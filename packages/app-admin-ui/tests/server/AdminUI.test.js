@@ -38,7 +38,6 @@ describe('Add Middleware', () => {
       adminPath,
       signinPath: '/signin',
       signoutPath: '/signout',
-      sessionPath: '/session',
     });
 
     //expect(adminUI.createSessionMiddleware()).not.toBe(null);

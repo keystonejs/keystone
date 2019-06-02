@@ -9,7 +9,6 @@ import { Global } from '@emotion/core';
 import { globalStyles } from '@arch-ui/theme';
 
 import ApolloClient from './apolloClient';
-
 import Nav from './components/Nav';
 import ScrollToTop from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';

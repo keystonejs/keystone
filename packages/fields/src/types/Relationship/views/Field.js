@@ -109,7 +109,7 @@ export default class RelationshipField extends Component {
   render() {
     const { autoFocus, field, value, renderContext, error, onChange } = this.props;
     const { many, ref } = field.config;
-    const { authList, withAuth } = field.adminMeta;
+    const { authStrategy } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
     return (
@@ -146,14 +146,14 @@ export default class RelationshipField extends Component {
             }}
             field={field}
           />
-          {withAuth && ref === authList && (
+          {authStrategy && ref === authStrategy.listKey && (
             <SetAsCurrentUser
               many={many}
               onAddUser={user => {
                 onChange(many ? (value || []).concat(user) : user);
               }}
               value={value}
-              listKey={authList}
+              listKey={authStrategy.listKey}
             />
           )}
         </FieldInput>

@@ -6,6 +6,7 @@ const StackUtils = require('stack-utils');
 const cuid = require('cuid');
 const { omit } = require('@keystone-alpha/utils');
 const { logger } = require('@keystone-alpha/logger');
+const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
 
 const { NestedError } = require('./graphqlErrors');
 
@@ -139,14 +140,19 @@ const _formatError = error => {
   }
 };
 
-function createApolloServer(keystone, apolloConfig, schemaName, dev) {
+function createApolloServer(keystone, apolloConfig, schemaName, dev, cookieSecret) {
   // add the Admin GraphQL API
   const server = new ApolloServer({
     maxFileSize: 200 * 1024 * 1024,
     maxFiles: 5,
     ...apolloConfig,
     ...keystone.getAdminSchema(),
-    context: ({ req }) => keystone.getAccessContext(schemaName, req),
+    context: ({ req }) => ({
+      startAuthedSession: ({ item, list }, audiences) =>
+        startAuthedSession(req, { item, list }, audiences, cookieSecret),
+      endAuthedSession: endAuthedSession.bind(null, req),
+      ...keystone.getAccessContext(schemaName, req),
+    }),
     ...(process.env.ENGINE_API_KEY
       ? {
           engine: { apiKey: process.env.ENGINE_API_KEY },

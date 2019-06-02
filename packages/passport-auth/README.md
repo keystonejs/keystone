@@ -35,6 +35,8 @@ InitializePassportAuthStrategies(app); // you can use server.app
 ```javascript
 const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
 
+const cookieSecret = '<the same as passed to your `app-graphql` instance>';
+
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
   list: 'User',
@@ -57,7 +59,7 @@ server.app.get(
     sessionExists: (itemId, req, res) => {
       console.log(`Already logged in as ${itemId} 🎉`);
       // logged in already? Send 'em home!
-      return res.redirect('/api/session');
+      return res.redirect('/');
     },
   })
 );
@@ -74,7 +76,7 @@ server.app.get(
         await keystone.sessionManager.startAuthedSession(req, {
           item: authedItem,
           list: info.list,
-        });
+        }, ['admin'], cookieSecret);
       } catch (createError) {
         return res.json({
           success: false,
@@ -83,7 +85,7 @@ server.app.get(
         });
       }
 
-      res.redirect('/api/session');
+      res.redirect('/');
     },
     failedVerification(error, req, res) {
       console.log('🤔 Failed to verify Twitter login creds');
@@ -102,6 +104,8 @@ bank's password over multiple server requests / page refreshes:
 ```javascript
 const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
 
+const cookieSecret = '<the same as passed to your `app-graphql` instance>';
+
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
   list: 'User',
@@ -124,7 +128,7 @@ server.app.get(
     sessionExists: (itemId, req, res) => {
       console.log(`Already logged in as ${itemId} 🎉`);
       // logged in already? Send 'em home!
-      return res.redirect('/api/session');
+      return res.redirect('/');
     },
   })
 );
@@ -139,7 +143,7 @@ server.app.get(
         return res.redirect('/auth/twitter/details');
       }
 
-      res.redirect('/api/session');
+      res.redirect('/');
     },
     failedVerification(error, req, res) {
       console.log('🤔 Failed to verify Twitter login creds');
@@ -150,7 +154,7 @@ server.app.get(
 
 server.app.get('/auth/twitter/details', (req, res) => {
   if (req.user) {
-    return res.redirect('/api/session');
+    return res.redirect('/');
   }
 
   // Capture details somehow
@@ -166,7 +170,7 @@ server.app.use(server.express.urlencoded({ extended: true }));
 
 server.app.post('/auth/twitter/complete', async (req, res, next) => {
   if (req.user) {
-    return res.redirect('/api/session');
+    return res.redirect('/');
   }
 
   // Finally, we have all the info we need to create a new user and log that
@@ -179,8 +183,8 @@ server.app.post('/auth/twitter/complete', async (req, res, next) => {
     });
 
     await keystone.auth.User.twitter.connectItem(req, { item });
-    await keystone.sessionManager.startAuthedSession(req, { item, list });
-    res.redirect('/api/session');
+    await keystone.sessionManager.startAuthedSession(req, { item, list }, ['admin'], cookieSecret);
+    res.redirect('/');
   } catch (createError) {
     next(createError);
   }
