@@ -28,12 +28,23 @@ export default class PasswordController extends FieldController {
   };
 
   validateInput = ({ originalInput, addFieldValidationError }) => {
-    const { minLength } = this.config;
+    const { isRequired, minLength } = this.config;
+
+    if (isRequired) {
+      if (!originalInput[this.path].inputPassword) {
+        return addFieldValidationError(`Password is required`);
+      }
+    } else if (!originalInput[this.path].inputPassword) {
+      //no password required and no password is set so just return
+      return;
+    }
 
     if (originalInput[this.path].inputPassword.length < minLength) {
-      addFieldValidationError(`Password must be at least ${minLength} characters`);
-    } else if (originalInput[this.path].inputPassword !== originalInput[this.path].inputConfirm) {
-      addFieldValidationError('Passwords do not match');
+      return addFieldValidationError(`Password must be at least ${minLength} characters`);
+    }
+
+    if (originalInput[this.path].inputPassword !== originalInput[this.path].inputConfirm) {
+      return addFieldValidationError('Passwords do not match');
     }
   };
 }

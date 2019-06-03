@@ -284,7 +284,7 @@ const ItemDetails = withRouter(
                           autoFocus={!i}
                           field={field}
                           errors={[
-                            ...(itemErrors[field.path] || []),
+                            ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
                             ...(validationErrors[field.path] || []),
                           ]}
                           warnings={validationWarnings[field.path] || []}
