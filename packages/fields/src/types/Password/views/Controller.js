@@ -27,7 +27,7 @@ export default class PasswordController extends FieldController {
     return data[this.path] ? data[this.path].inputPassword : undefined;
   };
 
-  validateInput = ({ originalInput, addFieldValidationError, addFieldValidationWarning }) => {
+  validateInput = ({ originalInput, addFieldValidationError }) => {
     const { minLength } = this.config;
 
     if (originalInput[this.path].inputPassword.length < minLength) {
