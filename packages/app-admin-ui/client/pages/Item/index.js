@@ -138,7 +138,7 @@ const ItemDetails = withRouter(
         return;
       }
 
-      const { onUpdate, toastManager, updateItem, item: initialData, list } = this.props;
+      const { onUpdate, toastManager, updateItem, item: initialData } = this.props;
 
       const fieldsObject = this.getFieldsObject();
 
