@@ -34,7 +34,7 @@ export default class PasswordController extends FieldController {
       if (!originalInput[this.path].inputPassword) {
         return addFieldValidationError(`Password is required`);
       }
-    } else if (!originalInput[this.path].inputPassword) {
+    } else if (!originalInput[this.path] || !originalInput[this.path].inputPassword) {
       //no password required and no password is set so just return
       return;
     }
