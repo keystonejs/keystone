@@ -155,6 +155,8 @@ const ItemDetails = withRouter(
         path => !fieldsObject[path].hasChanged(initialValues, currentValues)
       );
 
+      const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
+
       // On the first pass through, there wont be any warnings, so we go ahead
       // and check.
       // On the second pass through, there _may_ be warnings, and by this point
@@ -164,7 +166,7 @@ const ItemDetails = withRouter(
       // Later, on every change, we reset the warnings, so we know if things
       // have changed since last time we checked.
       if (!countArrays(validationWarnings)) {
-        const { errors, warnings } = await validateFields(list.fields, item, data);
+        const { errors, warnings } = await validateFields(fields, item, data);
 
         const totalErrors = countArrays(errors);
         const totalWarnings = countArrays(warnings);
