@@ -69,6 +69,7 @@ export default class PasswordField extends Component {
               <Input
                 autoComplete="off"
                 autoFocus={autoFocus}
+                id={`${htmlID}-confirm`}
                 name="inputConfirm"
                 onChange={this.onChange}
                 placeholder="Confirm Password"
@@ -86,7 +87,7 @@ export default class PasswordField extends Component {
               </Button>
             </FlexGroup>
           ) : (
-            <Button onClick={this.toggleInterface} variant="ghost">
+            <Button id={`${htmlID}-button`} onClick={this.toggleInterface} variant="ghost">
               {value ? 'Update Password' : 'Set Password'}
             </Button>
           )}
