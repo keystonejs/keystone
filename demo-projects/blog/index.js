@@ -38,6 +38,11 @@ const adminApp = new AdminUIApp({
   authStrategy,
   pages: [
     {
+      label: 'A new dashboard',
+      path: '',
+      component: require.resolve('./admin/pages/dashboard'),
+    },
+    {
       label: 'About this project',
       path: 'about',
       component: require.resolve('./admin/pages/about'),
