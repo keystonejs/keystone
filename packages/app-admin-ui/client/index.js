@@ -27,7 +27,7 @@ import StyleGuidePage from './pages/StyleGuide';
 const findCustomPages = (pages, allPages = []) => {
   if (!Array.isArray(pages)) return allPages;
   pages.forEach(page => {
-    if (page.path) allPages.push(page);
+    if (typeof page.path === 'string') allPages.push(page);
     else if (page.children) findCustomPages(page.children, allPages);
   });
   return allPages;
@@ -54,11 +54,6 @@ const Keystone = () => {
                         path={`${adminPath}/style-guide/:page?`}
                         render={() => <StyleGuidePage {...adminMeta} />}
                       />
-                      <Route
-                        exact
-                        path={`${adminPath}`}
-                        render={() => <HomePage {...adminMeta} />}
-                      />
                       {findCustomPages(pages).map(page => (
                         <Route
                           exact
@@ -70,6 +65,7 @@ const Keystone = () => {
                           }}
                         />
                       ))}
+                      <Route exact path={adminPath} render={() => <HomePage {...adminMeta} />} />
                       <Route
                         path={`${adminPath}/:listKey`}
                         render={({

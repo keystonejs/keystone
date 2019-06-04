@@ -1,0 +1,1 @@
+Allow changing to default dashboard to a custom component
