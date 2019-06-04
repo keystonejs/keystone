@@ -142,7 +142,7 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth) {
+function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, onRenderIndexPage) {
   if (node.children) {
     const groupKey = uid(node.children);
     depth += 1;
@@ -151,13 +151,16 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth) {
       <React.Fragment key={groupKey}>
         {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
         {node.children.map(child =>
-          renderChildren(child, mouseIsOverNav, getListByKey, adminPath, depth)
+          renderChildren(child, mouseIsOverNav, getListByKey, adminPath, depth, onRenderIndexPage)
         )}
       </React.Fragment>
     );
   }
 
-  if (node.path) {
+  if (typeof node.path === 'string') {
+    if (node.path === '') {
+      onRenderIndexPage();
+    }
     const { path, label } = node;
     const href = `${adminPath}/${path}`;
     const isSelected = href === location.pathname;
@@ -203,6 +206,18 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth) {
 }
 
 function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOverNav }) {
+  let hasRenderedIndexPage = false;
+  let onRenderIndexPage = () => {
+    hasRenderedIndexPage = true;
+  };
+  let pageNavItems =
+    pages && pages.length
+      ? pages.map(node =>
+          renderChildren(node, mouseIsOverNav, getListByKey, adminPath, 0, onRenderIndexPage)
+        )
+      : listKeys.map(key =>
+          renderChildren(key, mouseIsOverNav, getListByKey, adminPath, 0, onRenderIndexPage)
+        );
   return (
     <Relative>
       <Route>
@@ -210,21 +225,17 @@ function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOver
           <ScrollQuery isPassive={false}>
             {(ref, snapshot) => (
               <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                <PrimaryNavItem
-                  to={adminPath}
-                  isSelected={location.pathname === adminPath}
-                  mouseIsOverNav={mouseIsOverNav}
-                >
-                  Dashboard
-                </PrimaryNavItem>
+                {hasRenderedIndexPage === false && (
+                  <PrimaryNavItem
+                    to={adminPath}
+                    isSelected={location.pathname === adminPath}
+                    mouseIsOverNav={mouseIsOverNav}
+                  >
+                    Dashboard
+                  </PrimaryNavItem>
+                )}
 
-                {pages && pages.length
-                  ? pages.map(node =>
-                      renderChildren(node, mouseIsOverNav, getListByKey, adminPath, 0)
-                    )
-                  : listKeys.map(key =>
-                      renderChildren(key, mouseIsOverNav, getListByKey, adminPath)
-                    )}
+                {pageNavItems}
               </PrimaryNavScrollArea>
             )}
           </ScrollQuery>
