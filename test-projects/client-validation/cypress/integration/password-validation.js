@@ -83,32 +83,3 @@ describe('Editing data', () => {
     cy.get('body').should('contain', 'test name');
   });
 });
-
-// describe('Deleting data', () => {
-//   [
-//     {
-//       section: 'Users',
-//       url: '/admin/users',
-//       item: 'Jonny Dox',
-//     },
-//     {
-//       section: 'Posts',
-//       url: '/admin/posts',
-//       item: 'Our post',
-//     },
-//     {
-//       section: 'Post Categories',
-//       url: '/admin/post-categories',
-//       item: 'Our category',
-//     },
-//   ].forEach(({ section, url, item }) => {
-//     it(`Deleting data to ${section}`, () => {
-//       cy.visit(url);
-
-//       cy.get(`a:contains("${item}"):first`).click();
-//       cy.get('button:contains("Delete"):first').click();
-//       cy.get('body:last footer button:first').click();
-//       cy.get('body').should('not.contain', item);
-//     });
-//   });
-// });
