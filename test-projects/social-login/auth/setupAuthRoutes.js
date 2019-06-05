@@ -81,7 +81,12 @@ module.exports = ({
       if (req.user) {
         return res.redirect(successRedirect);
       }
-
+      // If we don't have a keystone[serviceName]SessionId at this point
+      // send back to the loginMiddleware
+      if (!req.session[strategy.config.keystoneSessionIdField]) {
+        return res.redirect(basePath);
+      }
+      
       // Create a new User
       try {
         const list = strategy.getList();
