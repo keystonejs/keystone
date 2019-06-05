@@ -36,7 +36,6 @@ describe('Add Middleware', () => {
   test('Smoke test', () => {
     const adminUI = new AdminUIApp({
       adminPath,
-      signoutPath: '/signout',
     });
 
     //expect(adminUI.createSessionMiddleware()).not.toBe(null);
