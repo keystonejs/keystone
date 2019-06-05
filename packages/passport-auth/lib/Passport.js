@@ -23,6 +23,9 @@ class PassportAuthStrategy {
       scope: [],
       ...config,
     };
+    // The field name on the User list (for example) such as `facebookUserId` or
+    // `twitterUserId` which the application developer has set.
+    this.serviceIdField = this.config.idField;
     this.ServiceStrategy = ServiceStrategy;
 
     this.createSessionList();
@@ -89,26 +92,6 @@ class PassportAuthStrategy {
       validationArgs
     );
 
-    // Lookup a past, verified session, that links to a user
-    let pastSessionItem;
-    let fieldItemPopulated;
-    try {
-      // NOTE: We don't need to filter on verifiedAt as these rows can only
-      // possibly exist after we've validated with Passport Service (see above)
-      pastSessionItem = await this.getSessionList().adapter.findOne({
-        [FIELD_SERVICE_NAME]: this.authType,
-        [FIELD_USER_ID]: validatedInfo.id,
-      });
-      // find user item related to past session, join not possible atm
-      fieldItemPopulated =
-        pastSessionItem &&
-        (await this.getList().adapter.findById(pastSessionItem[this.config.itemField].toString()));
-    } catch (sessionFindError) {
-      // TODO: Better error message. Why would this fail? DB connection lost? A
-      // "not found" shouldn't throw (it'll just return null).
-      throw new Error(`Unable to lookup existing ${this.authType} sessions: ${sessionFindError}`);
-    }
-
     const newSessionData = {
       [this.config.tokenSecretField]: accessToken,
       [FIELD_SERVICE_NAME]: this.authType,
@@ -116,32 +99,86 @@ class PassportAuthStrategy {
       [FIELD_USERNAME]: validatedInfo.username,
     };
 
-    // Only add a reference to the parent list when we know the link exists
-    if (pastSessionItem) {
-      newSessionData[this.config.itemField] = fieldItemPopulated.id;
+    let itemId;
+    // Find an existing user that matches the given validated service id
+    try {
+      const queryName = this.getList().gqlNames.listQueryName;
+      // TODO: URL?
+      // TOOD: `fetch` vs `request`?
+      const { data } = await fetch('/', {
+        method: 'POST',
+        body: {
+          query: `
+          query($serviceId: String) {
+            # eg; allUsers
+            ${queryName}(
+              first: 1
+              where: {
+                # eg; facebookUserId / googleUserId
+                ${this.serviceIdField}: $serviceId
+              }
+            ) {
+              id
+            }
+          }
+        `,
+          variables: { serviceId: validatedInfo.id },
+        },
+      });
+
+      itemId = data[queryName].length ? data[queryName][0].id : null;
+
+      // Only add a reference to the parent list when we know the link exists
+      if (itemId) {
+        newSessionData[this.config.itemField] = itemId;
+      }
+    } catch (sessionFindError) {
+      throw new Error(`Unable to lookup existing ${this.authType} sessions: ${sessionFindError}`);
     }
 
-    const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
+    // Insert a new session row with the service ID, and maybe the associated
+    // Keystone item id
+    const mutationName = this.getSessionList().gqlNames.createMutationName;
+    const mutationInputName = this.getSessionList().gqlNames.createInputName;
+
+    // TODO: URL?
+    // TOOD: `fetch` vs `request`?
+    const { data } = await fetch('/', {
+      method: 'POST',
+      body: {
+        query: `
+        mutation($newSessionData: ${mutationInputName}) {
+          ${mutationName}(data: $newSessionData) {
+            id
+          }
+        }
+      `,
+        variables: newSessionData,
+      },
+    });
+
+    const sessionItem = data[mutationName];
 
     const result = {
       success: true,
       list: this.getList(),
+      profile: validatedInfo,
       [this.config.sessionIdField]: sessionItem.id,
     };
 
-    if (!pastSessionItem) {
+    if (!itemId) {
       // If no previous Session found...
       // Create a new Session session that doesn't like to an item yet
       return {
         ...result,
         newUser: true,
+        item: {},
       };
     }
 
-    const previouslyVerifiedItem = fieldItemPopulated;
     return {
       ...result,
-      item: previouslyVerifiedItem,
+      item: { id: itemId },
     };
   }
 
@@ -154,9 +191,9 @@ class PassportAuthStrategy {
     req.session[this.config.keystoneSessionIdField] = sessionId;
   }
 
-  async connectItem(req, { item }) {
-    if (!item) {
-      throw new Error(`Must provide an \`item\` to connect to a ${this.authType} session`);
+  async connectItem(req, itemId) {
+    if (!itemId) {
+      throw new Error(`Must provide an \`itemId\` to connect to a ${this.authType} session`);
     }
 
     if (!req) {
@@ -174,18 +211,19 @@ class PassportAuthStrategy {
     }
 
     try {
+      // TODO: GraphQL Requests
       const serviceItem = await this.getSessionList().adapter.update(serviceSessionId, {
-        item: item.id,
+        item: itemId
       });
 
-      await this.getList().adapter.update(item.id, {
+      await this.getList().adapter.update(itemId, {
         [FIELD_USER_ID]: serviceItem[FIELD_USER_ID],
         [FIELD_USERNAME]: serviceItem[FIELD_USERNAME],
       });
     } catch (error) {
       return { success: false, error };
     }
-    return { success: true, item, list: this.getList() };
+    return { success: true, list: this.getList() };
   }
 
   /**
@@ -233,22 +271,22 @@ class PassportAuthStrategy {
     return (req, res, next) => {
       // This middleware will call the `verify` callback we passed up the top to
       // the `new Passport{Service}` constructor
-      passport.authenticate(this.authType, async (verifyError, passportUser, info) => {
+      passport.authenticate(this.authType, async (verifyError, item, info) => {
         // If we get a error, bail and display the message we get
         if (verifyError) {
           return failedVerification(verifyError.message || verifyError.toString(), req, res, next);
         }
-        // If we don't authorise at Service we won't have any info about the
+        // If we don't authenticate at Service we won't have any info about the
         // user so we need to bail
-        if (!info) {
-          return failedVerification(null, req, res, next);
+        if (!info[this.sessionIdField]) {
+          return failedVerification('Unable to authenticate user', req, res, next);
         }
         // Otherwise, store the Service data in session so we can refer
         // back to it
         try {
           this.pauseValidation(req, info);
 
-          await verified(passportUser, info, req, res, next);
+          await verified(item, info, req, res, next);
         } catch (validationVerificationError) {
           next(validationVerificationError);
         }
@@ -280,8 +318,12 @@ class PassportAuthStrategy {
           });
           if (!result.success) {
             // false indicates an authentication failure
+            // `done` is the callback passed to `passport.authenticate`, so
+            // params passed here will be the arguments to that function
             return done(null, false, { ...result, profile });
           }
+          // `done` is the callback passed to `passport.authenticate`, so params
+          // passed here will be the arguments to that function
           return done(null, result.item, { ...result, profile });
         } catch (error) {
           return done(error);
