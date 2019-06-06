@@ -73,10 +73,15 @@ server.app.get(
 
       try {
         await keystone.auth.User.twitter.connectItem(req, { item: authedItem });
-        await keystone.sessionManager.startAuthedSession(req, {
-          item: authedItem,
-          list: info.list,
-        }, ['admin'], cookieSecret);
+        await keystone.sessionManager.startAuthedSession(
+          req,
+          {
+            item: authedItem,
+            list: info.list,
+          },
+          ['admin'],
+          cookieSecret
+        );
       } catch (createError) {
         return res.json({
           success: false,

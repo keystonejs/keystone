@@ -104,7 +104,7 @@ const initialData = {
       status: 'active',
       themeColor: '#334455',
       // Default to "1 month from now"
-      startTime: new Date(Date.now() + (1000 * 60 * 60 * 24 * 30)).toISOString(),
+      startTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
       durationMins: 150,
       maxRsvps: 120,
       isRsvpAvailable: true,

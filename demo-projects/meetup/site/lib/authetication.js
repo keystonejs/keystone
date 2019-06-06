@@ -122,12 +122,12 @@ class AuthProviderClass extends Component {
     return this.props.client
       .mutate({
         mutation: gql`
-        mutation {
-          unauthenticateUser {
-            success
+          mutation {
+            unauthenticateUser {
+              success
+            }
           }
-        }
-      `,
+        `,
         fetchPolicy: 'no-cache',
       })
       .then(async ({ data: { unauthenticateUser }, error }) => {
