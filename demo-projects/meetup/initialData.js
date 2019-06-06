@@ -103,9 +103,11 @@ const initialData = {
       name: 'Keystone Launch',
       status: 'active',
       themeColor: '#334455',
-      startTime: '2019-05-15T18:00:00+11:00',
+      // Default to "1 month from now"
+      startTime: new Date(Date.now() + (1000 * 60 * 60 * 24 * 30)).toISOString(),
       durationMins: 150,
       maxRsvps: 120,
+      isRsvpAvailable: true,
     },
   ],
   Talk: [{ name: 'Introducing Keystone 5 🎉' }, { name: 'Keystone 5 - Under the hood' }],

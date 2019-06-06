@@ -20,16 +20,14 @@ export default ({ onSuccess, onClickForgot }) => {
     event.preventDefault();
 
     setIsLoading(true);
-    const result = await signin({ email, password });
-    setIsLoading(false);
-
-    if (result.success) {
+    try {
+      await signin({ email, password });
+      setIsLoading(false);
       setErrorState(false);
-
       if (onSuccess && typeof onSuccess === 'function') {
         onSuccess();
       }
-    } else {
+    } catch (error) {
       setErrorState(true);
     }
   };

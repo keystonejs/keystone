@@ -27,12 +27,12 @@ export default () => {
 
   const handleSignin = async () => {
     setIsLoading(true);
-    const result = await signin({ email, password });
-    setIsLoading(false);
-    if (!result.success) {
-      setErrorState(true);
-    } else {
+    try {
+      await signin({ email, password });
+      setIsLoading(false);
       setErrorState(false);
+    } catch (error) {
+      setErrorState(true);
     }
   };
 

@@ -43,15 +43,15 @@ class Session extends Component {
       this.setState({ isLoading: true });
     }
 
-    this.props.client
+    return this.props.client
       .query({
         query: gql`
-        query {
-          user: authenticated${this.props.adminMeta.authStrategy.listKey} {
-            ${userFragment}
+          query {
+            user: authenticated${this.props.adminMeta.authStrategy.listKey} {
+              ${userFragment}
+            }
           }
-        }
-      `,
+        `,
         fetchPolicy: 'no-cache',
       })
       .then(({ data: { user }, error }) => {
@@ -63,6 +63,7 @@ class Session extends Component {
       .catch(error => {
         console.error(error);
         this.setState({ error, isLoading: false });
+        throw error;
       });
   };
 
@@ -72,17 +73,17 @@ class Session extends Component {
     // NOTE: We are not capturing the `token` here on purpose; The GraphQL API
     // will set a `keystone.sid` cookie on its domain, which will be
     // automatically read for each subsequent query.
-    this.props.client
+    return this.props.client
       .mutate({
         mutation: gql`
-        mutation signin($identity: String, $secret: String) {
-          authenticate: authenticate${listKey}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
-            item {
-              ${userFragment}
+          mutation signin($identity: String, $secret: String) {
+            authenticate: authenticate${listKey}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
+              item {
+                ${userFragment}
+              }
             }
           }
-        }
-      `,
+        `,
         fetchPolicy: 'no-cache',
         variables: { identity, secret },
       })
@@ -99,13 +100,14 @@ class Session extends Component {
       .catch(error => {
         console.error(error);
         this.setState({ error, isLoading: false });
+        throw error;
       });
   };
 
   signOut = () => {
     this.setState({ error: null, isLoading: true });
     const { listKey } = this.props.adminMeta.authStrategy;
-    this.props.client
+    return this.props.client
       .mutate({
         mutation: gql`
         mutation {
@@ -129,6 +131,7 @@ class Session extends Component {
       .catch(error => {
         console.error(error);
         this.setState({ error, isLoading: false });
+        throw error;
       });
   };
 
