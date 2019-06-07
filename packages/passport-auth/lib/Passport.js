@@ -225,8 +225,8 @@ class PassportAuthStrategy {
       const newServiceItemFields = {
         [FIELD_USER_ID]: serviceItem[FIELD_USER_ID],
         [FIELD_USERNAME]: serviceItem[FIELD_USERNAME],
-      }
-      await request(endpoint,
+      };
+      await request(this.config.endpoint,
         `
           mutation($id: ID!, $newServiceItemFields: ${userMutationInputName}) {
             ${userMutationName}(id: $id ,data: $newServiceItemFields) {
