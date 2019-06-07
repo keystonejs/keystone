@@ -1,4 +1,5 @@
 const passport = require('passport');
+const { request } = require('graphql-request');
 
 const FIELD_SERVICE_NAME = 'service';
 const FIELD_USER_ID = 'serviceUserId';
@@ -20,7 +21,7 @@ class PassportAuthStrategy {
       useSession: false,
       sessionIdField: 'passport',
       keystoneSessionIdField: 'keystone_passport',
-      scope: [],
+			scope: [],
       ...config,
     };
     // The field name on the User list (for example) such as `facebookUserId` or
@@ -30,7 +31,7 @@ class PassportAuthStrategy {
 
     this.createSessionList();
 
-    this.passportStrategy = this.getPassportStrategy();
+    this.passportStrategy = this.getPassportStrategy(this.config.strategyConfig);
     passport.use(this.passportStrategy);
   }
 
@@ -47,7 +48,7 @@ class PassportAuthStrategy {
       this.keystone.createList(this.config.sessionListKey, {
         fields: {
           [FIELD_SERVICE_NAME]: { type: Text },
-          [FIELD_USER_ID]: { type: Text },
+          [FIELD_USER_ID]: { type: Text, mongooseOptions: { index: true } },
           [FIELD_USERNAME]: { type: Text },
           [this.config.tokenSecretField]: { type: Text },
           [this.config.itemField]: {
@@ -79,7 +80,7 @@ class PassportAuthStrategy {
         }
         resolve({
           id: profile.id,
-          username: profile.username || null,
+          username: profile.displayName || null,
         });
       });
     });
@@ -103,34 +104,29 @@ class PassportAuthStrategy {
     // Find an existing user that matches the given validated service id
     try {
       const queryName = this.getList().gqlNames.listQueryName;
-      // TODO: URL?
-      // TOOD: `fetch` vs `request`?
-      const { data } = await fetch('/', {
-        method: 'POST',
-        body: {
-          query: `
-          query($serviceId: String) {
-            # eg; allUsers
-            ${queryName}(
-              first: 1
-              where: {
-                # eg; facebookUserId / googleUserId
-                ${this.serviceIdField}: $serviceId
-              }
-            ) {
-              id
+       const data = await request(this.config.endpoint,
+      `
+        query($serviceId: String) {
+          ${queryName}(
+            first: 1
+            where: {
+              # eg; facebookUserId / googleUserId
+              ${this.serviceIdField}: $serviceId
             }
+          ) {
+            id
           }
-        `,
-          variables: { serviceId: validatedInfo.id },
-        },
-      });
+        }
+      `,
+        { serviceId: validatedInfo.id }
+      );
 
       itemId = data[queryName].length ? data[queryName][0].id : null;
 
       // Only add a reference to the parent list when we know the link exists
+      // we use connect here to link to an existent user in our mutation (UserRelateToOneInput)
       if (itemId) {
-        newSessionData[this.config.itemField] = itemId;
+        newSessionData[this.config.itemField] = { connect: { id: itemId } };
       }
     } catch (sessionFindError) {
       throw new Error(`Unable to lookup existing ${this.authType} sessions: ${sessionFindError}`);
@@ -141,22 +137,18 @@ class PassportAuthStrategy {
     const mutationName = this.getSessionList().gqlNames.createMutationName;
     const mutationInputName = this.getSessionList().gqlNames.createInputName;
 
-    // TODO: URL?
-    // TOOD: `fetch` vs `request`?
-    const { data } = await fetch('/', {
-      method: 'POST',
-      body: {
-        query: `
-        mutation($newSessionData: ${mutationInputName}) {
-          ${mutationName}(data: $newSessionData) {
+    const data = await request(this.config.endpoint,
+      `
+        mutation($newSessionDataObject: ${mutationInputName}) {
+          ${mutationName}(data: $newSessionDataObject) {
             id
           }
         }
       `,
-        variables: newSessionData,
-      },
-    });
-
+      {
+        newSessionDataObject: newSessionData
+      }
+    );
     const sessionItem = data[mutationName];
 
     const result = {
@@ -191,9 +183,9 @@ class PassportAuthStrategy {
     req.session[this.config.keystoneSessionIdField] = sessionId;
   }
 
-  async connectItem(req, itemId) {
-    if (!itemId) {
-      throw new Error(`Must provide an \`itemId\` to connect to a ${this.authType} session`);
+  async connectItem(req, item) {
+    if (!item) {
+      throw new Error(`Must provide an \`item\` to connect to a ${this.authType} session`);
     }
 
     if (!req) {
@@ -201,7 +193,6 @@ class PassportAuthStrategy {
     }
 
     const serviceSessionId = req.session[this.config.keystoneSessionIdField];
-
     if (!serviceSessionId) {
       throw new Error(
         `Unable to extract ${
@@ -211,15 +202,44 @@ class PassportAuthStrategy {
     }
 
     try {
-      // TODO: GraphQL Requests
-      const serviceItem = await this.getSessionList().adapter.update(serviceSessionId, {
-        item: itemId
-      });
+      const passportSessionMutationName = this.getSessionList().gqlNames.updateMutationName;
+      const passportSessionMutationInputName = this.getSessionList().gqlNames.updateInputName;
+      const serviceItem = await request(this.config.endpoint,
+        `
+          mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
+            ${passportSessionMutationName}(id: $id , data: $data) {
+							id
+							serviceUserId
+							serviceUsername
+            }
+          }
+        `,
+        {
+          id: serviceSessionId,
+          data: { item: { connect: { id: item.item.id } } },
+        }
+			);
 
-      await this.getList().adapter.update(itemId, {
+      const userMutationName = this.getList().gqlNames.updateMutationName;
+      const userMutationInputName = this.getList().gqlNames.updateInputName;
+      const newServiceItemFields = {
         [FIELD_USER_ID]: serviceItem[FIELD_USER_ID],
         [FIELD_USERNAME]: serviceItem[FIELD_USERNAME],
-      });
+      }
+      await request(endpoint,
+        `
+          mutation($id: ID!, $newServiceItemFields: ${userMutationInputName}) {
+            ${userMutationName}(id: $id ,data: $newServiceItemFields) {
+              id
+            }
+          }
+        `,
+        {
+          id: item.item.id,
+          newServiceItemFields,
+
+        }
+      );
     } catch (error) {
       return { success: false, error };
     }
@@ -278,7 +298,7 @@ class PassportAuthStrategy {
         }
         // If we don't authenticate at Service we won't have any info about the
         // user so we need to bail
-        if (!info[this.sessionIdField]) {
+        if (!info[this.config.sessionIdField]) {
           return failedVerification('Unable to authenticate user', req, res, next);
         }
         // Otherwise, store the Service data in session so we can refer
@@ -295,7 +315,7 @@ class PassportAuthStrategy {
   }
 
   //#region abstract method, must implement if ServiceStrategy is not provided in constructor
-  getPassportStrategy() {
+  getPassportStrategy(strategyConfig) {
     if (!this.ServiceStrategy) {
       throw new Error(
         `Must provide PassportJs strategy Type in constructor or override this method in ${
@@ -309,7 +329,8 @@ class PassportAuthStrategy {
         clientID: this.config.consumerKey,
         clientSecret: this.config.consumerSecret,
         callbackURL: this.config.callbackURL,
-        passReqToCallback: true,
+				passReqToCallback: true,
+				...strategyConfig,
       },
       async (req, accessToken, refreshToken, profile, done) => {
         try {
