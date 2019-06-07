@@ -1,13 +1,18 @@
+/** @jsx jsx */
+
+import { jsx } from '@emotion/core';
 import * as React from 'react';
 
-const Cell = (props: Props) => {
-  let { data } = props;
+import Preview from './preview';
 
+const Cell = ({ data }) => {
   if (!data) {
     return null;
   }
 
-  return <a href={data}>{JSON.stringify(data, null, 2)}</a>;
+  return (
+    <Preview data={data.preview} originalUrl={data.originalUrl} />
+  );
 };
 
 export default Cell;
