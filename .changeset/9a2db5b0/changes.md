@@ -1,0 +1,1 @@
+Add keystone.addLists method
