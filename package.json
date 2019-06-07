@@ -18,7 +18,7 @@
     "lint:markdown": "remark . --frail --quiet",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:flow && yarn lint:markdown",
     "start": "yarn start:demo",
-    "start:demo": "/bin/sh -c 'cd demo-projects/${1:-$0} && yarn start' todo",
+    "start:demo": "/bin/sh -c 'cd demo-projects/${1:-$0} && yarn dev' todo",
     "start:test": "/bin/sh -c 'cd test-projects/${1:-$0} && yarn start' basic",
     "website:start": "cd website && yarn start",
     "website:build": "cd website && yarn build",

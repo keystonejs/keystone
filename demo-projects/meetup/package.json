@@ -9,8 +9,9 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone",
-    "build": "cross-env NODE_ENV=production next build"
+    "build": "cross-env keystone build",
+    "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
+    "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
     "@emotion/core": "^10.0.10",
