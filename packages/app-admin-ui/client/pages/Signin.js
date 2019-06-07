@@ -10,6 +10,8 @@ import SessionProvider from '../providers/Session';
 
 import logo from '../assets/logo.png';
 
+const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
@@ -65,24 +67,24 @@ const Spacer = styled.div({
 class SigninPage extends Component {
   reloading = false;
   state = {
-    username: '',
-    password: '',
+    identity: '',
+    secret: '',
   };
   onSubmit = e => {
     e.preventDefault();
     const { isLoading, signIn } = this.props;
-    const { username, password } = this.state;
+    const { identity, secret } = this.state;
     if (isLoading) return;
-    signIn({ username, password });
+    signIn({ identity, secret });
   };
   render() {
-    const { error, isLoading, isSignedIn } = this.props;
+    const { error, isLoading, isSignedIn, authStrategy } = this.props;
     if (isSignedIn && !this.reloading) {
       // Avoid reloading on subsequent renders
       this.reloading = true;
       window.location.reload(true);
     }
-    const { username, password } = this.state;
+    const { identity, secret } = this.state;
     return (
       <Container>
         <Alerts>
@@ -95,19 +97,19 @@ class SigninPage extends Component {
           <Divider />
           <div>
             <Fields>
-              <FieldLabel>Email</FieldLabel>
+              <FieldLabel>{upcase(authStrategy.identityField)}</FieldLabel>
               <Input
-                name="username"
+                name="identity"
                 autoFocus
-                value={username}
-                onChange={e => this.setState({ username: e.target.value })}
+                value={identity}
+                onChange={e => this.setState({ identity: e.target.value })}
               />
-              <FieldLabel>Password</FieldLabel>
+              <FieldLabel>{upcase(authStrategy.secretField)}</FieldLabel>
               <Input
                 type="password"
-                name="password"
-                value={password}
-                onChange={e => this.setState({ password: e.target.value })}
+                name="secret"
+                value={secret}
+                onChange={e => this.setState({ secret: e.target.value })}
               />
             </Fields>
             <LoadingButton
@@ -126,8 +128,8 @@ class SigninPage extends Component {
   }
 }
 
-export default ({ sessionPath, signinPath, signoutPath }) => (
-  <SessionProvider signinPath={signinPath} signoutPath={signoutPath} sessionPath={sessionPath}>
-    {props => <SigninPage {...props} />}
+export default ({ signinPath, signoutPath, authStrategy }) => (
+  <SessionProvider signinPath={signinPath} signoutPath={signoutPath}>
+    {props => <SigninPage {...props} authStrategy={authStrategy} />}
   </SessionProvider>
 );

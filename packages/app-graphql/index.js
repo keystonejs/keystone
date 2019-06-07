@@ -43,7 +43,13 @@ class GraphQLApp {
       middlewares.push(commonSessionMiddleware(keystone, this._cookieSecret, this._sessionStore));
     }
 
-    const server = createApolloServer(keystone, this._apollo, this._schemaName, dev);
+    const server = createApolloServer(
+      keystone,
+      this._apollo,
+      this._schemaName,
+      dev,
+      this._cookieSecret
+    );
     // GraphQL API always exists independent of any adminUI or Session
     // settings We currently make the admin UI public. In the future we want
     // to be able to restrict this to a limited audience, while setting up a

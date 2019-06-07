@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const compression = require('compression');
-const { createSessionMiddleware } = require('@keystone-alpha/session');
 const path = require('path');
 const fs = require('fs');
 const fallback = require('express-history-api-fallback');
@@ -37,31 +36,40 @@ class AdminUIApp {
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
       signoutPath: `${this.adminPath}/signout`,
-      sessionPath: `${this.adminPath}/session`,
     };
   }
 
   getAdminMeta() {
     return {
       adminPath: this.adminPath,
-      authList: this.authStrategy ? this.authStrategy.listKey : null,
       pages: this.pages,
       ...this.routes,
-      withAuth: !!this.authStrategy,
+      ...(this.authStrategy
+        ? {
+            authStrategy: this.authStrategy.getAdminMeta(),
+          }
+        : {}),
     };
   }
 
   createSessionMiddleware() {
-    const { signinPath, signoutPath, sessionPath } = this.routes;
-    // This session allows the user to authenticate as part of the 'admin' audience.
-    // This isn't used by anything just yet. In the near future we will set up the admin-ui
-    // application and api to be non-public.
-    const audiences = ['admin'];
-    return createSessionMiddleware(
-      { signinPath, signoutPath, sessionPath, successPath: this.adminPath },
-      this.authStrategy,
-      audiences
+    const { signinPath } = this.routes;
+
+    const app = express();
+
+    // Short-circuit GET requests when the user already signed in (avoids
+    // downloading UI bundle, doing a client side redirect, etc)
+    app.get(signinPath, (req, res, next) =>
+      // This session is currently authenticated as part of the 'admin'
+      // audience.
+      req.user && req.session.audiences && req.session.audiences.contains('admin')
+        ? res.redirect(this.adminPath)
+        : next()
     );
+
+    // TODO: Attach a server-side signout to signoutPath
+
+    return app;
   }
 
   build({ keystone, distDir }) {
@@ -124,11 +132,11 @@ class AdminUIApp {
     if (dev) {
       return this.createDevMiddleware({ keystone });
     } else {
-      return this.createProdMiddleware({ distDir });
+      return this.createProdMiddleware({ keystone, distDir });
     }
   }
 
-  createProdMiddleware({ distDir }) {
+  createProdMiddleware({ keystone, distDir }) {
     const app = express.Router();
 
     app.use(compression());
@@ -168,7 +176,7 @@ class AdminUIApp {
     const _app = express.Router();
 
     if (this.authStrategy) {
-      _app.use(this.createSessionMiddleware());
+      _app.use(this.createSessionMiddleware(keystone));
     }
 
     _app.use(this.adminPath, app);
@@ -187,7 +195,7 @@ class AdminUIApp {
 
     const { adminPath } = this;
     if (this.authStrategy) {
-      app.use(this.createSessionMiddleware());
+      app.use(this.createSessionMiddleware(keystone));
     }
 
     // ensure any non-resource requests are rewritten for history api fallback

@@ -10,7 +10,7 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
+// Cypress.Commands.add("login", (identity, secret) => { ... })
 //
 //
 // -- This is a child command --
@@ -110,16 +110,16 @@ function graphqlOperation(type) {
 Cypress.Commands.add('graphql_query', graphqlOperation('query'));
 Cypress.Commands.add('graphql_mutate', graphqlOperation('mutate'));
 
-Cypress.Commands.add('loginToKeystone', (email, password) => {
+Cypress.Commands.add('loginToKeystone', (identity, secret) => {
   cy.visit('/admin');
 
-  cy.get('input[name="username"]')
+  cy.get('input[name="identity"]')
     .clear({ force: true })
-    .type(email, { force: true });
+    .type(identity, { force: true });
 
-  cy.get('[name="password"]')
+  cy.get('[name="secret"]')
     .clear({ force: true })
-    .type(password, { force: true });
+    .type(secret, { force: true });
 
   cy.get('button[type="submit"]').click();
 
