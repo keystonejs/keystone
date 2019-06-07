@@ -9,9 +9,9 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
-    "build": "cross-env keystone build",
-    "start": "cross-env NODE_ENV=production keystone start"
+    "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true node -r dotenv-safe/config `yarn bin`/keystone dev",
+    "build": "cross-env node -r dotenv-safe/config `yarn bin`/keystone build",
+    "start": "cross-env NODE_ENV=production node -r dotenv-safe/config `yarn bin`/keystone start"
   },
   "dependencies": {
     "@arch-ui/layout": "^0.2.2",
@@ -21,12 +21,13 @@
     "@keystone-alpha/adapter-mongoose": "^2.0.1",
     "@keystone-alpha/app-admin-ui": "^4.0.0",
     "@keystone-alpha/app-graphql": "^6.0.0",
+    "@keystone-alpha/app-next": "^1.0.1",
+    "@keystone-alpha/app-static": "^1.0.1",
     "@keystone-alpha/fields": "^6.2.2",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.0",
     "@keystone-alpha/file-adapters": "^1.1.0",
     "@keystone-alpha/keystone": "^5.0.1",
-    "@keystone-alpha/app-next": "^1.0.1",
-    "@keystone-alpha/app-static": "^1.0.1",
+    "@keystone-alpha/oembed-adapters": "^0.0.0",
     "apollo-boost": "^0.3.1",
     "apollo-client": "^2.5.1",
     "apollo-upload-client": "^10.0.0",

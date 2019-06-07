@@ -7,6 +7,7 @@ const {
   Checkbox,
   CalendarDay,
   DateTime,
+  OEmbed,
 } = require('@keystone-alpha/fields');
 const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const { LocalFileAdapter } = require('@keystone-alpha/file-adapters');
@@ -14,6 +15,15 @@ const getYear = require('date-fns/get_year');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const dev = process.env.NODE_ENV !== 'production';
+
+let iframelyAdapter;
+
+if (process.env.IFRAMELY_API_KEY) {
+  const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+  iframelyAdapter = new IframelyOEmbedAdapter({
+    apiKey: process.env.IFRAMELY_API_KEY,
+  });
+}
 
 const fileAdapter = new LocalFileAdapter({
   directory: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
@@ -35,6 +45,9 @@ exports.User = {
       yearRangeFrom: 1901,
       yearRangeTo: getYear(new Date()),
     },
+    ...(process.env.IFRAMELY_API_KEY ? {
+      portfolio: { type: OEmbed, adapter: iframelyAdapter },
+    } : {}),
     password: { type: Password },
     isAdmin: { type: Checkbox },
     avatar: { type: File, adapter: avatarFileAdapter },

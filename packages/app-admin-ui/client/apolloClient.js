@@ -3,8 +3,18 @@ import { createUploadLink } from 'apollo-upload-client';
 import { withClientState } from 'apollo-link-state';
 import { onError } from 'apollo-link-error';
 
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
+
+// This shouldn't be necessary, but it silences an annoying error from Apollo
+// Client: https://github.com/apollographql/apollo-client/issues/3397#issuecomment-421433032
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData: {
+    __schema: {
+      types: []
+    }
+  }
+});
 
 const fetch = require('cross-fetch');
 
@@ -18,8 +28,8 @@ class BoostClientWithUpload extends ApolloClient {
   constructor(config) {
     const cache =
       config && config.cacheRedirects
-        ? new InMemoryCache({ cacheRedirects: config.cacheRedirects })
-        : new InMemoryCache();
+        ? new InMemoryCache({ fragmentMatcher, cacheRedirects: config.cacheRedirects })
+        : new InMemoryCache({ fragmentMatcher });
 
     const stateLink =
       config && config.clientState ? withClientState({ ...config.clientState, cache }) : false;
