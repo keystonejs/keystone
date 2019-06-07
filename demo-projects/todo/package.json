@@ -9,6 +9,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
+    "build": "cross-env keystone build",
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
     "start": "cross-env NODE_ENV=production keystone start"
   },
