@@ -1,12 +1,15 @@
 const { startAuthedSession } = require('@keystone-alpha/session');
 const express = require('express');
 
+const { cookieSecret } = require('../config');
+
 module.exports = ({
   strategy,
   app,
   authRoot = '/auth',
   successRedirect = '/api/session',
   failureRedirect = '/',
+  audiences = ['admin'],
 }) => {
   const basePath = `${authRoot}/${strategy.authType}`;
   // Hit this route to start the auth process for service
@@ -40,7 +43,7 @@ module.exports = ({
         }
 
         // Otherwise create a session based on the user we have already
-        await startAuthedSession(req, { item, list });
+        await startAuthedSession(req, { item, list }, audiences, cookieSecret);
         // Redirect on sign in
         res.redirect(successRedirect);
       },
@@ -91,7 +94,7 @@ module.exports = ({
         });
 
         await strategy.connectItem(req, { item });
-        await startAuthedSession(req, { item, list });
+        await startAuthedSession(req, { item, list }, audiences, cookieSecret);
         res.redirect(successRedirect);
       } catch (createError) {
         next(createError);

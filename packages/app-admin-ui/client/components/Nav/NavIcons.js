@@ -12,10 +12,10 @@ import { useAdminMeta } from '../../providers/AdminMeta';
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 export function NavIcons() {
-  let { adminPath, graphiqlPath, signoutPath, withAuth } = useAdminMeta();
-  return ENABLE_DEV_FEATURES || withAuth ? (
+  let { adminPath, graphiqlPath, signoutPath, authStrategy } = useAdminMeta();
+  return ENABLE_DEV_FEATURES || authStrategy ? (
     <NavGroupIcons>
-      {withAuth ? (
+      {authStrategy ? (
         <PrimaryNavItem href={signoutPath} title="Sign Out">
           <SignOutIcon />
           <A11yText>Sign Out</A11yText>

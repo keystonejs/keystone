@@ -80,8 +80,8 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
   );
 };
 
-export default ({ signinPath, signoutPath, sessionPath }) => (
-  <SessionProvider signinPath={signinPath} signoutPath={signoutPath} sessionPath={sessionPath}>
+export default ({ signinPath, signoutPath }) => (
+  <SessionProvider signinPath={signinPath} signoutPath={signoutPath}>
     {props => <SignedOutPage signinPath={signinPath} {...props} />}
   </SessionProvider>
 );

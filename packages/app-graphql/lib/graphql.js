@@ -14,7 +14,14 @@ const graphiqlMiddleware = endpoint => (req, res) => {
   }
 
   res.setHeader('Content-Type', 'text/html');
-  res.write(renderPlaygroundPage({ endpoint, version: playgroundPkg.version, tabs: [tab] }));
+  res.write(
+    renderPlaygroundPage({
+      endpoint,
+      version: playgroundPkg.version,
+      tabs: [tab],
+      settings: { 'request.credentials': 'same-origin' },
+    })
+  );
   res.end();
 };
 
