@@ -28,6 +28,8 @@ const avatarFileAdapter = new LocalFileAdapter({
 exports.User = {
   fields: {
     name: { type: Text },
+    hidden: { type: Text, isVisible: false },
+    readonly: { type: Text, isEditable: false },
     email: { type: Text, isUnique: true },
     dob: {
       type: CalendarDay,

@@ -4,18 +4,31 @@ import { parseFieldAccess } from '@keystone-alpha/access-control';
 class Field {
   constructor(
     path,
-    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
+    {
+      access,
+      defaultValue,
+      hooks = {},
+      isEditable = true,
+      isRequired,
+      isVisible = true,
+      label,
+      schemaDoc,
+      ...config
+    },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
+    this.config = config;
+    this.defaultValue = defaultValue;
+    this.getListByKey = getListByKey;
+    this.hooks = hooks;
+    this.isEditable = isRequired;
+    this.isRequired = isRequired;
+    this.isVisible = isRequired;
+    this.label = label || inflection.humanize(inflection.underscore(path));
+    this.listKey = listKey;
     this.path = path;
     this.schemaDoc = schemaDoc;
-    this.config = config;
-    this.isRequired = isRequired;
-    this.defaultValue = defaultValue;
-    this.hooks = hooks;
-    this.getListByKey = getListByKey;
-    this.listKey = listKey;
-    this.label = label || inflection.humanize(inflection.underscore(path));
+
     this.adapter = listAdapter.newFieldAdapter(
       fieldAdapterClass,
       this.constructor.name,
@@ -157,10 +170,12 @@ class Field {
   }
   getAdminMeta() {
     return this.extendAdminMeta({
+      defaultValue: this.getDefaultValue(),
+      isEditable: this.isEditable,
+      isVisible: this.isVisible,
       label: this.label,
       path: this.path,
       type: this.constructor.name,
-      defaultValue: this.getDefaultValue(),
     });
   }
   extendAdminMeta(meta) {
