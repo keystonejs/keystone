@@ -7,7 +7,7 @@ const { NextApp } = require('@keystone-alpha/app-next');
 const { StaticApp } = require('@keystone-alpha/app-static');
 
 const { staticRoute, staticPath, distDir } = require('./config');
-const { User, Post, PostCategory, Comment } = require('./schema');
+const schema = require('./schema');
 
 const keystone = new Keystone({
   name: 'Keystone Demo Blog',
@@ -28,10 +28,7 @@ const authStrategy = keystone.createAuthStrategy({
   list: 'User',
 });
 
-keystone.createList('User', User);
-keystone.createList('Post', Post);
-keystone.createList('PostCategory', PostCategory);
-keystone.createList('Comment', Comment);
+keystone.createLists(schema);
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',

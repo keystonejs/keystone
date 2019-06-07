@@ -97,6 +97,17 @@ module.exports = class Keystone {
     return list;
   }
 
+  /*
+    This is a shorthand method for adding multiple lists to Keystone with a
+    single function call. Useful to simpilfy importing your schema from a
+    separate file to your keystone setup.
+  */
+  createLists(lists) {
+    for (const key in lists) {
+      this.createList(key, lists[key]);
+    }
+  }
+
   /**
    * @return Promise<null>
    */
