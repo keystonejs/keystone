@@ -21,12 +21,13 @@ class PassportAuthStrategy {
       useSession: false,
       sessionIdField: 'passport',
       keystoneSessionIdField: 'keystone_passport',
-			scope: [],
+      scope: [],
       ...config,
     };
     // The field name on the User list (for example) such as `facebookUserId` or
     // `twitterUserId` which the application developer has set.
     this.serviceIdField = this.config.idField;
+    this.serviceUsernameField = this.config.usernameField;
     this.ServiceStrategy = ServiceStrategy;
 
     this.createSessionList();
@@ -193,6 +194,7 @@ class PassportAuthStrategy {
     }
 
     const serviceSessionId = req.session[this.config.keystoneSessionIdField];
+
     if (!serviceSessionId) {
       throw new Error(
         `Unable to extract ${
@@ -208,9 +210,9 @@ class PassportAuthStrategy {
         `
           mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
             ${passportSessionMutationName}(id: $id , data: $data) {
-							id
-							serviceUserId
-							serviceUsername
+              id
+              serviceUserId
+              serviceUsername
             }
           }
         `,
@@ -218,14 +220,15 @@ class PassportAuthStrategy {
           id: serviceSessionId,
           data: { item: { connect: { id: item.item.id } } },
         }
-			);
+      );
 
       const userMutationName = this.getList().gqlNames.updateMutationName;
       const userMutationInputName = this.getList().gqlNames.updateInputName;
       const newServiceItemFields = {
-        [FIELD_USER_ID]: serviceItem[FIELD_USER_ID],
-        [FIELD_USERNAME]: serviceItem[FIELD_USERNAME],
+        [this.serviceIdField]: serviceItem[passportSessionMutationName][FIELD_USER_ID],
+        [this.serviceUsernameField]: serviceItem[passportSessionMutationName][FIELD_USERNAME],
       };
+
       await request(this.config.endpoint,
         `
           mutation($id: ID!, $newServiceItemFields: ${userMutationInputName}) {
@@ -237,7 +240,6 @@ class PassportAuthStrategy {
         {
           id: item.item.id,
           newServiceItemFields,
-
         }
       );
     } catch (error) {
@@ -329,8 +331,8 @@ class PassportAuthStrategy {
         clientID: this.config.consumerKey,
         clientSecret: this.config.consumerSecret,
         callbackURL: this.config.callbackURL,
-				passReqToCallback: true,
-				...strategyConfig,
+        passReqToCallback: true,
+        ...strategyConfig,
       },
       async (req, accessToken, refreshToken, profile, done) => {
         try {
