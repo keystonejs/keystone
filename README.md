@@ -80,7 +80,7 @@ yarn start
 ### Manual Setup
 
 ```bash
-npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui
+npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui @keystone-alpha/app-static
 ```
 
 Add a script to your `package.json`:
