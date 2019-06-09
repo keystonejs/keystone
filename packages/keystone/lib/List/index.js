@@ -1094,6 +1094,24 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
+
+    // Check for isRequired
+    const fieldValidationErrors = this.fields
+      .filter(
+        f =>
+          f.isRequired &&
+          !f.isRelationship &&
+          (resolvedData[f.path] === undefined || resolvedData[f.path] === null)
+      )
+      .map(f => ({
+        msg: `Required field "${f.path}" is null or undefined.`,
+        data: { resolvedData, operation, originalInput },
+        internalData: {},
+      }));
+    if (fieldValidationErrors.length) {
+      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
+    }
+
     const fields = this._fieldsFromObject(resolvedData);
     await this._validateHook(args, fields, operation, 'validateInput');
   }

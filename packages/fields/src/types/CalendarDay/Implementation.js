@@ -57,7 +57,7 @@ export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseF
     const schemaOptions = {
       type: String,
       validate: {
-        validator: this.buildValidator(validator, this.isRequired),
+        validator: this.buildValidator(validator),
         message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
       },
     };

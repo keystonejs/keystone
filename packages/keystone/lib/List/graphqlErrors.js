@@ -8,7 +8,7 @@ module.exports = {
     },
   }),
   ValidationFailureError: createError('ValidationFailureError', {
-    message: 'You attemped to perform an invalid mutation',
+    message: 'You attempted to perform an invalid mutation',
     options: {
       showPath: true,
     },

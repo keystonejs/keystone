@@ -158,7 +158,6 @@ export class Content extends Relationship {
           // TODO: Change to a native JSON type
           document: {
             type: TextType,
-            isRequired: true,
             schemaDoc: 'The serialized Slate.js Document structure',
           },
 
