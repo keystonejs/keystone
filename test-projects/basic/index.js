@@ -19,6 +19,7 @@ const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-ad
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { StaticApp } = require('@keystone-alpha/app-static');
+const { graphql } = require('graphql');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -139,7 +140,22 @@ keystone.createList('Post', {
     defaultColumns: 'name, status',
     defaultSort: 'name',
   },
-  labelResolver: item => item.name,
+  labelResolver: async (item, args, context, { schema }) => {
+    if (item.author) {
+      const query = `
+        query getAuthor($authorId: ID!) {
+          User(where: { id: $authorId }) {
+            name
+          }
+        }
+      `;
+      const variables = { authorId: item.author.toString() };
+      const { data } = await graphql(schema, query, null, context, variables);
+      return `${item.name} (by ${data.User.name})`;
+    } else {
+      return item.name;
+    }
+  },
 });
 
 keystone.createList('PostCategory', {
