@@ -3,6 +3,8 @@ import Text from '../Text';
 import DateTime from './';
 
 export const name = 'DateTime';
+export { DateTime as type };
+export const exampleValue = '"1990-12-31T12:34:56.789+01:23"';
 
 export const getTestFields = () => {
   return {

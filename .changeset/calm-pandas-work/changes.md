@@ -1,0 +1,1 @@
+Removed the isRequired parameter from MongooseFieldAdapter.buildValidator()

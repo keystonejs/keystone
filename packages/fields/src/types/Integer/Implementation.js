@@ -45,10 +45,7 @@ export class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldA
     const schemaOptions = {
       type: Number,
       validate: {
-        validator: this.buildValidator(
-          a => typeof a === 'number' && Number.isInteger(a),
-          this.isRequired
-        ),
+        validator: this.buildValidator(a => typeof a === 'number' && Number.isInteger(a)),
         message: '{VALUE} is not an integer value',
       },
     };
