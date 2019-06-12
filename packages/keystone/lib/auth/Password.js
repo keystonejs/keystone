@@ -15,14 +15,26 @@ class PasswordAuthStrategy {
       ...config,
     };
   }
+
   getList() {
     return this.keystone.lists[this.listKey];
   }
-  async validate({ identity, secret }) {
+
+  getInputFragment() {
+    return `
+      ${this.config.identityField}: String
+      ${this.config.secretField}: String
+    `;
+  }
+
+  async validate(args) {
+    const { identityField, secretField } = this.config;
+    const identity = args[identityField];
+    const secret = args[secretField];
+
     const list = this.getList();
 
     // Validate the config
-    const { identityField, secretField } = this.config;
     const secretFieldInstance = list.fieldsByPath[secretField];
 
     const protectIds = this.config.protectIdentities;
@@ -48,6 +60,8 @@ class PasswordAuthStrategy {
     // If we failed to match an identity and we're protecting existing identities then combat timing
     // attacks by creating an arbitrary hash (should take about as long has comparing an existing one)
     if (results.length !== 1 && protectIds) {
+      // TODO: This should call `secretFieldInstance.compare()` to ensure it's
+      // always consistent.
       // This may still leak if the workfactor for the password field has changed
       await secretFieldInstance.generateHash('password1234');
       return { success: false, message: genericError };
@@ -83,6 +97,12 @@ class PasswordAuthStrategy {
     }
 
     return { success: true, list, item, message: 'Authentication successful' };
+  }
+
+  getAdminMeta() {
+    const { listKey } = this;
+    const { identityField, secretField } = this.config;
+    return { listKey, identityField, secretField };
   }
 }
 

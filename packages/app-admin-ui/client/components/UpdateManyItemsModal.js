@@ -135,6 +135,9 @@ class UpdateManyModal extends Component {
                         autoFocus={!i}
                         field={field}
                         value={item[field.path]}
+                        // Explicitly pass undefined here as it doesn't make
+                        // sense to pass in any one 'saved' value
+                        savedValue={undefined}
                         onChange={onChange}
                         renderContext="dialog"
                       />

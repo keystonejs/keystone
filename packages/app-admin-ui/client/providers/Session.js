@@ -1,32 +1,12 @@
+import { withApollo } from 'react-apollo';
 import { Component } from 'react';
+import gql from 'graphql-tag';
 
-function getJSON(url) {
-  return fetch(url, {
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'content-type': 'application/json',
-      Accept: 'application/json',
-    },
-    mode: 'cors',
-    redirect: 'follow',
-  }).then(response => response.json());
-}
+import { withAdminMeta } from './AdminMeta';
 
-function postJSON(url, data = {}) {
-  return fetch(url, {
-    body: JSON.stringify(data),
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'content-type': 'application/json',
-      Accept: 'application/json',
-    },
-    method: 'POST',
-    mode: 'cors',
-    redirect: 'follow',
-  }).then(response => response.json());
-}
+const userFragment = `
+  id
+`;
 
 class Session extends Component {
   state = {
@@ -34,6 +14,8 @@ class Session extends Component {
     session: {},
     isLoading: true,
     isInitialising: true,
+    isSignedIn: false,
+    user: null,
   };
 
   componentDidMount() {
@@ -41,59 +23,122 @@ class Session extends Component {
     if (autoSignout) {
       this.signOut();
     } else {
-      this.getSession(autoSignout);
+      this.getSession();
     }
   }
 
+  setUserData = user => {
+    this.setState({
+      isInitialising: false,
+      isLoading: false,
+      isSignedIn: !!user,
+      user,
+    });
+  };
+
   getSession = () => {
-    const { sessionPath } = this.props;
     // Avoid an extra re-render
     const { isLoading } = this.state;
     if (!isLoading) {
       this.setState({ isLoading: true });
     }
-    // TODO: Handle errors
-    getJSON(sessionPath).then(data => {
-      this.setState({ isInitialising: false, isLoading: false, session: data });
-    });
+
+    return this.props.client
+      .query({
+        query: gql`
+          query {
+            user: authenticated${this.props.adminMeta.authStrategy.listKey} {
+              ${userFragment}
+            }
+          }
+        `,
+        fetchPolicy: 'no-cache',
+      })
+      .then(({ data: { user }, error }) => {
+        if (error) {
+          throw error;
+        }
+        this.setUserData(user);
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+        throw error;
+      });
   };
 
-  signIn = ({ username, password }) => {
-    const { signinPath } = this.props;
+  signIn = ({ identity, secret }) => {
     this.setState({ error: null, isLoading: true });
-    // TODO: Handle caught errors
-    postJSON(signinPath, { username, password })
-      .then(data => {
-        if (!data.success) {
-          this.setState({ error: data });
-        }
-        this.getSession();
+    const { listKey, identityField, secretField } = this.props.adminMeta.authStrategy;
+    // NOTE: We are not capturing the `token` here on purpose; The GraphQL API
+    // will set a `keystone.sid` cookie on its domain, which will be
+    // automatically read for each subsequent query.
+    return this.props.client
+      .mutate({
+        mutation: gql`
+          mutation signin($identity: String, $secret: String) {
+            authenticate: authenticate${listKey}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
+              item {
+                ${userFragment}
+              }
+            }
+          }
+        `,
+        fetchPolicy: 'no-cache',
+        variables: { identity, secret },
       })
-      .catch(error => console.error(error));
+      .then(({ data: { authenticate }, error }) => {
+        if (error) {
+          throw error;
+        }
+        // Ensure there's no old unauthenticated data hanging around
+        this.props.client.resetStore();
+        if (authenticate && authenticate.item) {
+          this.setUserData(authenticate.item);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+        throw error;
+      });
   };
 
   signOut = () => {
-    const { signoutPath } = this.props;
-    // Avoid an extra re-render
-    const { isLoading, error } = this.state;
-    if (error || !isLoading) {
-      this.setState({ error: null, isLoading: true });
-    }
-    // TODO: Handle errors
-    postJSON(signoutPath)
-      .then(() => this.getSession())
-      .catch(e => console.error(e));
+    this.setState({ error: null, isLoading: true });
+    const { listKey } = this.props.adminMeta.authStrategy;
+    return this.props.client
+      .mutate({
+        mutation: gql`
+        mutation {
+          unauthenticate: unauthenticate${listKey} {
+            success
+          }
+        }
+      `,
+        fetchPolicy: 'no-cache',
+      })
+      .then(({ data: { unauthenticate }, error }) => {
+        if (error) {
+          throw error;
+        }
+        // Ensure there's no old authenticated data hanging around
+        this.props.client.resetStore();
+        if (unauthenticate && unauthenticate.success) {
+          this.setUserData(null);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+        throw error;
+      });
   };
 
   render() {
     const { signIn, signOut } = this;
     const { children } = this.props;
-    const {
-      error,
-      session: { user, signedIn: isSignedIn },
-      isInitialising,
-      isLoading,
-    } = this.state;
+    const { error, user, isSignedIn, isInitialising, isLoading } = this.state;
 
     return children({
       error,
@@ -107,4 +152,4 @@ class Session extends Component {
   }
 }
 
-export default Session;
+export default withAdminMeta(withApollo(Session));

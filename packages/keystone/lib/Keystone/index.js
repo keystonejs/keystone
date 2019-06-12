@@ -79,7 +79,7 @@ module.exports = class Keystone {
       getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
-      getAuth: () => this.auth[key],
+      getAuth: () => this.auth[key] || {},
       registerType: type => this.registeredTypes.add(type),
       isAuxList,
       createAuxList: (auxKey, auxConfig) => {

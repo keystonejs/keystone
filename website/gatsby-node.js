@@ -9,7 +9,7 @@ const mdastToString = require('mdast-util-to-string');
 
 const generateUrl = require('./generateUrl');
 
-const compiler = rawMDX.createMdxAstCompiler({ mdPlugins: [] });
+const compiler = rawMDX.createMdxAstCompiler({ remarkPlugins: [] });
 
 const PROJECT_ROOT = path.resolve('..');
 const GROUPS = [
