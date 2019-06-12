@@ -185,3 +185,8 @@ export const captureSuspensePromises = executors => {
 
   return values;
 };
+
+//ruturns the length of all arrays in obj
+// { a: [1, 2], b: [1, 2, 3] } => 5
+export const countArrays = obj =>
+  Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);

@@ -95,3 +95,38 @@ export function copyToClipboard(
   // attempt fallback
   fallbackCopyToClipboard(text, successCb, errorCb);
 }
+
+// ==============================
+// Validate Fields
+// ==============================
+
+export async function validateFields(fields, item, data) {
+  const errors = {};
+  const warnings = {};
+
+  await Promise.all(
+    fields.map(({ validateInput, path }) => {
+      const addFieldValidationError = (message, data) => {
+        errors[path] = errors[path] || [];
+        errors[path].push({ message, data });
+      };
+
+      const addFieldValidationWarning = (message, data) => {
+        warnings[path] = warnings[path] || [];
+        warnings[path].push({ message, data });
+      };
+
+      return validateInput({
+        resolvedData: data,
+        originalInput: item,
+        addFieldValidationError,
+        addFieldValidationWarning,
+      });
+    })
+  );
+
+  return {
+    errors,
+    warnings,
+  };
+}

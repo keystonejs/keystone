@@ -12,7 +12,13 @@ import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
 import { Card } from '@arch-ui/card';
 import { gridSize } from '@arch-ui/theme';
-import { mapKeys, arrayToObject, omitBy, captureSuspensePromises } from '@keystone-alpha/utils';
+import {
+  mapKeys,
+  arrayToObject,
+  omitBy,
+  captureSuspensePromises,
+  countArrays,
+} from '@keystone-alpha/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -21,7 +27,12 @@ import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
-import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
+import {
+  deconstructErrorsToDataShape,
+  toastItemSuccess,
+  toastError,
+  validateFields,
+} from '../../util';
 import { ItemTitle } from './ItemTitle';
 
 let Render = ({ children }) => children();
@@ -56,6 +67,8 @@ const ItemDetails = withRouter(
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
+      validationErrors: {},
+      validationWarnings: {},
     };
 
     componentDidMount() {
@@ -121,8 +134,14 @@ const ItemDetails = withRouter(
       );
     }
 
-    onSave = () => {
-      const { item } = this.state;
+    onSave = async () => {
+      const { item, validationErrors, validationWarnings } = this.state;
+
+      // There are errors, no need to proceed - the entire save can be aborted.
+      if (countArrays(validationErrors)) {
+        return;
+      }
+
       const { onUpdate, toastManager, updateItem, item: initialData } = this.props;
 
       const fieldsObject = this.getFieldsObject();
@@ -140,6 +159,45 @@ const ItemDetails = withRouter(
         path => !fieldsObject[path].hasChanged(initialValues, currentValues)
       );
 
+      const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
+
+      // On the first pass through, there wont be any warnings, so we go ahead
+      // and check.
+      // On the second pass through, there _may_ be warnings, and by this point
+      // we know there are no errors (see the `validationErrors` check above),
+      // if so, we let the user force the update through anyway and hence skip
+      // this check.
+      // Later, on every change, we reset the warnings, so we know if things
+      // have changed since last time we checked.
+      if (!countArrays(validationWarnings)) {
+        const { errors, warnings } = await validateFields(fields, item, data);
+
+        const totalErrors = countArrays(errors);
+        const totalWarnings = countArrays(warnings);
+
+        if (totalErrors + totalWarnings > 0) {
+          const messages = [];
+          if (totalErrors > 0) {
+            messages.push(`${totalErrors} error${totalErrors > 1 ? 's' : ''}`);
+          }
+          if (totalWarnings > 0) {
+            messages.push(`${totalWarnings} warning${totalWarnings > 1 ? 's' : ''}`);
+          }
+
+          toastManager.add(`Validation failed: ${messages.join(' and ')}.`, {
+            autoDismiss: true,
+            appearance: errors.length ? 'error' : 'warning',
+          });
+
+          this.setState(() => ({
+            validationErrors: errors,
+            validationWarnings: warnings,
+          }));
+
+          return;
+        }
+      }
+
       updateItem({ variables: { id: item.id, data } })
         .then(() => {
           const toastContent = (
@@ -154,14 +212,18 @@ const ItemDetails = withRouter(
             appearance: 'success',
           });
           this.setState(state => {
+            const newState = {
+              validationErrors: {},
+              validationWarnings: {},
+            };
             // we only want to set itemHasChanged to false
             // when it hasn't changed since we did the mutation
             // otherwise a user could edit the data and
             // accidentally close the page without a warning
             if (state.item === item) {
-              return { itemHasChanged: false };
+              newState.itemHasChanged = false;
             }
-            return null;
+            return newState;
           });
         })
         .then(onUpdate)
@@ -199,7 +261,7 @@ const ItemDetails = withRouter(
 
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
-      const { item, itemHasChanged } = this.state;
+      const { item, itemHasChanged, validationErrors, validationWarnings } = this.state;
 
       return (
         <Fragment>
@@ -226,6 +288,8 @@ const ItemDetails = withRouter(
                             ...itm,
                             [field.path]: value,
                           },
+                          validationErrors: {},
+                          validationWarnings: {},
                           itemHasChanged: true,
                         }));
                       },
@@ -237,7 +301,11 @@ const ItemDetails = withRouter(
                         <Field
                           autoFocus={!i}
                           field={field}
-                          error={itemErrors[field.path]}
+                          errors={[
+                            ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                            ...(validationErrors[field.path] || []),
+                          ]}
+                          warnings={validationWarnings[field.path] || []}
                           value={item[field.path]}
                           savedValue={savedData[field.path]}
                           onChange={onChange}
@@ -249,6 +317,8 @@ const ItemDetails = withRouter(
                         field,
                         itemErrors[field.path],
                         item[field.path],
+                        validationErrors[field.path],
+                        validationWarnings[field.path],
                         savedData[field.path],
                         onChange,
                       ]
@@ -263,6 +333,8 @@ const ItemDetails = withRouter(
               canReset={itemHasChanged && !updateInProgress}
               onReset={this.onReset}
               updateInProgress={updateInProgress}
+              hasWarnings={countArrays(validationWarnings)}
+              hasErrors={countArrays(validationErrors)}
             />
           </Card>
 

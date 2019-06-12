@@ -10,6 +10,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@arch-ui/alert": "^0.0.5",
     "@arch-ui/button": "^0.0.7",
     "@arch-ui/color-utils": "^0.0.1",
     "@arch-ui/controls": "^0.0.6",

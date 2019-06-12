@@ -3,9 +3,9 @@ import { jsx } from '@emotion/core';
 import { Component, Fragment, useCallback, useMemo, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 
-import { Button } from '@arch-ui/button';
+import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { arrayToObject, captureSuspensePromises } from '@keystone-alpha/utils';
+import { arrayToObject, captureSuspensePromises, countArrays } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 import { LoadingIndicator } from '@arch-ui/loading';
@@ -31,9 +31,12 @@ class CreateItemModal extends Component {
     super(props);
     const { list } = props;
     const item = list.getInitialItemData();
-    this.state = { item };
+    const validationErrors = {};
+    const validationWarnings = {};
+
+    this.state = { item, validationErrors, validationWarnings };
   }
-  onCreate = event => {
+  onCreate = async event => {
     // prevent form submission
     event.preventDefault();
     // we have to stop propagation so that if this modal is inside another form
@@ -51,12 +54,51 @@ class CreateItemModal extends Component {
       isLoading,
     } = this.props;
     if (isLoading) return;
-    const { item } = this.state;
+    const { item, validationErrors, validationWarnings } = this.state;
+
+    if (countArrays(validationErrors)) {
+      return;
+    }
+
+    const data = arrayToObject(fields, 'path', field => field.serialize(item));
+
+    if (!countArrays(validationWarnings)) {
+      const errors = {};
+      const warnings = {};
+
+      await Promise.all(
+        fields.map(({ validateInput, path }) => {
+          const addFieldValidationError = (message, data) => {
+            errors[path] = errors[path] || [];
+            errors[path].push({ message, data });
+          };
+
+          const addFieldValidationWarning = (message, data) => {
+            warnings[path] = warnings[path] || [];
+            warnings[path].push({ message, data });
+          };
+
+          return validateInput({
+            resolvedData: data,
+            originalInput: item,
+            addFieldValidationError,
+            addFieldValidationWarning,
+          });
+        })
+      );
+
+      if (countArrays(errors) + countArrays(warnings) > 0) {
+        this.setState(() => ({
+          validationErrors: errors,
+          validationWarnings: warnings,
+        }));
+
+        return;
+      }
+    }
 
     createItem({
-      variables: {
-        data: arrayToObject(fields, 'path', field => field.serialize(item)),
-      },
+      variables: { data },
     }).then(data => {
       this.props.onCreate(data);
       this.setState({ item: this.props.list.getInitialItemData() });
@@ -77,7 +119,13 @@ class CreateItemModal extends Component {
   formComponent = props => <form autoComplete="off" onSubmit={this.onCreate} {...props} />;
   render() {
     const { isLoading, isOpen, list } = this.props;
-    const { item } = this.state;
+    const { item, validationErrors, validationWarnings } = this.state;
+
+    const hasWarnings = countArrays(validationWarnings);
+    const hasErrors = countArrays(validationErrors);
+
+    const cypressId = 'create-relationship-item-modal-submit-button';
+
     return (
       <Drawer
         closeOnBlanketClick
@@ -89,9 +137,16 @@ class CreateItemModal extends Component {
         slideInFrom="right"
         footer={
           <Fragment>
-            <Button appearance="primary" type="submit">
-              {isLoading ? 'Loading...' : 'Create'}
-            </Button>
+            <LoadingButton
+              appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
+              id={cypressId}
+              isDisabled={hasErrors}
+              isLoading={isLoading}
+              onClick={this.onUpdate}
+              type="submit"
+            >
+              {hasWarnings && !hasErrors ? 'Ignore Warnings and Create' : 'Create'}
+            </LoadingButton>
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
@@ -120,6 +175,8 @@ class CreateItemModal extends Component {
                               ...item,
                               [field.path]: value,
                             },
+                            validationErrors: {},
+                            validationWarnings: {},
                           }));
                         }, []);
                         return useMemo(
@@ -130,12 +187,20 @@ class CreateItemModal extends Component {
                               savedValue={item[field.path]}
                               field={field}
                               /* TODO: Permission query results */
-                              // error={}
+                              errors={validationErrors[field.path] || []}
+                              warnings={validationWarnings[field.path] || []}
                               onChange={onChange}
                               renderContext="dialog"
                             />
                           ),
-                          [i, item[field.path], field, onChange]
+                          [
+                            i,
+                            item[field.path],
+                            field,
+                            onChange,
+                            validationErrors[field.path],
+                            validationWarnings[field.path],
+                          ]
                         );
                       }}
                     </Render>

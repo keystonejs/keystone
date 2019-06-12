@@ -72,7 +72,7 @@ function Reset({ canReset, onReset }) {
 }
 
 export default memo(function Footer(props) {
-  const { onSave, onDelete, canReset, updateInProgress, onReset } = props;
+  const { onSave, onDelete, canReset, updateInProgress, onReset, hasWarnings, hasErrors } = props;
   const cypressId = 'item-page-save-button';
 
   return (
@@ -80,15 +80,15 @@ export default memo(function Footer(props) {
       <Toolbar key="footer">
         <div css={{ display: 'flex', alignItems: 'center' }}>
           <LoadingButton
-            appearance="primary"
+            appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
             id={cypressId}
-            isDisabled={updateInProgress}
+            isDisabled={updateInProgress || hasErrors}
             isLoading={updateInProgress}
             onClick={onSave}
             style={{ marginRight: 8 }}
             type="submit"
           >
-            Save Changes
+            {hasWarnings && !hasErrors ? 'Ignore Warnings and Save Changes' : 'Save Changes'}
           </LoadingButton>
           <Reset canReset={canReset} onReset={onReset} />
         </div>
