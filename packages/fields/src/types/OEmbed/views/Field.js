@@ -75,7 +75,7 @@ export default class UrlField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             type="url"
-            value={canRead && value && value.originalUrl}
+            value={canRead && value.originalUrl}
             placeholder={canRead ? undefined : error.message}
             onChange={this.onChange}
             id={htmlID}
