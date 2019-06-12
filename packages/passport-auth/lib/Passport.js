@@ -214,7 +214,7 @@ class PassportAuthStrategy {
           mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
             ${passportSessionMutationName}(id: $id , data: $data) {
               id
-              serviceUserId
+              ${FIELD_USER_ID}
               serviceUsername
             }
           }
