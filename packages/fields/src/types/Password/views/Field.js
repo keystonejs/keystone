@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, createRef, Fragment } from 'react';
+import { Component, createRef } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Alert } from '@arch-ui/alert';
@@ -93,27 +93,23 @@ export default class PasswordField extends Component {
           )}
         </FieldInput>
 
-        {errors.length ? (
-          <Fragment>
-            {errors.map(({ message, data }) => (
+        {errors.length
+          ? errors.map(({ message, data }) => (
               <Alert appearance="danger" key={message}>
                 {message}
                 {data ? ` - ${JSON.stringify(data)}` : null}
               </Alert>
-            ))}
-          </Fragment>
-        ) : null}
+            ))
+          : null}
 
-        {warnings.length ? (
-          <Fragment>
-            {warnings.map(({ message, data }) => (
+        {warnings.length
+          ? warnings.map(({ message, data }) => (
               <Alert appearance="warning" key={message}>
                 {message}
                 {data ? ` - ${JSON.stringify(data)}` : null}
               </Alert>
-            ))}
-          </Fragment>
-        ) : null}
+            ))
+          : null}
       </FieldContainer>
     );
   }
