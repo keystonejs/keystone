@@ -306,8 +306,8 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
 
-  buildValidator(validator, isRequired) {
-    return isRequired ? validator : a => validator(a) || typeof a === 'undefined' || a === null;
+  buildValidator(validator) {
+    return a => validator(a) || typeof a === 'undefined' || a === null;
   }
 
   mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
