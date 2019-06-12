@@ -1098,10 +1098,10 @@ module.exports = class List {
     // Check for isRequired
     const fieldValidationErrors = this.fields
       .filter(
-        f =>
-          f.isRequired &&
-          !f.isRelationship &&
-          (resolvedData[f.path] === undefined || resolvedData[f.path] === null)
+        field =>
+          field.isRequired &&
+          !field.isRelationship &&
+          (resolvedData[field.path] === undefined || resolvedData[field.path] === null)
       )
       .map(f => ({
         msg: `Required field "${f.path}" is null or undefined.`,
