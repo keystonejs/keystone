@@ -54,7 +54,7 @@ class TwitterAuthStrategy extends PassportAuthStrategy {
        */
       async (req, token, tokenSecret, oauthParams, profile, done) => {
         try {
-          let result = await this.keystone.auth.User.twitter.validate({
+          let result = await this.validate({
             accessToken: token,
             tokenSecret,
           });

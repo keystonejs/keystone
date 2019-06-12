@@ -49,7 +49,7 @@ class PassportAuthStrategy {
       this.keystone.createList(this.config.sessionListKey, {
         fields: {
           [FIELD_SERVICE_NAME]: { type: Text },
-          [FIELD_USER_ID]: { type: Text, mongooseOptions: { index: true } },
+          [FIELD_USER_ID]: { type: Text },
           [FIELD_USERNAME]: { type: Text },
           [this.config.tokenSecretField]: { type: Text },
           [this.config.itemField]: {
@@ -81,7 +81,7 @@ class PassportAuthStrategy {
         }
         resolve({
           id: profile.id,
-          username: profile.displayName || null,
+          username: profile.username || profile.displayName || `${profile.name.givenName} ${profile.name.familyName}`,
         });
       });
     });
