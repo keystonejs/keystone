@@ -236,7 +236,7 @@ class PassportAuthStrategy {
         this.config.endpoint,
         `
           mutation($id: ID!, $newServiceItemFields: ${userMutationInputName}) {
-            ${userMutationName}(id: $id ,data: $newServiceItemFields) {
+            ${userMutationName}(id: $id, data: $newServiceItemFields) {
               id
             }
           }
