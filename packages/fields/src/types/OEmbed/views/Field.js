@@ -10,10 +10,11 @@ import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
 import Preview from './preview';
 
-const StyledPreview = ({ preview, originalUrl, ...props }) => (
+const StyledPreview = ({ preview, originalUrl, fieldPath, ...props }) => (
   <Preview
     data={preview}
     originalUrl={originalUrl}
+    fieldPath={fieldPath}
     css={{
       backgroundColor: 'white',
       borderRadius,
@@ -27,13 +28,14 @@ const StyledPreview = ({ preview, originalUrl, ...props }) => (
   />
 );
 
-const PlaceholderPreview = ({ originalUrl }) => (
+const PlaceholderPreview = ({ originalUrl, fieldPath }) => (
   <StyledPreview
     data={{
       html: '<div style="background-color: darkgray; height: 2.5em" />',
       title: 'Preview will be generated after save'
     }}
     originalUrl={originalUrl}
+    fieldPath={fieldPath}
     css={{
       opacity: 0.3
     }}
@@ -49,7 +51,7 @@ export default class UrlField extends Component {
 
   render() {
     const { autoFocus, field, value, savedValue = {}, error } = this.props;
-    const htmlID = `ks-input-${field.path}`;
+    const htmlID = `ks-oembed-${field.path}`;
     const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
     const hasChanged = field.hasChanged(savedValue.originalUrl, value.originalUrl);
 
@@ -80,12 +82,13 @@ export default class UrlField extends Component {
           />
         </FieldInput>
         {value.originalUrl && hasChanged && (
-          <PlaceholderPreview originalUrl={value.originalUrl} />
+          <PlaceholderPreview originalUrl={value.originalUrl} fieldPath={field.path} />
         )}
         {value.originalUrl && !hasChanged && (
           <StyledPreview
             preview={value.preview}
             originalUrl={value.originalUrl}
+            fieldPath={field.path}
           />
         )}
       </FieldContainer>
