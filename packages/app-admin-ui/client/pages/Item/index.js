@@ -50,6 +50,10 @@ const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.s
 const getInitialValues = memoizeOne(getValues);
 const getCurrentValues = memoizeOne(getValues);
 
+const deserializeItem = memoizeOne((list, data) =>
+  list.deserializeItemData(data[list.gqlNames.itemQueryName])
+);
+
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
     constructor(props) {
@@ -222,7 +226,18 @@ const ItemDetails = withRouter(
             return newState;
           });
         })
-        .then(onUpdate);
+        .then(onUpdate)
+        .then(savedItem => {
+          // No changes since we kicked off the item saving
+          if (!this.state.itemHasChanged) {
+            // Then reset the state to the current server value
+            // This ensures we are able to pass any extra information returned
+            // from the server that otherwise would be unknown to client state
+            this.setState({
+              item: savedItem,
+            });
+          }
+        });
     };
 
     /**
@@ -280,6 +295,7 @@ const ItemDetails = withRouter(
                       },
                       [field]
                     );
+
                     return useMemo(
                       () => (
                         <Field
@@ -291,6 +307,7 @@ const ItemDetails = withRouter(
                           ]}
                           warnings={validationWarnings[field.path] || []}
                           value={item[field.path]}
+                          savedValue={savedData[field.path]}
                           onChange={onChange}
                           renderContext="page"
                         />
@@ -302,6 +319,8 @@ const ItemDetails = withRouter(
                         item[field.path],
                         validationErrors[field.path],
                         validationWarnings[field.path],
+                        savedData[field.path],
+                        onChange,
                       ]
                     );
                   }}
@@ -373,7 +392,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
             );
           }
 
-          const item = list.deserializeItemData(data[list.gqlNames.itemQueryName]);
+          const item = deserializeItem(list, data);
           const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
           return item ? (
@@ -409,7 +428,9 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
                         key={itemId}
                         list={list}
                         getListByKey={getListByKey}
-                        onUpdate={refetch}
+                        onUpdate={() =>
+                          refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
+                        }
                         toastManager={toastManager}
                         updateInProgress={updateInProgress}
                         updateErrorMessage={updateError && updateError.message}

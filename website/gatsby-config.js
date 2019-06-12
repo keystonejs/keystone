@@ -86,6 +86,10 @@ async function getGatsbyConfig() {
             // This is needed to resolve svgs
             { resolve: 'gatsby-remark-copy-linked-files' },
           ],
+          rehypePlugins: [
+            require('rehype-slug'),
+            [require('@mapbox/rehype-prism'), { ignoreMissing: true }],
+          ],
         },
       },
       {

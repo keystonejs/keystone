@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 
-import { MDXProvider } from '@mdx-js/tag';
+import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/core';
 import { SkipNavContent } from '@reach/skip-nav';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
@@ -303,7 +303,7 @@ const Content = props => (
         boxShadow: '-4px 0 0 rgba(9, 30, 66, 0.09)',
         boxSizing: 'border-box',
         fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
-        lineHeight: '1.4',
+        lineHeight: '1.2',
         padding: gridSize * 2,
         overflowX: 'auto',
         tabSize: 2,

@@ -149,6 +149,7 @@ class CreateItemModal extends Component {
                           <Field
                             autoFocus={!i}
                             value={item[field.path]}
+                            savedValue={item[field.path]}
                             field={field}
                             /* TODO: Permission query results */
                             errors={validationErrors[field.path] || []}
