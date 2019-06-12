@@ -30,8 +30,8 @@ keystone.createList('User', {
     portfolio: {
       type: OEmbed,
       adapter: iframelyAdapter,
-    }
-  }
+    },
+  },
 });
 ```
 
@@ -53,7 +53,6 @@ type OEmbedAuthor {
   # A URL for the author/owner of the resource.
   url: String
 }
-
 
 type OEmbedProvider {
   # The name of the resource provider.
@@ -86,7 +85,7 @@ type OEmbedPhoto implements OEmbed {
   originalUrl: String
   version: String
   title: String
-  cacheAge: String 
+  cacheAge: String
   provider: OEmbedProvider
   author: OEmbedAuthor
   thumbnail: OEmbedThumbnail
@@ -102,7 +101,7 @@ type OEmbedVideo implements OEmbed {
   originalUrl: String
   version: String
   title: String
-  cacheAge: String 
+  cacheAge: String
   provider: OEmbedProvider
   author: OEmbedAuthor
   thumbnail: OEmbedThumbnail
@@ -118,7 +117,7 @@ type OEmbedLink implements OEmbed {
   originalUrl: String
   version: String
   title: String
-  cacheAge: String 
+  cacheAge: String
   provider: OEmbedProvider
   author: OEmbedAuthor
   thumbnail: OEmbedThumbnail
@@ -129,7 +128,7 @@ type OEmbedRich implements OEmbed {
   originalUrl: String
   version: String
   title: String
-  cacheAge: String 
+  cacheAge: String
   provider: OEmbedProvider
   author: OEmbedAuthor
   thumbnail: OEmbedThumbnail
@@ -176,17 +175,17 @@ mutation {
       provider {
         name
       }
-      ...on OEmbedPhoto {
+      ... on OEmbedPhoto {
         url
         width
         height
       }
-      ...on OEmbedVideo {
+      ... on OEmbedVideo {
         html
         width
         height
       }
-      ...on OEmbedRich {
+      ... on OEmbedRich {
         html
         width
         height

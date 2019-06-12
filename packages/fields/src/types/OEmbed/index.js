@@ -1,10 +1,6 @@
 import { importView } from '@keystone-alpha/build-field-types';
 
-import {
-  OEmbed,
-  MongoOEmbedInterface,
-  KnexOEmbedInterface,
-} from './Implementation';
+import { OEmbed, MongoOEmbedInterface, KnexOEmbedInterface } from './Implementation';
 
 export default {
   type: 'OEmbed',

@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import * as React from 'react';
 
 const Preview = ({ data, originalUrl, fieldPath, ...props }) => {
   if (!data) {
@@ -9,7 +8,11 @@ const Preview = ({ data, originalUrl, fieldPath, ...props }) => {
   }
 
   return (
-    <div css={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} {...props} id={`ks-oembed-preview-${fieldPath}`}>
+    <div
+      css={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      {...props}
+      id={`ks-oembed-preview-${fieldPath}`}
+    >
       {data.html && (
         <div
           css={{

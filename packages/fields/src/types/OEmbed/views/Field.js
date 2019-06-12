@@ -32,12 +32,12 @@ const PlaceholderPreview = ({ originalUrl, fieldPath }) => (
   <StyledPreview
     data={{
       html: '<div style="background-color: darkgray; height: 2.5em" />',
-      title: 'Preview will be generated after save'
+      title: 'Preview will be generated after save',
     }}
     originalUrl={originalUrl}
     fieldPath={fieldPath}
     css={{
-      opacity: 0.3
+      opacity: 0.3,
     }}
   />
 );
@@ -45,7 +45,7 @@ const PlaceholderPreview = ({ originalUrl, fieldPath }) => (
 export default class UrlField extends Component {
   onChange = event => {
     this.props.onChange({
-      originalUrl: event.target.value
+      originalUrl: event.target.value,
     });
   };
 

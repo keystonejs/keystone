@@ -45,9 +45,11 @@ exports.User = {
       yearRangeFrom: 1901,
       yearRangeTo: getYear(new Date()),
     },
-    ...(process.env.IFRAMELY_API_KEY ? {
-      portfolio: { type: OEmbed, adapter: iframelyAdapter },
-    } : {}),
+    ...(process.env.IFRAMELY_API_KEY
+      ? {
+          portfolio: { type: OEmbed, adapter: iframelyAdapter },
+        }
+      : {}),
     password: { type: Password },
     isAdmin: { type: Checkbox },
     avatar: { type: File, adapter: avatarFileAdapter },

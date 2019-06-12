@@ -6,7 +6,7 @@ const oembedPreviewSelector = `#ks-oembed-preview-profile`;
 const getCellFromSecondRow = index =>
   `#ks-list-table tbody > tr:nth-child(2) > td:nth-child(${index})`;
 
-const saveValue = (value) => {
+const saveValue = value => {
   cy.get(oembedInputSelector).clear();
   if (value) {
     cy.get(oembedInputSelector).type(value);
@@ -19,7 +19,7 @@ const saveValue = (value) => {
   cy.server({ enable: false });
   cy.get('#item-page-save-button').click();
   cy.wait('@graphqlPost');
-}
+};
 
 describe('OEmbed <Field> view', () => {
   describe('no saved value', () => {

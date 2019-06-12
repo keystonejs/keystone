@@ -55,18 +55,22 @@ export default class FileController extends FieldController {
         // Use all the properties of the exist oembed data set
         ...oEmbed,
         // Attempt to derive a useful title
-        title: oEmbed.title || (oEmbed.author && oEmbed.author.name) || (oEmbed.provider && oEmbed.provider.name) || '',
-      }
+        title:
+          oEmbed.title ||
+          (oEmbed.author && oEmbed.author.name) ||
+          (oEmbed.provider && oEmbed.provider.name) ||
+          '',
+      },
     };
-  }
+  };
 
   serialize = data => {
     const { path } = this;
     // We only send the URL itself to the mutation
-    return data[path] && data[path].originalUrl || '';
-  }
+    return (data[path] && data[path].originalUrl) || '';
+  };
 
   hasChanged = (initial, current) => {
     return initial !== current;
-  }
+  };
 }

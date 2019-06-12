@@ -159,17 +159,17 @@ export class OEmbed extends Implementation {
         // Because we're returning an interface, we have to tell GraphQL what
         // __typename to use.
         let __typename = {
-          'photo': `${this.graphQLOutputType}Photo`,
-          'video': `${this.graphQLOutputType}Video`,
-          'link': `${this.graphQLOutputType}Link`,
-          'rich': `${this.graphQLOutputType}Rich`,
+          photo: `${this.graphQLOutputType}Photo`,
+          video: `${this.graphQLOutputType}Video`,
+          link: `${this.graphQLOutputType}Link`,
+          rich: `${this.graphQLOutputType}Rich`,
         }[item[this.path].type];
 
         return {
           ...item[this.path],
           __typename,
         };
-      }
+      },
     };
   }
 

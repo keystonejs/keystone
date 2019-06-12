@@ -11,9 +11,9 @@ import ApolloClient from 'apollo-client';
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: {
     __schema: {
-      types: []
-    }
-  }
+      types: [],
+    },
+  },
 });
 
 const fetch = require('cross-fetch');

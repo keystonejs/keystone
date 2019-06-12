@@ -28,8 +28,8 @@ keystone.createList('User', {
     portfolio: {
       type: OEmbed,
       adapter: iframelyAdapter,
-    }
-  }
+    },
+  },
 });
 ```
 
