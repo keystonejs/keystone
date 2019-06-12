@@ -105,8 +105,9 @@ class PassportAuthStrategy {
     // Find an existing user that matches the given validated service id
     try {
       const queryName = this.getList().gqlNames.listQueryName;
-       const data = await request(this.config.endpoint,
-      `
+      const data = await request(
+        this.config.endpoint,
+        `
         query($serviceId: String) {
           ${queryName}(
             first: 1
@@ -138,7 +139,8 @@ class PassportAuthStrategy {
     const mutationName = this.getSessionList().gqlNames.createMutationName;
     const mutationInputName = this.getSessionList().gqlNames.createInputName;
 
-    const data = await request(this.config.endpoint,
+    const data = await request(
+      this.config.endpoint,
       `
         mutation($newSessionDataObject: ${mutationInputName}) {
           ${mutationName}(data: $newSessionDataObject) {
@@ -147,7 +149,7 @@ class PassportAuthStrategy {
         }
       `,
       {
-        newSessionDataObject: newSessionData
+        newSessionDataObject: newSessionData,
       }
     );
     const sessionItem = data[mutationName];
@@ -206,7 +208,8 @@ class PassportAuthStrategy {
     try {
       const passportSessionMutationName = this.getSessionList().gqlNames.updateMutationName;
       const passportSessionMutationInputName = this.getSessionList().gqlNames.updateInputName;
-      const serviceItem = await request(this.config.endpoint,
+      const serviceItem = await request(
+        this.config.endpoint,
         `
           mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
             ${passportSessionMutationName}(id: $id , data: $data) {
@@ -229,7 +232,8 @@ class PassportAuthStrategy {
         [this.serviceUsernameField]: serviceItem[passportSessionMutationName][FIELD_USERNAME],
       };
 
-      await request(this.config.endpoint,
+      await request(
+        this.config.endpoint,
         `
           mutation($id: ID!, $newServiceItemFields: ${userMutationInputName}) {
             ${userMutationName}(id: $id ,data: $newServiceItemFields) {

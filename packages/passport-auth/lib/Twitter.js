@@ -6,7 +6,7 @@ class TwitterAuthStrategy extends PassportAuthStrategy {
     super(TwitterAuthStrategy.authType, keystone, listKey, {
       sessionIdField: 'twitterSession',
       keystoneSessionIdField: 'keystoneTwitterSessionId',
-			scope: ['email'],
+      scope: ['email'],
       ...config,
     });
   }
