@@ -279,6 +279,9 @@ const ItemDetails = withRouter(
               {list.fields.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
+                    const { isVisible } = field.config;
+                    if (!isVisible) return null;
+
                     const [Field] = field.adminMeta.readViews([field.views.Field]);
 
                     let onChange = useCallback(

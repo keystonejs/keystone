@@ -21,9 +21,9 @@ class Field {
     this.defaultValue = defaultValue;
     this.getListByKey = getListByKey;
     this.hooks = hooks;
-    this.isEditable = isRequired;
+    this.isEditable = isEditable;
     this.isRequired = isRequired;
-    this.isVisible = isRequired;
+    this.isVisible = isVisible;
     this.label = label || inflection.humanize(inflection.underscore(path));
     this.listKey = listKey;
     this.path = path;
