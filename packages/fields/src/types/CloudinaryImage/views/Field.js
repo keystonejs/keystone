@@ -54,7 +54,7 @@ export default class FileField extends Component {
     disabled: PropTypes.bool,
     errorMessage: PropTypes.func.isRequired,
     field: PropTypes.object,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
     statusMessage: PropTypes.func.isRequired,
     uploadButtonLabel: PropTypes.func.isRequired,
   };
@@ -86,7 +86,9 @@ export default class FileField extends Component {
 
   onCancel = () => {
     // revert to the original file if available
-    this.props.onChange(this.originalFile);
+    if (this.props.onChange) {
+      this.props.onChange(this.originalFile);
+    }
 
     this.setState({
       changeStatus: this.originalFile ? 'stored' : 'empty',
@@ -100,7 +102,9 @@ export default class FileField extends Component {
       errorMessage: null,
     });
 
-    this.props.onChange(null);
+    if (this.props.onChange) {
+      this.props.onChange(null);
+    }
   };
   onChange = ({
     target: {
@@ -135,7 +139,9 @@ export default class FileField extends Component {
       oldImagePath: this.getImagePath(), // used during FileReader processing
     });
 
-    onChange(file);
+    if (onChange) {
+      onChange(file);
+    }
     this.getDataURI(file);
   };
   openFileBrowser = () => {
