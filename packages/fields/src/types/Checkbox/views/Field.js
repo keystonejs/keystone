@@ -12,7 +12,7 @@ export default class TextField extends Component {
     this.props.onChange(event.target.checked);
   };
   render() {
-    const { autoFocus, field, value, errors } = this.props;
+    const { autoFocus, field, isEditable, value, errors } = this.props;
     const checked = value || false;
     const htmlID = `ks-input-${field.path}`;
 
@@ -24,8 +24,11 @@ export default class TextField extends Component {
             autoFocus={autoFocus}
             checked={checked}
             onChange={this.onChange}
+            isDisabled={!isEditable}
             id={htmlID}
-          />
+          >
+            {field.label}
+          </CheckboxPrimitive>
         </FieldInput>
       </FieldContainer>
     );

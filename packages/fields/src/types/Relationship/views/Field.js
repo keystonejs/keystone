@@ -107,7 +107,7 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, value, renderContext, errors, onChange } = this.props;
+    const { autoFocus, field, isEditable, value, renderContext, errors, onChange } = this.props;
     const { many, ref } = field.config;
     const { authStrategy } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
@@ -119,6 +119,7 @@ export default class RelationshipField extends Component {
             <RelationshipSelect
               autoFocus={autoFocus}
               isMulti={many}
+              isDisabled={!isEditable}
               field={field}
               value={value}
               errors={errors}
@@ -127,13 +128,15 @@ export default class RelationshipField extends Component {
               onChange={this.onChange}
             />
           </div>
-          <CreateAndAddItem
-            onCreate={item => {
-              onChange(many ? (value || []).concat(item) : item);
-            }}
-            field={field}
-          />
-          {authStrategy && ref === authStrategy.listKey && (
+          {isEditable && (
+            <CreateAndAddItem
+              onCreate={item => {
+                onChange(many ? (value || []).concat(item) : item);
+              }}
+              field={field}
+            />
+          )}
+          {isEditable && authStrategy && ref === authStrategy.listKey && (
             <SetAsCurrentUser
               many={many}
               onAddUser={user => {

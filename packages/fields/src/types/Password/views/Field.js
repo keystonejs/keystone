@@ -10,6 +10,7 @@ import { FlexGroup } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
 import { EyeIcon, LockIcon } from '@arch-ui/icons';
 import { A11yText } from '@arch-ui/typography';
+import { Lozenge } from '@arch-ui/lozenge';
 
 export default class PasswordField extends Component {
   focusTarget = createRef();
@@ -44,10 +45,20 @@ export default class PasswordField extends Component {
     this.setState(state => ({ showInputValue: !state.showInputValue }));
   };
   render() {
-    const { isEditing, inputPassword, inputConfirm, showInputValue } = this.state;
-    const { autoFocus, field, value: serverValue, errors, warnings } = this.props;
-    const value = serverValue || '';
+    const { isEditing, isEditable, inputPassword, inputConfirm, showInputValue } = this.state;
+    const { autoFocus, field, value, errors, warnings } = this.props;
     const htmlID = `ks-input-${field.path}`;
+
+    if (!isEditable) {
+      return (
+        <FieldContainer>
+          <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+          <Lozenge appearance={value ? 'primary' : 'default'}>
+            {value ? 'Password is set' : 'Password is not set'}
+          </Lozenge>
+        </FieldContainer>
+      );
+    }
 
     return (
       <FieldContainer>

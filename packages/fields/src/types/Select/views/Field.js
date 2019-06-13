@@ -11,7 +11,7 @@ export default class SelectField extends Component {
     this.props.onChange(option ? option.value : null);
   };
   render() {
-    const { autoFocus, field, value: serverValue, renderContext, errors } = this.props;
+    const { autoFocus, field, isEditable, value: serverValue, renderContext, errors } = this.props;
     const value = field.options.find(i => i.value === serverValue);
     const htmlID = `ks-input-${field.path}`;
     const canRead = errors.every(
@@ -41,6 +41,7 @@ export default class SelectField extends Component {
               options={field.options}
               onChange={this.onChange}
               isClearable
+              isDisabled={!isEditable}
               id={`react-select-${htmlID}`}
               inputId={htmlID}
               instanceId={htmlID}

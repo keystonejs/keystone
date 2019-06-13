@@ -11,7 +11,7 @@ export default class TextField extends Component {
     this.props.onChange(event.target.value);
   };
   render() {
-    const { autoFocus, field, errors, value: serverValue } = this.props;
+    const { autoFocus, field, isEditable, errors, value: serverValue } = this.props;
     const { isMultiline } = field.config;
     const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
@@ -35,6 +35,7 @@ export default class TextField extends Component {
             onChange={this.onChange}
             id={htmlID}
             isMultiline={isMultiline}
+            disabled={!isEditable}
           />
         </FieldInput>
       </FieldContainer>
