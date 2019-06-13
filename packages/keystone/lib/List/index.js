@@ -1094,14 +1094,17 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
-
     // Check for isRequired
     const fieldValidationErrors = this.fields
       .filter(
         field =>
           field.isRequired &&
           !field.isRelationship &&
-          (resolvedData[field.path] === undefined || resolvedData[field.path] === null)
+          ((operation === 'create' &&
+            (resolvedData[field.path] === undefined || resolvedData[field.path] === null)) ||
+            (operation === 'update' &&
+              Object.prototype.hasOwnProperty.call(resolvedData, field.path) &&
+              (resolvedData[field.path] === undefined || resolvedData[field.path] === null)))
       )
       .map(f => ({
         msg: `Required field "${f.path}" is null or undefined.`,
