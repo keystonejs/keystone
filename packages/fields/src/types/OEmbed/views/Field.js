@@ -5,7 +5,6 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
-import { ShieldIcon } from '@arch-ui/icons';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
 import Preview from './preview';
