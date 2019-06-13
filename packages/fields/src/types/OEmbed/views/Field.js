@@ -57,19 +57,7 @@ export default class UrlField extends Component {
 
     return (
       <FieldContainer>
-        <FieldLabel
-          htmlFor={htmlID}
-          css={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {field.label}{' '}
-          {!canRead ? (
-            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-          ) : null}
-        </FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <Input
             autoComplete="off"
