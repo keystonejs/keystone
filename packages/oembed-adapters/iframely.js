@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const crypto = require('crypto');
+const { importView } = require('@keystone-alpha/build-field-types');
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
@@ -54,5 +55,18 @@ module.exports = class IframelyOEmebedAdapter {
     }).map(([key, value]) => `${key}=${encodeURIComponent(value)}`);
 
     return fetch(`https://iframe.ly/api/oembed?${params.join('&')}`).then(res => res.json());
+  }
+
+  getAdminViews() {
+    return [importView('./views/preview')];
+  }
+
+  getViewOptions() {
+    return {
+      previewComponent: importView('./views/preview'),
+      // NOTE: This is the md5'd API key from the constructor, which is ok to
+      // put on the client according to the docs
+      clientApiKey: this.apiKey,
+    };
   }
 };

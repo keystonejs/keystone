@@ -10,3 +10,7 @@ exports.cloudinary = {
   apiKey: process.env.CLOUDINARY_KEY,
   apiSecret: process.env.CLOUDINARY_SECRET,
 };
+
+exports.iframely = {
+  apiKey: process.env.IFRAMELY_API_KEY,
+};

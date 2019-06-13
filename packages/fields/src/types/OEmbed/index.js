@@ -1,6 +1,7 @@
 import { importView } from '@keystone-alpha/build-field-types';
 
 import { OEmbed, MongoOEmbedInterface, KnexOEmbedInterface } from './Implementation';
+import { OEmbedBlock } from './OEmbedBlock';
 
 export default {
   type: 'OEmbed',
@@ -13,5 +14,8 @@ export default {
   adapters: {
     mongoose: MongoOEmbedInterface,
     knex: KnexOEmbedInterface,
+  },
+  blocks: {
+    oEmbed: OEmbedBlock,
   },
 };

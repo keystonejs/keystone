@@ -32,7 +32,6 @@
     "@arch-ui/typography": "^0.0.7",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
-    "@iframely/embed.js": "^1.1.1",
     "@keystone-alpha/access-control": "^1.0.5",
     "@keystone-alpha/adapter-knex": "^1.0.9",
     "@keystone-alpha/adapter-mongoose": "^2.1.0",
