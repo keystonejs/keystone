@@ -13,7 +13,7 @@ const keystone = new Keystone({
 keystone.createList('Todo', {
   schemaDoc: 'A list of things which need to be done',
   fields: {
-    name: { type: Text, schemaDoc: 'This is the thing you need to do' },
+    name: { type: Text, isRequired: true, schemaDoc: 'This is the thing you need to do' },
   },
 });
 

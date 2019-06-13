@@ -5,6 +5,7 @@ import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 import { ShieldIcon } from '@arch-ui/icons';
 import { Lozenge } from '@arch-ui/lozenge';
+import { Badge } from '@arch-ui/badge';
 
 export const FieldContainer = (props: *) => (
   <div data-selector="field-container" css={{ marginBottom: gridSize * 2 }} {...props} />
@@ -31,7 +32,7 @@ export const FieldLabel = (props: { htmlFor: *, field: *, errors: * }) => {
       {accessError ? (
         <ShieldIcon title={accessError.message} css={{ color: colors.N20, marginRight: '1em' }} />
       ) : null}{' '}
-      {props.field.config.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
+      {props.field.config.isRequired ? <Badge variant="subtle" value="Required" /> : null}
     </label>
   );
 };
