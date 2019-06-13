@@ -4,6 +4,9 @@ import Text from './';
 const fieldType = 'Text';
 export { fieldType as name };
 
+export { Text as type };
+export const exampleValue = '"foo"';
+
 export const getTestFields = () => {
   return {
     order: { type: Text },

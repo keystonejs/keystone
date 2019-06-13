@@ -4,6 +4,9 @@ import Text from '../Text';
 
 export const name = 'Select';
 
+export { Select as type };
+export const exampleValue = 'thinkmill';
+
 export const getTestFields = () => {
   return {
     name: { type: Text }, // Provide a field to sort on

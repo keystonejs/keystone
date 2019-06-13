@@ -1,0 +1,10 @@
+{
+  "releases": [{ "name": "@keystone-alpha/oembed-adapters", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/oembed-adapters"]
+    }
+  ]
+}

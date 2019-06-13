@@ -3,6 +3,8 @@ import Password from './';
 import Text from '../Text';
 
 export const name = 'Password';
+export { Password as type };
+export const exampleValue = '"password"';
 
 export const getTestFields = () => {
   return {

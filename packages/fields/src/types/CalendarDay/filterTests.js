@@ -3,6 +3,8 @@ import Text from '../Text';
 import CalendarDay from './';
 
 export const name = 'CalendarDay';
+export { CalendarDay as type };
+export const exampleValue = '"1990-12-31"';
 
 export const getTestFields = () => {
   return {

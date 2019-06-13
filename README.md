@@ -12,7 +12,7 @@ Keystone 5 introduces first-class GraphQL support, a new extensible architecture
 
 It is currently in alpha and under intensive development by [Thinkmill](https://www.thinkmill.com.au) and contributors around the world.
 
-### What's new?
+## What's new?
 
 Keystone 5 is a complete re-imagining of KeystoneJS for the future. It builds on the lessons we learned over the last 5 years of the Keystone's history and focuses on the things we believe are the most powerful features for modern web and mobile applications.
 
@@ -20,52 +20,15 @@ This means less focus on hand-holding Node.js template-driven websites and more 
 
 We believe it's the ideal back-end for rich React / Vue / Angular applications, Gatsby and Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
-## WARNING
+🚨🚨🚨
 
 This project is currently very much in the **alpha** phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
 
 To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm.
 
+🚨🚨🚨
+
 ## Getting Started
-
-If you're interested in checking out our progress, the simplest way to do so is to clone this repo and run one of the demo projects.
-
-_NOTE: You must have a [working version of `mongo`
-installed](https://docs.mongodb.com/manual/installation/#mongodb-community-edition)._
-
-### Demo Projects
-
-Minimum requirements for the Demo Projects:
-
-- [Node.js](https://nodejs.org/) >= 10.x
-- [MongoDB](https://v5.keystonejs.com/quick-start/mongodb) >= 4.x
-
-Download a copy of the Keystone 5 repo, and check out the latest release:
-
-```bash
-git clone https://github.com/keystonejs/keystone-5.git
-cd keystone-5
-git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
-```
-
-Pick which demo project you want to run:
-
-- `todo`: A Todo app showcasing the AdminUI and how to create a minimal List
-- `blog`: A starting point for a blog including a WYSIWYG editor
-- `meetup`: A local community event website with speakers and sponsors
-
-Then move into the directory for that demo, for example:
-
-```bash
-cd demo-projects/todo
-```
-
-Now install and run the project:
-
-```bash
-yarn
-yarn start
-```
 
 ### Quick start
 
@@ -74,13 +37,24 @@ To get up and running with a basic project template, run the following commands.
 ```bash
 yarn create keystone-app my-app
 cd my-app
-yarn start
+yarn dev
 ```
+
+For more details and system requirements, check out the [5 Minute Quick Start
+Guide](https://v5.keystonejs.com/quick-start/).
+
+### Demo Projects
+
+These projects are designed to show off different aspects of KeystoneJS features
+at a range of complexities (from a simple Todo App to a complex Meetup Site).
+
+See the [`demo-projects/README.md`](./demo-projects/README.md) docs to get
+started.
 
 ### Manual Setup
 
 ```bash
-npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui
+yarn add @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui
 ```
 
 Add a script to your `package.json`:
@@ -128,7 +102,7 @@ module.exports = {
 Now you have everything you need to run a Keystone instance:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Keystone will automatically detect your `index.js` and start the server for you:
@@ -198,7 +172,7 @@ Add these scripts to your `package.json`:
 }
 ```
 
-Run `npm run build` to generate the following outputs(this output could change in the future):
+Run `yarn build` to generate the following outputs(this output could change in the future):
 
 ```
 .
@@ -209,7 +183,7 @@ Run `npm run build` to generate the following outputs(this output could change i
 To run your keystone instance, run the start script.
 
 ```
-npm run start
+yarn start
 ```
 
 #### Production Build Artifacts
@@ -323,23 +297,15 @@ brew install mongodb
 brew services start mongodb
 ```
 
-Create an environment variable in the test project `.env`. This will run project locally on port 3000
-
-```sh
-# CLOUDINARY_CLOUD_NAME=abc123
-# CLOUDINARY_KEY=abc123
-# CLOUDINARY_SECRET=abc123
-PORT=3000
-```
-
 Then install the dependencies and start the test project:
 
 ```sh
 bolt
-bolt start {name of project folder}
+bolt dev
 ```
 
-_(Running `bolt start` will start the project located in `demo-projects/todo` by default)_
+See [`demo-projects/README.md`](./demo-projects/README.md) for more details on
+the available demo projects.
 
 ### Testing
 

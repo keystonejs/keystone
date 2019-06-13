@@ -3,6 +3,8 @@ import Text from '../Text';
 import Checkbox from './';
 
 export const name = 'Checkbox';
+export { Checkbox as type };
+export const exampleValue = 'true';
 
 export const getTestFields = () => {
   return {
