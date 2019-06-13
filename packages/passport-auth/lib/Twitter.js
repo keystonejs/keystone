@@ -6,6 +6,7 @@ class TwitterAuthStrategy extends PassportAuthStrategy {
     super(TwitterAuthStrategy.authType, keystone, listKey, {
       sessionIdField: 'twitterSession',
       keystoneSessionIdField: 'keystoneTwitterSessionId',
+      scope: ['email'],
       ...config,
     });
   }
@@ -31,6 +32,7 @@ class TwitterAuthStrategy extends PassportAuthStrategy {
         consumerSecret: this.config.consumerSecret,
         callbackURL: this.config.callbackURL,
         passReqToCallback: true,
+        includeEmail: true,
       },
       /**
        * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
@@ -52,7 +54,7 @@ class TwitterAuthStrategy extends PassportAuthStrategy {
        */
       async (req, token, tokenSecret, oauthParams, profile, done) => {
         try {
-          let result = await this.keystone.auth.User.twitter.validate({
+          let result = await this.validate({
             accessToken: token,
             tokenSecret,
           });
