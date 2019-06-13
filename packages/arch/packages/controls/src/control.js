@@ -59,8 +59,8 @@ type IconProps = {
 const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: IconProps) => {
   // background
   let bg = colors.N10;
-  if (isDisabled && checked) {
-    bg = colors.B.D20;
+  if (isDisabled) {
+    bg = colors.N10;
   } else if (isActive) {
     bg = checked ? colors.B.D10 : colors.N20;
   } else if ((isFocus || isHover) && !checked) {
@@ -72,7 +72,7 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: Ic
   // fill
   let fill = 'white';
   if (isDisabled && checked) {
-    fill = colors.N70;
+    fill = colors.N60;
   } else if (!checked) {
     fill = 'transparent';
   }
@@ -80,7 +80,9 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: Ic
   // stroke
   let innerStroke = isFocus ? colors.B.L20 : bg;
   let innerStrokeWidth = 1;
-  if (checked) {
+  if (isDisabled) {
+    innerStroke = colors.N20;
+  } else if (checked) {
     innerStroke = isActive ? colors.B.D20 : colors.B.base;
   }
 
