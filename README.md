@@ -37,7 +37,7 @@ To get up and running with a basic project template, run the following commands.
 ```bash
 yarn create keystone-app my-app
 cd my-app
-yarn dev
+yarn start
 ```
 
 For more details and system requirements, check out the [5 Minute Quick Start
