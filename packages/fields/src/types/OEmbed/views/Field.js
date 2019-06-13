@@ -49,9 +49,14 @@ export default class UrlField extends Component {
   };
 
   render() {
-    const { autoFocus, field, value, savedValue = {}, error } = this.props;
+    const { autoFocus, field, value, savedValue = {}, errors } = this.props;
     const htmlID = `ks-oembed-${field.path}`;
-    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
+    const canRead = errors.every(
+      error => !(error instanceof Error && error.name === 'AccessDeniedError')
+    );
+    const error = errors.find(
+      error => error instanceof Error && error.name === 'AccessDeniedError'
+    );
     const hasChanged = field.hasChanged(savedValue.originalUrl, value.originalUrl);
 
     return (
