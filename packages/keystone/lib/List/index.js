@@ -1102,7 +1102,9 @@ module.exports = class List {
           !field.isRelationship &&
           ((operation === 'create' &&
             (resolvedData[field.path] === undefined || resolvedData[field.path] === null)) ||
-            (operation === 'update' && resolvedData[field.path] === null))
+            (operation === 'update' &&
+              Object.prototype.hasOwnProperty.call(resolvedData, field.path) &&
+              (resolvedData[field.path] === undefined || resolvedData[field.path] === null)))
       )
       .map(f => ({
         msg: `Required field "${f.path}" is null or undefined.`,
