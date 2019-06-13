@@ -38,7 +38,6 @@ bolt demo blog dev
 
 To create & start a production build, use the `build` command followed by `start`:
 
-
 ```
 bolt demo blog build
 bolt demo blog start

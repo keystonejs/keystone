@@ -5,7 +5,6 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
-import { ShieldIcon } from '@arch-ui/icons';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
 import Preview from './preview';
@@ -50,26 +49,19 @@ export default class UrlField extends Component {
   };
 
   render() {
-    const { autoFocus, field, value, savedValue = {}, error } = this.props;
+    const { autoFocus, field, value, savedValue = {}, errors } = this.props;
     const htmlID = `ks-oembed-${field.path}`;
-    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
+    const canRead = errors.every(
+      error => !(error instanceof Error && error.name === 'AccessDeniedError')
+    );
+    const error = errors.find(
+      error => error instanceof Error && error.name === 'AccessDeniedError'
+    );
     const hasChanged = field.hasChanged(savedValue.originalUrl, value.originalUrl);
 
     return (
       <FieldContainer>
-        <FieldLabel
-          htmlFor={htmlID}
-          css={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {field.label}{' '}
-          {!canRead ? (
-            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-          ) : null}
-        </FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <Input
             autoComplete="off"
