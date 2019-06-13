@@ -65,6 +65,14 @@ export function serialiseSlateValue(value, blocks) {
           );
         }
 
+        if (!block.path) {
+          throw new Error(
+            `No mutation path set for block view type '${
+              block.type
+            }'. Ensure the block's view exports a 'path' key corresponding to the mutation path for saving block data`
+          );
+        }
+
         // Ensure the mutation group exists
         allMutations[block.path] = allMutations[block.path] || {
           // TODO: Don't forcible disconnect & reconnect. (It works because we know

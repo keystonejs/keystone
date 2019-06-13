@@ -35,7 +35,7 @@ export const inputStyles = (props: InputProps = {}) => ({
   ...(props.isMultiline
     ? {
         lineHeight: 'inherit',
-        height: 100,
+        minHeight: 100,
         resize: 'vertical',
       }
     : undefined),

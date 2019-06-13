@@ -2,7 +2,6 @@ const path = require('path');
 
 const { Content, MongoContentInterface, KnexContentInterface } = require('./Implementation');
 const blockquote = require('./blocks/blockquote');
-const embed = require('./blocks/embed');
 const heading = require('./blocks/heading');
 const image = require('./blocks/image-container');
 const link = require('./blocks/link');
@@ -23,7 +22,6 @@ module.exports = {
   },
   blocks: {
     blockquote,
-    embed,
     heading,
     image,
     link,
