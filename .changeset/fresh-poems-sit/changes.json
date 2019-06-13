@@ -1,0 +1,34 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-todo", "type": "minor" },
+    { "name": "@arch-ui/fields", "type": "minor" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/app-admin-ui",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields", "@arch-ui/fields"]
+    },
+    { "name": "@keystone-alpha/fields", "type": "patch", "dependencies": ["@arch-ui/fields"] },
+    {
+      "name": "@keystone-alpha/fields-wysiwyg-tinymce",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields", "@arch-ui/fields"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/app-admin-ui", "@keystone-alpha/fields", "@arch-ui/fields"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-client-validation",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/app-admin-ui", "@keystone-alpha/fields", "@arch-ui/fields"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/app-admin-ui", "@keystone-alpha/fields", "@arch-ui/fields"]
+    }
+  ]
+}

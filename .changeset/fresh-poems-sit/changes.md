@@ -1,0 +1,1 @@
+Added indicator to required fields
