@@ -3,7 +3,6 @@ const { request } = require('graphql-request');
 
 const FIELD_SERVICE_NAME = 'service';
 const FIELD_USER_ID = 'serviceUserId';
-const FIELD_USERNAME = 'serviceUsername';
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
@@ -26,8 +25,8 @@ class PassportAuthStrategy {
     };
     // The field name on the User list (for example) such as `facebookUserId` or
     // `twitterUserId` which the application developer has set.
-    this.serviceIdField = this.config.idField;
-    this.serviceUsernameField = this.config.usernameField;
+		this.serviceIdField = this.config.idField;
+
     this.ServiceStrategy = ServiceStrategy;
 
     this.createSessionList();
@@ -50,7 +49,6 @@ class PassportAuthStrategy {
         fields: {
           [FIELD_SERVICE_NAME]: { type: Text },
           [FIELD_USER_ID]: { type: Text },
-          [FIELD_USERNAME]: { type: Text },
           [this.config.tokenSecretField]: { type: Text },
           [this.config.itemField]: {
             type: Relationship,
@@ -79,10 +77,7 @@ class PassportAuthStrategy {
         if (error) {
           return reject(error);
         }
-        resolve({
-          id: profile.id,
-          username: profile.username || profile.displayName || `${profile.name.givenName} ${profile.name.familyName}`,
-        });
+        resolve(profile);
       });
     });
   }
@@ -94,11 +89,10 @@ class PassportAuthStrategy {
       validationArgs
     );
 
-    const newSessionData = {
+		const newSessionData = {
       [this.config.tokenSecretField]: accessToken,
       [FIELD_SERVICE_NAME]: this.authType,
       [FIELD_USER_ID]: validatedInfo.id,
-      [FIELD_USERNAME]: validatedInfo.username,
     };
 
     let itemId;
@@ -196,7 +190,6 @@ class PassportAuthStrategy {
     }
 
     const serviceSessionId = req.session[this.config.keystoneSessionIdField];
-
     if (!serviceSessionId) {
       throw new Error(
         `Unable to extract ${
@@ -207,7 +200,7 @@ class PassportAuthStrategy {
 
     try {
       const passportSessionMutationName = this.getSessionList().gqlNames.updateMutationName;
-      const passportSessionMutationInputName = this.getSessionList().gqlNames.updateInputName;
+			const passportSessionMutationInputName = this.getSessionList().gqlNames.updateInputName;
       const serviceItem = await request(
         this.config.endpoint,
         `
@@ -215,7 +208,6 @@ class PassportAuthStrategy {
             ${passportSessionMutationName}(id: $id , data: $data) {
               id
               ${FIELD_USER_ID}
-              ${FIELD_USERNAME}
             }
           }
         `,
@@ -229,9 +221,7 @@ class PassportAuthStrategy {
       const userMutationInputName = this.getList().gqlNames.updateInputName;
       const newServiceItemFields = {
         [this.serviceIdField]: serviceItem[passportSessionMutationName][FIELD_USER_ID],
-        [this.serviceUsernameField]: serviceItem[passportSessionMutationName][FIELD_USERNAME],
       };
-
       await request(
         this.config.endpoint,
         `
