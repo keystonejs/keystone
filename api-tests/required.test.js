@@ -71,7 +71,7 @@ describe('Test isRequired flag for all field types', () => {
             })
           );
           test(
-            'Update an object without the required field',
+            'Update an object with the required field having a null value',
             keystoneTestWrapper(({ keystone }) => {
               return graphqlRequest({
                 keystone,
@@ -86,10 +86,31 @@ describe('Test isRequired flag for all field types', () => {
                   }" data: { name: "updated test entry", testField: null } ) { id name } }`,
                 }).then(({ data, errors }) => {
                   expect(data.updateTest).toBe(null);
-                  expect(errors).not.toBe(null);
+                  expect(errors).not.toBe(undefined);
                   expect(errors.length).toEqual(1);
                   expect(errors[0].message).toEqual('You attempted to perform an invalid mutation');
                   expect(errors[0].path[0]).toEqual('updateTest');
+                });
+              });
+            })
+          );
+          test(
+            'Update an object without the required field',
+            keystoneTestWrapper(({ keystone }) => {
+              return graphqlRequest({
+                keystone,
+                query: `mutation { createTest(data: { name: "test entry", testField: ${
+                  mod.exampleValue
+                } } ) { id name } }`,
+              }).then(({ data }) => {
+                return graphqlRequest({
+                  keystone,
+                  query: `mutation { updateTest(id: "${
+                    data.createTest.id
+                  }" data: { name: "updated test entry" } ) { id name } }`,
+                }).then(({ data, errors }) => {
+                  expect(data.updateTest).not.toBe(null);
+                  expect(errors).toBe(undefined);
                 });
               });
             })
