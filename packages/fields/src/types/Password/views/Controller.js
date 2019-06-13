@@ -22,6 +22,10 @@ export default class PasswordController extends FieldController {
     },
   ];
 
+  // we never return the actual value for password fields, so we
+  // deserialise the value of the special `_is_set` path instead
+  deserialize = data => data[`${this.path}_is_set`];
+
   serialize = data => {
     // discard the "confirm" since we only need one version of the password
     return data[this.path] ? data[this.path].inputPassword : undefined;
