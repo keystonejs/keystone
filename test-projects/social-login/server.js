@@ -52,6 +52,8 @@ keystone
 
     const app = express();
 
+    app.use(middlewares);
+
     if (socialLogins.length > 0) {
       InitializePassportAuthStrategies(app);
     }
@@ -94,8 +96,6 @@ keystone
         next(e);
       }
     });
-
-    app.use(middlewares);
 
     app.listen(port, error => {
       if (error) throw error;

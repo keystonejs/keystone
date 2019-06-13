@@ -160,6 +160,7 @@ class Field {
       label: this.label,
       path: this.path,
       type: this.constructor.name,
+      isRequired: this.isRequired,
       defaultValue: this.getDefaultValue(),
     });
   }

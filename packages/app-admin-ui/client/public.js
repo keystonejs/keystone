@@ -36,7 +36,7 @@ const Keystone = () => {
           <ConnectivityListener />
           <Global styles={globalStyles} />
 
-          {adminMeta.withAuth ? (
+          {adminMeta.authStrategy ? (
             <BrowserRouter>
               <Switch>
                 <Route

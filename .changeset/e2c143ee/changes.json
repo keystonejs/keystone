@@ -1,0 +1,4 @@
+{
+  "releases": [{ "name": "@keystone-alpha/cypress-project-client-validation", "type": "major" }],
+  "dependents": []
+}

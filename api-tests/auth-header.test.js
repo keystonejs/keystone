@@ -3,11 +3,8 @@ const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password } = require('@keystone-alpha/fields');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const express = require('express');
-const bodyParser = require('body-parser');
-const cookieSignature = require('cookie-signature');
 const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
 const cuid = require('cuid');
 
 const initialData = {
@@ -59,50 +56,27 @@ async function setupKeystone() {
 
   app.use(await graphQLApp.prepareMiddleware({ keystone, dev: true }));
 
-  app.post(
-    '/signin',
-    bodyParser.json(),
-    bodyParser.urlencoded({ extended: true }),
-    async (req, res, next) => {
-      // Cleanup any previous session
-      await endAuthedSession(req);
-
-      try {
-        const result = await keystone.auth.User.password.validate({
-          identity: req.body.username,
-          secret: req.body.password,
-        });
-        if (!result.success) {
-          return res.json({
-            success: false,
-          });
-        }
-        await startAuthedSession(req, result);
-        res.json({
-          success: true,
-          token: req.sessionID,
-        });
-      } catch (e) {
-        next(e);
-      }
-    }
-  );
-
   return { keystone, app };
 }
 
-function login(app, username, password) {
+function login(app, email, password) {
   return supertest(app)
     .set('Accept', 'application/json')
-    .post('/signin', { username, password })
+    .post('/admin/api', {
+      query: `
+        mutation($email: String, $password: String) {
+          authenticateUserWithPassword(email: $email, password: $password) {
+            token
+          }
+        }
+      `,
+      variables: { email, password },
+    })
     .then(res => {
       expect(res.statusCode).toBe(200);
-      return JSON.parse(res.text);
+      const { data } = JSON.parse(res.text);
+      return data.authenticateUserWithPassword || {};
     });
-}
-
-function signCookie(token) {
-  return `s:${cookieSignature.sign(token, COOKIE_SECRET)}`;
 }
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
@@ -129,13 +103,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'Allows access with bearer token',
           runner(setupKeystone, async ({ keystone, app }) => {
             await keystone.createItems(initialData);
-            const { success, token } = await login(
+            const { token } = await login(
               app,
               initialData.User[0].email,
               initialData.User[0].password
             );
 
-            expect(success).toBe(true);
             expect(token).toBeTruthy();
 
             return supertest(app)
@@ -156,17 +129,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'Allows access with cookie',
           runner(setupKeystone, async ({ keystone, app }) => {
             await keystone.createItems(initialData);
-            const { success, token } = await login(
+            const { token } = await login(
               app,
               initialData.User[0].email,
               initialData.User[0].password
             );
 
-            expect(success).toBe(true);
             expect(token).toBeTruthy();
 
             return supertest(app)
-              .set('Cookie', `keystone.sid=${signCookie(token)}`)
+              .set('Cookie', `keystone.sid=s:${token}`)
               .set('Accept', 'application/json')
               .post('/admin/api', { query: '{ allUsers { id } }' })
               .then(function(res) {

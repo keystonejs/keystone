@@ -9,7 +9,9 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone"
+    "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
+    "build": "cross-env NODE_ENV=production keystone build",
+    "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^2.0.1",

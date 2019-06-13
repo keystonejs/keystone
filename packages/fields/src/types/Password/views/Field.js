@@ -4,6 +4,7 @@ import { jsx } from '@emotion/core';
 import { Component, createRef } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { FlexGroup } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
@@ -21,8 +22,13 @@ export default class PasswordField extends Component {
   onChange = ({ target }) => {
     const { name, value } = target;
 
-    this.setState({ [name]: value }, () => {
-      if (name === 'inputPassword') this.props.onChange(value);
+    this.setState(({ inputPassword, inputConfirm }) => {
+      this.props.onChange({
+        inputPassword,
+        inputConfirm,
+        [name]: value,
+      });
+      return { [name]: value };
     });
   };
   toggleInterface = () => {
@@ -39,7 +45,7 @@ export default class PasswordField extends Component {
   };
   render() {
     const { isEditing, inputPassword, inputConfirm, showInputValue } = this.state;
-    const { autoFocus, field, value: serverValue } = this.props;
+    const { autoFocus, field, value: serverValue, errors, warnings } = this.props;
     const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
 
@@ -63,6 +69,7 @@ export default class PasswordField extends Component {
               <Input
                 autoComplete="off"
                 autoFocus={autoFocus}
+                id={`${htmlID}-confirm`}
                 name="inputConfirm"
                 onChange={this.onChange}
                 placeholder="Confirm Password"
@@ -80,11 +87,29 @@ export default class PasswordField extends Component {
               </Button>
             </FlexGroup>
           ) : (
-            <Button onClick={this.toggleInterface} variant="ghost">
+            <Button id={`${htmlID}-button`} onClick={this.toggleInterface} variant="ghost">
               {value ? 'Update Password' : 'Set Password'}
             </Button>
           )}
         </FieldInput>
+
+        {errors.length
+          ? errors.map(({ message, data }) => (
+              <Alert appearance="danger" key={message}>
+                {message}
+                {data ? ` - ${JSON.stringify(data)}` : null}
+              </Alert>
+            ))
+          : null}
+
+        {warnings.length
+          ? warnings.map(({ message, data }) => (
+              <Alert appearance="warning" key={message}>
+                {message}
+                {data ? ` - ${JSON.stringify(data)}` : null}
+              </Alert>
+            ))
+          : null}
       </FieldContainer>
     );
   }

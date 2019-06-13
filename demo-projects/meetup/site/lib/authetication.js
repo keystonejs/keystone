@@ -1,13 +1,6 @@
 import React, { Component, createContext, useContext } from 'react';
-import getConfig from 'next/config';
 import { withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
-
-const {
-  publicRuntimeConfig: { serverUrl },
-} = getConfig();
-
-const apiEndpoint = `${serverUrl}/admin`;
 
 /**
  * AuthContext
@@ -23,6 +16,10 @@ export const AuthContext = createContext();
  * A hook which provides access to the AuthContext
  */
 export const useAuth = () => useContext(AuthContext);
+
+const userFragment = `
+  id
+`;
 
 /**
  * AuthProvider
@@ -44,52 +41,118 @@ class AuthProviderClass extends Component {
     this.checkSession();
   }
 
+  setUserData = user => {
+    this.setState({
+      isInitialising: false,
+      isLoading: false,
+      isAuthenticated: !!user,
+      user,
+    });
+  };
+
   checkSession = async () => {
-    if (!this.state.isLoading) {
+    // Avoid an extra re-render
+    const { isLoading } = this.state;
+    if (!isLoading) {
       this.setState({ isLoading: true });
     }
-    const result = await checkSession(this.props.client);
-    const { user, isSignedIn } = result;
-    this.setState({
-      user,
-      isSignedIn,
-      isLoading: false,
-    });
-    return result;
+
+    return this.props.client
+      .query({
+        query: gql`
+          query {
+            authenticatedUser {
+              ${userFragment}
+            }
+          }
+        `,
+        fetchPolicy: 'no-cache',
+      })
+      .then(({ data: { authenticatedUser }, error }) => {
+        if (error) {
+          throw error;
+        }
+        this.setUserData(authenticatedUser);
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+        throw error;
+      });
   };
 
   signin = async ({ email, password }) => {
-    this.setState({ isLoading: true });
-    const result = await signInWithEmail({ email, password });
-
-    if (!result.success) {
-      this.setState({ isLoading: false });
-      return { success: false };
-    }
-
-    return this.checkSession(this.props.client);
+    this.setState({ error: null, isLoading: true });
+    // NOTE: We are not capturing the `token` here on purpose; The GraphQL API
+    // will set a `keystone.sid` cookie on its domain, which will be
+    // automatically read for each subsequent query.
+    return this.props.client
+      .mutate({
+        mutation: gql`
+          mutation signin($email: String, $password: String) {
+            authenticateUserWithPassword(email: $email, password: $password) {
+              item {
+                ${userFragment}
+              }
+            }
+          }
+        `,
+        fetchPolicy: 'no-cache',
+        variables: { email, password },
+      })
+      .then(async ({ data: { authenticateUserWithPassword }, error }) => {
+        if (error) {
+          throw error;
+        }
+        // Ensure there's no old unauthenticated data hanging around
+        await this.props.client.resetStore();
+        if (authenticateUserWithPassword && authenticateUserWithPassword.item) {
+          this.setUserData(authenticateUserWithPassword.item);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+        throw error;
+      });
   };
 
   signout = async () => {
-    this.setState({ isLoading: true });
-    const result = await signout();
-    if (result.success) {
-      this.setState({
-        user: undefined,
-        isLoading: false,
+    this.setState({ error: null, isLoading: true });
+    return this.props.client
+      .mutate({
+        mutation: gql`
+          mutation {
+            unauthenticateUser {
+              success
+            }
+          }
+        `,
+        fetchPolicy: 'no-cache',
+      })
+      .then(async ({ data: { unauthenticateUser }, error }) => {
+        if (error) {
+          throw error;
+        }
+        // Ensure there's no old authenticated data hanging around
+        await this.props.client.resetStore();
+        if (unauthenticateUser && unauthenticateUser.success) {
+          this.setUserData(null);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ error, isLoading: false });
+        throw error;
       });
-      return { success: true };
-    } else {
-      return { success: false };
-    }
   };
 
   render() {
-    const { user, isLoading } = this.state;
+    const { user, isLoading, isAuthenticated } = this.state;
     return (
       <AuthContext.Provider
         value={{
-          isAuthenticated: !!user,
+          isAuthenticated,
           isLoading,
           signin: this.signin,
           signout: this.signout,
@@ -103,68 +166,3 @@ class AuthProviderClass extends Component {
 }
 
 export const AuthProvider = withApollo(AuthProviderClass);
-
-const signInWithEmail = async ({ email, password }) => {
-  try {
-    const res = await fetch(`${apiEndpoint}/signin`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json; charset=utf-8', Accept: 'application/json' },
-      body: JSON.stringify({ username: email, password }),
-    }).then(r => r.json());
-
-    if (res.success) {
-      return { success: true };
-    } else {
-      return { success: false, message: res.message };
-    }
-  } catch (error) {
-    console.error('Error signing in:', error);
-    return { success: false };
-  }
-};
-
-const signout = async () => {
-  try {
-    const res = await fetch(`${apiEndpoint}/signout`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { Accept: 'application/json' },
-    }).then(r => r.json());
-
-    return {
-      success: res.success === true,
-    };
-  } catch (error) {
-    console.error('Error signing out:', error);
-    return { success: false };
-  }
-};
-
-const checkSession = async apolloClient => {
-  try {
-    const {
-      data: { authenticatedUser },
-    } = await apolloClient.query({
-      query: gql`
-        query {
-          authenticatedUser {
-            id
-            name
-            isAdmin
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-    });
-
-    if (authenticatedUser) {
-      return { success: true, isSignedIn: true, user: authenticatedUser };
-    } else {
-      return { success: true, isSignedIn: false };
-    }
-  } catch (error) {
-    console.error('Error checking session:', error);
-    return { success: false, error: error.message };
-  }
-};
