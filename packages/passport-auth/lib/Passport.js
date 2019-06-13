@@ -25,7 +25,7 @@ class PassportAuthStrategy {
     };
     // The field name on the User list (for example) such as `facebookUserId` or
     // `twitterUserId` which the application developer has set.
-		this.serviceIdField = this.config.idField;
+    this.serviceIdField = this.config.idField;
 
     this.ServiceStrategy = ServiceStrategy;
 
@@ -89,7 +89,7 @@ class PassportAuthStrategy {
       validationArgs
     );
 
-		const newSessionData = {
+    const newSessionData = {
       [this.config.tokenSecretField]: accessToken,
       [FIELD_SERVICE_NAME]: this.authType,
       [FIELD_USER_ID]: validatedInfo.id,
@@ -200,7 +200,7 @@ class PassportAuthStrategy {
 
     try {
       const passportSessionMutationName = this.getSessionList().gqlNames.updateMutationName;
-			const passportSessionMutationInputName = this.getSessionList().gqlNames.updateInputName;
+      const passportSessionMutationInputName = this.getSessionList().gqlNames.updateInputName;
       const serviceItem = await request(
         this.config.endpoint,
         `
