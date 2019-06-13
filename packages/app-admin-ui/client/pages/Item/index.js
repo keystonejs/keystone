@@ -279,31 +279,34 @@ const ItemDetails = withRouter(
               {list.fields.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
-                    const { isVisible } = field.config;
+                    const { isEditable, isVisible } = field.config;
                     if (!isVisible) return null;
 
                     const [Field] = field.adminMeta.readViews([field.views.Field]);
 
-                    let onChange = useCallback(
-                      value => {
-                        this.setState(({ item: itm }) => ({
-                          item: {
-                            ...itm,
-                            [field.path]: value,
+                    let onChange = isEditable
+                      ? useCallback(
+                          value => {
+                            this.setState(({ item: currentItem }) => ({
+                              item: {
+                                ...currentItem,
+                                [field.path]: value,
+                              },
+                              validationErrors: {},
+                              validationWarnings: {},
+                              itemHasChanged: true,
+                            }));
                           },
-                          validationErrors: {},
-                          validationWarnings: {},
-                          itemHasChanged: true,
-                        }));
-                      },
-                      [field]
-                    );
+                          [field]
+                        )
+                      : undefined;
 
                     return useMemo(
                       () => (
                         <Field
                           autoFocus={!i}
                           field={field}
+                          isEditable={isEditable}
                           errors={[
                             ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
                             ...(validationErrors[field.path] || []),
