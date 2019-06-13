@@ -21,12 +21,12 @@ export default class CalendarDayField extends Component {
   };
 
   render() {
-    const { autoFocus, field, value } = this.props;
+    const { autoFocus, field, value, errors } = this.props;
     const htmlID = `ks-input-${field.path}`;
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <TextDayPicker
             id={`ks-daypicker-${field.path}`}

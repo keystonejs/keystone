@@ -9,13 +9,13 @@ export default class StarsField extends React.Component {
   };
 
   render() {
-    const { field, value } = this.props;
+    const { field, value, errors } = this.props;
     const { starCount } = field.config;
     const htmlID = `ks-input-${field.path}`;
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <Stars count={starCount} value={value} onChange={this.handleChange} />
         </FieldInput>

@@ -22,7 +22,7 @@ export default class TextField extends Component {
   };
 
   render() {
-    const { autoFocus, field, value } = this.props;
+    const { autoFocus, field, value, errors } = this.props;
     const {
       // currency,
       // digits,
@@ -32,7 +32,7 @@ export default class TextField extends Component {
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           {symbol && <Currency>{symbol}</Currency>}
           <Input
