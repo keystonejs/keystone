@@ -5,7 +5,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { AlertIcon, ShieldIcon } from '@arch-ui/icons';
+import { AlertIcon } from '@arch-ui/icons';
 import { HiddenInput } from '@arch-ui/input';
 import { Lozenge } from '@arch-ui/lozenge';
 import { Button, LoadingButton } from '@arch-ui/button';
@@ -216,30 +216,17 @@ export default class FileField extends Component {
   };
 
   render() {
-    const { autoFocus, field, statusMessage, error } = this.props;
+    const { autoFocus, field, statusMessage, errors } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
     const imagePath = this.getImagePath();
     const showStatusMessage = ['removed', 'updated'].includes(changeStatus);
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
     return (
       <FieldContainer>
-        <FieldLabel
-          htmlFor={htmlID}
-          css={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {field.label}{' '}
-          {!canRead ? (
-            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-          ) : null}
-        </FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           {file ? (
             <Wrapper>

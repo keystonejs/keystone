@@ -5,18 +5,21 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { ShieldIcon } from '@arch-ui/icons';
-import { colors } from '@arch-ui/theme';
 
 export default class SelectField extends Component {
   onChange = option => {
     this.props.onChange(option ? option.value : null);
   };
   render() {
-    const { autoFocus, field, value: serverValue, renderContext, error } = this.props;
+    const { autoFocus, field, value: serverValue, renderContext, errors } = this.props;
     const value = field.options.find(i => i.value === serverValue);
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
+    const canRead = errors.every(
+      error => !(error instanceof Error && error.name === 'AccessDeniedError')
+    );
+    const error = errors.find(
+      error => error instanceof Error && error.name === 'AccessDeniedError'
+    );
 
     const selectProps =
       renderContext === 'dialog'
@@ -28,19 +31,7 @@ export default class SelectField extends Component {
 
     return (
       <FieldContainer>
-        <FieldLabel
-          htmlFor={htmlID}
-          css={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {field.label}{' '}
-          {!canRead ? (
-            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-          ) : null}
-        </FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <div css={{ flex: 1 }}>
             <Select

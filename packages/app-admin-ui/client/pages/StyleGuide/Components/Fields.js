@@ -17,7 +17,7 @@ const FieldGuide = () => (
     </FlexGroup>
     <h4>Fields</h4>
     <FieldContainer>
-      <FieldLabel>Label</FieldLabel>
+      <FieldLabel field={{ label: 'Label', config: { isRequired: false } }} />
       <FieldInput>
         <Input placeholder="Max width 500px" />
       </FieldInput>

@@ -51,7 +51,7 @@ export default class PasswordField extends Component {
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           {isEditing ? (
             <FlexGroup growIndexes={[0, 1]}>
