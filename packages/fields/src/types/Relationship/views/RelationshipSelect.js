@@ -19,6 +19,7 @@ type Props = {
   onChange: Function,
   value: *,
   isMulti: boolean,
+  isDisabled: boolean,
 };
 
 function useIntersectionObserver(cb, ref) {
@@ -45,6 +46,7 @@ const Relationship = forwardRef(
       refList,
       canRead,
       isMulti,
+      isDisabled,
       search,
       autoFocus,
       serverErrors,
@@ -136,6 +138,7 @@ const Relationship = forwardRef(
         isLoading={loading}
         autoFocus={autoFocus}
         isMulti={isMulti}
+        isDisabled={isDisabled}
         components={selectComponents}
         getOptionValue={option => option.value.id}
         value={currentValue}
@@ -165,6 +168,7 @@ const RelationshipSelect = ({
   renderContext,
   htmlID,
   onChange,
+  isDisabled,
   isMulti,
   value,
 }: Props) => {
@@ -198,6 +202,7 @@ const RelationshipSelect = ({
               value,
               refList,
               canRead,
+              isDisabled,
               isMulti,
               search,
               autoFocus,
