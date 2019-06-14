@@ -1,5 +1,75 @@
 # @keystone-alpha/keystone
 
+## 6.0.0
+
+### Major Changes
+
+- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+
+  - `PasswordAuthStrategy#validate()` now accepts an object of `{ [identityField], [secretField] }` (was `{ identity, secret }`).
+  - Auth Strategies can now add AdminMeta via a `#getAdminMeta()` method which will be attached to the `authStrategy` key of `adminMeta` in the Admin UI.
+  - Added (un)authentication GraphQL mutations:
+    - ```graphql
+      mutation {
+        authenticate<List>With<Strategy>(<strategy-args) {
+          token # Add this token as a header: { Authorization: 'Bearer <token>' }
+          item # The authenticated item from <List>
+        }
+      }
+      ```
+      For the `PasswordAuthStrategy`, that is:
+      ```javascript
+      const authStrategy = keystone.createAuthStrategy({
+        type: PasswordAuthStrategy,
+        list: 'User',
+        config: {
+          identityField: 'username',
+          secretField: 'pass',
+        },
+      });
+      ```
+      ```graphql
+      mutation {
+        authenticateUserWithPassword(username: "jesstelford", pass: "abc123") {
+          token
+          item {
+            username
+          }
+        }
+      }
+      ```
+    - ```graphql
+      mutation {
+        unauthenticate<List> {
+          success
+        }
+      }
+      ```
+
+### Patch Changes
+
+- [3958a9c7](https://github.com/keystonejs/keystone-5/commit/3958a9c7):
+
+  Fields configured with isRequired now behave as expected on create and update, returning a validation error if they are null.
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+- [b69a2276](https://github.com/keystonejs/keystone-5/commit/b69a2276):
+
+  Removed unnecessary port parameter from keystone.prepare calls
+
+- [ec9e6e2a](https://github.com/keystonejs/keystone-5/commit/ec9e6e2a):
+
+  Fixed behaviour of isRequired within update operations.
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/app-graphql@6.1.0
+  - @keystone-alpha/session@2.0.0
+
 ## 5.0.1
 
 ### Patch Changes

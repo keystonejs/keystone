@@ -1,5 +1,61 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.0.0
+
+### Major Changes
+
+- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+
+  - Removed the `<adminPath>/signin`, `<adminPath>/signout`, and
+    `<adminPath>/session` routes.
+    - The REST routes have been replaced with GraphQL mutations
+      `authenticate<List>With<Strategy>` & `unauthenticate<List>` (see
+      `@keystone-alpha/keystone`'s `CHANGELOG.md` for details)
+  - Admin UI now uses the new `(un)authenticate` mutations for sigin/signout
+    pages.
+  - Signout page correctly renders again (previously was erroring and showing a
+    blank page)
+  - Generate Admin UI login form field labels based on the identity and secret
+    fields set in the PasswordAuthStrategy.
+
+### Minor Changes
+
+- [abce2e6c](https://github.com/keystonejs/keystone-5/commit/abce2e6c):
+
+  `<Field>` views now receive a `savedValue` prop representing the current state as saved to the database.
+
+- [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+
+  - Execute the new `validateInput()` method from fields before saving on
+    create/update pages.
+  - Any generated `warnings` or `errors` are passed to the `<Field>` component for
+    the component to display to the user.
+  - Any `errors` will cause the Primary button (_Create_, _Update_) to be disabled
+    until there are no more errors.
+  - Any `warnings` will cause the Primary button (_Create_, _Update_) to require a
+    confirmation (ie; warnings can be ignored, errors cannot)
+
+### Patch Changes
+
+- [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+
+  Silence a useless warning produced by Apollo when using the OEmbed field
+
+- [dc2cd8e5](https://github.com/keystonejs/keystone-5/commit/dc2cd8e5):
+
+  Allow changing to default dashboard to a custom component
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/session@2.0.0
+  - @arch-ui/fields@1.0.0
+
 ## 4.0.0
 
 ### Major Changes

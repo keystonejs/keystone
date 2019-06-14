@@ -1,5 +1,31 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 1.2.1
+
+### Patch Changes
+
+- [b69a2276](https://github.com/keystonejs/keystone-5/commit/b69a2276):
+
+  Removed unnecessary port parameter from keystone.prepare calls
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @keystone-alpha/app-admin-ui@5.0.0
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/passport-auth@1.0.1
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+  - @arch-ui/fields@1.0.0
+  - @keystone-alpha/app-graphql@6.1.0
+  - @keystone-alpha/app-static@1.0.2
+  - @arch-ui/input@0.0.7
+  - @keystone-alpha/file-adapters@1.1.1
+  - @keystone-alpha/session@2.0.0
+
 ## 1.2.0
 
 ### Minor Changes

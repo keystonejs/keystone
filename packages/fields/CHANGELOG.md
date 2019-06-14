@@ -1,5 +1,92 @@
 # @keystone-alpha/fields
 
+## 7.0.0
+
+### Major Changes
+
+- [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+
+  - Expose a new method on field Controllers: `field#validateInput()`.
+    - ```javascript
+      /**
+       * Perform client-side data validations before performing a
+       * mutation. Any errors or warnings raised will abort the mutation and
+       * re-render the `Field` view with a new `error` prop.
+       *
+       * This method is only called on fields whos `.hasChanged()` property returns
+       * truthy.
+       *
+       * If only warnings are raised, the Admin UI will allow the user to confirm
+       * they wish to continue anyway. If they continue, and no values have changed
+       * since the last validation, validateInput will be called again, however any
+       * warnings raised will be ignored and the mutation will proceed as normal.
+       * This method is called after `serialize`.
+       *
+       * @param {Object} options
+       * @param {Object} options.resolvedData The data object that would be sent to
+       * the server. This data has previously been fed through .serialize()
+       * @param {Object} options.originalInput The data as set by the `Field`
+       * component. This data has _not_ been previously fed through .serialize().
+       * @param {addFieldWarningOrError} options.addFieldValidationError
+       * @param {addFieldWarningOrError} options.addFieldValidationWarning
+       * @return undefined
+       */
+      validateInput = ({
+        resolvedData,
+        originalInput,
+        addFieldValidationError,
+        addFieldValidationWarning,
+      }) => {
+        // Call addFieldValidationError / addFieldValidationWarning here
+      };
+      ```
+  - `Password` field is now using `validateInput()` which enforces `isRequired`
+    and `minLength` checks in the Admin UI.
+
+### Minor Changes
+
+- [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+
+  - Add `OEmbed` field
+
+    ```javascript
+    const { Keystone } = require('@keystone-alpha/keystone');
+    const { OEmbed } = require('@keystone-alpha/fields');
+    const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+
+    const keystone = new Keystone(/* ... */);
+
+    const iframelyAdapter = new IframelyOEmbedAdapter({
+      apiKey: '...', // Get one from https://iframely.com
+    });
+
+    keystone.createList('User', {
+      fields: {
+        portfolio: {
+          type: OEmbed,
+          adapter: iframelyAdapter,
+        },
+      },
+    });
+    ```
+
+### Patch Changes
+
+- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+
+  - Correctly read auth strategy info for displaying the "setCurrentUser" toggle on Relationship fields in the Admin UI
+
+- [3958a9c7](https://github.com/keystonejs/keystone-5/commit/3958a9c7):
+
+  Fields configured with isRequired now behave as expected on create and update, returning a validation error if they are null.
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @arch-ui/fields@1.0.0
+
 ## 6.2.2
 
 ### Patch Changes

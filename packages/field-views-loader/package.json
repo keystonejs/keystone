@@ -1,6 +1,6 @@
 {
   "name": "@keystone-alpha/field-views-loader",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A webpack loader used to load all thew field views used in an app",
   "main": "index.js",
   "author": "The Keystone Development Team",
