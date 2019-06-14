@@ -7,7 +7,7 @@ This is the todo list - the simplest implementation of Keystone. The todo list a
 ## Running the Project.
 
 ```
-yarn dev
+yarn start
 ```
 
 Then visit:
@@ -15,13 +15,6 @@ Then visit:
 - The Todo application at [`http://localhost:3000`](http://localhost:3000)
 - The KeystoneJS Admin UI at [`http://localhost:3000/admin`](http://localhost:3000/admin)
 - The GraphQL Playground at [`http://localhost:3000/admin/graphiql`](http://localhost:3000/admin/graphiql)
-
-## Production Build
-
-```
-yarn build
-yarn start
-```
 
 ## React App
 

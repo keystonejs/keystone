@@ -31,7 +31,7 @@ To create a new KeystoneJS application, ensure [mongodb is running](../quick-sta
 ```sh
 yarn create keystone-app my-app
 cd my-app
-yarn dev
+yarn start
 ```
 
 Congratulations, you are now running your very own KeystoneJS application!
