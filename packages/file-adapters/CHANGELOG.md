@@ -1,5 +1,13 @@
 # @keystone-alpha/file-adapters
 
+## 1.1.1
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
 ## 1.1.0
 
 ### Minor Changes

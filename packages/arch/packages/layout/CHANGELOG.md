@@ -1,5 +1,13 @@
 # @arch-ui/layout
 
+## 0.2.3
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
 ## 0.2.2
 
 - Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):

@@ -1,5 +1,10 @@
 # @arch-ui/card
 
+## 0.0.4
+
+- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+  - @arch-ui/theme@0.0.5
+
 ## 0.0.3
 
 ### Patch Changes

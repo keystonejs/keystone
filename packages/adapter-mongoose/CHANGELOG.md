@@ -1,5 +1,22 @@
 # @keystone-alpha/adapter-mongoose
 
+## 2.1.0
+
+### Minor Changes
+
+- [3958a9c7](https://github.com/keystonejs/keystone-5/commit/3958a9c7):
+
+  Removed the isRequired parameter from MongooseFieldAdapter.buildValidator()
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/keystone@6.0.0
+
 ## 2.0.1
 
 - Updated dependencies [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):

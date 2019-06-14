@@ -1,1 +1,0 @@
-Fields configured with isRequired now behave as expected on create and update, returning a validation error if they are null. 

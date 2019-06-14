@@ -1,5 +1,18 @@
 # @keystone-alpha/test-utils
 
+## 2.0.4
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/adapter-mongoose@2.1.0
+  - @keystone-alpha/adapter-knex@1.0.9
+  - @keystone-alpha/keystone@6.0.0
+
 ## 2.0.3
 
 ### Patch Changes
