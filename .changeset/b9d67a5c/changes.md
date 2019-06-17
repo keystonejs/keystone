@@ -1,0 +1,1 @@
+Correctly guard against undefined serverErrors in RelationshipSelect
