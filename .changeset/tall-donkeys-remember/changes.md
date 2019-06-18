@@ -1,1 +1,1 @@
-add --connect-to option support
+Correctly read `--connect-to` option on the CLI
