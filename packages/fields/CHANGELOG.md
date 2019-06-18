@@ -1,5 +1,13 @@
 # @keystone-alpha/fields
 
+## 7.0.1
+
+### Patch Changes
+
+- [c3daef1a](https://github.com/keystonejs/keystone-5/commit/c3daef1a):
+
+  Correctly guard against undefined serverErrors in RelationshipSelect
+
 ## 7.0.0
 
 ### Major Changes
