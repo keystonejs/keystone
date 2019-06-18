@@ -1,5 +1,37 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.2.0
+
+### Minor Changes
+
+- [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+
+  Add tests for `OEmbed` type rendering in Admin UI
+
+### Patch Changes
+
+- [2df1e920](https://github.com/keystonejs/keystone-5/commit/2df1e920):
+
+  Restore process.env.MONGODB_URI to test project example
+
+- [b69a2276](https://github.com/keystonejs/keystone-5/commit/b69a2276):
+
+  Removed unnecessary port parameter from keystone.prepare calls
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @keystone-alpha/app-admin-ui@5.0.0
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+  - @arch-ui/fields@1.0.0
+  - @keystone-alpha/app-graphql@6.1.0
+  - @keystone-alpha/app-static@1.0.2
+  - @keystone-alpha/file-adapters@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes

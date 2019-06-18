@@ -1,5 +1,25 @@
 # @keystone-alpha/website
 
+## 1.0.11
+
+### Patch Changes
+
+- [ac119f88](https://github.com/keystonejs/keystone-5/commit/ac119f88):
+
+  Homepage of the documentation website reveals the video on hover/touch of the image to avoid double click on play
+
+- [df48bc05](https://github.com/keystonejs/keystone-5/commit/df48bc05):
+
+  Move meta generation to build time and stringify the contents of title and description nodes properly
+
+- [d362e82d](https://github.com/keystonejs/keystone-5/commit/d362e82d):
+
+  Make previous and next buttons consistent with order in sidebar
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
 ## 1.0.10
 
 ### Patch Changes

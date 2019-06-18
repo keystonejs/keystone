@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import SessionProvider from '../providers/Session';
@@ -69,7 +68,7 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
             <Fragment>
               <p>You have been signed out.</p>
               <p>
-                <Link to={signinPath}>Sign In</Link>
+                <a href={signinPath}>Sign In</a>
               </p>
             </Fragment>
           )}

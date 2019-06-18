@@ -1,1 +1,0 @@
-Fixed behaviour of isRequired within update operations. 

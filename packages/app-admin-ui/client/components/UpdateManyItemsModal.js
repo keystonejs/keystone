@@ -126,7 +126,7 @@ class UpdateManyModal extends Component {
         }
       >
         <FieldContainer>
-          <FieldLabel>Fields</FieldLabel>
+          <FieldLabel field={{ label: 'Fields', config: { isRequired: false } }} />
           <FieldInput>
             <Select
               autoFocus

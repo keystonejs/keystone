@@ -13,6 +13,12 @@ import { initialValue } from './editor/constants';
 
 const flattenBlocks = inputBlocks =>
   inputBlocks.reduce((outputBlocks, block) => {
+    if (!block.type) {
+      // Some blocks may pull in other views which aren't themselves blocks, so
+      // we ignore them here
+      return outputBlocks;
+    }
+
     // NOTE: It's enough to check just the type here as we've already flattened
     // and deduped dependencies during build.
     if (outputBlocks[block.type]) {

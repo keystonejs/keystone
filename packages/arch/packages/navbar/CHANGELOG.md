@@ -1,5 +1,13 @@
 # @arch-ui/navbar
 
+## 0.0.9
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
 ## 0.0.8
 
 ### Patch Changes

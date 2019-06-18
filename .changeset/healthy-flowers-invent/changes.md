@@ -1,0 +1,1 @@
+Remove the deleted `embed` block from the test project

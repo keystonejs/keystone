@@ -1,5 +1,25 @@
 # @keystone-alpha/app-graphql
 
+## 6.1.0
+
+### Minor Changes
+
+- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+
+  - GraphQL Playground now correctly sends auth cookies by default.
+  - The GraphQL `context` object now has `startAuthedSession` and
+    `endAuthedSession` methods bound to the current request (from
+    `@keystone-alpha/session`)
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/session@2.0.0
+
 ## 6.0.0
 
 ### Major Changes

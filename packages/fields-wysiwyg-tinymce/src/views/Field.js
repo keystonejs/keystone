@@ -14,25 +14,18 @@ export default class WysiwygField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, error, value: serverValue } = this.props;
+    const { autoFocus, field, errors, value: serverValue } = this.props;
     const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
+    const accessError = errors.find(
+      error => error instanceof Error && error.name === 'AccessDeniedError'
+    );
 
-    if (!canRead) return null;
+    if (accessError) return null;
 
     return (
       <FieldContainer>
-        <FieldLabel
-          htmlFor={htmlID}
-          css={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {field.label}
-        </FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <div css={{ display: 'flex', flex: 1 }}>
           <Editor value={value} onChange={this.onChange} id={htmlID} autoFocus={autoFocus} />
         </div>

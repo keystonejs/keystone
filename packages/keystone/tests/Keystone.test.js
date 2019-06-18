@@ -45,7 +45,7 @@ class MockFieldType {
   getGqlAuxMutations() {
     return ['mutateFoo: Boolean'];
   }
-  extendViews(views) {
+  extendAdminViews(views) {
     return views;
   }
 }

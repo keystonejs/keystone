@@ -62,7 +62,7 @@ class AdminUIApp {
     app.get(signinPath, (req, res, next) =>
       // This session is currently authenticated as part of the 'admin'
       // audience.
-      req.user && req.session.audiences && req.session.audiences.contains('admin')
+      req.user && req.session.audiences && req.session.audiences.includes('admin')
         ? res.redirect(this.adminPath)
         : next()
     );

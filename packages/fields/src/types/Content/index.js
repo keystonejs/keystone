@@ -1,6 +1,5 @@
 import { Content, MongoContentInterface, KnexContentInterface } from './Implementation';
 import blockquote from './blocks/blockquote';
-import embed from './blocks/embed';
 import heading from './blocks/heading';
 import image from './blocks/image-container';
 import link from './blocks/link';
@@ -22,7 +21,6 @@ export default {
   },
   blocks: {
     blockquote,
-    embed,
     heading,
     image,
     link,
