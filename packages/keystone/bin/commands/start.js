@@ -1,6 +1,11 @@
 const path = require('path');
 const { executeDefaultServer, getEntryFileFullPath } = require('../utils');
-const { DEFAULT_DIST_DIR, DEFAULT_PORT, DEFAULT_ENTRY, DEFAULT_CONNECT_TO } = require('../../constants');
+const {
+  DEFAULT_DIST_DIR,
+  DEFAULT_PORT,
+  DEFAULT_ENTRY,
+  DEFAULT_CONNECT_TO,
+} = require('../../constants');
 
 module.exports = {
   // prettier-ignore
