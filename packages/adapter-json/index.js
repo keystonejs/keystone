@@ -1,4 +1,4 @@
-const { escapeRegExp, identity, mapKeys } = require('@keystone-alpha/utils');
+const { escapeRegExp, identity, mapKeys, objMerge, flatten } = require('@keystone-alpha/utils');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const lowdb = require('lowdb');
 const lodashId = require('lodash-id');
@@ -36,9 +36,7 @@ class JSONAdapter extends BaseKeystoneAdapter {
 
   postConnect() {
     // Ensure we have a default empty array for all the lists
-    return pSettle([
-      this._dbInstance.defaults(mapKeys(this.listAdapters, () => ([]))).write()
-    ]);
+    return pSettle([this._dbInstance.defaults(mapKeys(this.listAdapters, () => [])).write()]);
   }
 
   read() {
@@ -77,7 +75,9 @@ class JSONListAdapter extends BaseListAdapter {
   }
 
   async _create(input) {
-    return await this.getDBCollection().insert(input).write();
+    return await this.getDBCollection()
+      .insert(input)
+      .write();
   }
 
   async _delete(id) {
@@ -109,29 +109,72 @@ class JSONListAdapter extends BaseListAdapter {
   }
 
   async _findById(id) {
-    const foundItem = this.getDBCollection().getById(id).value();
+    const foundItem = this.getDBCollection()
+      .getById(id)
+      .value();
     // If it doesn't exist, return null not `undefined`
     return await (foundItem || null);
   }
 
-  async _find(condition) {
-    return await this.getDBCollection().find(condition).value();
+  _find(where) {
+    return this._constructWhereChain(this.getDBCollection(), where).value();
   }
 
-  async _findOne(condition) {
-    return await this.getDBCollection()
-      .find(condition)
+  _findOne(where) {
+    return this._constructWhereChain(this.getDBCollection(), where)
       .head()
       .value();
+  }
+
+  _allQueryConditions() {
+    const idMatcher = value => item => (value || []).includes(item.id);
+
+    return {
+      id: value => (chain, _) => chain.filter(_.matchesProperty('id', value)),
+      id_not: value => (chain, _) => chain.reject(_.matchesProperty('id', value)),
+      id_in: value => chain => chain.filter(idMatcher(value)),
+      id_not_in: value => chain => chain.reject(idMatcher(value)),
+      ...objMerge(
+        this.fieldAdapters.map(fieldAdapter =>
+          fieldAdapter.getQueryConditions(fieldAdapter.dbPath)
+        )
+      ),
+    };
+  }
+
+  _buildChainableClauses(where, conditions) {
+    // Build up a list of functions we want to chain together as AND filters
+    return flatten(Object.entries(where).map(
+      ([condition, value]) => {
+
+        if (condition === 'AND') {
+          return flatten(value.map(ANDWhere => this._buildChainableClauses(ANDWhere, conditions)));
+        }
+
+        return [conditions[condition](value)];
+      }
+    ));
+  }
+
+  _constructWhereChain(chain, where) {
+    const lodash = this._parentAdapter.getLodash();
+    const conditions = this._allQueryConditions();
+    const clauses = this._buildChainableClauses(where, conditions);
+
+    return clauses.reduce(
+      (whereChain, clause) => clause(whereChain, lodash),
+      chain
+    );
   }
 
   async _itemsQuery({ where, first, skip, orderBy, search }, { meta = false } = {}) {
     let chain = this.getDBCollection();
 
     if (where) {
+      chain = this._constructWhereChain(chain, where);
       // TODO
-      debugger;
-      throw new Error('JSONAdapter#_itemsQuery() `where` param not implemented');
+      //debugger;
+      //throw new Error('JSONAdapter#_itemsQuery() `where` param not implemented');
     }
 
     if (search) {
