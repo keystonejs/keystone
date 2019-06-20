@@ -24,6 +24,7 @@ const { graphql } = require('graphql');
 
 const { staticRoute, staticPath, cloudinary, iframely } = require('./config');
 const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
@@ -48,7 +49,9 @@ const fileAdapter = new LocalFileAdapter({
 
 let embedAdapter;
 
-if (iframely.apiKey) {
+if (process.env.NODE_ENV === 'test') {
+  embedAdapter = new MockOEmbedAdapter();
+} else if (iframely.apiKey) {
   embedAdapter = new IframelyOEmbedAdapter({ apiKey: iframely.apiKey });
 }
 
