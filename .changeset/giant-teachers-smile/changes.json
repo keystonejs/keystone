@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/fields", "type": "minor" },
+    { "name": "@keystone-alpha/oembed-adapters", "type": "minor" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "minor" }
+  ],
+  "dependents": []
+}

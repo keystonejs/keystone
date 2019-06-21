@@ -22,7 +22,8 @@ const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { StaticApp } = require('@keystone-alpha/app-static');
 const { graphql } = require('graphql');
 
-const { staticRoute, staticPath, cloudinary } = require('./config');
+const { staticRoute, staticPath, cloudinary, iframely } = require('./config');
+const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
@@ -45,6 +46,14 @@ const fileAdapter = new LocalFileAdapter({
   directory: LOCAL_FILE_PATH,
   route: LOCAL_FILE_ROUTE,
 });
+
+let embedAdapter;
+
+if (process.env.NODE_ENV === 'test') {
+  embedAdapter = new MockOEmbedAdapter();
+} else if (iframely.apiKey) {
+  embedAdapter = new IframelyOEmbedAdapter({ apiKey: iframely.apiKey });
+}
 
 let cloudinaryAdapter;
 try {
@@ -89,7 +98,7 @@ keystone.createList('User', {
     attachment: { type: File, adapter: fileAdapter },
     color: { type: Color },
     website: { type: Url },
-    profile: { type: OEmbed, adapter: new MockOEmbedAdapter() },
+    ...(embedAdapter ? { profile: { type: OEmbed, adapter: embedAdapter } } : {}),
     ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
@@ -128,7 +137,10 @@ keystone.createList('Post', {
     value: {
       type: Content,
       blocks: [
-        [CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }],
+        ...(cloudinaryAdapter
+          ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
+          : []),
+        ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
