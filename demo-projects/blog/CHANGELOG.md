@@ -1,5 +1,31 @@
 # keystone_demo_blog
 
+## 1.2.2
+
+### Patch Changes
+
+- [dc2cd8e5](https://github.com/keystonejs/keystone-5/commit/dc2cd8e5):
+
+  Allow changing to default dashboard to a custom component
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/app-admin-ui@5.0.0
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.1
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/oembed-adapters@1.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+  - @keystone-alpha/app-graphql@6.1.0
+  - @keystone-alpha/app-next@1.0.2
+  - @keystone-alpha/app-static@1.0.2
+  - @arch-ui/layout@0.2.3
+  - @arch-ui/typography@0.0.7
+  - @keystone-alpha/file-adapters@1.1.1
+
 ## 1.2.1
 
 ### Patch Changes

@@ -14,13 +14,17 @@ const {
   Url,
   Content,
   Decimal,
+  OEmbed,
 } = require('@keystone-alpha/fields');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { StaticApp } = require('@keystone-alpha/app-static');
+const { graphql } = require('graphql');
 
-const { staticRoute, staticPath, cloudinary } = require('./config');
+const { staticRoute, staticPath, cloudinary, iframely } = require('./config');
+const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
@@ -42,6 +46,14 @@ const fileAdapter = new LocalFileAdapter({
   directory: LOCAL_FILE_PATH,
   route: LOCAL_FILE_ROUTE,
 });
+
+let embedAdapter;
+
+if (process.env.NODE_ENV === 'test') {
+  embedAdapter = new MockOEmbedAdapter();
+} else if (iframely.apiKey) {
+  embedAdapter = new IframelyOEmbedAdapter({ apiKey: iframely.apiKey });
+}
 
 let cloudinaryAdapter;
 try {
@@ -86,6 +98,7 @@ keystone.createList('User', {
     attachment: { type: File, adapter: fileAdapter },
     color: { type: Color },
     website: { type: Url },
+    ...(embedAdapter ? { profile: { type: OEmbed, adapter: embedAdapter } } : {}),
     ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
@@ -124,11 +137,13 @@ keystone.createList('Post', {
     value: {
       type: Content,
       blocks: [
-        [CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }],
+        ...(cloudinaryAdapter
+          ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
+          : []),
+        ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
-        [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],
         Content.blocks.link,
         Content.blocks.heading,
       ],
@@ -139,7 +154,22 @@ keystone.createList('Post', {
     defaultColumns: 'name, status',
     defaultSort: 'name',
   },
-  labelResolver: item => item.name,
+  labelResolver: async (item, args, context, { schema }) => {
+    if (item.author) {
+      const query = `
+        query getAuthor($authorId: ID!) {
+          User(where: { id: $authorId }) {
+            name
+          }
+        }
+      `;
+      const variables = { authorId: item.author.toString() };
+      const { data } = await graphql(schema, query, null, context, variables);
+      return `${item.name} (by ${data.User.name})`;
+    } else {
+      return item.name;
+    }
+  },
 });
 
 keystone.createList('PostCategory', {

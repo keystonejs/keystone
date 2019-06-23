@@ -1,5 +1,16 @@
 # @arch-ui/fields
 
+## 1.0.0
+
+### Major Changes
+
+- [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+
+  Update the FieldLabel component to take `htmlFor`, `field` and `errors` as props in order to have a consistent mechanism for surfacing the isRequired flag and any access denied errors.
+
+* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+  - @arch-ui/theme@0.0.5
+
 ## 0.0.5
 
 ### Patch Changes

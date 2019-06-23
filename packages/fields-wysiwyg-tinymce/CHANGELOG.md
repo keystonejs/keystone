@@ -1,5 +1,18 @@
 # @keystone-alpha/fields-wysiwyg-tinymce
 
+## 3.0.1
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @keystone-alpha/fields@7.0.0
+  - @arch-ui/fields@1.0.0
+
 ## 3.0.0
 
 ### Major Changes

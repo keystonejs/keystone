@@ -1,46 +1,41 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line
-import Highlight, { defaultProps } from 'prism-react-renderer';
-import reactAddonsTextContent from 'react-addons-text-content';
 import { jsx } from '@emotion/core';
 
 import theme from '../../prism-themes/custom';
 
-/*
-This solution should be seen as extremely temporary and not a platonic ideal of code highlighting.
+function themeToDict(theme, language) {
+  const { plain } = theme;
 
-At the time this was written gatsby-remark-prism was not working with gatsby-mdx (leading to explosions).
-This implementation is a best-guess of using prism-react-renderer with mdx. If better patterns are found
-I highly encourage changing this.
+  const styles = theme.styles.map(themeEntry => {
+    const { types, languages, style } = themeEntry;
+    if (languages && !languages.includes(language)) {
+      return {};
+    }
 
-Leaving styling the inline component until we have emotion
-*/
+    return types.reduce((acc, type) => {
+      const accStyle = { ...acc[type], ...style };
+
+      return Object.assign(acc, {
+        [`.${type}`]: accStyle,
+      });
+    }, {});
+  });
+
+  const themeDict = Object.assign(
+    {
+      ['.root']: plain,
+      ['.plain']: { ...plain, backgroundColor: null },
+    },
+    ...styles
+  );
+
+  return themeDict;
+}
 
 export const Code = props => {
   const lang = props.className ? props.className.replace('language-', '') : null;
+  const styles = themeToDict(theme, lang);
 
-  return lang ? (
-    <Highlight
-      {...defaultProps}
-      theme={theme}
-      code={reactAddonsTextContent(props.children)}
-      language={lang}
-    >
-      {({ tokens, getLineProps, getTokenProps }) => (
-        <code {...props}>
-          {tokens.map((line, idx) => (
-            <div {...getLineProps({ line, key: idx })}>
-              {line.map((token, key) => {
-                const { style, ...tokenProps } = getTokenProps({ token, key });
-                return <span css={style} {...tokenProps} />;
-              })}
-            </div>
-          ))}
-        </code>
-      )}
-    </Highlight>
-  ) : (
-    <code {...props} />
-  );
+  return <code css={styles} {...props} />;
 };

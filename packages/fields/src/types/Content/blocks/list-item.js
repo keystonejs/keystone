@@ -1,6 +1,11 @@
 import { importView } from '@keystone-alpha/build-field-types';
+import { Block } from '../../../Block';
 
-export default {
-  type: 'list-item',
-  viewPath: importView('../views/editor/blocks/list-item'),
-};
+export default class ListItemBlock extends Block {
+  get type() {
+    return 'list-item';
+  }
+  getAdminViews() {
+    return [importView('../views/editor/blocks/list-item')];
+  }
+}

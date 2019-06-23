@@ -22,6 +22,7 @@ import ListNotFoundPage from './pages/ListNotFound';
 import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
 import StyleGuidePage from './pages/StyleGuide';
+import SignoutPage from './pages/Signout';
 
 const findCustomPages = (pages, allPages = []) => {
   if (!Array.isArray(pages)) return allPages;
@@ -34,7 +35,7 @@ const findCustomPages = (pages, allPages = []) => {
 
 const Keystone = () => {
   let adminMeta = useAdminMeta();
-  let { adminPath, apiPath, pages, pageViews, readViews } = adminMeta;
+  let { adminPath, signoutPath, apiPath, pages, pageViews, readViews } = adminMeta;
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
@@ -45,77 +46,89 @@ const Keystone = () => {
             <ConnectivityListener />
             <Global styles={globalStyles} />
             <BrowserRouter>
-              <ScrollToTop>
-                <Nav>
-                  <Suspense fallback={<PageLoading />}>
-                    <Switch>
-                      <Route
-                        path={`${adminPath}/style-guide/:page?`}
-                        render={() => <StyleGuidePage {...adminMeta} />}
-                      />
-                      {findCustomPages(pages).map(page => (
-                        <Route
-                          exact
-                          key={page.path}
-                          path={`${adminPath}/${page.path}`}
-                          render={() => {
-                            const [Page] = readViews([pageViews[page.path]]);
-                            return <Page />;
-                          }}
-                        />
-                      ))}
-                      <Route exact path={adminPath} render={() => <HomePage {...adminMeta} />} />
-                      <Route
-                        path={`${adminPath}/:listKey`}
-                        render={({
-                          match: {
-                            params: { listKey },
-                          },
-                        }) => {
-                          // TODO: Permission query to show/hide a list from the
-                          // menu
-                          const list = adminMeta.getListByPath(listKey);
-                          return list ? (
-                            <Switch>
+              <Route exact path={signoutPath}>
+                {({ match }) =>
+                  match ? (
+                    <SignoutPage {...adminMeta} />
+                  ) : (
+                    <ScrollToTop>
+                      <Nav>
+                        <Suspense fallback={<PageLoading />}>
+                          <Switch>
+                            <Route
+                              path={`${adminPath}/style-guide/:page?`}
+                              render={() => <StyleGuidePage {...adminMeta} />}
+                            />
+                            {findCustomPages(pages).map(page => (
                               <Route
                                 exact
-                                path={`${adminPath}/:list`}
-                                render={routeProps => (
-                                  <ListPage
-                                    key={listKey}
-                                    list={list}
-                                    adminMeta={adminMeta}
-                                    routeProps={routeProps}
-                                  />
-                                )}
+                                key={page.path}
+                                path={`${adminPath}/${page.path}`}
+                                render={() => {
+                                  const [Page] = readViews([pageViews[page.path]]);
+                                  return <Page />;
+                                }}
                               />
-                              <Route
-                                exact
-                                path={`${adminPath}/:list/:itemId`}
-                                render={({
-                                  match: {
-                                    params: { itemId },
-                                  },
-                                }) => (
-                                  <ItemPage
-                                    key={`${listKey}-${itemId}`}
-                                    list={list}
-                                    itemId={itemId}
-                                    {...adminMeta}
-                                  />
-                                )}
-                              />
-                              <Route render={() => <InvalidRoutePage {...adminMeta} />} />
-                            </Switch>
-                          ) : (
-                            <ListNotFoundPage listKey={listKey} {...adminMeta} />
-                          );
-                        }}
-                      />
-                    </Switch>
-                  </Suspense>
-                </Nav>
-              </ScrollToTop>
+                            ))}
+                            <Route
+                              exact
+                              path={adminPath}
+                              render={() => <HomePage {...adminMeta} />}
+                            />
+                            <Route
+                              path={`${adminPath}/:listKey`}
+                              render={({
+                                match: {
+                                  params: { listKey },
+                                },
+                              }) => {
+                                // TODO: Permission query to show/hide a list from the
+                                // menu
+                                const list = adminMeta.getListByPath(listKey);
+                                return list ? (
+                                  <Switch>
+                                    <Route
+                                      exact
+                                      path={`${adminPath}/:list`}
+                                      render={routeProps => (
+                                        <ListPage
+                                          key={listKey}
+                                          list={list}
+                                          adminMeta={adminMeta}
+                                          routeProps={routeProps}
+                                        />
+                                      )}
+                                    />
+                                    <Route
+                                      exact
+                                      path={`${adminPath}/:list/:itemId`}
+                                      render={({
+                                        match: {
+                                          params: { itemId },
+                                        },
+                                      }) => (
+                                        <ItemPage
+                                          key={`${listKey}-${itemId}`}
+                                          list={list}
+                                          itemId={itemId}
+                                          {...adminMeta}
+                                        />
+                                      )}
+                                    />
+                                    <Route render={() => <InvalidRoutePage {...adminMeta} />} />
+                                  </Switch>
+                                ) : (
+                                  <ListNotFoundPage listKey={listKey} {...adminMeta} />
+                                );
+                              }}
+                            />
+                          </Switch>
+                        </Suspense>
+                      </Nav>
+                    </ScrollToTop>
+                  )
+                }
+              </Route>
             </BrowserRouter>
           </ToastProvider>
         </KeyboardShortcuts>

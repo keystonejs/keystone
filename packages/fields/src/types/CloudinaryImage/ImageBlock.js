@@ -1,8 +1,12 @@
 import pluralize from 'pluralize';
+import { importView } from '@keystone-alpha/build-field-types';
+
 import { Block } from '../../Block';
 import CloudinaryImage from './';
 import SelectType from '../Select';
 import RelationshipType from '../Relationship';
+import image from '../Content/blocks/image';
+import caption from '../Content/blocks/caption';
 
 const RelationshipWrapper = {
   ...RelationshipType,
@@ -60,11 +64,23 @@ export class ImageBlock extends Block {
     this.auxList = auxList;
   }
 
+  get type() {
+    return 'cloudinaryImage';
+  }
+
   get path() {
     return pluralize.plural(this.type);
   }
 
-  get fieldDefinitions() {
+  getAdminViews() {
+    return [
+      importView('./views/blocks/single-image'),
+      ...new image().getAdminViews(),
+      ...new caption().getAdminViews(),
+    ];
+  }
+
+  getFieldDefinitions() {
     return {
       [this.path]: {
         type: RelationshipWrapper,
@@ -81,7 +97,7 @@ export class ImageBlock extends Block {
     };
   }
 
-  extendAdminMeta(meta) {
+  getViewOptions() {
     return {
       query: `
         cloudinaryImages {
@@ -92,7 +108,6 @@ export class ImageBlock extends Block {
           align
         }
       `,
-      ...meta,
     };
   }
 }

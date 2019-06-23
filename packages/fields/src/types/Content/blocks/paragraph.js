@@ -1,6 +1,11 @@
 import { importView } from '@keystone-alpha/build-field-types';
+import { Block } from '../../../Block';
 
-export default {
-  type: 'paragraph',
-  viewPath: importView('../views/editor/blocks/paragraph'),
-};
+export default class ParagraphBlock extends Block {
+  get type() {
+    return 'paragraph';
+  }
+  getAdminViews() {
+    return [importView('../views/editor/blocks/paragraph')];
+  }
+}

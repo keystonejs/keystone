@@ -1,10 +1,10 @@
+import { dirname } from 'path';
 import express from 'express';
 import { Text } from '@keystone-alpha/fields';
 import { importView } from '@keystone-alpha/build-field-types';
 
 function prepareMiddleware() {
-  const tinymce = require.resolve('tinymce');
-  const tinymcePath = tinymce.substr(0, tinymce.lastIndexOf('/'));
+  const tinymcePath = dirname(require.resolve('tinymce'));
   const app = express();
   app.use('/tinymce-assets', express.static(tinymcePath));
   return app;

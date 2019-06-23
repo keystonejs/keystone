@@ -1,1 +1,0 @@
-- Correctly read auth strategy info for displaying the "setCurrentUser" toggle on Relationship fields in the Admin UI

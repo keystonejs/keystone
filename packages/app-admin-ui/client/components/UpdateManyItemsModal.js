@@ -2,12 +2,14 @@
 import { jsx } from '@emotion/core';
 import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
-import { Button } from '@arch-ui/button';
+import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { omit, arrayToObject } from '@keystone-alpha/utils';
+import { omit, arrayToObject, countArrays } from '@keystone-alpha/utils';
 import { LoadingIndicator } from '@arch-ui/loading';
+
+import { validateFields } from '../util';
 
 let Render = ({ children }) => children();
 
@@ -17,14 +19,33 @@ class UpdateManyModal extends Component {
     const { list } = props;
     const selectedFields = [];
     const item = list.getInitialItemData();
-    this.state = { item, selectedFields };
+    const validationErrors = {};
+    const validationWarnings = {};
+
+    this.state = { item, selectedFields, validationErrors, validationWarnings };
   }
-  onUpdate = () => {
+  onUpdate = async () => {
     const { updateItem, isLoading, items } = this.props;
-    const { item, selectedFields } = this.state;
+    const { item, selectedFields, validationErrors, validationWarnings } = this.state;
     if (isLoading) return;
+    if (countArrays(validationErrors)) {
+      return;
+    }
 
     const data = arrayToObject(selectedFields, 'path', field => field.serialize(item));
+
+    if (!countArrays(validationWarnings)) {
+      const { errors, warnings } = await validateFields(selectedFields, item, data);
+
+      if (countArrays(errors) + countArrays(warnings) > 0) {
+        this.setState(() => ({
+          validationErrors: errors,
+          validationWarnings: warnings,
+        }));
+
+        return;
+      }
+    }
 
     updateItem({
       variables: {
@@ -74,8 +95,11 @@ class UpdateManyModal extends Component {
   };
   render() {
     const { isLoading, isOpen, items, list } = this.props;
-    const { item, selectedFields } = this.state;
+    const { item, selectedFields, validationErrors, validationWarnings } = this.state;
     const options = this.getOptions();
+
+    const hasWarnings = countArrays(validationWarnings);
+    const hasErrors = countArrays(validationErrors);
 
     return (
       <Drawer
@@ -87,9 +111,14 @@ class UpdateManyModal extends Component {
         slideInFrom="left"
         footer={
           <Fragment>
-            <Button appearance="primary" onClick={this.onUpdate}>
-              {isLoading ? 'Loading...' : 'Update'}
-            </Button>
+            <LoadingButton
+              appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
+              isDisabled={hasErrors}
+              isLoading={isLoading}
+              onClick={this.onUpdate}
+            >
+              {hasWarnings && !hasErrors ? 'Ignore Warnings and Update' : 'Update'}
+            </LoadingButton>
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
@@ -97,7 +126,7 @@ class UpdateManyModal extends Component {
         }
       >
         <FieldContainer>
-          <FieldLabel>Fields</FieldLabel>
+          <FieldLabel field={{ label: 'Fields', config: { isRequired: false } }} />
           <FieldInput>
             <Select
               autoFocus
@@ -127,6 +156,8 @@ class UpdateManyModal extends Component {
                         ...item,
                         [field.path]: value,
                       },
+                      validationErrors: {},
+                      validationWarnings: {},
                     }));
                   });
                   return useMemo(
@@ -135,11 +166,23 @@ class UpdateManyModal extends Component {
                         autoFocus={!i}
                         field={field}
                         value={item[field.path]}
+                        // Explicitly pass undefined here as it doesn't make
+                        // sense to pass in any one 'saved' value
+                        savedValue={undefined}
+                        errors={validationErrors[field.path] || []}
+                        warnings={validationWarnings[field.path] || []}
                         onChange={onChange}
                         renderContext="dialog"
                       />
                     ),
-                    [i, field, item[field.path], onChange]
+                    [
+                      i,
+                      field,
+                      item[field.path],
+                      validationErrors[field.path],
+                      validationWarnings[field.path],
+                      onChange,
+                    ]
                   );
                 }}
               </Render>
