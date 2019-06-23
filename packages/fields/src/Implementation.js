@@ -167,7 +167,7 @@ class Field {
   extendAdminMeta(meta) {
     return meta;
   }
-  extendViews(views) {
+  extendAdminViews(views) {
     return views;
   }
   getDefaultValue() {

@@ -126,10 +126,17 @@ module.exports = function() {
     export function readViews(views) {
       return captureSuspensePromises(
         views.map(view => () => {
-          if (valueCache.has(view)) {
-            return valueCache.get(view);
+          let viewFn = view;
+          if (typeof view === 'string') {
+            viewFn = loaders[view];
+            if (!viewFn) {
+              throw new Error('Unknown view path ' + view);
+            }
+          }
+          if (valueCache.has(viewFn)) {
+            return valueCache.get(viewFn);
           } else {
-            throw loadView(view);
+            throw loadView(viewFn);
           }
         })
       );

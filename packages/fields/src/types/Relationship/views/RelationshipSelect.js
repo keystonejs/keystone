@@ -63,9 +63,9 @@ const Relationship = forwardRef(
             label: val._label_,
           }))
         : [];
-    const serverError = serverErrors.find(
-      error => error instanceof Error && error.name === 'AccessDeniedError'
-    );
+    const serverError =
+      serverErrors &&
+      serverErrors.find(error => error instanceof Error && error.name === 'AccessDeniedError');
     let currentValue = null;
 
     const getOption = value =>
@@ -141,7 +141,7 @@ const Relationship = forwardRef(
         value={currentValue}
         placeholder={
           // $FlowFixMe
-          canRead ? undefined : serverError.message
+          canRead ? undefined : serverError && serverError.message
         }
         options={options}
         onChange={onChange}

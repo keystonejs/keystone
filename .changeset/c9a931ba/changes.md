@@ -1,1 +1,0 @@
-`<Field>` views now receive a `savedValue` prop representing the current state as saved to the database.

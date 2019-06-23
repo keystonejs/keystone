@@ -1,1 +1,0 @@
-Move meta generation to build time and stringify the contents of title and description nodes properly

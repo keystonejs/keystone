@@ -1,5 +1,12 @@
 # @arch-ui/options
 
+## 0.0.7
+
+- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+  - @arch-ui/common@0.0.6
+  - @arch-ui/icons@0.0.5
+  - @arch-ui/theme@0.0.5
+
 ## 0.0.6
 
 - Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):

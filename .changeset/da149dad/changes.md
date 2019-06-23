@@ -1,1 +1,0 @@
-Move frontmatter in docs into comments

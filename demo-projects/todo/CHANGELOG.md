@@ -1,5 +1,15 @@
 # @keystone-alpha/demo-project-todo
 
+## 1.1.1
+
+- Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+- Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+- Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/app-admin-ui@5.0.0
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+
 ## 1.1.0
 
 ### Minor Changes

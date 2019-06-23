@@ -1,10 +1,16 @@
 export class Block {
-  constructor(_, { type }) {
-    this.type = type;
-
+  constructor() {
     // To be set by a Block if it creates a join table.
     // Instance of @keystone/core#List
     this.auxList = undefined;
+  }
+
+  get type() {
+    throw new Error(`${this.constructor.name} must have a 'type' getter`);
+  }
+
+  get path() {
+    throw new Error(`${this.constructor.name} must have a 'path' getter`);
   }
 
   getGqlInputType() {
@@ -32,15 +38,22 @@ export class Block {
     return [];
   }
 
-  get path() {
-    throw new Error(`${this.constructor.name} must have a 'path' getter`);
-  }
-
-  get fieldDefinitions() {
+  getFieldDefinitions() {
     return {};
   }
 
-  extendAdminMeta(meta) {
-    return meta;
+  /**
+   * @param graphQlArgs {Object}
+   */
+  getMutationOperationResults() {
+    return;
+  }
+
+  getAdminViews() {
+    return [];
+  }
+
+  getViewOptions() {
+    return {};
   }
 }

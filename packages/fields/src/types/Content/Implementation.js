@@ -12,14 +12,7 @@ import TextType from '../Text';
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
-const DEFAULT_BLOCKS = [paragraph];
-
-function flattenBlockViews(block) {
-  return [
-    block.viewPath,
-    ...(block.dependencies ? flatMap(block.dependencies, flattenBlockViews) : []),
-  ];
-}
+const DEFAULT_BLOCKS = [[paragraph, {}]];
 
 /**
  * @param data Object For example:
@@ -55,17 +48,15 @@ async function processSerialised(document, blocks, graphQlArgs) {
   const result = {
     document: walkSlateNode(document, {
       visitBlock(node) {
+        if (!node.data || !node.data._mutationPaths) {
+          // A regular slate.js node - pass it through
+          return node;
+        }
+
         const block = blocks.find(({ type }) => type === node.type);
 
         if (!block) {
-          if (node.data && node.data._mutationPath) {
-            throw new Error(
-              `Received mutation for ${node.type}, but no block types can handle it.`
-            );
-          }
-
-          // A regular slate.js node - pass it through
-          return node;
+          throw new Error(`Received mutation for ${node.type}, but no block types can handle it.`);
         }
 
         const _joinIds = node.data._mutationPaths.map(mutationPath => {
@@ -110,44 +101,34 @@ export class Content extends Relationship {
     // to this list+field and don't collide.
     const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
 
-    const blocks = Array.isArray(inputBlocks) ? inputBlocks : [];
+    // Normalise blocks to always be a tuple with a config object
+    let blocks = (Array.isArray(inputBlocks) ? inputBlocks : []).map(block =>
+      Array.isArray(block) ? block : [block, {}]
+    );
 
-    blocks.push(
-      ...DEFAULT_BLOCKS.filter(
-        defaultBlock =>
-          !blocks.find(
-            block => (Array.isArray(block) ? block[0] : block).type === defaultBlock.type
-          )
-      )
+    blocks.push(...DEFAULT_BLOCKS);
+
+    const blockInstances = blocks.map(
+      ([block, blockConfig]) =>
+        new block(blockConfig, {
+          fromList: listConfig.listKey,
+          joinList: type,
+          createAuxList: listConfig.createAuxList,
+          getListByKey: listConfig.getListByKey,
+          listConfig,
+        })
     );
 
     // Checking for duplicate block types
-    for (let currentIndex = 0; currentIndex < blocks.length; currentIndex++) {
-      const currentBlock = blocks[currentIndex];
-      const currentType = (Array.isArray(currentBlock) ? currentBlock[0] : currentBlock).type;
-      for (let checkIndex = currentIndex + 1; checkIndex < blocks.length; checkIndex++) {
-        const checkBlock = blocks[checkIndex];
-        const checkType = (Array.isArray(checkBlock) ? checkBlock[0] : checkBlock).type;
+    for (let currentIndex = 0; currentIndex < blockInstances.length; currentIndex++) {
+      const { type: currentType } = blockInstances[currentIndex];
+      for (let checkIndex = currentIndex + 1; checkIndex < blockInstances.length; checkIndex++) {
+        const { type: checkType } = blockInstances[checkIndex];
         if (currentType === checkType) {
           throw new Error(`Encountered duplicate Content block type '${currentType}'.`);
         }
       }
     }
-
-    const complexBlocks = blocks
-      .map(block => (Array.isArray(block) ? block : [block, {}]))
-      .filter(([block]) => block.implementation)
-      .map(
-        ([block, blockConfig]) =>
-          new block.implementation(blockConfig, {
-            type: block.type,
-            fromList: listConfig.listKey,
-            joinList: type,
-            createAuxList: listConfig.createAuxList,
-            getListByKey: listConfig.getListByKey,
-            listConfig,
-          })
-      );
 
     // Ensure the list is only instantiated once per server instance.
     let auxList = listConfig.getListByKey(type);
@@ -170,7 +151,7 @@ export class Content extends Relationship {
 
           // Gather up all the fields which blocks want to specify
           // (note: They may be Relationships to Aux Lists themselves!)
-          ...objMerge(complexBlocks.map(block => block.fieldDefinitions)),
+          ...objMerge(blockInstances.map(block => block.getFieldDefinitions())),
         },
         hooks: {
           async resolveInput({ resolvedData, ...args }) {
@@ -184,7 +165,7 @@ export class Content extends Relationship {
 
             // TODO: Remove JSON.parse once using native JSON type
             const documentObj = JSON.parse(resolvedData.document);
-            const { document } = await processSerialised(documentObj, complexBlocks, args);
+            const { document } = await processSerialised(documentObj, blockInstances, args);
             return {
               ...resolvedData,
               // TODO: FIXME: Use a JSON type
@@ -201,8 +182,7 @@ export class Content extends Relationship {
 
     this.auxList = auxList;
     this.listConfig = listConfig;
-    this.blocks = blocks;
-    this.complexBlocks = complexBlocks;
+    this.blocks = blockInstances;
   }
 
   /*
@@ -211,8 +191,8 @@ export class Content extends Relationship {
    * 2. The config (eg; { apiKey: process.env.EMBEDLY_API_KEY })
    * Because of the way we bundle the admin UI, we have to split apart these
    * two halves and send them seperately (see `@keystone-alpha/field-views-loader`):
-   * 1. Sent as a "view" (see `extendViews` below), which will be required (so
-   *    it's included in the bundle).
+   * 1. Sent as a "view" (see `extendAdminViews` below), which will be required
+   *    (so it's included in the bundle).
    * 2. Sent as a serialized JSON object (see `extendAdminMeta` below), which
    *    will be injected into the `window` and read back ready for use.
    * We then stitch those two halves back together within `views/Field.js`.
@@ -221,23 +201,10 @@ export class Content extends Relationship {
     return {
       ...meta,
 
-      // These are the blocks which have been directly passed in to the Content
-      // field (ie; it doesn't include dependencies unless they too were passed
-      // in)
-      blockTypes: this.blocks.map(block => (Array.isArray(block) ? block[0] : block).type),
+      blockTypes: this.blocks.map(({ type }) => type),
 
       blockOptions: this.blocks
-        // Normalise the input config so everything is an array
-        .map(block => (Array.isArray(block) ? [block[0], block[1]] : [block, {}]))
-        // Give complex blocks the opportunity to set default values
-        .map(([block, blockConfig]) => {
-          const complexBlockInstance = this.complexBlocks.find(({ type }) => type === block.type);
-
-          return [
-            block,
-            complexBlockInstance ? complexBlockInstance.extendAdminMeta(blockConfig) : blockConfig,
-          ];
-        })
+        .map(block => [block, block.getViewOptions()])
         // Don't bother sending any configs that are empty
         .filter(([, blockConfig]) => blockConfig && Object.keys(blockConfig).length)
         // Key the block options by type to be serialised and passed to the
@@ -254,12 +221,10 @@ export class Content extends Relationship {
 
   // Add the blocks config to the views object for usage in the admin UI
   // (ie; { Cell: , Field: , Filters: , blocks: ...})
-  extendViews(views) {
+  extendAdminViews(views) {
     return {
       ...views,
-      blocks: unique(
-        flatMap(this.blocks, block => flattenBlockViews(Array.isArray(block) ? block[0] : block))
-      ),
+      blocks: unique(flatMap(this.blocks, block => block.getAdminViews())),
     };
   }
 
