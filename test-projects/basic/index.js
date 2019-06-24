@@ -143,6 +143,9 @@ keystone.createList('Post', {
           ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
           : []),
         ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
+        ...(unsplash.accessKey
+          ? [[Unsplash.blocks.unsplashImage, { attribution: 'vocal.media', ...unsplash }]]
+          : []),
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
