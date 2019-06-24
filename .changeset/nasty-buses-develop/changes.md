@@ -1,0 +1,1 @@
+Add `searchUnsplash` GraphQL query when using the `Unsplash` field type

@@ -81,6 +81,22 @@ type Post {
   heroImage: UnsplashImage
 }
 
+type UnsplashSearchResults {
+  total: Int
+  totalPages: Int
+  results: [UnsplashImage]
+}
+
+enum UnsplashOrientation {
+  landscape
+  portrait
+  squarish
+}
+
+type Query {
+  searchUnsplash(query: String!, page: Int, perPage: Int, orientation: UnsplashOrientation, collections: [String]): UnsplashSearchResults
+}
+
 type Mutation {
   createPost(data: PostCreateInput): Post
 }
