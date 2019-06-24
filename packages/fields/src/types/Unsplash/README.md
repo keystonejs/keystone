@@ -101,12 +101,12 @@ mutation {
       publicUrl
       publicUrlTransformed(transformation: { w: "100" })
       user {
-        unsplashId: String
-        username: String
-        name: String
-        portfolioUrl: String
-        bio: String
-        location: String
+        unsplashId
+        username
+        name
+        portfolioUrl
+        bio
+        location
       }
     }
   }
@@ -127,8 +127,8 @@ Will result in something like:
         color: "#101206",
         description: null,
         publicUrl: "https://images.unsplash.com/photo-1469827160215-9d29e96e72f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjc3Nzg0fQ",
-        publicUrlTransformed(transformation: { w: "100" }): "https://images.unsplash.com/photo-1469827160215-9d29e96e72f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjc3Nzg0fQ&w=100",
-        user {
+        publicUrlTransformed: "https://images.unsplash.com/photo-1469827160215-9d29e96e72f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjc3Nzg0fQ&w=100",
+        user: {
           unsplashId: "bjJC-_rgjhg",
           username: "jeffkingla",
           name: "Jeff King",
