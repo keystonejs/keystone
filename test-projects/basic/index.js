@@ -15,6 +15,7 @@ const {
   Content,
   Decimal,
   OEmbed,
+  Unsplash,
 } = require('@keystone-alpha/fields');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
@@ -22,7 +23,7 @@ const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { StaticApp } = require('@keystone-alpha/app-static');
 const { graphql } = require('graphql');
 
-const { staticRoute, staticPath, cloudinary, iframely } = require('./config');
+const { staticRoute, staticPath, cloudinary, iframely, unsplash } = require('./config');
 const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
@@ -98,8 +99,9 @@ keystone.createList('User', {
     attachment: { type: File, adapter: fileAdapter },
     color: { type: Color },
     website: { type: Url },
-    ...(embedAdapter ? { profile: { type: OEmbed, adapter: embedAdapter } } : {}),
-    ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
+    ...(embedAdapter && { profile: { type: OEmbed, adapter: embedAdapter } }),
+    ...(cloudinaryAdapter && { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }),
+    ...(unsplash.accessKey && { favouriteImage: { type: Unsplash, ...unsplash } }),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
   hooks: {

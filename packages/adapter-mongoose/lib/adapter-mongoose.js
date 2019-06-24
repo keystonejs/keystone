@@ -333,11 +333,12 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  equalityConditionsInsensitive(dbPath) {
-    const f = escapeRegExp;
+  equalityConditionsInsensitive(dbPath, f = identity) {
     return {
-      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${f(value)}$`, 'i') }),
-      [`${this.path}_not_i`]: value => ({ [dbPath]: { $not: new RegExp(`^${f(value)}$`, 'i') } }),
+      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${escapeRegExp(f(value))}$`, 'i') }),
+      [`${this.path}_not_i`]: value => ({
+        [dbPath]: { $not: new RegExp(`^${escapeRegExp(f(value))}$`, 'i') },
+      }),
     };
   }
 
@@ -357,17 +358,26 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  stringConditions(dbPath) {
-    const f = escapeRegExp;
+  stringConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_contains`]: value => ({ [dbPath]: { $regex: new RegExp(f(value)) } }),
-      [`${this.path}_not_contains`]: value => ({ [dbPath]: { $not: new RegExp(f(value)) } }),
-      [`${this.path}_starts_with`]: value => ({ [dbPath]: { $regex: new RegExp(`^${f(value)}`) } }),
-      [`${this.path}_not_starts_with`]: value => ({
-        [dbPath]: { $not: new RegExp(`^${f(value)}`) },
+      [`${this.path}_contains`]: value => ({
+        [dbPath]: { $regex: new RegExp(escapeRegExp(f(value))) },
       }),
-      [`${this.path}_ends_with`]: value => ({ [dbPath]: { $regex: new RegExp(`${f(value)}$`) } }),
-      [`${this.path}_not_ends_with`]: value => ({ [dbPath]: { $not: new RegExp(`${f(value)}$`) } }),
+      [`${this.path}_not_contains`]: value => ({
+        [dbPath]: { $not: new RegExp(escapeRegExp(f(value))) },
+      }),
+      [`${this.path}_starts_with`]: value => ({
+        [dbPath]: { $regex: new RegExp(`^${escapeRegExp(f(value))}`) },
+      }),
+      [`${this.path}_not_starts_with`]: value => ({
+        [dbPath]: { $not: new RegExp(`^${escapeRegExp(f(value))}`) },
+      }),
+      [`${this.path}_ends_with`]: value => ({
+        [dbPath]: { $regex: new RegExp(`${escapeRegExp(f(value))}$`) },
+      }),
+      [`${this.path}_not_ends_with`]: value => ({
+        [dbPath]: { $not: new RegExp(`${escapeRegExp(f(value))}$`) },
+      }),
     };
   }
 

@@ -15,3 +15,4 @@ export { default as Color } from './types/Color';
 export { default as Url } from './types/Url';
 export { default as Content } from './types/Content';
 export { default as OEmbed } from './types/OEmbed';
+export { default as Unsplash } from './types/Unsplash';
