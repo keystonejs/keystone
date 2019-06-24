@@ -14,3 +14,8 @@ exports.cloudinary = {
 exports.iframely = {
   apiKey: process.env.IFRAMELY_API_KEY,
 };
+
+exports.unsplash = {
+  accessKey: process.env.UNSPLASH_ACCESS_KEY,
+  secretKey: process.env.UNSPLASH_SECRET_KEY,
+};
