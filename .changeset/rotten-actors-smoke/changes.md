@@ -1,0 +1,1 @@
+Gather views from fields via the renamed method `#extendAdminViews()` (was `#extendViews()`)

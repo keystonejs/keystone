@@ -1,0 +1,4 @@
+{
+  "releases": [{ "name": "@keystone-alpha/field-views-loader", "type": "minor" }],
+  "dependents": []
+}
