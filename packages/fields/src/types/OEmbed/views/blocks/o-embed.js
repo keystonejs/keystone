@@ -2,7 +2,6 @@
 import { jsx } from '@emotion/core';
 import { Suspense, Fragment, useState, createContext, useContext } from 'react';
 import { Button } from '@arch-ui/button';
-import { readViews } from './FIELD_TYPES';
 import PreviewPlaceholder from '../preview';
 import pluralize from 'pluralize';
 
@@ -21,7 +20,7 @@ const Embed = ({ url, oembedData }) => {
 
   if (options.previewComponent) {
     // The adapter should implement this option
-    const [Preview] = readViews([options.previewComponent]);
+    const [Preview] = options.adminMeta.readViews([options.previewComponent]);
     return <Preview url={url} options={options} />;
   } else {
     // This is a fallback so we can at least try to render _something_

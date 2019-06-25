@@ -56,7 +56,10 @@ export default class ContentController extends TextController {
 
       const customBlocks = blocksModules.map(block => ({
         ...block,
-        options: this.config.blockOptions[block.type],
+        options: {
+          ...this.config.blockOptions[block.type],
+          adminMeta: this.adminMeta,
+        },
         // This block exists because it was passed into the Content field
         // directly.
         // Depdencies are not allowed to show UI chrome (toolbar/sidebar) unless
