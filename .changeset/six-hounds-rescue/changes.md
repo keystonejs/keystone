@@ -1,0 +1,1 @@
+Ensure Post's label can be correctly rendered when associated user has no name.

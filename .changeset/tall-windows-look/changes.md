@@ -1,0 +1,1 @@
+Ensure knex database is correctly dropped for each test run.
