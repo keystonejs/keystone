@@ -1,5 +1,10 @@
 # @arch-ui/day-picker
 
+## 0.0.9
+
+- Updated dependencies [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
+  - @arch-ui/input@0.0.8
+
 ## 0.0.8
 
 - Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):

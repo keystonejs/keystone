@@ -1,1 +1,0 @@
-Expose the incoming Request object as `context.req` enabling things like logging IPs in custom hooks, etc.
