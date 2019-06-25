@@ -1,0 +1,1 @@
+When rendered as a <textarea>, the <Input> component is no longer limited to 100px height. `height` is replaced with `min-height`.

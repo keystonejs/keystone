@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/oembed-adapters",
   "description": "Adapters for fetching oEmbed data for the OEmbed field type",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/keystonejs/keystone-5.git",
   "author": "The Keystone Development Team",

@@ -1,18 +1,5 @@
 # @keystone-alpha/test-utils
 
-## 2.0.5
-
-### Patch Changes
-
-- [130ccb3c](https://github.com/keystonejs/keystone-5/commit/130ccb3c):
-
-  Ensure knex database is correctly dropped for each test run.
-
-* Updated dependencies [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
-  - @keystone-alpha/adapter-knex@1.1.0
-  - @keystone-alpha/adapter-mongoose@2.2.0
-  - @keystone-alpha/keystone@7.0.0
-
 ## 2.0.4
 
 ### Patch Changes

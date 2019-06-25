@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/demo-project-todo",
   "description": "An example KeystoneJS project showcasing a simple Todo List.",
   "private": true,
-  "version": "1.1.2",
+  "version": "1.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,11 +14,11 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^2.2.0",
-    "@keystone-alpha/app-admin-ui": "^5.0.1",
-    "@keystone-alpha/app-graphql": "^6.2.0",
-    "@keystone-alpha/fields": "^7.1.0",
-    "@keystone-alpha/keystone": "^7.0.0",
+    "@keystone-alpha/adapter-mongoose": "^2.1.0",
+    "@keystone-alpha/app-admin-ui": "^5.0.0",
+    "@keystone-alpha/app-graphql": "^6.1.0",
+    "@keystone-alpha/fields": "^7.0.0",
+    "@keystone-alpha/keystone": "^6.0.0",
     "@keystone-alpha/app-static": "^1.0.2",
     "cross-env": "^5.2.0"
   }

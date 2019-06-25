@@ -1,29 +1,5 @@
 # @keystone-alpha/fields
 
-## 7.1.0
-
-### Minor Changes
-
-- [bd2c9f9b](https://github.com/keystonejs/keystone-5/commit/bd2c9f9b):
-
-  Add oEmbed Content Block with adapter-specific renderers.
-
-- [ac41c256](https://github.com/keystonejs/keystone-5/commit/ac41c256):
-
-  Add an Unsplash Image type which fetches data from the Unsplash API
-
-- [06afb54f](https://github.com/keystonejs/keystone-5/commit/06afb54f):
-
-  Add an Unsplash Image Block for the Content field which takes an Unsplash Image ID and displays the image within the Content field.
-
-* Updated dependencies [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
-* Updated dependencies [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
-  - @arch-ui/fields@2.0.0
-  - @arch-ui/controls@0.0.8
-  - @arch-ui/day-picker@0.0.9
-  - @arch-ui/filters@0.0.9
-  - @arch-ui/input@0.0.8
-
 ## 7.0.1
 
 ### Patch Changes

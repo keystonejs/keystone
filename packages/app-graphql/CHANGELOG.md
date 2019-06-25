@@ -1,13 +1,5 @@
 # @keystone-alpha/app-graphql
 
-## 6.2.0
-
-### Minor Changes
-
-- [137274fa](https://github.com/keystonejs/keystone-5/commit/137274fa):
-
-  Expose the incoming Request object as `context.req` enabling things like logging IPs in custom hooks, etc.
-
 ## 6.1.0
 
 ### Minor Changes
