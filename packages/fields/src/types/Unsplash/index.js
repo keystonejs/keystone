@@ -1,5 +1,6 @@
 import { importView } from '@keystone-alpha/build-field-types';
 import { Unsplash, MongoUnsplashInterface, KnexUnsplashInterface } from './Implementation';
+import { UnsplashBlock } from './UnsplashBlock';
 
 export default {
   type: 'Unsplash',
@@ -12,5 +13,8 @@ export default {
   adapters: {
     mongoose: MongoUnsplashInterface,
     knex: KnexUnsplashInterface,
+  },
+  blocks: {
+    unsplashImage: UnsplashBlock,
   },
 };
