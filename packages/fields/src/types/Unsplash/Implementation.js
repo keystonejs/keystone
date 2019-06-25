@@ -32,7 +32,8 @@ function transformImageFromApiToKs5(image) {
     width: image.width,
     height: image.height,
     color: image.color,
-    description: image.description || image.alt_description,
+    description: image.description || null,
+    alt: image.alt_description || null,
     publicUrl: image.urls.raw,
     user: transformUserFromApiToKs5(image.user),
   };
@@ -119,7 +120,10 @@ export class Unsplash extends Implementation {
           width: Int
           height: Int
           color: String
+          # The author-supplied description of this photo
           description: String
+          # A description of the photo for use with screen readers
+          alt: String
           publicUrl: String
           publicUrlTransformed(transformation: UnsplashImageFormat): String
           user: UnsplashUser
