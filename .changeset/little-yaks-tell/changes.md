@@ -1,1 +1,0 @@
-Expose `options.adminMeta` to Content Blocks.

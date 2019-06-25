@@ -1,1 +1,0 @@
-Correctly send user to Admin UI after logging in (under some circumstances, it would just show the word "Error")

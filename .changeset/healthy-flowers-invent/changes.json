@@ -1,4 +1,0 @@
-{
-  "releases": [{ "name": "@keystone-alpha/cypress-project-basic", "type": "patch" }],
-  "dependents": []
-}

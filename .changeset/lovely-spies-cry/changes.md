@@ -1,1 +1,0 @@
-Correctly use `options.adminMeta.readViews()` to load OEmbed Block views.

@@ -1,5 +1,13 @@
 # @keystone-alpha/oembed-adapters
 
+## 1.1.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add oEmbed Content Block with adapter-specific renderers.
+
 ## 1.0.0
 
 ### Major Changes

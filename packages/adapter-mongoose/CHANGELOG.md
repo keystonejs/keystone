@@ -1,5 +1,16 @@
 # @keystone-alpha/adapter-mongoose
 
+## 2.2.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Allow transforming input types for `equalityConditionsInsensitive` & `stringConditions` methods on the MongooseAdapter.
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/keystone@7.0.0
+
 ## 2.1.0
 
 ### Minor Changes
