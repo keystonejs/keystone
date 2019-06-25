@@ -34,6 +34,15 @@ cd my-app
 yarn start
 ```
 
+or with npm:
+
+```sh
+npx create keystone-app my-app
+cd my-app
+npm start
+```
+
+
 Congratulations, you are now running your very own KeystoneJS application!
 To visit your running application (a simple todo list), visit
 
