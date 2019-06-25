@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/fields",
   "description": "KeystoneJS Field Types including Text, Password, DateTime, Integer, and more.",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "author": "The KeystoneJS Development Team",
@@ -13,14 +13,14 @@
     "@arch-ui/alert": "^0.0.6",
     "@arch-ui/button": "^0.0.8",
     "@arch-ui/color-utils": "^0.0.1",
-    "@arch-ui/controls": "^0.0.7",
-    "@arch-ui/day-picker": "^0.0.8",
+    "@arch-ui/controls": "^0.0.8",
+    "@arch-ui/day-picker": "^0.0.9",
     "@arch-ui/drawer": "^0.0.8",
-    "@arch-ui/fields": "^1.0.0",
-    "@arch-ui/filters": "^0.0.8",
+    "@arch-ui/fields": "^2.0.0",
+    "@arch-ui/filters": "^0.0.9",
     "@arch-ui/hooks": "^0.0.4",
     "@arch-ui/icons": "^0.0.5",
-    "@arch-ui/input": "^0.0.7",
+    "@arch-ui/input": "^0.0.8",
     "@arch-ui/layout": "^0.2.3",
     "@arch-ui/loading": "^0.0.7",
     "@arch-ui/lozenge": "^0.0.6",
@@ -33,8 +33,8 @@
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
     "@keystone-alpha/access-control": "^1.0.5",
-    "@keystone-alpha/adapter-knex": "^1.0.9",
-    "@keystone-alpha/adapter-mongoose": "^2.1.0",
+    "@keystone-alpha/adapter-knex": "^1.1.0",
+    "@keystone-alpha/adapter-mongoose": "^2.2.0",
     "@keystone-alpha/build-field-types": "^1.0.3",
     "@keystone-alpha/utils": "^3.0.1",
     "apollo-errors": "^1.9.0",
@@ -78,7 +78,7 @@
     "unsplash-js": "^5.0.0"
   },
   "devDependencies": {
-    "@keystone-alpha/test-utils": "^2.0.4",
+    "@keystone-alpha/test-utils": "^2.0.5",
     "cuid": "^2.1.6"
   },
   "field-types": {

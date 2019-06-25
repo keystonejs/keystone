@@ -1,5 +1,39 @@
 # @keystone-alpha/fields
 
+## 7.1.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add oEmbed Content Block with adapter-specific renderers.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add an Unsplash Image type which fetches data from the Unsplash API
+
+- [8799190e](https://github.com/keystonejs/keystone-5/commit/8799190e):
+
+  Expose `options.adminMeta` to Content Blocks.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add an Unsplash Image Block for the Content field which takes an Unsplash Image ID and displays the image within the Content field.
+
+### Patch Changes
+
+- [8799190e](https://github.com/keystonejs/keystone-5/commit/8799190e):
+
+  Correctly use `options.adminMeta.readViews()` to load OEmbed Block views.
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @arch-ui/fields@2.0.0
+  - @arch-ui/controls@0.0.8
+  - @arch-ui/day-picker@0.0.9
+  - @arch-ui/filters@0.0.9
+  - @arch-ui/input@0.0.8
+
 ## 7.0.1
 
 ### Patch Changes

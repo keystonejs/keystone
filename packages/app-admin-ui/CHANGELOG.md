@@ -1,5 +1,24 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.0.1
+
+### Patch Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Correctly send user to Admin UI after logging in (under some circumstances, it would just show the word "Error")
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Correctly sign the user out when clicking the icon in the Admin UI
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/fields@7.1.0
+  - @arch-ui/fields@2.0.0
+  - @arch-ui/controls@0.0.8
+  - @arch-ui/input@0.0.8
+
 ## 5.0.0
 
 ### Major Changes

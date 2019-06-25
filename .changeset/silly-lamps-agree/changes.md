@@ -1,1 +1,0 @@
-Correctly sign the user out when clicking the icon in the Admin UI

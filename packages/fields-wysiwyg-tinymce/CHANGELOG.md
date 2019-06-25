@@ -1,5 +1,13 @@
 # @keystone-alpha/fields-wysiwyg-tinymce
 
+## 3.0.2
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/fields@7.1.0
+  - @arch-ui/fields@2.0.0
+  - @arch-ui/input@0.0.8
+
 ## 3.0.1
 
 ### Patch Changes

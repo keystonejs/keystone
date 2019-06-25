@@ -1,5 +1,10 @@
 # @arch-ui/filters
 
+## 0.0.9
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @arch-ui/controls@0.0.8
+
 ## 0.0.8
 
 - Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
