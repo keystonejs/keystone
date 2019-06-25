@@ -170,7 +170,7 @@ keystone.createList('Post', {
       `;
       const variables = { authorId: item.author.toString() };
       const { data } = await graphql(schema, query, null, context, variables);
-      return `${item.name} (by ${data.User.name})`;
+      return `${item.name}${data.User && `(by ${data.User.name})`}`;
     } else {
       return item.name;
     }
