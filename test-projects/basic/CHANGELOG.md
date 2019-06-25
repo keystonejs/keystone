@@ -1,5 +1,39 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.0
+
+### Minor Changes
+
+- [06afb54f](https://github.com/keystonejs/keystone-5/commit/06afb54f):
+
+  Showcase the Unsplash Content Block in the Basic Test Project.
+
+- [ac41c256](https://github.com/keystonejs/keystone-5/commit/ac41c256):
+
+  Showcase usage of Unsplash Image field on Basic Test Project.
+
+- [bd2c9f9b](https://github.com/keystonejs/keystone-5/commit/bd2c9f9b):
+
+  Add oEmbed Content Block with adapter-specific renderers.
+
+### Patch Changes
+
+- [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
+
+  Remove the deleted `embed` block from the test project
+
+- [130ccb3c](https://github.com/keystonejs/keystone-5/commit/130ccb3c):
+
+  Ensure Post's label can be correctly rendered when associated user has no name.
+
+* Updated dependencies [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
+* Updated dependencies [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
+  - @keystone-alpha/app-admin-ui@5.0.1
+  - @keystone-alpha/fields@7.1.0
+  - @arch-ui/fields@2.0.0
+  - @keystone-alpha/adapter-mongoose@2.2.0
+  - @keystone-alpha/keystone@7.0.0
+
 ## 1.2.0
 
 ### Minor Changes

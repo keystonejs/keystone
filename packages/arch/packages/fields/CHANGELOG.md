@@ -1,5 +1,21 @@
 # @arch-ui/fields
 
+## 2.0.0
+
+### Major Changes
+
+- [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
+
+  - **Blocks**
+    - Blocks must now be classes, which implement the `Block` interface.
+    - `type` is no longer passed to a Block's constructor (it is expected to know it already).
+    - Remove the `embed` block
+    - `Block#dependencies` is removed; any depended upon views should be returned from `Block#getAdminViews()`.
+    - `Block#extendAdminMeta()` is renamed to `Block#getViewOptions()`.
+    - Add new `Block#getAdminViews()` method.
+  - **Field Types**
+    - `Field#extendViews()` is renamed to `Field#extendAdminViews()`.
+
 ## 1.0.0
 
 ### Major Changes

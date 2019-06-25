@@ -1,5 +1,19 @@
 # @keystone-alpha/keystone
 
+## 7.0.0
+
+### Major Changes
+
+- [23d94bb6](https://github.com/keystonejs/keystone-5/commit/23d94bb6):
+
+  Gather views from fields via the renamed method `#extendAdminViews()` (was `#extendViews()`)
+
+### Patch Changes
+
+- [25607913](https://github.com/keystonejs/keystone-5/commit/25607913):
+
+  Correctly read `--connect-to` option on the CLI
+
 ## 6.0.0
 
 ### Major Changes

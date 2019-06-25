@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,11 +18,11 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/login/.env file.\nSee test-projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^2.1.0",
-    "@keystone-alpha/app-admin-ui": "^5.0.0",
-    "@keystone-alpha/app-graphql": "^6.1.0",
-    "@keystone-alpha/fields": "^7.0.0",
-    "@keystone-alpha/keystone": "^6.0.0",
+    "@keystone-alpha/adapter-mongoose": "^2.2.0",
+    "@keystone-alpha/app-admin-ui": "^5.0.1",
+    "@keystone-alpha/app-graphql": "^6.2.0",
+    "@keystone-alpha/fields": "^7.1.0",
+    "@keystone-alpha/keystone": "^7.0.0",
     "@keystone-alpha/app-static": "^1.0.2",
     "@keystone-alpha/session": "^2.0.0",
     "body-parser": "^1.18.2",

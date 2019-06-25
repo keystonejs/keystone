@@ -1,1 +1,0 @@
-Move Knex Database Dropping from _always_ to _with config `dropDatabase: true`_.
