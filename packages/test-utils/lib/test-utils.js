@@ -10,9 +10,10 @@ const SCHEMA_NAME = 'testing';
 
 function setupServer({ name, adapterName, createLists = () => {} }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
+  const args = { mongoose: {}, knex: { dropDatabase: true } }[adapterName];
   const keystone = new Keystone({
     name,
-    adapter: new Adapter(),
+    adapter: new Adapter(args),
     defaultAccess: { list: true, field: true },
   });
 
@@ -39,10 +40,7 @@ async function getMongoMemoryServerConfig() {
   // Passing `true` here generates a new, random DB name for us
   const mongoUri = await mongoServer.getConnectionString(true);
   // In theory the dbName can contain query params so lets parse it then extract the db name
-  const dbName = url
-    .parse(mongoUri)
-    .pathname.split('/')
-    .pop();
+  const dbName = url.parse(mongoUri)``.pathname.split('/').pop();
 
   return { mongoUri, dbName };
 }
