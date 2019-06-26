@@ -272,7 +272,7 @@ module.exports = class List {
       if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
         throw `The type given for the '${
           this.key
-        }.${fieldKey}' field doesn't defined any adapters.`;
+        }.${fieldKey}' field doesn't define any adapters.`;
       }
     });
 
