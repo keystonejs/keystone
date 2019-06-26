@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/app-admin-ui",
   "description": "KeystoneJS Admin UI App.",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -26,7 +26,7 @@
     "@arch-ui/layout": "^0.2.3",
     "@arch-ui/loading": "^0.0.7",
     "@arch-ui/lozenge": "^0.0.6",
-    "@arch-ui/navbar": "^0.0.9",
+    "@arch-ui/navbar": "^0.1.0",
     "@arch-ui/options": "^0.0.7",
     "@arch-ui/pagination": "^0.0.8",
     "@arch-ui/pill": "^0.1.5",
