@@ -14,7 +14,7 @@ import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
 import { Card } from '@arch-ui/card';
 import DeleteItemModal from './DeleteItemModal';
-import { copyToClipboard } from '../util';
+import copyToClipboard from 'clipboard-copy';
 import { useListSort } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
 import { NoResults } from './NoResults';
