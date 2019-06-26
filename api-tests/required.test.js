@@ -16,9 +16,20 @@ describe('Test isRequired flag for all field types', () => {
     .readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
     .filter(filename => fs.existsSync(filename));
+
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {
-      testModules.map(require).forEach(mod => {
+      // Skip tests for field adapters that don't exist
+      const testModulesForAdapter = testModules.map(require).filter(mod => {
+        if (mod.name === 'ID') return true;
+        if (mod.type && mod.type.adapters.hasOwnProperty(adapterName)) return true;
+        console.log(
+          `Skipping isRequired test for ${mod.name}; no ${adapterName} field adapter supplied`
+        );
+        return false;
+      });
+
+      testModulesForAdapter.forEach(mod => {
         describe(`Test isRequired flag for module: ${mod.name}`, () => {
           const type = mod.type;
           const listName = 'Test';
@@ -75,15 +86,11 @@ describe('Test isRequired flag for all field types', () => {
             keystoneTestWrapper(({ keystone }) => {
               return graphqlRequest({
                 keystone,
-                query: `mutation { createTest(data: { name: "test entry", testField: ${
-                  mod.exampleValue
-                } } ) { id name } }`,
+                query: `mutation { createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id name } }`,
               }).then(({ data }) => {
                 return graphqlRequest({
                   keystone,
-                  query: `mutation { updateTest(id: "${
-                    data.createTest.id
-                  }" data: { name: "updated test entry", testField: null } ) { id name } }`,
+                  query: `mutation { updateTest(id: "${data.createTest.id}" data: { name: "updated test entry", testField: null } ) { id name } }`,
                 }).then(({ data, errors }) => {
                   expect(data.updateTest).toBe(null);
                   expect(errors).not.toBe(undefined);
@@ -99,15 +106,11 @@ describe('Test isRequired flag for all field types', () => {
             keystoneTestWrapper(({ keystone }) => {
               return graphqlRequest({
                 keystone,
-                query: `mutation { createTest(data: { name: "test entry", testField: ${
-                  mod.exampleValue
-                } } ) { id name } }`,
+                query: `mutation { createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id name } }`,
               }).then(({ data }) => {
                 return graphqlRequest({
                   keystone,
-                  query: `mutation { updateTest(id: "${
-                    data.createTest.id
-                  }" data: { name: "updated test entry" } ) { id name } }`,
+                  query: `mutation { updateTest(id: "${data.createTest.id}" data: { name: "updated test entry" } ) { id name } }`,
                 }).then(({ data, errors }) => {
                   expect(data.updateTest).not.toBe(null);
                   expect(errors).toBe(undefined);

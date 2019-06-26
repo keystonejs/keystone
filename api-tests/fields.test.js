@@ -9,15 +9,23 @@ jest.setTimeout(60000);
 
 describe('Test CRUD for all fields', () => {
   const typesLoc = path.resolve('packages/fields/src/types');
-  const testModules = fs
+  const testModulePaths = fs
     .readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
     .filter(filename => fs.existsSync(filename));
-  testModules.push(path.resolve('packages/fields/tests/idFilterTests.js'));
+  testModulePaths.push(path.resolve('packages/fields/tests/idFilterTests.js'));
 
-  multiAdapterRunners().map(({ runner, adapterName }) =>
+  multiAdapterRunners().map(({ runner, adapterName }) => {
+    // Skip tests for field adapters that don't exist
+    const testModulesForAdapter = testModulePaths.map(require).filter(mod => {
+      if (mod.name === 'ID') return true;
+      if (mod.type && mod.type.adapters.hasOwnProperty(adapterName)) return true;
+      console.log(`Skipping CRUD tests for ${mod.name}; no ${adapterName} field adapter supplied`);
+      return false;
+    });
+
     describe(`Adapter: ${adapterName}`, () => {
-      testModules.map(require).forEach(mod => {
+      testModulesForAdapter.forEach(mod => {
         describe(`All the CRUD tests for module: ${mod.name}`, () => {
           const listName = 'test';
           const keystoneTestWrapper = (testFn = () => {}) =>
@@ -43,6 +51,6 @@ describe('Test CRUD for all fields', () => {
           mod.filterTests(keystoneTestWrapper);
         });
       });
-    })
-  );
+    });
+  });
 });
