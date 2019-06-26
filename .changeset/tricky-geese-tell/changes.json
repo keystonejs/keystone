@@ -1,0 +1,11 @@
+{
+  "releases": [{ "name": "@arch-ui/navbar", "type": "minor" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/app-admin-ui",
+      "type": "patch",
+      "dependencies": ["@arch-ui/navbar"]
+    },
+    { "name": "@arch-ui/docs", "type": "patch", "dependencies": ["@arch-ui/navbar"] }
+  ]
+}

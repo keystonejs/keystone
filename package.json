@@ -9,6 +9,7 @@
     "dev": "yarn demo todo dev",
     "demo": "yarn --cwd ./demo-projects",
     "website": "yarn --cwd ./website",
+    "arch-docs": "yarn --cwd ./packages/arch/docs",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "cypress:run": "status=0; bolt w @keystone-alpha/cypress-project-basic run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-login run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-twitter-login run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-access-control run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-client-validation run cypress:run || status=$?; exit $status",
     "format:file": "prettier --write",
@@ -83,6 +84,7 @@
     "chalk": "^2.4.2",
     "chrono-node": "^1.3.5",
     "ci-info": "^2.0.0",
+    "clipboard-copy": "^3.0.0",
     "cloudinary": "^1.13.2",
     "codecov": "^3.1.0",
     "compression": "^1.7.4",
@@ -286,6 +288,7 @@
     "workspaces": [
       "packages/*",
       "!packages/arch",
+      "packages/arch/docs",
       "packages/arch/packages/*",
       "demo-projects/*",
       "test-projects/*",
