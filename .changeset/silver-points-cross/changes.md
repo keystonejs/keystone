@@ -1,1 +1,0 @@
-Replace custom copy to clipboard utility with the clipboard-copy package
