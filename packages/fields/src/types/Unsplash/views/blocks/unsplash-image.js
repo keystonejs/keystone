@@ -2,6 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment, useState, useCallback, createContext, useContext } from 'react';
 import pluralize from 'pluralize';
+import { Input } from '@arch-ui/input';
 
 export let type = 'unsplashImage';
 
@@ -53,15 +54,15 @@ const UnsplashImage = ({
       css={[
         {
           flex: 'auto',
-          height: '250px',
-          minWidth: '150px',
-          margin: '0 10px 10px 0',
+          height: '200px',
+          minWidth: '160px',
+          margin: '0 4px 4px 0',
           position: 'relative',
-          borderRadius: '5px',
+          borderRadius: '4px',
           cursor: 'pointer',
           overflow: 'hidden',
         },
-        width <= height ? { width: '300px' } : { width: '100px' },
+        width <= height ? { width: '320px' } : { width: '80px' },
       ]}
       id={unsplashId}
       onClick={onClick}
@@ -87,11 +88,9 @@ const UnsplashImage = ({
             'linear-gradient(180deg,rgba(0,0,0,.2) 0,transparent 40%,transparent 60%,rgba(0,0,0,.3))',
           zIndex: 1,
           opacity: 0,
-          border: '4px solid transparent',
-          transition: 'opacity 0.3s ease-in-out',
+          transition: 'opacity 0.2s ease-in-out',
           '&:hover': {
             opacity: 1,
-            border: '4px solid black',
           },
         }}
       >
@@ -100,7 +99,7 @@ const UnsplashImage = ({
             position: 'absolute',
             bottom: 0,
             left: 0,
-            margin: 10,
+            margin: 8,
             fontSize: 14,
             fonWeight: 'bold',
             color: 'white',
@@ -110,100 +109,70 @@ const UnsplashImage = ({
           <a css={linkStyles} href={userUrl} target="_blank" rel="noopener noreferrer">
             {user.name}
           </a>{' '}
-          on{' '}
-          <a css={linkStyles} href={unsplashUrl} target="_blank" rel="noopener noreferrer">
-            Unsplash
-          </a>
         </p>
       </div>
     </figure>
   );
 };
 
-const Search = () => {
+const Search = ({ onSelect }) => {
   const options = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState({
-    total: 954,
-    totalPages: 96,
-    results: [
-      {
-        id: 'abc',
-        unsplashId: 'def',
-        publicUrl: 'https://via.placeholder.com/400',
-        width: 1000 + Math.random() * 100,
-        height: 1000 + Math.random() * 100,
-        alt: 'an image',
-        user: {
-          name: 'Jess',
-          url: 'http://example.com',
-        },
-      },
-      {
-        id: 'abc',
-        unsplashId: 'def',
-        publicUrl: 'https://via.placeholder.com/400',
-        width: 1000 + Math.random() * 100,
-        height: 1000 + Math.random() * 100,
-        alt: 'an image',
-        user: {
-          name: 'Jess',
-          url: 'http://example.com',
-        },
-      },
-      {
-        id: 'abc',
-        unsplashId: 'def',
-        publicUrl: 'https://via.placeholder.com/400',
-        width: 1000 + Math.random() * 100,
-        height: 1000 + Math.random() * 100,
-        alt: 'an image',
-        user: {
-          name: 'Jess',
-          url: 'http://example.com',
-        },
-      },
-      {
-        id: 'abc',
-        unsplashId: 'def',
-        publicUrl: 'https://via.placeholder.com/400',
-        width: 1000 + Math.random() * 100,
-        height: 1000 + Math.random() * 100,
-        alt: 'an image',
-        user: {
-          name: 'Jess',
-          url: 'http://example.com',
-        },
-      },
-      {
-        id: 'abc',
-        unsplashId: 'def',
-        publicUrl: 'https://via.placeholder.com/400',
-        width: 1000 + Math.random() * 100,
-        height: 1000 + Math.random() * 100,
-        alt: 'an image',
-        user: {
-          name: 'Jess',
-          url: 'http://example.com',
-        },
-      },
-    ],
-  });
+  const [searchResults, setSearchResults] = useState();
 
-  const showPrevious = useCallback(() => setSearchPage(Math.max(1, searchPage - 1)), [
-    searchPage,
-    setSearchPage,
-  ]);
+  const showPrevious = useCallback(
+    () => {
+      const newPage = Math.max(1, searchPage - 1);
+      setSearchPage(newPage);
+      getUnsplashImages(searchTerm, newPage);
+    },
+    [searchPage, setSearchPage, searchTerm]
+  );
 
   const showNext = useCallback(
-    () =>
-      setSearchPage(
-        Math.min((searchResults && searchResults.totalPages) || Infinity, searchPage + 1)
-      ),
-    [searchPage, setSearchPage]
+    () => {
+      const newPage = Math.min((searchResults && searchResults.totalPages) || Infinity, searchPage + 1);
+      setSearchPage(newPage);
+      getUnsplashImages(searchTerm, newPage);
+    },
+    [searchPage, setSearchPage, searchTerm]
   );
+
+  const getUnsplashImages = (query, page) => {
+    fetch('/admin/api', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        variables: { query, page },
+        query: `query searchImages($query: String!, $page: Int) {
+          searchUnsplash(query: $query, perPage: 5, page: $page) {
+            total
+            totalPages
+            results {
+              id
+              unsplashId
+              publicUrl: publicUrlTransformed(transformation: { w: "400"})
+              width
+              height
+              alt
+              user {
+                name
+                url
+              }
+            }
+          }
+        }`,
+      }),
+    })
+      .then(x => x.json())
+      .then(results => {
+        setSearchResults(results.data.searchUnsplash);
+      });
+  };
 
   const onChange = useCallback(
     event => {
@@ -211,28 +180,7 @@ const Search = () => {
       event.stopPropagation();
       setSearchTerm(event.target.value);
       if (event.target.value.length > 3) {
-        console.log('call API: ', event.target.value);
-        /*
-         *
-query searchImages {
-  searchUnsplash(query: "computer") {
-    total
-    totalPages
-    results {
-      id
-      unsplashId
-      publicUrl: publicUrlTransformed(transformation: { w: "400"})
-      width
-      height
-      alt
-      user {
-        name
-        url
-      }
-    }
-  }
-}
-        */
+        getUnsplashImages(event.target.value, 1);
       }
     },
     [searchTerm, setSearchTerm]
@@ -241,50 +189,26 @@ query searchImages {
   const unsplashUrl = attributeUrl('https://unsplash.com', options.attribution);
 
   return (
-    <Fragment>
-      <label htmlFor="unsplash-block-search-input">
-        Type a keyword to search images on Unsplash
-      </label>
-      <input
+    <div
+      css={{
+        backgroundColor: '#f2f3f3',
+        borderRadius: '8px',
+        padding: '12px',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+      }}
+    >
+      <Input
+        autoFocus
         type="text"
         id="unsplash-block-search-input"
+        placeholder="Search for an image..."
         value={searchTerm}
         onChange={onChange}
         onClick={e => {
           e.stopPropagation();
         }}
-        css={{
-          flex: 10,
-          display: 'inline',
-          border: 'none',
-          backgroundColor: '#f6f6f6',
-          padding: 15,
-          fontSize: 18,
-          outline: 'none',
-          border: '3px solid #f6f6f6',
-          '&:focus': {
-            borderColor: '#bfbfbf',
-          },
-          borderRadius: '1000px',
-        }}
       />
-      {!searchResults && !loading && (
-        <div
-          css={{
-            display: 'flex',
-            flexFlow: 'column wrap',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            padding: '40px 0',
-            color: 'darkgray',
-            border: '2px dashed #E4E4E4',
-          }}
-        >
-          <p>Images will appear here when you hit Enter</p>
-        </div>
-      )}
-      <div css={{ position: 'relative' }}>
+      <div>
         {searchResults && searchResults.results.length ? (
           <Fragment>
             <div
@@ -292,17 +216,45 @@ query searchImages {
                 display: 'flex',
                 flexFlow: 'colunm nowrap',
                 justifyContent: 'space-between',
-                padding: '20px 0',
+                paddingTop: '16px',
+                paddingBottom: '16px',
                 width: '100%',
-                fontSize: 'smaller',
-                color: 'darkgray',
+                fontSize: '0.85rem',
               }}
             >
-              <span>{searchPage > 1 && <a onClick={showPrevious}>Previous</a>}</span>
-              <span css={{ width: '100%', textAlign: 'center' }}>
+              <span css={{ flex: 1 }}>
+                <a
+                  css={{
+                    color: searchPage > 1 ? null : '#ccc',
+                    cursor: searchPage > 1 ? 'pointer' : 'default',
+                    textDecoration: 'none',
+                    '&:hover': {
+                      textDecoration: searchPage > 1 ? 'underline' : 'none',
+                    },
+                  }}
+                  onClick={showPrevious}
+                >
+                  Previous
+                </a>
+              </span>
+              <span css={{ flex: 6, textAlign: 'center', color: '#999' }}>
                 {searchResults.total} results
               </span>
-              <span>{searchPage < searchResults.totalPages && <a onClick={showNext}>Next</a>}</span>
+              <span css={{ flex: 1, textAlign: 'right' }}>
+                <a
+                  css={{
+                    color: searchPage < searchResults.totalPages ? null : '#ccc',
+                    cursor: searchPage < searchResults.totalPages ? 'pointer' : 'default',
+                    textDecoration: 'none',
+                    '&:hover': {
+                      textDecoration: searchPage < searchResults.totalPages ? 'underline' : 'none',
+                    },
+                  }}
+                  onClick={showNext}
+                >
+                  Next
+                </a>
+              </span>
             </div>
             <div
               css={{
@@ -311,7 +263,7 @@ query searchImages {
                 display: 'flex',
                 flexFlow: 'row wrap',
                 justifyContent: 'space-evenly',
-                width: 'calc(100% + 10px)',
+                width: 'calc(100% + 4px)',
               }}
             >
               {searchResults.results.map(image => (
@@ -319,12 +271,16 @@ query searchImages {
                   key={image.unsplashId}
                   {...image}
                   unsplashUrl={unsplashUrl}
-                  onClick={() => console.log('image clicked:', image.unsplashId)}
+                  onClick={() => onSelect(image)}
                 />
               ))}
             </div>
           </Fragment>
-        ) : null}
+        ) : (
+          <div css={{ padding: '32px', textAlign: 'center', fontSize: '1rem', color: '#cdcdcd' }}>
+            Start typing to search for an image on Unsplash
+          </div>
+        )}
         {loading && (
           <div
             css={
@@ -347,11 +303,11 @@ query searchImages {
           </div>
         )}
       </div>
-    </Fragment>
+    </div>
   );
 };
 
-let Block = ({ unsplashId, unsplashData, onChange, onRemove }) => {
+let Block = ({ unsplashData, onSelect }) => {
   let options = useContext(Context);
 
   let unsplash = null;
@@ -363,19 +319,36 @@ let Block = ({ unsplashId, unsplashData, onChange, onRemove }) => {
     const userUrl = attributeUrl(user.url, options.attribution);
     const unsplashUrl = attributeUrl('https://unsplash.com', options.attribution);
 
+    const captionLinkStyle = {
+      color: 'inherit',
+      textDecoration: 'underline',
+      '&:hover': {
+        textDecoration: 'none',
+      },
+    };
+
     unsplash = (
       <div>
-        <img css={{ maxWidth: '100%' }} src={imgUrl} alt={alt} />
-        <em>
-          Photo by <a href={userUrl}>{user.name}</a> on <a href={unsplashUrl}>Unsplash</a>
-        </em>
+        <div>
+          <img css={{ maxWidth: '100%' }} src={imgUrl} alt={alt} />
+        </div>
+        <div css={{ fontSize: '0.75rem', marginTop: '8px', color: '#999' }}>
+          Photo by{' '}
+          <a href={userUrl} target="_blank" css={captionLinkStyle}>
+            {user.name}
+          </a>{' '}
+          on{' '}
+          <a href={unsplashUrl} target="_blank" css={captionLinkStyle}>
+            Unsplash
+          </a>
+        </div>
       </div>
     );
   }
 
   return (
     <Fragment>
-      <Search />
+      {!unsplashData && <Search onSelect={onSelect} />}
       {unsplash}
     </Fragment>
   );
@@ -397,14 +370,13 @@ export function Sidebar({ editor }) {
 export function Node({ node, editor }) {
   return (
     <Block
-      unsplashId={node.data.get('unsplashId')}
       unsplashData={node.data.get('unsplashData')}
       onRemove={() => {
         editor.removeNodeByKey(node.key);
       }}
-      onChange={unsplashId => {
+      onSelect={unsplashData => {
         editor.setNodeByKey(node.key, {
-          data: node.data.set('unsplashId', unsplashId),
+          data: node.data.set('unsplashData', unsplashData),
         });
       }}
     />
@@ -416,12 +388,12 @@ export let schema = {
 };
 
 export function serialize({ node }) {
-  const unsplashId = node.data.get('unsplashId');
+  const unsplashData = node.data.get('unsplashData');
 
   return {
     mutations: {
       create: {
-        image: unsplashId,
+        image: unsplashData.unsplashId,
       },
     },
     node: {
@@ -439,8 +411,5 @@ export function deserialize({ node, joins }) {
   }
 
   // Inject the original url back into the block
-  return node.set(
-    'data',
-    node.data.set('unsplashId', joins[0].image.unsplashId).set('unsplashData', joins[0].image)
-  );
+  return node.set('data', node.data.set('unsplashData', joins[0].image));
 }
