@@ -4,7 +4,7 @@
 import { Fragment } from 'react';
 import { jsx } from '@emotion/core';
 
-import { TerminalIcon, TelescopeIcon, MarkGithubIcon, SignOutIcon } from '@arch-ui/icons';
+import { TerminalIcon, MarkGithubIcon, SignOutIcon } from '@arch-ui/icons';
 import { PrimaryNavItem, NavGroupIcons } from '@arch-ui/navbar';
 import { A11yText } from '@arch-ui/typography';
 import { useAdminMeta } from '../../providers/AdminMeta';
@@ -12,7 +12,7 @@ import { useAdminMeta } from '../../providers/AdminMeta';
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 export function NavIcons() {
-  let { adminPath, graphiqlPath, signoutPath, authStrategy } = useAdminMeta();
+  let { graphiqlPath, signoutPath, authStrategy } = useAdminMeta();
   return ENABLE_DEV_FEATURES || authStrategy ? (
     <NavGroupIcons>
       {authStrategy ? (
@@ -30,10 +30,6 @@ export function NavIcons() {
           <PrimaryNavItem target="_blank" href={graphiqlPath} title="Graphiql Console">
             <TerminalIcon />
             <A11yText>Graphiql Console</A11yText>
-          </PrimaryNavItem>
-          <PrimaryNavItem to={`${adminPath}/style-guide`} title="Style Guide">
-            <TelescopeIcon />
-            <A11yText>Style Guide</A11yText>
           </PrimaryNavItem>
         </Fragment>
       ) : null}

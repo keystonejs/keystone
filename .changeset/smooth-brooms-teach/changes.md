@@ -1,0 +1,1 @@
+Remove Admin UI style guide. The style guide is now in the keystone-5 repo at packages/arch/docs
