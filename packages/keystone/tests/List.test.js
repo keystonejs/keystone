@@ -67,6 +67,7 @@ class MockAdapter {
 
 class MockPasswordAuthStrategy {
   getInputFragment = () => 'password: String';
+  validate = () => {};
 }
 
 Text.adapters['mock'] = {};

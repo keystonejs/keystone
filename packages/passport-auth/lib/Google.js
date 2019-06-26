@@ -8,8 +8,6 @@ class GoogleAuthStrategy extends PassportAuthStrategy {
       keystone,
       listKey,
       {
-        sessionIdField: 'googleSession',
-        keystoneSessionIdField: 'keystoneGoogleSessionId',
         scope: ['openid profile', 'openid email'],
         ...config,
       },

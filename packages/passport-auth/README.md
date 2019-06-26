@@ -5,251 +5,296 @@ title: Passport Auth Strategy
 
 # Passport Auth Strategy
 
-This package adds Auth Strategies based on popular social login service (Twitter/Facebook/Google and Github) for KeystoneJs. You can setup and enable social authentication in your Keystone app as explained here. It also enables you to easily extend base `PassportAuthStrategy` to add your own Auth Strategy based on PassportJs with minimal effort.
+Enable KeystoneJS authentication via services such as Google, Twitter, Facebook,
+GitHub, and any [others supported by `passport.js`](passportjs.org/packages/).
 
-### Important
+## Authentication Flows
 
-To be flexible in use of middleware and how they are arranged in stack, we do not bind `passport` middleware in express server. You must add following line or use one of the helper function we provide out of the box to enable use of PassportJs based auth strategy. This must be added after call to `keystone.connect()` see `social-login` test project for more details.
+This package enables three authentication flows;
 
-> Remember to organize the code in such a way that you call `keystone.conenct()` between `keystone.createAuthStrategy({...})` and mounting of routes/middleware.
+1. Single Step Account Creation & Authentication
+2. Multi Step Account Creation & Authentication
+3. Existing Account Authentication
 
-your own instance of express `app`
+### Single Step Account Creation & Authentication
 
-```js
-app.use(passport.initialize());
-```
+When creating a new account in KeystoneJS, the service (Google, Twitter, etc)
+provides some basic user information such as name and, if enabled, email. Often
+this information alone is enough to create a new KeystoneJS account, so it is
+the default authentication flow known as _Single Step Account Creation_.
 
-or the helper function
+For example, when logging in with Google, the user will;
 
-```js
-const { InitializePassportAuthStrategies } = require('@keystone-alpha/passport-auth');
-InitializePassportAuthStrategies(app); // you can use server.app
-```
+- Click "Login with Google"
+- Be redirected to google.com's authentication page if not already logged in
+- Be asked to grant permission for your KeystoneJS app
+- Be redirected to your application's _callback_ URL
+- This package will create a new account & authenticate the user, then trigger
+  `onAuthenticated()` (see [the API docs below](#api))
 
-## Twitter
+### Multi Step Account Creation & Authentication
 
-### Usage
+Sometimes the information provided by the service is not enough to create a new
+account in KeystoneJS. For example, your application may require the user's age,
+or want to confirm the email address provided by the service.
 
-#### 0-step new user creation
+The [default Single Step Flow](#single-step-account-creation-authentication) can
+be extended to _pause_ account creation while we gather the extra information
+from the user. Pausing even works across page refreshes. This is known as _Multi
+Step Account Creation_.
+
+For example, when logging in with Google, the user will _(differences from [the
+Single Step Flow](#single-step-account-creation-authentication) are bolded)_:
+
+- Click "Login with Google"
+- Be redirected to google.com's authentication page if not already logged in
+- Be asked to grant permission for your KeystoneJS app
+- Be redirected to your application's _callback_ URL
+- **Be redirected to a form to gather more information**
+- **Submit the form which will resume account creation & authentication**
+- This package will create a new account & authenticate the user, then trigger
+  `onAuthenticated()` (see [the API docs below](#api))
+
+### Existing Account Authentication
+
+When a user has previously created an account via a given service, this package
+will use information stored in the `idField` (see [the API docs below](#api)) to
+match the account and authenticate them:
+
+- Click "Login with Google"
+- Be redirected to google.com's authentication page if not already logged in
+- Be redirected to your application's _callback_ URL
+- This package will authenticate the existing user, then trigger
+  `onAuthenticated()` (see [the API docs below](#api))
+
+## API
+
+<!-- TODO -->
+
+## Usage
+
+### Single Step With Google
+
+_NOTE: The below can be done with any of the supported strategies (Twitter,
+Facebook, etc)._
+
+To run this example: `keystone dev`, then visit
+`http://localhost:3000/auth/google` to start the Google authentication process.
+
+`index.js`
 
 ```javascript
-const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 
-const cookieSecret = '<the same as passed to your `app-graphql` instance>';
+const { GoogleAuthStrategy } = require('@keystone-alpha/passport-auth');
 
-const twitterAuth = keystone.createAuthStrategy({
-  type: TwitterAuthStrategy,
-  list: 'User',
-  config: {
-    consumerKey: process.env.TWITTER_APP_KEY,
-    consumerSecret: process.env.TWITTER_APP_SECRET,
-    callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
+const cookieSecret = '<Something super secret>';
+
+const keystone = new Keystone({
+  name: 'Login With Google Example',
+  adapter: new MongooseAdapter(),
+});
+
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    email: { type: Text },
+
+    // This field name must match the `idField` setting passed to the auth
+    // strategy constructor below
+    googleId: { type: Text },
   },
 });
 
-// ......
-// keystone.conenct() // called here.
-// .......
-
-// Hit this route to start the twitter auth process
-server.app.get(
-  '/auth/twitter',
-  twitterAuth.loginMiddleware({
-    // If not set, will just call `next()`
-    sessionExists: (itemId, req, res) => {
-      console.log(`Already logged in as ${itemId} 🎉`);
-      // logged in already? Send 'em home!
-      return res.redirect('/');
-    },
-  })
-);
-
-// Twitter will redirect the user to this URL after approval.
-server.app.get(
-  '/auth/twitter/callback',
-  twitterAuth.authenticateMiddleware({
-    async verified(item, info, req, res) {
-      const authedItem = item || (await keystone.createItem(info.list.key, {}));
-
-      try {
-        await keystone.auth.User.twitter.connectItem(req, { item: authedItem });
-        await keystone.sessionManager.startAuthedSession(
-          req,
-          {
-            item: authedItem,
-            list: info.list,
-          },
-          ['admin'],
-          cookieSecret
-        );
-      } catch (createError) {
-        return res.json({
-          success: false,
-          // TODO: Better error
-          error: createError.message || createError.toString(),
-        });
-      }
-
-      res.redirect('/');
-    },
-    failedVerification(error, req, res) {
-      console.log('🤔 Failed to verify Twitter login creds');
-      res.redirect('/');
-    },
-  })
-);
-```
-
-#### Multi-step new user creation
-
-eg; After giving permission to Twitter, we then want to ask for an email, an
-address, their social security info, their mother's maiden name, and their
-bank's password over multiple server requests / page refreshes:
-
-```javascript
-const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
-
-const cookieSecret = '<the same as passed to your `app-graphql` instance>';
-
-const twitterAuth = keystone.createAuthStrategy({
-  type: TwitterAuthStrategy,
+const googleStrategy = keystone.createAuthStrategy({
+  type: GoogleAuthStrategy,
   list: 'User',
   config: {
-    consumerKey: process.env.TWITTER_APP_KEY,
-    consumerSecret: process.env.TWITTER_APP_SECRET,
-    callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
+    idField: 'googleId',
+    appId: '<Your Google App Id>',
+    appSecret: '<Your Google App Secret>',
+    cookieSecret,
+    hostURL: 'http://localhost:3000',
+    apiPath: '/admin/api',
+    loginPath: '/auth/google',
+    callbackPath: '/auth/google/callback',
+
+    // Once a user is found/created and successfully matched to the
+    // googleId, they are authenticated, and the token is returned here.
+    // NOTE: By default KeystoneJS sets a `keystone.sid` which authenticates the
+    // user for the API domain. If you want to authenticate via another domain,
+    // you must pass the `token` as a Bearer Token to GraphQL requests.
+    onAuthenticated: (token, req, res) => {
+      console.log(token);
+      res.redirect('/');
+    },
+
+    // If there was an error during any of the authentication flow, this
+    // callback is executed
+    onError: (error, req, res) => {
+      console.error(error);
+      res.redirect('/?error=Uh-oh');
+    },
   },
 });
 
-// ......
-// keystone.conenct() // called here.
-// .......
+module.exports = {
+  keystone,
+  apps: [new GraphQLApp({ cookieSecret }), new AdminUIApp()],
+};
+```
 
-// Hit this route to start the twitter auth process
-server.app.get(
-  '/auth/twitter',
-  twitterAuth.loginMiddleware({
-    // If not set, will just call `next()`
-    sessionExists: (itemId, req, res) => {
-      console.log(`Already logged in as ${itemId} 🎉`);
-      // logged in already? Send 'em home!
-      return res.redirect('/');
-    },
-  })
-);
+### Multi Step With Google
 
-// Twitter will redirect the user to this URL after approval.
-server.app.get(
-  '/auth/twitter/callback',
-  twitterAuth.authenticateMiddleware({
-    async verified(item, info, req, res) {
-      // Twitter is verified, but we need some more details from the user
-      if (!item) {
-        return res.redirect('/auth/twitter/details');
-      }
+_NOTE: The below can be done with any of the supported strategies (Twitter,
+Facebook, etc)._
 
-      res.redirect('/');
-    },
-    failedVerification(error, req, res) {
-      console.log('🤔 Failed to verify Twitter login creds');
-      res.redirect('/');
-    },
-  })
-);
+Due to the extra route used for gathering the user's name, this example
+implements [an All-in-one Custom
+Server](/discussions/custom-server#all-in-one-custom-server) and should be run
+with `node server.js`, then visit `http://localhost:3000/auth/google` to start
+the Google authentication process.
 
-server.app.get('/auth/twitter/details', (req, res) => {
-  if (req.user) {
-    return res.redirect('/');
-  }
+`server.js`
 
-  // Capture details somehow
-  res.send(`
-      <form action="/auth/twitter/complete" method="post">
-        <input type="text" placeholder="name" name="name" />
-        <button type="submit">Submit</button>
-      </form>
-    `);
+```javascript
+const { Keystone } = require('@keystone-alpha/keystone');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const express = require('express');
+
+const { GoogleAuthStrategy } = require('@keystone-alpha/passport-auth');
+
+const cookieSecret = '<Something super secret>';
+
+const keystone = new Keystone({
+  name: 'Login With Google Example',
+  adapter: new MongooseAdapter(),
 });
 
-server.app.use(server.express.urlencoded({ extended: true }));
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    email: { type: Text },
 
-server.app.post('/auth/twitter/complete', async (req, res, next) => {
-  if (req.user) {
-    return res.redirect('/');
-  }
+    // This field name must match the `idField` setting passed to the auth
+    // strategy constructor below
+    googleId: { type: Text },
+  },
+});
 
-  // Finally, we have all the info we need to create a new user and log that
-  // user in
-  try {
-    const list = keystone.getListByKey('User');
+const googleStrategy = keystone.createAuthStrategy({
+  type: GoogleAuthStrategy,
+  list: 'User',
+  config: {
+    idField: 'googleId',
+    appId: '<Your Google App Id>',
+    appSecret: '<Your Google App Secret>',
+    cookieSecret,
+    hostURL: 'http://localhost:3000',
+    apiPath: '/admin/api',
+    loginPath: '/auth/google',
+    callbackPath: '/auth/google/callback',
 
-    const item = await keystone.createItem(list.key, {
-      name: req.body.name,
+    // Called when there's no existing user for the given googleId
+    // Default: resolveCreateData: () => ({})
+    resolveCreateData: ({ createData, actions: { pauseAuthentication } }, req, res) => {
+      // If we don't have the right data to continue with a creation
+      if (!createData.name) {
+        // then we pause the flow
+        pauseAuthentication();
+        // And redirect the user to a page where they can enter the data.
+        // Later, the `resolveCreateData()` method will be re-executed this
+        // time with the complete data.
+        res.redirect(`/auth/google/step-2`);
+        return;
+      }
+
+      return createData;
+    },
+
+    // Once a user is found/created and successfully matched to the
+    // googleId, they are authenticated, and the token is returned here.
+    // NOTE: By default KeystoneJS sets a `keystone.sid` which authenticates the
+    // user for the API domain. If you want to authenticate via another domain,
+    // you must pass the `token` as a Bearer Token to GraphQL requests.
+    onAuthenticated: (token, req, res) => {
+      console.log(token);
+      res.redirect('/');
+    },
+
+    // If there was an error during any of the authentication flow, this
+    // callback is executed
+    onError: (error, req, res) => {
+      console.error(error);
+      res.redirect('/?error=Uh-oh');
+    },
+  },
+});
+
+keystone
+  .prepare({
+    apps: [new GraphQLApp({ cookieSecret }), new AdminUIApp()],
+    dev: process.env.NODE_ENV !== 'production',
+  })
+  .then(async ({ middlewares }) => {
+    await keystone.connect();
+    const app = express();
+    app.use(middlewares);
+
+    // Sample page to collect a name, submits to the completion step which will
+    // create a user
+    app.use(`/auth/google/step-2`, express.urlencoded({ extended: true }), (req, res, next) => {
+      if (req.method === 'POST') {
+        const { name } = req.body;
+        // Continue the authentication flow with additional data the user
+        // submitted.
+        // This data is merged into other data required by Keystone and will
+        // trigger the resolveCreateData() method again.
+        return googleStrategy.resumeAuthentication({ name }, req, res, next);
+      }
+
+      res.send(`
+          <form method="post">
+            <label>
+              What is your name? <input type="text" name="name" />
+            </label>
+            <button type="submit">Submit</button>
+          </form>
+        `);
     });
 
-    await keystone.auth.User.twitter.connectItem(req, { item });
-    await keystone.sessionManager.startAuthedSession(req, { item, list }, ['admin'], cookieSecret);
-    res.redirect('/');
-  } catch (createError) {
-    next(createError);
-  }
-});
+    app.listen(port, error => {
+      if (error) throw error;
+      console.log(`Ready. App available at http://localhost:${port}`);
+    });
+  })
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
 ```
 
-## Facebook, Google, GitHub
+## Using other PassportJs Strategies
 
-#### See Twitter Example
+You can create your own strategies to work with KeystoneJS by extending the
+`PassportAuthStrategy` class:
 
-## Using other PassportJs Strategy
-
-### Inherit from Keystone PassportAuthStrategy
-
-For Example, we will implement WordPress auth.
-First you need to register a WordPress dev account and create and app there. Make note of App Key and App Secret
-
-```js
+```javascript
 const PassportWordPress = require('passport-wordpress').Strategy;
 const { PassportAuthStrategy } = require('@keystone-alpha/passport-auth');
 
 class WordPressAuthStrategy extends PassportAuthStrategy {
   constructor(keystone, listKey, config) {
-    super(
-      WordPressAuthStrategy.authType,
-      keystone,
-      listKey,
-      {
-        sessionIdField: 'wordpressSession',
-        keystoneSessionIdField: 'keystoneWordPressSessionId',
-        ...config,
-      },
-      PassportWordPress
-    );
+    super(WordPressAuthStrategy.authType, keystone, listKey, config, PassportWordPress);
   }
 }
 
 WordPressAuthStrategy.authType = 'wordpress';
 
 module.exports = WordPressAuthStrategy;
-```
-
-### Usage
-
-Configure similar to Twitter Strategy
-
-```js
-const wpAuth = keystone.createAuthStrategy({
-  type: WordPressAuthStrategy,
-  list: 'User',
-  config: {
-    consumerKey: process.env.WP_APP_KEY,
-    consumerSecret: process.env.WP_APP_SECRET,
-    callbackURL: `http://localhost:${PORT}/auth/wordpress/callback`,
-  },
-});
-
-// ......
-// keystone.conenct()
-// .......
-
-// rest of the code for configuring routes, similar to Twitter
 ```
