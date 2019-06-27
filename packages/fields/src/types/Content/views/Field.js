@@ -17,7 +17,9 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
             (children, { Provider, options }, index) => (
               // Using index within key is ok here as the blocks never change
               // across renders
-              <Provider value={options} key={`${htmlID}-provider-${index}`}>{children}</Provider>
+              <Provider value={options} key={`${htmlID}-provider-${index}`}>
+                {children}
+              </Provider>
             ),
             <Editor
               key={htmlID}
