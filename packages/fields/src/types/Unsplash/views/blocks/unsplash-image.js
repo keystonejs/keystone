@@ -29,15 +29,7 @@ function attributeUrl(url, { source, medium }) {
   return attributedUrl;
 }
 
-const UnsplashImage = ({
-  width,
-  height,
-  unsplashId,
-  publicUrl,
-  alt,
-  user,
-  onClick
-}) => {
+const UnsplashImage = ({ width, height, unsplashId, publicUrl, alt, user, onClick }) => {
   const options = useContext(Context);
 
   const imgUrl = attributeUrl(publicUrl, options.attribution);
@@ -120,23 +112,20 @@ const Search = ({ onSelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState();
 
-  const showPrevious = useCallback(
-    () => {
-      const newPage = Math.max(1, searchPage - 1);
-      setSearchPage(newPage);
-      getUnsplashImages(searchTerm, newPage);
-    },
-    [searchPage, setSearchPage, searchTerm]
-  );
+  const showPrevious = useCallback(() => {
+    const newPage = Math.max(1, searchPage - 1);
+    setSearchPage(newPage);
+    getUnsplashImages(searchTerm, newPage);
+  }, [searchPage, setSearchPage, searchTerm]);
 
-  const showNext = useCallback(
-    () => {
-      const newPage = Math.min((searchResults && searchResults.totalPages) || Infinity, searchPage + 1);
-      setSearchPage(newPage);
-      getUnsplashImages(searchTerm, newPage);
-    },
-    [searchPage, setSearchPage, searchTerm]
-  );
+  const showNext = useCallback(() => {
+    const newPage = Math.min(
+      (searchResults && searchResults.totalPages) || Infinity,
+      searchPage + 1
+    );
+    setSearchPage(newPage);
+    getUnsplashImages(searchTerm, newPage);
+  }, [searchPage, setSearchPage, searchTerm]);
 
   const getUnsplashImages = (query, page) => {
     fetch('/admin/api', {
