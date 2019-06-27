@@ -36,8 +36,7 @@ const UnsplashImage = ({
   publicUrl,
   alt,
   user,
-  onClick,
-  unsplashUrl,
+  onClick
 }) => {
   const options = useContext(Context);
 
@@ -117,7 +116,6 @@ const UnsplashImage = ({
 
 const Search = ({ onSelect }) => {
   const options = useContext(Context);
-  const [loading, setLoading] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState();
@@ -279,27 +277,6 @@ const Search = ({ onSelect }) => {
         ) : (
           <div css={{ padding: '32px', textAlign: 'center', fontSize: '1rem', color: '#cdcdcd' }}>
             Start typing to search for an image on Unsplash
-          </div>
-        )}
-        {loading && (
-          <div
-            css={
-              searchResults
-                ? {
-                    position: 'absolute',
-                    height: 50,
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: 'white',
-                  }
-                : {
-                    position: 'relative',
-                    height: 300,
-                  }
-            }
-          >
-            Loading...
           </div>
         )}
       </div>
