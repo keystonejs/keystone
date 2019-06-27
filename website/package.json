@@ -27,7 +27,6 @@
     "@sindresorhus/slugify": "^0.6.0",
     "babel-plugin-extract-react-types": "^0.1.0",
     "bolt": "^0.22.6",
-    "emotion-server": "9.2.12",
     "facepaint": "^1.2.1",
     "gatsby": "^2.3.24",
     "gatsby-mdx": "^0.6.3",
