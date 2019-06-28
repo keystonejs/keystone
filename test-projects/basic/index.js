@@ -144,7 +144,7 @@ keystone.createList('Post', {
           : []),
         ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
         ...(unsplash.accessKey
-          ? [[Unsplash.blocks.unsplashImage, { attribution: 'vocal.media', ...unsplash }]]
+          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
           : []),
         Content.blocks.blockquote,
         Content.blocks.orderedList,

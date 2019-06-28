@@ -14,6 +14,9 @@ let Context = createContext(null);
 
 export let Provider = Context.Provider;
 
+const RESULTS_PER_PAGE = 5;
+const RESULTS_WIDTH = '400';
+
 function attributeUrl(url, { source, medium }) {
   const attributedUrl = new URL(url);
 
@@ -128,21 +131,21 @@ const Search = ({ onSelect }) => {
   }, [searchPage, setSearchPage, searchTerm]);
 
   const getUnsplashImages = (query, page) => {
-    fetch('/admin/api', {
+    fetch(options.adminMeta.apiPath, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        variables: { query, page },
-        query: `query searchImages($query: String!, $page: Int) {
-          searchUnsplash(query: $query, perPage: 5, page: $page) {
+        variables: { query, page, perPage: RESULTS_PER_PAGE, width: RESULTS_WIDTH },
+        query: `query searchImages($query: String!, $page: Int, $perPage: Int, $width: String) {
+          searchUnsplash(query: $query, perPage: $perPage, page: $page) {
             total
             totalPages
             results {
               id
               unsplashId
-              publicUrl: publicUrlTransformed(transformation: { w: "400"})
+              publicUrl: publicUrlTransformed(transformation: { w: $width})
               width
               height
               alt
