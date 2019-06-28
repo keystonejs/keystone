@@ -332,7 +332,15 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    return { typeDefs, resolvers };
+    return {
+      typeDefs: typeDefs.map(
+        typeDef =>
+          gql`
+            ${typeDef}
+          `
+      ),
+      resolvers,
+    };
   }
 
   dumpSchema(file) {
