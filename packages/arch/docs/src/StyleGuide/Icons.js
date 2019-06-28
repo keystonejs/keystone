@@ -3,7 +3,7 @@ import { Component, Fragment } from 'react';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import CopyToClipboard from '../../components/CopyToClipboard';
+import copyToClipboard from 'clipboard-copy';
 
 import * as icons from '@arch-ui/icons';
 import { Grid, Cell } from '@arch-ui/layout';
@@ -17,7 +17,10 @@ const Instructions = styled('div')`
   min-height: 24px;
 `;
 
-const IconContainer = styled('div')`
+const IconContainer = styled('button')`
+  display: block;
+  border: 0;
+  width: 100%;
   background-color: white;
   border-radius: 0.2em;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px rgba(0, 0, 0, 0.1);
@@ -90,10 +93,10 @@ export default class IconsGuide extends Component {
             const Icon = isCopied ? icons.CheckIcon : icons[name];
             return (
               <Cell width={2} key={name}>
-                <CopyToClipboard
-                  as={IconContainer}
-                  text={importText}
-                  onSuccess={this.handleCopy(importText)}
+                <IconContainer
+                  onClick={() => {
+                    copyToClipboard(importText).then(this.handleCopy(importText));
+                  }}
                 >
                   <Icon
                     css={{
@@ -103,7 +106,7 @@ export default class IconsGuide extends Component {
                     }}
                   />
                   <IconName className="icon-text">{isCopied ? 'Copied!' : name}</IconName>
-                </CopyToClipboard>
+                </IconContainer>
               </Cell>
             );
           })}

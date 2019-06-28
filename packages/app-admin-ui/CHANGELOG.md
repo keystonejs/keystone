@@ -1,5 +1,20 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.0.2
+
+### Patch Changes
+
+- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+
+  Replace custom copy to clipboard utility with the clipboard-copy package
+
+- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+
+  Remove Admin UI style guide. The style guide is now in the keystone-5 repo at packages/arch/docs
+
+* Updated dependencies [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+  - @arch-ui/navbar@0.1.0
+
 ## 5.0.1
 
 ### Patch Changes
