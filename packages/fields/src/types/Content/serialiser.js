@@ -12,13 +12,53 @@ function shallowNodeToJson(node) {
 }
 
 /**
- * @param document Object For example:
- * [
- *   { object: 'block', type: 'cloudinaryImage', data: { file: <FileObject>, align: 'center' } },
- *   { object: 'block', type: 'cloudinaryImage', data: { file: <FileObject>, align: 'center' } },
- *   { object: 'block', type: 'relationshipTag', data: { name: 'foobar' } }
- *   { object: 'block', type: 'relationshipUser', data: { _joinIds: ['xyz789'], id: 'uoi678' } }
- * ]
+ * A normalized & serialized version of a Slate.js Node
+ * @typedef {Object} SerializedNode
+ * @property {Object} mutations KS5 GraphQL nested mutations, the IDs of which
+ * will be stored in a `data._joinIds` array.
+ * @property {Object} node A JSON representation of a Slate.js Node with
+ * mutation data removed.
+ */
+
+/**
+ * Convert a Slate.js Node into a JSON representation while extracting out any
+ * GraphQL mutations which can be executed by the Keystone API.
+ * @callback serialize
+ * @param {Object} input
+ * @param {Object} input.value A Slate.js Value
+ * @param {Object} input.node A Slate.js Node
+ * @return {SerializedNode}
+ */
+
+/**
+ * @callback deserialize
+ * @param {Object} input
+ * @param {Object} input.node A Slate.js Node which will have a `data._joins`
+ * array containing values that are IDs in the `input.joins` array
+ * @param {Object[]} input.joins Array of joins data as plucked from
+ * deserialiseToSlateValue()
+ * @return {Object} A Slate.js Node
+ */
+
+/**
+ * @typedef {Object} Block
+ * @property {String} type The unique type this block is for
+ * @property {String} path The path into the data to lookup joined values
+ * @property {serialize} serialize
+ * @property {deserialize} deserialize
+ */
+
+/**
+ * @param value Object A Slate.js Value. For example:
+ * {
+ *   document: [
+ *     { object: 'block', type: 'cloudinaryImage', data: { file: <FileObject>, align: 'center' } },
+ *     { object: 'block', type: 'cloudinaryImage', data: { file: <FileObject>, align: 'center' } },
+ *     { object: 'block', type: 'relationshipTag', data: { name: 'foobar' } }
+ *     { object: 'block', type: 'relationshipUser', data: { _joinIds: ['xyz789'], id: 'uoi678' } }
+ *   ]
+ * }
+ * @param {Object.<string, Block>} blocks Blocks keyed by their type
  *
  * @return Object For example:
  * {
@@ -127,7 +167,7 @@ export function serialiseSlateValue(value, blocks) {
 }
 
 /**
- * @param document Object For example:
+ * @param {Object} data Object For example:
  * {
  *   document: [
  *     { object: 'block', type: 'cloudinaryImage', data: { _joinIds: ['abc123'] } },
@@ -144,14 +184,10 @@ export function serialiseSlateValue(value, blocks) {
  *     { id: 'xyz890', user: { id: 'uoi678' } },
  *   ],
  * }
+ * @param {Object.<string, Block>} blocks Blocks keyed by their type
  *
- * @return Object For example:
- * [
- *   { object: 'block', type: 'cloudinaryImage', data: { _joinIds: ['abc123'], publicUrl: '...', align: 'center' } },
- *   { object: 'block', type: 'cloudinaryImage', data: { _joinIds: ['qwe345'], publicUrl: '...', align: 'center' } },
- *   { object: 'block', type: 'relationshipUser', data: { _joinIds: ['ert567'], user: { id: 'dfg789' } } }
- *   { object: 'block', type: 'relationshipUser', data: { _joinIds: ['xyz789'], user: { id: 'uoi678' } } }
- * ]
+ * @return Object A Slate.js Document with all the _joinIds data inlined into
+ * the appropriate blocks
  */
 export function deserialiseToSlateValue({ document, ...serializations }, blocks) {
   assert(!!document, 'Must pass document to deserialiseToSlateValue()');
