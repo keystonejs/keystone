@@ -32,7 +32,8 @@ function transformImageFromApiToKs5(image) {
     width: image.width,
     height: image.height,
     color: image.color,
-    description: image.description || image.alt_description,
+    description: image.description || null,
+    alt: image.alt_description || null,
     publicUrl: image.urls.raw,
     user: transformUserFromApiToKs5(image.user),
   };
@@ -113,19 +114,81 @@ export class Unsplash extends Implementation {
         # Information describing an image as hosted by Unsplash
         # NOTE: The public URLs returned here are Unsplash CDN URLs as per their terms:
         # https://unsplash.com/api-terms
-        type UnsplashImage {
+        type ${this.graphQLOutputType} {
           id: ID
           unsplashId: String
           width: Int
           height: Int
           color: String
+          # The author-supplied description of this photo
           description: String
+          # A description of the photo for use with screen readers
+          alt: String
           publicUrl: String
           publicUrlTransformed(transformation: UnsplashImageFormat): String
           user: UnsplashUser
         }
       `,
+      `
+        enum UnsplashOrientation {
+          landscape
+          portrait
+          squarish
+        }
+      `,
+      `
+        type UnsplashSearchResults {
+          total: Int
+          totalPages: Int
+          results: [${this.graphQLOutputType}]
+        }
+      `,
     ];
+  }
+
+  getGqlAuxQueries() {
+    return [
+      `searchUnsplash(query: String!, page: Int, perPage: Int, orientation: UnsplashOrientation, collections: [String]): UnsplashSearchResults`,
+    ];
+  }
+
+  get gqlAuxQueryResolvers() {
+    return {
+      searchUnsplash: async (_, { query, page, perPage, orientation, collections }) => {
+        const { total, total_pages, results } = await this.unsplash
+          .request({
+            url: '/search/photos',
+            method: 'GET',
+            query: {
+              query,
+              ...(typeof page !== 'undefined' && { page }),
+              ...(typeof perPage !== 'undefined' && { per_page: perPage }),
+              ...(typeof orientation !== 'undefined' && { orientation }),
+              ...(collections && collections.length && { collections: collections.join(',') }),
+            },
+          })
+          .then(toJson);
+
+        return {
+          total,
+          totalPages: total_pages,
+          results: results.map(result =>
+            this.injectPublicUrlFields(transformImageFromApiToKs5(result))
+          ),
+        };
+      },
+    };
+  }
+
+  injectPublicUrlFields(data) {
+    return {
+      ...data,
+      // We want the default transformations applied to the regular public
+      // URL, so we do a "transformation" here too
+      publicUrl: this.publicUrlTransformed(data.publicUrl),
+      publicUrlTransformed: ({ transformation }) =>
+        this.publicUrlTransformed(data.publicUrl, transformation),
+    };
   }
 
   publicUrlTransformed(publicUrl, transformation) {
@@ -150,14 +213,7 @@ export class Unsplash extends Implementation {
           return null;
         }
 
-        return {
-          ...itemValues,
-          // We want the default transformations applied to the regular public
-          // URL, so we do a "transformation" here too
-          publicUrl: this.publicUrlTransformed(itemValues.publicUrl),
-          publicUrlTransformed: ({ transformation }) =>
-            this.publicUrlTransformed(itemValues.publicUrl, transformation),
-        };
+        return this.injectPublicUrlFields(itemValues);
       },
     };
   }
