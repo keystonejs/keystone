@@ -162,6 +162,16 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "wesbos",
+      "name": "Wes Bos",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/176013?v=4",
+      "profile": "http://www.wesbos.com",
+      "contributions": [
+        "doc",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
