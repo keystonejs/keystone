@@ -28,7 +28,6 @@ Please make sure your computer/server meets the following requirements:
 
 To create a new KeystoneJS application, ensure [mongodb is running](../quick-start/mongodb.md) and then run the following commands.
 
-
 ```sh
 npm init keystone-app my-app
 cd my-app
