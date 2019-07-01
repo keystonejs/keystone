@@ -306,6 +306,7 @@
   "field-types": {
     "packages": [
       "packages/fields-wysiwyg-tinymce",
+      "packages/field-content",
       "packages/fields"
     ]
   },

@@ -1,7 +1,7 @@
 import pluralize from 'pluralize';
 import { importView } from '@keystone-alpha/build-field-types';
 
-import { Block } from '../../Block';
+import { Block } from '@keystone-alpha/field-content/Block';
 import Unsplash from './';
 import RelationshipType from '../Relationship';
 

@@ -5,13 +5,8 @@ import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
 import { findNode } from 'slate-react';
 import { Block } from 'slate';
-import pluralize from 'pluralize';
 
-export const type = 'cloudinaryImage';
-
-// TODO: Receive this value from the server somehow. 'pluralize' is a fairly
-// large lib.
-export const path = pluralize.plural(type);
+export let type = 'image-container';
 
 let getFiles = () =>
   new Promise(resolve => {
@@ -39,7 +34,7 @@ const insertImageBlock = (blocks, editor, file, src) => {
   });
 };
 
-export function Sidebar({ editor, blocks }) {
+export function Sidebar({ blocks, editor }) {
   return (
     <button
       type="button"
@@ -100,15 +95,15 @@ export function Node(props) {
   );
 }
 
-export let getSchema = ({ blocks }) => ({
+export let getSchema = ({ blocks: { image, caption } }) => ({
   nodes: [
     {
-      match: [{ type: blocks.image.type }],
+      match: [{ type: image.type }],
       min: 1,
       max: 1,
     },
     {
-      match: [{ type: blocks.caption.type }],
+      match: [{ type: caption.type }],
       min: 1,
       max: 1,
     },
@@ -176,65 +171,3 @@ export let getPlugins = ({ blocks }) => [
     },
   },
 ];
-
-export function serialize({ node, blocks }) {
-  // Find the 'image' child node
-  const imageNode = node.findDescendant(
-    child => child.object === 'block' && child.type === blocks.image.type
-  );
-
-  if (!imageNode) {
-    console.error('No image found in a cloudinaryImage block');
-    return;
-  }
-
-  const alignment = node.data.get('alignment');
-  const file = imageNode.data.get('file');
-
-  // zero out the data field to ensure we don't accidentally store the `file` as
-  // a JSON blob
-  const newNode = node.setNode(node.getPath(imageNode.key), { data: {} });
-
-  return {
-    mutations: {
-      create: {
-        image: file,
-      },
-    },
-    node: {
-      ...newNode.toJSON(),
-      data: {
-        align: alignment,
-      },
-    },
-  };
-}
-
-export function deserialize({ node, joins, blocks }) {
-  if (!joins || !joins.length) {
-    console.error('No image data received when rehydrating cloudinaryImage block');
-    return;
-  }
-
-  // Find the 'image' child node
-  const imageNode = node.findDescendant(
-    child => child.object === 'block' && child.type === blocks.image.type
-  );
-
-  if (!imageNode) {
-    console.error('No image found in a cloudinaryImage block');
-    return;
-  }
-
-  return (
-    node
-      // Inject the alignment back into the containing block
-      .set('data', node.data.set('alignment', joins[0].align))
-      // And the src attribute into the inner image
-      .setNode(node.getPath(imageNode.key), {
-        data: {
-          src: joins[0].image.publicUrl,
-        },
-      })
-  );
-}
