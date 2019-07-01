@@ -1,1 +1,1 @@
-Using `connect: []` and `create: []` in man-relationship queries now behaves as expected.
+Using `connect: []` and `create: []` in many-relationship queries now behaves as expected.
