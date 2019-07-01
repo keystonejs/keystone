@@ -9,21 +9,20 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config server.js",
-    "build": "cross-env keystone build"
+    "start": "cross-env NODE_ENV=production node -r dotenv-safe/config server.js",
+    "build": "cross-env NODE_ENV=production node -r dotenv-safe/config `yarn bin`/keystone build"
   },
   "dependencies": {
-    "@arch-ui/layout": "^0.2.2",
-    "@arch-ui/typography": "^0.0.6",
-    "@keystone-alpha/adapter-mongoose": "^2.0.1",
-    "@keystone-alpha/app-admin-ui": "^4.0.0",
-    "@keystone-alpha/app-graphql": "^6.0.0",
-    "@keystone-alpha/app-static": "^1.0.1",
-    "@keystone-alpha/fields": "^6.2.2",
-    "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.0",
-    "@keystone-alpha/file-adapters": "^1.0.2",
-    "@keystone-alpha/keystone": "^5.0.1",
-    "@keystone-alpha/view": "^0.0.0",
+    "@arch-ui/layout": "^0.2.3",
+    "@arch-ui/typography": "^0.0.7",
+    "@keystone-alpha/adapter-mongoose": "^2.1.0",
+    "@keystone-alpha/app-admin-ui": "^5.0.0",
+    "@keystone-alpha/app-graphql": "^6.1.0",
+    "@keystone-alpha/app-static": "^1.0.2",
+    "@keystone-alpha/fields": "^7.0.1",
+    "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.1",
+    "@keystone-alpha/file-adapters": "^1.1.1",
+    "@keystone-alpha/keystone": "^6.0.0",
     "body-parser": "^1.18.2",
     "chalk": "^2.4.2",
     "ci-info": "^2.0.0",

@@ -2,6 +2,7 @@
   "scripts": {
     "start": "yarn todo dev",
     "blog": "yarn --cwd blog",
+    "blog:view": "yarn --cwd blog-view",
     "meetup": "yarn --cwd meetup",
     "todo": "yarn --cwd todo"
   },
