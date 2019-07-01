@@ -172,6 +172,15 @@
         "doc",
         "ideas"
       ]
+    },
+    {
+      "login": "vlad-elagin",
+      "name": "vlad-elagin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/28232030?v=4",
+      "profile": "https://github.com/vlad-elagin",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
