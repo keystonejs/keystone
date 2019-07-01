@@ -1,0 +1,1 @@
+Using `connect: []` and `create: []` in man-relationship queries now behaves as expected.
