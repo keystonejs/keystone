@@ -1,1 +1,0 @@
-Minor bump of bcrypt version
