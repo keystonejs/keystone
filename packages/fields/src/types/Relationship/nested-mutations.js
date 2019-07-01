@@ -17,12 +17,9 @@ function validateInput({ input, target, many }) {
 
   // Filter out mutations which don't have any parameters
   if (many) {
-    // to-many must have an array of at least one item with at least one key
+    // to-many must have an array of objects
     validInputMutations = validInputMutations.filter(
-      mutation =>
-        mutation === 'disconnectAll' ||
-        (Array.isArray(input[mutation]) &&
-          input[mutation].filter(item => Object.keys(item).length).length)
+      mutation => mutation === 'disconnectAll' || Array.isArray(input[mutation])
     );
   } else {
     validInputMutations = validInputMutations.filter(

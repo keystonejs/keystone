@@ -94,7 +94,13 @@ enum UnsplashOrientation {
 }
 
 type Query {
-  searchUnsplash(query: String!, page: Int, perPage: Int, orientation: UnsplashOrientation, collections: [String]): UnsplashSearchResults
+  searchUnsplash(
+    query: String!
+    page: Int
+    perPage: Int
+    orientation: UnsplashOrientation
+    collections: [String]
+  ): UnsplashSearchResults
 }
 
 type Mutation {
