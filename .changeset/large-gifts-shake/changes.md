@@ -1,1 +1,0 @@
-Added 'new project', 'adding lists' and 'relationships' guides.

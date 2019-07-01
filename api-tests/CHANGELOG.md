@@ -1,5 +1,13 @@
 # @keystone-alpha/api-tests
 
+## 1.0.11
+
+### Patch Changes
+
+- [148400dc](https://github.com/keystonejs/keystone-5/commit/148400dc):
+
+  Using `connect: []` and `create: []` in many-relationship queries now behaves as expected.
+
 ## 1.0.10
 
 - Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
