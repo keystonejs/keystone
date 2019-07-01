@@ -10,9 +10,10 @@ const SCHEMA_NAME = 'testing';
 
 function setupServer({ name, adapterName, createLists = () => {} }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
+  const args = { mongoose: {}, knex: { dropDatabase: true } }[adapterName];
   const keystone = new Keystone({
     name,
-    adapter: new Adapter(),
+    adapter: new Adapter(args),
     defaultAccess: { list: true, field: true },
   });
 

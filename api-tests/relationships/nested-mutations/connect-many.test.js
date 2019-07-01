@@ -78,13 +78,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             notes: { connect: [{ id: "${createNote.id}" }] }
           }) {
             id
+            notes { id }
           }
         }
     `,
           });
 
           expect(data).toMatchObject({
-            createUser: { id: expect.any(String) },
+            createUser: { id: expect.any(String), notes: expect.any(Array) },
           });
           expect(errors).toBe(undefined);
 
@@ -100,6 +101,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             notes: { connect: [{ id: "${createNote.id}" }, { id: "${createNote.id}" }] }
           }) {
             id
+            notes { id }
           }
         }
     `,
@@ -107,6 +109,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           expect(createUser).toMatchObject({
             id: expect.any(String),
+            notes: expect.any(Array),
+          });
+
+          // Test an empty list of related notes
+          const result = await graphqlRequest({
+            keystone,
+            query: `
+        mutation {
+          createUser(data: {
+            username: "A thing",
+            notes: { connect: [] }
+          }) {
+            id
+            notes { id }
+          }
+        }
+    `,
+          });
+          expect(result.data.createUser).toMatchObject({
+            id: expect.any(String),
+            notes: [],
           });
         })
       );

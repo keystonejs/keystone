@@ -1,5 +1,13 @@
 # @arch-ui/navbar
 
+## 0.1.0
+
+### Minor Changes
+
+- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+
+  Allow changing the underlying element type of the ItemElement component with the `as`
+
 ## 0.0.9
 
 ### Patch Changes

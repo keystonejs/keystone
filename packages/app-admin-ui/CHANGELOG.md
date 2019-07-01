@@ -1,5 +1,39 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.0.2
+
+### Patch Changes
+
+- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+
+  Replace custom copy to clipboard utility with the clipboard-copy package
+
+- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+
+  Remove Admin UI style guide. The style guide is now in the keystone-5 repo at packages/arch/docs
+
+* Updated dependencies [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+  - @arch-ui/navbar@0.1.0
+
+## 5.0.1
+
+### Patch Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Correctly send user to Admin UI after logging in (under some circumstances, it would just show the word "Error")
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Correctly sign the user out when clicking the icon in the Admin UI
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/fields@7.1.0
+  - @arch-ui/fields@2.0.0
+  - @arch-ui/controls@0.0.8
+  - @arch-ui/input@0.0.8
+
 ## 5.0.0
 
 ### Major Changes

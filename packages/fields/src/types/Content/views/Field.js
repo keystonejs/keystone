@@ -5,7 +5,7 @@ import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
 
 let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
-  const htmlID = `ks-input-${field.path}`;
+  const htmlID = `ks-content-editor-${field.path}`;
 
   return (
     <FieldContainer>
@@ -14,10 +14,15 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
         {Object.values(field.getBlocks())
           .filter(({ Provider, options }) => Provider && options)
           .reduce(
-            (children, { Provider, options }) => (
-              <Provider value={options}>{children}</Provider>
+            (children, { Provider, options }, index) => (
+              // Using index within key is ok here as the blocks never change
+              // across renders
+              <Provider value={options} key={`${htmlID}-provider-${index}`}>
+                {children}
+              </Provider>
             ),
             <Editor
+              key={htmlID}
               blocks={field.getBlocks()}
               value={value}
               onChange={onChange}

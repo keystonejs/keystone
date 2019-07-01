@@ -1,21 +1,23 @@
 const path = require('path');
 const { executeDefaultServer, getEntryFileFullPath } = require('../utils');
-const { DEFAULT_PORT, DEFAULT_ENTRY } = require('../../constants');
+const { DEFAULT_PORT, DEFAULT_ENTRY, DEFAULT_CONNECT_TO } = require('../../constants');
 
 module.exports = {
   // prettier-ignore
   spec: {
-    '--port':  Number,
-    '-p':      '--port',
-    '--entry': String,
+    '--port':       Number,
+    '-p':           '--port',
+    '--entry':      String,
+    '--connect-to': String,
   },
   help: ({ exeName }) => `
     Usage
       $ ${exeName} dev --port=3000
 
     Options
-      --port, -p  Port to start on [${DEFAULT_PORT}]
-      --entry     Entry file exporting keystone instance [${DEFAULT_ENTRY}]
+      --port, -p    Port to start on [${DEFAULT_PORT}]
+      --entry       Entry file exporting keystone instance [${DEFAULT_ENTRY}]
+      --connect-to  URI of database connection [${DEFAULT_CONNECT_TO}]
   `,
   exec: async (args, { exeName, _cwd = process.cwd() } = {}, spinner) => {
     spinner.text = 'Validating project entry file';

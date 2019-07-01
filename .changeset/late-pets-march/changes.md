@@ -1,9 +1,0 @@
-- **Blocks**
-  - Blocks must now be classes, which implement the `Block` interface.
-  - `type` is no longer passed to a Block's constructor (it is expected to know it already).
-  - Remove the `embed` block
-  - `Block#dependencies` is removed; any depended upon views should be returned from `Block#getAdminViews()`.
-  - `Block#extendAdminMeta()` is renamed to `Block#getViewOptions()`.
-  - Add new `Block#getAdminViews()` method.
-- **Field Types**
-  - `Field#extendViews()` is renamed to `Field#extendAdminViews()`.

@@ -21,7 +21,6 @@ import ListPage from './pages/List';
 import ListNotFoundPage from './pages/ListNotFound';
 import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
-import StyleGuidePage from './pages/StyleGuide';
 import SignoutPage from './pages/Signout';
 
 const findCustomPages = (pages, allPages = []) => {
@@ -55,10 +54,6 @@ const Keystone = () => {
                       <Nav>
                         <Suspense fallback={<PageLoading />}>
                           <Switch>
-                            <Route
-                              path={`${adminPath}/style-guide/:page?`}
-                              render={() => <StyleGuidePage {...adminMeta} />}
-                            />
                             {findCustomPages(pages).map(page => (
                               <Route
                                 exact

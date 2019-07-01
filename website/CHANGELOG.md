@@ -1,5 +1,10 @@
 # @keystone-alpha/website
 
+## 1.0.12
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @arch-ui/input@0.0.8
+
 ## 1.0.11
 
 ### Patch Changes
