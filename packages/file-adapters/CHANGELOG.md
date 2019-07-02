@@ -1,5 +1,21 @@
 # @keystone-alpha/file-adapters
 
+## 1.1.1
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+## 1.1.0
+
+### Minor Changes
+
+- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+
+  Allow passing relative paths to fileAdapter
+
 ## 1.0.2
 
 - [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):

@@ -3,7 +3,9 @@ import gql from 'graphql-tag';
 import { useFormState } from 'react-use-form-state';
 import { withToastManager } from 'react-toast-notifications';
 import { useMutation } from 'react-apollo-hooks';
+
 import { AvatarUpload } from '../components/AvatarUpload';
+import Meta from '../components/Meta';
 
 export default class ProfilePage extends Component {
   static async getInitialProps(ctx) {
@@ -28,7 +30,12 @@ export default class ProfilePage extends Component {
 
   render() {
     if (this.props.error) return <h1>Error loading User Profile.</h1>;
-    return <Profile {...this.props} />;
+    return (
+      <>
+        <Meta title={this.props.user.name} />
+        <Profile {...this.props} />
+      </>
+    );
   }
 }
 

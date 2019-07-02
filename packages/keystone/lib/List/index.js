@@ -1,5 +1,4 @@
 const pluralize = require('pluralize');
-
 const {
   resolveAllKeys,
   mapKeys,
@@ -13,12 +12,10 @@ const {
   zipObj,
   createLazyDeferred,
 } = require('@keystone-alpha/utils');
-
 const { parseListAccess } = require('@keystone-alpha/access-control');
-
 const { logger } = require('@keystone-alpha/logger');
-
 const gql = require('graphql-tag');
+
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
@@ -57,6 +54,8 @@ const opToType = {
   update: 'mutation',
   delete: 'mutation',
 };
+
+const getAuthMutationName = (prefix, authType) => `${prefix}With${upcase(authType)}`;
 
 const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   const { Text, Checkbox, Float } = require('@keystone-alpha/fields');
@@ -121,7 +120,16 @@ module.exports = class List {
       path,
       adapterConfig = {},
     },
-    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
+    {
+      getListByKey,
+      getGraphQLQuery,
+      adapter,
+      defaultAccess,
+      getAuth,
+      registerType,
+      createAuxList,
+      isAuxList,
+    }
   ) {
     this.key = key;
     this._fields = fields;
@@ -143,6 +151,7 @@ module.exports = class List {
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
+    this.hasAuth = () => !!Object.keys(getAuth() || {}).length;
     this.createAuxList = createAuxList;
 
     const _label = keyToLabel(key);
@@ -172,6 +181,10 @@ module.exports = class List {
       listQueryMetaName: `_all${_listQueryName}Meta`,
       listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
       authenticatedQueryName: `authenticated${_itemQueryName}`,
+      authenticateMutationPrefix: `authenticate${_itemQueryName}`,
+      unauthenticateMutationName: `unauthenticate${_itemQueryName}`,
+      authenticateOutputName: `authenticate${_itemQueryName}Output`,
+      unauthenticateOutputName: `unauthenticate${_itemQueryName}Output`,
       deleteMutationName: `delete${_itemQueryName}`,
       updateMutationName: `update${_itemQueryName}`,
       createMutationName: `create${_itemQueryName}`,
@@ -223,13 +236,18 @@ module.exports = class List {
 
         if (!graphQLQuery) {
           return Promise.reject(
-            new Error('No executable schema is available. Have you setup `@keystone-alpha/server`?')
+            new Error(
+              'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
+            )
           );
         }
 
         return graphQLQuery(queryString, passThroughContext, variables);
       },
     };
+
+    // Tell Keystone about all the types we've seen
+    Object.values(fields).forEach(({ type }) => registerType(type));
   }
 
   initFields() {
@@ -263,7 +281,7 @@ module.exports = class List {
     );
     this.fields = Object.values(this.fieldsByPath);
     this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendViews({ ...type.views })
+      this.fieldsByPath[path].extendAdminViews({ ...type.views })
     );
   }
 
@@ -386,6 +404,30 @@ module.exports = class List {
       `);
     }
 
+    if (this.hasAuth()) {
+      // If auth is enabled for this list (doesn't matter what strategy)
+      types.push(`
+        type ${this.gqlNames.unauthenticateOutputName} {
+          """
+          \`true\` when unauthentication succeeds.
+          NOTE: unauthentication always succeeds when the request has an invalid or missing authentication token.
+          """
+          success: Boolean
+        }
+      `);
+
+      types.push(`
+        type ${this.gqlNames.authenticateOutputName} {
+          """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
+          token: String
+          """ Retreive information on the newly authenticated ${
+            this.gqlNames.outputTypeName
+          } here. """
+          item: ${this.gqlNames.outputTypeName}
+        }
+      `);
+    }
+
     return types;
   }
 
@@ -435,7 +477,7 @@ module.exports = class List {
       );
     }
 
-    if (this.getAuth()) {
+    if (this.hasAuth()) {
       // If auth is enabled for this list (doesn't matter what strategy)
       queries.push(`${this.gqlNames.authenticatedQueryName}: ${this.gqlNames.outputTypeName}`);
     }
@@ -582,6 +624,28 @@ module.exports = class List {
           ids: [ID!]
         ): [${this.gqlNames.outputTypeName}]
       `);
+    }
+
+    if (this.hasAuth()) {
+      // If auth is enabled for this list (doesn't matter what strategy)
+      mutations.push(
+        `${this.gqlNames.unauthenticateMutationName}: ${this.gqlNames.unauthenticateOutputName}`
+      );
+
+      // And for each strategy, add the authentication mutation
+      mutations.push(
+        ...Object.entries(this.getAuth()).map(([authType, authStrategy]) => {
+          const authTypeTitleCase = upcase(authType);
+          return `
+            """ Authenticate and generate a token for a ${
+              this.gqlNames.outputTypeName
+            } with the ${authTypeTitleCase} Authentication Strategy. """
+            ${getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)}(
+              ${authStrategy.getInputFragment()}
+            ): ${this.gqlNames.authenticateOutputName}
+          `;
+        })
+      );
     }
 
     return mutations;
@@ -763,7 +827,7 @@ module.exports = class List {
     // NOTE: This query is not effected by the read permissions; if the user can
     // authenticate themselves, then they already have access to know that the
     // list exists
-    if (this.getAuth()) {
+    if (this.hasAuth()) {
       resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
         this.authenticatedQuery(context);
     }
@@ -813,7 +877,7 @@ module.exports = class List {
           this.gqlNames.listQueryMetaName,
         ];
 
-        if (this.getAuth()) {
+        if (this.hasAuth()) {
           queries.push(this.gqlNames.authenticatedQueryName);
         }
 
@@ -857,6 +921,33 @@ module.exports = class List {
     );
   }
 
+  async authenticateMutation(authType, args, context) {
+    // This is currently hard coded to enable authenticating with the admin UI.
+    // In the near future we will set up the admin-ui application and api to be
+    // non-public.
+    const audiences = ['admin'];
+
+    const authStrategy = this.getAuth()[authType];
+
+    // Verify incoming details
+    const { item, success, message } = await authStrategy.validate(args);
+
+    if (!success) {
+      throw new Error(message);
+    }
+
+    const token = await context.startAuthedSession({ item, list: this }, audiences);
+    return {
+      token,
+      item,
+    };
+  }
+
+  async unauthenticateMutation(context) {
+    await context.endAuthedSession();
+    return { success: true };
+  }
+
   get gqlMutationResolvers() {
     const mutationResolvers = {};
 
@@ -882,6 +973,20 @@ module.exports = class List {
 
       mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
         this.deleteManyMutation(ids, context);
+    }
+
+    // NOTE: This query is not effected by the read permissions; if the user can
+    // authenticate themselves, then they already have access to know that the
+    // list exists
+    if (this.hasAuth()) {
+      mutationResolvers[this.gqlNames.unauthenticateMutationName] = (_, __, context) =>
+        this.unauthenticateMutation(context);
+
+      Object.keys(this.getAuth()).forEach(authType => {
+        mutationResolvers[
+          getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)
+        ] = (_, args, context) => this.authenticateMutation(authType, args, context);
+      });
     }
 
     return mutationResolvers;
@@ -989,6 +1094,27 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
+    // Check for isRequired
+    const fieldValidationErrors = this.fields
+      .filter(
+        field =>
+          field.isRequired &&
+          !field.isRelationship &&
+          ((operation === 'create' &&
+            (resolvedData[field.path] === undefined || resolvedData[field.path] === null)) ||
+            (operation === 'update' &&
+              Object.prototype.hasOwnProperty.call(resolvedData, field.path) &&
+              (resolvedData[field.path] === undefined || resolvedData[field.path] === null)))
+      )
+      .map(f => ({
+        msg: `Required field "${f.path}" is null or undefined.`,
+        data: { resolvedData, operation, originalInput },
+        internalData: {},
+      }));
+    if (fieldValidationErrors.length) {
+      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
+    }
+
     const fields = this._fieldsFromObject(resolvedData);
     await this._validateHook(args, fields, operation, 'validateInput');
   }

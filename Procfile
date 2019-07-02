@@ -1,1 +1,1 @@
-web: yarn start blog
+web: yarn demo blog dev

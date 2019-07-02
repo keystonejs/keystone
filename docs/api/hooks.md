@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: api
 title: Hooks
----
+[meta]-->
 
 # Hooks API
 

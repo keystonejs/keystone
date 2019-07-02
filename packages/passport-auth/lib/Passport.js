@@ -1,8 +1,8 @@
 const passport = require('passport');
+const { request } = require('graphql-request');
 
 const FIELD_SERVICE_NAME = 'service';
 const FIELD_USER_ID = 'serviceUserId';
-const FIELD_USERNAME = 'serviceUsername';
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
@@ -23,11 +23,15 @@ class PassportAuthStrategy {
       scope: [],
       ...config,
     };
+    // The field name on the User list (for example) such as `facebookUserId` or
+    // `twitterUserId` which the application developer has set.
+    this.serviceIdField = this.config.idField;
+
     this.ServiceStrategy = ServiceStrategy;
 
     this.createSessionList();
 
-    this.passportStrategy = this.getPassportStrategy();
+    this.passportStrategy = this.getPassportStrategy(this.config.strategyConfig);
     passport.use(this.passportStrategy);
   }
 
@@ -45,7 +49,6 @@ class PassportAuthStrategy {
         fields: {
           [FIELD_SERVICE_NAME]: { type: Text },
           [FIELD_USER_ID]: { type: Text },
-          [FIELD_USERNAME]: { type: Text },
           [this.config.tokenSecretField]: { type: Text },
           [this.config.itemField]: {
             type: Relationship,
@@ -74,10 +77,7 @@ class PassportAuthStrategy {
         if (error) {
           return reject(error);
         }
-        resolve({
-          id: profile.id,
-          username: profile.username || null,
-        });
+        resolve(profile);
       });
     });
   }
@@ -89,59 +89,85 @@ class PassportAuthStrategy {
       validationArgs
     );
 
-    // Lookup a past, verified session, that links to a user
-    let pastSessionItem;
-    let fieldItemPopulated;
-    try {
-      // NOTE: We don't need to filter on verifiedAt as these rows can only
-      // possibly exist after we've validated with Passport Service (see above)
-      pastSessionItem = await this.getSessionList().adapter.findOne({
-        [FIELD_SERVICE_NAME]: this.authType,
-        [FIELD_USER_ID]: validatedInfo.id,
-      });
-      // find user item related to past session, join not possible atm
-      fieldItemPopulated =
-        pastSessionItem &&
-        (await this.getList().adapter.findById(pastSessionItem[this.config.itemField].toString()));
-    } catch (sessionFindError) {
-      // TODO: Better error message. Why would this fail? DB connection lost? A
-      // "not found" shouldn't throw (it'll just return null).
-      throw new Error(`Unable to lookup existing ${this.authType} sessions: ${sessionFindError}`);
-    }
-
     const newSessionData = {
       [this.config.tokenSecretField]: accessToken,
       [FIELD_SERVICE_NAME]: this.authType,
       [FIELD_USER_ID]: validatedInfo.id,
-      [FIELD_USERNAME]: validatedInfo.username,
     };
 
-    // Only add a reference to the parent list when we know the link exists
-    if (pastSessionItem) {
-      newSessionData[this.config.itemField] = fieldItemPopulated.id;
+    let itemId;
+    // Find an existing user that matches the given validated service id
+    try {
+      const queryName = this.getList().gqlNames.listQueryName;
+      const data = await request(
+        this.config.endpoint,
+        `
+        query($serviceId: String) {
+          ${queryName}(
+            first: 1
+            where: {
+              # eg; facebookUserId / googleUserId
+              ${this.serviceIdField}: $serviceId
+            }
+          ) {
+            id
+          }
+        }
+      `,
+        { serviceId: validatedInfo.id }
+      );
+
+      itemId = data[queryName].length ? data[queryName][0].id : null;
+
+      // Only add a reference to the parent list when we know the link exists
+      // we use connect here to link to an existent user in our mutation (UserRelateToOneInput)
+      if (itemId) {
+        newSessionData[this.config.itemField] = { connect: { id: itemId } };
+      }
+    } catch (sessionFindError) {
+      throw new Error(`Unable to lookup existing ${this.authType} sessions: ${sessionFindError}`);
     }
 
-    const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
+    // Insert a new session row with the service ID, and maybe the associated
+    // Keystone item id
+    const mutationName = this.getSessionList().gqlNames.createMutationName;
+    const mutationInputName = this.getSessionList().gqlNames.createInputName;
+
+    const data = await request(
+      this.config.endpoint,
+      `
+        mutation($newSessionDataObject: ${mutationInputName}) {
+          ${mutationName}(data: $newSessionDataObject) {
+            id
+          }
+        }
+      `,
+      {
+        newSessionDataObject: newSessionData,
+      }
+    );
+    const sessionItem = data[mutationName];
 
     const result = {
       success: true,
       list: this.getList(),
+      profile: validatedInfo,
       [this.config.sessionIdField]: sessionItem.id,
     };
 
-    if (!pastSessionItem) {
+    if (!itemId) {
       // If no previous Session found...
       // Create a new Session session that doesn't like to an item yet
       return {
         ...result,
         newUser: true,
+        item: {},
       };
     }
 
-    const previouslyVerifiedItem = fieldItemPopulated;
     return {
       ...result,
-      item: previouslyVerifiedItem,
+      item: { id: itemId },
     };
   }
 
@@ -154,7 +180,7 @@ class PassportAuthStrategy {
     req.session[this.config.keystoneSessionIdField] = sessionId;
   }
 
-  async connectItem(req, { item }) {
+  async connectItem(req, item) {
     if (!item) {
       throw new Error(`Must provide an \`item\` to connect to a ${this.authType} session`);
     }
@@ -164,7 +190,6 @@ class PassportAuthStrategy {
     }
 
     const serviceSessionId = req.session[this.config.keystoneSessionIdField];
-
     if (!serviceSessionId) {
       throw new Error(
         `Unable to extract ${
@@ -174,18 +199,47 @@ class PassportAuthStrategy {
     }
 
     try {
-      const serviceItem = await this.getSessionList().adapter.update(serviceSessionId, {
-        item: item.id,
-      });
+      const passportSessionMutationName = this.getSessionList().gqlNames.updateMutationName;
+      const passportSessionMutationInputName = this.getSessionList().gqlNames.updateInputName;
+      const serviceItem = await request(
+        this.config.endpoint,
+        `
+          mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
+            ${passportSessionMutationName}(id: $id , data: $data) {
+              id
+              ${FIELD_USER_ID}
+            }
+          }
+        `,
+        {
+          id: serviceSessionId,
+          data: { item: { connect: { id: item.item.id } } },
+        }
+      );
 
-      await this.getList().adapter.update(item.id, {
-        [FIELD_USER_ID]: serviceItem[FIELD_USER_ID],
-        [FIELD_USERNAME]: serviceItem[FIELD_USERNAME],
-      });
+      const userMutationName = this.getList().gqlNames.updateMutationName;
+      const userMutationInputName = this.getList().gqlNames.updateInputName;
+      const newServiceItemFields = {
+        [this.serviceIdField]: serviceItem[passportSessionMutationName][FIELD_USER_ID],
+      };
+      await request(
+        this.config.endpoint,
+        `
+          mutation($id: ID!, $newServiceItemFields: ${userMutationInputName}) {
+            ${userMutationName}(id: $id, data: $newServiceItemFields) {
+              id
+            }
+          }
+        `,
+        {
+          id: item.item.id,
+          newServiceItemFields,
+        }
+      );
     } catch (error) {
       return { success: false, error };
     }
-    return { success: true, item, list: this.getList() };
+    return { success: true, list: this.getList() };
   }
 
   /**
@@ -233,22 +287,22 @@ class PassportAuthStrategy {
     return (req, res, next) => {
       // This middleware will call the `verify` callback we passed up the top to
       // the `new Passport{Service}` constructor
-      passport.authenticate(this.authType, async (verifyError, passportUser, info) => {
+      passport.authenticate(this.authType, async (verifyError, item, info) => {
         // If we get a error, bail and display the message we get
         if (verifyError) {
           return failedVerification(verifyError.message || verifyError.toString(), req, res, next);
         }
-        // If we don't authorise at Service we won't have any info about the
+        // If we don't authenticate at Service we won't have any info about the
         // user so we need to bail
-        if (!info) {
-          return failedVerification(null, req, res, next);
+        if (!info[this.config.sessionIdField]) {
+          return failedVerification('Unable to authenticate user', req, res, next);
         }
         // Otherwise, store the Service data in session so we can refer
         // back to it
         try {
           this.pauseValidation(req, info);
 
-          await verified(passportUser, info, req, res, next);
+          await verified(item, info, req, res, next);
         } catch (validationVerificationError) {
           next(validationVerificationError);
         }
@@ -257,7 +311,7 @@ class PassportAuthStrategy {
   }
 
   //#region abstract method, must implement if ServiceStrategy is not provided in constructor
-  getPassportStrategy() {
+  getPassportStrategy(strategyConfig) {
     if (!this.ServiceStrategy) {
       throw new Error(
         `Must provide PassportJs strategy Type in constructor or override this method in ${
@@ -272,6 +326,7 @@ class PassportAuthStrategy {
         clientSecret: this.config.consumerSecret,
         callbackURL: this.config.callbackURL,
         passReqToCallback: true,
+        ...strategyConfig,
       },
       async (req, accessToken, refreshToken, profile, done) => {
         try {
@@ -280,8 +335,12 @@ class PassportAuthStrategy {
           });
           if (!result.success) {
             // false indicates an authentication failure
+            // `done` is the callback passed to `passport.authenticate`, so
+            // params passed here will be the arguments to that function
             return done(null, false, { ...result, profile });
           }
+          // `done` is the callback passed to `passport.authenticate`, so params
+          // passed here will be the arguments to that function
           return done(null, result.item, { ...result, profile });
         } catch (error) {
           return done(error);

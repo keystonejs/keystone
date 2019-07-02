@@ -1,5 +1,82 @@
 # @keystone-alpha/api-tests
 
+## 1.0.11
+
+### Patch Changes
+
+- [148400dc](https://github.com/keystonejs/keystone-5/commit/148400dc):
+
+  Using `connect: []` and `create: []` in many-relationship queries now behaves as expected.
+
+## 1.0.10
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/adapter-mongoose@2.2.0
+  - @keystone-alpha/test-utils@2.0.5
+  - @keystone-alpha/keystone@7.0.0
+
+## 1.0.9
+
+### Patch Changes
+
+- [3958a9c7](https://github.com/keystonejs/keystone-5/commit/3958a9c7):
+
+  Fields configured with isRequired now behave as expected on create and update, returning a validation error if they are null.
+
+- [ec9e6e2a](https://github.com/keystonejs/keystone-5/commit/ec9e6e2a):
+
+  Fixed behaviour of isRequired within update operations.
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+  - @keystone-alpha/test-utils@2.0.4
+  - @keystone-alpha/app-graphql@6.1.0
+  - @keystone-alpha/session@2.0.0
+
+## 1.0.8
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/keystone@5.0.0
+  - @keystone-alpha/test-utils@2.0.3
+  - @keystone-alpha/app-graphql@6.0.0
+
 ## 1.0.7
 
 - Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):

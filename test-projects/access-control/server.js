@@ -1,32 +1,42 @@
-const keystone = require('@keystone-alpha/core');
+const express = require('express');
 
+const { keystone, apps } = require('./index');
 const { port } = require('./config');
-
 const initialData = require('./data');
 
 keystone
-  .prepare({ port })
-  .then(async ({ server, keystone: keystoneApp }) => {
-    await keystoneApp.connect();
+  .prepare({
+    apps,
+    dev: process.env.NODE_ENV !== 'production',
+  })
+  .then(async ({ middlewares }) => {
+    await keystone.connect();
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production
-    const users = await keystoneApp.lists.User.adapter.findAll();
+    const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
+      Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystoneApp.createItems(initialData);
+      await keystone.createItems(initialData);
     }
 
-    server.app.get('/reset-db', async (req, res) => {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
+    const app = express();
+
+    app.get('/reset-db', async (req, res) => {
+      Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystoneApp.createItems(initialData);
+      await keystone.createItems(initialData);
       res.redirect('/admin');
     });
-    await server.start();
+
+    app.use(middlewares);
+
+    app.listen(port, error => {
+      if (error) throw error;
+    });
   })
   .catch(error => {
     console.error(error);

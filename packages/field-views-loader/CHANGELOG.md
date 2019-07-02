@@ -1,5 +1,29 @@
 # @keystone-alpha/field-views-loader
 
+## 2.2.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  `readViews()` can be passed a string for importing a known path.
+
+## 2.1.2
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+## 2.1.1
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Fix Admin UI building on Windows
+
 ## 2.1.0
 
 ### Minor Changes

@@ -1,25 +1,28 @@
 {
   "name": "@keystone-alpha/fields-wysiwyg-tinymce",
   "description": "KeystoneJS WYSIWYG HTML Field Type, powered by TinyMCE",
-  "version": "2.0.1",
+  "version": "3.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^0.0.5",
-    "@arch-ui/icons": "^0.0.4",
-    "@arch-ui/input": "^0.0.6",
-    "@arch-ui/theme": "^0.0.4",
+    "@arch-ui/fields": "^2.0.0",
+    "@arch-ui/icons": "^0.0.5",
+    "@arch-ui/input": "^0.0.8",
+    "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
-    "@keystone-alpha/build-field-types": "^1.0.0",
-    "@keystone-alpha/fields": "^6.1.1",
+    "@keystone-alpha/build-field-types": "^1.0.2",
+    "@keystone-alpha/fields": "^7.1.0",
     "cuid": "^2.1.6",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "tinymce": "^5.0.3"
+  },
+  "peerDependencies": {
+    "express": "^4.16.3"
   },
   "preconstruct": {
     "entrypoints": [

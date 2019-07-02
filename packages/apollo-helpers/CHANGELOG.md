@@ -1,5 +1,13 @@
 # @keystone-alpha/apollo-helpers
 
+## 1.0.4
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
 ## 1.0.3
 
 ### Patch Changes

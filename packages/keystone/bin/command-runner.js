@@ -1,11 +1,11 @@
+const chalk = require('chalk');
 const endent = require('endent');
 const pkgInfo = require('../package.json');
 const info = {
   exeName: Object.keys(pkgInfo.bin)[0],
   version: pkgInfo.version,
 };
-
-const DEFAULT_COMMAND = 'dev';
+const { DEFAULT_COMMAND } = require('../constants');
 
 module.exports = {
   DEFAULT_COMMAND,
@@ -33,8 +33,17 @@ module.exports = {
         .join('\n')}
   `,
 
-  exec: (args, commands) => {
+  exec: (args, commands, spinner) => {
     const command = args._[0] ? args._[0] : DEFAULT_COMMAND;
-    return commands[command].exec(args, info);
+    const cliOptions = Object.entries(args)
+      .filter(([arg]) => arg !== '_')
+      .map(([arg, value]) => `${arg}=${value}`)
+      .join(' ')
+      .trim();
+    spinner.info(
+      `Command: ${chalk.bold(`${info.exeName} ${command}${cliOptions ? ` ${cliOptions}` : ''}`)}`
+    );
+    spinner.start(' ');
+    return commands[command].exec(args, info, spinner);
   },
 };

@@ -1,21 +1,13 @@
 /** @jsx jsx */
 
 import React from 'react'; // eslint-disable-line no-unused-vars
-import reactAddonsTextContent from 'react-addons-text-content';
-import snakeCase from 'lodash.snakecase';
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 import { LinkIcon } from '@arch-ui/icons';
 
 import { mq } from '../../utils/media';
 
-function dashcase(children) {
-  // this matches the IDs that are used for links naturally by remark
-  return snakeCase(reactAddonsTextContent(children)).replace(/_/g, '-');
-}
-
-const Heading = ({ as: Tag, children, ...props }) => {
-  const id = dashcase(children);
+const Heading = ({ as: Tag, children, id, ...props }) => {
   const iconSize = 24;
   const depth = parseInt(Tag.slice(1), 10);
   const hasLink = depth > 1 && depth < 5;
@@ -43,7 +35,7 @@ const Heading = ({ as: Tag, children, ...props }) => {
         },
       }}
     >
-      <LinkIcon width={24} />
+      <LinkIcon width={iconSize} />
     </a>
   );
 

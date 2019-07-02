@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/pill",
   "description": "Pill Component as used in @keystone-alpha Admin UI.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/pill.cjs.js",
@@ -12,9 +12,9 @@
     "react": "^16.8.6"
   },
   "dependencies": {
-    "@arch-ui/common": "^0.0.5",
-    "@arch-ui/icons": "^0.0.4",
-    "@arch-ui/theme": "0.0.4",
+    "@arch-ui/common": "^0.0.6",
+    "@arch-ui/icons": "^0.0.5",
+    "@arch-ui/theme": "0.0.5",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10"

@@ -1,15 +1,19 @@
 const { startAuthedSession } = require('@keystone-alpha/session');
+const express = require('express');
+
+const { cookieSecret } = require('../config');
 
 module.exports = ({
   strategy,
-  server,
+  app,
   authRoot = '/auth',
   successRedirect = '/api/session',
   failureRedirect = '/',
+  audiences = ['admin'],
 }) => {
   const basePath = `${authRoot}/${strategy.authType}`;
   // Hit this route to start the auth process for service
-  server.app.get(
+  app.get(
     basePath,
     strategy.loginMiddleware({
       // If not set, will just call `next()`
@@ -22,7 +26,7 @@ module.exports = ({
   );
 
   // oAuth service will redirect the user to this URL after approval.
-  server.app.get(
+  app.get(
     `${basePath}/callback`,
     strategy.authenticateMiddleware({
       verified: async (item, { list }, req, res) => {
@@ -39,7 +43,7 @@ module.exports = ({
         }
 
         // Otherwise create a session based on the user we have already
-        await startAuthedSession(req, { item, list });
+        await startAuthedSession(req, { item, list }, audiences, cookieSecret);
         // Redirect on sign in
         res.redirect(successRedirect);
       },
@@ -52,7 +56,7 @@ module.exports = ({
 
   // Sample page to collect a name, submits to the completion step which will
   // create a user
-  server.app.get(`${basePath}/create`, (req, res) => {
+  app.get(`${basePath}/create`, (req, res) => {
     // Redirect if we're already signed in
     if (req.user) {
       return res.redirect(successRedirect);
@@ -72,9 +76,9 @@ module.exports = ({
   });
 
   // Gets the name and creates a new User
-  server.app.post(
+  app.post(
     `${basePath}/complete`,
-    server.express.urlencoded({ extended: true }),
+    express.urlencoded({ extended: true }),
     async (req, res, next) => {
       // Redirect if we're already signed in
       if (req.user) {
@@ -90,7 +94,7 @@ module.exports = ({
         });
 
         await strategy.connectItem(req, { item });
-        await startAuthedSession(req, { item, list });
+        await startAuthedSession(req, { item, list }, audiences, cookieSecret);
         res.redirect(successRedirect);
       } catch (createError) {
         next(createError);

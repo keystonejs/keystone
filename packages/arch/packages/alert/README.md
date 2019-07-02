@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: misc
 title: Alert
----
+[meta]-->
 
 import { Alert } from './src';
 

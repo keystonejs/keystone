@@ -5,35 +5,26 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
-import { ShieldIcon } from '@arch-ui/icons';
-import { colors } from '@arch-ui/theme';
 
 export default class TextField extends Component {
   onChange = event => {
     this.props.onChange(event.target.value);
   };
   render() {
-    const { autoFocus, field, error, value: serverValue } = this.props;
+    const { autoFocus, field, errors, value: serverValue } = this.props;
     const { isMultiline } = field.config;
     const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
+    const canRead = errors.every(
+      error => !(error instanceof Error && error.name === 'AccessDeniedError')
+    );
+    const error = errors.find(
+      error => error instanceof Error && error.name === 'AccessDeniedError'
+    );
 
     return (
       <FieldContainer>
-        <FieldLabel
-          htmlFor={htmlID}
-          css={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {field.label}{' '}
-          {!canRead ? (
-            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-          ) : null}
-        </FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <Input
             autoComplete="off"

@@ -160,13 +160,14 @@ class Field {
       label: this.label,
       path: this.path,
       type: this.constructor.name,
+      isRequired: this.isRequired,
       defaultValue: this.getDefaultValue(),
     });
   }
   extendAdminMeta(meta) {
     return meta;
   }
-  extendViews(views) {
+  extendAdminViews(views) {
     return views;
   }
   getDefaultValue() {

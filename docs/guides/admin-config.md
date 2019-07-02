@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Configuring Your Admin UI
----
+[meta]-->
 
 # Configuring Your Admin UI
 

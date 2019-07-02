@@ -23,6 +23,8 @@ exports.wpAppKey = process.env.WP_APP_KEY;
 exports.wpAppSecret = process.env.WP_APP_SECRET;
 exports.wpAuthEnabled = exports.wpAppKey && exports.wpAppSecret;
 
+exports.cookieSecret = 'qwerty';
+
 exports.staticRoute = '/public'; // The URL portion
 exports.staticPath = path.join(process.cwd(), 'public'); // The local path on disk
 

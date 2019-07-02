@@ -1,4 +1,5 @@
-import { Node } from 'slate';
+import { Node, Value } from 'slate';
+import assert from 'nanoassert';
 import { walkSlateNode } from './slate-walker';
 
 // Convert a Node to JSON without the .nodes list, which avoids recursively
@@ -64,6 +65,14 @@ export function serialiseSlateValue(value, blocks) {
           );
         }
 
+        if (!block.path) {
+          throw new Error(
+            `No mutation path set for block view type '${
+              block.type
+            }'. Ensure the block's view exports a 'path' key corresponding to the mutation path for saving block data`
+          );
+        }
+
         // Ensure the mutation group exists
         allMutations[block.path] = allMutations[block.path] || {
           // TODO: Don't forcible disconnect & reconnect. (It works because we know
@@ -115,4 +124,86 @@ export function serialiseSlateValue(value, blocks) {
     document: serializedDocument,
     ...allMutations,
   };
+}
+
+/**
+ * @param document Object For example:
+ * {
+ *   document: [
+ *     { object: 'block', type: 'cloudinaryImage', data: { _joinIds: ['abc123'] } },
+ *     { object: 'block', type: 'cloudinaryImage', data: { _joinIds: ['qwe345'] } },
+ *     { object: 'block', type: 'relationshipUser', data: { _joinIds: ['ert567'] } }
+ *     { object: 'block', type: 'relationshipUser', data: { _joinIds: ['xyz890'] } }
+ *   ],
+ *   cloudinaryImages: [
+ *     { id: 'abc123', publicUrl: '...', align: 'center' },
+ *     { id: 'qwe345', publicUrl: '...', align: 'center' },
+ *   ],
+ *   relationshipUsers: [
+ *     { id: 'ert567', user: { id: 'dfg789' } },
+ *     { id: 'xyz890', user: { id: 'uoi678' } },
+ *   ],
+ * }
+ *
+ * @return Object For example:
+ * [
+ *   { object: 'block', type: 'cloudinaryImage', data: { _joinIds: ['abc123'], publicUrl: '...', align: 'center' } },
+ *   { object: 'block', type: 'cloudinaryImage', data: { _joinIds: ['qwe345'], publicUrl: '...', align: 'center' } },
+ *   { object: 'block', type: 'relationshipUser', data: { _joinIds: ['ert567'], user: { id: 'dfg789' } } }
+ *   { object: 'block', type: 'relationshipUser', data: { _joinIds: ['xyz789'], user: { id: 'uoi678' } } }
+ * ]
+ */
+export function deserialiseToSlateValue({ document, ...serializations }, blocks) {
+  assert(!!document, 'Must pass document to deserialiseToSlateValue()');
+  assert(!!blocks, 'Must pass blocks to deserialiseToSlateValue()');
+
+  const value = Value.fromJSON({ document });
+
+  return value.set(
+    'document',
+    walkSlateNode(value.document, {
+      visitBlock(node) {
+        const block = blocks[node.type];
+
+        // No matching block that we're in charge of
+        if (!block) {
+          return;
+        }
+
+        // Pick out the data set based on the block's path
+        const data = serializations[block.path];
+
+        const nodeData = node.get('data');
+
+        const joins = ((nodeData && nodeData.size && nodeData.get('_joinIds')) || []).map(joinId =>
+          data.find(({ id }) => joinId === id)
+        );
+
+        // NOTE: deserialize _may_ return null. It will then fall into the
+        // `defaultVisitor` handler below.
+        const newNode = block.deserialize({ node, joins });
+
+        // Returning falsey will fall through to the default visitor below
+        if (!newNode) {
+          return;
+        }
+
+        if (!Node.isNode(newNode)) {
+          throw new Error(`${block.constructor.name}#deserialize() must return a Slate.js Node.`);
+        }
+
+        return newNode;
+      },
+      defaultVisitor(node, visitNode) {
+        if (node.nodes) {
+          // Now we recurse into the child nodes array
+          // NOTE: The result is immutable, so we have to return the result of
+          // `.set` here.
+          return node.set('nodes', node.nodes.map(visitNode));
+        }
+
+        return node;
+      },
+    })
+  );
 }

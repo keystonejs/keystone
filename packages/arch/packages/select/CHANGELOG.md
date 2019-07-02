@@ -1,5 +1,10 @@
 # @arch-ui/select
 
+## 0.0.7
+
+- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+  - @arch-ui/theme@0.0.5
+
 ## 0.0.6
 
 ### Patch Changes

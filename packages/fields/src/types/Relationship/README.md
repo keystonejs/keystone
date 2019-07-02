@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: field-types
 title: Relationship
----
+[meta]-->
 
 # Relationship
 
@@ -64,7 +64,7 @@ relationship:
 
 ```graphql
 # Replace all posts of a given User
-query replaceAllPosts {
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {
@@ -90,7 +90,7 @@ relationship:
 
 ```graphql
 # Replace the company of a given User
-query replaceAllPosts {
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {
@@ -117,7 +117,7 @@ as is the case for [to-many relationships](#overriding-a-to-many-relationship)):
 
 ```graphql
 # Replace the company of a given User
-query replaceAllPosts {
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {
@@ -144,7 +144,7 @@ mutation (thanks to the [order of execution](#order-of-execution)):
 
 ```graphql
 # Replace all posts related to a given User
-query replaceAllPosts {
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {

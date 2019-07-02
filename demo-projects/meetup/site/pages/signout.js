@@ -8,7 +8,7 @@ import { useAuth } from '../lib/authetication';
 import { Container } from '../primitives';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { colors } from '../theme';
+import Meta from '../components/Meta';
 
 export default () => {
   const { isAuthenticated, signout } = useAuth();
@@ -23,7 +23,8 @@ export default () => {
 
   return (
     <>
-      <Navbar background="white" foreground={colors.greyDark} />
+      <Meta title="Sign out" />
+      <Navbar background="white" />
       <Container>
         <p css={{ margin: '100px', textAlign: 'center' }}>Signing you out...</p>
       </Container>

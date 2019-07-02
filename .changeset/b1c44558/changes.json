@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/admin-ui", "type": "patch" },
-    { "name": "@keystone-alpha/website", "type": "patch" }
-  ],
-  "dependents": []
-}

@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Introduction
----
+[meta]-->
 
 # Guides
 

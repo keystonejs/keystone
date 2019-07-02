@@ -1,5 +1,92 @@
 # keystone_demo_blog
 
+## 1.2.3
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/adapter-mongoose@2.2.0
+  - @keystone-alpha/keystone@7.0.0
+
+## 1.2.2
+
+### Patch Changes
+
+- [dc2cd8e5](https://github.com/keystonejs/keystone-5/commit/dc2cd8e5):
+
+  Allow changing to default dashboard to a custom component
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/app-admin-ui@5.0.0
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.1
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/oembed-adapters@1.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+  - @keystone-alpha/app-graphql@6.1.0
+  - @keystone-alpha/app-next@1.0.2
+  - @keystone-alpha/app-static@1.0.2
+  - @arch-ui/layout@0.2.3
+  - @arch-ui/typography@0.0.7
+  - @keystone-alpha/file-adapters@1.1.1
+
+## 1.2.1
+
+### Patch Changes
+
+- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+
+  Correct the blog demo build config
+
+## 1.2.0
+
+### Minor Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+### Patch Changes
+
+- [8494e4cc](https://github.com/keystonejs/keystone-5/commit/8494e4cc):
+
+  `@keystone-alpha/app-admin-ui` no longer accepts a `keystone` paramater in its constructor. It is now automatically passed during the `keystone.prepare()` call.
+
+* Updated dependencies [666e15f5](https://github.com/keystonejs/keystone-5/commit/666e15f5):
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/keystone@5.0.0
+  - @keystone-alpha/app-admin-ui@4.0.0
+  - @keystone-alpha/app-graphql@6.0.0
+
 ## 1.1.1
 
 ### Patch Changes

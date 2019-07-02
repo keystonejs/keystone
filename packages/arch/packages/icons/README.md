@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: icons
 title: Icons
----
+[meta]-->
 
 # Arch-UI Icons
 

@@ -6,8 +6,8 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { ShieldIcon, PlusIcon, PersonIcon } from '@arch-ui/icons';
-import { colors, gridSize } from '@arch-ui/theme';
+import { PlusIcon, PersonIcon } from '@arch-ui/icons';
+import { gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
@@ -107,26 +107,13 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, value, renderContext, error, onChange } = this.props;
+    const { autoFocus, field, value, renderContext, errors, onChange } = this.props;
     const { many, ref } = field.config;
-    const { authList, withAuth } = field.adminMeta;
+    const { authStrategy } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
     return (
       <FieldContainer>
-        <FieldLabel
-          htmlFor={htmlID}
-          css={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {field.label}{' '}
-          {!canRead ? (
-            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-          ) : null}
-        </FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <div css={{ flex: 1 }}>
             <RelationshipSelect
@@ -134,7 +121,7 @@ export default class RelationshipField extends Component {
               isMulti={many}
               field={field}
               value={value}
-              error={error}
+              errors={errors}
               renderContext={renderContext}
               htmlID={htmlID}
               onChange={this.onChange}
@@ -146,14 +133,14 @@ export default class RelationshipField extends Component {
             }}
             field={field}
           />
-          {withAuth && ref === authList && (
+          {authStrategy && ref === authStrategy.listKey && (
             <SetAsCurrentUser
               many={many}
               onAddUser={user => {
                 onChange(many ? (value || []).concat(user) : user);
               }}
               value={value}
-              listKey={authList}
+              listKey={authStrategy.listKey}
             />
           )}
         </FieldInput>
