@@ -1,1 +1,1 @@
-Added modifiers prop to arch/tooltip
+Added modifiers to arch/tooltip
