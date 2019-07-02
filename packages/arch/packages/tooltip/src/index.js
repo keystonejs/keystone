@@ -33,11 +33,16 @@ type PositionerProps = {
   style?: Object,
   className?: string,
   targetNode: HTMLElement | null,
+  modifiers?: Object,
 };
 
 let TooltipPositioner = (props: PositionerProps) => {
   return createPortal(
-    <Popper referenceElement={props.targetNode} placement={props.placement}>
+    <Popper
+      referenceElement={props.targetNode}
+      placement={props.placement}
+      modifiers={props.modifiers}
+    >
       {({ ref, style }) => (
         <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>
           <div css={{ margin: gridSize }}>
@@ -172,7 +177,7 @@ export default class Tooltip extends Component<Props, State> {
   };
 
   render() {
-    const { children, content, onHide, onShow, placement, className } = this.props;
+    const { children, content, onHide, onShow, placement, modifiers, className } = this.props;
     const { isVisible } = this.state;
     const ref = this.ref;
 
@@ -185,6 +190,7 @@ export default class Tooltip extends Component<Props, State> {
             <TooltipPositioner
               targetNode={this.ref.current}
               placement={placement}
+              modifiers={modifiers}
               className={className}
               style={fade(transitionState)}
             >
