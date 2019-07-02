@@ -33,7 +33,6 @@ type PositionerProps = {
   style?: Object,
   className?: string,
   targetNode: HTMLElement | null,
-  modifiers?: Object,
 };
 
 let TooltipPositioner = (props: PositionerProps) => {
@@ -41,7 +40,7 @@ let TooltipPositioner = (props: PositionerProps) => {
     <Popper
       referenceElement={props.targetNode}
       placement={props.placement}
-      modifiers={props.modifiers}
+      modifiers={{ preventOverflow: { enabled: false } }}
     >
       {({ ref, style }) => (
         <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>
@@ -177,7 +176,7 @@ export default class Tooltip extends Component<Props, State> {
   };
 
   render() {
-    const { children, content, onHide, onShow, placement, modifiers, className } = this.props;
+    const { children, content, onHide, onShow, placement, className } = this.props;
     const { isVisible } = this.state;
     const ref = this.ref;
 
@@ -190,7 +189,6 @@ export default class Tooltip extends Component<Props, State> {
             <TooltipPositioner
               targetNode={this.ref.current}
               placement={placement}
-              modifiers={modifiers}
               className={className}
               style={fade(transitionState)}
             >
