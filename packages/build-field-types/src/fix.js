@@ -29,6 +29,5 @@ export default async function fix(directory: string) {
     })
   )).some(x => x);
 
-  let obj = packages.length > 1 ? 'packages' : 'package';
-  success(didModify ? `fixed ${obj}!` : `${obj} already valid!`);
+  success(didModify ? `fixed project!` : `project already valid!`);
 }

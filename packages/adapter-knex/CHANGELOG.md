@@ -1,5 +1,32 @@
 # @keystone-alpha/adapter-knex
 
+## 1.1.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Move Knex Database Dropping from _always_ to _with config `dropDatabase: true`_.
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/keystone@7.0.0
+
+## 1.0.9
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/keystone@6.0.0
+
+## 1.0.8
+
+- Updated dependencies [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+  - @keystone-alpha/keystone@5.0.0
+
 ## 1.0.7
 
 ### Patch Changes

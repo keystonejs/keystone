@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: tutorials
 title: GraphQL
----
+[meta]-->
 
 # An Introduction To KeystoneJS's GraphQL API
 

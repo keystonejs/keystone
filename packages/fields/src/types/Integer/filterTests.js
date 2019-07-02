@@ -3,6 +3,8 @@ import Text from '../Text';
 import Integer from './';
 
 export const name = 'Integer';
+export { Integer as type };
+export const exampleValue = '37';
 
 export const getTestFields = () => {
   return {

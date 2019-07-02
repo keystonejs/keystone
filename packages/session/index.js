@@ -1,6 +1,5 @@
 const {
   commonSessionMiddleware,
-  createSessionMiddleware,
   restrictAudienceMiddleware,
   startAuthedSession,
   endAuthedSession,
@@ -8,7 +7,6 @@ const {
 
 module.exports = {
   commonSessionMiddleware,
-  createSessionMiddleware,
   restrictAudienceMiddleware,
   startAuthedSession,
   endAuthedSession,

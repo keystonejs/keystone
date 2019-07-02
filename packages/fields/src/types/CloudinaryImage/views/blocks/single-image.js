@@ -211,3 +211,32 @@ export function serialize({ node }) {
     },
   };
 }
+
+export function deserialize({ node, joins }) {
+  if (!joins || !joins.length) {
+    console.error('No image data received when rehydrating cloudinaryImage block');
+    return;
+  }
+
+  // Find the 'image' child node
+  const imageNode = node.findDescendant(
+    child => child.object === 'block' && child.type === image.type
+  );
+
+  if (!imageNode) {
+    console.error('No image found in a cloudinaryImage block');
+    return;
+  }
+
+  return (
+    node
+      // Inject the alignment back into the containing block
+      .set('data', node.data.set('alignment', joins[0].align))
+      // And the src attribute into the inner image
+      .setNode(node.getPath(imageNode.key), {
+        data: {
+          src: joins[0].image.publicUrl,
+        },
+      })
+  );
+}

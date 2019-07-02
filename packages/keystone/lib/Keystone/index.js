@@ -1,6 +1,7 @@
 const GraphQLJSON = require('graphql-type-json');
 const fs = require('fs');
 const gql = require('graphql-tag');
+const flattenDeep = require('lodash.flattendeep');
 const fastMemoize = require('fast-memoize');
 const { print } = require('graphql/language/printer');
 const { graphql } = require('graphql');
@@ -23,6 +24,7 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
+const { DEFAULT_DIST_DIR } = require('../../constants');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
@@ -34,6 +36,7 @@ module.exports = class Keystone {
     defaultAdapter,
     name,
     adapterConnectOptions = {},
+    onConnect,
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -43,6 +46,8 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._graphQLQuery = {};
+    this.registeredTypes = new Set();
+    this.eventHandlers = { onConnect };
 
     if (adapters) {
       this.adapters = adapters;
@@ -74,7 +79,8 @@ module.exports = class Keystone {
       getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
-      getAuth: () => this.auth[key],
+      getAuth: () => this.auth[key] || {},
+      registerType: type => this.registeredTypes.add(type),
       isAuxList,
       createAuxList: (auxKey, auxConfig) => {
         if (isAuxList) {
@@ -104,8 +110,11 @@ module.exports = class Keystone {
           ...options,
         })
       )
-      // Don't unnecessarily leak any connection info
-    ).then(() => {});
+    ).then(() => {
+      if (this.eventHandlers.onConnect) {
+        return this.eventHandlers.onConnect(this);
+      }
+    });
   }
 
   /**
@@ -114,7 +123,8 @@ module.exports = class Keystone {
   disconnect() {
     return resolveAllKeys(
       mapKeys(this.adapters, adapter => adapter.disconnect())
-      // Don't unnecessarily leak any connection info
+      // Chain an empty function so that the result of this promise
+      // isn't unintentionally leaked to the caller
     ).then(() => {});
   }
 
@@ -322,7 +332,15 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    return { typeDefs, resolvers };
+    return {
+      typeDefs: typeDefs.map(
+        typeDef =>
+          gql`
+            ${typeDef}
+          `
+      ),
+      resolvers,
+    };
   }
 
   dumpSchema(file) {
@@ -407,5 +425,29 @@ module.exports = class Keystone {
 
     // 4. Merge the data back together again
     return mergeRelationships(createdItems, createdRelationships);
+  }
+
+  async prepare({ dev = false, apps = [], distDir } = {}) {
+    const middlewares = flattenDeep(
+      await Promise.all(
+        [
+          // Inject any field middlewares (eg; WYSIWIG's static assets)
+          // We do this first to avoid it conflicting with any catch-all routes the
+          // user may have specified
+          ...this.registeredTypes,
+          ...apps,
+        ]
+          .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
+          .map(app =>
+            app.prepareMiddleware({
+              keystone: this,
+              dev,
+              distDir: distDir || DEFAULT_DIST_DIR,
+            })
+          )
+      )
+    ).filter(middleware => !!middleware);
+
+    return { middlewares };
   }
 };

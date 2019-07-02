@@ -41,7 +41,14 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async postConnect() {
-    await this.dropDatabase();
+    const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
+
+    if (this.config.dropDatabase || !isSetup) {
+      console.log('Knex adapter: Dropping database');
+      await this.dropDatabase();
+    } else {
+      return [];
+    }
 
     const createResult = await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.createTable())

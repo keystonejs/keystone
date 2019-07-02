@@ -1,5 +1,177 @@
 # @keystone-alpha/fields
 
+## 7.2.0
+
+### Minor Changes
+
+- [c5c46545](https://github.com/keystonejs/keystone-5/commit/c5c46545):
+
+  Add `searchUnsplash` GraphQL query when using the `Unsplash` field type
+
+### Patch Changes
+
+- [148400dc](https://github.com/keystonejs/keystone-5/commit/148400dc):
+
+  Using `connect: []` and `create: []` in many-relationship queries now behaves as expected.
+
+* [384135b1](https://github.com/keystonejs/keystone-5/commit/384135b1):
+
+  Minor bump of bcrypt version
+
+## 7.1.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add oEmbed Content Block with adapter-specific renderers.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add an Unsplash Image type which fetches data from the Unsplash API
+
+- [8799190e](https://github.com/keystonejs/keystone-5/commit/8799190e):
+
+  Expose `options.adminMeta` to Content Blocks.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add an Unsplash Image Block for the Content field which takes an Unsplash Image ID and displays the image within the Content field.
+
+### Patch Changes
+
+- [8799190e](https://github.com/keystonejs/keystone-5/commit/8799190e):
+
+  Correctly use `options.adminMeta.readViews()` to load OEmbed Block views.
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @arch-ui/fields@2.0.0
+  - @arch-ui/controls@0.0.8
+  - @arch-ui/day-picker@0.0.9
+  - @arch-ui/filters@0.0.9
+  - @arch-ui/input@0.0.8
+
+## 7.0.1
+
+### Patch Changes
+
+- [c3daef1a](https://github.com/keystonejs/keystone-5/commit/c3daef1a):
+
+  Correctly guard against undefined serverErrors in RelationshipSelect
+
+## 7.0.0
+
+### Major Changes
+
+- [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+
+  - Expose a new method on field Controllers: `field#validateInput()`.
+    - ```javascript
+      /**
+       * Perform client-side data validations before performing a
+       * mutation. Any errors or warnings raised will abort the mutation and
+       * re-render the `Field` view with a new `error` prop.
+       *
+       * This method is only called on fields whos `.hasChanged()` property returns
+       * truthy.
+       *
+       * If only warnings are raised, the Admin UI will allow the user to confirm
+       * they wish to continue anyway. If they continue, and no values have changed
+       * since the last validation, validateInput will be called again, however any
+       * warnings raised will be ignored and the mutation will proceed as normal.
+       * This method is called after `serialize`.
+       *
+       * @param {Object} options
+       * @param {Object} options.resolvedData The data object that would be sent to
+       * the server. This data has previously been fed through .serialize()
+       * @param {Object} options.originalInput The data as set by the `Field`
+       * component. This data has _not_ been previously fed through .serialize().
+       * @param {addFieldWarningOrError} options.addFieldValidationError
+       * @param {addFieldWarningOrError} options.addFieldValidationWarning
+       * @return undefined
+       */
+      validateInput = ({
+        resolvedData,
+        originalInput,
+        addFieldValidationError,
+        addFieldValidationWarning,
+      }) => {
+        // Call addFieldValidationError / addFieldValidationWarning here
+      };
+      ```
+  - `Password` field is now using `validateInput()` which enforces `isRequired`
+    and `minLength` checks in the Admin UI.
+
+### Minor Changes
+
+- [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+
+  - Add `OEmbed` field
+
+    ```javascript
+    const { Keystone } = require('@keystone-alpha/keystone');
+    const { OEmbed } = require('@keystone-alpha/fields');
+    const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+
+    const keystone = new Keystone(/* ... */);
+
+    const iframelyAdapter = new IframelyOEmbedAdapter({
+      apiKey: '...', // Get one from https://iframely.com
+    });
+
+    keystone.createList('User', {
+      fields: {
+        portfolio: {
+          type: OEmbed,
+          adapter: iframelyAdapter,
+        },
+      },
+    });
+    ```
+
+### Patch Changes
+
+- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+
+  - Correctly read auth strategy info for displaying the "setCurrentUser" toggle on Relationship fields in the Admin UI
+
+- [3958a9c7](https://github.com/keystonejs/keystone-5/commit/3958a9c7):
+
+  Fields configured with isRequired now behave as expected on create and update, returning a validation error if they are null.
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @arch-ui/fields@1.0.0
+
+## 6.2.2
+
+### Patch Changes
+
+- [25f9ad7e](https://github.com/keystonejs/keystone-5/commit/25f9ad7e):
+
+  Compile Controller base class to ES5 so that non-native classes can extend it
+
+## 6.2.1
+
+### Patch Changes
+
+- [07692ee7](https://github.com/keystonejs/keystone-5/commit/07692ee7):
+
+  Fix item details updating failures when Access Control enabled on a field, but that field is not edited (ie; we were sending unedited data to the mutation which would (correctly) fail).
+
+## 6.2.0
+
+### Minor Changes
+
+- [c5a1d301](https://github.com/keystonejs/keystone-5/commit/c5a1d301):
+
+  - CloudinaryImage single image block correctly loads and displays saved image
+  - AdminUI deserialises fields JIT before rendering
+
 ## 6.1.1
 
 ### Patch Changes

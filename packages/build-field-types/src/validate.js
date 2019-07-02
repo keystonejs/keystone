@@ -24,11 +24,11 @@ export function validateEntrypointSource(entrypoint: Entrypoint) {
 }
 
 export function isMainFieldValid(entrypoint: Entrypoint) {
-  return entrypoint.main === getValidMainField(entrypoint);
+  return entrypoint.main === getValidMainField(entrypoint.package.name);
 }
 
 export function isModuleFieldValid(entrypoint: Entrypoint) {
-  return entrypoint.module === getValidModuleField(entrypoint);
+  return entrypoint.module === getValidModuleField(entrypoint.package.name);
 }
 
 export function validateEntrypoint(entrypoint: Entrypoint, log: boolean) {

@@ -1,7 +1,5 @@
 const cookieSignature = require('cookie-signature');
-const express = require('express');
 const expressSession = require('express-session');
-const bodyParser = require('body-parser');
 const cookie = require('cookie');
 
 const commonSessionMiddleware = (keystone, cookieSecret, sessionStore) => {
@@ -36,7 +34,7 @@ const commonSessionMiddleware = (keystone, cookieSecret, sessionStore) => {
     const cookies = cookie.parse(req.headers.cookie || '');
 
     // Construct a "fake" session cookie based on the authorization token
-    cookies[COOKIE_NAME] = `s:${cookieSignature.sign(token, cookieSecret)}`;
+    cookies[COOKIE_NAME] = `s:${token}`;
 
     // Then reset the cookies so the session middleware can read it.
     req.headers.cookie = Object.entries(cookies)
@@ -56,92 +54,6 @@ const commonSessionMiddleware = (keystone, cookieSecret, sessionStore) => {
   });
 
   return [injectAuthCookieMiddleware, sessionMiddleware, populateAuthedItemMiddleware(keystone)];
-};
-
-const formatResponse = (res, htmlResponse, json) =>
-  res.format({
-    default: htmlResponse,
-    'text/html': htmlResponse,
-    'application/json': () => res.json(json),
-  });
-
-const redirectSuccessfulSignin = (target, req, res) =>
-  formatResponse(res, () => res.redirect(target), { success: true });
-
-const signin = (signinPath, successPath, authStrategy, audiences) => async (req, res, next) => {
-  try {
-    // TODO: How could we support, for example, the twitter auth flow?
-    const result = await authStrategy.validate({
-      identity: req.body.username,
-      secret: req.body.password,
-    });
-
-    if (!result.success) {
-      // TODO - include some sort of error in the page
-      const htmlResponse = () => res.redirect(signinPath);
-      return formatResponse(res, htmlResponse, { success: false, message: result.message });
-    }
-
-    await startAuthedSession(req, result, audiences);
-  } catch (e) {
-    return next(e);
-  }
-
-  return redirectSuccessfulSignin(successPath, req, res);
-};
-
-const signout = async (req, res, next) => {
-  let success;
-  try {
-    await endAuthedSession(req);
-    success = true;
-  } catch (e) {
-    success = false;
-    // TODO: Better error logging?
-    console.error(e);
-  }
-
-  // NOTE: Because session is destroyed here, before webpack can handle the
-  // request, the "public" bundle will load the "signed out" page
-  return formatResponse(res, () => next(), { success });
-};
-
-const session = (req, res) => {
-  res.json({
-    signedIn: !!req.user,
-    user: req.user ? { id: req.user.id, name: req.user.name } : undefined,
-  });
-};
-
-const createSessionMiddleware = (
-  { signinPath, signoutPath, sessionPath, successPath },
-  authStrategy,
-  audiences
-) => {
-  const app = express();
-
-  // Listen to POST events for form signin form submission (GET falls through
-  // to the webpack server(s))
-  app.post(
-    signinPath,
-    bodyParser.json(),
-    bodyParser.urlencoded({ extended: true }),
-    signin(signinPath, successPath, authStrategy, audiences)
-  );
-
-  // Listen to both POST and GET events, and always sign the user out.
-  app.use(signoutPath, signout);
-
-  // Allow clients to AJAX for user info
-  app.get(sessionPath, session);
-
-  // Short-circuit GET requests when the user already signed in (avoids
-  // downloading UI bundle, doing a client side redirect, etc)
-  app.get(signinPath, (req, res, next) =>
-    req.user ? redirectSuccessfulSignin(successPath, req, res) : next()
-  );
-
-  return app;
 };
 
 function populateAuthedItemMiddleware(keystone) {
@@ -187,14 +99,14 @@ function restrictAudienceMiddleware({ isPublic, audiences }) {
   };
 }
 
-function startAuthedSession(req, { item, list }, audiences) {
+function startAuthedSession(req, { item, list }, audiences, cookieSecret) {
   return new Promise((resolve, reject) =>
     req.session.regenerate(err => {
       if (err) return reject(err);
       req.session.keystoneListKey = list.key;
       req.session.keystoneItemId = item.id;
       req.session.audiences = audiences;
-      resolve();
+      resolve(cookieSignature.sign(req.session.id, cookieSecret));
     })
   );
 }
@@ -210,7 +122,6 @@ function endAuthedSession(req) {
 
 module.exports = {
   commonSessionMiddleware,
-  createSessionMiddleware,
   restrictAudienceMiddleware,
   startAuthedSession,
   endAuthedSession,

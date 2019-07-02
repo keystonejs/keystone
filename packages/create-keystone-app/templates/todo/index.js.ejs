@@ -1,7 +1,9 @@
 const { Keystone } = require('@keystone-alpha/keystone');
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text } = require('@keystone-alpha/fields');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { StaticApp } = require('@keystone-alpha/app-static');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 
 // The core `keystone` instance is always required.
 // Here you can setup the database adapter, set the name used throughout the
@@ -22,21 +24,31 @@ keystone.createList('Todo', {
     // This list is setup with a single field, 'name'.
     // The type of Text influences the types and queries available via GraphQL.
     // See the Text field docs:
-    // https://v5.keystonejs.com/keystone-alpha/fields/types/text/
+    // https://v5.keystonejs.com/keystone-alpha/fields/src/types/text/
     name: { type: Text, schemaDoc: 'This is the thing you need to do' },
   },
 });
-
-// Setup the optional Admin UI
-// If no admin is created, you will still have a fully functioning GraphQL API.
-const admin = new AdminUI(keystone);
 
 module.exports = {
   // You must export your 'keystone' instance which will be used to setup
   // a database, and associated GraphQL APIs.
   keystone,
 
-  // Optionally export the 'admin' instance, which will generate the Admin UI
-  // based on the lists and fields you've setup.
-  admin,
+  // A running instance of KeystoneJS is comprised of a series of server
+  // middlewares.
+  // Using the `apps` export, we specify the order and composition of the
+  // express middlewares executed per request.
+  apps: [
+    // The (required) GraphQL API instance from which all our data is served
+    new GraphQLApp(),
+
+    // Serve our website from the root route.
+    new StaticApp({ path: '/', src: 'public' }),
+
+    // Setup the optional Admin UI which will generate the Admin UI based on the
+    // lists and fields you've setup.
+    // If no admin is created, you will still have a fully functioning GraphQL
+    // API.
+    new AdminUIApp({ enableDefaultRoute: true }),
+  ],
 };

@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Introduction
----
+[meta]-->
 
 # Discussion
 
@@ -12,3 +12,5 @@ Some discussion papers to help you perform various tasks in the KeystoneJS ecosy
 - [Hooks](./hooks.md)
 - [Mutation Lifecycle](./mutation-lifecycle.md)
 - [Performance](./performance.md)
+- [KeystoneJS Apps](./apps.md)
+- [Custom Server](./custom-server.md)

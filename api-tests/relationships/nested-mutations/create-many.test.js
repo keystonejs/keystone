@@ -152,6 +152,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(allNotes).toHaveLength(createUser.notes.length);
+
+          // Test an empty list of related notes
+          const result = await graphqlRequest({
+            keystone,
+            query: `
+        mutation {
+          createUser(data: {
+            username: "A thing",
+            notes: { create: [] }
+          }) {
+            id
+            notes { id }
+          }
+        }
+    `,
+          });
+
+          expect(result.data.createUser).toMatchObject({
+            id: expect.any(String),
+            notes: [],
+          });
         })
       );
 

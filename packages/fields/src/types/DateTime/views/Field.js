@@ -11,14 +11,15 @@ type Props = {
   autoFocus: boolean,
   field: Object,
   value: string,
+  errors: Array<Error>,
 };
 
-const DateTimeField = ({ autoFocus, field, onChange, value }: Props) => {
+const DateTimeField = ({ autoFocus, field, onChange, value, errors }: Props) => {
   const htmlID = `ks-input-${field.path}`;
 
   return (
     <FieldContainer>
-      <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <FieldInput>
         <TextDayTimePicker id={htmlID} date={value} onChange={onChange} autoFocus={autoFocus} />
       </FieldInput>

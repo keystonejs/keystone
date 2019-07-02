@@ -1,5 +1,118 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Showcase the Unsplash Content Block in the Basic Test Project.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Showcase usage of Unsplash Image field on Basic Test Project.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add oEmbed Content Block with adapter-specific renderers.
+
+### Patch Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Remove the deleted `embed` block from the test project
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Ensure Post's label can be correctly rendered when associated user has no name.
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/app-admin-ui@5.0.1
+  - @keystone-alpha/fields@7.1.0
+  - @arch-ui/fields@2.0.0
+  - @keystone-alpha/adapter-mongoose@2.2.0
+  - @keystone-alpha/keystone@7.0.0
+
+## 1.2.0
+
+### Minor Changes
+
+- [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+
+  Add tests for `OEmbed` type rendering in Admin UI
+
+### Patch Changes
+
+- [2df1e920](https://github.com/keystonejs/keystone-5/commit/2df1e920):
+
+  Restore process.env.MONGODB_URI to test project example
+
+- [b69a2276](https://github.com/keystonejs/keystone-5/commit/b69a2276):
+
+  Removed unnecessary port parameter from keystone.prepare calls
+
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @keystone-alpha/app-admin-ui@5.0.0
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+  - @arch-ui/fields@1.0.0
+  - @keystone-alpha/app-graphql@6.1.0
+  - @keystone-alpha/app-static@1.0.2
+  - @keystone-alpha/file-adapters@1.1.1
+
+## 1.1.0
+
+### Minor Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+### Patch Changes
+
+- [8494e4cc](https://github.com/keystonejs/keystone-5/commit/8494e4cc):
+
+  `@keystone-alpha/app-admin-ui` no longer accepts a `keystone` paramater in its constructor. It is now automatically passed during the `keystone.prepare()` call.
+
+* Updated dependencies [666e15f5](https://github.com/keystonejs/keystone-5/commit/666e15f5):
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/keystone@5.0.0
+  - @keystone-alpha/app-admin-ui@4.0.0
+  - @keystone-alpha/app-graphql@6.0.0
+
 ## 1.0.9
 
 ### Patch Changes

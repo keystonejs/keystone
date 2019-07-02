@@ -1,5 +1,13 @@
 # @arch-ui/pill
 
+## 0.1.5
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
 ## 0.1.4
 
 - Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):

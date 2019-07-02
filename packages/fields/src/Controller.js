@@ -21,6 +21,41 @@ export default class FieldController {
   // NOTE: This function is run synchronously
   serialize = data => data[this.path] || null;
 
+  /**
+   * Tell the AdminUI there has been an error with this field
+   *
+   * @callback addFieldWarningOrError
+   * @param {String} message This string will be displayed to the user in the
+   * Admin UI.
+   * @param {Object} data Any arbitrary data you wish to attach to the error. It
+   * will be available as part of the `errors` prop on the `Field` view.
+   */
+
+  /**
+   * Perform client-side data validations before performing a
+   * mutation. Any errors or warnings raised will abort the mutation and
+   * re-render the `Field` view with a new `error` prop.
+   *
+   * This method is only called on fields whos `.hasChanged()` property returns
+   * truthy.
+   *
+   * If only warnings are raised, the Admin UI will allow the user to confirm
+   * they wish to continue anyway. If they continue, and no values have changed
+   * since the last validation, validateInput will be called again, however any
+   * warnings raised will be ignored and the mutation will proceed as normal.
+   * This method is called after `serialize`.
+   *
+   * @param {Object} options
+   * @param {Object} options.resolvedData The data object that would be sent to
+   * the server. This data has previously been fed through .serialize()
+   * @param {Object} options.originalInput The data as set by the `Field`
+   * component. This data has _not_ been previously fed through .serialize().
+   * @param {addFieldWarningOrError} options.addFieldValidationError
+   * @param {addFieldWarningOrError} options.addFieldValidationWarning
+   * @return undefined
+   */
+  validateInput = () => {};
+
   // When receiving data from the server, it needs to be processed into a
   // format ready for display. The format received will be the same as specified
   // in the field's Implementation#gqlOutputFields()
@@ -40,8 +75,8 @@ export default class FieldController {
    * passed to this.serialize() for you
    * @return boolean
    */
-  hasChanged = async (initialData, currentData) =>
-    isEqual(initialData[this.path], currentData[this.path]);
+  hasChanged = (initialData, currentData) =>
+    !isEqual(initialData[this.path], currentData[this.path]);
 
   // eslint-disable-next-line no-unused-vars
   getDefaultValue = data => this.config.defaultValue || '';

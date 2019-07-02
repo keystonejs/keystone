@@ -1,5 +1,21 @@
 # @arch-ui/input
 
+## 0.0.8
+
+### Patch Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  When rendered as a <textarea>, the <Input> component is no longer limited to 100px height. `height` is replaced with `min-height`.
+
+## 0.0.7
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
 ## 0.0.6
 
 - Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):

@@ -1,28 +1,23 @@
 /** @jsx jsx */
 
-import React, { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react'; // eslint-disable-line no-unused-vars
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
-import throttle from 'lodash.throttle';
-import { MDXProvider } from '@mdx-js/tag';
+
+import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/core';
 import { SkipNavContent } from '@reach/skip-nav';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
-
-import matter from 'gray-matter';
-import visit from 'unist-util-visit';
-import rawMDX from '@mdx-js/mdx';
-const compiler = rawMDX.createMdxAstCompiler({ mdPlugins: [] });
 
 import Layout from '../templates/layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
 import { media, mediaMax } from '../utils/media';
-import { Container, Footer, Sidebar, Search } from '../components';
+import { useNavData } from '../utils/hooks';
+import { Container } from '../components';
 import { CONTAINER_GUTTERS } from '../components/Container';
-
-const SIDEBAR_WIDTH = 280;
+import { Sidebar, SIDEBAR_WIDTH } from '../components/Sidebar';
 
 function titleCase(str, at = '-') {
   if (!str) return str;
@@ -37,34 +32,42 @@ function titleCase(str, at = '-') {
 
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
-  pageContext: { prev, next },
+  pageContext: { slug },
 }) {
+  let navData = useNavData();
+  let flatNavData = [].concat(...Object.values(navData));
+  let currentPageIndex = flatNavData.findIndex(node => node.path === slug);
+  let prev, next;
+  if (currentPageIndex !== 0) {
+    prev = flatNavData[currentPageIndex - 1];
+  }
+  if (currentPageIndex !== flatNavData.length - 1) {
+    next = flatNavData[currentPageIndex + 1];
+  }
+
   const { code, fields } = mdx;
   const { siteMetadata } = site;
-  const { description, heading } = getMeta(matter(mdx.rawBody).content);
   const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
-  const title = `${fields.pageTitle.charAt(0) === '@' ? heading : fields.pageTitle}${suffix}`;
+  const title = `${
+    fields.pageTitle.charAt(0) === '@' ? fields.heading : fields.pageTitle
+  }${suffix}`;
 
   return (
     <>
       <SiteMeta pathname={fields.slug} />
       <Helmet>
         <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta property="og:description" content={description} />
+        <meta name="description" content={fields.description} />
+        <meta property="og:description" content={fields.description} />
         <meta property="og:url" content={`${siteMetadata.siteUrl}${fields.slug}`} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <meta name="twitter:description" content={description} />
+        <meta name="twitter:description" content={fields.description} />
       </Helmet>
       <Layout>
         {({ sidebarOffset, sidebarIsVisible }) => (
           <Container>
-            <Aside isVisible={sidebarIsVisible} offsetTop={sidebarOffset} key="sidebar">
-              <Search />
-              <Sidebar />
-              <Footer />
-            </Aside>
+            <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} />
             <Content>
               <main>
                 <SkipNavContent />
@@ -92,17 +95,17 @@ export default function Template({
               </EditSection>
               <Pagination aria-label="Pagination">
                 {prev ? (
-                  <PaginationButton to={prev.fields.slug}>
+                  <PaginationButton to={prev.path}>
                     <small>&larr; Prev</small>
-                    <span>{prev.fields.pageTitle}</span>
+                    <span>{prev.context.pageTitle}</span>
                   </PaginationButton>
                 ) : (
                   <PaginationPlaceholder />
                 )}
                 {next ? (
-                  <PaginationButton align="right" to={next.fields.slug}>
+                  <PaginationButton align="right" to={next.path}>
                     <small>Next &rarr;</small>
-                    <span>{next.fields.pageTitle}</span>
+                    <span>{next.context.pageTitle}</span>
                   </PaginationButton>
                 ) : (
                   <PaginationPlaceholder />
@@ -119,23 +122,6 @@ export default function Template({
 // ==============================
 // Meta
 // ==============================
-
-function getMeta(rawBody) {
-  const ast = compiler.parse(rawBody);
-  let description;
-  let heading;
-
-  visit(ast, node => {
-    if (!description && node.type === 'paragraph') {
-      description = node.children[0].value;
-    }
-    if (!heading && node.type === 'heading' && node.depth === 1) {
-      heading = node.children[0].value;
-    }
-  });
-
-  return { description, heading };
-}
 
 // ==============================
 // Styled Components
@@ -252,81 +238,7 @@ const PaginationButton = ({ align = 'left', ...props }) => (
 // ==============================
 
 const layoutGutter = gridSize * 4;
-let oldSidebarOffset = 0;
-let oldWindowOffset = 0;
 
-const Aside = ({ offsetTop, isVisible, ...props }) => {
-  const asideRef = useRef();
-  const [isStuck, setSticky] = useState(false);
-
-  const handleWindowScroll = () => {
-    oldWindowOffset = window.pageYOffset;
-    if (window.pageYOffset > offsetTop && !isStuck) {
-      setSticky(true);
-    }
-    if (window.pageYOffset <= offsetTop && isStuck) {
-      setSticky(false);
-    }
-  };
-
-  const maintainSidebarScroll = throttle(() => {
-    oldSidebarOffset = asideRef.current.scrollTop;
-  });
-
-  useEffect(() => {
-    const asideEl = asideRef.current; // maintain ref for cleanup
-    window.addEventListener('scroll', handleWindowScroll);
-    asideEl.addEventListener('scroll', maintainSidebarScroll);
-
-    // cleanup
-    return () => {
-      window.removeEventListener('scroll', handleWindowScroll);
-      asideEl.removeEventListener('scroll', maintainSidebarScroll);
-    };
-  });
-
-  // NOTE: maintain the user's scroll whilst navigating between pages.
-  // This is a symptom of Gatsby remounting the entire tree (template) on each
-  // page change via `createPage` in "gatsby-node.js".
-  useEffect(() => {
-    const scrollTop = oldWindowOffset ? oldSidebarOffset + offsetTop : oldSidebarOffset;
-    asideRef.current.scrollTop = scrollTop;
-  }, [asideRef.current]);
-
-  const stickyStyles = {
-    height: isStuck ? '100%' : `calc(100% - ${offsetTop}px)`,
-    position: isStuck ? 'fixed' : 'absolute',
-    width: SIDEBAR_WIDTH,
-    top: isStuck ? 0 : offsetTop,
-  };
-
-  // NOTE: the 5px gutter is to stop inner elements outline/box-shadow etc.
-  // being cropped because the aside has overflow-x hidden (due to y=auto).
-  const avoidCropGutter = 5;
-
-  return (
-    <aside
-      ref={asideRef}
-      css={{
-        boxSizing: 'border-box',
-        overflowY: 'auto',
-        paddingBottom: '3rem',
-        paddingTop: layoutGutter,
-        marginLeft: -avoidCropGutter,
-        paddingLeft: avoidCropGutter,
-
-        [mediaMax.sm]: {
-          display: isVisible ? 'block' : 'none',
-        },
-        [media.sm]: {
-          paddingRight: layoutGutter,
-          ...stickyStyles,
-        },
-      }}
-      {...props}
-    />
-  );
-};
 const Content = props => (
   <div
     css={{
@@ -391,7 +303,7 @@ const Content = props => (
         boxShadow: '-4px 0 0 rgba(9, 30, 66, 0.09)',
         boxSizing: 'border-box',
         fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
-        lineHeight: '1.4',
+        lineHeight: '1.2',
         padding: gridSize * 2,
         overflowX: 'auto',
         tabSize: 2,
@@ -437,6 +349,8 @@ export const pageQuery = graphql`
         body
       }
       fields {
+        heading
+        description
         editUrl
         pageTitle
         navGroup

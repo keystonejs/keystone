@@ -3,6 +3,8 @@ import Text from '../Text';
 import Float from '.';
 
 export const name = 'Float';
+export { Float as type };
+export const exampleValue = '6.28';
 
 export const getTestFields = () => {
   return {

@@ -1,6 +1,7 @@
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password, Select } = require('@keystone-alpha/fields');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { objMerge } = require('@keystone-alpha/utils');
 const {
   getStaticListName,
@@ -138,12 +139,7 @@ listAccessVariations.forEach(createListWithStaticAccess);
 listAccessVariations.forEach(createListWithImperativeAccess);
 listAccessVariations.forEach(createListWithDeclarativeAccess);
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  authStrategy,
-});
-
 module.exports = {
   keystone,
-  admin,
+  apps: [new GraphQLApp(), new AdminUIApp({ adminPath: '/admin', authStrategy })],
 };

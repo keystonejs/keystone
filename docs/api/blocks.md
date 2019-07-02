@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: api
 title: Content Blocks
----
+[meta]-->
 
 # Content Blocks API
 
@@ -17,7 +17,7 @@ keystone.createList('Post', {
   fields: {
     body: {
       type: Content,
-      blocks: [Content.blocks.blockquote, CloudinaryImage.blocks.singleImage],
+      blocks: [Content.blocks.blockquote, CloudinaryImage.blocks.image],
     },
   },
 });
@@ -31,35 +31,37 @@ Each _Block_ is defined by the following API:
 {
   // (required)
   // A globally unique name for this block. Alpha-num characters only.
+  // NOTE: This must match the value exported from `getAdminViews()#type`.
   type: 'MyBlock',
 
   // (required)
   // The views this block will provide.
   // See below for the expected exports.
-  viewPath: '/absolute/path/to/built/view/file',
+  // Blocks can insert/render other blocks (eg; an image gallery can insert
+  // an image block). These other block views should also be included here.
+  getAdminViews: () => ['/absolute/path/to/built/view/file'],
 
   // (optional)
   // The server-side serialization implementation logic.
   // If not provided, any data included in the block will be serialised and
   // stored as a string in the database, and passed directly back to the
   // slate.js editor client side.
-  // NOTE: See viewPath#serialiser for complimentary client-side logic
+  // NOTE: See getAdminViews()#serialiser for complimentary client-side logic
   implementation: SingleImageBlock,
 
   // TODO: The client-side serialization implementation logic.
-
-  // (optional)
-  // Blocks can insert/render other blocks (eg; an image gallery can insert
-  // an image block). Define them here.
-  // It should be a regular block definition.
-  dependencies: ?, // image-container
 }
 ```
 
-The view file referenced from the `viewPath` option can have the following
-exports:
+The view files referenced from the `getAdminViews()` option can have the
+following exports:
 
 ```javascript
+// (required)
+// A globally unique name for this block. Alpha-num characters only.
+// NOTE: This must match the value exported from the Block config .type
+export const type = 'MyBlock';
+
 // (required)
 // The element rendered into the slate.js editor.
 // Is passed all the props a slate.js `renderNode()` receives.

@@ -1,5 +1,46 @@
 # @keystone-alpha/website
 
+## 1.0.12
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @arch-ui/input@0.0.8
+
+## 1.0.11
+
+### Patch Changes
+
+- [ac119f88](https://github.com/keystonejs/keystone-5/commit/ac119f88):
+
+  Homepage of the documentation website reveals the video on hover/touch of the image to avoid double click on play
+
+- [df48bc05](https://github.com/keystonejs/keystone-5/commit/df48bc05):
+
+  Move meta generation to build time and stringify the contents of title and description nodes properly
+
+- [d362e82d](https://github.com/keystonejs/keystone-5/commit/d362e82d):
+
+  Make previous and next buttons consistent with order in sidebar
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+## 1.0.10
+
+### Patch Changes
+
+- [b47fb186](https://github.com/keystonejs/keystone-5/commit/b47fb186):
+
+  Documentation website now features the egghead intro video instead of the illustration. The only changes here are on the homepage.
+
+## 1.0.9
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Remove unused dependency
+
 ## 1.0.8
 
 - Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):

@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Utilities
----
+[meta]-->
 
 # Utilities
 

@@ -1,5 +1,68 @@
 # @keystone-alpha/demo-project-todo
 
+## 1.1.2
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @keystone-alpha/adapter-mongoose@2.2.0
+  - @keystone-alpha/keystone@7.0.0
+
+## 1.1.1
+
+- Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+- Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+- Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+  - @keystone-alpha/app-admin-ui@5.0.0
+  - @keystone-alpha/keystone@6.0.0
+  - @keystone-alpha/fields@7.0.0
+  - @keystone-alpha/adapter-mongoose@2.1.0
+
+## 1.1.0
+
+### Minor Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+### Patch Changes
+
+- [8494e4cc](https://github.com/keystonejs/keystone-5/commit/8494e4cc):
+
+  `@keystone-alpha/app-admin-ui` no longer accepts a `keystone` paramater in its constructor. It is now automatically passed during the `keystone.prepare()` call.
+
+* Updated dependencies [666e15f5](https://github.com/keystonejs/keystone-5/commit/666e15f5):
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/keystone@5.0.0
+  - @keystone-alpha/app-admin-ui@4.0.0
+  - @keystone-alpha/app-graphql@6.0.0
+
 ## 1.0.8
 
 ### Patch Changes

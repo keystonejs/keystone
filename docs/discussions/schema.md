@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Data modeling - Lists & Fields
----
+[meta]-->
 
 # Schema - Lists & Fields
 

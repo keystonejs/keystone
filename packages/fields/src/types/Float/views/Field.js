@@ -13,12 +13,12 @@ export default class TextField extends Component {
   };
 
   render() {
-    const { autoFocus, field, value } = this.props;
+    const { autoFocus, field, value, errors } = this.props;
     const htmlID = `ks-input-${field.path}`;
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <Input
             autoComplete="off"
