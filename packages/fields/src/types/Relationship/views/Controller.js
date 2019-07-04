@@ -28,17 +28,6 @@ export default class RelationshipController extends FieldController {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
 
-  deserialize = data => {
-    // this is probably not a great solution
-    // ideally, we should have a set option in the mutation
-    this.lastSavedState = this.config.many
-      ? (data[this.path] || []).map(x => x.id)
-      : data[this.path]
-      ? data[this.path].id
-      : null;
-    return data[this.path];
-  };
-
   serialize = data => {
     const { path } = this;
     const { many } = this.config;
@@ -51,16 +40,8 @@ export default class RelationshipController extends FieldController {
         ids = value.map(x => x.id);
       }
       return {
-        connect: ids
-          .filter(id => {
-            return !this.lastSavedState.includes(id);
-          })
-          .map(id => ({ id })),
-        disconnect: this.lastSavedState
-          .filter(id => {
-            return !ids.includes(id);
-          })
-          .map(id => ({ id })),
+        disconnectAll: true,
+        connect: ids.map(id => ({ id })),
       };
     }
 
