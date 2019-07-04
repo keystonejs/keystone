@@ -1,0 +1,51 @@
+{
+  "name": "@keystone-alpha/field-content",
+  "description": "A block-based content field for KeystoneJS",
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "@arch-ui/color-utils": "^0.0.1",
+    "@arch-ui/fields": "^2.0.0",
+    "@arch-ui/hooks": "^0.0.4",
+    "@arch-ui/icons": "^0.0.5",
+    "@arch-ui/input": "^0.0.8",
+    "@arch-ui/theme": "^0.0.5",
+    "@arch-ui/tooltip": "^0.0.7",
+    "@arch-ui/typography": "^0.0.7",
+    "@babel/runtime": "^7.4.3",
+    "@emotion/core": "^10.0.10",
+    "@keystone-alpha/build-field-types": "^1.0.3",
+    "@keystone-alpha/fields": "^7.1.0",
+    "@keystone-alpha/utils": "^3.0.1",
+    "apply-ref": "^0.2.0",
+    "get-selection-range": "^0.1.0",
+    "image-extensions": "^1.1.0",
+    "is-hotkey": "^0.1.4",
+    "lodash.get": "^4.4.2",
+    "memoize-one": "^4.0.2",
+    "nanoassert": "^2.0.0",
+    "p-is-promise": "^2.1.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-popper": "^1.3.3",
+    "slate": "^0.44.12",
+    "slate-drop-or-paste-images": "^0.9.1",
+    "slate-html-serializer": "^0.7.36",
+    "slate-react": "^0.21.18"
+  },
+  "peerDependencies": {},
+  "field-types": {
+    "entrypoints": [
+      ".",
+      "Block",
+      "slate-serializer",
+      "blocks"
+    ]
+  },
+  "main": "dist/field-content.cjs.js",
+  "module": "dist/field-content.esm.js"
+}

@@ -352,9 +352,9 @@ export function Node({ node, editor }) {
   );
 }
 
-export let schema = {
+export let getSchema = () => ({
   isVoid: true,
-};
+});
 
 export function serialize({ node }) {
   const unsplashData = node.data.get('unsplashData');
