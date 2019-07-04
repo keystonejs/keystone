@@ -30,7 +30,7 @@ export default class RelationshipController extends FieldController {
 
   deserialize = data => {
     // this is probably not a great solution
-    // ideally, we should have a set option in addition to connect and disconnect
+    // ideally, we should have a set in the mutation
     this.lastSavedState = this.config.many
       ? (data[this.path] || []).map(x => x.id)
       : data[this.path]
