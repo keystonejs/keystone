@@ -60,7 +60,7 @@ let IconToolbarButton = ({ isActive, label, icon, tooltipPlacement = 'top', ...p
   );
 };
 
-export default function WysiwygField({ field, errors, value, onChange }) {
+export default function MarkdownField({ field, errors, value, onChange }) {
   const htmlID = `ks-input-${field.path}`;
   const accessError = errors.find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
