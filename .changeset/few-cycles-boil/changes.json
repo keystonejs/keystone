@@ -1,0 +1,109 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/field-content", "type": "major" },
+    { "name": "@keystone-alpha/fields", "type": "major" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/field-content",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/app-admin-ui",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/fields-wysiwyg-tinymce",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/keystone",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/passport-auth",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/fields-wysiwyg-tinymce",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-meetup",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/fields-wysiwyg-tinymce",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-todo",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-client-validation",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/passport-auth",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone", "@keystone-alpha/fields"]
+    }
+  ]
+}

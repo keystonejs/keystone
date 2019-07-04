@@ -1,0 +1,1 @@
+Don't error when Auth Strategy doesn't provide getInputFragment() or validate() method.

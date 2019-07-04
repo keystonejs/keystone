@@ -1,8 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
-import * as image from '../../../Content/views/editor/blocks/image';
-import * as caption from '../../../Content/views/editor/blocks/caption';
 import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
 import { findNode } from 'slate-react';
@@ -23,31 +21,31 @@ let getFiles = () =>
     input.click();
   });
 
-const insertImageBlockFromFile = (editor, file) => {
+const insertImageBlockFromFile = (blocks, editor, file) => {
   const reader = new FileReader();
-  reader.onload = event => insertImageBlock(editor, file, event.target.result);
+  reader.onload = event => insertImageBlock(blocks, editor, file, event.target.result);
   reader.readAsDataURL(file);
 };
 
-const insertImageBlock = (editor, file, src) => {
+const insertImageBlock = (blocks, editor, file, src) => {
   editor.insertBlock({
     type,
     nodes: [
       Block.create({
-        type: image.type,
+        type: blocks.image.type,
         data: { file, src },
       }),
     ],
   });
 };
 
-export function Sidebar({ editor }) {
+export function Sidebar({ editor, blocks }) {
   return (
     <button
       type="button"
       onClick={() => {
         getFiles().then(files => {
-          files.forEach(file => insertImageBlockFromFile(editor, file));
+          files.forEach(file => insertImageBlockFromFile(blocks, editor, file));
         });
       }}
     >
@@ -84,7 +82,7 @@ export function Node(props) {
       css={{ display: 'flex', flexDirection: 'column', ...getImageStyle(alignment) }}
       {...props.attributes}
     >
-      <image.ImageAlignmentContext.Provider
+      <props.blocks.image.ImageAlignmentContext.Provider
         value={useMemo(() => {
           return {
             alignment,
@@ -97,20 +95,20 @@ export function Node(props) {
         }, [props.node.key, alignment, props.editor, props.node.data])}
       >
         {props.children}
-      </image.ImageAlignmentContext.Provider>
+      </props.blocks.image.ImageAlignmentContext.Provider>
     </figure>
   );
 }
 
-export let schema = {
+export let getSchema = ({ blocks }) => ({
   nodes: [
     {
-      match: [{ type: image.type }],
+      match: [{ type: blocks.image.type }],
       min: 1,
       max: 1,
     },
     {
-      match: [{ type: caption.type }],
+      match: [{ type: blocks.caption.type }],
       min: 1,
       max: 1,
     },
@@ -154,19 +152,19 @@ export let schema = {
       return false;
     },
   },
-};
+});
 
-export let plugins = [
+export let getPlugins = ({ blocks }) => [
   insertImages({
     extensions: imageExtensions,
-    insertImage: insertImageBlockFromFile,
+    insertImage: insertImageBlockFromFile.bind(null, blocks),
   }),
   {
     onDragStart(event, editor, next) {
       const { value } = editor;
       const { document } = value;
       const node = findNode(event.target, editor);
-      if (node.type === image.type) {
+      if (node.type === blocks.image.type) {
         const ancestors = document.getAncestors(node.key);
         let imgContainer = ancestors.get(ancestors.size - 1);
         if (imgContainer.type === type) {
@@ -179,10 +177,10 @@ export let plugins = [
   },
 ];
 
-export function serialize({ node }) {
+export function serialize({ node, blocks }) {
   // Find the 'image' child node
   const imageNode = node.findDescendant(
-    child => child.object === 'block' && child.type === image.type
+    child => child.object === 'block' && child.type === blocks.image.type
   );
 
   if (!imageNode) {
@@ -212,7 +210,7 @@ export function serialize({ node }) {
   };
 }
 
-export function deserialize({ node, joins }) {
+export function deserialize({ node, joins, blocks }) {
   if (!joins || !joins.length) {
     console.error('No image data received when rehydrating cloudinaryImage block');
     return;
@@ -220,7 +218,7 @@ export function deserialize({ node, joins }) {
 
   // Find the 'image' child node
   const imageNode = node.findDescendant(
-    child => child.object === 'block' && child.type === image.type
+    child => child.object === 'block' && child.type === blocks.image.type
   );
 
   if (!imageNode) {

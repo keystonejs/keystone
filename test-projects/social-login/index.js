@@ -57,9 +57,7 @@ keystone.createList('User', {
     email: {
       type: Text,
       access: {
-        // defaults to 'false' for any unspecified keys, so this is technically
-        // unnecessary
-        read: false,
+        read: true,
         update: ({ item, authentication }) =>
           // Authenticated against the correct list
           authentication.listKey === this.listKey &&
@@ -76,22 +74,17 @@ keystone.createList('User', {
     },
     // TODO: Create a Facebook field type to encapsulate these
     facebookId: { type: Text },
-    facebookUsername: { type: Text },
     // TODO: Create a GitHub field type to encapsulate these
     githubId: { type: Text },
-    githubUsername: { type: Text },
 
     // TODO: Create a Twitter field type to encapsulate these
     twitterId: { type: Text },
-    twitterUsername: { type: Text },
 
     // TODO: Create a Google field type to encapsulate these
     googleId: { type: Text },
-    googleUsername: { type: Text },
 
     // TODO: Create a WordPress field type to encapsulate these
     wordpressId: { type: Text },
-    wordpressUsername: { type: Text },
 
     isAdmin: { type: Checkbox },
     company: {

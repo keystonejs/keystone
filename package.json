@@ -309,7 +309,8 @@
     "packages": [
       "packages/fields-wysiwyg-tinymce",
       "packages/fields",
-      "packages/fields-markdown"
+      "packages/fields-markdown",
+      "packages/field-content"
     ]
   },
   "jest": {
