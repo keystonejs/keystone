@@ -81,7 +81,6 @@ export let getTools = cm => {
       },
     },
     {
-      action: 'italicize',
       icon: ItalicIcon,
       label: 'Italicize',
       action() {
