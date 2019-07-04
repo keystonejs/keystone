@@ -3,71 +3,36 @@ const PassportAuthStrategy = require('./Passport');
 
 class TwitterAuthStrategy extends PassportAuthStrategy {
   constructor(keystone, listKey, config) {
-    super(TwitterAuthStrategy.authType, keystone, listKey, {
-      sessionIdField: 'twitterSession',
-      keystoneSessionIdField: 'keystoneTwitterSessionId',
-      scope: ['email'],
-      ...config,
-    });
+    super(
+      TwitterAuthStrategy.authType,
+      keystone,
+      listKey,
+      {
+        scope: ['email'],
+        ...config,
+        strategyConfig: {
+          consumerKey: config.appId,
+          consumerSecret: config.appSecret,
+          includeEmail: true,
+          // See: https://github.com/jaredhanson/passport-twitter/issues/67#issuecomment-275288663
+          userProfileURL:
+            'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
+          ...config.strategyConfig,
+        },
+      },
+      PassportTwitter
+    );
   }
 
-  validateWithService(strategy, token, { tokenSecret }) {
+  async _validateWithService(strategy, accessToken, tokenSecret) {
     return new Promise((resolve, reject) => {
-      strategy.userProfile(token, tokenSecret, {}, async (error, profile) => {
+      strategy.userProfile(accessToken, tokenSecret, {}, async (error, serviceProfile) => {
         if (error) {
           return reject(error);
         }
-        resolve({
-          id: profile.id,
-          username: profile.username || null,
-        });
+        resolve(serviceProfile);
       });
     });
-  }
-
-  getPassportStrategy() {
-    return new PassportTwitter(
-      {
-        consumerKey: this.config.consumerKey,
-        consumerSecret: this.config.consumerSecret,
-        callbackURL: this.config.callbackURL,
-        passReqToCallback: true,
-        includeEmail: true,
-      },
-      /**
-       * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
-       * ---
-       * Applications must supply a `verify` callback, for which the function
-       * signature is:
-       *
-       *     function(token, tokenSecret, oauthParams, profile, done) { ... }
-       *
-       * The verify callback is responsible for finding or creating the user, and
-       * invoking `done` with the following arguments:
-       *
-       *     done(err, user, info);
-       *
-       * `user` should be set to `false` to indicate an authentication failure.
-       * Additional `info` can optionally be passed as a third argument, typically
-       * used to display informational messages.  If an exception occured, `err`
-       * should be set.
-       */
-      async (req, token, tokenSecret, oauthParams, profile, done) => {
-        try {
-          let result = await this.validate({
-            accessToken: token,
-            tokenSecret,
-          });
-          if (!result.success) {
-            // false indicates an authentication failure
-            return done(null, false, { ...result, profile });
-          }
-          return done(null, result.item, { ...result, profile });
-        } catch (error) {
-          return done(error);
-        }
-      }
-    );
   }
 }
 
