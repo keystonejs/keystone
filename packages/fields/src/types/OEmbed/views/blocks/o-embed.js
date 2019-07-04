@@ -118,9 +118,9 @@ export function Node({ node, editor }) {
   );
 }
 
-export let schema = {
+export let getSchema = () => ({
   isVoid: true,
-};
+});
 
 export function serialize({ node }) {
   const url = node.data.get('url');

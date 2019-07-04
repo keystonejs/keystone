@@ -1,0 +1,1 @@
+Stop re-rendering ItemTitle on every change in an Item

@@ -24,6 +24,7 @@
     "@keystone-alpha/app-next": "^1.0.2",
     "@keystone-alpha/app-static": "^1.0.2",
     "@keystone-alpha/fields": "^7.1.0",
+    "@keystone-alpha/fields-markdown": "^0.0.0",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.2",
     "@keystone-alpha/file-adapters": "^1.1.1",
     "@keystone-alpha/keystone": "^7.0.0",

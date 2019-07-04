@@ -87,6 +87,7 @@
     "clipboard-copy": "^3.0.0",
     "cloudinary": "^1.13.2",
     "codecov": "^3.1.0",
+    "codemirror": "^5.48.0",
     "compression": "^1.7.4",
     "cookie": "^0.3.1",
     "cookie-signature": "^1.1.0",
@@ -213,6 +214,7 @@
     "react-adopt": "^0.6.0",
     "react-apollo": "2.4.0",
     "react-apollo-hooks": "^0.4.4",
+    "react-codemirror2": "^6.0.0",
     "react-color": "^2.17.0",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.6",
@@ -306,7 +308,9 @@
   "field-types": {
     "packages": [
       "packages/fields-wysiwyg-tinymce",
-      "packages/fields"
+      "packages/fields",
+      "packages/fields-markdown",
+      "packages/field-content"
     ]
   },
   "jest": {

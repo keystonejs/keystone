@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "node -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "start:debug": "node --inspect-brk -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` run",
     "cypress:open:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` open",
     "prepare-test-server": "cross-env NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
@@ -23,7 +24,9 @@
     "@keystone-alpha/app-admin-ui": "^5.0.1",
     "@keystone-alpha/app-graphql": "^6.2.0",
     "@keystone-alpha/app-static": "^1.0.2",
+    "@keystone-alpha/field-content": "^0.0.0",
     "@keystone-alpha/fields": "^7.1.0",
+    "@keystone-alpha/fields-markdown": "^0.0.0",
     "@keystone-alpha/file-adapters": "^1.1.1",
     "@keystone-alpha/keystone": "^7.0.0",
     "@keystone-alpha/oembed-adapters": "^1.1.0",
