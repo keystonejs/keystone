@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/fields-markdown",
   "description": "KeystoneJS Markdown Field Type",
-  "version": "3.0.2",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
