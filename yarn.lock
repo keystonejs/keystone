@@ -5902,6 +5902,11 @@ codemirror@^5.18.2, codemirror@^5.26.0, codemirror@^5.38.0:
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.44.0.tgz#80dc2a231eeb7aab25ec2405cdca37e693ccf9cc"
   integrity sha512-3l42syTNakCdCQuYeZJXTyxina6Y9i4V0ighSJXNCQtRbaCN76smKKLu1ZHPHQon3rnzC7l4i/0r4gp809K1wg==
 
+codemirror@^5.48.0:
+  version "5.48.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.48.0.tgz#66e6dae6ca79b955e34b322881ebb7b5512f3cc5"
+  integrity sha512-3Ter+tYtRlTNtxtYdYNPxGxBL/b3cMcvPdPm70gvmcOO2Rauv/fUEewWa0tT596Hosv6ea2mtpx28OXBy1mQCg==
+
 collapse-white-space@^1.0.0, collapse-white-space@^1.0.2:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/collapse-white-space/-/collapse-white-space-1.0.4.tgz#ce05cf49e54c3277ae573036a26851ba430a0091"
@@ -17899,6 +17904,11 @@ react-apollo@2.4.0:
     lodash.flowright "^3.5.0"
     lodash.isequal "^4.5.0"
     prop-types "^15.6.0"
+
+react-codemirror2@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-6.0.0.tgz#180065df57a64026026cde569a9708fdf7656525"
+  integrity sha512-D7y9qZ05FbUh9blqECaJMdDwKluQiO3A9xB+fssd5jKM7YAXucRuEOlX32mJQumUvHUkHRHqXIPBjm6g0FW0Ag==
 
 react-codemirror@^1.0.0:
   version "1.0.0"
