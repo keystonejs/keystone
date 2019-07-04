@@ -28,26 +28,43 @@ export default class RelationshipController extends FieldController {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
 
-  // TODO: FIXME: This should be `set`, not `connect`
-  buildRelateToOneInput = ({ id }) => ({ connect: { id } });
-  buildRelateToManyInput = data => ({ connect: data.map(({ id }) => ({ id })) });
+  deserialize = data => {
+    // this is a probably not great solution
+    // ideally, we should have a set option in addition to connect and disconnect
+    this.lastSavedState = this.config.many
+      ? (data[this.path] || []).map(x => x.id)
+      : data[this.path]
+      ? data[this.path].id
+      : null;
+    return data[this.path];
+  };
 
   serialize = data => {
     const { path } = this;
     const { many } = this.config;
 
-    if (!data[path]) {
-      return many ? { disconnectAll: true } : null;
-    }
+    let value = data[path];
 
     if (many) {
-      if (!Array.isArray(data[path]) || !data[path].length) {
-        return { disconnectAll: true };
+      let ids = [];
+      if (Array.isArray(value)) {
+        ids = value.map(x => x.id);
       }
-      return this.buildRelateToManyInput(data[path], path);
+      return {
+        connect: ids.map(id => ({ id })),
+        disconnect: this.lastSavedState
+          .filter(id => {
+            return !ids.includes(id);
+          })
+          .map(id => ({ id })),
+      };
     }
 
-    return this.buildRelateToOneInput(data[path], path);
+    if (!value) {
+      return { disconnect: { id: this.lastSavedState } };
+    }
+
+    return { connect: { id: value.id } };
   };
   getDefaultValue = () => {
     const { defaultValue, many } = this.config;
