@@ -51,7 +51,11 @@ export default class RelationshipController extends FieldController {
         ids = value.map(x => x.id);
       }
       return {
-        connect: ids.map(id => ({ id })),
+        connect: ids
+          .filter(id => {
+            return !this.lastSavedState.includes(id);
+          })
+          .map(id => ({ id })),
         disconnect: this.lastSavedState
           .filter(id => {
             return !ids.includes(id);
