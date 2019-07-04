@@ -3,17 +3,7 @@ const PassportAuthStrategy = require('./Passport');
 
 class GitHubAuthStrategy extends PassportAuthStrategy {
   constructor(keystone, listKey, config) {
-    super(
-      GitHubAuthStrategy.authType,
-      keystone,
-      listKey,
-      {
-        sessionIdField: 'githubSession',
-        keystoneSessionIdField: 'keystoneGitHubSessionId',
-        ...config,
-      },
-      PassportGitHub
-    );
+    super(GitHubAuthStrategy.authType, keystone, listKey, config, PassportGitHub);
   }
 }
 

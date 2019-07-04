@@ -1,0 +1,1 @@
+Prepare middlewares for auth strategies immediately after setting up session middleware.
