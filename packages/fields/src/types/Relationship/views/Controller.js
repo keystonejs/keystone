@@ -61,7 +61,7 @@ export default class RelationshipController extends FieldController {
     }
 
     if (!value) {
-      return { disconnect: { id: this.lastSavedState } };
+      return { disconnectAll: true };
     }
 
     return { connect: { id: value.id } };
