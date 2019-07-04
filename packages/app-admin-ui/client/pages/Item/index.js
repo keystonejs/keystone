@@ -268,7 +268,7 @@ const ItemDetails = withRouter(
           {itemHasChanged && <PreventNavigation />}
           <ItemTitle
             onCreateClick={this.openCreateModal}
-            item={item}
+            id={item.id}
             list={list}
             adminPath={adminPath}
             titleText={savedData._label_}
