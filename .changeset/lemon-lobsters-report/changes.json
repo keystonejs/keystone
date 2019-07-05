@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/passport-auth", "type": "major" },
-    { "name": "@keystone-alpha/cypress-project-social-login", "type": "major" }
-  ],
-  "dependents": []
-}

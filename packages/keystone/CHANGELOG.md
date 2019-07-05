@@ -1,5 +1,16 @@
 # @keystone-alpha/keystone
 
+## 7.0.2
+
+### Patch Changes
+
+- [04371d0d](https://github.com/keystonejs/keystone-5/commit/04371d0d):
+
+  Don't error when Auth Strategy doesn't provide getInputFragment() or validate() method.
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/fields@8.0.0
+
 ## 7.0.1
 
 ### Patch Changes

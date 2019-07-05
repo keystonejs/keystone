@@ -1,1 +1,0 @@
-Added modifiers to arch/tooltip
