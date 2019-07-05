@@ -1,1 +1,0 @@
-Extract `Content` field into its own package: `@keystone-alpha/field-content`.

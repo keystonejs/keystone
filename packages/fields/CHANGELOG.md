@@ -1,5 +1,19 @@
 # @keystone-alpha/fields
 
+## 8.0.0
+
+### Major Changes
+
+- [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+
+  Extract `Content` field into its own package: `@keystone-alpha/field-content`.
+
+### Patch Changes
+
+- [98bef287](https://github.com/keystonejs/keystone-5/commit/98bef287):
+
+  Fix the Relationship field type not allowing relationships to be removed from the Admin UI
+
 ## 7.2.0
 
 ### Minor Changes

@@ -1,5 +1,10 @@
 # @arch-ui/docs
 
+## 1.1.1
+
+- Updated dependencies [3544f852](https://github.com/keystonejs/keystone-5/commit/3544f852):
+  - @arch-ui/tooltip@0.1.0
+
 ## 1.1.0
 
 ### Minor Changes

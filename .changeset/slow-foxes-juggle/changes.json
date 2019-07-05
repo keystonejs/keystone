@@ -1,4 +1,0 @@
-{
-  "releases": [{ "name": "@arch-ui/tooltip", "type": "minor" }],
-  "dependents": [{ "name": "@arch-ui/docs", "type": "patch", "dependencies": ["@arch-ui/tooltip"] }]
-}
