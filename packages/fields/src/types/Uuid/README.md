@@ -5,10 +5,11 @@ title: Uuid
 
 # Uuid
 
-The `Uuid` type stores universally unique identifiers (UUIDs);
-128-bit numbers often displayed as hexidecimal in the format `00000000-0000-0000-0000-000000000000`.
+The `Uuid` field type stores Universally Unique Identifiers (UUIDs).
+UUIDs are 128-bit numbers but they're often represented in hexadecimal using the format `00000000-0000-0000-0000-000000000000`.
+Here we refer to this encoding as the `8-4-4-4-12` hex format.
 
-> The encoding used for storage differs by DB adapter, see [storage](#storage) below.
+The encoding used for storage differs by DB adaptor, see the [Storage section](#storage).
 
 ## Usage
 
@@ -22,94 +23,78 @@ keystone.createList('Products', {
 });
 ```
 
-
-// TODO: Build out the Mongo field adapter using the binary subtype (0x04)
-// We don't want to use strings because strings are case sensitive.
-// Even though we often pass UUIDs around in the `8-4-4-4-12` format, this is hex and
-// so stirng based equality comparisons will fail us. See also...
-//  - https://studio3t.com/knowledge-base/articles/mongodb-best-practices-uuid-data/#mongodb-best-practices
-//  - https://medium.com/@cdimascio/uuids-with-mongodb-and-node-js-d4a8a188344b
-
-
-
 ### Config
 
-| Option   | Type     | Default   | Description                                                                                                                                                |
-|:---------|:---------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `caseTo` | `String` | `'lower'` | Force the hex representation of IDs to upper or lower case when being read or written. <br>Valid values: `'upper'`, `'lower'` or `null` for no conversion. |
+| Option   | Type     | Default   | Description                                                                                                                                                                                                                                                       |
+| :------- | :------- | :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `caseTo` | `String` | `'lower'` | Force the hex representation of IDs to upper or lower case when being read or written. Valid values: `'lower'`, `'upper'` or `null` for no conversion. Defaults to `'lower'` as per [RFC 4122](https://tools.ietf.org/html/rfc4122). See also: [Casing](#casing). |
 
 ## GraphQL
 
+`Uuid` fields use the `ID` type in GraphQL.
 
 ### Input Fields
 
+| Field name | Type | Description                         |
+| :--------- | :--- | :---------------------------------- |
+| `${path}`  | `ID` | UUID in the `8-4-4-4-12` hex format |
 
 ### Output Fields
 
-
-### Sort Options
-
-
-### Filters
-
-
-
-Storage
-   Mongoose Adaptor
-   Knex Adaptor
-
-----
-
-
-## Usage
-
-```js
-keystone.createList('User', {
-  fields: {
-    email: { type: Text },
-    password: { type: Password },
-    // ...
-  },
-});
-```
-
-## GraphQL
-
-`Password` fields are somewhat unusual in that they can be written to but not read.
-
-### Input Fields
-
-`Password` fields at a `String` field to both create and update GraphQL Input types.
-
-| Field name | Type     | Description            |
-| ---------- | -------- | ---------------------- |
-| `${path}`  | `String` | The value to be hashed |
-
-### Output Fields
-
-In normal usage, hash values should not be externally accessible.
-As such `Password` fields do _not_ add a `String` output field.
-
-| Field name       | Type      | Description                    |
-| ---------------- | --------- | ------------------------------ |
-| `${path}_is_set` | `Boolean` | Does this field contain a hash |
+| Field name | Type | Description                         |
+| :--------- | :--- | :---------------------------------- |
+| `${path}`  | `ID` | UUID in the `8-4-4-4-12` hex format |
 
 ### Filters
 
-| Field name       | Type      | Description                    |
-| ---------------- | --------- | ------------------------------ |
-| `${path}_is_set` | `Boolean` | Does this field contain a hash |
+Since `Uuid` fields encode IDs, "text" filters (eg. `contains`, `starts_with`, etc) have been excluded.
+Note also that hexadecimal encoding, as used for UUIDs, is case agnostic.
+As such, despite the GraphQL `ID` type being encoded as Strings, all `Uuid` filters are effectively case insensitive.
+See the the [Casing section](#casing).
+
+| Field name       | Type   | Description                           |
+| :--------------- | :----- | :------------------------------------ |
+| `${path}`        | `ID`   | Exact match to the ID provided        |
+| `${path}_not`    | `ID`   | Not an exact match to the ID provided |
+| `${path}_in`     | `[ID]` | In the array of IDs provided          |
+| `${path}_not_in` | `[ID]` | Not in the array of IDs provided      |
 
 ## Storage
 
 ### Mongoose Adaptor
 
-The hash value is stored at `${path}`.
-All filters supported.
+When storing UUIDs, Mongo [recommends BSON objects are used](https://docs.mongodb.com/manual/reference/method/UUID/).
+The BSON spec indicates subtype `0x04` specifically.
+However most tools (including GraphQL) expect IDs to be encoded as strings and, for UUIDs, specifically expect the `8-4-4-4-12` hex format.
+Mongoose has no native support for UUIDs and storing them as BSON requires they be manually converted between these formats when being used.
+As such this field type does not currently follow the BSON recommendation; instead, the UUID values are stored as Strings.
+
+This is not ideal (PRs welcome).
+In additional to not being inefficiently stored, working with UUIDs as Strings potentially causes problems with casing.
+See the [Casing section](#casing).
 
 ### Knex Adaptor
 
-**Not yet supported**
+The Knex adaptor uses the [Knex `uuid` type](https://knexjs.org/#Schema-uuid):
 
-Value will be stored in a `text` fields.
+> .. this uses the built-in uuid type in PostgreSQL, and falling back to a char(36) in other databases.
 
+The PostgreSQL `uuid` type is a proper binary representation of the value.
+UUIDs in the text/hex format are implicitly cast to the `uuid` type when required so inserts, comparisons, etc. work as intended.
+
+Other databases, such as MySQL do not have a dedicated UUID type.
+When
+
+## Casing
+
+Unless you're on Postgres or MS SQL Server, your DB platform probably doesn't have native support for a UUIDs type.
+A string type like `varchar(36)` or `String` will be used instead with values being stored is their `8-4-4-4-12` hex format.
+This can cause problems with casing.
+
+Hexadecial itself is case agnostic.
+The hex value `AF3D` is identical to the hex value `af3d`; they both encode the same value as `44861` in decimal and `1010111100111101` in binary.
+However, in JavaScript, Mongo and (depending on your configuration) some other DB platforms, the _String_ `'AF3D'` does not equal the string `'af3d'`.
+
+For this field type, we mitigate this problem using the [`caseTo` config option](#config).
+This can be used to force the case of your values (to upper or lower case) whenever they're read, written or compared.
+This defaults to `'lower'` as per [the UUID spec](https://tools.ietf.org/html/rfc4122).
