@@ -1,5 +1,13 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.1.4
+
+### Patch Changes
+
+- [aa9d8920](https://github.com/keystonejs/keystone-5/commit/aa9d8920):
+
+  Remove commercial font Nueu Haas Unica from Open Source library
+
 ## 0.1.3
 
 - Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):

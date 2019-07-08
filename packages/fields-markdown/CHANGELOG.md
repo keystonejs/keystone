@@ -1,5 +1,13 @@
 # @keystone-alpha/fields-markdown
 
+## 1.0.1
+
+### Patch Changes
+
+- [7d606f4f](https://github.com/keystonejs/keystone-5/commit/7d606f4f):
+
+  Fix cursor moving to the end of the editor after every change
+
 ## 1.0.0
 
 ### Major Changes

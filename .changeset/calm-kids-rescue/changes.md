@@ -1,1 +1,0 @@
-Remove commercial font Nueu Haas Unica from Open Source library
