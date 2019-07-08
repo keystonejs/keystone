@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
@@ -37,7 +36,7 @@ const validator = a => typeof a === 'string' && /^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}
 
 // TODO: UUIDs _should_ be stored in Mongo using binary subtype 0x04 but strings are easier; see README.md
 export class MongoUuidInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
+  addToMongooseSchema(schema, mongoose) {
     const schemaOptions = {
       type: mongoose.Schema.Types.String,
       validate: {
@@ -52,10 +51,12 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
 
     // Updates the relevant value in the item provided (by referrence)
     addPreSaveHook(item => {
+      const list = this.getListByKey(this.listAdapter.key);
+      const field = list.fieldsByPath[this.path];
       const valType = typeof item[this.path];
 
       if (item[this.path] && valType === 'string') {
-        item[this.path] = this.field.normaliseValue(item[this.path]);
+        item[this.path] = field.normaliseValue(item[this.path]);
       } else if (!item[this.path] || valType === 'undefined') {
         delete item[this.path];
       } else {
@@ -66,17 +67,23 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
       return item;
     });
     addPostReadHook(item => {
+      const list = this.getListByKey(this.listAdapter.key);
+      const field = list.fieldsByPath[this.path];
+
       if (item[this.path]) {
-        item[this.path] = this.field.normaliseValue(item[this.path]);
+        item[this.path] = field.normaliseValue(item[this.path]);
       }
       return item;
     });
   }
 
   getQueryConditions(dbPath) {
+    const list = this.getListByKey(this.listAdapter.key);
+    const field = list.fieldsByPath[this.path];
+
     return {
-      ...this.equalityConditions(dbPath, this.field.normaliseValue),
-      ...this.inConditions(dbPath, this.field.normaliseValue),
+      ...this.equalityConditions(dbPath, field.normaliseValue),
+      ...this.inConditions(dbPath, field.normaliseValue),
     };
   }
 }
@@ -86,9 +93,12 @@ export class KnexUuidInterface extends KnexFieldAdapter {
     return table.uuid(this.path);
   }
   getQueryConditions(dbPath) {
+    const list = this.getListByKey(this.listAdapter.key);
+    const field = list.fieldsByPath[this.path];
+
     return {
-      ...this.equalityConditions(dbPath),
-      ...this.inConditions(dbPath),
+      ...this.equalityConditions(dbPath, field.normaliseValue),
+      ...this.inConditions(dbPath, field.normaliseValue),
     };
   }
 }

@@ -159,13 +159,6 @@ class BaseFieldAdapter {
     this.isUnique = isUnique;
   }
 
-  get list() {
-    return this.getListByKey(this.listAdapter.key);
-  }
-  get field() {
-    return this.list.fieldsByPath[this.path];
-  }
-
   setupHooks() {}
 }
 
