@@ -1,0 +1,1 @@
+Ensure all plugins for default Blocks are added to Slate correctly

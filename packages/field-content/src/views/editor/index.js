@@ -37,30 +37,30 @@ function Stories({ value: editorState, onChange, blocks, className }) {
     return getSchema(blocks);
   }, [blocks]);
 
-  let plugins = useMemo(
-    () =>
-      Object.values(blocks).reduce(
-        (combinedPlugins, block) => {
-          if (typeof block.getPlugins !== 'function') {
-            return combinedPlugins;
-          }
-          return [...combinedPlugins, block.getPlugins({ blocks })];
+  let plugins = useMemo(() => {
+    const renderNode = props => {
+      let block = blocks[props.node.type];
+      if (block) {
+        return <block.Node {...props} blocks={blocks} />;
+      }
+      return null;
+    };
+    return Object.values(blocks).reduce(
+      (combinedPlugins, block) => {
+        if (typeof block.getPlugins !== 'function') {
+          return combinedPlugins;
+        }
+        return [...combinedPlugins, ...block.getPlugins({ blocks })];
+      },
+      [
+        ...markPlugins,
+        {
+          renderBlock: renderNode,
+          renderInline: renderNode,
         },
-        [
-          ...markPlugins,
-          {
-            renderNode(props) {
-              let block = blocks[props.node.type];
-              if (block) {
-                return <block.Node {...props} blocks={blocks} />;
-              }
-              return null;
-            },
-          },
-        ]
-      ),
-    [blocks]
-  );
+      ]
+    );
+  }, [blocks]);
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
   return (

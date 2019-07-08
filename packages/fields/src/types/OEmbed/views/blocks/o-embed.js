@@ -124,13 +124,21 @@ export let getSchema = () => ({
 
 export function serialize({ node }) {
   const url = node.data.get('url');
+  const joinIds = node.data.get('_joinIds');
+
+  const mutations =
+    joinIds && joinIds.length
+      ? {
+          connect: { id: joinIds[0] },
+        }
+      : {
+          create: {
+            embed: url,
+          },
+        };
 
   return {
-    mutations: {
-      create: {
-        embed: url,
-      },
-    },
+    mutations,
     node: {
       ...node.toJSON(),
       // Zero out the data so we don't unnecesarily duplicate the url

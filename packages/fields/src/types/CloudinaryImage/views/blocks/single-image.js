@@ -188,6 +188,7 @@ export function serialize({ node, blocks }) {
     return;
   }
 
+  const joinIds = node.data.get('_joinIds');
   const alignment = node.data.get('alignment');
   const file = imageNode.data.get('file');
 
@@ -195,12 +196,19 @@ export function serialize({ node, blocks }) {
   // a JSON blob
   const newNode = node.setNode(node.getPath(imageNode.key), { data: {} });
 
+  const mutations =
+    joinIds && joinIds.length
+      ? {
+          connect: { id: joinIds[0] },
+        }
+      : {
+          create: {
+            image: file,
+          },
+        };
+
   return {
-    mutations: {
-      create: {
-        image: file,
-      },
-    },
+    mutations,
     node: {
       ...newNode.toJSON(),
       data: {
