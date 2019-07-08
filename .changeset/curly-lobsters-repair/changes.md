@@ -1,1 +1,0 @@
-Fix cursor moving to the end of the editor after every change

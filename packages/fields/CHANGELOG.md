@@ -1,5 +1,22 @@
 # @keystone-alpha/fields
 
+## 8.1.0
+
+### Minor Changes
+
+- [e945926c](https://github.com/keystonejs/keystone-5/commit/e945926c):
+
+  Adding Uuid field type with Mongoose and Knex adapters
+
+### Patch Changes
+
+- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+
+  CloudinaryImage, Unsplash, and OEmbed blocks will correctly re-connect to existing block data if present rather than disconnecting and reconnecting on every save of the Content editor.
+
+* Updated dependencies [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+  - @keystone-alpha/field-content@2.0.0
+
 ## 8.0.0
 
 ### Major Changes

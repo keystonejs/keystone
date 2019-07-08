@@ -1,1 +1,0 @@
-Adding Uuid field type with Mongoose and Knex adapters

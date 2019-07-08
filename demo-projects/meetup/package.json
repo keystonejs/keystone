@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/demo-project-meetup",
   "description": "An example KeystoneJS project showcasing a Meetup Site.",
   "private": true,
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -20,7 +20,7 @@
     "@keystone-alpha/app-graphql": "^6.3.0",
     "@keystone-alpha/app-next": "^1.0.2",
     "@keystone-alpha/email": "^3.0.1",
-    "@keystone-alpha/fields": "^8.0.0",
+    "@keystone-alpha/fields": "^8.1.0",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.3",
     "@keystone-alpha/file-adapters": "^1.1.1",
     "@keystone-alpha/keystone": "^7.0.2",
