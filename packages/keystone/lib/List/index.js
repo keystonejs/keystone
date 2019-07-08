@@ -261,6 +261,19 @@ module.exports = class List {
       ...fieldConfig,
       type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
     }));
+
+    // Helpful errors for misconfigured lists
+    Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
+      if (typeof fieldConfig.type === 'undefined') {
+        throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
+          `(${this.key}.${fieldKey}.type is undefined)`;
+      }
+      const adapters = fieldConfig.type.adapters;
+      if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
+        throw `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`;
+      }
+    });
+
     Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
       if (!type.adapters[this.adapterName]) {
         throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
