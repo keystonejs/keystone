@@ -42,7 +42,7 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
       type: mongoose.Schema.Types.String,
       validate: {
         validator: this.buildValidator(validator),
-        message: '{VALUE} is not a valid UUID',
+        message: '{VALUE} is not a valid UUID. Must be 8-4-4-4-12 hex format',
       },
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });

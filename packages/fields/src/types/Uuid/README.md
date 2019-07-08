@@ -83,7 +83,6 @@ The PostgreSQL `uuid` type is a proper binary representation of the value.
 UUIDs in the text/hex format are implicitly cast to the `uuid` type when required so inserts, comparisons, etc. work as intended.
 
 Other databases, such as MySQL do not have a dedicated UUID type.
-When
 
 ## Casing
 
