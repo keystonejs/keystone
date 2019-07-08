@@ -1,5 +1,37 @@
 # @keystone-alpha/fields
 
+## 8.0.0
+
+### Major Changes
+
+- [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+
+  Extract `Content` field into its own package: `@keystone-alpha/field-content`.
+
+### Patch Changes
+
+- [98bef287](https://github.com/keystonejs/keystone-5/commit/98bef287):
+
+  Fix the Relationship field type not allowing relationships to be removed from the Admin UI
+
+## 7.2.0
+
+### Minor Changes
+
+- [c5c46545](https://github.com/keystonejs/keystone-5/commit/c5c46545):
+
+  Add `searchUnsplash` GraphQL query when using the `Unsplash` field type
+
+### Patch Changes
+
+- [148400dc](https://github.com/keystonejs/keystone-5/commit/148400dc):
+
+  Using `connect: []` and `create: []` in many-relationship queries now behaves as expected.
+
+* [384135b1](https://github.com/keystonejs/keystone-5/commit/384135b1):
+
+  Minor bump of bcrypt version
+
 ## 7.1.0
 
 ### Minor Changes

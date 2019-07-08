@@ -647,9 +647,15 @@ module.exports = class List {
 
       // And for each strategy, add the authentication mutation
       mutations.push(
-        ...Object.entries(this.getAuth()).map(([authType, authStrategy]) => {
-          const authTypeTitleCase = upcase(authType);
-          return `
+        ...Object.entries(this.getAuth())
+          .filter(
+            ([, authStrategy]) =>
+              typeof authStrategy.getInputFragment === 'function' &&
+              typeof authStrategy.validate === 'function'
+          )
+          .map(([authType, authStrategy]) => {
+            const authTypeTitleCase = upcase(authType);
+            return `
             """ Authenticate and generate a token for a ${
               this.gqlNames.outputTypeName
             } with the ${authTypeTitleCase} Authentication Strategy. """
@@ -657,7 +663,7 @@ module.exports = class List {
               ${authStrategy.getInputFragment()}
             ): ${this.gqlNames.authenticateOutputName}
           `;
-        })
+          })
       );
     }
 
@@ -995,11 +1001,17 @@ module.exports = class List {
       mutationResolvers[this.gqlNames.unauthenticateMutationName] = (_, __, context) =>
         this.unauthenticateMutation(context);
 
-      Object.keys(this.getAuth()).forEach(authType => {
-        mutationResolvers[
-          getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)
-        ] = (_, args, context) => this.authenticateMutation(authType, args, context);
-      });
+      Object.entries(this.getAuth())
+        .filter(
+          ([, authStrategy]) =>
+            typeof authStrategy.getInputFragment === 'function' &&
+            typeof authStrategy.validate === 'function'
+        )
+        .forEach(([authType]) => {
+          mutationResolvers[
+            getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)
+          ] = (_, args, context) => this.authenticateMutation(authType, args, context);
+        });
     }
 
     return mutationResolvers;

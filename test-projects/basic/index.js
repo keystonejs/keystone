@@ -12,12 +12,13 @@ const {
   DateTime,
   Color,
   Url,
-  Content,
   Decimal,
   OEmbed,
   Unsplash,
 } = require('@keystone-alpha/fields');
+const { Content } = require('@keystone-alpha/field-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
+const { Markdown } = require('@keystone-alpha/fields-markdown');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { StaticApp } = require('@keystone-alpha/app-static');
@@ -136,6 +137,7 @@ keystone.createList('Post', {
     price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
+    markdownValue: { type: Markdown },
     value: {
       type: Content,
       blocks: [
@@ -144,7 +146,7 @@ keystone.createList('Post', {
           : []),
         ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
         ...(unsplash.accessKey
-          ? [[Unsplash.blocks.unsplashImage, { attribution: 'vocal.media', ...unsplash }]]
+          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
           : []),
         Content.blocks.blockquote,
         Content.blocks.orderedList,

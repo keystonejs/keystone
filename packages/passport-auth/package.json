@@ -1,19 +1,23 @@
 {
   "name": "@keystone-alpha/passport-auth",
   "description": "Provides Social Authentication Strategies based on PassportJS.",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/fields": "^7.0.0",
+    "@keystone-alpha/fields": "^8.0.0",
+    "@keystone-alpha/session": "^2.0.0",
+    "express": "^4.16.3",
     "graphql-request": "^1.8.2",
+    "nanoassert": "^2.0.0",
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-twitter": "^1.0.4"
+    "passport-twitter": "^1.0.4",
+    "passport-wordpress": "^0.0.4"
   }
 }

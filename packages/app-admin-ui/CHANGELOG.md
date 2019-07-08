@@ -1,5 +1,31 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.0.3
+
+### Patch Changes
+
+- [a6c3ac0c](https://github.com/keystonejs/keystone-5/commit/a6c3ac0c):
+
+  Stop re-rendering ItemTitle on every change in an Item
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/fields@8.0.0
+
+## 5.0.2
+
+### Patch Changes
+
+- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+
+  Replace custom copy to clipboard utility with the clipboard-copy package
+
+- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+
+  Remove Admin UI style guide. The style guide is now in the keystone-5 repo at packages/arch/docs
+
+* Updated dependencies [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+  - @arch-ui/navbar@0.1.0
+
 ## 5.0.1
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @keystone-alpha/app-graphql
 
+## 6.3.0
+
+### Minor Changes
+
+- [04371d0d](https://github.com/keystonejs/keystone-5/commit/04371d0d):
+
+  Prepare middlewares for auth strategies immediately after setting up session middleware.
+
 ## 6.2.0
 
 ### Minor Changes

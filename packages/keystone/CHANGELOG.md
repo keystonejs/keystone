@@ -1,5 +1,31 @@
 # @keystone-alpha/keystone
 
+## 7.0.2
+
+### Patch Changes
+
+- [04371d0d](https://github.com/keystonejs/keystone-5/commit/04371d0d):
+
+  Don't error when Auth Strategy doesn't provide getInputFragment() or validate() method.
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/fields@8.0.0
+
+## 7.0.1
+
+### Patch Changes
+
+- [de9e709d](https://github.com/keystonejs/keystone-5/commit/de9e709d):
+
+  Convert GraphQL SDL to AST before passing to Apollo
+
+  Apollo released a breaking change in a semver-minor which causes it to
+  stop understanding the SDL (string) GraphQL typeDefs we were passing it.
+  This fix ensures we're converting to an AST to avoid the error being
+  thrown.
+
+  See https://github.com/keystonejs/keystone-5/issues/1340
+
 ## 7.0.0
 
 ### Major Changes
