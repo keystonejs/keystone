@@ -1,4 +1,4 @@
-import { Uuid, KnexUuidInterface } from './Implementation';
+import { Uuid, MongoUuidInterface, KnexUuidInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
 export default {
@@ -11,5 +11,6 @@ export default {
   },
   adapters: {
     knex: KnexUuidInterface,
+    mongoose: MongoUuidInterface,
   },
 };
