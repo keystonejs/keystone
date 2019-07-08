@@ -143,7 +143,7 @@ export const filterTests = withKeystone => {
         'where: { otherId_not_in: ["01d20b3c-c0fe-4198-beb6-1a013c041805", "c0d37cbc-2f01-432c-89e0-405d54fd4cdc"] }',
         [
           { order: 'c', otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' },
-          { order: 'd', otherId: null }
+          { order: 'd', otherId: null },
         ]
       )
     )
@@ -156,7 +156,7 @@ export const filterTests = withKeystone => {
         'where: { otherId_not_in: ["01D20B3C-C0FE-4198-BEB6-1A013C041805", "C0D37CBC-2F01-432C-89E0-405D54FD4CDC"] }',
         [
           { order: 'c', otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' },
-          { order: 'd', otherId: null }
+          { order: 'd', otherId: null },
         ]
       )
     )

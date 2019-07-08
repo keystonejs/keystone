@@ -9,8 +9,7 @@ export class Uuid extends Implementation {
     this.normaliseValue = a => a;
     if (caseTo && caseTo.toString().toLowerCase() === 'upper') {
       this.normaliseValue = a => a.toString().toUpperCase();
-    }
-    else if (caseTo && caseTo.toString().toLowerCase() === 'lower') {
+    } else if (caseTo && caseTo.toString().toLowerCase() === 'lower') {
       this.normaliseValue = a => a.toString().toLowerCase();
     }
   }
@@ -32,7 +31,9 @@ export class Uuid extends Implementation {
   }
 }
 
-const validator = a => typeof a === 'string' && /^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$/.test(a);
+const validator = a =>
+  typeof a === 'string' &&
+  /^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$/.test(a);
 
 // TODO: UUIDs _should_ be stored in Mongo using binary subtype 0x04 but strings are easier; see README.md
 export class MongoUuidInterface extends MongooseFieldAdapter {
@@ -48,14 +49,14 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
   }
 
   setupHooks({ addPreSaveHook, addPostReadHook }) {
-
-    // Updates the relevant value in the item provided (by referrence)
+    // TODO: Remove the need to dereference the list and field to get the normalise function
     addPreSaveHook(item => {
-      const list = this.getListByKey(this.listAdapter.key);
-      const field = list.fieldsByPath[this.path];
       const valType = typeof item[this.path];
 
       if (item[this.path] && valType === 'string') {
+        const list = this.getListByKey(this.listAdapter.key);
+        const field = list.fieldsByPath[this.path];
+
         item[this.path] = field.normaliseValue(item[this.path]);
       } else if (!item[this.path] || valType === 'undefined') {
         delete item[this.path];
@@ -67,10 +68,10 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
       return item;
     });
     addPostReadHook(item => {
-      const list = this.getListByKey(this.listAdapter.key);
-      const field = list.fieldsByPath[this.path];
-
       if (item[this.path]) {
+        const list = this.getListByKey(this.listAdapter.key);
+        const field = list.fieldsByPath[this.path];
+
         item[this.path] = field.normaliseValue(item[this.path]);
       }
       return item;
