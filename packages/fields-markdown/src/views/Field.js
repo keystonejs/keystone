@@ -10,7 +10,7 @@ import { FieldContainer, FieldLabel } from '@arch-ui/fields';
 import 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/mode/gfm/gfm';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import { Controlled as CodeMirror } from 'react-codemirror2';
 import { getTools } from './get-tools';
 
 let ToolbarButton = forwardRef((props, ref) => {
@@ -113,7 +113,7 @@ export default function MarkdownField({ field, errors, value, onChange }) {
         {toolbar}
         <CodeMirror
           value={value}
-          onChange={(editor, data, value) => {
+          onBeforeChange={(editor, data, value) => {
             onChange(value);
           }}
           options={{
