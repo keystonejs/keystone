@@ -14,11 +14,7 @@ describe('Deserializing JSON -> a Slate.js Value', () => {
           nodes: [
             {
               object: 'text',
-              leaves: [
-                {
-                  text: '',
-                },
-              ],
+              text: '',
             },
           ],
         },
@@ -30,7 +26,7 @@ describe('Deserializing JSON -> a Slate.js Value', () => {
         document: {
           object: 'document',
           data: {},
-          nodes: [{ object: 'text', leaves: [{ object: 'leaf', text: '', marks: [] }] }],
+          nodes: [{ object: 'text', text: '' }],
         },
       });
     });
@@ -45,11 +41,7 @@ describe('Deserializing JSON -> a Slate.js Value', () => {
               nodes: [
                 {
                   object: 'text',
-                  leaves: [
-                    {
-                      text: '',
-                    },
-                  ],
+                  text: '',
                 },
               ],
             },
@@ -68,7 +60,7 @@ describe('Deserializing JSON -> a Slate.js Value', () => {
               object: 'block',
               type: 'paragraph',
               data: {},
-              nodes: [{ object: 'text', leaves: [{ object: 'leaf', text: '', marks: [] }] }],
+              nodes: [{ object: 'text', text: '' }],
             },
           ],
         },
@@ -116,11 +108,7 @@ describe('Deserializing JSON -> a Slate.js Value', () => {
               nodes: [
                 {
                   object: 'text',
-                  leaves: [
-                    {
-                      text: '',
-                    },
-                  ],
+                  text: '',
                 },
               ],
             },
@@ -146,7 +134,7 @@ describe('Deserializing JSON -> a Slate.js Value', () => {
               object: 'block',
               type: 'paragraph',
               data: {},
-              nodes: [{ object: 'text', leaves: [{ object: 'leaf', text: '', marks: [] }] }],
+              nodes: [{ object: 'text', text: '' }],
             },
           ],
         },
@@ -163,11 +151,7 @@ describe('Deserializing JSON -> a Slate.js Value', () => {
               nodes: [
                 {
                   object: 'text',
-                  leaves: [
-                    {
-                      text: '',
-                    },
-                  ],
+                  text: '',
                 },
               ],
             },

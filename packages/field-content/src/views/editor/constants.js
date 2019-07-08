@@ -7,11 +7,7 @@ export const initialValue = {
         nodes: [
           {
             object: 'text',
-            leaves: [
-              {
-                text: '',
-              },
-            ],
+            text: '',
           },
         ],
       },
