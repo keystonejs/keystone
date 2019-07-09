@@ -460,10 +460,9 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
 
   addToTableSchema(table) {
     // If we're relating to 'many' things, we don't store ids in this table
-    if (this.config.many) {
+    if (!this.config.many) {
       const column = table.integer(this.path).unsigned();
       if (this.isUnique) column.unique();
-      if (this.isRequired) column.notNullable();
     }
   }
 
