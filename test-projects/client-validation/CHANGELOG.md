@@ -1,5 +1,12 @@
 # @keystone-alpha/cypress-project-client-validation
 
+## 1.0.3
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/app-admin-ui@5.0.4
+  - @keystone-alpha/fields@9.0.0
+  - @keystone-alpha/keystone@7.0.3
+
 ## 1.0.2
 
 - Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):

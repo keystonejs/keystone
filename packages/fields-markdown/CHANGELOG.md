@@ -1,5 +1,10 @@
 # @keystone-alpha/fields-markdown
 
+## 1.0.2
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/fields@9.0.0
+
 ## 1.0.1
 
 ### Patch Changes

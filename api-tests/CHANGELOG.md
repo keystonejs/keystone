@@ -1,5 +1,12 @@
 # @keystone-alpha/api-tests
 
+## 1.0.13
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/test-utils@2.0.6
+  - @keystone-alpha/fields@9.0.0
+  - @keystone-alpha/keystone@7.0.3
+
 ## 1.0.12
 
 - Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):

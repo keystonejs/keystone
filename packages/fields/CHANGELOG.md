@@ -1,5 +1,13 @@
 # @keystone-alpha/fields
 
+## 9.0.0
+
+### Major Changes
+
+- [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+
+  Refactoring the knex adapter (and field adapters) to give the field type more control of the table schema (add 0 or multiple columns, etc)
+
 ## 8.1.0
 
 ### Minor Changes

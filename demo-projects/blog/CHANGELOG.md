@@ -1,5 +1,20 @@
 # keystone_demo_blog
 
+## 1.2.5
+
+### Patch Changes
+
+- [db212300](https://github.com/keystonejs/keystone-5/commit/db212300):
+
+  Upgrade next to v9 and remove support for next-routes. You should switch to the native support for dynamic routes in next@9
+
+* Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/app-admin-ui@5.0.4
+  - @keystone-alpha/fields-markdown@1.0.2
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.4
+  - @keystone-alpha/fields@9.0.0
+  - @keystone-alpha/keystone@7.0.3
+
 ## 1.2.4
 
 - Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):

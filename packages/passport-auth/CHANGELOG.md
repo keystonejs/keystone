@@ -1,5 +1,10 @@
 # @keystone-alpha/passport-auth
 
+## 2.0.1
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/fields@9.0.0
+
 ## 2.0.0
 
 ### Major Changes
