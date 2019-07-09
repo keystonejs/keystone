@@ -1,13 +1,5 @@
 # @keystone-alpha/app-next
 
-## 2.0.0
-
-### Major Changes
-
-- [6f3dd61c](https://github.com/keystonejs/keystone-5/commit/6f3dd61c):
-
-  Upgrade next to v9 and remove support for next-routes. You should switch to the native support for dynamic routes in next@9
-
 ## 1.0.2
 
 ### Patch Changes
