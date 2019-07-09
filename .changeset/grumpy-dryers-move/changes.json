@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/app-next", "type": "major" },
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "patch" }
+  ],
+  "dependents": []
+}

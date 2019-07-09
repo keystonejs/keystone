@@ -41,7 +41,7 @@ const Rsvp = ({ children, event, text, themeColor }) => {
               {({ openModal }) => (
                 <ButtonWrapper>
                   <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
-                  <Button route="signin" onClick={openModal}>
+                  <Button href="/signin" onClick={openModal}>
                     Sign In
                   </Button>
                 </ButtonWrapper>

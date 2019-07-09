@@ -3,7 +3,7 @@ import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
-import { Link } from '../../routes';
+import Link from 'next/link';
 import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -90,7 +90,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                 >
                   {prettyDate}
                 </p>
-                <Link route="event" params={{ id, hex }} passHref>
+                <Link href={`/event/[id]?hex=${hex}`} as={`/event/${id}?hex=${hex}`} passHref>
                   <a
                     css={{
                       color: 'inherit',
@@ -304,7 +304,7 @@ export default class Home extends Component {
                     <Container>
                       <H2 hasSeparator>More Meetups</H2>
                       <EventItems events={moreEvents} offsetTop css={{ marginTop: '3rem' }} />
-                      <Link route="events">
+                      <Link href="/events">
                         <a
                           css={{
                             color: 'black',

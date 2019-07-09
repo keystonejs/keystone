@@ -3,16 +3,16 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import { Query } from 'react-apollo';
 
-import Rsvp from '../components/Rsvp';
-import { Avatar, Container, Error, Hero, H1, H2, Html, Loading } from '../primitives';
-import Talks from '../components/Talks';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import Meta, { makeMetaUrl } from '../components/Meta';
-import { fontSizes, gridSize } from '../theme';
-import { GET_EVENT_DETAILS } from '../graphql/events';
-import { isInFuture, formatFutureDate, formatPastDate, stripTags } from '../helpers';
-import { mq } from '../helpers/media';
+import Rsvp from '../../components/Rsvp';
+import { Avatar, Container, Error, Hero, H1, H2, Html, Loading } from '../../primitives';
+import Talks from '../../components/Talks';
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
+import Meta, { makeMetaUrl } from '../../components/Meta';
+import { fontSizes, gridSize } from '../../theme';
+import { GET_EVENT_DETAILS } from '../../graphql/events';
+import { isInFuture, formatFutureDate, formatPastDate, stripTags } from '../../helpers';
+import { mq } from '../../helpers/media';
 
 export default class Event extends Component {
   static async getInitialProps({ query }) {
