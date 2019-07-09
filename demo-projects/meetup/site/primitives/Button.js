@@ -2,19 +2,20 @@
 import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import { colors } from '../theme';
-import { Link as NextLink } from '../../routes';
+import NextLink from 'next/link';
 import { getForegroundColor } from '../helpers';
 
-const Link = ({ route, ...props }) => (
-  <NextLink route={route} passHref>
+const Link = ({ as, href, ...props }) => (
+  <NextLink href={href} as={as} passHref>
     <a {...props} />
   </NextLink>
 );
 
 const getTag = props => {
   let tag = 'button';
-  if (props.href) tag = 'a';
-  if (props.route) tag = Link;
+  if (props.href) {
+    tag = /^https?:/.test(props.href) ? 'a' : Link;
+  }
 
   return tag;
 };
