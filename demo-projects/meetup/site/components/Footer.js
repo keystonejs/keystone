@@ -24,7 +24,7 @@ const Footer = ({ callToAction = true }) => {
         {callToAction && (
           <CallToAction>
             <Html markup={meetup.footer.callToActionText} />
-            <Button background={button.bg} foreground={button.fg} route="/signup">
+            <Button background={button.bg} foreground={button.fg} href="/signup">
               {meetup.footer.callToActionButtonLabel}
             </Button>
           </CallToAction>

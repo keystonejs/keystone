@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
-import { Link } from '../../../routes';
+import Link from 'next/link';
 import Rsvp from '../../components/Rsvp';
 import { H3, H5, Html, PinIcon } from '../../primitives';
 import { colors, gridSize, shadows } from '../../theme';
@@ -50,7 +50,8 @@ const EventItem = event => {
         }}
       >
         <div css={{ maxHeight: 400, overflow: 'hidden' }}>
-          <Link route="event" params={{ id, hex }} passHref>
+          {/* TODO: this might be wrong */}
+          <Link href={`/event/[id]?hex=${hex}`} as={`/event/${id}?hex=${hex}`} passHref>
             <a
               css={{
                 color: 'inherit',

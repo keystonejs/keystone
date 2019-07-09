@@ -82,7 +82,7 @@ export default ({ onSuccess, onClickSignin }) => {
                 ) : (
                   <Button type="submit">Send</Button>
                 )}
-                <Link route="signin" onClick={onClickSignin}>
+                <Link href="/signin" onClick={onClickSignin}>
                   Sign in
                 </Link>
               </Group>
