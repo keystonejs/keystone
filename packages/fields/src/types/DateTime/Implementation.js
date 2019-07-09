@@ -184,13 +184,17 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
     this.dbPath = utc_field;
   }
 
-  createColumn(table) {
+  addToTableSchema(table) {
     const field_path = this.path;
     const utc_field = `${field_path}_utc`;
     const offset_field = `${field_path}_offset`;
 
-    table.text(offset_field);
-    return table.timestamp(utc_field, { useTz: false });
+    // TODO: Should use a single field on PG
+    // .. although 2 cols is nice for MySQL (no native datetime with tz)
+    const columns = [table.text(offset_field), table.timestamp(utc_field, { useTz: false })];
+
+    if (this.isUnique) table.unique([offset_field, utc_field]);
+    if (this.isRequired) columns.map(c => c.notNullable());
   }
 }
 

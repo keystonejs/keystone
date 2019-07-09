@@ -25,9 +25,11 @@ keystone.createList('Products', {
 
 ### Config
 
-| Option   | Type     | Default   | Description                                                                                                                                                                                                                                                       |
-| :------- | :------- | :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `caseTo` | `String` | `'lower'` | Force the hex representation of IDs to upper or lower case when being read or written. Valid values: `'lower'`, `'upper'` or `null` for no conversion. Defaults to `'lower'` as per [RFC 4122](https://tools.ietf.org/html/rfc4122). See also: [Casing](#casing). |
+| Option       | Type      | Default   | Description                                                                                                                                                                                                                                                       |
+| :----------- | :-------- | :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `caseTo`     | `String`  | `'lower'` | Force the hex representation of IDs to upper or lower case when being read or written. Valid values: `'lower'`, `'upper'` or `null` for no conversion. Defaults to `'lower'` as per [RFC 4122](https://tools.ietf.org/html/rfc4122). See also: [Casing](#casing). |
+| `isRequired` | `Boolean` | `false`   | Does this field require a value?                                                                                                                                                                                                                                  |
+| `isUnique`   | `Boolean` | `false`   | Adds a unique index that allows only unique values to be stored                                                                                                                                                                                                   |
 
 ## GraphQL
 

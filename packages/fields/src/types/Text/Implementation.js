@@ -55,7 +55,9 @@ export class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter
 }
 
 export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.text(this.path);
+  addToTableSchema(table) {
+    const column = table.text(this.path);
+    if (this.isUnique) column.unique();
+    if (this.isRequired) column.notNullable();
   }
 }
