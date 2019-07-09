@@ -141,7 +141,8 @@ export class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter
 }
 
 export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.json(this.path);
+  addToTableSchema(table) {
+    const column = table.jsonb(this.path);
+    if (this.isRequired) column.notNullable();
   }
 }

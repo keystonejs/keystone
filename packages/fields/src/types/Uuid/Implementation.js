@@ -90,9 +90,12 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
 }
 
 export class KnexUuidInterface extends KnexFieldAdapter {
-  createColumn(table) {
-    return table.uuid(this.path);
+  addToTableSchema(table) {
+    const column = table.uuid(this.path);
+    if (this.isUnique) column.unique();
+    if (this.isRequired) column.notNullable();
   }
+
   getQueryConditions(dbPath) {
     const list = this.getListByKey(this.listAdapter.key);
     const field = list.fieldsByPath[this.path];

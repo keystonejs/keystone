@@ -130,18 +130,8 @@ class KnexListAdapter extends BaseListAdapter {
     await this._schema().createTable(this.key, table => {
       // Create an index column
       table.increments('id');
-      // Create the required columns for each field;
-      this.fieldAdapters.forEach(adapter => {
-        if (!(adapter.isRelationship && adapter.config.many)) {
-          const column = adapter.createColumn(table);
-          if (adapter.isUnique) {
-            column.unique();
-          }
-          if (adapter.isRequired && !adapter.isRelationship) {
-            column.notNullable(column);
-          }
-        }
-      });
+      // Let the field adapter add what it needs to the table schema
+      this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
     });
   }
 
@@ -587,8 +577,8 @@ class KnexListAdapter extends BaseListAdapter {
 }
 
 class KnexFieldAdapter extends BaseFieldAdapter {
-  createColumn() {
-    throw `createColumn not supported for field ${this.path} of type ${this.fieldName}`;
+  addToTableSchema() {
+    throw `addToTableSchema() missing from the ${this.fieldName} field type (used by ${this.path})`;
   }
 
   // The following methods provide helpers for constructing the return values of `getQueryConditions`.

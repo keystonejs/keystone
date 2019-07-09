@@ -148,15 +148,24 @@ class BaseListAdapter {
 }
 
 class BaseFieldAdapter {
-  constructor(fieldName, path, listAdapter, getListByKey, { isRequired, isUnique, ...config }) {
+  constructor(
+    fieldName,
+    path,
+    listAdapter,
+    getListByKey,
+    { isRequired, isIndexed, isUnique, ...config }
+  ) {
     this.fieldName = fieldName;
     this.path = path;
     this.listAdapter = listAdapter;
     this.config = config;
     this.getListByKey = getListByKey;
     this.dbPath = path;
-    this.isRequired = isRequired;
-    this.isUnique = isUnique;
+
+    // These are stored for all field types but not universally relevant
+    // Consider refactoring into the type implementation?
+    this.isRequired = !!isRequired;
+    this.isUnique = !!isUnique;
   }
 
   setupHooks() {}
