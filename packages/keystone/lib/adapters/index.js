@@ -148,13 +148,7 @@ class BaseListAdapter {
 }
 
 class BaseFieldAdapter {
-  constructor(
-    fieldName,
-    path,
-    listAdapter,
-    getListByKey,
-    { isRequired, isIndexed, isUnique, ...config }
-  ) {
+  constructor(fieldName, path, listAdapter, getListByKey, { isRequired, isUnique, ...config }) {
     this.fieldName = fieldName;
     this.path = path;
     this.listAdapter = listAdapter;
