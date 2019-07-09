@@ -268,7 +268,8 @@ export class MongoOEmbedInterface extends CommonOEmbedInterface(MongooseFieldAda
 }
 
 export class KnexOEmbedInterface extends CommonOEmbedInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.json(this.path);
+  addToTableSchema(table) {
+    const column = table.jsonb(this.path);
+    if (this.isRequired) column.notNullable();
   }
 }

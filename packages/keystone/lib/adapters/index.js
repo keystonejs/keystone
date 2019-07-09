@@ -155,8 +155,11 @@ class BaseFieldAdapter {
     this.config = config;
     this.getListByKey = getListByKey;
     this.dbPath = path;
-    this.isRequired = isRequired;
-    this.isUnique = isUnique;
+
+    // These are stored for all field types but not universally relevant
+    // Consider refactoring into the type implementation?
+    this.isRequired = !!isRequired;
+    this.isUnique = !!isUnique;
   }
 
   setupHooks() {}

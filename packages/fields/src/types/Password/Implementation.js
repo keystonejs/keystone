@@ -127,8 +127,9 @@ export class MongoPasswordInterface extends CommonPasswordInterface(MongooseFiel
 }
 
 export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.text(this.path);
+  addToTableSchema(table) {
+    const column = table.string(this.path, 60);
+    if (this.isRequired) column.notNullable();
   }
 
   getQueryConditions(dbPath) {
