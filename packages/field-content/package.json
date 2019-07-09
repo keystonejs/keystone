@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/field-content",
   "description": "A block-based content field for KeystoneJS",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -19,7 +19,7 @@
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
     "@keystone-alpha/build-field-types": "^1.0.3",
-    "@keystone-alpha/fields": "^8.1.0",
+    "@keystone-alpha/fields": "^9.0.0",
     "@keystone-alpha/utils": "^3.0.1",
     "apply-ref": "^0.2.0",
     "get-selection-range": "^0.1.0",

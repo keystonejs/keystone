@@ -1,5 +1,14 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.3
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/app-admin-ui@5.0.4
+  - @keystone-alpha/field-content@2.0.1
+  - @keystone-alpha/fields-markdown@1.0.2
+  - @keystone-alpha/fields@9.0.0
+  - @keystone-alpha/keystone@7.0.3
+
 ## 1.3.2
 
 - Updated dependencies [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
