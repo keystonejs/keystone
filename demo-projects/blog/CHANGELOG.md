@@ -1,5 +1,13 @@
 # keystone_demo_blog
 
+## 1.2.5
+
+### Patch Changes
+
+- [6f3dd61c](https://github.com/keystonejs/keystone-5/commit/6f3dd61c):
+
+  Upgrade next to v9 and remove support for next-routes. You should switch to the native support for dynamic routes in next@9
+
 ## 1.2.4
 
 - Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):

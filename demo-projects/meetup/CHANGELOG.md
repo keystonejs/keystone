@@ -1,5 +1,13 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.1.5
+
+### Patch Changes
+
+- [6f3dd61c](https://github.com/keystonejs/keystone-5/commit/6f3dd61c):
+
+  Upgrade next to v9 and remove support for next-routes. You should switch to the native support for dynamic routes in next@9
+
 ## 0.1.4
 
 ### Patch Changes
