@@ -50,6 +50,7 @@ export class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
   addToTableSchema(table) {
     const column = table.float(this.path);
     if (this.isUnique) column.unique();
-    if (this.isRequired) column.notNullable();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

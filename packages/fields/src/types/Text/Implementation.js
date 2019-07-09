@@ -58,6 +58,7 @@ export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
   addToTableSchema(table) {
     const column = table.text(this.path);
     if (this.isUnique) column.unique();
-    if (this.isRequired) column.notNullable();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

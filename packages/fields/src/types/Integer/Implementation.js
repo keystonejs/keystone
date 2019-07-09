@@ -57,6 +57,7 @@ export class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapte
   addToTableSchema(table) {
     const column = table.integer(this.path);
     if (this.isUnique) column.unique();
-    if (this.isRequired) column.notNullable();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

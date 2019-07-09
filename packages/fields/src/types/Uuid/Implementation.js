@@ -84,7 +84,8 @@ export class KnexUuidInterface extends KnexFieldAdapter {
   addToTableSchema(table) {
     const column = table.uuid(this.path);
     if (this.isUnique) column.unique();
-    if (this.isRequired) column.notNullable();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 
   getQueryConditions(dbPath) {
