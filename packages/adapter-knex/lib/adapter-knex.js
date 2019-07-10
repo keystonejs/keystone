@@ -577,6 +577,37 @@ class KnexListAdapter extends BaseListAdapter {
 }
 
 class KnexFieldAdapter extends BaseFieldAdapter {
+  constructor(
+    fieldName,
+    path,
+    field,
+    listAdapter,
+    getListByKey,
+    { knexOptions: { defaultTo, isNotNullable } = {} } = {}
+  ) {
+    super(...arguments);
+
+    // if our DB level config isn't explicitly configured, they get defaulted from the KS equivalents
+    this._defaultToSupplied = defaultTo;
+    this.isNotNullable =
+      typeof isNotNullable === 'undefined' ? !!field.isRequired : !!isNotNullable;
+  }
+
+  // Gives us a way to referrence knex when configuring DB-level defaults, eg:
+  //   knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
+  // We can't do this in the constructor as the knex instance doesn't exists
+  get defaultTo() {
+    if (this._defaultTo) return this._defaultTo;
+
+    const knex = this.listAdapter.parentAdapter.knex;
+    const resolve = () => {
+      if (typeof this._defaultToSupplied === 'undefined') return this.field.defaultValue;
+      if (typeof this._defaultToSupplied === 'function') return this._defaultToSupplied(knex);
+      return this._defaultToSupplied;
+    };
+    return (this._defaultTo = resolve());
+  }
+
   addToTableSchema() {
     throw `addToTableSchema() missing from the ${this.fieldName} field type (used by ${this.path})`;
   }

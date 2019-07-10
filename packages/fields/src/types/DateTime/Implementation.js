@@ -176,25 +176,39 @@ export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFiel
 export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
-    const field_path = this.path;
-    const utc_field = `${field_path}_utc`;
-    const offset_field = `${field_path}_offset`;
-    this.realKeys = [utc_field, offset_field];
-    this.sortKey = utc_field;
-    this.dbPath = utc_field;
+    const utcPath = `${this.path}_utc`;
+    const offsetPath = `${this.path}_offset`;
+    this.realKeys = [utcPath, offsetPath];
+    this.sortKey = utcPath;
+    this.dbPath = utcPath;
   }
 
   addToTableSchema(table) {
-    const field_path = this.path;
-    const utc_field = `${field_path}_utc`;
-    const offset_field = `${field_path}_offset`;
+    const utcPath = `${this.path}_utc`;
+    const offsetPath = `${this.path}_offset`;
 
     // TODO: Should use a single field on PG
     // .. although 2 cols is nice for MySQL (no native datetime with tz)
-    const columns = [table.text(offset_field), table.timestamp(utc_field, { useTz: false })];
+    const utcColumn = table.timestamp(utcPath, { useTz: false });
+    const offsetColumn = table.text(offsetPath);
 
-    if (this.isUnique) table.unique([offset_field, utc_field]);
-    if (this.isRequired) columns.map(c => c.notNullable());
+    // Interpret unique as meaning across both elements of the value
+    if (this.isUnique) table.unique([utcPath, offsetPath]);
+
+    // Interpret not nullable to mean neither field is nullable
+    if (this.isNotNullable) {
+      utcColumn.notNullable();
+      offsetColumn.notNullable();
+    }
+
+    // Allow defaults to be set for both elements of the value by nesting them
+    // TODO: Add to docs..
+    if (this.defaultTo && (this.defaultTo.utc || this.defaultTo.offset)) {
+      if (this.defaultTo.utc) utcColumn.defaultTo(this.defaultTo.utc);
+      if (this.defaultTo.offset) offsetColumn.defaultTo(this.defaultTo.offset);
+    } else if (this.defaultTo) {
+      utcColumn.defaultTo(this.defaultTo);
+    }
   }
 }
 

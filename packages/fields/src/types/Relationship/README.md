@@ -31,9 +31,9 @@ keystone.createList('Org', {
 
 ### Config
 
-| Option       | Type      | Default | Description                                                     |
-| ------------ | --------- | ------- | --------------------------------------------------------------- |
-| `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
+| Option     | Type      | Default | Description                                                     |
+| ---------- | --------- | ------- | --------------------------------------------------------------- |
+| `isUnique` | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
 
 ```DOCS_TODO
 TODO: Missing config options
