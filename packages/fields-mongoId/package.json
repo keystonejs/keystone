@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/fields-mongoId",
   "description": "KeystoneJS MongoId Field Type",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "index.js",
