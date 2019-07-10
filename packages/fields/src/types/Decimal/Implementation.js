@@ -82,7 +82,8 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
   addToTableSchema(table) {
     const column = table.decimal(this.path);
     if (this.isUnique) column.unique();
-    if (this.isRequired) column.notNullable();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 
   getQueryConditions(dbPath) {

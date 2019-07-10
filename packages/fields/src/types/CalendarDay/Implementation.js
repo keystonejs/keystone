@@ -69,7 +69,8 @@ export class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldA
   addToTableSchema(table) {
     const column = table.date(this.path);
     if (this.isUnique) column.unique();
-    if (this.isRequired) column.notNullable();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 
   setupHooks({ addPostReadHook }) {
