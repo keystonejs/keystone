@@ -68,8 +68,8 @@ if (google) {
 
       // Once a user is found/created and successfully matched to the
       // googleId, they are authenticated, and the token is returned here.
-      onAuthenticated: ({ token, item }, req, res) => {
-        console.log({ token, item });
+      onAuthenticated: (tokenAndItem, req, res) => {
+        console.log(tokenAndItem);
         // Grab the redirection target from the cookie set earlier
         const redirectTo = JSON.parse(req.cookies.redirects).successRedirect;
         // And redirect there
@@ -124,8 +124,8 @@ if (facebook) {
 
       // Once a user is found/created and successfully matched to the
       // googleId, they are authenticated, and the token is returned here.
-      onAuthenticated: ({ token, item }, req, res) => {
-        console.log({ token, item });
+      onAuthenticated: (tokenAndItem, req, res) => {
+        console.log(tokenAndItem);
         res.redirect('/profile');
       },
 
@@ -161,7 +161,7 @@ if (twitter) {
         }
         return createData;
       },
-      onAuthenticated: ({ token, item }, req, res) => res.redirect('/profile'),
+      onAuthenticated: (tokenAndItem, req, res) => res.redirect('/profile'),
       onError: (error, req, res) => {
         console.error(error);
         res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
@@ -192,7 +192,7 @@ if (github) {
         }
         return createData;
       },
-      onAuthenticated: ({ token, item }, req, res) => res.redirect('/profile'),
+      onAuthenticated: (tokenAndItem, req, res) => res.redirect('/profile'),
       onError: (error, req, res) => {
         console.error(error);
         res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
