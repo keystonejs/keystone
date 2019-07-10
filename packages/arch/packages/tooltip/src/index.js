@@ -40,7 +40,7 @@ let TooltipPositioner = (props: PositionerProps) => {
     <Popper
       referenceElement={props.targetNode}
       placement={props.placement}
-      modifiers={{ preventOverflow: { enabled: false } }}
+      modifiers={{ hide: { enabled: false }, preventOverflow: { enabled: false } }}
     >
       {({ ref, style }) => (
         <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>

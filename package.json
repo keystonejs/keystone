@@ -49,7 +49,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.3",
-    "@changesets/cli": "^1.2.0",
+    "@changesets/cli": "^1.3.0",
     "@emotion/core": "^10.0.10",
     "@emotion/hash": "^0.7.1",
     "@emotion/styled": "^10.0.10",
@@ -87,8 +87,10 @@
     "clipboard-copy": "^3.0.0",
     "cloudinary": "^1.13.2",
     "codecov": "^3.1.0",
+    "codemirror": "^5.48.0",
     "compression": "^1.7.4",
     "cookie": "^0.3.1",
+    "cookie-parser": "^1.4.4",
     "cookie-signature": "^1.1.0",
     "cors": "^2.8.4",
     "cpy": "^7.2.0",
@@ -183,8 +185,7 @@
     "ms": "^2.1.1",
     "multer": "^1.4.1",
     "nanoassert": "^2.0.0",
-    "next": "^8.0.3",
-    "next-routes": "^1.4.2",
+    "next": "^9.0.0",
     "node-fetch": "^2.3.0",
     "object-hash": "^1.3.1",
     "octicons": "^7.2.0",
@@ -216,6 +217,7 @@
     "react-adopt": "^0.6.0",
     "react-apollo": "2.4.0",
     "react-apollo-hooks": "^0.4.4",
+    "react-codemirror2": "^6.0.0",
     "react-color": "^2.17.0",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.6",
@@ -249,10 +251,9 @@
     "rxjs": "^6.4.0",
     "sarcastic": "^1.5.0",
     "serialize-error": "^3.0.0",
-    "slate": "^0.44.12",
+    "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-html-serializer": "^0.7.36",
-    "slate-react": "^0.21.18",
+    "slate-react": "^0.22.4",
     "source-map-support": "^0.5.12",
     "spawndamnit": "^2.0.0",
     "split": "^1.0.1",
@@ -309,7 +310,10 @@
   "field-types": {
     "packages": [
       "packages/fields-wysiwyg-tinymce",
-      "packages/fields"
+      "packages/fields",
+      "packages/fields-markdown",
+      "packages/field-content",
+      "packages/oembed-adapters"
     ]
   },
   "jest": {

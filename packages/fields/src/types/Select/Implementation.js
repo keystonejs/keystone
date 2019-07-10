@@ -74,7 +74,10 @@ export class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAda
 }
 
 export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.enu(this.path, this.config.options.map(({ value }) => value));
+  addToTableSchema(table) {
+    const column = table.enu(this.path, this.config.options.map(({ value }) => value));
+    if (this.isUnique) column.unique();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

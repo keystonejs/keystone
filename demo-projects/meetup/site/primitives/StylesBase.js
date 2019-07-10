@@ -6,11 +6,11 @@ export default function StylesBase() {
     <Global
       styles={css`
         ${normalize};
-        ${fonts};
+        $@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
         body {
           max-width: 100%;
           overflow-x: hidden;
-          font-family: 'NeueHass', -apple-system, BlinkMacSystemFont, Helvetica, sans-serif;
+          font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, Helvetica, sans-serif;
           line-height: 1.5;
 
           text-decoration-skip: ink;
@@ -172,29 +172,5 @@ const normalize = css`
   }
   [hidden] {
     display: none;
-  }
-`;
-
-const fonts = css`
-  @font-face {
-    font-family: 'NeueHass';
-    src: local('NeueHaasUnicaPro Regular'), local('NeueHaasUnicaPro-Regular'),
-      url('/static/fonts/NeueHaasUnicaPro-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'NeueHass';
-    src: local('NeueHaasUnicaPro Medium'), local('NeueHaasUnicaPro-Medium'),
-      url('/static/fonts/NeueHaasUnicaPro-Medium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'NeueHass';
-    src: local('NeueHaasUnicaPro Bold'), local('NeueHaasUnicaPro-Bold'),
-      url('/static/fonts/NeueHaasUnicaPro-Bold.woff') format('woff');
-    font-weight: 600;
-    font-style: normal;
   }
 `;

@@ -69,8 +69,8 @@ class BaseListAdapter {
     ];
   }
 
-  newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {
-    const adapter = new fieldAdapterClass(name, path, this, getListByKey, config);
+  newFieldAdapter(fieldAdapterClass, name, path, field, getListByKey, config) {
+    const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
     this.prepareFieldAdapter(adapter);
     adapter.setupHooks({
       addPreSaveHook: this.addPreSaveHook.bind(this),
@@ -148,15 +148,26 @@ class BaseListAdapter {
 }
 
 class BaseFieldAdapter {
-  constructor(fieldName, path, listAdapter, getListByKey, { isRequired, isUnique, ...config }) {
+  constructor(
+    fieldName,
+    path,
+    field,
+    listAdapter,
+    getListByKey,
+    { isRequired, isUnique, ...config }
+  ) {
     this.fieldName = fieldName;
     this.path = path;
+    this.field = field;
     this.listAdapter = listAdapter;
     this.config = config;
     this.getListByKey = getListByKey;
     this.dbPath = path;
-    this.isRequired = isRequired;
-    this.isUnique = isUnique;
+
+    // These are stored for all field types but not universally relevant
+    // Consider refactoring into the type implementation?
+    this.isRequired = !!isRequired;
+    this.isUnique = !!isUnique;
   }
 
   setupHooks() {}

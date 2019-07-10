@@ -1,5 +1,58 @@
 # @keystone-alpha/fields
 
+## 9.1.0
+
+### Minor Changes
+
+- [18064167](https://github.com/keystonejs/keystone-5/commit/18064167):
+
+  Adding `knexOptions` to the KnexFieldAdapter to support DB-level config for nullability (`isNotNullable`) and defaults (`defaultTo`)
+
+### Patch Changes
+
+- [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+
+  Adding field instance to the BaseFieldAdapter constructor arguments
+
+## 9.0.0
+
+### Major Changes
+
+- [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+
+  Refactoring the knex adapter (and field adapters) to give the field type more control of the table schema (add 0 or multiple columns, etc)
+
+## 8.1.0
+
+### Minor Changes
+
+- [e945926c](https://github.com/keystonejs/keystone-5/commit/e945926c):
+
+  Adding Uuid field type with Mongoose and Knex adapters
+
+### Patch Changes
+
+- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+
+  CloudinaryImage, Unsplash, and OEmbed blocks will correctly re-connect to existing block data if present rather than disconnecting and reconnecting on every save of the Content editor.
+
+* Updated dependencies [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+  - @keystone-alpha/field-content@2.0.0
+
+## 8.0.0
+
+### Major Changes
+
+- [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+
+  Extract `Content` field into its own package: `@keystone-alpha/field-content`.
+
+### Patch Changes
+
+- [98bef287](https://github.com/keystonejs/keystone-5/commit/98bef287):
+
+  Fix the Relationship field type not allowing relationships to be removed from the Admin UI
+
 ## 7.2.0
 
 ### Minor Changes

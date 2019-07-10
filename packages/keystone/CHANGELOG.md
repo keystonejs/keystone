@@ -1,5 +1,38 @@
 # @keystone-alpha/keystone
 
+## 8.0.0
+
+### Major Changes
+
+- [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+
+  Adding field instance to the BaseFieldAdapter constructor arguments
+
+### Patch Changes
+
+- [18064167](https://github.com/keystonejs/keystone-5/commit/18064167):
+
+  Adding `knexOptions` to the KnexFieldAdapter to support DB-level config for nullability (`isNotNullable`) and defaults (`defaultTo`)
+
+## 7.0.3
+
+### Patch Changes
+
+- [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+
+  Refactoring the knex adapter (and field adapters) to give the field type more control of the table schema (add 0 or multiple columns, etc)
+
+## 7.0.2
+
+### Patch Changes
+
+- [04371d0d](https://github.com/keystonejs/keystone-5/commit/04371d0d):
+
+  Don't error when Auth Strategy doesn't provide getInputFragment() or validate() method.
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/fields@8.0.0
+
 ## 7.0.1
 
 ### Patch Changes

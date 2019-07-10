@@ -458,8 +458,12 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return this.getListByKey(this.refListKey).adapter;
   }
 
-  createColumn(table) {
-    return table.integer(this.path).unsigned();
+  addToTableSchema(table) {
+    // If we're relating to 'many' things, we don't store ids in this table
+    if (!this.config.many) {
+      const column = table.integer(this.path).unsigned();
+      if (this.isUnique) column.unique();
+    }
   }
 
   createForiegnKey(table, schemaName) {

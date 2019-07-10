@@ -200,6 +200,20 @@ const googleStrategy = keystone.createAuthStrategy({
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
 
+    loginPathMiddleware: (req, res, next) => {
+      // An express middleware executed before the Passport social signin flow
+      // begins. Useful for setting cookies, etc.
+      // Don't forget to call `next()`!
+      next();
+    },
+
+    callbackPathMiddleware: (req, res, next) => {
+      // An express middleware executed before the callback route is run. Useful
+      // for logging, etc.
+      // Don't forget to call `next()`!
+      next();
+    },
+
     // Called when there's no existing user for the given googleId
     // Default: resolveCreateData: () => ({})
     resolveCreateData: ({ createData, actions: { pauseAuthentication } }, req, res) => {

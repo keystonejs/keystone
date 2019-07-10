@@ -79,9 +79,13 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
 }
 
 export class KnexDecimalInterface extends KnexFieldAdapter {
-  createColumn(table) {
-    return table.decimal(this.path);
+  addToTableSchema(table) {
+    const column = table.decimal(this.path);
+    if (this.isUnique) column.unique();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
+
   getQueryConditions(dbPath) {
     return {
       ...this.equalityConditions(dbPath),

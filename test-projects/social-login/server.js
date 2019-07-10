@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const {
   GoogleAuthStrategy,
   FacebookAuthStrategy,
@@ -24,6 +25,20 @@ if (google) {
       hostURL,
       loginPath: '/auth/google',
       callbackPath: '/auth/google/callback',
+
+      loginPathMiddleware: (req, res, next) => {
+        // Pull redirect URLs off of the query string
+        const { successRedirect = '/profile', failureRedirect = '/' } = req.query || {};
+        // Store them in a cookie so we can access them again later
+        res.cookie('redirects', JSON.stringify({ successRedirect, failureRedirect }));
+        // Continue with social authing
+        next();
+      },
+
+      callbackPathMiddleware: (req, res, next) => {
+        console.log('Google callback URL fired');
+        next();
+      },
 
       // Called when there's no existing user for the given googleId
       // Default: resolveCreateData: () => ({})
@@ -53,16 +68,28 @@ if (google) {
 
       // Once a user is found/created and successfully matched to the
       // googleId, they are authenticated, and the token is returned here.
-      onAuthenticated: (token, req, res) => {
-        console.log(token);
-        res.redirect('/profile');
+      onAuthenticated: (tokenAndItem, req, res) => {
+        console.log(tokenAndItem);
+        // Grab the redirection target from the cookie set earlier
+        const redirectTo = JSON.parse(req.cookies.redirects).successRedirect;
+        // And redirect there
+        // NOTE: You should probabaly do some safety checks here for a valid URL
+        // and/or ensure it's a relative URL to avoid phising attacks.
+        res.redirect(redirectTo);
       },
 
       // If there was an error during any of the authentication flow, this
       // callback is executed
       onError: (error, req, res) => {
         console.error(error);
-        res.redirect('/?error=Uh-oh');
+        // Grab the redirection target from the cookie set earlier
+        const redirectTo = JSON.parse(req.cookies.redirects).failureRedirect;
+        // And redirect there
+        // NOTE: You should probabaly do some safety checks here for a valid URL
+        // and/or ensure it's a relative URL to avoid phising attacks.
+        res.redirect(
+          `${redirectTo}?error=${encodeURIComponent(error.message || error.toString())}`
+        );
       },
     },
   });
@@ -97,15 +124,16 @@ if (facebook) {
 
       // Once a user is found/created and successfully matched to the
       // googleId, they are authenticated, and the token is returned here.
-      onAuthenticated: (token, req, res) => {
-        console.log(token);
+      onAuthenticated: (tokenAndItem, req, res) => {
+        console.log(tokenAndItem);
         res.redirect('/profile');
       },
 
       // If there was an error during any of the authentication flow, this
       // callback is executed
       onError: (error, req, res) => {
-        res.redirect('/?error=Uh-oh');
+        console.error(error);
+        res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
       },
     },
   });
@@ -133,8 +161,11 @@ if (twitter) {
         }
         return createData;
       },
-      onAuthenticated: (token, req, res) => res.redirect('/profile'),
-      onError: (error, req, res) => res.redirect('/?error=Uh-oh'),
+      onAuthenticated: (tokenAndItem, req, res) => res.redirect('/profile'),
+      onError: (error, req, res) => {
+        console.error(error);
+        res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
+      },
     },
   });
 }
@@ -161,8 +192,11 @@ if (github) {
         }
         return createData;
       },
-      onAuthenticated: (token, req, res) => res.redirect('/profile'),
-      onError: (error, req, res) => res.redirect('/?error=Uh-oh'),
+      onAuthenticated: (tokenAndItem, req, res) => res.redirect('/profile'),
+      onError: (error, req, res) => {
+        console.error(error);
+        res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
+      },
     },
   });
 }
@@ -187,6 +221,7 @@ keystone
 
     const app = express();
 
+    app.use(cookieParser());
     app.use(middlewares);
 
     // Sample page to collect a name, submits to the completion step which will
@@ -265,7 +300,11 @@ keystone
     app.get('/', (req, res) => {
       res.send(`
         <html>
-          <a href="/auth/google">Login With Google</a> <em>(multi-step)</em><br />
+          <a href="/auth/google?successRedirect=${encodeURIComponent(
+            '/profile?loggedInWithGoogle'
+          )}">
+            Login With Google
+          </a> <em>(multi-step)</em><br />
           <a href="/auth/facebook">Login With Facebook</a> <em>(single-step)</em><br />
           <a href="/auth/twitter">Login With Twitter</a> <em>(single-step)</em><br />
           <a href="/auth/github">Login With GitHub</a> <em>(single-step)</em><br />

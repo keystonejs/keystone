@@ -1,5 +1,41 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 2.0.2
+
+### Patch Changes
+
+- [ab0b1f22](https://github.com/keystonejs/keystone-5/commit/ab0b1f22):
+
+  Add an example of using the loginPathMiddleware and callbackPathMiddleware functions when doing social auth signin.
+
+* Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/adapter-mongoose@2.2.1
+  - @keystone-alpha/keystone@8.0.0
+  - @keystone-alpha/fields@9.1.0
+
+## 2.0.1
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/app-admin-ui@5.0.4
+  - @keystone-alpha/passport-auth@2.0.1
+  - @keystone-alpha/fields@9.0.0
+  - @keystone-alpha/keystone@7.0.3
+
+## 2.0.0
+
+### Major Changes
+
+- [04371d0d](https://github.com/keystonejs/keystone-5/commit/04371d0d):
+
+  Complete rewrite of Social Auth package, see the `README.md` for instructions on
+  how to use it.
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/app-admin-ui@5.0.3
+  - @keystone-alpha/keystone@7.0.2
+  - @keystone-alpha/passport-auth@2.0.0
+  - @keystone-alpha/fields@8.0.0
+
 ## 1.2.2
 
 - Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):

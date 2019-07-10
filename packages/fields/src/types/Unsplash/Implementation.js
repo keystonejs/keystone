@@ -260,7 +260,9 @@ export class MongoUnsplashInterface extends CommonUnsplashInterface(MongooseFiel
 }
 
 export class KnexUnsplashInterface extends CommonUnsplashInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.json(this.path);
+  addToTableSchema(table) {
+    const column = table.jsonb(this.path);
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

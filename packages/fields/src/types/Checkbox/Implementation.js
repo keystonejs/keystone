@@ -39,7 +39,9 @@ export class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFiel
 }
 
 export class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.boolean(this.path);
+  addToTableSchema(table) {
+    const column = table.boolean(this.path);
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

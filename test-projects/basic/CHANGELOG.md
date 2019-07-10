@@ -1,5 +1,35 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.4
+
+- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/adapter-mongoose@2.2.1
+  - @keystone-alpha/keystone@8.0.0
+  - @keystone-alpha/fields@9.1.0
+
+## 1.3.3
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/app-admin-ui@5.0.4
+  - @keystone-alpha/field-content@2.0.1
+  - @keystone-alpha/fields-markdown@1.0.2
+  - @keystone-alpha/fields@9.0.0
+  - @keystone-alpha/keystone@7.0.3
+
+## 1.3.2
+
+- Updated dependencies [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+  - @keystone-alpha/fields@8.1.0
+  - @keystone-alpha/field-content@2.0.0
+
+## 1.3.1
+
+- Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/app-admin-ui@5.0.3
+  - @keystone-alpha/keystone@7.0.2
+  - @keystone-alpha/field-content@1.0.0
+  - @keystone-alpha/fields@8.0.0
+
 ## 1.3.0
 
 ### Minor Changes

@@ -4,7 +4,7 @@ import { useContext, createContext } from 'react';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
-import { Link } from '../../routes';
+import Link from 'next/link';
 import { useAuth } from '../lib/authetication';
 import { SignoutIcon } from '../primitives';
 import { getForegroundColor, useLogoDimension } from '../helpers';
@@ -43,8 +43,8 @@ const NavAnchor = props => {
     />
   );
 };
-const NavLink = ({ route, ...props }) => (
-  <Link route={route} passHref>
+const NavLink = ({ href, as, ...props }) => (
+  <Link href={href} as={as} passHref>
     <NavAnchor {...props} />
   </Link>
 );
@@ -111,7 +111,7 @@ const UserActions = ({ user }) => {
         <NavText css={hideOnMobile}>
           <strong>{user.name}</strong>
         </NavText>
-        <NavLink route="signout" title="Sign Out" onClick={onSignout}>
+        <NavLink href="/signout" title="Sign Out" onClick={onSignout}>
           <SignoutIcon />
         </NavLink>
       </span>
@@ -124,14 +124,14 @@ const AnonActions = () => {
     <div>
       <AuthModal mode="signin">
         {({ openModal }) => (
-          <NavLink route="signin" onClick={openModal}>
+          <NavLink href="/signin" onClick={openModal}>
             Sign in
           </NavLink>
         )}
       </AuthModal>
       <AuthModal mode="signup">
         {({ openModal }) => (
-          <NavButton route="signup" onClick={openModal}>
+          <NavButton href="/signup" onClick={openModal}>
             Join
           </NavButton>
         )}
@@ -148,7 +148,7 @@ const Navbar = ({ background = 'white', ...props }) => {
   return (
     <ThemeContext.Provider value={{ background, foreground }}>
       <Header {...props}>
-        <Link route="/" passHref>
+        <Link href="/" passHref>
           <a>
             <img
               src={meetup.logo.src}
@@ -165,9 +165,9 @@ const Navbar = ({ background = 'white', ...props }) => {
           </a>
         </Link>
         <div css={{ flex: 1 }}>
-          <NavLink route="/">Home</NavLink>
-          <NavLink route="about">About</NavLink>
-          <NavLink route="events">Events</NavLink>
+          <NavLink href="/">Home</NavLink>
+          <NavLink href="/about">About</NavLink>
+          <NavLink href="/events">Events</NavLink>
         </div>
         {isAuthenticated ? <UserActions user={user} /> : <AnonActions />}
       </Header>

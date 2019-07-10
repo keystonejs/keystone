@@ -66,8 +66,11 @@ export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseF
 }
 
 export class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.date(this.path);
+  addToTableSchema(table) {
+    const column = table.date(this.path);
+    if (this.isUnique) column.unique();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 
   setupHooks({ addPostReadHook }) {

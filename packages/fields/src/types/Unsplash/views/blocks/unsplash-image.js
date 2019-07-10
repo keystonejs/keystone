@@ -352,19 +352,27 @@ export function Node({ node, editor }) {
   );
 }
 
-export let schema = {
+export let getSchema = () => ({
   isVoid: true,
-};
+});
 
 export function serialize({ node }) {
   const unsplashData = node.data.get('unsplashData');
+  const joinIds = node.data.get('_joinIds');
+
+  const mutations =
+    joinIds && joinIds.length
+      ? {
+          connect: { id: joinIds[0] },
+        }
+      : {
+          create: {
+            image: unsplashData.unsplashId,
+          },
+        };
 
   return {
-    mutations: {
-      create: {
-        image: unsplashData.unsplashId,
-      },
-    },
+    mutations,
     node: {
       ...node.toJSON(),
       // Zero out the data so we don't unnecesarily duplicate the url

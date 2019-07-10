@@ -94,18 +94,17 @@ const CommonPasswordInterface = superclass =>
     setupHooks({ addPreSaveHook }) {
       // Updates the relevant value in the item provided (by referrence)
       addPreSaveHook(async item => {
-        const list = this.getListByKey(this.listAdapter.key);
-        const field = list.fieldsByPath[this.path];
-        const plaintext = item[field.path];
+        const path = this.field.path;
+        const plaintext = item[path];
 
         if (typeof plaintext === 'undefined') {
           return item;
         }
 
         if (String(plaintext) === plaintext && plaintext !== '') {
-          item[field.path] = await field.generateHash(plaintext);
+          item[path] = await this.field.generateHash(plaintext);
         } else {
-          item[field.path] = null;
+          item[path] = null;
         }
         return item;
       });
@@ -127,8 +126,10 @@ export class MongoPasswordInterface extends CommonPasswordInterface(MongooseFiel
 }
 
 export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.text(this.path);
+  addToTableSchema(table) {
+    const column = table.string(this.path, 60);
+    if (this.isNotNullable) column.notNullable();
+    // Defaulting or unique constraints here would create vulnerabilities
   }
 
   getQueryConditions(dbPath) {

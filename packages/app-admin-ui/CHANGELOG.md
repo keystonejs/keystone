@@ -1,5 +1,21 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.0.4
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/fields@9.0.0
+
+## 5.0.3
+
+### Patch Changes
+
+- [a6c3ac0c](https://github.com/keystonejs/keystone-5/commit/a6c3ac0c):
+
+  Stop re-rendering ItemTitle on every change in an Item
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/fields@8.0.0
+
 ## 5.0.2
 
 ### Patch Changes

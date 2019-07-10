@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/docs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "license": "MIT",
   "dependencies": {
@@ -22,7 +22,7 @@
     "@arch-ui/popout": "^0.0.7",
     "@arch-ui/select": "^0.0.7",
     "@arch-ui/theme": "^0.0.5",
-    "@arch-ui/tooltip": "^0.0.7",
+    "@arch-ui/tooltip": "^0.1.0",
     "@arch-ui/typography": "^0.0.7",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10",

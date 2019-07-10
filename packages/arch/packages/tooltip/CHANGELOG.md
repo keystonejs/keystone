@@ -1,5 +1,21 @@
 # @arch-ui/tooltip
 
+## 0.1.1
+
+### Patch Changes
+
+- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+
+  Turn off warnings about 'preventOverflow' modifier is required by 'hide' modifier in order to work, be sure to include it before 'hide'!
+
+## 0.1.0
+
+### Minor Changes
+
+- [3544f852](https://github.com/keystonejs/keystone-5/commit/3544f852):
+
+  Added modifiers to arch/tooltip
+
 ## 0.0.7
 
 - Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
