@@ -1,1 +1,0 @@
-Adding field instance to the BaseFieldAdapter constructor arguments

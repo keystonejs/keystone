@@ -1,5 +1,19 @@
 # @keystone-alpha/passport-auth
 
+## 2.1.0
+
+### Minor Changes
+
+- [ab0b1f22](https://github.com/keystonejs/keystone-5/commit/ab0b1f22):
+
+  Add `loginPathMiddleware` and `callbackPathMiddleware` functions for hooking into the Passport auth flow.
+
+### Patch Changes
+
+- [ab0b1f22](https://github.com/keystonejs/keystone-5/commit/ab0b1f22):
+
+  Correctly stop processing social auth signin flow when an error occurs during account creation.
+
 ## 2.0.1
 
 - Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
