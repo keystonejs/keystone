@@ -1,0 +1,1 @@
+Build package with @keystone-alpha/build-field-types so it works when published
