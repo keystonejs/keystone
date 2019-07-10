@@ -1,0 +1,1 @@
+export { IframelyOEmbedAdapter } from './iframely';
