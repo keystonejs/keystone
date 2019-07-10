@@ -54,10 +54,7 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
       const valType = typeof item[this.path];
 
       if (item[this.path] && valType === 'string') {
-        const list = this.getListByKey(this.listAdapter.key);
-        const field = list.fieldsByPath[this.path];
-
-        item[this.path] = field.normaliseValue(item[this.path]);
+        item[this.path] = this.field.normaliseValue(item[this.path]);
       } else if (!item[this.path] || valType === 'undefined') {
         delete item[this.path];
       } else {
@@ -69,22 +66,16 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
     });
     addPostReadHook(item => {
       if (item[this.path]) {
-        const list = this.getListByKey(this.listAdapter.key);
-        const field = list.fieldsByPath[this.path];
-
-        item[this.path] = field.normaliseValue(item[this.path]);
+        item[this.path] = this.field.normaliseValue(item[this.path]);
       }
       return item;
     });
   }
 
   getQueryConditions(dbPath) {
-    const list = this.getListByKey(this.listAdapter.key);
-    const field = list.fieldsByPath[this.path];
-
     return {
-      ...this.equalityConditions(dbPath, field.normaliseValue),
-      ...this.inConditions(dbPath, field.normaliseValue),
+      ...this.equalityConditions(dbPath, this.field.normaliseValue),
+      ...this.inConditions(dbPath, this.field.normaliseValue),
     };
   }
 }
@@ -97,12 +88,9 @@ export class KnexUuidInterface extends KnexFieldAdapter {
   }
 
   getQueryConditions(dbPath) {
-    const list = this.getListByKey(this.listAdapter.key);
-    const field = list.fieldsByPath[this.path];
-
     return {
-      ...this.equalityConditions(dbPath, field.normaliseValue),
-      ...this.inConditions(dbPath, field.normaliseValue),
+      ...this.equalityConditions(dbPath, this.field.normaliseValue),
+      ...this.inConditions(dbPath, this.field.normaliseValue),
     };
   }
 }
