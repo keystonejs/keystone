@@ -1,11 +1,11 @@
-const fetch = require('node-fetch');
-const crypto = require('crypto');
-const { importView } = require('@keystone-alpha/build-field-types');
+import fetch from 'node-fetch';
+import crypto from 'crypto';
+import { importView } from '@keystone-alpha/build-field-types';
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
 
-module.exports = class IframelyOEmebedAdapter {
+export class IframelyOEmbedAdapter {
   constructor({ apiKey }) {
     if (!apiKey) {
       throw new Error('Must provide an apiKey to IFramely OEmbed Adapter');
@@ -69,4 +69,4 @@ module.exports = class IframelyOEmebedAdapter {
       clientApiKey: this.apiKey,
     };
   }
-};
+}
