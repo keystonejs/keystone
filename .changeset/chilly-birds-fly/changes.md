@@ -1,0 +1,1 @@
+Add an example of using the loginPathMiddleware and callbackPathMiddleware functions when doing social auth signin.

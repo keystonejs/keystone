@@ -25,6 +25,7 @@
     "@keystone-alpha/file-adapters": "^1.1.1",
     "@keystone-alpha/keystone": "^7.0.3",
     "@keystone-alpha/passport-auth": "^2.0.1",
+    "cookie-parser": "^1.4.4",
     "express": "^4.16.3",
     "passport-wordpress": "^0.0.4",
     "react": "^16.8.6"

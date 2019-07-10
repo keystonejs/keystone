@@ -40,6 +40,26 @@ class PassportAuthStrategy {
     assert(!!config.loginPath, 'Must provide `config.loginPath` option.');
     assert(!!config.idField, 'Must provide `config.idField` option.');
     assert(!!config.cookieSecret, 'Must provide `config.cookieSecret` option.');
+    assert(
+      ['function', 'undefined'].includes(typeof config.resolveCreateData),
+      'When `config.resolveCreateData` is passed, it must be a function.'
+    );
+    assert(
+      ['function', 'undefined'].includes(typeof config.onAuthenticated),
+      'When `config.onAuthenticated` is passed, it must be a function.'
+    );
+    assert(
+      ['function', 'undefined'].includes(typeof config.onError),
+      'When `config.onError` is passed, it must be a function.'
+    );
+    assert(
+      ['function', 'undefined'].includes(typeof config.loginPathMiddleware),
+      'When `config.loginPathMiddleware` is passed, it must be an express middleware function.'
+    );
+    assert(
+      ['function', 'undefined'].includes(typeof config.callbackPathMiddleware),
+      'When `config.callbackPathMiddleware` is passed, it must be an express middleware function.'
+    );
 
     this.authType = authType;
 
@@ -53,12 +73,14 @@ class PassportAuthStrategy {
     this._serviceAppId = config.appId;
     this._serviceAppSecret = config.appSecret;
     this._hostURL = config.hostURL;
+    this._cookieSecret = config.cookieSecret;
     this._loginPath = config.loginPath;
+    this._loginPathMiddleware = config.loginPathMiddleware || ((req, res, next) => next());
     this._callbackPath = config.callbackPath;
+    this._callbackPathMiddleware = config.callbackPathMiddleware || ((req, res, next) => next());
     this._passportScope = config.scope || [];
     this._resolveCreateData = config.resolveCreateData || (({ createData }) => createData);
     this._onAuthenticated = config.onAuthenticated || (() => {});
-    this._cookieSecret = config.cookieSecret;
     this._onError =
       config.onError ||
       (error => {
@@ -95,7 +117,7 @@ class PassportAuthStrategy {
     }
     isInitialized = true;
 
-    app.get(this._loginPath, (req, res, next) => {
+    app.get(this._loginPath, this._loginPathMiddleware, (req, res, next) => {
       // If the user isn't already logged in
       // kick off the service auth process
       passport.authenticate(this.authType, {
@@ -104,7 +126,7 @@ class PassportAuthStrategy {
       })(req, res, next);
     });
 
-    app.get(this._callbackPath, (req, res, next) => {
+    app.get(this._callbackPath, this._callbackPathMiddleware, (req, res, next) => {
       // This middleware will call the `verify` callback we passed up the top to
       // the `new Passport{Service}` constructor
       passport.authenticate(
