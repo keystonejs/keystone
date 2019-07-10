@@ -293,14 +293,12 @@ test('labelResolver', () => {
       fields: {
         index: { type: Integer },
         name: { type: Text },
-    },
-    labelField: 'index',
+      },
+      labelField: 'index',
     },
     listExtras()
   );
-  expect(list21.labelResolver({ name: 'Test integer', index: 0, id: '21' })).toEqual(
-    '0'
-  );
+  expect(list21.labelResolver({ name: 'Test integer', index: 0, id: '21' })).toEqual('0');
 
   // Use labelResolver if supplied (over-rides labelField)
   const list3 = new List(
