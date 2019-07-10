@@ -156,13 +156,15 @@ class PassportAuthStrategy {
           // Existing item found associated with the service based on the
           // accessToken
           if (item) {
-            await this._createOrUpdateItem(
-              { itemData: { id: item.id }, operation: 'connect', passportSessionInfo },
+            await this.finalizeAuthentication({
+              itemData: { id: item.id },
+              operation: 'connect',
+              passportSessionInfo,
+              accessToken,
               req,
               res,
-              next
-            );
-            await this._authenticateItem(item, accessToken, req, res, next);
+              next,
+            });
             return;
           }
 
@@ -200,13 +202,15 @@ class PassportAuthStrategy {
             [this._serviceIdField]: serviceProfile.id,
           };
 
-          item = await this._createOrUpdateItem(
-            { itemData: createData, operation: 'create', passportSessionInfo },
+          await this.finalizeAuthentication({
+            itemData: createData,
+            operation: 'create',
+            passportSessionInfo,
+            accessToken,
             req,
             res,
-            next
-          );
-          await this._authenticateItem(item, accessToken, req, res, next);
+            next,
+          });
         }
       )(req, res, next);
     });
@@ -268,13 +272,15 @@ class PassportAuthStrategy {
     );
 
     // Trigger the creation flow again now that we have all the info rehydrated
-    const item = await this._createOrUpdateItem(
-      { itemData: resolvedCreateData, operation: 'create', passportSessionInfo },
+    await this.finalizeAuthentication({
+      itemData: resolvedCreateData,
+      operation: 'create',
+      passportSessionInfo,
+      accessToken: passportSessionInfo[FIELD_TOKEN_SECRET],
       req,
       res,
-      next
-    );
-    await this._authenticateItem(item, passportSessionInfo[FIELD_TOKEN_SECRET], req, res, next);
+      next,
+    });
   }
 
   async getProfileData() {}
@@ -386,7 +392,28 @@ class PassportAuthStrategy {
   }
   //#endregion
 
-  async _createOrUpdateItem({ itemData, operation, passportSessionInfo }, req, res, next) {
+  async finalizeAuthentication({
+    itemData,
+    operation,
+    passportSessionInfo,
+    accessToken,
+    req,
+    res,
+    next,
+  }) {
+    try {
+      const item = await this._createOrUpdateItem({
+        itemData,
+        operation,
+        passportSessionInfo,
+      });
+      await this._authenticateItem(item, accessToken, req, res, next);
+    } catch (error) {
+      this._onError(error, req, res, next);
+    }
+  }
+
+  async _createOrUpdateItem({ itemData, operation, passportSessionInfo }) {
     // Inject the service user ID into the newly created user's account info
     assert(
       passportSessionInfo[FIELD_USER_ID],
@@ -400,34 +427,30 @@ class PassportAuthStrategy {
       itemData[this._serviceIdField] = passportSessionInfo[FIELD_USER_ID];
     }
 
-    try {
-      const passportSessionMutationName = this._getSessionList().gqlNames.updateMutationName;
-      const passportSessionMutationInputName = this._getSessionList().gqlNames.updateInputName;
+    const passportSessionMutationName = this._getSessionList().gqlNames.updateMutationName;
+    const passportSessionMutationInputName = this._getSessionList().gqlNames.updateInputName;
 
-      // Here we create both the Passport Session Item and the User Item
-      // in KS5 as a single, nested mutation.
-      const sessionItem = await request(
-        `${this._hostURL}${this._apiPath}`,
-        `
-          mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
-            session: ${passportSessionMutationName}(id: $id , data: $data) {
-              item {
-                id
-              }
+    // Here we create both the Passport Session Item and the User Item
+    // in KS5 as a single, nested mutation.
+    const sessionItem = await request(
+      `${this._hostURL}${this._apiPath}`,
+      `
+        mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
+          session: ${passportSessionMutationName}(id: $id , data: $data) {
+            item {
+              id
             }
           }
-        `,
-        {
-          id: passportSessionInfo.id,
-          // Create the Keystone item as a Nested Mutation
-          data: { item: { [operation]: itemData } },
         }
-      );
+      `,
+      {
+        id: passportSessionInfo.id,
+        // Create the Keystone item as a Nested Mutation
+        data: { item: { [operation]: itemData } },
+      }
+    );
 
-      return sessionItem.session.item;
-    } catch (error) {
-      return this._onError(error, req, res, next);
-    }
+    return sessionItem.session.item;
   }
 
   async _authenticateItem(item, accessToken, req, res, next) {

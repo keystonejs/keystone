@@ -62,7 +62,7 @@ if (google) {
       // callback is executed
       onError: (error, req, res) => {
         console.error(error);
-        res.redirect('/?error=Uh-oh');
+        res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
       },
     },
   });
@@ -105,7 +105,8 @@ if (facebook) {
       // If there was an error during any of the authentication flow, this
       // callback is executed
       onError: (error, req, res) => {
-        res.redirect('/?error=Uh-oh');
+        console.error(error);
+        res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
       },
     },
   });
@@ -134,7 +135,10 @@ if (twitter) {
         return createData;
       },
       onAuthenticated: (token, req, res) => res.redirect('/profile'),
-      onError: (error, req, res) => res.redirect('/?error=Uh-oh'),
+      onError: (error, req, res) => {
+        console.error(error);
+        res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
+      },
     },
   });
 }
@@ -162,7 +166,10 @@ if (github) {
         return createData;
       },
       onAuthenticated: (token, req, res) => res.redirect('/profile'),
-      onError: (error, req, res) => res.redirect('/?error=Uh-oh'),
+      onError: (error, req, res) => {
+        console.error(error);
+        res.redirect(`/?error=${encodeURIComponent(error.message || error.toString())}`);
+      },
     },
   });
 }
