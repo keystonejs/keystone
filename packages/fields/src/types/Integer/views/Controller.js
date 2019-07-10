@@ -1,23 +1,29 @@
+// @flow
 import FieldController from '../../../Controller';
 
+type FilterGraphQL = {| type: string, value: string |};
+type FilterLabel = {| label: string |};
+type FormatFilter = {| label: string, value: string |};
+type DataType = { [key: string]: string };
+
 export default class TextController extends FieldController {
-  getFilterGraphQL = ({ type, value }) => {
+  getFilterGraphQL = ({ type, value }: FilterGraphQL): string => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: ${value}`;
   };
-  getFilterLabel = ({ label }) => {
+  getFilterLabel = ({ label }: FilterLabel): string => {
     return `${this.label} ${label.toLowerCase()}`;
   };
-  formatFilter = ({ label, value }) => {
+  formatFilter = ({ label, value }: FormatFilter) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  serialize = data => {
+  serialize = (data: DataType): ?number => {
     const value = data[this.path];
     if (typeof value === 'number') {
       return value;
     } else if (typeof value === 'string' && value.length > 0) {
       // The field component enforces numeric values
-      return parseInt(value);
+      return parseInt(value, 10);
     } else {
       // if it is not a String or a Number then the field must be empty
       return null;
