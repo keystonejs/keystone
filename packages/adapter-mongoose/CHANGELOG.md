@@ -1,5 +1,10 @@
 # @keystone-alpha/adapter-mongoose
 
+## 2.2.1
+
+- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/keystone@8.0.0
+
 ## 2.2.0
 
 ### Minor Changes

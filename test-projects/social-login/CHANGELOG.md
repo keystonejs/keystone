@@ -1,5 +1,18 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 2.0.2
+
+### Patch Changes
+
+- [ab0b1f22](https://github.com/keystonejs/keystone-5/commit/ab0b1f22):
+
+  Add an example of using the loginPathMiddleware and callbackPathMiddleware functions when doing social auth signin.
+
+* Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/adapter-mongoose@2.2.1
+  - @keystone-alpha/keystone@8.0.0
+  - @keystone-alpha/fields@9.1.0
+
 ## 2.0.1
 
 - Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):

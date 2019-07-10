@@ -1,5 +1,16 @@
 # @keystone-alpha/adapter-knex
 
+## 2.1.0
+
+### Minor Changes
+
+- [18064167](https://github.com/keystonejs/keystone-5/commit/18064167):
+
+  Adding `knexOptions` to the KnexFieldAdapter to support DB-level config for nullability (`isNotNullable`) and defaults (`defaultTo`)
+
+* Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/keystone@8.0.0
+
 ## 2.0.0
 
 ### Major Changes

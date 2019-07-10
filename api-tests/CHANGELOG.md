@@ -1,5 +1,13 @@
 # @keystone-alpha/api-tests
 
+## 1.0.14
+
+- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/adapter-mongoose@2.2.1
+  - @keystone-alpha/test-utils@2.0.7
+  - @keystone-alpha/keystone@8.0.0
+  - @keystone-alpha/fields@9.1.0
+
 ## 1.0.13
 
 - Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):

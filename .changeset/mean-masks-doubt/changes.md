@@ -1,1 +1,0 @@
-Correctly stop processing social auth signin flow when an error occurs during account creation.
