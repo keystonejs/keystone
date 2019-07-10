@@ -20,6 +20,7 @@ class Field {
       fieldAdapterClass,
       this.constructor.name,
       path,
+      this,
       getListByKey,
       { isRequired, ...config }
     );
