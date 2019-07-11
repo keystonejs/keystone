@@ -308,6 +308,7 @@
     "packages": [
       "packages/field-content",
       "packages/fields",
+      "packages/fields-auto-increment",
       "packages/fields-markdown",
       "packages/fields-mongoId",
       "packages/fields-wysiwyg-tinymce",
