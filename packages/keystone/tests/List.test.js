@@ -8,7 +8,7 @@ jest.doMock('@keystone-alpha/logger', () => ({
 
 const List = require('../lib/List');
 const { AccessDeniedError } = require('../lib/List/graphqlErrors');
-const { Text, Checkbox, Float, Relationship } = require('@keystone-alpha/fields');
+const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-alpha/fields');
 const { getType } = require('@keystone-alpha/utils');
 const path = require('path');
 
@@ -285,6 +285,20 @@ test('labelResolver', () => {
   expect(list2.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
     'a@example.com'
   );
+
+  // Use Integer as a labelField
+  const list21 = new List(
+    'List21',
+    {
+      fields: {
+        index: { type: Integer },
+        name: { type: Text },
+      },
+      labelField: 'index',
+    },
+    listExtras()
+  );
+  expect(list21.labelResolver({ name: 'Test integer', index: 0, id: '21' })).toEqual('0');
 
   // Use labelResolver if supplied (over-rides labelField)
   const list3 = new List(
