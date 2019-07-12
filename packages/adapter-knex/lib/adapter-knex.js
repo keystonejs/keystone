@@ -583,7 +583,7 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     field,
     listAdapter,
     getListByKey,
-    { knexOptions: { defaultTo, isNotNullable } = {} } = {}
+    { knexOptions: { defaultTo, isNotNullable, ...knexOptions } = {} } = {}
   ) {
     super(...arguments);
 
@@ -591,6 +591,7 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     this._defaultToSupplied = defaultTo;
     this.isNotNullable =
       typeof isNotNullable === 'undefined' ? !!field.isRequired : !!isNotNullable;
+    this.knexOptions = knexOptions;
   }
 
   // Gives us a way to referrence knex when configuring DB-level defaults, eg:
