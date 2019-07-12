@@ -240,9 +240,7 @@ export function deserialize({ node, joins, blocks }) {
       .set('data', node.data.set('alignment', joins[0].align))
       // And the src attribute into the inner image
       .setNode(node.getPath(imageNode.key), {
-        data: {
-          src: joins[0].image.publicUrl,
-        },
+        data: imageNode.data.set('src', joins[0].image.publicUrl),
       })
   );
 }

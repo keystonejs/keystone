@@ -100,6 +100,14 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   return keystoneType;
 };
 
+const getDefautlLabelResolver = labelField => item => {
+  const value = item[labelField || 'name'];
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+  return value || item.id;
+};
+
 module.exports = class List {
   constructor(
     key,
@@ -146,7 +154,7 @@ module.exports = class List {
       maximumPageSize: 1000,
       ...adminConfig,
     };
-    this.labelResolver = labelResolver || (item => item[labelField || 'name'] || item.id);
+    this.labelResolver = labelResolver || getDefautlLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;

@@ -309,10 +309,12 @@
   },
   "field-types": {
     "packages": [
-      "packages/fields-wysiwyg-tinymce",
-      "packages/fields",
-      "packages/fields-markdown",
       "packages/field-content",
+      "packages/fields",
+      "packages/fields-auto-increment",
+      "packages/fields-markdown",
+      "packages/fields-mongoId",
+      "packages/fields-wysiwyg-tinymce",
       "packages/oembed-adapters"
     ]
   },
