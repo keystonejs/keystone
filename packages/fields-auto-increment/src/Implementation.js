@@ -6,26 +6,38 @@ export class AutoIncrementImplementation extends Implementation {
     // Apply some field type defaults before we hand off to super; see README.md
     if (typeof config.isUnique === 'undefined') config.isUnique = true;
     if (typeof config.access === 'undefined') config.access = {};
-    config.access = { create: false, update: false, delete: false, ...config.access };
+    if (typeof config.access === 'object') {
+      config.access = { create: false, update: false, delete: false, ...config.access };
+    }
 
     // The base implementation takes care of everything else
     super(path, config, context);
+
+    // If no valid gqlType is supplied, default based on whether or not we're the primary key
+    const gqlTypeDefault = this.isPrimaryKey ? 'ID' : 'Int';
+    this.gqlType = ['ID', 'Int'].includes(this.config.gqlType)
+      ? this.config.gqlType
+      : gqlTypeDefault;
   }
 
   get gqlOutputFields() {
-    return [`${this.path}: Int`];
+    return [`${this.path}: ${this.gqlType}`];
   }
   get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
   get gqlQueryInputFields() {
-    return [...this.equalityInputFields('Int'), ...this.inInputFields('Int')];
+    return [
+      ...this.equalityInputFields(this.gqlType),
+      ...this.orderingInputFields(this.gqlType),
+      ...this.inInputFields(this.gqlType),
+    ];
   }
   get gqlUpdateInputFields() {
-    return [`${this.path}: Int`];
+    return [`${this.path}: ${this.gqlType}`];
   }
   get gqlCreateInputFields() {
-    return [`${this.path}: Int`];
+    return [`${this.path}: ${this.gqlType}`];
   }
 }
 

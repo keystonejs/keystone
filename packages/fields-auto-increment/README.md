@@ -59,7 +59,7 @@ const keystone = new Keystone(/* ... */);
 keystone.createList('Order', {
   fields: {
     name: { type: Text },
-    orderNumber: { type: AutoIncrement },
+    orderNumber: { type: AutoIncrement, gqlType: 'Int' },
     // ...
   },
 });
@@ -67,10 +67,11 @@ keystone.createList('Order', {
 
 ### Config
 
-| Option        | Type      | Default     | Description                                                     |
-| :------------ | :-------- | :---------- | :-------------------------------------------------------------- |
-| `isRequired`  | `Boolean` | `false`     | Does this field require a value?                                |
-| `isUnique`    | `Boolean` | `true`      | Adds a unique index that allows only unique values to be stored |
+| Option       | Type      | Default       | Description                                                                                |
+| :----------- | :-------- | :------------ | :----------------------------------------------------------------------------------------- |
+| `isRequired` | `Boolean` | `false`       | Does this field require a value?                                                           |
+| `isUnique`   | `Boolean` | `true`        | Adds a unique index that allows only unique values to be stored                            |
+| `gqlType`    | `String`  | `Int` or `ID` | The GraphQL to be used by this field. Defaults to `ID` for primay keys or `Int` otherwise. |
 
 ## Admin UI
 
@@ -78,7 +79,9 @@ keystone.createList('Order', {
 
 ## GraphQL
 
-`AutoIncrement` fields use the `Int` type in GraphQL.
+`AutoIncrement` fields can use the `Int` or `ID` GraphQL types.
+This can be specified using the `gqlType` config option if needed.
+The default is `ID` for primay key fields and `Int` otherwise.
 
 ### Input Fields
 
@@ -86,28 +89,28 @@ keystone.createList('Order', {
 As such, input fields and types may not be added to the GraphQL schema.
 See the [non-standard defaults section](#non-standard-defaults) for details.
 
-| Field name | Type  | Description               |
-| :--------- | :---- | :------------------------ |
-| `${path}`  | `Int` | The integer value to save |
+| Field name | Type          | Description               |
+| :--------- | :------------ | :------------------------ |
+| `${path}`  | `Int` or `ID` | The integer value to save |
 
 ### Output Fields
 
-| Field name | Type  | Description              |
-| :--------- | :---- | :----------------------- |
-| `${path}`  | `Int` | The integer value stored |
+| Field name | Type          | Description              |
+| :--------- | :------------ | :----------------------- |
+| `${path}`  | `Int` or `ID` | The integer value stored |
 
 ### Filters
 
-| Field name       | Type    | Description                                 |
-| :--------------- | :------ | :------------------------------------------ |
-| `${path}`        | `Int`   | Exact match to the value provided           |
-| `${path}_not`    | `Int`   | Not an exact match to the value provided    |
-| `${path}_lt`     | `Int`   | Less than the value provided                |
-| `${path}_lte`    | `Int`   | Less than or equal to the value provided    |
-| `${path}_gt`     | `Int`   | Greater than the value provided             |
-| `${path}_gte`    | `Int`   | Greater or equal to than the value provided |
-| `${path}_in`     | `[Int]` | In the array of integers provided           |
-| `${path}_not_in` | `[Int]` | Not in the array of integers provided       |
+| Field name       | Type              | Description                                 |
+| :--------------- | :---------------- | :------------------------------------------ |
+| `${path}`        | `Int` or `ID`     | Exact match to the value provided           |
+| `${path}_not`    | `Int` or `ID`     | Not an exact match to the value provided    |
+| `${path}_lt`     | `Int` or `ID`     | Less than the value provided                |
+| `${path}_lte`    | `Int` or `ID`     | Less than or equal to the value provided    |
+| `${path}_gt`     | `Int` or `ID`     | Greater than the value provided             |
+| `${path}_gte`    | `Int` or `ID`     | Greater or equal to than the value provided |
+| `${path}_in`     | `[Int]` or `[ID]` | In the array of integers provided           |
+| `${path}_not_in` | `[Int]` or `[ID]` | Not in the array of integers provided       |
 
 ## Storage
 
