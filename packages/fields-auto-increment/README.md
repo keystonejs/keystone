@@ -6,12 +6,12 @@ title: AutoIncrement
 # Keystone 5 `AutoIncrement` Field Type
 
 An automatically incrementing integer with support for the Knex adapter.
-Currently, outside it's use as a primary key, this field type will only work on PostgreSQL.
-
 It's important to note, this type..
 
 - Has [important limitations](#limitations) due to varying support from the underlying DB platform
 - Has [non-standard defaults](#non-standard-defaults) for much of it's configuration
+
+**Currently, outside it's use as a primary key, this field type will only work on PostgreSQL.**
 
 ## Limitations
 
@@ -59,7 +59,7 @@ const keystone = new Keystone(/* ... */);
 keystone.createList('Order', {
   fields: {
     name: { type: Text },
-    orderNumber: { type: AutoIncrement, knexOptions: { isPrimaryKey: false } },
+    orderNumber: { type: AutoIncrement },
     // ...
   },
 });
@@ -71,18 +71,6 @@ keystone.createList('Order', {
 | :------------ | :-------- | :---------- | :-------------------------------------------------------------- |
 | `isRequired`  | `Boolean` | `false`     | Does this field require a value?                                |
 | `isUnique`    | `Boolean` | `true`      | Adds a unique index that allows only unique values to be stored |
-| `knexOptions` | `Object`  | (see below) | (see below)                                                     |
-
-### `knexOptions`
-
-| Option         | Type      | Default | Description                                           |
-| :------------- | :-------- | :------ | :---------------------------------------------------- |
-| `isPrimaryKey` | `Boolean` | `true`  | Should Knex set this as the primary key for the table |
-
-The setting `isPrimaryKey` to `false` prevents Knex from setting the columns as the primary key.
-This is current only supported on PostgreSQL.
-It works by substituting the generic `increments()` call for an explicitly build `serial` column.
-See the [Limitations section](#limitations) more about auto inc and their usage as primary keys.
 
 ## Admin UI
 
@@ -130,9 +118,10 @@ The underlying implementation varies in significant ways depending on the DB pla
 
 One implication of `increments()` is that Knex will
 [always make it the primary key](https://github.com/tgriesser/knex/issues/385) of the table.
-To work around this we've implemented the `knexOptions.isPrimaryKey` flag (see [`knexOptions`](#knexoptions)).
-Passing this as `false` replaces the generic `increments()` call with an explicitly build `serial` column.
-This is only supported on PostgreSQL.
+To work around this, if this type is not being used as the lists primary key,
+we replace the generic `increments()` call with an explicitly build `serial` column.
+This work around only supports PostgreSQL; on other DB platforms, this type can only be used for the `id` field.
+See the [Limitations section](#limitations) more about auto inc and their usage as primary keys.
 
 ### Mongoose Adapter
 

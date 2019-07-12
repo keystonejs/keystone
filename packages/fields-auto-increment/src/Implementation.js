@@ -34,17 +34,16 @@ export class KnexAutoIncrementInterface extends KnexFieldAdapter {
     // Apply some field type defaults before we hand off to super; see README.md
     knexOptions.isNotNullable =
       typeof knexOptions.isNotNullable === 'undefined' ? true : knexOptions.isNotNullable;
-    knexOptions.isPrimaryKey =
-      typeof knexOptions.isPrimaryKey === 'undefined' ? true : knexOptions.isPrimaryKey;
 
     // The base implementation takes care of everything else
     super(...arguments);
   }
 
   addToTableSchema(table) {
+    // The knex `increments()` schema building function always uses the column as the primary key
     // If not isPrimaryKey use a raw `serial` instead
     // This will only work on PostgreSQL; see README.md
-    const column = this.knexOptions.isPrimaryKey
+    const column = this.field.isPrimaryKey
       ? table.increments(this.path)
       : table.specificType(this.path, 'serial');
 
