@@ -5,6 +5,7 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
+
 const {
   objMerge,
   flatten,
@@ -19,13 +20,13 @@ const {
 class KnexAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
+    this.client = 'postgres';
     this.name = this.name || 'knex';
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
   async _connect(to, config = {}) {
     const {
-      client = 'postgres',
       connection = to ||
         process.env.KNEX_URI ||
         'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev',
@@ -34,7 +35,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     } = config;
     this.knex = knex({
       ...rest,
-      client,
+      client: this.client,
       connection,
     });
     this.schemaName = schemaName;
@@ -95,9 +96,15 @@ class KnexAdapter extends BaseKeystoneAdapter {
   // This will completely drop the backing database. Use wisely.
   dropDatabase() {
     const tables = Object.values(this.listAdapters)
-      .map(listAdapter => `${this.schemaName}."${listAdapter.key}"`)
+      .map(listAdapter => `"${this.schemaName}"."${listAdapter.key}"`)
       .join(',');
     return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
+  }
+
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { AutoIncrement } = require('@keystone-alpha/fields-auto-increment');
+    return AutoIncrement.primaryKeyDefaults[this.name].getConfig();
   }
 }
 
@@ -127,10 +134,8 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async createTable() {
+    // Let the field adapter add what it needs to the table schema
     await this._schema().createTable(this.key, table => {
-      // Create an index column
-      table.increments('id');
-      // Let the field adapter add what it needs to the table schema
       this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
     });
   }
@@ -344,25 +349,7 @@ class KnexListAdapter extends BaseListAdapter {
 
   _allQueryConditions(tableAlias) {
     const dbPathTransform = dbPath => `${tableAlias}.${dbPath}`;
-    const idPath = dbPathTransform('id');
     return {
-      id: value => b => b.where(idPath, parseInt(value, 10)),
-      id_not: value => b =>
-        value === null
-          ? b.whereNotNull(idPath)
-          : b.where(idPath, '!=', parseInt(value, 10)).orWhereNull(idPath),
-      id_in: value => b =>
-        value.includes(null)
-          ? b
-              .whereIn(idPath, value.filter(x => x !== null).map(x => parseInt(x, 10)))
-              .orWhereNull(idPath)
-          : b.whereIn(idPath, value.map(x => parseInt(x, 10))),
-      id_not_in: value => b =>
-        value.includes(null)
-          ? b
-              .whereNotIn(idPath, value.filter(x => x !== null).map(x => parseInt(x, 10)))
-              .whereNotNull(idPath)
-          : b.whereNotIn(idPath, value.map(x => parseInt(x, 10))).orWhereNull(idPath),
       ...objMerge(
         this.fieldAdapters.map(fieldAdapter =>
           fieldAdapter.getQueryConditions(dbPathTransform(fieldAdapter.dbPath))
