@@ -1480,4 +1480,7 @@ module.exports = class List {
   getFieldByPath(path) {
     return this.fieldsByPath[path];
   }
+  getPrimaryKey() {
+    return this.fieldsByPath['id'];
+  }
 };

@@ -104,7 +104,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
     const { AutoIncrement } = require('@keystone-alpha/fields-auto-increment');
-    return AutoIncrement.primaryKeyDefaults[this.name].getConfig();
+    return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
   }
 }
 
