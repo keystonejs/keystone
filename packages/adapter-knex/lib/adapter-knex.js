@@ -183,7 +183,7 @@ class KnexListAdapter extends BaseListAdapter {
     const item = (await this._query()
       .insert(realData)
       .into(this.key)
-      .returning(['id', ...Object.keys(realData)]))[0];
+      .returning('*'))[0];
 
     // For every many-field, update the many-table
     const manyItem = await resolveAllKeys(
