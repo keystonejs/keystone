@@ -15,12 +15,8 @@ export const AutoIncrement = {
 
   primaryKeyDefaults: {
     knex: {
-      getConfig: () => ({
-        type: AutoIncrement,
-        gqlType: 'ID',
-        isUnique: true,
-        knexOptions: { isNotNullable: true },
-      }),
+      // Uniqueness, non-nullability and GraphQL type are implied
+      getConfig: () => ({ type: AutoIncrement }),
     },
   },
 };

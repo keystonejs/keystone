@@ -56,11 +56,10 @@ class KnexAdapter extends BaseKeystoneAdapter {
     );
 
     const errors = createResult.filter(({ isRejected }) => isRejected);
-
     if (errors.length) {
-      const error = new Error('Post connection error - in postConnect');
+      if (errors.length === 1) throw errors[0];
+      const error = new Error('Multiple errors in KnexAdapter.postConnect():');
       error.errors = errors.map(({ reason }) => reason);
-      console.log(error.errors);
       throw error;
     }
 
@@ -129,8 +128,8 @@ class KnexListAdapter extends BaseListAdapter {
     return this.parentAdapter.getQueryBuilder();
   }
 
-  _manyTable(path) {
-    return `${this.key}_${path}`;
+  _manyTable(relationshipFieldPath) {
+    return `${this.key}_${relationshipFieldPath}`;
   }
 
   async createTable() {
@@ -147,39 +146,70 @@ class KnexListAdapter extends BaseListAdapter {
     await this._schema().table(this.key, table => {
       relationshipAdapters
         .filter(adapter => !adapter.config.many)
-        .forEach(adapter => adapter.createForiegnKey(table, this.parentAdapter.schemaName));
+        .forEach(adapter => adapter.createForeignKey(table, this.parentAdapter.schemaName));
     });
 
     // Create adjacency tables for the 'many' relationships
     await Promise.all(
       relationshipAdapters
         .filter(adapter => adapter.config.many)
-        .map(async adapter => {
-          const tableName = this._manyTable(adapter.path);
-          try {
-            await this._schema().dropTableIfExists(tableName);
-          } catch (err) {
-            console.log('Failed to drop');
-            console.log(err);
-            throw err;
-          }
-          await this._schema().createTable(tableName, table => {
-            table.increments('id');
-            table.integer(`${this.key}_id`).unsigned();
-            table
-              .foreign(`${this.key}_id`)
-              .references('id')
-              .inTable(`${this.parentAdapter.schemaName}.${this.key}`)
-              .onDelete('CASCADE');
-            table.integer(adapter.refListId).unsigned();
-            table
-              .foreign(adapter.refListId)
-              .references('id')
-              .inTable(`${this.parentAdapter.schemaName}.${adapter.refListKey}`)
-              .onDelete('CASCADE');
-          });
-        })
+        .map(adapter => this.createAdjacencyTable(adapter))
     );
+  }
+
+  // Create an adjacency table for the (many to many) relationship field adapter provided
+  // JM: This should probably all belong in the Relationship Knex field adapter
+  async createAdjacencyTable(relationshipFa) {
+    const dbAdapter = this.parentAdapter;
+    const tableName = this._manyTable(relationshipFa.path);
+
+    try {
+      console.log(`Dropping table ${tableName}`);
+      await dbAdapter.schema().dropTableIfExists(tableName);
+    } catch (err) {
+      console.log('Failed to drop');
+      console.log(err);
+      throw err;
+    }
+
+    // To be clear..
+    const leftListAdapter = this;
+    const leftPkFa = leftListAdapter.getPrimaryKeyAdapter();
+    const leftFkPath = `${leftListAdapter.key}_${leftPkFa.path}`;
+
+    const rightListAdapter = dbAdapter.getListAdapterByKey(relationshipFa.refListKey);
+    const rightPkFa = rightListAdapter.getPrimaryKeyAdapter();
+    const rightFkPath = `${rightListAdapter.key}_${leftPkFa.path}`;
+
+    // So right now, apparently, `many: true` indicates many-to-many
+    // It's not clear how isUnique would be configured at the moment
+    // Foreign keys are always indexed for now
+    // We don't allow duplicate relationships so we don't actually need a primary key here
+    await dbAdapter.schema().createTable(tableName, table => {
+      leftPkFa.addToForeignTableSchema(table, {
+        path: leftFkPath,
+        isUnique: false,
+        isIndexed: true,
+        isNotNullable: true,
+      });
+      table
+        .foreign(leftFkPath)
+        .references(leftPkFa.path) // 'id'
+        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.key}`)
+        .onDelete('CASCADE');
+
+      rightPkFa.addToForeignTableSchema(table, {
+        path: rightFkPath,
+        isUnique: false,
+        isIndexed: true,
+        isNotNullable: true,
+      });
+      table
+        .foreign(rightFkPath)
+        .references(rightPkFa.path) // 'id'
+        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.key}`)
+        .onDelete('CASCADE');
+    });
   }
 
   async _create(data) {
@@ -206,7 +236,7 @@ class KnexListAdapter extends BaseListAdapter {
             .insert(
               data[a.path].map(id => ({
                 [`${this.key}_id`]: item.id,
-                [a.refListId]: parseInt(id, 10),
+                [a.refListId]: id,
               }))
             )
             .into(this._manyTable(a.path))
@@ -282,7 +312,7 @@ class KnexListAdapter extends BaseListAdapter {
     const manyData = omit(data, this.realKeys);
     await Promise.all(
       Object.entries(manyData).map(async ([path, newValues]) => {
-        newValues = newValues.map(id => parseInt(id, 10));
+        newValues = newValues.map(id => id);
         const a = this.fieldAdaptersByPath[path];
         const tableName = this._manyTable(a.path);
 
@@ -291,18 +321,19 @@ class KnexListAdapter extends BaseListAdapter {
 
         // Work out what we've currently got
         const currentValues = await this._query()
-          .select('id', a.refListId)
+          .select(a.refListId)
           .from(tableName)
           .where(`${this.key}_id`, item.id);
 
         // Delete what needs to be deleted
         const needsDelete = currentValues
           .filter(x => !newValues.includes(x[a.refListId]))
-          .map(({ id }) => id);
+          .map(row => row[a.refListId]);
         if (needsDelete.length) {
           await this._query()
             .table(tableName)
-            .whereIn('id', needsDelete)
+            .where(`${this.key}_id`, item.id)
+            .whereIn(a.refListId, needsDelete)
             .del();
         }
         // Add what needs to be added
@@ -335,7 +366,7 @@ class KnexListAdapter extends BaseListAdapter {
     const result = (await this._query()
       .table(this.key)
       .select()
-      .where('id', parseInt(id, 10)))[0];
+      .where('id', id))[0];
     return result ? await this._populateMany(result) : null;
   }
 

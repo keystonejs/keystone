@@ -20,8 +20,7 @@ const Uuid = {
         if (client === 'postgres') {
           return {
             type: Uuid,
-            isUnique: true,
-            knexOptions: { isNotNullable: true, defaultTo: knex => knex.raw('gen_random_uuid()') },
+            knexOptions: { defaultTo: knex => knex.raw('gen_random_uuid()') },
           };
         }
         throw `The Uuid field type doesn't provide a default primary key field configuration for the ` +

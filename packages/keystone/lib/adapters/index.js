@@ -28,7 +28,8 @@ class BaseKeystoneAdapter {
       const errors = taskResults.filter(({ isRejected }) => isRejected);
 
       if (errors.length) {
-        const error = new Error('Post connection error');
+        if (errors.length === 1) throw errors[0];
+        const error = new Error('Multiple errors in BaseKeystoneAdapter.postConnect():');
         error.errors = errors.map(({ reason }) => reason);
         throw error;
       }
@@ -144,6 +145,13 @@ class BaseListAdapter {
     return this.fieldAdapters
       .filter(adapter => adapter.isRelationship)
       .find(adapter => adapter.supportsRelationshipQuery(segment));
+  }
+
+  getFieldAdapterByPath(path) {
+    return this.fieldAdaptersByPath[path];
+  }
+  getPrimaryKeyAdapter() {
+    return this.fieldAdaptersByPath['id'];
   }
 }
 

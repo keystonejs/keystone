@@ -83,9 +83,26 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
 export class KnexUuidInterface extends KnexFieldAdapter {
   addToTableSchema(table) {
     const column = table.uuid(this.path);
-    if (this.isUnique) column.unique();
-    if (this.isNotNullable) column.notNullable();
+    // Fair to say primary keys are always non-nullable and uniqueness is implied by primary()
+    if (this.field.isPrimaryKey) {
+      column.primary().notNullable();
+    } else {
+      if (this.isUnique) column.unique();
+      if (this.isNotNullable) column.notNullable();
+    }
     if (this.defaultTo) column.defaultTo(this.defaultTo);
+  }
+
+  addToForeignTableSchema(table, { path, isUnique, isIndexed, isNotNullable }) {
+    if (!this.field.isPrimaryKey) {
+      throw `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
+        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`;
+    }
+
+    const column = table.uuid(path);
+    if (isUnique) column.unique();
+    else if (isIndexed) column.index();
+    if (isNotNullable) column.notNullable();
   }
 
   getQueryConditions(dbPath) {

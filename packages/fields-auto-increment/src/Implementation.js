@@ -55,12 +55,26 @@ export class KnexAutoIncrementInterface extends KnexFieldAdapter {
     // The knex `increments()` schema building function always uses the column as the primary key
     // If not isPrimaryKey use a raw `serial` instead
     // This will only work on PostgreSQL; see README.md
-    const column = this.field.isPrimaryKey
-      ? table.increments(this.path)
-      : table.specificType(this.path, 'serial');
+    if (this.field.isPrimaryKey) {
+      // Fair to say primary keys are always non-nullable and uniqueness is implied by primary()
+      table.increments(this.path).notNullable();
+    } else {
+      const column = table.specificType(this.path, 'serial');
+      if (this.isUnique) column.unique();
+      if (this.isNotNullable) column.notNullable();
+    }
+  }
 
-    if (this.isUnique) column.unique();
-    if (this.isNotNullable) column.notNullable();
+  addToForeignTableSchema(table, { path, isUnique, isIndexed, isNotNullable }) {
+    if (!this.field.isPrimaryKey) {
+      throw `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
+        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`;
+    }
+
+    const column = table.integer(path).unsigned();
+    if (isUnique) column.unique();
+    else if (isIndexed) column.index();
+    if (isNotNullable) column.notNullable();
   }
 
   getQueryConditions(dbPath) {
