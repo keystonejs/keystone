@@ -176,24 +176,26 @@ export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFiel
 export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
-    const utcPath = `${this.path}_utc`;
-    const offsetPath = `${this.path}_offset`;
-    this.realKeys = [utcPath, offsetPath];
-    this.sortKey = utcPath;
-    this.dbPath = utcPath;
+
+    this.utcPath = `${this.path}_utc`;
+    this.offsetPath = `${this.path}_offset`;
+    this.realKeys = [this.utcPath, this.offsetPath];
+    this.sortKey = this.utcPath;
+    this.dbPath = this.utcPath;
+
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
   }
 
   addToTableSchema(table) {
-    const utcPath = `${this.path}_utc`;
-    const offsetPath = `${this.path}_offset`;
-
     // TODO: Should use a single field on PG
     // .. although 2 cols is nice for MySQL (no native datetime with tz)
-    const utcColumn = table.timestamp(utcPath, { useTz: false });
-    const offsetColumn = table.text(offsetPath);
+    const utcColumn = table.timestamp(this.utcPath, { useTz: false });
+    const offsetColumn = table.text(this.offsetPath);
 
-    // Interpret unique as meaning across both elements of the value
-    if (this.isUnique) table.unique([utcPath, offsetPath]);
+    // Interpret the index options as effecting both elements
+    if (this.isUnique) table.unique([this.utcPath, this.offsetPath]);
+    else if (this.isIndexed) table.index([this.utcPath, this.offsetPath]);
 
     // Interpret not nullable to mean neither field is nullable
     if (this.isNotNullable) {

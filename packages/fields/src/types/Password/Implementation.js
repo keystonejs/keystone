@@ -126,13 +126,28 @@ export class MongoPasswordInterface extends CommonPasswordInterface(MongooseFiel
 }
 
 export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    if (this.config.isUnique || this.config.isIndexed) {
+      throw `The Password field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+    if (this.config.defaultTo) {
+      throw `The Password field type doesn't support the Knex 'defaultTo' config. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+  }
+
   addToTableSchema(table) {
     const column = table.string(this.path, 60);
     if (this.isNotNullable) column.notNullable();
-    // Defaulting or unique constraints here would create vulnerabilities
   }
 
   getQueryConditions(dbPath) {
+    // JM: I wonder if performing a regex match here leaks any timing info that
+    // could be used to extract information about the hash.. :/
     return {
       [`${this.path}_is_set`]: value => b =>
         value

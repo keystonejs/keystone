@@ -54,13 +54,12 @@ class KnexAdapter extends BaseKeystoneAdapter {
     const createResult = await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.createTable())
     );
+    const errors = createResult.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
-    const errors = createResult.filter(({ isRejected }) => isRejected);
     if (errors.length) {
       if (errors.length === 1) throw errors[0];
       const error = new Error('Multiple errors in KnexAdapter.postConnect():');
-      error.errors = errors.map(({ reason }) => reason);
-      throw error;
+      throw { ...error, errors };
     }
 
     async function asyncForEach(array, callback) {
@@ -595,21 +594,11 @@ class KnexListAdapter extends BaseListAdapter {
 }
 
 class KnexFieldAdapter extends BaseFieldAdapter {
-  constructor(
-    fieldName,
-    path,
-    field,
-    listAdapter,
-    getListByKey,
-    { knexOptions: { defaultTo, isNotNullable, ...knexOptions } = {} } = {}
-  ) {
+  constructor() {
     super(...arguments);
 
-    // if our DB level config isn't explicitly configured, they get defaulted from the KS equivalents
-    this._defaultToSupplied = defaultTo;
-    this.isNotNullable =
-      typeof isNotNullable === 'undefined' ? !!field.isRequired : !!isNotNullable;
-    this.knexOptions = knexOptions;
+    // Just store the knexOptions; let the field types figure the rest out
+    this.knexOptions = this.config.knexOptions || {};
   }
 
   // Gives us a way to referrence knex when configuring DB-level defaults, eg:
@@ -618,13 +607,25 @@ class KnexFieldAdapter extends BaseFieldAdapter {
   get defaultTo() {
     if (this._defaultTo) return this._defaultTo;
 
+    const defaultToSupplied = this.knexOptions.defaultTo;
     const knex = this.listAdapter.parentAdapter.knex;
     const resolve = () => {
-      if (typeof this._defaultToSupplied === 'undefined') return this.field.defaultValue;
-      if (typeof this._defaultToSupplied === 'function') return this._defaultToSupplied(knex);
-      return this._defaultToSupplied;
+      if (typeof defaultToSupplied === 'undefined') return this.field.defaultValue;
+      if (typeof defaultToSupplied === 'function') return defaultToSupplied(knex);
+      return defaultToSupplied;
     };
+
     return (this._defaultTo = resolve());
+  }
+
+  // Default nullability from isRequired in most cases
+  // Some field types replace this logic (ie. Relationships)
+  get isNotNullable() {
+    if (this._isNotNullable) return this._isNotNullable;
+
+    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
+      ? this.field.isRequired
+      : this.knexOptions.isNotNullable));
   }
 
   addToTableSchema() {
