@@ -127,6 +127,7 @@ test('getAdminMeta()', () => {
     path: 'path',
     type: 'Field',
     defaultValue: 'default',
+    isPrimaryKey: false,
   });
 });
 

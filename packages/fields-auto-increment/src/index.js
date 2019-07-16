@@ -1,7 +1,7 @@
 import { AutoIncrementImplementation, KnexAutoIncrementInterface } from './Implementation';
 import { Integer } from '@keystone-alpha/fields';
 
-export let AutoIncrement = {
+export const AutoIncrement = {
   type: 'AutoIncrement',
   implementation: AutoIncrementImplementation,
   views: {
@@ -11,5 +11,12 @@ export let AutoIncrement = {
   },
   adapters: {
     knex: KnexAutoIncrementInterface,
+  },
+
+  primaryKeyDefaults: {
+    knex: {
+      // Uniqueness, non-nullability and GraphQL type are implied
+      getConfig: () => ({ type: AutoIncrement }),
+    },
   },
 };

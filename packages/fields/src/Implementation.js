@@ -8,6 +8,7 @@ class Field {
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
+    this.isPrimaryKey = path === 'id';
     this.schemaDoc = schemaDoc;
     this.config = config;
     this.isRequired = isRequired;
@@ -163,6 +164,7 @@ class Field {
       type: this.constructor.name,
       isRequired: this.isRequired,
       defaultValue: this.getDefaultValue(),
+      isPrimaryKey: this.isPrimaryKey,
     });
   }
   extendAdminMeta(meta) {

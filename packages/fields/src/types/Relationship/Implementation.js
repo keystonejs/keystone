@@ -447,6 +447,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
 export class KnexRelationshipInterface extends KnexFieldAdapter {
   constructor(...args) {
     super(...args);
+    // TODO: don't duplicate this logic?
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
@@ -461,12 +462,25 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
   addToTableSchema(table) {
     // If we're relating to 'many' things, we don't store ids in this table
     if (!this.config.many) {
-      const column = table.integer(this.path).unsigned();
-      if (this.isUnique) column.unique();
+      // The foreign key needs to do this work for us; we don't know what type it is
+      const refList = this.getListByKey(this.refListKey);
+      const refId = refList.getPrimaryKey();
+      const foreignKeyConfig = {
+        path: this.path,
+        isUnique: this.isUnique,
+        // Always true for now; should be configureable, default to true
+        isIndexed: true,
+        // We don't currently support non-nullability of foreign keys in a one-to-many configuration like this
+        // It complicates creates as it implies a precedence in ordering
+        // Ie. if a pair of list both have a non-nullable relationship with the other, all inserts on either will fail
+        isNotNullable: false, // this.isNotNullable,
+      };
+      refId.adapter.addToForeignTableSchema(table, foreignKeyConfig);
     }
   }
 
-  createForiegnKey(table, schemaName) {
+  // JM TODO: This should be part of the addToTableSchema() function
+  createForeignKey(table, schemaName) {
     return table
       .foreign(this.path)
       .references('id')

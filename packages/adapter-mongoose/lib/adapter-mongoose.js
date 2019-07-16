@@ -116,6 +116,12 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   dropDatabase() {
     return this.mongoose.connection.dropDatabase();
   }
+
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { MongoId } = require('@keystone-alpha/fields-mongoId');
+    return MongoId.primaryKeyDefaults[this.name].getConfig();
+  }
 }
 
 const DEFAULT_MODEL_SCHEMA_OPTIONS = {
