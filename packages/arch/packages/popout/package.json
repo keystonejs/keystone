@@ -18,8 +18,8 @@
     "@arch-ui/modal-utils": "^1.0.1",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.10",
-    "@emotion/styled": "^10.0.10",
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14",
     "react-focus-marshal": "^1.0.1"
   },
   "module": "dist/popout.esm.js"
