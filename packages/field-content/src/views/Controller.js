@@ -19,9 +19,7 @@ const flattenBlocks = inputBlocks =>
     // and deduped dependencies during build.
     if (outputBlocks[block.type]) {
       throw new Error(
-        `Encountered more than one Content block with type of '${
-          block.type
-        }'. Content blocks must have globally unique types.`
+        `Encountered more than one Content block with type of '${block.type}'. Content blocks must have globally unique types.`
       );
     }
 

@@ -132,9 +132,7 @@ export class OEmbed extends Implementation {
         }
       `,
       `
-        # This type is used for rich HTML content that does not fall under ${
-          this.graphQLOutputType
-        }Link, ${this.graphQLOutputType}Photo, or ${this.graphQLOutputType}Video.
+        # This type is used for rich HTML content that does not fall under ${this.graphQLOutputType}Link, ${this.graphQLOutputType}Photo, or ${this.graphQLOutputType}Video.
         type ${this.graphQLOutputType}Rich implements ${this.graphQLOutputType} {
           ${baseFields}
           # The HTML required to display the resource. The HTML should have no padding or margins. Consumers may wish to load the HTML in an off-domain iframe to avoid XSS vulnerabilities. The markup should be valid XHTML 1.0 Basic.

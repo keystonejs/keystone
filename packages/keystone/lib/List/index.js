@@ -92,9 +92,7 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 
   keystoneLogger.warn(
     { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${
-      keystoneType.type.type
-    }' from the @keystone-alpha/fields package.`
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone-alpha/fields package.`
   );
 
   return keystoneType;
@@ -449,9 +447,7 @@ module.exports = class List {
         type ${this.gqlNames.authenticateOutputName} {
           """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
           token: String
-          """ Retreive information on the newly authenticated ${
-            this.gqlNames.outputTypeName
-          } here. """
+          """ Retreive information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
           item: ${this.gqlNames.outputTypeName}
         }
       `);

@@ -73,17 +73,13 @@ export class Password extends Implementation {
   validateNewPassword(password) {
     if (this.rejectCommon && dumbPasswords.check(password)) {
       throw new Error(
-        `[password:rejectCommon:${this.listKey}:${
-          this.path
-        }] Common and frequently-used passwords are not allowed.`
+        `[password:rejectCommon:${this.listKey}:${this.path}] Common and frequently-used passwords are not allowed.`
       );
     }
     // TODO: checking string length is not simple; might need to revisit this (see https://mathiasbynens.be/notes/javascript-unicode)
     if (String(password).length < this.minLength) {
       throw new Error(
-        `[password:minLength:${this.listKey}:${this.path}] Value must be at least ${
-          this.minLength
-        } characters long.`
+        `[password:minLength:${this.listKey}:${this.path}] Value must be at least ${this.minLength} characters long.`
       );
     }
   }
