@@ -625,7 +625,7 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     if (this._isNotNullable) return this._isNotNullable;
 
     return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
-      ? this.field.isRequired
+      ? this.field.isRequired || (typeof this.defaultTo !== 'undefined' && this.defaultTo !== null)
       : this.knexOptions.isNotNullable));
   }
 

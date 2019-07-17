@@ -66,6 +66,6 @@ export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
     if (this.isUnique) column.unique();
     else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();
-    if (this.defaultTo) column.defaultTo(this.defaultTo);
+    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }

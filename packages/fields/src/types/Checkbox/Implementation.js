@@ -25,20 +25,16 @@ export class Checkbox extends Implementation {
   }
 }
 
-const CommonCheckboxInterface = superclass =>
-  class extends superclass {
-    getQueryConditions(dbPath) {
-      return this.equalityConditions(dbPath);
-    }
-  };
-
-export class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFieldAdapter) {
+export class MongoCheckboxInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: Boolean }, this.config) });
   }
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
+  }
 }
 
-export class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdapter) {
+export class KnexCheckboxInterface extends KnexFieldAdapter {
   constructor() {
     super(...arguments);
 
@@ -48,10 +44,12 @@ export class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdap
         `Check the config for ${this.path} on the ${this.field.listKey} list`;
     }
   }
-
   addToTableSchema(table) {
     const column = table.boolean(this.path);
     if (this.isNotNullable) column.notNullable();
-    if (this.defaultTo) column.defaultTo(this.defaultTo);
+    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
+  }
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
   }
 }
