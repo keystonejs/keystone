@@ -1,0 +1,4 @@
+{
+  "releases": [{ "name": "@keystone-alpha/fields-datetime-utc", "type": "major" }],
+  "dependents": []
+}
