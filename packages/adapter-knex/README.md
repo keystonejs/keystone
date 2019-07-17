@@ -13,6 +13,13 @@ At present, the only fully tested backend is `Postgres`, however Knex gives the 
 ## Setting Up Your Database
 
 Before running Keystone, you must set up a database, a schema, and a user.
+Assuming you're on MacOS and have Postgres installed the `build-test-db.sh` does this for you:
+
+```sh
+./packages/adapter-knex/build-test-db.sh
+```
+
+Otherwise, you can run the steps manually:
 
 ```shell
 createdb -U postgres ks5_dev
