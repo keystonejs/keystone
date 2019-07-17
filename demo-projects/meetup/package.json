@@ -14,7 +14,7 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.10",
+    "@emotion/core": "^10.0.14",
     "@keystone-alpha/adapter-mongoose": "^2.2.1",
     "@keystone-alpha/app-admin-ui": "^5.0.4",
     "@keystone-alpha/app-graphql": "^6.3.0",
