@@ -36,7 +36,7 @@
     "globby": "^9.1.0",
     "inquirer": "^6.2.0",
     "install-packages": "^0.2.5",
-    "jest-worker": "24.0.0",
+    "jest-worker": "^24.6.0",
     "lodash.isempty": "^4.4.0",
     "lodash.omitby": "^4.6.0",
     "magic-string": "^0.25.1",
