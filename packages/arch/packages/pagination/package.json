@@ -17,7 +17,7 @@
     "@arch-ui/layout": "^0.2.3",
     "@arch-ui/loading": "^0.0.7",
     "@arch-ui/theme": "^0.0.5",
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.5.4",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "react-router-dom": "5.0.0"

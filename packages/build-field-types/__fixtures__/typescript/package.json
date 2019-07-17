@@ -6,7 +6,7 @@
   "private": true,
   "module": "dist/typescript.esm.js",
   "dependencies": {
-    "@babel/core": "^7.4.3",
+    "@babel/core": "^7.5.4",
     "@babel/preset-typescript": "^7.3.3"
   }
 }

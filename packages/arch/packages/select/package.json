@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@arch-ui/theme": "^0.0.5",
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.5.4",
     "react-select": "2.3.0"
   },
   "module": "dist/select.esm.js"

@@ -18,7 +18,7 @@
     "@arch-ui/modal-utils": "^1.0.1",
     "@arch-ui/theme": "^0.0.5",
     "@arch-ui/typography": "^0.0.7",
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.5.4",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "react-focus-marshal": "^1.0.1",

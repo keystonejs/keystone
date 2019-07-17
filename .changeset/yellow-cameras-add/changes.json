@@ -1,0 +1,94 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/apollo-helpers", "type": "patch" },
+    { "name": "@keystone-alpha/app-admin-ui", "type": "patch" },
+    { "name": "@arch-ui/badge", "type": "patch" },
+    { "name": "@arch-ui/button", "type": "patch" },
+    { "name": "@arch-ui/card", "type": "patch" },
+    { "name": "@arch-ui/confirm", "type": "patch" },
+    { "name": "@arch-ui/controls", "type": "patch" },
+    { "name": "@arch-ui/day-picker", "type": "patch" },
+    { "name": "@arch-ui/dialog", "type": "patch" },
+    { "name": "@arch-ui/drawer", "type": "patch" },
+    { "name": "@arch-ui/dropdown", "type": "patch" },
+    { "name": "@arch-ui/fields", "type": "patch" },
+    { "name": "@arch-ui/filters", "type": "patch" },
+    { "name": "@arch-ui/hooks", "type": "patch" },
+    { "name": "@arch-ui/icons", "type": "patch" },
+    { "name": "@arch-ui/input", "type": "patch" },
+    { "name": "@arch-ui/layout", "type": "patch" },
+    { "name": "@arch-ui/loading", "type": "patch" },
+    { "name": "@arch-ui/lozenge", "type": "patch" },
+    { "name": "@arch-ui/modal-utils", "type": "patch" },
+    { "name": "@arch-ui/navbar", "type": "patch" },
+    { "name": "@arch-ui/options", "type": "patch" },
+    { "name": "@arch-ui/pagination", "type": "patch" },
+    { "name": "@arch-ui/pill", "type": "patch" },
+    { "name": "@arch-ui/popout", "type": "patch" },
+    { "name": "@arch-ui/select", "type": "patch" },
+    { "name": "@arch-ui/theme", "type": "patch" },
+    { "name": "@arch-ui/tooltip", "type": "patch" },
+    { "name": "@arch-ui/typography", "type": "patch" },
+    { "name": "@keystone-alpha/build-field-types", "type": "patch" },
+    { "name": "@keystone-alpha/field-content", "type": "patch" },
+    { "name": "@keystone-alpha/fields-markdown", "type": "patch" },
+    { "name": "@keystone-alpha/fields-wysiwyg-tinymce", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/oembed-adapters", "type": "patch" },
+    { "name": "@keystone-alpha/utils", "type": "patch" },
+    { "name": "@keystone-alpha/website", "type": "patch" }
+  ],
+  "dependents": [
+    {
+      "name": "@arch-ui/docs",
+      "type": "patch",
+      "dependencies": [
+        "@arch-ui/alert",
+        "@arch-ui/badge",
+        "@arch-ui/button",
+        "@arch-ui/controls",
+        "@arch-ui/dialog",
+        "@arch-ui/dropdown",
+        "@arch-ui/fields",
+        "@arch-ui/icons",
+        "@arch-ui/input",
+        "@arch-ui/layout",
+        "@arch-ui/loading",
+        "@arch-ui/lozenge",
+        "@arch-ui/navbar",
+        "@arch-ui/pagination",
+        "@arch-ui/pill",
+        "@arch-ui/popout",
+        "@arch-ui/select",
+        "@arch-ui/theme",
+        "@arch-ui/tooltip",
+        "@arch-ui/typography"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@arch-ui/fields",
+        "@arch-ui/input",
+        "@keystone-alpha/fields"
+      ]
+    },
+    { "name": "@arch-ui/alert", "type": "patch", "dependencies": ["@arch-ui/theme"] },
+    { "name": "@arch-ui/common", "type": "patch", "dependencies": ["@arch-ui/theme"] },
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@arch-ui/layout",
+        "@arch-ui/typography",
+        "@keystone-alpha/fields-markdown",
+        "@keystone-alpha/fields-wysiwyg-tinymce",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/oembed-adapters"
+      ]
+    }
+  ]
+}
