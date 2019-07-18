@@ -22,7 +22,7 @@
     "tinymce": "^5.0.3"
   },
   "peerDependencies": {
-    "express": "^4.16.3"
+    "express": "^4.17.1"
   },
   "preconstruct": {
     "entrypoints": [

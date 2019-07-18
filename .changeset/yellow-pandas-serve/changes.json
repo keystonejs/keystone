@@ -1,0 +1,20 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/api-tests", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "patch" },
+    { "name": "@keystone-alpha/app-admin-ui", "type": "patch" },
+    { "name": "@keystone-alpha/app-graphql", "type": "patch" },
+    { "name": "@keystone-alpha/app-static", "type": "patch" },
+    { "name": "@keystone-alpha/fields-wysiwyg-tinymce", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "patch" },
+    { "name": "@keystone-alpha/passport-auth", "type": "patch" },
+    { "name": "@keystone-alpha/session", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-client-validation", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-social-login", "type": "patch" }
+  ],
+  "dependents": []
+}

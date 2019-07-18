@@ -25,7 +25,7 @@
     "@keystone-alpha/keystone": "^8.0.0",
     "@keystone-alpha/utils": "^3.0.1",
     "cross-env": "^5.2.0",
-    "express": "^4.16.3"
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "cypress": "^3.4.0",
