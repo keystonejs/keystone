@@ -194,9 +194,10 @@ export default () => {
                           }}
                         >
                           {data.allUsers.map(user => (
-                            <option value={user.id} key={user.id}>{`${user.name} <${
-                              user.email
-                            }>`}</option>
+                            <option
+                              value={user.id}
+                              key={user.id}
+                            >{`${user.name} <${user.email}>`}</option>
                           ))}
                         </select>
                       </FormGroup>

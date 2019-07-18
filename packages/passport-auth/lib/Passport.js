@@ -243,9 +243,7 @@ class PassportAuthStrategy {
   async resumeAuthentication(createData, req, res, next) {
     if (!this._authenticationPaused(req)) {
       throw new Error(
-        `Unable to extract ${
-          this.authType
-        } Id from session. Maybe \`pauseAuthentication()\` wasn't called?`
+        `Unable to extract ${this.authType} Id from session. Maybe \`pauseAuthentication()\` wasn't called?`
       );
     }
 
@@ -363,9 +361,7 @@ class PassportAuthStrategy {
   _getPassportStrategy(strategyConfig) {
     if (!this._ServiceStrategy) {
       throw new Error(
-        `Must provide PassportJs strategy Type in constructor or override this method in ${
-          this.authType
-        }`
+        `Must provide PassportJs strategy Type in constructor or override this method in ${this.authType}`
       );
     }
 

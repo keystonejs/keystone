@@ -10,7 +10,7 @@
   "dependencies": {
     "@keystone-alpha/fields": "^9.1.0",
     "@keystone-alpha/session": "^2.0.0",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "graphql-request": "^1.8.2",
     "nanoassert": "^2.0.0",
     "passport": "^0.4.0",

@@ -28,11 +28,11 @@
     "@keystone-alpha/app-static": "^1.0.2",
     "cross-env": "^5.2.0",
     "date-fns": "^1.30.1",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "react": "^16.8.6"
   },
   "devDependencies": {
-    "cypress": "^3.2.0",
+    "cypress": "^3.4.0",
     "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",
     "mocha": "^5.2.0",

@@ -956,9 +956,7 @@ describe('Access Control, List, GraphQL', () => {
                   return cy
                     .graphql_mutate(
                       '/admin/api',
-                      `mutation { ${updateMutationName}(id: "${
-                        item.id
-                      }", data: { zip: "bar" }) { id } }`
+                      `mutation { ${updateMutationName}(id: "${item.id}", data: { zip: "bar" }) { id } }`
                     )
                     .then(({ data, errors }) => {
                       expect(errors, 'update mutation Errors').to.equal(undefined);

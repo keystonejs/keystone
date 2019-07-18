@@ -99,17 +99,13 @@ export function serialize(value, blocks) {
       if (mutations && Object.keys(mutations).length) {
         if (!serializedNode) {
           throw new Error(
-            `Must return a serialized 'node' when returning 'mutations'. See '${
-              block.constructor.name
-            }#serialize()'.`
+            `Must return a serialized 'node' when returning 'mutations'. See '${block.constructor.name}#serialize()'.`
           );
         }
 
         if (!block.path) {
           throw new Error(
-            `No mutation path set for block view type '${
-              block.type
-            }'. Ensure the block's view exports a 'path' key corresponding to the mutation path for saving block data`
+            `No mutation path set for block view type '${block.type}'. Ensure the block's view exports a 'path' key corresponding to the mutation path for saving block data`
           );
         }
 
