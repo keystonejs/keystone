@@ -1,6 +1,7 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { JSONFieldAdapter } from '@keystone-alpha/adapter-json';
 
 export class UuidImplementation extends Implementation {
   constructor(path, { caseTo = 'lower' }) {
@@ -116,6 +117,15 @@ export class KnexUuidInterface extends KnexFieldAdapter {
     if (isNotNullable) column.notNullable();
   }
 
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath, this.field.normaliseValue),
+      ...this.inConditions(dbPath, this.field.normaliseValue),
+    };
+  }
+}
+
+export class JSONUuidInterface extends JSONFieldAdapter {
   getQueryConditions(dbPath) {
     return {
       ...this.equalityConditions(dbPath, this.field.normaliseValue),

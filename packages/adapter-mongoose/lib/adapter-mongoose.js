@@ -172,6 +172,12 @@ class MongooseListAdapter extends BaseListAdapter {
     });
   }
 
+  findFieldAdapterForQuerySegment(segment) {
+    return this.fieldAdapters
+      .filter(adapter => adapter.isRelationship)
+      .find(adapter => adapter.supportsRelationshipQuery(segment));
+  }
+
   prepareFieldAdapter(fieldAdapter) {
     fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
   }

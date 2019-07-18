@@ -40,12 +40,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'during create mutation',
           runner(setupKeystone, async ({ keystone, create, findById }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await create('Teacher', {});
+            let teacher1 = await create('Teacher', { students: [] });
             await new Promise(resolve => process.nextTick(resolve));
-            let teacher2 = await create('Teacher', {});
+            let teacher2 = await create('Teacher', { students: [] });
 
             // canaryStudent is used as a canary to make sure nothing crosses over
-            let canaryStudent = await create('Student', {});
+            let canaryStudent = await create('Student', { teachers: [] });
 
             teacher1 = await findById('Teacher', teacher1.id);
             teacher2 = await findById('Teacher', teacher2.id);
@@ -99,12 +99,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'during update mutation',
           runner(setupKeystone, async ({ keystone, create, findById }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await create('Teacher', {});
-            let teacher2 = await create('Teacher', {});
-            let student1 = await create('Student', {});
+            let teacher1 = await create('Teacher', { students: [] });
+            let teacher2 = await create('Teacher', { students: [] });
+            let student1 = await create('Student', { teachers: [] });
             // Student2 is used as a canary to make sure things don't accidentally
             // cross over
-            let student2 = await create('Student', {});
+            let student2 = await create('Student', { teachers: [] });
 
             teacher1 = await findById('Teacher', teacher1.id);
             teacher2 = await findById('Teacher', teacher2.id);
@@ -205,7 +205,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'during update mutation',
           runner(setupKeystone, async ({ keystone, create, findById }) => {
-            let student = await create('Student', {});
+            let student = await create('Student', { teachers: [] });
             const teacherName1 = sampleOne(alphanumGenerator);
             const teacherName2 = sampleOne(alphanumGenerator);
 
@@ -252,8 +252,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested disconnect during update mutation',
         runner(setupKeystone, async ({ keystone, create, update, findById }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await create('Teacher', {});
-          let teacher2 = await create('Teacher', {});
+          let teacher1 = await create('Teacher', { students: [] });
+          let teacher2 = await create('Teacher', { students: [] });
           let student1 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
           let student2 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
 
@@ -329,8 +329,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested disconnectAll during update mutation',
         runner(setupKeystone, async ({ keystone, create, update, findById }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await create('Teacher', {});
-          let teacher2 = await create('Teacher', {});
+          let teacher1 = await create('Teacher', { students: [] });
+          let teacher2 = await create('Teacher', { students: [] });
           let student1 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
           let student2 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
 
@@ -404,8 +404,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       'delete mutation updates back references in to-many relationship',
       runner(setupKeystone, async ({ keystone, create, update, findById }) => {
         // Manually setup a connected Student <-> Teacher
-        let teacher1 = await create('Teacher', {});
-        let teacher2 = await create('Teacher', {});
+        let teacher1 = await create('Teacher', { students: [] });
+        let teacher2 = await create('Teacher', { students: [] });
         let student1 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
         let student2 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
 

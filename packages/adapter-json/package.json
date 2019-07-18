@@ -8,7 +8,8 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/keystone": "^8.0.0",
+    "@keystone-alpha/fields": "^10.1.0",
+    "@keystone-alpha/keystone": "^9.1.0",
     "@keystone-alpha/logger": "^2.0.1",
     "@keystone-alpha/utils": "^3.0.1",
     "cuid": "^2.1.6",

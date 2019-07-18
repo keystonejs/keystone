@@ -3,6 +3,8 @@ import omitBy from 'lodash.omitby';
 import { mergeWhereClause } from '@keystone-alpha/utils';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { JSONFieldAdapter } from '@keystone-alpha/adapter-json';
+import { MemoryFieldAdapter } from '@keystone-alpha/adapter-memory';
 
 const {
   Schema: {
@@ -481,10 +483,6 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       : this.knexOptions.isNotNullable));
   }
 
-  getRefListAdapter() {
-    return this.getListByKey(this.refListKey).adapter;
-  }
-
   addToTableSchema(table) {
     // If we're relating to 'many' things, we don't store ids in this table
     if (!this.field.many) {
@@ -515,9 +513,41 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
     };
   }
-  supportsRelationshipQuery(query) {
-    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
-      query
-    );
+}
+
+export class JSONRelationshipInterface extends JSONFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.isRelationship = true;
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      [`${this.path}_is_null`]: checkIsNull => _ => {
+        const matcher = _.overSome([
+          _.matchesProperty(dbPath, null),
+          _.matchesProperty(dbPath, undefined),
+        ]);
+        return checkIsNull ? matcher : _.negate(matcher);
+      },
+    };
+  }
+
+  getRefListAdapter() {
+    return this.getListByKey(this.refListKey).adapter;
+  }
+
+  supportsWhereClause(clause) {
+    return [
+      this.path,
+      `${this.path}_every`,
+      `${this.path}_some`,
+      `${this.path}_none`,
+      `${this.path}_is_null`,
+    ].includes(clause);
   }
 }
+
+export { JSONRelationshipInterface as MemoryRelationshipInterface };

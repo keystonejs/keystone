@@ -1,4 +1,4 @@
-import { UuidImplementation, MongoUuidInterface, KnexUuidInterface } from './Implementation';
+import { UuidImplementation, MongoUuidInterface, KnexUuidInterface, JSONUuidInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
 const Uuid = {
@@ -12,6 +12,7 @@ const Uuid = {
   adapters: {
     knex: KnexUuidInterface,
     mongoose: MongoUuidInterface,
+    json: JSONUuidInterface,
   },
 
   primaryKeyDefaults: {
@@ -34,6 +35,9 @@ const Uuid = {
           `You'll need to supply your own 'id' field for each list or use a different field type for your ` +
           `ids (eg '@keystone-alpha/fields-mongoid').`;
       },
+    },
+    json: {
+      getConfig: () => ({ type: Uuid }),
     },
   },
 };

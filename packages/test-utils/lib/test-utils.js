@@ -4,13 +4,14 @@ const url = require('url');
 const { Keystone } = require('@keystone-alpha/keystone');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
+const { MemoryAdapter } = require('@keystone-alpha/adapter-memory');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
 function setupServer({ name, adapterName, createLists = () => {} }) {
-  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
-  const args = { mongoose: {}, knex: { dropDatabase: true } }[adapterName];
+  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter, memory: MemoryAdapter }[adapterName];
+  const args = { mongoose: {}, knex: { dropDatabase: true }, memory: undefined }[adapterName];
   const keystone = new Keystone({
     name,
     adapter: new Adapter(args),
@@ -130,9 +131,9 @@ function keystoneKnexRunner(setupKeystoneFn, testFn) {
   };
 }
 
-function keystoneJSONRunner(setupKeystoneFn, testFn) {
+function keystoneMemoryRunner(setupKeystoneFn, testFn) {
   return async function() {
-    const setup = await setupKeystoneFn('json');
+    const setup = await setupKeystoneFn('memory');
     const { keystone } = setup;
 
     await keystone.connect();
@@ -144,6 +145,7 @@ function keystoneJSONRunner(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect()
     );

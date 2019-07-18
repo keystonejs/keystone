@@ -1,4 +1,4 @@
-import { SlugImplementation, MongoSlugInterface, KnexSlugInterface } from './Implementation';
+import { SlugImplementation, MongoSlugInterface, KnexSlugInterface, JSONSlugInterface, MemorySlugInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
 const Slug = {
@@ -12,6 +12,8 @@ const Slug = {
   adapters: {
     knex: KnexSlugInterface,
     mongoose: MongoSlugInterface,
+    json: JSONSlugInterface,
+    memory: MemorySlugInterface,
   },
 };
 

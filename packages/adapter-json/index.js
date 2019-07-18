@@ -57,6 +57,12 @@ class JSONAdapter extends BaseKeystoneAdapter {
     return this.write({});
   }
 
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { Uuid } = require('@keystone-alpha/fields');
+    return Uuid.primaryKeyDefaults[this.name].getConfig();
+  }
+
   getLowDBInstanceForList(key) {
     return this._dbInstance.get(key);
   }
@@ -208,10 +214,70 @@ class JSONListAdapter extends BaseListAdapter {
 
   _buildChainableClauses(where) {
     const conditions = this._allQueryConditions();
+
     // Build up a list of functions we want to chain together as AND filters
     return Object.entries(where).map(([condition, value]) => {
-      // TODO: if (isRelationship(condition)) { return buildRelationshipClause(condition, value) }
-      return conditions[condition](value);
+      // A "basic" condition we know how to handle
+      if (conditions[condition]) {
+        return conditions[condition](value);
+      }
+
+      // A more "complex" clause which some fields may support
+      const fieldAdapterForClause = this.fieldAdapters.find(fieldAdapter =>
+        fieldAdapter.supportsWhereClause(condition)
+      );
+
+      // Nope, nothing supports it, so we bail
+      if (!fieldAdapterForClause) {
+        throw new Error(
+          `Unexpected where clause '${condition}: ${JSON.stringify(value)}' for list '${this.key}'.`
+        );
+      }
+
+      // This adapter only knows how to handle special cases for `Relationship`
+      // fields, so it'll throw for everythign else left over
+      if (!fieldAdapterForClause.isRelationship) {
+        throw new Error(
+          `Expected where clause '${condition}: ${JSON.stringify(value)}' to be handled by '${
+            this.key
+          }.${fieldAdapterForClause.path}', but it is not of type Relationship.`
+        );
+      }
+
+      const refListAdapter = fieldAdapterForClause.getRefListAdapter();
+
+      // Finally, we have our filter for the Relationship field
+      return () => obj => {
+        const { many } = fieldAdapterForClause.config;
+        // This nested where clause should only operate on the IDs that are
+        // setup as relationships.
+        const idFilter = many
+          ? { id_in: obj[fieldAdapterForClause.path] || [] }
+          : { id: obj[fieldAdapterForClause.path] };
+
+        // Combine the ID filter with whatever filter was passed in
+        const refListWhere = { AND: [idFilter, value] };
+
+        // And finally count how many of the related items match that filter
+        const { count } = refListAdapter._itemsQuery({ where: refListWhere }, { meta: true });
+
+        if (many) {
+          // Check for _some/_every/_none
+          const [, conditionModifier] = condition.split('_');
+          if (conditionModifier === 'some') {
+            return count !== 0;
+          } else if (conditionModifier === 'every') {
+            return count === obj[fieldAdapterForClause.path].length;
+          } else if (conditionModifier === 'none') {
+            return count === 0;
+          }
+
+          return false;
+        }
+
+        // For the to-single case
+        return count !== 0;
+      };
     });
   }
 
@@ -243,15 +309,15 @@ class JSONListAdapter extends BaseListAdapter {
    * collection
    *   .filter(item => new RegExp(f('foo')).test(item.name))
    *   .filter(_.overEvery([
-   *     .filter(item => item.done === false)
-   *     .filter(item => item.deleted === false)
+   *     item => item.done === false,
+   *     item => item.deleted === false,
    *   ]))
    *   .filter(_.overSome([
    *     item => new RegExp(f('bar')).test(item.name),
    *     item => new RegExp(f('zip')).test(item.name),
    *   ]))
    */
-  async _itemsQuery({ where, first, skip, orderBy, search }, { meta = false } = {}) {
+  _itemsQuery({ where, first, skip, orderBy, search }, { meta = false } = {}) {
     let chain = this.getDBCollection();
 
     if (where) {
@@ -283,7 +349,7 @@ class JSONListAdapter extends BaseListAdapter {
       chain = chain.take(first);
     }
 
-    const items = await chain.value();
+    const items = chain.value();
 
     if (!meta) {
       return items;
