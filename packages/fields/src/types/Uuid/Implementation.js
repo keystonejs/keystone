@@ -81,6 +81,16 @@ export class MongoUuidInterface extends MongooseFieldAdapter {
 }
 
 export class KnexUuidInterface extends KnexFieldAdapter {
+  constructor() {
+    super(...arguments);
+
+    // TODO: Warning on invalid config for primary keys?
+    if (!this.field.isPrimaryKey) {
+      this.isUnique = !!this.config.isUnique;
+      this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+    }
+  }
+
   addToTableSchema(table) {
     const column = table.uuid(this.path);
     // Fair to say primary keys are always non-nullable and uniqueness is implied by primary()
@@ -88,6 +98,7 @@ export class KnexUuidInterface extends KnexFieldAdapter {
       column.primary().notNullable();
     } else {
       if (this.isUnique) column.unique();
+      else if (this.isIndexed) column.index();
       if (this.isNotNullable) column.notNullable();
     }
     if (this.defaultTo) column.defaultTo(this.defaultTo);

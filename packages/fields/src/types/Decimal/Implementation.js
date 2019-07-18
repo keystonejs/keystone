@@ -81,6 +81,8 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
 export class KnexDecimalInterface extends KnexFieldAdapter {
   constructor() {
     super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
 
     // In addition to the standard knexOptions this type supports precision and scale
     const { precision, scale } = this.knexOptions;
@@ -95,6 +97,7 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
   addToTableSchema(table) {
     const column = table.decimal(this.path, this.precision, this.scale);
     if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
   }

@@ -25,12 +25,12 @@ class BaseKeystoneAdapter {
     // Set up all list adapters
     try {
       const taskResults = await this.postConnect();
-      const errors = taskResults.filter(({ isRejected }) => isRejected);
+      const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
       if (errors.length) {
         if (errors.length === 1) throw errors[0];
         const error = new Error('Multiple errors in BaseKeystoneAdapter.postConnect():');
-        error.errors = errors.map(({ reason }) => reason);
+        error.errors = errors;
         throw error;
       }
     } catch (error) {
@@ -156,14 +156,7 @@ class BaseListAdapter {
 }
 
 class BaseFieldAdapter {
-  constructor(
-    fieldName,
-    path,
-    field,
-    listAdapter,
-    getListByKey,
-    { isRequired, isUnique, ...config }
-  ) {
+  constructor(fieldName, path, field, listAdapter, getListByKey, config = {}) {
     this.fieldName = fieldName;
     this.path = path;
     this.field = field;
@@ -171,11 +164,6 @@ class BaseFieldAdapter {
     this.config = config;
     this.getListByKey = getListByKey;
     this.dbPath = path;
-
-    // These are stored for all field types but not universally relevant
-    // Consider refactoring into the type implementation?
-    this.isRequired = !!isRequired;
-    this.isUnique = !!isUnique;
   }
 
   setupHooks() {}
