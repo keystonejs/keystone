@@ -28,7 +28,7 @@
     "fast-memoize": "^2.4.0",
     "fs-extra": "^7.0.0",
     "globby": "^9.1.0",
-    "graphql": "^14.0.2",
+    "graphql": "^14.4.2",
     "graphql-tag": "^2.10.1",
     "graphql-type-json": "^0.2.1",
     "lodash.flattendeep": "^4.4.0",
