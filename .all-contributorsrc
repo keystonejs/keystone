@@ -190,6 +190,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "1337cookie",
+      "name": "1337cookie",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15826769?v=4",
+      "profile": "https://github.com/1337cookie",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
