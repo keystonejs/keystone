@@ -367,12 +367,12 @@ export class Relationship extends Implementation {
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
-    this.isRelationship = true;
 
     // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
 
   addToMongooseSchema(schema) {

@@ -30,7 +30,8 @@ class BaseKeystoneAdapter {
       if (errors.length) {
         if (errors.length === 1) throw errors[0];
         const error = new Error('Multiple errors in BaseKeystoneAdapter.postConnect():');
-        throw { ...error, errors };
+        error.errors = errors;
+        throw error;
       }
     } catch (error) {
       // close the database connection if it was opened

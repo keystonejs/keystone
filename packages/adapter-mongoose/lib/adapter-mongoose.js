@@ -328,10 +328,7 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
-    // JM 190719:
-    // It seem to me this implementation will cause us to accumulate indexes
-    // Will indexes that are removed from code be dropped?
-    // Also, applying these config to all field types is probably wrong;
+    // Aapplying these config to all field types is probably wrong;
     // ie. unique constraints on Checkboxes, Files, etc. probably don't make sense
     if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
