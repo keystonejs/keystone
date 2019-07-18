@@ -1,0 +1,11 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "patch" },
+    { "name": "@keystone-alpha/apollo-helpers", "type": "patch" },
+    { "name": "@keystone-alpha/app-admin-ui", "type": "patch" },
+    { "name": "@keystone-alpha/app-graphql", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" }
+  ],
+  "dependents": []
+}

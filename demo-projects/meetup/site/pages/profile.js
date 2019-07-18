@@ -50,7 +50,7 @@ const Profile = withToastManager(props => {
   const [validationErrors, setValidationErrors] = useState({});
   const [updatingUser, setUpdatingUser] = useState(false);
 
-  const updateUser = useMutation(UPDATE_USER);
+  const [updateUser] = useMutation(UPDATE_USER);
 
   const submitDisabled =
     updatingUser ||

@@ -57,7 +57,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.8.1",
     "react": "^16.8.6",
-    "react-apollo": "2.4.0",
+    "react-apollo": "2.5.8",
     "react-color": "^2.17.0",
     "react-dom": "^16.8.6",
     "react-select": "2.3.0",
