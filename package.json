@@ -344,7 +344,7 @@
     "babel-eslint": "^10.0.1",
     "bolt": "^0.22.6",
     "chalk-cli": "^4.1.0",
-    "cypress": "^3.2.0",
+    "cypress": "^3.4.0",
     "dotenv-safe": "^6.0.0",
     "eslint": "^6.0.1",
     "eslint-plugin-cypress": "^2.6.0",
