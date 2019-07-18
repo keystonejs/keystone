@@ -1,0 +1,1 @@
+Ensure resolveInput for list receives result from fields
