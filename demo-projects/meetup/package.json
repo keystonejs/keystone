@@ -32,7 +32,7 @@
     "date-fns": "^1.30.1",
     "dotenv": "^8.0.0",
     "eslint-plugin-emotion": "^10.0.14",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "facepaint": "^1.2.1",
     "get-contrast": "^2.0.0",
     "graphql-tag": "^2.10.1",
