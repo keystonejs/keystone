@@ -332,12 +332,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             query: `
         mutation {
           updateUsers(data: [
-          { id: "${createUser.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${
-              createNote.id
-            }" }] } } },
-          { id: "${createUser2.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${
-              createNote2.id
-            }" }] } } },
+          { id: "${createUser.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote.id}" }] } } },
+          { id: "${createUser2.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote2.id}" }] } } },
         ]) {
           id
           notes {

@@ -1,0 +1,1 @@
+Fixing minor potential perf issue, flagged by DeepCheck

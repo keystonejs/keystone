@@ -79,11 +79,27 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
 }
 
 export class KnexDecimalInterface extends KnexFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+
+    // In addition to the standard knexOptions this type supports precision and scale
+    const { precision, scale } = this.knexOptions;
+    this.precision = precision === null ? null : parseInt(precision) || 18;
+    this.scale = scale === null ? null : (this.precision, parseInt(scale) || 4);
+    if (this.scale !== null && this.precision !== null && this.scale > this.precision) {
+      throw `The scale configured for Decimal field '${this.path}' (${this.scale}) ` +
+        `must not be larger than the field's precision (${this.precision})`;
+    }
+  }
+
   addToTableSchema(table) {
-    const column = table.decimal(this.path);
+    const column = table.decimal(this.path, this.precision, this.scale);
     if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();
-    if (this.defaultTo) column.defaultTo(this.defaultTo);
+    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 
   getQueryConditions(dbPath) {

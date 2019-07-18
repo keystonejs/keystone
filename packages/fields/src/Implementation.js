@@ -8,9 +8,10 @@ class Field {
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
+    this.isPrimaryKey = path === 'id';
     this.schemaDoc = schemaDoc;
     this.config = config;
-    this.isRequired = isRequired;
+    this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
     this.hooks = hooks;
     this.getListByKey = getListByKey;
@@ -22,7 +23,7 @@ class Field {
       path,
       this,
       getListByKey,
-      { isRequired, ...config }
+      { ...config }
     );
 
     // Should be overwritten by types that implement a Relationship interface
@@ -163,6 +164,7 @@ class Field {
       type: this.constructor.name,
       isRequired: this.isRequired,
       defaultValue: this.getDefaultValue(),
+      isPrimaryKey: this.isPrimaryKey,
     });
   }
   extendAdminMeta(meta) {

@@ -1,0 +1,1 @@
+Fixing issue with the Select fields on Knex; options not being applied correctly

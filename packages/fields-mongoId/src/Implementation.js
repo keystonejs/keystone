@@ -25,6 +25,9 @@ const normaliseValue = a => (a ? a.toString().toLowerCase() : null);
 
 export class MongooseMongoIdInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema, mongoose) {
+    // If this field is the primary key we actually don't have to add it; it's implicit
+    if (this.field.isPrimaryKey) return;
+
     const schemaOptions = {
       type: mongoose.Schema.Types.ObjectId,
       validate: {
@@ -32,20 +35,57 @@ export class MongooseMongoIdInterface extends MongooseFieldAdapter {
         message: '{VALUE} is not a valid Mongo ObjectId',
       },
     };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+    schema.add({
+      [this.field.isPrimaryKey ? '_id' : this.path]: this.mergeSchemaOptions(
+        schemaOptions,
+        this.config
+      ),
+    });
   }
+
+  setupHooks({ addPreSaveHook, addPostReadHook }) {
+    if (!this.field.isPrimaryKey) return;
+
+    addPreSaveHook(item => {
+      if (item.id) {
+        item._id = item.id;
+        delete item.id;
+      }
+      return item;
+    });
+    addPostReadHook(itemOrModel => {
+      // Sometimes this is called with a mongoose model, sometimes with an object and sometimes with null
+      // I do no know why
+      const item = itemOrModel && itemOrModel.toObject ? itemOrModel.toObject() : itemOrModel;
+
+      if (item && item._id) {
+        item.id = item._id.toString();
+        delete item._id;
+      }
+      return item;
+    });
+  }
+
   getQueryConditions(dbPath) {
+    const mongoose = this.listAdapter.parentAdapter.mongoose;
     return {
-      ...this.equalityConditions(dbPath),
-      ...this.inConditions(dbPath),
+      ...this.equalityConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
+      ...this.inConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
     };
   }
 }
 
 export class KnexMongoIdInterface extends KnexFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
   addToTableSchema(table) {
     const column = table.string(this.path, 24);
     if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
   }

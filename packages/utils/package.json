@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.3",
-    "p-is-promise": "^2.1.0",
+    "p-is-promise": "^3.0.0",
     "p-lazy": "^3.0.0",
     "p-reflect": "^2.1.0"
   }

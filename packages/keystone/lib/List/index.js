@@ -92,9 +92,7 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 
   keystoneLogger.warn(
     { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${
-      keystoneType.type.type
-    }' from the @keystone-alpha/fields package.`
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone-alpha/fields package.`
   );
 
   return keystoneType;
@@ -144,16 +142,17 @@ module.exports = class List {
     this.hooks = hooks;
     this.mutations = mutations;
     this.schemaDoc = schemaDoc;
-    // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
+
+    // Assuming the id column shouldn't be included in default columns or sort
+    const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
       defaultPageSize: 50,
-      defaultColumns: Object.keys(fields)
-        .slice(0, 2)
-        .join(','),
-      defaultSort: Object.keys(fields)[0],
+      defaultColumns: nonIdFieldNames.slice(0, 2).join(','),
+      defaultSort: nonIdFieldNames[0],
       maximumPageSize: 1000,
       ...adminConfig,
     };
+
     this.labelResolver = labelResolver || getDefautlLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
@@ -259,16 +258,27 @@ module.exports = class List {
   }
 
   initFields() {
-    if (this.fieldsInitialised) {
-      return;
-    }
-
+    if (this.fieldsInitialised) return;
     this.fieldsInitialised = true;
 
-    const sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
+    let sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
       ...fieldConfig,
       type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
     }));
+
+    // Add an 'id' field if none supplied
+    if (!sanitisedFieldsConfig.id) {
+      if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
+        throw `No 'id' field given for the '${this.key}' list and the list adapter ` +
+          `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
+          `(no 'getDefaultPrimaryKeyConfig()' function)`;
+      }
+      // Rebuild the object so id is "first"
+      sanitisedFieldsConfig = {
+        id: this.adapter.parentAdapter.getDefaultPrimaryKeyConfig(),
+        ...sanitisedFieldsConfig,
+      };
+    }
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
@@ -346,7 +356,6 @@ module.exports = class List {
         `
         """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
-          id: ID
           """
           This virtual field will be resolved in one of the following ways (in this order):
            1. Execution of 'labelResolver' set on the ${this.key} List config, or
@@ -368,11 +377,6 @@ module.exports = class List {
       `,
         `
         input ${this.gqlNames.whereInputName} {
-          id: ID
-          id_not: ID
-          id_in: [ID!]
-          id_not_in: [ID!]
-
           AND: [${this.gqlNames.whereInputName}]
           OR: [${this.gqlNames.whereInputName}]
 
@@ -395,6 +399,7 @@ module.exports = class List {
         input ${this.gqlNames.updateInputName} {
           ${flatten(
             this.fields
+              .filter(({ path }) => path !== 'id') // Exclude the id fields update types
               .filter(field => skipAccessControl || field.access.update) // If it's globally set to false, makes sense to never let it be updated
               .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
@@ -413,6 +418,7 @@ module.exports = class List {
         input ${this.gqlNames.createInputName} {
           ${flatten(
             this.fields
+              .filter(({ path }) => path !== 'id') // Exclude the id fields create types
               .filter(field => skipAccessControl || field.access.create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
@@ -441,9 +447,7 @@ module.exports = class List {
         type ${this.gqlNames.authenticateOutputName} {
           """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
           token: String
-          """ Retreive information on the newly authenticated ${
-            this.gqlNames.outputTypeName
-          } here. """
+          """ Retreive information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
           item: ${this.gqlNames.outputTypeName}
         }
       `);
@@ -1471,5 +1475,8 @@ module.exports = class List {
 
   getFieldByPath(path) {
     return this.fieldsByPath[path];
+  }
+  getPrimaryKey() {
+    return this.fieldsByPath['id'];
   }
 };

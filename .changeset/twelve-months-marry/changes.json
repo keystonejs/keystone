@@ -1,0 +1,4 @@
+{
+  "releases": [{ "name": "@keystone-alpha/demo-project-meetup", "type": "patch" }],
+  "dependents": []
+}

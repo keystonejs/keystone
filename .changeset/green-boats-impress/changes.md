@@ -1,0 +1,1 @@
+Adding `precision` and `scale` as `knexOptions` for the `Decimal` field type

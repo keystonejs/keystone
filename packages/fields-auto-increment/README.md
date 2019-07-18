@@ -6,12 +6,12 @@ title: AutoIncrement
 # Keystone 5 `AutoIncrement` Field Type
 
 An automatically incrementing integer with support for the Knex adapter.
-Currently, outside it's use as a primary key, this field type will only work on PostgreSQL.
-
 It's important to note, this type..
 
 - Has [important limitations](#limitations) due to varying support from the underlying DB platform
 - Has [non-standard defaults](#non-standard-defaults) for much of it's configuration
+
+**Currently, outside it's use as a primary key, this field type will only work on PostgreSQL.**
 
 ## Limitations
 
@@ -59,7 +59,7 @@ const keystone = new Keystone(/* ... */);
 keystone.createList('Order', {
   fields: {
     name: { type: Text },
-    orderNumber: { type: AutoIncrement, knexOptions: { isPrimaryKey: false } },
+    orderNumber: { type: AutoIncrement, gqlType: 'Int' },
     // ...
   },
 });
@@ -67,22 +67,11 @@ keystone.createList('Order', {
 
 ### Config
 
-| Option        | Type      | Default     | Description                                                     |
-| :------------ | :-------- | :---------- | :-------------------------------------------------------------- |
-| `isRequired`  | `Boolean` | `false`     | Does this field require a value?                                |
-| `isUnique`    | `Boolean` | `true`      | Adds a unique index that allows only unique values to be stored |
-| `knexOptions` | `Object`  | (see below) | (see below)                                                     |
-
-### `knexOptions`
-
-| Option         | Type      | Default | Description                                           |
-| :------------- | :-------- | :------ | :---------------------------------------------------- |
-| `isPrimaryKey` | `Boolean` | `true`  | Should Knex set this as the primary key for the table |
-
-The setting `isPrimaryKey` to `false` prevents Knex from setting the columns as the primary key.
-This is current only supported on PostgreSQL.
-It works by substituting the generic `increments()` call for an explicitly build `serial` column.
-See the [Limitations section](#limitations) more about auto inc and their usage as primary keys.
+| Option       | Type      | Default       | Description                                                                                |
+| :----------- | :-------- | :------------ | :----------------------------------------------------------------------------------------- |
+| `isRequired` | `Boolean` | `false`       | Does this field require a value?                                                           |
+| `isUnique`   | `Boolean` | `true`        | Adds a unique index that allows only unique values to be stored                            |
+| `gqlType`    | `String`  | `Int` or `ID` | The GraphQL to be used by this field. Defaults to `ID` for primay keys or `Int` otherwise. |
 
 ## Admin UI
 
@@ -90,7 +79,9 @@ See the [Limitations section](#limitations) more about auto inc and their usage 
 
 ## GraphQL
 
-`AutoIncrement` fields use the `Int` type in GraphQL.
+`AutoIncrement` fields can use the `Int` or `ID` GraphQL types.
+This can be specified using the `gqlType` config option if needed.
+The default is `ID` for primay key fields and `Int` otherwise.
 
 ### Input Fields
 
@@ -98,28 +89,28 @@ See the [Limitations section](#limitations) more about auto inc and their usage 
 As such, input fields and types may not be added to the GraphQL schema.
 See the [non-standard defaults section](#non-standard-defaults) for details.
 
-| Field name | Type  | Description               |
-| :--------- | :---- | :------------------------ |
-| `${path}`  | `Int` | The integer value to save |
+| Field name | Type          | Description               |
+| :--------- | :------------ | :------------------------ |
+| `${path}`  | `Int` or `ID` | The integer value to save |
 
 ### Output Fields
 
-| Field name | Type  | Description              |
-| :--------- | :---- | :----------------------- |
-| `${path}`  | `Int` | The integer value stored |
+| Field name | Type          | Description              |
+| :--------- | :------------ | :----------------------- |
+| `${path}`  | `Int` or `ID` | The integer value stored |
 
 ### Filters
 
-| Field name       | Type    | Description                                 |
-| :--------------- | :------ | :------------------------------------------ |
-| `${path}`        | `Int`   | Exact match to the value provided           |
-| `${path}_not`    | `Int`   | Not an exact match to the value provided    |
-| `${path}_lt`     | `Int`   | Less than the value provided                |
-| `${path}_lte`    | `Int`   | Less than or equal to the value provided    |
-| `${path}_gt`     | `Int`   | Greater than the value provided             |
-| `${path}_gte`    | `Int`   | Greater or equal to than the value provided |
-| `${path}_in`     | `[Int]` | In the array of integers provided           |
-| `${path}_not_in` | `[Int]` | Not in the array of integers provided       |
+| Field name       | Type              | Description                                 |
+| :--------------- | :---------------- | :------------------------------------------ |
+| `${path}`        | `Int` or `ID`     | Exact match to the value provided           |
+| `${path}_not`    | `Int` or `ID`     | Not an exact match to the value provided    |
+| `${path}_lt`     | `Int` or `ID`     | Less than the value provided                |
+| `${path}_lte`    | `Int` or `ID`     | Less than or equal to the value provided    |
+| `${path}_gt`     | `Int` or `ID`     | Greater than the value provided             |
+| `${path}_gte`    | `Int` or `ID`     | Greater or equal to than the value provided |
+| `${path}_in`     | `[Int]` or `[ID]` | In the array of integers provided           |
+| `${path}_not_in` | `[Int]` or `[ID]` | Not in the array of integers provided       |
 
 ## Storage
 
@@ -130,9 +121,10 @@ The underlying implementation varies in significant ways depending on the DB pla
 
 One implication of `increments()` is that Knex will
 [always make it the primary key](https://github.com/tgriesser/knex/issues/385) of the table.
-To work around this we've implemented the `knexOptions.isPrimaryKey` flag (see [`knexOptions`](#knexoptions)).
-Passing this as `false` replaces the generic `increments()` call with an explicitly build `serial` column.
-This is only supported on PostgreSQL.
+To work around this, if this type is not being used as the lists primary key,
+we replace the generic `increments()` call with an explicitly build `serial` column.
+This work around only supports PostgreSQL; on other DB platforms, this type can only be used for the `id` field.
+See the [Limitations section](#limitations) more about auto inc and their usage as primary keys.
 
 ### Mongoose Adapter
 
