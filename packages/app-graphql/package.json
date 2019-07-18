@@ -20,7 +20,7 @@
     "ensure-error": "^1.0.0",
     "express-pino-logger": "^4.0.0",
     "falsey": "^1.0.0",
-    "graphql": "^14.0.2",
+    "graphql": "^14.4.2",
     "graphql-playground-html": "^1.6.12",
     "graphql-playground-react": "^1.7.19",
     "graphql-tag": "^2.10.1",
