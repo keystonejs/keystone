@@ -39,6 +39,16 @@ export class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFiel
 }
 
 export class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdapter) {
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    if (this.config.isUnique || this.config.isIndexed) {
+      throw `The Checkbox field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+  }
+
   addToTableSchema(table) {
     const column = table.boolean(this.path);
     if (this.isNotNullable) column.notNullable();

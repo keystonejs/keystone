@@ -76,9 +76,16 @@ export class MongooseMongoIdInterface extends MongooseFieldAdapter {
 }
 
 export class KnexMongoIdInterface extends KnexFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
   addToTableSchema(table) {
     const column = table.string(this.path, 24);
     if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
   }

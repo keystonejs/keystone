@@ -128,6 +128,7 @@ test('getAdminMeta()', () => {
     type: 'Field',
     defaultValue: 'default',
     isPrimaryKey: false,
+    isRequired: false,
   });
 });
 

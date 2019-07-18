@@ -42,13 +42,20 @@ export class AutoIncrementImplementation extends Implementation {
 }
 
 export class KnexAutoIncrementInterface extends KnexFieldAdapter {
-  constructor(fieldName, path, field, listAdapter, getListByKey, knexOptions = {}) {
-    // Apply some field type defaults before we hand off to super; see README.md
-    knexOptions.isNotNullable =
-      typeof knexOptions.isNotNullable === 'undefined' ? true : knexOptions.isNotNullable;
-
-    // The base implementation takes care of everything else
+  constructor() {
     super(...arguments);
+
+    // Default isUnique to true if not specified
+    this.isUnique = typeof this.config.isUnique === 'undefined' ? true : !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  // Override isNotNullable defaulting logic; default to true if not specified
+  get isNotNullable() {
+    if (this._isNotNullable) return this._isNotNullable;
+    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
+      ? true
+      : this.knexOptions.isNotNullable));
   }
 
   addToTableSchema(table) {
@@ -58,9 +65,11 @@ export class KnexAutoIncrementInterface extends KnexFieldAdapter {
     if (this.field.isPrimaryKey) {
       // Fair to say primary keys are always non-nullable and uniqueness is implied by primary()
       table.increments(this.path).notNullable();
+      // TODO: Warning on invalid primary key config options?
     } else {
       const column = table.specificType(this.path, 'serial');
       if (this.isUnique) column.unique();
+      else if (this.isIndexed) column.index();
       if (this.isNotNullable) column.notNullable();
     }
   }

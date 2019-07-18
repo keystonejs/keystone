@@ -17,9 +17,12 @@ import { enqueueBacklinkOperations } from './backlinks';
 export class Relationship extends Implementation {
   constructor(path, { ref, many, withMeta }) {
     super(...arguments);
+
+    // JM: It bugs me this is duplicated in the field adapters but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+
     this.isRelationship = true;
     this.many = many;
     this.withMeta = typeof withMeta !== 'undefined' ? withMeta : true;
@@ -364,6 +367,8 @@ export class Relationship extends Implementation {
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
+
+    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
@@ -433,7 +438,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       //    the query
       matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
       // Flag this is a to-many relationship
-      many: this.config.many,
+      many: this.field.many,
     };
   }
 
@@ -445,14 +450,35 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
 }
 
 export class KnexRelationshipInterface extends KnexFieldAdapter {
-  constructor(...args) {
-    super(...args);
-    // TODO: don't duplicate this logic?
+  constructor() {
+    super(...arguments);
+    this.isRelationship = true;
+
+    // Default isIndexed to true if it's not explicitly provided
+    // Mutually exclusive with isUnique
+    this.isUnique = typeof this.config.isUnique === 'undefined' ? false : !!this.config.isUnique;
+    this.isIndexed =
+      typeof this.config.isIndexed === 'undefined'
+        ? !this.config.isUnique
+        : !!this.config.isIndexed;
+
+    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.refListId = `${refListKey}_id`;
-    this.isRelationship = true;
+  }
+
+  // Override the isNotNullable defaulting logic; default to false, not field.isRequired
+  // Non-nullability of foreign keys in a one-to-many configuration causes problems with complicates creates
+  // It implies a precedence in ordering of create operations and can break the nexted create resolvers
+  // Also, if a pair of list both have a non-nullable relationship with the other, all inserts on either will fail
+  get isNotNullable() {
+    if (this._isNotNullable) return this._isNotNullable;
+
+    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
+      ? false
+      : this.knexOptions.isNotNullable));
   }
 
   getRefListAdapter() {
@@ -461,19 +487,15 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
 
   addToTableSchema(table) {
     // If we're relating to 'many' things, we don't store ids in this table
-    if (!this.config.many) {
+    if (!this.field.many) {
       // The foreign key needs to do this work for us; we don't know what type it is
       const refList = this.getListByKey(this.refListKey);
       const refId = refList.getPrimaryKey();
       const foreignKeyConfig = {
         path: this.path,
         isUnique: this.isUnique,
-        // Always true for now; should be configureable, default to true
-        isIndexed: true,
-        // We don't currently support non-nullability of foreign keys in a one-to-many configuration like this
-        // It complicates creates as it implies a precedence in ordering
-        // Ie. if a pair of list both have a non-nullable relationship with the other, all inserts on either will fail
-        isNotNullable: false, // this.isNotNullable,
+        isIndexed: this.isIndexed,
+        isNotNullable: false, // See validation above
       };
       refId.adapter.addToForeignTableSchema(table, foreignKeyConfig);
     }
