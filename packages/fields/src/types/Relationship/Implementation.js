@@ -495,7 +495,7 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
         path: this.path,
         isUnique: this.isUnique,
         isIndexed: this.isIndexed,
-        isNotNullable: false, // See validation above
+        isNotNullable: this.isNotNullable,
       };
       refId.adapter.addToForeignTableSchema(table, foreignKeyConfig);
     }
