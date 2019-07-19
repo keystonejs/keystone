@@ -1,13 +1,5 @@
 # @arch-ui/controls
 
-## 0.0.9
-
-### Patch Changes
-
-- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
-
-  Upgrade emotion to 10.0.14
-
 ## 0.0.8
 
 - Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):

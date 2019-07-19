@@ -1,0 +1,1 @@
+Fixing application of some field config on knex

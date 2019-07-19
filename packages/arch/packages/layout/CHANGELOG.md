@@ -1,13 +1,5 @@
 # @arch-ui/layout
 
-## 0.2.4
-
-### Patch Changes
-
-- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
-
-  Upgrade emotion to 10.0.14
-
 ## 0.2.3
 
 ### Patch Changes

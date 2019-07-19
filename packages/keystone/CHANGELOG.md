@@ -1,45 +1,5 @@
 # @keystone-alpha/keystone
 
-## 9.0.0
-
-### Major Changes
-
-- [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
-
-  Adding isIndexed field config and support for in most field types
-
-### Minor Changes
-
-- [c3ecaf74](https://github.com/keystonejs/keystone-5/commit/c3ecaf74):
-
-  Check for the number type in label resolver to prevent false positive on zero.
-
-- [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
-
-  Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
-
-### Patch Changes
-
-- [39e0d9c0](https://github.com/keystonejs/keystone-5/commit/39e0d9c0):
-
-  Upgrade prettier to 1.18.2
-
-- [b081a9af](https://github.com/keystonejs/keystone-5/commit/b081a9af):
-
-  Ensure resolveInput for list receives result from fields
-
-- [a44cb2b3](https://github.com/keystonejs/keystone-5/commit/a44cb2b3):
-
-  Upgrade graphql to 14.4.2
-
-- [cfc333e9](https://github.com/keystonejs/keystone-5/commit/cfc333e9):
-
-  Upgrade promise utility dependencies
-
-- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
-
-  Upgrade express to 4.17.1
-
 ## 8.0.0
 
 ### Major Changes

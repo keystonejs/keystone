@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/fields-auto-increment", "type": "major" },
+    { "name": "@keystone-alpha/adapter-knex", "type": "patch" }
+  ],
+  "dependents": []
+}

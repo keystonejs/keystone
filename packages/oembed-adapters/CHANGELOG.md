@@ -1,13 +1,5 @@
 # @keystone-alpha/oembed-adapters
 
-## 1.1.2
-
-### Patch Changes
-
-- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
-
-  Upgrade emotion to 10.0.14
-
 ## 1.1.1
 
 ### Patch Changes
