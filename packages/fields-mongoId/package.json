@@ -10,6 +10,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.4.3",
     "@keystone-alpha/adapter-knex": "^2.0.0",
     "@keystone-alpha/adapter-mongoose": "^2.2.0",
     "@keystone-alpha/fields": "^9.0.0"
