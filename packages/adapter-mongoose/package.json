@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/fields-mongoId": "^1.0.0",
+    "@keystone-alpha/fields-mongoid": "^1.0.0",
     "@keystone-alpha/keystone": "^9.0.0",
     "@keystone-alpha/logger": "^2.0.1",
     "@keystone-alpha/mongo-join-builder": "^2.0.3",

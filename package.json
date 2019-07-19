@@ -311,7 +311,7 @@
       "packages/fields-auto-increment",
       "packages/fields-datetime-utc",
       "packages/fields-markdown",
-      "packages/fields-mongoId",
+      "packages/fields-mongoid",
       "packages/fields-wysiwyg-tinymce",
       "packages/oembed-adapters"
     ]

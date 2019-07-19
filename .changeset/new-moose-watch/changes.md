@@ -1,0 +1,1 @@
+Correctly lowercase packagename ready for release
