@@ -1,5 +1,11 @@
 # @keystone-alpha/adapter-mongoose
 
+## 3.0.1
+
+### Patch Changes
+
+- [ba146456](https://github.com/keystonejs/keystone-5/commit/ba146456): Depend on correct version of @keystone-alpha/fields-mongoid
+
 ## 3.0.0
 
 ### Major Changes
