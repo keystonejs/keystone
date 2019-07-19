@@ -1,5 +1,11 @@
 # @keystone-alpha/fields-mongoid
 
+## 1.0.1
+
+### Patch Changes
+
+- [143715e4](https://github.com/keystonejs/keystone-5/commit/143715e4): Correctly lowercase packagename ready for release
+
 ## 1.0.0
 
 _NOTE: Never published_
