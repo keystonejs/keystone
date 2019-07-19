@@ -1,6 +1,8 @@
-# @keystone-alpha/fields-mongoId
+# @keystone-alpha/fields-mongoid
 
 ## 1.0.0
+
+_NOTE: Never published_
 
 ### Major Changes
 

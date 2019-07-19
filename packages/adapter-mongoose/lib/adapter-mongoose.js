@@ -119,7 +119,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { MongoId } = require('@keystone-alpha/fields-mongoId');
+    const { MongoId } = require('@keystone-alpha/fields-mongoid');
     return MongoId.primaryKeyDefaults[this.name].getConfig();
   }
 }

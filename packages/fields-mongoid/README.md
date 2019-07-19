@@ -19,7 +19,7 @@ It supports the core Mongoose and Knex adapters:
 
 ```js
 const { Keystone } = require('@keystone-alpha/keystone');
-const { MongoId } = require('@keystone-alpha/fields-mongoId');
+const { MongoId } = require('@keystone-alpha/fields-mongoid');
 
 const keystone = new Keystone(/* ... */);
 

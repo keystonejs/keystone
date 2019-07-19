@@ -1,10 +1,10 @@
 {
-  "name": "@keystone-alpha/fields-mongoId",
+  "name": "@keystone-alpha/fields-mongoid",
   "description": "KeystoneJS MongoId Field Type",
   "version": "1.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "main": "dist/fields-mongoId.cjs.js",
+  "main": "dist/fields-mongoid.cjs.js",
   "repository": "https://github.com/keystonejs/keystone-5.git",
   "engines": {
     "node": ">=8.4.0"
@@ -15,5 +15,5 @@
     "@keystone-alpha/adapter-mongoose": "^3.0.0",
     "@keystone-alpha/fields": "^10.0.0"
   },
-  "module": "dist/fields-mongoId.esm.js"
+  "module": "dist/fields-mongoid.esm.js"
 }
