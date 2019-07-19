@@ -1106,18 +1106,23 @@ module.exports = class List {
     };
     const fields = this._fieldsFromObject(resolvedData);
 
-    resolvedData = await this._mapToFields(fields, field =>
-      field.resolveInput({ resolvedData, ...args })
-    );
+    resolvedData = await this._mapToFields(fields, field => field.resolveInput(args));
     resolvedData = {
       ...resolvedData,
       ...(await this._mapToFields(fields.filter(field => field.hooks.resolveInput), field =>
-        field.hooks.resolveInput({ resolvedData, ...args })
+        field.hooks.resolveInput({ ...args, resolvedData })
       )),
     };
 
     if (this.hooks.resolveInput) {
-      resolvedData = await this.hooks.resolveInput({ resolvedData, ...args });
+      resolvedData = await this.hooks.resolveInput({ ...args, resolvedData });
+      if (typeof resolvedData !== 'object') {
+        throw new Error(
+          `Expected ${
+            this.key
+          }.hooks.resolveInput() to return an object, but got a ${typeof resolvedData}: ${resolvedData}`
+        );
+      }
     }
 
     return resolvedData;
