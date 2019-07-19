@@ -1,29 +1,5 @@
 # @keystone-alpha/demo-project-meetup
 
-## 0.1.7
-
-### Patch Changes
-
-- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
-
-  Upgrade emotion to 10.0.14
-
-- [2b560047](https://github.com/keystonejs/keystone-5/commit/2b560047):
-
-  Upgrade eslint to 6.0.1
-
-- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
-
-  Upgrade express to 4.17.1
-
-* Updated dependencies [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
-* Updated dependencies [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
-  - @keystone-alpha/adapter-mongoose@3.0.0
-  - @keystone-alpha/keystone@9.0.0
-  - @keystone-alpha/fields@10.0.0
-  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.5
-  - @keystone-alpha/app-admin-ui@5.1.0
-
 ## 0.1.6
 
 - Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):

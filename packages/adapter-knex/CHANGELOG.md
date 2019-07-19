@@ -1,35 +1,5 @@
 # @keystone-alpha/adapter-knex
 
-## 3.0.0
-
-### Major Changes
-
-- [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
-
-  Adding isIndexed field config and support for in most field types
-
-- [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
-
-  Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
-
-### Patch Changes
-
-- [0cc0a80c](https://github.com/keystonejs/keystone-5/commit/0cc0a80c):
-
-  Upgrade knex to 0.19.0
-
-- [898265c1](https://github.com/keystonejs/keystone-5/commit/898265c1):
-
-  Fixing application of some field config on knex
-
-- [a2bb4361](https://github.com/keystonejs/keystone-5/commit/a2bb4361):
-
-  Adding `AutoIncrement` field type
-
-- [df3b7984](https://github.com/keystonejs/keystone-5/commit/df3b7984):
-
-  Reload all columns after insert (knex); fixes #1399
-
 ## 2.1.0
 
 ### Minor Changes

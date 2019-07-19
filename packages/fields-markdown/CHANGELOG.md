@@ -1,16 +1,5 @@
 # @keystone-alpha/fields-markdown
 
-## 1.0.3
-
-### Patch Changes
-
-- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
-
-  Upgrade emotion to 10.0.14
-
-* Updated dependencies [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
-  - @keystone-alpha/fields@10.0.0
-
 ## 1.0.2
 
 - Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):

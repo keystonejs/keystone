@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/fields-datetime-utc",
   "description": "KeystoneJS DatetimeUtc Field Type",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone-5.git",
@@ -9,9 +9,9 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-knex": "^3.0.0",
-    "@keystone-alpha/adapter-mongoose": "^3.0.0",
-    "@keystone-alpha/fields": "^10.0.0",
+    "@keystone-alpha/adapter-knex": "^2.1.0",
+    "@keystone-alpha/adapter-mongoose": "^2.2.1",
+    "@keystone-alpha/fields": "^9.1.0",
     "luxon": "^1.11.4"
   },
   "main": "dist/fields-datetime-utc.cjs.js",

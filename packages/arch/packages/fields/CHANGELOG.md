@@ -1,13 +1,5 @@
 # @arch-ui/fields
 
-## 2.0.1
-
-### Patch Changes
-
-- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
-
-  Upgrade emotion to 10.0.14
-
 ## 2.0.0
 
 ### Major Changes

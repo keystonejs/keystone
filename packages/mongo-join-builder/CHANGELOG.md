@@ -1,13 +1,5 @@
 # @keystone-alpha/mongo-join-builder
 
-## 2.0.3
-
-### Patch Changes
-
-- [1a980b0d](https://github.com/keystonejs/keystone-5/commit/1a980b0d):
-
-  Upgrade to mongoose 5.6.5
-
 ## 2.0.2
 
 ### Patch Changes

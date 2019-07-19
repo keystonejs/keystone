@@ -1,20 +1,5 @@
 # @keystone-alpha/passport-auth
 
-## 2.1.1
-
-### Patch Changes
-
-- [39e0d9c0](https://github.com/keystonejs/keystone-5/commit/39e0d9c0):
-
-  Upgrade prettier to 1.18.2
-
-- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
-
-  Upgrade express to 4.17.1
-
-* Updated dependencies [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
-  - @keystone-alpha/fields@10.0.0
-
 ## 2.1.0
 
 ### Minor Changes

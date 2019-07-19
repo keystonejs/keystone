@@ -1,34 +1,5 @@
 # @keystone-alpha/api-tests
 
-## 1.1.0
-
-### Minor Changes
-
-- [b081a9af](https://github.com/keystonejs/keystone-5/commit/b081a9af):
-
-  Ensure resolveInput for list receives result from fields
-
-### Patch Changes
-
-- [39e0d9c0](https://github.com/keystonejs/keystone-5/commit/39e0d9c0):
-
-  Upgrade prettier to 1.18.2
-
-- [df3b7984](https://github.com/keystonejs/keystone-5/commit/df3b7984):
-
-  Reload all columns after insert (knex); fixes #1399
-
-- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
-
-  Upgrade express to 4.17.1
-
-* Updated dependencies [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
-* Updated dependencies [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
-  - @keystone-alpha/test-utils@2.1.0
-  - @keystone-alpha/adapter-mongoose@3.0.0
-  - @keystone-alpha/keystone@9.0.0
-  - @keystone-alpha/fields@10.0.0
-
 ## 1.0.14
 
 - Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):

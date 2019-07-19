@@ -1,0 +1,1 @@
+Reload all columns after insert (knex); fixes #1399

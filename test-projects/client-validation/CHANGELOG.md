@@ -1,24 +1,5 @@
 # @keystone-alpha/cypress-project-client-validation
 
-## 1.0.5
-
-### Patch Changes
-
-- [0d176bc5](https://github.com/keystonejs/keystone-5/commit/0d176bc5):
-
-  Upgrade cypress to 3.4.0
-
-- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
-
-  Upgrade express to 4.17.1
-
-* Updated dependencies [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
-* Updated dependencies [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
-  - @keystone-alpha/adapter-mongoose@3.0.0
-  - @keystone-alpha/keystone@9.0.0
-  - @keystone-alpha/fields@10.0.0
-  - @keystone-alpha/app-admin-ui@5.1.0
-
 ## 1.0.4
 
 - Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
