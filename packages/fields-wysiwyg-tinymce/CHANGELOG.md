@@ -1,5 +1,15 @@
 # @keystone-alpha/fields-wysiwyg-tinymce
 
+## 3.0.5
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
+  - @keystone-alpha/fields@10.0.0
+
 ## 3.0.4
 
 - Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
