@@ -1,5 +1,17 @@
 # @keystone-alpha/app-graphql
 
+## 6.3.1
+
+### Patch Changes
+
+- [a44cb2b3](https://github.com/keystonejs/keystone-5/commit/a44cb2b3):
+
+  Upgrade graphql to 14.4.2
+
+- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
+
+  Upgrade express to 4.17.1
+
 ## 6.3.0
 
 ### Minor Changes

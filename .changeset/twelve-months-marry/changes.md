@@ -1,1 +1,0 @@
-Upgrade eslint to 6.0.1

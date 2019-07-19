@@ -1,5 +1,24 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 2.0.3
+
+### Patch Changes
+
+- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
+
+  Upgrade express to 4.17.1
+
+* Updated dependencies [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
+* Updated dependencies [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
+* Updated dependencies [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
+  - @keystone-alpha/app-admin-ui@5.1.0
+  - @arch-ui/fields@2.0.1
+  - @arch-ui/input@0.0.9
+  - @keystone-alpha/fields@10.0.0
+  - @keystone-alpha/adapter-mongoose@3.0.0
+  - @keystone-alpha/keystone@9.0.0
+  - @keystone-alpha/passport-auth@2.1.1
+
 ## 2.0.2
 
 ### Patch Changes

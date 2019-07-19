@@ -1,5 +1,13 @@
 # @keystone-alpha/session
 
+## 2.0.1
+
+### Patch Changes
+
+- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
+
+  Upgrade express to 4.17.1
+
 ## 2.0.0
 
 ### Major Changes

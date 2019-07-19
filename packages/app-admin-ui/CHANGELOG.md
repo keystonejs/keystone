@@ -1,5 +1,31 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.1.0
+
+### Minor Changes
+
+- [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
+
+  Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Patch Changes
+
+- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
+
+  Upgrade emotion to 10.0.14
+
+- [a44cb2b3](https://github.com/keystonejs/keystone-5/commit/a44cb2b3):
+
+  Upgrade graphql to 14.4.2
+
+- [243fc26c](https://github.com/keystonejs/keystone-5/commit/243fc26c):
+
+  Fixing minor potential perf issue, flagged by DeepCheck
+
+- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
+
+  Upgrade express to 4.17.1
+
 ## 5.0.4
 
 - Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):

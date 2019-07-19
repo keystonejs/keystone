@@ -1,5 +1,28 @@
 # @keystone-alpha/test-utils
 
+## 2.1.0
+
+### Minor Changes
+
+- [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
+
+  Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Patch Changes
+
+- [1a980b0d](https://github.com/keystonejs/keystone-5/commit/1a980b0d):
+
+  Upgrade to mongoose 5.6.5
+
+- [cfc333e9](https://github.com/keystonejs/keystone-5/commit/cfc333e9):
+
+  Upgrade promise utility dependencies
+
+* Updated dependencies [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
+  - @keystone-alpha/adapter-knex@3.0.0
+  - @keystone-alpha/adapter-mongoose@3.0.0
+  - @keystone-alpha/keystone@9.0.0
+
 ## 2.0.7
 
 - Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
