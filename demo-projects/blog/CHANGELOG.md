@@ -1,5 +1,30 @@
 # keystone_demo_blog
 
+## 1.2.7
+
+### Patch Changes
+
+- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
+
+  Upgrade emotion to 10.0.14
+
+- [39e0d9c0](https://github.com/keystonejs/keystone-5/commit/39e0d9c0):
+
+  Upgrade prettier to 1.18.2
+
+- [6e552bbc](https://github.com/keystonejs/keystone-5/commit/6e552bbc):
+
+  Upgrade express to 4.17.1
+
+* Updated dependencies [598089f3](https://github.com/keystonejs/keystone-5/commit/598089f3):
+* Updated dependencies [50254b9e](https://github.com/keystonejs/keystone-5/commit/50254b9e):
+  - @keystone-alpha/adapter-mongoose@3.0.0
+  - @keystone-alpha/keystone@9.0.0
+  - @keystone-alpha/fields@10.0.0
+  - @keystone-alpha/fields-markdown@1.0.3
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.5
+  - @keystone-alpha/app-admin-ui@5.1.0
+
 ## 1.2.6
 
 - Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):

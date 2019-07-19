@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@arch-ui/docs", "type": "patch" },
-    { "name": "@keystone-alpha/website", "type": "patch" }
-  ],
-  "dependents": []
-}

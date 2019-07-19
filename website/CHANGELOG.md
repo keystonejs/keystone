@@ -1,5 +1,17 @@
 # @keystone-alpha/website
 
+## 1.0.13
+
+### Patch Changes
+
+- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
+
+  Upgrade emotion to 10.0.14
+
+- [267a4181](https://github.com/keystonejs/keystone-5/commit/267a4181):
+
+  Update gatsby to 2.13.25
+
 ## 1.0.12
 
 - Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):

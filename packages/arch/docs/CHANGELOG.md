@@ -1,5 +1,17 @@
 # @arch-ui/docs
 
+## 1.1.2
+
+### Patch Changes
+
+- [8cf499b7](https://github.com/keystonejs/keystone-5/commit/8cf499b7):
+
+  Upgrade emotion to 10.0.14
+
+- [267a4181](https://github.com/keystonejs/keystone-5/commit/267a4181):
+
+  Update gatsby to 2.13.25
+
 ## 1.1.1
 
 - Updated dependencies [3544f852](https://github.com/keystonejs/keystone-5/commit/3544f852):

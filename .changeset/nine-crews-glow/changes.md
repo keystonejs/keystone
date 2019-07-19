@@ -1,1 +1,0 @@
-Adding isIndexed field config and support for in most field types
