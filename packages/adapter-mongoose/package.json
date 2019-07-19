@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/adapter-mongoose",
   "description": "KeystoneJS Mongoose Database adapter.",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
