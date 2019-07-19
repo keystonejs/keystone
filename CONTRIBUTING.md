@@ -61,15 +61,16 @@ The `bolt version-packages` command will generate a release commit, which will b
 The commands to run are:
 
 ```sh
-git checkout master
-git pull
-git branch -D temp-release-branch
-git checkout -b temp-release-branch
-bolt fresh
-bolt version-packages
-bolt format
-git add .
-git commit -m "Run version-packages"
+git checkout master && \
+git pull && \
+git branch -D temp-release-branch && \
+git checkout -b temp-release-branch && \
+bolt fresh && \
+bolt build && \
+bolt version-packages && \
+bolt format && \
+git add . && \
+git commit -m "Prepare release" && \
 git push --set-upstream origin temp-release-branch
 ```
 
@@ -80,18 +81,12 @@ Once you have run this you will need to make a pull request to merge this back i
 Once the version changes are merged back in to master, to do a manual release:
 
 ```sh
-git checkout master
-git pull
+git checkout master && \
+git pull && \
+bolt && \
+bolt publish-changed && \
+git push --tags && \
 bolt
-bolt publish-changed
-git push --tags
-bolt
-```
-
-**Note**: if you have two-factor authentication enabled for npm, you'll need to provide your 2FA code to the `publish-changed` task, like this:
-
-```sh
-NPM_CONFIG_OTP=123456 bolt publish-changed
 ```
 
 The `bolt publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
