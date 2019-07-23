@@ -17,7 +17,7 @@ const defaultTransforms = {
 function transformUserFromApiToKs5(user, { includeId = false } = {}) {
   return {
     ...(includeId && { id: user.id }),
-    unsplpashId: user.id,
+    unsplashId: user.id,
     username: user.username,
     name: user.name,
     url: user.links.html,
