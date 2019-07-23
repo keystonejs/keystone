@@ -1,5 +1,11 @@
 # @arch-ui/tooltip
 
+## 0.1.2
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+
 ## 0.1.1
 
 ### Patch Changes

@@ -32,7 +32,7 @@ const Uuid = {
       getConfig: () => {
         throw `The Uuid field type doesn't provide a default primary key field configuration for mongoose. ` +
           `You'll need to supply your own 'id' field for each list or use a different field type for your ` +
-          `ids (eg '@keystone-alpha/fields-mongoId').`;
+          `ids (eg '@keystone-alpha/fields-mongoid').`;
       },
     },
   },

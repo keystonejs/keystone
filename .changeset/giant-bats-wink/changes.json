@@ -1,9 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" },
-    { "name": "@keystone-alpha/fields", "type": "patch" },
-    { "name": "@keystone-alpha/mongo-join-builder", "type": "patch" },
-    { "name": "@keystone-alpha/test-utils", "type": "patch" }
-  ],
-  "dependents": []
-}

@@ -1,5 +1,11 @@
 # @arch-ui/day-picker
 
+## 0.0.10
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+
 ## 0.0.9
 
 - Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):

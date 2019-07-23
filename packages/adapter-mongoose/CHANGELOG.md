@@ -1,5 +1,22 @@
 # @keystone-alpha/adapter-mongoose
 
+## 3.0.1
+
+### Patch Changes
+
+- [ba146456](https://github.com/keystonejs/keystone-5/commit/ba146456): Depend on correct version of @keystone-alpha/fields-mongoid
+
+## 3.0.0
+
+### Major Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Adding isIndexed field config and support for in most field types
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade to mongoose 5.6.5
+
 ## 2.2.1
 
 - Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):

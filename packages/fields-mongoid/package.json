@@ -1,9 +1,10 @@
 {
-  "name": "@keystone-alpha/fields-auto-increment",
-  "description": "KeystoneJS AutoIncrement Field Type",
-  "version": "1.0.0",
+  "name": "@keystone-alpha/fields-mongoid",
+  "description": "KeystoneJS MongoId Field Type",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "main": "dist/fields-mongoid.cjs.js",
   "repository": "https://github.com/keystonejs/keystone-5.git",
   "engines": {
     "node": ">=8.4.0"
@@ -11,8 +12,8 @@
   "dependencies": {
     "@babel/runtime": "^7.4.3",
     "@keystone-alpha/adapter-knex": "^3.0.0",
+    "@keystone-alpha/adapter-mongoose": "^3.0.0",
     "@keystone-alpha/fields": "^10.0.0"
   },
-  "main": "dist/fields-auto-increment.cjs.js",
-  "module": "dist/fields-auto-increment.esm.js"
+  "module": "dist/fields-mongoid.esm.js"
 }

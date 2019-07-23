@@ -1,5 +1,16 @@
 # @keystone-alpha/field-content
 
+## 2.0.2
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade promise utility dependencies
+
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
+  - @keystone-alpha/fields@10.0.0
+
 ## 2.0.1
 
 - Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
