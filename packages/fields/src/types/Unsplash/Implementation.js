@@ -14,8 +14,9 @@ const defaultTransforms = {
   fit: 'max',
 };
 
-function transformUserFromApiToKs5(user) {
+function transformUserFromApiToKs5(user, { includeId = false } = {}) {
   return {
+    ...(includeId && { id: user.id }),
     unsplpashId: user.id,
     username: user.username,
     name: user.name,
@@ -26,8 +27,9 @@ function transformUserFromApiToKs5(user) {
   };
 }
 
-function transformImageFromApiToKs5(image) {
+function transformImageFromApiToKs5(image, { includeId = false } = {}) {
   return {
+    ...(includeId && { id: image.id }),
     unsplashId: image.id,
     width: image.width,
     height: image.height,
@@ -35,7 +37,7 @@ function transformImageFromApiToKs5(image) {
     description: image.description || null,
     alt: image.alt_description || null,
     publicUrl: image.urls.raw,
-    user: transformUserFromApiToKs5(image.user),
+    user: transformUserFromApiToKs5(image.user, { includeId }),
   };
 }
 
@@ -173,7 +175,7 @@ export class Unsplash extends Implementation {
           total,
           totalPages: total_pages,
           results: results.map(result =>
-            this.injectPublicUrlFields(transformImageFromApiToKs5(result))
+            this.injectPublicUrlFields(transformImageFromApiToKs5(result, { includeId: true }))
           ),
         };
       },
