@@ -1,15 +1,14 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import Link from 'next/link';
 
 import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import { useState } from 'react';
 
-import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import Layout from '../templates/layout';
-
-/** @jsx jsx */
+import Layout from '../../templates/layout';
 
 const FormGroup = styled.div({
   display: 'flex',
@@ -48,6 +47,7 @@ const ADD_POST = gql`
       }
     ) {
       id
+      slug
     }
   }
 `;
@@ -58,12 +58,12 @@ export default () => {
   const [image, setImage] = useState('');
   const [authorId, setAuthorId] = useState('');
   const [showBanner, setShowBanner] = useState(false);
-  const [id, setId] = useState('');
+  const [slug, setSlug] = useState('');
 
   return (
     <Layout>
       <div css={{ margin: '48px 0' }}>
-        <Link href="/">
+        <Link href="/" passHref>
           <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
         </Link>
         <h1>New Post</h1>
@@ -71,20 +71,20 @@ export default () => {
         {showBanner && (
           <div
             css={{
-              background: id ? '#90ee9061' : '#ee909061',
-              border: `1px solid ${id ? 'green' : 'red'}`,
-              color: id ? 'green' : 'red',
+              background: slug ? '#90ee9061' : '#ee909061',
+              border: `1px solid ${slug ? 'green' : 'red'}`,
+              color: slug ? 'green' : 'red',
               padding: 12,
               marginBottom: 32,
               borderRadius: 6,
             }}
           >
-            {id ? (
+            {slug ? (
               <span>
                 <strong>Success!</strong> Post has been created.{' '}
-                <a href={`/post?id=${id}`} css={{ color: 'green' }}>
-                  Check it out
-                </a>
+                <Link href={`/post/[slug]?slug=${slug}`} as={`/post/${slug}`} passHref>
+                  <a css={{ color: 'green' }}>Check it out</a>
+                </Link>
               </span>
             ) : (
               <span>
@@ -113,7 +113,7 @@ export default () => {
               <Mutation
                 mutation={ADD_POST}
                 update={(cache, { data: { createPost } }) => {
-                  setId(createPost.id);
+                  setSlug(createPost.slug);
                   setShowBanner(true);
                 }}
               >

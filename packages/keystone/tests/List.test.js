@@ -61,6 +61,9 @@ class MockFieldImplementation {
   getDefaultValue() {
     return;
   }
+  async resolveInput({ resolvedData }) {
+    return resolvedData.id;
+  }
   async validateInput() {}
   async beforeChange() {}
   async afterChange() {}

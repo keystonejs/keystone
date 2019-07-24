@@ -1,0 +1,1 @@
+Add a `delete` method to test runners so they can remove items as part of a unit test.
