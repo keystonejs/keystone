@@ -66,6 +66,12 @@ function getConfig() {
       value: Boolean,
     },
     {
+      description: `Use template`,
+      command: '--template',
+      alias: '-t',
+      value: String,
+    },
+    {
       description: 'Version number',
       command: '--version',
       alias: '-v',
