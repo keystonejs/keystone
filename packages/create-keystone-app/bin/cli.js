@@ -6,6 +6,8 @@ const chalk = require('chalk');
 const endent = require('endent');
 const terminalLink = require('terminal-link');
 const { exec, createAppName } = require('../lib/generator');
+const fs = require('fs');
+const prompts = require('prompts');
 
 const pkgInfo = require('../package.json');
 
@@ -93,7 +95,31 @@ function getConfig() {
   return { argSpecDescription, title, info };
 }
 
-function main() {
+const getTemplate = async function() {
+  const choices = fs
+    .readdirSync(path.join(__dirname, '..', 'templates'))
+    .filter(dir => {
+      const relativePath = path.join(__dirname, '..', 'templates', dir);
+      return fs.existsSync(relativePath) && fs.lstatSync(relativePath).isDirectory();
+    })
+    .map(dir => ({
+      initial: dir === 'todo',
+      title: dir,
+      value: dir,
+    }));
+
+  const response = await prompts([
+    {
+      type: 'select',
+      name: 'template',
+      message: 'Select a template',
+      choices,
+    },
+  ]);
+  return response.template;
+};
+
+async function main() {
   const { argSpecDescription, title, info } = getConfig();
 
   const args = getArgs({ argSpecDescription, title, info });
@@ -121,8 +147,10 @@ function main() {
 
   console.log(`\n${title}\n`);
 
+  const template = await getTemplate();
+
   // Everything else is assumed to be a command we want to execute - more options added
-  exec({ name, appName, projectDir, noDeps: args['--no-deps'] })
+  exec({ name, appName, projectDir, noDeps: args['--no-deps'], template })
     .catch(() => {
       process.exit(1);
     })

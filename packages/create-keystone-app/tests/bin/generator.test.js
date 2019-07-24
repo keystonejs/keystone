@@ -1,6 +1,7 @@
 const version = require('../../package.json').version;
 const child_process = require('child_process');
 const path = require('path');
+const { exec } = require('../../lib/generator');
 
 describe('create-keystone-app generator', () => {
   test('prints version', () => {
@@ -42,16 +43,17 @@ describe('create-keystone-app generator', () => {
     const folderName = 'unit-test-cli-tool';
     const folderPath = path.normalize(`${process.cwd()}/${folderName}`);
 
-    const cli = child_process.spawnSync('node', [
-      path.normalize(`${__dirname}/../../bin/cli.js`),
-      folderName,
-      '-n',
-    ]);
-    const files = child_process.spawnSync('ls', [folderPath]);
-    child_process.spawnSync('rm', ['-rf', folderPath]);
-    expect(cli.stdout.toString().trim()).toEqual(expect.stringContaining('KeystoneJS app created'));
-    expect(cli.stderr.toString().trim()).toEqual('');
-    expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('package.json'));
-    expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('index.js'));
+    return exec({
+      name: folderName,
+      appName: folderName,
+      noDeps: true,
+      projectDir: folderPath,
+      template: 'todo',
+    }).then(() => {
+      const files = child_process.spawnSync('ls', [folderPath]);
+      child_process.spawnSync('rm', ['-rf', folderPath]);
+      expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('package.json'));
+      expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('index.js'));
+    });
   });
 });

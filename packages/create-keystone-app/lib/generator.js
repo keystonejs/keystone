@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 const execa = require('execa');
 const Listr = require('listr');
 const ejs = require('ejs');
@@ -9,33 +9,8 @@ const split = require('split');
 const { merge, throwError } = require('rxjs');
 const { filter, catchError } = require('rxjs/operators');
 const streamToObservable = require('@samverschueren/stream-to-observable');
-const prompts = require('prompts');
 
 const templateBase = path.join(__dirname, '..', 'templates');
-
-const getTemplate = async function() {
-  const choices = fs
-    .readdirSync(path.join(__dirname, '..', 'templates'))
-    .filter(dir => {
-      const relativePath = path.join(__dirname, '..', 'templates', dir);
-      return fs.existsSync(relativePath) && fs.lstatSync(relativePath).isDirectory();
-    })
-    .map(dir => ({
-      initial: dir === 'todo',
-      title: dir,
-      value: dir,
-    }));
-
-  const response = await prompts([
-    {
-      type: 'select',
-      name: 'template',
-      message: 'Select a template',
-      choices,
-    },
-  ]);
-  return response.template;
-};
 
 /**
  * Cheks directory for empty, if not empty it throws error
@@ -67,9 +42,7 @@ const exec = (cmd, args) => {
  * creates project
  * @param {String} name name of the project, input from user
  */
-async function generate({ name, appName, noDeps, projectDir }) {
-  const template = await getTemplate();
-
+async function generate({ name, appName, noDeps, projectDir, template }) {
   checkEmptyDir(projectDir);
   if (!fs.existsSync(projectDir)) {
     fs.mkdirSync(projectDir);
