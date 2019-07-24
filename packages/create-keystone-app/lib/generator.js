@@ -9,8 +9,33 @@ const split = require('split');
 const { merge, throwError } = require('rxjs');
 const { filter, catchError } = require('rxjs/operators');
 const streamToObservable = require('@samverschueren/stream-to-observable');
+const prompts = require('prompts');
 
 const templateBase = path.join(__dirname, '..', 'templates');
+
+const getTemplate = async function() {
+  const choices = fs
+    .readdirSync(path.join(__dirname, '..', 'templates'))
+    .filter(dir => {
+      const relativePath = path.join(__dirname, '..', 'templates', dir);
+      return fs.existsSync(relativePath) && fs.lstatSync(relativePath).isDirectory();
+    })
+    .map(dir => ({
+      initial: dir === 'todo',
+      title: dir,
+      value: dir,
+    }));
+
+  const response = await prompts([
+    {
+      type: 'select',
+      name: 'template',
+      message: 'Select a template',
+      choices,
+    },
+  ]);
+  return response.template;
+};
 
 /**
  * Cheks directory for empty, if not empty it throws error
@@ -42,22 +67,20 @@ const exec = (cmd, args) => {
  * creates project
  * @param {String} name name of the project, input from user
  */
-function generate({ name, appName, noDeps, projectDir, templateDir }) {
+async function generate({ name, appName, noDeps, projectDir }) {
+  const template = await getTemplate();
+
+  checkEmptyDir(projectDir);
+  if (!fs.existsSync(projectDir)) {
+    fs.mkdirSync(projectDir);
+  }
+
   let hasYarn = true;
   const tasks = new Listr([
     {
-      title: `Check ${projectDir}`,
-      task: () => {
-        checkEmptyDir(projectDir);
-        if (!fs.existsSync(projectDir)) {
-          fs.mkdirSync(projectDir);
-        }
-      },
-    },
-    {
       title: 'Create KeystoneJS Project',
       task: () =>
-        copyTemplate(`${templateBase}/${templateDir}`, projectDir, {
+        copyTemplate(`${templateBase}/${template}`, projectDir, {
           name,
           appName,
         }),

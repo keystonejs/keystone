@@ -66,12 +66,6 @@ function getConfig() {
       value: Boolean,
     },
     {
-      description: `Use template`,
-      command: '--template',
-      alias: '-t',
-      value: String,
-    },
-    {
       description: 'Version number',
       command: '--version',
       alias: '-v',
@@ -118,7 +112,6 @@ function main() {
   const appName = createAppName(name);
   const projectDir =
     args._[0] === '.' ? `.` : `.${path.sep}${path.relative(process.cwd(), appName)}`;
-  const templateDir = args['--template'] || 'todo';
 
   // if project name is missing print help
   if (args._.length === 0 || appName === '') {
@@ -129,19 +122,19 @@ function main() {
   console.log(`\n${title}\n`);
 
   // Everything else is assumed to be a command we want to execute - more options added
-  exec({ name, appName, projectDir, noDeps: args['--no-deps'], templateDir })
+  exec({ name, appName, projectDir, noDeps: args['--no-deps'] })
     .catch(() => {
       process.exit(1);
     })
     .then(({ projectDir, hasYarn }) => {
       console.log(endent`
-      🎉 KeystoneJS app created in ${chalk.bold(projectDir)}
+      🎉  KeystoneJS app created in ${chalk.bold(projectDir)}
 
       ${chalk.bold('Get started:')}
 
       ${chalk.yellow.bold(endent`
         ${projectDir !== '.' ? `cd ${projectDir}` : ''}
-        ${hasYarn ? 'yarn' : 'npm run'} start
+        ${hasYarn ? 'yarn start' : 'npm run start'}
       `)}
 
       ${chalk.bold('Next steps:')}
