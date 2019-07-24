@@ -1,5 +1,6 @@
 const version = require('../../package.json').version;
 const child_process = require('child_process');
+const createAppName = require('../../lib/generator.js').createAppName;
 const path = require('path');
 
 describe('create-keystone-app generator', () => {
@@ -39,7 +40,7 @@ describe('create-keystone-app generator', () => {
   });
 
   test('copies the templates', () => {
-    const folderName = 'unti-test-cli-tool';
+    const folderName = 'unit-test-cli-tool';
     const folderPath = path.normalize(`${process.cwd()}/${folderName}`);
 
     const cli = child_process.spawnSync('node', [

@@ -108,10 +108,14 @@ function main() {
     process.exit(0);
   }
 
-  const name = createAppName(args._[0] || '');
+  const name = args._[0] || '';
+  const appName = createAppName(name);
+  const projectDir =
+    args._[0] === '.' ? `.` : `.${path.sep}${path.relative(process.cwd(), appName)}`;
+  const templateDir = args['--template'] || 'todo';
 
   // if project name is missing print help
-  if (args._.length === 0 || name === '') {
+  if (args._.length === 0 || appName === '') {
     console.info(help({ argSpecDescription, title, info }));
     process.exit(0);
   }
@@ -119,19 +123,18 @@ function main() {
   console.log(`\n${title}\n`);
 
   // Everything else is assumed to be a command we want to execute - more options added
-  exec(name, args['--no-deps'])
+  exec({ name, appName, projectDir, noDeps: args['--no-deps'], templateDir })
     .catch(() => {
       process.exit(1);
     })
     .then(({ projectDir, hasYarn }) => {
-      console.log();
       console.log(endent`
       🎉 KeystoneJS app created in ${chalk.bold(projectDir)}
 
       ${chalk.bold('Get started:')}
 
       ${chalk.yellow.bold(endent`
-        cd ${projectDir}
+        ${projectDir !== '.' ? `cd ${projectDir}` : ''}
         ${hasYarn ? 'yarn' : 'npm run'} start
       `)}
 

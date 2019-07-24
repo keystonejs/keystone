@@ -10,7 +10,7 @@ const { merge, throwError } = require('rxjs');
 const { filter, catchError } = require('rxjs/operators');
 const streamToObservable = require('@samverschueren/stream-to-observable');
 
-const templateDir = path.join(__dirname, '..', 'templates');
+const templateBase = path.join(__dirname, '..', 'templates');
 
 /**
  * Cheks directory for empty, if not empty it throws error
@@ -42,23 +42,22 @@ const exec = (cmd, args) => {
  * creates project
  * @param {String} name name of the project, input from user
  */
-function generate(name, noDeps) {
-  const appName = createAppName(name);
-  const projectDir = `.${path.sep}${path.relative(process.cwd(), appName)}`;
+function generate({ name, appName, noDeps, projectDir, templateDir }) {
   let hasYarn = true;
-
   const tasks = new Listr([
     {
       title: `Check ${projectDir}`,
       task: () => {
         checkEmptyDir(projectDir);
-        fs.mkdirSync(projectDir);
+        if (!fs.existsSync(projectDir)) {
+          fs.mkdirSync(projectDir);
+        }
       },
     },
     {
       title: 'Create KeystoneJS Project',
       task: () =>
-        copyTemplate(`${templateDir}/todo`, projectDir, {
+        copyTemplate(`${templateBase}/${templateDir}`, projectDir, {
           name,
           appName,
         }),
@@ -86,7 +85,7 @@ function generate(name, noDeps) {
 }
 
 /**
- * copies teplate ro project directory, renders .ejs file if needed
+ * copies template ro project directory, renders .ejs file if needed
  * @param {String} templatePath path of the template for project
  * @param {String} projectDir project directory
  * @param {Object} templateData template data for ejs rendering
@@ -111,8 +110,11 @@ function copyTemplate(templatePath, projectDir, templateData) {
     }
     // if file is directory, recursively copy template
     if (stats.isDirectory()) {
-      fs.mkdirSync(`${projectDir}/${file}`);
-      copyTemplate(origFilePath, `${projectDir}/${file}`, templateData);
+      const dir = `${projectDir}/${file}`;
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+      }
+      copyTemplate(origFilePath, dir, templateData);
     }
   });
 }
@@ -124,6 +126,10 @@ function copyTemplate(templatePath, projectDir, templateData) {
  */
 
 function createAppName(pathName) {
+  if (pathName === '.') {
+    pathName = process.cwd();
+  }
+
   return path
     .basename(pathName)
     .replace(/[^A-Za-z0-9.-]+/g, '-')
@@ -132,9 +138,9 @@ function createAppName(pathName) {
 }
 
 module.exports = {
-  exec: (name, noDeps = false) => {
+  exec: args => {
     try {
-      return Promise.resolve(generate(name, noDeps));
+      return Promise.resolve(generate(args));
     } catch (error) {
       return Promise.reject(error);
     }
