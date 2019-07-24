@@ -207,6 +207,7 @@
     "pluralize": "^7.0.0",
     "preconstruct": "0.0.66",
     "pretty-proptypes": "^0.5.0",
+    "prompts": "^2.1.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.1",
     "raf-schd": "^4.0.0",
