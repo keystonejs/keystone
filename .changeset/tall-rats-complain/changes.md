@@ -1,0 +1,1 @@
+Remove sizeByPixelDensity option in gatsby-remark-images
