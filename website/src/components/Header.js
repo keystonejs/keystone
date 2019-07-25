@@ -197,10 +197,6 @@ const NAV_LINKS = [
     url: '/guides/',
   },
   {
-    name: 'Tutorials',
-    url: '/tutorials/',
-  },
-  {
     name: 'API',
     url: '/api/',
   },

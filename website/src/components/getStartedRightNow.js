@@ -79,7 +79,7 @@ export default () => (
         up-and-running in less than a minute.
       </p>
       <div css={{ display: 'inline-flex' }}>
-        <Button appearance="primary" href="/tutorials/getting-started">
+        <Button appearance="primary" href="/guides/getting-started">
           Get Started
         </Button>
       </div>

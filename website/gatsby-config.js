@@ -1,13 +1,18 @@
 const bolt = require('bolt');
 const fs = require('fs');
+const path = require('path');
 
 async function getPackagePlugins() {
   const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
+  const docSections = fs.readdirSync(`${rootDir}/docs/`).filter(dir => {
+    const fullDir = path.join(`${rootDir}/docs/`, dir);
+    return fs.existsSync(fullDir) && fs.lstatSync(fullDir).isDirectory();
+  });
 
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
-    ...['quick-start', 'tutorials', 'guides', 'api', 'discussions'].map(name => ({
+    ...docSections.map(name => ({
       resolve: 'gatsby-source-filesystem',
       options: { name, path: `${rootDir}/docs/${name}/` },
     })),
