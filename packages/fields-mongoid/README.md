@@ -5,7 +5,7 @@ title: MongoId
 
 # Keystone 5 `MongoId` Field Type
 
-This field allows arbitary MongoID fields to be added to your lists.
+This field allows arbitrary MongoID fields to be added to your lists.
 
 It supports the core Mongoose and Knex adapters:
 
