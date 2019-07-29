@@ -1,0 +1,1 @@
+Remove incorrect Cell view config from Slug field
