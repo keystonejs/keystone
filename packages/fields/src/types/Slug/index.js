@@ -8,7 +8,6 @@ const Slug = {
     Controller: importView('../Text/views/Controller'),
     Field: importView('../Text/views/Field'),
     Filter: importView('../Text/views/Filter'),
-    Cell: importView('../Text/views/Cell'),
   },
   adapters: {
     knex: KnexSlugInterface,
