@@ -1,6 +1,7 @@
 const {
   File,
   Text,
+  Slug,
   Relationship,
   Select,
   Password,
@@ -60,6 +61,7 @@ exports.User = {
 exports.Post = {
   fields: {
     title: { type: Text },
+    slug: { type: Slug, from: 'title' },
     author: {
       type: Relationship,
       ref: 'User',
@@ -89,7 +91,7 @@ exports.Post = {
 exports.PostCategory = {
   fields: {
     name: { type: Text },
-    slug: { type: Text },
+    slug: { type: Slug, from: 'name' },
   },
 };
 

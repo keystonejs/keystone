@@ -82,6 +82,10 @@ function getUpdate(keystone) {
   return (list, id, data) => keystone.getListByKey(list).adapter.update(id, data);
 }
 
+function getDelete(keystone) {
+  return (list, id) => keystone.getListByKey(list).adapter.delete(id);
+}
+
 function keystoneMongoRunner(setupKeystoneFn, testFn) {
   return async function() {
     const setup = await setupKeystoneFn('mongoose');
@@ -98,6 +102,7 @@ function keystoneMongoRunner(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect().then(teardownMongoMemoryServer)
     );
@@ -118,6 +123,7 @@ function keystoneKnexRunner(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect()
     );

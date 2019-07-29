@@ -9,8 +9,8 @@ import { useState } from 'react';
 import { jsx } from '@emotion/core';
 import { format } from 'date-fns';
 
-import Layout from '../templates/layout';
-import Header from '../components/header';
+import Layout from '../../templates/layout';
+import Header from '../../components/header';
 
 /** @jsx jsx */
 
@@ -38,12 +38,13 @@ const ADD_COMMENT = gql`
 `;
 
 const ALL_QUERIES = gql`
-  query AllQueries($id: ID!) {
-    Post(where: { id: $id }) {
+  query AllQueries($slug: String) {
+    allPosts(where: { slug: $slug }) {
+      id
       title
+      slug
       body
       posted
-      id
       image {
         publicUrl
       }
@@ -52,7 +53,7 @@ const ALL_QUERIES = gql`
       }
     }
 
-    allComments(where: { originalPost: { id: $id } }) {
+    allComments(where: { originalPost: { slug: $slug } }) {
       id
       body
       author {
@@ -117,8 +118,8 @@ const Comments = ({ data }) => (
   </div>
 );
 
-const AddComments = ({ users, postId }) => {
-  let user = users.filter(u => u.email == 'a@demo.user')[0];
+const AddComments = ({ users, post }) => {
+  let user = users.filter(u => u.email == 'user@keystonejs.com')[0];
   let [comment, setComment] = useState('');
 
   return (
@@ -129,12 +130,12 @@ const AddComments = ({ users, postId }) => {
         update={(cache, { data: data }) => {
           const { allComments, allUsers, allPosts } = cache.readQuery({
             query: ALL_QUERIES,
-            variables: { id: postId },
+            variables: { slug: post.slug },
           });
 
           cache.writeQuery({
             query: ALL_QUERIES,
-            variables: { id: postId },
+            variables: { slug: post.slug },
             data: {
               allPosts,
               allUsers,
@@ -152,7 +153,7 @@ const AddComments = ({ users, postId }) => {
                 variables: {
                   body: comment,
                   author: user.id,
-                  postId: postId,
+                  postId: post.id,
                   posted: new Date(),
                 },
               });
@@ -200,24 +201,26 @@ const AddComments = ({ users, postId }) => {
 };
 
 class PostPage extends React.Component {
-  static getInitialProps({ query }) {
-    return { id: query.id };
+  static getInitialProps({ query: { slug } }) {
+    return { slug };
   }
   render() {
-    const { id } = this.props;
+    const { slug } = this.props;
     return (
       <Layout>
         <Header />
         <div css={{ margin: '48px 0' }}>
-          <Link href="/">
+          <Link href="/" passHref>
             <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
           </Link>
-          <Query query={ALL_QUERIES} variables={{ id }}>
+          <Query query={ALL_QUERIES} variables={{ slug }}>
             {({ data, loading, error }) => {
               if (loading) return <p>loading...</p>;
               if (error) return <p>Error!</p>;
 
-              const post = data.Post;
+              const post = data.allPosts && data.allPosts[0];
+
+              if (!post) return <p>404: Post not found</p>;
 
               return (
                 <>
@@ -249,9 +252,9 @@ class PostPage extends React.Component {
                     </article>
                   </div>
 
-                  <Comments data={data} id={id} />
+                  <Comments data={data} />
 
-                  <AddComments postId={post.id} users={data.allUsers} />
+                  <AddComments post={post} users={data.allUsers} />
                 </>
               );
             }}

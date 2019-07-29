@@ -13,9 +13,10 @@ import Header from '../components/header';
 
 const Post = ({ post }) => {
   return (
-    <Link href={{ pathname: '/post', query: { id: post.id } }}>
-      <div
+    <Link href={`/post/[slug]?slug=${post.slug}`} as={`/post/${post.slug}`} passHref>
+      <a
         css={{
+          display: 'block',
           background: 'white',
           boxShadow: '0px 10px 20px hsla(200, 20%, 20%, 0.20)',
           marginBottom: 32,
@@ -35,7 +36,7 @@ const Post = ({ post }) => {
             </p>
           </div>
         </article>
-      </div>
+      </a>
     </Link>
   );
 };
@@ -61,6 +62,7 @@ export default () => (
               id
               body
               posted
+              slug
               image {
                 publicUrl
               }
