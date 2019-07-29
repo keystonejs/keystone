@@ -1,1 +1,0 @@
-Ensure searchUnsplash mutation returns results with a non-null id

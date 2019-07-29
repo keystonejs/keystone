@@ -1,5 +1,11 @@
 # keystone_demo_blog
 
+## 2.0.0
+
+### Major Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Switch to Next.js 9 dynamic routes, and use a Slug field instead of the `id` for routes.
+
 ## 1.2.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @keystone-alpha/test-utils
 
+## 2.2.0
+
+### Minor Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Add a `delete` method to test runners so they can remove items as part of a unit test.
+
 ## 2.1.0
 
 ### Minor Changes

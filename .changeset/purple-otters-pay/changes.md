@@ -1,1 +1,0 @@
-Switch to Next.js 9 dynamic routes, and use a Slug field instead of the `id` for routes.

@@ -1,5 +1,16 @@
 # @keystone-alpha/fields
 
+## 10.1.0
+
+### Minor Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Add a Slug field type for auto-generating slugs based on other fields.
+
+### Patch Changes
+
+- [653aa0e2](https://github.com/keystonejs/keystone-5/commit/653aa0e2): Remove incorrect Cell view config from Slug field
+- [9c3b7436](https://github.com/keystonejs/keystone-5/commit/9c3b7436): Ensure searchUnsplash mutation returns results with a non-null id
+
 ## 10.0.0
 
 ### Major Changes
