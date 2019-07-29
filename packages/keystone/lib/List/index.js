@@ -3,6 +3,7 @@ const {
   resolveAllKeys,
   mapKeys,
   omit,
+  omitBy,
   unique,
   intersection,
   mergeWhereClause,
@@ -1104,17 +1105,30 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
-    const fields = this._fieldsFromObject(resolvedData);
 
-    resolvedData = await this._mapToFields(fields, field => field.resolveInput(args));
+    // First we run the field type hooks
+    // NOTE: resolveInput is run on _every_ field, regardless if it has a value
+    // passed in or not
+    resolvedData = await this._mapToFields(this.fields, field => field.resolveInput(args));
+
+    // We then filter out the `undefined` results (they should return `null` or
+    // a value)
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
+    // Run the schema-level field hooks, passing in the results from the field
+    // type hooks
     resolvedData = {
       ...resolvedData,
-      ...(await this._mapToFields(fields.filter(field => field.hooks.resolveInput), field =>
+      ...(await this._mapToFields(this.fields.filter(field => field.hooks.resolveInput), field =>
         field.hooks.resolveInput({ ...args, resolvedData })
       )),
     };
 
+    // And filter out the `undefined`s again.
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
     if (this.hooks.resolveInput) {
+      // And run any list-level hook
       resolvedData = await this.hooks.resolveInput({ ...args, resolvedData });
       if (typeof resolvedData !== 'object') {
         throw new Error(
@@ -1125,6 +1139,7 @@ module.exports = class List {
       }
     }
 
+    // Finally returning the amalgamated result of all the hooks.
     return resolvedData;
   }
 

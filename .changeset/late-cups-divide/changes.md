@@ -1,0 +1,1 @@
+Add a Slug field type for auto-generating slugs based on other fields.
