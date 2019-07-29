@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 9.1.0
+
+### Minor Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Run .resolveInput() on all fields/field hooks regardless of if data has been passed as part of the mutation. This enables .resolveInput() to be run on fields without data during an update mutation.
+
 ## 9.0.0
 
 ### Major Changes
