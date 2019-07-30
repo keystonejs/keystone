@@ -7,6 +7,35 @@ export const gqlCountQueries = lists => gql`{
 }`;
 
 export default class List {
+  config: $TSFixMe;
+  adminMeta: {
+    readViews: Function;
+  };
+  fields: $TSFixMe;
+  fieldsByPath: { [index:string] : $TSFixMe };
+  gqlNames: {
+    createMutationName: any;
+    createManyMutationName: any;
+    updateMutationName: any;
+    updateManyMutationName: any;
+    deleteMutationName: any;
+    deleteManyMutationName: any;
+    createInputName: any;
+    createManyInputName: any;
+    updateInputName: any;
+    updateManyInputName: any;
+    itemQueryName: any;
+    listQueryName: any;
+    listQueryMetaName: any;
+  };
+  createMutation: $TSFixMe;
+  createManyMutation: any;
+  updateMutation: any;
+  updateManyMutation: any;
+  deleteMutation: any;
+  deleteManyMutation: any;
+  singular: string;
+  plural: string;
   constructor(config, adminMeta, views) {
     this.config = config;
     this.adminMeta = adminMeta; 

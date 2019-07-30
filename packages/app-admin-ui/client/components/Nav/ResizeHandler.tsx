@@ -22,7 +22,14 @@ function setCache(state) {
   }
 }
 
-class ResizeHandler extends Component {
+type ResizeHandlerProps = {
+  keyManager: {
+    subscribe: Function;
+    unsubscribe: Function;
+  };
+  children: (resizePorps, clickProps, snapshot) => Node
+}
+class ResizeHandler extends Component<ResizeHandlerProps> {
   state = getCache();
 
   componentDidMount() {

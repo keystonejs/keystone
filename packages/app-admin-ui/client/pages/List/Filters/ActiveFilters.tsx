@@ -18,10 +18,10 @@ export const elementOffsetStyles = {
 
 export type FilterType = {
   field: {
-    label: string;
-    list: object;
-    path: string;
-    type: string;
+    label?: string;
+    list?: object;
+    path?: string;
+    type?: string;
   };
   filter: {
     type: string;
@@ -32,7 +32,10 @@ export type FilterType = {
   value: string;
 };
 type Props = {
-  list: object;
+  list?: {
+    key?: string;
+    fields?: $TSFixMe[];
+  };
 };
 
 export default function ActiveFilters({ list }: Props) {

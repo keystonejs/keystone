@@ -5,7 +5,9 @@ import DocumentTitle from 'react-document-title';
 import { withAdminMeta } from '../providers/AdminMeta';
 
 type Props = {
-  adminMeta: object;
+  adminMeta: {
+    name: string;
+  };
   children: Node;
 };
 

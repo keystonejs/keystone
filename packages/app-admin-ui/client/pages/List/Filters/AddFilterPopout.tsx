@@ -90,7 +90,10 @@ function getInitialState() {
 }
 
 type Props = {
-  existingFilters: Array<object>;
+  existingFilters?: Array<{type?, field?}>;
+  listKey?: string;
+  fields?: $TSFixMe;
+  onChange?: $TSFixMe;
 };
 type State = {
   field: object;
@@ -106,9 +109,9 @@ export default class AddFilterPopout extends Component<Props, State> {
   // Refs
   // ==============================
 
-  fieldSelectRef = createRef();
-  filterSelectRef = createRef();
-  filterRef = createRef();
+  fieldSelectRef = createRef<HTMLElement>();
+  filterSelectRef = createRef<HTMLElement>();
+  filterRef = createRef<HTMLElement>();
 
   // Utils
   // ==============================

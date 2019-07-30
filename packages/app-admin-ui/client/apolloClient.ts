@@ -24,7 +24,7 @@ const fetch = require('cross-fetch');
 // Then modified to replace apollo-link-http with apollo-upload-client:
 // https://github.com/jaydenseric/apollo-upload-client
 
-class BoostClientWithUpload extends ApolloClient {
+class BoostClientWithUpload extends ApolloClient<$TSFixMe> {
   constructor(config) {
     const cache =
       config && config.cacheRedirects

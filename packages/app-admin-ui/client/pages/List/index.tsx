@@ -27,6 +27,7 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+import List from '../../classes/List';
 
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
@@ -34,7 +35,7 @@ const HeaderInset = props => (
 
 type Props = {
   adminMeta: object;
-  list: object;
+  list: List;
   routeProps: object;
 };
 type LayoutProps = Props & {

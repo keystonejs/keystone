@@ -56,7 +56,10 @@ const Relative = styled(Col)({
   height: ' 100%',
   position: 'relative',
 });
-const GrabHandle = styled.div(({ isActive }) => ({
+type GrabHandleProps = {
+  isActive: boolean;
+}
+const GrabHandle = styled.div<GrabHandleProps>(({ isActive }) => ({
   backgroundColor: alpha(colors.text, 0.06),
   height: isActive ? '100%' : 0,
   cursor: 'col-resize',
@@ -84,7 +87,12 @@ const GrabHandle = styled.div(({ isActive }) => ({
     top: -gridSize,
   },
 }));
-const CollapseExpand = styled.button(({ isCollapsed, mouseIsOverNav }) => {
+
+type CollapseExpandProps = {
+  isCollapsed: boolean;
+  mouseIsOverNav: boolean;
+}
+const CollapseExpand = styled.button<CollapseExpandProps>(({ isCollapsed, mouseIsOverNav }) => {
   const size = 32;
   const offsetTop = 20;
   const isActive = isCollapsed || mouseIsOverNav;
@@ -294,7 +302,7 @@ class Nav extends Component {
       <ResizeHandler isActive={mouseIsOverNav}>
         {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
           const navWidth = isCollapsed ? 0 : width;
-          const makeResizeStyles = key => {
+          const makeResizeStyles: $TSFixMe = key => {
             const pointers = isDragging ? { pointerEvents: 'none' } : null;
             const transitions = isDragging
               ? null

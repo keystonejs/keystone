@@ -8,6 +8,7 @@ import { colors } from '@arch-ui/theme';
 
 import SessionProvider from '../providers/Session';
 
+// @ts-ignore
 import logo from '../assets/logo.png';
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
@@ -64,7 +65,14 @@ const Spacer = styled.div({
   height: 120,
 });
 
-class SigninPage extends Component {
+type Props = {
+isLoading?: boolean;
+signIn?: $TSFixMe;
+isSignedIn?: boolean;
+authStrategy?: $TSFixMe;
+error?: $TSFixMe;
+}
+class SigninPage extends Component<Props> {
   reloading = false;
   state = {
     identity: '',

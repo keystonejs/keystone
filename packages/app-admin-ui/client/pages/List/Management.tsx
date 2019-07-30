@@ -10,8 +10,9 @@ import { colors, gridSize } from '@arch-ui/theme';
 
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
+import List from '../../classes/List';
 
-export const ManageToolbar = styled.div(({ isVisible }) => ({
+export const ManageToolbar = styled.div<{isVisible?}>(({ isVisible }) => ({
   height: 35,
   marginBottom: gridSize * 2,
   marginTop: gridSize,
@@ -23,10 +24,12 @@ const SelectedCount = styled.div({
 });
 
 type Props = {
-  list: object;
-  onDeleteMany: (x0: any) => void;
-  onUpdateMany: (x0: any) => void;
+  list: List;
+  onDeleteMany: (x0?: any) => void;
+  onUpdateMany: (x0?: any) => void;
   selectedItems: Array<string>;
+  pageSize?: number;
+  totalItems?: number;
 };
 
 export default function ListManage(props: Props) {

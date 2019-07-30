@@ -16,7 +16,15 @@ const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
 
-export let ItemTitle = memo(function ItemTitle({ titleText, id, list, adminPath, onCreateClick }) {
+type Props = {
+  titleText?: string;
+  id?: string;
+  list?: $TSFixMe;
+  adminPath?: string;
+  onCreateClick?: (e: Event) => void;
+}
+
+export let ItemTitle = memo<Props>(function ItemTitle({ titleText, id, list, adminPath, onCreateClick }) {
   const listHref = `${adminPath}/${list.path}`;
   const cypressId = 'item-page-create-button';
 

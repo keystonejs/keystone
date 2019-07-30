@@ -50,7 +50,7 @@ const Footer = styled(Bar)({
 });
 
 // Other
-export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
+export const DisclosureArrow = styled.span<{size?}>(({ size = '0.3em' }) => ({
   borderLeft: `${size} solid transparent`,
   borderRight: `${size} solid transparent`,
   borderTop: `${size} solid`,
@@ -63,16 +63,16 @@ export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
 }));
 
 type Props = {
-  buttonLabel: string;
-  children: Node;
-  component: ComponentType<any>;
-  innerRef: Ref<any>;
-  bodyRef: Ref<any>;
-  footerContent: Node;
-  headerAfter: Node;
-  headerBefore: Node;
-  headerTitle: Node;
-  target: string;
+  buttonLabel?: string;
+  children?: $TSFixMe;
+  component?: ComponentType<any>;
+  innerRef?: Ref<any>;
+  bodyRef?: Ref<any>;
+  footerContent?: $TSFixMe;
+  headerAfter?: Node;
+  headerBefore?: Node;
+  headerTitle?: string;
+  target?: $TSFixMe;
 };
 
 export const Popout = ({

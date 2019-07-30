@@ -13,9 +13,11 @@
       // Disallow features that require cross-file information for emit.
       "isolatedModules": true,
       // Import non-ES modules as default imports.
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "jsx": "preserve",
     },
     "include": [
-      "client"
+      "client",
+      "../../typings/"
     ]
   }

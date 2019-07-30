@@ -13,7 +13,25 @@ import { validateFields } from '../util';
 
 let Render = ({ children }) => children();
 
-class UpdateManyModal extends Component {
+type Props = {
+  updateItem?: $TSFixMe;
+  isLoading?: boolean;
+  isOpen?: boolean;
+  items?: $TSFixMe;
+  list?: $TSFixMe;
+  onClose?: ()=> void;
+  onUpdate?: () => void;
+}
+
+type State = {
+  item?: $TSFixMe;
+  selectedFields?: $TSFixMe;
+  validationErrors?: $TSFixMe;
+  validationWarnings?: $TSFixMe;
+}
+
+class UpdateManyModal extends Component<Props, State> {
+  filterOption: $TSFixMe;
   constructor(props) {
     super(props);
     const { list } = props;
@@ -197,7 +215,7 @@ class UpdateManyModal extends Component {
   }
 }
 
-export default class UpdateManyModalWithMutation extends Component {
+export default class UpdateManyModalWithMutation extends Component<{list?, isOpen?, items?, onClose?, onUpdate?}> {
   render() {
     const { list } = this.props;
     return (

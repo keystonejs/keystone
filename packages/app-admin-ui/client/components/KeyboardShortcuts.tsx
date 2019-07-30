@@ -9,6 +9,7 @@ const LISTENER_OPTIONS = {
 };
 
 export default class KeyboardShortcuts extends React.Component {
+  keyIsDown: boolean;
   listeners = {};
 
   componentDidMount() {

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import styled from '@emotion/styled';
 
 import SessionProvider from '../providers/Session';
+// @ts-ignore
 import logo from '../assets/logo.png';
 
 const Container = styled.div({

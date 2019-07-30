@@ -7,7 +7,7 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { Popout } from '../../../components/Popout';
 import AnimateHeight from '../../../components/AnimateHeight';
 
-const FooterButton = ({ isPrimary, ...props }) => (
+const FooterButton = ({ isPrimary, ...props }: {isPrimary?, onClick?, children?, type?}) => (
   <button
     type="button"
     css={{
@@ -30,10 +30,17 @@ const FooterButton = ({ isPrimary, ...props }) => (
 );
 
 type Props = {
-  onSubmit: (x0: Event) => void;
+  onClose?: (x0: Event) => void;
+  onSubmit?: (x0: Event) => void;
+  headerTitle?: string;
+  headerBefore?: $TSFixMe;
+  showFooter?: boolean;
+  target?: $TSFixMe;
 };
 
 export default class FilterPopout extends Component<Props> {
+  popoutRef: $TSFixMe;
+  popoutBody: $TSFixMe;
   onSubmit = event => {
     const { onSubmit } = this.props;
 

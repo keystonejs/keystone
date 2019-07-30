@@ -54,8 +54,32 @@ const deserializeItem = memoizeOne((list, data) =>
   list.deserializeItemData(data[list.gqlNames.itemQueryName])
 );
 
+type Props = {
+  item?: $TSFixMe;
+  adminPath?:string;
+  history?:$TSFixMe;
+  list?:$TSFixMe;
+  toast?:$TSFixMe;
+  onUpdate?:$TSFixMe;
+  toastManager?:$TSFixMe;
+  updateItem?:$TSFixMe;
+  updateInProgress?: boolean;
+  itemErrors?: $TSFixMe;
+}
+
+type State = {
+  item?: $TSFixMe;
+  itemHasChanged?: boolean;
+  showDeleteModal?: boolean;
+  showCreateModal?: boolean;
+  validationErrors?: $TSFixMe;
+  validationWarnings?: $TSFixMe;
+}
+
 const ItemDetails = withRouter(
-  class ItemDetails extends Component {
+  class ItemDetails extends Component<Props, State> {
+    getFieldsObject: $TSFixMe;
+    mounted: boolean;
     constructor(props) {
       super(props);
       // memoized function so we can call it multiple times _per component_
@@ -212,7 +236,7 @@ const ItemDetails = withRouter(
             appearance: 'success',
           });
           this.setState(state => {
-            const newState = {
+            const newState: $TSFixMe = {
               validationErrors: {},
               validationWarnings: {},
             };
@@ -345,7 +369,7 @@ const ItemDetails = withRouter(
     }
   }
 );
-const ItemNotFound = ({ adminPath, errorMessage, list }) => (
+const ItemNotFound = ({ adminPath, errorMessage, list }: $TSFixMe) => (
   <PageError>
     <p>Couldn't find a {list.singular} matching that ID</p>
     <Button to={`${adminPath}/${list.path}`} variant="ghost">

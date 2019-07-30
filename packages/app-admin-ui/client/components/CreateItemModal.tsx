@@ -11,10 +11,27 @@ import { AutocompleteCaptor } from '@arch-ui/input';
 
 import PageLoading from './PageLoading';
 import { validateFields } from '../util';
+import List from '../classes/List';
 
 let Render = ({ children }) => children();
 
-class CreateItemModal extends Component {
+type Props = {
+  list: List;
+  createItem: Function;
+  onClose: Function;
+  onCreate: Function;
+  isLoading: boolean;
+  isOpen: boolean;
+}
+
+type State = {
+  item: $TSFixMe;
+  validationErrors: $TSFixMe;
+  validationWarnings: $TSFixMe;
+}
+
+class CreateItemModal extends Component<Props, State> {
+  onUpdate: Function;
   constructor(props) {
     super(props);
     const { list } = props;

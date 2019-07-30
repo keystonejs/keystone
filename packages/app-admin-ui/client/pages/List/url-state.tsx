@@ -6,12 +6,13 @@ import { FieldControllerType } from '@keystone-alpha/fields/Controller';
 import { pseudoLabelField } from './FieldSelect';
 import { AdminMeta } from '../../providers/AdminMeta';
 
+type DirectionType = "ASC" | "DESC"
 export type SortByType = {
   field: {
     label: string;
     path: string;
   };
-  direction: "ASC" | "DESC";
+  direction: DirectionType;
 };
 
 export type FilterType = {
@@ -19,6 +20,7 @@ export type FilterType = {
   label: string;
   type: string;
   value: string;
+  path?: $TSFixMe;
 };
 
 export type SearchType = {
@@ -66,7 +68,7 @@ const encodeFields = fields => {
 
 const parseSortBy = (sortBy: string, list: List): SortByType | null => {
   let key = sortBy;
-  let direction = 'ASC';
+  let direction: DirectionType = 'ASC';
 
   if (sortBy.charAt(0) === '-') {
     key = sortBy.substr(1);
@@ -138,7 +140,7 @@ type Props = {
   adminMeta: AdminMeta;
   children: (x0: any) => Node;
   history: object;
-  list: object;
+  list: List;
   location: object;
   match: object;
 };
@@ -146,24 +148,24 @@ type Props = {
 export const decodeSearch = (search: string, props: Props): SearchType => {
   const query = querystring.parse(search.replace('?', ''));
   const searchDefaults = getSearchDefaults(props);
-  const params = Object.keys(query).reduce((acc, key) => {
+  const params: $TSFixMe = Object.keys(query).reduce((acc, key) => {
     // Remove anything that is not "allowed"
     if (!allowedSearchParams.includes(key)) return acc;
 
     // Each type has a different parse function.
     switch (key) {
       case 'currentPage':
-        acc[key] = parseInt(query[key], 10);
+        acc[key] = parseInt(query[key] as string, 10);
         break;
       case 'pageSize':
         const { maximumPageSize } = props.list.adminConfig;
-        acc[key] = Math.min(parseInt(query[key], 10), maximumPageSize);
+        acc[key] = Math.min(parseInt(query[key] as string, 10), maximumPageSize);
         break;
       case 'fields':
         acc[key] = parseFields(query[key], props.list);
         break;
       case 'sortBy':
-        let sortBy = parseSortBy(query[key], props.list);
+        let sortBy = parseSortBy(query[key]as string, props.list);
         if (sortBy !== null) {
           acc[key] = sortBy;
         }
@@ -177,7 +179,7 @@ export const decodeSearch = (search: string, props: Props): SearchType => {
   // decode filters
   params.filters = Object.keys(query).reduce((acc, key) => {
     if (key.charAt(0) !== '!') return acc;
-    const filter = parseFilter([key.substr(1), query[key]], props.list);
+    const filter = parseFilter([key.substr(1), query[key] as string], props.list);
     if (filter) acc.push(filter);
     return acc;
   }, []);

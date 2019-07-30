@@ -71,7 +71,17 @@ function Reset({ canReset, onReset }) {
   );
 }
 
-export default memo(function Footer(props) {
+type Props = {
+  onSave?: $TSFixMe;
+  onDelete?: $TSFixMe;
+  canReset?: $TSFixMe;
+  updateInProgress?: $TSFixMe;
+  onReset?: $TSFixMe;
+  hasWarnings?: $TSFixMe;
+  hasErrors?: $TSFixMe;
+}
+
+export default memo(function Footer(props: Props) {
   const { onSave, onDelete, canReset, updateInProgress, onReset, hasWarnings, hasErrors } = props;
   const cypressId = 'item-page-save-button';
 

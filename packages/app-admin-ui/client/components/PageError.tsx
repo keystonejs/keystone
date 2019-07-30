@@ -7,7 +7,7 @@ import { colors } from '@arch-ui/theme';
 import { Container } from '@arch-ui/layout';
 
 type Props = {
-  children: Node;
+  children: $TSFixMe;
   Icon: ElementType;
 };
 

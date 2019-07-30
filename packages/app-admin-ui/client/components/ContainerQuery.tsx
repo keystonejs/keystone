@@ -1,9 +1,18 @@
-import React, { createRef, Component, Fragment } from 'react';
+import React, { createRef, Component, Fragment, ReactComponentElement } from 'react';
 import PropTypes from 'prop-types';
 import ResizeObserver from 'resize-observer-polyfill';
 
-export default class ContainerQuery extends Component {
-  measureElement = createRef();
+type Props = {
+  children?: (x: $TSFixMe) => Node;
+  render?: Function;
+}
+
+type State = {
+  width: string;
+}
+export default class ContainerQuery extends Component<Props, State> {
+  resizeObserver;
+  measureElement = createRef<HTMLDivElement>();
   state = { width: 'auto' };
   static propTypes = {
     children: PropTypes.func,

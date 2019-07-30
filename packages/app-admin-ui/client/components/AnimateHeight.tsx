@@ -5,10 +5,11 @@ import ResizeObserver from 'resize-observer-polyfill';
 
 type Height = number | string;
 type Props = {
-  autoScroll: boolean | HTMLElement;
-  initialHeight: Height;
-  onChange?: (x0: Height) => any;
-  render: (x0: { ref: Ref<any> }) => Node;
+  autoScroll?: boolean | HTMLElement;
+  initialHeight?: Height;
+  onChange?: (height: $TSFixMe) => any;
+  render?: $TSFixMe;
+  style?: $TSFixMe;
 };
 type State = {
   height: Height;
@@ -16,7 +17,7 @@ type State = {
 };
 
 function Memoize({ children, deps }) {
-  return useMemo(children, deps);
+  return useMemo<$TSFixMe>(children, deps);
 }
 
 export default class AnimateHeight extends Component<Props, State> {

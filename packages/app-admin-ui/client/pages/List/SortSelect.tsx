@@ -10,15 +10,16 @@ import { Button } from '@arch-ui/button';
 
 import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
 import { useList, useListSort, useKeyDown } from './dataHooks';
+import { SortByType } from './url-state';
 
 type Props = {
   listKey: string;
 };
 export default function SortPopout({ listKey }: Props) {
   const list = useList(listKey);
-  const [sortValue, handleSortChange] = useListSort(listKey);
+  const [sortValue, handleSortChange]: $TSFixMe = useListSort(listKey);
   const altIsDown = useKeyDown('Alt');
-  const popoutRef = useRef();
+  const popoutRef = useRef<Window>();
 
   const handleChange = field => {
     const isSelected = field.path === sortValue.field.path;

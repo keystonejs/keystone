@@ -2,12 +2,16 @@ import React from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
+import List from '../classes/List';
 
 type Props = {
   isOpen: boolean;
-  itemIds: Array<string>;
-  list: object;
-  item: object;
+  itemIds?: Array<string>;
+  list: List;
+  item: {
+    _label_: string;
+    id: string;
+  };
   onClose: (x0?: any) => void;
   onDelete: (x0?: Promise<any>) => void;
 };

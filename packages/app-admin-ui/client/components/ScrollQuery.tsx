@@ -1,13 +1,29 @@
-import { createRef, Component } from 'react';
+import { createRef, Component, Ref } from 'react';
 import PropTypes from 'prop-types';
 import ResizeObserver from 'resize-observer-polyfill';
 import raf from 'raf-schd';
 
-const LISTENER_OPTIONS = { passive: true };
+const LISTENER_OPTIONS: EventListenerOptions = { passive: true };
 
-export default class ScrollQuery extends Component {
-  scrollElement = createRef();
-  state = { hasScroll: false, isScrollable: false, scrollTop: 0 };
+type Props = {
+  isPassive?: $TSFixMe;
+  render?: Function;
+  children?: (Ref, State) => $TSFixMe;
+}
+
+type State = {
+  isBottom?: boolean;
+  isScrollable?: boolean;
+  hasScroll?: boolean;
+  scrollTop?: number;
+  isTop?: boolean;
+  scrollHeight?: $TSFixMe;
+}
+
+export default class ScrollQuery extends Component<Props, State> {
+  resizeObserver: ResizeObserver;
+  scrollElement = createRef<HTMLElement>();
+  state: State = { hasScroll: false, isScrollable: false, scrollTop: 0 };
   static propTypes = {
     children: PropTypes.func,
     isPassive: PropTypes.bool,

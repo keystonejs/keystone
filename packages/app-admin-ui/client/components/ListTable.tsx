@@ -18,8 +18,22 @@ import copyToClipboard from 'clipboard-copy';
 import { useListSort } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
 import { NoResults } from './NoResults';
+import List from '../classes/List';
 
 const Render = ({ children }) => children();
+
+type Selectable = {
+  isSelected?: boolean;
+}
+
+type CanActive = {
+  isActive?: boolean;
+}
+
+type Sortable = {
+  isSortable?: boolean;
+}
+
 
 // Styled Components
 const Table = styled('table')({
@@ -27,12 +41,12 @@ const Table = styled('table')({
   borderSpacing: 0,
   width: '100%',
 });
-const TableRow = styled('tr')(({ isActive }) => ({
+const TableRow = styled('tr')<CanActive>(({ isActive }) => ({
   '> td': {
     backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
   },
 }));
-const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
+const HeaderCell = styled('th')<Selectable & Sortable >(({ isSelected, isSortable }) => ({
   backgroundColor: 'white',
   boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
   boxSizing: 'border-box',
@@ -53,7 +67,7 @@ const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
     color: isSortable && !isSelected ? colors.N60 : null,
   },
 }));
-const BodyCell = styled('td')(({ isSelected }) => ({
+const BodyCell = styled('td')<Selectable>(({ isSelected }) => ({
   backgroundColor: isSelected ? colors.B.L95 : null,
   boxShadow: isSelected
     ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
@@ -84,7 +98,7 @@ const BodyCellTruncated = styled(BodyCell)`
   word-wrap: normal;
 `;
 
-const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
+const SortDirectionArrow = styled.span<{size?, rotate?}>(({ size = '0.25em', rotate = '0deg' }) => ({
   borderLeft: `${size} solid transparent`,
   borderRight: `${size} solid transparent`,
   borderTop: `${size} solid`,
@@ -100,9 +114,11 @@ const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) =>
 // Functional Components
 
 type SortLinkProps = {
-  handleSortChange: Function;
+  handleSortChange: $TSFixMe;
   active: boolean;
   sortAscending: boolean;
+  field: $TSFixMe;
+  sortable: boolean;
 };
 
 class SortLink extends React.Component<SortLinkProps> {
@@ -138,7 +154,21 @@ class SortLink extends React.Component<SortLinkProps> {
 // Common for display & manage
 // ==============================
 
-class ListRow extends Component {
+type ListRowProp = {
+  item: $TSFixMe;
+  onSelectChange: Function;
+  onDelete?: Function;
+  list: List;
+  link: $TSFixMe;
+  isSelected: $TSFixMe;
+  itemErrors: $TSFixMe;
+  fields: $TSFixMe;
+}
+
+class ListRow extends Component<ListRowProp> {
+  mounted: boolean;
+  getCheckbox: $TSFixMe;
+
   static defaultProps = { itemErrors: {} };
   state = { showDeleteModal: false };
   componentDidMount() {
@@ -314,7 +344,7 @@ export default function ListTable(props) {
     search,
   } = props;
 
-  const [sortBy, onSortChange] = useListSort(list.key);
+  const [sortBy, onSortChange] = useListSort(list.key) as [$TSFixMe, $TSFixMe];
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;
@@ -327,7 +357,7 @@ export default function ListTable(props) {
   // +2 because of check-boxes on left, and overflow menu on right
   const columns = fields.length + 2;
 
-  const TableContents = ({ isLoading, children }) => (
+  const TableContents: React.SFC<{isLoading?, children?}> = ({ isLoading, children }) => (
     <Fragment>
       <colgroup>
         <col width="32" />

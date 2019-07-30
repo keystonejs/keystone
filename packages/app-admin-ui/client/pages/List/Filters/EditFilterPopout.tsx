@@ -4,14 +4,21 @@ import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
 
 type Props = {
-  filter: object;
-  onChange: (x0: Event) => void;
+  filter?: {
+    field?: $TSFixMe;
+    value?: $TSFixMe;
+    label?: $TSFixMe;
+    type?: $TSFixMe;
+  };
+  target?: $TSFixMe;
+  onChange?: (x0: $TSFixMe) => void;
 };
 type State = {
-  value: string;
+  value?: string;
 };
 
 export default class EditFilterPopout extends Component<Props, State> {
+  filterRef: $TSFixMe;
   state = { value: this.props.filter.value };
 
   onChangeFilter = value => {

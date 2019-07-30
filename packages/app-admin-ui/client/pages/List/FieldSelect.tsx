@@ -26,13 +26,19 @@ function getOptionValue(opt) {
 
 type FieldType = object;
 export type FieldSelectProps = {
-  fields: Array<FieldType>;
-  onChange: (x0: FieldType) => void;
-  value: FieldType | Array<FieldType>;
-  includeLabelField: boolean;
+  fields?: Array<FieldType>;
+  onChange?: (x0: FieldType) => void;
+  value?: FieldType | Array<FieldType>;
+  includeLabelField?: boolean;
+  isOptionDisabled?: $TSFixMe;
+  innerRef?: $TSFixMe;
+  isMulti?: boolean;
+  listFields?: $TSFixMe[];
+  placeholder?: $TSFixMe;
+  components?: $TSFixMe;
 };
 
-export const pseudoLabelField = { label: 'Label', path: '_label_' };
+export const pseudoLabelField: $TSFixMe = { label: 'Label', path: '_label_' };
 
 export default class FieldSelect extends Component<FieldSelectProps> {
   constructor(props) {

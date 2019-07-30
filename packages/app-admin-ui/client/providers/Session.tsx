@@ -8,7 +8,14 @@ const userFragment = `
   id
 `;
 
-class Session extends Component {
+type Props = {
+  autoSignout?: boolean;
+  adminMeta?: $TSFixMe;
+  client: $TSFixMe;
+  children?: $TSFixMe;
+}
+
+class Session extends Component<Props> {
   state = {
     error: null,
     session: {},

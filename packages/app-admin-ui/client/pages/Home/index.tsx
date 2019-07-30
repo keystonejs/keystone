@@ -12,7 +12,13 @@ import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
-class HomePage extends Component {
+type Props = {
+  adminPath?: string;
+  history?: $TSFixMe;
+  lists?: $TSFixMe;
+  data?: $TSFixMe;
+}
+class HomePage extends Component<Props> {
   state = { createFromList: null };
 
   openCreateModal = createFromList => event => {
@@ -70,7 +76,7 @@ class HomePage extends Component {
                     );
                   })}
                 </Grid>
-              );
+              ) as $TSFixMe;
             }}
           </ContainerQuery>
         </Container>

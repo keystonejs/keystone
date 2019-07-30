@@ -68,7 +68,7 @@ export const BoxComponent = ({
 
 export const Box = withPseudoState(BoxComponent);
 
-export const Name = styled.span(
+export const Name = styled.span<{isHover?}>(
   ({ isHover }) => `
   border-bottom: 1px solid ${isHover ? colors.B.A50 : 'transparent'};
   color: ${colors.primary};
@@ -98,7 +98,7 @@ export const Count = ({ meta }) => {
     </div>
   );
 };
-export const CreateButton = styled.button(
+export const CreateButton = styled.button<{isHover?}>(
   ({ isHover }) => `
   align-items: center;
   background-color: ${isHover ? colors.N20 : colors.N10};
