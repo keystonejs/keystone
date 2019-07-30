@@ -1,18 +1,19 @@
-// @flow
-
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, type Ref, type Node, useMemo } from 'react';
+import { Component, Ref, useMemo } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 
 type Height = number | string;
 type Props = {
-  autoScroll: boolean | HTMLElement,
-  initialHeight: Height,
-  onChange?: Height => any,
-  render: ({ ref: Ref<*> }) => Node,
+  autoScroll: boolean | HTMLElement;
+  initialHeight: Height;
+  onChange?: (x0: Height) => any;
+  render: (x0: { ref: Ref<any> }) => Node;
 };
-type State = { height: Height, isTransitioning: boolean };
+type State = {
+  height: Height;
+  isTransitioning: boolean;
+};
 
 function Memoize({ children, deps }) {
   return useMemo(children, deps);
@@ -31,7 +32,7 @@ export default class AnimateHeight extends Component<Props, State> {
     const element = autoScroll instanceof HTMLElement ? autoScroll : this.node;
     if (
       !element ||
-      // $FlowFixMe
+      // $TSFixMe
       typeof element.scrollTo !== 'function'
     ) {
       return;

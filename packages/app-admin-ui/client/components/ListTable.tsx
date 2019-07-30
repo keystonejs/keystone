@@ -100,9 +100,9 @@ const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) =>
 // Functional Components
 
 type SortLinkProps = {
-  handleSortChange: Function,
-  active: boolean,
-  sortAscending: boolean,
+  handleSortChange: Function;
+  active: boolean;
+  sortAscending: boolean;
 };
 
 class SortLink extends React.Component<SortLinkProps> {

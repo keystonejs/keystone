@@ -17,13 +17,22 @@ export const elementOffsetStyles = {
 };
 
 export type FilterType = {
-  field: { label: string, list: Object, path: string, type: string },
-  filter: { type: string, label: string, getInitialValue: () => string },
-  label: string,
-  value: string,
+  field: {
+    label: string;
+    list: object;
+    path: string;
+    type: string;
+  };
+  filter: {
+    type: string;
+    label: string;
+    getInitialValue: () => string;
+  };
+  label: string;
+  value: string;
 };
 type Props = {
-  list: object,
+  list: object;
 };
 
 export default function ActiveFilters({ list }: Props) {

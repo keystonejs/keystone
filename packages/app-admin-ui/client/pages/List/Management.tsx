@@ -23,10 +23,10 @@ const SelectedCount = styled.div({
 });
 
 type Props = {
-  list: Object,
-  onDeleteMany: (*) => void,
-  onUpdateMany: (*) => void,
-  selectedItems: Array<string>,
+  list: object;
+  onDeleteMany: (x0: any) => void;
+  onUpdateMany: (x0: any) => void;
+  selectedItems: Array<string>;
 };
 
 export default function ListManage(props: Props) {

@@ -9,8 +9,8 @@ export const gqlCountQueries = lists => gql`{
 export default class List {
   constructor(config, adminMeta, views) {
     this.config = config;
-    this.adminMeta = adminMeta;
-
+    this.adminMeta = adminMeta; 
+    
     // TODO: undo this
     Object.assign(this, config);
 
@@ -21,9 +21,9 @@ export default class List {
         return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
       });
 
-    this.fieldsByPath = arrayToObject(this.fields, 'path');
+      this.fieldsByPath = arrayToObject(this.fields, 'path');
 
-    this.createMutation = gql`
+      this.createMutation = gql`
       mutation create($data: ${this.gqlNames.createInputName}!) {
         ${this.gqlNames.createMutationName}(data: $data) {
           id
@@ -84,7 +84,7 @@ export default class List {
   static getQueryArgs = ({ filters, ...args }) => {
     const queryArgs = Object.keys(args).map(
       // Using stringify to get the correct quotes depending on type
-      argName => `${argName}: ${JSON.stringify(args[argName])}`
+    argName => `${argName}: ${JSON.stringify(args[argName])}`
     );
     if (filters) {
       const filterArgs = filters.map(filter => filter.field.getFilterGraphQL(filter));
@@ -120,7 +120,7 @@ export default class List {
   }
 
   deserializeItemData(item) {
-    return {
+    return { 
       ...mapKeys(this.fieldsByPath, field => field.deserialize(item)),
       // Handle the special case of `_label_` (and potentially others)
       ...omit(item, Object.keys(this.fieldsByPath)),

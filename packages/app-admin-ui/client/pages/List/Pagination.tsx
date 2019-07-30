@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
@@ -6,8 +5,8 @@ import { Pagination } from '@arch-ui/pagination';
 import { useListPagination } from './dataHooks';
 
 type Props = {
-  isLoading: boolean,
-  listKey: string,
+  isLoading: boolean;
+  listKey: string;
 };
 
 const CYPRESS_TEST_ID = 'ks-pagination';
@@ -42,7 +41,7 @@ export function getPaginationLabel({
   plural = 'Items',
   singular = 'Item',
   total,
-}: *) {
+}: any) {
   if (!total) {
     return `No ${plural}`;
   }

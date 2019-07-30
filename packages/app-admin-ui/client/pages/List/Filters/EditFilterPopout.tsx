@@ -4,11 +4,11 @@ import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
 
 type Props = {
-  filter: Object,
-  onChange: Event => void,
+  filter: object;
+  onChange: (x0: Event) => void;
 };
 type State = {
-  value: string,
+  value: string;
 };
 
 export default class EditFilterPopout extends Component<Props, State> {

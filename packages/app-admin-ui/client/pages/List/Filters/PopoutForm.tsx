@@ -30,7 +30,7 @@ const FooterButton = ({ isPrimary, ...props }) => (
 );
 
 type Props = {
-  onSubmit: Event => void,
+  onSubmit: (x0: Event) => void;
 };
 
 export default class FilterPopout extends Component<Props> {

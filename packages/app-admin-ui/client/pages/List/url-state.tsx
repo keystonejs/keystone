@@ -1,33 +1,33 @@
-// @flow
-
 import querystring from 'querystring';
 import * as React from 'react';
-
 import List from '../../classes/List';
-// $FlowFixMe flow doesn't recognise the `*/Controller` entry point
-import type { FieldControllerType } from '@keystone-alpha/fields/Controller';
+// $TSFixMe flow doesn't recognise the `*/Controller` entry point
+import { FieldControllerType } from '@keystone-alpha/fields/Controller';
 import { pseudoLabelField } from './FieldSelect';
-import type { AdminMeta } from '../../providers/AdminMeta';
+import { AdminMeta } from '../../providers/AdminMeta';
 
 export type SortByType = {
-  field: { label: string, path: string },
-  direction: 'ASC' | 'DESC',
+  field: {
+    label: string;
+    path: string;
+  };
+  direction: "ASC" | "DESC";
 };
 
 export type FilterType = {
-  field: FieldControllerType,
-  label: string,
-  type: string,
-  value: string,
+  field: FieldControllerType;
+  label: string;
+  type: string;
+  value: string;
 };
 
 export type SearchType = {
-  currentPage: number,
-  pageSize: number,
-  search: string,
-  fields: Array<FieldControllerType>,
-  sortBy: SortByType,
-  filters: Array<FilterType>,
+  currentPage: number;
+  pageSize: number;
+  search: string;
+  fields: Array<FieldControllerType>;
+  sortBy: SortByType;
+  filters: Array<FilterType>;
 };
 
 // ==============================
@@ -135,12 +135,12 @@ const encodeFilter = (filter: FilterType): [string, string] => {
 };
 
 type Props = {
-  adminMeta: AdminMeta,
-  children: (*) => React.Node,
-  history: Object,
-  list: Object,
-  location: Object,
-  match: Object,
+  adminMeta: AdminMeta;
+  children: (x0: any) => Node;
+  history: object;
+  list: object;
+  location: object;
+  match: object;
 };
 
 export const decodeSearch = (search: string, props: Props): SearchType => {

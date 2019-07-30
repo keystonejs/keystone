@@ -90,12 +90,12 @@ function getInitialState() {
 }
 
 type Props = {
-  existingFilters: Array<Object>,
+  existingFilters: Array<object>;
 };
 type State = {
-  field: Object,
-  filter: Object,
-  value: string,
+  field: object;
+  filter: object;
+  value: string;
 };
 
 let Render = ({ children }) => children();

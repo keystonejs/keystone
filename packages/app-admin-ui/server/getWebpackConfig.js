@@ -17,7 +17,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
 
   const rules = [
     {
-      test: /\.js$/,
+      test: [/\.jsx?$/, /\.tsx?$/],
       exclude: [/node_modules(?!(?:\/|\\)@keystone-alpha(?:\/|\\)app-admin-ui)/],
       use: [
         {
@@ -26,6 +26,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
             configFile: false,
             babelrc: false,
             presets: [
+              '@babel/preset-typescript',
               mode === 'production'
                 ? require.resolve('babel-preset-react-app/prod')
                 : require.resolve('babel-preset-react-app/dev'),
@@ -61,7 +62,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       ],
     });
   }
-  const entryPath = `./${entry}.js`;
+  const entryPath = `./${entry}.tsx`;
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
@@ -85,6 +86,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       rules,
     },
     resolve: {
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
       alias: {
         // we only want to bundle a single version of react
         // but we don't want to assume a consumer has the same version of react

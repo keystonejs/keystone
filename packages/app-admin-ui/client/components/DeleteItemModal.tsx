@@ -1,32 +1,32 @@
-// @flow
 import React from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
 
 type Props = {
-  isOpen: boolean,
-  itemIds: Array<string>,
-  list: Object,
-  onClose: () => void,
-  onDelete: (Promise<*>) => void,
+  isOpen: boolean;
+  itemIds: Array<string>;
+  list: object;
+  item: object;
+  onClose: (x0?: any) => void;
+  onDelete: (x0?: Promise<any>) => void;
 };
 
-export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDelete }: Props) {
+export default function DeleteItemModal({ isOpen, item, list, onClose, onDelete }: Props) {
   return (
-    <Mutation mutation={list.deleteManyMutation}>
-      {(deleteItems, { loading }) => {
+    <Mutation mutation={list.deleteMutation}>
+      {(deleteItem, { loading }) => {
         return (
           <Confirm
             isOpen={isOpen}
-            onKeyDown={event => {
-              if (event.key === 'Escape' && !loading) {
+            onKeyDown={e => {
+              if (e.key === 'Escape' && !loading) {
                 onClose();
               }
             }}
           >
             <p style={{ marginTop: 0 }}>
-              Are you sure you want to delete <strong>{list.formatCount(itemIds)}</strong>?
+              Are you sure you want to delete <strong>{item._label_}</strong>?
             </p>
             <footer>
               <Button
@@ -34,9 +34,7 @@ export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDele
                 variant="ghost"
                 onClick={() => {
                   if (loading) return;
-                  deleteItems({
-                    variables: { ids: itemIds },
-                  }).then(onDelete);
+                  onDelete(deleteItem({ variables: { id: item.id } }));
                 }}
               >
                 Delete

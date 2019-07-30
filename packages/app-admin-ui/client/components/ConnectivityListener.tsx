@@ -1,10 +1,13 @@
-// @flow
 import React, { Component } from 'react';
-import { withToastManager, type Context } from 'react-toast-notifications';
+import { withToastManager, Context } from 'react-toast-notifications';
 
-type Props = { toastManager: Context };
+type Props = {
+  toastManager: Context;
+};
 
-type State = { isOnline: boolean };
+type State = {
+  isOnline: boolean;
+};
 
 class ConnectivityListener extends Component<Props, State> {
   state = { isOnline: window ? window.navigator.onLine : false };

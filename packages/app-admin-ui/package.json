@@ -36,6 +36,7 @@
     "@arch-ui/tooltip": "^0.1.2",
     "@arch-ui/typography": "^0.0.8",
     "@babel/core": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "@keystone-alpha/build-field-types": "^1.0.4",
@@ -85,5 +86,8 @@
     "webpack": "4.28.4",
     "webpack-dev-middleware": "^3.6.1",
     "webpack-hot-middleware": "^2.24.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.5.3"
   }
 }

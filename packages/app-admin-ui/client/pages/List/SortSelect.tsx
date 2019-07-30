@@ -12,9 +12,8 @@ import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout'
 import { useList, useListSort, useKeyDown } from './dataHooks';
 
 type Props = {
-  listKey: string,
+  listKey: string;
 };
-
 export default function SortPopout({ listKey }: Props) {
   const list = useList(listKey);
   const [sortValue, handleSortChange] = useListSort(listKey);

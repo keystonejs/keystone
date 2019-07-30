@@ -1,6 +1,4 @@
-// @flow
-
-import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
+import React, { Fragment, ComponentType, Ref } from 'react';
 import styled from '@emotion/styled';
 
 import { Button } from '@arch-ui/button';
@@ -65,16 +63,16 @@ export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
 }));
 
 type Props = {
-  buttonLabel: string,
-  children: Node,
-  component: ComponentType<*>,
-  innerRef: Ref<*>,
-  bodyRef: Ref<*>,
-  footerContent: Node,
-  headerAfter: Node,
-  headerBefore: Node,
-  headerTitle: Node,
-  target: string,
+  buttonLabel: string;
+  children: Node;
+  component: ComponentType<any>;
+  innerRef: Ref<any>;
+  bodyRef: Ref<any>;
+  footerContent: Node;
+  headerAfter: Node;
+  headerBefore: Node;
+  headerTitle: Node;
+  target: string;
 };
 
 export const Popout = ({

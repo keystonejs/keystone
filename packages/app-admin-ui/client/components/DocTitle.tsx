@@ -1,13 +1,12 @@
-// @flow
+import React, { Children } from 'react';
 
-import React, { Children, type Node } from 'react';
 import DocumentTitle from 'react-document-title';
 
 import { withAdminMeta } from '../providers/AdminMeta';
 
 type Props = {
-  adminMeta: Object,
-  children: Node,
+  adminMeta: object;
+  children: Node;
 };
 
 const DocTitle = ({ adminMeta, children }: Props) => {

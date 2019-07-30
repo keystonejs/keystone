@@ -33,14 +33,14 @@ const HeaderInset = props => (
 );
 
 type Props = {
-  adminMeta: Object,
-  list: Object,
-  routeProps: Object,
+  adminMeta: object;
+  list: object;
+  routeProps: object;
 };
 type LayoutProps = Props & {
-  items: Array<Object>,
-  itemCount: number,
-  queryErrors: Array<Object>,
+  items: Array<object>;
+  itemCount: number;
+  queryErrors: Array<object>;
 };
 
 function ListLayout(props: LayoutProps) {

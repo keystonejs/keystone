@@ -24,12 +24,12 @@ function getOptionValue(opt) {
  * and returning it during `onChange`.
  */
 
-type FieldType = Object;
+type FieldType = object;
 export type FieldSelectProps = {
-  fields: Array<FieldType>,
-  onChange: FieldType => void,
-  value: FieldType | Array<FieldType>,
-  includeLabelField: boolean,
+  fields: Array<FieldType>;
+  onChange: (x0: FieldType) => void;
+  value: FieldType | Array<FieldType>;
+  includeLabelField: boolean;
 };
 
 export const pseudoLabelField = { label: 'Label', path: '_label_' };

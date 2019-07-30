@@ -1,8 +1,10 @@
-// @flow
-import { Component, type Node } from 'react';
-import { withRouter, type Location } from 'react-router-dom';
+import { Component } from 'react';
+import { withRouter, Location } from 'react-router-dom';
 
-type Props = { location: Location, children: Node };
+type Props = {
+  location: Location;
+  children: Node;
+};
 
 class ScrollToTop extends Component<Props> {
   componentDidUpdate(prevProps) {

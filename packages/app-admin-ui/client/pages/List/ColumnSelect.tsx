@@ -8,7 +8,7 @@ import { useList, useListColumns } from './dataHooks';
 import FieldSelect from './FieldSelect';
 
 type Props = {
-  listKey: string,
+  listKey: string;
 };
 
 export default function ColumnPopout({ listKey, target }: Props) {
