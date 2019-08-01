@@ -91,7 +91,15 @@ module.exports = {
         project: './tsconfig.json',
         tsconfigRootDir: 'packages/app-admin-ui/',
       },
-      plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jest', 'cypress', 'import', 'emotion'],
+      plugins: [
+        '@typescript-eslint',
+        'react',
+        'react-hooks',
+        'jest',
+        'cypress',
+        'import',
+        'emotion',
+      ],
       extends: [
         'plugin:jest/recommended',
         'eslint:recommended',
