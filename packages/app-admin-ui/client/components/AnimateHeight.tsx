@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Ref, useMemo } from 'react';
+import { Component, useMemo } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 
 type Height = number | string;

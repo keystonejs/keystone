@@ -16,7 +16,7 @@
     "format": "prettier --write \"**/*.{js,ts,tsx}{,on}\" \"**/*.md\" && remark . --output",
     "fresh": "yarn clean && bolt",
     "clean": "bolt ws exec -- rimraf node_modules website/.cache && rimraf node_modules",
-    "lint:eslint": "eslint .",
+    "lint:eslint": "eslint . --ext .js,.ts,.tsx",
     "lint:prettier": "prettier --list-different \"**/*.{js,ts,tsx}\"",
     "lint:flow": "flow check",
     "lint:markdown": "remark . --frail --quiet",

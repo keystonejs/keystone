@@ -183,7 +183,9 @@ const ItemDetails = withRouter(
         path => !fieldsObject[path].hasChanged(initialValues, currentValues)
       );
 
-      const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
+      const fields = Object.values(
+        omitBy(fieldsObject, path => !Object.prototype.hasOwnProperty.call(data, path))
+      );
 
       // On the first pass through, there wont be any warnings, so we go ahead
       // and check.
@@ -428,7 +430,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
                 <Mutation
                   mutation={list.updateMutation}
                   onError={updateError => {
-                    const [title, ...rest] = updateError.message.split(/\:/);
+                    const [title, ...rest] = updateError.message.split(/:/);
                     const toastContent = rest.length ? (
                       <div>
                         <strong>{title.trim()}</strong>

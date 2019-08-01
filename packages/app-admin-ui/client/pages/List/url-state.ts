@@ -1,5 +1,4 @@
 import querystring from 'querystring';
-import * as React from 'react';
 import List from '../../classes/List';
 // $TSFixMe flow doesn't recognise the `*/Controller` entry point
 import { FieldControllerType } from '@keystone-alpha/fields/Controller';
@@ -38,23 +37,6 @@ export type SearchType = {
 
 const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sortBy', 'filters'];
 
-const getSearchDefaults = (props: Props): SearchType => {
-  const { defaultColumns, defaultSort, defaultPageSize } = props.list.adminConfig;
-
-  // Dynamic defaults
-  const fields = parseFields(defaultColumns, props.list);
-  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
-  fields.unshift(pseudoLabelField);
-  return {
-    currentPage: 1,
-    pageSize: defaultPageSize,
-    search: '',
-    fields,
-    sortBy,
-    filters: [],
-  };
-};
-
 const parseFields = (fields, list) => {
   const fieldPaths = fields.split(',');
   return fieldPaths
@@ -82,6 +64,23 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
   return {
     field: { label: field.label, path: field.path },
     direction,
+  };
+};
+
+const getSearchDefaults = (props: Props): SearchType => {
+  const { defaultColumns, defaultSort, defaultPageSize } = props.list.adminConfig;
+
+  // Dynamic defaults
+  const fields = parseFields(defaultColumns, props.list);
+  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
+  fields.unshift(pseudoLabelField);
+  return {
+    currentPage: 1,
+    pageSize: defaultPageSize,
+    search: '',
+    fields,
+    sortBy,
+    filters: [],
   };
 };
 

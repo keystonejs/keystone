@@ -10,7 +10,42 @@ import { Button } from '@arch-ui/button';
 
 import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
 import { useList, useListSort, useKeyDown } from './dataHooks';
-import { SortByType } from './url-state';
+
+// ==============================
+// Styled Components
+// ==============================
+
+export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
+  const { altIsDown } = props.selectProps;
+  const direction = isSelected ? '(ASC)' : altIsDown ? '(ASC)' : '(DESC)';
+
+  return (
+    <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
+      <span>
+        {children}
+        <small css={{ color: colors.N40 }}> {direction}</small>
+      </span>
+      <CheckMark isFocused={isFocused} isSelected={isSelected} />
+    </OptionPrimitive>
+  );
+};
+
+const Note = styled.div({
+  color: colors.N60,
+  fontSize: '0.85em',
+});
+
+// ==============================
+// Utilities
+// ==============================
+
+function invertDirection(direction) {
+  const inverted = { ASC: 'DESC', DESC: 'ASC' };
+  return inverted[direction] || direction;
+}
+function isOptionSelected(opt, selected) {
+  return opt.path === selected[0].field.path;
+}
 
 type Props = {
   listKey: string;
@@ -68,40 +103,4 @@ export default function SortPopout({ listKey }: Props) {
       </div>
     </Popout>
   );
-}
-
-// ==============================
-// Styled Components
-// ==============================
-
-export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
-  const { altIsDown } = props.selectProps;
-  const direction = isSelected ? '(ASC)' : altIsDown ? '(ASC)' : '(DESC)';
-
-  return (
-    <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
-      <span>
-        {children}
-        <small css={{ color: colors.N40 }}> {direction}</small>
-      </span>
-      <CheckMark isFocused={isFocused} isSelected={isSelected} />
-    </OptionPrimitive>
-  );
-};
-
-const Note = styled.div({
-  color: colors.N60,
-  fontSize: '0.85em',
-});
-
-// ==============================
-// Utilities
-// ==============================
-
-function invertDirection(direction) {
-  const inverted = { ASC: 'DESC', DESC: 'ASC' };
-  return inverted[direction] || direction;
-}
-function isOptionSelected(opt, selected) {
-  return opt.path === selected[0].field.path;
 }

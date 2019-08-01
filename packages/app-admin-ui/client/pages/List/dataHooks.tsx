@@ -402,6 +402,43 @@ const bodyUserSelect = val => {
   });
 };
 
+/**
+ * Key Down Hook
+ * ------------------------------
+ * @param {string} targetKey - The key to target e.g. 'Alt', or 'Shift'
+ * @param {tuple} [keydownHandler, keyupHandler] - Optional event handlers
+ * @returns {boolean} keyIsDown - whether or not the target key is down
+ */
+
+export function useKeyDown(targetKey, [keydownHandler, keyupHandler] = []) {
+  const [keyIsDown, setKeyDown] = useState(false);
+
+  const handleKeyDown = e => {
+    if (e.key !== targetKey) return;
+    if (keydownHandler) keydownHandler(e);
+
+    setKeyDown(true);
+  };
+  const handleKeyUp = e => {
+    if (e.key !== targetKey) return;
+    if (keyupHandler) keyupHandler(e);
+
+    setKeyDown(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown, { isPassive: true });
+    document.addEventListener('keyup', handleKeyUp, { isPassive: true });
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, { isPassive: true });
+      document.removeEventListener('keyup', handleKeyUp, { isPassive: true });
+    };
+  });
+
+  return keyIsDown;
+}
+
 export function useListSelect(items) {
   const [lastChecked, setLastChecked] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -461,41 +498,4 @@ export function useListSelect(items) {
   // };
 
   return [selectedItems, onSelect];
-}
-
-/**
- * Key Down Hook
- * ------------------------------
- * @param {string} targetKey - The key to target e.g. 'Alt', or 'Shift'
- * @param {tuple} [keydownHandler, keyupHandler] - Optional event handlers
- * @returns {boolean} keyIsDown - whether or not the target key is down
- */
-
-export function useKeyDown(targetKey, [keydownHandler, keyupHandler] = []) {
-  const [keyIsDown, setKeyDown] = useState(false);
-
-  const handleKeyDown = e => {
-    if (e.key !== targetKey) return;
-    if (keydownHandler) keydownHandler(e);
-
-    setKeyDown(true);
-  };
-  const handleKeyUp = e => {
-    if (e.key !== targetKey) return;
-    if (keyupHandler) keyupHandler(e);
-
-    setKeyDown(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown, { isPassive: true });
-    document.addEventListener('keyup', handleKeyUp, { isPassive: true });
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown, { isPassive: true });
-      document.removeEventListener('keyup', handleKeyUp, { isPassive: true });
-    };
-  });
-
-  return keyIsDown;
 }

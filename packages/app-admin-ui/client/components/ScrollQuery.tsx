@@ -8,7 +8,7 @@ const LISTENER_OPTIONS: EventListenerOptions = { passive: true };
 type Props = {
   isPassive?: $TSFixMe;
   render?: Function;
-  children?: (Ref, State) => $TSFixMe;
+  children?: (ref: Ref<Element>, state: State) => $TSFixMe;
 };
 
 type State = {
