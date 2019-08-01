@@ -58,7 +58,7 @@ const Relative = styled(Col)({
 });
 type GrabHandleProps = {
   isActive: boolean;
-}
+};
 const GrabHandle = styled.div<GrabHandleProps>(({ isActive }) => ({
   backgroundColor: alpha(colors.text, 0.06),
   height: isActive ? '100%' : 0,
@@ -91,7 +91,7 @@ const GrabHandle = styled.div<GrabHandleProps>(({ isActive }) => ({
 type CollapseExpandProps = {
   isCollapsed: boolean;
   mouseIsOverNav: boolean;
-}
+};
 const CollapseExpand = styled.button<CollapseExpandProps>(({ isCollapsed, mouseIsOverNav }) => {
   const size = 32;
   const offsetTop = 20;

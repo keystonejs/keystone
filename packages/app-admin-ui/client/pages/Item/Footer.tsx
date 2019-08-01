@@ -79,7 +79,7 @@ type Props = {
   onReset?: $TSFixMe;
   hasWarnings?: $TSFixMe;
   hasErrors?: $TSFixMe;
-}
+};
 
 export default memo(function Footer(props: Props) {
   const { onSave, onDelete, canReset, updateInProgress, onReset, hasWarnings, hasErrors } = props;

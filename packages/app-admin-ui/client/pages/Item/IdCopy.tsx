@@ -11,7 +11,7 @@ import { colors } from '@arch-ui/theme';
 import { Button } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
-const CopyIcon = memo<{isCopied?}>(function CopyIcon({ isCopied }) {
+const CopyIcon = memo<{ isCopied? }>(function CopyIcon({ isCopied }) {
   return isCopied ? (
     <Animation name="pulse" duration="500ms">
       <CheckIcon css={{ color: colors.create }} />
@@ -21,7 +21,7 @@ const CopyIcon = memo<{isCopied?}>(function CopyIcon({ isCopied }) {
   );
 });
 
-export const IdCopy = memo<{id?}>(function IdCopy({ id }) {
+export const IdCopy = memo<{ id? }>(function IdCopy({ id }) {
   const [isCopied, setIsCopied] = useState(false);
   const onSuccess = useCallback(() => {
     setIsCopied(true);

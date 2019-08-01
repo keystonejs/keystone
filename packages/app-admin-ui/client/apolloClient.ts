@@ -17,7 +17,6 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   },
 });
 
-
 // Ejected from apollo-boost v0.1.4:
 // https://github.com/apollographql/apollo-client/tree/4e2b2b90b181d9c1927a721de4e26e4ed3c86637/packages/apollo-boost
 // (with Typescriptyness removed)

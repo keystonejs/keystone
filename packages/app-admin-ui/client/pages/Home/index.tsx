@@ -17,7 +17,7 @@ type Props = {
   history?: $TSFixMe;
   lists?: $TSFixMe;
   data?: $TSFixMe;
-}
+};
 class HomePage extends Component<Props> {
   state = { createFromList: null };
 

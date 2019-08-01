@@ -9,7 +9,7 @@ type Props = {
   isPassive?: $TSFixMe;
   render?: Function;
   children?: (Ref, State) => $TSFixMe;
-}
+};
 
 type State = {
   isBottom?: boolean;
@@ -18,7 +18,7 @@ type State = {
   scrollTop?: number;
   isTop?: boolean;
   scrollHeight?: $TSFixMe;
-}
+};
 
 export default class ScrollQuery extends Component<Props, State> {
   resizeObserver: ResizeObserver;

@@ -50,7 +50,7 @@ const Footer = styled(Bar)({
 });
 
 // Other
-export const DisclosureArrow = styled.span<{size?}>(({ size = '0.3em' }) => ({
+export const DisclosureArrow = styled.span<{ size? }>(({ size = '0.3em' }) => ({
   borderLeft: `${size} solid transparent`,
   borderRight: `${size} solid transparent`,
   borderTop: `${size} solid`,

@@ -27,7 +27,7 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
-import  {default as ListType } from '../../classes/List';
+import { default as ListType } from '../../classes/List';
 
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />

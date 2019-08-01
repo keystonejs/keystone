@@ -7,7 +7,7 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { Popout } from '../../../components/Popout';
 import AnimateHeight from '../../../components/AnimateHeight';
 
-const FooterButton = ({ isPrimary, ...props }: {isPrimary?; onClick?; children?; type?}) => (
+const FooterButton = ({ isPrimary, ...props }: { isPrimary?; onClick?; children?; type? }) => (
   <button
     type="button"
     css={{

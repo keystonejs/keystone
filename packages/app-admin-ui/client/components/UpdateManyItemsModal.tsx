@@ -21,14 +21,14 @@ type Props = {
   list?: $TSFixMe;
   onClose?: () => void;
   onUpdate?: () => void;
-}
+};
 
 type State = {
   item?: $TSFixMe;
   selectedFields?: $TSFixMe;
   validationErrors?: $TSFixMe;
   validationWarnings?: $TSFixMe;
-}
+};
 
 class UpdateManyModal extends Component<Props, State> {
   filterOption: $TSFixMe;
@@ -215,7 +215,13 @@ class UpdateManyModal extends Component<Props, State> {
   }
 }
 
-export default class UpdateManyModalWithMutation extends Component<{list?; isOpen?; items?; onClose?; onUpdate?}> {
+export default class UpdateManyModalWithMutation extends Component<{
+  list?;
+  isOpen?;
+  items?;
+  onClose?;
+  onUpdate?;
+}> {
   render() {
     const { list } = this.props;
     return (

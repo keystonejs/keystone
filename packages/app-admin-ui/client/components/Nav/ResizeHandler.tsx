@@ -28,7 +28,7 @@ type ResizeHandlerProps = {
     unsubscribe: Function;
   };
   children: (resizePorps, clickProps, snapshot) => Node;
-}
+};
 class ResizeHandler extends Component<ResizeHandlerProps> {
   state = getCache();
 

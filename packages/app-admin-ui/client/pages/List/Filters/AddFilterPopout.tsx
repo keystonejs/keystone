@@ -90,7 +90,7 @@ function getInitialState() {
 }
 
 type Props = {
-  existingFilters?: {type?; field?}[];
+  existingFilters?: { type?; field? }[];
   listKey?: string;
   fields?: $TSFixMe;
   onChange?: $TSFixMe;

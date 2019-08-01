@@ -5,11 +5,11 @@ import ResizeObserver from 'resize-observer-polyfill';
 type Props = {
   children?: (x: $TSFixMe) => Node;
   render?: Function;
-}
+};
 
 type State = {
   width: string;
-}
+};
 export default class ContainerQuery extends Component<Props, State> {
   resizeObserver;
   measureElement = createRef<HTMLDivElement>();

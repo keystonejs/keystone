@@ -24,16 +24,15 @@ const Render = ({ children }) => children();
 
 type Selectable = {
   isSelected?: boolean;
-}
+};
 
 type CanActive = {
   isActive?: boolean;
-}
+};
 
 type Sortable = {
   isSortable?: boolean;
-}
-
+};
 
 // Styled Components
 const Table = styled('table')({
@@ -46,7 +45,7 @@ const TableRow = styled('tr')<CanActive>(({ isActive }) => ({
     backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
   },
 }));
-const HeaderCell = styled('th')<Selectable & Sortable >(({ isSelected, isSortable }) => ({
+const HeaderCell = styled('th')<Selectable & Sortable>(({ isSelected, isSortable }) => ({
   backgroundColor: 'white',
   boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
   boxSizing: 'border-box',
@@ -98,18 +97,20 @@ const BodyCellTruncated = styled(BodyCell)`
   word-wrap: normal;
 `;
 
-const SortDirectionArrow = styled.span<{size?; rotate?}>(({ size = '0.25em', rotate = '0deg' }) => ({
-  borderLeft: `${size} solid transparent`,
-  borderRight: `${size} solid transparent`,
-  borderTop: `${size} solid`,
-  display: 'inline-block',
-  height: 0,
-  marginLeft: '0.33em',
-  marginTop: '-0.125em',
-  verticalAlign: 'middle',
-  width: 0,
-  transform: `rotate(${rotate})`,
-}));
+const SortDirectionArrow = styled.span<{ size?; rotate? }>(
+  ({ size = '0.25em', rotate = '0deg' }) => ({
+    borderLeft: `${size} solid transparent`,
+    borderRight: `${size} solid transparent`,
+    borderTop: `${size} solid`,
+    display: 'inline-block',
+    height: 0,
+    marginLeft: '0.33em',
+    marginTop: '-0.125em',
+    verticalAlign: 'middle',
+    width: 0,
+    transform: `rotate(${rotate})`,
+  })
+);
 
 // Functional Components
 
@@ -163,7 +164,7 @@ type ListRowProp = {
   isSelected: $TSFixMe;
   itemErrors: $TSFixMe;
   fields: $TSFixMe;
-}
+};
 
 class ListRow extends Component<ListRowProp> {
   mounted: boolean;
@@ -357,7 +358,7 @@ export default function ListTable(props) {
   // +2 because of check-boxes on left, and overflow menu on right
   const columns = fields.length + 2;
 
-  const TableContents: React.SFC<{isLoading?; children?}> = ({ isLoading, children }) => (
+  const TableContents: React.SFC<{ isLoading?; children? }> = ({ isLoading, children }) => (
     <Fragment>
       <colgroup>
         <col width="32" />

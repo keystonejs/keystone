@@ -65,7 +65,7 @@ type Props = {
   updateItem?: $TSFixMe;
   updateInProgress?: boolean;
   itemErrors?: $TSFixMe;
-}
+};
 
 type State = {
   item?: $TSFixMe;
@@ -74,7 +74,7 @@ type State = {
   showCreateModal?: boolean;
   validationErrors?: $TSFixMe;
   validationWarnings?: $TSFixMe;
-}
+};
 
 const ItemDetails = withRouter(
   class ItemDetails extends Component<Props, State> {

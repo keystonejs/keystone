@@ -13,7 +13,7 @@ type Props = {
   adminMeta?: $TSFixMe;
   client: $TSFixMe;
   children?: $TSFixMe;
-}
+};
 
 class Session extends Component<Props> {
   state = {

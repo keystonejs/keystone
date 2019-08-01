@@ -66,12 +66,12 @@ const Spacer = styled.div({
 });
 
 type Props = {
-isLoading?: boolean;
-signIn?: $TSFixMe;
-isSignedIn?: boolean;
-authStrategy?: $TSFixMe;
-error?: $TSFixMe;
-}
+  isLoading?: boolean;
+  signIn?: $TSFixMe;
+  isSignedIn?: boolean;
+  authStrategy?: $TSFixMe;
+  error?: $TSFixMe;
+};
 class SigninPage extends Component<Props> {
   reloading = false;
   state = {

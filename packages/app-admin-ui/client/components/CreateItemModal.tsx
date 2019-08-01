@@ -22,13 +22,13 @@ type Props = {
   onCreate: Function;
   isLoading: boolean;
   isOpen: boolean;
-}
+};
 
 type State = {
   item: $TSFixMe;
   validationErrors: $TSFixMe;
   validationWarnings: $TSFixMe;
-}
+};
 
 class CreateItemModal extends Component<Props, State> {
   onUpdate: Function;

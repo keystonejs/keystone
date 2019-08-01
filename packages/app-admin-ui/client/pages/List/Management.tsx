@@ -12,7 +12,7 @@ import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import List from '../../classes/List';
 
-export const ManageToolbar = styled.div<{isVisible?}>(({ isVisible }) => ({
+export const ManageToolbar = styled.div<{ isVisible? }>(({ isVisible }) => ({
   height: 35,
   marginBottom: gridSize * 2,
   marginTop: gridSize,
