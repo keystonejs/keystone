@@ -37,7 +37,7 @@ const adminMeta = {
 // so this function should only be called inside a react render
 function readAdminMeta() {
   if (!hasInitialisedLists) {
-    let allControllers = new Set();
+    const allControllers = new Set();
 
     Object.values(listViews).forEach(list => {
       Object.values(list).forEach(({ Controller }) => {

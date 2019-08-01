@@ -5,6 +5,7 @@ import { onError } from 'apollo-link-error';
 
 import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
+import fetch from 'cross-fetch';
 
 // This shouldn't be necessary, but it silences an annoying error from Apollo
 // Client: https://github.com/apollographql/apollo-client/issues/3397#issuecomment-421433032
@@ -16,7 +17,6 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   },
 });
 
-const fetch = require('cross-fetch');
 
 // Ejected from apollo-boost v0.1.4:
 // https://github.com/apollographql/apollo-client/tree/4e2b2b90b181d9c1927a721de4e26e4ed3c86637/packages/apollo-boost

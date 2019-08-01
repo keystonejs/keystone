@@ -27,7 +27,7 @@ type ResizeHandlerProps = {
     subscribe: Function;
     unsubscribe: Function;
   };
-  children: (resizePorps, clickProps, snapshot) => Node
+  children: (resizePorps, clickProps, snapshot) => Node;
 }
 class ResizeHandler extends Component<ResizeHandlerProps> {
   state = getCache();
@@ -62,7 +62,7 @@ class ResizeHandler extends Component<ResizeHandlerProps> {
   };
 
   initializeDrag = () => {
-    let initialWidth = this.state.width;
+    const initialWidth = this.state.width;
 
     this.setState({ initialWidth, isDragging: true });
   };

@@ -24,7 +24,7 @@ type Props = {
   onCreateClick?: (e: Event) => void;
 }
 
-export let ItemTitle = memo<Props>(function ItemTitle({ titleText, id, list, adminPath, onCreateClick }) {
+export const ItemTitle = memo<Props>(function ItemTitle({ titleText, id, list, adminPath, onCreateClick }) {
   const listHref = `${adminPath}/${list.path}`;
   const cypressId = 'item-page-create-button';
 

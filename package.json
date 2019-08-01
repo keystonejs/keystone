@@ -269,6 +269,7 @@
   },
   "prettier": {
     "proseWrap": "preserve",
+    "tabWidth": 2,
     "singleQuote": true,
     "trailingComma": "es5",
     "printWidth": 100
@@ -341,6 +342,8 @@
     ]
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "all-contributors-cli": "^6.2.0",
     "babel-eslint": "^10.0.1",
     "bolt": "^0.22.6",

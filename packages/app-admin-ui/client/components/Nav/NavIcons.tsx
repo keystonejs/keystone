@@ -12,7 +12,7 @@ import { useAdminMeta } from '../../providers/AdminMeta';
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 export function NavIcons() {
-  let { graphiqlPath, signoutPath, authStrategy } = useAdminMeta();
+  const { graphiqlPath, signoutPath, authStrategy } = useAdminMeta();
   return ENABLE_DEV_FEATURES || authStrategy ? (
     <NavGroupIcons>
       {authStrategy ? (

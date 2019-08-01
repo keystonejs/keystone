@@ -25,8 +25,8 @@ import SigninPage from './pages/Signin';
 */
 
 const Keystone = () => {
-  let adminMeta = useAdminMeta();
-  let { apiPath } = adminMeta;
+  const adminMeta = useAdminMeta();
+  const { apiPath } = adminMeta;
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
   return (

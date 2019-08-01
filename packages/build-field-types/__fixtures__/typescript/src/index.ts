@@ -1,3 +1,3 @@
-let thing: string = "something";
+let thing: string = 'something';
 
 export default thing;

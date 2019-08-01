@@ -98,7 +98,7 @@ const BodyCellTruncated = styled(BodyCell)`
   word-wrap: normal;
 `;
 
-const SortDirectionArrow = styled.span<{size?, rotate?}>(({ size = '0.25em', rotate = '0deg' }) => ({
+const SortDirectionArrow = styled.span<{size?; rotate?}>(({ size = '0.25em', rotate = '0deg' }) => ({
   borderLeft: `${size} solid transparent`,
   borderRight: `${size} solid transparent`,
   borderTop: `${size} solid`,
@@ -357,7 +357,7 @@ export default function ListTable(props) {
   // +2 because of check-boxes on left, and overflow menu on right
   const columns = fields.length + 2;
 
-  const TableContents: React.SFC<{isLoading?, children?}> = ({ isLoading, children }) => (
+  const TableContents: React.SFC<{isLoading?; children?}> = ({ isLoading, children }) => (
     <Fragment>
       <colgroup>
         <col width="32" />

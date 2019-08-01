@@ -27,7 +27,7 @@ function useKeyListener(listener, deps) {
 }
 
 function Reset({ canReset, onReset }) {
-  let [resetRequested, setResetRequested] = useState(false);
+  const [resetRequested, setResetRequested] = useState(false);
 
   useKeyListener(
     event => {

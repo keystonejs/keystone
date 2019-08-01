@@ -6,7 +6,7 @@ import List from '../classes/List';
 
 type Props = {
   isOpen: boolean;
-  itemIds: Array<string>;
+  itemIds: string[];
   list: List;
   onClose: () => void;
   onDelete: (x0: Promise<any>) => void;

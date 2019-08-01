@@ -6,7 +6,7 @@ import { FieldControllerType } from '@keystone-alpha/fields/Controller';
 import { pseudoLabelField } from './FieldSelect';
 import { AdminMeta } from '../../providers/AdminMeta';
 
-type DirectionType = "ASC" | "DESC"
+type DirectionType = 'ASC' | 'DESC'
 export type SortByType = {
   field: {
     label: string;
@@ -27,9 +27,9 @@ export type SearchType = {
   currentPage: number;
   pageSize: number;
   search: string;
-  fields: Array<FieldControllerType>;
+  fields: FieldControllerType[];
   sortBy: SortByType;
-  filters: Array<FilterType>;
+  filters: FilterType[];
 };
 
 // ==============================
@@ -165,7 +165,7 @@ export const decodeSearch = (search: string, props: Props): SearchType => {
         acc[key] = parseFields(query[key], props.list);
         break;
       case 'sortBy':
-        let sortBy = parseSortBy(query[key]as string, props.list);
+        const sortBy = parseSortBy(query[key]as string, props.list);
         if (sortBy !== null) {
           acc[key] = sortBy;
         }

@@ -27,7 +27,7 @@ type Props = {
   list: List;
   onDeleteMany: (x0?: any) => void;
   onUpdateMany: (x0?: any) => void;
-  selectedItems: Array<string>;
+  selectedItems: string[];
   pageSize?: number;
   totalItems?: number;
 };

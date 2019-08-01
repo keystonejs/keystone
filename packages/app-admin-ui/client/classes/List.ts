@@ -12,7 +12,7 @@ export default class List {
     readViews: Function;
   };
   fields: $TSFixMe;
-  fieldsByPath: { [index:string] : $TSFixMe };
+  fieldsByPath: { [index: string]: $TSFixMe };
   gqlNames: {
     createMutationName: any;
     createManyMutationName: any;
@@ -38,8 +38,8 @@ export default class List {
   plural: string;
   constructor(config, adminMeta, views) {
     this.config = config;
-    this.adminMeta = adminMeta; 
-    
+    this.adminMeta = adminMeta;
+
     // TODO: undo this
     Object.assign(this, config);
 
@@ -149,7 +149,7 @@ export default class List {
   }
 
   deserializeItemData(item) {
-    return { 
+    return {
       ...mapKeys(this.fieldsByPath, field => field.deserialize(item)),
       // Handle the special case of `_label_` (and potentially others)
       ...omit(item, Object.keys(this.fieldsByPath)),

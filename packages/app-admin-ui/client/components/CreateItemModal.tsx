@@ -13,7 +13,7 @@ import PageLoading from './PageLoading';
 import { validateFields } from '../util';
 import List from '../classes/List';
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
 type Props = {
   list: List;
@@ -150,8 +150,8 @@ class CreateItemModal extends Component<Props, State> {
                 return list.fields.map((field, i) => (
                   <Render key={field.path}>
                     {() => {
-                      let [Field] = field.adminMeta.readViews([field.views.Field]);
-                      let onChange = useCallback(value => {
+                      const [Field] = field.adminMeta.readViews([field.views.Field]);
+                      const onChange = useCallback(value => {
                         this.setState(({ item }) => ({
                           item: {
                             ...item,

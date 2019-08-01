@@ -6,7 +6,7 @@ import List from '../classes/List';
 
 type Props = {
   isOpen: boolean;
-  itemIds?: Array<string>;
+  itemIds?: string[];
   list: List;
   item: {
     _label_: string;

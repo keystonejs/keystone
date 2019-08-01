@@ -33,8 +33,8 @@ const findCustomPages = (pages, allPages = []) => {
 };
 
 const Keystone = () => {
-  let adminMeta = useAdminMeta();
-  let { adminPath, signoutPath, apiPath, pages, pageViews, readViews } = adminMeta;
+  const adminMeta = useAdminMeta();
+  const { adminPath, signoutPath, apiPath, pages, pageViews, readViews } = adminMeta;
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
   return (

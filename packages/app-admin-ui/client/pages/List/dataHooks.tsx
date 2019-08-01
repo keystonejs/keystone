@@ -123,7 +123,7 @@ export function useListModifier(listKey) {
    * @returns {undefined}
    */
   return function setSearch(changes, addHistoryRecord = true) {
-    let overrides = {};
+    const overrides = {};
 
     // NOTE: some changes should reset the currentPage number to 1.
     // eg: typing in the search box or changing filters
@@ -414,7 +414,7 @@ export function useListSelect(items) {
   };
   const shiftIsDown = useKeyDown('Shift', [handleKeyDown, handleKeyUp]);
 
-  const onSelect = (value: string | Array<string>) => {
+  const onSelect = (value: string | string[]) => {
     let nextSelected = selectedItems.slice(0);
 
     if (Array.isArray(value)) {

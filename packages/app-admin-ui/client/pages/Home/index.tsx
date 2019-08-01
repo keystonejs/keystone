@@ -28,8 +28,8 @@ class HomePage extends Component<Props> {
   closeCreateModal = () => this.setState({ createFromList: null });
 
   onCreate = list => ({ data }) => {
-    let { adminPath, history } = this.props;
-    let id = data[list.gqlNames.createMutationName].id;
+    const { adminPath, history } = this.props;
+    const id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 

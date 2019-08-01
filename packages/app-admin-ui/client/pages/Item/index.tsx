@@ -35,7 +35,7 @@ import {
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
 const Form = styled.form({
   marginBottom: gridSize * 3,
@@ -56,13 +56,13 @@ const deserializeItem = memoizeOne((list, data) =>
 
 type Props = {
   item?: $TSFixMe;
-  adminPath?:string;
-  history?:$TSFixMe;
-  list?:$TSFixMe;
-  toast?:$TSFixMe;
-  onUpdate?:$TSFixMe;
-  toastManager?:$TSFixMe;
-  updateItem?:$TSFixMe;
+  adminPath?: string;
+  history?: $TSFixMe;
+  list?: $TSFixMe;
+  toast?: $TSFixMe;
+  onUpdate?: $TSFixMe;
+  toastManager?: $TSFixMe;
+  updateItem?: $TSFixMe;
   updateInProgress?: boolean;
   itemErrors?: $TSFixMe;
 }
@@ -305,7 +305,7 @@ const ItemDetails = withRouter(
                   {() => {
                     const [Field] = field.adminMeta.readViews([field.views.Field]);
 
-                    let onChange = useCallback(
+                    const onChange = useCallback(
                       value => {
                         this.setState(({ item: itm }) => ({
                           item: {

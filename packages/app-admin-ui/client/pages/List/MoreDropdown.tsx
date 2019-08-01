@@ -9,14 +9,14 @@ import { useMeasure } from '@arch-ui/hooks';
 
 import { useReset } from './dataHooks';
 
-let dropdownTarget = props => (
+const dropdownTarget = props => (
   <IconButton {...props} variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
     <A11yText>Show more...</A11yText>
   </IconButton>
 );
 
 export function MoreDropdown({ listKey, measureRef, isFullWidth, onFullWidthToggle }) {
-  let { width } = useMeasure(measureRef);
+  const { width } = useMeasure(measureRef);
   const onReset = useReset(listKey);
   const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
   const tableToggleIsAvailable = width > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;

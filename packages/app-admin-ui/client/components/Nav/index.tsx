@@ -215,10 +215,10 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, on
 
 function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOverNav }) {
   let hasRenderedIndexPage = false;
-  let onRenderIndexPage = () => {
+  const onRenderIndexPage = () => {
     hasRenderedIndexPage = true;
   };
-  let pageNavItems =
+  const pageNavItems =
     pages && pages.length
       ? pages.map(node =>
           renderChildren(node, mouseIsOverNav, getListByKey, adminPath, 0, onRenderIndexPage)
@@ -253,8 +253,8 @@ function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOver
   );
 }
 
-let PrimaryNavContent = ({ mouseIsOverNav }) => {
-  let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
+const PrimaryNavContent = ({ mouseIsOverNav }) => {
+  const { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
 
   return (
     <Inner>

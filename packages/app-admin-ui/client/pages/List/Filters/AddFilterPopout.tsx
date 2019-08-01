@@ -90,7 +90,7 @@ function getInitialState() {
 }
 
 type Props = {
-  existingFilters?: Array<{type?, field?}>;
+  existingFilters?: {type?; field?}[];
   listKey?: string;
   fields?: $TSFixMe;
   onChange?: $TSFixMe;
@@ -101,7 +101,7 @@ type State = {
   value: string;
 };
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
 export default class AddFilterPopout extends Component<Props, State> {
   state = getInitialState();
@@ -340,7 +340,7 @@ export default class AddFilterPopout extends Component<Props, State> {
               >
                 <Render>
                   {() => {
-                    let [Filter] = field.adminMeta.readViews([field.views.Filter]);
+                    const [Filter] = field.adminMeta.readViews([field.views.Filter]);
 
                     return (
                       <Filter

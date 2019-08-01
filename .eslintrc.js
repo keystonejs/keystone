@@ -84,5 +84,26 @@ module.exports = {
         'import/no-unresolved': 'off',
       },
     },
+    {
+      files: ['packages/app-admin-ui/**/*.ts', 'packages/app-admin-ui/**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: 'packages/app-admin-ui/',
+      },
+      plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jest', 'cypress', 'import', 'emotion'],
+      extends: [
+        'plugin:jest/recommended',
+        'eslint:recommended',
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended',
+      ],
+      rules: {
+        '@typescript-eslint/indent': 'off',
+        '@typescript-eslint/prefer-interface': 'off',
+        'import/no-unresolved': 'off',
+        '@typescript-eslint/explicit-member-accessibility': 'off',
+      },
+    },
   ],
 };

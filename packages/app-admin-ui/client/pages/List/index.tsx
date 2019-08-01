@@ -39,9 +39,9 @@ type Props = {
   routeProps: object;
 };
 type LayoutProps = Props & {
-  items: Array<object>;
+  items: object[];
   itemCount: number;
-  queryErrors: Array<object>;
+  queryErrors: object[];
 };
 
 function ListLayout(props: LayoutProps) {
@@ -97,7 +97,7 @@ function ListLayout(props: LayoutProps) {
     query.refetch();
   };
   const onCreate = ({ data }) => {
-    let id = data[list.gqlNames.createMutationName].id;
+    const id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
     query.refetch();
   };

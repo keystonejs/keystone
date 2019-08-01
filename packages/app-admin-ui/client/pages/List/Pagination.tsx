@@ -47,7 +47,7 @@ export function getPaginationLabel({
   }
 
   let count = '';
-  let { end, start } = getRange({ currentPage, pageSize, total });
+  const { end, start } = getRange({ currentPage, pageSize, total });
 
   if (total > pageSize) {
     count = `Showing ${start} to ${end} of ${total}`;
