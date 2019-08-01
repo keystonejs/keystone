@@ -6,13 +6,13 @@ exports[`typescript: dist/typescript.cjs.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-let thing = \\"something\\";
+let thing = \'something\';
 exports.default = thing;
 "
 `;
 
 exports[`typescript: dist/typescript.esm.js 1`] = `
-"let thing = \\"something\\";
+"let thing = \'something\';
 export default thing;
 "
 `;
@@ -33,7 +33,7 @@ Object {
 `;
 
 exports[`typescript: src/index.ts 1`] = `
-"let thing: string = \\"something\\";
+"let thing: string = \'something\';
 
 export default thing;
 "
