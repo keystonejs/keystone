@@ -10,17 +10,15 @@ title: Database Adapter - Mongoose
 ```javascript
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
-const keystone = new Keystone({
-  name: 'My Awesome Project',
-  adapter: new MongooseAdapter(),
-});
-
 const mongooseOptions = {
   /* .. */
 };
-const mongoDbUri = '';
 
-keystone.connect(mongoDbUri, mongooseOptions);
+const keystone = new Keystone({
+  name: 'My Awesome Project',
+  adapter: new MongooseAdapter(),
+  adapterConnectOptions: mongooseOptions,
+});
 ```
 
 ## API
