@@ -172,7 +172,9 @@ class Field {
       path: this.path,
       type: this.constructor.name,
       isRequired: this.isRequired,
-      defaultValue: this.getDefaultValue(),
+      // We can only pass scalar default values through to the admin ui, not
+      // functions
+      defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
       isPrimaryKey: this.isPrimaryKey,
     });
   }

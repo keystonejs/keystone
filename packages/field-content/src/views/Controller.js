@@ -33,8 +33,9 @@ const flattenBlocks = inputBlocks =>
   }, {});
 
 export default class ContentController extends Controller {
-  constructor(...args) {
-    super(...args);
+  constructor(config, ...args) {
+    const defaultValue = 'defaultValue' in config ? config.defaultValue : Value.fromJSON(initialValue);
+    super({ ...config, defaultValue }, ...args);
 
     // Attach this as a memoized member function to avoid two pitfalls;
     // 1. Don't load all the block views up front. Instead, lazily load them
@@ -150,8 +151,6 @@ export default class ContentController extends Controller {
 
     return deserialize(parsedData, blocks);
   };
-
-  getDefaultValue = () => Value.fromJSON(initialValue);
 
   getQueryFragment = () => `
     ${this.path} {

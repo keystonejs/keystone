@@ -115,8 +115,8 @@ export default class List {
     return `${this.gqlNames.listQueryMetaName}${metaQueryArgs} { count }`;
   }
 
-  getInitialItemData() {
-    return mapKeys(this.fieldsByPath, field => field.getDefaultValue());
+  getInitialItemData({ originalInput = {} }) {
+    return mapKeys(this.fieldsByPath, field => field.getDefaultValue({ originalInput }));
   }
 
   deserializeItemData(item) {

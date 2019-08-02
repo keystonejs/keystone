@@ -58,7 +58,7 @@ class UpdateManyModal extends Component {
   };
 
   resetState = () => {
-    this.setState({ item: this.props.list.getInitialItemData(), selectedFields: [] });
+    this.setState({ item: this.props.list.getInitialItemData({}), selectedFields: [] });
   };
   onClose = () => {
     const { isLoading } = this.props;

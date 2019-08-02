@@ -6,7 +6,6 @@ const config = {
   type: 'type',
   list: 'list',
   adminMeta: 'adminMeta',
-  defaultValue: 'default',
 };
 
 describe('new Controller()', () => {
@@ -58,15 +57,67 @@ describe('deserialize()', () => {
 });
 
 describe('getDefaultValue()', () => {
-  test('getDefaultValue() - Default defined', () => {
-    const controller = new FieldController(config, 'list', 'adminMeta');
-    const value = controller.getDefaultValue();
+  test('No default', () => {
+    const controller = new FieldController(
+      config,
+      'list',
+      'adminMeta'
+    );
+    const value = controller.getDefaultValue({});
+    expect(value).toEqual(undefined);
+  });
+
+  test('Default defined as `undefined`', () => {
+    const controller = new FieldController(
+      { ...config, defaultValue: undefined },
+      'list',
+      'adminMeta'
+    );
+    const value = controller.getDefaultValue({});
+    expect(value).toEqual(undefined);
+  });
+
+  test('Default defined as `null`', () => {
+    const controller = new FieldController(
+      { ...config, defaultValue: null },
+      'list',
+      'adminMeta'
+    );
+    const value = controller.getDefaultValue({});
+    expect(value).toEqual(null);
+  });
+
+  test('Default defined as a string', () => {
+    const controller = new FieldController(
+      { ...config, defaultValue: 'default' },
+      'list',
+      'adminMeta'
+    );
+    const value = controller.getDefaultValue({});
     expect(value).toEqual('default');
   });
 
-  test('getDefaultValue() - No default', () => {
-    const controller = new FieldController({}, 'list', 'adminMeta');
-    const value = controller.getDefaultValue();
-    expect(value).toEqual('');
-  });
+  describe('default as a function', () => {
+    test('function is executed', () => {
+      const controller = new FieldController(
+        { ...config, defaultValue: () => 'default' },
+        'list',
+        'adminMeta'
+      );
+      const value = controller.getDefaultValue({});
+      expect(value).toEqual('default');
+    });
+
+    test('receives expected paramaters', () => {
+      const originalInput = {};
+      const defaultValue = jest.fn(() => 'default');
+      const controller = new FieldController(
+        { ...config, defaultValue },
+        'list',
+        'adminMeta'
+      );
+      controller.getDefaultValue({ originalInput });
+      expect(defaultValue).toHaveBeenCalledWith({ originalInput });
+    });
+  });;
 });
