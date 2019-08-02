@@ -1088,12 +1088,25 @@ module.exports = class List {
     );
   }
 
-  async _resolveDefaults(data) {
-    // FIXME: Consider doing this in a way which only calls getDefaultValue once.
-    const fields = this.fields.filter(field => field.getDefaultValue() !== undefined);
+  async _resolveDefaults({ existingItem, context, originalInput }) {
+    const args = {
+      existingItem,
+      context,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+
+    const fieldsWithoutValues = this.fields.filter(
+      field => typeof originalInput[field.path] === 'undefined'
+    );
+
+    const defaultValues = await this._mapToFields(fieldsWithoutValues, field =>
+      field.getDefaultValue(args)
+    );
+
     return {
-      ...(await this._mapToFields(fields, field => field.getDefaultValue())),
-      ...data,
+      ...omitBy(defaultValues, path => typeof defaultValues[path] === 'undefined'),
+      ...originalInput,
     };
   }
 
@@ -1327,10 +1340,10 @@ module.exports = class List {
     );
   }
 
-  async _createSingle(data, existingItem, context, mutationState) {
+  async _createSingle(originalInput, existingItem, context, mutationState) {
     const operation = 'create';
     return await this._nestedMutation(mutationState, context, async mutationState => {
-      const defaultedItem = await this._resolveDefaults(data);
+      const defaultedItem = await this._resolveDefaults({ existingItem, context, originalInput });
 
       // Enable resolveRelationship to perform some action after the item is created by
       // giving them a promise which will eventually resolve with the value of the
@@ -1345,11 +1358,17 @@ module.exports = class List {
         mutationState
       );
 
-      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      resolvedData = await this._resolveInput(
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput
+      );
 
-      await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this._validateInput(resolvedData, existingItem, context, operation, originalInput);
 
-      await this._beforeChange(resolvedData, existingItem, context, operation, data);
+      await this._beforeChange(resolvedData, existingItem, context, operation, originalInput);
 
       let newItem;
       try {
@@ -1369,7 +1388,8 @@ module.exports = class List {
 
       return {
         result: newItem,
-        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+        afterHook: () =>
+          this._afterChange(newItem, existingItem, context, operation, originalInput),
       };
     });
   }

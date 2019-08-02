@@ -90,9 +90,9 @@ export default class FieldController {
     !isEqual(initialData[this.path], currentData[this.path]);
 
   // eslint-disable-next-line no-unused-vars
-  getDefaultValue = ({ originalInput }) => {
+  getDefaultValue = ({ originalInput = {} } = {}) => {
     return this._getDefaultValue({ originalInput });
-  }
+  };
 
   initCellView = () => {
     const { Cell } = this.views;

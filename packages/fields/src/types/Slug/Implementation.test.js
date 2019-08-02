@@ -29,7 +29,7 @@ const setupList = (adapterName, fields) =>
   });
 
 describe('Slug#implementation', () => {
-  multiAdapterRunners('knex').map(({ runner, adapterName }) =>
+  multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {
       it('Instantiates correctly if from is a string', () => {
         expect(() => {

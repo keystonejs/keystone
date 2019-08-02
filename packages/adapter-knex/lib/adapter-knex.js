@@ -654,12 +654,11 @@ class KnexFieldAdapter extends BaseFieldAdapter {
         // will return until it's executed, so we err on the side of
         // permissiveness and assume the function may return `null`, and hence
         // this field is nullable.
-        if (typeof this.field.config.defaultValue === 'function') {
+        if (typeof this.field.defaultValue === 'function') {
           this._isNotNullable = false;
         } else {
           this._isNotNullable =
-            typeof this.field.config.defaultValue !== 'undefined' &&
-            this.field.config.defaultValue !== null;
+            typeof this.field.defaultValue !== 'undefined' && this.field.defaultValue !== null;
         }
       }
     }

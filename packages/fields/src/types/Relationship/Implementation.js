@@ -359,9 +359,6 @@ export class Relationship extends Implementation {
   get gqlCreateInputFields() {
     return this.gqlUpdateInputFields;
   }
-  getDefaultValue() {
-    return null;
-  }
 }
 
 export class MongoRelationshipInterface extends MongooseFieldAdapter {

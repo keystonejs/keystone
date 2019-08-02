@@ -1347,7 +1347,7 @@ test('authenticatedQuery', async () => {
 test('createMutation', async () => {
   const list = setup();
   const result = await list.createMutation({ name: 'test', email: 'test@example.com' }, context);
-  expect(result).toEqual({ name: 'test', email: 'test@example.com', index: 3, other: null });
+  expect(result).toEqual({ name: 'test', email: 'test@example.com', index: 3 });
 });
 
 test('createManyMutation', async () => {
@@ -1360,8 +1360,8 @@ test('createManyMutation', async () => {
     context
   );
   expect(result).toEqual([
-    { name: 'test1', email: 'test1@example.com', index: 3, other: null },
-    { name: 'test2', email: 'test2@example.com', index: 4, other: null },
+    { name: 'test1', email: 'test1@example.com', index: 3 },
+    { name: 'test2', email: 'test2@example.com', index: 4 },
   ]);
 });
 
