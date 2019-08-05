@@ -1,0 +1,14 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/app-admin-ui", "type": "patch" },
+    { "name": "@arch-ui/options", "type": "patch" },
+    { "name": "@arch-ui/select", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" },
+    { "name": "@keystone-alpha/website", "type": "patch" }
+  ],
+  "dependents": [
+    { "name": "@arch-ui/docs", "type": "patch", "dependencies": ["@arch-ui/select"] },
+    { "name": "@arch-ui/day-picker", "type": "patch", "dependencies": ["@arch-ui/select"] }
+  ]
+}
