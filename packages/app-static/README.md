@@ -24,7 +24,7 @@ module.exports = {
     new AdminUIApp(),
     new StaticApp({
       path: '/',
-      src: pathModule.join(__dirname, 'build'),
+      src: 'public',
       fallback: 'index.html',
     }),
   ],
