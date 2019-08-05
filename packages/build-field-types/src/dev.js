@@ -3,7 +3,6 @@ import { Project } from './project';
 import { success, info } from './logger';
 import * as fs from 'fs-extra';
 import path from 'path';
-import endent from 'endent';
 
 export default async function dev(projectDir: string) {
   let project: Project = await Project.create(projectDir);
@@ -23,18 +22,16 @@ export default async function dev(projectDir: string) {
             fs.symlink(entrypoint.source, path.join(entrypoint.directory, entrypoint.module)),
             fs.writeFile(
               path.join(entrypoint.directory, entrypoint.main),
-              endent`
-            'use strict';
+              `"use strict";
 
-            let unregister = require('${require.resolve('@preconstruct/hook')}').___internalHook('${
-                project.directory
-              }');
+let unregister = require(${JSON.stringify(
+                require.resolve('@preconstruct/hook')
+              )}).___internalHook(${JSON.stringify(project.directory)});
 
-            module.exports = require('${entrypoint.source}');
+module.exports = require(${JSON.stringify(entrypoint.source)});
 
-            unregister();
-            
-            `
+unregister();
+`
             ),
           ]);
         })
