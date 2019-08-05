@@ -43,4 +43,4 @@ The path to the folder containing static files.
 
 #### `fallback` (optional)
 
-The name of the file to serve if none is found.
+The path to the file to serve if none is found. This path is resolved relative to the `src` path.
