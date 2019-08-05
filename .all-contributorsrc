@@ -162,6 +162,63 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "wesbos",
+      "name": "Wes Bos",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/176013?v=4",
+      "profile": "http://www.wesbos.com",
+      "contributions": [
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "vlad-elagin",
+      "name": "vlad-elagin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/28232030?v=4",
+      "profile": "https://github.com/vlad-elagin",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Olya-Yer",
+      "name": "Olya-Yer ",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/33322677?v=4",
+      "profile": "https://github.com/Olya-Yer",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "1337cookie",
+      "name": "1337cookie",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15826769?v=4",
+      "profile": "https://github.com/1337cookie",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MadeByMike",
+      "name": "Mike",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1320567?v=4",
+      "profile": "http://madebymike.com.au",
+      "contributions": [
+        "ideas",
+        "projectManagement",
+        "review"
+      ]
+    },
+    {
+      "login": "jordanoverbye",
+      "name": "Jordan Overbye",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6265154?v=4",
+      "profile": "https://jordanoverbye.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7

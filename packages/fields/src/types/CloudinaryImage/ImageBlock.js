@@ -1,12 +1,11 @@
 import pluralize from 'pluralize';
 import { importView } from '@keystone-alpha/build-field-types';
 
-import { Block } from '../../Block';
+import { Block } from '@keystone-alpha/field-content/Block';
+import { imageContainer, caption } from '@keystone-alpha/field-content/blocks';
 import CloudinaryImage from './';
 import SelectType from '../Select';
 import RelationshipType from '../Relationship';
-import image from '../Content/blocks/image';
-import caption from '../Content/blocks/caption';
 
 const RelationshipWrapper = {
   ...RelationshipType,
@@ -75,7 +74,7 @@ export class ImageBlock extends Block {
   getAdminViews() {
     return [
       importView('./views/blocks/single-image'),
-      ...new image().getAdminViews(),
+      ...new imageContainer().getAdminViews(),
       ...new caption().getAdminViews(),
     ];
   }

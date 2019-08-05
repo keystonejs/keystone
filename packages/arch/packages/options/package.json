@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/options",
   "description": "Options UI as used in @keystone-alpha Admin UI.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/options.cjs.js",
@@ -16,8 +16,8 @@
     "@arch-ui/icons": "^0.0.5",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.10",
-    "react-select": "3.0.4"
+    "@emotion/core": "^10.0.14",
+    "react-select": "^3.0.4"
   },
   "module": "dist/options.esm.js"
 }

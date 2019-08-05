@@ -1,5 +1,13 @@
 # @keystone-alpha/build-field-types
 
+## 1.0.4
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade jest dependency
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
+
 ## 1.0.3
 
 ### Patch Changes

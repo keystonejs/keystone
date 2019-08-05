@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/button",
   "description": "Button Components as used in @keystone-alpha Admin UI.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/button.cjs.js",
@@ -14,11 +14,11 @@
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.1",
     "@arch-ui/common": "^0.0.6",
-    "@arch-ui/loading": "^0.0.7",
+    "@arch-ui/loading": "^0.0.8",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.10",
-    "@emotion/styled": "^10.0.10",
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14",
     "react-pseudo-state": "^2.2.2",
     "react-router-dom": "5.0.0"
   },

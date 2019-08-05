@@ -1,5 +1,58 @@
 # keystone_demo_blog
 
+## 2.0.0
+
+### Major Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Switch to Next.js 9 dynamic routes, and use a Slug field instead of the `id` for routes.
+
+## 1.2.7
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
+  - @keystone-alpha/adapter-mongoose@3.0.0
+  - @keystone-alpha/keystone@9.0.0
+  - @keystone-alpha/fields@10.0.0
+  - @keystone-alpha/fields-markdown@1.0.3
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.5
+  - @keystone-alpha/app-admin-ui@5.1.0
+
+## 1.2.6
+
+- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/adapter-mongoose@2.2.1
+  - @keystone-alpha/keystone@8.0.0
+  - @keystone-alpha/fields@9.1.0
+
+## 1.2.5
+
+### Patch Changes
+
+- [db212300](https://github.com/keystonejs/keystone-5/commit/db212300):
+
+  Upgrade next to v9 and remove support for next-routes. You should switch to the native support for dynamic routes in next@9
+
+* Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/app-admin-ui@5.0.4
+  - @keystone-alpha/fields-markdown@1.0.2
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.4
+  - @keystone-alpha/fields@9.0.0
+  - @keystone-alpha/keystone@7.0.3
+
+## 1.2.4
+
+- Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/app-admin-ui@5.0.3
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.3
+  - @keystone-alpha/keystone@7.0.2
+  - @keystone-alpha/fields@8.0.0
+
 ## 1.2.3
 
 - Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):

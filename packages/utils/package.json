@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/utils",
   "description": "Common utility functions used throughout @keystone-alpha packages.",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/utils.cjs.js",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.3",
-    "p-is-promise": "^2.1.0",
+    "p-is-promise": "^3.0.0",
     "p-lazy": "^3.0.0",
     "p-reflect": "^2.1.0"
   }

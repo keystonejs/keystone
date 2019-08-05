@@ -47,9 +47,7 @@ class PasswordAuthStrategy {
     ) {
       throw new Error(
         `Field type specified does not support required functionality.` +
-          `The PasswordAuthStrategy for list '${
-            this.listKey
-          }' is using a secretField of '${secretField}'` +
+          `The PasswordAuthStrategy for list '${this.listKey}' is using a secretField of '${secretField}'` +
           ` but field type does not provide the required compare() functionality.`
       );
     }
@@ -75,9 +73,7 @@ class PasswordAuthStrategy {
     }
     if (results.length > 1) {
       const key = '[passwordAuth:identity:multipleFound]';
-      const message = `${key} The ${identityField} provided identified ${results.length} ${
-        list.plural
-      }`;
+      const message = `${key} The ${identityField} provided identified ${results.length} ${list.plural}`;
       return { success: false, message };
     }
 

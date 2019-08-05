@@ -1,27 +1,31 @@
 const path = require('path');
 
 exports.port = process.env.PORT || 3000;
-exports.appURL = process.env.APP_URL || `http://localhost:${exports.port}`;
+exports.hostURL = process.env.HOST_URL || `http://localhost:${exports.port}`;
 
-exports.facebookAppKey = process.env.FACEBOOK_APP_KEY;
-exports.facebookAppSecret = process.env.FACEBOOK_APP_SECRET;
-exports.facebookAuthEnabled = exports.facebookAppKey && exports.facebookAppSecret;
+exports.facebook = process.env.FACEBOOK_APP_ID &&
+  process.env.FACEBOOK_APP_SECRET && {
+    appId: process.env.FACEBOOK_APP_ID,
+    appSecret: process.env.FACEBOOK_APP_SECRET,
+  };
 
-exports.githubAppKey = process.env.GITHUB_APP_KEY;
-exports.githubAppSecret = process.env.GITHUB_APP_SECRET;
-exports.githubAuthEnabled = exports.githubAppKey && exports.githubAppSecret;
+exports.google = process.env.GOOGLE_APP_ID &&
+  process.env.GOOGLE_APP_SECRET && {
+    appId: process.env.GOOGLE_APP_ID,
+    appSecret: process.env.GOOGLE_APP_SECRET,
+  };
 
-exports.twitterAppKey = process.env.TWITTER_APP_KEY;
-exports.twitterAppSecret = process.env.TWITTER_APP_SECRET;
-exports.twitterAuthEnabled = exports.twitterAppKey && exports.twitterAppSecret;
+exports.twitter = process.env.TWITTER_APP_ID &&
+  process.env.TWITTER_APP_SECRET && {
+    appId: process.env.TWITTER_APP_ID,
+    appSecret: process.env.TWITTER_APP_SECRET,
+  };
 
-exports.googleAppKey = process.env.GOOGLE_APP_KEY;
-exports.googleAppSecret = process.env.GOOGLE_APP_SECRET;
-exports.googleAuthEnabled = exports.googleAppKey && exports.googleAppSecret;
-
-exports.wpAppKey = process.env.WP_APP_KEY;
-exports.wpAppSecret = process.env.WP_APP_SECRET;
-exports.wpAuthEnabled = exports.wpAppKey && exports.wpAppSecret;
+exports.github = process.env.GITHUB_APP_ID &&
+  process.env.GITHUB_APP_SECRET && {
+    appId: process.env.GITHUB_APP_ID,
+    appSecret: process.env.GITHUB_APP_SECRET,
+  };
 
 exports.cookieSecret = 'qwerty';
 

@@ -119,9 +119,7 @@ export let getRollupConfig = (
         case 'UNRESOLVED_IMPORT': {
           if (/^@babel\/runtime\/helpers\//.test(warning.source)) {
             throw new FatalError(
-              `Babel helpers (functions inserted by Babel transforms) should be imported from the @babel/runtime package to reduce bundle size but @babel/runtime is not in the dependencies of ${
-                pkg.name
-              }, please add it there.`,
+              `Babel helpers (functions inserted by Babel transforms) should be imported from the @babel/runtime package to reduce bundle size but @babel/runtime is not in the dependencies of ${pkg.name}, please add it there.`,
               pkg
             );
           }

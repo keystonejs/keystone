@@ -47,7 +47,17 @@ export class MongoFloatInterface extends CommonFloatInterface(MongooseFieldAdapt
 }
 
 export class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.float(this.path);
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  addToTableSchema(table) {
+    const column = table.float(this.path);
+    if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
+    if (this.isNotNullable) column.notNullable();
+    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }

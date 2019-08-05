@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.1.2",
+  "version": "1.1.6",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,19 +18,19 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/login/.env file.\nSee test-projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^2.2.0",
-    "@keystone-alpha/app-admin-ui": "^5.0.1",
-    "@keystone-alpha/app-graphql": "^6.2.0",
-    "@keystone-alpha/fields": "^7.1.0",
-    "@keystone-alpha/keystone": "^7.0.0",
-    "@keystone-alpha/app-static": "^1.0.2",
-    "@keystone-alpha/session": "^2.0.0",
+    "@keystone-alpha/adapter-mongoose": "^3.0.0",
+    "@keystone-alpha/app-admin-ui": "^5.1.0",
+    "@keystone-alpha/app-graphql": "^6.3.1",
+    "@keystone-alpha/fields": "^10.0.0",
+    "@keystone-alpha/keystone": "^9.0.0",
+    "@keystone-alpha/app-static": "^1.0.3",
+    "@keystone-alpha/session": "^2.0.1",
     "body-parser": "^1.18.2",
     "cross-env": "^5.2.0",
-    "express": "^4.16.3"
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "cypress": "^3.2.0",
+    "cypress": "^3.4.0",
     "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",
     "mocha": "^5.2.0",

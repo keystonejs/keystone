@@ -3,7 +3,7 @@ section: field-types
 title: OEmbed Field Type
 [meta]-->
 
-# OEmbed Field Type
+# OEmbed
 
 > oEmbed is a format for allowing an embedded representation of a URL on third
 > party sites. The simple API allows a website to display embedded content (such
@@ -14,7 +14,7 @@ title: OEmbed Field Type
 
 ## Usage
 
-```javascript
+```js
 const { Keystone } = require('@keystone-alpha/keystone');
 const { OEmbed } = require('@keystone-alpha/fields');
 const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
@@ -27,13 +27,24 @@ const iframelyAdapter = new IframelyOEmbedAdapter({
 
 keystone.createList('User', {
   fields: {
-    portfolio: {
-      type: OEmbed,
-      adapter: iframelyAdapter,
-    },
+    name: { type: Text },
+    portfolio: { type: OEmbed, adapter: iframelyAdapter },
+    // ..
   },
 });
 ```
+
+### Config
+
+| Option       | Type      | Default | Description                      |
+| ------------ | --------- | ------- | -------------------------------- |
+| `isRequired` | `Boolean` | `false` | Does this field require a value? |
+
+```DOCS_TODO
+TODO
+```
+
+## GraphQL
 
 Will add the following to the GraphQL schema:
 
@@ -223,4 +234,10 @@ Will result in something like:
     }
   }
 }
+```
+
+---
+
+```DOCS_TODO
+TODO: Clean up and standardisation
 ```

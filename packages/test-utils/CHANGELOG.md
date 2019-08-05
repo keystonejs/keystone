@@ -1,5 +1,40 @@
 # @keystone-alpha/test-utils
 
+## 2.2.0
+
+### Minor Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Add a `delete` method to test runners so they can remove items as part of a unit test.
+
+## 2.1.0
+
+### Minor Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade to mongoose 5.6.5
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade promise utility dependencies
+
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
+  - @keystone-alpha/adapter-knex@3.0.0
+  - @keystone-alpha/adapter-mongoose@3.0.0
+  - @keystone-alpha/keystone@9.0.0
+
+## 2.0.7
+
+- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+  - @keystone-alpha/adapter-knex@2.1.0
+  - @keystone-alpha/adapter-mongoose@2.2.1
+  - @keystone-alpha/keystone@8.0.0
+
+## 2.0.6
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/adapter-knex@2.0.0
+  - @keystone-alpha/keystone@7.0.3
+
 ## 2.0.5
 
 ### Patch Changes

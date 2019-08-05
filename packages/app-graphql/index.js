@@ -1,6 +1,7 @@
 const createCorsMiddleware = require('cors');
 const falsey = require('falsey');
 const { commonSessionMiddleware } = require('@keystone-alpha/session');
+const flattenDeep = require('lodash.flattendeep');
 const createGraphQLMiddleware = require('./lib/graphql');
 const { createApolloServer } = require('./lib/apolloServer');
 
@@ -28,7 +29,7 @@ class GraphQLApp {
   /**
    * @return Array<middlewares>
    */
-  prepareMiddleware({ keystone, dev }) {
+  prepareMiddleware({ keystone, dev, ...args }) {
     const middlewares = [];
 
     if (falsey(process.env.DISABLE_LOGGING)) {
@@ -41,6 +42,16 @@ class GraphQLApp {
 
     if (keystone.auth && Object.keys(keystone.auth).length > 0) {
       middlewares.push(commonSessionMiddleware(keystone, this._cookieSecret, this._sessionStore));
+
+      // The auth strategies need to come _after_ the common session middleware
+      // above
+      middlewares.push(
+        ...flattenDeep(
+          Object.values(keystone.auth).map(authStrategies => Object.values(authStrategies))
+        )
+          .filter(({ prepareMiddleware }) => !!prepareMiddleware)
+          .map(authStrategy => authStrategy.prepareMiddleware({ keystone, dev, ...args }))
+      );
     }
 
     const server = createApolloServer(

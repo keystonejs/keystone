@@ -288,9 +288,7 @@ describe('Access Control, Field, GraphQL', () => {
                 cy
                   .graphql_mutate(
                     '/admin/api',
-                    `mutation { ${updateMutationName}(id: "${
-                      item.id
-                    }", data: { ${fieldName}: "bar" }) { id } }`
+                    `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`
                   )
                   .then(({ data, errors }) => {
                     expect(errors, 'update mutation Errors').to.equal(undefined);
@@ -387,9 +385,7 @@ describe('Access Control, Field, GraphQL', () => {
                   cy
                     .graphql_query(
                       '/admin/api',
-                      `query { ${singleQueryName}(where: { id: "${
-                        item.id
-                      }" }) { id ${fieldName} } }`
+                      `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`
                     )
                     .then(({ data, errors }) => {
                       expect(errors, 'no errors querying all').to.equal(undefined);
@@ -434,9 +430,7 @@ describe('Access Control, Field, GraphQL', () => {
                   cy
                     .graphql_query(
                       '/admin/api',
-                      `query { ${singleQueryName}(where: { id: "${
-                        item.id
-                      }" }) { id ${fieldName} } }`
+                      `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`
                     )
                     .then(({ data, errors }) => {
                       expect(data, 'read singular denied').to.have.deep.property(
@@ -478,9 +472,7 @@ describe('Access Control, Field, GraphQL', () => {
                   cy
                     .graphql_mutate(
                       '/admin/api',
-                      `mutation { ${updateMutationName}(id: "${
-                        item.id
-                      }", data: { ${fieldName}: "bar" }) { id } }`
+                      `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`
                     )
                     .then(({ data, errors }) => {
                       expect(errors, 'update mutation Errors').to.equal(undefined);
@@ -506,9 +498,7 @@ describe('Access Control, Field, GraphQL', () => {
                   cy
                     .graphql_mutate(
                       '/admin/api',
-                      `mutation { ${updateMutationName}(id: "${
-                        item.id
-                      }", data: { ${fieldName}: "bar" }) { id } }`
+                      `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`
                     )
                     .then(({ data, errors }) => {
                       expect(data, 'update mutation no data').to.have.property(

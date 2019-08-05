@@ -1,5 +1,11 @@
 # @arch-ui/modal-utils
 
+## 1.0.2
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+
 ## 1.0.1
 
 - Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):

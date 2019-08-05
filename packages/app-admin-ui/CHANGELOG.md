@@ -1,5 +1,34 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.1.0
+
+### Minor Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade graphql to 14.4.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Fixing minor potential perf issue, flagged by DeepCheck
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+
+## 5.0.4
+
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+  - @keystone-alpha/fields@9.0.0
+
+## 5.0.3
+
+### Patch Changes
+
+- [a6c3ac0c](https://github.com/keystonejs/keystone-5/commit/a6c3ac0c):
+
+  Stop re-rendering ItemTitle on every change in an Item
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/fields@8.0.0
+
 ## 5.0.2
 
 ### Patch Changes

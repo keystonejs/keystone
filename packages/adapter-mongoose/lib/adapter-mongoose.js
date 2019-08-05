@@ -116,6 +116,12 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   dropDatabase() {
     return this.mongoose.connection.dropDatabase();
   }
+
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { MongoId } = require('@keystone-alpha/fields-mongoid');
+    return MongoId.primaryKeyDefaults[this.name].getConfig();
+  }
 }
 
 const DEFAULT_MODEL_SCHEMA_OPTIONS = {
@@ -302,6 +308,17 @@ class MongooseListAdapter extends BaseListAdapter {
 }
 
 class MongooseFieldAdapter extends BaseFieldAdapter {
+  constructor() {
+    super(...arguments);
+
+    // isIndexed is mutually exclusive with isUnique
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+
+    // We don't currently have any mongoose-specific options
+    // this.mongooseOptions = this.config.mongooseOptions || {};
+  }
+
   addToMongooseSchema() {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
@@ -311,12 +328,17 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
+    // Aapplying these config to all field types is probably wrong;
+    // ie. unique constraints on Checkboxes, Files, etc. probably don't make sense
     if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
       // constantly recreating indexes. Ie; if we just splat `unique` onto the
       // options object, it would be `undefined`, which would cause Mongoose to
       // drop and recreate all indexes.
       schemaOptions.unique = true;
+    }
+    if (this.isIndexed) {
+      schemaOptions.index = true;
     }
     return { ...schemaOptions, ...mongooseOptions };
   }

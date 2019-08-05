@@ -1,5 +1,63 @@
 # @keystone-alpha/keystone
 
+## 9.1.0
+
+### Minor Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Run .resolveInput() on all fields/field hooks regardless of if data has been passed as part of the mutation. This enables .resolveInput() to be run on fields without data during an update mutation.
+
+## 9.0.0
+
+### Major Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Adding isIndexed field config and support for in most field types
+
+### Minor Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Check for the number type in label resolver to prevent false positive on zero.
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Ensure resolveInput for list receives result from fields
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade graphql to 14.4.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade promise utility dependencies
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+
+## 8.0.0
+
+### Major Changes
+
+- [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+
+  Adding field instance to the BaseFieldAdapter constructor arguments
+
+### Patch Changes
+
+- [18064167](https://github.com/keystonejs/keystone-5/commit/18064167):
+
+  Adding `knexOptions` to the KnexFieldAdapter to support DB-level config for nullability (`isNotNullable`) and defaults (`defaultTo`)
+
+## 7.0.3
+
+### Patch Changes
+
+- [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+
+  Refactoring the knex adapter (and field adapters) to give the field type more control of the table schema (add 0 or multiple columns, etc)
+
+## 7.0.2
+
+### Patch Changes
+
+- [04371d0d](https://github.com/keystonejs/keystone-5/commit/04371d0d):
+
+  Don't error when Auth Strategy doesn't provide getInputFragment() or validate() method.
+
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+  - @keystone-alpha/fields@8.0.0
+
 ## 7.0.1
 
 ### Patch Changes

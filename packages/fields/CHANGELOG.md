@@ -1,5 +1,109 @@
 # @keystone-alpha/fields
 
+## 10.1.0
+
+### Minor Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Add a Slug field type for auto-generating slugs based on other fields.
+
+### Patch Changes
+
+- [653aa0e2](https://github.com/keystonejs/keystone-5/commit/653aa0e2): Remove incorrect Cell view config from Slug field
+- [9c3b7436](https://github.com/keystonejs/keystone-5/commit/9c3b7436): Ensure searchUnsplash mutation returns results with a non-null id
+
+## 10.0.0
+
+### Major Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Minor Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Adding `precision` and `scale` as `knexOptions` for the `Decimal` field type
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Adding isIndexed field config and support for in most field types
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Check for the number type in label resolver to prevent false positive on zero.
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Fixing issue with the Select fields on Knex; options not being applied correctly
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade to mongoose 5.6.5
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Fixing application of some field config on knex
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade graphql to 14.4.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Ensure the CloudinaryImage Content Block correctly updates the nested Slate.js image Node data instead of overwiting it which could cause issues for the image renderer expecting an Immutable Map, but receiving a plain Object.
+
+## 9.1.0
+
+### Minor Changes
+
+- [18064167](https://github.com/keystonejs/keystone-5/commit/18064167):
+
+  Adding `knexOptions` to the KnexFieldAdapter to support DB-level config for nullability (`isNotNullable`) and defaults (`defaultTo`)
+
+### Patch Changes
+
+- [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+
+  Adding field instance to the BaseFieldAdapter constructor arguments
+
+## 9.0.0
+
+### Major Changes
+
+- [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+
+  Refactoring the knex adapter (and field adapters) to give the field type more control of the table schema (add 0 or multiple columns, etc)
+
+## 8.1.0
+
+### Minor Changes
+
+- [e945926c](https://github.com/keystonejs/keystone-5/commit/e945926c):
+
+  Adding Uuid field type with Mongoose and Knex adapters
+
+### Patch Changes
+
+- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+
+  CloudinaryImage, Unsplash, and OEmbed blocks will correctly re-connect to existing block data if present rather than disconnecting and reconnecting on every save of the Content editor.
+
+* Updated dependencies [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+  - @keystone-alpha/field-content@2.0.0
+
+## 8.0.0
+
+### Major Changes
+
+- [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+
+  Extract `Content` field into its own package: `@keystone-alpha/field-content`.
+
+### Patch Changes
+
+- [98bef287](https://github.com/keystonejs/keystone-5/commit/98bef287):
+
+  Fix the Relationship field type not allowing relationships to be removed from the Admin UI
+
+## 7.2.0
+
+### Minor Changes
+
+- [c5c46545](https://github.com/keystonejs/keystone-5/commit/c5c46545):
+
+  Add `searchUnsplash` GraphQL query when using the `Unsplash` field type
+
+### Patch Changes
+
+- [148400dc](https://github.com/keystonejs/keystone-5/commit/148400dc):
+
+  Using `connect: []` and `create: []` in many-relationship queries now behaves as expected.
+
+* [384135b1](https://github.com/keystonejs/keystone-5/commit/384135b1):
+
+  Minor bump of bcrypt version
+
 ## 7.1.0
 
 ### Minor Changes

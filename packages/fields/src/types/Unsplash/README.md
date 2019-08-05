@@ -3,9 +3,8 @@ section: field-types
 title: Unsplash Field Type
 [meta]-->
 
-# Unsplash Field Type
+# Unsplash
 
-> **Unsplash**
 > The internet’s source of freely useable images.
 > Powered by creators everywhere.
 
@@ -32,6 +31,18 @@ keystone.createList('Post', {
   },
 });
 ```
+
+### Config
+
+| Option       | Type      | Default | Description                      |
+| ------------ | --------- | ------- | -------------------------------- |
+| `isRequired` | `Boolean` | `false` | Does this field require a value? |
+
+```DOCS_TODO
+TODO: Missing config options
+```
+
+## GraphQL
 
 Will add the following to the GraphQL schema:
 
@@ -79,6 +90,28 @@ input UserCreateInput {
 
 type Post {
   heroImage: UnsplashImage
+}
+
+type UnsplashSearchResults {
+  total: Int
+  totalPages: Int
+  results: [UnsplashImage]
+}
+
+enum UnsplashOrientation {
+  landscape
+  portrait
+  squarish
+}
+
+type Query {
+  searchUnsplash(
+    query: String!
+    page: Int
+    perPage: Int
+    orientation: UnsplashOrientation
+    collections: [String]
+  ): UnsplashSearchResults
 }
 
 type Mutation {
@@ -140,4 +173,10 @@ Will result in something like:
     }
   }
 }
+```
+
+---
+
+```DOCS_TODO
+TODO: Missing standard sections
 ```

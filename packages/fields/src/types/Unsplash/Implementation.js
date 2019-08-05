@@ -14,9 +14,10 @@ const defaultTransforms = {
   fit: 'max',
 };
 
-function transformUserFromApiToKs5(user) {
+function transformUserFromApiToKs5(user, { includeId = false } = {}) {
   return {
-    unsplpashId: user.id,
+    ...(includeId && { id: user.id }),
+    unsplashId: user.id,
     username: user.username,
     name: user.name,
     url: user.links.html,
@@ -26,15 +27,17 @@ function transformUserFromApiToKs5(user) {
   };
 }
 
-function transformImageFromApiToKs5(image) {
+function transformImageFromApiToKs5(image, { includeId = false } = {}) {
   return {
+    ...(includeId && { id: image.id }),
     unsplashId: image.id,
     width: image.width,
     height: image.height,
     color: image.color,
-    description: image.description || image.alt_description,
+    description: image.description || null,
+    alt: image.alt_description || null,
     publicUrl: image.urls.raw,
-    user: transformUserFromApiToKs5(image.user),
+    user: transformUserFromApiToKs5(image.user, { includeId }),
   };
 }
 
@@ -113,19 +116,81 @@ export class Unsplash extends Implementation {
         # Information describing an image as hosted by Unsplash
         # NOTE: The public URLs returned here are Unsplash CDN URLs as per their terms:
         # https://unsplash.com/api-terms
-        type UnsplashImage {
+        type ${this.graphQLOutputType} {
           id: ID
           unsplashId: String
           width: Int
           height: Int
           color: String
+          # The author-supplied description of this photo
           description: String
+          # A description of the photo for use with screen readers
+          alt: String
           publicUrl: String
           publicUrlTransformed(transformation: UnsplashImageFormat): String
           user: UnsplashUser
         }
       `,
+      `
+        enum UnsplashOrientation {
+          landscape
+          portrait
+          squarish
+        }
+      `,
+      `
+        type UnsplashSearchResults {
+          total: Int
+          totalPages: Int
+          results: [${this.graphQLOutputType}]
+        }
+      `,
     ];
+  }
+
+  getGqlAuxQueries() {
+    return [
+      `searchUnsplash(query: String!, page: Int, perPage: Int, orientation: UnsplashOrientation, collections: [String]): UnsplashSearchResults`,
+    ];
+  }
+
+  get gqlAuxQueryResolvers() {
+    return {
+      searchUnsplash: async (_, { query, page, perPage, orientation, collections }) => {
+        const { total, total_pages, results } = await this.unsplash
+          .request({
+            url: '/search/photos',
+            method: 'GET',
+            query: {
+              query,
+              ...(typeof page !== 'undefined' && { page }),
+              ...(typeof perPage !== 'undefined' && { per_page: perPage }),
+              ...(typeof orientation !== 'undefined' && { orientation }),
+              ...(collections && collections.length && { collections: collections.join(',') }),
+            },
+          })
+          .then(toJson);
+
+        return {
+          total,
+          totalPages: total_pages,
+          results: results.map(result =>
+            this.injectPublicUrlFields(transformImageFromApiToKs5(result, { includeId: true }))
+          ),
+        };
+      },
+    };
+  }
+
+  injectPublicUrlFields(data) {
+    return {
+      ...data,
+      // We want the default transformations applied to the regular public
+      // URL, so we do a "transformation" here too
+      publicUrl: this.publicUrlTransformed(data.publicUrl),
+      publicUrlTransformed: ({ transformation }) =>
+        this.publicUrlTransformed(data.publicUrl, transformation),
+    };
   }
 
   publicUrlTransformed(publicUrl, transformation) {
@@ -150,14 +215,7 @@ export class Unsplash extends Implementation {
           return null;
         }
 
-        return {
-          ...itemValues,
-          // We want the default transformations applied to the regular public
-          // URL, so we do a "transformation" here too
-          publicUrl: this.publicUrlTransformed(itemValues.publicUrl),
-          publicUrlTransformed: ({ transformation }) =>
-            this.publicUrlTransformed(itemValues.publicUrl, transformation),
-        };
+        return this.injectPublicUrlFields(itemValues);
       },
     };
   }
@@ -204,7 +262,20 @@ export class MongoUnsplashInterface extends CommonUnsplashInterface(MongooseFiel
 }
 
 export class KnexUnsplashInterface extends CommonUnsplashInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.json(this.path);
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    // We totally can index these values, it's just not trivial. See issue #1297
+    if (this.config.isUnique || this.config.isIndexed) {
+      throw `The Unsplash field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+  }
+
+  addToTableSchema(table) {
+    const column = table.jsonb(this.path);
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

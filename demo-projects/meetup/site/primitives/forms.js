@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { Children } from 'react';
-import { Link as NextLink } from '../../routes';
+import NextLink from 'next/link';
 
 import { colors, gridSize, borderRadius } from '../theme';
 
@@ -81,8 +81,8 @@ export const Group = ({ children, ...props }) => {
     </div>
   );
 };
-export const Link = ({ route, ...props }) => (
-  <NextLink route={route} passHref>
+export const Link = ({ href, as, ...props }) => (
+  <NextLink href={href} as={as} passHref>
     <a
       css={{
         color: 'inherit',
