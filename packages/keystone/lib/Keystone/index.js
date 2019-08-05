@@ -101,12 +101,11 @@ module.exports = class Keystone {
    * @return Promise<null>
    */
   connect(to, options) {
-    const { adapters, name, adapterConnectOptions } = this;
+    const { adapters, name } = this;
     return resolveAllKeys(
       mapKeys(adapters, adapter =>
         adapter.connect(to, {
           name,
-          ...adapterConnectOptions,
           ...options,
         })
       )

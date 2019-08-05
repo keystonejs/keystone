@@ -1,15 +1,16 @@
 const pWaterfall = require('p-waterfall');
 
 class BaseKeystoneAdapter {
-  constructor(config) {
+  constructor({ listAdapterConfig, name, ...config }) {
     this.config = { ...config };
-    this.name = this.config.name;
+    this.name = name;
     this.listAdapters = {};
+    this.listAdapterConfig = listAdapterConfig;
   }
 
   newListAdapter(key, { listAdapterClass, ...adapterConfig }) {
     const _listAdapterClass =
-      listAdapterClass || this.config.listAdapterClass || this.constructor.defaultListAdapterClass;
+      listAdapterClass || this.listAdapterClass || this.constructor.defaultListAdapterClass;
     this.listAdapters[key] = new _listAdapterClass(key, this, adapterConfig);
     return this.listAdapters[key];
   }
@@ -20,7 +21,7 @@ class BaseKeystoneAdapter {
 
   async connect(to, config = {}) {
     // Connect to the database
-    await this._connect(to, config);
+    await this._connect(to, { config, ...this.config });
 
     // Set up all list adapters
     try {

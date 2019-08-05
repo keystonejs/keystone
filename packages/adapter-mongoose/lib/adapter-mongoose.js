@@ -84,14 +84,18 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   }
 
   async _connect(to, config = {}) {
-    // NOTE: We pull out `name` here, but don't use it, so it
-    // doesn't conflict with the options the user wants passed to mongodb.
-    const { name: _, ...adapterConnectOptions } = config;
-
     // Default to the localhost instance
-    let uri = to;
+    let uri =
+      to ||
+      process.env.MONGO_URI ||
+      process.env.MONGODB_URI ||
+      process.env.MONGO_URL ||
+      process.env.MONGODB_URL ||
+      process.env.MONGOLAB_URI ||
+      process.env.MONGOLAB_URL;
+
     if (!uri) {
-      const defaultDbName = inflection.dasherize(config.name).toLowerCase() || 'keystone';
+      const defaultDbName = inflection.dasherize(this.name).toLowerCase() || 'keystone';
       uri = `mongodb://localhost:27017/${defaultDbName}`;
       logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
@@ -99,7 +103,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     await this.mongoose.connect(uri, {
       useNewUrlParser: true,
       useFindAndModify: false,
-      ...adapterConnectOptions,
+      ...config,
     });
   }
   async postConnect() {
