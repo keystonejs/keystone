@@ -205,7 +205,7 @@
     "pino": "5.11.1",
     "pirates": "^4.0.1",
     "pluralize": "^7.0.0",
-    "preconstruct": "0.0.66",
+    "preconstruct": "0.0.86",
     "pretty-proptypes": "^0.5.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.1",
