@@ -10,31 +10,18 @@ title: Database Adapter - Mongoose
 ```javascript
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
+const mongooseOptions = {};
+
 const keystone = new Keystone({
   name: 'My Awesome Project',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter(mongooseOptions),
 });
-
-const mongooseOptions = {
-  /* .. */
-};
-const mongoDbUri = '';
-
-keystone.connect(mongoDbUri, mongooseOptions);
 ```
 
 ## API
 
 ### `mongoDbUri`
 
-_**Default:**_ `'mongodb://localhost:27017/${SAFE_KEYSTONE_NAME}'`
+_**Default:**_ `'mongodb://localhost/keystone'`
 
 This URI will be passed directly to Mongoose (and hence MongoDB) as the location of the database.
-
-### `mongooseOptions`
-
-#### `mongooseOptions.*`
-
-All other options are passed directly to Mongoose.
-
-See [the Mongoose docs](https://mongoosejs.com/docs/connections.html) for more.

@@ -12,18 +12,18 @@ At present, the only fully tested backend is `Postgres`, however Knex gives the 
 
 ## Setting Up Your Database
 
-Before running Keystone, you must set up a database, a schema, and a user.
+Before running Keystone, you must set up a database.
+
 Assuming you're on MacOS and have Postgres installed the `build-test-db.sh` does this for you:
 
 ```sh
-./packages/adapter-knex/build-test-db.sh
+./build-test-db.sh
 ```
 
 Otherwise, you can run the steps manually:
 
 ```shell
-createdb -U postgres ks5_dev
-psql ks5_dev -U postgres -c "CREATE SCHEMA keystone;"
+createdb -U postgres keystone
 psql ks5_dev -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
 psql ks5_dev -U postgres -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
 ```
@@ -33,29 +33,23 @@ psql ks5_dev -U postgres -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
 ```javascript
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
+const knexOptions = {
+  connection: 'postgres://keystone5:k3yst0n3@localhost:5432/keystone',
+};
+
 const keystone = new Keystone({
   name: 'My Awesome Project',
-  adapter: new KnexAdapter(),
-});
-
-const uri = 'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev';
-const client = 'postgres';
-const schemaName = 'keystone';
-
-const knexOptions = { ... };
-
-keystone.connect(uri, {
-  client,
-  schemaName,
-  ...knexOptions,
+  adapter: new KnexAdapter(knexOptions),
 });
 ```
 
 ## API
 
-### `uri`
+All Knex Adapter options are passed directly
 
-_**Default:**_ `'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev'`
+### `connection`
+
+_**Default:**_ `'postgres://localhost/keystone'`
 
 Either a connection string, or a connection object, as accepted by Knex.
 See [knex docs](https://knexjs.org/#Installation-client) for more details.
@@ -69,13 +63,9 @@ Defines the type of backend to use. Current `postgres` is supported, but any val
 
 ### `schemaName`
 
-_**Default:**_ `'keystone'`
+_**Default:**_ `'public'`
 
-All keystone tables are grouped within a schema. This value should match the name of the schema used in the `CREATE SCHEMA` step above.
-
-### `knexOptions`
-
-Any extra options provided will be passed through to the Knex configuration function. See the [Knex docs](https://knexjs.org/#Installation-client) for possible values.
+All postgres tables are grouped within a schema. This value should match the name of the schema used in the `CREATE SCHEMA` step above.
 
 ## Debugging
 

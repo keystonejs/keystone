@@ -5,6 +5,7 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
+const logger = require('@keystone-alpha/logger').logger('knex');
 
 const {
   objMerge,
@@ -21,23 +22,35 @@ class KnexAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
     this.client = 'postgres';
-    this.name = this.name || 'knex';
+    this.name = 'knex';
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
   async _connect(to, config = {}) {
-    const {
-      connection = to ||
-        process.env.KNEX_URI ||
-        'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev',
-      schemaName = 'keystone',
-      ...rest
-    } = config;
+    let uri = to || process.env.KNEX_URI;
+
+    if (!uri && !config.connection) {
+      uri = `postgres://localhost/keystone`;
+      logger.warn(`No Knex connection URI specified. Defaulting to '${uri}'`);
+    }
+
+    const { schemaName, ...knexConfig } = config;
+
     this.knex = knex({
-      ...rest,
       client: this.client,
-      connection,
+      connection: uri,
+      ...knexConfig,
     });
+
+    // Knex will not error until a connection is made
+    // To check that the connection we run a test query
+    this.knex.raw('select 1+1 as result').catch(result => {
+      logger.error(`Could not connect to database: '${uri}'`);
+      logger.warn(`Check your database configuration.`);
+      logger.error(result.error);
+      throw result.error;
+    });
+
     this.schemaName = schemaName;
   }
 
@@ -280,6 +293,9 @@ class KnexListAdapter extends BaseListAdapter {
   async _populateMany(result) {
     // Takes an existing result and merges in all the many-relationship fields
     // by performing a query on their join-tables.
+
+    console.log(result);
+
     return {
       ...result,
       ...(await resolveAllKeys(
