@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const inflection = require('inflection');
 const pSettle = require('p-settle');
 const {
   escapeRegExp,
@@ -73,9 +72,7 @@ const modifierConditions = {
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
-
-    this.name = this.name || 'mongoose';
-
+    this.name = 'mongoose';
     this.mongoose = new mongoose.Mongoose();
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
@@ -95,8 +92,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       process.env.MONGOLAB_URL;
 
     if (!uri) {
-      const defaultDbName = inflection.dasherize(this.name).toLowerCase() || 'keystone';
-      uri = `mongodb://localhost:27017/${defaultDbName}`;
+      uri = `mongodb://localhost/keystone`;
       logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
 
@@ -332,7 +328,7 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
-    // Aapplying these config to all field types is probably wrong;
+    // Applying these config to all field types is probably wrong;
     // ie. unique constraints on Checkboxes, Files, etc. probably don't make sense
     if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
