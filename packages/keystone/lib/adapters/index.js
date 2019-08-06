@@ -1,11 +1,9 @@
 const pWaterfall = require('p-waterfall');
 
 class BaseKeystoneAdapter {
-  constructor({ listAdapterConfig, name, ...config }) {
+  constructor(config = {}) {
     this.config = { ...config };
-    this.name = name;
     this.listAdapters = {};
-    this.listAdapterConfig = listAdapterConfig;
   }
 
   newListAdapter(key, { listAdapterClass, ...adapterConfig }) {
