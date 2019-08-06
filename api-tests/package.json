@@ -9,10 +9,11 @@
     "node": ">=8.4.0"
   },
   "devDependencies": {
+    "@keystone-alpha/adapter-knex": "^3.0.0",
     "@keystone-alpha/adapter-mongoose": "^3.0.0",
+    "@keystone-alpha/app-graphql": "^6.3.1",
     "@keystone-alpha/fields": "^10.0.0",
     "@keystone-alpha/keystone": "^9.0.0",
-    "@keystone-alpha/app-graphql": "^6.3.1",
     "@keystone-alpha/session": "^2.0.1",
     "@keystone-alpha/test-utils": "^2.1.0",
     "body-parser": "^1.18.2",

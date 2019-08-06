@@ -5,6 +5,8 @@ const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const express = require('express');
 const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
+
 const cuid = require('cuid');
 
 const initialData = {
@@ -24,10 +26,13 @@ const initialData = {
 
 const COOKIE_SECRET = 'qwerty';
 
-async function setupKeystone() {
+async function setupKeystone(adapterName) {
+  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
   const keystone = new Keystone({
     name: `Jest Test Project For Login Auth ${cuid()}`,
-    adapter: new MongooseAdapter(),
+    adapter: new Adapter({
+      dropDatabase: true,
+    }),
     defaultAccess: {
       list: ({ authentication: { item } }) => !!item,
     },
@@ -78,6 +83,7 @@ function login(app, email, password) {
       return data.authenticateUserWithPassword || {};
     });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('Auth testing', () => {
