@@ -52,6 +52,8 @@ describe('List view URL state', () => {
     cy.visit('/admin/posts');
 
     cy.get('#ks-list-search-input').type('Why');
+    // Sleep due to the debounce on the search term input field
+    cy.wait(500);
     cy.location('search').should('eq', '?search=Why');
 
     // The results should be updated.

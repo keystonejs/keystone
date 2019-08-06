@@ -90,7 +90,10 @@ export class UnsplashBlock extends Block {
 
   getMutationOperationResults({ context }) {
     return {
-      [this.path]: context._blockMeta[this.joinList][this.path],
+      [this.path]:
+        context._blockMeta &&
+        context._blockMeta[this.joinList] &&
+        context._blockMeta[this.joinList][this.path],
     };
   }
 

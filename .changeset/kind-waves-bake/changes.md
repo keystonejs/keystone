@@ -1,0 +1,1 @@
+Correctly remove Drawer overlay when drawer is closed
