@@ -36,7 +36,7 @@ describe('Testing re-hydration', () => {
 
     clickCategoriesSelect();
 
-    cy.get('div[role="option"]').should('contain', 'New Category');
+    cy.get('div#react-select-ks-input-categories-option-6').should('contain', 'New Category');
 
     cy.visit('/admin/post-categories');
     cy.get('a:contains("New Category"):first').click();
