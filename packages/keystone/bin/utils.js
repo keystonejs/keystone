@@ -5,7 +5,7 @@ const ciInfo = require('ci-info');
 const chalk = require('chalk');
 const path = require('path');
 
-const { DEFAULT_CONNECT_TO, DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
+const { DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
 
 const ttyLink = (text, path, port) => {
   if (ciInfo.isCI) {
@@ -58,7 +58,6 @@ function extractAppMeta(apps) {
 
 async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
-  const connectTo = args['--connect-to'] ? args['--connect-to'] : DEFAULT_CONNECT_TO;
   let router;
   let status = 'start-server';
 
@@ -105,7 +104,7 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   const { middlewares } = await keystone.prepare({ apps, distDir, dev });
 
-  await keystone.connect(connectTo);
+  await keystone.connect();
 
   spinner.succeed('Connected to database');
   spinner.start('Preparing to accept requests');

@@ -17,24 +17,26 @@ const {
   resolveAllKeys,
   identity,
 } = require('@keystone-alpha/utils');
+const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
-  constructor() {
+  constructor({ knexConfig } = {}) {
     super(...arguments);
-    this.client = 'postgres';
+    this.client = knexConfig.client || 'postgres';
     this.name = 'knex';
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
-    let uri = to || process.env.KNEX_URI;
+  async _connect({ name }, { schemaName, knexConfig }) {
+    const { connection } = knexConfig;
+    let uri =
+      connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
 
-    if (!uri && !config.connection) {
-      uri = `postgres://localhost/keystone`;
+    if (!uri) {
+      const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
+      uri = `postgres://localhost/${defaultDbName}`;
       logger.warn(`No Knex connection URI specified. Defaulting to '${uri}'`);
     }
-
-    const { schemaName, ...knexConfig } = config;
 
     this.knex = knex({
       client: this.client,

@@ -20,6 +20,7 @@ const logger = require('@keystone-alpha/logger').logger('mongoose');
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
 const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
+const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
@@ -80,10 +81,12 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
+  async _connect({ name }, { mongoUri, ...mongooseConfig } = {}) {
     // Default to the localhost instance
     let uri =
-      to ||
+      mongoUri ||
+      process.env.CONNECT_TO ||
+      process.env.DATABASE_URL ||
       process.env.MONGO_URI ||
       process.env.MONGODB_URI ||
       process.env.MONGO_URL ||
@@ -92,14 +95,15 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       process.env.MONGOLAB_URL;
 
     if (!uri) {
-      uri = `mongodb://localhost/keystone`;
+      const defaultDbName = slugify(name) || 'keystone';
+      uri = `mongodb://localhost/${defaultDbName}`;
       logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
 
     await this.mongoose.connect(uri, {
       useNewUrlParser: true,
       useFindAndModify: false,
-      ...config,
+      ...mongooseConfig,
     });
   }
   async postConnect() {

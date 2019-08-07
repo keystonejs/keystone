@@ -100,16 +100,9 @@ module.exports = class Keystone {
   /**
    * @return Promise<null>
    */
-  connect(to, options) {
+  connect() {
     const { adapters, name } = this;
-    return resolveAllKeys(
-      mapKeys(adapters, adapter =>
-        adapter.connect(to, {
-          name,
-          ...options,
-        })
-      )
-    ).then(() => {
+    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name }))).then(() => {
       if (this.eventHandlers.onConnect) {
         return this.eventHandlers.onConnect(this);
       }
