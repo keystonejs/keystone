@@ -81,7 +81,8 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect({ name }, { mongoUri, ...mongooseConfig } = {}) {
+  async _connect({ name }) {
+    const { mongoUri, ...mongooseConfig } = this.config;
     // Default to the localhost instance
     let uri =
       mongoUri ||

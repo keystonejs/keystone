@@ -20,15 +20,16 @@ const {
 const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
-  constructor({ knexConfig } = {}) {
+  constructor({ knexOptions = {} }) {
     super(...arguments);
-    this.client = knexConfig.client || 'postgres';
+    this.client = knexOptions.client || 'postgres';
     this.name = 'knex';
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect({ name }, { schemaName, knexConfig }) {
-    const { connection } = knexConfig;
+  async _connect({ name }) {
+    const { schemaName = 'public', knexOptions = {} } = this.config;
+    const { connection } = knexOptions;
     let uri =
       connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
 
@@ -41,7 +42,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     this.knex = knex({
       client: this.client,
       connection: uri,
-      ...knexConfig,
+      ...knexOptions,
     });
 
     // Knex will not error until a connection is made
@@ -295,8 +296,6 @@ class KnexListAdapter extends BaseListAdapter {
   async _populateMany(result) {
     // Takes an existing result and merges in all the many-relationship fields
     // by performing a query on their join-tables.
-
-    console.log(result);
 
     return {
       ...result,
@@ -620,8 +619,8 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     this.knexOptions = this.config.knexOptions || {};
   }
 
-  // Gives us a way to referrence knex when configuring DB-level defaults, eg:
-  //   knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
+  // Gives us a way to reference knex when configuring DB-level defaults, eg:
+  // knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
   // We can't do this in the constructor as the knex instance doesn't exists
   get defaultTo() {
     if (this._defaultTo) return this._defaultTo;

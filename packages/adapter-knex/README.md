@@ -33,14 +33,11 @@ psql ks5_dev -U postgres -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
 ```javascript
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
-const knexOptions = {};
-
 const keystone = new Keystone({
   name: 'My Awesome Project',
   adapter: new KnexAdapter({
-    knexOptions: {
-      connection: 'postgres://keystone5:k3yst0n3@localhost:5432/keystone',
-    },
+    schemaName,
+    knexOptions,
   }),
 });
 ```
@@ -51,11 +48,12 @@ const keystone = new Keystone({
 
 _**Default:**_ `'public'`
 
-All postgres tables are grouped within a schema. This value should match the name of the schema used in the `CREATE SCHEMA` step above.
+All postgres tables are grouped within a schema.
 
 ### `knexOptions`
 
 These options are passed directly through to Knex.
+
 See the [knex docs](https://knexjs.org/#Installation-client) for more details.
 
 _**Default:**_
