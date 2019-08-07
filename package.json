@@ -251,7 +251,6 @@
     "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.22.4",
-    "slugify": "^1.3.4",
     "source-map-support": "^0.5.12",
     "spawndamnit": "^2.0.0",
     "split": "^1.0.1",
