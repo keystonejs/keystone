@@ -210,6 +210,24 @@
         "projectManagement",
         "review"
       ]
+    },
+    {
+      "login": "jordanoverbye",
+      "name": "Jordan Overbye",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6265154?v=4",
+      "profile": "https://jordanoverbye.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "prvit",
+      "name": "prvit",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2816799?v=4",
+      "profile": "https://github.com/prvit",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

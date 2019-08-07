@@ -49,7 +49,8 @@ class KnexAdapter extends BaseKeystoneAdapter {
     // To check that the connection we run a test query
     this.knex.raw('select 1+1 as result').catch(result => {
       logger.error(`Could not connect to database: '${uri}'`);
-      logger.warn(`Check your database configuration.`);
+      logger.warn(`If this is the first time you've run Keystone, you can create your database with the following command:`);
+      logger.warn(`createdb -U postgres ${uri.split('/').pop()}`);
       logger.error(result.error);
       throw result.error;
     });

@@ -8,7 +8,7 @@ class BaseKeystoneAdapter {
 
   newListAdapter(key, { listAdapterClass, ...adapterConfig }) {
     const _listAdapterClass =
-      listAdapterClass || this.listAdapterClass || this.constructor.defaultListAdapterClass;
+      listAdapterClass || this.config.listAdapterClass || this.constructor.defaultListAdapterClass;
     this.listAdapters[key] = new _listAdapterClass(key, this, adapterConfig);
     return this.listAdapters[key];
   }
@@ -19,7 +19,7 @@ class BaseKeystoneAdapter {
 
   async connect({ name }) {
     // Connect to the database
-    await this._connect({ name }, { ...this.config });
+    await this._connect({ name }, this.config);
 
     // Set up all list adapters
     try {
