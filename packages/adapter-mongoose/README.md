@@ -25,7 +25,7 @@ const keystone = new Keystone({
 
 This is used as the `uri` parameter for `mongoose.connect()`.
 
-_**Default:**_ Environmental variable or `'mongodb://localhost/<DATABASE_NAME>'`
+_**Default:**_ Environmental variable (see below) or `'mongodb://localhost/<DATABASE_NAME>'`
 
 If not specified, Keystone will first look for one of the following environmental variables:
 
