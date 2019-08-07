@@ -1,3 +1,4 @@
 - API Changes to Adapters:
     - Configs are now passed directly to the adapters rather than via `adapterConnectOptions`. 
     - Default connections strings changed for both Knex and Mongoose adapters to be more inline with system defaults.
+    - `keystone.connect()` no longer accepts a `to` paramter - the connection options must be passed to the adapter constructor (as above).
