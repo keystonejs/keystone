@@ -9,7 +9,7 @@ describe('Home page', () => {
       cy.contains(`Go to ${text}`)
         .should('have.attr', 'href', `/admin/${target}`)
         .should('have.attr', 'title', `Go to ${text}`)
-        .click();
+        .click({ force: true });
 
       cy.url().should('include', target);
     });
@@ -35,7 +35,7 @@ describe('Home page', () => {
       },
       { text: 'Post Category', labels: ['Name', 'Slug'] },
     ].forEach(({ text, labels }) => {
-      cy.contains('button', `Create ${text}`).click();
+      cy.contains('button', `Create ${text}`).click({ force: true });
       cy.contains('div', `Create ${text} Dialog`).contains('h3', `Create ${text}`);
       cy.contains('div', `Create ${text} Dialog`).contains('button', 'Create');
       labels.forEach(label => {
@@ -43,7 +43,7 @@ describe('Home page', () => {
       });
       cy.contains('div', `Create ${text} Dialog`)
         .contains('button', 'Cancel')
-        .click();
+        .click({ force: true });
       cy.contains('div', `Create ${text} Dialog`).should('not.exist');
     });
   });
@@ -51,8 +51,8 @@ describe('Home page', () => {
   it('Ensure Create Modal opens inside the detail view, has the correct fields, and Cancels', () => {
     cy.visit('/admin/users');
 
-    cy.get('a[href^="/admin/users/"]:first').click();
-    cy.get('#item-page-create-button').click();
+    cy.get('a[href^="/admin/users/"]:first').click({ force: true });
+    cy.get('#item-page-create-button').click({ force: true });
 
     [
       {
@@ -67,7 +67,7 @@ describe('Home page', () => {
       });
       cy.contains('div', `Create ${text} Dialog`)
         .contains('button', 'Cancel')
-        .click();
+        .click({ force: true });
       cy.contains('div', `Create ${text} Dialog`).should('not.exist');
     });
   });

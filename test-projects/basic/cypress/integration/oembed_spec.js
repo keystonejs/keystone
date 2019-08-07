@@ -17,7 +17,7 @@ const saveValue = value => {
   cy.route('post', '**/admin/api').as('graphqlPost');
   // Avoid accidentally mocking routes
   cy.server({ enable: false });
-  cy.get('#item-page-save-button').click();
+  cy.get('#item-page-save-button').click({ force: true });
   cy.wait('@graphqlPost');
 };
 
@@ -25,7 +25,7 @@ describe('OEmbed <Field> view', () => {
   describe('no saved value', () => {
     before(() => {
       cy.visit(path);
-      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
+      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
       saveValue();
     });
 
@@ -51,7 +51,7 @@ describe('OEmbed <Field> view', () => {
   describe('existing saved value', () => {
     before(() => {
       cy.visit(path);
-      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
+      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
       saveValue('http://example.com?cjwsyh30x0000xzn59j0xhq38');
     });
 
@@ -89,7 +89,7 @@ describe('OEmbed <Cell> view', () => {
   describe('no saved value', () => {
     before(() => {
       cy.visit(path);
-      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
+      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
       saveValue();
     });
 
@@ -105,7 +105,7 @@ describe('OEmbed <Cell> view', () => {
   describe('existing saved value', () => {
     before(() => {
       cy.visit(path);
-      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
+      cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
       saveValue('http://example.com?cjwsyh30x0000xzn59j0xhq38');
     });
 
