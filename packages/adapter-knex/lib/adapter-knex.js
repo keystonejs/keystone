@@ -20,15 +20,16 @@ const {
 const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
-  constructor({ knexOptions = {} }) {
+  constructor({ knexOptions = {}, schemaName = 'public' }) {
     super(...arguments);
     this.client = knexOptions.client || 'postgres';
     this.name = 'knex';
+    this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
   async _connect({ name }) {
-    const { schemaName = 'public', knexOptions = {} } = this.config;
+    const { knexOptions = {} } = this.config;
     const { connection } = knexOptions;
     let uri =
       connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
@@ -49,18 +50,17 @@ class KnexAdapter extends BaseKeystoneAdapter {
     // To check that the connection we run a test query
     this.knex.raw('select 1+1 as result').catch(result => {
       logger.error(`Could not connect to database: '${uri}'`);
-      logger.warn(`If this is the first time you've run Keystone, you can create your database with the following command:`);
+      logger.warn(
+        `If this is the first time you've run Keystone, you can create your database with the following command:`
+      );
       logger.warn(`createdb -U postgres ${uri.split('/').pop()}`);
       logger.error(result.error);
       throw result.error;
     });
-
-    this.schemaName = schemaName;
   }
 
   async postConnect() {
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
-
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
       await this.dropDatabase();
