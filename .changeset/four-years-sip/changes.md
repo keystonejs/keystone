@@ -1,0 +1,3 @@
+- API Changes to Adapters:
+    - Configs are now passed directly to the adapters rather than via `adapterConnectOptions`. 
+    - Default connections strings changed for both Knex and Mongoose adapters to be more inline with system defaults.
