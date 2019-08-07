@@ -70,10 +70,7 @@ describe('Test isRequired flag for all field types', () => {
               return graphqlRequest({
                 keystone,
                 query: `mutation { createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id name } }`,
-              }).then(({ data, errors }) => {
-                if (errors) {
-                  console.log({ data, errors }, mod.exampleValue);
-                }
+              }).then(({ data }) => {
                 return graphqlRequest({
                   keystone,
                   query: `mutation { updateTest(id: "${data.createTest.id}" data: { name: "updated test entry", testField: null } ) { id name } }`,
@@ -93,16 +90,7 @@ describe('Test isRequired flag for all field types', () => {
               return graphqlRequest({
                 keystone,
                 query: `mutation { createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id name } }`,
-              }).then(({ data, errors }) => {
-                if (!data.createTest) {
-                  console.log(errors);
-                  console.log(mod);
-
-                  console.log(
-                    `mutation { createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id name } }`
-                  );
-                }
-
+              }).then(({ data }) => {
                 return graphqlRequest({
                   keystone,
                   query: `mutation { updateTest(id: "${data.createTest.id}" data: { name: "updated test entry" } ) { id name } }`,
