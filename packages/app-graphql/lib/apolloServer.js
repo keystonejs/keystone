@@ -152,6 +152,7 @@ function createApolloServer(keystone, apolloConfig, schemaName, dev, cookieSecre
         startAuthedSession(req, { item, list }, audiences, cookieSecret),
       endAuthedSession: endAuthedSession.bind(null, req),
       ...keystone.getAccessContext(schemaName, req),
+      req,
     }),
     ...(process.env.ENGINE_API_KEY
       ? {

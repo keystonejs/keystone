@@ -116,6 +116,12 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   dropDatabase() {
     return this.mongoose.connection.dropDatabase();
   }
+
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { MongoId } = require('@keystone-alpha/fields-mongoid');
+    return MongoId.primaryKeyDefaults[this.name].getConfig();
+  }
 }
 
 const DEFAULT_MODEL_SCHEMA_OPTIONS = {
@@ -302,6 +308,17 @@ class MongooseListAdapter extends BaseListAdapter {
 }
 
 class MongooseFieldAdapter extends BaseFieldAdapter {
+  constructor() {
+    super(...arguments);
+
+    // isIndexed is mutually exclusive with isUnique
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+
+    // We don't currently have any mongoose-specific options
+    // this.mongooseOptions = this.config.mongooseOptions || {};
+  }
+
   addToMongooseSchema() {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
@@ -311,12 +328,17 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
+    // Aapplying these config to all field types is probably wrong;
+    // ie. unique constraints on Checkboxes, Files, etc. probably don't make sense
     if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
       // constantly recreating indexes. Ie; if we just splat `unique` onto the
       // options object, it would be `undefined`, which would cause Mongoose to
       // drop and recreate all indexes.
       schemaOptions.unique = true;
+    }
+    if (this.isIndexed) {
+      schemaOptions.index = true;
     }
     return { ...schemaOptions, ...mongooseOptions };
   }
@@ -333,11 +355,12 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  equalityConditionsInsensitive(dbPath) {
-    const f = escapeRegExp;
+  equalityConditionsInsensitive(dbPath, f = identity) {
     return {
-      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${f(value)}$`, 'i') }),
-      [`${this.path}_not_i`]: value => ({ [dbPath]: { $not: new RegExp(`^${f(value)}$`, 'i') } }),
+      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${escapeRegExp(f(value))}$`, 'i') }),
+      [`${this.path}_not_i`]: value => ({
+        [dbPath]: { $not: new RegExp(`^${escapeRegExp(f(value))}$`, 'i') },
+      }),
     };
   }
 
@@ -357,17 +380,26 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  stringConditions(dbPath) {
-    const f = escapeRegExp;
+  stringConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_contains`]: value => ({ [dbPath]: { $regex: new RegExp(f(value)) } }),
-      [`${this.path}_not_contains`]: value => ({ [dbPath]: { $not: new RegExp(f(value)) } }),
-      [`${this.path}_starts_with`]: value => ({ [dbPath]: { $regex: new RegExp(`^${f(value)}`) } }),
-      [`${this.path}_not_starts_with`]: value => ({
-        [dbPath]: { $not: new RegExp(`^${f(value)}`) },
+      [`${this.path}_contains`]: value => ({
+        [dbPath]: { $regex: new RegExp(escapeRegExp(f(value))) },
       }),
-      [`${this.path}_ends_with`]: value => ({ [dbPath]: { $regex: new RegExp(`${f(value)}$`) } }),
-      [`${this.path}_not_ends_with`]: value => ({ [dbPath]: { $not: new RegExp(`${f(value)}$`) } }),
+      [`${this.path}_not_contains`]: value => ({
+        [dbPath]: { $not: new RegExp(escapeRegExp(f(value))) },
+      }),
+      [`${this.path}_starts_with`]: value => ({
+        [dbPath]: { $regex: new RegExp(`^${escapeRegExp(f(value))}`) },
+      }),
+      [`${this.path}_not_starts_with`]: value => ({
+        [dbPath]: { $not: new RegExp(`^${escapeRegExp(f(value))}`) },
+      }),
+      [`${this.path}_ends_with`]: value => ({
+        [dbPath]: { $regex: new RegExp(`${escapeRegExp(f(value))}$`) },
+      }),
+      [`${this.path}_not_ends_with`]: value => ({
+        [dbPath]: { $not: new RegExp(`${escapeRegExp(f(value))}$`) },
+      }),
     };
   }
 

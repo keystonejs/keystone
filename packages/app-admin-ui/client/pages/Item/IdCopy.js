@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useCallback, memo, useState, useEffect } from 'react';
 
-import CopyToClipboard from '../../components/CopyToClipboard';
+import copyToClipboard from 'clipboard-copy';
 import Animation from '../../components/Animation';
 import { CheckIcon, ClippyIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
@@ -51,12 +51,18 @@ export let IdCopy = memo(function IdCopy({ id }) {
       </div>
       <Tooltip content="Copy ID" hideOnMouseDown hideOnKeyDown>
         {ref => (
-          <CopyToClipboard as={Button} ref={ref} text={id} onSuccess={onSuccess} variant="subtle">
+          <Button
+            ref={ref}
+            onClick={() => {
+              copyToClipboard(id).then(onSuccess);
+            }}
+            variant="subtle"
+          >
             <div css={{ width: 16 }}>
               <CopyIcon isCopied={isCopied} />
             </div>
             <A11yText>Copy ID</A11yText>
-          </CopyToClipboard>
+          </Button>
         )}
       </Tooltip>
     </FlexGroup>

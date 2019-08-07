@@ -3,6 +3,7 @@ const {
   resolveAllKeys,
   mapKeys,
   omit,
+  omitBy,
   unique,
   intersection,
   mergeWhereClause,
@@ -92,12 +93,18 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 
   keystoneLogger.warn(
     { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${
-      keystoneType.type.type
-    }' from the @keystone-alpha/fields package.`
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone-alpha/fields package.`
   );
 
   return keystoneType;
+};
+
+const getDefautlLabelResolver = labelField => item => {
+  const value = item[labelField || 'name'];
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+  return value || item.id;
 };
 
 module.exports = class List {
@@ -136,17 +143,18 @@ module.exports = class List {
     this.hooks = hooks;
     this.mutations = mutations;
     this.schemaDoc = schemaDoc;
-    // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
+
+    // Assuming the id column shouldn't be included in default columns or sort
+    const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
       defaultPageSize: 50,
-      defaultColumns: Object.keys(fields)
-        .slice(0, 2)
-        .join(','),
-      defaultSort: Object.keys(fields)[0],
+      defaultColumns: nonIdFieldNames.slice(0, 2).join(','),
+      defaultSort: nonIdFieldNames[0],
       maximumPageSize: 1000,
       ...adminConfig,
     };
-    this.labelResolver = labelResolver || (item => item[labelField || 'name'] || item.id);
+
+    this.labelResolver = labelResolver || getDefautlLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
@@ -251,16 +259,40 @@ module.exports = class List {
   }
 
   initFields() {
-    if (this.fieldsInitialised) {
-      return;
-    }
-
+    if (this.fieldsInitialised) return;
     this.fieldsInitialised = true;
 
-    const sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
+    let sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
       ...fieldConfig,
       type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
     }));
+
+    // Add an 'id' field if none supplied
+    if (!sanitisedFieldsConfig.id) {
+      if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
+        throw `No 'id' field given for the '${this.key}' list and the list adapter ` +
+          `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
+          `(no 'getDefaultPrimaryKeyConfig()' function)`;
+      }
+      // Rebuild the object so id is "first"
+      sanitisedFieldsConfig = {
+        id: this.adapter.parentAdapter.getDefaultPrimaryKeyConfig(),
+        ...sanitisedFieldsConfig,
+      };
+    }
+
+    // Helpful errors for misconfigured lists
+    Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
+      if (typeof fieldConfig.type === 'undefined') {
+        throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
+          `(${this.key}.${fieldKey}.type is undefined)`;
+      }
+      const adapters = fieldConfig.type.adapters;
+      if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
+        throw `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`;
+      }
+    });
+
     Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
       if (!type.adapters[this.adapterName]) {
         throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
@@ -325,7 +357,6 @@ module.exports = class List {
         `
         """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
-          id: ID
           """
           This virtual field will be resolved in one of the following ways (in this order):
            1. Execution of 'labelResolver' set on the ${this.key} List config, or
@@ -347,11 +378,6 @@ module.exports = class List {
       `,
         `
         input ${this.gqlNames.whereInputName} {
-          id: ID
-          id_not: ID
-          id_in: [ID!]
-          id_not_in: [ID!]
-
           AND: [${this.gqlNames.whereInputName}]
           OR: [${this.gqlNames.whereInputName}]
 
@@ -374,6 +400,7 @@ module.exports = class List {
         input ${this.gqlNames.updateInputName} {
           ${flatten(
             this.fields
+              .filter(({ path }) => path !== 'id') // Exclude the id fields update types
               .filter(field => skipAccessControl || field.access.update) // If it's globally set to false, makes sense to never let it be updated
               .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
@@ -392,6 +419,7 @@ module.exports = class List {
         input ${this.gqlNames.createInputName} {
           ${flatten(
             this.fields
+              .filter(({ path }) => path !== 'id') // Exclude the id fields create types
               .filter(field => skipAccessControl || field.access.create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
@@ -420,9 +448,7 @@ module.exports = class List {
         type ${this.gqlNames.authenticateOutputName} {
           """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
           token: String
-          """ Retreive information on the newly authenticated ${
-            this.gqlNames.outputTypeName
-          } here. """
+          """ Retreive information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
           item: ${this.gqlNames.outputTypeName}
         }
       `);
@@ -634,9 +660,15 @@ module.exports = class List {
 
       // And for each strategy, add the authentication mutation
       mutations.push(
-        ...Object.entries(this.getAuth()).map(([authType, authStrategy]) => {
-          const authTypeTitleCase = upcase(authType);
-          return `
+        ...Object.entries(this.getAuth())
+          .filter(
+            ([, authStrategy]) =>
+              typeof authStrategy.getInputFragment === 'function' &&
+              typeof authStrategy.validate === 'function'
+          )
+          .map(([authType, authStrategy]) => {
+            const authTypeTitleCase = upcase(authType);
+            return `
             """ Authenticate and generate a token for a ${
               this.gqlNames.outputTypeName
             } with the ${authTypeTitleCase} Authentication Strategy. """
@@ -644,7 +676,7 @@ module.exports = class List {
               ${authStrategy.getInputFragment()}
             ): ${this.gqlNames.authenticateOutputName}
           `;
-        })
+          })
       );
     }
 
@@ -982,11 +1014,17 @@ module.exports = class List {
       mutationResolvers[this.gqlNames.unauthenticateMutationName] = (_, __, context) =>
         this.unauthenticateMutation(context);
 
-      Object.keys(this.getAuth()).forEach(authType => {
-        mutationResolvers[
-          getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)
-        ] = (_, args, context) => this.authenticateMutation(authType, args, context);
-      });
+      Object.entries(this.getAuth())
+        .filter(
+          ([, authStrategy]) =>
+            typeof authStrategy.getInputFragment === 'function' &&
+            typeof authStrategy.validate === 'function'
+        )
+        .forEach(([authType]) => {
+          mutationResolvers[
+            getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)
+          ] = (_, args, context) => this.authenticateMutation(authType, args, context);
+        });
     }
 
     return mutationResolvers;
@@ -1067,22 +1105,41 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
-    const fields = this._fieldsFromObject(resolvedData);
 
-    resolvedData = await this._mapToFields(fields, field =>
-      field.resolveInput({ resolvedData, ...args })
-    );
+    // First we run the field type hooks
+    // NOTE: resolveInput is run on _every_ field, regardless if it has a value
+    // passed in or not
+    resolvedData = await this._mapToFields(this.fields, field => field.resolveInput(args));
+
+    // We then filter out the `undefined` results (they should return `null` or
+    // a value)
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
+    // Run the schema-level field hooks, passing in the results from the field
+    // type hooks
     resolvedData = {
       ...resolvedData,
-      ...(await this._mapToFields(fields.filter(field => field.hooks.resolveInput), field =>
-        field.hooks.resolveInput({ resolvedData, ...args })
+      ...(await this._mapToFields(this.fields.filter(field => field.hooks.resolveInput), field =>
+        field.hooks.resolveInput({ ...args, resolvedData })
       )),
     };
 
+    // And filter out the `undefined`s again.
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
     if (this.hooks.resolveInput) {
-      resolvedData = await this.hooks.resolveInput({ resolvedData, ...args });
+      // And run any list-level hook
+      resolvedData = await this.hooks.resolveInput({ ...args, resolvedData });
+      if (typeof resolvedData !== 'object') {
+        throw new Error(
+          `Expected ${
+            this.key
+          }.hooks.resolveInput() to return an object, but got a ${typeof resolvedData}: ${resolvedData}`
+        );
+      }
     }
 
+    // Finally returning the amalgamated result of all the hooks.
     return resolvedData;
   }
 
@@ -1438,5 +1495,8 @@ module.exports = class List {
 
   getFieldByPath(path) {
     return this.fieldsByPath[path];
+  }
+  getPrimaryKey() {
+    return this.fieldsByPath['id'];
   }
 };

@@ -1,1 +1,0 @@
-`readViews()` can be passed a string for importing a known path.

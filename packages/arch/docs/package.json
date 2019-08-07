@@ -1,0 +1,37 @@
+{
+  "name": "@arch-ui/docs",
+  "version": "1.1.2",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "@arch-ui/alert": "^0.0.7",
+    "@arch-ui/badge": "^0.0.7",
+    "@arch-ui/button": "^0.0.9",
+    "@arch-ui/controls": "^0.0.9",
+    "@arch-ui/dialog": "^0.0.9",
+    "@arch-ui/dropdown": "^0.0.8",
+    "@arch-ui/fields": "^2.0.1",
+    "@arch-ui/icons": "^0.0.5",
+    "@arch-ui/input": "^0.0.9",
+    "@arch-ui/layout": "^0.2.4",
+    "@arch-ui/loading": "^0.0.8",
+    "@arch-ui/lozenge": "^0.0.7",
+    "@arch-ui/navbar": "^0.1.1",
+    "@arch-ui/pagination": "^0.0.9",
+    "@arch-ui/pill": "^0.1.6",
+    "@arch-ui/popout": "^0.0.8",
+    "@arch-ui/select": "^0.0.7",
+    "@arch-ui/theme": "^0.0.5",
+    "@arch-ui/tooltip": "^0.1.2",
+    "@arch-ui/typography": "^0.0.8",
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14",
+    "@reach/router": "^1.2.1",
+    "clipboard-copy": "^3.0.0",
+    "gatsby": "^2.13.25",
+    "react": "^16.8.6"
+  },
+  "scripts": {
+    "start": "gatsby develop"
+  }
+}

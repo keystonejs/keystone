@@ -37,7 +37,11 @@ type PositionerProps = {
 
 let TooltipPositioner = (props: PositionerProps) => {
   return createPortal(
-    <Popper referenceElement={props.targetNode} placement={props.placement}>
+    <Popper
+      referenceElement={props.targetNode}
+      placement={props.placement}
+      modifiers={{ hide: { enabled: false }, preventOverflow: { enabled: false } }}
+    >
       {({ ref, style }) => (
         <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>
           <div css={{ margin: gridSize }}>

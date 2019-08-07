@@ -13,7 +13,7 @@ export default () => (
     }}
   >
     <p css={{ margin: 0, fontSize: '2em' }}>My Blog</p>
-    <Link href="/new">
+    <Link href="/post/new" passHref>
       <a css={{ color: 'hsl(200, 20%, 50%)', cursor: 'pointer' }}>+ Add Post</a>
     </Link>
   </header>

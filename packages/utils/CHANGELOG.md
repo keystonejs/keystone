@@ -1,5 +1,11 @@
 # @keystone-alpha/utils
 
+## 3.0.2
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade promise utility dependencies
+
 ## 3.0.1
 
 ### Patch Changes

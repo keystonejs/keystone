@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import { AlertIcon, Container, H1 } from '../primitives';
-import { Link } from '../../routes';
+import Link from 'next/link';
 
 export default function Error({ message, title }) {
   return (
@@ -11,7 +11,7 @@ export default function Error({ message, title }) {
       <AlertIcon size={48} />
       <H1>{title}</H1>
       <p>{message}</p>
-      <Link route="/" passHref>
+      <Link href="/" passHref>
         <a css={{ color: 'inherit' }}>Go back home</a>
       </Link>
     </Container>

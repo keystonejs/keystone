@@ -1,5 +1,11 @@
 # @arch-ui/popout
 
+## 0.0.8
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+
 ## 0.0.7
 
 ### Patch Changes

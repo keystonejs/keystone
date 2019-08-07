@@ -25,11 +25,12 @@ class BaseKeystoneAdapter {
     // Set up all list adapters
     try {
       const taskResults = await this.postConnect();
-      const errors = taskResults.filter(({ isRejected }) => isRejected);
+      const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
       if (errors.length) {
-        const error = new Error('Post connection error');
-        error.errors = errors.map(({ reason }) => reason);
+        if (errors.length === 1) throw errors[0];
+        const error = new Error('Multiple errors in BaseKeystoneAdapter.postConnect():');
+        error.errors = errors;
         throw error;
       }
     } catch (error) {
@@ -69,8 +70,8 @@ class BaseListAdapter {
     ];
   }
 
-  newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {
-    const adapter = new fieldAdapterClass(name, path, this, getListByKey, config);
+  newFieldAdapter(fieldAdapterClass, name, path, field, getListByKey, config) {
+    const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
     this.prepareFieldAdapter(adapter);
     adapter.setupHooks({
       addPreSaveHook: this.addPreSaveHook.bind(this),
@@ -145,18 +146,24 @@ class BaseListAdapter {
       .filter(adapter => adapter.isRelationship)
       .find(adapter => adapter.supportsRelationshipQuery(segment));
   }
+
+  getFieldAdapterByPath(path) {
+    return this.fieldAdaptersByPath[path];
+  }
+  getPrimaryKeyAdapter() {
+    return this.fieldAdaptersByPath['id'];
+  }
 }
 
 class BaseFieldAdapter {
-  constructor(fieldName, path, listAdapter, getListByKey, { isRequired, isUnique, ...config }) {
+  constructor(fieldName, path, field, listAdapter, getListByKey, config = {}) {
     this.fieldName = fieldName;
     this.path = path;
+    this.field = field;
     this.listAdapter = listAdapter;
     this.config = config;
     this.getListByKey = getListByKey;
     this.dbPath = path;
-    this.isRequired = isRequired;
-    this.isUnique = isUnique;
   }
 
   setupHooks() {}

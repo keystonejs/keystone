@@ -16,13 +16,7 @@ const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
 
-export let ItemTitle = memo(function ItemTitle({
-  titleText,
-  item,
-  list,
-  adminPath,
-  onCreateClick,
-}) {
+export let ItemTitle = memo(function ItemTitle({ titleText, id, list, adminPath, onCreateClick }) {
   const listHref = `${adminPath}/${list.path}`;
   const cypressId = 'item-page-create-button';
 
@@ -42,7 +36,7 @@ export let ItemTitle = memo(function ItemTitle({
           <Search list={list} />
         </div>
         <div>
-          <IdCopy id={item.id} />
+          <IdCopy id={id} />
           {list.access.create ? (
             <Tooltip content="Create" hideOnMouseDown hideOnKeyDown>
               {ref => (

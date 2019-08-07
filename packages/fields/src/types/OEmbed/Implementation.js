@@ -132,9 +132,7 @@ export class OEmbed extends Implementation {
         }
       `,
       `
-        # This type is used for rich HTML content that does not fall under ${
-          this.graphQLOutputType
-        }Link, ${this.graphQLOutputType}Photo, or ${this.graphQLOutputType}Video.
+        # This type is used for rich HTML content that does not fall under ${this.graphQLOutputType}Link, ${this.graphQLOutputType}Photo, or ${this.graphQLOutputType}Video.
         type ${this.graphQLOutputType}Rich implements ${this.graphQLOutputType} {
           ${baseFields}
           # The HTML required to display the resource. The HTML should have no padding or margins. Consumers may wish to load the HTML in an off-domain iframe to avoid XSS vulnerabilities. The markup should be valid XHTML 1.0 Basic.
@@ -268,7 +266,20 @@ export class MongoOEmbedInterface extends CommonOEmbedInterface(MongooseFieldAda
 }
 
 export class KnexOEmbedInterface extends CommonOEmbedInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.json(this.path);
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    // We totally can index these values, it's just not trivial. See issue #1297
+    if (this.config.isUnique || this.config.isIndexed) {
+      throw `The OEmbed field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+  }
+
+  addToTableSchema(table) {
+    const column = table.jsonb(this.path);
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

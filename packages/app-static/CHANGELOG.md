@@ -1,5 +1,11 @@
 # @keystone-alpha/app-static
 
+## 1.0.3
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+
 ## 1.0.2
 
 ### Patch Changes

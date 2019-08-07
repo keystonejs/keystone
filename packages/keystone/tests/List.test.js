@@ -8,7 +8,7 @@ jest.doMock('@keystone-alpha/logger', () => ({
 
 const List = require('../lib/List');
 const { AccessDeniedError } = require('../lib/List/graphqlErrors');
-const { Text, Checkbox, Float, Relationship } = require('@keystone-alpha/fields');
+const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-alpha/fields');
 const { getType } = require('@keystone-alpha/utils');
 const path = require('path');
 
@@ -17,10 +17,72 @@ function resolveViewPath(viewPath) {
   return path.join(fieldsPackagePath, 'src', 'types', viewPath);
 }
 
+class MockFieldImplementation {
+  constructor() {
+    this.access = {
+      create: false,
+      read: true,
+      update: false,
+      delete: false,
+    };
+    this.config = {};
+    this.hooks = {};
+  }
+  getAdminMeta() {
+    return { path: 'id' };
+  }
+  get gqlOutputFields() {
+    return ['id: ID'];
+  }
+  get gqlQueryInputFields() {
+    return ['id: ID'];
+  }
+  get gqlUpdateInputFields() {
+    return ['id: ID'];
+  }
+  get gqlCreateInputFields() {
+    return ['id: ID'];
+  }
+  getGqlAuxTypes() {
+    return [];
+  }
+  getGqlAuxQueries() {
+    return [];
+  }
+  getGqlAuxMutations() {
+    return [];
+  }
+  get gqlOutputFieldResolvers() {
+    return {};
+  }
+  extendAdminViews(views) {
+    return views;
+  }
+  getDefaultValue() {
+    return;
+  }
+  async resolveInput({ resolvedData }) {
+    return resolvedData.id;
+  }
+  async validateInput() {}
+  async beforeChange() {}
+  async afterChange() {}
+  async beforeDelete() {}
+  async validateDelete() {}
+  async afterDelete() {}
+}
 class MockFieldAdapter {}
 
+const MockIdType = {
+  implementation: MockFieldImplementation,
+  views: {},
+  adapters: { mock: MockFieldAdapter },
+};
+
 class MockListAdapter {
-  constructor() {
+  name = 'mock';
+  constructor(parentAdapter) {
+    this.parentAdapter = parentAdapter;
     this.index = 3;
     this.items = {
       0: { name: 'a', email: 'a@example.com', index: 0 },
@@ -62,11 +124,13 @@ class MockListAdapter {
 
 class MockAdapter {
   name = 'mock';
-  newListAdapter = () => new MockListAdapter();
+  newListAdapter = () => new MockListAdapter(this);
+  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
 }
 
 class MockPasswordAuthStrategy {
   getInputFragment = () => 'password: String';
+  validate = () => {};
 }
 
 Text.adapters['mock'] = {};
@@ -208,27 +272,32 @@ describe('new List()', () => {
 
   test('new List() - fields', () => {
     const list = setup();
-    expect(list.fields).toHaveLength(5);
-    expect(list.fields[0]).toBeInstanceOf(Text.implementation);
+    expect(list.fields).toHaveLength(6);
+    expect(list.fields[0]).toBeInstanceOf(MockIdType.implementation);
     expect(list.fields[1]).toBeInstanceOf(Text.implementation);
-    expect(list.fields[2]).toBeInstanceOf(Relationship.implementation);
-    expect(list.fields[3]).toBeInstanceOf(Text.implementation);
+    expect(list.fields[2]).toBeInstanceOf(Text.implementation);
+    expect(list.fields[3]).toBeInstanceOf(Relationship.implementation);
     expect(list.fields[4]).toBeInstanceOf(Text.implementation);
+    expect(list.fields[5]).toBeInstanceOf(Text.implementation);
 
+    expect(list.fieldsByPath['id']).toBeInstanceOf(MockIdType.implementation);
     expect(list.fieldsByPath['name']).toBeInstanceOf(Text.implementation);
     expect(list.fieldsByPath['email']).toBeInstanceOf(Text.implementation);
     expect(list.fieldsByPath['other']).toBeInstanceOf(Relationship.implementation);
     expect(list.fieldsByPath['hidden']).toBeInstanceOf(Text.implementation);
     expect(list.fieldsByPath['writeOnce']).toBeInstanceOf(Text.implementation);
 
-    const noFieldsList = new List('NoField', { fields: {} }, listExtras());
-    noFieldsList.initFields();
-    expect(noFieldsList.fields).toHaveLength(0);
+    const idOnlyList = new List('NoField', { fields: {} }, listExtras());
+    idOnlyList.initFields();
+    expect(idOnlyList.fields).toHaveLength(1);
+    expect(list.fields[0]).toBeInstanceOf(MockIdType.implementation);
+    expect(list.fieldsByPath['id']).toBeInstanceOf(MockIdType.implementation);
   });
 
   test('new List() - views', () => {
     const list = setup();
     expect(list.views).toEqual({
+      id: {},
       name: {
         Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
@@ -284,6 +353,20 @@ test('labelResolver', () => {
   expect(list2.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
     'a@example.com'
   );
+
+  // Use Integer as a labelField
+  const list21 = new List(
+    'List21',
+    {
+      fields: {
+        index: { type: Integer },
+        name: { type: Text },
+      },
+      labelField: 'index',
+    },
+    listExtras()
+  );
+  expect(list21.labelResolver({ name: 'Test integer', index: 0, id: '21' })).toEqual('0');
 
   // Use labelResolver if supplied (over-rides labelField)
   const list3 = new List(
@@ -375,11 +458,12 @@ describe('getAdminMeta()', () => {
     const list = setup();
     const adminMeta = list.getAdminMeta();
 
-    expect(adminMeta.fields).toHaveLength(4);
-    expect(adminMeta.fields[0].path).toEqual('name');
-    expect(adminMeta.fields[1].path).toEqual('email');
-    expect(adminMeta.fields[2].path).toEqual('other');
-    expect(adminMeta.fields[3].path).toEqual('writeOnce');
+    expect(adminMeta.fields).toHaveLength(5);
+    expect(adminMeta.fields[0].path).toEqual('id');
+    expect(adminMeta.fields[1].path).toEqual('name');
+    expect(adminMeta.fields[2].path).toEqual('email');
+    expect(adminMeta.fields[3].path).toEqual('other');
+    expect(adminMeta.fields[4].path).toEqual('writeOnce');
   });
 
   test('getAdminMeta() - views', () => {
@@ -387,6 +471,7 @@ describe('getAdminMeta()', () => {
     const adminMeta = list.getAdminMeta();
 
     expect(adminMeta.views).toEqual({
+      id: {}, // Mocked
       name: {
         Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
@@ -427,7 +512,6 @@ describe('getAdminMeta()', () => {
     }`;
     const type = `""" A keystone list """
     type Test {
-      id: ID
       """
       This virtual field will be resolved in one of the following ways (in this order):
        1. Execution of 'labelResolver' set on the Test List config, or
@@ -436,18 +520,16 @@ describe('getAdminMeta()', () => {
        4. As an alias to the 'id' field on the Test List.
       """
       _label_: String
+      id: ID
       name: String
       email: String
       other: Other
       writeOnce: String
     }`;
     const whereInput = `input TestWhereInput {
-      id: ID
-      id_not: ID
-      id_in: [ID!]
-      id_not_in: [ID!]
       AND: [TestWhereInput]
       OR: [TestWhereInput]
+      id: ID
       name: String
       name_not: String
       name_contains: String

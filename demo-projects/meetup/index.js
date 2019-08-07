@@ -5,7 +5,6 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { NextApp } = require('@keystone-alpha/app-next');
-const routes = require('./routes');
 
 const { Event, Talk, User, Rsvp, Organiser, Sponsor, ForgottenPasswordToken } = require('./schema');
 
@@ -48,5 +47,5 @@ const adminApp = new AdminUIApp({
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), adminApp, new NextApp({ dir: 'site', nextRoutes: routes })],
+  apps: [new GraphQLApp(), adminApp, new NextApp({ dir: 'site' })],
 };

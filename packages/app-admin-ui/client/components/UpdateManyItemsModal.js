@@ -150,16 +150,19 @@ class UpdateManyModal extends Component {
               <Render>
                 {() => {
                   let [Field] = field.adminMeta.readViews([field.views.Field]);
-                  let onChange = useCallback(value => {
-                    this.setState(({ item }) => ({
-                      item: {
-                        ...item,
-                        [field.path]: value,
-                      },
-                      validationErrors: {},
-                      validationWarnings: {},
-                    }));
-                  });
+                  let onChange = useCallback(
+                    value => {
+                      this.setState(({ item }) => ({
+                        item: {
+                          ...item,
+                          [field.path]: value,
+                        },
+                        validationErrors: {},
+                        validationWarnings: {},
+                      }));
+                    },
+                    [field]
+                  );
                   return useMemo(
                     () => (
                       <Field

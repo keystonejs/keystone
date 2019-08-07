@@ -5,16 +5,7 @@ const { Text, Relationship } = require('@keystone-alpha/fields');
 
 class MockFieldAdapter {}
 
-class MockListAdapter {
-  newFieldAdapter = () => new MockFieldAdapter();
-}
-
-class MockAdapter {
-  name = 'mock';
-  newListAdapter = () => new MockListAdapter();
-}
-
-class MockFieldType {
+class MockFieldImplementation {
   constructor() {
     this.access = {
       create: true,
@@ -50,6 +41,26 @@ class MockFieldType {
   }
 }
 
+const MockFieldType = {
+  implementation: MockFieldImplementation,
+  views: {},
+  adapters: { mock: MockFieldAdapter },
+};
+
+class MockListAdapter {
+  constructor(parentAdapter) {
+    this.parentAdapter = parentAdapter;
+  }
+  key = 'mock';
+  newFieldAdapter = () => new MockFieldAdapter();
+}
+
+class MockAdapter {
+  name = 'mock';
+  newListAdapter = () => new MockListAdapter(this);
+  getDefaultPrimaryKeyConfig = () => ({ type: MockFieldType });
+}
+
 test('Check require', () => {
   expect(Keystone).not.toBeNull();
 });
@@ -72,25 +83,13 @@ test('unique typeDefs', () => {
 
   keystone.createList('User', {
     fields: {
-      images: {
-        type: {
-          implementation: MockFieldType,
-          views: {},
-          adapters: { mock: MockFieldAdapter },
-        },
-      },
+      images: { type: MockFieldType },
     },
   });
 
   keystone.createList('Post', {
     fields: {
-      hero: {
-        type: {
-          implementation: MockFieldType,
-          views: {},
-          adapters: { mock: MockFieldAdapter },
-        },
-      },
+      hero: { type: MockFieldType },
     },
   });
 
@@ -113,20 +112,8 @@ describe('Keystone.createList()', () => {
 
     keystone.createList('User', {
       fields: {
-        name: {
-          type: {
-            implementation: MockFieldType,
-            views: {},
-            adapters: { mock: MockFieldAdapter },
-          },
-        },
-        email: {
-          type: {
-            implementation: MockFieldType,
-            views: {},
-            adapters: { mock: MockFieldAdapter },
-          },
-        },
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
       },
     });
 
@@ -446,17 +433,17 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const mockMiddlewareFn = () => {};
-    const MockField = {
+    const MockFieldWithMiddleware = {
       prepareMiddleware: jest.fn(() => mockMiddlewareFn),
-      implementation: MockFieldType,
+      implementation: MockFieldImplementation,
       views: {},
       adapters: { mock: MockFieldAdapter },
     };
     const keystone = new Keystone(config);
-    keystone.createList('Foo', { fields: { zip: { type: MockField } } });
+    keystone.createList('Foo', { fields: { zip: { type: MockFieldWithMiddleware } } });
     const { middlewares } = await keystone.prepare({ apps: [] });
 
-    expect(MockField.prepareMiddleware).toHaveBeenCalled();
+    expect(MockFieldWithMiddleware.prepareMiddleware).toHaveBeenCalled();
     expect(middlewares).toBeInstanceOf(Array);
     expect(middlewares).toHaveLength(1);
     expect(middlewares[0]).toBe(mockMiddlewareFn);

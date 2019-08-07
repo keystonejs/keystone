@@ -54,7 +54,17 @@ export class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldA
 }
 
 export class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.integer(this.path);
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  addToTableSchema(table) {
+    const column = table.integer(this.path);
+    if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
+    if (this.isNotNullable) column.notNullable();
+    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }

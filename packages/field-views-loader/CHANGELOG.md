@@ -1,5 +1,13 @@
 # @keystone-alpha/field-views-loader
 
+## 2.2.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  `readViews()` can be passed a string for importing a known path.
+
 ## 2.1.2
 
 ### Patch Changes

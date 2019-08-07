@@ -14,10 +14,12 @@ export default class List {
     // TODO: undo this
     Object.assign(this, config);
 
-    this.fields = config.fields.map(fieldConfig => {
-      const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
-      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
-    });
+    this.fields = config.fields
+      .filter(field => !field.isPrimaryKey)
+      .map(fieldConfig => {
+        const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
+        return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
+      });
 
     this.fieldsByPath = arrayToObject(this.fields, 'path');
 

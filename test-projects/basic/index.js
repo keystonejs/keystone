@@ -12,17 +12,19 @@ const {
   DateTime,
   Color,
   Url,
-  Content,
   Decimal,
   OEmbed,
+  Unsplash,
 } = require('@keystone-alpha/fields');
+const { Content } = require('@keystone-alpha/field-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
+const { Markdown } = require('@keystone-alpha/fields-markdown');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { StaticApp } = require('@keystone-alpha/app-static');
 const { graphql } = require('graphql');
 
-const { staticRoute, staticPath, cloudinary, iframely } = require('./config');
+const { staticRoute, staticPath, cloudinary, iframely, unsplash } = require('./config');
 const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
@@ -98,8 +100,9 @@ keystone.createList('User', {
     attachment: { type: File, adapter: fileAdapter },
     color: { type: Color },
     website: { type: Url },
-    ...(embedAdapter ? { profile: { type: OEmbed, adapter: embedAdapter } } : {}),
-    ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
+    ...(embedAdapter && { profile: { type: OEmbed, adapter: embedAdapter } }),
+    ...(cloudinaryAdapter && { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }),
+    ...(unsplash.accessKey && { favouriteImage: { type: Unsplash, ...unsplash } }),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
   hooks: {
@@ -134,6 +137,7 @@ keystone.createList('Post', {
     price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
+    markdownValue: { type: Markdown },
     value: {
       type: Content,
       blocks: [
@@ -141,6 +145,9 @@ keystone.createList('Post', {
           ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
           : []),
         ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
+        ...(unsplash.accessKey
+          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
+          : []),
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
@@ -165,7 +172,7 @@ keystone.createList('Post', {
       `;
       const variables = { authorId: item.author.toString() };
       const { data } = await graphql(schema, query, null, context, variables);
-      return `${item.name} (by ${data.User.name})`;
+      return `${item.name}${data.User && `(by ${data.User.name})`}`;
     } else {
       return item.name;
     }

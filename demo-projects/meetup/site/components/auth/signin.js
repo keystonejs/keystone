@@ -74,7 +74,7 @@ export default ({ onSuccess, onClickForgot }) => {
           ) : (
             <Button type="submit">Sign in</Button>
           )}
-          <Link route="forgot-password" onClick={onClickForgot}>
+          <Link href="/forgot-password" onClick={onClickForgot}>
             Forgot password
           </Link>
         </Group>

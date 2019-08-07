@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/typography",
   "description": "Typography Components used throughout @arch-ui packages and @keystone-alpha Admin UI.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/typography.cjs.js",
@@ -14,8 +14,8 @@
   "dependencies": {
     "@arch-ui/theme": "0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.10",
-    "@emotion/styled": "^10.0.10"
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14"
   },
   "module": "dist/typography.esm.js"
 }

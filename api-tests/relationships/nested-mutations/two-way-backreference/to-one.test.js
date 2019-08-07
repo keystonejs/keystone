@@ -73,8 +73,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             let company = await create('Company', {});
 
             // Sanity check the links don't yet exist
-            expect(company.location).toBe(undefined);
-            expect(location.company).toBe(undefined);
+            // `...not.toBe(expect.anything())` allows null and undefined values
+            expect(company.location).not.toBe(expect.anything());
+            expect(location.company).not.toBe(expect.anything());
 
             const { errors } = await graphqlRequest({
               keystone,

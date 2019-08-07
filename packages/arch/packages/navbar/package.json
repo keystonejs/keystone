@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/navbar",
   "description": "Navbar UI as used in @keystone-alpha Admin UI.",
-  "version": "0.0.9",
+  "version": "0.1.1",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/navbar.cjs.js",
@@ -15,8 +15,8 @@
     "@arch-ui/color-utils": "^0.0.1",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.10",
-    "@emotion/styled": "^10.0.10",
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14",
     "react-router-dom": "5.0.0"
   },
   "module": "dist/navbar.esm.js"

@@ -73,17 +73,13 @@ export class Password extends Implementation {
   validateNewPassword(password) {
     if (this.rejectCommon && dumbPasswords.check(password)) {
       throw new Error(
-        `[password:rejectCommon:${this.listKey}:${
-          this.path
-        }] Common and frequently-used passwords are not allowed.`
+        `[password:rejectCommon:${this.listKey}:${this.path}] Common and frequently-used passwords are not allowed.`
       );
     }
     // TODO: checking string length is not simple; might need to revisit this (see https://mathiasbynens.be/notes/javascript-unicode)
     if (String(password).length < this.minLength) {
       throw new Error(
-        `[password:minLength:${this.listKey}:${this.path}] Value must be at least ${
-          this.minLength
-        } characters long.`
+        `[password:minLength:${this.listKey}:${this.path}] Value must be at least ${this.minLength} characters long.`
       );
     }
   }
@@ -94,18 +90,17 @@ const CommonPasswordInterface = superclass =>
     setupHooks({ addPreSaveHook }) {
       // Updates the relevant value in the item provided (by referrence)
       addPreSaveHook(async item => {
-        const list = this.getListByKey(this.listAdapter.key);
-        const field = list.fieldsByPath[this.path];
-        const plaintext = item[field.path];
+        const path = this.field.path;
+        const plaintext = item[path];
 
         if (typeof plaintext === 'undefined') {
           return item;
         }
 
         if (String(plaintext) === plaintext && plaintext !== '') {
-          item[field.path] = await field.generateHash(plaintext);
+          item[path] = await this.field.generateHash(plaintext);
         } else {
-          item[field.path] = null;
+          item[path] = null;
         }
         return item;
       });
@@ -127,11 +122,28 @@ export class MongoPasswordInterface extends CommonPasswordInterface(MongooseFiel
 }
 
 export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.text(this.path);
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    if (this.config.isUnique || this.config.isIndexed) {
+      throw `The Password field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+    if (this.config.defaultTo) {
+      throw `The Password field type doesn't support the Knex 'defaultTo' config. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+  }
+
+  addToTableSchema(table) {
+    const column = table.string(this.path, 60);
+    if (this.isNotNullable) column.notNullable();
   }
 
   getQueryConditions(dbPath) {
+    // JM: I wonder if performing a regex match here leaks any timing info that
+    // could be used to extract information about the hash.. :/
     return {
       [`${this.path}_is_set`]: value => b =>
         value

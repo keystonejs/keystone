@@ -10,9 +10,10 @@ const SCHEMA_NAME = 'testing';
 
 function setupServer({ name, adapterName, createLists = () => {} }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
+  const args = { mongoose: {}, knex: { dropDatabase: true } }[adapterName];
   const keystone = new Keystone({
     name,
-    adapter: new Adapter(),
+    adapter: new Adapter(args),
     defaultAccess: { list: true, field: true },
   });
 
@@ -81,7 +82,11 @@ function getUpdate(keystone) {
   return (list, id, data) => keystone.getListByKey(list).adapter.update(id, data);
 }
 
-function keystoneMongoTest(setupKeystoneFn, testFn) {
+function getDelete(keystone) {
+  return (list, id) => keystone.getListByKey(list).adapter.delete(id);
+}
+
+function keystoneMongoRunner(setupKeystoneFn, testFn) {
   return async function() {
     const setup = await setupKeystoneFn('mongoose');
     const { keystone } = setup;
@@ -97,13 +102,14 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect().then(teardownMongoMemoryServer)
     );
   };
 }
 
-function keystoneKnexTest(setupKeystoneFn, testFn) {
+function keystoneKnexRunner(setupKeystoneFn, testFn) {
   return async function() {
     const setup = await setupKeystoneFn('knex');
     const { keystone } = setup;
@@ -117,17 +123,18 @@ function keystoneKnexTest(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect()
     );
   };
 }
 
-function multiAdapterRunners() {
+function multiAdapterRunners(only) {
   return [
-    { runner: keystoneMongoTest, adapterName: 'mongoose' },
-    { runner: keystoneKnexTest, adapterName: 'knex' },
-  ];
+    { runner: keystoneMongoRunner, adapterName: 'mongoose' },
+    { runner: keystoneKnexRunner, adapterName: 'knex' },
+  ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 
 const sorted = (arr, keyFn) => {

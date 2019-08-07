@@ -5,9 +5,7 @@ title: Relationship
 
 # Relationship
 
-## Nested Mutations
-
-Let's say you've got these lists:
+## Usage
 
 ```javascript
 keystone.createList('User', {
@@ -31,9 +29,21 @@ keystone.createList('Org', {
 });
 ```
 
-The to-many (`User.posts`) and to-single (`User.company`) relationships can be
-mutated as part of a mutation on items in the parent list (eg; during a
-`createUser`, or `updateUser` mutation, etc).
+### Config
+
+| Option     | Type      | Default | Description                                                     |
+| ---------- | --------- | ------- | --------------------------------------------------------------- |
+| `isUnique` | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
+
+```DOCS_TODO
+TODO: Missing config options
+```
+
+### Nested Mutations
+
+Using the example list config above,
+the to-many (`User.posts`) and to-single (`User.company`) relationships can be mutated as part of a mutation on items in the parent list
+(eg; during a `createUser`, or `updateUser` mutation, etc).
 
 The available nested mutations:
 
@@ -160,4 +170,10 @@ mutation replaceAllPosts {
     }
   }
 }
+```
+
+---
+
+```DOCS_TODO
+TODO: Standard sections missing
 ```
