@@ -33,39 +33,47 @@ psql ks5_dev -U postgres -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
 ```javascript
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
-const knexOptions = {
-  connection: 'postgres://keystone5:k3yst0n3@localhost:5432/keystone',
-};
+const knexOptions = {};
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
-  adapter: new KnexAdapter(knexOptions),
+  adapter: new KnexAdapter({
+    knexOptions: {
+      connection: 'postgres://keystone5:k3yst0n3@localhost:5432/keystone',
+    },
+  }),
 });
 ```
 
 ## API
-
-All Knex Adapter options are passed directly
-
-### `connection`
-
-_**Default:**_ `'postgres://localhost/keystone'`
-
-Either a connection string, or a connection object, as accepted by Knex.
-See [knex docs](https://knexjs.org/#Installation-client) for more details.
-If the environment variable `KNEX_URI` is set, its value will be used as the default.
-
-### `client`
-
-_**Default:**_ `'postgres'`
-
-Defines the type of backend to use. Current `postgres` is supported, but any value supported by Knex may be supported in the future.
 
 ### `schemaName`
 
 _**Default:**_ `'public'`
 
 All postgres tables are grouped within a schema. This value should match the name of the schema used in the `CREATE SCHEMA` step above.
+
+### `knexOptions`
+
+These options are passed directly through to Knex.
+See the [knex docs](https://knexjs.org/#Installation-client) for more details.
+
+_**Default:**_
+
+```javaScript
+{
+  client: 'postgres',
+  connection: '<DEFAULT_CONNECTION_URL>'
+}
+```
+
+The `DEFAULT_CONNECTION_URL` will be either one of the following environmental variables:
+
+- `CONNECT_TO`,
+- `DATABASE_URL`,
+- `KNEX_URI`
+
+or `'postgres://localhost/<DATABASE_NAME>'`where `DATABASE_NAME` is be derived from the Keystone project name.
 
 ## Debugging
 
