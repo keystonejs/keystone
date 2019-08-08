@@ -12,16 +12,13 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
-  adapter: new MongooseAdapter({
-    mongoUri,
-    mongooseOptions,
-  }),
+  adapter: new MongooseAdapter(),
 });
 ```
 
-## API
+## API `new MongooseAdapter(options)`
 
-### `mongoUri` (optional)
+### `options.mongoUri` (optional)
 
 This is used as the `uri` parameter for `mongoose.connect()`.
 
@@ -38,7 +35,7 @@ If not specified, Keystone will first look for one of the following environmenta
 - `MONGOLAB_URI`,
 - `MONGOLAB_URL`
 
-If none of these are found a connection string with a `DATABASE_NAME` will be derived from the Keystone project name is used.
+If none of these are found a connection string is derived with a `DATABASE_NAME` from the Keystone project name.
 
 ### `mongooseOptions` (optional)
 
