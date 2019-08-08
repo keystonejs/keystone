@@ -8,7 +8,6 @@ const {
 
 const {
   objMerge,
-  flatten,
   escapeRegExp,
   pick,
   omit,
@@ -367,7 +366,7 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _findAll() {
-    return this._itemsQuery();
+    return this._itemsQuery({});
   }
 
   async _findById(id) {
@@ -395,11 +394,11 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _itemsQuery(args, { meta = false } = {}) {
-    const { where = {}, first, skip, orderBy } = args;
     const query = new QueryBuilder(this, args, { meta }).get();
     const results = await query;
 
     if (meta) {
+      const { first, skip } = args;
       const ret = results[0];
       let count = ret.count;
 
