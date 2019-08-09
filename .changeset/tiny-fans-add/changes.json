@@ -1,0 +1,9 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-client-validation", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "patch" }
+  ],
+  "dependents": []
+}

@@ -29,7 +29,7 @@ describe('Nav Bar', () => {
       } else {
         cy.get('nav')
           .contains(text)
-          .click();
+          .click({ force: true });
         cy.url().should('include', target);
       }
     });

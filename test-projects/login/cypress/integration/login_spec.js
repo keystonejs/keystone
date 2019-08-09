@@ -27,7 +27,7 @@ describe('Testing Login', () => {
       // There's a race condition where the click handler for the button doesn't
       // appear to be attached, so the form is not getting validated correctly
       cy.wait(250);
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
@@ -42,7 +42,7 @@ describe('Testing Login', () => {
         .clear({ force: true })
         .type('gibberish', { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
@@ -57,7 +57,7 @@ describe('Testing Login', () => {
         .clear({ force: true })
         .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
@@ -72,7 +72,7 @@ describe('Testing Login', () => {
         .clear({ force: true })
         .type('gibberish', { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
   });
@@ -99,7 +99,7 @@ describe('Testing Login', () => {
         .clear({ force: true })
         .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
 
       cy.get('body').should('contain', 'Users');
       cy.get('body').should('contain', 'Dashboard');
@@ -116,7 +116,7 @@ describe('Testing Login', () => {
         .clear({ force: true })
         .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
 
       cy.url().should('match', /admin\/users$/);
       cy.get('body').should('contain', 'Users');
@@ -151,7 +151,7 @@ describe('authenticated item', () => {
         .clear({ force: true })
         .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
 
       // Wait for page to load (completing the signin round trip)
       cy.get('main h1').should('contain', 'Dashboard');
