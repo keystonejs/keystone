@@ -180,7 +180,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               feed_some: { title_contains: "J" }
             }) {
               id
-              feed {
+              feed(orderBy: "title_ASC") {
                 title
               }
             }
@@ -299,7 +299,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }) {
               id
               name
-              feed {
+              feed(orderBy: "title_ASC") {
                 id
                 title
               }
@@ -330,7 +330,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           query {
             allUsers(where: {
               feed_none: { title_contains: "J" }
-            }) {
+            },
+            orderBy: "id_ASC") {
               id
               feed {
                 title

@@ -295,14 +295,19 @@ class KnexListAdapter extends BaseListAdapter {
   // Add subqueries that return arrays of IDs for each "many" relationship
   _addManySubqueries(query, baseTableAlias) {
     const manyAdapters = this.fieldAdapters.filter(a => a.isRelationship && a.config.many);
-    query.column(manyAdapters.map(a => {
-      const manyTable = this._manyTable(a.path);
-      const manyTableAlias = `s${baseTableAlias}__${a.path}`;
-      return this._query().select(this._knexRaw('array_agg(??)', `${manyTableAlias}.${a.refListId}`))
-        .from(`${manyTable} as ${manyTableAlias}`)
-        .where(`${manyTableAlias}.${this.key}_id`, this._knexRef(`${baseTableAlias}.id`))
-        .as(`${a.path}`);
-    }));
+    query.column(
+      manyAdapters.map(a => {
+        const manyTable = this._manyTable(a.path);
+        const manyTableAlias = `s${baseTableAlias}__${a.path}`;
+        return this._query()
+          .select(
+            this._knexRaw("coalesce(array_agg(??), '{}')", `${manyTableAlias}.${a.refListId}`)
+          )
+          .from(`${manyTable} as ${manyTableAlias}`)
+          .where(`${manyTableAlias}.${this.key}_id`, this._knexRef(`${baseTableAlias}.id`))
+          .as(`${a.path}`);
+      })
+    );
     return query;
   }
 
@@ -310,12 +315,11 @@ class KnexListAdapter extends BaseListAdapter {
     // Update the real data
     const realData = pick(data, this.realKeys);
     const query = this._query()
-      .table(`${this.key} as t0`)
+      .table(this.key)
       .where({ id });
     if (Object.keys(realData).length) {
       query.update(realData);
     }
-    this._addManySubqueries(query, 't0');
     const item = (await query.returning(['id', ...this.realKeys]))[0];
 
     // For every many-field, update the many-table
@@ -362,7 +366,7 @@ class KnexListAdapter extends BaseListAdapter {
       })
     );
 
-    return item;
+    return this._findById(item.id);
   }
 
   async _findAll() {
@@ -370,8 +374,8 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _findById(id) {
-    const results = await this._itemsQuery({ where: { 'id': id } });
-    return results[0];
+    const results = await this._itemsQuery({ where: { id } });
+    return results[0] || null;
   }
 
   async _find(condition) {
@@ -419,6 +423,7 @@ class KnexListAdapter extends BaseListAdapter {
 
 class QueryBuilder {
   constructor(listAdapter, { where = {}, first, skip, orderBy }, { meta = false }) {
+    this._tableAliases = {};
     this._nextBaseTableAliasId = 0;
     const baseTableAlias = this._getNextBaseTableAlias();
     this._query = listAdapter._query().from(`${listAdapter.key} as ${baseTableAlias}`);
@@ -456,7 +461,9 @@ class QueryBuilder {
   }
 
   _getNextBaseTableAlias() {
-    return `t${this._nextBaseTableAliasId++}`;
+    const alias = `t${this._nextBaseTableAliasId++}`;
+    this._tableAliases[alias] = true;
+    return alias;
   }
 
   // Recursively traverse the `where` query to identify required joins and add them to the query
@@ -483,7 +490,14 @@ class QueryBuilder {
           const otherList = otherAdapter.refListKey;
           const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
           const otherTableAlias = `${tableAlias}__${path}`;
-          query.leftOuterJoin(`${otherList} as ${otherTableAlias}`, `${otherTableAlias}.id`, `${tableAlias}.${path}`);
+          if (!this._tableAliases[otherTableAlias]) {
+            this._tableAliases[otherTableAlias] = true;
+            query.leftOuterJoin(
+              `${otherList} as ${otherTableAlias}`,
+              `${otherTableAlias}.id`,
+              `${tableAlias}.${path}`
+            );
+          }
           this._addJoins(query, otherListAdapter, where[path], otherTableAlias);
         }
       }
@@ -510,7 +524,9 @@ class QueryBuilder {
             q.whereRaw('false');
             subJoiner = w => q.orWhere(w);
           }
-          where[path].forEach(subWhere => this._addWheres(subJoiner, listAdapter, subWhere, tableAlias));
+          where[path].forEach(subWhere =>
+            this._addWheres(subJoiner, listAdapter, subWhere, tableAlias)
+          );
         });
       } else {
         // We have a relationship field
@@ -529,8 +545,15 @@ class QueryBuilder {
           const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
           const otherTableAlias = `${subBaseTableAlias}__${p}`;
 
-          const subQuery = listAdapter._query().select(`${subBaseTableAlias}.${thisID}`).from(`${manyTableName} as ${subBaseTableAlias}`);
-          subQuery.innerJoin(`${otherListAdapter.key} as ${otherTableAlias}`, `${otherTableAlias}.id`, `${subBaseTableAlias}.${otherList}_id`);
+          const subQuery = listAdapter
+            ._query()
+            .select(`${subBaseTableAlias}.${thisID}`)
+            .from(`${manyTableName} as ${subBaseTableAlias}`);
+          subQuery.innerJoin(
+            `${otherListAdapter.key} as ${otherTableAlias}`,
+            `${otherTableAlias}.id`,
+            `${subBaseTableAlias}.${otherList}_id`
+          );
 
           this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias);
 
@@ -547,7 +570,12 @@ class QueryBuilder {
             });
           } else {
             subQuery.whereRaw('true');
-            this._addWheres(w => subQuery.andWhere(w), otherListAdapter, where[path], otherTableAlias);
+            this._addWheres(
+              w => subQuery.andWhere(w),
+              otherListAdapter,
+              where[path],
+              otherTableAlias
+            );
           }
 
           if (constraintType === 'some') {
