@@ -552,7 +552,7 @@ keystone.createList('User', {
 Here we have two relationships:
 
 - A _to-single_ `createdBy` field on the `Todo` list, and
-- A _to-many_ `totolist` field on the `User` list.
+- A _to-many_ `todolist` field on the `User` list.
 
 Now it's possible to query in both directions:
 
