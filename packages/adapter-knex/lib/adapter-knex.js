@@ -104,14 +104,6 @@ class KnexAdapter extends BaseKeystoneAdapter {
     const { AutoIncrement } = require('@keystone-alpha/fields-auto-increment');
     return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
   }
-
-  _knexRaw(sql, bindings) {
-    return this.knex.raw(sql, bindings);
-  }
-
-  _knexRef(identifier) {
-    return this.knex.ref(identifier);
-  }
 }
 
 class KnexListAdapter extends BaseListAdapter {
@@ -133,14 +125,6 @@ class KnexListAdapter extends BaseListAdapter {
 
   _query() {
     return this.parentAdapter.getQueryBuilder();
-  }
-
-  _knexRaw(sql, bindings) {
-    return this.parentAdapter._knexRaw(sql, bindings);
-  }
-
-  _knexRef(identifier) {
-    return this.parentAdapter._knexRef(identifier);
   }
 
   _manyTable(relationshipFieldPath) {
