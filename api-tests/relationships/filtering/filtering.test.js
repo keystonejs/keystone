@@ -216,6 +216,125 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
         })
       );
+
+      test(
+        'many-to-many filtering composes with one-to-many filtering',
+        runner(setupKeystone, async ({ keystone, create }) => {
+          const adsCompany = await create('Company', { name: 'AdsAdsAds' });
+          const otherCompany = await create('Company', { name: 'Thinkmill' });
+
+          // Content can have multiple authors
+          const spam1 = await create('Post', { content: 'spam' });
+          const spam2 = await create('Post', { content: 'spam' });
+          const content = await create('Post', { content: 'cute cat pics' });
+
+          const spammyUser = await create('User', {
+            company: adsCompany.id,
+            posts: [spam1.id, spam2.id],
+          });
+          const mixedUser = await create('User', {
+            company: adsCompany.id,
+            posts: [spam1.id, content.id],
+          });
+          const nonSpammyUser = await create('User', {
+            company: adsCompany.id,
+            posts: [content.id],
+          });
+          const quietUser = await create('User', { company: adsCompany.id, posts: [] });
+          const otherUser = await create('User', { company: otherCompany.id, posts: [content.id] });
+          const spammyOtherUser = await create('User', {
+            company: otherCompany.id,
+            posts: [spam1.id],
+          });
+
+          // adsCompany users whose every post is spam
+          // NB: this includes users who have no posts at all
+          let { data, errors } = await graphqlRequest({
+            keystone,
+            query: `
+        query {
+          allUsers(where: {
+            company: { name: "${adsCompany.name}" }
+            posts_every: { content: "spam" }
+          }) {
+            id
+            company {
+              id
+              name
+            }
+            posts {
+              content
+            }
+          }
+        }
+      `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data.allUsers).toHaveLength(2);
+          expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(data.allUsers.map(u => u.id).sort()).toEqual([spammyUser.id, quietUser.id].sort());
+          expect(data.allUsers.every(u => u.posts.every(p => p.content === 'spam')));
+
+          // adsCompany users with no spam
+          ({ data, errors } = await graphqlRequest({
+            keystone,
+            query: `
+        query {
+          allUsers(where: {
+            company: { name: "${adsCompany.name}" }
+            posts_none: { content: "spam" }
+          }) {
+            id
+            company {
+              id
+              name
+            }
+            posts {
+              content
+            }
+          }
+        }
+      `,
+          }));
+
+          expect(errors).toBe(undefined);
+          expect(data.allUsers).toHaveLength(2);
+          expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(data.allUsers.map(u => u.id).sort()).toEqual(
+            [nonSpammyUser.id, quietUser.id].sort()
+          );
+          expect(data.allUsers.every(u => u.posts.every(p => p.content !== 'spam')));
+
+          // adsCompany users with some spam
+          ({ data, errors } = await graphqlRequest({
+            keystone,
+            query: `
+        query {
+          allUsers(where: {
+            company: { name: "${adsCompany.name}" }
+            posts_some: { content: "spam" }
+          }) {
+            id
+            company {
+              id
+              name
+            }
+            posts {
+              content
+            }
+          }
+        }
+      `,
+          }));
+
+          expect(errors).toBe(undefined);
+          expect(data.allUsers).toHaveLength(2);
+          expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(data.allUsers.map(u => u.id).sort()).toEqual([mixedUser.id, spammyUser.id].sort());
+          expect(data.allUsers.every(u => u.posts.some(p => p.content !== 'spam')));
+        })
+      );
     });
   })
 );
