@@ -65,7 +65,7 @@ The CalendarDay component includes an input that allows the user to change the c
 ## GraphQL
 
 `CalendarDay` fields use the `String` type in GraphQL.
-They produce and values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
+They produce values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
 
 ### Input Fields
 
