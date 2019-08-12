@@ -446,6 +446,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       }
   `,
         });
+        expect(errors).toBe(undefined);
 
         teacher1 = await findById('Teacher', teacher1.id);
         teacher2 = await findById('Teacher', teacher2.id);

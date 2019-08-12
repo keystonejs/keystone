@@ -241,8 +241,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             posts: [content.id],
           });
           const quietUser = await create('User', { company: adsCompany.id, posts: [] });
-          const otherUser = await create('User', { company: otherCompany.id, posts: [content.id] });
-          const spammyOtherUser = await create('User', {
+          await create('User', { company: otherCompany.id, posts: [content.id] });
+          await create('User', {
             company: otherCompany.id,
             posts: [spam1.id],
           });
@@ -274,7 +274,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data.allUsers).toHaveLength(2);
           expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
           expect(data.allUsers.map(u => u.id).sort()).toEqual([spammyUser.id, quietUser.id].sort());
-          expect(data.allUsers.every(u => u.posts.every(p => p.content === 'spam')));
+          expect(data.allUsers.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([
+            true,
+            true,
+          ]);
 
           // adsCompany users with no spam
           ({ data, errors } = await graphqlRequest({
@@ -304,7 +307,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data.allUsers.map(u => u.id).sort()).toEqual(
             [nonSpammyUser.id, quietUser.id].sort()
           );
-          expect(data.allUsers.every(u => u.posts.every(p => p.content !== 'spam')));
+          expect(data.allUsers.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([
+            true,
+            true,
+          ]);
 
           // adsCompany users with some spam
           ({ data, errors } = await graphqlRequest({
@@ -332,7 +338,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data.allUsers).toHaveLength(2);
           expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
           expect(data.allUsers.map(u => u.id).sort()).toEqual([mixedUser.id, spammyUser.id].sort());
-          expect(data.allUsers.every(u => u.posts.some(p => p.content !== 'spam')));
+          expect(data.allUsers.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([
+            true,
+            true,
+          ]);
         })
       );
     });
