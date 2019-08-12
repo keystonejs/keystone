@@ -292,23 +292,24 @@ class KnexListAdapter extends BaseListAdapter {
       .del();
   }
 
-  // Add subqueries that return arrays of IDs for each "many" relationship
-  _addManySubqueries(query, baseTableAlias) {
-    const manyAdapters = this.fieldAdapters.filter(a => a.isRelationship && a.config.many);
-    query.column(
-      manyAdapters.map(a => {
-        const manyTable = this._manyTable(a.path);
-        const manyTableAlias = `s${baseTableAlias}__${a.path}`;
-        return this._query()
-          .select(
-            this._knexRaw("coalesce(array_agg(??), '{}')", `${manyTableAlias}.${a.refListId}`)
-          )
-          .from(`${manyTable} as ${manyTableAlias}`)
-          .where(`${manyTableAlias}.${this.key}_id`, this._knexRef(`${baseTableAlias}.id`))
-          .as(`${a.path}`);
-      })
-    );
-    return query;
+  async _populateMany(result) {
+    // Takes an existing result and merges in all the many-relationship fields
+    // by performing a query on their join-tables.
+    return {
+      ...result,
+      ...(await resolveAllKeys(
+        arrayToObject(
+          this.fieldAdapters.filter(a => a.isRelationship && a.config.many),
+          'path',
+          async a =>
+            (await this._query()
+              .select(a.refListId)
+              .from(this._manyTable(a.path))
+              .where(`${this.key}_id`, result.id)
+              .returning(a.refListId)).map(x => x[a.refListId])
+        )
+      )),
+    };
   }
 
   async _update(id, data) {
@@ -417,7 +418,7 @@ class KnexListAdapter extends BaseListAdapter {
       return { count };
     }
 
-    return results;
+    return Promise.all(results.map(result => this._populateMany(result)));
   }
 }
 
@@ -431,7 +432,6 @@ class QueryBuilder {
       this._query.count();
     } else {
       this._query.column(`${baseTableAlias}.*`);
-      listAdapter._addManySubqueries(this._query, baseTableAlias);
     }
 
     this._addJoins(this._query, listAdapter, where, baseTableAlias);
