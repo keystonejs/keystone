@@ -19,28 +19,28 @@ describe('Testing re-hydration', () => {
     }
 
     cy.visit('/admin/posts');
-    cy.get('#list-page-create-button').click();
+    cy.get('#list-page-create-button').click({ force: true });
 
     clickCategoriesSelect();
 
     cy.get('div[role="option"]').should('not.contain', 'New Category');
 
     cy.visit('/admin/post-categories');
-    cy.get('#list-page-create-button').click();
+    cy.get('#list-page-create-button').click({ force: true });
     cy.get('#ks-input-name').type('New Category');
-    cy.get('#create-item-modal-submit-button').click();
+    cy.get('#create-item-modal-submit-button').click({ force: true });
     cy.get('body').should('contain', 'New Category');
 
-    cy.get('nav a:contains("Posts")').click();
-    cy.get('#list-page-create-button').click();
+    cy.get('nav a:contains("Posts")').click({ force: true });
+    cy.get('#list-page-create-button').click({ force: true });
 
     clickCategoriesSelect();
 
     cy.get('div#react-select-ks-input-categories-option-6').should('contain', 'New Category');
 
     cy.visit('/admin/post-categories');
-    cy.get('a:contains("New Category"):first').click();
-    cy.get('button:contains("Delete"):first').click();
-    cy.get('body:last footer button:first').click();
+    cy.get('a:contains("New Category"):first').click({ force: true });
+    cy.get('button:contains("Delete"):first').click({ force: true });
+    cy.get('body:last footer button:first').click({ force: true });
   });
 });

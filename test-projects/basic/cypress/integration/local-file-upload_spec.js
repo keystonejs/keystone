@@ -27,7 +27,7 @@ describe('Adding a file', function() {
         // Avoid accidentally mocking routes
         cy.server({ enable: false });
 
-        cy.get('button[type="submit"]').click();
+        cy.get('button[type="submit"]').click({ force: true });
         cy.contains('upload.txt');
         cy.wait('@graphqlPost');
         // There's a race condition somewhere. If we don't wait, the query

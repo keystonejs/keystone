@@ -23,7 +23,7 @@ describe('CalendarDay Component - Formatting', () => {
   });
 
   it('should format date correctly on the details page', () => {
-    cy.get(getCellFromSecondRow(2)).click();
+    cy.get(`${getCellFromSecondRow(2)} > a`).click({ force: true });
     cy.get(calendarDayInputSelector).should('have.value', '1st January 1990');
   });
 });
@@ -31,25 +31,25 @@ describe('CalendarDay Component - Formatting', () => {
 describe('CalendarDay Component - Functionality', () => {
   beforeEach(() => {
     cy.visit(path);
-    cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
+    cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
   });
 
   it('can accept natural language like today', () => {
     cy.get(calendarDayInputSelector).type('today');
-    cy.get('label:contains("Name")').click();
+    cy.get('label:contains("Name")').click({ force: true });
 
     cy.get(calendarDayInputSelector).should('have.value', '3rd March 2019');
   });
 
   it(`can accept natural language like tomorrow`, () => {
     cy.get(calendarDayInputSelector).type('tomorrow');
-    cy.get('label:contains("Name")').click();
+    cy.get('label:contains("Name")').click({ force: true });
     cy.get(calendarDayInputSelector).should('have.value', '4th March 2019');
   });
 
   it(`can accept a date`, () => {
     cy.get(calendarDayInputSelector).type('20 september 2015');
-    cy.get('label:contains("Name")').click();
+    cy.get('label:contains("Name")').click({ force: true });
     cy.get(calendarDayInputSelector).should('have.value', '20th September 2015');
   });
 });
@@ -66,7 +66,7 @@ describe('DateTime Component - Formatting', () => {
   });
 
   it('should format date-time correctly on the details page', () => {
-    cy.get(getCellFromSecondRow(2)).click();
+    cy.get(`${getCellFromSecondRow(2)} > a`).click({ force: true });
     cy.get(dateTimeInputSelector).should('have.value', '11:08 AM 16th August 2018 +10:00');
   });
 });
@@ -74,12 +74,12 @@ describe('DateTime Component - Formatting', () => {
 describe('DateTime Component - Functionality', () => {
   before(() => {
     cy.visit(path);
-    cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
+    cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
   });
 
   it('can accept natural language like today at 4pm', () => {
     cy.get(dateTimeInputSelector).type('today at 4pm');
-    cy.get('label:contains("Name")').click();
+    cy.get('label:contains("Name")').click({ force: true });
 
     cy.get(dateTimeInputSelector).should('have.value', '4:00 PM 3rd March 2019 +00:00');
   });
@@ -88,7 +88,7 @@ describe('DateTime Component - Functionality', () => {
     cy.get(dateTimeInputSelector)
       .clear()
       .type('tomorrow at 4pm');
-    cy.get('label:contains("Name")').click();
+    cy.get('label:contains("Name")').click({ force: true });
 
     cy.get(dateTimeInputSelector).should('have.value', '4:00 PM 4th March 2019 +00:00');
   });
@@ -97,7 +97,7 @@ describe('DateTime Component - Functionality', () => {
     cy.get(dateTimeInputSelector)
       .clear()
       .type('1:28 am 12 september 2018 +10:00');
-    cy.get('label:contains("Name")').click();
+    cy.get('label:contains("Name")').click({ force: true });
     cy.get(dateTimeInputSelector).should('have.value', '1:28 AM 12th September 2018 +10:00');
   });
 });

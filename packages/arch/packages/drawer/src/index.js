@@ -126,6 +126,7 @@ type Props = {
   attachTo: HTMLElement,
   children: Node,
   closeOnBlanketClick: boolean,
+  isOpen: boolean,
   component: ComponentType<*> | string,
   footer?: Element<*>,
   heading?: string,
@@ -167,6 +168,7 @@ let ModalDialog = memo<Props>(function ModalDialog({
   width,
   onKeyDown,
   transitionState,
+  isOpen,
 }) {
   let stackIndex = useStackIndex(
     transitionState === 'entered' || transitionState === 'entering',
@@ -181,11 +183,13 @@ let ModalDialog = memo<Props>(function ModalDialog({
 
   return createPortal(
     <Fragment>
-      <Blanket
-        style={fade(transitionState)}
-        onClick={closeOnBlanketClick ? onClose : undefined}
-        isTinted
-      />
+      {isOpen ? (
+        <Blanket
+          style={fade(transitionState)}
+          onClick={closeOnBlanketClick ? onClose : undefined}
+          isTinted
+        />
+      ) : null}
       <Positioner
         style={slideInHorizontal(transitionState, { slideInFrom })}
         slideInFrom={slideInFrom}

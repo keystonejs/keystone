@@ -3,7 +3,7 @@ describe('Filter by name', () => {
 
   it('Should filter by name', () => {
     cy.get('a[href="/admin/users"]:last')
-      .click()
+      .click({ force: true })
       .get('button:contains("Filters")')
       .click({ force: true })
       .get('#app ~ div')
@@ -22,7 +22,7 @@ describe('Filter by email', () => {
   before(() => cy.visit('/reset-db'));
   it('Should filter by email', () => {
     cy.get('a[href="/admin/users"]:last')
-      .click()
+      .click({ force: true })
       .get('button:contains("Filters")')
       .click({ force: true })
       .get('#app ~ div')
@@ -41,7 +41,7 @@ describe('Filter by company', () => {
   before(() => cy.visit('/reset-db'));
   it('Should filter by company', () => {
     cy.get('a[href="/admin/users"]:last')
-      .click()
+      .click({ force: true })
       .get('button:contains("Filters")')
       .click({ force: true })
       .get('#app ~ div')

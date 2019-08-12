@@ -6,32 +6,35 @@ describe('Adding users', () => {
   ].forEach(({ data, error }) => {
     it(`Displays ${error} error`, () => {
       cy.visit('/admin/users');
-      cy.get('#list-page-create-button').click();
+      cy.get('#list-page-create-button').click({ force: true });
 
       Object.keys(data).forEach(item => {
         if (item === 'ks-input-password') {
-          cy.get(`#ks-input-password-button`).click();
+          cy.get(`#ks-input-password-button`).click({ force: true });
         }
 
         cy.get(`#${item}`).type(data[item]);
       });
 
-      cy.get('#create-item-modal-submit-button').click();
+      // Why force? Because Cypress has lots of issues with determining
+      // clickability:
+      // https://github.com/cypress-io/cypress/labels/topic%3A%20visibility%20%F0%9F%91%81
+      cy.get('#create-item-modal-submit-button').click({ force: true });
       cy.get('form').should('contain', error);
     });
   });
 
   it(`Creates the user`, () => {
     cy.visit('/admin/users');
-    cy.get('#list-page-create-button').click();
+    cy.get('#list-page-create-button').click({ force: true });
 
     cy.get('#ks-input-name').type('John Doe');
     cy.get('#ks-input-email').type('john@gmail.com');
-    cy.get('#ks-input-password-button').click();
+    cy.get('#ks-input-password-button').click({ force: true });
     cy.get('#ks-input-password').type('password');
     cy.get('#ks-input-password-confirm').type('password');
 
-    cy.get('#create-item-modal-submit-button').click();
+    cy.get('#create-item-modal-submit-button').click({ force: true });
 
     cy.location('pathname').should('match', new RegExp(`/admin/users/.+`));
 
@@ -48,11 +51,11 @@ describe('Editing data', () => {
   ].forEach(({ data, error }) => {
     it(`Displays ${error} error`, () => {
       cy.visit('/admin/users');
-      cy.get(`a:contains("John Doe"):first`).click();
+      cy.get(`a:contains("John Doe"):first`).click({ force: true });
 
       Object.keys(data).forEach(item => {
         if (item === 'ks-input-password') {
-          cy.get(`#ks-input-password-button`).click();
+          cy.get(`#ks-input-password-button`).click({ force: true });
         }
 
         if (!data[item]) {
@@ -63,23 +66,23 @@ describe('Editing data', () => {
         }
       });
 
-      cy.get('#item-page-save-button').click();
+      cy.get('#item-page-save-button').click({ force: true });
       cy.get('form').should('contain', error);
     });
   });
 
   it('Updated data', () => {
     cy.visit('/admin/users');
-    cy.get(`a:contains("John Doe"):first`).click();
+    cy.get(`a:contains("John Doe"):first`).click({ force: true });
 
     cy.get('#ks-input-name').clear();
     cy.get('#ks-input-name').type('test name');
-    cy.get(`#ks-input-password-button`).click();
+    cy.get(`#ks-input-password-button`).click({ force: true });
     cy.get(`#ks-input-password`).type('new password');
     cy.get(`#ks-input-password-confirm`).type('new password');
 
-    cy.get('#item-page-save-button').click();
-    cy.get(`nav a:contains("Users")`).click();
+    cy.get('#item-page-save-button').click({ force: true });
+    cy.get(`nav a:contains("Users")`).click({ force: true });
     cy.get('body').should('contain', 'test name');
   });
 });

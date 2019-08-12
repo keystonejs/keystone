@@ -25,6 +25,8 @@ describe('Search', () => {
       cy.visit(url);
       cy.get('#ks-list-search-input').type(searchTerm);
 
+      // Wait due to a debounce on the search input field
+      cy.wait(500);
       found.forEach(name => {
         cy.get('main').should('contain', name);
       });

@@ -228,6 +228,24 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "kennedybaird",
+      "name": "Kennedy Baird",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/20593811?v=4",
+      "profile": "https://github.com/kennedybaird",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "thiagodebastos",
+      "name": "Thiago De Bastos",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6151341?v=4",
+      "profile": "http://thiagodebastos.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
