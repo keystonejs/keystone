@@ -16,6 +16,9 @@ describe('Adding users', () => {
         cy.get(`#${item}`).type(data[item]);
       });
 
+      // Why force? Because Cypress has lots of issues with determining
+      // clickability:
+      // https://github.com/cypress-io/cypress/labels/topic%3A%20visibility%20%F0%9F%91%81
       cy.get('#create-item-modal-submit-button').click({ force: true });
       cy.get('form').should('contain', error);
     });
