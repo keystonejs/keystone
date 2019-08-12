@@ -1,10 +1,10 @@
 const supertest = require('supertest-light');
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-const { Text, Password } = require('@keystone-alpha/fields');
+const { PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const { Text, Password, DateTime } = require('@keystone-alpha/fields');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const express = require('express');
 const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { setupServer } = require('@keystone-alpha/test-utils');
 const cuid = require('cuid');
 
 const initialData = {
@@ -24,37 +24,47 @@ const initialData = {
 
 const COOKIE_SECRET = 'qwerty';
 
-async function setupKeystone() {
-  const keystone = new Keystone({
-    name: `Jest Test Project For Login Auth ${cuid()}`,
-    adapter: new MongooseAdapter(),
-    defaultAccess: {
-      list: ({ authentication: { item } }) => !!item,
-    },
-  });
-
-  keystone.createList('User', {
-    fields: {
-      name: { type: Text },
-      email: { type: Text },
-      password: { type: Password },
-    },
-  });
-
-  keystone.createAuthStrategy({
-    type: PasswordAuthStrategy,
-    list: 'User',
-  });
-
+async function setupKeystone(adapterName) {
   const app = express();
+  const { keystone } = setupServer({
+    adapterName,
+    name: `Jest Test Project For Login Auth ${cuid()}`,
+    createLists: keystone => {
+      keystone.createList('Post', {
+        fields: {
+          title: { type: Text },
+          postedAt: { type: DateTime },
+        },
+      });
 
-  const graphQLApp = new GraphQLApp(keystone, {
-    cookieSecret: COOKIE_SECRET,
-    apiPath: '/admin/api',
-    graphiqlPath: '/admin/graphiql',
+      keystone.createList('User', {
+        fields: {
+          name: { type: Text },
+          email: { type: Text },
+          password: { type: Password },
+        },
+      });
+
+      keystone.createAuthStrategy({
+        type: PasswordAuthStrategy,
+        list: 'User',
+      });
+    },
+    createApps: async keystone => {
+      const graphQLApp = new GraphQLApp(keystone, {
+        cookieSecret: COOKIE_SECRET,
+        apiPath: '/admin/api',
+        graphiqlPath: '/admin/graphiql',
+      });
+
+      app.use(await graphQLApp.prepareMiddleware({ keystone, dev: true }));
+    },
+    keystoneOptions: {
+      defaultAccess: {
+        list: ({ authentication: { item } }) => !!item,
+      },
+    },
   });
-
-  app.use(await graphQLApp.prepareMiddleware({ keystone, dev: true }));
 
   return { keystone, app };
 }
@@ -78,6 +88,7 @@ function login(app, email, password) {
       return data.authenticateUserWithPassword || {};
     });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('Auth testing', () => {

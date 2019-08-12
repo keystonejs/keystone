@@ -1,14 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer } = require('@keystone-alpha/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
 const { Text } = require('@keystone-alpha/fields');
-
-const SCHEMA_NAME = 'testing';
-
-function graphqlRequest({ keystone, query }) {
-  return keystone._graphQLQuery[SCHEMA_NAME](query, keystone.getAccessContext(SCHEMA_NAME, {}));
-}
 
 describe('Test isRequired flag for all field types', () => {
   const typesLoc = path.resolve('packages/fields/src/types');
@@ -26,7 +20,7 @@ describe('Test isRequired flag for all field types', () => {
             runner(
               () =>
                 setupServer({
-                  name: `Field tests for ${type.type} ${cuid}`,
+                  name: `Field tests for ${type.type} ${cuid()}`,
                   adapterName,
                   createLists: keystone => {
                     if (type.type === 'Select') {

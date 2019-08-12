@@ -10,7 +10,9 @@
   "dependencies": {
     "@keystone-alpha/fields-auto-increment": "^1.0.0",
     "@keystone-alpha/keystone": "^9.0.0",
+    "@keystone-alpha/logger": "^2.0.1",
     "@keystone-alpha/utils": "^3.0.2",
+    "@sindresorhus/slugify": "^0.6.0",
     "knex": "^0.19.0",
     "p-settle": "^3.1.0",
     "pg": "^7.10.0"
