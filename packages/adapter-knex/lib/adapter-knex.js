@@ -5,6 +5,7 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
+const logger = require('@keystone-alpha/logger').logger('knex');
 
 const {
   objMerge,
@@ -16,34 +17,50 @@ const {
   resolveAllKeys,
   identity,
 } = require('@keystone-alpha/utils');
+const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
-  constructor() {
+  constructor({ knexOptions = {}, schemaName = 'public' }) {
     super(...arguments);
-    this.client = 'postgres';
-    this.name = this.name || 'knex';
+    this.client = knexOptions.client || 'postgres';
+    this.name = 'knex';
+    this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
-    const {
-      connection = to ||
-        process.env.KNEX_URI ||
-        'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev',
-      schemaName = 'keystone',
-      ...rest
-    } = config;
+  async _connect({ name }) {
+    const { knexOptions = {} } = this.config;
+    const { connection } = knexOptions;
+    let uri =
+      connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
+
+    if (!uri) {
+      const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
+      uri = `postgres://localhost/${defaultDbName}`;
+      logger.warn(`No Knex connection URI specified. Defaulting to '${uri}'`);
+    }
+
     this.knex = knex({
-      ...rest,
       client: this.client,
-      connection,
+      connection: uri,
+      ...knexOptions,
     });
-    this.schemaName = schemaName;
+
+    // Knex will not error until a connection is made
+    // To check that the connection we run a test query
+    await this.knex.raw('select 1+1 as result').catch(result => {
+      logger.error(`Could not connect to database: '${uri}'`);
+      logger.warn(
+        `If this is the first time you've run Keystone, you can create your database with the following command:`
+      );
+      logger.warn(`createdb -U postgres ${uri.split('/').pop()}`);
+      logger.error(result.error);
+      throw result.error;
+    });
   }
 
   async postConnect() {
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
-
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
       await this.dropDatabase();
@@ -280,6 +297,7 @@ class KnexListAdapter extends BaseListAdapter {
   async _populateMany(result) {
     // Takes an existing result and merges in all the many-relationship fields
     // by performing a query on their join-tables.
+
     return {
       ...result,
       ...(await resolveAllKeys(
@@ -602,8 +620,8 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     this.knexOptions = this.config.knexOptions || {};
   }
 
-  // Gives us a way to referrence knex when configuring DB-level defaults, eg:
-  //   knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
+  // Gives us a way to reference knex when configuring DB-level defaults, eg:
+  // knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
   // We can't do this in the constructor as the knex instance doesn't exists
   get defaultTo() {
     if (this._defaultTo) return this._defaultTo;

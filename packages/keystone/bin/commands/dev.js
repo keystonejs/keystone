@@ -1,6 +1,6 @@
 const path = require('path');
 const { executeDefaultServer, getEntryFileFullPath } = require('../utils');
-const { DEFAULT_PORT, DEFAULT_ENTRY, DEFAULT_CONNECT_TO } = require('../../constants');
+const { DEFAULT_PORT, DEFAULT_ENTRY } = require('../../constants');
 
 module.exports = {
   // prettier-ignore
@@ -17,7 +17,6 @@ module.exports = {
     Options
       --port, -p    Port to start on [${DEFAULT_PORT}]
       --entry       Entry file exporting keystone instance [${DEFAULT_ENTRY}]
-      --connect-to  URI of database connection [${DEFAULT_CONNECT_TO}]
   `,
   exec: async (args, { exeName, _cwd = process.cwd() } = {}, spinner) => {
     spinner.text = 'Validating project entry file';

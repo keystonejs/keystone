@@ -8,20 +8,29 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
-function setupServer({ name, adapterName, createLists = () => {} }) {
+function setupServer({ name, adapterName, createLists = () => {}, createApps, keystoneOptions }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
-  const args = { mongoose: {}, knex: { dropDatabase: true } }[adapterName];
+  const args = {
+    mongoose: {},
+    knex: {
+      dropDatabase: true,
+      knexOptions: { connection: process.env.KNEX_URI || 'postgres://localhost/keystone' },
+    },
+  }[adapterName];
+
   const keystone = new Keystone({
     name,
     adapter: new Adapter(args),
     defaultAccess: { list: true, field: true },
+    ...keystoneOptions,
   });
 
   createLists(keystone);
-
-  // Has the side-effect of registering the schema with the keystone object
-  new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
-
+  if (createApps) {
+    createApps(keystone);
+  } else {
+    new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
+  }
   return { keystone };
 }
 

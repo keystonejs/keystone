@@ -51,7 +51,7 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
   }
 
   setupHooks({ addPreSaveHook, addPostReadHook }) {
-    // Updates the relevant value in the item provided (by referrence)
+    // Updates the relevant value in the item provided (by reference)
     addPreSaveHook(item => {
       if (item[this.path] && typeof item[this.path] === 'string') {
         item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
