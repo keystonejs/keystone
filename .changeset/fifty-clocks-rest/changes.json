@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/api-tests", "type": "minor" },
+    { "name": "@keystone-alpha/fields", "type": "minor" },
+    { "name": "@keystone-alpha/keystone", "type": "minor" }
+  ],
+  "dependents": []
+}
