@@ -100,10 +100,10 @@ All filter fields expect values in the ISO8601 (`YYYY-MM-DD`) format.
 
 In Mongoose the field is added using the `String` schema type.
 
-The `isRequired` config option is enforces by Keystone only.
+The `isRequired` config option is enforced by Keystone only.
 
 ### Knex Adaptor
 
 The Knex adaptor uses the [Knex `date` type](https://knexjs.org/#Schema-date):
 
-The `isRequired` config option is enforces by Keystone and, if equal to `true`, the column is set as not nullable.
+The `isRequired` config option is enforced by Keystone and, if equal to `true`, the column is set as not nullable.
