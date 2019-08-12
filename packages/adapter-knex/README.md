@@ -19,13 +19,13 @@ const keystone = new Keystone({
 
 ## API `new KnexAdapter(options)`
 
-### `schemaName`
+### `options.schemaName`
 
 _**Default:**_ `'public'`
 
 All postgres tables are grouped within a schema and `public` is the default schema.
 
-### `knexOptions`
+### `options.knexOptions`
 
 These options are passed directly through to Knex.
 
@@ -54,9 +54,9 @@ To log all Knex queries, run the server with the environment variable `DEBUG=kne
 
 ## Setting Up a Database
 
-Before running Keystone with the Knex adapter you should configure a database. By default Knex will look for Postgres database on the default port, matching the project name, as the current user.
+Before running Keystone with the Knex adapter you should configure a database. By default Knex will look for a Postgres database on the default port, matching the project name, as the current user.
 
-In most cases this database will not exist and you will want configure a user and database for your application.
+In most cases this database will not exist and you will want to configure a user and database for your application.
 
 Assuming you're on MacOS and have Postgres installed the `build-test-db.sh` does this for you:
 
