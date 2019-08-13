@@ -5,6 +5,9 @@ Contributions to KeystoneJS in the form of issues and PRs are welcomed.
 During the alpha stage of development we are focussing on getting the core systems working smoothly.
 Contributions which improve the documention and test coverage are particularly welcomed.
 
+### Community Ecosystem
+We appreciate all help and efforts in improving KeystoneJs. Sometime it is not possible to triage all PR and accept all PRs and features into the core repo. We do want to see your contribution being used by comminity and help create a thriving ecosystem around Keystone. You can also make contributions to keystone community at https://github.com/keystone-js/keystone-js. One of the first community package is shipped as [@keystone-js/view ](https://www.npmjs.com/package/@keystone-js/view).
+
 ## Code of Conduct
 
 KeystoneJS adheres to the [Contributor Covenant Code of Conduct](code-of-conduct.md).
