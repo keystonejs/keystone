@@ -1,5 +1,11 @@
 # @keystone-alpha/build-field-types
 
+## 1.0.5
+
+### Patch Changes
+
+- [37b52b7b](https://github.com/keystonejs/keystone-5/commit/37b52b7b): support windows paths in development build
+
 ## 1.0.4
 
 ### Patch Changes

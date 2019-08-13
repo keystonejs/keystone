@@ -1,5 +1,12 @@
 # @keystone-alpha/test-utils
 
+## 2.2.1
+
+- Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):
+  - @keystone-alpha/adapter-knex@4.0.0
+  - @keystone-alpha/adapter-mongoose@4.0.0
+  - @keystone-alpha/keystone@10.0.0
+
 ## 2.2.0
 
 ### Minor Changes

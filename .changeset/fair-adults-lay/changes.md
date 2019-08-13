@@ -1,1 +1,0 @@
-Blocks correctly handle case when no mutations are present for their block in a Content field.

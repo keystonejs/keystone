@@ -1,5 +1,19 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.2.0
+
+### Minor Changes
+
+- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function in view Controllers
+
+### Patch Changes
+
+- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+
+- Updated dependencies [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06):
+  - @keystone-alpha/fields@10.2.0
+  - @arch-ui/drawer@0.0.10
+
 ## 5.1.0
 
 ### Minor Changes
