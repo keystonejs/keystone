@@ -41,4 +41,4 @@ If none of these are found a connection string is derived with a `DATABASE_NAME`
 
 These options are passed directly through to `mongoose.connect()`.
 
-See: https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect for a detailed list of options.
+See: <https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect> for a detailed list of options.

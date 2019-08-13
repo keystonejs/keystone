@@ -1,1 +1,0 @@
-Added a new fallback option to support client-side routing

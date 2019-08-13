@@ -1,1 +1,0 @@
-Support defaultValue as a function in view Controllers

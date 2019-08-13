@@ -1,5 +1,11 @@
 # @keystone-alpha/website
 
+## 1.1.1
+
+### Patch Changes
+
+- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+
 ## 1.1.0
 
 ### Minor Changes

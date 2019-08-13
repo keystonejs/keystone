@@ -1,5 +1,11 @@
 # @keystone-alpha/field-content
 
+## 2.1.0
+
+### Minor Changes
+
+- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function in view Controllers
+
 ## 2.0.2
 
 ### Patch Changes

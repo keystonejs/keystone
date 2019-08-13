@@ -1,5 +1,24 @@
 # @keystone-alpha/fields
 
+## 10.2.0
+
+### Minor Changes
+
+- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function at mutation execution time
+- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function in view Controllers
+
+### Patch Changes
+
+- [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06): Blocks correctly handle case when no mutations are present for their block in a Content field.
+- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+
+- Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):
+- Updated dependencies [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06):
+  - @keystone-alpha/test-utils@2.2.1
+  - @keystone-alpha/adapter-knex@4.0.0
+  - @keystone-alpha/adapter-mongoose@4.0.0
+  - @arch-ui/drawer@0.0.10
+
 ## 10.1.0
 
 ### Minor Changes

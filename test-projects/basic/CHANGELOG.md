@@ -1,5 +1,18 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.6
+
+### Patch Changes
+
+- [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06): More resilient tests
+- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+- [992c7e74](https://github.com/keystonejs/keystone-5/commit/992c7e74): More resilient tests by using force clicks in Cypress to work around Cypress bugs.
+
+- Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):
+  - @keystone-alpha/fields@10.2.0
+  - @keystone-alpha/adapter-mongoose@4.0.0
+  - @keystone-alpha/keystone@10.0.0
+
 ## 1.3.5
 
 ### Patch Changes
