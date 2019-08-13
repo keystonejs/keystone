@@ -1,5 +1,13 @@
 # @keystone-alpha/adapter-knex
 
+## 4.0.1
+
+### Patch Changes
+
+- [3eeb07c7](https://github.com/keystonejs/keystone-5/commit/3eeb07c7): - Re-instate default config for Knex adapter
+  - Throw the correct error object when a connection error occurs in the Knex
+    Database
+
 ## 4.0.0
 
 ### Major Changes
