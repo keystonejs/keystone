@@ -48,13 +48,13 @@ class KnexAdapter extends BaseKeystoneAdapter {
     // Knex will not error until a connection is made
     // To check that the connection we run a test query
     await this.knex.raw('select 1+1 as result').catch(result => {
+      const connectionError = result.error || result;
       logger.error(`Could not connect to database: '${uri}'`);
       logger.warn(
         `If this is the first time you've run Keystone, you can create your database with the following command:`
       );
       logger.warn(`createdb -U postgres ${uri.split('/').pop()}`);
-      logger.error(result.error);
-      throw result.error;
+      throw connectionError;
     });
   }
 
