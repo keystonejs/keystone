@@ -19,7 +19,7 @@ const {
 const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
-  constructor({ knexOptions = {}, schemaName = 'public' }) {
+  constructor({ knexOptions = {}, schemaName = 'public' } = {}) {
     super(...arguments);
     this.client = knexOptions.client || 'postgres';
     this.name = 'knex';
