@@ -603,17 +603,20 @@ class KnexFieldAdapter extends BaseFieldAdapter {
   // knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
   // We can't do this in the constructor as the knex instance doesn't exists
   get defaultTo() {
-    if (this._defaultTo) return this._defaultTo;
+    if (this._defaultTo) {
+      return this._defaultTo;
+    }
 
     const defaultToSupplied = this.knexOptions.defaultTo;
     const knex = this.listAdapter.parentAdapter.knex;
-    const resolve = () => {
-      if (typeof defaultToSupplied === 'undefined') return this.field.defaultValue;
-      if (typeof defaultToSupplied === 'function') return defaultToSupplied(knex);
-      return defaultToSupplied;
-    };
 
-    return (this._defaultTo = resolve());
+    if (typeof defaultToSupplied === 'function') {
+      this._defaultTo = defaultToSupplied(knex);
+    } else {
+      this._defaultTo = defaultToSupplied;
+    }
+
+    return this._defaultTo;
   }
 
   // Default nullability from isRequired in most cases
@@ -621,9 +624,25 @@ class KnexFieldAdapter extends BaseFieldAdapter {
   get isNotNullable() {
     if (this._isNotNullable) return this._isNotNullable;
 
-    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
-      ? this.field.isRequired || (typeof this.defaultTo !== 'undefined' && this.defaultTo !== null)
-      : this.knexOptions.isNotNullable));
+    if (typeof this.knexOptions.isNotNullable === 'undefined') {
+      if (this.field.isRequired) {
+        this._isNotNullable = true;
+      } else {
+        // NOTE: We do our best to check for a default value below, but if a
+        // function was supplied, we have no way of knowing what that function
+        // will return until it's executed, so we err on the side of
+        // permissiveness and assume the function may return `null`, and hence
+        // this field is nullable.
+        if (typeof this.field.defaultValue === 'function') {
+          this._isNotNullable = false;
+        } else {
+          this._isNotNullable =
+            typeof this.field.defaultValue !== 'undefined' && this.field.defaultValue !== null;
+        }
+      }
+    }
+
+    return this._isNotNullable;
   }
 
   addToTableSchema() {

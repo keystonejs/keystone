@@ -9,6 +9,17 @@ export default class FieldController {
     this.list = list;
     this.adminMeta = adminMeta;
     this.views = views;
+
+    if ('defaultValue' in config) {
+      if (typeof config.defaultValue !== 'function') {
+        this._getDefaultValue = () => config.defaultValue;
+      } else {
+        this._getDefaultValue = config.defaultValue;
+      }
+    } else {
+      // By default, the default value is undefined
+      this._getDefaultValue = () => undefined;
+    }
   }
 
   // TODO: This is a bad default; we should (somehow?) inspect the fields provided
@@ -79,7 +90,9 @@ export default class FieldController {
     !isEqual(initialData[this.path], currentData[this.path]);
 
   // eslint-disable-next-line no-unused-vars
-  getDefaultValue = data => this.config.defaultValue || '';
+  getDefaultValue = ({ originalInput = {} } = {}) => {
+    return this._getDefaultValue({ originalInput });
+  };
 
   initCellView = () => {
     const { Cell } = this.views;

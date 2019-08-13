@@ -126,13 +126,10 @@ export class SlugImplementation extends Text {
     this.generateFn = generateFn;
     this.makeUnique = makeUniqueFn;
     this.regenerateOnUpdate = regenerateOnUpdate;
-    debugger;
   }
 
   async resolveInput({ resolvedData, existingItem, actions: { query } }) {
     let slug;
-
-    debugger;
 
     // A slug has been passed in
     if (resolvedData[this.path]) {

@@ -24,6 +24,9 @@ keystone.createList('Post', {
 If not set, or set to `undefined`, it must be provided when creating new items.
 For a 'nullable' field, set `defaultValue: null`.
 
+`defaultValue` may be a static value, or a function which returns the value / a
+Promise for the value.
+
 NOTE: Some types have a pre-configured defaultValue;
 
 - **Relationship**: `null`

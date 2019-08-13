@@ -51,9 +51,17 @@ describe('List view URL state', () => {
   it('Stores search state in the url', () => {
     cy.visit('/admin/posts');
 
+    // Setup to track XHR requests
+    cy.server();
+    // Alias the graphql request route
+    cy.route('post', '**/admin/api').as('graphqlPost');
+    // Avoid accidentally mocking routes
+    cy.server({ enable: false });
+
     cy.get('#ks-list-search-input').type('Why');
-    // Sleep due to the debounce on the search term input field
-    cy.wait(500);
+
+    cy.wait('@graphqlPost');
+
     cy.location('search').should('eq', '?search=Why');
 
     // The results should be updated.

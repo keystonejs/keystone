@@ -101,7 +101,7 @@ class CreateItemModal extends Component {
       variables: { data },
     }).then(data => {
       this.props.onCreate(data);
-      this.setState({ item: this.props.list.getInitialItemData() });
+      this.setState({ item: this.props.list.getInitialItemData({}) });
     });
   };
   onClose = () => {

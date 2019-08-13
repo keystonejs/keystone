@@ -172,7 +172,9 @@ class Field {
       path: this.path,
       type: this.constructor.name,
       isRequired: this.isRequired,
-      defaultValue: this.getDefaultValue(),
+      // We can only pass scalar default values through to the admin ui, not
+      // functions
+      defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
       isPrimaryKey: this.isPrimaryKey,
     });
   }
@@ -182,8 +184,16 @@ class Field {
   extendAdminViews(views) {
     return views;
   }
-  getDefaultValue() {
-    return this.defaultValue;
+  getDefaultValue({ existingItem, context, originalInput, actions }) {
+    if (typeof this.defaultValue !== 'undefined') {
+      if (typeof this.defaultValue === 'function') {
+        return this.defaultValue({ existingItem, context, originalInput, actions });
+      } else {
+        return this.defaultValue;
+      }
+    }
+    // By default, the default value is undefined
+    return undefined;
   }
 }
 

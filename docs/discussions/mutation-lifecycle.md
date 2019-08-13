@@ -140,6 +140,8 @@ Any fields which a) are not set on the provided item and b) have a configured de
 
 The default value of a field can be configured at `List` definition time with the config attribute `defaultValue`.
 
+The `defaultValue` may be a static value, or a function which returns either the value or a Promise.
+
 Custom field types can override this behaviour by defining the method `getDefaultValue()`.
 
 Relationship fields do not currently support default values.

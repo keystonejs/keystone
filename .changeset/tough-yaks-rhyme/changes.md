@@ -1,0 +1,1 @@
+Knex adapter is smarter about default values
