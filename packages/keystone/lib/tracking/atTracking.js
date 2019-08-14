@@ -2,7 +2,7 @@ const { DateTime } = require('@keystone-alpha/fields');
 
 const fields = ['createdAt', 'updatedAt'];
 
-module.exports = (listConfig, { chainBeforeChangeHook = true } = {}) => {
+module.exports = (listConfig, { chainResolveInputHook = true } = {}) => {
   const resultConfig = { ...listConfig };
   fields.forEach(field => {
     if (!resultConfig.fields[field]) {
@@ -11,31 +11,36 @@ module.exports = (listConfig, { chainBeforeChangeHook = true } = {}) => {
         format: 'MM/DD/YYYY h:mm A',
         access: {
           read: true,
-          create: false,
-          update: false,
+          create: true, // TODO: revert to false when read only fields are available
+          update: true, // TODO: revert to false when read only fields are available
         },
       };
     }
   });
-  const beforeChangeHook = resultConfig.hooks && resultConfig.hooks.beforeChange;
+  const resolveInputHook = resultConfig.hooks && resultConfig.hooks.resolveInput;
   resultConfig.hooks = resultConfig.hooks || {};
-  resultConfig.hooks.beforeChange = async ({
+  resultConfig.hooks.resolveInput = async ({
     resolvedData,
     existingItem,
     originalInput,
     context,
     list,
   }) => {
-    if (originalInput === 'create') {
+    if (Object.keys(originalInput).length === 0) {
+      return;
+    }
+    if (existingItem === undefined) {
+      // create mode
       const createdAt = new Date().toISOString();
       resolvedData[fields[0]] = createdAt;
       resolvedData[fields[1]] = createdAt;
-    }
-    if (originalInput === 'update') {
+    } else {
+      // update mode
+      delete resolvedData[fields[0]]; // TODO: delete incoming updatedAt field due to no availability of readonly field.
       resolvedData[fields[1]] = new Date().toISOString();
     }
-    if (chainBeforeChangeHook && beforeChangeHook) {
-      return await beforeChangeHook({
+    if (chainResolveInputHook && resolveInputHook) {
+      await resolveInputHook({
         resolvedData,
         existingItem,
         originalInput,
@@ -43,6 +48,7 @@ module.exports = (listConfig, { chainBeforeChangeHook = true } = {}) => {
         list,
       });
     }
+    return resolvedData;
   };
   return resultConfig;
 };

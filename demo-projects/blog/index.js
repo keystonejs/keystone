@@ -31,7 +31,7 @@ const authStrategy = keystone.createAuthStrategy({
 });
 
 keystone.createList('User', User);
-keystone.createList('Post',  byTracking(atTracking(Post)));
+keystone.createList('Post', byTracking(atTracking(Post)));
 
 keystone.createList('PostCategory', PostCategory);
 keystone.createList('Comment', Comment);
