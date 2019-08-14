@@ -377,8 +377,10 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _findById(id) {
-    const results = await this._itemsQuery({ where: { id } });
-    return results[0] || null;
+    const item = (await this._query()
+      .from(this.key)
+      .where('id', id))[0];
+    return item ? this._populateMany(item) : null;
   }
 
   async _find(condition) {
@@ -386,7 +388,7 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _findOne(condition) {
-    return (await this._itemsQuery({ where: { ...condition } }))[0];
+    return (await this._itemsQuery({ where: { ...condition }, first: 1 }))[0];
   }
 
   _allQueryConditions(tableAlias) {
