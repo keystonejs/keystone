@@ -1,0 +1,1 @@
+Minor performance improvements to Knex adapter
