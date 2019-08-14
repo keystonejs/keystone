@@ -60,7 +60,6 @@ const _byTracking = ({ created = true, updated = true }) => ({
     return resolvedData;
   };
   hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
-  console.log({ fields, hooks, ...rest });
   return { fields, hooks, ...rest };
 };
 

@@ -59,7 +59,6 @@ const _atTracking = ({ created = true, updated = true }) => ({
     return resolvedData;
   };
   hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
-  console.log({ fields, hooks, ...rest });
   return { fields, hooks, ...rest };
 };
 
