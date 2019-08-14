@@ -74,7 +74,9 @@ module.exports = class Keystone {
   createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
-    const list = new List(key, config, {
+    const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
+
+    const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
       getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],
       adapter: adapters[adapterName],
