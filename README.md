@@ -12,7 +12,7 @@ Keystone 5 introduces first-class GraphQL support, a new extensible architecture
 
 It is currently in alpha and under intensive development by [Thinkmill](https://www.thinkmill.com.au) and contributors around the world.
 
-### What's new?
+## What's new?
 
 Keystone 5 is a complete re-imagining of KeystoneJS for the future. It builds on the lessons we learned over the last 5 years of the Keystone's history and focuses on the things we believe are the most powerful features for modern web and mobile applications.
 
@@ -20,49 +20,15 @@ This means less focus on hand-holding Node.js template-driven websites and more 
 
 We believe it's the ideal back-end for rich React / Vue / Angular applications, Gatsby and Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
-## WARNING
+🚨🚨🚨
 
 This project is currently very much in the **alpha** phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
 
 To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm.
 
+🚨🚨🚨
+
 ## Getting Started
-
-If you're interested in checking out our progress, the simplest way to do so is to clone this repo and run one of the demo projects.
-
-_NOTE: You must have a [working version of `mongo`
-installed](https://docs.mongodb.com/manual/installation/#mongodb-community-edition)._
-
-### Demo Projects
-
-First, you'll need Bolt installed:
-
-```bash
-yarn global add bolt
-```
-
-You'll also need MongoDB installed. If you need help check out our [MongoDB Guide](https://v5.keystonejs.com/quick-start/mongodb)
-
-Then clone this repo and use Bolt to install the dependencies:
-
-```bash
-git clone https://github.com/keystonejs/keystone-5.git
-cd keystone-5
-bolt
-```
-
-Finally, run the build and start a project:
-
-```bash
-yarn build
-yarn start
-```
-
-There are currently two projects available: `todo` and `blog`. You can specify the project you want to start:
-
-```bash
-yarn start blog
-```
 
 ### Quick start
 
@@ -74,10 +40,21 @@ cd my-app
 yarn start
 ```
 
-### Setup
+For more details and system requirements, check out the [5 Minute Quick Start
+Guide](https://v5.keystonejs.com/quick-start/).
 
-```
-npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/admin-ui
+### Demo Projects
+
+These projects are designed to show off different aspects of KeystoneJS features
+at a range of complexities (from a simple Todo App to a complex Meetup Site).
+
+See the [`demo-projects/README.md`](./demo-projects/README.md) docs to get
+started.
+
+### Manual Setup
+
+```bash
+yarn add @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui
 ```
 
 Add a script to your `package.json`:
@@ -93,11 +70,13 @@ Add a script to your `package.json`:
 Create a file `index.js`:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
-const { AdminUI }         = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text }            = require('@keystone-alpha/fields');
+const { GraphQLApp }      = require('@keystone-alpha/app-graphql');
+const { AdminUIApp }      = require('@keystone-alpha/app-admin-ui');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -110,19 +89,20 @@ keystone.createList('Todo', {
   },
 });
 
-// Setup the optional Admin UI
-const admin = new AdminUI(keystone);
-
 module.exports = {
   keystone,
-  admin,
+  apps: [
+    new GraphQLApp(),
+    // Setup the optional Admin UI
+    new AdminUIApp(),
+  ],
 };
 ```
 
 Now you have everything you need to run a Keystone instance:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Keystone will automatically detect your `index.js` and start the server for you:
@@ -130,24 +110,6 @@ Keystone will automatically detect your `index.js` and start the server for you:
 - `http://localhost:3000/admin`: Keystone Admin UI
 - `http://localhost:3000/admin/api`: generated GraphQL API
 - `http://localhost:3000/admin/graphiql`: GraphQL Playground UI
-
-#### Server Configuration
-
-Extra config can be set with the `serverConfig` export in `index.js`:
-
-```javascript
-// ...
-module.exports = {
-  keystone,
-  admin,
-  serverConfig: {
-    'cookie secret': 'qwerty',
-    apiPath: '/admin/api',
-    graphiqlPath: '/admin/graphiql',
-  },
-};
-// TODO: Document _all_ the options
-```
 
 ### Custom Server
 
@@ -161,76 +123,72 @@ must handle executing the different parts of Keystone.
 Create the `server.js` file:
 
 <!-- prettier-ignore -->
-```javascript
-const keystoneServer = require('@keystone-alpha/core');
 
-keystoneServer.prepare({ port: 3000 })
-  .then(({ server, keystone }) => {
-    server.app.get('/', (req, res) => {
+```javascript
+const express = require('express');
+const { keystone, apps } = require('./index');
+
+keystone.prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
+  .then(({ middlewares }) => {
+    keystone.connect();
+    const app = express();
+    app.get('/', (req, res) => {
       res.end('Hello world');
     });
-    return server.start();
+    app.use(middlewares);
+    app.listen(3000);
   })
   .catch(error => {
     console.error(error);
   });
 ```
 
-Run keystone as you normally would:
+You'll need to change the `dev` script in your `package.json` to run the server file with node like this.
 
-```
-npm run dev
-```
-
-#### Custom Server Configuration
-
-When using a custom server, you should pass the `serverConfig` object to the
-`prepare()` method:
-
-```javascript
-keystone.prepare({
-  serverConfig: {
-    /* ... */
-  },
-});
+```diff
+- "dev": "keystone"
++ "dev": "NODE_ENV=development node server.js"
 ```
 
-For available options, see [Server Configuration](#server-configuration).
+_Note that when using a custom server, you will no longer get the formatted
+console output when starting a server._
+
+For more, see the [Custom Server
+Discussion](https://v5.keystonejs.com/discussions/custom-server).
 
 ### Production Build
 
 When getting ready to deploy your app to production, there are performance
 optimisations which Keystone can prepare for you.
 
-Add this script to your `package.json`:
+Add these scripts to your `package.json`:
 
 ```json
 {
   "scripts": {
-    "build": "keystone build"
+    "build": "keystone build",
+    "start": "keystone start"
   }
 }
 ```
 
-Run `npm run build` to generate the following outputs:
+Run `yarn build` to generate the following outputs(this output could change in the future):
 
 ```
 .
 └── dist/
-    ├── api/
-    ├── admin/
-    └── index.js
+    └── admin/
 ```
 
-To run your keystone instance, execute the `index.js` file:
+To run your keystone instance, run the start script.
 
 ```
-cd dist
-node index.js
+yarn start
 ```
 
 #### Production Build Artifacts
 
+<!--
 ##### `dist/index.js`
 
 An all-in-one server which will start your Keystone API and Admin UI running on
@@ -246,15 +204,16 @@ the keystone instance, and a server to run the API.
 
 This folder contains an `index.js` file which when run via node
 (`node dist/api/index.js`) will serve the API. In this manner, it is possible to
-deploy the API independently of the [admin UI](#dist-admin) by deploying the
-contents of the `dist/api/` folder only.
+deploy the API independently of the [admin UI](#distadmin) by deploying the
+contents of the `dist/api/` folder only. -->
 
 ##### `dist/admin/`
 
 A static export of the Admin UI lives here. Built from your code setting up the
 keystone instance, this export contains _list_ and _field_ config information
-tightly coupled to the API. It is therefore recommended to always deploy the
-Admin UI at the same time as deploying the API to avoid any inconsistencies.
+tightly coupled to the API.
+
+<!-- commented out for now because you currently have to deploy them at the same time right now: It is therefore recommended to always deploy the Admin UI at the same time as deploying the API to avoid any inconsistencies. -->
 
 ### Adding Authentication
 
@@ -264,11 +223,12 @@ To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
+
 ```javascript
-const { Keystone, PasswordAuth } = require('@keystone-alpha/keystone');
-const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 
 const keystone = new Keystone({
   name: 'Keystone With Auth',
@@ -283,7 +243,7 @@ keystone.createList('User', {
 });
 
 const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuth,
+  type: PasswordAuthStrategy,
   list: 'User',
   config: {
     identityField: 'username', // default: 'email'
@@ -291,14 +251,11 @@ const authStrategy = keystone.createAuthStrategy({
   }
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  authStrategy,
-});
-
 module.exports = {
   keystone,
-  admin,
+  apps: [
+    new AdminUIApp({ adminPath: '/admin', authStrategy })
+  ],
 };
 ```
 
@@ -340,23 +297,15 @@ brew install mongodb
 brew services start mongodb
 ```
 
-Create an environment variable in the test project `.env`. This will run project locally on port 3000
-
-```sh
-# CLOUDINARY_CLOUD_NAME=abc123
-# CLOUDINARY_KEY=abc123
-# CLOUDINARY_SECRET=abc123
-PORT=3000
-```
-
 Then install the dependencies and start the test project:
 
 ```sh
 bolt
-bolt start {name of project folder}
+bolt dev
 ```
 
-_(Running `bolt start` will start the project located in `demo-projects/todo` by default)_
+See [`demo-projects/README.md`](./demo-projects/README.md) for more details on
+the available demo projects.
 
 ### Testing
 

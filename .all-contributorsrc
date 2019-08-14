@@ -152,6 +152,101 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mshavliuk",
+      "name": "mshavliuk",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6589665?v=4",
+      "profile": "https://github.com/mshavliuk",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "wesbos",
+      "name": "Wes Bos",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/176013?v=4",
+      "profile": "http://www.wesbos.com",
+      "contributions": [
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "vlad-elagin",
+      "name": "vlad-elagin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/28232030?v=4",
+      "profile": "https://github.com/vlad-elagin",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Olya-Yer",
+      "name": "Olya-Yer ",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/33322677?v=4",
+      "profile": "https://github.com/Olya-Yer",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "1337cookie",
+      "name": "1337cookie",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15826769?v=4",
+      "profile": "https://github.com/1337cookie",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MadeByMike",
+      "name": "Mike",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1320567?v=4",
+      "profile": "http://madebymike.com.au",
+      "contributions": [
+        "ideas",
+        "projectManagement",
+        "review",
+        "code"
+      ]
+    },
+    {
+      "login": "jordanoverbye",
+      "name": "Jordan Overbye",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6265154?v=4",
+      "profile": "https://jordanoverbye.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "prvit",
+      "name": "prvit",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2816799?v=4",
+      "profile": "https://github.com/prvit",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "kennedybaird",
+      "name": "Kennedy Baird",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/20593811?v=4",
+      "profile": "https://github.com/kennedybaird",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "thiagodebastos",
+      "name": "Thiago De Bastos",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6151341?v=4",
+      "profile": "http://thiagodebastos.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

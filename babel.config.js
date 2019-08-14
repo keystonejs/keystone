@@ -1,7 +1,7 @@
 module.exports = {
   presets: [
     [
-      '@babel/env',
+      '@babel/preset-env',
       {
         targets: {
           node: 10,
@@ -14,15 +14,19 @@ module.exports = {
         },
       },
     ],
-    '@babel/react',
+    '@babel/preset-react',
     '@babel/preset-flow',
   ],
   plugins: [
+    '@babel/plugin-transform-runtime',
     '@babel/plugin-proposal-class-properties',
     '@babel/proposal-object-rest-spread',
     '@babel/plugin-syntax-dynamic-import',
-    ...(process.env.NODE_ENV === 'test'
-      ? [require('./packages/build-field-types').devBabelPlugin]
-      : []),
+  ],
+  overrides: [
+    {
+      include: 'packages/fields/src/Controller.js',
+      presets: ['@babel/preset-env'],
+    },
   ],
 };

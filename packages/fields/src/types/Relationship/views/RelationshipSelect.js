@@ -13,7 +13,7 @@ type Props = {
   innerRef?: React.Ref<*>,
   autoFocus?: boolean,
   field: Object,
-  error?: Error,
+  errors?: Array<Error>,
   renderContext: string | null,
   htmlID: string,
   onChange: Function,
@@ -47,7 +47,7 @@ const Relationship = forwardRef(
       isMulti,
       search,
       autoFocus,
-      serverError,
+      serverErrors,
       onChange,
       htmlID,
       setSearch,
@@ -63,19 +63,21 @@ const Relationship = forwardRef(
             label: val._label_,
           }))
         : [];
-
+    const serverError =
+      serverErrors &&
+      serverErrors.find(error => error instanceof Error && error.name === 'AccessDeniedError');
     let currentValue = null;
+
+    const getOption = value =>
+      typeof value === 'string'
+        ? options.find(opt => opt.value.id === value) || { label: value, value: value }
+        : { label: value._label_, value: value };
+
     if (value !== null && canRead) {
       if (isMulti) {
-        currentValue = (Array.isArray(value) ? value : []).map(val => ({
-          label: val._label_,
-          value: val,
-        }));
+        currentValue = (Array.isArray(value) ? value : []).map(getOption);
       } else if (value) {
-        currentValue = {
-          label: value._label_,
-          value: value,
-        };
+        currentValue = getOption(value);
       }
     }
 
@@ -139,7 +141,7 @@ const Relationship = forwardRef(
         value={currentValue}
         placeholder={
           // $FlowFixMe
-          canRead ? undefined : serverError.message
+          canRead ? undefined : serverError && serverError.message
         }
         options={options}
         onChange={onChange}
@@ -159,7 +161,7 @@ const RelationshipSelect = ({
   innerRef,
   autoFocus,
   field,
-  error: serverError,
+  errors: serverErrors,
   renderContext,
   htmlID,
   onChange,
@@ -173,8 +175,9 @@ const RelationshipSelect = ({
     `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`
   )}${refList.countQuery(`(search: $search)`)}}`;
 
-  const canRead = !(serverError instanceof Error && serverError.name === 'AccessDeniedError');
-
+  const canRead =
+    !serverErrors ||
+    serverErrors.every(error => !(error instanceof Error && error.name === 'AccessDeniedError'));
   const selectProps = renderContext === 'dialog' ? { menuShouldBlockScroll: true } : null;
 
   return (
@@ -198,7 +201,7 @@ const RelationshipSelect = ({
               isMulti,
               search,
               autoFocus,
-              serverError,
+              serverErrors,
               onChange,
               htmlID,
               setSearch,

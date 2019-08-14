@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Documentation Style
----
+[meta]-->
 
 # Documentation Style
 
@@ -93,10 +93,10 @@ It's worth noting that GitHub Markdown only cares which numbers you use for the 
 it takes that as the initial value and counts up from there.
 As such, there are two methods that work:
 
-1.  Usually it's preferable to number all items with `1`.
-    This keeps diffs clean since inserting or removing an item doesn't re-number all subsequent items.
-1.  However, if the doc refers to the items _by number_ it makes sense to number them ordinarily within the Markdown.
-    The Prettier will _correct the order of items_ numbered in this way which is nice (but does cause noisier diffs).
+1. Usually it's preferable to number all items with `1`.
+   This keeps diffs clean since inserting or removing an item doesn't re-number all subsequent items.
+2. However, if the doc refers to the items _by number_ it makes sense to number them ordinarily within the Markdown.
+   The Prettier will _correct the order of items_ numbered in this way which is nice (but does cause noisier diffs).
 
 ## Links
 

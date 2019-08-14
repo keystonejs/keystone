@@ -1,11 +1,11 @@
-const USERNAME = 'boris@keystone-alpha.com';
-const PASSWORD = 'correctbattery';
+const IDENTITY = 'boris@keystone-alpha.com';
+const SECRET = 'correctbattery';
 
 describe('Testing Login', () => {
   it('Shows login screen instead of admin page', () => {
     cy.visit('/admin');
-    cy.get('[name="username"]').should('exist');
-    cy.get('[name="password"]').should('exist');
+    cy.get('[name="identity"]').should('exist');
+    cy.get('[name="secret"]').should('exist');
     cy.get('button[type="submit"]')
       .should('exist')
       .should('contain', 'Sign In');
@@ -14,8 +14,8 @@ describe('Testing Login', () => {
   it('Shows login screen instead of users page', () => {
     cy.visit('/admin/users');
     cy.get('body').should('not.contain', 'Users');
-    cy.get('[name="username"]').should('exist');
-    cy.get('[name="password"]').should('exist');
+    cy.get('[name="identity"]').should('exist');
+    cy.get('[name="secret"]').should('exist');
     cy.get('button[type="submit"]')
       .should('exist')
       .should('contain', 'Sign In');
@@ -27,52 +27,52 @@ describe('Testing Login', () => {
       // There's a race condition where the click handler for the button doesn't
       // appear to be attached, so the form is not getting validated correctly
       cy.wait(250);
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
     it('Does not log in with invalid credentials', () => {
       cy.visit('/admin');
 
-      cy.get('input[name="username"]')
+      cy.get('input[name="identity"]')
         .clear({ force: true })
         .type('fake@example.com', { force: true });
 
-      cy.get('[name="password"]')
+      cy.get('[name="secret"]')
         .clear({ force: true })
         .type('gibberish', { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
-    it('Does not log in with invalid username', () => {
+    it('Does not log in with invalid identity', () => {
       cy.visit('/admin');
 
-      cy.get('input[name="username"]')
+      cy.get('input[name="identity"]')
         .clear({ force: true })
         .type('fake@example.com', { force: true });
 
-      cy.get('[name="password"]')
+      cy.get('[name="secret"]')
         .clear({ force: true })
-        .type(PASSWORD, { force: true });
+        .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
-    it('Does not log in with invalid password', () => {
+    it('Does not log in with invalid secret', () => {
       cy.visit('/admin');
 
-      cy.get('input[name="username"]')
+      cy.get('input[name="identity"]')
         .clear({ force: true })
-        .type(USERNAME, { force: true });
+        .type(IDENTITY, { force: true });
 
-      cy.get('[name="password"]')
+      cy.get('[name="secret"]')
         .clear({ force: true })
         .type('gibberish', { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username and password were incorrect');
     });
   });
@@ -91,15 +91,15 @@ describe('Testing Login', () => {
     it('Logs in with valid credentials', () => {
       cy.visit('/admin');
 
-      cy.get('input[name="username"]')
+      cy.get('input[name="identity"]')
         .clear({ force: true })
-        .type(USERNAME, { force: true });
+        .type(IDENTITY, { force: true });
 
-      cy.get('[name="password"]')
+      cy.get('[name="secret"]')
         .clear({ force: true })
-        .type(PASSWORD, { force: true });
+        .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
 
       cy.get('body').should('contain', 'Users');
       cy.get('body').should('contain', 'Dashboard');
@@ -108,15 +108,15 @@ describe('Testing Login', () => {
     it('Redirects to requested page after login', () => {
       cy.visit('/admin/users');
 
-      cy.get('input[name="username"]')
+      cy.get('input[name="identity"]')
         .clear({ force: true })
-        .type(USERNAME, { force: true });
+        .type(IDENTITY, { force: true });
 
-      cy.get('[name="password"]')
+      cy.get('[name="secret"]')
         .clear({ force: true })
-        .type(PASSWORD, { force: true });
+        .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
 
       cy.url().should('match', /admin\/users$/);
       cy.get('body').should('contain', 'Users');
@@ -143,15 +143,15 @@ describe('authenticated item', () => {
     before(() => {
       cy.visit('/admin');
 
-      cy.get('input[name="username"]')
+      cy.get('input[name="identity"]')
         .clear({ force: true })
-        .type(USERNAME, { force: true });
+        .type(IDENTITY, { force: true });
 
-      cy.get('[name="password"]')
+      cy.get('[name="secret"]')
         .clear({ force: true })
-        .type(PASSWORD, { force: true });
+        .type(SECRET, { force: true });
 
-      cy.get('button[type="submit"]').click();
+      cy.get('button[type="submit"]').click({ force: true });
 
       // Wait for page to load (completing the signin round trip)
       cy.get('main h1').should('contain', 'Dashboard');

@@ -12,9 +12,12 @@ const {
 } = mongoose;
 
 export class File extends Implementation {
-  constructor() {
+  constructor(path, { directory, route, adapter }) {
     super(...arguments);
     this.graphQLOutputType = 'File';
+    this.directory = directory;
+    this.route = route;
+    this.fileAdapter = adapter;
   }
 
   get gqlOutputFields() {
@@ -23,8 +26,8 @@ export class File extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      directory: this.config.directory,
-      route: this.config.route,
+      directory: this.directory,
+      route: this.route,
     };
   }
   get gqlQueryInputFields() {
@@ -65,7 +68,7 @@ export class File extends Implementation {
         if (itemValues.id) itemValues.id = itemValues.id.toString();
 
         return {
-          publicUrl: this.config.adapter.publicUrl(itemValues),
+          publicUrl: this.fileAdapter.publicUrl(itemValues),
           ...itemValues,
         };
       },
@@ -92,7 +95,7 @@ export class File extends Implementation {
 
     const newId = new ObjectId();
 
-    const { id, filename, _meta } = await this.config.adapter.save({
+    const { id, filename, _meta } = await this.fileAdapter.save({
       stream,
       filename: originalFilename,
       mimetype,
@@ -138,7 +141,20 @@ export class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter
 }
 
 export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.json(this.path);
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    // We totally can index these values, it's just not trivial. See issue #1297
+    if (this.config.isUnique || this.config.isIndexed) {
+      throw `The File field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+    }
+  }
+
+  addToTableSchema(table) {
+    const column = table.jsonb(this.path);
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }

@@ -1,18 +1,15 @@
 const pWaterfall = require('p-waterfall');
 
 class BaseKeystoneAdapter {
-  constructor(config) {
+  constructor(config = {}) {
     this.config = { ...config };
-    this.name = this.config.name;
     this.listAdapters = {};
   }
 
-  newListAdapter(key, config = {}) {
-    const listAdapterClass =
-      config.listAdapterClass ||
-      this.config.listAdapterClass ||
-      this.constructor.defaultListAdapterClass;
-    this.listAdapters[key] = new listAdapterClass(key, this, config);
+  newListAdapter(key, { listAdapterClass, ...adapterConfig }) {
+    const _listAdapterClass =
+      listAdapterClass || this.config.listAdapterClass || this.constructor.defaultListAdapterClass;
+    this.listAdapters[key] = new _listAdapterClass(key, this, adapterConfig);
     return this.listAdapters[key];
   }
 
@@ -20,18 +17,19 @@ class BaseKeystoneAdapter {
     return this.listAdapters[key];
   }
 
-  async connect(to, config = {}) {
+  async connect({ name }) {
     // Connect to the database
-    await this._connect(to, config);
+    await this._connect({ name }, this.config);
 
     // Set up all list adapters
     try {
       const taskResults = await this.postConnect();
-      const errors = taskResults.filter(({ isRejected }) => isRejected);
+      const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
       if (errors.length) {
-        const error = new Error('Post connection error');
-        error.errors = errors.map(({ reason }) => reason);
+        if (errors.length === 1) throw errors[0];
+        const error = new Error('Multiple errors in BaseKeystoneAdapter.postConnect():');
+        error.errors = errors;
         throw error;
       }
     } catch (error) {
@@ -71,8 +69,8 @@ class BaseListAdapter {
     ];
   }
 
-  newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {
-    const adapter = new fieldAdapterClass(name, path, this, getListByKey, config);
+  newFieldAdapter(fieldAdapterClass, name, path, field, getListByKey, config) {
+    const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
     this.prepareFieldAdapter(adapter);
     adapter.setupHooks({
       addPreSaveHook: this.addPreSaveHook.bind(this),
@@ -147,12 +145,20 @@ class BaseListAdapter {
       .filter(adapter => adapter.isRelationship)
       .find(adapter => adapter.supportsRelationshipQuery(segment));
   }
+
+  getFieldAdapterByPath(path) {
+    return this.fieldAdaptersByPath[path];
+  }
+  getPrimaryKeyAdapter() {
+    return this.fieldAdaptersByPath['id'];
+  }
 }
 
 class BaseFieldAdapter {
-  constructor(fieldName, path, listAdapter, getListByKey, config) {
+  constructor(fieldName, path, field, listAdapter, getListByKey, config = {}) {
     this.fieldName = fieldName;
     this.path = path;
+    this.field = field;
     this.listAdapter = listAdapter;
     this.config = config;
     this.getListByKey = getListByKey;

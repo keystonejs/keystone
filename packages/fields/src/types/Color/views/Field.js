@@ -4,16 +4,13 @@ import { jsx } from '@emotion/core';
 import React from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { ShieldIcon } from '@arch-ui/icons';
-import { colors } from '@arch-ui/theme';
 import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
 import SketchPicker from 'react-color/lib/Sketch';
 
-const ColorField = ({ field, value: serverValue, error, onChange }) => {
+const ColorField = ({ field, value: serverValue, errors, onChange }) => {
   const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
-  const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
   const target = props => (
     <Button {...props} variant="ghost">
@@ -52,19 +49,7 @@ const ColorField = ({ field, value: serverValue, error, onChange }) => {
 
   return (
     <FieldContainer>
-      <FieldLabel
-        htmlFor={htmlID}
-        css={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
-        {field.label}{' '}
-        {!canRead ? (
-          <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-        ) : null}
-      </FieldLabel>
+      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <FieldInput>
         <Popout width={220} target={target}>
           <SketchPicker

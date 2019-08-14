@@ -3,10 +3,11 @@
 import is from 'sarcastic';
 import globby from 'globby';
 import * as fs from 'fs-extra';
-import { readFileSync } from 'fs';
 import nodePath from 'path';
 import { Item } from './item';
 import { Entrypoint } from './entrypoint';
+import { FatalError } from './errors';
+import { confirms, errors } from './messages';
 import { getValidMainField, getValidModuleField } from './utils';
 
 /*::
@@ -25,7 +26,7 @@ export class Package extends Item {
     let contents = await fs.readFile(filePath, 'utf-8');
     let pkg = new Package(filePath, contents);
 
-    let filenames = await globby(pkg.configEntrypoints, {
+    let entrypointDirectories = await globby(pkg.configEntrypoints, {
       cwd: pkg.directory,
       onlyDirectories: true,
       absolute: true,
@@ -33,29 +34,48 @@ export class Package extends Item {
     });
 
     pkg.entrypoints = await Promise.all(
-      filenames.map(async filename => {
-        let entrypoint = await Entrypoint.create(filename, pkg);
-        return entrypoint;
+      entrypointDirectories.map(async directory => {
+        let filename = nodePath.join(directory, 'package.json');
+
+        let contents = null;
+
+        try {
+          contents = await fs.readFile(filename, 'utf-8');
+        } catch (e) {
+          if (e.code !== 'ENOENT') {
+            throw e;
+          }
+        }
+
+        return { filename, contents };
       })
-    );
-
-    return pkg;
-  }
-  static createSync(directory: string): Package {
-    let filePath = nodePath.join(directory, 'package.json');
-    let contents = readFileSync(filePath, 'utf-8');
-    let pkg = new Package(filePath, contents);
-    let filenames = globby.sync(pkg.configEntrypoints, {
-      cwd: pkg.directory,
-      onlyDirectories: true,
-      absolute: true,
-      expandDirectories: false,
+    ).then(descriptors => {
+      return Promise.all(
+        descriptors.map(async ({ filename, contents }) => {
+          if (contents === null) {
+            let shouldCreateEntrypointPkgJson = await confirms.createEntrypointPkgJson({
+              name: nodePath.join(pkg.name, nodePath.relative(pkg.directory, directory)),
+            });
+            if (!shouldCreateEntrypointPkgJson) {
+              throw new FatalError(errors.noEntrypointPkgJson, {
+                name: nodePath.join(pkg.name, nodePath.relative(pkg.directory, directory)),
+              });
+            }
+            contents = JSON.stringify(
+              {
+                main: getValidMainField(pkg.name),
+                module: getValidModuleField(pkg.name),
+              },
+              null,
+              2
+            );
+            await fs.writeFile(filename, contents);
+          }
+          return new Entrypoint(filename, contents, pkg);
+        })
+      );
     });
 
-    pkg.entrypoints = filenames.map(filename => {
-      let entrypoint = Entrypoint.createSync(filename, pkg);
-      return entrypoint;
-    });
     return pkg;
   }
 
@@ -63,11 +83,11 @@ export class Package extends Item {
     this.entrypoints.forEach(entrypoint => {
       switch (field) {
         case 'main': {
-          entrypoint.main = getValidMainField(entrypoint);
+          entrypoint.main = getValidMainField(this.name);
           break;
         }
         case 'module': {
-          entrypoint.module = getValidModuleField(entrypoint);
+          entrypoint.module = getValidModuleField(this.name);
           break;
         }
       }

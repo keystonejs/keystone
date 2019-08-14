@@ -6,8 +6,12 @@ import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 import { Implementation } from '../../Implementation';
 
 class _DateTime extends Implementation {
-  constructor() {
+  constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
     super(...arguments);
+    this.format = format;
+    this.yearRangeFrom = yearRangeFrom;
+    this.yearRangeTo = yearRangeTo;
+    this.yearPickerType = yearPickerType;
   }
 
   get gqlOutputFields() {
@@ -32,10 +36,10 @@ class _DateTime extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      format: this.config.format,
-      yearRangeFrom: this.config.yearRangeFrom,
-      yearRangeTo: this.config.yearRangeTo,
-      yearPickerType: this.config.yearPickerType,
+      format: this.format,
+      yearRangeFrom: this.yearRangeFrom,
+      yearRangeTo: this.yearRangeTo,
+      yearPickerType: this.yearPickerType,
     };
   }
   get gqlAuxFieldResolvers() {
@@ -172,21 +176,41 @@ export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFiel
 export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
-    const field_path = this.path;
-    const utc_field = `${field_path}_utc`;
-    const offset_field = `${field_path}_offset`;
-    this.realKeys = [utc_field, offset_field];
-    this.sortKey = utc_field;
-    this.dbPath = utc_field;
+
+    this.utcPath = `${this.path}_utc`;
+    this.offsetPath = `${this.path}_offset`;
+    this.realKeys = [this.utcPath, this.offsetPath];
+    this.sortKey = this.utcPath;
+    this.dbPath = this.utcPath;
+
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
   }
 
-  createColumn(table) {
-    const field_path = this.path;
-    const utc_field = `${field_path}_utc`;
-    const offset_field = `${field_path}_offset`;
+  addToTableSchema(table) {
+    // TODO: Should use a single field on PG
+    // .. although 2 cols is nice for MySQL (no native datetime with tz)
+    const utcColumn = table.timestamp(this.utcPath, { useTz: false });
+    const offsetColumn = table.text(this.offsetPath);
 
-    table.text(offset_field);
-    return table.timestamp(utc_field, { useTz: false });
+    // Interpret the index options as effecting both elements
+    if (this.isUnique) table.unique([this.utcPath, this.offsetPath]);
+    else if (this.isIndexed) table.index([this.utcPath, this.offsetPath]);
+
+    // Interpret not nullable to mean neither field is nullable
+    if (this.isNotNullable) {
+      utcColumn.notNullable();
+      offsetColumn.notNullable();
+    }
+
+    // Allow defaults to be set for both elements of the value by nesting them
+    // TODO: Add to docs..
+    if (this.defaultTo && (this.defaultTo.utc || this.defaultTo.offset)) {
+      if (this.defaultTo.utc) utcColumn.defaultTo(this.defaultTo.utc);
+      if (this.defaultTo.offset) offsetColumn.defaultTo(this.defaultTo.offset);
+    } else if (this.defaultTo) {
+      utcColumn.defaultTo(this.defaultTo);
+    }
   }
 }
 

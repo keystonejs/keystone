@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const inflection = require('inflection');
 const pSettle = require('p-settle');
 const {
   escapeRegExp,
@@ -21,6 +20,7 @@ const logger = require('@keystone-alpha/logger').logger('mongoose');
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
 const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
+const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
@@ -73,9 +73,7 @@ const modifierConditions = {
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
-
-    this.name = this.name || 'mongoose';
-
+    this.name = 'mongoose';
     this.mongoose = new mongoose.Mongoose();
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
@@ -83,30 +81,31 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
-    const dbName = config.dbName || inflection.dasherize(config.name).toLowerCase();
-    // NOTE: We pull out `name` here, but don't use it, so it
-    // doesn't conflict with the options the user wants passed to mongodb.
-    const { name: _, ...adapterConnectOptions } = config;
+  async _connect({ name }) {
+    const { mongoUri, ...mongooseConfig } = this.config;
+    // Default to the localhost instance
+    let uri =
+      mongoUri ||
+      process.env.CONNECT_TO ||
+      process.env.DATABASE_URL ||
+      process.env.MONGO_URI ||
+      process.env.MONGODB_URI ||
+      process.env.MONGO_URL ||
+      process.env.MONGODB_URL ||
+      process.env.MONGOLAB_URI ||
+      process.env.MONGOLAB_URL;
 
-    let uri = to;
     if (!uri) {
-      logger.warn('No MongoDB connection specified. Falling back to local instance on port 27017');
-      // Default to the localhost instance
-      uri = 'mongodb://localhost:27017/';
+      const defaultDbName = slugify(name) || 'keystone';
+      uri = `mongodb://localhost/${defaultDbName}`;
+      logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
-    await this.mongoose.connect(
-      uri,
-      // NOTE: We still pass in the dbName for the case where `to` is set, but
-      // doesn't have a name in the uri.
-      // For the case where `to` does not have a name, and `dbName` is set, the
-      // expected behaviour is for the name to be set to `dbName`.
-      // For the case where `to` has a name, and `dbName` is not set, we are
-      // forcing the name to be the dasherized of the Keystone name.
-      // For the case where both are set, the expected behaviour is for it to be
-      // overwritten.
-      { useNewUrlParser: true, useFindAndModify: false, ...adapterConnectOptions, dbName }
-    );
+
+    await this.mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      ...mongooseConfig,
+    });
   }
   async postConnect() {
     return await pSettle(
@@ -121,6 +120,12 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   // This will completely drop the backing database. Use wisely.
   dropDatabase() {
     return this.mongoose.connection.dropDatabase();
+  }
+
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { MongoId } = require('@keystone-alpha/fields-mongoid');
+    return MongoId.primaryKeyDefaults[this.name].getConfig();
   }
 }
 
@@ -308,21 +313,37 @@ class MongooseListAdapter extends BaseListAdapter {
 }
 
 class MongooseFieldAdapter extends BaseFieldAdapter {
+  constructor() {
+    super(...arguments);
+
+    // isIndexed is mutually exclusive with isUnique
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+
+    // We don't currently have any mongoose-specific options
+    // this.mongooseOptions = this.config.mongooseOptions || {};
+  }
+
   addToMongooseSchema() {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
 
-  buildValidator(validator, isRequired) {
-    return isRequired ? validator : a => validator(a) || typeof a === 'undefined' || a === null;
+  buildValidator(validator) {
+    return a => validator(a) || typeof a === 'undefined' || a === null;
   }
 
-  mergeSchemaOptions(schemaOptions, { isUnique, mongooseOptions }) {
-    if (isUnique) {
+  mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
+    // Applying these config to all field types is probably wrong;
+    // ie. unique constraints on Checkboxes, Files, etc. probably don't make sense
+    if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
       // constantly recreating indexes. Ie; if we just splat `unique` onto the
       // options object, it would be `undefined`, which would cause Mongoose to
       // drop and recreate all indexes.
       schemaOptions.unique = true;
+    }
+    if (this.isIndexed) {
+      schemaOptions.index = true;
     }
     return { ...schemaOptions, ...mongooseOptions };
   }
@@ -339,11 +360,12 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  equalityConditionsInsensitive(dbPath) {
-    const f = escapeRegExp;
+  equalityConditionsInsensitive(dbPath, f = identity) {
     return {
-      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${f(value)}$`, 'i') }),
-      [`${this.path}_not_i`]: value => ({ [dbPath]: { $not: new RegExp(`^${f(value)}$`, 'i') } }),
+      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${escapeRegExp(f(value))}$`, 'i') }),
+      [`${this.path}_not_i`]: value => ({
+        [dbPath]: { $not: new RegExp(`^${escapeRegExp(f(value))}$`, 'i') },
+      }),
     };
   }
 
@@ -363,17 +385,26 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  stringConditions(dbPath) {
-    const f = escapeRegExp;
+  stringConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_contains`]: value => ({ [dbPath]: { $regex: new RegExp(f(value)) } }),
-      [`${this.path}_not_contains`]: value => ({ [dbPath]: { $not: new RegExp(f(value)) } }),
-      [`${this.path}_starts_with`]: value => ({ [dbPath]: { $regex: new RegExp(`^${f(value)}`) } }),
-      [`${this.path}_not_starts_with`]: value => ({
-        [dbPath]: { $not: new RegExp(`^${f(value)}`) },
+      [`${this.path}_contains`]: value => ({
+        [dbPath]: { $regex: new RegExp(escapeRegExp(f(value))) },
       }),
-      [`${this.path}_ends_with`]: value => ({ [dbPath]: { $regex: new RegExp(`${f(value)}$`) } }),
-      [`${this.path}_not_ends_with`]: value => ({ [dbPath]: { $not: new RegExp(`${f(value)}$`) } }),
+      [`${this.path}_not_contains`]: value => ({
+        [dbPath]: { $not: new RegExp(escapeRegExp(f(value))) },
+      }),
+      [`${this.path}_starts_with`]: value => ({
+        [dbPath]: { $regex: new RegExp(`^${escapeRegExp(f(value))}`) },
+      }),
+      [`${this.path}_not_starts_with`]: value => ({
+        [dbPath]: { $not: new RegExp(`^${escapeRegExp(f(value))}`) },
+      }),
+      [`${this.path}_ends_with`]: value => ({
+        [dbPath]: { $regex: new RegExp(`${escapeRegExp(f(value))}$`) },
+      }),
+      [`${this.path}_not_ends_with`]: value => ({
+        [dbPath]: { $not: new RegExp(`${escapeRegExp(f(value))}$`) },
+      }),
     };
   }
 

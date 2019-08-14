@@ -1,5 +1,381 @@
 # @keystone-alpha/fields
 
+## 10.2.0
+
+### Minor Changes
+
+- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function at mutation execution time
+- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function in view Controllers
+
+### Patch Changes
+
+- [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06): Blocks correctly handle case when no mutations are present for their block in a Content field.
+- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+
+- Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):
+- Updated dependencies [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06):
+  - @keystone-alpha/test-utils@2.2.1
+  - @keystone-alpha/adapter-knex@4.0.0
+  - @keystone-alpha/adapter-mongoose@4.0.0
+  - @arch-ui/drawer@0.0.10
+
+## 10.1.0
+
+### Minor Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Add a Slug field type for auto-generating slugs based on other fields.
+
+### Patch Changes
+
+- [653aa0e2](https://github.com/keystonejs/keystone-5/commit/653aa0e2): Remove incorrect Cell view config from Slug field
+- [9c3b7436](https://github.com/keystonejs/keystone-5/commit/9c3b7436): Ensure searchUnsplash mutation returns results with a non-null id
+
+## 10.0.0
+
+### Major Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+
+### Minor Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Adding `precision` and `scale` as `knexOptions` for the `Decimal` field type
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Adding isIndexed field config and support for in most field types
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Check for the number type in label resolver to prevent false positive on zero.
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Fixing issue with the Select fields on Knex; options not being applied correctly
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade to mongoose 5.6.5
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Fixing application of some field config on knex
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade graphql to 14.4.2
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Ensure the CloudinaryImage Content Block correctly updates the nested Slate.js image Node data instead of overwiting it which could cause issues for the image renderer expecting an Immutable Map, but receiving a plain Object.
+
+## 9.1.0
+
+### Minor Changes
+
+- [18064167](https://github.com/keystonejs/keystone-5/commit/18064167):
+
+  Adding `knexOptions` to the KnexFieldAdapter to support DB-level config for nullability (`isNotNullable`) and defaults (`defaultTo`)
+
+### Patch Changes
+
+- [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+
+  Adding field instance to the BaseFieldAdapter constructor arguments
+
+## 9.0.0
+
+### Major Changes
+
+- [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+
+  Refactoring the knex adapter (and field adapters) to give the field type more control of the table schema (add 0 or multiple columns, etc)
+
+## 8.1.0
+
+### Minor Changes
+
+- [e945926c](https://github.com/keystonejs/keystone-5/commit/e945926c):
+
+  Adding Uuid field type with Mongoose and Knex adapters
+
+### Patch Changes
+
+- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+
+  CloudinaryImage, Unsplash, and OEmbed blocks will correctly re-connect to existing block data if present rather than disconnecting and reconnecting on every save of the Content editor.
+
+* Updated dependencies [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+  - @keystone-alpha/field-content@2.0.0
+
+## 8.0.0
+
+### Major Changes
+
+- [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+
+  Extract `Content` field into its own package: `@keystone-alpha/field-content`.
+
+### Patch Changes
+
+- [98bef287](https://github.com/keystonejs/keystone-5/commit/98bef287):
+
+  Fix the Relationship field type not allowing relationships to be removed from the Admin UI
+
+## 7.2.0
+
+### Minor Changes
+
+- [c5c46545](https://github.com/keystonejs/keystone-5/commit/c5c46545):
+
+  Add `searchUnsplash` GraphQL query when using the `Unsplash` field type
+
+### Patch Changes
+
+- [148400dc](https://github.com/keystonejs/keystone-5/commit/148400dc):
+
+  Using `connect: []` and `create: []` in many-relationship queries now behaves as expected.
+
+* [384135b1](https://github.com/keystonejs/keystone-5/commit/384135b1):
+
+  Minor bump of bcrypt version
+
+## 7.1.0
+
+### Minor Changes
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add oEmbed Content Block with adapter-specific renderers.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add an Unsplash Image type which fetches data from the Unsplash API
+
+- [8799190e](https://github.com/keystonejs/keystone-5/commit/8799190e):
+
+  Expose `options.adminMeta` to Content Blocks.
+
+- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+
+  Add an Unsplash Image Block for the Content field which takes an Unsplash Image ID and displays the image within the Content field.
+
+### Patch Changes
+
+- [8799190e](https://github.com/keystonejs/keystone-5/commit/8799190e):
+
+  Correctly use `options.adminMeta.readViews()` to load OEmbed Block views.
+
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @arch-ui/fields@2.0.0
+  - @arch-ui/controls@0.0.8
+  - @arch-ui/day-picker@0.0.9
+  - @arch-ui/filters@0.0.9
+  - @arch-ui/input@0.0.8
+
+## 7.0.1
+
+### Patch Changes
+
+- [c3daef1a](https://github.com/keystonejs/keystone-5/commit/c3daef1a):
+
+  Correctly guard against undefined serverErrors in RelationshipSelect
+
+## 7.0.0
+
+### Major Changes
+
+- [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+
+  - Expose a new method on field Controllers: `field#validateInput()`.
+    - ```javascript
+      /**
+       * Perform client-side data validations before performing a
+       * mutation. Any errors or warnings raised will abort the mutation and
+       * re-render the `Field` view with a new `error` prop.
+       *
+       * This method is only called on fields whos `.hasChanged()` property returns
+       * truthy.
+       *
+       * If only warnings are raised, the Admin UI will allow the user to confirm
+       * they wish to continue anyway. If they continue, and no values have changed
+       * since the last validation, validateInput will be called again, however any
+       * warnings raised will be ignored and the mutation will proceed as normal.
+       * This method is called after `serialize`.
+       *
+       * @param {Object} options
+       * @param {Object} options.resolvedData The data object that would be sent to
+       * the server. This data has previously been fed through .serialize()
+       * @param {Object} options.originalInput The data as set by the `Field`
+       * component. This data has _not_ been previously fed through .serialize().
+       * @param {addFieldWarningOrError} options.addFieldValidationError
+       * @param {addFieldWarningOrError} options.addFieldValidationWarning
+       * @return undefined
+       */
+      validateInput = ({
+        resolvedData,
+        originalInput,
+        addFieldValidationError,
+        addFieldValidationWarning,
+      }) => {
+        // Call addFieldValidationError / addFieldValidationWarning here
+      };
+      ```
+  - `Password` field is now using `validateInput()` which enforces `isRequired`
+    and `minLength` checks in the Admin UI.
+
+### Minor Changes
+
+- [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+
+  - Add `OEmbed` field
+
+    ```javascript
+    const { Keystone } = require('@keystone-alpha/keystone');
+    const { OEmbed } = require('@keystone-alpha/fields');
+    const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+
+    const keystone = new Keystone(/* ... */);
+
+    const iframelyAdapter = new IframelyOEmbedAdapter({
+      apiKey: '...', // Get one from https://iframely.com
+    });
+
+    keystone.createList('User', {
+      fields: {
+        portfolio: {
+          type: OEmbed,
+          adapter: iframelyAdapter,
+        },
+      },
+    });
+    ```
+
+### Patch Changes
+
+- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+
+  - Correctly read auth strategy info for displaying the "setCurrentUser" toggle on Relationship fields in the Admin UI
+
+- [3958a9c7](https://github.com/keystonejs/keystone-5/commit/3958a9c7):
+
+  Fields configured with isRequired now behave as expected on create and update, returning a validation error if they are null.
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+  - @arch-ui/fields@1.0.0
+
+## 6.2.2
+
+### Patch Changes
+
+- [25f9ad7e](https://github.com/keystonejs/keystone-5/commit/25f9ad7e):
+
+  Compile Controller base class to ES5 so that non-native classes can extend it
+
+## 6.2.1
+
+### Patch Changes
+
+- [07692ee7](https://github.com/keystonejs/keystone-5/commit/07692ee7):
+
+  Fix item details updating failures when Access Control enabled on a field, but that field is not edited (ie; we were sending unedited data to the mutation which would (correctly) fail).
+
+## 6.2.0
+
+### Minor Changes
+
+- [c5a1d301](https://github.com/keystonejs/keystone-5/commit/c5a1d301):
+
+  - CloudinaryImage single image block correctly loads and displays saved image
+  - AdminUI deserialises fields JIT before rendering
+
+## 6.1.1
+
+### Patch Changes
+
+- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+
+  Minor Admin UI Tweaks
+
+* Updated dependencies [71766bd8](https://github.com/keystonejs/keystone-5/commit/71766bd8):
+* Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+  - @arch-ui/day-picker@0.0.7
+  - @keystone-alpha/test-utils@2.0.2
+  - @keystone-alpha/adapter-mongoose@2.0.0
+
+## 6.1.0
+
+### Minor Changes
+
+- [29728d5e](https://github.com/keystonejs/keystone-5/commit/29728d5e):
+
+  Allow blocks to pick data sent to the adminUI via extendAdminMeta()
+
+### Patch Changes
+
+- [e502af66](https://github.com/keystonejs/keystone-5/commit/e502af66):
+
+  Fix dist directories not being cleared before builds causing broken builds with build-field-types
+
+## 6.0.0
+
+### Major Changes
+
+- [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+
+  Explicit field config options are no longer available on `field.config` for field Implementaiton objects.
+
+- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+
+  - Field view Controllers: Rename `.getValue()` to `.serialize()` and add `.deserialize()` to enable handling pre-save to server & post-read from server respectively.
+
+- [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+
+  - Use build-field-types
+
+- [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+
+  - `{ mongooseOptions: { isRequired: true } }` should be replaced by `{ isRequired: true }`
+
+- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+
+  - Field view Controllers: Rename `.getIntialData()` to `.getDefaultValue()` to better reflect the purpose of the function.
+
+### Minor Changes
+
+- [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+
+  - Added support for isMultiline to Text field type
+
+- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+
+  - Add a mechanism for loading multiple Suspense-aware components in parallel
+
+### Patch Changes
+
+- [ebb858a5](https://github.com/keystonejs/keystone-5/commit/ebb858a5):
+
+  - Optimistically open Nested Create Item Modal and show loading spinner
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [a4c66012](https://github.com/keystonejs/keystone-5/commit/a4c66012):
+
+  - Use `.path` rather than `.config.path` in Controllers
+
+- [3aeabc5e](https://github.com/keystonejs/keystone-5/commit/3aeabc5e):
+
+  - Refactor Content Type to extend Relationship Type to simplify implementation and enable future enhancements
+
+- [b8fc0a22](https://github.com/keystonejs/keystone-5/commit/b8fc0a22):
+
+  - Update dependency
+
+* Updated dependencies [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
+* Updated dependencies [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
+* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+  - @keystone-alpha/build-field-types@1.0.0
+  - @arch-ui/drawer@0.0.6
+  - @arch-ui/tooltip@0.0.6
+  - @arch-ui/popout@0.0.6
+  - @keystone-alpha/access-control@1.0.4
+  - @keystone-alpha/adapter-knex@1.0.7
+  - @keystone-alpha/adapter-mongoose@1.0.7
+  - @keystone-alpha/utils@3.0.0
+
 ## 5.0.0
 
 - [patch][5c36ea0b](https://github.com/keystonejs/keystone-5/commit/5c36ea0b):

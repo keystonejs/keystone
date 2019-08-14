@@ -21,4 +21,30 @@ export default class PasswordController extends FieldController {
       getInitialValue: () => true,
     },
   ];
+
+  serialize = data => {
+    // discard the "confirm" since we only need one version of the password
+    return data[this.path] ? data[this.path].inputPassword : undefined;
+  };
+
+  validateInput = ({ originalInput, addFieldValidationError }) => {
+    const { isRequired, minLength } = this.config;
+
+    if (isRequired) {
+      if (!originalInput[this.path] || !originalInput[this.path].inputPassword) {
+        return addFieldValidationError(`Password is required`);
+      }
+    } else if (!originalInput[this.path] || !originalInput[this.path].inputPassword) {
+      //no password required and no password is set so just return
+      return;
+    }
+
+    if (originalInput[this.path].inputPassword.length < minLength) {
+      return addFieldValidationError(`Password must be at least ${minLength} characters`);
+    }
+
+    if (originalInput[this.path].inputPassword !== originalInput[this.path].inputConfirm) {
+      return addFieldValidationError('Passwords do not match');
+    }
+  };
 }

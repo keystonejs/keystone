@@ -1,8 +1,6 @@
+const isPromise = require('p-is-promise');
 const {
-  camelize,
   getType,
-  fixConfigKeys,
-  checkRequiredConfig,
   escapeRegExp,
   mapKeys,
   mapKeyNames,
@@ -18,25 +16,11 @@ const {
   flatten,
   flatMap,
   zipObj,
+  captureSuspensePromises,
   ...utils
 } = require('../src');
 
 describe('utils', () => {
-  test('camelize', () => {
-    expect(camelize('')).toEqual('');
-    expect(camelize('a')).toEqual('a');
-    expect(camelize('A')).toEqual('a');
-    expect(camelize('a b')).toEqual('aB');
-    expect(camelize('a B')).toEqual('aB');
-    expect(camelize('A B')).toEqual('aB');
-    expect(camelize('A b')).toEqual('aB');
-    expect(camelize('foo bar baz')).toEqual('fooBarBaz');
-    expect(camelize('Foo Bar Baz')).toEqual('fooBarBaz');
-    expect(camelize('FOO BAR BAZ')).toEqual('fooBARBAZ');
-    expect(camelize('HTTP request handler')).toEqual('httpRequestHandler');
-    expect(camelize('URL parser')).toEqual('urlParser');
-  });
-
   test('getType', () => {
     expect(getType(undefined)).toEqual('Undefined');
     expect(getType(null)).toEqual('Null');
@@ -45,29 +29,6 @@ describe('utils', () => {
     expect(getType({})).toEqual('Object');
     expect(getType([])).toEqual('Array');
     expect(getType(() => {})).toEqual('Function');
-  });
-
-  test('fixConfigKeys', () => {
-    const config = {
-      a: 1,
-      foo: 2,
-      FooBar: 3,
-    };
-    expect(fixConfigKeys(config)).toEqual({ a: 1, foo: 2, fooBar: 3 });
-    expect(fixConfigKeys(config, {})).toEqual({ a: 1, foo: 2, fooBar: 3 });
-    expect(fixConfigKeys(config, { foo: 'bar' })).toEqual({ a: 1, bar: 2, fooBar: 3 });
-  });
-
-  test('checkRequiredConfig', () => {
-    const config = {
-      a: 1,
-      b: 2,
-      c: 3,
-    };
-    expect(checkRequiredConfig(config)).toBe(undefined);
-    expect(checkRequiredConfig(config, [])).toBe(undefined);
-    expect(checkRequiredConfig(config, ['a', 'c'])).toBe(undefined);
-    expect(() => checkRequiredConfig(config, ['a', 'c', 'd'])).toThrow(Error);
   });
 
   test('escapeRegExp', () => {
@@ -297,6 +258,128 @@ describe('utils', () => {
     expect(mergeWhereClause(args, where)).toEqual({
       a: 1,
       where: { AND: [{ b: 2, c: ['1', '2'] }, { d: 20, c: ['3', '4'] }] },
+    });
+  });
+
+  describe('captureSuspensePromises', () => {
+    test('executes all fns sync when no Promises thrown', () => {
+      const funcs = [jest.fn(), jest.fn()];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (e) {}
+
+      expect(funcs[0]).toHaveBeenCalledTimes(1);
+      expect(funcs[1]).toHaveBeenCalledTimes(1);
+    });
+
+    test('does not throw when no executors throw', () => {
+      const funcs = [jest.fn(), jest.fn()];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (e) {
+        expect(true).toBeFalsey();
+      }
+
+      expect(funcs[0]).toHaveBeenCalledTimes(1);
+      expect(funcs[1]).toHaveBeenCalledTimes(1);
+    });
+
+    test('executes all fns sync when a Promise is thrown', () => {
+      const funcs = [
+        jest.fn(),
+        jest.fn(() => {
+          throw Promise.resolve();
+        }),
+        jest.fn(),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (e) {}
+
+      expect(funcs[0]).toHaveBeenCalledTimes(1);
+      expect(funcs[1]).toHaveBeenCalledTimes(1);
+      expect(funcs[2]).toHaveBeenCalledTimes(1);
+    });
+
+    test('throws a Promise when executor throws a Promise', () => {
+      const funcs = [
+        jest.fn(),
+        jest.fn(() => {
+          throw Promise.resolve();
+        }),
+        jest.fn(),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+        expect(true).toBeFalsey();
+      } catch (maybePromise) {
+        expect(isPromise(maybePromise)).toBeTruthy();
+      }
+    });
+
+    test('thrown Promise resolves all thrown Promises', () => {
+      const resolvers = [jest.fn(), jest.fn(), jest.fn()];
+
+      const funcs = [
+        jest.fn(() => {
+          throw new Promise(resolve => {
+            // Artificially delay this promise's resolution to the next tick
+            // which will ensure the microtask (aka: Promise) queue is fully
+            // flushed
+            process.nextTick(() => {
+              resolvers[0]();
+              resolve();
+            });
+          });
+        }),
+        jest.fn(() => {
+          throw Promise.resolve().then(resolvers[1]);
+        }),
+        jest.fn(() => {
+          throw Promise.resolve().then(resolvers[2]);
+        }),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (thrownPromise) {
+        return thrownPromise.then(() => {
+          expect(resolvers[0]).toHaveBeenCalledTimes(1);
+          expect(resolvers[1]).toHaveBeenCalledTimes(1);
+          expect(resolvers[2]).toHaveBeenCalledTimes(1);
+        });
+      }
+
+      expect(true).toBeFalsey();
+    });
+
+    test('throws a Error when executor throws a Error', () => {
+      const funcs = [
+        jest.fn(),
+        jest.fn(() => {
+          throw new Error();
+        }),
+        jest.fn(),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+        expect(true).toBeFalsey();
+      } catch (maybePromise) {
+        expect(!isPromise(maybePromise)).toBeTruthy();
+      }
+    });
+
+    test('acts like .map when no promises thrown', () => {
+      const funcs = [jest.fn(() => 'foo'), jest.fn(() => 'bar')];
+
+      const result = captureSuspensePromises(funcs);
+
+      expect(result).toMatchObject(['foo', 'bar']);
     });
   });
 });

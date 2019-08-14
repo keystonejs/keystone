@@ -15,7 +15,6 @@ describe('Nav Bar', () => {
       newTab: true,
     },
     { text: 'Graphiql', target: '/admin/graphiql', newTab: true },
-    { text: 'Style Guide', target: '/admin/style-guide' },
   ].forEach(({ text, target, newTab = false }) => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
       cy.visit('/admin');
@@ -30,7 +29,7 @@ describe('Nav Bar', () => {
       } else {
         cy.get('nav')
           .contains(text)
-          .click();
+          .click({ force: true });
         cy.url().should('include', target);
       }
     });

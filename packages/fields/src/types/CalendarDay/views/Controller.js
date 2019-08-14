@@ -11,8 +11,8 @@ export default class CalendarDayController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  getValue = data => {
-    let value = data[this.config.path];
+  serialize = data => {
+    let value = data[this.path];
     if (typeof value !== 'string') {
       return null;
     }

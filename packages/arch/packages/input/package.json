@@ -1,22 +1,22 @@
 {
   "name": "@arch-ui/input",
   "description": "Input component as used in @keystone-alpha Admin UI.",
-  "version": "0.0.4",
+  "version": "0.0.9",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/input.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "devDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "dependencies": {
     "@arch-ui/color-utils": "0.0.1",
-    "@arch-ui/common": "0.0.3",
-    "@arch-ui/theme": "0.0.3",
-    "@babel/runtime": "^7.3.4",
-    "@emotion/core": "^10.0.9"
+    "@arch-ui/common": "0.0.6",
+    "@arch-ui/theme": "0.0.5",
+    "@babel/runtime": "^7.4.3",
+    "@emotion/core": "^10.0.14"
   },
   "module": "dist/input.esm.js"
 }

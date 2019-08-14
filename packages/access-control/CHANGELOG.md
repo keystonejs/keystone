@@ -1,5 +1,18 @@
 # @keystone-alpha/access-control
 
+## 1.0.5
+
+### Patch Changes
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+## 1.0.4
+
+- Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+  - @keystone-alpha/utils@3.0.0
+
 ## 1.0.3
 
 - [patch][10d96db2](https://github.com/keystonejs/keystone-5/commit/10d96db2):

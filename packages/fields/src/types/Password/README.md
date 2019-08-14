@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: field-types
 title: Password
----
+[meta]-->
 
 # Password
 
@@ -35,6 +35,7 @@ keystone.createList('User', {
 | `minLength`    | `Integer` | `8`     | The minimum number of characters this field will accept               |
 | `rejectCommon` | `Boolean` | `false` | Checks the password against a list of commonly used passwords         |
 | `workFactor`   | `Integer` | `10`    | Controls the processing time required to generate and validate hashes |
+| `isRequired`   | `Boolean` | `false` | Does this field require a value?                                      |
 
 #### `minLength`
 
@@ -110,13 +111,13 @@ As such `Password` fields do _not_ add a `String` output field.
 
 ## Storage
 
+The value stored is a bcrypt hash of the string provided.
+
 ### Mongoose Adaptor
 
-The hash value is stored at `${path}`.
-All filters supported.
+The hash is stored at `${path}` as a `String`.
 
 ### Knex Adaptor
 
-**Not yet supported**
-
-Value will be stored in a `text` fields.
+The hash is stored at `${path}` using the
+[Knex `string` type](https://knexjs.org/#Schema-string) with a max length of 60.

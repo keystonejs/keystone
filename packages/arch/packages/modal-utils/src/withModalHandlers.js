@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment, type ComponentType, type Node, memo } from 'react';
 import ScrollLock from 'react-scrolllock';
-import { TransitionProvider } from './transitions';
+import { TransitionProvider, type TransitionState } from './transitions';
 
 type GenericFn = any => mixed;
 export type CloseType = (event: Event) => void;
@@ -22,7 +22,7 @@ export type ModalHandlerProps = {
   target: TargetArg => Node,
 };
 type State = { isOpen: boolean, clientX: number, clientY: number };
-type Config = { Transition: (*) => * };
+type Config = {| transition: TransitionState => Object |};
 
 function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name || 'Component'})`;
@@ -38,7 +38,7 @@ let Target = memo(function Target({ isOpen, mode, target, targetRef, open, toggl
 
 export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
-  { Transition }: Config
+  { transition }: Config
 ) {
   class IntermediateComponent extends Component<*, State> {
     lastHover: HTMLElement;
@@ -131,18 +131,17 @@ export default function withModalHandlers(
           {isOpen ? <ScrollLock /> : null}
           <TransitionProvider isOpen={isOpen} onEntered={onOpen} onExited={onClose}>
             {transitionState => (
-              <Transition transitionState={transitionState}>
-                <WrappedComponent
-                  close={this.close}
-                  open={this.open}
-                  getModalRef={this.getContent}
-                  targetNode={this.targetNode}
-                  contentNode={this.contentNode}
-                  isOpen={isOpen}
-                  mouseCoords={{ clientX, clientY }}
-                  {...this.props}
-                />
-              </Transition>
+              <WrappedComponent
+                close={this.close}
+                open={this.open}
+                getModalRef={this.getContent}
+                targetNode={this.targetNode}
+                contentNode={this.contentNode}
+                isOpen={isOpen}
+                mouseCoords={{ clientX, clientY }}
+                style={transition(transitionState)}
+                {...this.props}
+              />
             )}
           </TransitionProvider>
         </Fragment>

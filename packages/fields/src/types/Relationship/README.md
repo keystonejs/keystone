@@ -1,13 +1,11 @@
----
+<!--[meta]
 section: field-types
 title: Relationship
----
+[meta]-->
 
 # Relationship
 
-## Nested Mutations
-
-Let's say you've got these lists:
+## Usage
 
 ```javascript
 keystone.createList('User', {
@@ -31,9 +29,21 @@ keystone.createList('Org', {
 });
 ```
 
-The to-many (`User.posts`) and to-single (`User.company`) relationships can be
-mutated as part of a mutation on items in the parent list (eg; during a
-`createUser`, or `updateUser` mutation, etc).
+### Config
+
+| Option     | Type      | Default | Description                                                     |
+| ---------- | --------- | ------- | --------------------------------------------------------------- |
+| `isUnique` | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
+
+```DOCS_TODO
+TODO: Missing config options
+```
+
+### Nested Mutations
+
+Using the example list config above,
+the to-many (`User.posts`) and to-single (`User.company`) relationships can be mutated as part of a mutation on items in the parent list
+(eg; during a `createUser`, or `updateUser` mutation, etc).
 
 The available nested mutations:
 
@@ -49,9 +59,9 @@ The available nested mutations:
 Nested mutations are executed in the following order:
 
 1. `disconnectAll`
-1. `disconnect`
-1. `create`
-1. `connect`
+2. `disconnect`
+3. `create`
+4. `connect`
 
 ### Examples
 
@@ -61,9 +71,10 @@ Use the `create` nested mutation to create and append an item to a to-many
 relationship:
 
 <!-- prettier-ignore -->
+
 ```graphql
-# Replace the company of a given User
-query replaceAllPosts {
+# Replace all posts of a given User
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {
@@ -86,9 +97,10 @@ Use the `connect` nested mutation to append an existing item to a to-many
 relationship:
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace the company of a given User
-query replaceAllPosts {
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {
@@ -112,9 +124,10 @@ the value of a to-single relationship (it's not necessary to use `disconnectAll`
 as is the case for [to-many relationships](#overriding-a-to-many-relationship)):
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace the company of a given User
-query replaceAllPosts {
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {
@@ -138,9 +151,10 @@ To completely replace the related items in a to-many list, you can perform a
 mutation (thanks to the [order of execution](#order-of-execution)):
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace all posts related to a given User
-query replaceAllPosts {
+mutation replaceAllPosts {
   updateUser(
     where: { id: "abc123" },
     data: {
@@ -156,5 +170,10 @@ query replaceAllPosts {
     }
   }
 }
+```
 
+---
+
+```DOCS_TODO
+TODO: Standard sections missing
 ```

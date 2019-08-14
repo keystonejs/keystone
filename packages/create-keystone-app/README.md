@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Create Keystone App
----
+[meta]-->
 
 # Create Keystone App
 

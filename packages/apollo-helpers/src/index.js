@@ -361,7 +361,7 @@ function injectIsOptimisticFlag({
 
   return {
     // Return a function which performs a memoized lookup based on the current
-    // known state of resovlers / list info
+    // known state of resolvers / list info
     resolvers: () => injectIsOptimisticFlagToKeystoneTypes(resolvers, keystoneListsMeta),
     defaults: {
       ...defaults,

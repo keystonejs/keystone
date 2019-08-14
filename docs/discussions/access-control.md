@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Access Control
----
+[meta]-->
 
 # Access Control Guide
 
@@ -11,21 +11,21 @@ title: Access Control
 
 There are 2 ways of effecting the available actions of a user in Keystone:
 
-1.  Admin UI authentication
-2.  GraphQL access control
+1. Admin UI authentication
+2. GraphQL access control
 
 Note on Terminology:
 
 - _Authentication_ refers to a user identifying themselves.
   The specifics of how this is done is outside the scope of this document.
   Within this document, we abbreviate _Authentication_ to _Auth_.
-  See [Authentication](../authentication.md) for more.
+  See [Authentication](./authentication.md) for more.
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
 
 ## Admin UI Authentication
 
-See [Authentication](../authentication.md).
+See [Authentication](./authentication.md).
 
 ## GraphQL Access Control
 
@@ -34,17 +34,17 @@ access level of the currently authenticated (or anonymous) user.
 
 For example, the below access control states:
 
-1.  Only admins can read deactivated user accounts.
-2.  Only authenticated users can read/update their own email, not any other
-    user's. Admins can read/update anyone's email.
-3.  Only admins can see if a password is set. No-one can read their own or other
-    user's passwords.
-    - _NOTE: It is **never** possible in Keystone to read a password via the
-      Admin UI or the API)_
-4.  Only authenticated users can update their own password. Admins can update
-    anyone's password.
+1. Only admins can read deactivated user accounts.
+2. Only authenticated users can read/update their own email, not any other
+   user's. Admins can read/update anyone's email.
+3. Only admins can see if a password is set. No-one can read their own or other
+   user's passwords.
+   - _NOTE: It is **never** possible in Keystone to read a password via the
+     Admin UI or the API)_
+4. Only authenticated users can update their own password. Admins can update
+   anyone's password.
 
-_NOTE: The code below depends on having a correct [authentication setup](../authentication.md)._
+_NOTE: The code below depends on having a correct [authentication setup](./authentication.md)._
 
 ```javascript
 const { Text, Select, Checkbox, Password } = require('@keystone-alpha/fields');
@@ -113,4 +113,4 @@ Notice Jess can only read his own email, and cannot read any passwords.
 
 ---
 
-Read more in the [Access Control API docs](../../guides/access-control.md).
+Read more in the [Access Control API docs](../api/access-control.md).

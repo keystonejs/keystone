@@ -2,33 +2,35 @@
   "name": "@keystone-alpha/cypress-project-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.0.7",
+  "version": "1.1.7",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config `yarn bin`/keystone | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "start": "node -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
     "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
-    "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
-    "cypress:run:ci": "touch .env && yarn prepare-test-server cypress:run:cmd",
+    "prepare-test-server": "cross-env NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
+    "cypress:run:ci": "cross-env NODE_ENV=production touch .env && keystone build && yarn prepare-test-server cypress:run:cmd",
     "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a test-projects/login/.env file.\nSee test-projects/login/.env.example for values\n\"; exit 1; fi",
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/login/.env file.\nSee test-projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^1.0.6",
-    "@keystone-alpha/admin-ui": "^3.1.0",
-    "@keystone-alpha/core": "^2.0.3",
-    "@keystone-alpha/fields": "^5.0.0",
-    "@keystone-alpha/keystone": "^3.1.0",
-    "@keystone-alpha/server": "^4.0.1",
-    "@keystone-alpha/session": "^1.0.2",
-    "body-parser": "^1.18.2"
+    "@keystone-alpha/adapter-mongoose": "^4.0.0",
+    "@keystone-alpha/app-admin-ui": "^5.2.0",
+    "@keystone-alpha/app-graphql": "^6.3.1",
+    "@keystone-alpha/fields": "^10.2.0",
+    "@keystone-alpha/keystone": "^10.0.0",
+    "@keystone-alpha/app-static": "^1.1.0",
+    "@keystone-alpha/session": "^2.0.1",
+    "body-parser": "^1.18.2",
+    "cross-env": "^5.2.0",
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "cypress": "^3.2.0",
+    "cypress": "^3.4.0",
     "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",
     "mocha": "^5.2.0",

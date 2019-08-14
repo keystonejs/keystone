@@ -81,6 +81,7 @@ jobs:
       - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
       - run: yarn lint:prettier
       - run: yarn lint:flow
+      - run: yarn lint:markdown
       - run:
           name: Unit tests
           command: yarn jest --ci --testResultsProcessor="jest-junit" --maxWorkers=1
@@ -116,6 +117,14 @@ jobs:
     <<: *job-setup
     <<: *integration-steps
 
+  integration_tests_clientvalidation:
+    environment:
+      PROJECT_DIRECTORY: test-projects/client-validation
+      PROJECT_NAME: 'Cypress Test Project For Client Validation'
+      PORT: 3000
+    <<: *job-setup
+    <<: *integration-steps
+
   # integration_tests_twitterlogin:
   #   environment:
   #     PROJECT_DIRECTORY: test-projects/twitter-login
@@ -132,3 +141,4 @@ workflows:
       - integration_tests_login
       # - integration_tests_twitterlogin
       - integration_tests_accesscontrol
+      - integration_tests_clientvalidation

@@ -63,9 +63,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'create nested from within create mutation',
         runner(setupKeystone, async ({ keystone }) => {
-          const noteContent = sampleOne(alphanumGenerator);
-          const noteContent2 = sampleOne(alphanumGenerator);
-          const noteContent3 = sampleOne(alphanumGenerator);
+          const noteContent = `a${sampleOne(alphanumGenerator)}`;
+          const noteContent2 = `b${sampleOne(alphanumGenerator)}`;
+          const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
           // Create an item that does the nested create
           const { data, errors } = await graphqlRequest({
@@ -77,7 +77,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             notes: { create: [{ content: "${noteContent}" }] }
           }) {
             id
-            notes {
+            notes(orderBy: "content_ASC") {
               id
               content
             }
@@ -113,7 +113,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }) {
             id
-            notes {
+            notes(orderBy: "content_ASC") {
               id
               content
             }
@@ -152,15 +152,36 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(allNotes).toHaveLength(createUser.notes.length);
+
+          // Test an empty list of related notes
+          const result = await graphqlRequest({
+            keystone,
+            query: `
+        mutation {
+          createUser(data: {
+            username: "A thing",
+            notes: { create: [] }
+          }) {
+            id
+            notes { id }
+          }
+        }
+    `,
+          });
+
+          expect(result.data.createUser).toMatchObject({
+            id: expect.any(String),
+            notes: [],
+          });
         })
       );
 
       test(
         'create nested from within update mutation',
         runner(setupKeystone, async ({ keystone, create }) => {
-          const noteContent = sampleOne(alphanumGenerator);
-          const noteContent2 = sampleOne(alphanumGenerator);
-          const noteContent3 = sampleOne(alphanumGenerator);
+          const noteContent = `a${sampleOne(alphanumGenerator)}`;
+          const noteContent2 = `b${sampleOne(alphanumGenerator)}`;
+          const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
           // Create an item to update
           const createUser = await create('User', { username: 'A thing' });
@@ -219,7 +240,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           ) {
             id
-            notes {
+            notes(orderBy: "content_ASC") {
               id
               content
             }

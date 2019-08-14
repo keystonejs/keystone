@@ -1,43 +1,11 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
-
-export const camelize = str =>
-  // split the string into words, lowercase the leading character of the first word,
-  // uppercase the leading character of all other words, then join together.
-  // If the first word is all uppercase, lowercase the whole thing.
-  str
-    .split(' ')
-    .filter(w => w)
-    .map((w, i) =>
-      i === 0
-        ? w === w.toUpperCase()
-          ? w.toLowerCase()
-          : w.replace(/\S/, c => c.toLowerCase())
-        : w.replace(/\S/, c => c.toUpperCase())
-    )
-    .join('');
+import isPromise from 'p-is-promise';
 
 export const noop = x => x;
 export const identity = noop;
 export const getType = thing =>
   Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
-
-export const fixConfigKeys = (config, remapKeys = {}) => {
-  const rtn = {};
-  Object.keys(config).forEach(key => {
-    if (remapKeys[key]) rtn[remapKeys[key]] = config[key];
-    else rtn[camelize(key)] = config[key];
-  });
-  return rtn;
-};
-
-export const checkRequiredConfig = (config, requiredKeys = []) => {
-  requiredKeys.forEach(key => {
-    if (config[key] === undefined) {
-      throw new Error(`Required key ${key} is not defined in the config`);
-    }
-  });
-};
 
 export const escapeRegExp = str =>
   (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
@@ -186,3 +154,39 @@ export const createLazyDeferred = () => {
     },
   };
 };
+
+/**
+ * Given an array of functions which may throw a Promise when executed, we want
+ * to ensure all functions are executed, reducing any thrown Promises to a
+ * single Promise, which is itself rethrown.
+ * If no Promises are thrown, this is the equivalent of a .map
+ */
+export const captureSuspensePromises = executors => {
+  const values = [];
+  const promises = executors
+    .map(executor => {
+      try {
+        values.push(executor());
+      } catch (loadingPromiseOrError) {
+        // An actual error was thrown, so we want to bubble that up
+        if (!isPromise(loadingPromiseOrError)) {
+          throw loadingPromiseOrError;
+        }
+        // Return a Suspense promise
+        return loadingPromiseOrError;
+      }
+    })
+    .filter(Boolean);
+
+  if (promises.length) {
+    // All the suspense promises are reduced to a single promise then rethrown
+    throw Promise.all(promises);
+  }
+
+  return values;
+};
+
+//ruturns the length of all arrays in obj
+// { a: [1, 2], b: [1, 2, 3] } => 5
+export const countArrays = obj =>
+  Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);

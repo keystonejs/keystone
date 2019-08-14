@@ -1,13 +1,13 @@
----
+<!--[meta]
 section: quick-start
 title: Introduction
----
+[meta]-->
 
 # Quick Start
 
 ## Welcome
 
-This quick start guide will get you up and running with a fresh new Keystone application in just a few easy commands.
+This quick start guide will get you up and running with a fresh new KeystoneJS application in just a few easy commands.
 
 With just _5 minutes_, this is what you're going to build:
 
@@ -29,12 +29,20 @@ Please make sure your computer/server meets the following requirements:
 To create a new KeystoneJS application, ensure [mongodb is running](../quick-start/mongodb.md) and then run the following commands.
 
 ```sh
-npx create-keystone-app my-app
+npm init keystone-app my-app
 cd my-app
 npm start
 ```
 
-Congratulations, you are now running your very own Keystone application!
+or with yarn:
+
+```sh
+yarn create keystone-app my-app
+cd my-app
+yarn start
+```
+
+Congratulations, you are now running your very own KeystoneJS application!
 To visit your running application (a simple todo list), visit
 
 <pre>
@@ -43,7 +51,7 @@ To visit your running application (a simple todo list), visit
 	</code>
 </pre>
 
-Your application also has an admin UI, which lets you directly manipulate the data in your database.
+Your application also has an Admin UI, which lets you directly manipulate the data in your database
 
 <pre>
 	<code>
@@ -51,10 +59,8 @@ Your application also has an admin UI, which lets you directly manipulate the da
 	</code>
 </pre>
 
-The [Admin UI Tutorial](../tutorials/admin-ui.md) will walk you through the functionality provided by the Admin UI.
-
-Both your application and the admin UI are being powered by a GraphQL API.
-Keystone provides a web interface for this API at
+Both your application and the admin UI are powered by a GraphQL API.
+KeystoneJS provides a web interface for this API at
 
 <pre>
 	<code>
@@ -62,4 +68,8 @@ Keystone provides a web interface for this API at
 	</code>
 </pre>
 
-The [Introduction To GraphQL](../tutorials/intro-to-graphql.md) tutorial will guide you through the basics of using GraphQL to interact with your Keystone system.
+## Up Next
+
+- [Schema - Lists & Fields](../discussions/schema.md)
+- [Using the KeystoneJS Admin UI](../tutorials/admin-ui.md)
+- [Introduction To KeystoneJS's GraphQL API](../tutorials/intro-to-graphql.md)

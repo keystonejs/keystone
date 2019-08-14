@@ -5,7 +5,7 @@ Finally this is available in Keystone 5 🎉.
 
 In this post we will be creating a simple custom Field Type for star ratings ⭐️ ⭐️ ⭐️ ⭐️ ⭐️!
 
-![Screenshot of the Stars input field in Keystone Admin UI]()
+![Screenshot of the Stars input field in Keystone Admin UI](<>)
 
 For this component, our data requirements are simple. We need to store an Integer in the database
 to represent the number of stars on a blog post. This makes things easy because Integer is a built
@@ -63,7 +63,7 @@ This is where we will spend most of our time in this tutorial.
 
 ## Defining The Field Type
 
-Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README/index.md).
+Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](../../../../packages/fields/README.md).
 
 ```jsx
 const { Stars, MongoIntegerInterface } = require('./Implementation');
@@ -179,7 +179,7 @@ export default class StarsField extends React.Component {
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
           <Stars count={starCount} value={value} onChange={this.handleChange} />
         </FieldInput>

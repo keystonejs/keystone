@@ -1,24 +1,36 @@
-const pFinally = require('p-finally');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { createApolloServer } = require('@keystone-alpha/server');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const pFinally = require('p-finally');
+const url = require('url');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
-function setupServer({ name, adapterName, createLists = () => {} }) {
+function setupServer({ name, adapterName, createLists = () => {}, createApps, keystoneOptions }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
+  const args = {
+    mongoose: {},
+    knex: {
+      dropDatabase: true,
+      knexOptions: { connection: process.env.KNEX_URI || 'postgres://localhost/keystone' },
+    },
+  }[adapterName];
+
   const keystone = new Keystone({
     name,
-    adapter: new Adapter(),
+    adapter: new Adapter(args),
     defaultAccess: { list: true, field: true },
+    ...keystoneOptions,
   });
 
   createLists(keystone);
-
-  createApolloServer(keystone, {}, SCHEMA_NAME);
-
+  if (createApps) {
+    createApps(keystone);
+  } else {
+    new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
+  }
   return { keystone };
 }
 
@@ -36,8 +48,11 @@ async function getMongoMemoryServerConfig() {
   mongoServerReferences++;
   // Passing `true` here generates a new, random DB name for us
   const mongoUri = await mongoServer.getConnectionString(true);
-  // The dbName is the last part of the URI path
-  const dbName = mongoUri.split('/').pop();
+  // In theory the dbName can contain query params so lets parse it then extract the db name
+  const dbName = url
+    .parse(mongoUri)
+    .pathname.split('/')
+    .pop();
 
   return { mongoUri, dbName };
 }
@@ -76,9 +91,13 @@ function getUpdate(keystone) {
   return (list, id, data) => keystone.getListByKey(list).adapter.update(id, data);
 }
 
-function keystoneMongoTest(setupKeystoneFn, testFn) {
+function getDelete(keystone) {
+  return (list, id) => keystone.getListByKey(list).adapter.delete(id);
+}
+
+function keystoneMongoRunner(setupKeystoneFn, testFn) {
   return async function() {
-    const setup = setupKeystoneFn('mongoose');
+    const setup = await setupKeystoneFn('mongoose');
     const { keystone } = setup;
 
     const { mongoUri, dbName } = await getMongoMemoryServerConfig();
@@ -92,15 +111,16 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect().then(teardownMongoMemoryServer)
     );
   };
 }
 
-function keystoneKnexTest(setupKeystoneFn, testFn) {
+function keystoneKnexRunner(setupKeystoneFn, testFn) {
   return async function() {
-    const setup = setupKeystoneFn('knex');
+    const setup = await setupKeystoneFn('knex');
     const { keystone } = setup;
 
     await keystone.connect();
@@ -112,17 +132,18 @@ function keystoneKnexTest(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect()
     );
   };
 }
 
-function multiAdapterRunners() {
+function multiAdapterRunners(only) {
   return [
-    { runner: keystoneMongoTest, adapterName: 'mongoose' },
-    { runner: keystoneKnexTest, adapterName: 'knex' },
-  ];
+    { runner: keystoneMongoRunner, adapterName: 'mongoose' },
+    { runner: keystoneKnexRunner, adapterName: 'knex' },
+  ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 
 const sorted = (arr, keyFn) => {

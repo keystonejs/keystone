@@ -1,10 +1,9 @@
-/* eslint-disable no-shadow */
 const pluralize = require('pluralize');
-
 const {
   resolveAllKeys,
   mapKeys,
   omit,
+  omitBy,
   unique,
   intersection,
   mergeWhereClause,
@@ -14,12 +13,10 @@ const {
   zipObj,
   createLazyDeferred,
 } = require('@keystone-alpha/utils');
-
 const { parseListAccess } = require('@keystone-alpha/access-control');
-
 const { logger } = require('@keystone-alpha/logger');
-
 const gql = require('graphql-tag');
+
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
@@ -59,6 +56,8 @@ const opToType = {
   delete: 'mutation',
 };
 
+const getAuthMutationName = (prefix, authType) => `${prefix}With${upcase(authType)}`;
+
 const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   const { Text, Checkbox, Float } = require('@keystone-alpha/fields');
 
@@ -94,93 +93,128 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 
   keystoneLogger.warn(
     { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${
-      keystoneType.type.type
-    }' from the @keystone-alpha/fields package.`
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone-alpha/fields package.`
   );
 
   return keystoneType;
 };
 
+const getDefautlLabelResolver = labelField => item => {
+  const value = item[labelField || 'name'];
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+  return value || item.id;
+};
+
 module.exports = class List {
   constructor(
     key,
-    config,
-    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
+    {
+      fields,
+      hooks = {},
+      mutations = [],
+      schemaDoc,
+      labelResolver,
+      labelField,
+      access,
+      adminConfig = {},
+      itemQueryName,
+      listQueryName,
+      label,
+      singular,
+      plural,
+      path,
+      adapterConfig = {},
+    },
+    {
+      getListByKey,
+      getGraphQLQuery,
+      adapter,
+      defaultAccess,
+      getAuth,
+      registerType,
+      createAuxList,
+      isAuxList,
+    }
   ) {
     this.key = key;
+    this._fields = fields;
+    this.hooks = hooks;
+    this.mutations = mutations;
+    this.schemaDoc = schemaDoc;
 
-    // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
-    config.adminConfig = {
+    // Assuming the id column shouldn't be included in default columns or sort
+    const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
+    this.adminConfig = {
       defaultPageSize: 50,
-      defaultColumns: Object.keys(config.fields)
-        .slice(0, 2)
-        .join(','),
-      defaultSort: Object.keys(config.fields)[0],
+      defaultColumns: nonIdFieldNames.slice(0, 2).join(','),
+      defaultSort: nonIdFieldNames[0],
       maximumPageSize: 1000,
-      ...(config.adminConfig || {}),
-    };
-    this.config = {
-      labelResolver: item => item[config.labelField || 'name'] || item.id,
-      hooks: {},
-      ...config,
+      ...adminConfig,
     };
 
+    this.labelResolver = labelResolver || getDefautlLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
+    this.hasAuth = () => !!Object.keys(getAuth() || {}).length;
     this.createAuxList = createAuxList;
 
-    const label = keyToLabel(key);
-    const singular = pluralize.singular(label);
-    const plural = pluralize.plural(label);
+    const _label = keyToLabel(key);
+    const _singular = pluralize.singular(_label);
+    const _plural = pluralize.plural(_label);
 
-    if (plural === label) {
+    if (_plural === _label) {
       throw new Error(
-        `Unable to use ${label} as a List name - it has an ambiguous plural (${plural}). Please choose another name for your list.`
+        `Unable to use ${_label} as a List name - it has an ambiguous plural (${_plural}). Please choose another name for your list.`
       );
     }
 
     this.adminUILabels = {
-      label: config.label || plural,
-      singular: config.singular || singular,
-      plural: config.plural || plural,
-      path: config.path || labelToPath(plural),
+      label: label || _plural,
+      singular: singular || _singular,
+      plural: plural || _plural,
+      path: path || labelToPath(_plural),
     };
 
-    const itemQueryName = config.itemQueryName || labelToClass(singular);
-    const listQueryName = config.listQueryName || labelToClass(plural);
+    const _itemQueryName = itemQueryName || labelToClass(_singular);
+    const _listQueryName = listQueryName || labelToClass(_plural);
 
     this.gqlNames = {
       outputTypeName: this.key,
-      itemQueryName: itemQueryName,
-      listQueryName: `all${listQueryName}`,
-      listQueryMetaName: `_all${listQueryName}Meta`,
-      listMetaName: preventInvalidUnderscorePrefix(`_${listQueryName}Meta`),
-      authenticatedQueryName: `authenticated${itemQueryName}`,
-      deleteMutationName: `delete${itemQueryName}`,
-      updateMutationName: `update${itemQueryName}`,
-      createMutationName: `create${itemQueryName}`,
-      deleteManyMutationName: `delete${listQueryName}`,
-      updateManyMutationName: `update${listQueryName}`,
-      createManyMutationName: `create${listQueryName}`,
-      whereInputName: `${itemQueryName}WhereInput`,
-      whereUniqueInputName: `${itemQueryName}WhereUniqueInput`,
-      updateInputName: `${itemQueryName}UpdateInput`,
-      createInputName: `${itemQueryName}CreateInput`,
-      updateManyInputName: `${listQueryName}UpdateInput`,
-      createManyInputName: `${listQueryName}CreateInput`,
-      relateToManyInputName: `${itemQueryName}RelateToManyInput`,
-      relateToOneInputName: `${itemQueryName}RelateToOneInput`,
+      itemQueryName: _itemQueryName,
+      listQueryName: `all${_listQueryName}`,
+      listQueryMetaName: `_all${_listQueryName}Meta`,
+      listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
+      authenticatedQueryName: `authenticated${_itemQueryName}`,
+      authenticateMutationPrefix: `authenticate${_itemQueryName}`,
+      unauthenticateMutationName: `unauthenticate${_itemQueryName}`,
+      authenticateOutputName: `authenticate${_itemQueryName}Output`,
+      unauthenticateOutputName: `unauthenticate${_itemQueryName}Output`,
+      deleteMutationName: `delete${_itemQueryName}`,
+      updateMutationName: `update${_itemQueryName}`,
+      createMutationName: `create${_itemQueryName}`,
+      deleteManyMutationName: `delete${_listQueryName}`,
+      updateManyMutationName: `update${_listQueryName}`,
+      createManyMutationName: `create${_listQueryName}`,
+      whereInputName: `${_itemQueryName}WhereInput`,
+      whereUniqueInputName: `${_itemQueryName}WhereUniqueInput`,
+      updateInputName: `${_itemQueryName}UpdateInput`,
+      createInputName: `${_itemQueryName}CreateInput`,
+      updateManyInputName: `${_listQueryName}UpdateInput`,
+      createManyInputName: `${_listQueryName}CreateInput`,
+      relateToManyInputName: `${_itemQueryName}RelateToManyInput`,
+      relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
     };
 
     this.adapterName = adapter.name;
-    this.adapter = adapter.newListAdapter(this.key, this.config);
+    this.adapter = adapter.newListAdapter(this.key, adapterConfig);
 
     this.access = parseListAccess({
       listKey: key,
-      access: config.access,
+      access,
       defaultAccess: this.defaultAccess.list,
     });
 
@@ -210,26 +244,55 @@ module.exports = class List {
 
         if (!graphQLQuery) {
           return Promise.reject(
-            new Error('No executable schema is available. Have you setup `@keystone-alpha/server`?')
+            new Error(
+              'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
+            )
           );
         }
 
         return graphQLQuery(queryString, passThroughContext, variables);
       },
     };
+
+    // Tell Keystone about all the types we've seen
+    Object.values(fields).forEach(({ type }) => registerType(type));
   }
 
   initFields() {
-    if (this.fieldsInitialised) {
-      return;
-    }
-
+    if (this.fieldsInitialised) return;
     this.fieldsInitialised = true;
 
-    const sanitisedFieldsConfig = mapKeys(this.config.fields, (fieldConfig, path) => ({
+    let sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
       ...fieldConfig,
       type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
     }));
+
+    // Add an 'id' field if none supplied
+    if (!sanitisedFieldsConfig.id) {
+      if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
+        throw `No 'id' field given for the '${this.key}' list and the list adapter ` +
+          `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
+          `(no 'getDefaultPrimaryKeyConfig()' function)`;
+      }
+      // Rebuild the object so id is "first"
+      sanitisedFieldsConfig = {
+        id: this.adapter.parentAdapter.getDefaultPrimaryKeyConfig(),
+        ...sanitisedFieldsConfig,
+      };
+    }
+
+    // Helpful errors for misconfigured lists
+    Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
+      if (typeof fieldConfig.type === 'undefined') {
+        throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
+          `(${this.key}.${fieldKey}.type is undefined)`;
+      }
+      const adapters = fieldConfig.type.adapters;
+      if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
+        throw `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`;
+      }
+    });
+
     Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
       if (!type.adapters[this.adapterName]) {
         throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
@@ -250,7 +313,7 @@ module.exports = class List {
     );
     this.fields = Object.values(this.fieldsByPath);
     this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendViews({ ...type.views })
+      this.fieldsByPath[path].extendAdminViews({ ...type.views })
     );
   }
 
@@ -268,12 +331,12 @@ module.exports = class List {
       fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
       adminConfig: {
-        defaultPageSize: this.config.adminConfig.defaultPageSize,
-        defaultColumns: this.config.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: this.config.adminConfig.defaultSort,
+        defaultPageSize: this.adminConfig.defaultPageSize,
+        defaultColumns: this.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        defaultSort: this.adminConfig.defaultSort,
         maximumPageSize: Math.max(
-          this.config.adminConfig.defaultPageSize,
-          this.config.adminConfig.maximumPageSize
+          this.adminConfig.defaultPageSize,
+          this.adminConfig.maximumPageSize
         ),
       },
     };
@@ -292,9 +355,8 @@ module.exports = class List {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ skipAccessControl }))),
         `
-        """ ${this.config.schemaDoc || 'A keystone list'} """
+        """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
-          id: ID
           """
           This virtual field will be resolved in one of the following ways (in this order):
            1. Execution of 'labelResolver' set on the ${this.key} List config, or
@@ -307,8 +369,8 @@ module.exports = class List {
             this.fields
               .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
               .map(field =>
-                field.config.schemaDoc
-                  ? `""" ${field.config.schemaDoc} """ ${field.gqlOutputFields}`
+                field.schemaDoc
+                  ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields}`
                   : field.gqlOutputFields
               )
           ).join('\n')}
@@ -316,11 +378,6 @@ module.exports = class List {
       `,
         `
         input ${this.gqlNames.whereInputName} {
-          id: ID
-          id_not: ID
-          id_in: [ID!]
-          id_not_in: [ID!]
-
           AND: [${this.gqlNames.whereInputName}]
           OR: [${this.gqlNames.whereInputName}]
 
@@ -343,6 +400,7 @@ module.exports = class List {
         input ${this.gqlNames.updateInputName} {
           ${flatten(
             this.fields
+              .filter(({ path }) => path !== 'id') // Exclude the id fields update types
               .filter(field => skipAccessControl || field.access.update) // If it's globally set to false, makes sense to never let it be updated
               .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
@@ -361,6 +419,7 @@ module.exports = class List {
         input ${this.gqlNames.createInputName} {
           ${flatten(
             this.fields
+              .filter(({ path }) => path !== 'id') // Exclude the id fields create types
               .filter(field => skipAccessControl || field.access.create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
@@ -369,6 +428,28 @@ module.exports = class List {
       types.push(`
         input ${this.gqlNames.createManyInputName} {
           data: ${this.gqlNames.createInputName}
+        }
+      `);
+    }
+
+    if (this.hasAuth()) {
+      // If auth is enabled for this list (doesn't matter what strategy)
+      types.push(`
+        type ${this.gqlNames.unauthenticateOutputName} {
+          """
+          \`true\` when unauthentication succeeds.
+          NOTE: unauthentication always succeeds when the request has an invalid or missing authentication token.
+          """
+          success: Boolean
+        }
+      `);
+
+      types.push(`
+        type ${this.gqlNames.authenticateOutputName} {
+          """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
+          token: String
+          """ Retreive information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
+          item: ${this.gqlNames.outputTypeName}
         }
       `);
     }
@@ -422,7 +503,7 @@ module.exports = class List {
       );
     }
 
-    if (this.getAuth()) {
+    if (this.hasAuth()) {
       // If auth is enabled for this list (doesn't matter what strategy)
       queries.push(`${this.gqlNames.authenticatedQueryName}: ${this.gqlNames.outputTypeName}`);
     }
@@ -475,7 +556,7 @@ module.exports = class List {
     }
     const fieldResolvers = {
       // TODO: The `_label_` output field currently circumvents access control
-      _label_: this.config.labelResolver,
+      _label_: this.labelResolver,
       ...objMerge(
         this.fields
           .filter(field => field.access.read)
@@ -503,7 +584,7 @@ module.exports = class List {
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge([
-      ...(this.config.mutations || []).map(({ schema, resolver }) => {
+      ...this.mutations.map(({ schema, resolver }) => {
         const mutationName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
         return {
           [mutationName]: (obj, args, context, info) =>
@@ -518,9 +599,7 @@ module.exports = class List {
     const mutations = flatten(
       this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
     );
-    if (this.config.mutations) {
-      mutations.push(...this.config.mutations.map(({ schema }) => schema));
-    }
+    mutations.push(...this.mutations.map(({ schema }) => schema));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -571,6 +650,34 @@ module.exports = class List {
           ids: [ID!]
         ): [${this.gqlNames.outputTypeName}]
       `);
+    }
+
+    if (this.hasAuth()) {
+      // If auth is enabled for this list (doesn't matter what strategy)
+      mutations.push(
+        `${this.gqlNames.unauthenticateMutationName}: ${this.gqlNames.unauthenticateOutputName}`
+      );
+
+      // And for each strategy, add the authentication mutation
+      mutations.push(
+        ...Object.entries(this.getAuth())
+          .filter(
+            ([, authStrategy]) =>
+              typeof authStrategy.getInputFragment === 'function' &&
+              typeof authStrategy.validate === 'function'
+          )
+          .map(([authType, authStrategy]) => {
+            const authTypeTitleCase = upcase(authType);
+            return `
+            """ Authenticate and generate a token for a ${
+              this.gqlNames.outputTypeName
+            } with the ${authTypeTitleCase} Authentication Strategy. """
+            ${getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)}(
+              ${authStrategy.getInputFragment()}
+            ): ${this.gqlNames.authenticateOutputName}
+          `;
+          })
+      );
     }
 
     return mutations;
@@ -752,7 +859,7 @@ module.exports = class List {
     // NOTE: This query is not effected by the read permissions; if the user can
     // authenticate themselves, then they already have access to know that the
     // list exists
-    if (this.getAuth()) {
+    if (this.hasAuth()) {
       resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
         this.authenticatedQuery(context);
     }
@@ -802,7 +909,7 @@ module.exports = class List {
           this.gqlNames.listQueryMetaName,
         ];
 
-        if (this.getAuth()) {
+        if (this.hasAuth()) {
           queries.push(this.gqlNames.authenticatedQueryName);
         }
 
@@ -846,6 +953,33 @@ module.exports = class List {
     );
   }
 
+  async authenticateMutation(authType, args, context) {
+    // This is currently hard coded to enable authenticating with the admin UI.
+    // In the near future we will set up the admin-ui application and api to be
+    // non-public.
+    const audiences = ['admin'];
+
+    const authStrategy = this.getAuth()[authType];
+
+    // Verify incoming details
+    const { item, success, message } = await authStrategy.validate(args);
+
+    if (!success) {
+      throw new Error(message);
+    }
+
+    const token = await context.startAuthedSession({ item, list: this }, audiences);
+    return {
+      token,
+      item,
+    };
+  }
+
+  async unauthenticateMutation(context) {
+    await context.endAuthedSession();
+    return { success: true };
+  }
+
   get gqlMutationResolvers() {
     const mutationResolvers = {};
 
@@ -871,6 +1005,26 @@ module.exports = class List {
 
       mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
         this.deleteManyMutation(ids, context);
+    }
+
+    // NOTE: This query is not effected by the read permissions; if the user can
+    // authenticate themselves, then they already have access to know that the
+    // list exists
+    if (this.hasAuth()) {
+      mutationResolvers[this.gqlNames.unauthenticateMutationName] = (_, __, context) =>
+        this.unauthenticateMutation(context);
+
+      Object.entries(this.getAuth())
+        .filter(
+          ([, authStrategy]) =>
+            typeof authStrategy.getInputFragment === 'function' &&
+            typeof authStrategy.validate === 'function'
+        )
+        .forEach(([authType]) => {
+          mutationResolvers[
+            getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)
+          ] = (_, args, context) => this.authenticateMutation(authType, args, context);
+        });
     }
 
     return mutationResolvers;
@@ -934,12 +1088,25 @@ module.exports = class List {
     );
   }
 
-  async _resolveDefaults(data) {
-    // FIXME: Consider doing this in a way which only calls getDefaultValue once.
-    const fields = this.fields.filter(field => field.getDefaultValue() !== undefined);
+  async _resolveDefaults({ existingItem, context, originalInput }) {
+    const args = {
+      existingItem,
+      context,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+
+    const fieldsWithoutValues = this.fields.filter(
+      field => typeof originalInput[field.path] === 'undefined'
+    );
+
+    const defaultValues = await this._mapToFields(fieldsWithoutValues, field =>
+      field.getDefaultValue(args)
+    );
+
     return {
-      ...(await this._mapToFields(fields, field => field.getDefaultValue())),
-      ...data,
+      ...omitBy(defaultValues, path => typeof defaultValues[path] === 'undefined'),
+      ...originalInput,
     };
   }
 
@@ -951,22 +1118,41 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
-    const fields = this._fieldsFromObject(resolvedData);
 
-    resolvedData = await this._mapToFields(fields, field =>
-      field.resolveInput({ resolvedData, ...args })
-    );
+    // First we run the field type hooks
+    // NOTE: resolveInput is run on _every_ field, regardless if it has a value
+    // passed in or not
+    resolvedData = await this._mapToFields(this.fields, field => field.resolveInput(args));
+
+    // We then filter out the `undefined` results (they should return `null` or
+    // a value)
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
+    // Run the schema-level field hooks, passing in the results from the field
+    // type hooks
     resolvedData = {
       ...resolvedData,
-      ...(await this._mapToFields(fields.filter(field => field.config.hooks.resolveInput), field =>
-        field.config.hooks.resolveInput({ resolvedData, ...args })
+      ...(await this._mapToFields(this.fields.filter(field => field.hooks.resolveInput), field =>
+        field.hooks.resolveInput({ ...args, resolvedData })
       )),
     };
 
-    if (this.config.hooks.resolveInput) {
-      resolvedData = await this.config.hooks.resolveInput({ resolvedData, ...args });
+    // And filter out the `undefined`s again.
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
+    if (this.hooks.resolveInput) {
+      // And run any list-level hook
+      resolvedData = await this.hooks.resolveInput({ ...args, resolvedData });
+      if (typeof resolvedData !== 'object') {
+        throw new Error(
+          `Expected ${
+            this.key
+          }.hooks.resolveInput() to return an object, but got a ${typeof resolvedData}: ${resolvedData}`
+        );
+      }
     }
 
+    // Finally returning the amalgamated result of all the hooks.
     return resolvedData;
   }
 
@@ -978,6 +1164,27 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
+    // Check for isRequired
+    const fieldValidationErrors = this.fields
+      .filter(
+        field =>
+          field.isRequired &&
+          !field.isRelationship &&
+          ((operation === 'create' &&
+            (resolvedData[field.path] === undefined || resolvedData[field.path] === null)) ||
+            (operation === 'update' &&
+              Object.prototype.hasOwnProperty.call(resolvedData, field.path) &&
+              (resolvedData[field.path] === undefined || resolvedData[field.path] === null)))
+      )
+      .map(f => ({
+        msg: `Required field "${f.path}" is null or undefined.`,
+        data: { resolvedData, operation, originalInput },
+        internalData: {},
+      }));
+    if (fieldValidationErrors.length) {
+      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
+    }
+
     const fields = this._fieldsFromObject(resolvedData);
     await this._validateHook(args, fields, operation, 'validateInput');
   }
@@ -999,16 +1206,16 @@ module.exports = class List {
     args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
-      field.config.hooks[hookName](args)
+    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
+      field.hooks[hookName](args)
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
     }
 
-    if (this.config.hooks[hookName]) {
+    if (this.hooks[hookName]) {
       const listValidationErrors = [];
-      await this.config.hooks[hookName]({
+      await this.hooks[hookName]({
         ...args,
         addValidationError: (msg, _data = {}, internalData = {}) =>
           listValidationErrors.push({ msg, data: _data, internalData }),
@@ -1062,11 +1269,11 @@ module.exports = class List {
   async _runHook(args, fieldObject, hookName) {
     const fields = this._fieldsFromObject(fieldObject);
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
-      field.config.hooks[hookName](args)
+    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
+      field.hooks[hookName](args)
     );
 
-    if (this.config.hooks[hookName]) await this.config.hooks[hookName](args);
+    if (this.hooks[hookName]) await this.hooks[hookName](args);
   }
 
   async _nestedMutation(mutationState, context, mutation) {
@@ -1124,17 +1331,19 @@ module.exports = class List {
 
     this.checkListAccess(context, operation, { gqlName });
 
-    const itemsToUpdate = data.map(d => ({ existingItem: undefined, data: d }));
+    const itemsToUpdate = data.map(d => ({ existingItem: undefined, data: d.data }));
 
     this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
-    return Promise.all(data.map(d => this._createSingle(d, undefined, context, mutationState)));
+    return Promise.all(
+      data.map(d => this._createSingle(d.data, undefined, context, mutationState))
+    );
   }
 
-  async _createSingle(data, existingItem, context, mutationState) {
+  async _createSingle(originalInput, existingItem, context, mutationState) {
     const operation = 'create';
     return await this._nestedMutation(mutationState, context, async mutationState => {
-      const defaultedItem = await this._resolveDefaults(data);
+      const defaultedItem = await this._resolveDefaults({ existingItem, context, originalInput });
 
       // Enable resolveRelationship to perform some action after the item is created by
       // giving them a promise which will eventually resolve with the value of the
@@ -1149,11 +1358,17 @@ module.exports = class List {
         mutationState
       );
 
-      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      resolvedData = await this._resolveInput(
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput
+      );
 
-      await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this._validateInput(resolvedData, existingItem, context, operation, originalInput);
 
-      await this._beforeChange(resolvedData, existingItem, context, operation, data);
+      await this._beforeChange(resolvedData, existingItem, context, operation, originalInput);
 
       let newItem;
       try {
@@ -1173,7 +1388,8 @@ module.exports = class List {
 
       return {
         result: newItem,
-        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+        afterHook: () =>
+          this._afterChange(newItem, existingItem, context, operation, originalInput),
       };
     });
   }
@@ -1299,5 +1515,8 @@ module.exports = class List {
 
   getFieldByPath(path) {
     return this.fieldsByPath[path];
+  }
+  getPrimaryKey() {
+    return this.fieldsByPath['id'];
   }
 };

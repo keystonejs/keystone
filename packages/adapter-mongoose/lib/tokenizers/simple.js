@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const { objMerge } = require('@keystone-alpha/utils');
 
 module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions }) => (
@@ -13,12 +12,6 @@ module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions }) =>
   // ['posts', 'comments', 'author']
   const refListAdapter = getRelatedListAdapterFromQueryPath(path.slice(0, -1));
   const simpleQueryConditions = {
-    // id is how it looks in the schema
-    // _id is how it looks in the MongoDB
-    id: value => ({ _id: { $eq: mongoose.Types.ObjectId(value) } }),
-    id_not: value => ({ _id: { $ne: mongoose.Types.ObjectId(value) } }),
-    id_in: value => ({ _id: { $in: value.map(id => mongoose.Types.ObjectId(id)) } }),
-    id_not_in: value => ({ _id: { $not: { $in: value.map(id => mongoose.Types.ObjectId(id)) } } }),
     ...objMerge(
       refListAdapter.fieldAdapters.map(fieldAdapter =>
         fieldAdapter.getQueryConditions(fieldAdapter.dbPath)

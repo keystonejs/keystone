@@ -1,5 +1,90 @@
 # @keystone-alpha/website
 
+## 1.1.1
+
+### Patch Changes
+
+- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+
+## 1.1.0
+
+### Minor Changes
+
+- [601ad192](https://github.com/keystonejs/keystone-5/commit/601ad192): Remove sizeByPixelDensity option in gatsby-remark-images
+
+## 1.0.13
+
+### Patch Changes
+
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Update gatsby to 2.13.25
+
+## 1.0.12
+
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+  - @arch-ui/input@0.0.8
+
+## 1.0.11
+
+### Patch Changes
+
+- [ac119f88](https://github.com/keystonejs/keystone-5/commit/ac119f88):
+
+  Homepage of the documentation website reveals the video on hover/touch of the image to avoid double click on play
+
+- [df48bc05](https://github.com/keystonejs/keystone-5/commit/df48bc05):
+
+  Move meta generation to build time and stringify the contents of title and description nodes properly
+
+- [d362e82d](https://github.com/keystonejs/keystone-5/commit/d362e82d):
+
+  Make previous and next buttons consistent with order in sidebar
+
+- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+
+  Move frontmatter in docs into comments
+
+## 1.0.10
+
+### Patch Changes
+
+- [b47fb186](https://github.com/keystonejs/keystone-5/commit/b47fb186):
+
+  Documentation website now features the egghead intro video instead of the illustration. The only changes here are on the homepage.
+
+## 1.0.9
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Remove unused dependency
+
+## 1.0.8
+
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+  - @arch-ui/input@0.0.6
+  - @arch-ui/select@0.0.6
+
+## 1.0.7
+
+### Patch Changes
+
+- [2e59d131](https://github.com/keystonejs/keystone-5/commit/2e59d131):
+
+  [docs] Add discussions on Schemas and Relationships
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [94ed17bd](https://github.com/keystonejs/keystone-5/commit/94ed17bd):
+
+  [docs] Clearer path to follow immediately following the Quick Start tutorial
+
+* Updated dependencies [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+  - @arch-ui/input@0.0.5
+
 ## 1.0.6
 
 - Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

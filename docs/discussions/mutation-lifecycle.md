@@ -1,27 +1,37 @@
----
+<!--[meta]
 section: discussions
 title: Mutation Lifecycle
----
+[meta]-->
 
 # Mutation Lifecycle
 
-<!-- TODO auto-generated TOC -->
+## Table of Contents
+
+- [Introduction](#introduction)
 
 - [Mutation Phases](#mutation-phases)
+
   - [Access Control Phase](#access-control-phase)
-    - [1. Check list access [create/update/delete]](#1-check-list-access-createupdatedelete)
-    - [2. Get item(s) [update/delete]](#2-get-items-updatedelete)
-    - [3. Check field access [create/update]](#3-check-field-access-createupdate)
+
+    - [1. Check list access (create/update/delete)](#1-check-list-access-createupdatedelete)
+    - [2. Get item(s) (update/delete)](#2-get-items-updatedelete)
+    - [3. Check field access (create/update)](#3-check-field-access-createupdate)
+
   - [Operational Phase](#operational-phase)
-    - [1. Resolve defaults [create]](#1-resolve-defaults-create)
-    - [2a. Resolve relationship [create/update]](#2a-resolve-relationship-createupdate)
-    - [2b. Register backlinks [delete]](#2b-register-backlinks-delete)
-    - [3. Resolve input [create/update]](#3-resolve-input-createupdate)
-    - [3. Validate input/delete [create/update/delete]](#3-validate-inputdelete-createupdatedelete)
-    - [4. Before change/delete [create/update/delete]](#4-before-changedelete-createupdatedelete)
-    - [5. Database operation [create/update/delete]](#5-database-operation-createupdatedelete)
-    - [6. Resolve backlinks [create/update/delete]](#6-resolve-backlinks-createupdatedelete)
-    - [7. After change [create/update/delete]](#7-after-change-createupdatedelete)
+
+    - [1. Resolve defaults (create)](#1-resolve-defaults-create)
+    - [2a. Resolve relationship (create/update)](#2a-resolve-relationship-createupdate)
+    - [2b. Register backlinks (delete)](#2b-register-backlinks-delete)
+    - [3. Resolve input (create/update)](#3-resolve-input-createupdate)
+    - [3. Validate input/delete (create/update/delete)](#3-validate-inputdelete-createupdatedelete)
+    - [4. Before change/delete (create/update/delete)](#4-before-changedelete-createupdatedelete)
+    - [5. Database operation (create/update/delete)](#5-database-operation-createupdatedelete)
+    - [6. Resolve backlinks (create/update/delete)](#6-resolve-backlinks-createupdatedelete)
+    - [7. After change (create/update/delete)](#7-after-change-createupdatedelete)
+
+- [Summary](#summary)
+
+## Introduction
 
 The Keystone GraphQL API implements a CRUD API with `create`, `update` and `delete` mutations for each `List`.
 Each of these mutations can be applied to either a single item or many items at once.
@@ -51,7 +61,7 @@ Each of these mutations is implemented within Keystone by a corresponding resolv
 Please refer to the [API documentation](LINK_TODO)) for full details on how to call these mutations either from [GraphQL](LINK_TODO)) or directly from [Keystone](LINK_TODO)).
 -->
 
-Keystone provides [access control](../access-control.md)) mechanisms and a [hook system](../hooks.md)) which allows the developer to customise the behaviour of each of these mutations.
+Keystone provides [access control](./access-control.md)) mechanisms and a [hook system](./hooks.md)) which allows the developer to customise the behaviour of each of these mutations.
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.
 
@@ -92,7 +102,7 @@ The first step in all mutations is to check that the user has access to perform 
 
 If access control has been defined statically or imperatively this check can be performed here. An `AccessDeniedError` is returned if the access control failed. If the access control mechanism for this list is defined declaratively (i.e using a GraphQL `where` statement), this check is deferred until the next step.
 
-For more information on how to define access control, please consult the [access control documentation](../access-control.md)).
+For more information on how to define access control, please consult the [access control documentation](./access-control.md)).
 
 #### 2. Get item(s) (`update/delete`)
 
@@ -129,6 +139,8 @@ The first step when creating a new item is to resolve any default values.
 Any fields which a) are not set on the provided item and b) have a configured default value will be set to the default value.
 
 The default value of a field can be configured at `List` definition time with the config attribute `defaultValue`.
+
+The `defaultValue` may be a static value, or a function which returns either the value or a Promise.
 
 Custom field types can override this behaviour by defining the method `getDefaultValue()`.
 

@@ -1,17 +1,11 @@
 import FieldController from '../../../Controller';
 
 export default class SelectController extends FieldController {
-  constructor(...args) {
-    super(...args);
+  constructor(config, ...args) {
+    const defaultValue = 'defaultValue' in config ? config.defaultValue : null;
+    super({ ...config, defaultValue }, ...args);
     this.options = this.config.options;
   }
-  getValue = data => {
-    const { path } = this.config;
-    return data[path] ? data[path] : null;
-  };
-  getInitialData = () => {
-    return this.config.defaultValue || null;
-  };
   getFilterGraphQL = ({ value: { inverted, options } }) => {
     const isMulti = options.length > 1;
 

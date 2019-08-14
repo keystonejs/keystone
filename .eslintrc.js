@@ -11,7 +11,6 @@ module.exports = {
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
-    'no-shadow': 'warn',
     'no-trailing-spaces': 'error',
     'no-undef': 'error',
     'no-unused-expressions': 'error',

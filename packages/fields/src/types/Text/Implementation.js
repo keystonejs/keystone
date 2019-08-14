@@ -3,8 +3,9 @@ import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 export class Text extends Implementation {
-  constructor() {
+  constructor(path, { isMultiline }) {
     super(...arguments);
+    this.isMultiline = isMultiline;
   }
   get gqlOutputFields() {
     return [`${this.path}: String`];
@@ -28,7 +29,7 @@ export class Text extends Implementation {
     return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {
-    const { isMultiline } = this.config;
+    const { isMultiline } = this;
     return { isMultiline, ...meta };
   }
 }
@@ -54,7 +55,17 @@ export class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter
 }
 
 export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.text(this.path);
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  addToTableSchema(table) {
+    const column = table.text(this.path);
+    if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
+    if (this.isNotNullable) column.notNullable();
+    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }

@@ -12,13 +12,13 @@ export default class TextField extends Component {
     this.props.onChange(event.target.checked);
   };
   render() {
-    const { autoFocus, field, value } = this.props;
+    const { autoFocus, field, value, errors } = this.props;
     const checked = value || false;
     const htmlID = `ks-input-${field.path}`;
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput css={{ height: 35 }}>
           <CheckboxPrimitive
             autoFocus={autoFocus}

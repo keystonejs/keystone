@@ -46,10 +46,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             // canaryStudent is used as a canary to make sure nothing crosses over
             let canaryStudent = await create('Student', {});
-            debugger;
 
             teacher1 = await findById('Teacher', teacher1.id);
-            debugger;
             teacher2 = await findById('Teacher', teacher2.id);
             canaryStudent = await findById('Student', canaryStudent.id);
 
@@ -177,7 +175,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
             ) {
               id
-              teachers {
+              teachers(orderBy: "id_ASC") {
                 id
               }
             }
@@ -195,10 +193,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const teacher2 = await findById('Teacher', newTeachers[1].id);
             newStudent = await findById('Student', newStudent.id);
 
-            expect(toStr(newStudent.teachers)).toMatchObject([
-              teacher1.id.toString(),
-              teacher2.id.toString(),
-            ]);
+            // We can't assume what IDs get assigned, or what order they come back in
+            expect(toStr(newStudent.teachers.sort())).toMatchObject(
+              [teacher1.id.toString(), teacher2.id.toString()].sort()
+            );
             expect(toStr(teacher1.students)).toMatchObject([newStudent.id.toString()]);
             expect(toStr(teacher2.students)).toMatchObject([newStudent.id.toString()]);
           })
@@ -240,10 +238,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const teacher2 = await findById('Teacher', newTeachers[1].id);
             student = await findById('Student', student.id);
 
-            expect(toStr(student.teachers)).toMatchObject([
-              teacher1.id.toString(),
-              teacher2.id.toString(),
-            ]);
+            // We can't assume what IDs get assigned, or what order they come back in
+            expect(toStr(student.teachers.sort())).toMatchObject(
+              [teacher1.id.toString(), teacher2.id.toString()].sort()
+            );
             expect(toStr(teacher1.students)).toMatchObject([student.id.toString()]);
             expect(toStr(teacher2.students)).toMatchObject([student.id.toString()]);
           })
@@ -448,7 +446,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       }
   `,
         });
-
         expect(errors).toBe(undefined);
 
         teacher1 = await findById('Teacher', teacher1.id);

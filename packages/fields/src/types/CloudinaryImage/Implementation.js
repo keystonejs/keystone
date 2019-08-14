@@ -74,9 +74,9 @@ class CloudinaryImage extends File {
         if (itemValues.id) itemValues.id = itemValues.id.toString();
 
         return {
-          publicUrl: this.config.adapter.publicUrl(itemValues),
+          publicUrl: this.fileAdapter.publicUrl(itemValues),
           publicUrlTransformed: ({ transformation }) =>
-            this.config.adapter.publicUrlTransformed(itemValues, transformation),
+            this.fileAdapter.publicUrlTransformed(itemValues, transformation),
           ...itemValues,
         };
       },

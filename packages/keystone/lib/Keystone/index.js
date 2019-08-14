@@ -1,6 +1,7 @@
 const GraphQLJSON = require('graphql-type-json');
 const fs = require('fs');
 const gql = require('graphql-tag');
+const flattenDeep = require('lodash.flattendeep');
 const fastMemoize = require('fast-memoize');
 const { print } = require('graphql/language/printer');
 const { graphql } = require('graphql');
@@ -10,6 +11,7 @@ const {
   mapKeys,
   objMerge,
   flatten,
+  unique,
 } = require('@keystone-alpha/utils');
 const {
   validateFieldAccessControl,
@@ -22,29 +24,37 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
-
-const unique = arr => [...new Set(arr)];
+const { DEFAULT_DIST_DIR } = require('../../constants');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
 module.exports = class Keystone {
-  constructor(config) {
-    this.config = {
-      ...config,
-    };
-    this.defaultAccess = { list: true, field: true, ...config.defaultAccess };
+  constructor({
+    defaultAccess,
+    adapters,
+    adapter,
+    defaultAdapter,
+    name,
+    adapterConnectOptions = {},
+    onConnect,
+  }) {
+    this.name = name;
+    this.adapterConnectOptions = adapterConnectOptions;
+    this.defaultAccess = { list: true, field: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._graphQLQuery = {};
+    this.registeredTypes = new Set();
+    this.eventHandlers = { onConnect };
 
-    if (config.adapters) {
-      this.adapters = config.adapters;
-      this.defaultAdapter = config.defaultAdapter;
-    } else if (config.adapter) {
-      this.adapters = { [config.adapter.constructor.name]: config.adapter };
-      this.defaultAdapter = config.adapter.constructor.name;
+    if (adapters) {
+      this.adapters = adapters;
+      this.defaultAdapter = defaultAdapter;
+    } else if (adapter) {
+      this.adapters = { [adapter.constructor.name]: adapter };
+      this.defaultAdapter = adapter.constructor.name;
     } else {
       throw new Error('Need an adapter, yo');
     }
@@ -64,12 +74,15 @@ module.exports = class Keystone {
   createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
-    const list = new List(key, config, {
+    const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
+
+    const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
       getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
-      getAuth: () => this.auth[key],
+      getAuth: () => this.auth[key] || {},
+      registerType: type => this.registeredTypes.add(type),
       isAuxList,
       createAuxList: (auxKey, auxConfig) => {
         if (isAuxList) {
@@ -89,23 +102,13 @@ module.exports = class Keystone {
   /**
    * @return Promise<null>
    */
-  connect(to, options) {
-    const {
-      adapters,
-      config: { name, dbName, adapterConnectOptions },
-    } = this;
-
-    return resolveAllKeys(
-      mapKeys(adapters, adapter =>
-        adapter.connect(to, {
-          name,
-          dbName,
-          ...adapterConnectOptions,
-          ...options,
-        })
-      )
-      // Don't unnecessarily leak any connection info
-    ).then(() => {});
+  connect() {
+    const { adapters, name } = this;
+    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name }))).then(() => {
+      if (this.eventHandlers.onConnect) {
+        return this.eventHandlers.onConnect(this);
+      }
+    });
   }
 
   /**
@@ -114,12 +117,12 @@ module.exports = class Keystone {
   disconnect() {
     return resolveAllKeys(
       mapKeys(this.adapters, adapter => adapter.disconnect())
-      // Don't unnecessarily leak any connection info
+      // Chain an empty function so that the result of this promise
+      // isn't unintentionally leaked to the caller
     ).then(() => {});
   }
 
   getAdminMeta() {
-    const { name } = this.config;
     // We've consciously made a design choice that the `read` permission on a
     // list is a master switch in the Admin UI (not the GraphQL API).
     // Justification: If you want to Create without the Read permission, you
@@ -137,7 +140,7 @@ module.exports = class Keystone {
       list => list.getAdminMeta()
     );
 
-    return { lists, name };
+    return { lists, name: this.name };
   }
 
   getTypeDefs({ skipAccessControl = false } = {}) {
@@ -323,7 +326,15 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    return { typeDefs, resolvers };
+    return {
+      typeDefs: typeDefs.map(
+        typeDef =>
+          gql`
+            ${typeDef}
+          `
+      ),
+      resolvers,
+    };
   }
 
   dumpSchema(file) {
@@ -408,5 +419,29 @@ module.exports = class Keystone {
 
     // 4. Merge the data back together again
     return mergeRelationships(createdItems, createdRelationships);
+  }
+
+  async prepare({ dev = false, apps = [], distDir } = {}) {
+    const middlewares = flattenDeep(
+      await Promise.all(
+        [
+          // Inject any field middlewares (eg; WYSIWIG's static assets)
+          // We do this first to avoid it conflicting with any catch-all routes the
+          // user may have specified
+          ...this.registeredTypes,
+          ...apps,
+        ]
+          .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
+          .map(app =>
+            app.prepareMiddleware({
+              keystone: this,
+              dev,
+              distDir: distDir || DEFAULT_DIST_DIR,
+            })
+          )
+      )
+    ).filter(middleware => !!middleware);
+
+    return { middlewares };
   }
 };

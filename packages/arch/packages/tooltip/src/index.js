@@ -8,7 +8,7 @@ import flushable from 'flushable';
 import styled from '@emotion/styled';
 import { Popper } from 'react-popper';
 
-import { TransitionProvider, Fade } from '@arch-ui/modal-utils';
+import { TransitionProvider, fade } from '@arch-ui/modal-utils';
 import { colors, gridSize } from '@arch-ui/theme';
 
 // ==============================
@@ -37,7 +37,11 @@ type PositionerProps = {
 
 let TooltipPositioner = (props: PositionerProps) => {
   return createPortal(
-    <Popper referenceElement={props.targetNode} placement={props.placement}>
+    <Popper
+      referenceElement={props.targetNode}
+      placement={props.placement}
+      modifiers={{ hide: { enabled: false }, preventOverflow: { enabled: false } }}
+    >
       {({ ref, style }) => (
         <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>
           <div css={{ margin: gridSize }}>
@@ -182,15 +186,14 @@ export default class Tooltip extends Component<Props, State> {
 
         <TransitionProvider isOpen={isVisible} onEntered={onShow} onExited={onHide}>
           {transitionState => (
-            <Fade transitionState={transitionState}>
-              <TooltipPositioner
-                targetNode={this.ref.current}
-                placement={placement}
-                className={className}
-              >
-                {content}
-              </TooltipPositioner>
-            </Fade>
+            <TooltipPositioner
+              targetNode={this.ref.current}
+              placement={placement}
+              className={className}
+              style={fade(transitionState)}
+            >
+              {content}
+            </TooltipPositioner>
           )}
         </TransitionProvider>
       </Fragment>

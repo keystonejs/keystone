@@ -15,13 +15,17 @@ import { resolveNested } from './nested-mutations';
 import { enqueueBacklinkOperations } from './backlinks';
 
 export class Relationship extends Implementation {
-  constructor() {
+  constructor(path, { ref, many, withMeta }) {
     super(...arguments);
-    const [refListKey, refFieldPath] = this.config.ref.split('.');
+
+    // JM: It bugs me this is duplicated in the field adapters but initialisation order makes it hard to avoid
+    const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+
     this.isRelationship = true;
-    this.withMeta = typeof this.config.withMeta !== 'undefined' ? this.config.withMeta : true;
+    this.many = many;
+    this.withMeta = typeof withMeta !== 'undefined' ? withMeta : true;
   }
 
   tryResolveRefList() {
@@ -48,8 +52,6 @@ export class Relationship extends Implementation {
   }
 
   get gqlOutputFields() {
-    const { many } = this.config;
-
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access.read) {
@@ -57,7 +59,7 @@ export class Relationship extends Implementation {
       return [];
     }
 
-    if (many) {
+    if (this.many) {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
         `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
@@ -69,16 +71,11 @@ export class Relationship extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    const {
-      refListKey: ref,
-      refFieldPath,
-      config: { many },
-    } = this;
+    const { refListKey: ref, refFieldPath, many } = this;
     return { ...meta, ref, refFieldPath, many };
   }
 
   get gqlQueryInputFields() {
-    const { many } = this.config;
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access.read) {
@@ -86,7 +83,7 @@ export class Relationship extends Implementation {
       return [];
     }
 
-    if (many) {
+    if (this.many) {
       return [
         `""" condition must be true for all nodes """
         ${this.path}_every: ${refList.gqlNames.whereInputName}`,
@@ -103,7 +100,6 @@ export class Relationship extends Implementation {
   }
 
   get gqlOutputFieldResolvers() {
-    const { many } = this.config;
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access.read) {
@@ -112,7 +108,7 @@ export class Relationship extends Implementation {
     }
 
     // to-one relationships are much easier to deal with.
-    if (!many) {
+    if (!this.many) {
       return {
         [this.path]: (item, _, context) => {
           // No ID set, so we return null for the value
@@ -190,8 +186,6 @@ export class Relationship extends Implementation {
    * `operations`.
    */
   async resolveNestedOperations(operations, item, context, getItem, mutationState) {
-    const { many, isRequired } = this.config;
-
     const { refList, refField } = this.tryResolveRefList();
     const listInfo = {
       local: { list: this.getListByKey(this.listKey), field: this },
@@ -205,7 +199,7 @@ export class Relationship extends Implementation {
       && (
         // If the field is not required, and the value is `null`, we can ignore
         // it and move on.
-        !isRequired
+        !this.isRequired
         // This field will be backlinked to this field's containing item, so we
         // can safely ignore it now expecing the backlinking process in the
         // calling code to take care of it.
@@ -221,7 +215,7 @@ export class Relationship extends Implementation {
     }
 
     let currentValue = item && item[this.path];
-    if (many) {
+    if (this.many) {
       currentValue = (currentValue || []).map(id => id.toString());
     } else {
       currentValue = currentValue && currentValue.toString();
@@ -233,7 +227,7 @@ export class Relationship extends Implementation {
       input: operations,
       currentValue,
       listInfo,
-      many,
+      many: this.many,
       context,
       mutationState,
     });
@@ -258,7 +252,7 @@ export class Relationship extends Implementation {
   // 3. create
   // 4. connect
   convertResolvedOperationsToFieldValue({ create, connect, disconnect }, item) {
-    if (this.config.many) {
+    if (this.many) {
       const currentValue = ((item && item[this.path]) || []).map(id => id.toString());
       return [...currentValue.filter(id => !disconnect.includes(id)), ...connect, ...create].filter(
         id => !!id
@@ -284,7 +278,7 @@ export class Relationship extends Implementation {
     const { refList, refField } = this.tryResolveRefList();
     if (refField) {
       enqueueBacklinkOperations(
-        { disconnect: this.config.many ? data : [data] },
+        { disconnect: this.many ? data : [data] },
         mutationState.queues,
         Promise.resolve(item),
         { list: this.getListByKey(this.listKey), field: this },
@@ -316,7 +310,7 @@ export class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { connect: { id: 'abc123' } }
     // }
-    if (this.config.many) {
+    if (this.many) {
       return [
         `
         input ${refList.gqlNames.relateToManyInputName} {
@@ -356,7 +350,7 @@ export class Relationship extends Implementation {
   }
   get gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
-    if (this.config.many) {
+    if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
     }
 
@@ -365,14 +359,13 @@ export class Relationship extends Implementation {
   get gqlCreateInputFields() {
     return this.gqlUpdateInputFields;
   }
-  getDefaultValue() {
-    return null;
-  }
 }
 
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
+
+    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
@@ -442,7 +435,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       //    the query
       matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
       // Flag this is a to-many relationship
-      many: this.config.many,
+      many: this.field.many,
     };
   }
 
@@ -454,24 +447,59 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
 }
 
 export class KnexRelationshipInterface extends KnexFieldAdapter {
-  constructor(...args) {
-    super(...args);
+  constructor() {
+    super(...arguments);
+    this.isRelationship = true;
+
+    // Default isIndexed to true if it's not explicitly provided
+    // Mutually exclusive with isUnique
+    this.isUnique = typeof this.config.isUnique === 'undefined' ? false : !!this.config.isUnique;
+    this.isIndexed =
+      typeof this.config.isIndexed === 'undefined'
+        ? !this.config.isUnique
+        : !!this.config.isIndexed;
+
+    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.refListId = `${refListKey}_id`;
-    this.isRelationship = true;
+  }
+
+  // Override the isNotNullable defaulting logic; default to false, not field.isRequired
+  // Non-nullability of foreign keys in a one-to-many configuration causes problems with complicates creates
+  // It implies a precedence in ordering of create operations and can break the nexted create resolvers
+  // Also, if a pair of list both have a non-nullable relationship with the other, all inserts on either will fail
+  get isNotNullable() {
+    if (this._isNotNullable) return this._isNotNullable;
+
+    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
+      ? false
+      : this.knexOptions.isNotNullable));
   }
 
   getRefListAdapter() {
     return this.getListByKey(this.refListKey).adapter;
   }
 
-  createColumn(table) {
-    return table.integer(this.path).unsigned();
+  addToTableSchema(table) {
+    // If we're relating to 'many' things, we don't store ids in this table
+    if (!this.field.many) {
+      // The foreign key needs to do this work for us; we don't know what type it is
+      const refList = this.getListByKey(this.refListKey);
+      const refId = refList.getPrimaryKey();
+      const foreignKeyConfig = {
+        path: this.path,
+        isUnique: this.isUnique,
+        isIndexed: this.isIndexed,
+        isNotNullable: this.isNotNullable,
+      };
+      refId.adapter.addToForeignTableSchema(table, foreignKeyConfig);
+    }
   }
 
-  createForiegnKey(table, schemaName) {
+  // JM TODO: This should be part of the addToTableSchema() function
+  createForeignKey(table, schemaName) {
     return table
       .foreign(this.path)
       .references('id')

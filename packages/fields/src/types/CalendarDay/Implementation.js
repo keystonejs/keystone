@@ -5,8 +5,12 @@ import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 export class CalendarDay extends Implementation {
-  constructor() {
+  constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
     super(...arguments);
+    this.format = format;
+    this.yearRangeFrom = yearRangeFrom;
+    this.yearRangeTo = yearRangeTo;
+    this.yearPickerType = yearPickerType;
   }
 
   get gqlOutputFields() {
@@ -28,10 +32,10 @@ export class CalendarDay extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      format: this.config.format,
-      yearRangeFrom: this.config.yearRangeFrom,
-      yearRangeTo: this.config.yearRangeTo,
-      yearPickerType: this.config.yearPickerType,
+      format: this.format,
+      yearRangeFrom: this.yearRangeFrom,
+      yearRangeTo: this.yearRangeTo,
+      yearPickerType: this.yearPickerType,
     };
   }
 }
@@ -49,14 +53,11 @@ const CommonCalendarInterface = superclass =>
 
 export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    const { mongooseOptions = {} } = this.config;
-    const { isRequired } = mongooseOptions;
-
     const validator = a => typeof a === 'string' && format(parse(a), 'YYYY-MM-DD') === a;
     const schemaOptions = {
       type: String,
       validate: {
-        validator: this.buildValidator(validator, isRequired),
+        validator: this.buildValidator(validator),
         message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
       },
     };
@@ -65,8 +66,18 @@ export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseF
 }
 
 export class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.date(this.path);
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  addToTableSchema(table) {
+    const column = table.date(this.path);
+    if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
+    if (this.isNotNullable) column.notNullable();
+    if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 
   setupHooks({ addPostReadHook }) {

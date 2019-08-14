@@ -3,11 +3,13 @@ import Text from '../Text';
 import Decimal from './';
 
 export const name = 'Decimal';
+export { Decimal as type };
+export const exampleValue = '"6.28"';
 
 export const getTestFields = () => {
   return {
     name: { type: Text },
-    price: { type: Decimal },
+    price: { type: Decimal, knexOptions: { scale: 2 } },
   };
 };
 

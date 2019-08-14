@@ -13,9 +13,9 @@ function initOptions(options) {
 }
 
 export class Select extends Implementation {
-  constructor(path, config) {
+  constructor(path, { options }) {
     super(...arguments);
-    this.options = initOptions(config.options);
+    this.options = initOptions(options);
   }
   get gqlOutputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
@@ -74,7 +74,17 @@ export class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAda
 }
 
 export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
-  createColumn(table) {
-    return table.enu(this.path, this.config.options.map(({ value }) => value));
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  addToTableSchema(table) {
+    const column = table.enu(this.path, this.field.options.map(({ value }) => value));
+    if (this.isUnique) column.unique();
+    else if (this.isIndexed) column.index();
+    if (this.isNotNullable) column.notNullable();
+    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }

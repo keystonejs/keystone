@@ -1,6 +1,10 @@
 import FieldController from '../../../Controller';
 
 export default class RelationshipController extends FieldController {
+  constructor(config, ...args) {
+    const defaultValue = 'defaultValue' in config ? config.defaultValue : config.many ? [] : null;
+    super({ ...config, defaultValue }, ...args);
+  }
   getRefList() {
     const { getListByKey } = this.adminMeta;
     const { ref } = this.config;
@@ -28,29 +32,28 @@ export default class RelationshipController extends FieldController {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
 
-  // TODO: FIXME: This should be `set`, not `connect`
-  buildRelateToOneInput = ({ id }) => ({ connect: { id } });
-  buildRelateToManyInput = data => ({ connect: data.map(({ id }) => ({ id })) });
+  serialize = data => {
+    const { path } = this;
+    const { many } = this.config;
 
-  getValue = data => {
-    const { many, path } = this.config;
-
-    if (!data[path]) {
-      return many ? { disconnectAll: true } : null;
-    }
+    let value = data[path];
 
     if (many) {
-      if (!Array.isArray(data[path]) || !data[path].length) {
-        return { disconnectAll: true };
+      let ids = [];
+      if (Array.isArray(value)) {
+        ids = value.map(x => x.id);
       }
-      return this.buildRelateToManyInput(data[path], path);
+      return {
+        disconnectAll: true,
+        connect: ids.map(id => ({ id })),
+      };
     }
 
-    return this.buildRelateToOneInput(data[path], path);
-  };
-  getInitialData = () => {
-    const { defaultValue, many } = this.config;
-    return many ? defaultValue || [] : defaultValue || null;
+    if (!value) {
+      return { disconnectAll: true };
+    }
+
+    return { connect: { id: value.id } };
   };
 
   getFilterTypes = () => {
