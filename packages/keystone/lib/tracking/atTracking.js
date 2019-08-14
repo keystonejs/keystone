@@ -1,54 +1,70 @@
 const { DateTime } = require('@keystone-alpha/fields');
 
-const fields = ['createdAt', 'updatedAt'];
+const composeResolveInput = (originalHook, newHook) => async params => {
+  const resolvedData = await originalHook(params);
+  return newHook({ ...params, resolvedData });
+};
 
-module.exports = (listConfig, { chainResolveInputHook = true } = {}) => {
-  const resultConfig = { ...listConfig };
-  fields.forEach(field => {
-    if (!resultConfig.fields[field]) {
-      resultConfig.fields[field] = {
-        type: DateTime,
-        format: 'MM/DD/YYYY h:mm A',
-        access: {
-          read: true,
-          create: true, // TODO: revert to false when read only fields are available
-          update: true, // TODO: revert to false when read only fields are available
-        },
-      };
-    }
-  });
-  const resolveInputHook = resultConfig.hooks && resultConfig.hooks.resolveInput;
-  resultConfig.hooks = resultConfig.hooks || {};
-  resultConfig.hooks.resolveInput = async ({
-    resolvedData,
-    existingItem,
-    originalInput,
-    context,
-    list,
-  }) => {
+const _atTracking = ({ created = true, updated = true }) => ({
+  updatedAtField = 'updatedAt',
+  createdAtField = 'createdAt',
+  ...atFieldOptions
+} = {}) => ({ fields = {}, hooks = {}, ...rest }) => {
+  const dateTimeOptions = {
+    type: DateTime,
+    format: 'MM/DD/YYYY h:mm A',
+    access: {
+      read: true,
+      create: true, // TODO: revert to false when read only fields are available
+      update: true, // TODO: revert to false when read only fields are available
+    },
+    ...atFieldOptions,
+  };
+
+  if (updated) {
+    fields[updatedAtField] = {
+      ...dateTimeOptions,
+    };
+  }
+
+  if (created) {
+    fields[createdAtField] = {
+      ...dateTimeOptions,
+    };
+  }
+
+  const originalResolveInput = hooks.resolveInput || (({ resolvedData }) => resolvedData); // possible to have no hooks provided
+  const newResolveInput = ({ resolvedData, existingItem, originalInput }) => {
     if (Object.keys(originalInput).length === 0) {
-      return;
+      return resolvedData;
     }
+    const dateNow = new Date().toISOString();
     if (existingItem === undefined) {
       // create mode
-      const createdAt = new Date().toISOString();
-      resolvedData[fields[0]] = createdAt;
-      resolvedData[fields[1]] = createdAt;
+      if (created) {
+        resolvedData[createdAtField] = dateNow;
+      }
+      if (updated) {
+        resolvedData[updatedAtField] = dateNow;
+      }
     } else {
       // update mode
-      delete resolvedData[fields[0]]; // TODO: delete incoming updatedAt field due to no availability of readonly field.
-      resolvedData[fields[1]] = new Date().toISOString();
-    }
-    if (chainResolveInputHook && resolveInputHook) {
-      await resolveInputHook({
-        resolvedData,
-        existingItem,
-        originalInput,
-        context,
-        list,
-      });
+      if (created) {
+        delete resolvedData[createdAtField]; // This is a bug?, data for createdAtField should not be sent
+      }
+      if (updated) {
+        resolvedData[updatedAtField] = dateNow;
+      }
     }
     return resolvedData;
   };
-  return resultConfig;
+  hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
+  console.log({ fields, hooks, ...rest });
+  return { fields, hooks, ...rest };
 };
+
+const createdAt = options => _atTracking({ created: true, updated: false })(options);
+const updatedAt = options => _atTracking({ created: false, updated: true })(options);
+const atTracking = options => _atTracking({ created: true, updated: true })(options);
+
+module.exports = { createdAt, updatedAt, atTracking };
