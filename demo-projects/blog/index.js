@@ -5,8 +5,6 @@ const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { NextApp } = require('@keystone-alpha/app-next');
 const { StaticApp } = require('@keystone-alpha/app-static');
-const atTracking = require('@keystone-alpha/keystone/lib/tracking/atTracking');
-const byTracking = require('@keystone-alpha/keystone/lib/tracking/byTracking');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
@@ -31,8 +29,7 @@ const authStrategy = keystone.createAuthStrategy({
 });
 
 keystone.createList('User', User);
-keystone.createList('Post', byTracking(atTracking(Post)));
-
+keystone.createList('Post', Post);
 keystone.createList('PostCategory', PostCategory);
 keystone.createList('Comment', Comment);
 
