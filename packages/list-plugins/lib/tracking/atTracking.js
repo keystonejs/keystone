@@ -1,9 +1,5 @@
 const { DateTime } = require('@keystone-alpha/fields');
-
-const composeResolveInput = (originalHook, newHook) => async params => {
-  const resolvedData = await originalHook(params);
-  return newHook({ ...params, resolvedData });
-};
+const { composeResolveInput } = require('../utils');
 
 const _atTracking = ({ created = true, updated = true }) => ({
   updatedAtField = 'updatedAt',
@@ -33,7 +29,6 @@ const _atTracking = ({ created = true, updated = true }) => ({
     };
   }
 
-  const originalResolveInput = hooks.resolveInput || (({ resolvedData }) => resolvedData); // possible to have no hooks provided
   const newResolveInput = ({ resolvedData, existingItem, originalInput }) => {
     if (Object.keys(originalInput).length === 0) {
       return resolvedData;
@@ -58,6 +53,7 @@ const _atTracking = ({ created = true, updated = true }) => ({
     }
     return resolvedData;
   };
+  const originalResolveInput = hooks.resolveInput;
   hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
   return { fields, hooks, ...rest };
 };

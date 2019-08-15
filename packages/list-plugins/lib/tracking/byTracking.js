@@ -1,19 +1,14 @@
 const { Relationship } = require('@keystone-alpha/fields');
-
-const composeResolveInput = (originalHook, newHook) => async params => {
-  const resolvedData = await originalHook(params);
-  return newHook({ ...params, resolvedData });
-};
+const { composeResolveInput } = require('../utils');
 
 const _byTracking = ({ created = true, updated = true }) => ({
   updatedByField = 'updatedBy',
   createdByField = 'createdBy',
-  trackingListName = 'User',
   ...byFieldOptions
 } = {}) => ({ fields = {}, hooks = {}, ...rest }) => {
   const relationshipOptions = {
     type: Relationship,
-    ref: trackingListName,
+    ref: 'User',
     access: {
       read: true,
       create: true, // TODO: revert to false when read only fields are available
@@ -34,7 +29,6 @@ const _byTracking = ({ created = true, updated = true }) => ({
     };
   }
 
-  const originalResolveInput = hooks.resolveInput || (({ resolvedData }) => resolvedData); // possible to have no hooks provided
   const newResolveInput = ({ resolvedData, existingItem, originalInput, context }) => {
     if (Object.keys(originalInput).length === 0) {
       return resolvedData;
@@ -59,6 +53,7 @@ const _byTracking = ({ created = true, updated = true }) => ({
     }
     return resolvedData;
   };
+  const originalResolveInput = hooks.resolveInput;
   hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
   return { fields, hooks, ...rest };
 };
