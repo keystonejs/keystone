@@ -1,1 +1,0 @@
-Faster Knex query generation

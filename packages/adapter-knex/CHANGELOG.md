@@ -1,5 +1,12 @@
 # @keystone-alpha/adapter-knex
 
+## 4.0.2
+
+### Patch Changes
+
+- [5631ce3c](https://github.com/keystonejs/keystone-5/commit/5631ce3c): Faster Knex query generation
+- [b8d30f57](https://github.com/keystonejs/keystone-5/commit/b8d30f57): Minor performance improvements to Knex adapter
+
 ## 4.0.1
 
 ### Patch Changes
