@@ -16,7 +16,7 @@ For this reason we might not add features to Keystone if they are prescriptive a
 
 But we want your contributions! We recognise many types of applications share common features and prescriptive patterns can sometimes be helpful, even at the expense of flexibility.
 
-If you develop custom fields, adapters, apps or any other Keystone feature, (or have an idea) join us on the [Keystone Slack channel](https://launchpass.com/keystonejs) or make a pull request to [keystone-contrib](https://github.com/keystone-contrib/keystone-contrib) and we will add it to our list of community libraries. 
+If you develop custom fields, adapters, apps or any other Keystone feature, (or have an idea) join us on the [Keystone Slack channel](https://launchpass.com/keystonejs) or make a pull request to [KeystoneJS-Contrib](https://github.com/keystonejs-contrib/keystonejs-contrib) and we will add it to our list of community libraries. 
 
 ## Code of Conduct
 
