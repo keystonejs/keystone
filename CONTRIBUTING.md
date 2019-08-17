@@ -6,7 +6,17 @@ During the alpha stage of development we are focussing on getting the core syste
 Contributions which improve the documention and test coverage are particularly welcomed.
 
 ### Community Ecosystem
-We appreciate all help and efforts in improving KeystoneJs. Sometime it is not possible to triage all PR and accept all PRs and features into the core repo. We do want to see your contribution being used by comminity and help create a thriving ecosystem around Keystone. You can also make contributions to keystone community at https://github.com/keystone-js/keystone-js. One of the first community package is shipped as [@keystone-js/view ](https://www.npmjs.com/package/@keystone-js/view).
+Keystone makes no assumptions about type of applications it powers. It achieves flexibility through small, highly composable parts that allow you to build a foundation for any type of application.  
+
+For this reason we might not add features to Keystone if they are prescriptive about:
+  - Data structures
+  - Workflows
+  - Access controls
+  - Front-end application UI
+
+But we want your contributions! We recognise many types of applications share common features and prescriptive patterns can sometimes be helpful, even at the expense of flexibility.
+
+If you develop custom fields, adapters, apps or any other Keystone feature, (or have an idea) join us on the [Keystone Slack channel](https://launchpass.com/keystonejs) or make a pull request to [keystone-contrib](https://github.com/keystone-contrib/keystone-contrib) and we will add it to our list of community libraries. 
 
 ## Code of Conduct
 
