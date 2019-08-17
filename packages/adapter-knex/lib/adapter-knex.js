@@ -8,7 +8,6 @@ const {
 const logger = require('@keystone-alpha/logger').logger('knex');
 
 const {
-  objMerge,
   escapeRegExp,
   pick,
   omit,
@@ -391,15 +390,13 @@ class KnexListAdapter extends BaseListAdapter {
     return (await this._itemsQuery({ where: { ...condition }, first: 1 }))[0];
   }
 
-  _allQueryConditions(tableAlias) {
-    const dbPathTransform = dbPath => `${tableAlias}.${dbPath}`;
-    return {
-      ...objMerge(
-        this.fieldAdapters.map(fieldAdapter =>
-          fieldAdapter.getQueryConditions(dbPathTransform(fieldAdapter.dbPath))
-        )
-      ),
-    };
+  _getQueryConditionByPath(path, tableAlias) {
+    const dbPath = path.split('_', 1);
+    const fieldAdapter = this.fieldAdaptersByPath[dbPath];
+    // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
+    return (
+      fieldAdapter && fieldAdapter.getQueryConditions(`${tableAlias}.${fieldAdapter.dbPath}`)[path]
+    );
   }
 
   async _itemsQuery(args, { meta = false } = {}) {
@@ -474,9 +471,9 @@ class QueryBuilder {
   // We perform joins on non-many relationship fields which are mentioned in the where query.
   // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
   _addJoins(query, listAdapter, where, tableAlias) {
-    // FIXME: Do we need to build a list of all conditions?
-    const nonJoinConditions = listAdapter._allQueryConditions();
-    const joinPaths = Object.keys(where).filter(path => !nonJoinConditions[path]);
+    const joinPaths = Object.keys(where).filter(
+      path => !listAdapter._getQueryConditionByPath(path)
+    );
     for (let path of joinPaths) {
       if (path === 'AND' || path === 'OR') {
         // AND/OR we need to traverse their children
@@ -511,12 +508,10 @@ class QueryBuilder {
   // Recursively traverses the `where` query and pushes knex query functions to whereJoiner,
   // which will normally do something like pass it to q.andWhere() to add to a query
   _addWheres(whereJoiner, listAdapter, where, tableAlias) {
-    const nonJoinConditions = listAdapter._allQueryConditions(tableAlias);
-
     for (let path of Object.keys(where)) {
-      const conditionImpl = nonJoinConditions[path];
-      if (conditionImpl) {
-        whereJoiner(conditionImpl(where[path]));
+      const condition = listAdapter._getQueryConditionByPath(path, tableAlias);
+      if (condition) {
+        whereJoiner(condition(where[path]));
       } else if (path === 'AND' || path === 'OR') {
         whereJoiner(q => {
           // AND/OR need to traverse both side of the query
