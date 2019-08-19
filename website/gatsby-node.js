@@ -16,12 +16,15 @@ const PROJECT_ROOT = path.resolve('..');
 // Used for sorting the navigation:
 const GROUPS = [
   'quick-start',
-  'tutorials',
   'guides',
   'api',
+  'tutorials',
+  'adapters',
+  'apps',
+  'authentication-strategies',
   'discussions',
-  'packages',
   'field-types',
+  'packages',
 ];
 const GROUPS_NO_PKG = GROUPS.filter(s => s !== 'packages');
 

@@ -1,5 +1,5 @@
 <!--[meta]
-section: Authentication Strategies
+section: authentication-strategies
 title: Passport Auth Strategy
 [meta]-->
 

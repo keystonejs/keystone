@@ -1,5 +1,5 @@
 <!--[meta]
-section: Adapters
+section: adapters
 title: OEmbed Adapters
 [meta]-->
 

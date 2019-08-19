@@ -1,10 +1,6 @@
 <!--[meta]
-section: packages
+section: apps
 title: Admin UI
 [meta]-->
 
 # Admin UI
-
-```DOCS_TODO
-TODO
-```
