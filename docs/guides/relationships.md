@@ -5,36 +5,58 @@ title: Creating Relationships Between Lists
 
 # Creating Relationships Between Lists
 
-## Pick assignee from Users collection (to-single relationship)
+## Add an assignee from Users collection to a Todo (to-single relationship)
 
-Now, when we've created all neccessary lists, let's link each other by setting up
-`relationship`. Tweak assignee field in `Todos.js` to match next code:
+Now that we have created all of the neccessary lists we can set up relationships between them with Keystone's `Relationship` type.
 
-```javascript
-{
-    type: Relationship,
-    ref: 'User',
-}
+In `Todos.js`, import the `Relationship` type from Keystone and update change the type from `Text` to `Relationship`. This tells Keystone that this field is a relationship. 
+
+```diff
++ const { Relationship } = require('@keystone-alpha/fields');
+ // ...
+    asignee: {
+-        type: 'Text',
++        type: Relationship,
+         isRequired: true,
+     }
+ //...
+```
+Now that Keystone knows that `asignee` field is a `Relationship`, we need a way to tell Keystone what `asignee` is actually related to. This is where the `ref` option comes in. `ref` takes a `string` that must match an existing Keystone List object defined with `createList`. We want an asignee to be one of our `User` List, so we add the `ref` prop accordingly:
+
+```diff
+  const { Relationship } = require('@keystone-alpha/fields');
+ // ...
+    asignee: {
+         type: 'Text',
+         type: Relationship,
+         isRequired: true,
++        ref: 'User'
+     }
+ //...
 ```
 
-Don't forget to import `Relationship` type. Option called `ref` defines, to which collection we will relate according to names we gave them in `index.js` file while calling `createList`. Now in admin panel you can pick one of created users to make him responsible for task completion.
+Now in the admin panel you can pick one of the created users to make them responsible for task completion.
 
 ## Pick task from Todos collection (two-way to-single relationship)
 
-Now we can assign a task to user, but can't give user a task! Let's fix this.
-In `Users.js` add following:
+We can assign a task to an user, but we can't yet assign an user to a task. This is because the `User` list has no `Relationship` type field to relate an `User` back to a task. What we want to do is set up a two-way one-one relationship between `User` and `Task`. This is like saying _"A user can be assigned to a single task, and a task can be owned by a single user."_
 
-```javascript
-module.exports = {
-  // ...
-  task: {
-    type: Relationship,
-    ref: 'Todo',
-  },
-};
+Let's add that relationship in `Users.js`:
+
+```diff
+ // ...
+      password: {
+       type: Password,
+       isRequired: true,
+     },
++     task: {
++         type: Relationship,
++         ref: 'Todo',
++     },
+ // ...
 ```
 
-Now we can set a task for User from admin panel. But it looks like something is wrong. When we pick a task for user and then checking this task - there are no assignee or someone else is assigned. We can solve this by...
+Now we can set a Task for a User from the Admin UI. But it looks like something is wrong. When we pick a task for user and then checking this task - there are no assignee or someone else is assigned. We can solve this by...
 
 ## Enabling Back Reference between Users and Todos
 
