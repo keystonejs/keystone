@@ -119,13 +119,16 @@ module.exports = {
     });
   },
 
-  validateListAccessControl({ access, listKey, operation, authentication }) {
+  validateListAccessControl({ access, listKey, operation, authentication = {}, originalInput }) {
     // Either a boolean or an object describing a where clause
     let result;
     if (typeof access[operation] !== 'function') {
       result = access[operation];
     } else {
-      result = access[operation]({ authentication: authentication.item ? authentication : {} });
+      result = access[operation]({
+        authentication: authentication.item ? authentication : {},
+        originalInput,
+      });
     }
 
     const type = getType(result);
@@ -150,9 +153,10 @@ module.exports = {
     access,
     listKey,
     fieldKey,
+    originalInput,
     existingItem,
     operation,
-    authentication,
+    authentication = {},
   }) {
     let result;
     if (typeof access[operation] !== 'function') {
@@ -160,6 +164,7 @@ module.exports = {
     } else {
       result = access[operation]({
         authentication: authentication.item ? authentication : {},
+        originalInput,
         existingItem,
       });
     }

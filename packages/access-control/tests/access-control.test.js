@@ -151,6 +151,18 @@ describe('Access control package tests', () => {
       Error
     );
 
+    const originalInput = {};
+    const accessFn = jest.fn(() => true);
+
+    validateListAccessControl({ access: { [operation]: accessFn }, operation, originalInput });
+
+    expect(accessFn).toHaveBeenCalledTimes(1);
+    expect(accessFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        originalInput,
+      })
+    );
+
     [{}, { item: {} }].forEach(authentication => {
       operation = 'read';
 
@@ -203,6 +215,25 @@ describe('Access control package tests', () => {
     expect(validateFieldAccessControl({ access: { [operation]: false }, operation })).toBe(false);
     expect(() => validateFieldAccessControl({ access: { [operation]: 10 }, operation })).toThrow(
       Error
+    );
+
+    const originalInput = {};
+    const existingItem = {};
+    const accessFn = jest.fn(() => true);
+
+    validateFieldAccessControl({
+      access: { [operation]: accessFn },
+      operation,
+      originalInput,
+      existingItem,
+    });
+
+    expect(accessFn).toHaveBeenCalledTimes(1);
+    expect(accessFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        originalInput,
+        existingItem,
+      })
     );
 
     [{}, { item: {} }].forEach(authentication => {
