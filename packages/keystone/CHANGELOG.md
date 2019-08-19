@@ -1,5 +1,17 @@
 # @keystone-alpha/keystone
 
+## 10.2.0
+
+### Minor Changes
+
+- [e5d4ee76](https://github.com/keystonejs/keystone-5/commit/e5d4ee76): Expose 'originalInput' to access control functions for lists & fields
+
+## 10.1.0
+
+### Minor Changes
+
+- [36616092](https://github.com/keystonejs/keystone-5/commit/36616092): Added `plugins` option to the config of `createList`
+
 ## 10.0.0
 
 ### Major Changes

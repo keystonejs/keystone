@@ -74,7 +74,9 @@ module.exports = class Keystone {
   createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
-    const list = new List(key, config, {
+    const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
+
+    const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
       getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],
       adapter: adapters[adapterName],
@@ -353,9 +355,10 @@ module.exports = class Keystone {
     // memoizing to avoid requests that hit the same type multiple times.
     // We do it within the request callback so we can resolve it based on the
     // request info ( like who's logged in right now, etc)
-    const getListAccessControlForUser = fastMemoize((listKey, operation) => {
+    const getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
       return validateListAccessControl({
         access: this.lists[listKey].access,
+        originalInput,
         operation,
         authentication: { item: user, listKey: authedListKey },
         listKey,
@@ -363,9 +366,10 @@ module.exports = class Keystone {
     });
 
     const getFieldAccessControlForUser = fastMemoize(
-      (listKey, fieldKey, existingItem, operation) => {
+      (listKey, fieldKey, originalInput, existingItem, operation) => {
         return validateFieldAccessControl({
           access: this.lists[listKey].fieldsByPath[fieldKey].access,
+          originalInput,
           existingItem,
           operation,
           authentication: { item: user, listKey: authedListKey },
