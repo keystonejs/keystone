@@ -12,6 +12,8 @@ const generateUrl = require('./generateUrl');
 const compiler = rawMDX.createMdxAstCompiler({ remarkPlugins: [] });
 
 const PROJECT_ROOT = path.resolve('..');
+
+// Used for sorting the navigation:
 const GROUPS = [
   'quick-start',
   'tutorials',
@@ -61,10 +63,10 @@ exports.createPages = ({ actions, graphql }) => {
     const pages = result.data.allMdx.edges.filter(page => {
       const {
         node: {
-          fields: { draft },
+          fields: { draft, navGroup },
         },
       } = page;
-      return Boolean(!draft);
+      return Boolean(!draft) && Boolean(!navGroup);
     });
 
     pages.forEach(({ node: { id, fields } }) => {

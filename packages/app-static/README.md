@@ -1,5 +1,5 @@
 <!--[meta]
-section: packages
+section: Apps
 title: KeystoneJS Static File App
 [meta]-->
 

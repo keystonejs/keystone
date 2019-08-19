@@ -1,5 +1,5 @@
 <!--[meta]
-section: packages
+section: Adapters
 title: File Adapters
 [meta]-->
 

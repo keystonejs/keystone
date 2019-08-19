@@ -1,5 +1,5 @@
 <!--[meta]
-section: packages
+section: Authentication Strategies
 title: Passport Auth Strategy
 [meta]-->
 
