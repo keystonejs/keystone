@@ -1,5 +1,18 @@
 # keystone_demo_blog
 
+## 2.0.1
+
+- Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):
+  - @keystone-alpha/fields@10.2.0
+  - @keystone-alpha/adapter-mongoose@4.0.0
+  - @keystone-alpha/keystone@10.0.0
+
+## 2.0.0
+
+### Major Changes
+
+- [d7819a55](https://github.com/keystonejs/keystone-5/commit/d7819a55): Switch to Next.js 9 dynamic routes, and use a Slug field instead of the `id` for routes.
+
 ## 1.2.7
 
 ### Patch Changes

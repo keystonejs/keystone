@@ -5,10 +5,9 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
+const logger = require('@keystone-alpha/logger').logger('knex');
 
 const {
-  objMerge,
-  flatten,
   escapeRegExp,
   pick,
   omit,
@@ -16,34 +15,50 @@ const {
   resolveAllKeys,
   identity,
 } = require('@keystone-alpha/utils');
+const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
-  constructor() {
+  constructor({ knexOptions = {}, schemaName = 'public' } = {}) {
     super(...arguments);
-    this.client = 'postgres';
-    this.name = this.name || 'knex';
+    this.client = knexOptions.client || 'postgres';
+    this.name = 'knex';
+    this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
-    const {
-      connection = to ||
-        process.env.KNEX_URI ||
-        'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev',
-      schemaName = 'keystone',
-      ...rest
-    } = config;
+  async _connect({ name }) {
+    const { knexOptions = {} } = this.config;
+    const { connection } = knexOptions;
+    let uri =
+      connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
+
+    if (!uri) {
+      const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
+      uri = `postgres://localhost/${defaultDbName}`;
+      logger.warn(`No Knex connection URI specified. Defaulting to '${uri}'`);
+    }
+
     this.knex = knex({
-      ...rest,
       client: this.client,
-      connection,
+      connection: uri,
+      ...knexOptions,
     });
-    this.schemaName = schemaName;
+
+    // Knex will not error until a connection is made
+    // To check that the connection we run a test query
+    await this.knex.raw('select 1+1 as result').catch(result => {
+      const connectionError = result.error || result;
+      logger.error(`Could not connect to database: '${uri}'`);
+      logger.warn(
+        `If this is the first time you've run Keystone, you can create your database with the following command:`
+      );
+      logger.warn(`createdb -U postgres ${uri.split('/').pop()}`);
+      throw connectionError;
+    });
   }
 
   async postConnect() {
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
-
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
       await this.dropDatabase();
@@ -280,6 +295,7 @@ class KnexListAdapter extends BaseListAdapter {
   async _populateMany(result) {
     // Takes an existing result and merges in all the many-relationship fields
     // by performing a query on their join-tables.
+
     return {
       ...result,
       ...(await resolveAllKeys(
@@ -352,229 +368,43 @@ class KnexListAdapter extends BaseListAdapter {
       })
     );
 
-    return this._populateMany(item);
+    return this._findById(item.id);
   }
 
   async _findAll() {
-    const results = await this._query()
-      .table(this.key)
-      .select();
-    return results.map(result => this._populateMany(result));
+    return this._itemsQuery({});
   }
 
   async _findById(id) {
-    const result = (await this._query()
-      .table(this.key)
-      .select()
+    const item = (await this._query()
+      .from(this.key)
       .where('id', id))[0];
-    return result ? await this._populateMany(result) : null;
+    return item ? this._populateMany(item) : null;
   }
 
   async _find(condition) {
-    return await this._itemsQuery({ where: { ...condition } });
+    return this._itemsQuery({ where: { ...condition } });
   }
 
   async _findOne(condition) {
-    return (await this._itemsQuery({ where: { ...condition } }))[0];
+    return (await this._itemsQuery({ where: { ...condition }, first: 1 }))[0];
   }
 
-  _allQueryConditions(tableAlias) {
-    const dbPathTransform = dbPath => `${tableAlias}.${dbPath}`;
-    return {
-      ...objMerge(
-        this.fieldAdapters.map(fieldAdapter =>
-          fieldAdapter.getQueryConditions(dbPathTransform(fieldAdapter.dbPath))
-        )
-      ),
-    };
-  }
-
-  // Recursively traverse the `where` query to identify which tables need to be joined, and on which fields.
-  // We perform joins on non-many relationship fields which are mentioned in the where query.
-  // Many relationships are handle with separate queries.
-  // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
-  // Returns: [{
-  //   fromCol:
-  //   fromTable:
-  //   toTable:
-  // }]
-  _traverseJoins(where, alias, aliases) {
-    // These are the conditions which we know how to explicitly handle
-    const nonJoinConditions = Object.keys(this._allQueryConditions());
-    // Which means these are all the `where` conditions which are non-trivial and may require a join operation.
-    Object.keys(where)
-      .filter(path => !nonJoinConditions.includes(path))
-      .forEach(path => {
-        if (path === 'AND' || path === 'OR') {
-          // AND/OR we need to traverse their children
-          where[path].forEach(x => this._traverseJoins(x, alias, aliases));
-        } else {
-          const adapter = this.fieldAdaptersByPath[path];
-          if (adapter) {
-            // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
-            // These correspond to many-relationships, which are handled separately
-
-            // We need a join of the form:
-            // ... LEFT OUTER JOIN {otherList} AS t1 ON {alias}.{path} = t1.id
-            // Each join should result in a unique alias (t1, t2, etc), so we key the aliases
-            // object on a key which combines the current alias, path, and the name of the list we're joining to.
-            const otherList = adapter.refListKey;
-            const key = `${alias}.${path}.${otherList}`;
-            if (!aliases[key]) {
-              aliases[key] = `t${Object.keys(aliases).length + 1}`;
-            }
-            this.getListAdapterByKey(otherList)._traverseJoins(where[path], aliases[key], aliases);
-          }
-        }
-      });
-  }
-
-  async _buildManyWhereClause(path, where) {
-    // Many relationship. Do explicit queries to identify which IDs match the query
-    // and return a where clause of the form `id in [...]`.
-    // (NB: Is there a more efficient way to do this? Quite probably. Definitely worth
-    // investigating for someone with mad SQL skills)
-    const [p, q] = path.split('_');
-    const thisID = `${this.key}_id`;
-    const tableName = this._manyTable(p);
-    const otherList = this.fieldAdaptersByPath[p].refListKey;
-
-    // If performing an <>_every query, we need to count how many related items each item has
-    const relatedCountById =
-      q === 'every' &&
-      arrayToObject(
-        await this._query()
-          .select(thisID)
-          .count('*')
-          .from(tableName)
-          .groupBy(thisID),
-        thisID,
-        x => x.count
-      );
-
-    // Identify and count all the items in the referenced list which match the query
-    const matchingItems = await this.getListAdapterByKey(otherList)._itemsQuery({ where });
-    const matchingCount = await this._query()
-      .select(thisID)
-      .count('*')
-      .from(tableName)
-      .whereIn(`${otherList}_id`, matchingItems.map(({ id }) => id))
-      .groupBy(thisID);
-    const matchingCountById = arrayToObject(matchingCount, thisID, x => x.count);
-
-    // Identify all the IDs in this table which meet the every/some/none criteria
-    const validIDs = (await this._query()
-      .select('id')
-      .from(this.key))
-      .map(({ id }) => ({ id, count: matchingCountById[id] || 0 }))
-      .filter(
-        ({ id, count }) =>
-          (q === 'every' && count === (relatedCountById[id] || 0)) ||
-          (q === 'some' && count > 0) ||
-          (q === 'none' && count === 0)
-      )
-      .map(({ id }) => id);
-    return b => b.whereIn('id', validIDs);
-  }
-
-  // Recursively traverses the `where` query to build up a list of knex query functions.
-  // These will be applied as a where ... andWhere chain on the joined table.
-  async _traverseWhereClauses(where, alias, aliases) {
-    let whereClauses = [];
-    const conditions = this._allQueryConditions(alias);
-    const nonJoinConditions = Object.keys(conditions);
-
-    await Promise.all(
-      Object.keys(where).map(async path => {
-        if (nonJoinConditions.includes(path)) {
-          // This is a simple data field which we know how to handle
-          whereClauses.push(conditions[path](where[path]));
-        } else if (path === 'AND' || path === 'OR') {
-          // AND/OR need to traverse both side of the query
-          const subClauses = flatten(
-            await Promise.all(where[path].map(d => this._traverseWhereClauses(d, alias, aliases)))
-          );
-          whereClauses.push(b => {
-            b.where(subClauses[0]);
-            subClauses.slice(1).forEach(whereClause => {
-              if (path === 'AND') b.andWhere(whereClause);
-              else b.orWhere(whereClause);
-            });
-          });
-        } else {
-          // We have a relationship field
-          const adapter = this.fieldAdaptersByPath[path];
-          if (adapter) {
-            // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
-            whereClauses.push(
-              ...(await this.getListAdapterByKey(adapter.refListKey)._traverseWhereClauses(
-                where[path],
-                aliases[`${alias}.${path}.${adapter.refListKey}`],
-                aliases
-              ))
-            );
-          } else {
-            // Many relationship
-            whereClauses.push(await this._buildManyWhereClause(path, where[path]));
-          }
-        }
-      })
+  _getQueryConditionByPath(path, tableAlias) {
+    const dbPath = path.split('_', 1);
+    const fieldAdapter = this.fieldAdaptersByPath[dbPath];
+    // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
+    return (
+      fieldAdapter && fieldAdapter.getQueryConditions(`${tableAlias}.${fieldAdapter.dbPath}`)[path]
     );
-    return whereClauses;
   }
 
   async _itemsQuery(args, { meta = false } = {}) {
-    const { where = {}, first, skip, orderBy } = args;
-
-    // Construct the base of the query, which will either be a select or count operation
-    const baseAlias = 't0';
-    const partialQuery = this._query().from(`${this.key} as ${baseAlias}`);
-    if (meta) {
-      partialQuery.count();
-    } else {
-      partialQuery.select(`${baseAlias}.*`);
-    }
-
-    // Join all the tables required to perform the query
-    const aliases = {};
-    this._traverseJoins(where, baseAlias, aliases);
-    Object.entries(aliases).forEach(([key, toAlias]) => {
-      const [fromAlias, fromCol, toTable] = key.split('.');
-      partialQuery.leftOuterJoin(
-        `${toTable} as ${toAlias}`,
-        `${toAlias}.id`,
-        `${fromAlias}.${fromCol}`
-      );
-    });
-
-    // Add all the where clauses to the query
-    const whereClauses = await this._traverseWhereClauses(where, baseAlias, aliases);
-    if (whereClauses.length) {
-      partialQuery.where(whereClauses[0]);
-      whereClauses.slice(1).forEach(whereClause => {
-        partialQuery.andWhere(whereClause);
-      });
-    }
-
-    // Add query modifiers as required
-    if (!meta) {
-      if (first !== undefined) {
-        partialQuery.limit(first);
-      }
-      if (skip !== undefined) {
-        partialQuery.offset(skip);
-      }
-      if (orderBy !== undefined) {
-        const [orderField, orderDirection] = orderBy.split('_');
-        const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
-        partialQuery.orderBy(sortKey, orderDirection);
-      }
-    }
-
-    // Perform the query for everything except the `many` fields.
-    const results = await partialQuery;
+    const query = new QueryBuilder(this, args, { meta }).get();
+    const results = await query;
 
     if (meta) {
+      const { first, skip } = args;
       const ret = results[0];
       let count = ret.count;
 
@@ -589,8 +419,172 @@ class KnexListAdapter extends BaseListAdapter {
       return { count };
     }
 
-    // Populate the `many` fields with IDs and return the result
     return Promise.all(results.map(result => this._populateMany(result)));
+  }
+}
+
+class QueryBuilder {
+  constructor(listAdapter, { where = {}, first, skip, orderBy }, { meta = false }) {
+    this._tableAliases = {};
+    this._nextBaseTableAliasId = 0;
+    const baseTableAlias = this._getNextBaseTableAlias();
+    this._query = listAdapter._query().from(`${listAdapter.key} as ${baseTableAlias}`);
+    if (meta) {
+      this._query.count();
+    } else {
+      this._query.column(`${baseTableAlias}.*`);
+    }
+
+    this._addJoins(this._query, listAdapter, where, baseTableAlias);
+    // Dumb sentinel to avoid juggling where() vs andWhere()
+    // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
+    this._query.whereRaw('true');
+    this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias);
+
+    // Add query modifiers as required
+    if (!meta) {
+      if (first !== undefined) {
+        this._query.limit(first);
+      }
+      if (skip !== undefined) {
+        this._query.offset(skip);
+      }
+      if (orderBy !== undefined) {
+        const [orderField, orderDirection] = orderBy.split('_');
+        const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
+        this._query.orderBy(sortKey, orderDirection);
+      }
+    }
+  }
+
+  get() {
+    return this._query;
+  }
+
+  _getNextBaseTableAlias() {
+    const alias = `t${this._nextBaseTableAliasId++}`;
+    this._tableAliases[alias] = true;
+    return alias;
+  }
+
+  // Recursively traverse the `where` query to identify required joins and add them to the query
+  // We perform joins on non-many relationship fields which are mentioned in the where query.
+  // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
+  _addJoins(query, listAdapter, where, tableAlias) {
+    const joinPaths = Object.keys(where).filter(
+      path => !listAdapter._getQueryConditionByPath(path)
+    );
+    for (let path of joinPaths) {
+      if (path === 'AND' || path === 'OR') {
+        // AND/OR we need to traverse their children
+        where[path].forEach(x => this._addJoins(query, listAdapter, x, tableAlias));
+      } else {
+        const otherAdapter = listAdapter.fieldAdaptersByPath[path];
+        // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
+        // These correspond to many-relationships, which are handled separately
+        if (otherAdapter) {
+          // We need a join of the form:
+          // ... LEFT OUTER JOIN {otherList} AS t1 ON {tableAlias}.{path} = t1.id
+          // Each table has a unique path to the root table via foreign keys
+          // This is used to give each table join a unique alias
+          // E.g., t0__fk1__fk2
+          const otherList = otherAdapter.refListKey;
+          const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
+          const otherTableAlias = `${tableAlias}__${path}`;
+          if (!this._tableAliases[otherTableAlias]) {
+            this._tableAliases[otherTableAlias] = true;
+            query.leftOuterJoin(
+              `${otherList} as ${otherTableAlias}`,
+              `${otherTableAlias}.id`,
+              `${tableAlias}.${path}`
+            );
+          }
+          this._addJoins(query, otherListAdapter, where[path], otherTableAlias);
+        }
+      }
+    }
+  }
+
+  // Recursively traverses the `where` query and pushes knex query functions to whereJoiner,
+  // which will normally do something like pass it to q.andWhere() to add to a query
+  _addWheres(whereJoiner, listAdapter, where, tableAlias) {
+    for (let path of Object.keys(where)) {
+      const condition = listAdapter._getQueryConditionByPath(path, tableAlias);
+      if (condition) {
+        whereJoiner(condition(where[path]));
+      } else if (path === 'AND' || path === 'OR') {
+        whereJoiner(q => {
+          // AND/OR need to traverse both side of the query
+          let subJoiner;
+          if (path == 'AND') {
+            q.whereRaw('true');
+            subJoiner = w => q.andWhere(w);
+          } else {
+            q.whereRaw('false');
+            subJoiner = w => q.orWhere(w);
+          }
+          where[path].forEach(subWhere =>
+            this._addWheres(subJoiner, listAdapter, subWhere, tableAlias)
+          );
+        });
+      } else {
+        // We have a relationship field
+        const fieldAdapter = listAdapter.fieldAdaptersByPath[path];
+        if (fieldAdapter) {
+          // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
+          const otherListAdapter = listAdapter.getListAdapterByKey(fieldAdapter.refListKey);
+          this._addWheres(whereJoiner, otherListAdapter, where[path], `${tableAlias}__${path}`);
+        } else {
+          // Many relationship
+          const [p, constraintType] = path.split('_');
+          const thisID = `${listAdapter.key}_id`;
+          const manyTableName = listAdapter._manyTable(p);
+          const subBaseTableAlias = this._getNextBaseTableAlias();
+          const otherList = listAdapter.fieldAdaptersByPath[p].refListKey;
+          const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
+          const otherTableAlias = `${subBaseTableAlias}__${p}`;
+
+          const subQuery = listAdapter
+            ._query()
+            .select(`${subBaseTableAlias}.${thisID}`)
+            .from(`${manyTableName} as ${subBaseTableAlias}`);
+          subQuery.innerJoin(
+            `${otherListAdapter.key} as ${otherTableAlias}`,
+            `${otherTableAlias}.id`,
+            `${subBaseTableAlias}.${otherList}_id`
+          );
+
+          this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias);
+
+          // some: the ID is in the examples found
+          // none: the ID is not in the examples found
+          // every: the ID is not in the counterexamples found
+          // FIXME: This works in a general and logical way, but doesn't always generate the queries that PG can best optimise
+          // 'some' queries would more efficient as inner joins
+
+          if (constraintType === 'every') {
+            subQuery.whereNot(q => {
+              q.whereRaw('true');
+              this._addWheres(w => q.andWhere(w), otherListAdapter, where[path], otherTableAlias);
+            });
+          } else {
+            subQuery.whereRaw('true');
+            this._addWheres(
+              w => subQuery.andWhere(w),
+              otherListAdapter,
+              where[path],
+              otherTableAlias
+            );
+          }
+
+          if (constraintType === 'some') {
+            whereJoiner(q => q.whereIn(`${tableAlias}.id`, subQuery));
+          } else {
+            whereJoiner(q => q.whereNotIn(`${tableAlias}.id`, subQuery));
+          }
+        }
+      }
+    }
   }
 }
 
@@ -602,21 +596,24 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     this.knexOptions = this.config.knexOptions || {};
   }
 
-  // Gives us a way to referrence knex when configuring DB-level defaults, eg:
-  //   knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
+  // Gives us a way to reference knex when configuring DB-level defaults, eg:
+  // knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
   // We can't do this in the constructor as the knex instance doesn't exists
   get defaultTo() {
-    if (this._defaultTo) return this._defaultTo;
+    if (this._defaultTo) {
+      return this._defaultTo;
+    }
 
     const defaultToSupplied = this.knexOptions.defaultTo;
     const knex = this.listAdapter.parentAdapter.knex;
-    const resolve = () => {
-      if (typeof defaultToSupplied === 'undefined') return this.field.defaultValue;
-      if (typeof defaultToSupplied === 'function') return defaultToSupplied(knex);
-      return defaultToSupplied;
-    };
 
-    return (this._defaultTo = resolve());
+    if (typeof defaultToSupplied === 'function') {
+      this._defaultTo = defaultToSupplied(knex);
+    } else {
+      this._defaultTo = defaultToSupplied;
+    }
+
+    return this._defaultTo;
   }
 
   // Default nullability from isRequired in most cases
@@ -624,9 +621,25 @@ class KnexFieldAdapter extends BaseFieldAdapter {
   get isNotNullable() {
     if (this._isNotNullable) return this._isNotNullable;
 
-    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
-      ? this.field.isRequired || (typeof this.defaultTo !== 'undefined' && this.defaultTo !== null)
-      : this.knexOptions.isNotNullable));
+    if (typeof this.knexOptions.isNotNullable === 'undefined') {
+      if (this.field.isRequired) {
+        this._isNotNullable = true;
+      } else {
+        // NOTE: We do our best to check for a default value below, but if a
+        // function was supplied, we have no way of knowing what that function
+        // will return until it's executed, so we err on the side of
+        // permissiveness and assume the function may return `null`, and hence
+        // this field is nullable.
+        if (typeof this.field.defaultValue === 'function') {
+          this._isNotNullable = false;
+        } else {
+          this._isNotNullable =
+            typeof this.field.defaultValue !== 'undefined' && this.field.defaultValue !== null;
+        }
+      }
+    }
+
+    return this._isNotNullable;
   }
 
   addToTableSchema() {

@@ -1,5 +1,31 @@
 # @keystone-alpha/adapter-knex
 
+## 4.0.2
+
+### Patch Changes
+
+- [5631ce3c](https://github.com/keystonejs/keystone-5/commit/5631ce3c): Faster Knex query generation
+- [b8d30f57](https://github.com/keystonejs/keystone-5/commit/b8d30f57): Minor performance improvements to Knex adapter
+
+## 4.0.1
+
+### Patch Changes
+
+- [3eeb07c7](https://github.com/keystonejs/keystone-5/commit/3eeb07c7): - Re-instate default config for Knex adapter
+  - Throw the correct error object when a connection error occurs in the Knex
+    Database
+
+## 4.0.0
+
+### Major Changes
+
+- [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86): - API Changes to Adapters: - Configs are now passed directly to the adapters rather than via `adapterConnectOptions`. - Default connections strings changed for both Knex and Mongoose adapters to be more inline with system defaults. - `keystone.connect()` no longer accepts a `to` paramter - the connection options must be passed to the adapter constructor (as above).
+
+### Patch Changes
+
+- [87155453](https://github.com/keystonejs/keystone-5/commit/87155453): Refactor Knex query builder to fix many-to-many filtering in complex queries, and reduce the number of database calls
+- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Knex adapter is smarter about default values
+
 ## 3.0.0
 
 ### Major Changes

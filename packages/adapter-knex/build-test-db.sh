@@ -4,8 +4,7 @@
 # Will distroy any existing data, etc.
 # When Keystone starts the knex adapter will recreate the structure
 
-KS_DB_NAME="ks5_dev"
-KS_SCHEMA_NAME="keystone"
+KS_DB_NAME="keystone"
 KS_USER_NAME="keystone5"
 KS_USER_PASS="k3yst0n3"
 
@@ -29,10 +28,7 @@ RECREATE_ROLE_SQL="
   DROP USER IF EXISTS \"${KS_USER_NAME}\";
   CREATE USER \"${KS_USER_NAME}\" PASSWORD '${KS_USER_PASS}';
 "
-SETUP_SCHEMA="
-  CREATE SCHEMA \"${KS_SCHEMA_NAME}\";
-  GRANT ALL ON SCHEMA \"${KS_SCHEMA_NAME}\" TO \"${KS_USER_NAME}\";
-"
+
 # Needed for `gen_random_uuid()` function, used by UUIDs
 SETUP_UUIDS="
   CREATE EXTENSION IF NOT EXISTS \"pgcrypto\";
@@ -45,5 +41,4 @@ psql template1 -U "${SUPER_USER}" -c "${CREATE_DB_SQL}"
 psql template1 -U "${SUPER_USER}" -c "${RECREATE_ROLE_SQL}"
 
 # Run in the new DB
-psql "${KS_DB_NAME}" -U "${SUPER_USER}" -c "${SETUP_SCHEMA}"
 psql "${KS_DB_NAME}" -U "${SUPER_USER}" -c "${SETUP_UUIDS}"

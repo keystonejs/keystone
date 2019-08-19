@@ -85,7 +85,6 @@ async function getGatsbyConfig() {
               resolve: 'gatsby-remark-images',
               options: {
                 maxWidth: 848, // TODO: remove magic number -- width of main col
-                sizeByPixelDensity: true,
               },
             },
             // This is needed to resolve svgs

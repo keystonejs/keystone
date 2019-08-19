@@ -3,6 +3,7 @@ const {
   resolveAllKeys,
   mapKeys,
   omit,
+  omitBy,
   unique,
   intersection,
   mergeWhereClause,
@@ -1087,12 +1088,25 @@ module.exports = class List {
     );
   }
 
-  async _resolveDefaults(data) {
-    // FIXME: Consider doing this in a way which only calls getDefaultValue once.
-    const fields = this.fields.filter(field => field.getDefaultValue() !== undefined);
+  async _resolveDefaults({ existingItem, context, originalInput }) {
+    const args = {
+      existingItem,
+      context,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+
+    const fieldsWithoutValues = this.fields.filter(
+      field => typeof originalInput[field.path] === 'undefined'
+    );
+
+    const defaultValues = await this._mapToFields(fieldsWithoutValues, field =>
+      field.getDefaultValue(args)
+    );
+
     return {
-      ...(await this._mapToFields(fields, field => field.getDefaultValue())),
-      ...data,
+      ...omitBy(defaultValues, path => typeof defaultValues[path] === 'undefined'),
+      ...originalInput,
     };
   }
 
@@ -1104,17 +1118,30 @@ module.exports = class List {
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
-    const fields = this._fieldsFromObject(resolvedData);
 
-    resolvedData = await this._mapToFields(fields, field => field.resolveInput(args));
+    // First we run the field type hooks
+    // NOTE: resolveInput is run on _every_ field, regardless if it has a value
+    // passed in or not
+    resolvedData = await this._mapToFields(this.fields, field => field.resolveInput(args));
+
+    // We then filter out the `undefined` results (they should return `null` or
+    // a value)
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
+    // Run the schema-level field hooks, passing in the results from the field
+    // type hooks
     resolvedData = {
       ...resolvedData,
-      ...(await this._mapToFields(fields.filter(field => field.hooks.resolveInput), field =>
+      ...(await this._mapToFields(this.fields.filter(field => field.hooks.resolveInput), field =>
         field.hooks.resolveInput({ ...args, resolvedData })
       )),
     };
 
+    // And filter out the `undefined`s again.
+    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
+
     if (this.hooks.resolveInput) {
+      // And run any list-level hook
       resolvedData = await this.hooks.resolveInput({ ...args, resolvedData });
       if (typeof resolvedData !== 'object') {
         throw new Error(
@@ -1125,6 +1152,7 @@ module.exports = class List {
       }
     }
 
+    // Finally returning the amalgamated result of all the hooks.
     return resolvedData;
   }
 
@@ -1312,10 +1340,10 @@ module.exports = class List {
     );
   }
 
-  async _createSingle(data, existingItem, context, mutationState) {
+  async _createSingle(originalInput, existingItem, context, mutationState) {
     const operation = 'create';
     return await this._nestedMutation(mutationState, context, async mutationState => {
-      const defaultedItem = await this._resolveDefaults(data);
+      const defaultedItem = await this._resolveDefaults({ existingItem, context, originalInput });
 
       // Enable resolveRelationship to perform some action after the item is created by
       // giving them a promise which will eventually resolve with the value of the
@@ -1330,11 +1358,17 @@ module.exports = class List {
         mutationState
       );
 
-      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      resolvedData = await this._resolveInput(
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput
+      );
 
-      await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this._validateInput(resolvedData, existingItem, context, operation, originalInput);
 
-      await this._beforeChange(resolvedData, existingItem, context, operation, data);
+      await this._beforeChange(resolvedData, existingItem, context, operation, originalInput);
 
       let newItem;
       try {
@@ -1354,7 +1388,8 @@ module.exports = class List {
 
       return {
         result: newItem,
-        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+        afterHook: () =>
+          this._afterChange(newItem, existingItem, context, operation, originalInput),
       };
     });
   }

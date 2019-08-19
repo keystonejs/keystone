@@ -1,5 +1,11 @@
 # @keystone-alpha/app-static
 
+## 1.1.0
+
+### Minor Changes
+
+- [fe23c719](https://github.com/keystonejs/keystone-5/commit/fe23c719): Added a new fallback option to support client-side routing
+
 ## 1.0.3
 
 ### Patch Changes

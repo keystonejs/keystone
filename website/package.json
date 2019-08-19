@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "1.0.13",
+  "version": "1.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "@arch-ui/icons": "^0.0.5",
     "@arch-ui/input": "^0.0.9",
-    "@arch-ui/select": "^0.0.7",
+    "@arch-ui/select": "^0.0.8",
     "@arch-ui/theme": "^0.0.5",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
@@ -27,7 +27,6 @@
     "@sindresorhus/slugify": "^0.6.0",
     "babel-plugin-extract-react-types": "^0.1.0",
     "bolt": "^0.22.6",
-    "emotion-server": "9.2.12",
     "facepaint": "^1.2.1",
     "gatsby": "^2.13.25",
     "gatsby-mdx": "^0.6.3",

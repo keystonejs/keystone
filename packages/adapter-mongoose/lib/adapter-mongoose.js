@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const inflection = require('inflection');
 const pSettle = require('p-settle');
 const {
   escapeRegExp,
@@ -21,6 +20,7 @@ const logger = require('@keystone-alpha/logger').logger('mongoose');
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
 const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
+const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
@@ -73,9 +73,7 @@ const modifierConditions = {
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
-
-    this.name = this.name || 'mongoose';
-
+    this.name = 'mongoose';
     this.mongoose = new mongoose.Mongoose();
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
@@ -83,23 +81,30 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
-    // NOTE: We pull out `name` here, but don't use it, so it
-    // doesn't conflict with the options the user wants passed to mongodb.
-    const { name: _, ...adapterConnectOptions } = config;
-
+  async _connect({ name }) {
+    const { mongoUri, ...mongooseConfig } = this.config;
     // Default to the localhost instance
-    let uri = to;
+    let uri =
+      mongoUri ||
+      process.env.CONNECT_TO ||
+      process.env.DATABASE_URL ||
+      process.env.MONGO_URI ||
+      process.env.MONGODB_URI ||
+      process.env.MONGO_URL ||
+      process.env.MONGODB_URL ||
+      process.env.MONGOLAB_URI ||
+      process.env.MONGOLAB_URL;
+
     if (!uri) {
-      const defaultDbName = inflection.dasherize(config.name).toLowerCase() || 'keystone';
-      uri = `mongodb://localhost:27017/${defaultDbName}`;
+      const defaultDbName = slugify(name) || 'keystone';
+      uri = `mongodb://localhost/${defaultDbName}`;
       logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
 
     await this.mongoose.connect(uri, {
       useNewUrlParser: true,
       useFindAndModify: false,
-      ...adapterConnectOptions,
+      ...mongooseConfig,
     });
   }
   async postConnect() {
@@ -328,7 +333,7 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
-    // Aapplying these config to all field types is probably wrong;
+    // Applying these config to all field types is probably wrong;
     // ie. unique constraints on Checkboxes, Files, etc. probably don't make sense
     if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose

@@ -1,5 +1,11 @@
 # @arch-ui/select
 
+## 0.0.8
+
+### Patch Changes
+
+- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+
 ## 0.0.7
 
 - Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):

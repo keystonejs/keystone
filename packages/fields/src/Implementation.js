@@ -91,9 +91,18 @@ class Field {
   }
 
   /*
-   * @param data {Mixed} The value of this field received from the query
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
+   * @param {Object} data
+   * @param {Object} data.resolvedData  The incoming item for the mutation with
+   * relationships and defaults already resolved
+   * @param {Object} data.existingItem If this is a updateX mutation, this will
+   * be the existing data in the database
+   * @param {Object} data.context The graphQL context object of the current
+   * request
+   * @param {Object} data.originalInput The raw incoming item from the mutation
+   * (no relationships or defaults resolved)
+   * @param {Object} data.actions
+   * @param {Function} data.actions.query Perform a graphQl query
+   * programatically
    */
   async resolveInput({ resolvedData }) {
     return resolvedData[this.path];
@@ -163,7 +172,9 @@ class Field {
       path: this.path,
       type: this.constructor.name,
       isRequired: this.isRequired,
-      defaultValue: this.getDefaultValue(),
+      // We can only pass scalar default values through to the admin ui, not
+      // functions
+      defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
       isPrimaryKey: this.isPrimaryKey,
     });
   }
@@ -173,8 +184,16 @@ class Field {
   extendAdminViews(views) {
     return views;
   }
-  getDefaultValue() {
-    return this.defaultValue;
+  getDefaultValue({ existingItem, context, originalInput, actions }) {
+    if (typeof this.defaultValue !== 'undefined') {
+      if (typeof this.defaultValue === 'function') {
+        return this.defaultValue({ existingItem, context, originalInput, actions });
+      } else {
+        return this.defaultValue;
+      }
+    }
+    // By default, the default value is undefined
+    return undefined;
   }
 }
 

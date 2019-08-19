@@ -65,7 +65,7 @@ The CalendarDay component includes an input that allows the user to change the c
 ## GraphQL
 
 `CalendarDay` fields use the `String` type in GraphQL.
-They produce and values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
+They produce values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
 
 ### Input Fields
 
@@ -100,10 +100,10 @@ All filter fields expect values in the ISO8601 (`YYYY-MM-DD`) format.
 
 In Mongoose the field is added using the `String` schema type.
 
-The `isRequired` config option is enforces by Keystone only.
+The `isRequired` config option is enforced by Keystone only.
 
 ### Knex Adaptor
 
 The Knex adaptor uses the [Knex `date` type](https://knexjs.org/#Schema-date):
 
-The `isRequired` config option is enforces by Keystone and, if equal to `true`, the column is set as not nullable.
+The `isRequired` config option is enforced by Keystone and, if equal to `true`, the column is set as not nullable.

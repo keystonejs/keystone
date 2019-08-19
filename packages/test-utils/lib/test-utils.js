@@ -8,20 +8,29 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
-function setupServer({ name, adapterName, createLists = () => {} }) {
+function setupServer({ name, adapterName, createLists = () => {}, createApps, keystoneOptions }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
-  const args = { mongoose: {}, knex: { dropDatabase: true } }[adapterName];
+  const args = {
+    mongoose: {},
+    knex: {
+      dropDatabase: true,
+      knexOptions: { connection: process.env.KNEX_URI || 'postgres://localhost/keystone' },
+    },
+  }[adapterName];
+
   const keystone = new Keystone({
     name,
     adapter: new Adapter(args),
     defaultAccess: { list: true, field: true },
+    ...keystoneOptions,
   });
 
   createLists(keystone);
-
-  // Has the side-effect of registering the schema with the keystone object
-  new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
-
+  if (createApps) {
+    createApps(keystone);
+  } else {
+    new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
+  }
   return { keystone };
 }
 
@@ -82,6 +91,10 @@ function getUpdate(keystone) {
   return (list, id, data) => keystone.getListByKey(list).adapter.update(id, data);
 }
 
+function getDelete(keystone) {
+  return (list, id) => keystone.getListByKey(list).adapter.delete(id);
+}
+
 function keystoneMongoRunner(setupKeystoneFn, testFn) {
   return async function() {
     const setup = await setupKeystoneFn('mongoose');
@@ -98,6 +111,7 @@ function keystoneMongoRunner(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect().then(teardownMongoMemoryServer)
     );
@@ -118,6 +132,7 @@ function keystoneKnexRunner(setupKeystoneFn, testFn) {
         findById: getFindById(keystone),
         findOne: getFindOne(keystone),
         update: getUpdate(keystone),
+        delete: getDelete(keystone),
       }),
       () => keystone.disconnect()
     );

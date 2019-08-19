@@ -1,5 +1,11 @@
 # @arch-ui/drawer
 
+## 0.0.10
+
+### Patch Changes
+
+- [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06): Correctly remove Drawer overlay when drawer is closed
+
 ## 0.0.9
 
 ### Patch Changes

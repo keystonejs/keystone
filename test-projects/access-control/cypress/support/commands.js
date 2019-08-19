@@ -121,7 +121,7 @@ Cypress.Commands.add('loginToKeystone', (identity, secret) => {
     .clear({ force: true })
     .type(secret, { force: true });
 
-  cy.get('button[type="submit"]').click();
+  cy.get('button[type="submit"]').click({ force: true });
 
   // Wait for page to load (completing the signin round trip)
   cy.get('main h1').should('contain', 'Dashboard');
