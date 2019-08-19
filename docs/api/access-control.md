@@ -113,6 +113,7 @@ type AccessInput = {
     item?: {},
     listKey?: string,
   },
+  originalInput?: {},
 };
 
 type StaticAccess = boolean;
@@ -141,6 +142,7 @@ ie; for a list `User`, it would match the input type `UserWhereInput`.
 - `authentication` describes the currently authenticated user.
   - `.item` is the details of the current user. Will be `undefined` for anonymous users.
   - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
+- `originalInput` for `create` & `update` mutations, this is the data as passed in the mutation.
 
 When resolving `StaticAccess`;
 
@@ -333,7 +335,8 @@ type AccessInput = {
     item?: {},
     listKey?: string,
   },
-  existingItem: {},
+  originalInput?: {},
+  existingItem?: {},
 };
 
 type StaticAccess = boolean;
@@ -364,7 +367,8 @@ only to modify it).
 - `authentication` describes the currently authenticated user.
   - `.item` is the details of the current user. Will be `undefined` for anonymous users.
   - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
-- `existingItem` is the existing item this field belongs to (undefined on create).
+- `originalInput`is the data as passed in the mutation for `create` & `update` mutations (`undefined` for `read`).
+- `existingItem` is the existing item this field belongs to for `update` mutations & `read` queries (`undefined` for `create`).
 
 When defining `StaticAccess`;
 

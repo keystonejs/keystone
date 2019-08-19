@@ -140,7 +140,7 @@ Relationship.adapters['mock'] = {};
 
 const context = {
   getListAccessControlForUser: () => true,
-  getFieldAccessControlForUser: (listKey, fieldPath, existingItem) =>
+  getFieldAccessControlForUser: (listKey, fieldPath, originalInput, existingItem) =>
     !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   authedItem: {
     id: 1,
@@ -1013,16 +1013,21 @@ test('checkFieldAccess', () => {
 
 test('checkListAccess', () => {
   const list = setup();
-  expect(list.checkListAccess(context, 'read', { gqlName: 'testing' })).toEqual(true);
+  const originalInput = {};
+  expect(list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })).toEqual(
+    true
+  );
 
   const newContext = {
     ...context,
-    getListAccessControlForUser: (listKey, operation) => operation === 'update',
+    getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
   };
-  expect(list.checkListAccess(newContext, 'update', { gqlName: 'testing' })).toEqual(true);
-  expect(() => list.checkListAccess(newContext, 'read', { gqlName: 'testing' })).toThrow(
-    AccessDeniedError
+  expect(list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })).toEqual(
+    true
   );
+  expect(() =>
+    list.checkListAccess(newContext, originalInput, 'read', { gqlName: 'testing' })
+  ).toThrow(AccessDeniedError);
 });
 
 test('getAccessControlledItem', async () => {

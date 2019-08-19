@@ -1,0 +1,1 @@
+Expose 'originalInput' to access control functions for lists & fields
