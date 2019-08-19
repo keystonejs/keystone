@@ -8,7 +8,8 @@ title: Hooks
 The APIs for each hook are mostly the same across the 3 hook types
 ([list hooks](../discussions/hooks.md#list-hooks), [field hooks](../discussions/hooks.md#field-hooks), [field type
 hooks](../discussions/hooks.md#field-type-hooks)).
-Any differences are called out in the documentation for that hook below.
+
+Any differences are called out in the documentation below.
 
 Usage:
 
@@ -46,7 +47,6 @@ keystone.createList('User', {
 Example:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const resolveInput = ({
   resolvedData,
@@ -165,7 +165,6 @@ order](../discussions/hooks.md#hook-execution-order) as the input data.
 Example:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const validateInput = ({
   resolvedData,
@@ -192,10 +191,6 @@ const validateInput = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `validateDelete: Func(ValidateDeleteArg: Object) => undefined|Promise<undefined>`
@@ -203,7 +198,6 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const validateDelete = ({
   existingItem,
@@ -226,10 +220,6 @@ const validateDelete = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `beforeChange: Func(BeforeChangeArg: Object) => undefined|Promise<undefined>`
@@ -237,7 +227,6 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const beforeChange = ({
   resolvedData,
@@ -262,10 +251,6 @@ const beforeChange = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `afterChange: Func(AfterChangeArg: Object) => undefined|Promise<undefined>`
@@ -273,7 +258,6 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const afterChange = ({
   updatedItem,
@@ -298,10 +282,6 @@ const afterChange = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `beforeDelete: Func(BeforeDeleteArg: Object) => undefined|Promise<undefined>`
@@ -309,7 +289,6 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const beforeDelete = ({
   existingItem,
@@ -330,10 +309,6 @@ const beforeDelete = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `afterDelete: Func(AfterDeleteArg: Object) => undefined|Promise<undefined>`
@@ -341,7 +316,6 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const afterDelete = ({
   existingItem,
@@ -360,8 +334,4 @@ const afterDelete = ({
   context: Object,
   list: Object,
 }
-```
-
-```DOCS_TODO
-TODO
 ```

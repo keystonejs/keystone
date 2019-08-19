@@ -132,8 +132,4 @@ Which [Field](#field-hooks) & [Field Type](#field-type-hooks) hooks are executed
 - `beforeDelete`: Call on all fields.
 - `afterDelete`: Called on all fields.
 
-## Error Handling
-
-```DOCS_TODO
-TODO
-```
+<!-- TODO: ## Error Handling -->
