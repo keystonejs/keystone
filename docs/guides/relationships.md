@@ -7,7 +7,7 @@ title: Creating Relationships Between Lists
 
 ## Pick assignee from Users collection (to-single relationship)
 
-Now, when we've created all neccessary lists, let's link each other by setting up
+Now, when we've created all necessary lists, let's link each other by setting up
 `relationship`. Tweak assignee field in `Todos.js` to match next code:
 
 ```javascript
