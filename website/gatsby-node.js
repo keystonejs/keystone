@@ -42,6 +42,7 @@ exports.createPages = ({ actions, graphql }) => {
               sortOrder
               isPackageIndex
               pageTitle
+              draft
             }
           }
         }
@@ -56,7 +57,15 @@ exports.createPages = ({ actions, graphql }) => {
       If you end up with multiple ways to generate a markdown page, you will
       need to split out to new templates, with their own graphql queries
     */
-    const pages = result.data.allMdx.edges;
+
+    const pages = result.data.allMdx.edges.filter(page => {
+      const {
+        node: {
+          fields: { draft },
+        },
+      } = page;
+      return Boolean(!draft);
+    });
 
     pages.forEach(({ node: { id, fields } }) => {
       // The 'fields' values are injected during the `onCreateNode` call below
@@ -133,6 +142,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       sortOrder: GROUPS.indexOf(navGroup),
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
+      draft: Boolean(data.draft),
       description,
       heading,
     };
