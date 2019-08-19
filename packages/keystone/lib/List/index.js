@@ -689,6 +689,13 @@ module.exports = class List {
     return mutations;
   }
 
+  getGqlMutationTypes() {
+    const types = [];
+    types.push(...flatten(this.mutations.filter(({ types }) => types).map(({ types }) => types)));
+
+    return types;
+  }
+
   checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
 
