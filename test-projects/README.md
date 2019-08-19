@@ -1,4 +1,4 @@
-## ATENTION
+## ATTENTION
 
 This folder contains projects used for Cypress tests. You do not want to use these as starting points for your own project. You are better off using the demo projects for that, which are located in `/demo-projects`.
 
