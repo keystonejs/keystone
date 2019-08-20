@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Keystone To-Do List</title>
+    <style>
+      body {
+        background: hsl(261, 84%, 95%);
+      }
+      .addItem::placeholder {
+        color: hsl(261, 84%, 60%);
+      }
+      .addItem:focus {
+        outline-color: hsl(261, 84%, 60%);
+      }
+      .trash:focus {
+        outline: none;
+      }
+    </style>
+    <!-- This is really slow, please don't do this in production! -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+      const { useEffect, useState } = React;
+
+      function graphql(query, variables = {}) {
+        return fetch('/admin/api', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            variables,
+            query,
+          }),
+        }).then(x => x.json());
+      }
+
+      const GET_TODOS = `
+        query GetTodos {
+          allTodos {
+            name
+            id
+          }
+        }
+      `;
+
+      const ADD_TODO = `
+        mutation AddTodo($name: String!) {
+          createTodo(data: { name: $name }) {
+            name
+            id
+          }
+        }
+      `;
+
+      const REMOVE_TODO = `
+        mutation RemoveTodo($id: ID!) {
+          deleteTodo(id: $id) {
+            name
+            id
+          }
+        }
+      `;
+
+      const Form = ({ refetch }) => {
+        let [value, setValue] = useState('');
+
+        return (
+          <div>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                graphql(ADD_TODO, { name: value }).then(refetch);
+                setValue('');
+              }}
+            >
+              <input
+                placeholder="Add new item"
+                style={styles.formInput}
+                className="addItem"
+                value={value}
+                onChange={event => {
+                  setValue(event.target.value);
+                }}
+              />
+            </form>
+          </div>
+        );
+      };
+
+      const Item = props => (
+        <li style={styles.listItem}>
+          {props.todo.name}
+          <button
+            style={styles.deleteButton}
+            className="trash"
+            onClick={() => {
+              graphql(REMOVE_TODO, { id: props.todo.id }).then(props.refetch);
+            }}
+          >
+            <svg viewBox="0 0 14 16" style={styles.deleteIcon}>
+              <title>Delete this item</title>
+              <path
+                fillRule="evenodd"
+                d="M11 2H9c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1H2c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1v9c0 .55.45 1 1 1h7c.55 0 1-.45 1-1V5c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 12H3V5h1v8h1V5h1v8h1V5h1v8h1V5h1v9zm1-10H2V3h9v1z"
+              />
+            </svg>
+          </button>
+        </li>
+      );
+
+      function List({ data, state, refetch }) {
+        switch (state) {
+          case 'loading': {
+            return <p>Loading...</p>;
+          }
+          case 'error': {
+            return <p>Error!</p>;
+          }
+          case 'loaded': {
+            return (
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {data.allTodos.map((todo, index) => (
+                  <Item todo={todo} refetch={refetch} key={index} />
+                ))}
+              </ul>
+            );
+          }
+        }
+      }
+
+      const App = () => {
+        let [{ state, data }, setState] = useState({ state: 'loading', data: null });
+        let fetch = () => {
+          graphql(GET_TODOS)
+            .then(({ data }) => {
+              setState({ state: 'loaded', data });
+            })
+            .catch(() => {
+              setState({ state: 'error', data: null });
+            });
+        };
+
+        useEffect(fetch, []);
+
+        return (
+          <div style={styles.app}>
+            <h1 style={styles.mainHeading}>Welcome to Keystone 5!</h1>
+            <p style={styles.introText}>
+              Here's a simple demo app that lets you add/remove todo items. Create a few entries,
+              then go check them out from your <a href="/admin">Keystone 5 Admin UI</a>!
+            </p>
+            <hr style={styles.divider} />
+            <div style={styles.formWrapper}>
+              <h2 style={styles.appHeading}>To-Do List</h2>
+              <Form refetch={fetch} />
+              <List data={data} state={state} refetch={fetch} />
+            </div>
+          </div>
+        );
+      };
+
+      const brightness = {
+        default: '60%',
+        light: '95%',
+        dark: '14%',
+      };
+
+      const tint = (opacity = 1, theme = 'default') =>
+        `hsla(261, 84%, ${brightness[theme]}, ${opacity})`;
+
+      const styles = {
+        app: {
+          padding: 50,
+          maxWidth: 600,
+          color: tint(1, 'dark'),
+          fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
+        },
+        mainHeading: {
+          fontWeight: 900,
+          marginTop: 50,
+        },
+        introText: {
+          lineHeight: 1.5,
+          color: tint(0.6, 'dark'),
+        },
+        divider: {
+          marginTop: 30,
+          marginLeft: 0,
+          width: 48,
+          height: 4,
+          borderWidth: 0,
+          backgroundColor: tint(0.3),
+        },
+        formWrapper: {
+          maxWidth: 500,
+        },
+        appHeading: {
+          textTransform: 'uppercase',
+          fontWeight: 900,
+          marginTop: 50,
+        },
+        formInput: {
+          color: tint(1, 'dark'),
+          padding: '12px 16px',
+          fontSize: '1.25em',
+          width: '100%',
+          borderRadius: 6,
+          border: 0,
+          background: tint(0.3),
+        },
+
+        listItem: {
+          padding: '32px 16px',
+          fontSize: '1.25em',
+          fontWeight: 600,
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          borderTop: `1px solid ${tint(0.2)}`,
+        },
+
+        deleteIcon: { width: 20, height: 20, fill: tint() },
+
+        deleteButton: {
+          background: 0,
+          border: 0,
+          padding: 0,
+          cursor: 'pointer',
+        },
+      };
+
+      ReactDOM.render(<App />, document.getElementById('app'));
+    </script>
+  </body>
+</html>
