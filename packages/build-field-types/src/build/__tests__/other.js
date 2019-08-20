@@ -6,6 +6,10 @@ import { snapshotDirectory, install } from '../../../test-utils';
 
 const f = fixturez(__dirname);
 
+// we're increasing the timeout here because we run `yarn install`
+// and that sometimes takes longer than the default timeout
+jest.setTimeout(30000);
+
 jest.mock('../../prompt');
 
 afterEach(() => {

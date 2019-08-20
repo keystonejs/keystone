@@ -16,13 +16,17 @@ const generateSlug = valueToSlugify => slugify(valueToSlugify || '');
 export class SlugImplementation extends Text {
   constructor(
     path,
-    { from, generate, makeUnique, isUnique, regenerateOnUpdate = true },
+    { from, generate, makeUnique, alwaysMakeUnique = false, isUnique, regenerateOnUpdate = true },
     { listKey }
   ) {
     const listAndFieldPath = `${listKey}.${path}`;
 
     if (typeof regenerateOnUpdate !== 'boolean') {
       throw new Error(`The 'regenerateOnUpdate' option on ${listAndFieldPath} must be true/false`);
+    }
+
+    if (typeof alwaysMakeUnique !== 'boolean') {
+      throw new Error(`The 'alwaysMakeUnique' option on ${listAndFieldPath} must be true/false`);
     }
 
     if (from && generate) {
@@ -126,6 +130,7 @@ export class SlugImplementation extends Text {
     this.generateFn = generateFn;
     this.makeUnique = makeUniqueFn;
     this.regenerateOnUpdate = regenerateOnUpdate;
+    this.alwaysMakeUnique = alwaysMakeUnique;
   }
 
   async resolveInput({ resolvedData, existingItem, actions: { query } }) {
@@ -189,11 +194,11 @@ export class SlugImplementation extends Text {
       }
     }
 
-    if (!this.isUnique) {
+    if (!this.isUnique && !this.alwaysMakeUnique) {
       return slug;
     }
 
-    let previousSlug;
+    let uniqueSlug = slug;
     let slugIsUnique;
     let makeUniqueAttempts = 0;
     const listAndFieldPath = `${this.listKey}.${this.path}`;
@@ -210,6 +215,11 @@ export class SlugImplementation extends Text {
       }
     `;
 
+    if (this.alwaysMakeUnique) {
+      // Force a uniquification pass over the slug
+      uniqueSlug = await this.makeUnique({ slug, previousSlug: uniqueSlug });
+    }
+
     // Repeat until we have a unique slug, or we've tried too many times
     do {
       if (makeUniqueAttempts >= MAX_UNIQUE_ATTEMPTS) {
@@ -223,11 +233,16 @@ export class SlugImplementation extends Text {
       const { data, errors } = await query(queryString, {
         variables: {
           where: {
-            [this.path]: slug,
+            [this.path]: uniqueSlug,
             // Ensure we ignore the current item when doing an update
             ...(existingItem && existingItem.id && { id_not_in: [existingItem.id] }),
           },
         },
+        // Access Control may filter out some results, so we wouldn't be
+        // retreiving an accurate list of all existing items. Because we add the
+        // unique constraint to the field, the database will throw an error if
+        // we miss a match and try to insert anyway.
+        skipAccessControl: true,
       });
 
       if (errors) {
@@ -243,12 +258,11 @@ export class SlugImplementation extends Text {
 
       if (!slugIsUnique) {
         // An existinig slug was found, so we try make it unique
-        slug = await this.makeUnique({ slug, previousSlug });
-        previousSlug = slug;
+        uniqueSlug = await this.makeUnique({ slug, previousSlug: uniqueSlug });
       }
     } while (!slugIsUnique);
 
-    return slug;
+    return uniqueSlug;
   }
 }
 
