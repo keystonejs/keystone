@@ -3,24 +3,48 @@ section: api
 title: Keystone
 [meta]-->
 
-## keystone
+# keystone
 
-### keystone.createAuthStrategy(options)
+## createAuthStrategy(options)
 
-Initialises and returns a new authentication strategy.
+### usage
 
-#### options
+```javascript
+const { PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 
-| StrategyType | A valid Authentication Strategy. See: authentication strategies. |
-| listKey | Where authentication is linked to a List such as a 'User'. |
-| config | Configuration options that will be passed to the authentication strategy. |
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+});
+```
 
-### keystone.createList(listKey, config)
+Initialises and return an authentication strategy for use in the AdminUI and other apps.
+
+### options
+
+<table>
+<tr>
+<th>StrategyType</th>
+<td>A valid Authentication Strategy. See: authentication strategies.          </td>
+</tr>
+<tr>
+<th>listKey</th>
+<td>Where authentication is linked to a List such as a 'User'.                </td>
+</tr>
+<tr>
+<th>config</th>
+<td>Configuration options that will be passed to the authentication strategy. </td>
+</tr>
+</table>
+
+## keystone.createList(listKey, config)
 
 Registers a new list with Keystone and returns a Keystone list object.
 
+|         |                                                                                            |
+| ------- | ------------------------------------------------------------------------------------------ |
 | listKey | A string representing the name of a list. This should be singular, E.g. 'User' not 'Users' |
-| config | The list config. See: Creating lists |
+| config  | The list config. See: Creating lists                                                       |
 
 ## keystone.connect()
 
@@ -54,15 +78,17 @@ keystone.createItems({
 
 ## keystone.disconnect()
 
-Will disconnect all adapters.
+Disconnects all adapters.
 
 ## keystone.prepare(options)
 
 ### options
 
-| dev | `true` or `false` - sets the dev flag in Keystone's express middleware. |
-| apps | An array of 'Apps' which are express middleware. |
-| distDir | the build directory for keystone. |
+|         |                                                                         |
+| ------- | ----------------------------------------------------------------------- |
+| dev     | `true` or `false` - sets the dev flag in Keystone's express middleware. |
+| apps    | An array of 'Apps' which are express middleware.                        |
+| distDir | the build directory for keystone.                                       |
 
 <!--
 

@@ -8,26 +8,43 @@ import { useNavData } from '../utils/hooks';
 
 export const SidebarNav = () => {
   const navData = useNavData();
-
-  const navGroups = Object.keys(navData);
-
+  console.log({ navData });
   return (
     <nav aria-label="Documentation Menu">
-      {navGroups.map(navGroup => {
-        const sectionId = `docs-menu-${navGroup}`;
-
-        const pages = navData[navGroup];
+      {navData.map(navGroup => {
+        const sectionId = `docs-menu-${navGroup.navTitle}`;
+        console.log({ navGroup });
         return (
-          <div key={navGroup}>
-            <GroupHeading id={sectionId}>{navGroup.replace('-', ' ')}</GroupHeading>
+          <div key={navGroup.navTitle}>
+            <GroupHeading id={sectionId}>{navGroup.navTitle.replace('-', ' ')}</GroupHeading>
             <List aria-labelledby={sectionId}>
-              {pages.map(node => {
+              {navGroup.pages.map(node => {
                 return (
                   <ListItem key={node.path} to={node.path}>
                     {node.context.pageTitle}
                   </ListItem>
                 );
               })}
+              {navGroup.subNavs.length ? (
+                <li>
+                  {navGroup.subNavs.map(navGroup => (
+                    <>
+                      <GroupHeading id={sectionId}>
+                        {navGroup.navTitle.replace('-', ' ')}
+                      </GroupHeading>
+                      <List aria-labelledby={sectionId}>
+                        {navGroup.pages.map(node => {
+                          return (
+                            <ListItem key={node.path} to={node.path}>
+                              {node.context.pageTitle}
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+                    </>
+                  ))}
+                </li>
+              ) : null}
             </List>
           </div>
         );

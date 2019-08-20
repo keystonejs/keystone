@@ -1,5 +1,5 @@
 <!--[meta]
-section: adapters
+section: field-adapters
 title: File Adapters
 [meta]-->
 

@@ -34,16 +34,16 @@ export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
   pageContext: { slug },
 }) {
-  let navData = useNavData();
-  let flatNavData = [].concat(...Object.values(navData));
-  let currentPageIndex = flatNavData.findIndex(node => node.path === slug);
+  // let navData = useNavData();
+  // let flatNavData = [].concat(navData.pages);
+  // let currentPageIndex = flatNavData.findIndex(node => node.path === slug);
   let prev, next;
-  if (currentPageIndex !== 0) {
-    prev = flatNavData[currentPageIndex - 1];
-  }
-  if (currentPageIndex !== flatNavData.length - 1) {
-    next = flatNavData[currentPageIndex + 1];
-  }
+  // if (currentPageIndex !== 0) {
+  //   prev = flatNavData[currentPageIndex - 1];
+  // }
+  // if (currentPageIndex !== flatNavData.length - 1) {
+  //   next = flatNavData[currentPageIndex + 1];
+  // }
 
   const { code, fields } = mdx;
   const { siteMetadata } = site;

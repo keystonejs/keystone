@@ -105,6 +105,7 @@ async function getGatsbyConfig() {
           fields: [
             { name: 'content' },
             { name: 'navGroup', store: true },
+            { name: 'navSubGroup', store: true },
             { name: 'slug', store: true },
             { name: 'title', store: true, attributes: { boost: 20 } },
           ],
@@ -114,6 +115,7 @@ async function getGatsbyConfig() {
             Mdx: {
               content: node => node.rawBody,
               navGroup: node => node.fields.navGroup,
+              navSubGroup: node => node.fields.navSubGroup,
               slug: node => node.fields.slug,
               title: node => node.fields.pageTitle,
             },

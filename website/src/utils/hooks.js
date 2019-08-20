@@ -24,6 +24,7 @@ export function useNavData() {
             path
             context {
               navGroup
+              navSubGroup
               isPackageIndex
               pageTitle
             }
@@ -33,19 +34,47 @@ export function useNavData() {
     }
   `);
 
-  const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
-    if (node.context.navGroup !== null) {
-      // finding out what directory the file is in (eg '/keystone-alpha')
-      pageList[node.context.navGroup] = pageList[node.context.navGroup] || [];
-      if (node.context.pageTitle === 'Introduction') {
-        pageList[node.context.navGroup].unshift(node);
-      } else if (node.context.navGroup !== 'packages' || node.context.isPackageIndex) {
-        pageList[node.context.navGroup].push(node);
+  const navData = data.allSitePage.edges.reduce(
+    (
+      pageList,
+      {
+        node,
+        node: {
+          context,
+          context: { navGroup, navSubGroup },
+        },
       }
-    }
+    ) => {
+      if (navGroup !== null) {
+        // finding out what directory the file is in (eg '/keystone-alpha')
 
-    return pageList;
-  }, {});
+        const addPage = page => {
+          if (context.pageTitle === 'Introduction') {
+            page.pages.unshift(node);
+          } else if (navGroup !== 'packages' || context.isPackageIndex) {
+            page.pages.push(node);
+          }
+        };
 
+        if (Boolean(!pageList.find(obj => obj.navTitle === navGroup))) {
+          pageList.push({ navTitle: navGroup, pages: [], subNavs: [] });
+        }
+
+        if (navSubGroup === 'no-sub-nav') {
+          const page = pageList.find(obj => obj.navTitle === navGroup);
+          addPage(page);
+        } else {
+          const page = pageList.find(obj => obj.navTitle === navGroup);
+          if (Boolean(!page.subNavs.find(obj => obj.navTitle === navSubGroup))) {
+            page.subNavs.push({ navTitle: navSubGroup, pages: [] });
+          }
+          const subPage = page.subNavs.find(obj => obj.navTitle === navSubGroup);
+          addPage(subPage);
+        }
+      }
+      return pageList;
+    },
+    []
+  );
   return navData;
 }

@@ -1,5 +1,5 @@
 <!--[meta]
-section: packages
+section: utilities
 title: Create Keystone App
 [meta]-->
 

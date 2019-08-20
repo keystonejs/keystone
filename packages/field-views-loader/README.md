@@ -1,5 +1,4 @@
 <!--[meta]
-section: packages
 title: Field Views Loader
 [meta]-->
 

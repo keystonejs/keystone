@@ -20,13 +20,12 @@ const GROUPS = [
   'api',
   'tutorials',
   'adapters',
+  'field adapters',
   'apps',
   'authentication-strategies',
   'discussions',
   'field-types',
-  'packages',
 ];
-const GROUPS_NO_PKG = GROUPS.filter(s => s !== 'packages');
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
@@ -43,6 +42,7 @@ exports.createPages = ({ actions, graphql }) => {
             fields {
               slug
               navGroup
+              navSubGroup
               workspaceSlug
               sortOrder
               isPackageIndex
@@ -69,7 +69,8 @@ exports.createPages = ({ actions, graphql }) => {
           fields: { draft, navGroup },
         },
       } = page;
-      return Boolean(!draft) && Boolean(!navGroup);
+
+      return Boolean(!draft) && Boolean(navGroup !== '');
     });
 
     pages.forEach(({ node: { id, fields } }) => {
@@ -109,10 +110,11 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const parent = getNode(node.parent);
     const { sourceInstanceName, relativePath } = parent;
 
-    const isPackage = !GROUPS_NO_PKG.includes(sourceInstanceName);
+    const isPackage = !GROUPS.includes(sourceInstanceName);
     let { data, content } = matter(node.rawBody, { delimiters: ['<!--[meta]', '[meta]-->'] });
 
     const navGroup = data.section;
+    const navSubGroup = data.subSection;
     let pageTitle = data.title;
 
     if (isPackage && sourceInstanceName !== '@keystone-alpha/fields') {
@@ -134,17 +136,19 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       }
     });
 
+    console.log({ navSubGroup });
     // This value is added in `gatsby-config` as the "name" of the plugin.
     // Since we scan every workspace and add that as a separate plugin, we
     // have the opportunity there to add the "name", which we pull from the
     // workspace's `package.json`, and can use here.
     const fieldsToAdd = {
-      navGroup: navGroup,
+      navGroup: navGroup || 'no-section' || null,
+      navSubGroup: navSubGroup || 'no-sub-nav' || null,
       workspaceSlug: slugify(sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
       slug: generateUrl(parent),
-      sortOrder: GROUPS.indexOf(navGroup),
+      sortOrder: GROUPS.indexOf(navGroup) === -1 ? 999999 : GROUPS.indexOf(navGroup),
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
       draft: Boolean(data.draft),
