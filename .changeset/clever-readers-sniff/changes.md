@@ -1,0 +1,2 @@
+- Add `Slug.alwaysMakeUnique` option to force calling `makeUnique` even when initially generated slug may already be unique to prevent accidental data leak.
+- Fix a bug where items restricted via access control weren't considered when testing a `Slug` for uniqueness.
