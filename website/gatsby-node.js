@@ -117,12 +117,6 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const navSubGroup = data.subSection;
     let pageTitle = data.title;
 
-    if (isPackage && sourceInstanceName !== '@keystone-alpha/fields') {
-      const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
-      const workspaces = await bolt.getWorkspaces({ cwd: rootDir, only: sourceInstanceName });
-      pageTitle = workspaces[0].name;
-    }
-
     const ast = compiler.parse(content);
     let description;
     let heading;
@@ -136,7 +130,6 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       }
     });
 
-    console.log({ navSubGroup });
     // This value is added in `gatsby-config` as the "name" of the plugin.
     // Since we scan every workspace and add that as a separate plugin, we
     // have the opportunity there to add the "name", which we pull from the

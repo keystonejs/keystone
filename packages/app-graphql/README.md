@@ -1,5 +1,6 @@
 <!--[meta]
-section: apps
+section: api
+subSection: apps
 title: GraphQL App
 [meta]-->
 

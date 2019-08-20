@@ -1,5 +1,6 @@
 <!--[meta]
-section: authentication-strategies
+section: api
+subSection: authentication-strategies
 title: Passport Auth Strategy
 [meta]-->
 

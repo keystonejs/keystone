@@ -25,11 +25,11 @@ Initialises and return an authentication strategy for use in the AdminUI and oth
 <table>
 <tr>
 <th>StrategyType</th>
-<td>A valid Authentication Strategy. See: authentication strategies.          </td>
+<td>A valid Authentication Strategy. See: authentication strategies.</td>
 </tr>
 <tr>
 <th>listKey</th>
-<td>Where authentication is linked to a List such as a 'User'.                </td>
+<td>Where authentication is linked to a List such as a 'User'.</td>
 </tr>
 <tr>
 <th>config</th>

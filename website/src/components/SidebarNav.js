@@ -29,9 +29,9 @@ export const SidebarNav = () => {
                 <li>
                   {navGroup.subNavs.map(navGroup => (
                     <>
-                      <GroupHeading id={sectionId}>
+                      <GroupSubHeading id={sectionId}>
                         {navGroup.navTitle.replace('-', ' ')}
-                      </GroupHeading>
+                      </GroupSubHeading>
                       <List aria-labelledby={sectionId}>
                         {navGroup.pages.map(node => {
                           return (
@@ -57,7 +57,7 @@ const GroupHeading = props => (
   <h3
     css={{
       color: colors.N80,
-      fontSize: '0.9rem',
+      fontSize: '1rem',
       fontWeight: 700,
       marginTop: '2.4em',
       textTransform: 'uppercase',
@@ -65,9 +65,26 @@ const GroupHeading = props => (
     {...props}
   />
 );
+
+const GroupSubHeading = props => (
+  <h3
+    css={{
+      color: colors.N60,
+      fontSize: '0.9rem',
+      fontWeight: 700,
+      padding: `${gridSize * 0.75}px 0`,
+      margin: '0',
+      marginTop: '1rem',
+      textTransform: 'uppercase',
+    }}
+    {...props}
+  />
+);
+
 const List = props => (
   <ul css={{ listStyle: 'none', fontSize: '0.9rem', padding: 0, margin: 0 }} {...props} />
 );
+
 const ListItem = props => (
   <li>
     <Link
