@@ -56,7 +56,7 @@
     "@iframely/embed.js": "^1.1.1",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
     "@mapbox/rehype-prism": "^0.3.1",
-    "@mdx-js/mdx": "^1.0.20",
+    "@mdx-js/mdx": "^1.0.20", 
     "@mdx-js/react": "^1.0.20",
     "@preconstruct/hook": "0.0.1",
     "@reach/router": "^1.2.1",
