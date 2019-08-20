@@ -6,6 +6,8 @@ import { snapshotDirectory, install } from '../../../test-utils';
 
 const f = fixturez(__dirname);
 
+jest.setTimeout(30000);
+
 jest.mock('../../prompt');
 
 afterEach(() => {
