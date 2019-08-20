@@ -6,17 +6,19 @@ During the alpha stage of development we are focussing on getting the core syste
 Contributions which improve the documention and test coverage are particularly welcomed.
 
 ### Community Ecosystem
-Keystone makes no assumptions about type of applications it powers. It achieves flexibility through small, highly composable parts that allow you to build a foundation for any type of application.  
+
+Keystone makes no assumptions about type of applications it powers. It achieves flexibility through small, highly composable parts that allow you to build a foundation for any type of application.
 
 For this reason we might not add features to Keystone if they are prescriptive about:
-  - Data structures
-  - Workflows
-  - Access controls
-  - Front-end application UI
+
+- Data structures
+- Workflows
+- Access controls
+- Front-end application UI
 
 But we want your contributions! We recognise many types of applications share common features and prescriptive patterns can sometimes be helpful, even at the expense of flexibility.
 
-If you develop custom fields, adapters, apps or any other Keystone feature, (or have an idea) join us on the [Keystone Slack channel](https://launchpass.com/keystonejs) or make a pull request to [KeystoneJS-Contrib](https://github.com/keystonejs-contrib/keystonejs-contrib) and we will add it to our list of community libraries. 
+If you develop custom fields, adapters, apps or any other Keystone feature, (or have an idea) join us on the [Keystone Slack channel](https://launchpass.com/keystonejs) or make a pull request to [KeystoneJS-Contrib](https://github.com/keystonejs-contrib/keystonejs-contrib) and we will add it to our list of community libraries.
 
 ## Code of Conduct
 
