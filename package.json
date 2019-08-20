@@ -298,7 +298,8 @@
       "demo-projects/*",
       "test-projects/*",
       "api-tests",
-      "website"
+      "website",
+      "packages/create-keystone-app/example-projects/*"
     ]
   },
   "preconstruct": {
