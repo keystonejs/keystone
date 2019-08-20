@@ -1,5 +1,17 @@
 # @keystone-alpha/keystone
 
+## 10.3.0
+
+### Minor Changes
+
+- [759a3c17](https://github.com/keystonejs/keystone-5/commit/759a3c17): Add a `types` property to custom mutations.
+
+## 10.2.0
+
+### Minor Changes
+
+- [e5d4ee76](https://github.com/keystonejs/keystone-5/commit/e5d4ee76): Expose 'originalInput' to access control functions for lists & fields
+
 ## 10.1.0
 
 ### Minor Changes

@@ -537,7 +537,13 @@ module.exports = class List {
     return (item, args, context, ...rest) => {
       // If not allowed access
       const operation = 'read';
-      const access = context.getFieldAccessControlForUser(this.key, field.path, item, operation);
+      const access = context.getFieldAccessControlForUser(
+        this.key,
+        field.path,
+        undefined,
+        item,
+        operation
+      );
       if (!access) {
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
@@ -683,6 +689,10 @@ module.exports = class List {
     return mutations;
   }
 
+  getGqlMutationTypes() {
+    return flatten(this.mutations.filter(x => x.types).map(x => x.types));
+  }
+
   checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
 
@@ -693,6 +703,7 @@ module.exports = class List {
           const access = context.getFieldAccessControlForUser(
             this.key,
             field.path,
+            data,
             existingItem,
             operation
           );
@@ -706,8 +717,8 @@ module.exports = class List {
     }
   }
 
-  checkListAccess(context, operation, { gqlName, ...extraInternalData }) {
-    const access = context.getListAccessControlForUser(this.key, operation);
+  checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
+    const access = context.getListAccessControlForUser(this.key, originalInput, operation);
     if (!access) {
       graphqlLogger.debug(
         { operation, access, gqlName, ...extraInternalData },
@@ -868,7 +879,7 @@ module.exports = class List {
   }
 
   async listQuery(args, context, queryName) {
-    const access = this.checkListAccess(context, 'read', { queryName });
+    const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
     return this.adapter.itemsQuery(mergeWhereClause(args, access));
   }
@@ -879,7 +890,7 @@ module.exports = class List {
       // on what the user requested
       // Evalutation takes place in ../Keystone/index.js
       getCount: () => {
-        const access = this.checkListAccess(context, 'read', { queryName });
+        const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
         return this.adapter
           .itemsQueryMeta(mergeWhereClause(args, access))
@@ -897,10 +908,10 @@ module.exports = class List {
       // NOTE: These could return a Boolean or a JSON object (if using the
       // declarative syntax)
       getAccess: () => ({
-        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
-        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
-        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
-        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
+        getCreate: () => context.getListAccessControlForUser(this.key, undefined, 'create'),
+        getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read'),
+        getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update'),
+        getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
       }),
       getSchema: () => {
         const queries = [
@@ -933,7 +944,7 @@ module.exports = class List {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
-    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
+    const access = this.checkListAccess(context, undefined, operation, { gqlName, itemId: id });
 
     const result = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
 
@@ -1314,7 +1325,7 @@ module.exports = class List {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
 
-    this.checkListAccess(context, operation, { gqlName });
+    this.checkListAccess(context, data, operation, { gqlName });
 
     const existingItem = undefined;
 
@@ -1329,7 +1340,7 @@ module.exports = class List {
     const operation = 'create';
     const gqlName = this.gqlNames.createManyMutationName;
 
-    this.checkListAccess(context, operation, { gqlName });
+    this.checkListAccess(context, data, operation, { gqlName });
 
     const itemsToUpdate = data.map(d => ({ existingItem: undefined, data: d.data }));
 
@@ -1399,7 +1410,7 @@ module.exports = class List {
     const gqlName = this.gqlNames.updateMutationName;
     const extraData = { itemId: id };
 
-    const access = this.checkListAccess(context, operation, { gqlName, ...extraData });
+    const access = this.checkListAccess(context, data, operation, { gqlName, ...extraData });
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1420,7 +1431,7 @@ module.exports = class List {
     const ids = data.map(d => d.id);
     const extraData = { itemId: ids };
 
-    const access = this.checkListAccess(context, operation, { gqlName, ...extraData });
+    const access = this.checkListAccess(context, data, operation, { gqlName, ...extraData });
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
@@ -1470,7 +1481,7 @@ module.exports = class List {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteMutationName;
 
-    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
+    const access = this.checkListAccess(context, undefined, operation, { gqlName, itemId: id });
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1485,7 +1496,7 @@ module.exports = class List {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
-    const access = this.checkListAccess(context, operation, { gqlName, itemIds: ids });
+    const access = this.checkListAccess(context, undefined, operation, { gqlName, itemIds: ids });
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 

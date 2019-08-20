@@ -1,5 +1,11 @@
 # @keystone-alpha/access-control
 
+## 1.1.0
+
+### Minor Changes
+
+- [e5d4ee76](https://github.com/keystonejs/keystone-5/commit/e5d4ee76): Expose 'originalInput' to access control functions for lists & fields
+
 ## 1.0.5
 
 ### Patch Changes
