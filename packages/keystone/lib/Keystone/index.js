@@ -155,6 +155,7 @@ module.exports = class Keystone {
     // Deduping here avoids that problem.
     return [
       ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ skipAccessControl })))),
+      ...unique(flatten(this.listsArray.map(list => list.getGqlMutationTypes()))),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
