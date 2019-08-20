@@ -5,7 +5,6 @@ const { getProjectDirectory } = require('./util');
 
 const showSuccessMessage = async () => {
   const projectDir = await getProjectDirectory();
-  console.log('\n');
   console.log(`
   🎉  KeystoneJS created a starter project in: ${c.bold(projectDir)}
 
