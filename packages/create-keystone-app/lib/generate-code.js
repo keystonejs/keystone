@@ -7,8 +7,8 @@ const generateCode = async () => {
   const projectName = await getProjectName();
   const projectConfigString = `const PROJECT_NAME = ${JSON.stringify(projectName)};`;
 
-  const generatedCode = `${await adapterTemplateContent}
-${await projectConfigString}
+  const generatedCode = `${adapterTemplateContent}
+${projectConfigString}
 `;
   return generatedCode;
 };
