@@ -1,1 +1,0 @@
-Add a `types` property to custom mutations.
