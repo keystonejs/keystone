@@ -690,7 +690,7 @@ module.exports = class List {
   }
 
   getGqlMutationTypes() {
-    return [...flatten(this.mutations.filter(x => x.types).map(x => x.types);
+    return flatten(this.mutations.filter(x => x.types).map(x => x.types));
   }
 
   checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
