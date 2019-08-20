@@ -1,6 +1,6 @@
 /*
   TODO:
-    - work out how (and when) to vaidate the username and password fields
+    - work out how (and when) to validate the username and password fields
     - allow a validateUser() hook to be provided in config
 */
 

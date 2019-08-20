@@ -24,7 +24,7 @@
     "@keystone-alpha/fields": "^10.2.0",
     "@keystone-alpha/file-adapters": "^1.1.1",
     "@keystone-alpha/keystone": "^10.0.0",
-    "@keystone-alpha/passport-auth": "^2.1.1",
+    "@keystone-alpha/auth-passport": "^2.1.1",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "passport-wordpress": "^0.0.4",
