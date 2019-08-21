@@ -17,7 +17,7 @@ export function useNavData() {
     query HeadingQuery {
       allSitePage(
         filter: { path: { ne: "/dev-404-page/" } }
-        sort: { fields: [context___sortOrder, context___pageTitle] }
+        sort: { fields: [context___sortOrder, context___sortSubOrder, context___pageTitle] }
       ) {
         edges {
           node {
@@ -60,7 +60,7 @@ export function useNavData() {
           pageList.push({ navTitle: navGroup, pages: [], subNavs: [] });
         }
 
-        if (navSubGroup === 'no-sub-nav') {
+        if (navSubGroup === null) {
           const page = pageList.find(obj => obj.navTitle === navGroup);
           addPage(page);
         } else {

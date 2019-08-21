@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: apps
-title: GraphQL App
+title: GraphQL API
 [meta]-->
 
-# GraphQL App
+# GraphQL API
 
 ```DOCS_TODO
 TODO

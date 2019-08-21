@@ -1,11 +1,25 @@
 <!--[meta]
 section: api
 subSection: apps
-title: KeystoneJS Next.js App
+title: Next.js App
 [meta]-->
 
-# KeystoneJS Next.js App
+# Next.js App
 
-```DOCS_TODO
-TODO
+## Usage
+
+```javascript
+const { NextApp } = require('@keystone-alpha/app-next');
+
+...
+
+module.exports = {
+  keystone,
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp(),
+    new NextApp({ dir: 'app' }),
+  ],
+  distDir,
+};
 ```

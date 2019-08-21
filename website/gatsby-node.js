@@ -1,5 +1,4 @@
 const path = require('path');
-const bolt = require('bolt');
 const get = require('lodash.get');
 const slugify = require('@sindresorhus/slugify');
 const visit = require('unist-util-visit');
@@ -14,17 +13,16 @@ const compiler = rawMDX.createMdxAstCompiler({ remarkPlugins: [] });
 const PROJECT_ROOT = path.resolve('..');
 
 // Used for sorting the navigation:
-const GROUPS = [
-  'quick-start',
-  'guides',
-  'api',
-  'tutorials',
-  'adapters',
-  'field adapters',
+const GROUPS = ['', 'quick-start', 'guides', 'tutorials', 'discussions', 'api'];
+const SUB_GROUPS = [
+  '',
   'apps',
-  'authentication-strategies',
-  'discussions',
   'field-types',
+  'adapters',
+  'field-adapters',
+  'api',
+  'authentication-strategies',
+  'utilities',
 ];
 
 exports.createPages = ({ actions, graphql }) => {
@@ -70,7 +68,9 @@ exports.createPages = ({ actions, graphql }) => {
         },
       } = page;
 
-      return Boolean(!draft) && Boolean(navGroup !== '');
+      return Boolean(!draft) && Boolean(navGroup !== ''); // Ok so now items with draft or no navGroup should not be shown?
+      // Notice nothing changed?
+      //Gatsby did not crash but... let's restart it
     });
 
     pages.forEach(({ node: { id, fields } }) => {
@@ -134,14 +134,17 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     // Since we scan every workspace and add that as a separate plugin, we
     // have the opportunity there to add the "name", which we pull from the
     // workspace's `package.json`, and can use here.
+
     const fieldsToAdd = {
-      navGroup: navGroup || 'no-section' || null,
-      navSubGroup: navSubGroup || 'no-sub-nav' || null,
+      navGroup: navGroup || null, // Empty string is fine
+      navSubGroup: navSubGroup || null,
       workspaceSlug: slugify(sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
       slug: generateUrl(parent),
       sortOrder: GROUPS.indexOf(navGroup) === -1 ? 999999 : GROUPS.indexOf(navGroup),
+      sortSubOrder:
+        SUB_GROUPS.indexOf(navSubGroup) === -1 ? 999999 : SUB_GROUPS.indexOf(navSubGroup),
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
       draft: Boolean(data.draft),
@@ -150,12 +153,25 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     };
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348
-    Object.keys(fieldsToAdd).forEach(key => {
-      createNodeField({
-        node,
-        name: key,
-        value: fieldsToAdd[key],
+    Object.keys(fieldsToAdd)
+      .filter(key => fieldsToAdd[key])
+      .forEach(key => {
+        createNodeField({
+          node,
+          name: key,
+          value: fieldsToAdd[key],
+        });
       });
-    });
   }
 };
+
+// exports.sourceNodes = ({ actions }) => {
+//   const { createTypes } = actions;
+//   const typeDefs = `
+//     type Mdx implements Node {
+//       name: String
+//       navSubGroup: String
+//     }
+//   `;
+//   createTypes(typeDefs);
+// };

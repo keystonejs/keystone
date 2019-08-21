@@ -1,6 +1,6 @@
 <!--[meta]
 section: api
-subSection: Field adapters
+subSection: field-adapters
 title: File Adapters
 [meta]-->
 

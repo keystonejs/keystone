@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-adapters
+section: api
+subSection: field-adapters
 title: OEmbed Adapters
 [meta]-->
 

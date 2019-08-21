@@ -1,5 +1,6 @@
 <!--[meta]
-section: utilities
+section: api
+subSection: utilities
 title: Email Sending
 [meta]-->
 

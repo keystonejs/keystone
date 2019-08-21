@@ -27,22 +27,25 @@ export const SidebarNav = () => {
               })}
               {navGroup.subNavs.length ? (
                 <li>
-                  {navGroup.subNavs.map(navGroup => (
-                    <>
-                      <GroupSubHeading id={sectionId}>
-                        {navGroup.navTitle.replace('-', ' ')}
-                      </GroupSubHeading>
-                      <List aria-labelledby={sectionId}>
-                        {navGroup.pages.map(node => {
-                          return (
-                            <ListItem key={node.path} to={node.path}>
-                              {node.context.pageTitle}
-                            </ListItem>
-                          );
-                        })}
-                      </List>
-                    </>
-                  ))}
+                  {navGroup.subNavs.map(navGroup => {
+                    console.log(navGroup);
+                    return (
+                      <>
+                        <GroupSubHeading id={sectionId}>
+                          {navGroup.navTitle.replace('-', ' ')}
+                        </GroupSubHeading>
+                        <List aria-labelledby={sectionId}>
+                          {navGroup.pages.map(node => {
+                            return (
+                              <ListItem key={node.path} to={node.path}>
+                                {node.context.pageTitle}
+                              </ListItem>
+                            );
+                          })}
+                        </List>
+                      </>
+                    );
+                  })}
                 </li>
               ) : null}
             </List>
