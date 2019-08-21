@@ -113,6 +113,7 @@ module.exports = class List {
     {
       fields,
       hooks = {},
+      queries = [],
       mutations = [],
       schemaDoc,
       labelResolver,
@@ -141,6 +142,7 @@ module.exports = class List {
     this.key = key;
     this._fields = fields;
     this.hooks = hooks;
+    this.queries = queries;
     this.mutations = mutations;
     this.schemaDoc = schemaDoc;
 
@@ -472,6 +474,7 @@ module.exports = class List {
     const queries = flatten(
       this.fields.map(field => field.getGqlAuxQueries({ skipAccessControl }))
     );
+    queries.push(...this.queries.map(({ schema }) => schema));
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
@@ -584,7 +587,16 @@ module.exports = class List {
 
   get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
+    return objMerge([
+      ...this.queries.map(({ schema, resolver }) => {
+        const queryName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
+        return {
+          [queryName]: (obj, args, context, info) =>
+            resolver(obj, args, context, info, mapKeys(this.hooksActions, hook => hook(context))),
+        };
+      }),
+      ...this.fields.map(field => field.gqlAuxQueryResolvers),
+    ]);
   }
 
   get gqlAuxMutationResolvers() {
@@ -691,6 +703,10 @@ module.exports = class List {
 
   getGqlMutationTypes() {
     return flatten(this.mutations.filter(x => x.types).map(x => x.types));
+  }
+
+  getGqlQueryTypes() {
+    return flatten(this.queries.filter(x => x.types).map(x => x.types));
   }
 
   checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
