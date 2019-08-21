@@ -104,4 +104,4 @@ class PasswordAuthStrategy {
 
 PasswordAuthStrategy.authType = 'password';
 
-module.exports = PasswordAuthStrategy;
+module.exports = { PasswordAuthStrategy };
