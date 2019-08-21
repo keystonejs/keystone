@@ -30,7 +30,7 @@ Here, we will setup a `PasswordAuthStrategy` instance:
 
 ```javascript
 const { Text, Password } = require('@keystone-alpha/fields');
-const { PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 
 const keystone = keystone.createList('User', {

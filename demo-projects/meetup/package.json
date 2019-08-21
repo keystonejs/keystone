@@ -19,6 +19,7 @@
     "@keystone-alpha/app-admin-ui": "^5.2.0",
     "@keystone-alpha/app-graphql": "^6.3.1",
     "@keystone-alpha/app-next": "^2.0.0",
+    "@keystone-alpha/auth-password": "^0.0.0",
     "@keystone-alpha/email": "^3.0.1",
     "@keystone-alpha/fields": "^10.2.0",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.5",
