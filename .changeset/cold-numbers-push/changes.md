@@ -1,0 +1,1 @@
+Renamed `passport-auth` to `auth-passport`
