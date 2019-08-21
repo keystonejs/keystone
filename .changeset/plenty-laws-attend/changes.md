@@ -1,0 +1,1 @@
+Makes the password auth strategy its own package
