@@ -5,7 +5,7 @@ const {
   FacebookAuthStrategy,
   TwitterAuthStrategy,
   GitHubAuthStrategy,
-} = require('@keystone-alpha/passport-auth');
+} = require('@keystone-alpha/auth-passport');
 
 const { keystone, apps } = require('./index');
 const { google, facebook, twitter, github, hostURL, port, cookieSecret } = require('./config');
