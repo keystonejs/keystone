@@ -1,1 +1,0 @@
-A new CLI with support for adapter and template choices.
