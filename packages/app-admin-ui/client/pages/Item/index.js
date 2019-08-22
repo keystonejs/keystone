@@ -59,7 +59,9 @@ const ItemDetails = withRouter(
     constructor(props) {
       super(props);
       // memoized function so we can call it multiple times _per component_
-      this.getFieldsObject = memoizeOne(() => arrayToObject(props.list.fields, 'path'));
+      this.getFieldsObject = memoizeOne(() =>
+        arrayToObject(props.list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey), 'path')
+      );
     }
 
     state = {
@@ -276,56 +278,60 @@ const ItemDetails = withRouter(
           <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
             <Form>
               <AutocompleteCaptor />
-              {list.fields.map((field, i) => (
-                <Render key={field.path}>
-                  {() => {
-                    const [Field] = field.adminMeta.readViews([field.views.Field]);
+              {list.fields
+                .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                .map((field, i) => (
+                  <Render key={field.path}>
+                    {() => {
+                      const [Field] = field.adminMeta.readViews([field.views.Field]);
 
-                    let onChange = useCallback(
-                      value => {
-                        this.setState(({ item: itm }) => ({
-                          item: {
-                            ...itm,
-                            [field.path]: value,
-                          },
-                          validationErrors: {},
-                          validationWarnings: {},
-                          itemHasChanged: true,
-                        }));
-                      },
-                      [field]
-                    );
+                      let onChange = useCallback(
+                        value => {
+                          this.setState(({ item: itm }) => ({
+                            item: {
+                              ...itm,
+                              [field.path]: value,
+                            },
+                            validationErrors: {},
+                            validationWarnings: {},
+                            itemHasChanged: true,
+                          }));
+                        },
+                        [field]
+                      );
 
-                    return useMemo(
-                      () => (
-                        <Field
-                          autoFocus={!i}
-                          field={field}
-                          errors={[
-                            ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                            ...(validationErrors[field.path] || []),
-                          ]}
-                          warnings={validationWarnings[field.path] || []}
-                          value={item[field.path]}
-                          savedValue={savedData[field.path]}
-                          onChange={onChange}
-                          renderContext="page"
-                        />
-                      ),
-                      [
-                        i,
-                        field,
-                        itemErrors[field.path],
-                        item[field.path],
-                        validationErrors[field.path],
-                        validationWarnings[field.path],
-                        savedData[field.path],
-                        onChange,
-                      ]
-                    );
-                  }}
-                </Render>
-              ))}
+                      return useMemo(
+                        () => (
+                          <Field
+                            autoFocus={!i}
+                            field={field}
+                            errors={[
+                              ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                              ...(validationErrors[field.path] || []),
+                            ]}
+                            warnings={validationWarnings[field.path] || []}
+                            value={item[field.path]}
+                            itemId={item.id}
+                            savedValue={savedData[field.path]}
+                            onChange={onChange}
+                            renderContext="page"
+                          />
+                        ),
+                        [
+                          i,
+                          field,
+                          itemErrors[field.path],
+                          item[field.path],
+                          item.id,
+                          validationErrors[field.path],
+                          validationWarnings[field.path],
+                          savedData[field.path],
+                          onChange,
+                        ]
+                      );
+                    }}
+                  </Render>
+                ))}
             </Form>
             <Footer
               onSave={this.onSave}
@@ -370,7 +376,11 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           // Now that the network request for data has been triggered, we
           // try to initialise the fields. They are Suspense capable, so may
           // throw Promises which will be caught by the above <Suspense>
-          captureSuspensePromises(list.fields.map(field => () => field.initFieldView()));
+          captureSuspensePromises(
+            list.fields
+              .filter(({ isPrimaryKey }) => !isPrimaryKey)
+              .map(field => () => field.initFieldView())
+          );
 
           // If the views load before the API request comes back, keep showing
           // the loading component
