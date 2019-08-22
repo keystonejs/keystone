@@ -6,13 +6,15 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { PlusIcon, PersonIcon } from '@arch-ui/icons';
+import { PlusIcon, PersonIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
 import CreateItemModal from './CreateItemModal';
 import RelationshipSelect from './RelationshipSelect';
+
+const MAX_IDS_IN_FILTER = 100;
 
 function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
   let path = 'authenticated' + listKey;
@@ -57,6 +59,54 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
         return null;
       }}
     </Query>
+  );
+}
+
+function LinkToRelatedItems({ field, value }) {
+  const { many, ref } = field.config;
+  const { adminPath, getListByKey } = field.adminMeta;
+  const refList = getListByKey(ref);
+  let isDisabled = false;
+  let label;
+  let link = `${adminPath}/${refList.path}`;
+  if (many) {
+    label = 'View List of Related Items';
+
+    if (!value.length) {
+      isDisabled = true;
+    }
+
+    // What happens when there are 10,000 ids? The URL would be too
+    // big, so we arbitrarily limit it to the first 100
+    link = `${link}?!id_in="${value
+      .slice(0, MAX_IDS_IN_FILTER)
+      .map(({ id }) => id)
+      .join(',')}"`;
+  } else {
+    label = 'View Item Details';
+
+    if (!value) {
+      isDisabled = true;
+    } else {
+      link = `${link}/${value.id}`;
+    }
+  }
+
+  return (
+    <Tooltip placement="top" content={label}>
+      {ref => (
+        <IconButton
+          ref={ref}
+          icon={LinkExternalIcon}
+          aria-label={label}
+          variant="ghost"
+          css={{ marginLeft: gridSize }}
+          target="_blank"
+          to={link}
+          isDisabled={isDisabled}
+        />
+      )}
+    </Tooltip>
   );
 }
 
@@ -143,6 +193,7 @@ export default class RelationshipField extends Component {
               listKey={authStrategy.listKey}
             />
           )}
+          <LinkToRelatedItems field={field} value={value} />
         </FieldInput>
       </FieldContainer>
     );

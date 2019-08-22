@@ -10,10 +10,13 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@arch-ui/input": "^0.0.9",
     "@babel/runtime": "^7.4.3",
     "@keystone-alpha/adapter-knex": "^4.0.0",
     "@keystone-alpha/adapter-mongoose": "^4.0.0",
-    "@keystone-alpha/fields": "^10.2.0"
+    "@keystone-alpha/build-field-types": "^1.0.5",
+    "@keystone-alpha/fields": "^10.2.0",
+    "react": "^16.8.6"
   },
   "module": "dist/fields-mongoid.esm.js"
 }
