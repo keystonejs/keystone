@@ -1,5 +1,11 @@
 # @keystone-alpha/fields-mongoid
 
+## 1.1.0
+
+### Minor Changes
+
+- [da65e1a0](https://github.com/keystonejs/keystone-5/commit/da65e1a0): Allow display and filtering of 'Id' column in Admin UI
+
 ## 1.0.2
 
 - Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):

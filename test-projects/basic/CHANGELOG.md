@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.7
+
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+  - @keystone-alpha/adapter-mongoose@4.0.1
+  - @keystone-alpha/keystone@10.5.0
+
 ## 1.3.6
 
 ### Patch Changes

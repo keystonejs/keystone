@@ -1,1 +1,0 @@
-Fix a bug where the cli would not copy files

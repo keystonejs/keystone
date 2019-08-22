@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-access-control
 
+## 1.1.8
+
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+  - @keystone-alpha/adapter-mongoose@4.0.1
+  - @keystone-alpha/keystone@10.5.0
+
 ## 1.1.7
 
 ### Patch Changes

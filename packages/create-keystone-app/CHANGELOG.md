@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.0.1
+
+### Patch Changes
+
+- [a4d23240](https://github.com/keystonejs/keystone-5/commit/a4d23240): Fix a bug where the cli would not copy files
+
 ## 1.0.0
 
 ### Major Changes
