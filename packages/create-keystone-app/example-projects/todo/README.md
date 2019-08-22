@@ -4,7 +4,7 @@ You've created a KeystoneJS project! This project contains an example of a basic
 
 ## Running the Project.
 
-To run this project first run `npm install`. Note: If you generated this project via the Keystone cli step this has been done for you \o/.
+To run this project first run `npm install`. Note: If you generated this project via the Keystone cli step this has been done for you \\o/.
 
 Once running, the Keystone Admin UI is reachable via `localhost:3000/admin`.
 

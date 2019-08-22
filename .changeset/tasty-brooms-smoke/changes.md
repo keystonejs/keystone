@@ -1,1 +1,0 @@
-Implemented custom queries in the same format as custom mutations.
