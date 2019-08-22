@@ -1,4 +1,4 @@
-# @keystone-alpha/passport-auth
+# @keystone-alpha/auth-passport
 
 ## 2.1.1
 
