@@ -126,4 +126,4 @@ The time spend verifying an actors credentials should be constant-time regardles
 
 ## Social Login Strategies (Twitter, Facebook, Google, GitHub)
 
-See [`@keystone-alpha/passport-auth`](../../../passport-auth/README.md) for social logins using PassportJs based Auth Strategies
+See [`@keystone-alpha/auth-passport`](../../../auth-passport/README.md) for social logins using PassportJs based Auth Strategies
