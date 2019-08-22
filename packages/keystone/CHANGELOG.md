@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 10.5.0
+
+### Minor Changes
+
+- [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26): Renames the package `@keystone-alpha/passport-auth` to `@keystone-alpha/auth-passport`. Anyone using `passport-auth` should switch over to the new package - the old one will no longer be receiving updates.
+
 ## 10.4.0
 
 ### Minor Changes
