@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 10.4.0
+
+### Minor Changes
+
+- [d3238352](https://github.com/keystonejs/keystone-5/commit/d3238352): Implemented custom queries in the same format as custom mutations.
+
 ## 10.3.0
 
 ### Minor Changes
