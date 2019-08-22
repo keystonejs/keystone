@@ -1,6 +1,6 @@
-import FieldController from '../../../Controller';
+import FieldController from '@keystone-alpha/fields/Controller';
 
-export default class UuidController extends FieldController {
+export default class TextController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     switch (type) {
       case 'is': {
@@ -23,6 +23,7 @@ export default class UuidController extends FieldController {
       }
     }
   };
+
   getFilterLabel = ({ label, type }) => {
     let suffix = '';
     if (['in', 'not_in'].includes(type)) {

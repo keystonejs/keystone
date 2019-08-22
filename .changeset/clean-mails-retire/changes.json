@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/app-admin-ui", "type": "minor" },
+    { "name": "@keystone-alpha/fields-mongoid", "type": "minor" },
+    { "name": "@keystone-alpha/fields", "type": "minor" }
+  ],
+  "dependents": []
+}
