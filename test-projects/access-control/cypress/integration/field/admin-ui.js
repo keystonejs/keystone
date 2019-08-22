@@ -32,45 +32,76 @@ describe('Access Control Fields > Admin UI', () => {
   stayLoggedIn('su');
 
   describe('creating', () => {
-    function createTests(listName) {
-      const slug = listSlug(listName);
-
-      before(() => {
-        cy.visit(`/admin/${slug}`);
-        cy.get('#list-page-create-button').click({ force: true });
-        cy.get('form[role="dialog"]').should('exist');
-      });
+    describe(`static on ${staticList}`, () => {
+      const slug = listSlug(staticList);
 
       it('shows creatable inputs', () => {
-        fieldAccessVariations
-          .filter(({ create, read }) => create && read)
-          .forEach(access => {
-            const field = getFieldName(access);
-            cy.get(`label[for="ks-input-${field}"]`)
-              .should('exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('exist'));
-          });
+        const fields = fieldAccessVariations.filter(({ create, read }) => create && read);
+        const fieldNames = fields.map(access => getFieldName(access));
+
+        cy.visit(`/admin/${slug}?fields=${fieldNames.join('%2C')}`);
+        cy.get('#list-page-create-button').click({ force: true });
+        cy.get('form[role="dialog"]').should('exist');
+
+        fields.forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('exist'));
+        });
       });
 
-      // Skipped until Admin UI is created to exclude these fields
-      it.skip('does not show non-creatable inputs', () => {
-        fieldAccessVariations
-          .filter(({ create, read }) => !create && read)
-          .forEach(access => {
-            const field = getFieldName(access);
-            cy.get(`label[for="ks-input-${field}"]`)
-              .should('exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
-          });
-      });
-    }
+      it('does not show non-creatable inputs', () => {
+        const fields = fieldAccessVariations.filter(({ create, read }) => !create && read);
+        const fieldNames = fields.map(access => getFieldName(access));
 
-    describe(`static on ${staticList}`, () => {
-      createTests(staticList);
+        cy.visit(`/admin/${slug}?fields=${fieldNames.join('%2C')}`);
+        cy.get('#list-page-create-button').click({ force: true });
+        cy.get('form[role="dialog"]').should('exist');
+
+        fields.forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('not.exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
+        });
+      });
     });
 
     describe('imperative', () => {
-      createTests(imperativeList);
+      const slug = listSlug(imperativeList);
+
+      it('shows creatable inputs', () => {
+        const fields = fieldAccessVariations.filter(({ create, read }) => create && read);
+        const fieldNames = fields.map(access => getFieldName(access));
+
+        cy.visit(`/admin/${slug}?fields=${fieldNames.join('%2C')}`);
+        cy.get('#list-page-create-button').click({ force: true });
+        cy.get('form[role="dialog"]').should('exist');
+
+        fields.forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('exist'));
+        });
+      });
+
+      it.skip('does not show non-creatable inputs', () => {
+        const fields = fieldAccessVariations.filter(({ create, read }) => !create && read);
+        const fieldNames = fields.map(access => getFieldName(access));
+
+        cy.visit(`/admin/${slug}?fields=${fieldNames.join('%2C')}`);
+        cy.get('#list-page-create-button').click({ force: true });
+        cy.get('form[role="dialog"]').should('exist');
+
+        fields.forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('not.exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
+        });
+      });
     });
   });
 
@@ -90,47 +121,67 @@ describe('Access Control Fields > Admin UI', () => {
     describe(`static on ${staticList}`, () => {
       const slug = listSlug(staticList);
 
-      // Skipped until we can force the Admin UI to show all the columns we need
-      it.skip('shows readable field values on list view', () => {
-        cy.visit(`/admin/${slug}`);
-        fieldAccessVariations
-          .filter(({ read }) => read)
-          .forEach(access => {
-            cy.get(`[data-field="${getFieldName(access)}"]`).should('exist');
-            // TODO: Test value is displayed and correct
-          });
+      it('shows readable field values on list view', () => {
+        const fields = fieldAccessVariations.filter(({ read }) => read);
+        const fieldNames = fields.map(access => getFieldName(access));
+
+        cy.visit(`/admin/${slug}?fields=${fieldNames.join('%2C')}`);
+
+        fields.forEach(access => {
+          cy.get(`[data-field="${getFieldName(access)}"]`).should('exist');
+          // TODO: Test value is displayed and correct
+        });
       });
     });
 
     describe('imperative', () => {
       const slug = listSlug(imperativeList);
 
-      // Skipped until we can force the Admin UI to show all the columns we need
-      it.skip('shows readable field values on list view', () => {
-        cy.visit(`/admin/${slug}`);
-        fieldAccessVariations
-          .filter(({ read }) => read)
-          .forEach(access => {
-            cy.get(`[data-field="${getFieldName(access)}"]`).should('exist');
-            // TODO: Test value is displayed and correct
-          });
+      it('shows readable field values on list view', () => {
+        const fields = fieldAccessVariations.filter(({ read }) => read);
+        const fieldNames = fields.map(access => getFieldName(access));
+
+        cy.visit(`/admin/${slug}?fields=${fieldNames.join('%2C')}`);
+
+        fields.forEach(access => {
+          cy.get(`[data-field="${getFieldName(access)}"]`).should('exist');
+          // TODO: Test value is displayed and correct
+        });
       });
 
-      // Skipped until Admin UI is updated to exclude these fields
       it.skip('does not show item value of non-readable fields', () => {
-        fieldAccessVariations
-          .filter(({ read }) => !read)
-          .forEach(access => {
-            cy.get(`[data-field="${getFieldName(access)}"]`).should('exist');
-          });
+        const fields = fieldAccessVariations.filter(({ read }) => !read);
+        const fieldNames = fields.map(access => getFieldName(access));
+
+        cy.visit(`/admin/${slug}?fields=${fieldNames.join('%2C')}`);
+
+        fields.forEach(access => {
+          cy.get(`[data-field="${getFieldName(access)}"]`).should('not.exist');
+        });
       });
     });
   });
 
   describe('updating', () => {
-    function updateTests(listName) {
-      const slug = listSlug(listName);
-      const queryName = `all${listName}s`;
+    function updateFromListViewTests(listName) {
+      describe(`list view multi-update on list ${listName}`, () => {
+        it.skip('shows only the fields commonly updatable across all selected items', () => {
+          // TODO: Setup access control so that it's something like this:
+          //
+          // | Is Updatable | foo | bar | zip |
+          // |--------------|-----|-----|-----|
+          // | Item 1       |  ✓  |     |  ✓  |
+          // | Item 2       |     |  ✓  |  ✓  |
+          //
+          // And check that the updatable fields are the intersection (ie; only
+          // 'zip' in this case)
+        });
+      });
+    }
+
+    describe(`static on ${staticList}`, () => {
+      const slug = listSlug(staticList);
+      const queryName = `all${staticList}s`;
 
       before(() => {
         cy.graphql_query('/admin/api', `query { ${queryName}(first: 1) { id } }`).then(
@@ -152,42 +203,55 @@ describe('Access Control Fields > Admin UI', () => {
           });
       });
 
-      // Skipped until Admin UI hides these fields
+      it('does not show non-updatable inputs', () => {
+        fieldAccessVariations
+          .filter(({ update, read }) => !update && read)
+          .forEach(access => {
+            const field = getFieldName(access);
+            cy.get(`label[for="ks-input-${field}"]`)
+              .should('not.exist')
+              .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
+          });
+      });
+
+      updateFromListViewTests(staticList);
+    });
+
+    describe(`imperative on ${imperativeList}`, () => {
+      const slug = listSlug(imperativeList);
+      const queryName = `all${imperativeList}s`;
+
+      before(() => {
+        cy.graphql_query('/admin/api', `query { ${queryName}(first: 1) { id } }`).then(
+          ({ data }) => {
+            cy.visit(`/admin/${slug}/${data[queryName][0].id}`);
+            cy.get('form').should('exist');
+          }
+        );
+      });
+
+      it('shows updatable inputs', () => {
+        fieldAccessVariations
+          .filter(({ update, read }) => update && read)
+          .forEach(access => {
+            const field = getFieldName(access);
+            cy.get(`label[for="ks-input-${field}"]`)
+              .should('exist')
+              .then(() => cy.get(`#ks-input-${field}`).should('exist'));
+          });
+      });
+
       it.skip('does not show non-updatable inputs', () => {
         fieldAccessVariations
           .filter(({ update, read }) => !update && read)
           .forEach(access => {
             const field = getFieldName(access);
             cy.get(`label[for="ks-input-${field}"]`)
-              .should('exist')
+              .should('not.exist')
               .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
           });
       });
-    }
 
-    function updateFromListViewTests() {
-      describe('list view multi-update', () => {
-        it.skip('shows only the fields commonly updatable across all selected items', () => {
-          // TODO: Setup access control so that it's something like this:
-          //
-          // | Is Updatable | foo | bar | zip |
-          // |--------------|-----|-----|-----|
-          // | Item 1       |  ✓  |     |  ✓  |
-          // | Item 2       |     |  ✓  |  ✓  |
-          //
-          // And check that the updatable fields are the intersection (ie; only
-          // 'zip' in this case)
-        });
-      });
-    }
-
-    describe(`static on ${staticList}`, () => {
-      updateTests(staticList);
-      updateFromListViewTests(staticList);
-    });
-
-    describe(`imperative on ${imperativeList}`, () => {
-      updateTests(imperativeList);
       updateFromListViewTests(imperativeList);
     });
   });
