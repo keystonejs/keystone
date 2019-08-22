@@ -27,12 +27,7 @@ const copyExampleProject = async () => {
   const to = await getProjectDirectory();
 
   createNewProjectFolder(to);
-  fs.copySync(from, to, {
-    filter: file => {
-      // A little safety check here just in case
-      return file.search('node_modules') === -1;
-    },
-  });
+  fs.copySync(from, to);
   tick('Copying project files');
 };
 

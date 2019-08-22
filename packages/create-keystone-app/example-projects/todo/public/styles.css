@@ -10,7 +10,6 @@ html {
 }
 
 body {
-  background: linear-gradient(to bottom left, hsla(220, 84%, 95%, 0.4), hsla(220, 84%, 60%, 0.4));
   font-family: system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto, sans-serif;
   display: flex;
   justify-content: center;
@@ -40,7 +39,7 @@ body {
   max-width: 600px;
   background: #fff;
   border-radius: 18px;
-  border: solid 1px hsla(220, 84%, 85%, 1);
+  border: solid 3px hsl(220, 70%, 60%, 0.8);
   color: hsla(220, 84%, 14%, 1);
 }
 
