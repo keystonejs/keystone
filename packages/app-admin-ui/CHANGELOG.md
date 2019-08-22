@@ -1,5 +1,11 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.3.0
+
+### Minor Changes
+
+- [da65e1a0](https://github.com/keystonejs/keystone-5/commit/da65e1a0): Allow display and filtering of 'Id' column in Admin UI
+
 ## 5.2.0
 
 ### Minor Changes

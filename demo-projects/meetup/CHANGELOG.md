@@ -1,5 +1,11 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.1.9
+
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+  - @keystone-alpha/adapter-mongoose@4.0.1
+  - @keystone-alpha/keystone@10.5.0
+
 ## 0.1.8
 
 - Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):
