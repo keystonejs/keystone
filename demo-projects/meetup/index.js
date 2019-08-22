@@ -1,6 +1,7 @@
 require('dotenv').config();
 
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');

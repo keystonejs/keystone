@@ -23,6 +23,7 @@
     "@keystone-alpha/app-graphql": "^6.3.1",
     "@keystone-alpha/app-next": "^2.0.0",
     "@keystone-alpha/app-static": "^1.1.0",
+    "@keystone-alpha/auth-password": "^0.0.0",
     "@keystone-alpha/fields": "^10.4.0",
     "@keystone-alpha/fields-markdown": "^1.0.3",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.5",

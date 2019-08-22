@@ -23,6 +23,7 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
+    "@keystone-alpha/auth-password": "^0.0.0",
     "express": "^4.17.1"
   }
 }

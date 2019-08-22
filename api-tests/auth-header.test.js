@@ -1,5 +1,5 @@
 const supertest = require('supertest-light');
-const { PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
 const { Text, Password, DateTime } = require('@keystone-alpha/fields');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const express = require('express');
