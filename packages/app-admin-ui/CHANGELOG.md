@@ -1,5 +1,11 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.5.0
+
+### Minor Changes
+
+- [f7ba8a35](https://github.com/keystonejs/keystone-5/commit/f7ba8a35): Prefill nested creates for Relationship fields with back referennces
+
 ## 5.4.0
 
 ### Minor Changes
