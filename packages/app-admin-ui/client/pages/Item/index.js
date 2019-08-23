@@ -60,7 +60,12 @@ const ItemDetails = withRouter(
       super(props);
       // memoized function so we can call it multiple times _per component_
       this.getFieldsObject = memoizeOne(() =>
-        arrayToObject(props.list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey), 'path')
+        arrayToObject(
+          props.list.fields
+            .filter(({ isPrimaryKey }) => !isPrimaryKey)
+            .filter(({ maybeAccess }) => !!maybeAccess.update),
+          'path'
+        )
       );
     }
 
@@ -280,6 +285,7 @@ const ItemDetails = withRouter(
               <AutocompleteCaptor />
               {list.fields
                 .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                .filter(({ maybeAccess }) => !!maybeAccess.update)
                 .map((field, i) => (
                   <Render key={field.path}>
                     {() => {
@@ -379,6 +385,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           captureSuspensePromises(
             list.fields
               .filter(({ isPrimaryKey }) => !isPrimaryKey)
+              .filter(({ maybeAccess }) => !!maybeAccess.update)
               .map(field => () => field.initFieldView())
           );
 

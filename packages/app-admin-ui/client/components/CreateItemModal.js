@@ -48,12 +48,14 @@ class CreateItemModal extends Component {
       return;
     }
 
-    const nonPrimaryKeyFields = fields.filter(({ isPrimaryKey }) => !isPrimaryKey);
+    const creatable = fields
+      .filter(({ isPrimaryKey }) => !isPrimaryKey)
+      .filter(({ maybeAccess }) => !!maybeAccess.create);
 
-    const data = arrayToObject(nonPrimaryKeyFields, 'path', field => field.serialize(item));
+    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
 
     if (!countArrays(validationWarnings)) {
-      const { errors, warnings } = await validateFields(nonPrimaryKeyFields, item, data);
+      const { errors, warnings } = await validateFields(creatable, item, data);
 
       if (countArrays(errors) + countArrays(warnings) > 0) {
         this.setState(() => ({
@@ -131,11 +133,12 @@ class CreateItemModal extends Component {
             <AutocompleteCaptor />
             <Render>
               {() => {
-                const nonPrimaryKeyFields = list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey);
-                captureSuspensePromises(
-                  nonPrimaryKeyFields.map(field => () => field.initFieldView())
-                );
-                return nonPrimaryKeyFields.map((field, i) => (
+                const creatable = list.fields
+                  .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                  .filter(({ maybeAccess }) => !!maybeAccess.create);
+
+                captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
+                return creatable.map((field, i) => (
                   <Render key={field.path}>
                     {() => {
                       let [Field] = field.adminMeta.readViews([field.views.Field]);
