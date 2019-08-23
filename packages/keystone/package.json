@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/keystone",
   "description": "The main @keystone-alpha class & CLI. This is where the magic happens.",
-  "version": "10.5.0",
+  "version": "11.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,7 +14,7 @@
     "@keystone-alpha/access-control": "^1.1.0",
     "@keystone-alpha/app-graphql": "^6.3.1",
     "@keystone-alpha/build-field-types": "^1.0.5",
-    "@keystone-alpha/fields": "^10.4.0",
+    "@keystone-alpha/fields": "^10.5.0",
     "@keystone-alpha/logger": "^2.0.1",
     "@keystone-alpha/session": "^2.0.1",
     "@keystone-alpha/utils": "^3.0.2",

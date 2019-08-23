@@ -1,5 +1,13 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.2.0
+
+### Minor Changes
+
+- [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a): Makes the password auth strategy its own package.
+  Previously: `const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');`
+  After change: `const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');`
+
 ## 0.1.9
 
 - Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):

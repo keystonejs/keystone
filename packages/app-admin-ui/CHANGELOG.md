@@ -1,5 +1,11 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.4.0
+
+### Minor Changes
+
+- [33ed590e](https://github.com/keystonejs/keystone-5/commit/33ed590e): Respect static field-level access control in the Admin UI
+
 ## 5.3.0
 
 ### Minor Changes
