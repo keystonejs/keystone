@@ -78,9 +78,19 @@ export class File extends Implementation {
   async resolveInput({ resolvedData, existingItem }) {
     const previousData = existingItem && existingItem[this.path];
     const uploadData = resolvedData[this.path];
-    // TODO: FIXME: Handle when uploadData is null. Can happen when:
-    // Deleting the file
-    if (!uploadData) {
+
+    // NOTE: The following two conditions could easily be combined into a
+    // single `if (!uploadData) return uploadData`, but that would lose the
+    // nuance of returning `undefined` vs `null`.
+    // Premature Optimisers; be ware!
+    if (typeof uploadData === 'undefined') {
+      // Nothing was passed in, so we can bail early.
+      return undefined;
+    }
+
+    if (uploadData === null) {
+      // `null` was specifically uploaded, and we should set the field value to
+      // null. To do that we... return `null`
       return null;
     }
 
