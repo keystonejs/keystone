@@ -1,5 +1,5 @@
 exports.composeResolveInput = (originalHook, newHook) => async params => {
-  let resolvedData = {};
+  let { resolvedData } = params;
   if (originalHook) {
     resolvedData = await originalHook(params);
   }
