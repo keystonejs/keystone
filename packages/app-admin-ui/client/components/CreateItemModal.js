@@ -17,8 +17,8 @@ let Render = ({ children }) => children();
 class CreateItemModal extends Component {
   constructor(props) {
     super(props);
-    const { list } = props;
-    const item = list.getInitialItemData();
+    const { list, prefillData } = props;
+    const item = list.getInitialItemData({ prefill: prefillData });
     const validationErrors = {};
     const validationWarnings = {};
 
