@@ -6,6 +6,8 @@ export default class FieldController {
     this.label = config.label;
     this.path = config.path;
     this.type = config.type;
+    this.maybeAccess = config.access;
+    this.isPrimaryKey = config.isPrimaryKey;
     this.list = list;
     this.adminMeta = adminMeta;
     this.views = views;

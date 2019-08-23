@@ -299,6 +299,91 @@ describe('Slug#implementation', () => {
             }
           )();
         });
+
+        it('Generates a unique slug when alwaysMakeUnique: true', () => {
+          return runner(
+            () =>
+              setupList(adapterName, {
+                name: { type: Text },
+                url: { type: Slug, from: 'name', alwaysMakeUnique: true },
+              }),
+            async ({ keystone }) => {
+              const {
+                gqlNames: { createMutationName },
+              } = keystone.listsArray[0];
+              return graphqlRequest({
+                keystone,
+                query: `mutation { ${createMutationName}(data: { name: "Wicked Sauce", url: "wicked-sauce" } ) { id name url } }`,
+              }).then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).toMatchObject({
+                  url: expect.stringMatching(/^wicked-sauce-[a-zA-Z0-9]+$/),
+                });
+              });
+            }
+          )();
+        });
+
+        it("Calls 'makeUnique' when alwaysMakeUnique is true", () => {
+          return runner(
+            () =>
+              setupList(adapterName, {
+                name: { type: Text },
+                url: {
+                  type: Slug,
+                  from: 'name',
+                  alwaysMakeUnique: true,
+                  makeUnique: ({ slug }) => reverse(slug),
+                },
+              }),
+            async ({ keystone }) => {
+              const {
+                gqlNames: { createMutationName },
+              } = keystone.listsArray[0];
+              return graphqlRequest({
+                keystone,
+                query: `mutation { ${createMutationName}(data: { name: "Awesome Sauce", url: "awesome-sauce" } ) { id name url } }`,
+              }).then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).toMatchObject({
+                  url: reverse('awesome-sauce'),
+                });
+              });
+            }
+          )();
+        });
+
+        it("Still calls 'makeUnique' when isUnique: false & alwaysMakeUnique: true", () => {
+          const makeUnique = jest.fn(({ slug }) => reverse(slug));
+          return runner(
+            () =>
+              setupList(adapterName, {
+                name: { type: Text },
+                url: {
+                  type: Slug,
+                  from: 'name',
+                  alwaysMakeUnique: true,
+                  makeUnique,
+                  isUnique: false,
+                },
+              }),
+            async ({ keystone }) => {
+              const {
+                gqlNames: { createMutationName },
+              } = keystone.listsArray[0];
+              return graphqlRequest({
+                keystone,
+                query: `mutation { ${createMutationName}(data: { name: "Awesome Sauce", url: "awesome-sauce" } ) { id name url } }`,
+              }).then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).toMatchObject({
+                  url: reverse('awesome-sauce'),
+                });
+                expect(makeUnique).toHaveBeenCalled();
+              });
+            }
+          )();
+        });
       });
 
       describe('update mutation', () => {
@@ -651,6 +736,19 @@ describe('Slug#implementation', () => {
               () => {}
             )()
           ).rejects.toThrow(/The 'regenerateOnUpdate' option on .*\.url must be true\/false/);
+        });
+
+        it("throws if 'alwaysMakeUnique' is not a bool", () => {
+          return expect(
+            runner(
+              () =>
+                setupList(adapterName, {
+                  url: { type: Slug, from: 'foo', alwaysMakeUnique: 13 },
+                }),
+              // Empty test, we just want to assert the setup works
+              () => {}
+            )()
+          ).rejects.toThrow(/The 'alwaysMakeUnique' option on .*\.url must be true\/false/);
         });
 
         it("throws if both 'from' and 'generate' specified", () => {

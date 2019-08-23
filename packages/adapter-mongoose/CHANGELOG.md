@@ -1,5 +1,10 @@
 # @keystone-alpha/adapter-mongoose
 
+## 4.0.1
+
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+  - @keystone-alpha/keystone@10.5.0
+
 ## 4.0.0
 
 ### Major Changes

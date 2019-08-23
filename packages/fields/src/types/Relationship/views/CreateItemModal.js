@@ -60,7 +60,11 @@ class CreateItemModal extends Component {
       return;
     }
 
-    const data = arrayToObject(fields, 'path', field => field.serialize(item));
+    const creatable = fields
+      .filter(({ isPrimaryKey }) => !isPrimaryKey)
+      .filter(({ maybeAccess }) => !!maybeAccess.create);
+
+    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
 
     if (!countArrays(validationWarnings)) {
       const errors = {};
@@ -163,8 +167,12 @@ class CreateItemModal extends Component {
             <AutocompleteCaptor />
             <Render>
               {() => {
-                captureSuspensePromises(list.fields.map(field => () => field.initFieldView()));
-                return list.fields.map((field, i) => {
+                const creatable = list.fields
+                  .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                  .filter(({ maybeAccess }) => !!maybeAccess.create);
+
+                captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
+                return creatable.map((field, i) => {
                   return (
                     <Render key={field.path}>
                       {() => {

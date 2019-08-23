@@ -1,5 +1,18 @@
 # @keystone-alpha/fields
 
+## 10.4.0
+
+### Minor Changes
+
+- [da65e1a0](https://github.com/keystonejs/keystone-5/commit/da65e1a0): Allow display and filtering of 'Id' column in Admin UI
+
+## 10.3.0
+
+### Minor Changes
+
+- [a640471a](https://github.com/keystonejs/keystone-5/commit/a640471a): - Add `Slug.alwaysMakeUnique` option to force calling `makeUnique` even when initially generated slug may already be unique to prevent accidental data leak.
+  - Fix a bug where items restricted via access control weren't considered when testing a `Slug` for uniqueness.
+
 ## 10.2.0
 
 ### Minor Changes

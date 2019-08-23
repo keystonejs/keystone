@@ -4,14 +4,15 @@ import {
   KnexMongoIdInterface,
 } from './Implementation';
 import { Text } from '@keystone-alpha/fields';
+import { importView } from '@keystone-alpha/build-field-types';
 
 export const MongoId = {
   type: 'MongoId',
   implementation: MongoIdImplementation,
   views: {
-    Controller: Text.views.Controller,
+    Controller: importView('./views/Controller'),
     Field: Text.views.Field,
-    Filter: Text.views.Filter,
+    Filter: importView('./views/Filter'),
   },
   adapters: {
     knex: KnexMongoIdInterface,

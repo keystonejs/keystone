@@ -119,6 +119,11 @@ describe('getAdminMeta()', () => {
 
     const value = impl.getAdminMeta();
     expect(value).toEqual({
+      access: {
+        create: true,
+        read: true,
+        update: true,
+      },
       label: 'config label',
       path: 'path',
       type: 'Field',
@@ -133,6 +138,11 @@ describe('getAdminMeta()', () => {
 
     const value = impl.getAdminMeta();
     expect(value).toEqual({
+      access: {
+        create: true,
+        read: true,
+        update: true,
+      },
       label: 'config label',
       path: 'path',
       type: 'Field',
