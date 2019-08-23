@@ -14,13 +14,13 @@ export default class FieldController {
 
     if ('defaultValue' in config) {
       if (typeof config.defaultValue !== 'function') {
-        this._getDefaultValue = () => config.defaultValue;
+        this._getDefaultValue = ({ prefill }) => prefill[this.path] || config.defaultValue;
       } else {
         this._getDefaultValue = config.defaultValue;
       }
     } else {
       // By default, the default value is undefined
-      this._getDefaultValue = () => undefined;
+      this._getDefaultValue = ({ prefill }) => prefill[this.path] || undefined;
     }
   }
 
@@ -92,8 +92,8 @@ export default class FieldController {
     !isEqual(initialData[this.path], currentData[this.path]);
 
   // eslint-disable-next-line no-unused-vars
-  getDefaultValue = ({ originalInput = {} } = {}) => {
-    return this._getDefaultValue({ originalInput });
+  getDefaultValue = ({ originalInput = {}, prefill = {} } = {}) => {
+    return this._getDefaultValue({ originalInput, prefill });
   };
 
   initCellView = () => {

@@ -102,10 +102,11 @@ describe('getDefaultValue()', () => {
 
     test('receives expected paramaters', () => {
       const originalInput = {};
+      const prefill = {};
       const defaultValue = jest.fn(() => 'default');
       const controller = new FieldController({ ...config, defaultValue }, 'list', 'adminMeta');
-      controller.getDefaultValue({ originalInput });
-      expect(defaultValue).toHaveBeenCalledWith({ originalInput });
+      controller.getDefaultValue({ originalInput, prefill });
+      expect(defaultValue).toHaveBeenCalledWith({ originalInput, prefill });
     });
   });
 });
