@@ -110,10 +110,35 @@ function LinkToRelatedItems({ field, value }) {
   );
 }
 
-function CreateAndAddItem({ field, onCreate }) {
+function CreateAndAddItem({ field, item, list, onCreate }) {
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
   let [isOpen, setIsOpen] = useState(false);
   let label = `Create and add ${relatedList.singular}`;
+
+  let prefillData;
+  if (item && item.id) {
+    prefillData = relatedList.fields
+      // Find relationships on the refList which have a back link to this
+      // Relationship field
+      .filter(
+        relatedField =>
+          relatedField.type === 'Relationship' &&
+          relatedField.config.ref === list.key &&
+          relatedField.config.refFieldPath === field.path
+      )
+      // And convert it into an object of data to prefill the form with
+      .reduce((memo, prefillField) => {
+        const prefill = {
+          _label_: item._label_ || '<link to parent>',
+          id: item.id,
+        };
+        return {
+          ...memo,
+          [prefillField.path]: prefillField.config.many ? [prefill] : prefill,
+        };
+      }, {});
+  }
+
   return (
     <Fragment>
       <Tooltip placement="top" content={label}>
@@ -133,6 +158,7 @@ function CreateAndAddItem({ field, onCreate }) {
       <CreateItemModal
         isOpen={isOpen}
         list={relatedList}
+        prefillData={prefillData}
         onClose={() => {
           setIsOpen(false);
         }}
@@ -157,7 +183,7 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, value, renderContext, errors, onChange } = this.props;
+    const { autoFocus, field, value, renderContext, errors, onChange, item, list } = this.props;
     const { many, ref } = field.config;
     const { authStrategy } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
@@ -182,6 +208,8 @@ export default class RelationshipField extends Component {
               onChange(many ? (value || []).concat(item) : item);
             }}
             field={field}
+            item={item}
+            list={list}
           />
           {authStrategy && ref === authStrategy.listKey && (
             <SetAsCurrentUser

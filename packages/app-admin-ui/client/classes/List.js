@@ -115,13 +115,13 @@ export default class List {
     return `${this.gqlNames.listQueryMetaName}${metaQueryArgs} { count }`;
   }
 
-  getInitialItemData({ originalInput = {} } = {}) {
+  getInitialItemData({ originalInput = {}, prefill = {} } = {}) {
     return this.fields
       .filter(({ isPrimaryKey }) => !isPrimaryKey)
       .reduce(
         (memo, field) => ({
           ...memo,
-          [field.path]: field.getDefaultValue({ originalInput }),
+          [field.path]: field.getDefaultValue({ originalInput, prefill }),
         }),
         {}
       );

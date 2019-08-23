@@ -311,13 +311,14 @@ const ItemDetails = withRouter(
                           <Field
                             autoFocus={!i}
                             field={field}
+                            list={list}
+                            item={item}
                             errors={[
                               ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
                               ...(validationErrors[field.path] || []),
                             ]}
                             warnings={validationWarnings[field.path] || []}
                             value={item[field.path]}
-                            itemId={item.id}
                             savedValue={savedData[field.path]}
                             onChange={onChange}
                             renderContext="page"
@@ -326,6 +327,7 @@ const ItemDetails = withRouter(
                         [
                           i,
                           field,
+                          list,
                           itemErrors[field.path],
                           item[field.path],
                           item.id,
