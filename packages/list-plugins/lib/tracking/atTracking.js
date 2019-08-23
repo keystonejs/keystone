@@ -1,65 +1,35 @@
 const { DateTime } = require('@keystone-alpha/fields');
-const { composeResolveInput } = require('../utils');
+const trackingBase = require('./trackingBase');
 
-const _atTracking = ({ created = true, updated = true }) => ({
-  updatedAtField = 'updatedAt',
-  createdAtField = 'createdAt',
-  ...atFieldOptions
-} = {}) => ({ fields = {}, hooks = {}, ...rest }) => {
-  const dateTimeOptions = {
-    type: DateTime,
-    format: 'MM/DD/YYYY h:mm A',
-    access: {
-      read: true,
-      create: false,
-      update: false,
-    },
-    ...atFieldOptions,
-  };
-
-  if (updated) {
-    fields[updatedAtField] = {
-      ...dateTimeOptions,
-    };
-  }
-
-  if (created) {
-    fields[createdAtField] = {
-      ...dateTimeOptions,
-    };
-  }
-
-  const newResolveInput = ({ resolvedData, existingItem, originalInput }) => {
-    if (Object.keys(originalInput).length === 0) {
-      return resolvedData;
-    }
-    const dateNow = new Date().toISOString();
-    if (existingItem === undefined) {
-      // create mode
-      if (created) {
-        resolvedData[createdAtField] = dateNow;
-      }
-      if (updated) {
-        resolvedData[updatedAtField] = dateNow;
-      }
-    } else {
-      // update mode
-      if (created) {
-        delete resolvedData[createdAtField]; // createdAtField No longer sent by api/admin, but access control can be skipped!
-      }
-      if (updated) {
-        resolvedData[updatedAtField] = dateNow;
-      }
-    }
-    return resolvedData;
-  };
-  const originalResolveInput = hooks.resolveInput;
-  hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
-  return { fields, hooks, ...rest };
+const fieldConfig = {
+  type: DateTime,
+  format: 'MM/DD/YYYY h:mm A',
 };
 
-const createdAt = options => _atTracking({ created: true, updated: false })(options);
-const updatedAt = options => _atTracking({ created: false, updated: true })(options);
-const atTracking = options => _atTracking({ created: true, updated: true })(options);
+const createFieldFunc = () => new Date().toISOString();
+
+const createdAtConfig = ({ createdAtField = 'createdAt', ...options } = {}) => ({
+  fieldConfig,
+  createFieldFunc,
+  ...options,
+  createdField: createdAtField,
+});
+
+const updatedAtConfig = ({ updatedAtField = 'updatedAt', ...options } = {}) => ({
+  fieldConfig,
+  updateFieldFunc: createFieldFunc,
+  ...options,
+  updatedField: updatedAtField,
+});
+
+const createdAt = options =>
+  trackingBase({ created: true, updated: false })({ ...createdAtConfig(options) });
+const updatedAt = options =>
+  trackingBase({ created: false, updated: true })({ ...updatedAtConfig(options) });
+const atTracking = options =>
+  trackingBase({ created: true, updated: true })({
+    ...createdAtConfig(options),
+    ...updatedAtConfig(options),
+  });
 
 module.exports = { createdAt, updatedAt, atTracking };
