@@ -1,8 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/app-admin-ui", "type": "minor" },
-    { "name": "@keystone-alpha/fields", "type": "minor" },
-    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" }
-  ],
-  "dependents": []
-}
