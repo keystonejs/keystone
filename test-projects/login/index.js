@@ -48,7 +48,7 @@ keystone.createList('Post', {
   },
 });
 
-const sysUptimeTracker = trackingBase({ created: true, updated: true })({
+const sysUptimeTracker = trackingBase({
   fieldConfig: {
     type: Integer,
   },

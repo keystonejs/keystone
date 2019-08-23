@@ -78,22 +78,26 @@ keystone.createList('ListWithPlugin', {
 
 ## Custom Tracking (trackingBase)
 
-This base plugin helps create custom tracking for extended use. must provide:
+This base plugin helps create custom tracking for extended use.
 
-`fieldConfig`: Field config, similar to field as in list schema
-`createField`: Name of the field for create hook
-`createFieldFunc`: function to return value for create operation, this function accepts parameters same as resolveInput hook
-`updateField`: Name of the field for update hook
-`updateFieldFunc`: function to return value for update operation, this function accepts parameters same as resolveInput hook
+Config Options:
+
+`fieldConfig`: [Required] Field config, similar to field as in list schema
+`createField`: [Required*] Name of the field for create hook
+`createFieldFunc`: [Required*] function to return value for create operation, this function accepts parameters same as resolveInput hook
+`updateField`: [Required*] Name of the field for update hook
+`updateFieldFunc`: [Required*] function to return value for update operation, this function accepts parameters same as resolveInput hook
+
+> only one of `createField, createFieldFunc` or `updateField, updateFieldFunc` combination is required, both combination can be provided.
 
 ### API
 
-Example to track free memory at the time of create or update
+Example to track system uptime at the time of create or update of list item
 
 ```js
 const { uptime } = require('os');
 const { trackingBase } = require('@keystone-alpha/list-plugins');
-const sysUptimeTracker = trackingBase({ created: true, updated: true })({
+const sysUptimeTracker = trackingBase({
   fieldConfig: {
     type: Text,
   },

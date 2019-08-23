@@ -22,12 +22,10 @@ const updatedAtConfig = ({ updatedAtField = 'updatedAt', ...options } = {}) => (
   updatedField: updatedAtField,
 });
 
-const createdAt = options =>
-  trackingBase({ created: true, updated: false })({ ...createdAtConfig(options) });
-const updatedAt = options =>
-  trackingBase({ created: false, updated: true })({ ...updatedAtConfig(options) });
+const createdAt = options => trackingBase({ ...createdAtConfig(options) });
+const updatedAt = options => trackingBase({ ...updatedAtConfig(options) });
 const atTracking = options =>
-  trackingBase({ created: true, updated: true })({
+  trackingBase({
     ...createdAtConfig(options),
     ...updatedAtConfig(options),
   });

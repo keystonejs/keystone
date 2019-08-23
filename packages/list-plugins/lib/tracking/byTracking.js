@@ -22,12 +22,10 @@ const updatedByConfig = ({ updatedByField = 'updatedBy', ...options } = {}) => (
   updatedField: updatedByField,
 });
 
-const createdBy = options =>
-  trackingBase({ created: true, updated: false })({ ...createdByConfig(options) });
-const updatedBy = options =>
-  trackingBase({ created: false, updated: true })({ ...updatedByConfig(options) });
+const createdBy = options => trackingBase({ ...createdByConfig(options) });
+const updatedBy = options => trackingBase({ ...updatedByConfig(options) });
 const byTracking = options =>
-  trackingBase({ created: true, updated: true })({
+  trackingBase({
     ...createdByConfig(options),
     ...updatedByConfig(options),
   });

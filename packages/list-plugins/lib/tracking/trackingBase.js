@@ -1,6 +1,6 @@
 const { composeResolveInput } = require('../utils');
 
-module.exports = ({ created = true, updated = true }) => ({
+module.exports = ({
   createdField,
   updatedField,
   fieldConfig,
@@ -13,6 +13,9 @@ module.exports = ({ created = true, updated = true }) => ({
       '[list-plugins] [trackingBase] must provide one of `createdField` or `updatedField'
     );
   }
+
+  const created = !!createdField;
+  const updated = !!updatedField;
 
   if (created) {
     fields[createdField] = {
