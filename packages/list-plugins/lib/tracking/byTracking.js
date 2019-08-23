@@ -11,8 +11,8 @@ const _byTracking = ({ created = true, updated = true }) => ({
     ref: 'User',
     access: {
       read: true,
-      create: true, // TODO: revert to false when read only fields are available
-      update: true, // TODO: revert to false when read only fields are available
+      create: false,
+      update: false,
     },
     ...byFieldOptions,
   };

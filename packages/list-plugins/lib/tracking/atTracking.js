@@ -11,8 +11,8 @@ const _atTracking = ({ created = true, updated = true }) => ({
     format: 'MM/DD/YYYY h:mm A',
     access: {
       read: true,
-      create: true, // TODO: revert to false when read only fields are available
-      update: true, // TODO: revert to false when read only fields are available
+      create: false,
+      update: false,
     },
     ...atFieldOptions,
   };
