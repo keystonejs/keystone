@@ -45,7 +45,7 @@ const _atTracking = ({ created = true, updated = true }) => ({
     } else {
       // update mode
       if (created) {
-        delete resolvedData[createdAtField]; // This is a bug?, data for createdAtField should not be sent
+        delete resolvedData[createdAtField]; // createdAtField No longer sent by api/admin, but access control can be skipped!
       }
       if (updated) {
         resolvedData[updatedAtField] = dateNow;

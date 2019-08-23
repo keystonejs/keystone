@@ -45,7 +45,7 @@ const _byTracking = ({ created = true, updated = true }) => ({
     } else {
       // update mode
       if (created) {
-        delete resolvedData[createdByField]; // This is a bug?, data for createdAtField should not be sent
+        delete resolvedData[createdByField]; // createdByField No longer sent by api/admin, but access control can be skipped!
       }
       if (updated) {
         resolvedData[updatedByField] = id;
