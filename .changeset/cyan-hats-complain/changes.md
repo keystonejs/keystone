@@ -1,0 +1,1 @@
+Refactored tracking to include trackingBase, expose `trackingBase` for others to build custom tracking type list plugin easily

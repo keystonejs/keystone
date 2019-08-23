@@ -1,0 +1,10 @@
+{
+  "releases": [{ "name": "@keystone-alpha/list-plugins", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/cypress-project-login",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/list-plugins"]
+    }
+  ]
+}
