@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: Unsplash Field Type
+title: Unsplash
 [meta]-->
 
 # Unsplash

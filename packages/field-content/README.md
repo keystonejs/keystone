@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: Content Field
+title: Content
 [meta]-->
 
 # Content Field

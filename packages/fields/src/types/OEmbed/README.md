@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: OEmbed Field Type
+title: OEmbed
 [meta]-->
 
 # OEmbed
