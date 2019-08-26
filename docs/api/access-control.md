@@ -8,8 +8,8 @@ title: Access Control
 Control who can do what with your GraphQL API.
 
 _Note: This is the API documentation for Access Control. For getting started,
-see the [Access Control Guide](../discussions/access-control.md) or the
-[Authentication Guide](../discussions/authentication.md)._
+see the [Access Control Guide](../guides/access-control.md) or the
+[Authentication Guide](../guides/authentication.md)._
 
 ## Table of Contents
 
@@ -92,7 +92,7 @@ const keystone = new Keystone('My App', {
 List level access control can have varying degrees of specificity depending on
 how much control you need.
 
-#### `access` API
+#### Access API
 
 A key on the list config, `access` can be specified either as a single control,
 covering all CRUD operations, or as an object keyed by CRUD operation names.
@@ -159,7 +159,7 @@ Definition of `access` operations:
 When access is denied, the GraphQL response will contain an error with
 `type: 'AccessDeniedError'`, and `null` for the data.
 
-_NOTE_: The `create` operation cannot be given `DeclarativeAccess` - it does not
+*Note*: The `create` operation cannot be given `DeclarativeAccess` - it does not
 make sense to do so and will throw an error if attempted.
 
 Let's break it down into concrete examples:
@@ -250,7 +250,7 @@ _NOTE:_ Even when returning `false`,
 the queries/mutations/types for that operation _will_ be included in the GraphQL Schema.
 For example, `create: () => false` will still include the `createXXXX` mutation in the GraphQL Schema, and so on.
 
-##### `GraphQLWhere`s
+##### GraphQLWhere
 
 In the examples below, the `name_contains: 'k'` syntax matches the `UserWhereInput` GraphQL type for the list.
 
@@ -317,7 +317,7 @@ keystone.createList('User', {
 
 ### Field level access control
 
-#### `access` API
+#### access API
 
 A key on the field config, `access` can be specified either as a single control,
 covering all CRU operations, or as an object keyed by CRU operation names.
@@ -497,7 +497,7 @@ As above
 ## Admin UI display & forms
 
 You are able to control which fields are available within the Admin UI
-indpendently of the access control options (but access control still governs
+independently of the access control options (but access control still governs
 the final data displayed / mutated, see _[GraphQL access control](#graphql-access-control)_).
 
 Given a list configured like so:

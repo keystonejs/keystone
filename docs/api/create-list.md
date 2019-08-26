@@ -120,7 +120,7 @@ keystone.createList('User',
 
 ### access
 
-(Access control)[/discussions/access-control] options for the list.
+(Access control)[/guides/access-control] options for the list.
 
 Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the (access control API documentation)[/api/access-control] for more details.
 
@@ -237,7 +237,7 @@ keystone.createList("WoolyBoi", {
 });
 ```
 
-_Note_: This will override labels in the AdminUI but will not change graphQL queries. For queries and mutations see: `itemQueryName` and `listQueryName`.
+*Note*: This will override labels in the AdminUI but will not change graphQL queries. For queries and mutations see: `itemQueryName` and `listQueryName`.
 
 ### plural
 

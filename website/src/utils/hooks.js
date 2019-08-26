@@ -17,7 +17,14 @@ export function useNavData() {
     query HeadingQuery {
       allSitePage(
         filter: { path: { ne: "/dev-404-page/" } }
-        sort: { fields: [context___sortOrder, context___sortSubOrder, context___pageTitle] }
+        sort: {
+          fields: [
+            context___sortOrder
+            context___sortSubOrder
+            context___order
+            context___pageTitle
+          ]
+        }
       ) {
         edges {
           node {
@@ -40,7 +47,6 @@ export function useNavData() {
       {
         node,
         node: {
-          context,
           context: { navGroup, navSubGroup },
         },
       }
@@ -49,11 +55,7 @@ export function useNavData() {
         // finding out what directory the file is in (eg '/keystone-alpha')
 
         const addPage = page => {
-          if (context.pageTitle === 'Introduction') {
-            page.pages.unshift(node);
-          } else if (navGroup !== 'packages' || context.isPackageIndex) {
-            page.pages.push(node);
-          }
+          page.pages.push(node);
         };
 
         if (Boolean(!pageList.find(obj => obj.navTitle === navGroup))) {

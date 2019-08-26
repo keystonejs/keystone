@@ -67,10 +67,6 @@ The DateTime component includes an input that allows the user to change the curr
 
 The `DateTime` field type adds a custom scalar `DateTime` and uses it for input and output fields.
 
-```DOCS_TODO
-TODO
-```
-
 ## Storage
 
 ### Mongoose Adaptor

@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: utilities
-title: Email Sending
+title: Keystone Email
 [meta]-->
 
-# Email Sending
+# Keystone ßEmail
 
 Send emails via various transports, rendered with Express-compatible
 renderers.

@@ -43,6 +43,8 @@ exports.createPages = ({ actions, graphql }) => {
               navSubGroup
               workspaceSlug
               sortOrder
+              sortSubOrder
+              order
               isPackageIndex
               pageTitle
               draft
@@ -69,8 +71,6 @@ exports.createPages = ({ actions, graphql }) => {
       } = page;
 
       return Boolean(!draft) && Boolean(navGroup !== ''); // Ok so now items with draft or no navGroup should not be shown?
-      // Notice nothing changed?
-      //Gatsby did not crash but... let's restart it
     });
 
     pages.forEach(({ node: { id, fields } }) => {
@@ -115,6 +115,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
 
     const navGroup = data.section;
     const navSubGroup = data.subSection;
+    const order = data.order || 99999999999;
     let pageTitle = data.title;
 
     const ast = compiler.parse(content);
@@ -145,6 +146,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       sortOrder: GROUPS.indexOf(navGroup) === -1 ? 999999 : GROUPS.indexOf(navGroup),
       sortSubOrder:
         SUB_GROUPS.indexOf(navSubGroup) === -1 ? 999999 : SUB_GROUPS.indexOf(navSubGroup),
+      order,
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
       draft: Boolean(data.draft),
@@ -164,14 +166,3 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       });
   }
 };
-
-// exports.sourceNodes = ({ actions }) => {
-//   const { createTypes } = actions;
-//   const typeDefs = `
-//     type Mdx implements Node {
-//       name: String
-//       navSubGroup: String
-//     }
-//   `;
-//   createTypes(typeDefs);
-// };

@@ -69,6 +69,13 @@ async function getGatsbyConfig() {
         },
       },
       {
+        // https://github.com/gatsbyjs/gatsby/issues/15486#issuecomment-509405867
+        resolve: `gatsby-transformer-remark`,
+        options: {
+          plugins: [`gatsby-remark-images`],
+        },
+      },
+      {
         resolve: `gatsby-mdx`,
         options: {
           extensions: ['.mdx', '.md'],

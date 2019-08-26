@@ -41,10 +41,6 @@ keystone.createList('User', {
 | ------------ | --------- | ------- | -------------------------------- |
 | `isRequired` | `Boolean` | `false` | Does this field require a value? |
 
-```DOCS_TODO
-TODO
-```
-
 ## GraphQL
 
 Will add the following to the GraphQL schema:
@@ -238,7 +234,3 @@ Will result in something like:
 ```
 
 ---
-
-```DOCS_TODO
-TODO: Clean up and standardisation
-```

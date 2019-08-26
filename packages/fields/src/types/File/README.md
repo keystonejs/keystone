@@ -24,7 +24,3 @@ keystone.createList('Applicant', {
 | `isRequired` | `Boolean` | `false` | Does this field require a value? |
 
 ---
-
-```DOCS_TODO
-TODO
-```

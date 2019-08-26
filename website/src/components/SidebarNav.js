@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React, { Fragment } from 'react'; // eslint-disable-line no-unused-vars
 import { Link } from 'gatsby';
 import { colors, gridSize } from '@arch-ui/theme';
 import { jsx } from '@emotion/core';
@@ -8,12 +8,10 @@ import { useNavData } from '../utils/hooks';
 
 export const SidebarNav = () => {
   const navData = useNavData();
-  console.log({ navData });
   return (
     <nav aria-label="Documentation Menu">
       {navData.map(navGroup => {
         const sectionId = `docs-menu-${navGroup.navTitle}`;
-        console.log({ navGroup });
         return (
           <div key={navGroup.navTitle}>
             <GroupHeading id={sectionId}>{navGroup.navTitle.replace('-', ' ')}</GroupHeading>
@@ -28,9 +26,8 @@ export const SidebarNav = () => {
               {navGroup.subNavs.length ? (
                 <li>
                   {navGroup.subNavs.map(navGroup => {
-                    console.log(navGroup);
                     return (
-                      <>
+                      <Fragment key={navGroup.navTitle}>
                         <GroupSubHeading id={sectionId}>
                           {navGroup.navTitle.replace('-', ' ')}
                         </GroupSubHeading>
@@ -43,7 +40,7 @@ export const SidebarNav = () => {
                             );
                           })}
                         </List>
-                      </>
+                      </Fragment>
                     );
                   })}
                 </li>

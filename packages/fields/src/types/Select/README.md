@@ -46,9 +46,3 @@ keystone.createList('Rsvp', {
   },
 });
 ```
-
----
-
-```DOCS_TODO
-TODO
-```

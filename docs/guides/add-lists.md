@@ -104,5 +104,5 @@ keystone.createList('User', UsersSchema);
 Realunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user. But how can we assign a task to specific user? Let's proceed with [Defining Relationships](./relationships.md)
 
 See also:
-[Schema - Lists & Fields](../discussions/schema.md)
+[Schema - Lists & Fields](../guides/schema.md)
 [API - createList](../api/create-list.md)

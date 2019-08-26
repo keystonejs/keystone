@@ -4,7 +4,7 @@ subSection: field-types
 title: MongoId
 [meta]-->
 
-# Keystone 5 `MongoId` Field Type
+# MongoId
 
 This field allows arbitrary MongoID fields to be added to your lists.
 

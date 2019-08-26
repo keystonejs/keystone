@@ -39,10 +39,6 @@ keystone.createList('Post', {
 | ------------ | --------- | ------- | -------------------------------- |
 | `isRequired` | `Boolean` | `false` | Does this field require a value? |
 
-```DOCS_TODO
-TODO: Missing config options
-```
-
 ## GraphQL
 
 Will add the following to the GraphQL schema:
@@ -174,10 +170,4 @@ Will result in something like:
     }
   }
 }
-```
-
----
-
-```DOCS_TODO
-TODO: Missing standard sections
 ```

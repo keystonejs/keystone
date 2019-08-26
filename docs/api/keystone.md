@@ -41,10 +41,10 @@ Initialises and return an authentication strategy for use in the AdminUI and oth
 
 Registers a new list with Keystone and returns a Keystone list object.
 
-|         |                                                                                            |
-| ------- | ------------------------------------------------------------------------------------------ |
-| listKey | A string representing the name of a list. This should be singular, E.g. 'User' not 'Users' |
-| config  | The list config. See: Creating lists                                                       |
+| Option    | Type     | Default | Description                                                            |
+| --------- | -------- | ------- | ---------------------------------------------------------------------- |
+| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users' |
+| `config`  | `Object` | `{}`    | The list config. See: Creating lists                                   |
 
 ## keystone.connect()
 

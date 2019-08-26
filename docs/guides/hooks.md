@@ -1,9 +1,9 @@
 <!--[meta]
-section: discussions
+section: guides
 title: Hooks
 [meta]-->
 
-# Hooks Guide
+# Hooks
 
 > _NOTE: Below is an overview of hooks. For API docs see
 > [Hooks API](../api/hooks.md)._

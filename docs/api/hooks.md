@@ -6,8 +6,8 @@ title: Hooks
 # Hooks API
 
 The APIs for each hook are mostly the same across the 3 hook types
-([list hooks](../discussions/hooks.md#list-hooks), [field hooks](../discussions/hooks.md#field-hooks), [field type
-hooks](../discussions/hooks.md#field-type-hooks)).
+([list hooks](../guides/hooks.md#list-hooks), [field hooks](../guides/hooks.md#field-hooks), [field type
+hooks](../guides/hooks.md#field-type-hooks)).
 
 Any differences are called out in the documentation below.
 
@@ -156,7 +156,7 @@ An API providing programatic access to List functions:
 
 The result of `resolveInput()` should have the same structure as the input (ie;
 the same keys). It is passed to [the next function in the execution
-order](../discussions/hooks.md#hook-execution-order) as the input data.
+order](../guides/hooks.md#hook-execution-order) as the input data.
 
 ---
 

@@ -5,7 +5,3 @@ title: Color
 [meta]-->
 
 # Color
-
-```DOCS_TODO
-TODO
-```
