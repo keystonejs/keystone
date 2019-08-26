@@ -1,5 +1,23 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.5.0
+
+### Minor Changes
+
+- [f7ba8a35](https://github.com/keystonejs/keystone-5/commit/f7ba8a35): Prefill nested creates for Relationship fields with back referennces
+
+## 5.4.0
+
+### Minor Changes
+
+- [33ed590e](https://github.com/keystonejs/keystone-5/commit/33ed590e): Respect static field-level access control in the Admin UI
+
+## 5.3.0
+
+### Minor Changes
+
+- [da65e1a0](https://github.com/keystonejs/keystone-5/commit/da65e1a0): Allow display and filtering of 'Id' column in Admin UI
+
 ## 5.2.0
 
 ### Minor Changes

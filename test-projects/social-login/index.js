@@ -1,4 +1,5 @@
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
 const {
   File,
   Text,

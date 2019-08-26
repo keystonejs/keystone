@@ -1,5 +1,25 @@
 # @keystone-alpha/keystone
 
+## 11.0.0
+
+### Major Changes
+
+- [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a): Makes the password auth strategy its own package.
+  Previously: `const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');`
+  After change: `const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');`
+
+## 10.5.0
+
+### Minor Changes
+
+- [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26): Renames the package `@keystone-alpha/passport-auth` to `@keystone-alpha/auth-passport`. Anyone using `passport-auth` should switch over to the new package - the old one will no longer be receiving updates.
+
+## 10.4.0
+
+### Minor Changes
+
+- [d3238352](https://github.com/keystonejs/keystone-5/commit/d3238352): Implemented custom queries in the same format as custom mutations.
+
 ## 10.3.0
 
 ### Minor Changes

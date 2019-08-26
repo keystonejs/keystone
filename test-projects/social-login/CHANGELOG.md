@@ -1,5 +1,19 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 2.2.0
+
+### Minor Changes
+
+- [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a): Makes the password auth strategy its own package.
+  Previously: `const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');`
+  After change: `const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');`
+
+## 2.1.0
+
+### Minor Changes
+
+- [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26): Renames the package `@keystone-alpha/passport-auth` to `@keystone-alpha/auth-passport`. Anyone using `passport-auth` should switch over to the new package - the old one will no longer be receiving updates.
+
 ## 2.0.4
 
 - Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):

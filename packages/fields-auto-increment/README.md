@@ -68,11 +68,11 @@ keystone.createList('Order', {
 
 ### Config
 
-| Option       | Type      | Default       | Description                                                                                |
-| :----------- | :-------- | :------------ | :----------------------------------------------------------------------------------------- |
-| `isRequired` | `Boolean` | `false`       | Does this field require a value?                                                           |
-| `isUnique`   | `Boolean` | `true`        | Adds a unique index that allows only unique values to be stored                            |
-| `gqlType`    | `String`  | `Int` or `ID` | The GraphQL to be used by this field. Defaults to `ID` for primay keys or `Int` otherwise. |
+| Option       | Type      | Default       | Description                                                                                 |
+| :----------- | :-------- | :------------ | :------------------------------------------------------------------------------------------ |
+| `isRequired` | `Boolean` | `false`       | Does this field require a value?                                                            |
+| `isUnique`   | `Boolean` | `true`        | Adds a unique index that allows only unique values to be stored                             |
+| `gqlType`    | `String`  | `Int` or `ID` | The GraphQL to be used by this field. Defaults to `ID` for primary keys or `Int` otherwise. |
 
 ## Admin UI
 
@@ -82,7 +82,7 @@ keystone.createList('Order', {
 
 `AutoIncrement` fields can use the `Int` or `ID` GraphQL types.
 This can be specified using the `gqlType` config option if needed.
-The default is `ID` for primay key fields and `Int` otherwise.
+The default is `ID` for primary key fields and `Int` otherwise.
 
 ### Input Fields
 

@@ -1,5 +1,17 @@
 # @keystone-alpha/demo-project-todo
 
+## 1.1.9
+
+- Updated dependencies [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a):
+  - @keystone-alpha/adapter-mongoose@4.0.2
+  - @keystone-alpha/keystone@11.0.0
+
+## 1.1.8
+
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+  - @keystone-alpha/adapter-mongoose@4.0.1
+  - @keystone-alpha/keystone@10.5.0
+
 ## 1.1.7
 
 - Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):

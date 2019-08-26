@@ -225,7 +225,8 @@ list used for authentication in `index.js`:
 <!-- prettier-ignore -->
 
 ```javascript
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');

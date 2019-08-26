@@ -1,5 +1,36 @@
 # @keystone-alpha/fields
 
+## 10.6.1
+
+### Patch Changes
+
+- [9c1b1886](https://github.com/keystonejs/keystone-5/commit/9c1b1886): CloudinaryImage & File fields no longer lose their value during update mutations
+
+## 10.6.0
+
+### Minor Changes
+
+- [f7ba8a35](https://github.com/keystonejs/keystone-5/commit/f7ba8a35): Prefill nested creates for Relationship fields with back referennces
+
+## 10.5.0
+
+### Minor Changes
+
+- [33ed590e](https://github.com/keystonejs/keystone-5/commit/33ed590e): Respect static field-level access control in the Admin UI
+
+## 10.4.0
+
+### Minor Changes
+
+- [da65e1a0](https://github.com/keystonejs/keystone-5/commit/da65e1a0): Allow display and filtering of 'Id' column in Admin UI
+
+## 10.3.0
+
+### Minor Changes
+
+- [a640471a](https://github.com/keystonejs/keystone-5/commit/a640471a): - Add `Slug.alwaysMakeUnique` option to force calling `makeUnique` even when initially generated slug may already be unique to prevent accidental data leak.
+  - Fix a bug where items restricted via access control weren't considered when testing a `Slug` for uniqueness.
+
 ## 10.2.0
 
 ### Minor Changes

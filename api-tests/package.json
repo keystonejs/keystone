@@ -2,20 +2,20 @@
   "name": "@keystone-alpha/api-tests",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.3.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "devDependencies": {
-    "@keystone-alpha/adapter-knex": "^4.0.0",
-    "@keystone-alpha/adapter-mongoose": "^4.0.0",
+    "@keystone-alpha/adapter-knex": "^4.0.4",
+    "@keystone-alpha/adapter-mongoose": "^4.0.2",
     "@keystone-alpha/app-graphql": "^6.3.1",
-    "@keystone-alpha/fields": "^10.2.0",
-    "@keystone-alpha/keystone": "^10.0.0",
+    "@keystone-alpha/fields": "^10.5.0",
+    "@keystone-alpha/keystone": "^11.0.0",
     "@keystone-alpha/session": "^2.0.1",
-    "@keystone-alpha/test-utils": "^2.2.1",
+    "@keystone-alpha/test-utils": "^2.2.3",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.6",
@@ -23,6 +23,7 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
+    "@keystone-alpha/auth-password": "^1.0.0",
     "express": "^4.17.1"
   }
 }

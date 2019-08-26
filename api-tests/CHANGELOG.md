@@ -1,5 +1,21 @@
 # @keystone-alpha/api-tests
 
+## 1.3.0
+
+### Minor Changes
+
+- [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a): Makes the password auth strategy its own package.
+  Previously: `const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');`
+  After change: `const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');`
+
+## 1.2.1
+
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+  - @keystone-alpha/adapter-knex@4.0.3
+  - @keystone-alpha/adapter-mongoose@4.0.1
+  - @keystone-alpha/test-utils@2.2.2
+  - @keystone-alpha/keystone@10.5.0
+
 ## 1.2.0
 
 ### Minor Changes

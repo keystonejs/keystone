@@ -78,7 +78,9 @@ class UpdateManyModal extends Component {
   handleSelect = selected => {
     const { list } = this.props;
     const selectedFields = selected.map(({ path, value }) => {
-      return list.fields.find(f => f.path === path || f.path === value);
+      return list.fields
+        .filter(({ isPrimaryKey }) => !isPrimaryKey)
+        .find(f => f.path === path || f.path === value);
     });
     this.setState({ selectedFields });
   };
@@ -91,7 +93,7 @@ class UpdateManyModal extends Component {
   getOptions = () => {
     const { list } = this.props;
     // remove the `options` key from select type fields
-    return list.fields.map(f => omit(f, ['options']));
+    return list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey).map(f => omit(f, ['options']));
   };
   render() {
     const { isLoading, isOpen, items, list } = this.props;

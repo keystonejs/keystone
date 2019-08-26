@@ -1,12 +1,9 @@
 {
   "name": "create-keystone-app",
-  "description": "Create minimal Keystone 5 app",
-  "version": "0.6.2",
+  "description": "Generate starter apps for Keystone 5",
+  "version": "1.0.1",
   "bin": {
     "create-keystone-app": "bin/cli.js"
-  },
-  "scripts": {
-    "test": "DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1"
   },
   "keywords": [
     "keystonejs"
@@ -14,15 +11,14 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "dependencies": {
-    "@samverschueren/stream-to-observable": "^0.3.0",
+    "@sindresorhus/slugify": "^0.6.0",
     "arg": "^4.1.0",
+    "cfonts": "^2.4.4",
     "chalk": "^2.4.2",
-    "ejs": "^2.6.1",
-    "endent": "^1.3.0",
-    "execa": "1.0.0",
-    "listr": "^0.14.3",
-    "rxjs": "^6.4.0",
-    "split": "^1.0.1",
+    "execa": "^2.0.4",
+    "fs-extra": "^7.0.0",
+    "kleur": "^3.0.3",
+    "prompts": "^2.2.1",
     "terminal-link": "^1.3.0"
   }
 }
