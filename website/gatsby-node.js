@@ -123,7 +123,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const navGroup = data.section;
     const navSubGroup = data.subSection;
     const order = data.order || 99999999999;
-    let pageTitle = data.title;
+    let pageTitle = data.title || '';
 
     const ast = compiler.parse(content);
     let description;
