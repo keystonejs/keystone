@@ -1,1 +1,0 @@
-Fix bug with custom query/mutation resolvers
