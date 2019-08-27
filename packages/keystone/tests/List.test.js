@@ -184,7 +184,9 @@ const listExtras = (getAuth = () => {}, queryMethod = undefined) => ({
   adapter: new MockAdapter(),
   getAuth,
   defaultAccess: { list: true, field: true },
-  getGraphQLQuery: () => queryMethod,
+  queryHelper: context => (queryString, { variables } = {}) => {
+    return queryMethod(queryString, context, variables);
+  },
   registerType: () => {},
 });
 
@@ -829,35 +831,20 @@ test('gqlAuxQueryResolvers', () => {
 });
 
 test('gqlAuxMutationResolvers', () => {
-  const resolver = id => `Hello, ${id}`;
-  const mutations = [
-    {
-      schema: 'example(id: ID): String',
-      resolver,
-    },
-  ];
-  const list = setup({ mutations });
-  expect(list.gqlAuxMutationResolvers.example).toBeInstanceOf(Function);
+  const list = setup();
+  expect(list.gqlAuxMutationResolvers).toEqual({});
 });
 
 [false, true].forEach(withAuth => {
   test(`getGqlMutations() ${withAuth ? 'with' : 'without'} auth`, () => {
     const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
-    const resolver = id => `Hello, ${id}`;
-    const mutations = [
-      {
-        schema: 'example(id: ID): String',
-        resolver,
-      },
-    ];
-    const extraConfig = { mutations };
+    const extraConfig = {};
     expect(
       setup({ access: true, ...extraConfig }, getAuth)
         .getGqlMutations()
         .map(normalise)
     ).toEqual(
       [
-        `example(id: ID): String`,
         `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
         `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
         `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
@@ -879,7 +866,6 @@ test('gqlAuxMutationResolvers', () => {
         .map(normalise)
     ).toEqual(
       [
-        `example(id: ID): String`,
         ...(withAuth
           ? [
               `unauthenticateTest: unauthenticateTestOutput`,
@@ -898,7 +884,6 @@ test('gqlAuxMutationResolvers', () => {
         .map(normalise)
     ).toEqual(
       [
-        `example(id: ID): String`,
         ...(withAuth
           ? [
               `unauthenticateTest: unauthenticateTestOutput`,
@@ -916,7 +901,6 @@ test('gqlAuxMutationResolvers', () => {
         .map(normalise)
     ).toEqual(
       [
-        `example(id: ID): String`,
         `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
         `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
         ...(withAuth
@@ -936,7 +920,6 @@ test('gqlAuxMutationResolvers', () => {
         .map(normalise)
     ).toEqual(
       [
-        `example(id: ID): String`,
         `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
         `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
         ...(withAuth
@@ -956,7 +939,6 @@ test('gqlAuxMutationResolvers', () => {
         .map(normalise)
     ).toEqual(
       [
-        `example(id: ID): String`,
         `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
         `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
         ...(withAuth

@@ -45,6 +45,9 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
+    this._extendedTypes = [];
+    this._extendedQueries = [];
+    this._extendedMutations = [];
     this._graphQLQuery = {};
     this.registeredTypes = new Set();
     this.eventHandlers = { onConnect };
@@ -59,6 +62,33 @@ module.exports = class Keystone {
       throw new Error('Need an adapter, yo');
     }
   }
+
+  _buildQueryHelper() {
+    return context => (queryString, { skipAccessControl = false, variables } = {}) => {
+      let passThroughContext = context;
+
+      if (skipAccessControl) {
+        passThroughContext = {
+          ...context,
+          getListAccessControlForUser: () => true,
+          getFieldAccessControlForUser: () => true,
+        };
+      }
+
+      const graphQLQuery = this._graphQLQuery[context.schemaName];
+
+      if (!graphQLQuery) {
+        return Promise.reject(
+          new Error(
+            'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
+          )
+        );
+      }
+
+      return graphQLQuery(queryString, passThroughContext, variables);
+    };
+  }
+
   createAuthStrategy(options) {
     const { type: StrategyType, list: listKey, config } = options;
     const { authType } = StrategyType;
@@ -78,7 +108,7 @@ module.exports = class Keystone {
 
     const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
-      getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],
+      queryHelper: this._buildQueryHelper(),
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key] || {},
@@ -97,6 +127,12 @@ module.exports = class Keystone {
     this.listsArray.push(list);
     list.initFields();
     return list;
+  }
+
+  extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
+    this._extendedTypes = this._extendedTypes.concat(types);
+    this._extendedQueries = this._extendedQueries.concat(queries);
+    this._extendedMutations = this._extendedMutations.concat(mutations);
   }
 
   /**
@@ -155,8 +191,7 @@ module.exports = class Keystone {
     // Deduping here avoids that problem.
     return [
       ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ skipAccessControl })))),
-      ...unique(flatten(this.listsArray.map(list => list.getGqlQueryTypes()))),
-      ...unique(flatten(this.listsArray.map(list => list.getGqlMutationTypes()))),
+      ...unique(this._extendedTypes),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -216,14 +251,20 @@ module.exports = class Keystone {
        }`,
       `type Query {
           ${unique(
-            flatten(firstClassLists.map(list => list.getGqlQueries({ skipAccessControl })))
+            flatten([
+              ...firstClassLists.map(list => list.getGqlQueries({ skipAccessControl })),
+              this._extendedQueries.map(({ schema }) => schema),
+            ])
           ).join('\n')}
           """ Retrieve the meta-data for all lists. """
           _ksListsMeta: [_ListMeta]
        }`,
       `type Mutation {
           ${unique(
-            flatten(firstClassLists.map(list => list.getGqlMutations({ skipAccessControl })))
+            flatten([
+              ...firstClassLists.map(list => list.getGqlMutations({ skipAccessControl })),
+              this._extendedMutations.map(({ schema }) => schema),
+            ])
           ).join('\n')}
        }`,
     ].map(s => print(gql(s)));
@@ -292,9 +333,16 @@ module.exports = class Keystone {
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
     // - first one wins)
-    // TODO: Document this order of precendence, becaut it's not obvious, and
+    // TODO: Document this order of precendence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
+    const customResolver = ({ schema, resolver }) => {
+      const name = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
+      return {
+        [name]: (obj, args, context, info) =>
+          resolver(obj, args, context, info, { query: this._buildQueryHelper() }),
+      };
+    };
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
@@ -316,11 +364,13 @@ module.exports = class Keystone {
         // And the Keystone meta queries must always be available
         _ksListsMeta: (_, args, context) =>
           this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
+        ...objMerge(this._extendedQueries.map(customResolver)),
       },
 
       Mutation: {
         ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers)),
         ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers)),
+        ...objMerge(this._extendedMutations.map(customResolver)),
       },
     };
 
