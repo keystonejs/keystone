@@ -173,7 +173,19 @@ export class OEmbed extends Implementation {
 
   async resolveInput({ resolvedData }) {
     const inputUrl = resolvedData[this.path];
-    if (!inputUrl) {
+
+    // NOTE: The following two conditions could easily be combined into a
+    // single `if (!inputUrl) return inputUrl`, but that would lose the nuance of
+    // returning `undefined` vs `null`.
+    // Premature Optimisers; be ware!
+    if (typeof inputUrl === 'undefined') {
+      // Nothing was passed in, so we can bail early.
+      return undefined;
+    }
+
+    if (inputUrl === null) {
+      // `null` was specifically uploaded, and we should set the field value to
+      // null. To do that we... return `null`
       return null;
     }
 
