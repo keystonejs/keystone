@@ -340,7 +340,7 @@ module.exports = class Keystone {
       const name = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
       return {
         [name]: (obj, args, context, info) =>
-          resolver(obj, args, context, info, { query: this._buildQueryHelper() }),
+          resolver(obj, args, context, info, { query: this._buildQueryHelper()(context) }),
       };
     };
     const resolvers = {
