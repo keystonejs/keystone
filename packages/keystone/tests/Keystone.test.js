@@ -178,6 +178,78 @@ describe('Keystone.createList()', () => {
   });
 });
 
+describe('Keystone.extendGraphQLSchema()', () => {
+  test('types', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+    keystone.createList('User', {
+      fields: {
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
+      },
+    });
+
+    keystone.extendGraphQLSchema({ types: ['type FooBar { foo: Int, bar: Float }'] });
+    const schema = keystone.getTypeDefs().join('\n');
+    expect(schema.match(/type FooBar {\s*foo: Int\s*bar: Float\s*}/g) || []).toHaveLength(1);
+  });
+
+  test('queries', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+    keystone.createList('User', {
+      fields: {
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
+      },
+    });
+
+    keystone.extendGraphQLSchema({
+      queries: [
+        {
+          schema: 'double(x: Int): Int',
+          resolver: (_, { x }) => 2 * x,
+        },
+      ],
+    });
+    const schema = keystone.getTypeDefs().join('\n');
+    expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
+    expect(keystone._extendedQueries).toHaveLength(1);
+  });
+
+  test('mutations', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+    keystone.createList('User', {
+      fields: {
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
+      },
+    });
+
+    keystone.extendGraphQLSchema({
+      mutations: [
+        {
+          schema: 'double(x: Int): Int',
+          resolver: (_, { x }) => 2 * x,
+        },
+      ],
+    });
+    const schema = keystone.getTypeDefs().join('\n');
+    expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
+    expect(keystone._extendedMutations).toHaveLength(1);
+  });
+});
+
 describe('Keystone.createItems()', () => {
   const lists = {
     User: {
