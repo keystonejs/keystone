@@ -4,7 +4,7 @@ import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { withToastManager } from 'react-toast-notifications';
+import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
 
 import { Container } from '@arch-ui/layout';
@@ -149,7 +149,12 @@ const ItemDetails = withRouter(
         return;
       }
 
-      const { onUpdate, toastManager, updateItem, item: initialData } = this.props;
+      const {
+        onUpdate,
+        toastManager: { addToast },
+        updateItem,
+        item: initialData,
+      } = this.props;
 
       const fieldsObject = this.getFieldsObject();
 
@@ -191,7 +196,7 @@ const ItemDetails = withRouter(
             messages.push(`${totalWarnings} warning${totalWarnings > 1 ? 's' : ''}`);
           }
 
-          toastManager.add(`Validation failed: ${messages.join(' and ')}.`, {
+          addToast(`Validation failed: ${messages.join(' and ')}.`, {
             autoDismiss: true,
             appearance: errors.length ? 'error' : 'warning',
           });
@@ -214,7 +219,7 @@ const ItemDetails = withRouter(
             </div>
           );
 
-          toastManager.add(toastContent, {
+          addToast(toastContent, {
             autoDismiss: true,
             appearance: 'success',
           });
@@ -373,8 +378,9 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
+const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   const itemQuery = list.getItemQuery(itemId);
+  const { addToast } = useToasts();
   return (
     <Suspense fallback={<PageLoading />}>
       {/* network-only because the data we mutate with is important for display
@@ -433,7 +439,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
                       updateError.message
                     );
 
-                    toastManager.add(toastContent, {
+                    addToast(toastContent, {
                       appearance: 'error',
                     });
                   }}
@@ -450,7 +456,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
                         onUpdate={() =>
                           refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
                         }
-                        toastManager={toastManager}
+                        toastManager={{ addToast }}
                         updateInProgress={updateInProgress}
                         updateErrorMessage={updateError && updateError.message}
                         updateItem={updateItem}
@@ -469,4 +475,4 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   );
 };
 
-export default withToastManager(ItemPage);
+export default ItemPage;
