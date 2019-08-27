@@ -1,1 +1,0 @@
-OEmbed & Unsplash types no longer lose their value on update.
