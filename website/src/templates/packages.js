@@ -1,8 +1,8 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React, { Fragment } from 'react'; // eslint-disable-line no-unused-vars
 import { Helmet } from 'react-helmet';
-import { Link, graphql } from 'gatsby';
+import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 
 import { MDXProvider } from '@mdx-js/react';
@@ -18,7 +18,6 @@ import { useNavData } from '../utils/hooks';
 import { Container } from '../components';
 import { CONTAINER_GUTTERS } from '../components/Container';
 import { Sidebar, SIDEBAR_WIDTH } from '../components/Sidebar';
-import { json } from 'body-parser';
 
 function titleCase(str, at = '-') {
   if (!str) return str;
@@ -46,35 +45,35 @@ export default function Template({
   const renderPackages = () => {
     return (
       <>
-        {navData.map(d => {
+        {navData.map((d, i) => {
           return (
-            <>
+            <Fragment key={`navData-${i}`}>
               <ul>
                 {d.pages
                   .filter(d => d.context.isPackageIndex)
                   .map(d => (
-                    <li>
+                    <li key={d.path}>
                       <a href={d.path}>{d.path.replace(/^\//, '@').replace(/\/$/, '')}</a>
                     </li>
                   ))}
               </ul>
               {d.subNavs.length
-                ? d.subNavs.map(d => (
-                    <>
+                ? d.subNavs.map((d, i) => (
+                    <Fragment key={`subNavData-${i}`}>
                       <h2>{d.navTitle.replace('-', ' ').toUpperCase()}</h2>
                       <ul>
                         {d.pages
                           .filter(d => d.context.isPackageIndex)
                           .map(d => (
-                            <li>
+                            <li key={d.path}>
                               {<a href={d.path}>{d.path.replace(/^\//, '@').replace(/\/$/, '')}</a>}
                             </li>
                           ))}
                       </ul>
-                    </>
+                    </Fragment>
                   ))
                 : null}
-            </>
+            </Fragment>
           );
         })}
       </>

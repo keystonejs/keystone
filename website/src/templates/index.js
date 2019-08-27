@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React, { Fragment } from 'react'; // eslint-disable-line no-unused-vars
 import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
@@ -46,7 +46,7 @@ export default function Template({
     const navSectionData = navData.find(d => d.navTitle === section);
     if (navSectionData) {
       return (
-        <>
+        <Fragment>
           <ul>
             {navSectionData.pages
               .filter(d => d.path !== fields.slug)
@@ -57,18 +57,18 @@ export default function Template({
               ))}
           </ul>
           {navSectionData.subNavs.length
-            ? navSectionData.subNavs.map(d => (
-                <>
+            ? navSectionData.subNavs.map((d, i) => (
+                <Fragment key={`subnavdata-${i}`}>
                   <h2>{d.navTitle.replace('-', ' ').toUpperCase()}</h2>
                   <ul>
                     {d.pages.map(d => (
                       <li>{<a href={d.path}>{d.context.pageTitle}</a>}</li>
                     ))}
                   </ul>
-                </>
+                </Fragment>
               ))
             : null}
-        </>
+        </Fragment>
       );
     }
     return null;

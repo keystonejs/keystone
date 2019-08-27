@@ -164,7 +164,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348
     Object.keys(fieldsToAdd)
-      .filter(key => typeof fieldsToAdd[key] !== undefined || typeof fieldsToAdd[key] !== null)
+      .filter(key => fieldsToAdd[key] !== undefined || fieldsToAdd[key] !== null)
       .forEach(key => {
         createNodeField({
           node,
