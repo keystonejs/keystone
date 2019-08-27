@@ -1,5 +1,11 @@
 # @keystone-alpha/fields
 
+## 10.6.1
+
+### Patch Changes
+
+- [9c1b1886](https://github.com/keystonejs/keystone-5/commit/9c1b1886): CloudinaryImage & File fields no longer lose their value during update mutations
+
 ## 10.6.0
 
 ### Minor Changes

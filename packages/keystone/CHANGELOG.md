@@ -1,5 +1,21 @@
 # @keystone-alpha/keystone
 
+## 12.0.0
+
+### Major Changes
+
+- [33001656](https://github.com/keystonejs/keystone-5/commit/33001656): \* Added `keystone.extendGraphQLSchema()` as the interface for custom mutations and queries.
+
+  ```javascript
+  keystone.extendGraphQLSchema({
+    types: ['type Foo { foo: Int }', ...],
+    queries: [{ schema: '...', resolver: () => {} }, ...],
+    mutations: [{ schema: '...', resolver: () => {} }, ...],
+  });
+  ```
+
+  - `new List()` and `keystone.createList()` no longer accept `queries` or `mutations` options! Please use `extendGraphQLSchema()` instead.
+
 ## 11.0.0
 
 ### Major Changes
