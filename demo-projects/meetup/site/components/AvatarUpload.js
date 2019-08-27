@@ -4,14 +4,16 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from 'react-apollo-hooks';
+import { useToasts } from 'react-toast-notifications';
 import { Avatar } from './Avatar';
 
 const validImageTypes = 'image/gif, image/jpeg, image/jpg, image/png';
 
-export const AvatarUpload = ({ userId, size, toastManager }) => {
+export const AvatarUpload = ({ userId, size }) => {
   const [loadingImage, setLoadingImage] = useState(false);
   const updateAvatar = useMutation(UPDATE_AVATAR);
   const { data, loading } = useQuery(USER, { variables: { userId } });
+  const { addToast } = useToasts();
   if (loading) return null;
 
   const user = data.User;
@@ -23,7 +25,7 @@ export const AvatarUpload = ({ userId, size, toastManager }) => {
 
     // Validate file type
     if (!file.type || validImageTypes.indexOf(file.type) === -1) {
-      toastManager.add('Please provide a valid image type: GIF, JPG, or PNG.', {
+      addToast('Please provide a valid image type: GIF, JPG, or PNG.', {
         appearance: 'error',
         autoDismiss: true,
       });
@@ -32,7 +34,7 @@ export const AvatarUpload = ({ userId, size, toastManager }) => {
 
     // Validate file size
     if (file.size > 5 * 1024 * 1024) {
-      toastManager.add('Maximum image size is 5MB.', {
+      addToast('Maximum image size is 5MB.', {
         appearance: 'error',
         autoDismiss: true,
       });
@@ -48,7 +50,7 @@ export const AvatarUpload = ({ userId, size, toastManager }) => {
     })
       .then(() => {
         setLoadingImage(false);
-        toastManager.add('New avatar image saved successfully.', {
+        addToast('New avatar image saved successfully.', {
           appearance: 'success',
           autoDismiss: true,
         });
@@ -109,7 +111,6 @@ export const AvatarUpload = ({ userId, size, toastManager }) => {
 
 AvatarUpload.propTypes = {
   size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge', 'xxlarge']).isRequired,
-  toastManager: PropTypes.object,
   userId: PropTypes.string.isRequired,
 };
 
