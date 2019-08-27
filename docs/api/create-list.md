@@ -74,14 +74,6 @@ keystone.createList('User',
 })
 ```
 
-### mutations
-
-An Array of custom mutations in the form of: `{ schema, resolver }`.
-
-_Note:_ These mutation don't necessarily need to be associated with the list. As a result this API may change in the future.
-
-### label
-
 Overrides label for the list in the AdminUI. Default is `listName`.
 
 ### labelField
