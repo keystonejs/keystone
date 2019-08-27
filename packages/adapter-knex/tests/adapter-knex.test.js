@@ -1,8 +1,5 @@
 const { KnexAdapter } = require('../lib/adapter-knex');
 
-// const mockError = jest.spyOn(global.console, 'error');
-// const mockWarn = jest.spyOn(global.console, 'warn');
-
 global.console = {
   error: jest.fn(),
   warn: jest.fn(),
