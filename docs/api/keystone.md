@@ -46,6 +46,26 @@ Registers a new list with Keystone and returns a Keystone list object.
 | listKey | A string representing the name of a list. This should be singular, E.g. 'User' not 'Users' |
 | config  | The list config. See: Creating lists                                                       |
 
+## keystone.extendGraphQLSchema({ types, queries, mutations })
+
+Extends keystones generated schema with custom types, queries, and mutations.
+
+|           |                                                     |
+| --------- | --------------------------------------------------- |
+| types     | A list of strings defining graphQL types.           |
+| queries   | A list of objects of the form { schema, resolver }. |
+| mutations | A list of objects of the form { schema, resolver }. |
+
+The `schema` for both queries and mutations should be a string defining the graphQL schema element for the query/mutation, e.g.
+
+```javascript
+{
+  schema: 'getBestPosts(author: ID!): [Post]';
+}
+```
+
+The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info)`. See the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature) for more details.
+
 ## keystone.connect()
 
 Manually connect Keystone to the adapters. See Custom Servers.

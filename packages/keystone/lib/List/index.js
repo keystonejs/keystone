@@ -15,7 +15,6 @@ const {
 } = require('@keystone-alpha/utils');
 const { parseListAccess } = require('@keystone-alpha/access-control');
 const { logger } = require('@keystone-alpha/logger');
-const gql = require('graphql-tag');
 
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
@@ -113,8 +112,6 @@ module.exports = class List {
     {
       fields,
       hooks = {},
-      queries = [],
-      mutations = [],
       schemaDoc,
       labelResolver,
       labelField,
@@ -130,7 +127,7 @@ module.exports = class List {
     },
     {
       getListByKey,
-      getGraphQLQuery,
+      queryHelper,
       adapter,
       defaultAccess,
       getAuth,
@@ -142,8 +139,6 @@ module.exports = class List {
     this.key = key;
     this._fields = fields;
     this.hooks = hooks;
-    this.queries = queries;
-    this.mutations = mutations;
     this.schemaDoc = schemaDoc;
 
     // Assuming the id column shouldn't be included in default columns or sort
@@ -231,29 +226,7 @@ module.exports = class List {
        *
        * @return Promise<Object> The graphql query response
        */
-      query: context => (queryString, { skipAccessControl = false, variables } = {}) => {
-        let passThroughContext = context;
-
-        if (skipAccessControl) {
-          passThroughContext = {
-            ...context,
-            getListAccessControlForUser: () => true,
-            getFieldAccessControlForUser: () => true,
-          };
-        }
-
-        const graphQLQuery = getGraphQLQuery(context.schemaName);
-
-        if (!graphQLQuery) {
-          return Promise.reject(
-            new Error(
-              'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
-            )
-          );
-        }
-
-        return graphQLQuery(queryString, passThroughContext, variables);
-      },
+      query: queryHelper,
     };
 
     // Tell Keystone about all the types we've seen
@@ -474,7 +447,6 @@ module.exports = class List {
     const queries = flatten(
       this.fields.map(field => field.getGqlAuxQueries({ skipAccessControl }))
     );
-    queries.push(...this.queries.map(({ schema }) => schema));
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
@@ -587,37 +559,18 @@ module.exports = class List {
 
   get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge([
-      ...this.queries.map(({ schema, resolver }) => {
-        const queryName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
-        return {
-          [queryName]: (obj, args, context, info) =>
-            resolver(obj, args, context, info, mapKeys(this.hooksActions, hook => hook(context))),
-        };
-      }),
-      ...this.fields.map(field => field.gqlAuxQueryResolvers),
-    ]);
+    return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
   }
 
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge([
-      ...this.mutations.map(({ schema, resolver }) => {
-        const mutationName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
-        return {
-          [mutationName]: (obj, args, context, info) =>
-            resolver(obj, args, context, info, mapKeys(this.hooksActions, hook => hook(context))),
-        };
-      }),
-      ...this.fields.map(field => field.gqlAuxMutationResolvers),
-    ]);
+    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
   }
 
   getGqlMutations({ skipAccessControl = false } = {}) {
     const mutations = flatten(
       this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
     );
-    mutations.push(...this.mutations.map(({ schema }) => schema));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -699,14 +652,6 @@ module.exports = class List {
     }
 
     return mutations;
-  }
-
-  getGqlMutationTypes() {
-    return flatten(this.mutations.filter(x => x.types).map(x => x.types));
-  }
-
-  getGqlQueryTypes() {
-    return flatten(this.queries.filter(x => x.types).map(x => x.types));
   }
 
   checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
