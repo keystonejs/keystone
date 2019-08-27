@@ -51,8 +51,8 @@ export default function Template({
             {navSectionData.pages
               .filter(d => d.path !== fields.slug)
               .map(d => (
-                <li>
-                  <a href={d.context.path}>{d.context.pageTitle}</a>
+                <li key={d.path}>
+                  <a href={d.path}>{d.context.pageTitle}</a>
                 </li>
               ))}
           </ul>
@@ -62,7 +62,7 @@ export default function Template({
                   <h2>{d.navTitle.replace('-', ' ').toUpperCase()}</h2>
                   <ul>
                     {d.pages.map(d => (
-                      <li>{<a href={d.path}>{d.context.pageTitle}</a>}</li>
+                      <li key={d.path}>{<a href={d.path}>{d.context.pageTitle}</a>}</li>
                     ))}
                   </ul>
                 </Fragment>

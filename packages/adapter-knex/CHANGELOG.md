@@ -1,5 +1,10 @@
 # @keystone-alpha/adapter-knex
 
+## 4.0.5
+
+- Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):
+  - @keystone-alpha/keystone@12.0.0
+
 ## 4.0.4
 
 - Updated dependencies [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a):
