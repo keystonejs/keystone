@@ -13,10 +13,11 @@ export function useDimensions() {
 }
 
 export function useNavData() {
+  // We filter out the index.md pages from the nav list
   let data = useStaticQuery(graphql`
     query HeadingQuery {
       allSitePage(
-        filter: { path: { ne: "/dev-404-page/" } }
+        filter: { path: { ne: "/dev-404-page/" }, context: { isIndex: { ne: true } } }
         sort: {
           fields: [
             context___sortOrder
@@ -32,6 +33,7 @@ export function useNavData() {
             context {
               navGroup
               navSubGroup
+              order
               isPackageIndex
               pageTitle
             }

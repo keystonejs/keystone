@@ -2,6 +2,7 @@
 section: quick-start
 title: Getting Started
 order: 1
+slug: quick-start
 [meta]-->
 
 # Getting Started
@@ -43,7 +44,7 @@ Enter the name of your project and follow the prompts. Be sure to select the "To
 
 ```sh
 cd my-app
-npm dev
+npm run dev
 ```
 
 Congratulations, you are now running your very own KeystoneJS application!

@@ -1,7 +1,7 @@
 <!--[meta]
-section: packages
+section: api
 title: Keystone
-draft: true
+order: 1
 [meta]-->
 
 # Keystone

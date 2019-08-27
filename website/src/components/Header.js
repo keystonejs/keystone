@@ -202,6 +202,6 @@ const NAV_LINKS = [
   },
   {
     name: 'Packages',
-    url: '/keystone-alpha/keystone/',
+    url: '/packages/',
   },
 ];

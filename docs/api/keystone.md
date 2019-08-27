@@ -5,38 +5,6 @@ title: Keystone
 
 # keystone
 
-## createAuthStrategy(options)
-
-### usage
-
-```javascript
-const { PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-```
-
-Initialises and return an authentication strategy for use in the AdminUI and other apps.
-
-### options
-
-<table>
-<tr>
-<th>StrategyType</th>
-<td>A valid Authentication Strategy. See: authentication strategies.</td>
-</tr>
-<tr>
-<th>listKey</th>
-<td>Where authentication is linked to a List such as a 'User'.</td>
-</tr>
-<tr>
-<th>config</th>
-<td>Configuration options that will be passed to the authentication strategy. </td>
-</tr>
-</table>
-
 ## keystone.createList(listKey, config)
 
 Registers a new list with Keystone and returns a Keystone list object.

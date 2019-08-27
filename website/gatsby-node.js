@@ -29,6 +29,8 @@ exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
 
   const template = path.resolve(`src/templates/docs.js`);
+  const indexTemplate = path.resolve(`src/templates/index.js`);
+  const packageTemplate = path.resolve(`src/templates/packages.js`);
 
   // The 'fields' values are injected during the `onCreateNode` call below
   return graphql(`
@@ -46,6 +48,7 @@ exports.createPages = ({ actions, graphql }) => {
               sortSubOrder
               order
               isPackageIndex
+              isIndex
               pageTitle
               draft
             }
@@ -66,18 +69,22 @@ exports.createPages = ({ actions, graphql }) => {
     const pages = result.data.allMdx.edges.filter(page => {
       const {
         node: {
-          fields: { draft, navGroup },
+          fields: { draft },
         },
       } = page;
 
-      return Boolean(!draft) && Boolean(navGroup !== ''); // Ok so now items with draft or no navGroup should not be shown?
+      return Boolean(!draft);
     });
 
     pages.forEach(({ node: { id, fields } }) => {
-      // The 'fields' values are injected during the `onCreateNode` call below
       createPage({
         path: `${fields.slug}`,
-        component: template,
+        component:
+          fields.slug === '/packages/'
+            ? packageTemplate
+            : fields.isIndex
+            ? indexTemplate
+            : template,
         context: {
           mdPageId: id,
           ...fields,
@@ -148,6 +155,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
         SUB_GROUPS.indexOf(navSubGroup) === -1 ? 999999 : SUB_GROUPS.indexOf(navSubGroup),
       order,
       isPackageIndex: isPackage && relativePath === 'README.md',
+      isIndex: !isPackage && relativePath === 'index.md',
       pageTitle: pageTitle,
       draft: Boolean(data.draft),
       description,
@@ -156,7 +164,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348
     Object.keys(fieldsToAdd)
-      .filter(key => fieldsToAdd[key])
+      .filter(key => typeof fieldsToAdd[key] !== undefined || typeof fieldsToAdd[key] !== null)
       .forEach(key => {
         createNodeField({
           node,

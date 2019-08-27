@@ -4,7 +4,7 @@ subSection: utilities
 title: Keystone Email
 [meta]-->
 
-# Keystone ßEmail
+# Keystone Email
 
 Send emails via various transports, rendered with Express-compatible
 renderers.
