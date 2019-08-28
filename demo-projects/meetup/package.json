@@ -27,7 +27,7 @@
     "@keystone-alpha/file-adapters": "^1.1.1",
     "@keystone-alpha/keystone": "^12.0.0",
     "@keystone-alpha/session": "^2.0.1",
-    "apollo-boost": "^0.3.1",
+    "apollo-boost": "^0.4.4",
     "apollo-client": "^2.6.4",
     "body-parser": "^1.18.2",
     "cross-env": "^5.2.0",
