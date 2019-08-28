@@ -22,6 +22,7 @@
     "@keystone-alpha/app-admin-ui": "^5.4.0",
     "@keystone-alpha/app-graphql": "^6.3.1",
     "@keystone-alpha/app-static": "^1.1.0",
+    "@keystone-alpha/list-plugins": "^0.0.0",
     "@keystone-alpha/auth-password": "^1.0.0",
     "@keystone-alpha/fields": "^10.5.0",
     "@keystone-alpha/keystone": "^12.0.0",
