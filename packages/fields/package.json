@@ -10,6 +10,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.0.1",
     "@arch-ui/alert": "^0.0.7",
     "@arch-ui/button": "^0.0.9",
     "@arch-ui/controls": "^0.0.10",
