@@ -19,7 +19,7 @@ see the [Access Control Guide](../guides/access-control.md) or the
 
     - [List level access control](#list-level-access-control)
 
-      - [access API](#access-api)
+      - [Access API](#access-api)
 
         - [Booleans](#booleans)
 
@@ -28,7 +28,7 @@ see the [Access Control Guide](../guides/access-control.md) or the
           - [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
           - [Granular functions returning Boolean](#granular-functions-returning-boolean)
 
-        - [GraphQLWheres](#graphqlwheres)
+        - [GraphQLWhere](#graphqlwhere)
 
           - [Granular static GraphQLWheres](#granular-static-graphqlwheres)
           - [Granular functions returning GraphQLWhere](#granular-functions-returning-graphqlwhere)
@@ -159,7 +159,7 @@ Definition of `access` operations:
 When access is denied, the GraphQL response will contain an error with
 `type: 'AccessDeniedError'`, and `null` for the data.
 
-*Note*: The `create` operation cannot be given `DeclarativeAccess` - it does not
+_Note_: The `create` operation cannot be given `DeclarativeAccess` - it does not
 make sense to do so and will throw an error if attempted.
 
 Let's break it down into concrete examples:

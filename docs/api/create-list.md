@@ -229,7 +229,7 @@ keystone.createList("WoolyBoi", {
 });
 ```
 
-*Note*: This will override labels in the AdminUI but will not change graphQL queries. For queries and mutations see: `itemQueryName` and `listQueryName`.
+_Note_: This will override labels in the AdminUI but will not change graphQL queries. For queries and mutations see: `itemQueryName` and `listQueryName`.
 
 ### plural
 
