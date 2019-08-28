@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/list-plugins", "type": "major" },
-    { "name": "@keystone-alpha/cypress-project-login", "type": "minor" }
-  ],
-  "dependents": []
-}

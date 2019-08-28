@@ -1,1 +1,0 @@
-upgraded `react-toast-notifications` to `2.2.4`. use `useToasts` hook when possible.

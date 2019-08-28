@@ -1,5 +1,11 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.5.1
+
+### Patch Changes
+
+- [30f6b7eb](https://github.com/keystonejs/keystone-5/commit/30f6b7eb): upgraded `react-toast-notifications` to `2.2.4`. use `useToasts` hook when possible.
+
 ## 5.5.0
 
 ### Minor Changes
