@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 12.0.1
+
+### Patch Changes
+
+- [1a20fd27](https://github.com/keystonejs/keystone-5/commit/1a20fd27): Fix bug with custom query/mutation resolvers
+
 ## 12.0.0
 
 ### Major Changes
