@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
-import { Mutation, Query } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { withRouter } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
@@ -381,96 +381,94 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
 const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   const itemQuery = list.getItemQuery(itemId);
   const { addToast } = useToasts();
+  const { loading, error, data, refetch } = useQuery(itemQuery, {
+    // network-only because the data we mutate with is important for display in the UI, and may be different than what's in the cache
+    fetchPolicy: 'network-only',
+    errorPolicy: 'all',
+  });
+  const [updateItem, { loading: updateInProgress, error: updateError }] = useMutation(
+    list.updateMutation,
+    {
+      onError: updateError => {
+        const [title, ...rest] = updateError.message.split(/\:/);
+        const toastContent = rest.length ? (
+          <div>
+            <strong>{title.trim()}</strong>
+            <div>{rest.join('').trim()}</div>
+          </div>
+        ) : (
+          updateError.message
+        );
+
+        addToast(toastContent, {
+          appearance: 'error',
+        });
+      },
+    }
+  );
   return (
     <Suspense fallback={<PageLoading />}>
-      {/* network-only because the data we mutate with is important for display
-          in the UI, and may be different than what's in the cache */}
-      <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
-        {({ loading, error, data, refetch }) => {
-          // Now that the network request for data has been triggered, we
-          // try to initialise the fields. They are Suspense capable, so may
-          // throw Promises which will be caught by the above <Suspense>
-          captureSuspensePromises(
-            list.fields
-              .filter(({ isPrimaryKey }) => !isPrimaryKey)
-              .filter(({ maybeAccess }) => !!maybeAccess.update)
-              .map(field => () => field.initFieldView())
+      {(() => {
+        // Now that the network request for data has been triggered, we
+        // try to initialise the fields. They are Suspense capable, so may
+        // throw Promises which will be caught by the above <Suspense>
+        captureSuspensePromises(
+          list.fields
+            .filter(({ isPrimaryKey }) => !isPrimaryKey)
+            .filter(({ maybeAccess }) => !!maybeAccess.update)
+            .map(field => () => field.initFieldView())
+        );
+
+        // If the views load before the API request comes back, keep showing
+        // the loading component
+        if (loading) return <PageLoading />;
+
+        // Only show error page if there is no data
+        // (ie; there could be partial data + partial errors)
+        if (
+          error &&
+          (!data ||
+            !data[list.gqlNames.itemQueryName] ||
+            !Object.keys(data[list.gqlNames.itemQueryName]).length)
+        ) {
+          return (
+            <Fragment>
+              <DocTitle>{list.singular} not found</DocTitle>
+              <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+            </Fragment>
           );
+        }
 
-          // If the views load before the API request comes back, keep showing
-          // the loading component
-          if (loading) return <PageLoading />;
+        const item = deserializeItem(list, data);
+        const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
-          // Only show error page if there is no data
-          // (ie; there could be partial data + partial errors)
-          if (
-            error &&
-            (!data ||
-              !data[list.gqlNames.itemQueryName] ||
-              !Object.keys(data[list.gqlNames.itemQueryName]).length)
-          ) {
-            return (
-              <Fragment>
-                <DocTitle>{list.singular} not found</DocTitle>
-                <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
-              </Fragment>
-            );
-          }
-
-          const item = deserializeItem(list, data);
-          const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
-
-          return item ? (
-            <main>
-              <DocTitle>
-                {item._label_} - {list.singular}
-              </DocTitle>
-              <Container id="toast-boundary">
-                <Mutation
-                  mutation={list.updateMutation}
-                  onError={updateError => {
-                    const [title, ...rest] = updateError.message.split(/\:/);
-                    const toastContent = rest.length ? (
-                      <div>
-                        <strong>{title.trim()}</strong>
-                        <div>{rest.join('').trim()}</div>
-                      </div>
-                    ) : (
-                      updateError.message
-                    );
-
-                    addToast(toastContent, {
-                      appearance: 'error',
-                    });
-                  }}
-                >
-                  {(updateItem, { loading: updateInProgress, error: updateError }) => {
-                    return (
-                      <ItemDetails
-                        adminPath={adminPath}
-                        item={item}
-                        itemErrors={itemErrors}
-                        key={itemId}
-                        list={list}
-                        getListByKey={getListByKey}
-                        onUpdate={() =>
-                          refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
-                        }
-                        toastManager={{ addToast }}
-                        updateInProgress={updateInProgress}
-                        updateErrorMessage={updateError && updateError.message}
-                        updateItem={updateItem}
-                      />
-                    );
-                  }}
-                </Mutation>
-              </Container>
-            </main>
-          ) : (
-            <ItemNotFound adminPath={adminPath} list={list} />
-          );
-        }}
-      </Query>
+        return item ? (
+          <main>
+            <DocTitle>
+              {item._label_} - {list.singular}
+            </DocTitle>
+            <Container id="toast-boundary">
+              <ItemDetails
+                adminPath={adminPath}
+                item={item}
+                itemErrors={itemErrors}
+                key={itemId}
+                list={list}
+                getListByKey={getListByKey}
+                onUpdate={() =>
+                  refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
+                }
+                toastManager={{ addToast }}
+                updateInProgress={updateInProgress}
+                updateErrorMessage={updateError && updateError.message}
+                updateItem={updateItem}
+              />
+            </Container>
+          </main>
+        ) : (
+          <ItemNotFound adminPath={adminPath} list={list} />
+        );
+      })()}
     </Suspense>
   );
 };
