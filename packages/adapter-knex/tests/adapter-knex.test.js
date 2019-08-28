@@ -7,14 +7,13 @@ global.console = {
 };
 
 describe('Knex Adapter', () => {
-  const testAdapter = new KnexAdapter({ connection: 'postgres://localhost/undefined_database' });
+  const testAdapter = new KnexAdapter({
+    knexOptions: { connection: 'postgres://localhost/undefined_database' },
+  });
   test('throws when database cannot be found', async () => {
     const result = await testAdapter
       ._connect({ name: 'undefined-database' })
       .catch(result => result);
-
-    // Temp logging for CI
-    console.log(result);
 
     expect(result).toBeInstanceOf(Error);
     expect(global.console.error).toHaveBeenCalledWith(
