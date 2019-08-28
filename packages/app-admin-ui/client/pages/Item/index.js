@@ -407,6 +407,8 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
     }
   );
 
+  // If the views load before the API request comes back, keep showing
+  // the loading component
   if (loading) {
     return <PageLoading />;
   }
@@ -441,9 +443,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
           .filter(({ maybeAccess }) => !!maybeAccess.update)
           .map(field => () => field.initFieldView())
       )}
-      {// If the views load before the API request comes back, keep showing
-      // the loading component
-      item ? (
+      {item ? (
         <main>
           <DocTitle>
             {item._label_} - {list.singular}
