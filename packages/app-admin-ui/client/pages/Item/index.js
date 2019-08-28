@@ -97,7 +97,14 @@ const ItemDetails = withRouter(
       }
     };
     onDelete = deletePromise => {
-      const { adminPath, history, list, item } = this.props;
+      const {
+        adminPath,
+        history,
+        list,
+        item,
+        toastManager: { addToast },
+      } = this.props;
+
       deletePromise
         .then(() => {
           if (this.mounted) {
@@ -105,10 +112,10 @@ const ItemDetails = withRouter(
           }
           history.push(`${adminPath}/${list.path}`);
 
-          toastItemSuccess(this.props.toast, item, 'Deleted successfully');
+          toastItemSuccess({ addToast }, item, 'Deleted successfully');
         })
         .catch(error => {
-          toastError(this.props.toast, error);
+          toastError({ addToast }, error);
         });
     };
 

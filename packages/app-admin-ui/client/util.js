@@ -28,7 +28,7 @@ export const deconstructErrorsToDataShape = error => {
 // Toast Formatters
 // ==============================
 
-export function toastItemSuccess(toast, item, message = 'Success') {
+export function toastItemSuccess({ addToast }, item, message = 'Success') {
   const toastContent = (
     <div>
       {item && item._label_ ? <strong>{item._label_}</strong> : null}
@@ -36,13 +36,13 @@ export function toastItemSuccess(toast, item, message = 'Success') {
     </div>
   );
 
-  toast.addToast(toastContent, {
+  addToast(toastContent, {
     autoDismiss: true,
     appearance: 'success',
-  })();
+  });
 }
 
-export function toastError(toast, error) {
+export function toastError({ addToast }, error) {
   const [title, ...rest] = error.message.split(/\:/);
   const toastContent = rest.length ? (
     <div>
@@ -53,9 +53,9 @@ export function toastError(toast, error) {
     error.message
   );
 
-  toast.addToast(toastContent, {
+  addToast(toastContent, {
     appearance: 'error',
-  })();
+  });
 }
 
 // ==============================
