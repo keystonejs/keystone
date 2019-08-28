@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, Fragment, useCallback, useMemo, Suspense } from 'react';
-import { Mutation } from 'react-apollo';
 import { useToasts } from 'react-toast-notifications';
+import { useMutation } from '@apollo/react-hooks';
 
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
@@ -196,16 +196,11 @@ class CreateItemModal extends Component {
 export default function CreateItemModalWithMutation(props) {
   const { list } = props;
   const { addToast } = useToasts();
-  return (
-    <Mutation mutation={list.createMutation}>
-      {(createItem, { loading }) => (
-        <CreateItemModal
-          createItem={createItem}
-          isLoading={loading}
-          addToast={addToast}
-          {...props}
-        />
-      )}
-    </Mutation>
-  );
+  const [createItem, { loading }] = useMutation(list.createMutation);
+  return (<CreateItemModal
+    createItem={createItem}
+    isLoading={loading}
+    addToast={addToast}
+    {...props}
+  />);
 }
