@@ -406,69 +406,64 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
       },
     }
   );
+  const item = data && data[list.gqlNames.itemQueryName] ? deserializeItem(list, data) : null;
+  const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
+
+  // Only show error page if there is no data
+  // (ie; there could be partial data + partial errors)
+  const isError =
+    error &&
+    (!data ||
+      !data[list.gqlNames.itemQueryName] ||
+      !Object.keys(data[list.gqlNames.itemQueryName]).length);
   return (
     <Suspense fallback={<PageLoading />}>
-      {(() => {
-        // Now that the network request for data has been triggered, we
-        // try to initialise the fields. They are Suspense capable, so may
-        // throw Promises which will be caught by the above <Suspense>
-        captureSuspensePromises(
-          list.fields
-            .filter(({ isPrimaryKey }) => !isPrimaryKey)
-            .filter(({ maybeAccess }) => !!maybeAccess.update)
-            .map(field => () => field.initFieldView())
-        );
-
-        // If the views load before the API request comes back, keep showing
-        // the loading component
-        if (loading) return <PageLoading />;
-
-        // Only show error page if there is no data
-        // (ie; there could be partial data + partial errors)
-        if (
-          error &&
-          (!data ||
-            !data[list.gqlNames.itemQueryName] ||
-            !Object.keys(data[list.gqlNames.itemQueryName]).length)
-        ) {
-          return (
-            <Fragment>
-              <DocTitle>{list.singular} not found</DocTitle>
-              <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
-            </Fragment>
-          );
-        }
-
-        const item = deserializeItem(list, data);
-        const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
-
-        return item ? (
-          <main>
-            <DocTitle>
-              {item._label_} - {list.singular}
-            </DocTitle>
-            <Container id="toast-boundary">
-              <ItemDetails
-                adminPath={adminPath}
-                item={item}
-                itemErrors={itemErrors}
-                key={itemId}
-                list={list}
-                getListByKey={getListByKey}
-                onUpdate={() =>
-                  refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
-                }
-                toastManager={{ addToast }}
-                updateInProgress={updateInProgress}
-                updateErrorMessage={updateError && updateError.message}
-                updateItem={updateItem}
-              />
-            </Container>
-          </main>
-        ) : (
-          <ItemNotFound adminPath={adminPath} list={list} />
-        );
-      })()}
+      {// Now that the network request for data has been triggered, we
+      // try to initialise the fields. They are Suspense capable, so may
+      // throw Promises which will be caught by the above <Suspense>
+      captureSuspensePromises(
+        list.fields
+          .filter(({ isPrimaryKey }) => !isPrimaryKey)
+          .filter(({ maybeAccess }) => !!maybeAccess.update)
+          .map(field => () => field.initFieldView())
+      )}
+      {// If the views load before the API request comes back, keep showing
+      // the loading component
+      loading ? (
+        <PageLoading />
+      ) : !isError && item ? (
+        <main>
+          <DocTitle>
+            {item._label_} - {list.singular}
+          </DocTitle>
+          <Container id="toast-boundary">
+            <ItemDetails
+              adminPath={adminPath}
+              item={item}
+              itemErrors={itemErrors}
+              key={itemId}
+              list={list}
+              getListByKey={getListByKey}
+              onUpdate={() =>
+                refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
+              }
+              toastManager={{ addToast }}
+              updateInProgress={updateInProgress}
+              updateErrorMessage={updateError && updateError.message}
+              updateItem={updateItem}
+            />
+          </Container>
+        </main>
+      ) : (
+        <Fragment>
+          <DocTitle>{list.singular} not found</DocTitle>
+          <ItemNotFound
+            adminPath={adminPath}
+            list={list}
+            errorMessage={error ? error.message : undefined}
+          />
+        </Fragment>
+      )}
     </Suspense>
   );
 };
