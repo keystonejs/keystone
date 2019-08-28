@@ -1,9 +1,9 @@
 <!--[meta]
-section: discussions
+section: guides
 title: Authentication
 [meta]-->
 
-# Authentication Guide
+# Authentication
 
 _Note on terminology_:
 

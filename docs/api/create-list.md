@@ -1,9 +1,9 @@
 <!--[meta]
 section: api
-title: keystone.createList() API
+title: createList
 [meta]-->
 
-# `keystone.createList(name, options)` API
+# keystone.createList(name, options)
 
 ## Usage
 
@@ -15,15 +15,15 @@ keystone.createList('Post', {
 
 ## API
 
-## `name`
+## name
 
 A singular name for the list e.g. 'Post'. Where possible plural names will be generated automatically or can be configured in options.
 
-### `options`
+## options
 
-#### `fields`
+### fields
 
-##### `defaultValue`
+#### defaultValue
 
 If not set a value must be provided when creating new items.
 
@@ -40,11 +40,11 @@ where it's possible a user is never able to create new items because they don't
 have access to create a certain field, which attempts to use the `defaultValue`,
 but then throws an error because no `defaultValue` has been set.
 
-### `schemaDoc`
+### schemaDoc
 
 A description for the list. Used in the Admin UI.
 
-### `hooks`
+### hooks
 
 Specify hooks to execute functions after list actions. List actions include:
 
@@ -74,11 +74,9 @@ keystone.createList('User',
 })
 ```
 
-### `label`
-
 Overrides label for the list in the AdminUI. Default is `listName`.
 
-### `labelField`
+### labelField
 
 Specify a field to use as a label for individual list items.
 
@@ -95,7 +93,7 @@ keystone.createList('User',
 })
 ```
 
-### `labelResolver`
+### labelResolver
 
 Function to resolve labels for individual list item. Default resolves the `labelField`.
 
@@ -112,9 +110,9 @@ keystone.createList('User',
 })
 ```
 
-### `access`
+### access
 
-(Access control)[/discussions/access-control] options for the list.
+(Access control)[/guides/access-control] options for the list.
 
 Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the (access control API documentation)[/api/access-control] for more details.
 
@@ -132,7 +130,7 @@ keystone.createList('User',
 })
 ```
 
-### `adminConfig`
+### adminConfig
 
 Options for the AdminUI including:
 
@@ -159,7 +157,7 @@ keystone.createList('User',
 })
 ```
 
-### `itemQueryName`
+### itemQueryName
 
 Changes the item name in GraphQL queries and mutations.
 
@@ -185,7 +183,7 @@ query {
 }
 ```
 
-### `listQueryName`
+### listQueryName
 
 Changes the list name in GraphQL queries and mutations.
 
@@ -211,7 +209,7 @@ query {
 }
 ```
 
-### `singular`
+### singular
 
 Keystone list names should be singular and Keystone will attempt to determine a plural.
 
@@ -233,7 +231,7 @@ keystone.createList("WoolyBoi", {
 
 _Note_: This will override labels in the AdminUI but will not change graphQL queries. For queries and mutations see: `itemQueryName` and `listQueryName`.
 
-### `plural`
+### plural
 
 Keystone will attempt to determine a plural for list items. Sometimes Keystone will not be able to determing the plural forcing you to change the list name. Or sometimes Keystone may get it wrong, especially for non-english words.
 
@@ -248,15 +246,15 @@ keystone.createList("Octopus", {
 });
 ```
 
-### `path`
+### path
 
 Changes the path in the Admin UI. Updating `plural` and `singular` values will not change the route in the admin UI. You can specify this using `path`.
 
-### `adapterConfig`
+### adapterConfig
 
 Override the adapter config options for a specific list.
 
-### `plugins`
+### plugins
 
 An array of functions that modify config values. Plugin functions receive a config object and can modify or extend this. They should return a valid list config.
 

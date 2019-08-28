@@ -10129,6 +10129,13 @@ gatsby-react-router-scroll@^2.1.3:
     scroll-behavior "^0.9.9"
     warning "^3.0.0"
 
+gatsby-remark-check-links@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-check-links/-/gatsby-remark-check-links-2.0.4.tgz#28da6d6af2a6a395328ce829850c646a69477241"
+  integrity sha512-jTzAkrRb7zjjUSqc/nBPVyLPiCW5hi7F2ai+GA2kL5c4ojXaK8KRMUaYeRByxbzEkt8Me94wybFyz32T0jiBhA==
+  dependencies:
+    unist-util-visit "^1.4.1"
+
 gatsby-remark-copy-linked-files@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/gatsby-remark-copy-linked-files/-/gatsby-remark-copy-linked-files-2.1.3.tgz#4b5d632a8907d2a327231a76c79e6c023852e745"
@@ -22765,7 +22772,7 @@ unist-util-visit@^1.0.0, unist-util-visit@^1.1.0, unist-util-visit@^1.3.0, unist
   dependencies:
     unist-util-visit-parents "^2.0.0"
 
-unist-util-visit@^1.1.3:
+unist-util-visit@^1.1.3, unist-util-visit@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/unist-util-visit/-/unist-util-visit-1.4.1.tgz#4724aaa8486e6ee6e26d7ff3c8685960d560b1e3"
   integrity sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==

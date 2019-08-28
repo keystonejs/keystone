@@ -1,5 +1,5 @@
 <!--[meta]
-section: discussions
+section: guides
 title: Custom Server
 [meta]-->
 
@@ -21,7 +21,7 @@ application which consumes your [schema definition](../schema.md). A Custom
 Server must handle initialising a http server which correctly executes any given
 [KeystoneJS Apps](../apps.md).
 
-_NOTE_: Before reaching for a custom server, consider using a [KeystoneJS
+_Note_: Before reaching for a custom server, consider using a [KeystoneJS
 App](../apps.md) which can enhance the functionality of the default server. Apps
 available in Keystone include:
 

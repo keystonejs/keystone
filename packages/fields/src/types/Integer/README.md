@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: Integer
 [meta]-->
 
@@ -24,7 +25,3 @@ keystone.createList('Review', {
 | `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
 
 ---
-
-```DOCS_TODO
-TODO
-```

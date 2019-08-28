@@ -1,6 +1,7 @@
 <!--[meta]
 section: tutorials
 title: Admin UI
+draft: true
 [meta]-->
 
 # Using the KeystoneJS Admin UI

@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: File
 [meta]-->
 
@@ -23,7 +24,3 @@ keystone.createList('Applicant', {
 | `isRequired` | `Boolean` | `false` | Does this field require a value? |
 
 ---
-
-```DOCS_TODO
-TODO
-```

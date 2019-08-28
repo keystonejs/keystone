@@ -3,7 +3,7 @@
 Contributions to KeystoneJS in the form of issues and PRs are welcomed.
 
 During the alpha stage of development we are focussing on getting the core systems working smoothly.
-Contributions which improve the documention and test coverage are particularly welcomed.
+Contributions which improve the documentation and test coverage are particularly welcomed.
 
 ### Community Ecosystem
 

@@ -5,6 +5,15 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 
+const {
+  createdAt,
+  createdBy,
+  updatedAt,
+  updatedBy,
+  atTracking,
+  byTracking,
+} = require('@keystone-alpha/list-plugins');
+
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
   adapter: new MongooseAdapter(),
@@ -35,6 +44,23 @@ keystone.createList('Post', {
     author: { type: Relationship, ref: 'User' },
     editors: { type: Relationship, ref: 'User', many: true },
   },
+});
+
+keystone.createList('ListWithPlugin', {
+  fields: {
+    text: { type: Text },
+  },
+  plugins: [
+    atTracking(),
+    createdAt({ createdAtField: 'whenCreated' }),
+    updatedAt({ updatedAtField: 'whenUpdated' }),
+    byTracking({
+      createdByField: 'creator',
+      updatedByField: 'updater',
+    }),
+    createdBy(),
+    updatedBy(),
+  ],
 });
 
 module.exports = {

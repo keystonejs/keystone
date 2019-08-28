@@ -1,5 +1,5 @@
 <!--[meta]
-section: packages
+section: api
 title: Authentication Strategies
 [meta]-->
 

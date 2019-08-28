@@ -1,5 +1,6 @@
 <!--[meta]
-section: packages
+section: api
+subSection: utilities
 title: Test Utils
 [meta]-->
 

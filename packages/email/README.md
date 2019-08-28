@@ -1,9 +1,10 @@
 <!--[meta]
-section: packages
-title: Email Sending
+section: api
+subSection: utilities
+title: Keystone Email
 [meta]-->
 
-# Email Sending
+# Keystone Email
 
 Send emails via various transports, rendered with Express-compatible
 renderers.

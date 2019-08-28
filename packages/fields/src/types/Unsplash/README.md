@@ -1,6 +1,7 @@
 <!--[meta]
-section: field-types
-title: Unsplash Field Type
+section: api
+subSection: field-types
+title: Unsplash
 [meta]-->
 
 # Unsplash
@@ -37,10 +38,6 @@ keystone.createList('Post', {
 | Option       | Type      | Default | Description                      |
 | ------------ | --------- | ------- | -------------------------------- |
 | `isRequired` | `Boolean` | `false` | Does this field require a value? |
-
-```DOCS_TODO
-TODO: Missing config options
-```
 
 ## GraphQL
 
@@ -173,10 +170,4 @@ Will result in something like:
     }
   }
 }
-```
-
----
-
-```DOCS_TODO
-TODO: Missing standard sections
 ```

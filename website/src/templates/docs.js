@@ -35,7 +35,10 @@ export default function Template({
   pageContext: { slug },
 }) {
   let navData = useNavData();
-  let flatNavData = [].concat(...Object.values(navData));
+  let flatNavData = navData.reduce((prev, next) => {
+    const subNavData = next.subNavs.reduce((prev, next) => [...prev].concat(next.pages), []);
+    return [...prev, ...next.pages, ...subNavData];
+  }, []);
   let currentPageIndex = flatNavData.findIndex(node => node.path === slug);
   let prev, next;
   if (currentPageIndex !== 0) {

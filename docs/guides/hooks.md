@@ -1,9 +1,9 @@
 <!--[meta]
-section: discussions
+section: guides
 title: Hooks
 [meta]-->
 
-# Hooks Guide
+# Hooks
 
 > _NOTE: Below is an overview of hooks. For API docs see
 > [Hooks API](../api/hooks.md)._
@@ -132,8 +132,4 @@ Which [Field](#field-hooks) & [Field Type](#field-type-hooks) hooks are executed
 - `beforeDelete`: Call on all fields.
 - `afterDelete`: Called on all fields.
 
-## Error Handling
-
-```DOCS_TODO
-TODO
-```
+<!-- TODO: ## Error Handling -->
