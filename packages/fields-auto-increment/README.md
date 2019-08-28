@@ -1,9 +1,10 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: AutoIncrement
 [meta]-->
 
-# Keystone 5 `AutoIncrement` Field Type
+# AutoIncrement
 
 An automatically incrementing integer with support for the Knex adapter.
 It's important to note, this type..

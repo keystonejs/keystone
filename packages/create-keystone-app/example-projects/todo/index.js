@@ -29,8 +29,3 @@ module.exports = {
     new AdminUIApp({ enableDefaultRoute: true }),
   ],
 };
-
-// CRA should be like next with more doco on how to "eject"
-// Spawn child in dev
-
-// Need to look at next doco on how to navigate people ot examples

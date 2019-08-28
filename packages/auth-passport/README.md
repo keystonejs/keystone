@@ -155,7 +155,7 @@ Facebook, etc)._
 
 Due to the extra route used for gathering the user's name, this example
 implements [an All-in-one Custom
-Server](/discussions/custom-server#all-in-one-custom-server) and should be run
+Server](/guides/custom-server#all-in-one-custom-server) and should be run
 with `node server.js`, then visit `http://localhost:3000/auth/google` to start
 the Google authentication process.
 

@@ -1,6 +1,7 @@
 <!--[meta]
-section: field-types
-title: OEmbed Field Type
+section: api
+subSection: field-types
+title: OEmbed
 [meta]-->
 
 # OEmbed
@@ -39,10 +40,6 @@ keystone.createList('User', {
 | Option       | Type      | Default | Description                      |
 | ------------ | --------- | ------- | -------------------------------- |
 | `isRequired` | `Boolean` | `false` | Does this field require a value? |
-
-```DOCS_TODO
-TODO
-```
 
 ## GraphQL
 
@@ -237,7 +234,3 @@ Will result in something like:
 ```
 
 ---
-
-```DOCS_TODO
-TODO: Clean up and standardisation
-```

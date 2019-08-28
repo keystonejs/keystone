@@ -1,5 +1,6 @@
 <!--[meta]
-section: packages
+section: api
+subSection: field-adapters
 title: File Adapters
 [meta]-->
 
@@ -11,12 +12,4 @@ Different contexts are supported by different file adapters. This package contai
 
 ## `LocalFileAdapter`
 
-```DOCS_TODO
-TODO
-```
-
 ## `CloudinaryFileAdapter`
-
-```DOCS_TODO
-TODO
-```

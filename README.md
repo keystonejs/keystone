@@ -154,7 +154,7 @@ _Note that when using a custom server, you will no longer get the formatted
 console output when starting a server._
 
 For more, see the [Custom Server
-Discussion](https://v5.keystonejs.com/discussions/custom-server).
+Discussion](https://v5.keystonejs.com/guides/custom-server).
 
 ### Production Build
 
@@ -217,7 +217,7 @@ tightly coupled to the API.
 
 ### Adding Authentication
 
-_See [Authentication docs](https://v5.keystonejs.com/discussions/authentication)._
+_See [Authentication docs](https://v5.keystonejs.com/guides/authentication)._
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:

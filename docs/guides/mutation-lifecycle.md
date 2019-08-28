@@ -1,5 +1,5 @@
 <!--[meta]
-section: discussions
+section: guides
 title: Mutation Lifecycle
 [meta]-->
 

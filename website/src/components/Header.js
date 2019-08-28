@@ -197,15 +197,11 @@ const NAV_LINKS = [
     url: '/guides/',
   },
   {
-    name: 'Tutorials',
-    url: '/tutorials/',
-  },
-  {
     name: 'API',
     url: '/api/',
   },
   {
     name: 'Packages',
-    url: '/keystone-alpha/keystone/',
+    url: '/packages/',
   },
 ];

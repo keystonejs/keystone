@@ -1,5 +1,4 @@
 <!--[meta]
-section: packages
 title: Mongo Join Builder
 [meta]-->
 

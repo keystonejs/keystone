@@ -1,6 +1,7 @@
 <!--[meta]
-section: field-types
-title: Introduction
+section: api
+title: Field Types
+order: 2
 [meta]-->
 
 # Field Types
