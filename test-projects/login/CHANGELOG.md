@@ -1,5 +1,12 @@
 # @keystone-alpha/cypress-project-login
 
+## 1.4.0
+
+### Minor Changes
+
+- [3469873b](https://github.com/keystonejs/keystone-5/commit/3469873b): added initial release of list-plugins with support for createdAt, updatedAt, createdBy and updatedBy tracking using List plugins feature
+  updated login test project to add a list with all possible tracking field options.
+
 ## 1.3.1
 
 - Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):
