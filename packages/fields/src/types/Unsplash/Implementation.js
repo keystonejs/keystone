@@ -222,7 +222,19 @@ export class Unsplash extends Implementation {
 
   async resolveInput({ resolvedData }) {
     const inputId = resolvedData[this.path];
-    if (!inputId) {
+
+    // NOTE: The following two conditions could easily be combined into a
+    // single `if (!inputId) return inputId`, but that would lose the nuance of
+    // returning `undefined` vs `null`.
+    // Premature Optimisers; be ware!
+    if (typeof inputId === 'undefined') {
+      // Nothing was passed in, so we can bail early.
+      return undefined;
+    }
+
+    if (inputId === null) {
+      // `null` was specifically uploaded, and we should set the field value to
+      // null. To do that we... return `null`
       return null;
     }
 

@@ -1,7 +1,7 @@
 import React, { Component, useState, useCallback } from 'react';
 import gql from 'graphql-tag';
 import { useFormState } from 'react-use-form-state';
-import { withToastManager } from 'react-toast-notifications';
+import { useToasts } from 'react-toast-notifications';
 import { useMutation } from 'react-apollo-hooks';
 
 import { AvatarUpload } from '../components/AvatarUpload';
@@ -39,14 +39,14 @@ export default class ProfilePage extends Component {
   }
 }
 
-const Profile = withToastManager(props => {
-  const { user, toastManager } = props;
+const Profile = ({ user }) => {
   const [formState, { text, email, password }] = useFormState({
     name: user.name,
     email: user.email,
     twitterHandle: user.twitterHandle || '',
     image: user.image,
   });
+  const { addToast } = useToasts();
   const [validationErrors, setValidationErrors] = useState({});
   const [updatingUser, setUpdatingUser] = useState(false);
 
@@ -73,7 +73,7 @@ const Profile = withToastManager(props => {
             ...formState,
           },
         });
-        toastManager.add('Changes saved successfully.', {
+        addToast('Changes saved successfully.', {
           appearance: 'success',
           autoDismiss: true,
         });
@@ -84,7 +84,7 @@ const Profile = withToastManager(props => {
         );
         setValidationErrors({ password: `${errorMessage}` });
 
-        toastManager.add('Please try again.', {
+        addToast('Please try again.', {
           appearance: 'error',
           autoDismiss: true,
         });
@@ -97,7 +97,7 @@ const Profile = withToastManager(props => {
 
   return (
     <div>
-      <AvatarUpload userId={user.id} size="xlarge" toastManager={toastManager} />
+      <AvatarUpload userId={user.id} size="xlarge" />
       <form onSubmit={handleSubmit} noValidate>
         <label htmlFor="name">
           Name
@@ -150,7 +150,7 @@ const Profile = withToastManager(props => {
       </form>
     </div>
   );
-});
+};
 
 const USER = gql`
   query user {
