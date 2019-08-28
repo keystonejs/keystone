@@ -1,5 +1,11 @@
 # @keystone-alpha/auth-passport
 
+## 3.1.0
+
+### Minor Changes
+
+- [b301fd0f](https://github.com/keystonejs/keystone-5/commit/b301fd0f): `auth-passport`'s `onAuthenticated` method now receives an `isNewItem` flag to indicate if the user is logging for the first time or not.
+
 ## 3.0.0
 
 ### Major Changes
