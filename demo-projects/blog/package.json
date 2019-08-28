@@ -31,7 +31,7 @@
     "@keystone-alpha/file-adapters": "^2.0.1",
     "@keystone-alpha/keystone": "^15.3.1",
     "@keystone-alpha/oembed-adapters": "^1.1.2",
-    "apollo-boost": "^0.3.1",
+    "apollo-boost": "^0.4.4",
     "apollo-client": "^2.6.4",
     "apollo-upload-client": "^10.0.0",
     "cross-env": "^5.2.0",
