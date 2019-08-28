@@ -16,9 +16,9 @@ describe('Knex Adapter', () => {
     // Temp logging for CI
     console.log(result);
 
+    expect(result).toBeInstanceOf(Error);
     expect(global.console.error).toHaveBeenCalledWith(
       "Could not connect to database: 'postgres://localhost/undefined_database'"
     );
-    expect(result).toBeInstanceOf(Error);
   });
 });

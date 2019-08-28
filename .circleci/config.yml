@@ -13,20 +13,21 @@ x-job-setup: &job-setup
         KNEX_URI: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
     - image: mongo:3.6.7
     - image: circleci/postgres:9.6.5-alpine-ram
+  parallelism: 5
 
   working_directory: /home/circleci/repo
 
 # Download and cache dependencies
 x-restore-cache: &restore-cache
   keys:
-    - v11-dependencies-{{ checksum "yarn.lock" }}
+    - v12-dependencies-{{ checksum "yarn.lock" }}
       # fallback to using the latest cache if no exact match is found
-    - v11-dependencies-
+    - v12-dependencies-
 
 x-save-cache: &save-cache
   paths:
     - node_modules
-  key: v11-dependencies-{{ checksum "yarn.lock" }}
+  key: v12-dependencies-{{ checksum "yarn.lock" }}
 
 x-integration-steps: &integration-steps
   steps:
