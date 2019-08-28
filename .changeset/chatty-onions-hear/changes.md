@@ -1,0 +1,1 @@
+fix issue related to react-toast-notifications update. toasts are not triggered after delete success.
