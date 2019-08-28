@@ -455,32 +455,28 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
           .filter(({ maybeAccess }) => !!maybeAccess.update)
           .map(field => () => field.initFieldView())
       )}
-      {item ? (
-        <main>
-          <DocTitle>
-            {item._label_} - {list.singular}
-          </DocTitle>
-          <Container id="toast-boundary">
-            <ItemDetails
-              adminPath={adminPath}
-              item={item}
-              itemErrors={itemErrors}
-              key={itemId}
-              list={list}
-              getListByKey={getListByKey}
-              onUpdate={() =>
-                refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
-              }
-              toastManager={{ addToast }}
-              updateInProgress={updateInProgress}
-              updateErrorMessage={updateError && updateError.message}
-              updateItem={updateItem}
-            />
-          </Container>
-        </main>
-      ) : (
-        <ItemNotFound adminPath={adminPath} list={list} />
-      )}
+      <main>
+        <DocTitle>
+          {item._label_} - {list.singular}
+        </DocTitle>
+        <Container id="toast-boundary">
+          <ItemDetails
+            adminPath={adminPath}
+            item={item}
+            itemErrors={itemErrors}
+            key={itemId}
+            list={list}
+            getListByKey={getListByKey}
+            onUpdate={() =>
+              refetch().then(refetchedData => deserializeItem(list, refetchedData.data))
+            }
+            toastManager={{ addToast }}
+            updateInProgress={updateInProgress}
+            updateErrorMessage={updateError && updateError.message}
+            updateItem={updateItem}
+          />
+        </Container>
+      </main>
     </Suspense>
   );
 };
