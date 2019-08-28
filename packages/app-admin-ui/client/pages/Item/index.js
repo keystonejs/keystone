@@ -420,24 +420,29 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
     return <PageLoading />;
   }
 
+  const item = data && data[list.gqlNames.itemQueryName] ? deserializeItem(list, data) : undefined;
+  const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
+
+  // There may be partial result when error
+  const noData =
+    !data ||
+    !data[list.gqlNames.itemQueryName] ||
+    !Object.keys(data[list.gqlNames.itemQueryName]).length;
+
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
-  if (
-    error &&
-    (!data ||
-      !data[list.gqlNames.itemQueryName] ||
-      !Object.keys(data[list.gqlNames.itemQueryName]).length)
-  ) {
+  if ((error && noData) || !item) {
     return (
       <Fragment>
         <DocTitle>{list.singular} not found</DocTitle>
-        <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+        <ItemNotFound
+          adminPath={adminPath}
+          errorMessage={error ? error.message : undefined}
+          list={list}
+        />
       </Fragment>
     );
   }
-
-  const item = deserializeItem(list, data);
-  const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
   return (
     <Suspense fallback={<PageLoading />}>
