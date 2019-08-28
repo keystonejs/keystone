@@ -6,9 +6,10 @@ title: Hooks
 # Hooks API
 
 The APIs for each hook are mostly the same across the 3 hook types
-([list hooks](../discussions/hooks.md#list-hooks), [field hooks](../discussions/hooks.md#field-hooks), [field type
-hooks](../discussions/hooks.md#field-type-hooks)).
-Any differences are called out in the documentation for that hook below.
+([list hooks](../guides/hooks.md#list-hooks), [field hooks](../guides/hooks.md#field-hooks), [field type
+hooks](../guides/hooks.md#field-type-hooks)).
+
+Any differences are called out in the documentation below.
 
 Usage:
 
@@ -156,7 +157,7 @@ An API providing programatic access to List functions:
 
 The result of `resolveInput()` should have the same structure as the input (ie;
 the same keys). It is passed to [the next function in the execution
-order](../discussions/hooks.md#hook-execution-order) as the input data.
+order](../guides/hooks.md#hook-execution-order) as the input data.
 
 ---
 
@@ -192,10 +193,6 @@ const validateInput = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `validateDelete: Func(ValidateDeleteArg: Object) => undefined|Promise<undefined>`
@@ -224,10 +221,6 @@ const validateDelete = ({
   context: Object,
   list: Object,
 }
-```
-
-```DOCS_TODO
-TODO
 ```
 
 ---
@@ -262,10 +255,6 @@ const beforeChange = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `afterChange: Func(AfterChangeArg: Object) => undefined|Promise<undefined>`
@@ -298,10 +287,6 @@ const afterChange = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `beforeDelete: Func(BeforeDeleteArg: Object) => undefined|Promise<undefined>`
@@ -330,10 +315,6 @@ const beforeDelete = ({
 }
 ```
 
-```DOCS_TODO
-TODO
-```
-
 ---
 
 ## `afterDelete: Func(AfterDeleteArg: Object) => undefined|Promise<undefined>`
@@ -360,8 +341,4 @@ const afterDelete = ({
   context: Object,
   list: Object,
 }
-```
-
-```DOCS_TODO
-TODO
 ```

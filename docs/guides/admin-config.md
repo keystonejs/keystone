@@ -1,12 +1,11 @@
 <!--[meta]
 section: guides
-title: Configuring Your Admin UI
+title: Configuring the Admin UI
+draft: true
 [meta]-->
 
-# Configuring Your Admin UI
+# Configuring the Admin UI
 
 In this guide we will learn how to config the behaviour of our Admin UI.
 
-```DOCS_TODO
-TODO
-```
+Let's start using the CLI to create a starter project.

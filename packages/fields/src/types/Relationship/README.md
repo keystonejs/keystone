@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: Relationship
 [meta]-->
 
@@ -34,10 +35,6 @@ keystone.createList('Org', {
 | Option     | Type      | Default | Description                                                     |
 | ---------- | --------- | ------- | --------------------------------------------------------------- |
 | `isUnique` | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
-
-```DOCS_TODO
-TODO: Missing config options
-```
 
 ### Nested Mutations
 
@@ -173,7 +170,3 @@ mutation replaceAllPosts {
 ```
 
 ---
-
-```DOCS_TODO
-TODO: Standard sections missing
-```

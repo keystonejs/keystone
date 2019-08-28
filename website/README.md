@@ -26,7 +26,7 @@ for the website. Here you can use both `.md` and `.js` to define pages.
 
 ### A brief detour into some definitions.
 
-We are using certain concepts to group together our content. Our documenation is either:
+We are using certain concepts to group together our content. Our documentation is either:
 
 - tutorial
   - designed for newer users
@@ -44,7 +44,7 @@ We are using certain concepts to group together our content. Our documenation is
   - designed for people looking for specific answers on implementation
   - may make assumptions that the person reading has a basic understanding of the system
   - Very nitty gritty documentation, mostly explanatory text, often no examples
-  - Verymuch a glossary or dictionary - must be easily searchable
+  - Very much a glossary or dictionary - must be easily searchable
 - Decision documentation
   - Rarely needed by users
   - Focused on explaining _why_ a decision was made, not just how to use it.

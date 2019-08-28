@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: Float
 [meta]-->
 
@@ -25,7 +26,3 @@ keystone.createList('SensorReading', {
 | `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
 
 ---
-
-```DOCS_TODO
-TODO
-```

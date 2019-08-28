@@ -1,10 +1,7 @@
 <!--[meta]
-section: packages
-title: GraphQL App
+section: api
+subSection: apps
+title: GraphQL API
 [meta]-->
 
-# GraphQL App
-
-```DOCS_TODO
-TODO
-```
+# GraphQL API

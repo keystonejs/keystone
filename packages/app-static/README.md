@@ -1,6 +1,7 @@
 <!--[meta]
-section: packages
-title: KeystoneJS Static File App
+section: api
+subSection: apps
+title: Static App
 [meta]-->
 
 # KeystoneJS Static File App

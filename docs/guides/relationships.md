@@ -7,7 +7,7 @@ title: Creating Relationships Between Lists
 
 ## Pick assignee from Users collection (to-single relationship)
 
-Now, when we've created all neccessary lists, let's link each other by setting up
+Now, when we've created all necessary lists, let's link each other by setting up
 `relationship`. Tweak assignee field in `Todos.js` to match next code:
 
 ```javascript
@@ -76,6 +76,7 @@ tasks: {
 
 Option `many: true` indicates, that User can store multiple references to tasks. Note that we've changed `task` to `tasks`. Copy this code to your application and dont forget to change `assignee` field in `Todos.js` to match new field name. Now in admin UI you can pick multiple tasks for a user.
 
-See also:\
-[Schema - Lists & Fields](../discussions/schema.md)\
-[Field Types - Relationship](../../packages/fields/src/types/Relationship/README.md)
+See also:
+
+- [Schema - Lists & Fields](../guides/schema.md)
+- [Field Types - Relationship](../../packages/fields/src/types/Relationship/README.md)

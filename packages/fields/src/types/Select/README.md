@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: Select
 [meta]-->
 
@@ -44,10 +45,4 @@ keystone.createList('Rsvp', {
     // ..
   },
 });
-```
-
----
-
-```DOCS_TODO
-TODO
 ```

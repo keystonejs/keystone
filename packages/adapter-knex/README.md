@@ -1,5 +1,6 @@
 <!--[meta]
-section: packages
+section: api
+subSection: adapters
 title: Database Adapter - Knex
 [meta]-->
 

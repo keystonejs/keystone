@@ -1,13 +1,18 @@
 const bolt = require('bolt');
 const fs = require('fs');
+const path = require('path');
 
 async function getPackagePlugins() {
   const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
+  const docSections = fs.readdirSync(`${rootDir}/docs/`).filter(dir => {
+    const fullDir = path.join(`${rootDir}/docs/`, dir);
+    return fs.existsSync(fullDir) && fs.lstatSync(fullDir).isDirectory();
+  });
 
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
-    ...['quick-start', 'tutorials', 'guides', 'api', 'discussions'].map(name => ({
+    ...docSections.map(name => ({
       resolve: 'gatsby-source-filesystem',
       options: { name, path: `${rootDir}/docs/${name}/` },
     })),
@@ -64,6 +69,13 @@ async function getGatsbyConfig() {
         },
       },
       {
+        // https://github.com/gatsbyjs/gatsby/issues/15486#issuecomment-509405867
+        resolve: `gatsby-transformer-remark`,
+        options: {
+          plugins: [`gatsby-remark-images`],
+        },
+      },
+      {
         resolve: `gatsby-mdx`,
         options: {
           extensions: ['.mdx', '.md'],
@@ -100,6 +112,7 @@ async function getGatsbyConfig() {
           fields: [
             { name: 'content' },
             { name: 'navGroup', store: true },
+            { name: 'navSubGroup', store: true },
             { name: 'slug', store: true },
             { name: 'title', store: true, attributes: { boost: 20 } },
           ],
@@ -109,6 +122,7 @@ async function getGatsbyConfig() {
             Mdx: {
               content: node => node.rawBody,
               navGroup: node => node.fields.navGroup,
+              navSubGroup: node => node.fields.navSubGroup,
               slug: node => node.fields.slug,
               title: node => node.fields.pageTitle,
             },

@@ -2172,13 +2172,6 @@
   dependencies:
     "@emotion/memoize" "0.7.2"
 
-"@emotion/is-prop-valid@^0.6.1":
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.6.8.tgz#68ad02831da41213a2089d2cab4e8ac8b30cbd85"
-  integrity sha512-IMSL7ekYhmFlILXcouA6ket3vV7u9BqStlXzbKOF9HBtpUPMMlHU+bBxrLOa2NvleVwNIxeq/zL8LafLbeUXcA==
-  dependencies:
-    "@emotion/memoize" "^0.6.6"
-
 "@emotion/is-prop-valid@^0.7.3":
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.7.3.tgz#a6bf4fa5387cbba59d44e698a4680f481a8da6cc"
@@ -6885,13 +6878,6 @@ create-ecdh@^4.0.0:
     bn.js "^4.1.0"
     elliptic "^6.0.0"
 
-create-emotion-styled@^9.2.8:
-  version "9.2.8"
-  resolved "https://registry.yarnpkg.com/create-emotion-styled/-/create-emotion-styled-9.2.8.tgz#c0050e768ba439609bec108600467adf2de67cc3"
-  integrity sha512-2LrNM5MREWzI5hZK+LyiBHglwE18WE3AEbBQgpHQ1+zmyLSm/dJsUZBeFAwuIMb+TjNZP0KsMZlV776ufOtFdg==
-  dependencies:
-    "@emotion/is-prop-valid" "^0.6.1"
-
 create-emotion@^9.2.12:
   version "9.2.12"
   resolved "https://registry.yarnpkg.com/create-emotion/-/create-emotion-9.2.12.tgz#0fc8e7f92c4f8bb924b0fef6781f66b1d07cb26f"
@@ -10142,6 +10128,13 @@ gatsby-react-router-scroll@^2.1.3:
     "@babel/runtime" "^7.0.0"
     scroll-behavior "^0.9.9"
     warning "^3.0.0"
+
+gatsby-remark-check-links@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-check-links/-/gatsby-remark-check-links-2.0.4.tgz#28da6d6af2a6a395328ce829850c646a69477241"
+  integrity sha512-jTzAkrRb7zjjUSqc/nBPVyLPiCW5hi7F2ai+GA2kL5c4ojXaK8KRMUaYeRByxbzEkt8Me94wybFyz32T0jiBhA==
+  dependencies:
+    unist-util-visit "^1.4.1"
 
 gatsby-remark-copy-linked-files@^2.1.3:
   version "2.1.3"
@@ -18684,14 +18677,6 @@ react-dom@^16.8.6:
     prop-types "^15.6.2"
     scheduler "^0.13.6"
 
-react-emotion@^9.1.3:
-  version "9.2.12"
-  resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-9.2.12.tgz#74d1494f89e22d0b9442e92a33ca052461955c83"
-  integrity sha512-qt7XbxnEKX5sZ73rERJ92JMbEOoyOwG3BuCRFRkXrsJhEe+rFBRTljRw7yOLHZUCQC4GBObZhjXIduQ8S0ZpYw==
-  dependencies:
-    babel-plugin-emotion "^9.2.11"
-    create-emotion-styled "^9.2.8"
-
 react-error-overlay@5.1.6:
   version "5.1.6"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.6.tgz#0cd73407c5d141f9638ae1e0c63e7b2bf7e9929d"
@@ -18954,13 +18939,12 @@ react-sortable-hoc@^0.8.3:
     invariant "^2.2.1"
     prop-types "^15.5.7"
 
-react-toast-notifications@^1.2.0:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-1.3.1.tgz#76386c08d0a039d8ed153ceebeb19dd6f88ede34"
-  integrity sha512-2mrFkNQxGYamVt10LhVOzja3xzQwtDK9QcfypvPNnbAnI63oDawsX/RBNaj1O8IIKJ+rA5FITrT2zdudSX/GbA==
+react-toast-notifications@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.2.4.tgz#953c82b08fe182f1e89bd50b270fab08a688c0d6"
+  integrity sha512-3wTxlp0TnWLWaHnqTWj3rwD8IqFxWKINHiFMQpYvO/x7So89+sH+tDV6x4s0yToTImHNUOs8mDlxMAFy+4NwAA==
   dependencies:
-    emotion "^9.1.1"
-    react-emotion "^9.1.3"
+    "@emotion/core" "^10.0.14"
     react-transition-group "^2.3.1"
 
 react-transition-group@^2.2.1, react-transition-group@^2.3.1:
@@ -22788,7 +22772,7 @@ unist-util-visit@^1.0.0, unist-util-visit@^1.1.0, unist-util-visit@^1.3.0, unist
   dependencies:
     unist-util-visit-parents "^2.0.0"
 
-unist-util-visit@^1.1.3:
+unist-util-visit@^1.1.3, unist-util-visit@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/unist-util-visit/-/unist-util-visit-1.4.1.tgz#4724aaa8486e6ee6e26d7ff3c8685960d560b1e3"
   integrity sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==

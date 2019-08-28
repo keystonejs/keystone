@@ -1,49 +1,54 @@
 <!--[meta]
 section: quick-start
-title: Introduction
+title: Getting Started
+order: 1
+slug: quick-start
 [meta]-->
 
-# Quick Start
+# Getting Started
 
 ## Welcome
 
-This quick start guide will get you up and running with a fresh new KeystoneJS application in just a few easy commands.
+This quick start guide will get you up and running with a fresh new KeystoneJS application in just a few easy minutes.
 
-With just _5 minutes_, this is what you're going to build:
+With just 5 minutes, this is what you're going to build:
 
-[![Screenshot of the final Todo app](./img/todo-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/todo.png)
-
-[![Screenshot of KeystoneJS Admin Dashboard](./img/admin-dashboard-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/admin-dashboard.png)
-
-[![Screenshot of KeystoneJS Admin Todo List](./img/admin-list-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/admin-list.png)
+![Screenshot of KeystoneJS Todo App](./img/to-do-app-example.png)
 
 ## Requirements
 
 Please make sure your computer/server meets the following requirements:
 
 - [Node.js](https://nodejs.org/) >= 10.x: Node.js is a server platform which runs JavaScript.
-- [MongoDB](../quick-start/mongodb.md) >= 4.x: MongoDB is a powerful document store.
+
+And, ONE of the following:
+
+- [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful document store.
+- [Postgres](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
 
 ## Installation
 
-To create a new KeystoneJS application, ensure [mongodb is running](../quick-start/mongodb.md) and then run the following commands.
+To create a new KeystoneJS application, ensure [your database is configured and running](../quick-start/database.md), then run the following commands.
 
 ```sh
 npm init keystone-app my-app
-cd my-app
-npm start
 ```
 
 or with yarn:
 
 ```sh
 yarn create keystone-app my-app
+```
+
+Enter the name of your project and follow the prompts. Be sure to select the "ToDo" application if you wish to follow this guide.
+
+```sh
 cd my-app
-yarn start
+npm run dev
 ```
 
 Congratulations, you are now running your very own KeystoneJS application!
-To visit your running application (a simple todo list), visit
+To visit the running application (a simple todo list), visit
 
 <pre>
 	<code>
@@ -70,6 +75,6 @@ KeystoneJS provides a web interface for this API at
 
 ## Up Next
 
-- [Schema - Lists & Fields](../discussions/schema.md)
+- [Schema - Lists & Fields](../guides/schema.md)
 - [Using the KeystoneJS Admin UI](../tutorials/admin-ui.md)
 - [Introduction To KeystoneJS's GraphQL API](../tutorials/intro-to-graphql.md)
