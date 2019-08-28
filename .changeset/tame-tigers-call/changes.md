@@ -1,0 +1,1 @@
+Updates warning message when knex cannot find a database
