@@ -406,16 +406,30 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
       },
     }
   );
-  const item = data && data[list.gqlNames.itemQueryName] ? deserializeItem(list, data) : null;
-  const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
+
+  if (loading) {
+    return <PageLoading />;
+  }
 
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
-  const isError =
+  if (
     error &&
     (!data ||
       !data[list.gqlNames.itemQueryName] ||
-      !Object.keys(data[list.gqlNames.itemQueryName]).length);
+      !Object.keys(data[list.gqlNames.itemQueryName]).length)
+  ) {
+    return (
+      <Fragment>
+        <DocTitle>{list.singular} not found</DocTitle>
+        <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+      </Fragment>
+    );
+  }
+
+  const item = deserializeItem(list, data);
+  const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
+
   return (
     <Suspense fallback={<PageLoading />}>
       {// Now that the network request for data has been triggered, we
@@ -429,9 +443,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
       )}
       {// If the views load before the API request comes back, keep showing
       // the loading component
-      loading ? (
-        <PageLoading />
-      ) : !isError && item ? (
+      item ? (
         <main>
           <DocTitle>
             {item._label_} - {list.singular}
@@ -455,14 +467,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
           </Container>
         </main>
       ) : (
-        <Fragment>
-          <DocTitle>{list.singular} not found</DocTitle>
-          <ItemNotFound
-            adminPath={adminPath}
-            list={list}
-            errorMessage={error ? error.message : undefined}
-          />
-        </Fragment>
+        <ItemNotFound adminPath={adminPath} list={list} />
       )}
     </Suspense>
   );
