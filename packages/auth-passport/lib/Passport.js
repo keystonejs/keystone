@@ -425,7 +425,7 @@ class PassportAuthStrategy {
         operation,
         passportSessionInfo,
       });
-      await this._authenticateItem(item, accessToken, req, res, next);
+      await this._authenticateItem(item, accessToken, operation === 'create', req, res, next);
     } catch (error) {
       this._onError(error, req, res, next);
     }
@@ -471,7 +471,7 @@ class PassportAuthStrategy {
     return sessionItem.session.item;
   }
 
-  async _authenticateItem(item, accessToken, req, res, next) {
+  async _authenticateItem(item, accessToken, isNewItem, req, res, next) {
     const audiences = ['admin'];
 
     const token = await startAuthedSession(
@@ -480,7 +480,7 @@ class PassportAuthStrategy {
       audiences,
       this._cookieSecret
     );
-    this._onAuthenticated({ token, item }, req, res, next);
+    this._onAuthenticated({ token, item, isNewItem }, req, res, next);
   }
 }
 

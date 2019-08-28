@@ -1,0 +1,1 @@
+`auth-passport`'s `onAuthenticated` method now receives an `isNewItem` flag to indicate if the user is logging for the first time or not.
