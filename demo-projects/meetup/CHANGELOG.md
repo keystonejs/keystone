@@ -1,5 +1,11 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.2.2
+
+### Patch Changes
+
+- [30f6b7eb](https://github.com/keystonejs/keystone-5/commit/30f6b7eb): upgraded `react-toast-notifications` to `2.2.4`. use `useToasts` hook when possible.
+
 ## 0.2.1
 
 - Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):

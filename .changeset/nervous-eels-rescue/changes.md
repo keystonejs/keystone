@@ -1,2 +1,0 @@
-added initial release of list-plugins with support for createdAt, updatedAt, createdBy and updatedBy tracking using List plugins feature
-updated login test project to add a list with all possible tracking field options.
