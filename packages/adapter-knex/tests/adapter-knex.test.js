@@ -7,7 +7,7 @@ const { KnexAdapter } = require('../lib/adapter-knex');
 // };
 
 describe('Knex Adapter', () => {
-  const testAdapter = new KnexAdapter();
+  const testAdapter = new KnexAdapter({ connection: 'postgres://localhost/undefined_database' });
   test('throws when database cannot be found', async () => {
     const result = await testAdapter
       ._connect({ name: 'undefined-database' })
