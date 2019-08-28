@@ -13,7 +13,6 @@ x-job-setup: &job-setup
         KNEX_URI: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
     - image: mongo:3.6.7
     - image: circleci/postgres:9.6.5-alpine-ram
-  parallelism: 5
 
   working_directory: /home/circleci/repo
 
