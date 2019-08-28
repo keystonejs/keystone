@@ -2172,13 +2172,6 @@
   dependencies:
     "@emotion/memoize" "0.7.2"
 
-"@emotion/is-prop-valid@^0.6.1":
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.6.8.tgz#68ad02831da41213a2089d2cab4e8ac8b30cbd85"
-  integrity sha512-IMSL7ekYhmFlILXcouA6ket3vV7u9BqStlXzbKOF9HBtpUPMMlHU+bBxrLOa2NvleVwNIxeq/zL8LafLbeUXcA==
-  dependencies:
-    "@emotion/memoize" "^0.6.6"
-
 "@emotion/is-prop-valid@^0.7.3":
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.7.3.tgz#a6bf4fa5387cbba59d44e698a4680f481a8da6cc"
@@ -6884,13 +6877,6 @@ create-ecdh@^4.0.0:
   dependencies:
     bn.js "^4.1.0"
     elliptic "^6.0.0"
-
-create-emotion-styled@^9.2.8:
-  version "9.2.8"
-  resolved "https://registry.yarnpkg.com/create-emotion-styled/-/create-emotion-styled-9.2.8.tgz#c0050e768ba439609bec108600467adf2de67cc3"
-  integrity sha512-2LrNM5MREWzI5hZK+LyiBHglwE18WE3AEbBQgpHQ1+zmyLSm/dJsUZBeFAwuIMb+TjNZP0KsMZlV776ufOtFdg==
-  dependencies:
-    "@emotion/is-prop-valid" "^0.6.1"
 
 create-emotion@^9.2.12:
   version "9.2.12"
@@ -18691,14 +18677,6 @@ react-dom@^16.8.6:
     prop-types "^15.6.2"
     scheduler "^0.13.6"
 
-react-emotion@^9.1.3:
-  version "9.2.12"
-  resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-9.2.12.tgz#74d1494f89e22d0b9442e92a33ca052461955c83"
-  integrity sha512-qt7XbxnEKX5sZ73rERJ92JMbEOoyOwG3BuCRFRkXrsJhEe+rFBRTljRw7yOLHZUCQC4GBObZhjXIduQ8S0ZpYw==
-  dependencies:
-    babel-plugin-emotion "^9.2.11"
-    create-emotion-styled "^9.2.8"
-
 react-error-overlay@5.1.6:
   version "5.1.6"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.6.tgz#0cd73407c5d141f9638ae1e0c63e7b2bf7e9929d"
@@ -18961,13 +18939,12 @@ react-sortable-hoc@^0.8.3:
     invariant "^2.2.1"
     prop-types "^15.5.7"
 
-react-toast-notifications@^1.2.0:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-1.3.1.tgz#76386c08d0a039d8ed153ceebeb19dd6f88ede34"
-  integrity sha512-2mrFkNQxGYamVt10LhVOzja3xzQwtDK9QcfypvPNnbAnI63oDawsX/RBNaj1O8IIKJ+rA5FITrT2zdudSX/GbA==
+react-toast-notifications@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.2.4.tgz#953c82b08fe182f1e89bd50b270fab08a688c0d6"
+  integrity sha512-3wTxlp0TnWLWaHnqTWj3rwD8IqFxWKINHiFMQpYvO/x7So89+sH+tDV6x4s0yToTImHNUOs8mDlxMAFy+4NwAA==
   dependencies:
-    emotion "^9.1.1"
-    react-emotion "^9.1.3"
+    "@emotion/core" "^10.0.14"
     react-transition-group "^2.3.1"
 
 react-transition-group@^2.2.1, react-transition-group@^2.3.1:

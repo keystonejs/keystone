@@ -233,7 +233,7 @@
     "react-router-dom": "5.0.0",
     "react-scrolllock": "^4.0.1",
     "react-select": "^3.0.4",
-    "react-toast-notifications": "^1.2.0",
+    "react-toast-notifications": "^2.2.4",
     "react-transition-group": "^2.6.1",
     "react-uid": "^2.2.0",
     "react-use-form-state": "^0.10.0",
