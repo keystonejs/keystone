@@ -1,5 +1,11 @@
 # @keystone-alpha/fields
 
+## 10.6.2
+
+### Patch Changes
+
+- [4ab3cc38](https://github.com/keystonejs/keystone-5/commit/4ab3cc38): OEmbed & Unsplash types no longer lose their value on update.
+
 ## 10.6.1
 
 ### Patch Changes
