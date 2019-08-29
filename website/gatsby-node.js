@@ -13,7 +13,16 @@ const compiler = rawMDX.createMdxAstCompiler({ remarkPlugins: [] });
 const PROJECT_ROOT = path.resolve('..');
 
 // Used for sorting the navigation:
-const GROUPS = ['', 'quick-start', 'guides', 'tutorials', 'discussions', 'api'];
+const GROUPS = [
+  '',
+  'quick-start',
+  'guides',
+  'tutorials',
+  'discussions',
+  'api',
+  'list-plugins',
+  'road-map',
+];
 const SUB_GROUPS = [
   '',
   'apps',

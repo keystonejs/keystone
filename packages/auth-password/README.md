@@ -1,16 +1,11 @@
 <!--[meta]
 section: api
-title: Authentication Strategies
+subSection: authentication-strategies
+title: Password Auth Strategy
+order: 1
 [meta]-->
 
-# Authentication Strategies
-
-When calling `keystone.createAuthStrategy()` you must supply specify the auth strategy to be used
-by supplying it's class.
-
-Below are the currently supported auth strategy types.
-
-## Password
+# Password Auth Strategy
 
 Authenticates party (often a user) based on their presentation of a credential pair.
 The credential pair consists of an identifier and a secret (often an email address and password).
@@ -123,7 +118,3 @@ which state:
 
 Efforts are also taken to protect against timing attacks.
 The time spend verifying an actors credentials should be constant-time regardless of the reason for failure.
-
-## Social Login Strategies (Twitter, Facebook, Google, GitHub)
-
-See [`@keystone-alpha/auth-passport`](../../../auth-passport/README.md) for social logins using PassportJs based Auth Strategies

@@ -1,111 +1,184 @@
 <!--[meta]
 section: api
 title: Hooks
+order: 7
 [meta]-->
 
-# Hooks API
+# Hooks
 
 The APIs for each hook are mostly the same across the 3 hook types
-([list hooks](../guides/hooks.md#list-hooks), [field hooks](../guides/hooks.md#field-hooks), [field type
-hooks](../guides/hooks.md#field-type-hooks)).
+([list hooks](/guides/hooks.md#list-hooks), [field hooks](/guides/hooks.md#field-hooks), [field type
+hooks](/guides/hooks.md#field-type-hooks)).
 
 Any differences are called out in the documentation below.
 
-Usage:
+## Usage
 
 ```javascript
 keystone.createList('User', {
   fields: {
     name: {
       type: Text
-      hooks: {
-        resolveInput: async (...) => { ... },
-        validateInput: async (...) => { ... },
-        beforeChange: async (...) => { ... },
-        afterChange: async (...) => { ... },
-        beforeDelete: async (...) => { ... },
-        validateDelete: async (...) => { ... },
-        afterDelete: async (...) => { ... },
-      },
+      hooks: { /* hooks config */ },
     },
   },
-  hooks: {
-    resolveInput: async (...) => { ... },
-    validateInput: async (...) => { ... },
-    beforeChange: async (...) => { ... },
-    afterChange: async (...) => { ... },
-    beforeDelete: async (...) => { ... },
-    validateDelete: async (...) => { ... },
-    afterDelete: async (...) => { ... },
-  },
+  hooks: { /* hooks config */ },
   ...
 });
 ```
 
-## `resolveInput: Func(ResolveInputArg: Object) => ResolveInputResult: Object|Promise<Object>`
+## Config
 
-Example:
+| option           | Type       | Description                                                                          |
+| ---------------- | ---------- | ------------------------------------------------------------------------------------ |
+| `resolveInput`   | `Function` | Executed after access control checks and default values are assigned.                |
+| `validateInput`  | `Function` | Executed after `resolveInput`. Should throw if `resolvedData` is invalid.            |
+| `beforeChange`   | `Function` | Executed after `validateInput`.                                                      |
+| `afterChange`    | `Function` | Executed once the mutation has been completed and all transactions finalised.        |
+| `validateDelete` | `Function` | Executed after access control checks. Should throw if `resolvedData` is invalid.     |
+| `beforeDelete`   | `Function` | Executed after `validateDelete`.                                                     |
+| `afterDelete`    | `Function` | Executed once the delete mutation has been completed and all transactions finalised. |
+
+### `resolveInput`
+
+Executed after access control checks and default values are assigned. Used to modify the `resolvedData`.
+
+The result of `resolveInput` can be a `Promise` or an `Object`. It should have the same structure as the `resolvedData`.
+
+The result is passed to [the next function in the execution order](/guides/hooks/#hook-execution-order).
+
+_Note_: `resolveInput` is not executed for deleted items.
+
+#### Usage:
 
 <!-- prettier-ignore -->
-
 ```javascript
-const resolveInput = ({
-  resolvedData,
-  existingItem,
-  originalInput,
-  context,
-  list,
+const resolveInput = ({ 
+  resolvedData, 
+  existingItem, 
+  originalInput, 
+  context, 
+  list 
 }) => resolvedData;
 ```
 
-### `ResolveInputArg: Object`
+### `validateInput`
 
-```
-{
-  resolvedData: Object,
-  existingItem: Object,
-  originalInput: Object,
-  context: Object,
-  list: Object,
-}
-```
+Executed after `resolveInput`. Should throw if `resolvedData` is invalid.
 
-#### `ResolveInputArg#resolvedData`
+#### Usage
 
-An object containing the data received by the graphQL mutation and any defaults
-provided by the field types.
-
-Roughly:
-
+<!-- prettier-ignore -->
 ```javascript
-{
-  ...fieldDefaults,
-  ...inputData,
-}
+const validateInput = ({
+  resolvedData,
+  existingItem,
+  originalInput,
+  addFieldValidationError,
+  context,
+  list,
+}) => {
+  /* throw any errors here */
+};
 ```
 
-#### `ResolveInputArg#existingItem`
+_Note_: `validateInput` is not executed for deleted items. See: [`validateDelete`](#validate-delete)
 
-For `create` mutations, this will be `undefined`.
+### `beforeChange`
 
-For `update` mutations, this will be the current value as stored in the
-database.
+Executed after `validateInput`. `beforeChange` is not used to maniputate data but can be used to preform actions before data is saved.
 
-#### `ResolveInputArg#originalInput`
+_Note_: `beforeChange` is not executed for deleted items. See: [`beforeDelete`](#before-delete)
 
-An object with the arguments passed into the field in the query.
-For example, if the field was called with `user(name: "Ada")`,
-the `data` object would be: `{ 'name': 'Ada' }`.
+### `afterChange`
 
-#### `ResolveInputArg#context`
+Executed once the mutation has been completed and all transactions finalised.
 
-The [Apollo `context`
-object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context)
-for this request.
+#### Usage
 
-#### `ResolveInputArg#list`
+<!-- prettier-ignore -->
+```javascript
+const afterChange = ({ 
+  updatedItem, 
+  existingItem, 
+  originalInput, 
+  context, 
+  list 
+}) => {
+  /* side effects here */
+};
+```
 
-An API providing programatic access to List functions:
+_Note_: `afterChange` is not executed for deleted items. See: [`afterDelete`](#after-delete)
+
+### `validateDelete`
+
+Executed after access control checks. Should throw if delete operation is invalid.
+
+#### Usage
+
+<!-- prettier-ignore -->
+```javascript
+const validateDelete = ({
+  existingItem,
+  addFieldValidationError,
+  context,
+  list,
+}) => {
+  /* throw any errors here */
+};
+```
+
+### `beforeDelete`
+
+Executed after `validateDelete`.
+
+#### Usage
+
+<!-- prettier-ignore -->
+```javascript
+const beforeDelete = ({
+  existingItem,
+  context,
+  list,
+}) => {
+  /* throw any errors here */
+};
+```
+
+### `afterDelete`
+
+Executed once the delete mutation has been completed and all transactions finalised.
+
+#### Usage
+
+<!-- prettier-ignore -->
+```javascript
+const afterDelete = ({
+  existingItem,
+  context,
+  list,
+}) => {
+  /* side effects here */
+};
+```
+
+---
+
+## Hooks function properties
+
+| Parameter                 | Type             | Description                                                                                                                    |
+| ------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `resolvedData`            | `Object`         | An object containing data received by the graphQL mutation and defaults values.                                                |
+| `existingItem`            | `any`            | The current stored value. (`undefined` for create)                                                                             |
+| `originalInput`           | `Object`         | An object containing arguments passed to the field in the graphQL query.                                                       |
+| `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request. |
+| `list`                    | `Object`         | An Object providing access to List functions. [List properties](#List-properties).                                             |
+| `addFieldValidationError` | `Function`       | Used to set a field validation error. Accepts a `String`.                                                                      |
+
+### List properties
+
+The `list` property contain an object providing access to List functions:
 
 ```javascript
 {
@@ -150,195 +223,5 @@ An API providing programatic access to List functions:
    * @return Object The programatic API of the requested list.
    */
   getList: (key) => Object,
-}
-```
-
-### `ResolveInputResult: Object|Promise<Object>`
-
-The result of `resolveInput()` should have the same structure as the input (ie;
-the same keys). It is passed to [the next function in the execution
-order](../guides/hooks.md#hook-execution-order) as the input data.
-
----
-
-## `validateInput: Func(ValidateInputArg: Object) => undefined`
-
-Example:
-
-<!-- prettier-ignore -->
-
-```javascript
-const validateInput = ({
-  resolvedData,
-  existingItem,
-  originalInput,
-  addFieldValidationError,
-  context,
-  list,
-}) => {
-  /* throw any errors here */
-};
-```
-
-### `ValidateInputArg: Object`
-
-```
-{
-  resolvedData: Object,
-  existingItem: Object,
-  originalInput: Object,
-  addFieldValidationError: Func,
-  context: Object,
-  list: Object,
-}
-```
-
----
-
-## `validateDelete: Func(ValidateDeleteArg: Object) => undefined|Promise<undefined>`
-
-Example:
-
-<!-- prettier-ignore -->
-
-```javascript
-const validateDelete = ({
-  existingItem,
-  addFieldValidationError,
-  context,
-  list,
-}) => {
-  /* throw any errors here */
-};
-```
-
-### `ValidateDeleteArg: Object`
-
-```
-{
-  existingItem: Object,
-  addFieldValidationError: Func,
-  context: Object,
-  list: Object,
-}
-```
-
----
-
-## `beforeChange: Func(BeforeChangeArg: Object) => undefined|Promise<undefined>`
-
-Example:
-
-<!-- prettier-ignore -->
-
-```javascript
-const beforeChange = ({
-  resolvedData,
-  existingItem,
-  originalInput,
-  context,
-  list,
-}) => {
-  /* side effects here */
-};
-```
-
-### `BeforeChangeArg: Object`
-
-```
-{
-  resolvedData: Object,
-  existingItem: Object,
-  originalInput: Object,
-  context: Object,
-  list: Object,
-}
-```
-
----
-
-## `afterChange: Func(AfterChangeArg: Object) => undefined|Promise<undefined>`
-
-Example:
-
-<!-- prettier-ignore -->
-
-```javascript
-const afterChange = ({
-  updatedItem,
-  existingItem,
-  originalInput,
-  context,
-  list,
-}) => {
-  /* side effects here */
-};
-```
-
-### `ValidateDeleteArg: Object`
-
-```
-{
-  updatedItem: Object,
-  existingItem: Object,
-  originalInput: Func,
-  context: Object,
-  list: Object,
-}
-```
-
----
-
-## `beforeDelete: Func(BeforeDeleteArg: Object) => undefined|Promise<undefined>`
-
-Example:
-
-<!-- prettier-ignore -->
-
-```javascript
-const beforeDelete = ({
-  existingItem,
-  context,
-  list,
-}) => {
-  /* throw any errors here */
-};
-```
-
-### `BeforeDeleteArg: Object`
-
-```
-{
-  existingItem: Object,
-  context: Object,
-  list: Object,
-}
-```
-
----
-
-## `afterDelete: Func(AfterDeleteArg: Object) => undefined|Promise<undefined>`
-
-Example:
-
-<!-- prettier-ignore -->
-
-```javascript
-const afterDelete = ({
-  existingItem,
-  context,
-  list,
-}) => {
-  /* side effects here */
-};
-```
-
-### `AfterDeleteArg: Object`
-
-```
-{
-  existingItem: Object,
-  context: Object,
-  list: Object,
 }
 ```
