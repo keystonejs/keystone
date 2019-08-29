@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "minor" },
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "minor" }
+  ],
+  "dependents": []
+}
