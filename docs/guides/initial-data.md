@@ -67,7 +67,6 @@ keystone.createItems({
 });
 ```
 
-</Note>
 _Note_: The format of the data must match the schema setup with calls to `keystone.createList()`.
 
 #### Relationships
