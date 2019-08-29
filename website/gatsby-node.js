@@ -158,7 +158,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       workspaceSlug: slugify(sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
-      slug: generateUrl(parent),
+      slug: data.slug || generateUrl(parent),
       sortOrder: GROUPS.indexOf(navGroup) === -1 ? 999999 : GROUPS.indexOf(navGroup),
       sortSubOrder:
         SUB_GROUPS.indexOf(navSubGroup) === -1 ? 999999 : SUB_GROUPS.indexOf(navSubGroup),
