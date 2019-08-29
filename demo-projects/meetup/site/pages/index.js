@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useQuery, useLazyQuery } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
@@ -63,7 +63,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
 
   const hex = themeColor ? themeColor.slice(1) : null;
 
-  const { allRsvps } = ({} = data);
+  const { allRsvps } = data || {};
   const attending = allRsvps ? `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}` : undefined;
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
