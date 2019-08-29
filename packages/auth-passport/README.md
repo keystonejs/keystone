@@ -31,7 +31,8 @@ For example, when logging in with Google, the user will;
 - Be asked to grant permission for your KeystoneJS app
 - Be redirected to your application's _callback_ URL
 - This package will create a new account & authenticate the user, then trigger
-  `onAuthenticated()` (see [the API docs below](#api))
+  `onAuthenticated({ token, item, isNewItem })` with `isNewItem = true` (see [the API
+  docs below](#api))
 
 ### Multi Step Account Creation & Authentication
 
@@ -54,7 +55,8 @@ Single Step Flow](#single-step-account-creation-authentication) are bolded)_:
 - **Be redirected to a form to gather more information**
 - **Submit the form which will resume account creation & authentication**
 - This package will create a new account & authenticate the user, then trigger
-  `onAuthenticated()` (see [the API docs below](#api))
+  `onAuthenticated({ token, item, isNewItem })` with `isNewItem = true` (see [the API
+  docs below](#api))
 
 ### Existing Account Authentication
 
@@ -66,7 +68,8 @@ match the account and authenticate them:
 - Be redirected to google.com's authentication page if not already logged in
 - Be redirected to your application's _callback_ URL
 - This package will authenticate the existing user, then trigger
-  `onAuthenticated()` (see [the API docs below](#api))
+  `onAuthenticated({ token, item, isNewItem })` with `isNewItem = false` (see
+  [the API docs below](#api))
 
 ## API
 
@@ -128,7 +131,7 @@ const googleStrategy = keystone.createAuthStrategy({
     // NOTE: By default KeystoneJS sets a `keystone.sid` which authenticates the
     // user for the API domain. If you want to authenticate via another domain,
     // you must pass the `token` as a Bearer Token to GraphQL requests.
-    onAuthenticated: (token, req, res) => {
+    onAuthenticated: ({ token, item, isNewItem }, req, res) => {
       console.log(token);
       res.redirect('/');
     },
@@ -237,7 +240,7 @@ const googleStrategy = keystone.createAuthStrategy({
     // NOTE: By default KeystoneJS sets a `keystone.sid` which authenticates the
     // user for the API domain. If you want to authenticate via another domain,
     // you must pass the `token` as a Bearer Token to GraphQL requests.
-    onAuthenticated: (token, req, res) => {
+    onAuthenticated: ({ token, item, isNewItem }, req, res) => {
       console.log(token);
       res.redirect('/');
     },

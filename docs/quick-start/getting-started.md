@@ -2,7 +2,7 @@
 section: quick-start
 title: Getting Started
 order: 1
-slug: quick-start
+slug: /quick-start/
 [meta]-->
 
 # Getting Started
