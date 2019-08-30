@@ -36,7 +36,7 @@ const initalItemsToLoad = 10;
 const subsequentItemsToLoad = 50;
 
 // to use hooks in render props
-const Relationship = forwardRef(
+const Relationship = forwardRef<any, any>(
   (
     {
       data,
