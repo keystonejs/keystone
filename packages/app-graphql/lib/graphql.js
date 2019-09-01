@@ -1,6 +1,6 @@
 const express = require('express');
-const { renderPlaygroundPage } = require('graphql-playground-html');
-const playgroundPkg = require('graphql-playground-react/package.json');
+const { renderPlaygroundPage } = require('@apollographql/graphql-playground-html');
+const playgroundPkg = require('@apollographql/graphql-playground-react/package.json');
 const falsey = require('falsey');
 const { restrictAudienceMiddleware } = require('@keystone-alpha/session');
 
@@ -50,7 +50,7 @@ module.exports = function createGraphQLMiddleware(
   // { cors: false } - prevent ApolloServer from overriding Keystone's CORS configuration.
   // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
   app.use(apiPath, restrict);
-  server.applyMiddleware({ app, path: apiPath, cors: false });
+  app.use(server.getMiddleware({ path: apiPath, cors: false }));
 
   return app;
 };
