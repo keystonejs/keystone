@@ -223,7 +223,7 @@ mutation newTodo($name: String) {
 
 ### `options`
 
-| Option              | Type      | Default | Description                                                                                                                          |
-| ------------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `variables`         | `Object`  | `{}`    | The variables passed to the graphql query for the given queryString.                                                                 |
-| `context`           | `Object`  | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName`            |
+| Option      | Type     | Default | Description                                                                                                               |
+| ----------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `variables` | `Object` | `{}`    | The variables passed to the graphql query for the given queryString.                                                      |
+| `context`   | `Object` | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName` |

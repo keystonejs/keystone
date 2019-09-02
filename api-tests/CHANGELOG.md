@@ -1,5 +1,18 @@
 # @keystone-alpha/api-tests
 
+## 1.4.0
+
+### Minor Changes
+
+- [8bb1bb0e](https://github.com/keystonejs/keystone-5/commit/8bb1bb0e): Add a `keystone.executeQuery()` method to run GraphQL queries and mutations directly against a Keystone instance. NOTE: These queries are executed without any Access Control checks by default.
+
+- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
+  - @keystone-alpha/test-utils@2.3.0
+  - @keystone-alpha/adapter-knex@4.0.7
+  - @keystone-alpha/adapter-mongoose@4.0.4
+  - @keystone-alpha/app-graphql@7.0.0
+  - @keystone-alpha/keystone@13.0.0
+
 ## 1.3.1
 
 - Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):

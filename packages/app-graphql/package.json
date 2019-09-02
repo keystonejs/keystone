@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/app-graphql",
   "description": "KeystoneJS GraphQL App.",
-  "version": "6.3.1",
+  "version": "7.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

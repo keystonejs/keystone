@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 2.2.2
+
+### Patch Changes
+
+- [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7): `cookieSecret` and `sessionStore` config options are now passed to the `Keystone` constructor instead of the individual auth or graphql packages.
+
 ## 2.2.1
 
 - Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):
