@@ -1,5 +1,15 @@
 # @keystone-alpha/app-graphql
 
+## 7.0.0
+
+### Major Changes
+
+- [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7): `cookieSecret` and `sessionStore` config options are now passed to the `Keystone` constructor instead of the individual auth or graphql packages.
+
+### Patch Changes
+
+- [b27f6eed](https://github.com/keystonejs/keystone-5/commit/b27f6eed): Upgrade apollo-server to 2.9.1
+
 ## 6.3.1
 
 ### Patch Changes

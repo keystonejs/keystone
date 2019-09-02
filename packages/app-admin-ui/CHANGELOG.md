@@ -1,5 +1,11 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.5.2
+
+### Patch Changes
+
+- [b822d229](https://github.com/keystonejs/keystone-5/commit/b822d229): fix issue related to react-toast-notifications update. toasts are not triggered after delete success.
+
 ## 5.5.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # keystone_demo_blog
 
+## 2.1.2
+
+- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
+  - @keystone-alpha/adapter-mongoose@4.0.4
+  - @keystone-alpha/app-graphql@7.0.0
+  - @keystone-alpha/keystone@13.0.0
+
 ## 2.1.1
 
 - Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):

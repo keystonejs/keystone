@@ -49,6 +49,7 @@ module.exports = {
 Initialising a list is not always the straight forward problem it seems.
 
 ```javascript
+
 ```
 
 You can achieve this setup by running the Keystone CLI and selecting the `Starter` template.

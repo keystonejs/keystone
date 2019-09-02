@@ -15,19 +15,29 @@ see the [Access Control Guide](https://v5.keystonejs.com/guides/access-control) 
 ## Table of Contents
 
 - [GraphQL Access Control](#graphql-access-control)
+
   - [Defaults](#defaults)
+
   - [List level access control](#list-level-access-control)
+
     - [Access API](#access-api)
+
       - [Booleans](#booleans)
+
         - [Shorthand static Boolean](#shorthand-static-boolean)
         - [Granular static Booleans](#granular-static-booleans)
         - [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
         - [Granular functions returning Boolean](#granular-functions-returning-boolean)
+
       - [GraphQLWhere](#graphqlwhere)
+
         - [Granular static GraphQLWheres](#granular-static-graphqlwheres)
         - [Granular functions returning GraphQLWhere](#granular-functions-returning-graphqlwhere)
+
   - [Field level access control](#field-level-access-control)
+
     - [access API](#access-api-1)
+
       - [Shorthand static Boolean](#shorthand-static-boolean-1)
       - [Granular static Booleans](#granular-static-booleans-1)
       - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
