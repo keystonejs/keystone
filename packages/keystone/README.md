@@ -183,22 +183,18 @@ See: [Custom Server](https://v5.keystonejs.com/guides/custom-server).
 
 Disconnect all adapters.
 
-## `keystone.executeQuery(queryString, options)`
+## executeQuery(queryString, config)
+
+### Usage
 
 Use this method to execute queries or mutations directly against a Keystone
 instance.
 
-> ℹ️ When querying or mutating via `keystone.executeQuery`, there are differences
-> to keep in mind:
->
-> - No access control checks are run (everything is set to `() => true`)
-> - The `context.req` object is set to `{}` (you can override this if necessary,
->   see options below)
-> - Attempting to authenticate will throw errors (due to `req` being mocked)
+```javascript
+keystone.executeQuery(queryString, config);
+```
 
-Returns a Promise representing the result of the given query or mutation.
-
-### `queryString`
+### queryString
 
 A graphQL query string. For example:
 
@@ -221,9 +217,19 @@ mutation newTodo($name: String) {
 }
 ```
 
-### `options`
+### Config
 
 | Option      | Type     | Default | Description                                                                                                               |
 | ----------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `variables` | `Object` | `{}`    | The variables passed to the graphql query for the given queryString.                                                      |
 | `context`   | `Object` | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName` |
+
+ℹ️ When querying or mutating via `keystone.executeQuery`, there are differences
+to keep in mind:
+
+- No access control checks are run (everything is set to `() => true`)
+- The `context.req` object is set to `{}` (you can override this if necessary,
+  see options below)
+- Attempting to authenticate will throw errors (due to `req` being mocked)
+
+Returns a Promise representing the result of the given query or mutation.
