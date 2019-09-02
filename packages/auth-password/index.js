@@ -12,9 +12,6 @@ class PasswordAuthStrategy {
       identityField: 'email',
       secretField: 'password',
       protectIdentities: false,
-      identityFilter: ({ identityField, identity }) => ({
-        [identityField]: identity,
-      }),
       ...config,
     };
   }
@@ -55,13 +52,8 @@ class PasswordAuthStrategy {
       );
     }
 
-    const identityFilter = this.config.identityFilter({
-      identityField,
-      identity,
-    });
-
     // Match by identity
-    const results = await list.adapter.find(identityFilter);
+    const results = await list.adapter.find({ [identityField]: identity });
 
     // If we failed to match an identity and we're protecting existing identities then combat timing
     // attacks by creating an arbitrary hash (should take about as long has comparing an existing one)

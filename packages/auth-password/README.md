@@ -61,12 +61,11 @@ app.post('/admin/signin', async (req, res) => {
 
 ### Config
 
-| Option              | Type       | Default                                 | Description                                                               |
-| ------------------- | ---------- | --------------------------------------- | ------------------------------------------------------------------------- |
-| `identity`          | `String`   | `email`                                 | The field `path` for values that uniquely identifies items                |
-| `secret`            | `String`   | `password`                              | The field `path` for secret values known only to the authenticating party |
-| `protectIdentities` | `Boolean`  | `false`                                 | Protect identities at the expense of usability                            |
-| `identityFilter`    | `Function` | See: (identityFilter)[#identity-filter] | Used to filter matched identities                                         |
+| Option              | Type      | Default    | Description                                                               |
+| ------------------- | --------- | ---------- | ------------------------------------------------------------------------- |
+| `identity`          | `String`  | `email`    | The field `path` for values that uniquely identifies items                |
+| `secret`            | `String`  | `password` | The field `path` for secret values known only to the authenticating party |
+| `protectIdentities` | `Boolean` | `false`    | Protect identities at the expense of usability                            |
 
 #### `identity`
 
@@ -119,27 +118,3 @@ which state:
 
 Efforts are also taken to protect against timing attacks.
 The time spend verifying an actors credentials should be constant-time regardless of the reason for failure.
-
-#### `identityFilter`
-
-A function used to restrict items matched for authentication. The function is passed the `identityField` and `identity` given at login. It should return a Keystone graphQL where statement. The default function for matching items is:
-
-```javascript
-const identityFilter = ({ identityField, identity }) => ({
-  [identityField]: identity,
-});
-```
-
-This returns items where the `identityField` matches the `identity` provided.
-
-You may wish to modify this if you want to restrict users that can login to the AdminUI. This example restricts the authentication strategy to only match admin users:
-
-```javascript
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  identityFilter: ({ identityField, identity }) => ({
-    AND: [{ [identityField]: identity }, { isAdmin: true }],
-  }),
-});
-```
