@@ -94,7 +94,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allUsers.length).toEqual(1);
 
             // This query returns too many results
-            ({ data, errors } = await graphqlRequest({
+            ({ errors } = await graphqlRequest({
               keystone,
               query: `
           query {
@@ -108,7 +108,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
             // The query results don't break the limits, but the "first" parameter does
-            ({ data, errors } = await graphqlRequest({
+            ({ errors } = await graphqlRequest({
               keystone,
               query: `
           query {
@@ -209,7 +209,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ]);
 
             // This post has too many authors
-            ({ data, errors } = await graphqlRequest({
+            ({ errors } = await graphqlRequest({
               keystone,
               query: `
           query {
@@ -246,7 +246,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allPosts).toEqual([{ title: 'Three authors' }]);
 
             // Some posts are okay, but one breaks the limit
-            ({ data, errors } = await graphqlRequest({
+            ({ errors } = await graphqlRequest({
               keystone,
               query: `
           query {
