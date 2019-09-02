@@ -40,7 +40,7 @@ class PassportAuthStrategy {
     assert(!!config.loginPath, 'Must provide `config.loginPath` option.');
     assert(!!config.idField, 'Must provide `config.idField` option.');
     assert(
-      typeof config.cookieSecret !== 'undefined',
+      typeof config.cookieSecret === 'undefined',
       'The `cookieSecret` config option for `PassportAuthStrategy` has been moved to the `Keystone` constructor: `new Keystone({ cookieSecret: "abc" })`.'
     );
     assert(
