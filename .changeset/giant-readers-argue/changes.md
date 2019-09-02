@@ -6,8 +6,10 @@ The `identityFilter` has been added to configurations options:
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
-  identityFilter: ({ identityField, identity }) => ({
-    AND: [{ [identityField]: identity }, { isAdmin: true }],
-  }),
+  config: {
+    identityFilter: ({ identityField, identity }) => ({
+      AND: [{ [identityField]: identity }, { isAdmin: true }],
+    }),
+  },
 });
 ```

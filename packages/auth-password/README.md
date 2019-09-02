@@ -138,8 +138,10 @@ You may wish to modify this if you want to restrict users that can login to the 
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
-  identityFilter: ({ identityField, identity }) => ({
-    AND: [{ [identityField]: identity }, { isAdmin: true }],
-  }),
+  config: {
+    identityFilter: ({ identityField, identity }) => ({
+      AND: [{ [identityField]: identity }, { isAdmin: true }],
+    }),
+  },
 });
 ```
