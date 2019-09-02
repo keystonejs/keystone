@@ -458,7 +458,6 @@ describe('keystone.prepare()', () => {
     const { middlewares } = await keystone.prepare({ apps: undefined });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
   });
 
   test('handles apps:[]', async () => {
@@ -470,7 +469,6 @@ describe('keystone.prepare()', () => {
     const { middlewares } = await keystone.prepare({ apps: [] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
   });
 
   test('Handles apps without a `prepareMiddleware`', async () => {
@@ -479,10 +477,13 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
+    // For less-brittle tests, we grab the list of middlewares when prepare is
+    // given no apps, then compare it with the one that did.
+    const { middlewares: defaultMiddlewares } = await keystone.prepare();
     const { middlewares } = await keystone.prepare({ apps: [{ foo: 'bar' }] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
+    expect(middlewares).toHaveLength(defaultMiddlewares.length);
   });
 
   test('filters out null middleware results', async () => {
@@ -491,10 +492,13 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
+    // For less-brittle tests, we grab the list of middlewares when prepare is
+    // given no apps, then compare it with the one that did.
+    const { middlewares: defaultMiddlewares } = await keystone.prepare();
     const { middlewares } = await keystone.prepare({ apps: [{ prepareMiddleware: () => {} }] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
+    expect(middlewares).toHaveLength(defaultMiddlewares.length);
   });
 
   test('filters out empty middleware arrays', async () => {
@@ -503,10 +507,13 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
+    // For less-brittle tests, we grab the list of middlewares when prepare is
+    // given no apps, then compare it with the one that did.
+    const { middlewares: defaultMiddlewares } = await keystone.prepare();
     const { middlewares } = await keystone.prepare({ apps: [{ prepareMiddleware: () => [] }] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
+    expect(middlewares).toHaveLength(defaultMiddlewares.length);
   });
 
   test('returns middlewares', async () => {
@@ -514,13 +521,14 @@ describe('keystone.prepare()', () => {
       adapter: new MockAdapter(),
       name: 'Jest Test',
     };
+    const middleware = jest.fn(() => {});
     const keystone = new Keystone(config);
     const { middlewares } = await keystone.prepare({
-      apps: [{ prepareMiddleware: () => () => {} }],
+      apps: [{ prepareMiddleware: () => middleware }],
     });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(1);
+    expect(middlewares).toEqual(expect.arrayContaining([middleware]));
   });
 
   test('flattens deeply nested middlewares', async () => {
@@ -529,18 +537,15 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
-    const fn0 = () => {};
-    const fn1 = () => {};
-    const fn2 = () => {};
+    const fn0 = jest.fn(() => {});
+    const fn1 = jest.fn(() => {});
+    const fn2 = jest.fn(() => {});
     const { middlewares } = await keystone.prepare({
       apps: [{ prepareMiddleware: () => [[fn0, fn1], fn2] }],
     });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(3);
-    expect(middlewares[0]).toBe(fn0);
-    expect(middlewares[1]).toBe(fn1);
-    expect(middlewares[2]).toBe(fn2);
+    expect(middlewares).toEqual(expect.arrayContaining([fn0, fn1, fn2]));
   });
 
   test('executes FIELD.prepareMiddleware()', async () => {
@@ -548,7 +553,7 @@ describe('keystone.prepare()', () => {
       adapter: new MockAdapter(),
       name: 'Jest Test',
     };
-    const mockMiddlewareFn = () => {};
+    const mockMiddlewareFn = jest.fn(() => {});
     const MockFieldWithMiddleware = {
       prepareMiddleware: jest.fn(() => mockMiddlewareFn),
       implementation: MockFieldImplementation,
@@ -561,8 +566,7 @@ describe('keystone.prepare()', () => {
 
     expect(MockFieldWithMiddleware.prepareMiddleware).toHaveBeenCalled();
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(1);
-    expect(middlewares[0]).toBe(mockMiddlewareFn);
+    expect(middlewares).toEqual(expect.arrayContaining([mockMiddlewareFn]));
   });
 
   test('orders field middlewares before app middlewares', async () => {});

@@ -1,6 +1,10 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystone-alpha/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const {
+  multiAdapterRunners,
+  setupServer,
+  networkedGraphqlRequest,
+} = require('@keystone-alpha/test-utils');
 const cuid = require('cuid');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -37,7 +41,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('relationship filtering with access control', () => {
       test(
         'implicitly filters to only the IDs in the database by default',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ app, create }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
@@ -55,19 +59,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await networkedGraphqlRequest({
+            app,
             query: `
-        query {
-          UserToPostLimitedRead(where: { id: "${user.id}" }) {
-            id
-            username
-            posts {
-              id
-            }
-          }
-        }
-      `,
+              query {
+                UserToPostLimitedRead(where: { id: "${user.id}" }) {
+                  id
+                  username
+                  posts {
+                    id
+                  }
+                }
+              }
+            `,
           });
 
           expect(errors).toBe(undefined);
@@ -83,7 +87,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'explicitly filters when given a `where` clause',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ app, create }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
@@ -101,21 +105,21 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await networkedGraphqlRequest({
+            app,
             query: `
-        query {
-          UserToPostLimitedRead(where: { id: "${user.id}" }) {
-            id
-            username
-            # Knowingly filter to an ID I don't have read access to
-            # To see if the filter is correctly "AND"d with the access control
-            posts(where: { id_in: ["${postIds[2]}"] }) {
-              id
-            }
-          }
-        }
-      `,
+              query {
+                UserToPostLimitedRead(where: { id: "${user.id}" }) {
+                  id
+                  username
+                  # Knowingly filter to an ID I don't have read access to
+                  # To see if the filter is correctly "AND"d with the access control
+                  posts(where: { id_in: ["${postIds[2]}"] }) {
+                    id
+                  }
+                }
+              }
+            `,
           });
 
           expect(errors).toBe(undefined);

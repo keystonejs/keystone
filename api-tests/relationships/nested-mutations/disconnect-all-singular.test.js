@@ -1,7 +1,12 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const {
+  multiAdapterRunners,
+  setupServer,
+  graphqlRequest,
+  networkedGraphqlRequest,
+} = require('@keystone-alpha/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -167,7 +172,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when using disconnectAll',
-          runner(setupKeystone, async ({ keystone, create, findById }) => {
+          runner(setupKeystone, async ({ app, create, findById }) => {
             const groupName = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -183,20 +188,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(createEvent.group.toString()).toBe(createGroup.id);
 
             // Update the item and link the relationship field
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            updateEventToGroupNoRead(
-              id: "${createEvent.id}"
-              data: {
-                group: { disconnectAll: true }
-              }
-            ) {
-              id
-            }
-          }
-      `,
+                mutation {
+                  updateEventToGroupNoRead(
+                    id: "${createEvent.id}"
+                    data: {
+                      group: { disconnectAll: true }
+                    }
+                  ) {
+                    id
+                  }
+                }
+              `,
             });
 
             expect(errors).toBe(undefined);

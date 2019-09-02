@@ -16,6 +16,7 @@ order: 1
 | `prepare`             | Manually peapare Keystone middlewares.                                       |
 | `createItems`         | Add items to a Keystone list.                                                |
 | `disconnect`          | Disconnect from all adapters.                                                |
+| `executeQuery`        | Run GraphQL queries and mutations directly against a Keystone instance.      |
 
 <!--
 
@@ -181,3 +182,48 @@ See: [Custom Server](https://v5.keystonejs.com/guides/custom-server).
 ## disconnect()
 
 Disconnect all adapters.
+
+## `keystone.executeQuery(queryString, options)`
+
+Use this method to execute queries or mutations directly against a Keystone
+instance.
+
+> ℹ️ When querying or mutating via `keystone.executeQuery`, there are differences
+> to keep in mind:
+>
+> - No access control checks are run (everything is set to `() => true`)
+> - The `context.req` object is set to `{}` (you can override this if necessary,
+>   see options below)
+> - Attempting to authenticate will throw errors (due to `req` being mocked)
+
+Returns a Promise representing the result of the given query or mutation.
+
+### `queryString`
+
+A graphQL query string. For example:
+
+```graphql
+query {
+  allTodos {
+    id
+    name
+  }
+}
+```
+
+Can also be a mutation:
+
+```graphql
+mutation newTodo($name: String) {
+  createTodo(name: $name) {
+    id
+  }
+}
+```
+
+### `options`
+
+| Option              | Type      | Default | Description                                                                                                                          |
+| ------------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `variables`         | `Object`  | `{}`    | The variables passed to the graphql query for the given queryString.                                                                 |
+| `context`           | `Object`  | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName`            |
