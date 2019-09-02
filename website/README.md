@@ -45,10 +45,6 @@ We are using certain concepts to group together our content. Our documentation i
   - may make assumptions that the person reading has a basic understanding of the system
   - Very nitty gritty documentation, mostly explanatory text, often no examples
   - Very much a glossary or dictionary - must be easily searchable
-- Decision documentation
-  - Rarely needed by users
-  - Focused on explaining _why_ a decision was made, not just how to use it.
-  - I am unsure where this will currently live.
 
 ### Back from our detour
 

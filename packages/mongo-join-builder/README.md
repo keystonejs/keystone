@@ -152,8 +152,7 @@ db.orders.aggregate([
 
 Instead, we can use `mongo-join-builder`!
 
-_NOTE: This example is incomplete, and only for documentation purposes. See
-[`examples/`](./examples) for complete examples._
+_NOTE: This example is incomplete, and only for documentation purposes. See the examples directory for complete examples._
 
 ```javascript
 const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
