@@ -1,5 +1,11 @@
 # @keystone-alpha/auth-passport
 
+## 4.0.1
+
+### Patch Changes
+
+- [12668191](https://github.com/keystonejs/keystone-5/commit/12668191): Fix assertion logic of cookieSecret deprecation message
+
 ## 4.0.0
 
 ### Major Changes

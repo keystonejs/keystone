@@ -1,1 +1,0 @@
-Fix assertion logic of cookieSecret deprecation message
