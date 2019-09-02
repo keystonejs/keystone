@@ -188,8 +188,8 @@ Disconnect all adapters.
 Use this method to execute queries or mutations directly against a Keystone
 instance.
 
-> ℹ️ When querying or mutating via `keystone.query`, there are differences to keep
-> in mind:
+> ℹ️ When querying or mutating via `keystone.executeQuery`, there are differences
+> to keep in mind:
 >
 > - No access control checks are run (everything is set to `() => true`)
 > - The `context.req` object is set to `{}` (you can override this if necessary,
