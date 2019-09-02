@@ -1,5 +1,15 @@
 # @keystone-alpha/keystone
 
+## 13.0.0
+
+### Major Changes
+
+- [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7): `cookieSecret` and `sessionStore` config options are now passed to the `Keystone` constructor instead of the individual auth or graphql packages.
+
+### Minor Changes
+
+- [8bb1bb0e](https://github.com/keystonejs/keystone-5/commit/8bb1bb0e): Add a `keystone.executeQuery()` method to run GraphQL queries and mutations directly against a Keystone instance. NOTE: These queries are executed without any Access Control checks by default.
+
 ## 12.0.1
 
 ### Patch Changes

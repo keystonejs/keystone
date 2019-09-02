@@ -1,5 +1,23 @@
 # @keystone-alpha/auth-passport
 
+## 4.0.1
+
+### Patch Changes
+
+- [12668191](https://github.com/keystonejs/keystone-5/commit/12668191): Fix assertion logic of cookieSecret deprecation message
+
+## 4.0.0
+
+### Major Changes
+
+- [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7): `cookieSecret` and `sessionStore` config options are now passed to the `Keystone` constructor instead of the individual auth or graphql packages.
+
+## 3.1.0
+
+### Minor Changes
+
+- [b301fd0f](https://github.com/keystonejs/keystone-5/commit/b301fd0f): `auth-passport`'s `onAuthenticated` method now receives an `isNewItem` flag to indicate if the user is logging for the first time or not.
+
 ## 3.0.0
 
 ### Major Changes

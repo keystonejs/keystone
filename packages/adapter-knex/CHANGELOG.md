@@ -1,5 +1,16 @@
 # @keystone-alpha/adapter-knex
 
+## 4.0.7
+
+- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
+  - @keystone-alpha/keystone@13.0.0
+
+## 4.0.6
+
+### Patch Changes
+
+- [7e280f57](https://github.com/keystonejs/keystone-5/commit/7e280f57): Updates warning message when knex cannot find a database
+
 ## 4.0.5
 
 - Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):

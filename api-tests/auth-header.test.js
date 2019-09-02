@@ -1,9 +1,6 @@
-const supertest = require('supertest-light');
 const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
 const { Text, Password, DateTime } = require('@keystone-alpha/fields');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const express = require('express');
-const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
+const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystone-alpha/test-utils');
 const { setupServer } = require('@keystone-alpha/test-utils');
 const cuid = require('cuid');
 
@@ -24,9 +21,8 @@ const initialData = {
 
 const COOKIE_SECRET = 'qwerty';
 
-async function setupKeystone(adapterName) {
-  const app = express();
-  const { keystone } = setupServer({
+function setupKeystone(adapterName) {
+  return setupServer({
     adapterName,
     name: `Jest Test Project For Login Auth ${cuid()}`,
     createLists: keystone => {
@@ -50,43 +46,29 @@ async function setupKeystone(adapterName) {
         list: 'User',
       });
     },
-    createApps: async keystone => {
-      const graphQLApp = new GraphQLApp(keystone, {
-        cookieSecret: COOKIE_SECRET,
-        apiPath: '/admin/api',
-        graphiqlPath: '/admin/graphiql',
-      });
-
-      app.use(await graphQLApp.prepareMiddleware({ keystone, dev: true }));
-    },
     keystoneOptions: {
+      cookieSecret: COOKIE_SECRET,
       defaultAccess: {
         list: ({ authentication: { item } }) => !!item,
       },
     },
   });
-
-  return { keystone, app };
 }
 
 function login(app, email, password) {
-  return supertest(app)
-    .set('Accept', 'application/json')
-    .post('/admin/api', {
-      query: `
-        mutation($email: String, $password: String) {
-          authenticateUserWithPassword(email: $email, password: $password) {
-            token
-          }
+  return networkedGraphqlRequest({
+    app,
+    query: `
+      mutation($email: String, $password: String) {
+        authenticateUserWithPassword(email: $email, password: $password) {
+          token
         }
-      `,
-      variables: { email, password },
-    })
-    .then(res => {
-      expect(res.statusCode).toBe(200);
-      const { data } = JSON.parse(res.text);
-      return data.authenticateUserWithPassword || {};
-    });
+      }
+    `,
+    variables: { email, password },
+  }).then(({ data }) => {
+    return data.authenticateUserWithPassword || {};
+  });
 }
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
@@ -97,15 +79,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ keystone, app }) => {
           // seed the db
           await keystone.createItems(initialData);
-          return supertest(app)
-            .set('Accept', 'application/json')
-            .post('/admin/api', { query: '{ allUsers { id } }' })
-            .then(function(res) {
-              expect(res.statusCode).toBe(200);
-              res.body = JSON.parse(res.text);
-              expect(res.body.data).toEqual({ allUsers: null });
-              expect(res.body.errors).toMatchObject([{ name: 'AccessDeniedError' }]);
-            });
+          const { data, errors } = await networkedGraphqlRequest({
+            app,
+            query: '{ allUsers { id } }',
+          });
+          expect(data).toEqual({ allUsers: null });
+          expect(errors).toMatchObject([{ name: 'AccessDeniedError' }]);
         })
       );
 
@@ -121,18 +100,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             );
 
             expect(token).toBeTruthy();
+            const { data, errors } = await networkedGraphqlRequest({
+              app,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              query: '{ allUsers { id } }',
+            });
 
-            return supertest(app)
-              .set('Authorization', `Bearer ${token}`)
-              .set('Accept', 'application/json')
-              .post('/admin/api', { query: '{ allUsers { id } }' })
-              .then(function(res) {
-                expect(res.statusCode).toBe(200);
-                res.body = JSON.parse(res.text);
-                expect(res.body.data).toHaveProperty('allUsers');
-                expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
-                expect(res.body).not.toHaveProperty('errors');
-              });
+            expect(data).toHaveProperty('allUsers');
+            expect(data.allUsers).toHaveLength(initialData.User.length);
+            expect(errors).toBe(undefined);
           })
         );
 
@@ -148,17 +126,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             expect(token).toBeTruthy();
 
-            return supertest(app)
-              .set('Cookie', `keystone.sid=s:${token}`)
-              .set('Accept', 'application/json')
-              .post('/admin/api', { query: '{ allUsers { id } }' })
-              .then(function(res) {
-                expect(res.statusCode).toBe(200);
-                res.body = JSON.parse(res.text);
-                expect(res.body.data).toHaveProperty('allUsers');
-                expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
-                expect(res.body).not.toHaveProperty('errors');
-              });
+            const { data, errors } = await networkedGraphqlRequest({
+              app,
+              headers: {
+                Cookie: `keystone.sid=s:${token}`,
+              },
+              query: '{ allUsers { id } }',
+            });
+
+            expect(data).toHaveProperty('allUsers');
+            expect(data.allUsers).toHaveLength(initialData.User.length);
+            expect(errors).toBe(undefined);
           })
         );
       });

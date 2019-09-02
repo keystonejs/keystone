@@ -28,7 +28,7 @@ And, ONE of the following:
 
 ## Installation
 
-To create a new KeystoneJS application, ensure [your database is configured and running](../quick-start/database.md), then run the following commands.
+To create a new KeystoneJS application, ensure [your database is configured and running](https://v5.keystonejs.com/quick-start/adapters), then run the following commands.
 
 ```sh
 npm init keystone-app my-app
@@ -72,9 +72,3 @@ KeystoneJS provides a web interface for this API at
 		<a href="http://localhost:3000/admin/graphiql">http://localhost:3000/admin/graphiql</a>
 	</code>
 </pre>
-
-## Up Next
-
-- [Schema - Lists & Fields](../guides/schema.md)
-- [Using the KeystoneJS Admin UI](../tutorials/admin-ui.md)
-- [Introduction To KeystoneJS's GraphQL API](../tutorials/intro-to-graphql.md)

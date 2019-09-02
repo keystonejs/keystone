@@ -8,7 +8,7 @@ const {
 } = require('@keystone-alpha/auth-passport');
 
 const { keystone, apps } = require('./index');
-const { google, facebook, twitter, github, hostURL, port, cookieSecret } = require('./config');
+const { google, facebook, twitter, github, hostURL, port } = require('./config');
 const initialData = require('./data');
 
 let googleStrategy;
@@ -20,7 +20,6 @@ if (google) {
       idField: 'googleId',
       appId: google.appId,
       appSecret: google.appSecret,
-      cookieSecret,
       apiPath: '/admin/api',
       hostURL,
       loginPath: '/auth/google',
@@ -103,7 +102,6 @@ if (facebook) {
       idField: 'facebookId',
       appId: facebook.appId,
       appSecret: facebook.appSecret,
-      cookieSecret,
       apiPath: '/admin/api',
       hostURL,
       loginPath: '/auth/facebook',
@@ -147,7 +145,6 @@ if (twitter) {
       idField: 'twitterId',
       appId: twitter.appId,
       appSecret: twitter.appSecret,
-      cookieSecret,
       apiPath: '/admin/api',
       hostURL,
       loginPath: '/auth/twitter',
@@ -178,7 +175,6 @@ if (github) {
       idField: 'githubId',
       appId: github.appId,
       appSecret: github.appSecret,
-      cookieSecret,
       apiPath: '/admin/api',
       hostURL,
       loginPath: '/auth/github',

@@ -1,7 +1,12 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const {
+  multiAdapterRunners,
+  setupServer,
+  graphqlRequest,
+  networkedGraphqlRequest,
+} = require('@keystone-alpha/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -208,7 +213,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'throws error when linking nested within create mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -217,23 +222,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            createEventToGroupNoRead(data: {
-              title: "A thing",
-              group: { connect: { id: "${createGroupNoRead.id}" } }
-            }) {
-              id
-            }
-          }
-      `,
+                mutation {
+                  createEventToGroupNoRead(data: {
+                    title: "A thing",
+                    group: { connect: { id: "${createGroupNoRead.id}" } }
+                  }) {
+                    id
+                  }
+                }
+              `,
             });
 
             expect(errors).toMatchObject([
               {
-                message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
+                data: {
+                  errors: expect.arrayContaining([
+                    expect.objectContaining({
+                      message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
+                    }),
+                  ]),
+                },
               },
             ]);
           })
@@ -241,7 +252,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'does not throw error when linking nested within update mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -254,34 +265,40 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Create an item to update
             const {
               data: { createEventToGroupNoRead },
-            } = await graphqlRequest({
-              keystone,
+            } = await networkedGraphqlRequest({
+              app,
               query: 'mutation { createEventToGroupNoRead(data: { title: "A thing", }) { id } }',
             });
 
             expect(createEventToGroupNoRead.id).toBeTruthy();
 
             // Update the item and link the relationship field
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            updateEventToGroupNoRead(
-              id: "${createEventToGroupNoRead.id}"
-              data: {
-                title: "A thing",
-                group: { connect: { id: "${createGroupNoRead.id}" } }
-              }
-            ) {
-              id
-            }
-          }
-      `,
+                mutation {
+                  updateEventToGroupNoRead(
+                    id: "${createEventToGroupNoRead.id}"
+                    data: {
+                      title: "A thing",
+                      group: { connect: { id: "${createGroupNoRead.id}" } }
+                    }
+                  ) {
+                    id
+                  }
+                }
+              `,
             });
 
             expect(errors).toMatchObject([
               {
-                message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
+                data: {
+                  errors: expect.arrayContaining([
+                    expect.objectContaining({
+                      message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
+                    }),
+                  ]),
+                },
               },
             ]);
           })
@@ -291,7 +308,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('create: false on related list', () => {
         test(
           'does not throw error when linking nested within create mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -299,21 +316,21 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { id } = await create('GroupNoCreate', { name: groupName });
 
             // Create an item that does the linking
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            createEventToGroupNoCreate(data: {
-              title: "A thing",
-              group: { connect: { id: "${id}" } }
-            }) {
-              id
-              group {
-                id
-              }
-            }
-          }
-      `,
+                mutation {
+                  createEventToGroupNoCreate(data: {
+                    title: "A thing",
+                    group: { connect: { id: "${id}" } }
+                  }) {
+                    id
+                    group {
+                      id
+                    }
+                  }
+                }
+              `,
             });
 
             expect(data).toMatchObject({
@@ -325,7 +342,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'does not throw error when linking nested within update mutation',
-          runner(setupKeystone, async ({ keystone, create, findOne, findById }) => {
+          runner(setupKeystone, async ({ app, create, findOne, findById }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -340,25 +357,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            updateEventToGroupNoCreate(
-              id: "${createEventToGroupNoCreate.id}"
-              data: {
-                title: "A thing",
-                group: { connect: { id: "${createGroupNoCreate.id}" } }
-              }
-            ) {
-              id
-              group {
-                id
-                name
-              }
-            }
-          }
-      `,
+                mutation {
+                  updateEventToGroupNoCreate(
+                    id: "${createEventToGroupNoCreate.id}"
+                    data: {
+                      title: "A thing",
+                      group: { connect: { id: "${createGroupNoCreate.id}" } }
+                    }
+                  ) {
+                    id
+                    group {
+                      id
+                      name
+                    }
+                  }
+                }
+              `,
             });
 
             expect(data).toMatchObject({

@@ -1,66 +1,73 @@
 <!--[meta]
 section: api
-title: createList
+title: Create List
+order: 2
 [meta]-->
 
-# keystone.createList(name, options)
+# createList(name, options)
 
 ## Usage
 
 ```javascript
 keystone.createList('Post', {
-  /* ... */
+  /* ...config */
 });
 ```
 
-## API
+### Config
 
-## name
+| Option          | Type                                | Default                       | Description                                                                             |
+| --------------- | ----------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| `fields`        | `Object`                            |                               | Defines the fields in a list.                                                           |
+| `schemaDoc`     | `String`                            |                               | A description for the list. Used in the Admin UI.                                       |
+| `hooks`         | `Object`                            | `{}`                          | Specify hooks to execute functions after list actions.                                  |
+| `labelField`    | `String`                            | `name`                        | Specify a field to use as a label for individual list items.                            |
+| `labelResolver` | `Function`                          | Resolves `labelField` or `id` | Function to resolve labels for individual list items.                                   |
+| `access`        | `Function` \| `Object` \| `Boolean` | `true`                        | [Access control](https://v5.keystonejs.com/guides/access-control) options for the list. |
+| `adapterConfig` | `Object`                            |                               | Override the adapter config options for a specific list.                                |
+| `itemQueryName` | `String`                            |                               | Changes the _item_ name in GraphQL queries and mutations.                               |
+| `listQueryName` | `String`                            |                               | Changes the _list_ name in GraphQL queries and mutations.                               |
+| `singular`      | `String`                            |                               | Specify a singular noun for Keystone to use for the list.                               |
+| `plural`        | `String`                            |                               | Specify a plural for Keystone to use for the list.                                      |
+| `path`          | `String`                            |                               | Changes the path in the Admin UI.                                                       |
+| `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.                                  |
 
-A singular name for the list e.g. 'Post'. Where possible plural names will be generated automatically or can be configured in options.
+### `fields`
 
-## options
+Defines the fields to use in a list.
 
-### fields
+#### Usage
 
-#### defaultValue
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+  },
+});
+```
 
-If not set a value must be provided when creating new items.
+See: [Fields](/keystone-alpha/fields/) for more information on configuring field options.
 
-For a 'nullable' field, set `defaultValue: null`.
+### `schemaDoc`
 
-May be a static value, or a function which returns the value / a Promise for the value.
+A description for the list used in the GraphQL schema.
 
-NOTE: Some types have a pre-configured defaultValue;
-
-- **Relationship**: `null`
-
-NOTE: This can have impacts when combined with [access control](./access-control.md)
-where it's possible a user is never able to create new items because they don't
-have access to create a certain field, which attempts to use the `defaultValue`,
-but then throws an error because no `defaultValue` has been set.
-
-### schemaDoc
-
-A description for the list. Used in the Admin UI.
-
-### hooks
+### `hooks`
 
 Specify hooks to execute functions after list actions. List actions include:
 
-- resolveInput
-- validateInput
-- beforeChange
-- afterChange
-- beforeDelete
-- validateDelete
-- afterDelete
+- `resolveInput`
+- `validateInput`
+- `beforeChange`
+- `afterChange`
+- `beforeDelete`
+- `validateDelete`
+- `afterDelete`
 
-E.g.
+#### Usage
 
-```
-keystone.createList('User',
-{
+```javascript
+keystone.createList('User', {
   fields: {
     name: { type: Text },
   },
@@ -71,66 +78,65 @@ keystone.createList('User',
       };
     },
   },
-})
+});
 ```
+
+### `label`
 
 Overrides label for the list in the AdminUI. Default is `listName`.
 
-### labelField
+### `labelField`
 
 Specify a field to use as a label for individual list items.
 
-E.g.
+#### Usage
 
-```
-keystone.createList('User',
-{
+```javascript
+keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
   },
-  labelField: 'name'
-})
+  labelField: 'name',
+});
 ```
 
-### labelResolver
+### `labelResolver`
 
 Function to resolve labels for individual list item. Default resolves the `labelField`.
 
-E.g.
+#### Usage
 
-```
-keystone.createList('User',
-{
+```javascript
+keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
   },
-  labelResolver: item => `${item.name} - ${item.email}`
-})
+  labelResolver: item => `${item.name} - ${item.email}`,
+});
 ```
 
-### access
+### `access`
 
-(Access control)[/guides/access-control] options for the list.
+[Access control](https://v5.keystonejs.com/guides/access-control) options for the list.
 
-Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the (access control API documentation)[/api/access-control] for more details.
+Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the (access control API documentation)[https://v5.keystonejs.com/api/access-control] for more details.
 
-E.g.
+#### Usage
 
-```
-keystone.createList('User',
-{
+```javascript
+keystone.createList('User', {
   fields: {
     name: { type: Text },
   },
   access: {
     read: false,
   },
-})
+});
 ```
 
-### adminConfig
+### `adminConfig`
 
 Options for the AdminUI including:
 
@@ -139,11 +145,10 @@ Options for the AdminUI including:
 - `defaultSort`
 - `maximumPageSize`
 
-E.g.
+#### Usage
 
-```
-keystone.createList('User',
-{
+```javascript
+keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
@@ -154,23 +159,22 @@ keystone.createList('User',
     defaultSort: 'email',
     maximumPageSize: 100,
   },
-})
+});
 ```
 
-### itemQueryName
+### `itemQueryName`
 
 Changes the item name in GraphQL queries and mutations.
 
-E.g.
+#### Usage
 
-```
-keystone.createList('User',
-{
+```javascript
+keystone.createList('User', {
   fields: {
     name: { type: Text },
   },
   itemQueryName: 'Person',
-})
+});
 ```
 
 With the above example a GraphQL query might look like this:
@@ -183,20 +187,19 @@ query {
 }
 ```
 
-### listQueryName
+### `listQueryName`
 
 Changes the list name in GraphQL queries and mutations.
 
-E.g.
+#### Usage
 
-```
-keystone.createList('User',
-{
+```javascript
+keystone.createList('User', {
   fields: {
     name: { type: Text },
   },
-  listQueryName: 'People'
-})
+  listQueryName: 'People',
+});
 ```
 
 With the above example a GraphQL query might look like this:
@@ -209,7 +212,7 @@ query {
 }
 ```
 
-### singular
+### `singular`
 
 Keystone list names should be singular and Keystone will attempt to determine a plural.
 
@@ -217,45 +220,73 @@ Where Keystone can't determine a plural you may be forced to use a different lis
 
 The `singular` option allows you to change the display label for singular items.
 
-E.g. Keystone can't determine a plural for 'Sheep'. Let's use 'WoolyBoi' instead and change the `singular` option:
+E.g. Keystone can't determine a plural for 'Sheep'. Let's change the `singular` option:
 
-```
-keystone.createList("WoolyBoi", {
+```javascript
+keystone.createList('WoolyBoi', {
   fields: {
-    sheepName: { type: Text }
+    sheepName: { type: Text },
   },
   singular: 'Sheep',
-  plural: 'Sheep'
+  plural: 'Sheep',
 });
 ```
 
 _Note_: This will override labels in the AdminUI but will not change graphQL queries. For queries and mutations see: `itemQueryName` and `listQueryName`.
 
-### plural
+### `plural`
 
 Keystone will attempt to determine a plural for list items. Sometimes Keystone will not be able to determing the plural forcing you to change the list name. Or sometimes Keystone may get it wrong, especially for non-english words.
 
 E.g. Keystone thinks the correct plural for Octopus is "Octopi". Everyone knows the scientifically accurate plural is "Octopodes":
 
-```
-keystone.createList("Octopus", {
+```javascript
+keystone.createList('Octopus', {
   fields: {
-    legs: { type: Integer }
+    legs: { type: Integer },
   },
-  plural: "Octopodes"
+  plural: 'Octopodes',
 });
 ```
 
-### path
+### `path`
 
 Changes the path in the Admin UI. Updating `plural` and `singular` values will not change the route in the admin UI. You can specify this using `path`.
 
-### adapterConfig
+### `adapterConfig`
 
-Override the adapter config options for a specific list.
+Override the adapter config options for a specific list. Normally `adapterConfig` is provided when initialising Keystone:
 
-### plugins
+```javascript
+const keystone = new Keystone({
+  name: 'my-project',
+  adapter: new Adapter({
+    /* ...adapterConfig */
+  }),
+});
+```
+
+Specifying an adapter config on a list item will extend the default config for this list.
+
+### `plugins`
 
 An array of functions that modify config values. Plugin functions receive a config object and can modify or extend this. They should return a valid list config.
 
-This provides an API for packaging features that can be applied to multiple lists.
+```javascript
+const setupUserList = ({ fields, ...config }) => {
+  return {
+    ...config,
+    fields: {
+      ...fields,
+      name: { type: Text },
+      password: { type: Password },
+    },
+  };
+};
+
+keystone.createList('User', {
+  plugin: [setupUserList],
+});
+```
+
+This provides a method for packaging features that can be applied to multiple lists.

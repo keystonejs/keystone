@@ -5,7 +5,7 @@ title: Adding Lists To Your Keystone Project
 
 # Adding Lists To Your Keystone Project
 
-We've already created one list during [previous tutorial](./new-project.md).
+We've already created one list during [previous tutorial](https://v5.keystonejs.com/quick-start).
 Now it's the time to dive deeper. Let's make ToDos object a bit more complex.
 
 ## Creating basic list in separate file
@@ -69,7 +69,7 @@ module.exports = {
 }
 ```
 
-If you're curious about the usage options you can read more about `CalendarDay` [here](../../packages/fields/src/types/CalendarDay/README.md). Now it's a time to explore docs about other field types and get a bit familiar with them, it will help you make your schema cleaner.
+If you're curious about the usage options you can read more about `CalendarDay` [here](https://v5.keystonejs.com/keystone-alpha/fields/src/types/calendar-day/). Now it's a time to explore docs about other field types and get a bit familiar with them, it will help you make your schema cleaner.
 
 ## Defining User list
 
@@ -101,8 +101,8 @@ const UsersSchema = require('./lists/Users.js');
 keystone.createList('User', UsersSchema);
 ```
 
-Realunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user. But how can we assign a task to specific user? Let's proceed with [Defining Relationships](./relationships.md)
+Realunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user. But how can we assign a task to specific user? Let's proceed with [Defining Relationships](https://v5.keystonejs.com/guides/relationships)
 
 See also:
-[Schema - Lists & Fields](../guides/schema.md)
-[API - createList](../api/create-list.md)
+[Schema - Lists & Fields](https://v5.keystonejs.com/guides/schema)
+[API - createList](https://v5.keystonejs.com/api/create-list)

@@ -10,7 +10,12 @@ function setupKeystone(adapterName) {
       keystone.createList('User', {
         fields: {
           company: { type: Relationship, ref: 'Company' },
-          workHistory: { type: Relationship, ref: 'Company', many: true, access: { read: false } },
+          workHistory: {
+            type: Relationship,
+            ref: 'Company',
+            many: true,
+            access: { read: false },
+          },
           posts: { type: Relationship, ref: 'Post', many: true },
         },
       });

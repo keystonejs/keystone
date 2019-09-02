@@ -1,7 +1,12 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const {
+  multiAdapterRunners,
+  setupServer,
+  graphqlRequest,
+  networkedGraphqlRequest,
+} = require('@keystone-alpha/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -440,7 +445,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'throws when link nested from within create mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -448,24 +453,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               content: noteContent,
             });
 
-            // Create an item that does the linking
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            createUserToNotesNoRead(data: {
-              username: "A thing",
-              notes: { connect: [{ id: "${createNoteNoRead.id}" }] }
-            }) {
-              id
-            }
-          }
-      `,
+                mutation {
+                  createUserToNotesNoRead(data: {
+                    username: "A thing",
+                    notes: { connect: [{ id: "${createNoteNoRead.id}" }] }
+                  }) {
+                    id
+                  }
+                }
+              `,
             });
 
             expect(errors).toMatchObject([
               {
-                message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                data: {
+                  errors: expect.arrayContaining([
+                    expect.objectContaining({
+                      message:
+                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                    }),
+                  ]),
+                },
               },
             ]);
           })
@@ -473,7 +484,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'throws when link nested from within update mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -485,26 +496,33 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            updateUserToNotesNoRead(
-              id: "${createUser.id}"
-              data: {
-                username: "A thing",
-                notes: { connect: [{ id: "${createNote.id}" }] }
-              }
-            ) {
-              id
-            }
-          }
-      `,
+                mutation {
+                  updateUserToNotesNoRead(
+                    id: "${createUser.id}"
+                    data: {
+                      username: "A thing",
+                      notes: { connect: [{ id: "${createNote.id}" }] }
+                    }
+                  ) {
+                    id
+                  }
+                }
+              `,
             });
 
             expect(errors).toMatchObject([
               {
-                message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                data: {
+                  errors: expect.arrayContaining([
+                    expect.objectContaining({
+                      message:
+                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                    }),
+                  ]),
+                },
               },
             ]);
           })
@@ -514,7 +532,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('create: false on related list', () => {
         test(
           'does not throw when link nested from within create mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -523,27 +541,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            createUserToNotesNoCreate(data: {
-              username: "A thing",
-              notes: { connect: [{ id: "${createNoteNoCreate.id}" }] }
-            }) {
-              id
-            }
-          }
-      `,
+                mutation {
+                  createUserToNotesNoCreate(data: {
+                    username: "A thing",
+                    notes: { connect: [{ id: "${createNoteNoCreate.id}" }] }
+                  }) {
+                    id
+                  }
+                }
+              `,
             });
 
             expect(errors).toBe(undefined);
+            expect(data.createUserToNotesNoCreate).toMatchObject({ id: expect.any(String) });
           })
         );
 
         test(
           'does not throw when link nested from within update mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -555,26 +574,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            updateUserToNotesNoCreate(
-              id: "${createUser.id}"
-              data: {
-                username: "A thing",
-                notes: {
-                  connect: [{id: "${createNote.id}" }]
+                mutation {
+                  updateUserToNotesNoCreate(
+                    id: "${createUser.id}"
+                    data: {
+                      username: "A thing",
+                      notes: {
+                        connect: [{id: "${createNote.id}" }]
+                      }
+                    }
+                  ) {
+                    id
+                  }
                 }
-              }
-            ) {
-              id
-            }
-          }
-      `,
+              `,
             });
 
             expect(errors).toBe(undefined);
+            expect(data.updateUserToNotesNoCreate).toMatchObject({ id: expect.any(String) });
           })
         );
       });

@@ -19,38 +19,6 @@ function setupKeystone(adapterName) {
           group: { type: Relationship, ref: 'Group' },
         },
       });
-
-      keystone.createList('GroupNoRead', {
-        fields: {
-          name: { type: Text },
-        },
-        access: {
-          read: () => false,
-        },
-      });
-
-      keystone.createList('EventToGroupNoRead', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoRead' },
-        },
-      });
-
-      keystone.createList('GroupNoCreate', {
-        fields: {
-          name: { type: Text },
-        },
-        access: {
-          create: () => false,
-        },
-      });
-
-      keystone.createList('EventToGroupNoCreate', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoCreate' },
-        },
-      });
     },
   });
 }
