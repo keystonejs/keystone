@@ -71,61 +71,13 @@ module.exports = class Keystone {
       throw new Error('Need an adapter, yo');
     }
 
-  getCookieSecret() {
-    if (!this._cookieSecret) {
-      throw new Error('No cookieSecret set in Keystone constructor');
-    }
-    return this._cookieSecret;
-  }
-
-  // The GraphQL App uses this method to build up the context required for each
-  // incoming query.
-  // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName = 'admin', req = {}, skipAccessControl = false } = {}) {
-    let getListAccessControlForUser;
-    let getFieldAccessControlForUser;
-
-    if (skipAccessControl) {
-      getListAccessControlForUser = () => true;
-      getFieldAccessControlForUser = () => true;
-    } else {
-      // memoizing to avoid requests that hit the same type multiple times.
-      // We do it within the request callback so we can resolve it based on the
-      // request info ( like who's logged in right now, etc)
-      getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
-        return validateListAccessControl({
-          access: this.lists[listKey].access,
-          originalInput,
-          operation,
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-        });
-      });
-
-      getFieldAccessControlForUser = fastMemoize(
-        (listKey, fieldKey, originalInput, existingItem, operation) => {
-          return validateFieldAccessControl({
-            access: this.lists[listKey].fieldsByPath[fieldKey].access,
-            originalInput,
-            existingItem,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-            fieldKey,
-            listKey,
-          });
-        }
+    // Placeholder until keystone.prepare() is run during which this function
+    // will be replaced with one that can actually make queries (assuming the
+    // graphql app is setup, which is checked for elsewhere).
+    this.executeQuery = () => {
+      throw new Error(
+        'Attempted to execute keystone.query() before keystone.prepare() has completed.'
       );
-    }
-
-    return {
-      schemaName,
-      startAuthedSession: ({ item, list }, audiences) =>
-        startAuthedSession(req, { item, list }, audiences, this._cookieSecret),
-      endAuthedSession: endAuthedSession.bind(null, req),
-      authedItem: req.user,
-      authedListKey: req.authedListKey,
-      getListAccessControlForUser,
-      getFieldAccessControlForUser,
     };
   }
 
@@ -187,24 +139,47 @@ module.exports = class Keystone {
     };
   }
 
-  _buildQueryHelper() {
-    return context => (queryString, { skipAccessControl = false, variables } = {}) => {
-      let passThroughContext = context;
+  /**
+   * A factory for generating executable graphql query functions.
+   *
+   * @param context Object The graphQL Context object
+   * @param context.schemaName String Usually 'admin', this is the registered
+   * schema as passed to keystone.registerSchema()
+   *
+   * @return Function An executable function for running a query
+   */
+  _buildQueryHelper(defaultContext) {
+    /**
+     * An executable function for running a query
+     *
+     * @param queryString String A graphQL query string
+     * @param options.skipAccessControl Boolean By default access control _of
+     * the user making the initial request_ is still tested. Disable all
+     * Access Control checks with this flag
+     * @param options.variables Object The variables passed to the graphql
+     * query for the given queryString.
+     * @param options.context Object Overrides to the default context used when
+     * making a query. Useful for setting the `schemaName` for example.
+     *
+     * @return Promise<Object> The graphql query response
+     */
+    return (queryString, { skipAccessControl = false, variables, context = {} } = {}) => {
+      let passThroughContext = {
+        ...defaultContext,
+        ...context,
+      };
 
       if (skipAccessControl) {
-        passThroughContext = {
-          ...context,
-          getListAccessControlForUser: () => true,
-          getFieldAccessControlForUser: () => true,
-        };
+        passThroughContext.getListAccessControlForUser = () => true;
+        passThroughContext.getFieldAccessControlForUser = () => true;
       }
 
-      const graphQLQuery = this._graphQLQuery[context.schemaName];
+      const graphQLQuery = this._graphQLQuery[passThroughContext.schemaName];
 
       if (!graphQLQuery) {
         return Promise.reject(
           new Error(
-            'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
+            `No executable schema named '${passThroughContext.schemaName}' is available. Have you setup '@keystone-alpha/app-graphql'?`
           )
         );
       }
@@ -232,7 +207,7 @@ module.exports = class Keystone {
 
     const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
-      queryHelper: this._buildQueryHelper(),
+      queryHelper: this._buildQueryHelper.bind(this),
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key] || {},
@@ -464,7 +439,7 @@ module.exports = class Keystone {
       const name = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
       return {
         [name]: (obj, args, context, info) =>
-          resolver(obj, args, context, info, { query: this._buildQueryHelper()(context) }),
+          resolver(obj, args, context, info, { query: this._buildQueryHelper(context) }),
       };
     };
     const resolvers = {
@@ -586,6 +561,11 @@ module.exports = class Keystone {
           )
       )),
     ]).filter(middleware => !!middleware);
+
+    // Now that the middlewares are done, it's safe to assume all the schemas
+    // are registered, so we can setup our query helper
+    // This enables god-mode queries with no access control checks
+    this.executeQuery = this._buildQueryHelper(this.getGraphQlContext({ skipAccessControl: true }));
 
     return { middlewares };
   }

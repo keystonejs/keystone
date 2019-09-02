@@ -1,3 +1,5 @@
+const express = require('express');
+const supertest = require('supertest-light');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 const pFinally = require('p-finally');
 const url = require('url');
@@ -8,7 +10,7 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
-function setupServer({ name, adapterName, createLists = () => {}, createApps, keystoneOptions }) {
+async function setupServer({ name, adapterName, createLists = () => {}, keystoneOptions }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
   const args = {
     mongoose: {},
@@ -26,19 +28,41 @@ function setupServer({ name, adapterName, createLists = () => {}, createApps, ke
   });
 
   createLists(keystone);
-  if (createApps) {
-    createApps(keystone);
-  } else {
-    new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
-  }
-  return { keystone };
+
+  const apps = [
+    new GraphQLApp({
+      schemaName: SCHEMA_NAME,
+      apiPath: '/admin/api',
+      graphiqlPath: '/admin/graphiql',
+    }),
+  ];
+
+  const { middlewares } = await keystone.prepare({ dev: true, apps });
+
+  const app = express();
+  app.use(middlewares);
+
+  return { keystone, app };
 }
 
-function graphqlRequest({ keystone, query }) {
-  return keystone._graphQLQuery[SCHEMA_NAME](
-    query,
-    keystone.getGraphQlContext({ schemaName: SCHEMA_NAME })
-  );
+function graphqlRequest({ keystone, query, variables }) {
+  return keystone.executeQuery(query, { context: { schemaName: SCHEMA_NAME }, variables });
+}
+
+function networkedGraphqlRequest({ app, query, variables = undefined, headers = {} }) {
+  const request = supertest(app).set('Accept', 'application/json');
+
+  Object.entries(headers).forEach(([key, value]) => request.set(key, value));
+
+  return request
+    .post('/admin/api', { query, variables })
+    .then(res => {
+      expect(res.statusCode).toBe(200);
+      return JSON.parse(res.text);
+    })
+    .catch(error => ({
+      errors: [error],
+    }));
 }
 
 // One instance per node.js thread which cleans itself up when the main process
@@ -178,5 +202,6 @@ module.exports = {
   setupServer,
   multiAdapterRunners,
   graphqlRequest,
+  networkedGraphqlRequest,
   matchFilter,
 };

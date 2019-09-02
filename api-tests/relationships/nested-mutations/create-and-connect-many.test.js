@@ -1,7 +1,12 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const {
+  multiAdapterRunners,
+  setupServer,
+  graphqlRequest,
+  networkedGraphqlRequest,
+} = require('@keystone-alpha/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -226,7 +231,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'throws when link AND create nested from within create mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
             const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -236,32 +241,41 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            createUserToNotesNoRead(data: {
-              username: "A thing",
-              notes: {
-                connect: [{ id: "${createNoteNoRead.id}" }],
-                create: [{ content: "${noteContent2}" }]
-              }
-            }) {
-              id
-            }
-          }
-      `,
+                mutation {
+                  createUserToNotesNoRead(data: {
+                    username: "A thing",
+                    notes: {
+                      connect: [{ id: "${createNoteNoRead.id}" }],
+                      create: [{ content: "${noteContent2}" }]
+                    }
+                  }) {
+                    id
+                  }
+                }
+              `,
             });
 
             expect(errors).toMatchObject([
-              { message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>' },
+              {
+                data: {
+                  errors: expect.arrayContaining([
+                    expect.objectContaining({
+                      message:
+                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                    }),
+                  ]),
+                },
+              },
             ]);
           })
         );
 
         test(
           'throws when link & create nested from within update mutation',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
             const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -274,28 +288,37 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-          mutation {
-            updateUserToNotesNoRead(
-              id: "${createUser.id}"
-              data: {
-                username: "A thing",
-                notes: {
-                  connect: [{ id: "${createNote.id}" }],
-                  create: [{ content: "${noteContent2}" }]
+                mutation {
+                  updateUserToNotesNoRead(
+                    id: "${createUser.id}"
+                    data: {
+                      username: "A thing",
+                      notes: {
+                        connect: [{ id: "${createNote.id}" }],
+                        create: [{ content: "${noteContent2}" }]
+                      }
+                    }
+                  ) {
+                    id
+                  }
                 }
-              }
-            ) {
-              id
-            }
-          }
-      `,
+              `,
             });
 
             expect(errors).toMatchObject([
-              { message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>' },
+              {
+                data: {
+                  errors: expect.arrayContaining([
+                    expect.objectContaining({
+                      message:
+                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                    }),
+                  ]),
+                },
+              },
             ]);
           })
         );
