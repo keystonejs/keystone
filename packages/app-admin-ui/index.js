@@ -17,6 +17,7 @@ class AdminUIApp {
     authStrategy,
     pages,
     enableDefaultRoute = false,
+    filterAdminAccess = () => true,
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -32,6 +33,7 @@ class AdminUIApp {
     this.apiPath = apiPath;
     this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
+    this.filterAdminAccess = filterAdminAccess;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -139,6 +141,14 @@ class AdminUIApp {
   createProdMiddleware({ keystone, distDir }) {
     const app = express.Router();
 
+    app.use(this.adminPath, (req, res, next) => {
+      if (req.user && !this.filterAdminAccess(req.user)) {
+        res.redirect('/');
+      } else {
+        next();
+      }
+    });
+
     app.use(compression());
 
     const builtAdminRoot = path.join(distDir, 'admin');
@@ -149,12 +159,16 @@ class AdminUIApp {
     }
     const secureBuiltRoot = path.join(builtAdminRoot, 'secure');
     const secureStaticMiddleware = express.static(secureBuiltRoot);
-    const secureFallbackMiddleware = fallback('index.html', { root: secureBuiltRoot });
+    const secureFallbackMiddleware = fallback('index.html', {
+      root: secureBuiltRoot,
+    });
 
     if (this.authStrategy) {
       const publicBuiltRoot = path.join(builtAdminRoot, 'public');
       const publicStaticMiddleware = express.static(publicBuiltRoot);
-      const publicFallbackMiddleware = fallback('index.html', { root: publicBuiltRoot });
+      const publicFallbackMiddleware = fallback('index.html', {
+        root: publicBuiltRoot,
+      });
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
         return req.user
@@ -184,7 +198,11 @@ class AdminUIApp {
     if (this.enableDefaultRoute) {
       // Attach this last onto the root so the `this.adminPath` can overwrite it
       // if necessary
-      _app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './server/default.html')));
+      _app.get('/', (req, res) => {
+        if (!req.user) {
+          res.sendFile(path.resolve(__dirname, './server/default.html'));
+        }
+      });
     }
 
     return _app;
@@ -192,6 +210,14 @@ class AdminUIApp {
 
   createDevMiddleware({ keystone }) {
     const app = express();
+
+    app.use(this.adminPath, (req, res, next) => {
+      if (req.user && !this.filterAdminAccess(req.user)) {
+        res.redirect('/');
+      } else {
+        next();
+      }
+    });
 
     const { adminPath } = this;
     if (this.authStrategy) {
@@ -203,6 +229,7 @@ class AdminUIApp {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings
       // was appended.
+
       if (/^[\w\/\-]+$/.test(req.path)) req.url = '/';
       next();
     });
@@ -244,6 +271,7 @@ class AdminUIApp {
       const publicHotMiddleware = webpackHotMiddleware(publicCompiler, webpackHotMiddlewareConfig);
 
       // app.use(adminMiddleware);
+
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
         return req.user ? secureMiddleware(req, res, next) : publicMiddleware(req, res, next);
