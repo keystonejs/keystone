@@ -1,27 +1,36 @@
 const createCorsMiddleware = require('cors');
 const falsey = require('falsey');
-const { commonSessionMiddleware } = require('@keystone-alpha/session');
-const flattenDeep = require('lodash.flattendeep');
+const assert = require('nanoassert');
 const createGraphQLMiddleware = require('./lib/graphql');
 const { createApolloServer } = require('./lib/apolloServer');
 
 class GraphQLApp {
   constructor({
     cors = { origin: true, credentials: true },
-    cookieSecret = 'qwerty',
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
     schemaName = 'admin',
     apollo = {},
-    sessionStore,
     pinoOptions,
+    // Deprecated options:
+    cookieSecret,
+    sessionStore,
   } = {}) {
+    // Remove these assertions after March 1st, 2019 (6 months from when they
+    // were added)
+    assert(
+      typeof cookieSecret === 'undefined',
+      'The `cookieSecret` option has moved to the Keystone constructor: `new Keystone({ cookieSecret: "abc" })`'
+    );
+    assert(
+      typeof sessionStore === 'undefined',
+      'The `sessionStore` option has moved to the Keystone constructor: `new Keystone({ sessionStore: myStore })`'
+    );
+
     this._apiPath = apiPath;
     this._graphiqlPath = graphiqlPath;
     this._pinoOptions = pinoOptions;
     this._cors = cors;
-    this._cookieSecret = cookieSecret;
-    this._sessionStore = sessionStore;
     this._apollo = apollo;
     this._schemaName = schemaName;
   }
@@ -29,7 +38,7 @@ class GraphQLApp {
   /**
    * @return Array<middlewares>
    */
-  prepareMiddleware({ keystone, dev, ...args }) {
+  prepareMiddleware({ keystone, dev }) {
     const middlewares = [];
 
     if (falsey(process.env.DISABLE_LOGGING)) {
@@ -40,27 +49,7 @@ class GraphQLApp {
       middlewares.push(createCorsMiddleware(this._cors));
     }
 
-    if (keystone.auth && Object.keys(keystone.auth).length > 0) {
-      middlewares.push(commonSessionMiddleware(keystone, this._cookieSecret, this._sessionStore));
-
-      // The auth strategies need to come _after_ the common session middleware
-      // above
-      middlewares.push(
-        ...flattenDeep(
-          Object.values(keystone.auth).map(authStrategies => Object.values(authStrategies))
-        )
-          .filter(({ prepareMiddleware }) => !!prepareMiddleware)
-          .map(authStrategy => authStrategy.prepareMiddleware({ keystone, dev, ...args }))
-      );
-    }
-
-    const server = createApolloServer(
-      keystone,
-      this._apollo,
-      this._schemaName,
-      dev,
-      this._cookieSecret
-    );
+    const server = createApolloServer(keystone, this._apollo, this._schemaName, dev);
     // GraphQL API always exists independent of any adminUI or Session
     // settings We currently make the admin UI public. In the future we want
     // to be able to restrict this to a limited audience, while setting up a
