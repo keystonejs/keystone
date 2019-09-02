@@ -39,7 +39,10 @@ class PassportAuthStrategy {
     assert(!!config.hostURL, 'Must provide `config.hostURL` option.');
     assert(!!config.loginPath, 'Must provide `config.loginPath` option.');
     assert(!!config.idField, 'Must provide `config.idField` option.');
-    assert(!!config.cookieSecret, 'Must provide `config.cookieSecret` option.');
+    assert(
+      typeof config.cookieSecret !== 'undefined',
+      'The `cookieSecret` config option for `PassportAuthStrategy` has been moved to the `Keystone` constructor: `new Keystone({ cookieSecret: "abc" })`.'
+    );
     assert(
       ['function', 'undefined'].includes(typeof config.resolveCreateData),
       'When `config.resolveCreateData` is passed, it must be a function.'
@@ -67,13 +70,13 @@ class PassportAuthStrategy {
     this._keystone = keystone;
     this._listKey = listKey;
     this._ServiceStrategy = ServiceStrategy;
+    this._cookieSecret = keystone.getCookieSecret();
 
     // Pull all the required data off the `config` object
     this._apiPath = config.apiPath;
     this._serviceAppId = config.appId;
     this._serviceAppSecret = config.appSecret;
     this._hostURL = config.hostURL;
-    this._cookieSecret = config.cookieSecret;
     this._loginPath = config.loginPath;
     this._loginPathMiddleware = config.loginPathMiddleware || ((req, res, next) => next());
     this._callbackPath = config.callbackPath;

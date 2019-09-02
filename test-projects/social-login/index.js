@@ -25,6 +25,7 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const keystone = new Keystone({
   name: 'Cypress Test for Social Login',
   adapter: new MongooseAdapter(),
+  cookieSecret,
 });
 
 // eslint-disable-next-line no-unused-vars
@@ -150,7 +151,7 @@ keystone.createList('PostCategory', {
 module.exports = {
   keystone,
   apps: [
-    new GraphQLApp({ cookieSecret }),
+    new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
     new AdminUIApp({ authStrategy: DISABLE_AUTH ? undefined : authStrategy }),
   ],

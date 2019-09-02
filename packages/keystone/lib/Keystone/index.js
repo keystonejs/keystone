@@ -17,6 +17,11 @@ const {
   validateFieldAccessControl,
   validateListAccessControl,
 } = require('@keystone-alpha/access-control');
+const {
+  startAuthedSession,
+  endAuthedSession,
+  commonSessionMiddleware,
+} = require('@keystone-alpha/session');
 
 const {
   unmergeRelationships,
@@ -37,6 +42,8 @@ module.exports = class Keystone {
     name,
     adapterConnectOptions = {},
     onConnect,
+    cookieSecret = 'qwerty',
+    sessionStore,
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -49,6 +56,8 @@ module.exports = class Keystone {
     this._extendedQueries = [];
     this._extendedMutations = [];
     this._graphQLQuery = {};
+    this._cookieSecret = cookieSecret;
+    this._sessionStore = sessionStore;
     this.registeredTypes = new Set();
     this.eventHandlers = { onConnect };
 
@@ -61,6 +70,64 @@ module.exports = class Keystone {
     } else {
       throw new Error('Need an adapter, yo');
     }
+  }
+
+  getCookieSecret() {
+    if (!this._cookieSecret) {
+      throw new Error('No cookieSecret set in Keystone constructor');
+    }
+    return this._cookieSecret;
+  }
+
+  // The GraphQL App uses this method to build up the context required for each
+  // incoming query.
+  // It is also used for generating the `keystone.query` method
+  getGraphQlContext({ schemaName = 'admin', req = {}, skipAccessControl = false } = {}) {
+    let getListAccessControlForUser;
+    let getFieldAccessControlForUser;
+
+    if (skipAccessControl) {
+      getListAccessControlForUser = () => true;
+      getFieldAccessControlForUser = () => true;
+    } else {
+      // memoizing to avoid requests that hit the same type multiple times.
+      // We do it within the request callback so we can resolve it based on the
+      // request info ( like who's logged in right now, etc)
+      getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
+        return validateListAccessControl({
+          access: this.lists[listKey].access,
+          originalInput,
+          operation,
+          authentication: { item: req.user, listKey: req.authedListKey },
+          listKey,
+        });
+      });
+
+      getFieldAccessControlForUser = fastMemoize(
+        (listKey, fieldKey, originalInput, existingItem, operation) => {
+          return validateFieldAccessControl({
+            access: this.lists[listKey].fieldsByPath[fieldKey].access,
+            originalInput,
+            existingItem,
+            operation,
+            authentication: { item: req.user, listKey: req.authedListKey },
+            fieldKey,
+            listKey,
+          });
+        }
+      );
+    }
+
+    return {
+      schemaName,
+      startAuthedSession: ({ item, list }, audiences) =>
+        startAuthedSession(req, { item, list }, audiences, this._cookieSecret),
+      endAuthedSession: endAuthedSession.bind(null, req),
+      authedItem: req.user,
+      authedListKey: req.authedListKey,
+      getListAccessControlForUser,
+      getFieldAccessControlForUser,
+    };
   }
 
   _buildQueryHelper() {
@@ -401,46 +468,6 @@ module.exports = class Keystone {
     fs.writeFileSync(file, schema);
   }
 
-  // Create an access context for the given "user" which can be used to call the
-  // List API methods which are access controlled.
-  getAccessContext(schemaName, { user, authedListKey }) {
-    // memoizing to avoid requests that hit the same type multiple times.
-    // We do it within the request callback so we can resolve it based on the
-    // request info ( like who's logged in right now, etc)
-    const getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
-      return validateListAccessControl({
-        access: this.lists[listKey].access,
-        originalInput,
-        operation,
-        authentication: { item: user, listKey: authedListKey },
-        listKey,
-      });
-    });
-
-    const getFieldAccessControlForUser = fastMemoize(
-      (listKey, fieldKey, originalInput, existingItem, operation) => {
-        return validateFieldAccessControl({
-          access: this.lists[listKey].fieldsByPath[fieldKey].access,
-          originalInput,
-          existingItem,
-          operation,
-          authentication: { item: user, listKey: authedListKey },
-          fieldKey,
-          listKey,
-        });
-      }
-    );
-
-    return {
-      // req.user & req.authedListKey come from ../index.js
-      schemaName,
-      authedItem: user,
-      authedListKey: authedListKey,
-      getListAccessControlForUser,
-      getFieldAccessControlForUser,
-    };
-  }
-
   createItem(listKey, itemData) {
     return this.lists[listKey].adapter.create(itemData);
   }
@@ -476,13 +503,20 @@ module.exports = class Keystone {
   }
 
   async prepare({ dev = false, apps = [], distDir } = {}) {
-    const middlewares = flattenDeep(
-      await Promise.all(
+    const middlewares = flattenDeep([
+      // Used by other middlewares such as authentication strategies. Important
+      // to be first so the methods added to `req` are available further down
+      // the request pipeline.
+      commonSessionMiddleware(this, this._cookieSecret, this._sessionStore),
+      ...(await Promise.all(
         [
           // Inject any field middlewares (eg; WYSIWIG's static assets)
           // We do this first to avoid it conflicting with any catch-all routes the
           // user may have specified
           ...this.registeredTypes,
+          ...flattenDeep(
+            Object.values(this.auth).map(authStrategies => Object.values(authStrategies))
+          ),
           ...apps,
         ]
           .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
@@ -493,8 +527,8 @@ module.exports = class Keystone {
               distDir: distDir || DEFAULT_DIST_DIR,
             })
           )
-      )
-    ).filter(middleware => !!middleware);
+      )),
+    ]).filter(middleware => !!middleware);
 
     return { middlewares };
   }
