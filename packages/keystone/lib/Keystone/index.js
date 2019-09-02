@@ -70,6 +70,63 @@ module.exports = class Keystone {
     } else {
       throw new Error('Need an adapter, yo');
     }
+
+  getCookieSecret() {
+    if (!this._cookieSecret) {
+      throw new Error('No cookieSecret set in Keystone constructor');
+    }
+    return this._cookieSecret;
+  }
+
+  // The GraphQL App uses this method to build up the context required for each
+  // incoming query.
+  // It is also used for generating the `keystone.query` method
+  getGraphQlContext({ schemaName = 'admin', req = {}, skipAccessControl = false } = {}) {
+    let getListAccessControlForUser;
+    let getFieldAccessControlForUser;
+
+    if (skipAccessControl) {
+      getListAccessControlForUser = () => true;
+      getFieldAccessControlForUser = () => true;
+    } else {
+      // memoizing to avoid requests that hit the same type multiple times.
+      // We do it within the request callback so we can resolve it based on the
+      // request info ( like who's logged in right now, etc)
+      getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
+        return validateListAccessControl({
+          access: this.lists[listKey].access,
+          originalInput,
+          operation,
+          authentication: { item: req.user, listKey: req.authedListKey },
+          listKey,
+        });
+      });
+
+      getFieldAccessControlForUser = fastMemoize(
+        (listKey, fieldKey, originalInput, existingItem, operation) => {
+          return validateFieldAccessControl({
+            access: this.lists[listKey].fieldsByPath[fieldKey].access,
+            originalInput,
+            existingItem,
+            operation,
+            authentication: { item: req.user, listKey: req.authedListKey },
+            fieldKey,
+            listKey,
+          });
+        }
+      );
+    }
+
+    return {
+      schemaName,
+      startAuthedSession: ({ item, list }, audiences) =>
+        startAuthedSession(req, { item, list }, audiences, this._cookieSecret),
+      endAuthedSession: endAuthedSession.bind(null, req),
+      authedItem: req.user,
+      authedListKey: req.authedListKey,
+      getListAccessControlForUser,
+      getFieldAccessControlForUser,
+    };
   }
 
   getCookieSecret() {
