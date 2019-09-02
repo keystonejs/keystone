@@ -1,5 +1,11 @@
 # @keystone-alpha/auth-passport
 
+## 4.1.0
+
+### Minor Changes
+
+- [b08c499e](https://github.com/keystonejs/keystone-5/commit/b08c499e): Remove unnecessary `hostURL` and `apiPath` options from `PassportAuthStrategy` constructor thanks to usage of the new `keystone.executeQuery()` internally.
+
 ## 4.0.1
 
 ### Patch Changes
