@@ -50,7 +50,7 @@ See: [Fields](/keystone-alpha/fields/) for more information on configuring field
 
 ### `schemaDoc`
 
-A description for the list used in the AdminUI.
+A description for the list used in the GraphQL schema.
 
 ### `hooks`
 
