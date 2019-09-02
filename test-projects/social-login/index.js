@@ -75,18 +75,33 @@ keystone.createList('User', {
       },
     },
     // TODO: Create a Facebook field type to encapsulate these
-    facebookId: { type: Text },
+    facebookId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
     // TODO: Create a GitHub field type to encapsulate these
-    githubId: { type: Text },
+    githubId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     // TODO: Create a Twitter field type to encapsulate these
-    twitterId: { type: Text },
+    twitterId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     // TODO: Create a Google field type to encapsulate these
-    googleId: { type: Text },
+    googleId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     // TODO: Create a WordPress field type to encapsulate these
-    wordpressId: { type: Text },
+    wordpressId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     isAdmin: { type: Checkbox },
     company: {

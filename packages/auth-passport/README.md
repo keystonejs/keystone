@@ -100,6 +100,7 @@ const cookieSecret = '<Something super secret>';
 const keystone = new Keystone({
   name: 'Login With Google Example',
   adapter: new MongooseAdapter(),
+  cookieSecret,
 });
 
 keystone.createList('User', {
@@ -120,9 +121,6 @@ const googleStrategy = keystone.createAuthStrategy({
     idField: 'googleId',
     appId: '<Your Google App Id>',
     appSecret: '<Your Google App Secret>',
-    cookieSecret,
-    hostURL: 'http://localhost:3000',
-    apiPath: '/admin/api',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
 
@@ -147,7 +145,7 @@ const googleStrategy = keystone.createAuthStrategy({
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp({ cookieSecret }), new AdminUIApp()],
+  apps: [new GraphQLApp(), new AdminUIApp()],
 };
 ```
 
@@ -178,6 +176,7 @@ const cookieSecret = '<Something super secret>';
 const keystone = new Keystone({
   name: 'Login With Google Example',
   adapter: new MongooseAdapter(),
+  cookieSecret,
 });
 
 keystone.createList('User', {
@@ -198,9 +197,6 @@ const googleStrategy = keystone.createAuthStrategy({
     idField: 'googleId',
     appId: '<Your Google App Id>',
     appSecret: '<Your Google App Secret>',
-    cookieSecret,
-    hostURL: 'http://localhost:3000',
-    apiPath: '/admin/api',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
 
@@ -256,7 +252,7 @@ const googleStrategy = keystone.createAuthStrategy({
 
 keystone
   .prepare({
-    apps: [new GraphQLApp({ cookieSecret }), new AdminUIApp()],
+    apps: [new GraphQLApp(), new AdminUIApp()],
     dev: process.env.NODE_ENV !== 'production',
   })
   .then(async ({ middlewares }) => {
