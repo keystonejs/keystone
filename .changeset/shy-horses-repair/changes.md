@@ -1,0 +1,1 @@
+Remove unnecessary `hostURL` and `apiPath` options from `PassportAuthStrategy` constructor thanks to usage of the new `keystone.executeQuery()` internally.

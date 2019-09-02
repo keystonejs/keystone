@@ -139,7 +139,6 @@
     "get-selection-range": "^0.1.0",
     "globby": "^9.1.0",
     "graphql": "^14.4.2",
-    "graphql-request": "^1.8.2",
     "graphql-tag": "^2.10.1",
     "graphql-type-json": "^0.2.1",
     "gray-matter": "^4.0.2",
