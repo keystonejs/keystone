@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { __RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';

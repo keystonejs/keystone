@@ -2,7 +2,7 @@ import React, { Component, useState, useCallback } from 'react';
 import gql from 'graphql-tag';
 import { useFormState } from 'react-use-form-state';
 import { useToasts } from 'react-toast-notifications';
-import { useMutation } from 'react-apollo-hooks';
+import { useMutation } from '@apollo/react-hooks';
 
 import { AvatarUpload } from '../components/AvatarUpload';
 import Meta from '../components/Meta';
@@ -50,7 +50,7 @@ const Profile = ({ user }) => {
   const [validationErrors, setValidationErrors] = useState({});
   const [updatingUser, setUpdatingUser] = useState(false);
 
-  const updateUser = useMutation(UPDATE_USER);
+  const [updateUser] = useMutation(UPDATE_USER);
 
   const submitDisabled =
     updatingUser ||
