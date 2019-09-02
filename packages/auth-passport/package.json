@@ -11,7 +11,6 @@
     "@keystone-alpha/fields": "^10.4.0",
     "@keystone-alpha/session": "^2.0.1",
     "express": "^4.17.1",
-    "graphql-request": "^1.8.2",
     "nanoassert": "^2.0.0",
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",

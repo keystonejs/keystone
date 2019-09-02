@@ -8,7 +8,7 @@ const {
 } = require('@keystone-alpha/auth-passport');
 
 const { keystone, apps } = require('./index');
-const { google, facebook, twitter, github, hostURL, port } = require('./config');
+const { google, facebook, twitter, github, port } = require('./config');
 const initialData = require('./data');
 
 let googleStrategy;
@@ -20,8 +20,6 @@ if (google) {
       idField: 'googleId',
       appId: google.appId,
       appSecret: google.appSecret,
-      apiPath: '/admin/api',
-      hostURL,
       loginPath: '/auth/google',
       callbackPath: '/auth/google/callback',
 
@@ -102,8 +100,6 @@ if (facebook) {
       idField: 'facebookId',
       appId: facebook.appId,
       appSecret: facebook.appSecret,
-      apiPath: '/admin/api',
-      hostURL,
       loginPath: '/auth/facebook',
       callbackPath: '/auth/facebook/callback',
       // Called when there's no existing user for the given googleId
@@ -145,8 +141,6 @@ if (twitter) {
       idField: 'twitterId',
       appId: twitter.appId,
       appSecret: twitter.appSecret,
-      apiPath: '/admin/api',
-      hostURL,
       loginPath: '/auth/twitter',
       callbackPath: '/auth/twitter/callback',
       resolveCreateData: ({ createData, serviceProfile }) => {
@@ -175,8 +169,6 @@ if (github) {
       idField: 'githubId',
       appId: github.appId,
       appSecret: github.appSecret,
-      apiPath: '/admin/api',
-      hostURL,
       loginPath: '/auth/github',
       callbackPath: '/auth/github/callback',
       resolveCreateData: ({ createData, serviceProfile }) => {

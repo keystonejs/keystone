@@ -1,6 +1,5 @@
 const express = require('express');
 const passport = require('passport');
-const { request } = require('graphql-request');
 const assert = require('nanoassert');
 const { startAuthedSession } = require('@keystone-alpha/session');
 
@@ -32,11 +31,9 @@ const sessionFragment = `
  */
 class PassportAuthStrategy {
   constructor(authType, keystone, listKey, config, ServiceStrategy = null) {
-    assert(!!config.apiPath, 'Must provide `config.apiPath` option.');
     assert(!!config.callbackPath, 'Must provide `config.callbackPath` option.');
     assert(!!config.appId, 'Must provide `config.appId` option.');
     assert(!!config.appSecret, 'Must provide `config.appSecret` option.');
-    assert(!!config.hostURL, 'Must provide `config.hostURL` option.');
     assert(!!config.loginPath, 'Must provide `config.loginPath` option.');
     assert(!!config.idField, 'Must provide `config.idField` option.');
     assert(
@@ -64,6 +61,20 @@ class PassportAuthStrategy {
       'When `config.callbackPathMiddleware` is passed, it must be an express middleware function.'
     );
 
+    // NOTE: Remove after March 1st, 2020 (ie; 6mo since deprecation)
+    if (typeof config.hostURL !== 'undefined') {
+      console.warn(
+        'The `hostURL` config option for `PassportAuthStrategy` has been removed and is no longer necessary.'
+      );
+    }
+
+    // NOTE: Remove after March 1st, 2020 (ie; 6mo since deprecation)
+    if (typeof config.apiPath !== 'undefined') {
+      console.warn(
+        'The `apiPath` config option for `PassportAuthStrategy` has been removed and is no longer necessary.'
+      );
+    }
+
     this.authType = authType;
 
     // Capture some useful variables
@@ -73,10 +84,8 @@ class PassportAuthStrategy {
     this._cookieSecret = keystone.getCookieSecret();
 
     // Pull all the required data off the `config` object
-    this._apiPath = config.apiPath;
     this._serviceAppId = config.appId;
     this._serviceAppSecret = config.appSecret;
-    this._hostURL = config.hostURL;
     this._loginPath = config.loginPath;
     this._loginPathMiddleware = config.loginPathMiddleware || ((req, res, next) => next());
     this._callbackPath = config.callbackPath;
@@ -150,8 +159,7 @@ class PassportAuthStrategy {
           let item;
           try {
             const queryName = this._getList().gqlNames.listQueryName;
-            const data = await request(
-              `${this._hostURL}${this._apiPath}`,
+            const { errors, data } = await this._keystone.executeQuery(
               `
                 query($serviceId: String) {
                   ${queryName}(
@@ -165,8 +173,12 @@ class PassportAuthStrategy {
                   }
                 }
               `,
-              { serviceId: serviceProfile.id }
+              { variables: { serviceId: serviceProfile.id } }
             );
+
+            if (errors) {
+              throw errors;
+            }
 
             item = data[queryName].length ? data[queryName][0] : null;
           } catch (error) {
@@ -255,8 +267,10 @@ class PassportAuthStrategy {
 
     // Extract the accessToken from the Passport Session List Item
     const queryName = this._getSessionList().gqlNames.itemQueryName;
-    const { getSession: passportSessionInfo } = await request(
-      `${this._hostURL}${this._apiPath}`,
+    const {
+      errors,
+      data: { getSession: passportSessionInfo },
+    } = await this._keystone.executeQuery(
       `
         query($id: ID!) {
           getSession: ${queryName}(where: { id: $id }) {
@@ -264,8 +278,12 @@ class PassportAuthStrategy {
           }
         }
       `,
-      { id: passportSessionId }
+      { variables: { id: passportSessionId } }
     );
+
+    if (errors) {
+      throw errors;
+    }
 
     // Ask the service for all the profile info for the given accessToken
     const serviceProfile = await this._validateWithService(
@@ -388,8 +406,10 @@ class PassportAuthStrategy {
         const mutationName = this._getSessionList().gqlNames.createMutationName;
         const mutationInputName = this._getSessionList().gqlNames.createInputName;
 
-        const { createSession: passportSessionInfo } = await request(
-          `${this._hostURL}${this._apiPath}`,
+        const {
+          errors,
+          data: { createSession: passportSessionInfo },
+        } = await this._keystone.executeQuery(
           `
             mutation($newSessionDataObject: ${mutationInputName}) {
               createSession: ${mutationName}(data: $newSessionDataObject) {
@@ -398,14 +418,20 @@ class PassportAuthStrategy {
             }
           `,
           {
-            newSessionDataObject: {
-              [FIELD_TOKEN_SECRET]: accessToken,
-              [FIELD_REFRESH_TOKEN]: refreshToken,
-              [FIELD_SERVICE_NAME]: this.authType,
-              [FIELD_USER_ID]: serviceProfile.id,
+            variables: {
+              newSessionDataObject: {
+                [FIELD_TOKEN_SECRET]: accessToken,
+                [FIELD_REFRESH_TOKEN]: refreshToken,
+                [FIELD_SERVICE_NAME]: this.authType,
+                [FIELD_USER_ID]: serviceProfile.id,
+              },
             },
           }
         );
+
+        if (errors) {
+          throw errors;
+        }
 
         done(null, { serviceProfile, accessToken, passportSessionInfo });
       }
@@ -453,8 +479,7 @@ class PassportAuthStrategy {
 
     // Here we create both the Passport Session Item and the User Item
     // in KS5 as a single, nested mutation.
-    const sessionItem = await request(
-      `${this._hostURL}${this._apiPath}`,
+    const { errors, data: sessionItem } = await this._keystone.executeQuery(
       `
         mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
           session: ${passportSessionMutationName}(id: $id , data: $data) {
@@ -465,11 +490,17 @@ class PassportAuthStrategy {
         }
       `,
       {
-        id: passportSessionInfo.id,
-        // Create the Keystone item as a Nested Mutation
-        data: { item: { [operation]: itemData } },
+        variables: {
+          id: passportSessionInfo.id,
+          // Create the Keystone item as a Nested Mutation
+          data: { item: { [operation]: itemData } },
+        },
       }
     );
+
+    if (errors) {
+      throw errors;
+    }
 
     return sessionItem.session.item;
   }
