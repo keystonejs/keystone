@@ -16,21 +16,21 @@ keystone.createList('Post', {
 
 ### Config
 
-| Option          | Type                                | Default                       | Description                                                    |
-| --------------- | ----------------------------------- | ----------------------------- | -------------------------------------------------------------- |
-| `fields`        | `Object`                            |                               | Defines the fields in a list.                                  |
-| `schemaDoc`     | `String`                            |                               | A description for the list. Used in the Admin UI.              |
-| `hooks`         | `Object`                            | `{}`                          | Specify hooks to execute functions after list actions.         |
-| `labelField`    | `String`                            | `name`                        | Specify a field to use as a label for individual list items.   |
-| `labelResolver` | `Function`                          | Resolves `labelField` or `id` | Function to resolve labels for individual list items.          |
-| `access`        | `Function` \| `Object` \| `Boolean` | `true`                        | [Access control](/guides/access-control) options for the list. |
-| `adapterConfig` | `Object`                            |                               | Override the adapter config options for a specific list.       |
-| `itemQueryName` | `String`                            |                               | Changes the _item_ name in GraphQL queries and mutations.      |
-| `listQueryName` | `String`                            |                               | Changes the _list_ name in GraphQL queries and mutations.      |
-| `singular`      | `String`                            |                               | Specify a singular noun for Keystone to use for the list.      |
-| `plural`        | `String`                            |                               | Specify a plural for Keystone to use for the list.             |
-| `path`          | `String`                            |                               | Changes the path in the Admin UI.                              |
-| `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.         |
+| Option          | Type                                | Default                       | Description                                                                             |
+| --------------- | ----------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| `fields`        | `Object`                            |                               | Defines the fields in a list.                                                           |
+| `schemaDoc`     | `String`                            |                               | A description for the list. Used in the Admin UI.                                       |
+| `hooks`         | `Object`                            | `{}`                          | Specify hooks to execute functions after list actions.                                  |
+| `labelField`    | `String`                            | `name`                        | Specify a field to use as a label for individual list items.                            |
+| `labelResolver` | `Function`                          | Resolves `labelField` or `id` | Function to resolve labels for individual list items.                                   |
+| `access`        | `Function` \| `Object` \| `Boolean` | `true`                        | [Access control](https://v5.keystonejs.com/guides/access-control) options for the list. |
+| `adapterConfig` | `Object`                            |                               | Override the adapter config options for a specific list.                                |
+| `itemQueryName` | `String`                            |                               | Changes the _item_ name in GraphQL queries and mutations.                               |
+| `listQueryName` | `String`                            |                               | Changes the _list_ name in GraphQL queries and mutations.                               |
+| `singular`      | `String`                            |                               | Specify a singular noun for Keystone to use for the list.                               |
+| `plural`        | `String`                            |                               | Specify a plural for Keystone to use for the list.                                      |
+| `path`          | `String`                            |                               | Changes the path in the Admin UI.                                                       |
+| `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.                                  |
 
 ### `fields`
 
@@ -119,9 +119,9 @@ keystone.createList('User', {
 
 ### `access`
 
-[Access control](/guides/access-control) options for the list.
+[Access control](https://v5.keystonejs.com/guides/access-control) options for the list.
 
-Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the (access control API documentation)[/api/access-control] for more details.
+Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the (access control API documentation)[https://v5.keystonejs.com/api/access-control] for more details.
 
 #### Usage
 

@@ -7,8 +7,8 @@ order: 7
 # Hooks
 
 The APIs for each hook are mostly the same across the 3 hook types
-([list hooks](/guides/hooks.md#list-hooks), [field hooks](/guides/hooks.md#field-hooks), [field type
-hooks](/guides/hooks.md#field-type-hooks)).
+([list hooks](https://v5.keystonejs.com/guides/hooks#list-hooks), [field hooks](https://v5.keystonejs.com/guides/hooks#field-hooks), [field type
+hooks](https://v5.keystonejs.com/guides/hooks#field-type-hooks)).
 
 Any differences are called out in the documentation below.
 

@@ -50,10 +50,10 @@ keystone.createList('Posts', {
 
 Registers a new list with Keystone and returns a Keystone list object.
 
-| Option    | Type     | Default | Description                                                                        |
-| --------- | -------- | ------- | ---------------------------------------------------------------------------------- |
-| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.            |
-| `config`  | `Object` | `{}`    | The list config. See the [createList API](/api/create-list) page for more details. |
+| Option    | Type     | Default | Description                                                                                                 |
+| --------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                     |
+| `config`  | `Object` | `{}`    | The list config. See the [createList API](https://v5.keystonejs.com/api/create-list) page for more details. |
 
 ## extendGraphQLSchema(config)
 
@@ -176,7 +176,7 @@ keystone.connect();
 
 _Note_: `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
 
-See: [Custom Server](guides/custom-server).
+See: [Custom Server](https://v5.keystonejs.com/guides/custom-server).
 
 ## disconnect()
 

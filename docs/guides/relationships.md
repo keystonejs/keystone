@@ -78,5 +78,5 @@ Option `many: true` indicates, that User can store multiple references to tasks.
 
 See also:
 
-- [Schema - Lists & Fields](../guides/schema.md)
-- [Field Types - Relationship](../../packages/fields/src/types/Relationship/README.md)
+- [Schema - Lists & Fields](https://v5.keystonejs.com/guides/schema)
+- [Field Types - Relationship](https://v5.keystonejs.com/keystone-alpha/fields/src/types/relationship/)
