@@ -256,6 +256,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "simonswiss",
+      "name": "Simon Vrachliotis",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/485747?v=4",
+      "profile": "http://simonswiss.com",
+      "contributions": [
+        "example",
+        "tutorial",
+        "video"
+      ]
     }
   ],
   "contributorsPerLine": 7
