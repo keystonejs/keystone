@@ -247,6 +247,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "dcousens",
+      "name": "Daniel Cousens",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/413395?v=4",
+      "profile": "https://dcousens.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
