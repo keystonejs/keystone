@@ -1,5 +1,11 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.3.0
+
+### Minor Changes
+
+- [79e362c0](https://github.com/keystonejs/keystone-5/commit/79e362c0): update demos to use apollo hooks instead of Query and Mutations.
+
 ## 0.2.3
 
 - Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
