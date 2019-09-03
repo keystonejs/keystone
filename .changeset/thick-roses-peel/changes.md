@@ -1,1 +1,0 @@
-Revert usage of Apollo Hooks

@@ -1,5 +1,11 @@
 # @keystone-alpha/fields
 
+## 10.7.2
+
+### Patch Changes
+
+- [99dc6cae](https://github.com/keystonejs/keystone-5/commit/99dc6cae): Revert usage of Apollo Hooks
+
 ## 10.7.1
 
 ### Patch Changes
