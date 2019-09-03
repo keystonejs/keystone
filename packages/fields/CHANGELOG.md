@@ -1,5 +1,11 @@
 # @keystone-alpha/fields
 
+## 10.7.0
+
+### Minor Changes
+
+- [79e362c0](https://github.com/keystonejs/keystone-5/commit/79e362c0): upgrade react-apollo and use hooks instead of Query and Mutation components
+
 ## 10.6.2
 
 ### Patch Changes
