@@ -12,17 +12,18 @@ const SCHEMA_NAME = 'testing';
 
 async function setupServer({ name, adapterName, createLists = () => {}, keystoneOptions }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
-  const args = {
-    mongoose: {},
-    knex: {
+
+  const argGenerator = {
+    mongoose: getMongoMemoryServerConfig,
+    knex: () => ({
       dropDatabase: true,
       knexOptions: { connection: process.env.KNEX_URI || 'postgres://localhost/keystone' },
-    },
+    }),
   }[adapterName];
 
   const keystone = new Keystone({
     name,
-    adapter: new Adapter(args),
+    adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
     ...keystoneOptions,
   });
@@ -122,54 +123,44 @@ function getDelete(keystone) {
   return (list, id) => keystone.getListByKey(list).adapter.delete(id);
 }
 
-function keystoneMongoRunner(setupKeystoneFn, testFn) {
-  return async function() {
-    const setup = await setupKeystoneFn('mongoose');
-    const { keystone } = setup;
+function _keystoneRunner(adapterName, tearDownFunction) {
+  return function(setupKeystoneFn, testFn) {
+    return async function() {
+      if (!testFn) {
+        // If a testFn is not defined then we just need
+        // to excute setup and tear down in isolation.
+        try {
+          await setupKeystoneFn(adapterName);
+        } catch (error) {
+          await tearDownFunction();
+          throw error;
+        }
+        return;
+      }
+      const setup = await setupKeystoneFn(adapterName);
+      const { keystone } = setup;
 
-    const { mongoUri, dbName } = await getMongoMemoryServerConfig();
+      await keystone.connect();
 
-    await keystone.connect(mongoUri, { dbName });
-
-    return pFinally(
-      testFn({
-        ...setup,
-        create: getCreate(keystone),
-        findById: getFindById(keystone),
-        findOne: getFindOne(keystone),
-        update: getUpdate(keystone),
-        delete: getDelete(keystone),
-      }),
-      () => keystone.disconnect().then(teardownMongoMemoryServer)
-    );
-  };
-}
-
-function keystoneKnexRunner(setupKeystoneFn, testFn) {
-  return async function() {
-    const setup = await setupKeystoneFn('knex');
-    const { keystone } = setup;
-
-    await keystone.connect();
-
-    return pFinally(
-      testFn({
-        ...setup,
-        create: getCreate(keystone),
-        findById: getFindById(keystone),
-        findOne: getFindOne(keystone),
-        update: getUpdate(keystone),
-        delete: getDelete(keystone),
-      }),
-      () => keystone.disconnect()
-    );
+      return pFinally(
+        testFn({
+          ...setup,
+          create: getCreate(keystone),
+          findById: getFindById(keystone),
+          findOne: getFindOne(keystone),
+          update: getUpdate(keystone),
+          delete: getDelete(keystone),
+        }),
+        () => keystone.disconnect().then(tearDownFunction)
+      );
+    };
   };
 }
 
 function multiAdapterRunners(only) {
   return [
-    { runner: keystoneMongoRunner, adapterName: 'mongoose' },
-    { runner: keystoneKnexRunner, adapterName: 'knex' },
+    { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
+    { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 
