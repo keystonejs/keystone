@@ -103,19 +103,21 @@ class MockListAdapter {
   delete = async id => {
     this.items[id] = undefined;
   };
-  itemsQuery = ({ where: { id_in: ids, id, id_not_in } }) => {
-    return id
-      ? [this.items[id]]
-      : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
-  };
-  itemsQueryMeta = async ({ where: { id_in: ids, id, id_not_in } }) => {
-    return {
-      count: (id
+  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
+    if (meta) {
+      return {
+        count: (id
+          ? [this.items[id]]
+          : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
+        ).length,
+      };
+    } else {
+      return id
         ? [this.items[id]]
-        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
-      ).length,
-    };
+        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
+    }
   };
+  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
   update = (id, item) => {
     this.items[id] = { ...this.items[id], ...item };
     return this.items[id];

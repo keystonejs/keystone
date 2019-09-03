@@ -13,4 +13,10 @@ module.exports = {
       showPath: true,
     },
   }),
+  LimitsExceededError: createError('LimitsExceededError', {
+    message: 'Your request exceeded server limits',
+    options: {
+      showPath: true,
+    },
+  }),
 };

@@ -290,3 +290,20 @@ keystone.createList('User', {
 ```
 
 This provides a method for packaging features that can be applied to multiple lists.
+
+### `queryLimits`
+
+Configuration for limiting the kinds of queries that can be made against the list, to avoid queries that might overload the server.
+
+- `maxResults`: maximum number of results that can be returned in a query (or subquery)
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+  },
+  queryLimits: {
+    maxResults: 100,
+  },
+});
+```
