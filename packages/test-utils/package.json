@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/test-utils",
   "description": "Common utilities used while testing @keystone-alpha/* packages.",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -11,7 +11,7 @@
     "@keystone-alpha/adapter-knex": "^4.0.7",
     "@keystone-alpha/adapter-mongoose": "^4.0.4",
     "@keystone-alpha/app-graphql": "^7.0.0",
-    "@keystone-alpha/keystone": "^13.0.0",
+    "@keystone-alpha/keystone": "^13.1.0",
     "express": "^4.17.1",
     "mongodb-memory-server": "^5.1.5",
     "p-finally": "^2.0.1",

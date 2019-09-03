@@ -1,1 +1,0 @@
-Add queryLimits and maxResults to List API
