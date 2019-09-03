@@ -19,7 +19,11 @@ const { logger } = require('@keystone-alpha/logger');
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
-const { AccessDeniedError, ValidationFailureError } = require('./graphqlErrors');
+const {
+  AccessDeniedError,
+  LimitsExceededError,
+  ValidationFailureError,
+} = require('./graphqlErrors');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -124,6 +128,7 @@ module.exports = class List {
       plural,
       path,
       adapterConfig = {},
+      queryLimits = {},
     },
     {
       getListByKey,
@@ -214,6 +219,14 @@ module.exports = class List {
       access,
       defaultAccess: this.defaultAccess.list,
     });
+
+    this.queryLimits = {
+      maxResults: Infinity,
+      ...queryLimits,
+    };
+    if (this.queryLimits.maxResults < 1) {
+      throw new Error(`List ${label}'s queryLimits.maxResults can't be < 1`);
+    }
 
     this.hooksActions = {
       /**
@@ -729,7 +742,7 @@ module.exports = class List {
       // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
       // have been caught earlier, so this spread and overwrite can only
       // ever be additive or overwrite with the same value
-      item = (await this.adapter.itemsQuery({ first: 1, where: { ...access, id } }))[0];
+      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }))[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
@@ -758,7 +771,7 @@ module.exports = class List {
 
     // Early out - the user has full access to operate on this list
     if (access === true) {
-      return await this.adapter.itemsQuery({ where: { id_in: uniqueIds } });
+      return await this._itemsQuery({ where: { id_in: uniqueIds } });
     }
 
     let idFilters = {};
@@ -805,7 +818,7 @@ module.exports = class List {
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
     const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
-    return await this.adapter.itemsQuery({ where: { ...remainingAccess, ...idFilters } });
+    return await this._itemsQuery({ where: { ...remainingAccess, ...idFilters } });
   }
 
   get gqlQueryResolvers() {
@@ -842,7 +855,7 @@ module.exports = class List {
   async listQuery(args, context, queryName) {
     const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
-    return this.adapter.itemsQuery(mergeWhereClause(args, access));
+    return this._itemsQuery(mergeWhereClause(args, access));
   }
 
   async listQueryMeta(args, context, queryName) {
@@ -853,9 +866,9 @@ module.exports = class List {
       getCount: () => {
         const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
-        return this.adapter
-          .itemsQueryMeta(mergeWhereClause(args, access))
-          .then(({ count }) => count);
+        return this._itemsQuery(mergeWhereClause(args, access), { meta: true }).then(
+          ({ count }) => count
+        );
       },
     };
   }
@@ -911,6 +924,44 @@ module.exports = class List {
 
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
     return result;
+  }
+
+  async _itemsQuery(args, extra) {
+    // This is private because it doesn't handle access control
+
+    const { maxResults } = this.queryLimits;
+
+    const throwLimitsExceeded = args => {
+      throw new LimitsExceededError({
+        data: {
+          list: this.key,
+          ...args,
+        },
+      });
+    };
+
+    // Need to enforce List-specific query limits
+    const { first = Infinity } = args;
+    // We want to help devs by failing fast and noisily if limits are violated.
+    // Unfortunately, we can't always be sure of intent.
+    // E.g., if the query has a "first: 10", is it bad if more results that could come back?
+    // Maybe yes, or maybe the dev is just paginating posts.
+    // But we can be sure there's a problem in two cases:
+    // * The query explicitly has a "first" that exceeds the limit
+    // * The query has no "first", and has more results than the limit
+    if (first < Infinity && first > maxResults) {
+      throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
+    }
+    // + 1 to allow limit violation detection
+    const resultsLimit = Math.min(maxResults + 1, first);
+    if (resultsLimit < Infinity) {
+      args.first = resultsLimit;
+    }
+    const results = await this.adapter.itemsQuery(args, extra);
+    if (results.length > maxResults) {
+      throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
+    }
+    return results;
   }
 
   authenticatedQuery(context) {
