@@ -727,68 +727,47 @@ describe('Slug#implementation', () => {
       describe('error handling', () => {
         it("throws if 'regenerateOnUpdate' is not a bool", () => {
           return expect(
-            runner(
-              () =>
-                setupList(adapterName, {
-                  url: { type: Slug, from: 'foo', regenerateOnUpdate: 13 },
-                }),
-              // Empty test, we just want to assert the setup works
-              () => {}
+            runner(() =>
+              setupList(adapterName, {
+                url: { type: Slug, from: 'foo', regenerateOnUpdate: 13 },
+              })
             )()
           ).rejects.toThrow(/The 'regenerateOnUpdate' option on .*\.url must be true\/false/);
         });
 
         it("throws if 'alwaysMakeUnique' is not a bool", () => {
           return expect(
-            runner(
-              () =>
-                setupList(adapterName, {
-                  url: { type: Slug, from: 'foo', alwaysMakeUnique: 13 },
-                }),
-              // Empty test, we just want to assert the setup works
-              () => {}
+            runner(() =>
+              setupList(adapterName, {
+                url: { type: Slug, from: 'foo', alwaysMakeUnique: 13 },
+              })
             )()
           ).rejects.toThrow(/The 'alwaysMakeUnique' option on .*\.url must be true\/false/);
         });
 
         it("throws if both 'from' and 'generate' specified", () => {
           return expect(
-            runner(
-              () =>
-                setupList(adapterName, { url: { type: Slug, from: 'foo', generate: () => {} } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
+            runner(() =>
+              setupList(adapterName, { url: { type: Slug, from: 'foo', generate: () => {} } })
             )()
           ).rejects.toThrow("Only one of 'from' or 'generate' can be supplied");
         });
 
         it("throws if 'from' is not a string", () => {
           return expect(
-            runner(
-              () => setupList(adapterName, { url: { type: Slug, from: 12 } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
-            )()
+            runner(() => setupList(adapterName, { url: { type: Slug, from: 12 } }))()
           ).rejects.toThrow(/The 'from' option on .* must be a string/);
         });
 
         it("throws if 'from' is a function", () => {
           return expect(
-            runner(
-              () => setupList(adapterName, { url: { type: Slug, from: () => {} } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
-            )()
+            runner(() => setupList(adapterName, { url: { type: Slug, from: () => {} } }))()
           ).rejects.toThrow(/A function was specified for the 'from' option/);
         });
 
         it("throws when 'makeUnique' isn't a function", () => {
           return expect(
-            runner(
-              () => setupList(adapterName, { url: { type: Slug, makeUnique: 'foo' } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
-            )()
+            runner(() => setupList(adapterName, { url: { type: Slug, makeUnique: 'foo' } }))()
           ).rejects.toThrow(
             /The 'makeUnique' option on .* must be a function, but received string/
           );
