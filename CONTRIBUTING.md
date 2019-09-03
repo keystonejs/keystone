@@ -170,6 +170,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/kennedybaird"><img src="https://avatars1.githubusercontent.com/u/20593811?v=4" width="100px;" alt="Kennedy Baird"/><br /><sub><b>Kennedy Baird</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=kennedybaird" title="Documentation">📖</a></td>
     <td align="center"><a href="http://thiagodebastos.com"><img src="https://avatars0.githubusercontent.com/u/6151341?v=4" width="100px;" alt="Thiago De Bastos"/><br /><sub><b>Thiago De Bastos</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=thiagodebastos" title="Documentation">📖</a></td>
     <td align="center"><a href="https://dcousens.com"><img src="https://avatars0.githubusercontent.com/u/413395?v=4" width="100px;" alt="Daniel Cousens"/><br /><sub><b>Daniel Cousens</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=dcousens" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://simonswiss.com"><img src="https://avatars1.githubusercontent.com/u/485747?v=4" width="100px;" alt="Simon Vrachliotis"/><br /><sub><b>Simon Vrachliotis</b></sub></a><br /><a href="#example-simonswiss" title="Examples">💡</a> <a href="#tutorial-simonswiss" title="Tutorials">✅</a> <a href="#video-simonswiss" title="Videos">📹</a></td>
   </tr>
 </table>
 
