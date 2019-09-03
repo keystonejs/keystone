@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import Link from 'next/link';
 
 import gql from 'graphql-tag';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { Mutation, Query } from 'react-apollo';
 import { useState } from 'react';
 
 import styled from '@emotion/styled';
@@ -52,16 +52,6 @@ const ADD_POST = gql`
   }
 `;
 
-const ADMIN_USERS = gql`
-  {
-    allUsers(where: { isAdmin: true }) {
-      name
-      email
-      id
-    }
-  }
-`;
-
 export default () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -69,13 +59,7 @@ export default () => {
   const [authorId, setAuthorId] = useState('');
   const [showBanner, setShowBanner] = useState(false);
   const [slug, setSlug] = useState('');
-  const { data, loading, error } = useQuery(ADMIN_USERS);
-  const [createPost] = useMutation(ADD_POST, {
-    update: (cache, { data: { createPost } }) => {
-      setSlug(createPost.slug);
-      setShowBanner(true);
-    },
-  });
+
   return (
     <Layout>
       <div css={{ margin: '48px 0' }}>
@@ -110,93 +94,121 @@ export default () => {
           </div>
         )}
 
-        {loading ? (
-          <p>loading...</p>
-        ) : error ? (
-          <p>Error!</p>
-        ) : (
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              createPost({
-                variables: {
-                  title,
-                  body,
-                  image,
-                  authorId: authorId || data.allUsers[0].id,
-                  posted: new Date(),
-                },
-              });
+        <Query
+          query={gql`
+            {
+              allUsers(where: { isAdmin: true }) {
+                name
+                email
+                id
+              }
+            }
+          `}
+        >
+          {({ data, loading, error }) => {
+            if (loading) return <p>loading...</p>;
+            if (error) return <p>Error!</p>;
 
-              setTitle('');
-              setBody('');
-            }}
-          >
-            <FormGroup>
-              <Label htmlFor="title">Title:</Label>
-              <Input
-                type="text"
-                name="title"
-                value={title}
-                onChange={event => {
-                  setTitle(event.target.value);
-                }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="body">Body:</Label>
-              <textarea
-                css={{
-                  width: '100%',
-                  padding: 8,
-                  fontSize: '1em',
-                  borderRadius: 4,
-                  border: '1px solid hsl(200,20%,70%)',
-                  height: 200,
-                  resize: 'none',
-                }}
-                name="body"
-                value={body}
-                onChange={event => {
-                  setBody(event.target.value);
-                }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="image">Image URL:</Label>
-              <Input
-                type="file"
-                name="image"
-                // value={image}
-                onChange={event => {
-                  setImage(event.target.files[0]);
-                }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="admin">Post as:</Label>
-              <select
-                name="admin"
-                css={{
-                  width: '100%',
-                  height: 32,
-                  fontSize: '1em',
-                  borderRadius: 4,
-                  border: '1px solid hsl(200,20%,70%)',
-                }}
-                value={authorId}
-                onSelect={event => {
-                  setAuthorId(event.target.value);
+            return (
+              <Mutation
+                mutation={ADD_POST}
+                update={(cache, { data: { createPost } }) => {
+                  setSlug(createPost.slug);
+                  setShowBanner(true);
                 }}
               >
-                {data.allUsers.map(user => (
-                  <option value={user.id} key={user.id}>{`${user.name} <${user.email}>`}</option>
-                ))}
-              </select>
-            </FormGroup>
-            <input type="submit" value="submit" />
-          </form>
-        )}
+                {createPost => {
+                  return (
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                        createPost({
+                          variables: {
+                            title,
+                            body,
+                            image,
+                            authorId: authorId || data.allUsers[0].id,
+                            posted: new Date(),
+                          },
+                        });
+
+                        setTitle('');
+                        setBody('');
+                      }}
+                    >
+                      <FormGroup>
+                        <Label htmlFor="title">Title:</Label>
+                        <Input
+                          type="text"
+                          name="title"
+                          value={title}
+                          onChange={event => {
+                            setTitle(event.target.value);
+                          }}
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="body">Body:</Label>
+                        <textarea
+                          css={{
+                            width: '100%',
+                            padding: 8,
+                            fontSize: '1em',
+                            borderRadius: 4,
+                            border: '1px solid hsl(200,20%,70%)',
+                            height: 200,
+                            resize: 'none',
+                          }}
+                          name="body"
+                          value={body}
+                          onChange={event => {
+                            setBody(event.target.value);
+                          }}
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="image">Image URL:</Label>
+                        <Input
+                          type="file"
+                          name="image"
+                          // value={image}
+                          onChange={event => {
+                            setImage(event.target.files[0]);
+                          }}
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="admin">Post as:</Label>
+                        <select
+                          name="admin"
+                          css={{
+                            width: '100%',
+                            height: 32,
+                            fontSize: '1em',
+                            borderRadius: 4,
+                            border: '1px solid hsl(200,20%,70%)',
+                          }}
+                          value={authorId}
+                          onSelect={event => {
+                            setAuthorId(event.target.value);
+                          }}
+                        >
+                          {data.allUsers.map(user => (
+                            <option
+                              value={user.id}
+                              key={user.id}
+                            >{`${user.name} <${user.email}>`}</option>
+                          ))}
+                        </select>
+                      </FormGroup>
+                      <input type="submit" value="submit" />
+                    </form>
+                  );
+                }}
+              </Mutation>
+            );
+          }}
+        </Query>
       </div>
     </Layout>
   );

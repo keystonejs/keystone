@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { useQuery } from '@apollo/react-hooks';
+import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
@@ -16,11 +16,7 @@ const { publicRuntimeConfig } = getConfig();
 
 export default function About() {
   const { meetup } = publicRuntimeConfig;
-  const { data, loading, error } = useQuery(GET_ORGANISERS);
-  const hasOrganisers = Boolean(data.allOrganisers && data.allOrganisers.length);
-  const allOrganisers = hasOrganisers
-    ? data.allOrganisers.filter(o => o.user).map(o => o.user)
-    : [];
+
   return (
     <>
       <Meta title="About" description={meetup.aboutIntro} />
@@ -34,23 +30,35 @@ export default function About() {
             <Html markup={meetup.aboutIntro} />
           </Content>
         )}
-        {loading ? (
-          <Loading />
-        ) : error ? (
-          <Error error={error} />
-        ) : !hasOrganisers ? null : (
-          <OrganiserList
-            title={
-              <H3 size={5} css={{ marginBottom: '0.66em' }}>
-                Organisers
-              </H3>
+        <Query query={GET_ORGANISERS}>
+          {({ data, loading, error }) => {
+            if (loading) return <Loading />;
+            if (error) return <Error error={error} />;
+
+            const hasOrganisers = Boolean(data.allOrganisers && data.allOrganisers.length);
+
+            if (!hasOrganisers) {
+              return null;
             }
-          >
-            {allOrganisers.map(organiser => {
-              return <Organiser key={organiser.id} organiser={organiser} />;
-            })}
-          </OrganiserList>
-        )}
+
+            const allOrganisers = data.allOrganisers.filter(o => o.user).map(o => o.user);
+
+            return (
+              <OrganiserList
+                title={
+                  <H3 size={5} css={{ marginBottom: '0.66em' }}>
+                    Organisers
+                  </H3>
+                }
+              >
+                {allOrganisers.map(organiser => {
+                  return <Organiser key={organiser.id} organiser={organiser} />;
+                })}
+              </OrganiserList>
+            );
+          }}
+        </Query>
+
         {meetup.codeOfConduct ? (
           <Content>
             <H2 hasSeparator css={{ marginBottom: '0.66em', marginTop: '1.22em' }}>

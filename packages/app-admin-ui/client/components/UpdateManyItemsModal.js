@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { Mutation } from 'react-apollo';
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
@@ -199,8 +199,15 @@ class UpdateManyModal extends Component {
   }
 }
 
-export default function UpdateManyModalWithMutation(props) {
-  const { list } = props;
-  const [updateItem, { loading }] = useMutation(list.updateManyMutation);
-  return <UpdateManyModal updateItem={updateItem} isLoading={loading} {...props} />;
+export default class UpdateManyModalWithMutation extends Component {
+  render() {
+    const { list } = this.props;
+    return (
+      <Mutation mutation={list.updateManyMutation}>
+        {(updateItem, { loading }) => (
+          <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
+        )}
+      </Mutation>
+    );
+  }
 }
