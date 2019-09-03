@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useState, useEffect, Component } from 'react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { Query, Mutation } from 'react-apollo';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
 
@@ -71,66 +71,77 @@ const ChangePasswordForm = ({ token, accessedAt }) => {
       Router.push('/');
     }
   }, [isAuthenticated]);
-  const { data, loading, error } = useQuery(GET_PASSWORD_TOKEN, {
-    variables: { token, accessedAt },
-  });
-  const [startPasswordRecovery, { error: mutationError }] = useMutation(CHANGE_PASSWORD, {
-    onCompleted: () => {
-      Router.push('/signin');
-    },
-  });
+
   return (
     <>
       <Meta title="Change password" />
       <Navbar background="white" foreground={colors.greyDark} />
-      {loading && !data ? (
-        <Loading isCentered size="xlarge" />
-      ) : error || !data.passwordTokens || !data.passwordTokens.length ? (
-        <Error message="Invalid or expired token" />
-      ) : (
-        <Container css={{ marginTop: gridSize * 3 }}>
-          <H1>Change password</H1>
-          {mutationError && <p css={{ color: colors.red }}>Failed to change password</p>}
+      <Query query={GET_PASSWORD_TOKEN} variables={{ token, accessedAt }}>
+        {({ data, loading, error }) => {
+          if (loading && !data) {
+            return <Loading isCentered size="xlarge" />;
+          }
+          if (error || !data.passwordTokens || !data.passwordTokens.length) {
+            return <Error message="Invalid or expired token" />;
+          }
 
-          <form
-            css={{ marginTop: gridSize * 3 }}
-            noValidate
-            onSubmit={handleSubmit(startPasswordRecovery)}
-          >
-            <Field>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                required
-                type="password"
-                id="password"
-                minLength={minPasswordLength}
-                autoFocus
-                autoComplete="password"
-                placeholder="supersecret"
-                disabled={isAuthenticated}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-            </Field>
-            <Field>
-              <Label htmlFor="confirmedPassword">Confirm password</Label>
-              <Input
-                required
-                type="password"
-                id="confirmedPassword"
-                minLength={minPasswordLength}
-                autoComplete="password"
-                placeholder="supersecret"
-                disabled={isAuthenticated}
-                value={confirmedPassword}
-                onChange={e => setConfirmedPassword(e.target.value)}
-              />
-            </Field>
-            {errorState ? <p css={{ color: colors.red }}>{errorState}</p> : null}
-            <Button type="submit">Change password</Button>
-          </form>
-        </Container>
-      )}
+          return (
+            <Mutation
+              mutation={CHANGE_PASSWORD}
+              onCompleted={() => {
+                Router.push('/signin');
+              }}
+            >
+              {(startPasswordRecovery, { error: mutationError }) => {
+                return (
+                  <Container css={{ marginTop: gridSize * 3 }}>
+                    <H1>Change password</H1>
+                    {mutationError && <p css={{ color: colors.red }}>Failed to change password</p>}
+
+                    <form
+                      css={{ marginTop: gridSize * 3 }}
+                      noValidate
+                      onSubmit={handleSubmit(startPasswordRecovery)}
+                    >
+                      <Field>
+                        <Label htmlFor="password">Password</Label>
+                        <Input
+                          required
+                          type="password"
+                          id="password"
+                          minLength={minPasswordLength}
+                          autoFocus
+                          autoComplete="password"
+                          placeholder="supersecret"
+                          disabled={isAuthenticated}
+                          value={password}
+                          onChange={e => setPassword(e.target.value)}
+                        />
+                      </Field>
+                      <Field>
+                        <Label htmlFor="confirmedPassword">Confirm password</Label>
+                        <Input
+                          required
+                          type="password"
+                          id="confirmedPassword"
+                          minLength={minPasswordLength}
+                          autoComplete="password"
+                          placeholder="supersecret"
+                          disabled={isAuthenticated}
+                          value={confirmedPassword}
+                          onChange={e => setConfirmedPassword(e.target.value)}
+                        />
+                      </Field>
+                      {errorState ? <p css={{ color: colors.red }}>{errorState}</p> : null}
+                      <Button type="submit">Change password</Button>
+                    </form>
+                  </Container>
+                );
+              }}
+            </Mutation>
+          );
+        }}
+      </Query>
       <Footer callToAction={false} />
     </>
   );

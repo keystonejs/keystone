@@ -10,7 +10,6 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@apollo/react-hooks": "^3.0.1",
     "@arch-ui/alert": "^0.0.7",
     "@arch-ui/button": "^0.0.9",
     "@arch-ui/controls": "^0.0.9",
@@ -60,7 +59,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.8.1",
     "react": "^16.8.6",
-    "react-apollo": "^3.0.1",
+    "react-apollo": "2.4.0",
     "react-color": "^2.17.0",
     "react-dom": "^16.8.6",
     "react-popper": "^1.3.3",

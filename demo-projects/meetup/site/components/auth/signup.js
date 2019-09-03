@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useState, useEffect } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { Mutation } from 'react-apollo';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
 
@@ -42,65 +42,74 @@ export default () => {
       Router.push('/');
     }
   }, [isAuthenticated]);
-  const [createUser, { error: mutationError }] = useMutation(CREATE_USER, {
-    onCompleted: () => {
-      handleSignin();
-    },
-  });
+
   return (
-    <>
-      {mutationError && <p css={{ color: colors.red }}>The email provided is already in use.</p>}
-      {errorState && <p css={{ color: colors.red }}>An unknown error has occured</p>}
+    <Mutation
+      mutation={CREATE_USER}
+      onCompleted={() => {
+        handleSignin();
+      }}
+    >
+      {(createUser, { error: mutationError }) => {
+        return (
+          <>
+            {mutationError && (
+              <p css={{ color: colors.red }}>The email provided is already in use.</p>
+            )}
+            {errorState && <p css={{ color: colors.red }}>An unknown error has occured</p>}
 
-      <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit(createUser)}>
-        <Field>
-          <Label htmlFor="name">Name</Label>
-          <Input
-            autoComplete="name"
-            autoFocus
-            disabled={isLoading || isAuthenticated}
-            id="name"
-            onChange={onChange(setName)}
-            placeholder="full name"
-            required
-            type="text"
-            value={name}
-          />
-        </Field>
-        <Field>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            autoComplete="email"
-            disabled={isLoading || isAuthenticated}
-            id="email"
-            onChange={onChange(setEmail)}
-            placeholder="you@awesome.com"
-            required
-            type="text"
-            value={email}
-          />
-        </Field>
-        <Field>
-          <Label htmlFor="password">Password</Label>
-          <Input
-            autoComplete="password"
-            disabled={isLoading || isAuthenticated}
-            id="password"
-            minLength="8"
-            onChange={onChange(setPassword)}
-            placeholder="supersecret"
-            required
-            type="password"
-            value={password}
-          />
-        </Field>
+            <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit(createUser)}>
+              <Field>
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  autoComplete="name"
+                  autoFocus
+                  disabled={isLoading || isAuthenticated}
+                  id="name"
+                  onChange={onChange(setName)}
+                  placeholder="full name"
+                  required
+                  type="text"
+                  value={name}
+                />
+              </Field>
+              <Field>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  autoComplete="email"
+                  disabled={isLoading || isAuthenticated}
+                  id="email"
+                  onChange={onChange(setEmail)}
+                  placeholder="you@awesome.com"
+                  required
+                  type="text"
+                  value={email}
+                />
+              </Field>
+              <Field>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  autoComplete="password"
+                  disabled={isLoading || isAuthenticated}
+                  id="password"
+                  minLength="8"
+                  onChange={onChange(setPassword)}
+                  placeholder="supersecret"
+                  required
+                  type="password"
+                  value={password}
+                />
+              </Field>
 
-        {isLoading ? (
-          <Button disabled>Creating account...</Button>
-        ) : (
-          <Button type="submit">Sign up</Button>
-        )}
-      </form>
-    </>
+              {isLoading ? (
+                <Button disabled>Creating account...</Button>
+              ) : (
+                <Button type="submit">Sign up</Button>
+              )}
+            </form>
+          </>
+        );
+      }}
+    </Mutation>
   );
 };
