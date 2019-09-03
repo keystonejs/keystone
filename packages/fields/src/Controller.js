@@ -83,7 +83,7 @@ export default class FieldController {
    * @param initialData {Object} An object containing the most recently received
    * data from the server, keyed by the field's path. The values have already
    * been passed to this.serialize() for you.
-   * @param initialData {Object} An object containing all of the data for the
+   * @param currentData {Object} An object containing all of the data for the
    * current item, keyed by the field's path. The values have already been
    * passed to this.serialize() for you
    * @return boolean
