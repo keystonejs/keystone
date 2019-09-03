@@ -49,7 +49,7 @@ export default class OEmbedField extends Component {
   };
 
   render() {
-    const { autoFocus, field, value = {}, savedValue = {}, errors } = this.props;
+    const { autoFocus, field, value = null, savedValue = null, errors } = this.props;
     const htmlID = `ks-oembed-${field.path}`;
     const canRead = errors.every(
       error => !(error instanceof Error && error.name === 'AccessDeniedError')
@@ -57,7 +57,7 @@ export default class OEmbedField extends Component {
     const error = errors.find(
       error => error instanceof Error && error.name === 'AccessDeniedError'
     );
-    const hasChanged = field.hasChanged(savedValue.originalUrl, value.originalUrl);
+    const hasChanged = field.hasChanged({ [field.path]: savedValue }, { [field.path]: value });
 
     return (
       <FieldContainer>
@@ -67,16 +67,16 @@ export default class OEmbedField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             type="url"
-            value={canRead && value.originalUrl}
+            value={(canRead && value && value.originalUrl) || ''}
             placeholder={canRead ? undefined : error.message}
             onChange={this.onChange}
             id={htmlID}
           />
         </FieldInput>
-        {value.originalUrl && hasChanged && (
+        {value && value.originalUrl && hasChanged && (
           <PlaceholderPreview originalUrl={value.originalUrl} fieldPath={field.path} />
         )}
-        {value.originalUrl && !hasChanged && (
+        {value && value.originalUrl && !hasChanged && (
           <StyledPreview
             preview={value.preview}
             originalUrl={value.originalUrl}
