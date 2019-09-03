@@ -1,5 +1,11 @@
 # @keystone-alpha/fields
 
+## 10.7.1
+
+### Patch Changes
+
+- [d9bd327e](https://github.com/keystonejs/keystone-5/commit/d9bd327e): Embed fields should handle receiving null or '' when being unset
+
 ## 10.7.0
 
 ### Minor Changes
