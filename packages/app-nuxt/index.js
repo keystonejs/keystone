@@ -1,5 +1,5 @@
-const { Nuxt, Builder } = require("nuxt");
-const express = require("express");
+const { Nuxt, Builder } = require('nuxt');
+const express = require('express');
 
 class NuxtApp {
   constructor({ ...config } = {}) {
@@ -10,17 +10,17 @@ class NuxtApp {
     const nuxt = new Nuxt({
       ...this._config,
       dev,
-      _build: !!dev
     });
     if (dev) {
-      new Builder(nuxt).build();
+      const builder = new Builder(nuxt);
+      await builder.build();
     }
     const app = express.Router();
     return app.use(nuxt.render);
   }
 
   async build() {
-    const nuxt = new Nuxt({ ...this._config, dev, _build: !!dev });
+    const nuxt = new Nuxt({ ...this._config, dev: false });
     return new Builder(nuxt).build();
   }
 }
