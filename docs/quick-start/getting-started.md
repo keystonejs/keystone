@@ -32,7 +32,7 @@ All set? Great, let's get started!
 
 ## Installation
 
-To create a new KeystoneJS application, run the following commands in your terminal.
+To create a new KeystoneJS application, run the following commands in your terminal:
 
 ```sh
 npm init keystone-app my-app
