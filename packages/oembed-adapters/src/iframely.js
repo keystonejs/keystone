@@ -6,7 +6,7 @@ const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
 
 export class IframelyOEmbedAdapter {
-  constructor({ apiKey }) {
+  constructor({ apiKey } = {}) {
     if (!apiKey) {
       throw new Error('Must provide an apiKey to IFramely OEmbed Adapter');
     }

@@ -11,9 +11,8 @@ export default class FileController extends FieldController {
   deserialize = data => {
     const oEmbed = data[this.path];
     if (!oEmbed || !oEmbed.originalUrl) {
-      // Nothing set, so force to an empty object (removes null checks from the
-      // `Field` view)
-      return {};
+      // Nothing set, so force to null
+      return null;
     }
 
     return {
@@ -36,10 +35,6 @@ export default class FileController extends FieldController {
   serialize = data => {
     const { path } = this;
     // We only send the URL itself to the mutation
-    return (data[path] && data[path].originalUrl) || '';
-  };
-
-  hasChanged = (initial, current) => {
-    return initial !== current;
+    return (data[path] && data[path].originalUrl) || null;
   };
 }
