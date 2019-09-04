@@ -3,6 +3,12 @@ const { Text } = require('@keystone-alpha/fields');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { NuxtApp } = require('@keystone-alpha/app-nuxt');
+
+const nuxtConfig = {
+  srcDir: 'src',
+  buildDir: 'dist'
+};
+
 const {
   MongooseAdapter: Adapter
 } = require('@keystone-alpha/adapter-mongoose');
@@ -23,8 +29,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new AdminUIApp(),
-    new NuxtApp({
-      srcDir: 'src'
-    })
+    new NuxtApp(nuxtConfig)
   ]
 };
