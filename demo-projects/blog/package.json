@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/demo-project-blog",
   "description": "An example KeystoneJS project showcasing a Blogging Site.",
   "private": true,
-  "version": "2.2.0",
+  "version": "2.3.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -19,7 +19,7 @@
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "@keystone-alpha/adapter-mongoose": "^4.0.4",
-    "@keystone-alpha/app-admin-ui": "^5.6.0",
+    "@keystone-alpha/app-admin-ui": "^5.7.0",
     "@keystone-alpha/app-graphql": "^7.0.0",
     "@keystone-alpha/app-next": "^2.0.0",
     "@keystone-alpha/app-static": "^1.1.0",

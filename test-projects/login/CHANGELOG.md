@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-login
 
+## 1.5.0
+
+### Minor Changes
+
+- [2350a9fd](https://github.com/keystonejs/keystone-5/commit/2350a9fd): Admin UI has a new config option: `isAccessAllowed({ authentication: { user, listKey } }) => Boolean` to restrict who can login to the Admin UI.
+
 ## 1.4.1
 
 - Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
