@@ -141,19 +141,16 @@ class AdminUIApp {
     const app = express.Router();
 
     app.use(this.adminPath, (req, res, next) => {
-      // All unauthenticated requests go to the signin page
+      // Depending on what was requested, we might redirect the user based on
+      // their access
       res.format({
-        // For everything else, we have middleware to handle it later down the
-        // line
-        // From the docs: "If the header is not specified [or is */*], the first
-        // callback is invoked."
+        // For everything other than html requests, we have middleware to handle
+        // it later down the line.
+        // From the docs: "If the header is not specified, the first callback is
+        // invoked."
         default: () => {
           next();
         },
-        // For everything else, we have middleware to handle it later down the
-        // line
-        // From the docs: "If the header is not specified [or is */*], the first
-        // callback is invoked."
         '*/*': () => {
           next();
         },
@@ -174,7 +171,7 @@ class AdminUIApp {
     }
   }
 
-  createProdMiddleware({ keystone, distDir, app }) {
+  createProdMiddleware({ distDir, app }) {
     app.use(compression());
 
     const builtAdminRoot = path.join(distDir, 'admin');
@@ -224,11 +221,7 @@ class AdminUIApp {
     if (this.enableDefaultRoute) {
       // Attach this last onto the root so the `this.adminPath` can overwrite it
       // if necessary
-      _app.get('/', (req, res) => {
-        if (!this.isAccessAllowed(req)) {
-          res.sendFile(path.resolve(__dirname, './server/default.html'));
-        }
-      });
+      _app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './server/default.html')));
     }
 
     return _app;
@@ -285,8 +278,6 @@ class AdminUIApp {
 
       const publicMiddleware = webpackDevMiddleware(publicCompiler, webpackMiddlewareConfig);
       const publicHotMiddleware = webpackHotMiddleware(publicCompiler, webpackHotMiddlewareConfig);
-
-      // app.use(adminMiddleware);
 
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
