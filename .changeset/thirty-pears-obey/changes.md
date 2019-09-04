@@ -1,1 +1,0 @@
-Admin UI has a new config option: `isAccessAllowed({ authentication: { user, listKey } }) => Boolean` to restrict who can login to the Admin UI.

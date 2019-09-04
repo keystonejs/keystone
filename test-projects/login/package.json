@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.4.1",
+  "version": "1.5.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^4.0.4",
-    "@keystone-alpha/app-admin-ui": "^5.5.2",
+    "@keystone-alpha/app-admin-ui": "^5.7.0",
     "@keystone-alpha/app-graphql": "^7.0.0",
     "@keystone-alpha/app-static": "^1.1.0",
     "@keystone-alpha/list-plugins": "^1.0.0",
