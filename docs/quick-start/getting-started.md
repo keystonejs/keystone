@@ -26,7 +26,7 @@ And, ONE of the following:
 - [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful document store.
 - [Postgres](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
 
-Finally, make sure [your database is configured and running](https://v5.keystonejs.com/quick-start/adapters).
+Finally, make sure [your database is configured and running](/quick-start/adapters).
 
 All set? Great, let's get started!
 
