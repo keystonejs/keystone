@@ -31,4 +31,4 @@ module.exports = {
 
 ### Config
 
-A config object can be passed to the `NuxtApp()` instance. Documentation for the `nuxtConfig` are available on the [https://nuxtjs.org/guide/configuration](NuxtJS documentation website).
+A config object can be passed to the `NuxtApp()` instance. Documentation for the `nuxtConfig` are available on the [NuxtJS documentation website](https://nuxtjs.org/guide/configuration).
