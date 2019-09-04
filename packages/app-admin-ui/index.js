@@ -55,6 +55,10 @@ class AdminUIApp {
   }
 
   isAccessAllowed(req) {
+    if (!this.authStrategy) {
+      return true;
+    }
+
     return (
       req.user &&
       this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } }) &&
