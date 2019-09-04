@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "minor" },
+    { "name": "@keystone-alpha/app-admin-ui", "type": "minor" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "minor" }
+  ],
+  "dependents": []
+}
