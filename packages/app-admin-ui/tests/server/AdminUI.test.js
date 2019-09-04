@@ -38,12 +38,16 @@ describe('Add Middleware', () => {
       adminPath,
     });
 
+    // Fake express app
+    const app = {
+      use: () => {},
+    };
+
     //expect(adminUI.createSessionMiddleware()).not.toBe(null);
     expect(
       adminUI.createDevMiddleware({
         keystone,
-        apiPath: adminPath,
-        graphiqlPath: `${adminPath}/graphiql`,
+        app,
       })
     ).not.toBe(null);
   });
