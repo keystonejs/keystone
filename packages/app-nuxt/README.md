@@ -9,17 +9,26 @@ title: Nuxt.js App
 ## Usage
 
 ```javascript
-const { Nuxt } = require('@keystone-alpha/app-next');
+const { NuxtApp } = require('@keystone-alpha/app-nuxt');
 
 ...
+
+const config = {
+  srcDir: "src",
+  buildDir: "dist",
+  // ...
+}
 
 module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
     new AdminUIApp(),
-    new NuxtApp(),
-  ],
-  distDir,
+    new NuxtApp(config),
+  ]
 };
 ```
+
+### Config
+
+A config object can be passed to the `NuxtApp` instance. Documentation for the `nuxtConfig` options is available on the [NuxtJS documentation website](https://nuxtjs.org/guide/configuration).
