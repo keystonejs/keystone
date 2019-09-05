@@ -17,7 +17,8 @@ This quick start guide will get you up and running in just a few minutes. Let's 
 
 ## Requirements
 
-Before we start, make sure your computer or server meets the following requirements:
+
+Before we start, check that your computer or server meets the following requirements:
 
 - [Node.js](https://nodejs.org/) >= 10.x: Node.js is a server platform which runs JavaScript.
 
@@ -80,7 +81,7 @@ Your application also has an Admin UI, which lets you directly manipulate the da
 ### A GraphQL API
 
 Both your application and the admin UI are powered by a GraphQL API.
-KeystoneJS provides a web interface for this API at
+KeystoneJS provides a web interface for this API at this URL:
 
 <pre>
 	<code>
@@ -92,4 +93,4 @@ KeystoneJS provides a web interface for this API at
 
 This todo app is a good introduction to Keystone, but chances are you'll want to build something a bit more complex and secure than that!
 
-The [guides section](/guides) is a great next step. It will walk you through concepts like [creating lists](/guides/add-lists), setting up [content relationship](/guides/relationships), managing [access control](/guides/access-control) and much more.
+The [guides section](/guides) is a great next step. It will walk you through concepts like [creating lists](/guides/add-lists), setting up [content relationships](/guides/relationships), managing [access control](/guides/access-control) and much more.
