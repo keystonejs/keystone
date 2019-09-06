@@ -1,7 +1,7 @@
 <template>
   <div>
     <main-nav />
-    <h1>This is the Home page</h1>
+    <h1>This is the About page</h1>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import MainNav from '../components/main-nav';
 export default {
   head: {
-    title: 'Home page',
+    title: 'About page',
   },
   components: {
     MainNav,
