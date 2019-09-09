@@ -75,7 +75,9 @@ const parseAccess = ({
   // Check that none of the schemaNames match the accessTypes
   if (intersection(schemaNames, accessTypes).length > 0) {
     throw new Error(
-      `${JSON.stringify(intersection(schemaNames, accessTypes))} are reserved words and cannot be used as schema names.`
+      `${JSON.stringify(
+        intersection(schemaNames, accessTypes)
+      )} are reserved words and cannot be used as schema names.`
     );
   }
 
