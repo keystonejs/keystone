@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/nuxt-app",
   "description": "A NuxtJS example project.",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
