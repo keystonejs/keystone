@@ -1,6 +1,6 @@
 const { Keystone } = require('@keystone-alpha/keystone');
 const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
-const { Text, Password, Relationship } = require('@keystone-alpha/fields');
+const { Text, Password, Relationship, Checkbox } = require('@keystone-alpha/fields');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
@@ -34,6 +34,7 @@ keystone.createList('User', {
     name: { type: Text },
     email: { type: Text },
     password: { type: Password },
+    isAdmin: { type: Checkbox },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -65,5 +66,13 @@ keystone.createList('ListWithPlugin', {
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ adminPath: '/admin', authStrategy })],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({
+      adminPath: '/admin',
+      authStrategy,
+      isAccessAllowed: ({ authentication: { item, listKey } }) =>
+        !!item && listKey === 'User' && !!item.isAdmin,
+    }),
+  ],
 };

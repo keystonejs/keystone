@@ -1,5 +1,23 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.7.0
+
+### Minor Changes
+
+- [2350a9fd](https://github.com/keystonejs/keystone-5/commit/2350a9fd): Admin UI has a new config option: `isAccessAllowed({ authentication: { user, listKey } }) => Boolean` to restrict who can login to the Admin UI.
+
+## 5.6.1
+
+### Patch Changes
+
+- [99dc6cae](https://github.com/keystonejs/keystone-5/commit/99dc6cae): Revert usage of Apollo Hooks
+
+## 5.6.0
+
+### Minor Changes
+
+- [79e362c0](https://github.com/keystonejs/keystone-5/commit/79e362c0): upgrade react-apollo and use hooks instead of Query and Mutation components
+
 ## 5.5.2
 
 ### Patch Changes

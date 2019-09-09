@@ -1,1 +1,0 @@
-update demos to use apollo hooks instead of Query and Mutations.

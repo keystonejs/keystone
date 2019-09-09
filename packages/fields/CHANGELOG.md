@@ -1,5 +1,23 @@
 # @keystone-alpha/fields
 
+## 10.7.2
+
+### Patch Changes
+
+- [99dc6cae](https://github.com/keystonejs/keystone-5/commit/99dc6cae): Revert usage of Apollo Hooks
+
+## 10.7.1
+
+### Patch Changes
+
+- [d9bd327e](https://github.com/keystonejs/keystone-5/commit/d9bd327e): Embed fields should handle receiving null or '' when being unset
+
+## 10.7.0
+
+### Minor Changes
+
+- [79e362c0](https://github.com/keystonejs/keystone-5/commit/79e362c0): upgrade react-apollo and use hooks instead of Query and Mutation components
+
 ## 10.6.2
 
 ### Patch Changes

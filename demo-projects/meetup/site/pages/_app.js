@@ -3,6 +3,7 @@ import App, { Container } from 'next/app';
 import Head from 'next/head';
 import gql from 'graphql-tag';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 import { ToastProvider } from 'react-toast-notifications';
 
 import withApollo from '../lib/withApollo';
@@ -41,15 +42,17 @@ class MyApp extends App {
         <Container>
           <ApolloProvider client={apolloClient}>
             <AuthProvider initialUserValue={user}>
-              <Head>
-                <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-                <meta
-                  name="viewport"
-                  content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
-                />
-              </Head>
-              <StylesBase />
-              <Component {...pageProps} />
+              <ApolloHooksProvider client={apolloClient}>
+                <Head>
+                  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+                  <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+                  />
+                </Head>
+                <StylesBase />
+                <Component {...pageProps} />
+              </ApolloHooksProvider>
             </AuthProvider>
           </ApolloProvider>
         </Container>

@@ -1,5 +1,11 @@
 # @keystone-alpha/api-tests
 
+## 1.5.0
+
+### Minor Changes
+
+- [63350996](https://github.com/keystonejs/keystone-5/commit/63350996): Add queryLimits and maxResults to List API
+
 ## 1.4.0
 
 ### Minor Changes

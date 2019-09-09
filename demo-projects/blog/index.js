@@ -37,6 +37,7 @@ keystone.createList('Comment', Comment);
 const adminApp = new AdminUIApp({
   adminPath: '/admin',
   authStrategy,
+  isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
   pages: [
     {
       label: 'A new dashboard',

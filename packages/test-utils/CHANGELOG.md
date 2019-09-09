@@ -1,5 +1,11 @@
 # @keystone-alpha/test-utils
 
+## 2.3.1
+
+### Patch Changes
+
+- [d80de82b](https://github.com/keystonejs/keystone-5/commit/d80de82b): Clean up error messages when using the mongo test runner
+
 ## 2.3.0
 
 ### Minor Changes

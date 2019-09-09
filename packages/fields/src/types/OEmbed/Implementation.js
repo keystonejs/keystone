@@ -183,9 +183,9 @@ export class OEmbed extends Implementation {
       return undefined;
     }
 
-    if (inputUrl === null) {
-      // `null` was specifically uploaded, and we should set the field value to
-      // null. To do that we... return `null`
+    if (inputUrl === null || inputUrl.trim() === '') {
+      // `null` or `''` was specifically uploaded, and we should set the field
+      // value to null. To do that we... return `null`
       return null;
     }
 

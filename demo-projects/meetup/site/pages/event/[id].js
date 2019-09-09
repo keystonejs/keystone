@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useQuery } from '@apollo/react-hooks';
+import { Component } from 'react';
+import { Query } from 'react-apollo';
 
 import Rsvp from '../../components/Rsvp';
 import { Avatar, Container, Error, Hero, H1, H2, Html, Loading } from '../../primitives';
@@ -13,92 +14,98 @@ import { GET_EVENT_DETAILS } from '../../graphql/events';
 import { isInFuture, formatFutureDate, formatPastDate, stripTags } from '../../helpers';
 import { mq } from '../../helpers/media';
 
-const Event = ({ id, loadingColor }) => {
-  const { data, loading, error } = useQuery(GET_EVENT_DETAILS, { variables: { event: id } });
-
-  if (loading) return <Loading isCentered color={loadingColor} size="xlarge" />;
-
-  if (error) {
-    console.error('Failed to load event', id, error);
-    return <Error message="Something went wrong. Please try again later." />;
-  }
-  if (!data.Event) {
-    return <p>Event not found</p>;
+export default class Event extends Component {
+  static async getInitialProps({ query }) {
+    const { id, hex } = query;
+    return { id, loadingColor: hex ? `#${hex}` : 'currentColor' };
   }
 
-  const { description, name, startTime, locationAddress, themeColor, talks } = data.Event;
-  const { allRsvps } = data;
+  render() {
+    const { id, loadingColor } = this.props;
 
-  const prettyDate = isInFuture(startTime)
-    ? formatFutureDate(startTime)
-    : formatPastDate(startTime);
+    return (
+      <Query query={GET_EVENT_DETAILS} variables={{ event: id }}>
+        {({ data, loading, error }) => {
+          if (loading) return <Loading isCentered color={loadingColor} size="xlarge" />;
 
-  const metaDescription = `${prettyDate} -- ${stripTags(description)}`;
+          if (error) {
+            console.error('Failed to load event', id, error);
+            return <Error message="Something went wrong. Please try again later." />;
+          }
+          if (!data.Event) {
+            return <p>Event not found</p>;
+          }
 
-  return (
-    <>
-      <Meta title={name} description={stripTags(description)}>
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={makeMetaUrl(`/event/${id}`)} />
-        <meta property="og:title" content={name} />
-        <meta property="og:type" content="article" />
-        <meta name="twitter:description" content={metaDescription} />
-      </Meta>
-      <Navbar background={themeColor} />
-      <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
-        <p css={{ fontWeight: 100 }}>{locationAddress}</p>
-        <Html markup={description} />
-      </Hero>
+          const { description, name, startTime, locationAddress, themeColor, talks } = data.Event;
+          const { allRsvps } = data;
 
-      <Container css={{ marginTop: gridSize * 3 }}>
-        <div css={mq({ float: [null, 'right'] })}>
-          <Rsvp event={data.Event} themeColor={themeColor}>
-            {({ message, component }) => component || message}
-          </Rsvp>
-        </div>
-        <H2 hasSeparator css={mq({ marginBottom: '2rem', marginTop: ['2rem', null] })}>
-          Talks
-        </H2>
-        <Talks talks={talks} />
+          const prettyDate = isInFuture(startTime)
+            ? formatFutureDate(startTime)
+            : formatPastDate(startTime);
 
-        <div css={{ textAlign: 'center', marginTop: '3em' }}>
-          <H1 as="h3">{allRsvps.length}</H1>
-          <div css={{ fontSize: fontSizes.md }}>
-            {isInFuture(startTime)
-              ? 'People are attending this meetup'
-              : 'People attended this meetup'}
-          </div>
+          const metaDescription = `${prettyDate} -- ${stripTags(description)}`;
 
-          <div
-            css={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              marginTop: '3em',
-            }}
-          >
-            {allRsvps
-              .filter(rsvp => rsvp.user)
-              .map(rsvp => (
-                <div key={rsvp.id} css={{ marginLeft: '0.25em', marginRight: '0.25em' }}>
-                  <Avatar
-                    alt={`${rsvp.user.name} Avatar`}
-                    name={rsvp.user.name}
-                    src={rsvp.user.image && rsvp.user.image.small}
-                  />
+          return (
+            <>
+              <Meta title={name} description={stripTags(description)}>
+                <meta property="og:description" content={metaDescription} />
+                <meta property="og:url" content={makeMetaUrl(`/event/${id}`)} />
+                <meta property="og:title" content={name} />
+                <meta property="og:type" content="article" />
+                <meta name="twitter:description" content={metaDescription} />
+              </Meta>
+              <Navbar background={themeColor} />
+              <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
+                <p css={{ fontWeight: 100 }}>{locationAddress}</p>
+                <Html markup={description} />
+              </Hero>
+
+              <Container css={{ marginTop: gridSize * 3 }}>
+                <div css={mq({ float: [null, 'right'] })}>
+                  <Rsvp event={data.Event} themeColor={themeColor}>
+                    {({ message, component }) => component || message}
+                  </Rsvp>
                 </div>
-              ))}
-          </div>
-        </div>
-      </Container>
-      <Footer />
-    </>
-  );
-};
+                <H2 hasSeparator css={mq({ marginBottom: '2rem', marginTop: ['2rem', null] })}>
+                  Talks
+                </H2>
+                <Talks talks={talks} />
 
-Event.getInitialProps = ({ query }) => {
-  const { id, hex } = query;
-  return { id, loadingColor: hex ? `#${hex}` : 'currentColor' };
-};
+                <div css={{ textAlign: 'center', marginTop: '3em' }}>
+                  <H1 as="h3">{allRsvps.length}</H1>
+                  <div css={{ fontSize: fontSizes.md }}>
+                    {isInFuture(startTime)
+                      ? 'People are attending this meetup'
+                      : 'People attended this meetup'}
+                  </div>
 
-export default Event;
+                  <div
+                    css={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      marginTop: '3em',
+                    }}
+                  >
+                    {allRsvps
+                      .filter(rsvp => rsvp.user)
+                      .map(rsvp => (
+                        <div key={rsvp.id} css={{ marginLeft: '0.25em', marginRight: '0.25em' }}>
+                          <Avatar
+                            alt={`${rsvp.user.name} Avatar`}
+                            name={rsvp.user.name}
+                            src={rsvp.user.image && rsvp.user.image.small}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </Container>
+              <Footer />
+            </>
+          );
+        }}
+      </Query>
+    );
+  }
+}

@@ -1,4 +1,5 @@
 const path = '/admin/users?fields=_label_%2Cprofile';
+const cuid = require('cuid');
 
 const oembedInputSelector = `#ks-oembed-profile`;
 const oembedPreviewSelector = `#ks-oembed-preview-profile`;
@@ -11,14 +12,15 @@ const saveValue = value => {
   if (value) {
     cy.get(oembedInputSelector).type(value);
   }
+  const alias = cuid.slug();
   // Setup to track XHR requests
   cy.server();
   // Alias the graphql request route
-  cy.route('post', '**/admin/api').as('graphqlPost');
+  cy.route('post', '**/admin/api').as(alias);
   // Avoid accidentally mocking routes
   cy.server({ enable: false });
   cy.get('#item-page-save-button').click({ force: true });
-  cy.wait('@graphqlPost');
+  return cy.wait(`@${alias}`);
 };
 
 describe('OEmbed <Field> view', () => {
@@ -45,6 +47,30 @@ describe('OEmbed <Field> view', () => {
         .should('exist')
         .should('contain', 'Preview will be generated after save')
         .should('contain', 'http://example.com');
+    });
+
+    it('should not send empty string when saving', () => {
+      cy.get(oembedInputSelector).should('have.value', '');
+      // The input is empty now, so just click save again
+      saveValue().then(({ request }) => {
+        // Now we assert on what was sent to the server. It shouldn't have
+        // included the oembed field at all (since nothing changed and the value
+        // is empty string)
+        expect(request.body.variables.data).to.be.an('object');
+        expect(request.body.variables.data).to.not.haveOwnProperty('profile');
+      });
+    });
+
+    it('should send string when saving', () => {
+      cy.get(oembedInputSelector).should('have.value', '');
+      const url = 'http://example.com?ck03eiuef0000tkpf8auu9j9z';
+      saveValue(url).then(({ request }) => {
+        // Now we assert on what was sent to the server. It should have
+        // included the oembed field with the correct value
+        expect(request.body.variables.data).to.be.an('object');
+        expect(request.body.variables.data).to.haveOwnProperty('profile');
+        expect(request.body.variables.data.profile).to.equal(url);
+      });
     });
   });
 

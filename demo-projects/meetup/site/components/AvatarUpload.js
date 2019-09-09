@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from 'react-apollo-hooks';
 import { useToasts } from 'react-toast-notifications';
 import { Avatar } from './Avatar';
 
@@ -11,7 +11,7 @@ const validImageTypes = 'image/gif, image/jpeg, image/jpg, image/png';
 
 export const AvatarUpload = ({ userId, size }) => {
   const [loadingImage, setLoadingImage] = useState(false);
-  const [updateAvatar] = useMutation(UPDATE_AVATAR);
+  const updateAvatar = useMutation(UPDATE_AVATAR);
   const { data, loading } = useQuery(USER, { variables: { userId } });
   const { addToast } = useToasts();
   if (loading) return null;

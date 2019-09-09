@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { Component, Fragment, useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
@@ -18,38 +18,48 @@ const MAX_IDS_IN_FILTER = 100;
 
 function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
   let path = 'authenticated' + listKey;
-  const { data } = useQuery(gql`
-  query User {
-    ${path} {
-      _label_
-      id
-    }
-  }
-`);
-  if (data && data[path]) {
-    let userId = data[path].id;
-    if (value !== null && (many ? value.some(item => item.id === userId) : value.id === userId)) {
-      return null;
-    }
-    let label = `${many ? 'Add' : 'Set as'} ${data[path]._label_}`;
-    return (
-      <Tooltip placement="top" content={label}>
-        {ref => (
-          <IconButton
-            css={{ marginLeft: gridSize }}
-            variant="ghost"
-            ref={ref}
-            onClick={() => {
-              onAddUser(data[path]);
-            }}
-            icon={PersonIcon}
-            aria-label={label}
-          />
-        )}
-      </Tooltip>
-    );
-  }
-  return null;
+  return (
+    <Query
+      query={gql`
+        query User {
+          ${path} {
+            _label_
+            id
+          }
+        }
+      `}
+    >
+      {({ data }) => {
+        if (data && data[path]) {
+          let userId = data[path].id;
+          if (
+            value !== null &&
+            (many ? value.some(item => item.id === userId) : value.id === userId)
+          ) {
+            return null;
+          }
+          let label = `${many ? 'Add' : 'Set as'} ${data[path]._label_}`;
+          return (
+            <Tooltip placement="top" content={label}>
+              {ref => (
+                <IconButton
+                  css={{ marginLeft: gridSize }}
+                  variant="ghost"
+                  ref={ref}
+                  onClick={() => {
+                    onAddUser(data[path]);
+                  }}
+                  icon={PersonIcon}
+                  aria-label={label}
+                />
+              )}
+            </Tooltip>
+          );
+        }
+        return null;
+      }}
+    </Query>
+  );
 }
 
 function LinkToRelatedItems({ field, value }) {
