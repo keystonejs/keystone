@@ -75,13 +75,13 @@ const parseAccess = ({
   // Check that none of the schemaNames match the accessTypes
   if (intersection(schemaNames, accessTypes).length > 0) {
     throw new Error(
-      `Invalid schemaNames: ${JSON.stringify(intersection(schemaNames, accessTypes))}`
+      `${JSON.stringify(intersection(schemaNames, accessTypes))} are reserved words and cannot be used as schema names.`
     );
   }
 
-  const N = intersection(Object.keys(access), schemaNames).length;
+  const providedNameCount = intersection(Object.keys(access), schemaNames).length;
   const type = getType(access);
-  if (type === 'Object' && N === Object.keys(access).length) {
+  if (type === 'Object' && providedNameCount === Object.keys(access).length) {
     // If all the keys are in schemaNames, parse each on their own
     return schemaNames.reduce(
       (acc, schemaName) => ({
@@ -96,7 +96,7 @@ const parseAccess = ({
       }),
       {}
     );
-  } else if (type === 'Object' && N > 0) {
+  } else if (type === 'Object' && providedNameCount > 0) {
     // If some are in, and some are out, throw an error!
     throw new Error(
       `Invalid schema names: ${JSON.stringify(
