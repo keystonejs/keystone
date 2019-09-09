@@ -6,29 +6,24 @@ const { NuxtApp } = require('@keystone-alpha/app-nuxt');
 
 const nuxtConfig = {
   srcDir: 'src',
-  buildDir: 'dist'
+  buildDir: 'dist',
 };
 
-const {
-  MongooseAdapter: Adapter
-} = require('@keystone-alpha/adapter-mongoose');
+const { MongooseAdapter: Adapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'nuxt-app',
-  adapter: new Adapter()
+  adapter: new Adapter(),
 });
 
-keystone.createList('List', {
+keystone.createList('Todo', {
+  schemaDoc: 'A list of things which need to be done',
   fields: {
-    text: { type: Text }
-  }
+    name: { type: Text, schemaDoc: 'This is the thing you need to do' },
+  },
 });
 
 module.exports = {
   keystone,
-  apps: [
-    new GraphQLApp(),
-    new AdminUIApp(),
-    new NuxtApp(nuxtConfig)
-  ]
+  apps: [new GraphQLApp(), new AdminUIApp(), new NuxtApp(nuxtConfig)],
 };
