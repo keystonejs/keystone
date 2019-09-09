@@ -215,10 +215,11 @@ module.exports = class List {
     this.adapter = adapter.newListAdapter(this.key, adapterConfig);
 
     this.access = parseListAccess({
+      schemaNames: ['public'],
       listKey: key,
       access,
       defaultAccess: this.defaultAccess.list,
-    });
+    })['public'];
 
     this.queryLimits = {
       maxResults: Infinity,

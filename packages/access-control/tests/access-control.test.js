@@ -12,32 +12,37 @@ describe('Access control package tests', () => {
     const where = { name: 'foo' }; // GraphQLWhere
     const whereFn = () => where; // (AccessInput => GraphQLWhere)
     const declaratives = [where, whereFn]; // type DeclarativeAccess = GraphQLWhere | (AccessInput => GraphQLWhere);
+    const schemaNames = ['public'];
 
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
-        expect(parseListAccess({ defaultAccess })).toEqual({
-          create: defaultAccess,
-          read: defaultAccess,
-          update: defaultAccess,
-          delete: defaultAccess,
+        expect(parseListAccess({ defaultAccess, schemaNames })).toEqual({
+          public: {
+            create: defaultAccess,
+            read: defaultAccess,
+            update: defaultAccess,
+            delete: defaultAccess,
+          },
         });
       });
     });
 
     test('Non-function declaratives and other misc values are not value inputs for defaultAccess', () => {
       [{ read: where }, 10].forEach(defaultAccess => {
-        expect(() => parseListAccess({ defaultAccess })).toThrow(Error);
+        expect(() => parseListAccess({ defaultAccess, schemaNames })).toThrow(Error);
       });
     });
 
     test('StaticAccess | ImperativeAccess are valid access modes, and should override the defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(access => {
-          expect(parseListAccess({ defaultAccess, access })).toEqual({
-            create: access,
-            read: access,
-            update: access,
-            delete: access,
+          expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+            public: {
+              create: access,
+              read: access,
+              update: access,
+              delete: access,
+            },
           });
         });
       });
@@ -49,19 +54,23 @@ describe('Access control package tests', () => {
         ['read', 'update', 'delete'].forEach(operation => {
           [...statics, ...imperatives, ...declaratives].forEach(opAccess => {
             const access = { [operation]: opAccess };
-            expect(parseListAccess({ defaultAccess, access })).toEqual({
-              create: defaultAccess,
-              read: defaultAccess,
-              update: defaultAccess,
-              delete: defaultAccess,
-              // Override the specific operation we are trying
-              ...{ [operation]: opAccess },
+            expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+              public: {
+                create: defaultAccess,
+                read: defaultAccess,
+                update: defaultAccess,
+                delete: defaultAccess,
+                // Override the specific operation we are trying
+                ...{ [operation]: opAccess },
+              },
             });
           });
         });
 
         // Misc values are not valid per-operation access modes
-        expect(() => parseListAccess({ defaultAccess, access: { read: 10 } })).toThrow(Error);
+        expect(() => parseListAccess({ defaultAccess, access: { read: 10 }, schemaNames })).toThrow(
+          Error
+        );
       });
     });
 
@@ -69,55 +78,85 @@ describe('Access control package tests', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(opAccess => {
           const access = { create: opAccess };
-          expect(parseListAccess({ defaultAccess, access })).toEqual({
-            create: opAccess,
-            read: defaultAccess,
-            update: defaultAccess,
-            delete: defaultAccess,
+          expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+            public: {
+              create: opAccess,
+              read: defaultAccess,
+              update: defaultAccess,
+              delete: defaultAccess,
+            },
           });
         });
 
         // DeclarativeAccess | Misc values are not valid per-operation access modes (create)
         [where, 10].forEach(opAccess => {
-          expect(() => parseListAccess({ defaultAccess, access: { create: opAccess } })).toThrow(
-            Error
-          );
+          expect(() =>
+            parseListAccess({ defaultAccess, access: { create: opAccess }, schemaNames })
+          ).toThrow(Error);
         });
       });
     });
 
     test('access as an object with bad fields or bad type', () => {
-      expect(() => parseListAccess({ access: { a: 1 } })).toThrow(Error);
-      expect(() => parseListAccess({ access: 10 })).toThrow(Error);
+      expect(() => parseListAccess({ access: { a: 1 }, schemaNames })).toThrow(Error);
+      expect(() => parseListAccess({ access: 10, schemaNames })).toThrow(Error);
+    });
+
+    test('Schema names which match access types should throw', () => {
+      expect(() => parseListAccess({ access: true, schemaNames: ['public', 'read'] })).toThrow(
+        Error
+      );
+    });
+
+    test('Schema names matching the access keys', () => {
+      const schemaNames = ['public', 'internal'];
+      const access = { public: true };
+      const defaultAccess = false;
+      expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+        public: { create: true, read: true, update: true, delete: true },
+        internal: { create: false, read: false, update: false, delete: false },
+      });
+    });
+
+    test('Access keys which dont match the schema keys should throw', () => {
+      const schemaNames = ['public', 'internal'];
+      const access = { public: true, missing: false };
+      const defaultAccess = false;
+      expect(() => parseListAccess({ defaultAccess, access, schemaNames })).toThrow(Error);
     });
   });
 
   describe('parseFieldAccess', () => {
     const statics = [true, false]; // type StaticAccess = boolean;
     const imperatives = [() => true, () => false]; // type ImperativeAccess = AccessInput => boolean;
+    const schemaNames = ['public'];
 
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
-        expect(parseFieldAccess({ defaultAccess })).toEqual({
-          create: defaultAccess,
-          read: defaultAccess,
-          update: defaultAccess,
+        expect(parseFieldAccess({ defaultAccess, schemaNames })).toEqual({
+          public: {
+            create: defaultAccess,
+            read: defaultAccess,
+            update: defaultAccess,
+          },
         });
       });
     });
 
     test('Objects and other misc values are not value inputs for defaultAccess', () => {
       [{ a: 1 }, 10].forEach(defaultAccess => {
-        expect(() => parseListAccess({ defaultAccess })).toThrow(Error);
+        expect(() => parseListAccess({ defaultAccess, schemaNames })).toThrow(Error);
       });
     });
     test('StaticAccess | ImperativeAccess are valid access modes, and should override the defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(access => {
-          expect(parseFieldAccess({ defaultAccess, access })).toEqual({
-            create: access,
-            read: access,
-            update: access,
+          expect(parseFieldAccess({ defaultAccess, access, schemaNames })).toEqual({
+            public: {
+              create: access,
+              read: access,
+              update: access,
+            },
           });
         });
       });
@@ -128,26 +167,28 @@ describe('Access control package tests', () => {
         ['create', 'read', 'update'].forEach(operation => {
           [...statics, ...imperatives].forEach(opAccess => {
             const access = { [operation]: opAccess };
-            expect(parseFieldAccess({ defaultAccess, access })).toEqual({
-              create: defaultAccess,
-              read: defaultAccess,
-              update: defaultAccess,
-              // Override the specific operation we are trying
-              ...{ [operation]: opAccess },
+            expect(parseFieldAccess({ defaultAccess, access, schemaNames })).toEqual({
+              public: {
+                create: defaultAccess,
+                read: defaultAccess,
+                update: defaultAccess,
+                // Override the specific operation we are trying
+                ...{ [operation]: opAccess },
+              },
             });
           });
 
           // Misc values are not valid per-operation access modes
-          expect(() => parseFieldAccess({ defaultAccess, access: { [operation]: 10 } })).toThrow(
-            Error
-          );
+          expect(() =>
+            parseFieldAccess({ defaultAccess, access: { [operation]: 10 }, schemaNames })
+          ).toThrow(Error);
         });
       });
     });
 
     test('Misc', () => {
-      expect(() => parseFieldAccess({ access: { a: 1 } })).toThrow(Error);
-      expect(() => parseFieldAccess({ access: 10 })).toThrow(Error);
+      expect(() => parseFieldAccess({ access: { a: 1 }, schemaNames })).toThrow(Error);
+      expect(() => parseFieldAccess({ access: 10, schemaNames })).toThrow(Error);
     });
   });
 

@@ -30,11 +30,12 @@ class Field {
     this.isRelationship = false;
 
     this.access = parseFieldAccess({
+      schemaNames: ['public'],
       listKey,
       fieldKey: path,
       defaultAccess,
       access: access,
-    });
+    })['public'];
   }
 
   // Field types should replace this if they want to any fields to the output type
