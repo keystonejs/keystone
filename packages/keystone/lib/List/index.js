@@ -330,18 +330,12 @@ module.exports = class List {
     };
   }
 
-  getGqlTypes({ skipAccessControl = false } = {}) {
+  getGqlTypes() {
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
     const types = [];
-    if (
-      skipAccessControl ||
-      this.access.read ||
-      this.access.create ||
-      this.access.update ||
-      this.access.delete
-    ) {
+    if (this.access.read || this.access.create || this.access.update || this.access.delete) {
       types.push(
-        ...flatten(this.fields.map(field => field.getGqlAuxTypes({ skipAccessControl }))),
+        ...flatten(this.fields.map(field => field.getGqlAuxTypes())),
         `
         """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
@@ -355,7 +349,7 @@ module.exports = class List {
           _label_: String
           ${flatten(
             this.fields
-              .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
+              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
               .map(field =>
                 field.schemaDoc
                   ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields}`
@@ -371,7 +365,7 @@ module.exports = class List {
 
           ${flatten(
             this.fields
-              .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
+              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
               .map(field => field.gqlQueryInputFields)
           ).join('\n')}
         }`,
@@ -383,13 +377,13 @@ module.exports = class List {
       );
     }
 
-    if (skipAccessControl || this.access.update) {
+    if (this.access.update) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
           ${flatten(
             this.fields
               .filter(({ path }) => path !== 'id') // Exclude the id fields update types
-              .filter(field => skipAccessControl || field.access.update) // If it's globally set to false, makes sense to never let it be updated
+              .filter(field => field.access.update) // If it's globally set to false, makes sense to never let it be updated
               .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
         }
@@ -402,13 +396,13 @@ module.exports = class List {
       `);
     }
 
-    if (skipAccessControl || this.access.create) {
+    if (this.access.create) {
       types.push(`
         input ${this.gqlNames.createInputName} {
           ${flatten(
             this.fields
               .filter(({ path }) => path !== 'id') // Exclude the id fields create types
-              .filter(field => skipAccessControl || field.access.create) // If it's globally set to false, makes sense to never let it be created
+              .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
         }
@@ -455,15 +449,13 @@ module.exports = class List {
     ];
   }
 
-  getGqlQueries({ skipAccessControl = false } = {}) {
+  getGqlQueries() {
     // All the auxiliary queries the fields want to add
-    const queries = flatten(
-      this.fields.map(field => field.getGqlAuxQueries({ skipAccessControl }))
-    );
+    const queries = flatten(this.fields.map(field => field.getGqlAuxQueries()));
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
-    if (skipAccessControl || this.access.read) {
+    if (this.access.read) {
       queries.push(
         `
         """ Search for all ${this.gqlNames.outputTypeName} items which match the where clause. """
@@ -580,14 +572,12 @@ module.exports = class List {
     return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
   }
 
-  getGqlMutations({ skipAccessControl = false } = {}) {
-    const mutations = flatten(
-      this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
-    );
+  getGqlMutations() {
+    const mutations = flatten(this.fields.map(field => field.getGqlAuxMutations()));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
-    if (skipAccessControl || this.access.create) {
+    if (this.access.create) {
       mutations.push(`
         """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
@@ -603,7 +593,7 @@ module.exports = class List {
       `);
     }
 
-    if (skipAccessControl || this.access.update) {
+    if (this.access.update) {
       mutations.push(`
       """ Update a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.updateMutationName}(
@@ -620,7 +610,7 @@ module.exports = class List {
       `);
     }
 
-    if (skipAccessControl || this.access.delete) {
+    if (this.access.delete) {
       mutations.push(`
         """ Delete a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.deleteMutationName}(

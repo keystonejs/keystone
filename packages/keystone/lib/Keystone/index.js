@@ -278,7 +278,7 @@ module.exports = class Keystone {
     return { lists, name: this.name };
   }
 
-  getTypeDefs({ skipAccessControl = false } = {}) {
+  getTypeDefs() {
     // Aux lists are only there for typing and internal operations, they should
     // not have any GraphQL operations performed on them
     const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
@@ -289,7 +289,7 @@ module.exports = class Keystone {
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ skipAccessControl })))),
+      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes()))),
       ...unique(this._extendedTypes),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
@@ -351,7 +351,7 @@ module.exports = class Keystone {
       `type Query {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlQueries({ skipAccessControl })),
+              ...firstClassLists.map(list => list.getGqlQueries()),
               this._extendedQueries.map(({ schema }) => schema),
             ])
           ).join('\n')}
@@ -361,7 +361,7 @@ module.exports = class Keystone {
       `type Mutation {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlMutations({ skipAccessControl })),
+              ...firstClassLists.map(list => list.getGqlMutations()),
               this._extendedMutations.map(({ schema }) => schema),
             ])
           ).join('\n')}
@@ -495,7 +495,7 @@ module.exports = class Keystone {
     // reinsert it.
     const schema = `
       scalar Upload
-      ${this.getTypeDefs({ skipAccessControl: true }).join('\n')}
+      ${this.getTypeDefs().join('\n')}
     `;
     fs.writeFileSync(file, schema);
   }
