@@ -5,7 +5,7 @@ title: GraphQL
 
 # Introduction to the GraphQL API
 
-_Before you begin:_ This guide assumes you have running instance of Keystone with the GraphQL App configured, and a list with some data to query.
+_Before you begin:_ This guide assumes you have running instance of Keystone with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
 
 Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any Keystone list.
 
@@ -26,11 +26,11 @@ Keystone would generate the following queries:
 - `allUsers`
 - `_allUsersMeta`
 - `User`
-- `_UserMeta`
+- `_UsersMeta`
 
 ### allUsers
 
-Retrieves all items from the user list. The `allUsers` queries accept a set standard list of query arguments that allow you to search, limit and filter results. See: [Search and Filtering](#search-and-filtering).
+Retrieves all items from the user list. The `allUsers` query also allows you to search, limit and filter results. See: [Search and Filtering](#search-and-filtering).
 
 #### Usage
 
@@ -44,7 +44,7 @@ query {
 
 ### \_allUsersMeta
 
-Retrieves all items meta for the user list. Currently used to return a count of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [search and filtering](#search-and-filtering) parameters as the `allUsers` query.
+Retrieves meta information about items in the user list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [search and filtering](#search-and-filtering) parameters as the `allUsers` query.
 
 #### Usage
 
@@ -58,7 +58,7 @@ query {
 
 ### User
 
-Retrieves a single item from the User list. The single entity query accepts a where parameter which must have provide an id.
+Retrieves a single item from the User list. The single entity query accepts a where parameter which must provide an id.
 
 #### Usage
 
@@ -70,9 +70,9 @@ query {
 }
 ```
 
-### \_UserMeta
+### \_UsersMeta
 
-Unlike `_allUsersMeta` this returns metadata relating to the list such as access control information. This query accepts no parameters.
+Retrieves meta information about the user list itself (ie; not about items in the list) such as access control information. This query accepts no parameters.
 
 ## Mutations
 
@@ -115,7 +115,7 @@ mutation {
 
 ### updateUser
 
-Update a User by ID. Accepts an `id` parameter that should match the id of a user item. The object should contain keys matching the field definition of the list. Only keys that you wish to update need to be provided.
+Update a User by ID. Accepts an `id` parameter that should match the id of a user item. The object should contain keys matching the field definition of the list. `updateUser` performs a _partial update_, meaning only keys that you wish to update need to be provided.
 
 #### Usage
 
@@ -163,7 +163,7 @@ mutation {
 
 Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/). The default path for Keystone's GraphQl Playground is `http://localhost:3000/admin/graphql`. Here you can execute queries and mutations against the Keystone API without writing any JavaScript.
 
-Once you have determined the correct query or mutation, you can add this to a front-end application. To do this you will need to submit a `POST` request to Keystone's API. The default API endpoint is: `http://localhost:3000/admin/api`.
+Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to Keystone's API. The default API endpoint is: `http://localhost:3000/admin/api`.
 
 In our examples we're going to use the browser's [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) for older browsers you may need to polyfill this or use a library like [axios](https://github.com/axios/axios).
 
@@ -226,13 +226,13 @@ fetch('/admin/api', {
 
 ## Executing Queries and Mutations on the Server
 
-In addition to executing queries via the API, you can execute queries and mutations on the server using the `keystone.executeQuery` method.
+In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](https://v5.keystonejs.com/keystone-alpha/keystone/#executequeryquerystring-config).
 
 **Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`.
 
 See: [Keystone executeQuery()](https://v5.keystonejs.com/keystone-alpha/keystone/#executequeryquerystring-config)
 
-## Search and Filtering
+## Filter, Limit and Sorting
 
 When executing queries and mutations there are a number of ways you can filter, limit and sort items. These include:
 
@@ -250,7 +250,7 @@ The options available in a where clause depend on the field types.
 
 ```gql
 query {
-  allUsers (where: { id_starts_with_i: 'A'} ) {
+  allUsers (where: { name_starts_with_i: 'A'} ) {
     id
   }
 }
@@ -323,11 +323,11 @@ query {
 
 #### `orderBy`
 
-Order results. The orderBy string should match a field name in the List.
+Order results. The orderBy string should match the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
 
 ```gql
 query {
-  allUsers(orderBy: "name") {
+  allUsers(orderBy: "name_DESC") {
     id
   }
 }
@@ -363,7 +363,7 @@ If the value of `skip` is greater than the number of available results, zero res
 
 ## Custom queries and Mutations
 
-You can add to the keystones generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema` method.
+You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
 
 ### Usage
 
