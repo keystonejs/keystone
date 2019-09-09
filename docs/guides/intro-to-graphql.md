@@ -165,7 +165,7 @@ Before you begin writing application code, a great place test queries and mutati
 
 Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to Keystone's API. The default API endpoint is: `http://localhost:3000/admin/api`.
 
-In our examples we're going to use the browser's [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) for older browsers you may need to polyfill this or use a library like [axios](https://github.com/axios/axios).
+In our examples we're going to use the browser's [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make a `POST` request.
 
 First of all let's save a simple query in a variable:
 
