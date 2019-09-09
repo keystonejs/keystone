@@ -54,10 +54,6 @@ class Field {
    *
    * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
-   *
-   * @param options Object skipAccessControl: will be true when the types
-   * should include those that otherwise would be excluded due to access control
-   * checks.
    */
   getGqlAuxTypes() {
     return [];
@@ -66,11 +62,6 @@ class Field {
     return {};
   }
 
-  /**
-   * @param options Object skipAccessControl: will be true when the types
-   * should include those that otherwise would be excluded due to access control
-   * checks.
-   */
   getGqlAuxQueries() {
     return [];
   }
@@ -78,11 +69,6 @@ class Field {
     return {};
   }
 
-  /**
-   * @param options Object skipAccessControl: will be true when the types
-   * should include those that otherwise would be excluded due to access control
-   * checks.
-   */
   getGqlAuxMutations() {
     return [];
   }
