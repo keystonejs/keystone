@@ -36,30 +36,11 @@ module.exports = {
 
 ## Config
 
-| Option         | Type     | Default                               | Description                               |
-| -------------- | -------- | ------------------------------------- | ----------------------------------------- |
-| `cors`         | `Object` | `{ origin: true, credentials: true }` | Used to enable cors                       |
-| `apiPath`      | `String` | `/admin/api`                          | Change the API path                       |
-| `graphiqlPath` | `String` | `/admin/graphiql`                     | Change the Apollo GraphQL playground path |
-| `schemaName`   | `String` | `admin`                               | Change the graphQL schema name            |
-| `apollo`       | `Object` | `{}`                                  | Options passed directly to Apollo Server  |
-
-### `cors`
-
-Options passed directly to the express [cors](https://github.com/expressjs/cors) middleware package.
-
-### `apiPath`
-
-Used to change the default API path.
-
-### `graphiqlPath`
-
-Used to change the default Apollo GraphQL playground path.
-
-#### `schemaName`
-
-Change the default graphQL `schemaName` (not recommended).
-
-#### `apollo`
-
-Options object passed to the [ApolloServer](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#apolloserver) constructor.
+| Option         | Type     | Default                               | Description                                                                                          |
+| -------------- | -------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `cors`         | `Object` | `{ origin: true, credentials: true }` | Options passed directly to the express [cors](https://github.com/expressjs/cors) middleware package. |
+|  |
+| `apiPath`      | `String` | `/admin/api`                          | Change the API path                                                                                  |
+| `graphiqlPath` | `String` | `/admin/graphiql`                     | Change the Apollo GraphQL playground path                                                            |
+| `schemaName`   | `String` | `admin`                               | Change the graphQL schema name (not recommended)                                                     |
+| `apollo`       | `Object` | `{}`                                  | Options passed directly to Apollo Server                                                             |

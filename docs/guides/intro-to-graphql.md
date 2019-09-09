@@ -167,7 +167,7 @@ Once you have determined the correct query or mutation, you can add this to your
 
 In our examples we're going to use the browser's [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make a `POST` request.
 
-First of all let's save a simple query in a variable:
+We're going to write a query and store it in a variable named `GET_ALL_USERS`. Once you have a query you can execute this query using a `POST` request:
 
 ```javascript
 const GET_ALL_USERS = `
@@ -177,11 +177,7 @@ query GetUsers {
     id
   }
 }`;
-```
 
-We can then execute this query using a `POST` request:
-
-```javascript
 fetch('/admin/api', {
   method: 'POST',
   headers: {
@@ -195,7 +191,7 @@ fetch('/admin/api', {
 
 The result should contain a `JSON` payload with the results from the query.
 
-Executing mutations is the same, however we need to pass variables along with the mutation:
+Executing mutations is the same, however we need to pass variables along with the mutation. The key for mutations in the post request is still `query`. Let's write a mutation called `ADD_USER`, and pass a `variables` object along with the mutation in the `POST` request:
 
 ```javascript
 const ADD_USER = `
@@ -205,11 +201,7 @@ mutation AddUser($name: String!) {
     id
   }
 }`;
-```
 
-The key for mutations is still `query`:
-
-```javascript
 fetch('/admin/api', {
   method: 'POST',
   headers: {
@@ -222,15 +214,15 @@ fetch('/admin/api', {
 }).then(result => result.json());
 ```
 
-**Note:** Queries via the API will enforce [Access Control](https://v5.keystonejs.com/api/access-control).
+A good next step is to write an `executeQuery` function that accepts a query and variables and returns the results from the API. Take a look at the `todo` sample application in the `cli` for examples of this.
+
+**Note:** If you have configured [Access Control](https://v5.keystonejs.com/api/access-control) it can effect the result of some queries.
 
 ## Executing Queries and Mutations on the Server
 
 In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](https://v5.keystonejs.com/keystone-alpha/keystone/#executequeryquerystring-config).
 
-**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`.
-
-See: [Keystone executeQuery()](https://v5.keystonejs.com/keystone-alpha/keystone/#executequeryquerystring-config)
+**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](https://v5.keystonejs.com/keystone-alpha/keystone/#executequeryquerystring-config)
 
 ## Filter, Limit and Sorting
 
@@ -255,6 +247,8 @@ query {
   }
 }
 ```
+
+**Note**: The documentation in the GraphQL Playground provides a complete reference of filters for any field type in your application.
 
 ##### Relationship `where` filters
 
@@ -309,6 +303,21 @@ You can combine multiple where clauses with `AND` or `OR` operators.
 - `AND`: [whereInput]
 - `OR`: [whereInput]
 
+##### Usage
+
+```gql
+query {
+  allUsers (where: {
+    OR: [
+      { name_starts_with_i: 'A' },
+      { email_starts_with_i: 'A' },
+    ]
+  } ) {
+    id
+  }
+}
+```
+
 #### `search`
 
 Will search the list to limit results.
@@ -349,6 +358,10 @@ query {
 
 #### `skip`
 
+Skip the number of results specified. Is applied before `first` parameter, but after `orderBy`, `where` and `search` values.
+
+If the value of `skip` is greater than the number of available results, zero results will be returned.
+
 ```gql
 query {
   allUsers(skip: 10) {
@@ -356,10 +369,6 @@ query {
   }
 }
 ```
-
-Skip the number of results specified. Is applied before `first` parameter, but after `orderBy`, `where` and `search` values.
-
-If the value of `skip` is greater than the number of available results, zero results will be returned.
 
 ## Custom queries and Mutations
 
