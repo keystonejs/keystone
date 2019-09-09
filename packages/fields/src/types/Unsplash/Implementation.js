@@ -154,7 +154,7 @@ export class Unsplash extends Implementation {
     ];
   }
 
-  get gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers() {
     return {
       searchUnsplash: async (_, { query, page, perPage, orientation, collections }) => {
         const { total, total_pages, results } = await this.unsplash

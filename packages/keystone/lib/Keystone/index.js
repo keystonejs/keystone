@@ -44,6 +44,7 @@ module.exports = class Keystone {
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
+    schemaNames,
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -58,6 +59,7 @@ module.exports = class Keystone {
     this._graphQLQuery = {};
     this._cookieSecret = cookieSecret;
     this._sessionStore = sessionStore;
+    this._schemaNames = schemaNames;
     this.registeredTypes = new Set();
     this.eventHandlers = { onConnect };
 
@@ -221,6 +223,7 @@ module.exports = class Keystone {
         }
         return this.createList(auxKey, auxConfig, { isAuxList: true });
       },
+      schemaNames: this._schemaNames,
     });
     this.lists[key] = list;
     this.listsArray.push(list);
@@ -278,7 +281,7 @@ module.exports = class Keystone {
     return { lists, name: this.name };
   }
 
-  getTypeDefs() {
+  getTypeDefs({ schemaName }) {
     // Aux lists are only there for typing and internal operations, they should
     // not have any GraphQL operations performed on them
     const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
@@ -289,8 +292,8 @@ module.exports = class Keystone {
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes()))),
-      ...unique(this._extendedTypes),
+      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ schemaName })))),
+      ...unique(this._extendedTypes), // FIXME: f(schemaName)
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -351,8 +354,8 @@ module.exports = class Keystone {
       `type Query {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlQueries()),
-              this._extendedQueries.map(({ schema }) => schema),
+              ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
+              this._extendedQueries.map(({ schema }) => schema), // FIXME: f(schemaName)
             ])
           ).join('\n')}
           """ Retrieve the meta-data for all lists. """
@@ -361,8 +364,8 @@ module.exports = class Keystone {
       `type Mutation {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlMutations()),
-              this._extendedMutations.map(({ schema }) => schema),
+              ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
+              this._extendedMutations.map(({ schema }) => schema), // FIXME: f(schemaName)
             ])
           ).join('\n')}
        }`,
@@ -377,8 +380,8 @@ module.exports = class Keystone {
       graphql(schema, query, null, context, variables);
   }
 
-  getAdminSchema() {
-    const typeDefs = this.getTypeDefs();
+  getAdminSchema({ schemaName }) {
+    const typeDefs = this.getTypeDefs({ schemaName });
     if (debugGraphQLSchemas()) {
       typeDefs.forEach(i => console.log(i));
     }
@@ -445,8 +448,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
-      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
+      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers({ schemaName }))),
 
       JSON: GraphQLJSON,
 
@@ -458,18 +461,20 @@ module.exports = class Keystone {
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers)),
-        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers)),
-        // And the Keystone meta queries must always be available
+        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers({ schemaName }))),
+        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
+        // And the Keystone meta queries must always(?) be available
         _ksListsMeta: (_, args, context) =>
-          this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
-        ...objMerge(this._extendedQueries.map(customResolver)),
+          this.listsArray
+            .filter(list => list._getSchemaAccess({ schemaName }).read)
+            .map(list => list.listMeta(context)),
+        ...objMerge(this._extendedQueries.map(customResolver)), // FIXME: f(schemaName)
       },
 
       Mutation: {
-        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers)),
-        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers)),
-        ...objMerge(this._extendedMutations.map(customResolver)),
+        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers({ schemaName }))),
+        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
+        ...objMerge(this._extendedMutations.map(customResolver)), // FIXME: f(schemaName)
       },
     };
 
@@ -488,14 +493,14 @@ module.exports = class Keystone {
     };
   }
 
-  dumpSchema(file) {
+  dumpSchema(file, schemaName) {
     // The 'Upload' scalar is normally automagically added by Apollo Server
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
     // Since we don't execute apollo server over this schema, we have to
     // reinsert it.
     const schema = `
       scalar Upload
-      ${this.getTypeDefs().join('\n')}
+      ${this.getTypeDefs({ schemaName }).join('\n')}
     `;
     fs.writeFileSync(file, schema);
   }

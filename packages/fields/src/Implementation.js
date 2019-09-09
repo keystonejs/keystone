@@ -5,7 +5,7 @@ class Field {
   constructor(
     path,
     { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
-    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
@@ -35,7 +35,12 @@ class Field {
       fieldKey: path,
       defaultAccess,
       access: access,
-    })['public'];
+      schemaNames,
+    });
+  }
+
+  _getSchemaAccess(/* { schemaName } */) {
+    return this.access; // FIXME
   }
 
   // Field types should replace this if they want to any fields to the output type
@@ -59,21 +64,21 @@ class Field {
   getGqlAuxTypes() {
     return [];
   }
-  get gqlAuxFieldResolvers() {
+  gqlAuxFieldResolvers() {
     return {};
   }
 
   getGqlAuxQueries() {
     return [];
   }
-  get gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers() {
     return {};
   }
 
   getGqlAuxMutations() {
     return [];
   }
-  get gqlAuxMutationResolvers() {
+  gqlAuxMutationResolvers() {
     return {};
   }
 

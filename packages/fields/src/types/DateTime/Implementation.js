@@ -42,7 +42,7 @@ class _DateTime extends Implementation {
       yearPickerType: this.yearPickerType,
     };
   }
-  get gqlAuxFieldResolvers() {
+  gqlAuxFieldResolvers() {
     return {
       DateTime: new GraphQLScalarType({
         name: 'DateTime',

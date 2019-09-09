@@ -226,8 +226,8 @@ export class Content extends Relationship.implementation {
     return [...super.getGqlAuxTypes(...args), ...this.auxList.getGqlTypes(...args)];
   }
 
-  get gqlAuxFieldResolvers() {
-    return this.auxList.gqlFieldResolvers;
+  gqlAuxFieldResolvers({ schemaName }) {
+    return this.auxList.gqlFieldResolvers({ schemaName });
   }
 }
 

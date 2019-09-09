@@ -824,17 +824,17 @@ test('gqlFieldResolvers', () => {
 
 test('gqlAuxFieldResolvers', () => {
   const list = setup();
-  expect(list.gqlAuxFieldResolvers).toEqual({});
+  expect(list.gqlAuxFieldResolvers()).toEqual({});
 });
 
 test('gqlAuxQueryResolvers', () => {
   const list = setup();
-  expect(list.gqlAuxQueryResolvers).toEqual({});
+  expect(list.gqlAuxQueryResolvers()).toEqual({});
 });
 
 test('gqlAuxMutationResolvers', () => {
   const list = setup();
-  expect(list.gqlAuxMutationResolvers).toEqual({});
+  expect(list.gqlAuxMutationResolvers()).toEqual({});
 });
 
 [false, true].forEach(withAuth => {
