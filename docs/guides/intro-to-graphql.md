@@ -222,7 +222,7 @@ fetch('/admin/api', {
 }).then(result => result.json());
 ```
 
-**Note: ** Queries via the API will enforce [Access Control](https://v5.keystonejs.com/api/access-control).
+**Note:** Queries via the API will enforce [Access Control](https://v5.keystonejs.com/api/access-control).
 
 ## Executing Queries and Mutations on the Server
 
