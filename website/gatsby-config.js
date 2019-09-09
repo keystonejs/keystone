@@ -106,7 +106,23 @@ async function getGatsbyConfig() {
       {
         resolve: 'gatsby-plugin-lunr',
         options: {
-          languages: [{ name: 'en' }],
+          languages: [
+            {
+              name: 'en',
+              filterNodes: node => {
+                const { context } = node;
+                const { fields } = node;
+                // I'm not sure why... but we get different types of nodes here
+                if (context || fields) {
+                  // Only only return false if draft is set to true,
+                  // undefined should default to not draft
+                  const draft = (context && context.draft) || (fields && fields.draft) || false;
+                  return Boolean(!draft);
+                }
+                return true;
+              },
+            },
+          ],
           // Fields to index. If store === true value will be stored in index file.
           // Attributes for custom indexing logic. See https://lunrjs.com/docs/lunr.Builder.html for details
           fields: [
