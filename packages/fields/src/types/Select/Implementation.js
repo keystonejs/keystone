@@ -17,10 +17,10 @@ export class Select extends Implementation {
     super(...arguments);
     this.options = initOptions(options);
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
@@ -43,7 +43,7 @@ export class Select extends Implementation {
   extendAdminMeta(meta) {
     return { ...meta, options: this.options };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields(this.getTypeName()),
       ...this.inInputFields(this.getTypeName()),

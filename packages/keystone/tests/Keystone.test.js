@@ -8,10 +8,12 @@ class MockFieldAdapter {}
 class MockFieldImplementation {
   constructor(name) {
     this.access = {
-      create: true,
-      read: true,
-      update: true,
-      delete: true,
+      public: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
     };
     this.config = {};
     this.name = name;
@@ -19,10 +21,10 @@ class MockFieldImplementation {
   getGqlAuxTypes() {
     return ['scalar Foo'];
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return ['foo: Boolean'];
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return ['zip: Boolean'];
   }
   get gqlUpdateInputFields() {

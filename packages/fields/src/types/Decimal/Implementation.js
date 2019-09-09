@@ -9,14 +9,14 @@ export class Decimal extends Implementation {
     this.symbol = symbol;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.orderingInputFields('String'),

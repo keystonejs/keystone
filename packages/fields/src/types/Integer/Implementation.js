@@ -7,14 +7,14 @@ export class Integer extends Implementation {
     super(...arguments);
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: Int`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('Int'),
       ...this.orderingInputFields('Int'),

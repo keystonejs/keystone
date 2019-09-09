@@ -7,13 +7,13 @@ export class Text extends Implementation {
     super(...arguments);
     this.isMultiline = isMultiline;
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),

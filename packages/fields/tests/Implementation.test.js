@@ -46,14 +46,14 @@ test('addToMongooseSchema()', () => {
 
 test('getGqlAuxTypes()', () => {
   const impl = new Field('path', {}, args);
-
-  expect(impl.getGqlAuxTypes()).toEqual([]);
+  const schemaName = 'public';
+  expect(impl.getGqlAuxTypes({ schemaName })).toEqual([]);
 });
 
 test('gqlAuxFieldResolvers', () => {
   const impl = new Field('path', {}, args);
-
-  expect(impl.gqlAuxFieldResolvers).toEqual({});
+  const schemaName = 'public';
+  expect(impl.gqlAuxFieldResolvers({ schemaName })).toEqual({});
 });
 
 test('getGqlAuxQueries()', () => {
@@ -65,7 +65,7 @@ test('getGqlAuxQueries()', () => {
 test('gqlAuxQueryResolvers', () => {
   const impl = new Field('path', {}, args);
 
-  expect(impl.gqlAuxQueryResolvers).toEqual({});
+  expect(impl.gqlAuxQueryResolvers()).toEqual({});
 });
 
 test('getGqlAuxMutations()', () => {
@@ -77,7 +77,7 @@ test('getGqlAuxMutations()', () => {
 test('gqlAuxMutationResolvers', () => {
   const impl = new Field('path', {}, args);
 
-  expect(impl.gqlAuxMutationResolvers).toEqual({});
+  expect(impl.gqlAuxMutationResolvers()).toEqual({});
 });
 
 test('afterChange()', async () => {
@@ -97,8 +97,8 @@ test('resolveInput()', async () => {
 
 test('gqlQueryInputFields', () => {
   const impl = new Field('path', {}, args);
-
-  expect(impl.gqlQueryInputFields).toEqual([]);
+  const schemaName = 'public';
+  expect(impl.gqlQueryInputFields({ schemaName })).toEqual([]);
 });
 
 test('gqlUpdateInputFields', () => {
@@ -109,8 +109,8 @@ test('gqlUpdateInputFields', () => {
 
 test('gqlOutputFieldResolvers', () => {
   const impl = new Field('path', {}, args);
-
-  expect(impl.gqlOutputFieldResolvers).toEqual({});
+  const schemaName = 'public';
+  expect(impl.gqlOutputFieldResolvers({ schemaName })).toEqual({});
 });
 
 describe('getAdminMeta()', () => {

@@ -14,13 +14,13 @@ export class UuidImplementation extends Implementation {
     }
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ID`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [...this.equalityInputFields('ID'), ...this.inInputFields('ID')];
   }
   get gqlUpdateInputFields() {

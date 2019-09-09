@@ -20,10 +20,12 @@ function resolveViewPath(viewPath) {
 class MockFieldImplementation {
   constructor() {
     this.access = {
-      create: false,
-      read: true,
-      update: false,
-      delete: false,
+      public: {
+        create: false,
+        read: true,
+        update: false,
+        delete: false,
+      },
     };
     this.config = {};
     this.hooks = {};
@@ -31,10 +33,10 @@ class MockFieldImplementation {
   getAdminMeta() {
     return { path: 'id' };
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return ['id: ID'];
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return ['id: ID'];
   }
   get gqlUpdateInputFields() {
@@ -52,7 +54,16 @@ class MockFieldImplementation {
   getGqlAuxMutations() {
     return [];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
+    return {};
+  }
+  gqlAuxQueryResolvers() {
+    return {};
+  }
+  gqlAuxMutationResolvers() {
+    return {};
+  }
+  gqlAuxFieldResolvers() {
     return {};
   }
   extendAdminViews(views) {
@@ -175,7 +186,9 @@ const getListByKey = listKey => {
         whereUniqueInputName: 'OtherWhereUniqueInput',
       },
       access: {
-        read: true,
+        public: {
+          read: true,
+        },
       },
     };
   }
@@ -267,10 +280,12 @@ describe('new List()', () => {
   test('new List() - access', () => {
     const list = setup();
     expect(list.access).toEqual({
-      create: true,
-      delete: true,
-      read: true,
-      update: true,
+      public: {
+        create: true,
+        delete: true,
+        read: true,
+        update: true,
+      },
     });
   });
 
@@ -629,10 +644,10 @@ describe('getAdminMeta()', () => {
     }`;
 
     const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
-
+    const schemaName = 'public';
     expect(
       setup({ access: true }, getAuth)
-        .getGqlTypes()
+        .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
       [
@@ -650,7 +665,7 @@ describe('getAdminMeta()', () => {
 
     expect(
       setup({ access: false }, getAuth)
-        .getGqlTypes()
+        .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
       [...(withAuth ? [unauthenticateOutput, authenticateOutput] : [])].map(s => print(gql(s)))
@@ -658,7 +673,7 @@ describe('getAdminMeta()', () => {
 
     expect(
       setup({ access: { read: true, create: false, update: false, delete: false } }, getAuth)
-        .getGqlTypes()
+        .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
       [
@@ -672,7 +687,7 @@ describe('getAdminMeta()', () => {
 
     expect(
       setup({ access: { read: false, create: true, update: false, delete: false } }, getAuth)
-        .getGqlTypes()
+        .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
       [
@@ -687,7 +702,7 @@ describe('getAdminMeta()', () => {
     );
     expect(
       setup({ access: { read: false, create: false, update: true, delete: false } }, getAuth)
-        .getGqlTypes()
+        .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
       [
@@ -702,7 +717,7 @@ describe('getAdminMeta()', () => {
     );
     expect(
       setup({ access: { read: false, create: false, update: false, delete: true } }, getAuth)
-        .getGqlTypes()
+        .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
       [
@@ -730,9 +745,10 @@ test('getGraphqlFilterFragment', () => {
 [false, true].forEach(withAuth => {
   test(`getGqlQueries() ${withAuth ? 'with' : 'without'} auth`, () => {
     const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
+    const schemaName = 'public';
     expect(
       setup({ access: true }, getAuth)
-        .getGqlQueries()
+        .getGqlQueries({ schemaName })
         .map(normalise)
     ).toEqual(
       [
@@ -764,7 +780,7 @@ test('getGraphqlFilterFragment', () => {
 
     expect(
       setup({ access: false }, getAuth)
-        .getGqlQueries()
+        .getGqlQueries({ schemaName })
         .map(normalise)
     ).toEqual(withAuth ? [`authenticatedTest: Test`].map(normalise) : []);
   });
@@ -811,7 +827,8 @@ test('wrapFieldResolverWithAC', () => {
 });
 
 test('gqlFieldResolvers', () => {
-  const resolvers = setup().gqlFieldResolvers;
+  const schemaName = 'public';
+  const resolvers = setup().gqlFieldResolvers({ schemaName });
   expect(resolvers.Test._label_).toBeInstanceOf(Function);
   expect(resolvers.Test.email).toBeInstanceOf(Function);
   expect(resolvers.Test.name).toBeInstanceOf(Function);
@@ -819,31 +836,33 @@ test('gqlFieldResolvers', () => {
   expect(resolvers.Test.writeOnce).toBeInstanceOf(Function);
   expect(resolvers.Test.hidden).toBe(undefined);
 
-  expect(setup({ access: false }).gqlFieldResolvers).toEqual({});
+  expect(setup({ access: false }).gqlFieldResolvers({ schemaName })).toEqual({});
 });
 
 test('gqlAuxFieldResolvers', () => {
   const list = setup();
-  expect(list.gqlAuxFieldResolvers).toEqual({});
+  const schemaName = 'public';
+  expect(list.gqlAuxFieldResolvers({ schemaName })).toEqual({});
 });
 
 test('gqlAuxQueryResolvers', () => {
   const list = setup();
-  expect(list.gqlAuxQueryResolvers).toEqual({});
+  expect(list.gqlAuxQueryResolvers()).toEqual({});
 });
 
 test('gqlAuxMutationResolvers', () => {
   const list = setup();
-  expect(list.gqlAuxMutationResolvers).toEqual({});
+  expect(list.gqlAuxMutationResolvers()).toEqual({});
 });
 
 [false, true].forEach(withAuth => {
   test(`getGqlMutations() ${withAuth ? 'with' : 'without'} auth`, () => {
     const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
     const extraConfig = {};
+    const schemaName = 'public';
     expect(
       setup({ access: true, ...extraConfig }, getAuth)
-        .getGqlMutations()
+        .getGqlMutations({ schemaName })
         .map(normalise)
     ).toEqual(
       [
@@ -864,7 +883,7 @@ test('gqlAuxMutationResolvers', () => {
 
     expect(
       setup({ access: false, ...extraConfig }, getAuth)
-        .getGqlMutations()
+        .getGqlMutations({ schemaName })
         .map(normalise)
     ).toEqual(
       [
@@ -882,7 +901,7 @@ test('gqlAuxMutationResolvers', () => {
         { access: { read: true, create: false, update: false, delete: false }, ...extraConfig },
         getAuth
       )
-        .getGqlMutations()
+        .getGqlMutations({ schemaName })
         .map(normalise)
     ).toEqual(
       [
@@ -899,7 +918,7 @@ test('gqlAuxMutationResolvers', () => {
         { access: { read: false, create: true, update: false, delete: false }, ...extraConfig },
         getAuth
       )
-        .getGqlMutations()
+        .getGqlMutations({ schemaName })
         .map(normalise)
     ).toEqual(
       [
@@ -918,7 +937,7 @@ test('gqlAuxMutationResolvers', () => {
         { access: { read: false, create: false, update: true, delete: false }, ...extraConfig },
         getAuth
       )
-        .getGqlMutations()
+        .getGqlMutations({ schemaName })
         .map(normalise)
     ).toEqual(
       [
@@ -937,7 +956,7 @@ test('gqlAuxMutationResolvers', () => {
         { access: { read: false, create: false, update: false, delete: true }, ...extraConfig },
         getAuth
       )
-        .getGqlMutations()
+        .getGqlMutations({ schemaName })
         .map(normalise)
     ).toEqual(
       [
@@ -1147,7 +1166,8 @@ test('getAccessControlledItems', async () => {
 [false, true].forEach(withAuth => {
   test(`gqlQueryResolvers ${withAuth ? 'with' : 'without'} auth`, () => {
     const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
-    const resolvers = setup({ access: true }, getAuth).gqlQueryResolvers;
+    const schemaName = 'public';
+    const resolvers = setup({ access: true }, getAuth).gqlQueryResolvers({ schemaName });
     expect(resolvers['allTests']).toBeInstanceOf(Function); // listQueryName
     expect(resolvers['_allTestsMeta']).toBeInstanceOf(Function); // listQueryMetaName
     expect(resolvers['_TestsMeta']).toBeInstanceOf(Function); // listMetaName
@@ -1158,7 +1178,7 @@ test('getAccessControlledItems', async () => {
       expect(resolvers['authenticatedTest']).toBe(undefined); // authenticatedQueryName
     }
 
-    const resolvers2 = setup({ access: false }, getAuth).gqlQueryResolvers;
+    const resolvers2 = setup({ access: false }, getAuth).gqlQueryResolvers({ schemaName });
     expect(resolvers2['allTests']).toBe(undefined); // listQueryName
     expect(resolvers2['_allTestsMeta']).toBe(undefined); // listQueryMetaName
     expect(resolvers2['_TestsMeta']).toBe(undefined); // listMetaName
@@ -1250,7 +1270,8 @@ test('authenticatedQuery', async () => {
 [false, true].forEach(withAuth => {
   test(`gqlMutationResolvers ${withAuth ? 'with' : 'without'} auth`, () => {
     const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
-    let resolvers = setup({ access: true }, getAuth).gqlMutationResolvers;
+    const schemaName = 'public';
+    let resolvers = setup({ access: true }, getAuth).gqlMutationResolvers({ schemaName });
     expect(resolvers['createTest']).toBeInstanceOf(Function);
     expect(resolvers['updateTest']).toBeInstanceOf(Function);
     expect(resolvers['deleteTest']).toBeInstanceOf(Function);
@@ -1262,7 +1283,7 @@ test('authenticatedQuery', async () => {
       expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
       expect(resolvers['unauthenticateTest']).toBe(undefined);
     }
-    resolvers = setup({ access: false }, getAuth).gqlMutationResolvers;
+    resolvers = setup({ access: false }, getAuth).gqlMutationResolvers({ schemaName });
     if (withAuth) {
       expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
       expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
@@ -1274,7 +1295,7 @@ test('authenticatedQuery', async () => {
     resolvers = setup(
       { access: { read: true, create: false, update: false, delete: false } },
       getAuth
-    ).gqlMutationResolvers;
+    ).gqlMutationResolvers({ schemaName });
     if (withAuth) {
       expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
       expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
@@ -1286,7 +1307,7 @@ test('authenticatedQuery', async () => {
     resolvers = setup(
       { access: { read: false, create: true, update: false, delete: false } },
       getAuth
-    ).gqlMutationResolvers;
+    ).gqlMutationResolvers({ schemaName });
     expect(resolvers['createTest']).toBeInstanceOf(Function);
     expect(resolvers['updateTest']).toBe(undefined);
     expect(resolvers['deleteTest']).toBe(undefined);
@@ -1302,7 +1323,7 @@ test('authenticatedQuery', async () => {
     resolvers = setup(
       { access: { read: false, create: false, update: true, delete: false } },
       getAuth
-    ).gqlMutationResolvers;
+    ).gqlMutationResolvers({ schemaName });
     expect(resolvers['createTest']).toBe(undefined);
     expect(resolvers['updateTest']).toBeInstanceOf(Function);
     expect(resolvers['deleteTest']).toBe(undefined);
@@ -1318,7 +1339,7 @@ test('authenticatedQuery', async () => {
     resolvers = setup(
       { access: { read: false, create: false, update: false, delete: true } },
       getAuth
-    ).gqlMutationResolvers;
+    ).gqlMutationResolvers({ schemaName });
     expect(resolvers['createTest']).toBe(undefined);
     expect(resolvers['updateTest']).toBe(undefined);
     expect(resolvers['deleteTest']).toBeInstanceOf(Function);

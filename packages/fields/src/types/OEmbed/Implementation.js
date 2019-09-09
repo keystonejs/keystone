@@ -29,11 +29,11 @@ export class OEmbed extends Implementation {
     this.parameters = parameters;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),
@@ -147,7 +147,7 @@ export class OEmbed extends Implementation {
   }
 
   // Called on `User.avatar` for example
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         if (!item[this.path]) {
