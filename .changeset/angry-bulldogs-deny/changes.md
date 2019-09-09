@@ -1,0 +1,1 @@
+Add sample app for nuxt
