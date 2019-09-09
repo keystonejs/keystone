@@ -17,7 +17,6 @@ This quick start guide will get you up and running in just a few minutes. Let's 
 
 ## Requirements
 
-
 Before we start, check that your computer or server meets the following requirements:
 
 - [Node.js](https://nodejs.org/) >= 10.x: Node.js is a server platform which runs JavaScript.
