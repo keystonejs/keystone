@@ -34,10 +34,9 @@ const projects = [
     adapters,
   },
   {
-    folder: 'nuxt-app',
-    title: 'Nuxt App',
-    description:
-      'A simple app using the NuxtJS front-end framework.',
+    folder: 'nuxt',
+    title: 'Nuxt',
+    description: 'A simple app using the NuxtJS front-end framework.',
     adapters,
   },
 ];

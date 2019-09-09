@@ -12,7 +12,7 @@ const nuxtConfig = {
 const { MongooseAdapter: Adapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'nuxt-app',
+  name: 'nuxt',
   adapter: new Adapter(),
 });
 
