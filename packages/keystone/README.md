@@ -146,12 +146,12 @@ Note an error is thrown if no items match the query.
 
 ## prepare(config)
 
-Manually prepare middlewares.
+Manually prepare middlewares. Returns a promise representing the processed middlewares. They are available as an array through the `middlewares` property of the returned object.
 
 ### Usage
 
 ```javascript
-keystone.prepare({
+const { middlewares } = await keystone.prepare({
   apps,
   dev: process.env.NODE_ENV !== 'production',
 });
