@@ -64,7 +64,7 @@ Retrieves a single item from the `User` list. The single entity query accepts a 
 
 ```gql
 query {
-  User(where: { id: ID }) {
+  User(where: { id: $id }) {
     name
   }
 }
