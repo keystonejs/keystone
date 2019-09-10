@@ -7,14 +7,14 @@ export class Float extends Implementation {
     super(...arguments);
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: Float`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('Float'),
       ...this.orderingInputFields('Float'),

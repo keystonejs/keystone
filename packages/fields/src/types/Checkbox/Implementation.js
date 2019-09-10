@@ -7,14 +7,14 @@ export class Checkbox extends Implementation {
     super(...arguments);
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: Boolean`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return this.equalityInputFields('Boolean');
   }
   get gqlUpdateInputFields() {

@@ -14,10 +14,10 @@ class _DateTime extends Implementation {
     this.yearPickerType = yearPickerType;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: DateTime`];
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('DateTime'),
       ...this.orderingInputFields('DateTime'),
@@ -42,7 +42,7 @@ class _DateTime extends Implementation {
       yearPickerType: this.yearPickerType,
     };
   }
-  get gqlAuxFieldResolvers() {
+  gqlAuxFieldResolvers() {
     return {
       DateTime: new GraphQLScalarType({
         name: 'DateTime',
