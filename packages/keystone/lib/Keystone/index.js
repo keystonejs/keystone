@@ -104,7 +104,7 @@ module.exports = class Keystone {
       // request info ( like who's logged in right now, etc)
       getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
         return validateListAccessControl({
-          access: this.lists[listKey].access,
+          access: this.lists[listKey].access['public'],
           originalInput,
           operation,
           authentication: { item: req.user, listKey: req.authedListKey },
@@ -115,7 +115,7 @@ module.exports = class Keystone {
       getFieldAccessControlForUser = fastMemoize(
         (listKey, fieldKey, originalInput, existingItem, operation) => {
           return validateFieldAccessControl({
-            access: this.lists[listKey].fieldsByPath[fieldKey].access,
+            access: this.lists[listKey].fieldsByPath[fieldKey].access['public'],
             originalInput,
             existingItem,
             operation,
@@ -258,6 +258,7 @@ module.exports = class Keystone {
   }
 
   getAdminMeta() {
+    const schemaName = 'public';
     // We've consciously made a design choice that the `read` permission on a
     // list is a master switch in the Admin UI (not the GraphQL API).
     // Justification: If you want to Create without the Read permission, you
@@ -270,7 +271,7 @@ module.exports = class Keystone {
     // In all these cases, the Admin UI becomes unnecessarily complex.
     // So we only allow all these actions if you also have read access.
     const lists = arrayToObject(
-      this.listsArray.filter(list => list.access.read && !list.isAuxList),
+      this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
       'key',
       list => list.getAdminMeta()
     );
@@ -279,6 +280,7 @@ module.exports = class Keystone {
   }
 
   getTypeDefs() {
+    const schemaName = 'public';
     // Aux lists are only there for typing and internal operations, they should
     // not have any GraphQL operations performed on them
     const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
@@ -289,7 +291,7 @@ module.exports = class Keystone {
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes()))),
+      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ schemaName })))),
       ...unique(this._extendedTypes),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
@@ -351,7 +353,7 @@ module.exports = class Keystone {
       `type Query {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlQueries()),
+              ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
               this._extendedQueries.map(({ schema }) => schema),
             ])
           ).join('\n')}
@@ -361,7 +363,7 @@ module.exports = class Keystone {
       `type Mutation {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlMutations()),
+              ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
               this._extendedMutations.map(({ schema }) => schema),
             ])
           ).join('\n')}
@@ -378,6 +380,7 @@ module.exports = class Keystone {
   }
 
   getAdminSchema() {
+    const schemaName = 'public';
     const typeDefs = this.getTypeDefs();
     if (debugGraphQLSchemas()) {
       typeDefs.forEach(i => console.log(i));
@@ -422,8 +425,8 @@ module.exports = class Keystone {
             fields: flatten(
               list
                 .getFieldsRelatedTo(key)
-                .filter(field => field.access.read)
-                .map(field => Object.keys(field.gqlOutputFieldResolvers))
+                .filter(field => field.access[schemaName].read)
+                .map(field => Object.keys(field.gqlOutputFieldResolvers({ schemaName })))
             ),
           }))
           .filter(({ fields }) => fields.length),
@@ -445,8 +448,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
-      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
+      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers({ schemaName }))),
 
       JSON: GraphQLJSON,
 
@@ -458,17 +461,19 @@ module.exports = class Keystone {
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers)),
-        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
+        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
         // And the Keystone meta queries must always be available
         _ksListsMeta: (_, args, context) =>
-          this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
+          this.listsArray
+            .filter(list => list.access[schemaName].read)
+            .map(list => list.listMeta(context)),
         ...objMerge(this._extendedQueries.map(customResolver)),
       },
 
       Mutation: {
-        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers)),
-        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
+        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
         ...objMerge(this._extendedMutations.map(customResolver)),
       },
     };

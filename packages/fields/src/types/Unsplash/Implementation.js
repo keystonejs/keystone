@@ -64,12 +64,12 @@ export class Unsplash extends Implementation {
     });
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
 
   // Filter based on Unsplash Image IDs
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),
@@ -154,7 +154,7 @@ export class Unsplash extends Implementation {
     ];
   }
 
-  get gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers() {
     return {
       searchUnsplash: async (_, { query, page, perPage, orientation, collections }) => {
         const { total, total_pages, results } = await this.unsplash
@@ -207,7 +207,7 @@ export class Unsplash extends Implementation {
   }
 
   // Called on `User.avatar` for example
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];

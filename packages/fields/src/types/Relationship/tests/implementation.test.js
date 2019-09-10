@@ -35,10 +35,12 @@ class MockList {
       relateToOneInputName: `${ref}RelateToOneInput`,
     };
     this.access = {
-      create: true,
-      read: true,
-      update: true,
-      delete: true,
+      public: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
     };
   }
   // The actual implementation in `@keystone-alpha/keystone/List/index.js` returns
@@ -90,9 +92,9 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-
+    const schemaName = 'public';
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.getGqlAuxTypes().join('\n'))).toMatchObject({
+    expect(gql(relationship.getGqlAuxTypes({ schemaName }).join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
@@ -155,9 +157,9 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-
+    const schemaName = 'public';
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.getGqlAuxTypes().join('\n'))).toMatchObject({
+    expect(gql(relationship.getGqlAuxTypes({ schemaName }).join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
@@ -226,7 +228,7 @@ describe('Type Generation', () => {
 
   test('to-single relationships cannot be filtered at the field level', () => {
     const path = 'foo';
-
+    const schemaName = 'public';
     const relationship = createRelationship({
       path,
       config: { many: false, ref: 'Zip' },
@@ -235,7 +237,7 @@ describe('Type Generation', () => {
     // Wrap it in a mock type because all we get back is the fields
     const fieldSchema = `
       type MockType {
-        ${relationship.gqlOutputFields.join('\n')}
+        ${relationship.gqlOutputFields({ schemaName }).join('\n')}
       }
     `;
 
@@ -267,7 +269,7 @@ describe('Type Generation', () => {
 
   test('to-many relationships can be filtered at the field level', () => {
     const path = 'foo';
-
+    const schemaName = 'public';
     const relationship = createRelationship({
       path,
       config: { many: true, ref: 'Zip' },
@@ -276,7 +278,7 @@ describe('Type Generation', () => {
     // Wrap it in a mock type because all we get back is the fields
     const fieldSchema = `
       type MockType {
-        ${relationship.gqlOutputFields.join('\n')}
+        ${relationship.gqlOutputFields({ schemaName }).join('\n')}
       }
     `;
 
@@ -325,7 +327,7 @@ describe('Type Generation', () => {
 
   test('to-many relationships can have meta disabled', () => {
     const path = 'foo';
-
+    const schemaName = 'public';
     const relationship = createRelationship({
       path,
       config: { many: true, ref: 'Zip', withMeta: false },
@@ -334,7 +336,7 @@ describe('Type Generation', () => {
     // Wrap it in a mock type because all we get back is the fields
     const fieldSchema = `
       type MockType {
-        ${relationship.gqlOutputFields.join('\n')}
+        ${relationship.gqlOutputFields({ schemaName }).join('\n')}
       }
     `;
 
@@ -377,10 +379,12 @@ describe('Referenced list errors', () => {
       whereInputName: '',
     },
     access: {
-      create: true,
-      read: true,
-      update: true,
-      delete: true,
+      public: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
     },
   };
 
@@ -392,6 +396,8 @@ describe('Referenced list errors', () => {
 
   ['gqlOutputFields', 'gqlQueryInputFields', 'gqlOutputFieldResolvers'].forEach(method => {
     describe(`${method}()`, () => {
+      const schemaName = 'public';
+
       test('throws when list not found', async () => {
         const relMany = createRelationship({
           path: 'foo',
@@ -399,7 +405,7 @@ describe('Referenced list errors', () => {
           // ie; "not found"
           getListByKey: () => {},
         });
-        expect(asyncify(() => relMany[method])).rejects.toThrow(
+        expect(asyncify(() => relMany[method]({ schemaName }))).rejects.toThrow(
           /Unable to resolve related list 'Zip'/
         );
       });
@@ -410,7 +416,7 @@ describe('Referenced list errors', () => {
           config: { many: true, ref: 'Zip' },
           getListByKey: () => mockList,
         });
-        return asyncify(() => relMany[method]);
+        return asyncify(() => relMany[method]({ schemaName }));
       });
 
       test('throws when field on list not found', async () => {
@@ -419,7 +425,7 @@ describe('Referenced list errors', () => {
           config: { many: true, ref: 'Zip.bar' },
           getListByKey: () => mockList,
         });
-        expect(asyncify(() => relMany[method])).rejects.toThrow(
+        expect(asyncify(() => relMany[method]({ schemaName }))).rejects.toThrow(
           /Unable to resolve two way relationship field 'Zip.bar'/
         );
       });
