@@ -9,7 +9,7 @@ _Before you begin:_ This guide assumes you have running instance of Keystone wit
 
 Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any Keystone list.
 
-For each List, Keystone generates four top level queries. Given the following example:
+For each list, Keystone generates four top level queries. Given the following example:
 
 ```javascript
 keystone.createList('User', {
@@ -30,7 +30,7 @@ Keystone would generate the following queries:
 
 ### allUsers
 
-Retrieves all items from the user list. The `allUsers` query also allows you to search, limit and filter results. See: [Search and Filtering](#search-and-filtering).
+Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Search and Filtering](#search-and-filtering).
 
 #### Usage
 
@@ -44,7 +44,7 @@ query {
 
 ### \_allUsersMeta
 
-Retrieves meta information about items in the user list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [search and filtering](#search-and-filtering) parameters as the `allUsers` query.
+Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [search and filtering](#search-and-filtering) parameters as the `allUsers` query.
 
 #### Usage
 
@@ -58,7 +58,7 @@ query {
 
 ### User
 
-Retrieves a single item from the User list. The single entity query accepts a where parameter which must provide an id.
+Retrieves a single item from the `User` list. The single entity query accepts a where parameter which must provide an id.
 
 #### Usage
 
@@ -72,7 +72,7 @@ query {
 
 ### \_UsersMeta
 
-Retrieves meta information about the user list itself (ie; not about items in the list) such as access control information. This query accepts no parameters.
+Retrieves meta information about the `User` list itself (ie; not about items in the list) such as access control information. This query accepts no parameters.
 
 ## Mutations
 
@@ -87,7 +87,7 @@ For each list Keystone generates six top level mutations:
 
 ### createUser
 
-Add a single User to the Users list. Requires a `data` parameter that is an object where keys match the field names in the list definition and the values are the data to create.
+Add a single `User` to the `User` list. Requires a `data` parameter that is an object where keys match the field names in the list definition and the values are the data to create.
 
 #### Usage
 
@@ -101,7 +101,7 @@ mutation {
 
 ### createUsers
 
-Creates multiple users. Parameters are the same as `createUser` except the data parameter should be an array of objects.
+Creates multiple `Users`. Parameters are the same as `createUser` except the data parameter should be an array of objects.
 
 #### Usage
 
@@ -115,7 +115,7 @@ mutation {
 
 ### updateUser
 
-Update a User by ID. Accepts an `id` parameter that should match the id of a user item. The object should contain keys matching the field definition of the list. `updateUser` performs a _partial update_, meaning only keys that you wish to update need to be provided.
+Update a `User` by ID. Accepts an `id` parameter that should match the id of a `User` item. The object should contain keys matching the field definition of the list. `updateUser` performs a _partial update_, meaning only keys that you wish to update need to be provided.
 
 #### Usage
 
@@ -129,7 +129,7 @@ mutation {
 
 ### updateUsers
 
-Update multiple Users by ID. Accepts a single data parameter that contains an array of objects. The object parameters are the same as `createUser` and should contain an `id` and nested `data` parameter with the field data.
+Update multiple `Users` by ID. Accepts a single data parameter that contains an array of objects. The object parameters are the same as `createUser` and should contain an `id` and nested `data` parameter with the field data.
 
 ```gql
 mutation {
@@ -141,7 +141,7 @@ mutation {
 
 ### deleteUser
 
-Delete a single Entity by ID. Accepts a single parameter where the `id` matches a user id.
+Delete a single Entity by ID. Accepts a single parameter where the `id` matches a `User` id.
 
 ```gql
 mutation {
@@ -370,6 +370,27 @@ query {
 }
 ```
 
+### Combining query arguments for pagination
+
+When `first` and `skip` are used together with the `count` from `_allUsersMeta`, this is sufficient to implement pagination on the list.
+
+It is important to provide the same `where` and `search` arguments to both the `allUser` and `_allUserMeta` queries. For example:
+
+```gql
+query {
+  allUsers (search:'a', skip: 10, first: 10) {
+    id
+  }
+  _allUsersMeta(search: 'a') {
+    count
+  }
+}
+```
+
+When `first` and `skip` are used together, skip works as an offset for the `first` argument. For example`(skip:10, first:5)` selects results 11 through 15.
+
+Both `skip` and `first` respect the values of the `where`, `search` and `orderBy` arguments.
+
 ## Custom queries and Mutations
 
 You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
@@ -393,24 +414,3 @@ keystone.extendGraphQLSchema({
   ],
 });
 ```
-
-### Combining query arguments for pagination
-
-When `first` and `skip` are used together with the `count` from `_allUsersMeta`, this is sufficient to implement pagination on the list.
-
-It is important to provide the same `where` and `search` arguments to both the `allUser` and `_allUserMeta` queries. For example:
-
-```gql
-query {
-  allUsers (search:'a', skip: 10, first: 10) {
-    id
-  }
-  _allUsersMeta(search: 'a') {
-    count
-  }
-}
-```
-
-When `first` and `skip` are used together, skip works as an offset for the `first` argument. For example`(skip:10, first:10)` selects results 11 through 20.
-
-Both `skip` and `first` respect the values of the `where`, `search` and `orderBy` arguments.
