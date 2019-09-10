@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/access-control", "type": "major" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "patch" }
+  ],
+  "dependents": []
+}
