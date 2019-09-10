@@ -18,18 +18,13 @@ jobs:
         with:
           version: 10.x
 
-      - name: Install Yarn
-        run: npm install --global yarn
+      - name: Install Bolt
+        run: npm install --global bolt
 
       - name: Install Dependencies
-        run: yarn
+        run: bolt
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@master
-        with:
-          # The --otp=1 is to get around a bug in changesets
-          # It will be fixed in Changesets 2
-          publish: yarn publish-changed --otp=1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
