@@ -44,6 +44,8 @@ module.exports = class Keystone {
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
+    secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
+    cookieMaxAge = process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 * 24 : null,
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -57,8 +59,9 @@ module.exports = class Keystone {
     this._extendedMutations = [];
     this._graphQLQuery = {};
     this._cookieSecret = cookieSecret;
+    this._secureCookies = secureCookies;
+    this._cookieMaxAge = cookieMaxAge;
     this._sessionStore = sessionStore;
-    this.registeredTypes = new Set();
     this.eventHandlers = { onConnect };
 
     if (adapters) {
@@ -544,7 +547,13 @@ module.exports = class Keystone {
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
-      commonSessionMiddleware(this, this._cookieSecret, this._sessionStore),
+      commonSessionMiddleware({
+        keystone: this,
+        cookieSecret: this._cookieSecret,
+        sessionStore: this.sessionStore,
+        secureCookies: this._secureCookies,
+        cookieMaxAge: this._cookieMaxAge,
+      }),
       ...(await Promise.all(
         [
           // Inject any field middlewares (eg; WYSIWIG's static assets)

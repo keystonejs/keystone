@@ -2,7 +2,13 @@ const cookieSignature = require('cookie-signature');
 const expressSession = require('express-session');
 const cookie = require('cookie');
 
-const commonSessionMiddleware = (keystone, cookieSecret, sessionStore) => {
+const commonSessionMiddleware = ({
+  keystone,
+  cookieSecret,
+  sessionStore,
+  secureCookies,
+  cookieMaxAge,
+}) => {
   const COOKIE_NAME = 'keystone.sid';
 
   // We have at least one auth strategy
@@ -50,7 +56,9 @@ const commonSessionMiddleware = (keystone, cookieSecret, sessionStore) => {
     resave: false,
     saveUninitialized: false,
     name: COOKIE_NAME,
+    cookie: { secure: secureCookies },
     store: sessionStore,
+    maxAge: cookieMaxAge,
   });
 
   return [injectAuthCookieMiddleware, sessionMiddleware, populateAuthedItemMiddleware(keystone)];
