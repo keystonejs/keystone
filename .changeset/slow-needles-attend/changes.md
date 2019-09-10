@@ -1,0 +1,1 @@
+throwing errors when the StaticApp doesn't have a string valued passed to the "path" or "src" properties
