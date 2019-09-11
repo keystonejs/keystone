@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/app-graphql-playground", "type": "major" },
+    { "name": "@keystone-alpha/app-graphql", "type": "patch" }
+  ],
+  "dependents": []
+}
