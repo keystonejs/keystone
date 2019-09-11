@@ -9,3 +9,5 @@ const keystone = new Keystone({
   secureCookies: true,
 });
 ```
+
+Note: `commonSessionMiddleware` now accepts a config object rather than multiple arguments.
