@@ -22,9 +22,10 @@ const apiPath = '/admin/api';
 module.exports = {
   new Keystone(),
   apps: [
+    // This should come before the GraphQLApp, as it sets up the dev query middleware
+    new GraphQLAppPlayground({ apiPath })
     // Disable the default playground on this app
     new GraphQLApp({ apiPath, graphiqlPath: undefined }),
-    new GraphQLAppPlayground({ apiPath })
     new AdminUIApp()
   ],
 };
