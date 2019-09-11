@@ -45,7 +45,7 @@ module.exports = class Keystone {
     cookieSecret = 'qwerty',
     sessionStore,
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
-    cookieMaxAge = process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 * 24 : null,
+    cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;

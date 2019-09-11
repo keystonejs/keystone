@@ -1,6 +1,6 @@
 Adds a `cookieMaxAge` and `secureCookies` option to the keystone constructor. 
 
-These will default to 1 day and `true` in production. Or `null` and `false` in other environments.
+These will default to 30 days for `cookieMaxAge` and `true` in production `false` in other environments for `secureCookies`.
 
 ### Usage 
 ```javascript
