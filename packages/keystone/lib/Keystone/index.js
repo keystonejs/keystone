@@ -93,7 +93,7 @@ module.exports = class Keystone {
   // The GraphQL App uses this method to build up the context required for each
   // incoming query.
   // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName = 'public', req = {}, skipAccessControl = false } = {}) {
+  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
     let getListAccessControlForUser;
     let getFieldAccessControlForUser;
 
