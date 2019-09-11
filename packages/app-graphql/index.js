@@ -1,18 +1,16 @@
-const createCorsMiddleware = require('cors');
-const falsey = require('falsey');
 const assert = require('nanoassert');
 const createGraphQLMiddleware = require('./lib/graphql');
 const { createApolloServer } = require('./lib/apolloServer');
 
 class GraphQLApp {
   constructor({
-    cors = { origin: true, credentials: true },
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
     schemaName = 'public',
     apollo = {},
-    pinoOptions,
     // Deprecated options:
+    cors,
+    pinoOptions,
     cookieSecret,
     sessionStore,
   } = {}) {
@@ -26,11 +24,16 @@ class GraphQLApp {
       typeof sessionStore === 'undefined',
       'The `sessionStore` option has moved to the Keystone constructor: `new Keystone({ sessionStore: myStore })`'
     );
-
+    assert(
+      typeof pinoOptions === 'undefined',
+      'The `pinoOptions` option has moved to the Keystone.pepare() method: `keystone.prepare({ pinoOptions })`'
+    );
+    assert(
+      typeof cors === 'undefined',
+      'The `cors` option has moved to the Keystone.pepare() method: `keystone.prepare({ cors })`'
+    );
     this._apiPath = apiPath;
     this._graphiqlPath = graphiqlPath;
-    this._pinoOptions = pinoOptions;
-    this._cors = cors;
     this._apollo = apollo;
     this._schemaName = schemaName;
   }
@@ -40,14 +43,6 @@ class GraphQLApp {
    */
   prepareMiddleware({ keystone, dev }) {
     const middlewares = [];
-
-    if (falsey(process.env.DISABLE_LOGGING)) {
-      middlewares.push(require('express-pino-logger')(this._pinoOptions));
-    }
-
-    if (this._cors) {
-      middlewares.push(createCorsMiddleware(this._cors));
-    }
 
     const server = createApolloServer(keystone, this._apollo, this._schemaName, dev);
     // GraphQL API always exists independent of any adminUI or Session
