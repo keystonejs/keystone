@@ -139,6 +139,7 @@ module.exports = class List {
       registerType,
       createAuxList,
       isAuxList,
+      schemaNames,
     }
   ) {
     this.key = key;
@@ -213,9 +214,10 @@ module.exports = class List {
 
     this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, adapterConfig);
+    this._schemaNames = schemaNames;
 
     this.access = parseListAccess({
-      schemaNames: ['public'],
+      schemaNames: this._schemaNames,
       listKey: key,
       access,
       defaultAccess: this.defaultAccess.list,
@@ -298,6 +300,7 @@ module.exports = class List {
           fieldAdapterClass: type.adapters[this.adapterName],
           defaultAccess: this.defaultAccess.field,
           createAuxList: this.createAuxList,
+          schemaNames: this._schemaNames,
         })
     );
     this.fields = Object.values(this.fieldsByPath);
@@ -306,8 +309,7 @@ module.exports = class List {
     );
   }
 
-  getAdminMeta() {
-    const schemaName = 'public';
+  getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
     return {
       key: this.key,
@@ -321,7 +323,7 @@ module.exports = class List {
       gqlNames: this.gqlNames,
       fields: this.fields
         .filter(field => field.access[schemaName].read)
-        .map(field => field.getAdminMeta()),
+        .map(field => field.getAdminMeta({ schemaName })),
       views: this.views,
       adminConfig: {
         defaultPageSize: this.adminConfig.defaultPageSize,

@@ -7,6 +7,7 @@ const args = {
     newFieldAdapter: jest.fn(),
   },
   defaultAccess: true,
+  schemaNames: ['public'],
 };
 
 describe('new Implementation()', () => {
@@ -21,6 +22,7 @@ describe('new Implementation()', () => {
           newFieldAdapter: jest.fn(),
         },
         defaultAccess: true,
+        schemaNames: ['public'],
       }
     );
     expect(impl).not.toBeNull();
@@ -116,8 +118,9 @@ test('gqlOutputFieldResolvers', () => {
 describe('getAdminMeta()', () => {
   test('meta is as expect', () => {
     const impl = new Field('path', { label: 'config label', defaultValue: 'default' }, args);
+    const schemaName = 'public';
 
-    const value = impl.getAdminMeta();
+    const value = impl.getAdminMeta({ schemaName });
     expect(value).toEqual({
       access: {
         create: true,
@@ -135,8 +138,9 @@ describe('getAdminMeta()', () => {
 
   test('when defaultValue is a function, forced to `undefined`', () => {
     const impl = new Field('path', { label: 'config label', defaultValue: () => 'default' }, args);
+    const schemaName = 'public';
 
-    const value = impl.getAdminMeta();
+    const value = impl.getAdminMeta({ schemaName });
     expect(value).toEqual({
       access: {
         create: true,
