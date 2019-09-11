@@ -1,0 +1,1 @@
+The `cors` and `pinoOptions` parameters now live on `keystone.prepare()` rather than `new GraphQLApp()`
