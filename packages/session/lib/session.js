@@ -56,9 +56,8 @@ const commonSessionMiddleware = ({
     resave: false,
     saveUninitialized: false,
     name: COOKIE_NAME,
-    cookie: { secure: secureCookies },
+    cookie: { secure: secureCookies, maxAge: cookieMaxAge },
     store: sessionStore,
-    maxAge: cookieMaxAge,
   });
 
   return [injectAuthCookieMiddleware, sessionMiddleware, populateAuthedItemMiddleware(keystone)];
