@@ -44,6 +44,7 @@ module.exports = class Keystone {
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
+    schemaNames = ['public'],
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -60,6 +61,7 @@ module.exports = class Keystone {
     this._sessionStore = sessionStore;
     this.registeredTypes = new Set();
     this.eventHandlers = { onConnect };
+    this._schemaNames = schemaNames;
 
     if (adapters) {
       this.adapters = adapters;
@@ -91,7 +93,7 @@ module.exports = class Keystone {
   // The GraphQL App uses this method to build up the context required for each
   // incoming query.
   // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName = 'admin', req = {}, skipAccessControl = false } = {}) {
+  getGraphQlContext({ schemaName = 'public', req = {}, skipAccessControl = false } = {}) {
     let getListAccessControlForUser;
     let getFieldAccessControlForUser;
 
@@ -104,7 +106,7 @@ module.exports = class Keystone {
       // request info ( like who's logged in right now, etc)
       getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
         return validateListAccessControl({
-          access: this.lists[listKey].access['public'],
+          access: this.lists[listKey].access[schemaName],
           originalInput,
           operation,
           authentication: { item: req.user, listKey: req.authedListKey },
@@ -115,7 +117,7 @@ module.exports = class Keystone {
       getFieldAccessControlForUser = fastMemoize(
         (listKey, fieldKey, originalInput, existingItem, operation) => {
           return validateFieldAccessControl({
-            access: this.lists[listKey].fieldsByPath[fieldKey].access['public'],
+            access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
             originalInput,
             existingItem,
             operation,
@@ -221,6 +223,7 @@ module.exports = class Keystone {
         }
         return this.createList(auxKey, auxConfig, { isAuxList: true });
       },
+      schemaNames: this._schemaNames,
     });
     this.lists[key] = list;
     this.listsArray.push(list);
@@ -257,8 +260,7 @@ module.exports = class Keystone {
     ).then(() => {});
   }
 
-  getAdminMeta() {
-    const schemaName = 'public';
+  getAdminMeta({ schemaName }) {
     // We've consciously made a design choice that the `read` permission on a
     // list is a master switch in the Admin UI (not the GraphQL API).
     // Justification: If you want to Create without the Read permission, you
@@ -273,14 +275,13 @@ module.exports = class Keystone {
     const lists = arrayToObject(
       this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
       'key',
-      list => list.getAdminMeta()
+      list => list.getAdminMeta({ schemaName })
     );
 
     return { lists, name: this.name };
   }
 
-  getTypeDefs() {
-    const schemaName = 'public';
+  getTypeDefs({ schemaName }) {
     // Aux lists are only there for typing and internal operations, they should
     // not have any GraphQL operations performed on them
     const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
@@ -379,9 +380,8 @@ module.exports = class Keystone {
       graphql(schema, query, null, context, variables);
   }
 
-  getAdminSchema() {
-    const schemaName = 'public';
-    const typeDefs = this.getTypeDefs();
+  getAdminSchema({ schemaName }) {
+    const typeDefs = this.getTypeDefs({ schemaName });
     if (debugGraphQLSchemas()) {
       typeDefs.forEach(i => console.log(i));
     }
@@ -493,14 +493,14 @@ module.exports = class Keystone {
     };
   }
 
-  dumpSchema(file) {
+  dumpSchema(file, schemaName) {
     // The 'Upload' scalar is normally automagically added by Apollo Server
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
     // Since we don't execute apollo server over this schema, we have to
     // reinsert it.
     const schema = `
       scalar Upload
-      ${this.getTypeDefs().join('\n')}
+      ${this.getTypeDefs({ schemaName }).join('\n')}
     `;
     fs.writeFileSync(file, schema);
   }

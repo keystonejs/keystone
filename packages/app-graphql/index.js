@@ -9,7 +9,7 @@ class GraphQLApp {
     cors = { origin: true, credentials: true },
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
-    schemaName = 'admin',
+    schemaName = 'public',
     apollo = {},
     pinoOptions,
     // Deprecated options:

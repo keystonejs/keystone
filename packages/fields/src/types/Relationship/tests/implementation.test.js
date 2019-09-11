@@ -55,6 +55,7 @@ function createRelationship({ path, config = {}, getListByKey = () => new MockLi
     listAdapter: new MockListAdapter(),
     fieldAdapterClass: MockFieldAdapter,
     defaultAccess: true,
+    schemaNames: ['public'],
   });
 }
 
