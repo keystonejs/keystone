@@ -23,11 +23,10 @@ module.exports = {
   apps: [
     new GraphQLApp({
       // All config keys are optional. Default values are shown here for completeness.
-        cors : { origin: true, credentials: true },
-        apiPath : '/admin/api',
-        graphiqlPath : '/admin/graphiql',
-        schemaName : 'admin',
-        apollo : {},
+        apiPath: '/admin/api',
+        graphiqlPath: '/admin/graphiql',
+        schemaName: 'admin',
+        apollo: {},
     }),
     new AdminUIApp()
   ],
