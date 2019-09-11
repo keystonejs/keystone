@@ -63,6 +63,8 @@ module.exports = class Keystone {
     this._cookieMaxAge = cookieMaxAge;
     this._sessionStore = sessionStore;
     this.eventHandlers = { onConnect };
+    this._sessionStore = sessionStore;
+    this.registeredTypes = new Set();
 
     if (adapters) {
       this.adapters = adapters;
