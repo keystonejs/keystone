@@ -3,6 +3,8 @@ const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
 const fastMemoize = require('fast-memoize');
+const falsey = require('falsey');
+const createCorsMiddleware = require('cors');
 const { print } = require('graphql/language/printer');
 const { graphql } = require('graphql');
 const {
@@ -543,7 +545,13 @@ module.exports = class Keystone {
     return mergeRelationships(createdItems, createdRelationships);
   }
 
-  async prepare({ dev = false, apps = [], distDir } = {}) {
+  async prepare({
+    dev = false,
+    apps = [],
+    distDir,
+    pinoOptions,
+    cors = { origin: true, credentials: true },
+  } = {}) {
     const middlewares = flattenDeep([
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
@@ -555,6 +563,8 @@ module.exports = class Keystone {
         secureCookies: this._secureCookies,
         cookieMaxAge: this._cookieMaxAge,
       }),
+      falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
+      cors && createCorsMiddleware(cors),
       ...(await Promise.all(
         [
           // Inject any field middlewares (eg; WYSIWIG's static assets)
