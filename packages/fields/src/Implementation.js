@@ -5,7 +5,7 @@ class Field {
   constructor(
     path,
     { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
-    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
@@ -30,7 +30,7 @@ class Field {
     this.isRelationship = false;
 
     this.access = parseFieldAccess({
-      schemaNames: ['public'],
+      schemaNames,
       listKey,
       fieldKey: path,
       defaultAccess,
@@ -153,8 +153,7 @@ class Field {
   get gqlUpdateInputFields() {
     return [];
   }
-  getAdminMeta() {
-    const schemaName = 'public';
+  getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
     return this.extendAdminMeta({
       label: this.label,

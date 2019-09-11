@@ -203,6 +203,7 @@ const listExtras = (getAuth = () => {}, queryMethod = undefined) => ({
     return queryMethod(queryString, context, variables);
   },
   registerType: () => {},
+  schemaNames: ['public'],
 });
 
 const setup = (extraConfig, getAuth, queryMethod) => {
@@ -420,13 +421,15 @@ test('labelResolver', () => {
 describe('getAdminMeta()', () => {
   test('adminMeta() - Smoke test', () => {
     const list = setup();
-    const adminMeta = list.getAdminMeta();
+    const schemaName = 'public';
+    const adminMeta = list.getAdminMeta({ schemaName });
     expect(adminMeta).not.toBeNull();
   });
 
   test('getAdminMeta() - labels', () => {
     const list = setup();
-    const adminMeta = list.getAdminMeta();
+    const schemaName = 'public';
+    const adminMeta = list.getAdminMeta({ schemaName });
 
     expect(adminMeta.key).toEqual('Test');
     expect(adminMeta.access).toEqual({
@@ -475,7 +478,8 @@ describe('getAdminMeta()', () => {
 
   test('getAdminMeta() - fields', () => {
     const list = setup();
-    const adminMeta = list.getAdminMeta();
+    const schemaName = 'public';
+    const adminMeta = list.getAdminMeta({ schemaName });
 
     expect(adminMeta.fields).toHaveLength(5);
     expect(adminMeta.fields[0].path).toEqual('id');
@@ -487,7 +491,8 @@ describe('getAdminMeta()', () => {
 
   test('getAdminMeta() - views', () => {
     const list = setup();
-    const adminMeta = list.getAdminMeta();
+    const schemaName = 'public';
+    const adminMeta = list.getAdminMeta({ schemaName });
 
     expect(adminMeta.views).toEqual({
       id: {}, // Mocked
@@ -1559,6 +1564,7 @@ describe('Maps from Native JS types to Keystone types', () => {
           getAuth: () => {},
           defaultAccess: { list: true, field: true },
           registerType: () => {},
+          schemaNames: ['public'],
         }
       );
       list.initFields();

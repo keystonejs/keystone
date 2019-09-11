@@ -25,6 +25,7 @@ async function setupServer({ name, adapterName, createLists = () => {}, keystone
     name,
     adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
+    schemaNames: [SCHEMA_NAME],
     ...keystoneOptions,
   });
 
