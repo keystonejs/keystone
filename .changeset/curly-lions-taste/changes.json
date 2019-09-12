@@ -1,0 +1,10 @@
+{
+  "releases": [{ "name": "@keystone-alpha/app-schema-router", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/demo-project-todo",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/app-schema-router"]
+    }
+  ]
+}
