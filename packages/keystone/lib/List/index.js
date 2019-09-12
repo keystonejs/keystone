@@ -954,10 +954,16 @@ module.exports = class List {
     if (first < Infinity && first > maxResults) {
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
-    // + 1 to allow limit violation detection
-    const resultsLimit = Math.min(maxResults + 1, first);
-    if (resultsLimit < Infinity) {
-      args.first = resultsLimit;
+    if (!(extra && extra.meta)) {
+      // "first" is designed to truncate the count value, but accurate counts are still
+      // needed for pagination.  resultsLimit is meant for protecting KS memory usage,
+      // not DB performance, anyway, so resultsLimit is only applied to queries that
+      // could return many results.
+      // + 1 to allow limit violation detection
+      const resultsLimit = Math.min(maxResults + 1, first);
+      if (resultsLimit < Infinity) {
+        args.first = resultsLimit;
+      }
     }
     const results = await this.adapter.itemsQuery(args, extra);
     if (results.length > maxResults) {
