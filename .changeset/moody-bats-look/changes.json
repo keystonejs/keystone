@@ -1,6 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/app-nuxt", "type": "major" }
-  ],
-  "dependents": []
-}

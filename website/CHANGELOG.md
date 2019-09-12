@@ -1,5 +1,11 @@
 # @keystone-alpha/website
 
+## 1.1.2
+
+### Patch Changes
+
+- [589de757](https://github.com/keystonejs/keystone-5/commit/589de757): quick start documentation page copy improvements
+
 ## 1.1.1
 
 ### Patch Changes

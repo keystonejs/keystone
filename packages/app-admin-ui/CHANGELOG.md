@@ -1,5 +1,24 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.8.0
+
+### Minor Changes
+
+- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+  - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
+  - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
+  - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
+  - `keystone.getAdminMeta()` -> `keystone.getAdminMeta({ schemaName })`
+  - `list.getAdminMeta()` -> `list.getAdminMeta({ schemaName })`
+  - `field.getAdminMeta()` -> `field.getAdminMeta({ schemaName })`
+
+### Patch Changes
+
+- [087ceeac](https://github.com/keystonejs/keystone-5/commit/087ceeac): Add robots exclusion meta tags to Admin UI
+
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
+  - @keystone-alpha/fields@11.0.0
+
 ## 5.7.0
 
 ### Minor Changes
