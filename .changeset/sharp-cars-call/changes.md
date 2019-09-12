@@ -1,1 +1,0 @@
-quick start documentation page copy improvements
