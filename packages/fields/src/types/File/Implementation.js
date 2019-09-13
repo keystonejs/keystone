@@ -20,7 +20,7 @@ export class File extends Implementation {
     this.fileAdapter = adapter;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
@@ -30,7 +30,7 @@ export class File extends Implementation {
       route: this.route,
     };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),
@@ -55,7 +55,7 @@ export class File extends Implementation {
     ];
   }
   // Called on `User.avatar` for example
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];

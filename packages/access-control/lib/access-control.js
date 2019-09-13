@@ -1,4 +1,4 @@
-const { getType, pick, defaultObj } = require('@keystone-alpha/utils');
+const { getType, pick, defaultObj, intersection } = require('@keystone-alpha/utils');
 
 const validateGranularConfigTypes = (longHandAccess, validationError) => {
   const errors = Object.entries(longHandAccess)
@@ -35,7 +35,7 @@ const parseGranularAccessConfig = ({
   return finalAccess;
 };
 
-const parseAccess = ({
+const parseAccessCore = ({
   accessTypes,
   access,
   defaultAccess,
@@ -64,11 +64,66 @@ const parseAccess = ({
   }
 };
 
+const parseAccess = ({
+  schemaNames,
+  accessTypes,
+  access,
+  defaultAccess,
+  onGranularParseError,
+  validateGranularType,
+}) => {
+  // Check that none of the schemaNames match the accessTypes
+  if (intersection(schemaNames, accessTypes).length > 0) {
+    throw new Error(
+      `${JSON.stringify(
+        intersection(schemaNames, accessTypes)
+      )} are reserved words and cannot be used as schema names.`
+    );
+  }
+
+  const providedNameCount = intersection(Object.keys(access), schemaNames).length;
+  const type = getType(access);
+  if (type === 'Object' && providedNameCount === Object.keys(access).length) {
+    // If all the keys are in schemaNames, parse each on their own
+    return schemaNames.reduce(
+      (acc, schemaName) => ({
+        ...acc,
+        [schemaName]: parseAccessCore({
+          accessTypes,
+          access: access.hasOwnProperty(schemaName) ? access[schemaName] : defaultAccess,
+          defaultAccess,
+          onGranularParseError,
+          validateGranularType,
+        }),
+      }),
+      {}
+    );
+  } else if (type === 'Object' && providedNameCount > 0) {
+    // If some are in, and some are out, throw an error!
+    throw new Error(
+      `Invalid schema names: ${JSON.stringify(
+        Object.keys(access).filter(k => !schemaNames.includes(k))
+      )}`
+    );
+  } else {
+    // Otherwise, treat it as common across all schemaNames
+    const commonAccess = parseAccessCore({
+      accessTypes,
+      access,
+      defaultAccess,
+      onGranularParseError,
+      validateGranularType,
+    });
+    return schemaNames.reduce((acc, schemaName) => ({ ...acc, [schemaName]: commonAccess }), {});
+  }
+};
+
 module.exports = {
-  parseListAccess({ listKey, defaultAccess, access = defaultAccess }) {
+  parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
     const accessTypes = ['create', 'read', 'update', 'delete'];
 
     return parseAccess({
+      schemaNames,
       accessTypes,
       access,
       defaultAccess,
@@ -95,10 +150,11 @@ module.exports = {
     });
   },
 
-  parseFieldAccess({ listKey, fieldKey, defaultAccess, access = defaultAccess }) {
+  parseFieldAccess({ listKey, fieldKey, defaultAccess, access = defaultAccess, schemaNames }) {
     const accessTypes = ['create', 'read', 'update'];
 
     return parseAccess({
+      schemaNames,
       accessTypes,
       access,
       defaultAccess,

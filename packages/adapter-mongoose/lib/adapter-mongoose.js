@@ -104,6 +104,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     await this.mongoose.connect(uri, {
       useNewUrlParser: true,
       useFindAndModify: false,
+      useUnifiedTopology: true,
       ...mongooseConfig,
     });
   }

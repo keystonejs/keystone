@@ -139,6 +139,7 @@ module.exports = class List {
       registerType,
       createAuxList,
       isAuxList,
+      schemaNames,
     }
   ) {
     this.key = key;
@@ -213,8 +214,10 @@ module.exports = class List {
 
     this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, adapterConfig);
+    this._schemaNames = schemaNames;
 
     this.access = parseListAccess({
+      schemaNames: this._schemaNames,
       listKey: key,
       access,
       defaultAccess: this.defaultAccess.list,
@@ -297,6 +300,7 @@ module.exports = class List {
           fieldAdapterClass: type.adapters[this.adapterName],
           defaultAccess: this.defaultAccess.field,
           createAuxList: this.createAuxList,
+          schemaNames: this._schemaNames,
         })
     );
     this.fields = Object.values(this.fieldsByPath);
@@ -305,18 +309,21 @@ module.exports = class List {
     );
   }
 
-  getAdminMeta() {
+  getAdminMeta({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
       // boundary)
-      access: mapKeys(this.access, val => !!val),
+      access: mapKeys(schemaAccess, val => !!val),
       label: this.adminUILabels.label,
       singular: this.adminUILabels.singular,
       plural: this.adminUILabels.plural,
       path: this.adminUILabels.path,
       gqlNames: this.gqlNames,
-      fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
+      fields: this.fields
+        .filter(field => field.access[schemaName].read)
+        .map(field => field.getAdminMeta({ schemaName })),
       views: this.views,
       adminConfig: {
         defaultPageSize: this.adminConfig.defaultPageSize,
@@ -330,12 +337,13 @@ module.exports = class List {
     };
   }
 
-  getGqlTypes() {
+  getGqlTypes({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
     const types = [];
-    if (this.access.read || this.access.create || this.access.update || this.access.delete) {
+    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       types.push(
-        ...flatten(this.fields.map(field => field.getGqlAuxTypes())),
+        ...flatten(this.fields.map(field => field.getGqlAuxTypes({ schemaName }))),
         `
         """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
@@ -349,11 +357,11 @@ module.exports = class List {
           _label_: String
           ${flatten(
             this.fields
-              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
+              .filter(field => field.access[schemaName].read) // If it's globally set to false, makes sense to never show it
               .map(field =>
                 field.schemaDoc
-                  ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields}`
-                  : field.gqlOutputFields
+                  ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields({ schemaName })}`
+                  : field.gqlOutputFields({ schemaName })
               )
           ).join('\n')}
         }
@@ -365,8 +373,8 @@ module.exports = class List {
 
           ${flatten(
             this.fields
-              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.gqlQueryInputFields)
+              .filter(field => field.access[schemaName].read) // If it's globally set to false, makes sense to never show it
+              .map(field => field.gqlQueryInputFields({ schemaName }))
           ).join('\n')}
         }`,
         // TODO: Include other `unique` fields and allow filtering by them
@@ -377,13 +385,13 @@ module.exports = class List {
       );
     }
 
-    if (this.access.update) {
+    if (schemaAccess.update) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
           ${flatten(
             this.fields
               .filter(({ path }) => path !== 'id') // Exclude the id fields update types
-              .filter(field => field.access.update) // If it's globally set to false, makes sense to never let it be updated
+              .filter(field => field.access[schemaName].update) // If it's globally set to false, makes sense to never let it be updated
               .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
         }
@@ -396,13 +404,13 @@ module.exports = class List {
       `);
     }
 
-    if (this.access.create) {
+    if (schemaAccess.create) {
       types.push(`
         input ${this.gqlNames.createInputName} {
           ${flatten(
             this.fields
               .filter(({ path }) => path !== 'id') // Exclude the id fields create types
-              .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
+              .filter(field => field.access[schemaName].create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
         }
@@ -449,13 +457,14 @@ module.exports = class List {
     ];
   }
 
-  getGqlQueries() {
+  getGqlQueries({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     // All the auxiliary queries the fields want to add
     const queries = flatten(this.fields.map(field => field.getGqlAuxQueries()));
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
-    if (this.access.read) {
+    if (schemaAccess.read) {
       queries.push(
         `
         """ Search for all ${this.gqlNames.outputTypeName} items which match the where clause. """
@@ -536,8 +545,9 @@ module.exports = class List {
     };
   }
 
-  get gqlFieldResolvers() {
-    if (!this.access.read) {
+  gqlFieldResolvers({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
+    if (!schemaAccess.read) {
       return {};
     }
     const fieldResolvers = {
@@ -545,10 +555,10 @@ module.exports = class List {
       _label_: this.labelResolver,
       ...objMerge(
         this.fields
-          .filter(field => field.access.read)
+          .filter(field => field.access[schemaName].read)
           .map(field =>
             // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
-            mapKeys(field.gqlOutputFieldResolvers, innerResolver =>
+            mapKeys(field.gqlOutputFieldResolvers({ schemaName }), innerResolver =>
               this.wrapFieldResolverWithAC(field, innerResolver)
             )
           )
@@ -557,27 +567,28 @@ module.exports = class List {
     return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
-  get gqlAuxFieldResolvers() {
+  gqlAuxFieldResolvers({ schemaName }) {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers));
+    return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
   }
 
-  get gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
+    return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers()));
   }
 
-  get gqlAuxMutationResolvers() {
+  gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
+    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers()));
   }
 
-  getGqlMutations() {
+  getGqlMutations({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     const mutations = flatten(this.fields.map(field => field.getGqlAuxMutations()));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
-    if (this.access.create) {
+    if (schemaAccess.create) {
       mutations.push(`
         """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
@@ -593,7 +604,7 @@ module.exports = class List {
       `);
     }
 
-    if (this.access.update) {
+    if (schemaAccess.update) {
       mutations.push(`
       """ Update a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.updateMutationName}(
@@ -610,7 +621,7 @@ module.exports = class List {
       `);
     }
 
-    if (this.access.delete) {
+    if (schemaAccess.delete) {
       mutations.push(`
         """ Delete a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.deleteMutationName}(
@@ -811,12 +822,13 @@ module.exports = class List {
     return await this._itemsQuery({ where: { ...remainingAccess, ...idFilters } });
   }
 
-  get gqlQueryResolvers() {
+  gqlQueryResolvers({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     let resolvers = {};
 
     // If set to false, we can confidently remove these resolvers entirely from
     // the graphql schema
-    if (this.access.read) {
+    if (schemaAccess.read) {
       resolvers = {
         [this.gqlNames.listQueryName]: (_, args, context) =>
           this.listQuery(args, context, this.gqlNames.listQueryName),
@@ -993,10 +1005,11 @@ module.exports = class List {
     return { success: true };
   }
 
-  get gqlMutationResolvers() {
+  gqlMutationResolvers({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     const mutationResolvers = {};
 
-    if (this.access.create) {
+    if (schemaAccess.create) {
       mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
         this.createMutation(data, context);
 
@@ -1004,7 +1017,7 @@ module.exports = class List {
         this.createManyMutation(data, context);
     }
 
-    if (this.access.update) {
+    if (schemaAccess.update) {
       mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
 
@@ -1012,7 +1025,7 @@ module.exports = class List {
         this.updateManyMutation(data, context);
     }
 
-    if (this.access.delete) {
+    if (schemaAccess.delete) {
       mutationResolvers[this.gqlNames.deleteMutationName] = (_, { id }, context) =>
         this.deleteMutation(id, context);
 

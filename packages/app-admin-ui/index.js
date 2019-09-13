@@ -18,6 +18,7 @@ class AdminUIApp {
     pages,
     enableDefaultRoute = false,
     isAccessAllowed = () => true,
+    schemaName = 'public',
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -34,6 +35,7 @@ class AdminUIApp {
     this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
     this._isAccessAllowed = isAccessAllowed;
+    this._schemaName = schemaName;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -137,7 +139,7 @@ class AdminUIApp {
       apiPath: this.apiPath,
       graphiqlPath: this.graphiqlPath,
       ...this.getAdminMeta(),
-      ...keystone.getAdminMeta(),
+      ...keystone.getAdminMeta({ schemaName: this._schemaName }),
     };
   }
 

@@ -3,6 +3,8 @@ const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
 const fastMemoize = require('fast-memoize');
+const falsey = require('falsey');
+const createCorsMiddleware = require('cors');
 const { print } = require('graphql/language/printer');
 const { graphql } = require('graphql');
 const {
@@ -44,6 +46,9 @@ module.exports = class Keystone {
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
+    secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
+    cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
+    schemaNames = ['public'],
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -57,9 +62,12 @@ module.exports = class Keystone {
     this._extendedMutations = [];
     this._graphQLQuery = {};
     this._cookieSecret = cookieSecret;
+    this._secureCookies = secureCookies;
+    this._cookieMaxAge = cookieMaxAge;
     this._sessionStore = sessionStore;
-    this.registeredTypes = new Set();
     this.eventHandlers = { onConnect };
+    this.registeredTypes = new Set();
+    this._schemaNames = schemaNames;
 
     if (adapters) {
       this.adapters = adapters;
@@ -91,7 +99,7 @@ module.exports = class Keystone {
   // The GraphQL App uses this method to build up the context required for each
   // incoming query.
   // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName = 'admin', req = {}, skipAccessControl = false } = {}) {
+  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
     let getListAccessControlForUser;
     let getFieldAccessControlForUser;
 
@@ -104,7 +112,7 @@ module.exports = class Keystone {
       // request info ( like who's logged in right now, etc)
       getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
         return validateListAccessControl({
-          access: this.lists[listKey].access,
+          access: this.lists[listKey].access[schemaName],
           originalInput,
           operation,
           authentication: { item: req.user, listKey: req.authedListKey },
@@ -115,7 +123,7 @@ module.exports = class Keystone {
       getFieldAccessControlForUser = fastMemoize(
         (listKey, fieldKey, originalInput, existingItem, operation) => {
           return validateFieldAccessControl({
-            access: this.lists[listKey].fieldsByPath[fieldKey].access,
+            access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
             originalInput,
             existingItem,
             operation,
@@ -221,6 +229,7 @@ module.exports = class Keystone {
         }
         return this.createList(auxKey, auxConfig, { isAuxList: true });
       },
+      schemaNames: this._schemaNames,
     });
     this.lists[key] = list;
     this.listsArray.push(list);
@@ -257,7 +266,7 @@ module.exports = class Keystone {
     ).then(() => {});
   }
 
-  getAdminMeta() {
+  getAdminMeta({ schemaName }) {
     // We've consciously made a design choice that the `read` permission on a
     // list is a master switch in the Admin UI (not the GraphQL API).
     // Justification: If you want to Create without the Read permission, you
@@ -270,15 +279,15 @@ module.exports = class Keystone {
     // In all these cases, the Admin UI becomes unnecessarily complex.
     // So we only allow all these actions if you also have read access.
     const lists = arrayToObject(
-      this.listsArray.filter(list => list.access.read && !list.isAuxList),
+      this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
       'key',
-      list => list.getAdminMeta()
+      list => list.getAdminMeta({ schemaName })
     );
 
     return { lists, name: this.name };
   }
 
-  getTypeDefs() {
+  getTypeDefs({ schemaName }) {
     // Aux lists are only there for typing and internal operations, they should
     // not have any GraphQL operations performed on them
     const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
@@ -289,7 +298,7 @@ module.exports = class Keystone {
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes()))),
+      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ schemaName })))),
       ...unique(this._extendedTypes),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
@@ -351,7 +360,7 @@ module.exports = class Keystone {
       `type Query {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlQueries()),
+              ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
               this._extendedQueries.map(({ schema }) => schema),
             ])
           ).join('\n')}
@@ -361,7 +370,7 @@ module.exports = class Keystone {
       `type Mutation {
           ${unique(
             flatten([
-              ...firstClassLists.map(list => list.getGqlMutations()),
+              ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
               this._extendedMutations.map(({ schema }) => schema),
             ])
           ).join('\n')}
@@ -377,8 +386,8 @@ module.exports = class Keystone {
       graphql(schema, query, null, context, variables);
   }
 
-  getAdminSchema() {
-    const typeDefs = this.getTypeDefs();
+  getAdminSchema({ schemaName }) {
+    const typeDefs = this.getTypeDefs({ schemaName });
     if (debugGraphQLSchemas()) {
       typeDefs.forEach(i => console.log(i));
     }
@@ -422,8 +431,8 @@ module.exports = class Keystone {
             fields: flatten(
               list
                 .getFieldsRelatedTo(key)
-                .filter(field => field.access.read)
-                .map(field => Object.keys(field.gqlOutputFieldResolvers))
+                .filter(field => field.access[schemaName].read)
+                .map(field => Object.keys(field.gqlOutputFieldResolvers({ schemaName })))
             ),
           }))
           .filter(({ fields }) => fields.length),
@@ -445,8 +454,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
-      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
+      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers({ schemaName }))),
 
       JSON: GraphQLJSON,
 
@@ -458,17 +467,19 @@ module.exports = class Keystone {
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers)),
-        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
+        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
         // And the Keystone meta queries must always be available
         _ksListsMeta: (_, args, context) =>
-          this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
+          this.listsArray
+            .filter(list => list.access[schemaName].read)
+            .map(list => list.listMeta(context)),
         ...objMerge(this._extendedQueries.map(customResolver)),
       },
 
       Mutation: {
-        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers)),
-        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
+        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
         ...objMerge(this._extendedMutations.map(customResolver)),
       },
     };
@@ -488,14 +499,14 @@ module.exports = class Keystone {
     };
   }
 
-  dumpSchema(file) {
+  dumpSchema(file, schemaName) {
     // The 'Upload' scalar is normally automagically added by Apollo Server
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
     // Since we don't execute apollo server over this schema, we have to
     // reinsert it.
     const schema = `
       scalar Upload
-      ${this.getTypeDefs().join('\n')}
+      ${this.getTypeDefs({ schemaName }).join('\n')}
     `;
     fs.writeFileSync(file, schema);
   }
@@ -534,12 +545,26 @@ module.exports = class Keystone {
     return mergeRelationships(createdItems, createdRelationships);
   }
 
-  async prepare({ dev = false, apps = [], distDir } = {}) {
+  async prepare({
+    dev = false,
+    apps = [],
+    distDir,
+    pinoOptions,
+    cors = { origin: true, credentials: true },
+  } = {}) {
     const middlewares = flattenDeep([
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
-      commonSessionMiddleware(this, this._cookieSecret, this._sessionStore),
+      commonSessionMiddleware({
+        keystone: this,
+        cookieSecret: this._cookieSecret,
+        sessionStore: this.sessionStore,
+        secureCookies: this._secureCookies,
+        cookieMaxAge: this._cookieMaxAge,
+      }),
+      falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
+      cors && createCorsMiddleware(cors),
       ...(await Promise.all(
         [
           // Inject any field middlewares (eg; WYSIWIG's static assets)

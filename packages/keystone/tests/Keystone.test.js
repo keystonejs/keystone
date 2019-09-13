@@ -8,10 +8,12 @@ class MockFieldAdapter {}
 class MockFieldImplementation {
   constructor(name) {
     this.access = {
-      create: true,
-      read: true,
-      update: true,
-      delete: true,
+      public: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
     };
     this.config = {};
     this.name = name;
@@ -19,10 +21,10 @@ class MockFieldImplementation {
   getGqlAuxTypes() {
     return ['scalar Foo'];
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return ['foo: Boolean'];
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return ['zip: Boolean'];
   }
   get gqlUpdateInputFields() {
@@ -93,8 +95,8 @@ test('unique typeDefs', () => {
       hero: { type: MockFieldType },
     },
   });
-
-  const schema = keystone.getTypeDefs().join('\n');
+  const schemaName = 'public';
+  const schema = keystone.getTypeDefs({ schemaName }).join('\n');
   expect(schema.match(/scalar Foo/g) || []).toHaveLength(1);
   expect(schema.match(/getFoo: Boolean/g) || []).toHaveLength(1);
   expect(schema.match(/mutateFoo: Boolean/g) || []).toHaveLength(1);
@@ -193,7 +195,8 @@ describe('Keystone.extendGraphQLSchema()', () => {
     });
 
     keystone.extendGraphQLSchema({ types: ['type FooBar { foo: Int, bar: Float }'] });
-    const schema = keystone.getTypeDefs().join('\n');
+    const schemaName = 'public';
+    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
     expect(schema.match(/type FooBar {\s*foo: Int\s*bar: Float\s*}/g) || []).toHaveLength(1);
   });
 
@@ -218,7 +221,8 @@ describe('Keystone.extendGraphQLSchema()', () => {
         },
       ],
     });
-    const schema = keystone.getTypeDefs().join('\n');
+    const schemaName = 'public';
+    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._extendedQueries).toHaveLength(1);
   });
@@ -244,7 +248,8 @@ describe('Keystone.extendGraphQLSchema()', () => {
         },
       ],
     });
-    const schema = keystone.getTypeDefs().join('\n');
+    const schemaName = 'public';
+    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._extendedMutations).toHaveLength(1);
   });

@@ -1,5 +1,61 @@
 # @keystone-alpha/fields
 
+## 11.0.0
+
+### Major Changes
+
+- [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9): The `.access` property of Fields is now keyed by `schemaName`. As such, a number of getters have been replaced with methods which take `{ schemaName }`.
+
+  - `get gqlOutputFields()` -> `gqlOutputFields({ schemaName })`
+  - `get gqlOutputFieldResolvers()` -> `gqlOutputFieldResolvers({ schemaName })`
+  - `get gqlAuxFieldResolvers() -> gqlAuxFieldResolvers({ schemaName })`
+  - `get gqlAuxQueryResolvers()` -> `gqlAuxQueryResolvers({ schemaName })`
+  - `get gqlAuxMutationResolvers()` -> `gqlAuxMutationResolvers({ schemaName })`
+  - `get gqlQueryInputFields()` -> `gqlQueryInputFields({ schemaName })`
+
+- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+  - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
+  - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
+  - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
+  - `keystone.getAdminMeta()` -> `keystone.getAdminMeta({ schemaName })`
+  - `list.getAdminMeta()` -> `list.getAdminMeta({ schemaName })`
+  - `field.getAdminMeta()` -> `field.getAdminMeta({ schemaName })`
+
+### Patch Changes
+
+- [bc0b9813](https://github.com/keystonejs/keystone-5/commit/bc0b9813): `parseListAccess` and `parseFieldAccess` now take `schemaNames` as an argument, and return a nested access object, with the `schemaNames` as keys.
+
+  For example,
+
+  ```js
+  parseListAccess({ defaultAccess: false, access: { public: true }, schemaNames: ['public', 'internal'] }
+  ```
+
+  will return
+
+  ```js
+  {
+    public: { create: true, read: true, update: true, delete: true },
+    internal: { create: false, read: false, update: false, delete: false },
+  }
+  ```
+
+  These changes are backwards compatible with regard to the `access` argument, so
+
+  ```js
+  const access = { create: true, read: true, update: true, delete: true };
+  parseListAccess({ access, schemaNames: ['public', 'internal'] }
+  ```
+
+  will return
+
+  ```js
+  {
+    public: { create: true, read: true, update: true, delete: true },
+    internal: { create: true, read: true, update: true, delete: true },
+  }
+  ```
+
 ## 10.7.2
 
 ### Patch Changes

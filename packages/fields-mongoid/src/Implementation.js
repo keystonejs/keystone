@@ -3,13 +3,13 @@ import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 export class MongoIdImplementation extends Implementation {
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ID`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [...this.equalityInputFields('ID'), ...this.inInputFields('ID')];
   }
   get gqlUpdateInputFields() {

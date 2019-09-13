@@ -5,7 +5,7 @@ class Field {
   constructor(
     path,
     { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
-    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
@@ -30,6 +30,7 @@ class Field {
     this.isRelationship = false;
 
     this.access = parseFieldAccess({
+      schemaNames,
       listKey,
       fieldKey: path,
       defaultAccess,
@@ -38,10 +39,10 @@ class Field {
   }
 
   // Field types should replace this if they want to any fields to the output type
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {};
   }
 
@@ -58,21 +59,21 @@ class Field {
   getGqlAuxTypes() {
     return [];
   }
-  get gqlAuxFieldResolvers() {
+  gqlAuxFieldResolvers() {
     return {};
   }
 
   getGqlAuxQueries() {
     return [];
   }
-  get gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers() {
     return {};
   }
 
   getGqlAuxMutations() {
     return [];
   }
-  get gqlAuxMutationResolvers() {
+  gqlAuxMutationResolvers() {
     return {};
   }
 
@@ -106,7 +107,7 @@ class Field {
 
   async afterDelete() {}
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [];
   }
   equalityInputFields(type) {
@@ -152,7 +153,8 @@ class Field {
   get gqlUpdateInputFields() {
     return [];
   }
-  getAdminMeta() {
+  getAdminMeta({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     return this.extendAdminMeta({
       label: this.label,
       path: this.path,
@@ -167,9 +169,9 @@ class Field {
       // and pass that through (we assume that if there is a function, it's a
       // "maybe" true, so default it to true).
       access: {
-        create: !!this.access.create,
-        read: !!this.access.read,
-        update: !!this.access.update,
+        create: !!schemaAccess.create,
+        read: !!schemaAccess.read,
+        update: !!schemaAccess.update,
       },
     });
   }
