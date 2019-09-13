@@ -14,6 +14,7 @@ const {
   objMerge,
   flatten,
   unique,
+  filterValues,
 } = require('@keystone-alpha/utils');
 const {
   validateFieldAccessControl,
@@ -292,6 +293,13 @@ module.exports = class Keystone {
     // not have any GraphQL operations performed on them
     const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
 
+    const mutations = unique(
+      flatten([
+        ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
+        this._extendedMutations.map(({ schema }) => schema),
+      ])
+    );
+
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGqlAuxTypes()` method, it will be
     // duplicated.
@@ -367,15 +375,13 @@ module.exports = class Keystone {
           """ Retrieve the meta-data for all lists. """
           _ksListsMeta: [_ListMeta]
        }`,
-      `type Mutation {
-          ${unique(
-            flatten([
-              ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
-              this._extendedMutations.map(({ schema }) => schema),
-            ])
-          ).join('\n')}
+      mutations.length > 0 &&
+        `type Mutation {
+          ${mutations.join('\n')}
        }`,
-    ].map(s => print(gql(s)));
+    ]
+      .filter(s => s)
+      .map(s => print(gql(s)));
   }
 
   // It's not Keystone core's responsibility to create an executable schema, but
@@ -451,38 +457,41 @@ module.exports = class Keystone {
           resolver(obj, args, context, info, { query: this._buildQueryHelper(context) }),
       };
     };
-    const resolvers = {
-      // Order of spreading is important here - we don't want user-defined types
-      // to accidentally override important things like `Query`.
-      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
-      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers({ schemaName }))),
+    const resolvers = filterValues(
+      {
+        // Order of spreading is important here - we don't want user-defined types
+        // to accidentally override important things like `Query`.
+        ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
+        ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers({ schemaName }))),
 
-      JSON: GraphQLJSON,
+        JSON: GraphQLJSON,
 
-      _QueryMeta: queryMetaResolver,
-      _ListMeta: listMetaResolver,
-      _ListAccess: listAccessResolver,
-      _ListSchema: listSchemaResolver,
+        _QueryMeta: queryMetaResolver,
+        _ListMeta: listMetaResolver,
+        _ListAccess: listAccessResolver,
+        _ListSchema: listSchemaResolver,
 
-      Query: {
-        // Order is also important here, any TypeQuery's defined by types
-        // shouldn't be able to override list-level queries
-        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
-        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
-        // And the Keystone meta queries must always be available
-        _ksListsMeta: (_, args, context) =>
-          this.listsArray
-            .filter(list => list.access[schemaName].read)
-            .map(list => list.listMeta(context)),
-        ...objMerge(this._extendedQueries.map(customResolver)),
+        Query: {
+          // Order is also important here, any TypeQuery's defined by types
+          // shouldn't be able to override list-level queries
+          ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
+          ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
+          // And the Keystone meta queries must always be available
+          _ksListsMeta: (_, args, context) =>
+            this.listsArray
+              .filter(list => list.access[schemaName].read)
+              .map(list => list.listMeta(context)),
+          ...objMerge(this._extendedQueries.map(customResolver)),
+        },
+
+        Mutation: {
+          ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
+          ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
+          ...objMerge(this._extendedMutations.map(customResolver)),
+        },
       },
-
-      Mutation: {
-        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
-        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
-        ...objMerge(this._extendedMutations.map(customResolver)),
-      },
-    };
+      o => Object.entries(o).length > 0
+    );
 
     if (debugGraphQLSchemas()) {
       console.log(resolvers);
