@@ -1,0 +1,1 @@
+Fix bug where a schema with no mutations would fail at schema generation time
