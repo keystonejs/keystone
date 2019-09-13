@@ -9,7 +9,7 @@ title: Access Control
 
 ## Intro
 
-There are 2 ways of effecting the available actions of a user in Keystone:
+There are 2 ways of affecting the available actions of a user in Keystone:
 
 1. Admin UI authentication
 2. GraphQL access control
