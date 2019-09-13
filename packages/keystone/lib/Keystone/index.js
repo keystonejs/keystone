@@ -331,7 +331,11 @@ module.exports = class Keystone {
           """Access Control settings for the currently logged in (or anonymous)
              user when performing 'delete' operations."""
           delete: JSON
-       }`,
+
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'auth' operations."""
+          auth: JSON
+        }`,
       `type _ListSchemaRelatedFields {
         """The typename as used in GraphQL queries"""
         type: String
@@ -416,6 +420,7 @@ module.exports = class Keystone {
       read: access => access.getRead(),
       update: access => access.getUpdate(),
       delete: access => access.getDelete(),
+      auth: access => access.getAuth(),
     };
 
     // Aux lists are only there for typing and internal operations, they should

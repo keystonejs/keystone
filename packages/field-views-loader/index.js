@@ -50,7 +50,7 @@ module.exports = function() {
       lists: {
         [listPath]: {  // e.g "User"
           ...
-          access: { create, read, update, delete },
+          access: { create, read, update, delete, auth },
           views: {
             [fieldPath]: {  // e.g 'email'
               Controller: 'absolute/path/to/controller',

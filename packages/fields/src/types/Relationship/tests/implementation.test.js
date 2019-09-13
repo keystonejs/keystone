@@ -385,6 +385,7 @@ describe('Referenced list errors', () => {
         read: true,
         update: true,
         delete: true,
+        auth: true,
       },
     },
   };
