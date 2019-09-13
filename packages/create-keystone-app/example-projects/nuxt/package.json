@@ -16,10 +16,10 @@
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^4.0.0",
     "@keystone-alpha/app-admin-ui": "^5.2.0",
-    "@keystone-alpha/app-graphql": "^7.0.0",
-    "@keystone-alpha/app-nuxt": "^0.0.1",
-    "@keystone-alpha/keystone": "^13.0.0",
-    "@keystone-alpha/fields": "^10.7.2",
+    "@keystone-alpha/app-graphql": "^8.0.0",
+    "@keystone-alpha/app-nuxt": "^1.0.0",
+    "@keystone-alpha/keystone": "^14.0.0",
+    "@keystone-alpha/fields": "^11.0.0",
     "cross-env": "^5.2.0",
     "express": "^4.17.1",
     "nuxt": "^2.9.2"

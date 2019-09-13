@@ -9,10 +9,13 @@ const nuxtConfig = {
   buildDir: 'dist',
 };
 
+/* keystone-cli: generated-code */
 const { MongooseAdapter: Adapter } = require('@keystone-alpha/adapter-mongoose');
+const PROJECT_NAME = 'Nuxt';
+/* /keystone-cli: generated-code */
 
 const keystone = new Keystone({
-  name: 'nuxt',
+  name: PROJECT_NAME,
   adapter: new Adapter(),
 });
 

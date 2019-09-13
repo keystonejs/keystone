@@ -28,8 +28,11 @@
 
       <!-- Todo list -->
       <div class="results">
+        <!-- Data not loaded yet -->
+        <p v-if="!todos">loading...</p>
+
         <!-- If there are no todos... -->
-        <p v-if="!todos.length">loading...</p>
+        <p v-if="!todos.length">No todo items yet. Create one above! ☝️</p>
         <!-- If there are some... -->
         <ul v-else class="list">
           <li v-for="todo in todos" :key="todo.id" class="list-item">
@@ -104,7 +107,6 @@ export default {
   data() {
     return {
       newTodo: '',
-      todos: [],
     };
   },
   // Get the todo items on server side
