@@ -97,7 +97,6 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   spinner.succeed('Initialised Keystone instance');
   spinner.start('Connecting to database');
-  console.log('\n');
 
   status = 'db-connect';
 
