@@ -77,7 +77,7 @@ module.exports = class Keystone {
       this.adapters = { [adapter.constructor.name]: adapter };
       this.defaultAdapter = adapter.constructor.name;
     } else {
-      throw new Error('Need an adapter, yo');
+      throw new Error('No database adapter provided');
     }
 
     // Placeholder until keystone.prepare() is run during which this function
