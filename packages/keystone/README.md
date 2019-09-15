@@ -56,6 +56,23 @@ Registers a new list with Keystone and returns a Keystone list object.
 | `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                     |
 | `config`  | `Object` | `{}`    | The list config. See the [createList API](https://v5.keystonejs.com/api/create-list) page for more details. |
 
+## createLists(items)
+
+Allows bulk creation of multiple lists.
+
+### Usage
+
+Takes a single object whose key, value pairs equate to the `listKey` and `config` parameters of `createList`.
+
+```javascript
+// Creates three lists named 'Foo', 'Bar', and 'Bat' with their respective config settings.
+keystone.createLists({
+  Foo: { /*...config */ },
+  Bar: { /*...config */ },
+  Bat: { /*...config */ },
+});
+```
+
 ## extendGraphQLSchema(config)
 
 Extends keystones generated schema with custom types, queries, and mutations.

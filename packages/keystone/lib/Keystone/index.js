@@ -238,6 +238,10 @@ module.exports = class Keystone {
     return list;
   }
 
+  createLists(listsToCreate) {
+    Object.entries(listsToCreate).forEach(([name, config]) => this.createList(name, config));
+  }
+
   extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
     this._extendedTypes = this._extendedTypes.concat(types);
     this._extendedQueries = this._extendedQueries.concat(queries);
