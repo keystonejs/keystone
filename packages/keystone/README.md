@@ -6,6 +6,35 @@ order: 1
 
 # keystone
 
+## Constructor
+
+### Usage
+
+```javascript
+const { Keystone } = require('@keystone-alpha/keystone');
+
+const keystone = new Keystone({
+  /*...config */
+});
+```
+
+### Config
+
+| Option                  | Type       | Default    | Description                                                                                                                                                 |
+| ----------------------- | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                           |
+| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://v5.keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details.           |
+| `adapters`              | `Array`    | `[]`       |                                                                                                                                                             |
+| `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                             |
+| `adapterConnectOptions` | `Object`   | `{}`       |                                                                                                                                                             |
+| `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                             |
+| `onConnect`             | `Function` | `null`     |                                                                                                                                                             |
+| `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                             |
+| `cookieMaxAge`          | `Int`      | 30 days    |                                                                                                                                                             |
+| `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                                       |
+| `sessionStore`          | `Object`   | `null`     |                                                                                                                                                             |
+| `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                             |
+
 ## Methods
 
 | Method                | Description                                                                  |
@@ -13,7 +42,7 @@ order: 1
 | `createList`          | Add a list to the Keystone schema.                                           |
 | `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
 | `connect`             | Manually connect to Adapters.                                                |
-| `prepare`             | Manually peapare Keystone middlewares.                                       |
+| `prepare`             | Manually prepare Keystone middlewares.                                       |
 | `createItems`         | Add items to a Keystone list.                                                |
 | `disconnect`          | Disconnect from all adapters.                                                |
 | `executeQuery`        | Run GraphQL queries and mutations directly against a Keystone instance.      |
