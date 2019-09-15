@@ -8,7 +8,7 @@ title: DateTimeUtc
 
 `DateTimeUtc` fields represent points in time.
 
-Accepts only values that include an offset, explicitly or implicity (as in JS `Date` objects).
+Accepts only values that include an offset, explicitly or implicitly (as in JS `Date` objects).
 Produces JS `Date` objects and ISO 8601 strings.
 
 Unlike the core `DateTime` field type only the UTC value is stored.
