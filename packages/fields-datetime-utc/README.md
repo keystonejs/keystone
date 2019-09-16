@@ -18,7 +18,6 @@ Unlike the core `DateTime` field type only the UTC value is stored.
 ```js
 keystone.createList('User', {
   fields: {
-    email: { type: Text },
     lastOnline: { type: DateTimeUtc },
   },
 });
