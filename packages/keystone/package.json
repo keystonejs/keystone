@@ -19,7 +19,7 @@
     "@keystone-alpha/session": "^2.0.1",
     "@keystone-alpha/utils": "^3.0.2",
     "apollo-errors": "^1.9.0",
-    "arg": "^4.1.0",
+    "arg": "^4.1.1",
     "chalk": "^2.4.2",
     "ci-info": "^2.0.0",
     "dev-null": "^0.1.1",
