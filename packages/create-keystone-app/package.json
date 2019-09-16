@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@sindresorhus/slugify": "^0.6.0",
-    "arg": "^4.1.0",
+    "arg": "^4.1.1",
     "cfonts": "^2.4.4",
     "chalk": "^2.4.2",
     "execa": "^2.0.4",
