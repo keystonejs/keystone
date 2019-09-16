@@ -341,7 +341,13 @@ module.exports = class List {
     const schemaAccess = this.access[schemaName];
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
     const types = [];
-    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
+    if (
+      schemaAccess.read ||
+      schemaAccess.create ||
+      schemaAccess.update ||
+      schemaAccess.delete ||
+      schemaAccess.auth
+    ) {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ schemaName }))),
         `
@@ -422,7 +428,7 @@ module.exports = class List {
       `);
     }
 
-    if (this.hasAuth()) {
+    if (this.hasAuth() && schemaAccess.auth) {
       // If auth is enabled for this list (doesn't matter what strategy)
       types.push(`
         type ${this.gqlNames.unauthenticateOutputName} {
@@ -492,7 +498,7 @@ module.exports = class List {
       );
     }
 
-    if (this.hasAuth()) {
+    if (this.hasAuth() && schemaAccess.auth) {
       // If auth is enabled for this list (doesn't matter what strategy)
       queries.push(`${this.gqlNames.authenticatedQueryName}: ${this.gqlNames.outputTypeName}`);
     }
@@ -637,7 +643,7 @@ module.exports = class List {
       `);
     }
 
-    if (this.hasAuth()) {
+    if (this.hasAuth() && schemaAccess.auth) {
       // If auth is enabled for this list (doesn't matter what strategy)
       mutations.push(
         `${this.gqlNames.unauthenticateMutationName}: ${this.gqlNames.unauthenticateOutputName}`
@@ -846,7 +852,7 @@ module.exports = class List {
     // NOTE: This query is not effected by the read permissions; if the user can
     // authenticate themselves, then they already have access to know that the
     // list exists
-    if (this.hasAuth()) {
+    if (this.hasAuth() && schemaAccess.auth) {
       resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
         this.authenticatedQuery(context);
     }
@@ -888,6 +894,7 @@ module.exports = class List {
         getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read'),
         getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update'),
         getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
+        getAuth: () => context.getListAccessControlForUser(this.key, undefined, 'auth'),
       }),
       getSchema: () => {
         const queries = [
@@ -977,14 +984,19 @@ module.exports = class List {
       return null;
     }
 
+    const queryName = this.gqlNames.authenticatedQueryName;
+    const access = this.checkListAccess(context, undefined, 'auth', { queryName });
     return this.itemQuery(
-      { where: { id: context.authedItem.id } },
+      mergeWhereClause({ where: { id: context.authedItem.id } }, access),
       context,
       this.gqlNames.authenticatedQueryName
     );
   }
 
   async authenticateMutation(authType, args, context) {
+    const queryName = getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType);
+    this.checkListAccess(context, undefined, 'auth', { queryName });
+
     // This is currently hard coded to enable authenticating with the admin UI.
     // In the near future we will set up the admin-ui application and api to be
     // non-public.
@@ -1007,6 +1019,9 @@ module.exports = class List {
   }
 
   async unauthenticateMutation(context) {
+    const queryName = this.gqlNames.unauthenticateMutationName;
+    this.checkListAccess(context, undefined, 'auth', { queryName });
+
     await context.endAuthedSession();
     return { success: true };
   }
@@ -1042,7 +1057,7 @@ module.exports = class List {
     // NOTE: This query is not effected by the read permissions; if the user can
     // authenticate themselves, then they already have access to know that the
     // list exists
-    if (this.hasAuth()) {
+    if (this.hasAuth() && schemaAccess.auth) {
       mutationResolvers[this.gqlNames.unauthenticateMutationName] = (_, __, context) =>
         this.unauthenticateMutation(context);
 
