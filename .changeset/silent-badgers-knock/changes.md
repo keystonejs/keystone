@@ -1,0 +1,1 @@
+Change FileAdapter API from: `{ route, directory }` to `{ path, src }` to match other packages.

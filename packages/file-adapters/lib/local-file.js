@@ -3,11 +3,11 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 
 module.exports = class LocalFileAdapter {
-  constructor({ directory, route }) {
-    this.directory = path.resolve(directory);
-    this.route = route;
+  constructor({ src, path }) {
+    this.src = path.resolve(src);
+    this.path = path;
 
-    mkdirp.sync(this.directory);
+    mkdirp.sync(this.src);
   }
 
   /**
@@ -15,7 +15,7 @@ module.exports = class LocalFileAdapter {
    */
   save({ stream, filename: originalFilename, id }) {
     const filename = `${id}-${originalFilename}`;
-    const filePath = path.join(this.directory, filename);
+    const filePath = path.join(this.src, filename);
     return new Promise((resolve, reject) =>
       stream
         .on('error', error => {
@@ -35,6 +35,6 @@ module.exports = class LocalFileAdapter {
    * Params: { id, filename }
    */
   publicUrl({ filename }) {
-    return `${this.route}/${filename}`;
+    return `${this.path}/${filename}`;
   }
 };

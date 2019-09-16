@@ -12,4 +12,13 @@ Different contexts are supported by different file adapters. This package contai
 
 ## `LocalFileAdapter`
 
+### Usage
+
+```javascript
+const fileAdapter = new LocalFileAdapter({
+  src: './files',
+  path: '/public',
+});
+```
+
 ## `CloudinaryFileAdapter`
