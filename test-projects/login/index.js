@@ -14,11 +14,13 @@ const {
   byTracking,
 } = require('@keystone-alpha/list-plugins');
 
+const defaultAccess = ({ authentication: { item } }) => !!item;
+
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
   adapter: new MongooseAdapter(),
   defaultAccess: {
-    list: ({ authentication: { item } }) => !!item,
+    list: defaultAccess,
   },
 });
 
@@ -37,6 +39,13 @@ keystone.createList('User', {
     isAdmin: { type: Checkbox },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
+  access: {
+    create: defaultAccess,
+    read: defaultAccess,
+    update: defaultAccess,
+    delete: defaultAccess,
+    auth: true,
+  },
 });
 
 keystone.createList('Post', {
