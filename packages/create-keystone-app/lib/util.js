@@ -22,9 +22,15 @@ const getProjectDirectory = async () => {
 // execute a child process in the new project directory
 const exec = async cmd => {
   const newProjectDir = await getProjectDirectory();
-  return execa.commandSync(cmd, {
-    cwd: path.resolve(newProjectDir),
-  });
+  let result = false;
+  try {
+    result = execa.commandSync(cmd, {
+      cwd: path.resolve(newProjectDir),
+    });
+  } catch (error) {
+    result = error;
+  }
+  return result;
 };
 
 module.exports = {

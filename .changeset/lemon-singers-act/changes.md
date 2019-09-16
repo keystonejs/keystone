@@ -1,0 +1,1 @@
+Only generate relationship update types when needed

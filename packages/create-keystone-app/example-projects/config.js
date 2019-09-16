@@ -33,6 +33,12 @@ const projects = [
       'A very simple Todo app with a static front-end written in good old HTML, CSS and JavaScript.',
     adapters,
   },
+  {
+    folder: 'nuxt',
+    title: 'Nuxt',
+    description: 'A simple app using the NuxtJS front-end framework.',
+    adapters,
+  },
 ];
 
 module.exports = {

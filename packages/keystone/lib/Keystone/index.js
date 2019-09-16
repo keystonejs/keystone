@@ -3,6 +3,8 @@ const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
 const fastMemoize = require('fast-memoize');
+const falsey = require('falsey');
+const createCorsMiddleware = require('cors');
 const { print } = require('graphql/language/printer');
 const { graphql } = require('graphql');
 const {
@@ -12,6 +14,7 @@ const {
   objMerge,
   flatten,
   unique,
+  filterValues,
 } = require('@keystone-alpha/utils');
 const {
   validateFieldAccessControl,
@@ -74,7 +77,7 @@ module.exports = class Keystone {
       this.adapters = { [adapter.constructor.name]: adapter };
       this.defaultAdapter = adapter.constructor.name;
     } else {
-      throw new Error('Need an adapter, yo');
+      throw new Error('No database adapter provided');
     }
 
     // Placeholder until keystone.prepare() is run during which this function
@@ -290,6 +293,13 @@ module.exports = class Keystone {
     // not have any GraphQL operations performed on them
     const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
 
+    const mutations = unique(
+      flatten([
+        ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
+        this._extendedMutations.map(({ schema }) => schema),
+      ])
+    );
+
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGqlAuxTypes()` method, it will be
     // duplicated.
@@ -321,7 +331,11 @@ module.exports = class Keystone {
           """Access Control settings for the currently logged in (or anonymous)
              user when performing 'delete' operations."""
           delete: JSON
-       }`,
+
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'auth' operations."""
+          auth: JSON
+        }`,
       `type _ListSchemaRelatedFields {
         """The typename as used in GraphQL queries"""
         type: String
@@ -365,15 +379,13 @@ module.exports = class Keystone {
           """ Retrieve the meta-data for all lists. """
           _ksListsMeta: [_ListMeta]
        }`,
-      `type Mutation {
-          ${unique(
-            flatten([
-              ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
-              this._extendedMutations.map(({ schema }) => schema),
-            ])
-          ).join('\n')}
+      mutations.length > 0 &&
+        `type Mutation {
+          ${mutations.join('\n')}
        }`,
-    ].map(s => print(gql(s)));
+    ]
+      .filter(s => s)
+      .map(s => print(gql(s)));
   }
 
   // It's not Keystone core's responsibility to create an executable schema, but
@@ -408,6 +420,7 @@ module.exports = class Keystone {
       read: access => access.getRead(),
       update: access => access.getUpdate(),
       delete: access => access.getDelete(),
+      auth: access => access.getAuth(),
     };
 
     // Aux lists are only there for typing and internal operations, they should
@@ -449,38 +462,41 @@ module.exports = class Keystone {
           resolver(obj, args, context, info, { query: this._buildQueryHelper(context) }),
       };
     };
-    const resolvers = {
-      // Order of spreading is important here - we don't want user-defined types
-      // to accidentally override important things like `Query`.
-      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
-      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers({ schemaName }))),
+    const resolvers = filterValues(
+      {
+        // Order of spreading is important here - we don't want user-defined types
+        // to accidentally override important things like `Query`.
+        ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
+        ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers({ schemaName }))),
 
-      JSON: GraphQLJSON,
+        JSON: GraphQLJSON,
 
-      _QueryMeta: queryMetaResolver,
-      _ListMeta: listMetaResolver,
-      _ListAccess: listAccessResolver,
-      _ListSchema: listSchemaResolver,
+        _QueryMeta: queryMetaResolver,
+        _ListMeta: listMetaResolver,
+        _ListAccess: listAccessResolver,
+        _ListSchema: listSchemaResolver,
 
-      Query: {
-        // Order is also important here, any TypeQuery's defined by types
-        // shouldn't be able to override list-level queries
-        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
-        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
-        // And the Keystone meta queries must always be available
-        _ksListsMeta: (_, args, context) =>
-          this.listsArray
-            .filter(list => list.access[schemaName].read)
-            .map(list => list.listMeta(context)),
-        ...objMerge(this._extendedQueries.map(customResolver)),
+        Query: {
+          // Order is also important here, any TypeQuery's defined by types
+          // shouldn't be able to override list-level queries
+          ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
+          ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
+          // And the Keystone meta queries must always be available
+          _ksListsMeta: (_, args, context) =>
+            this.listsArray
+              .filter(list => list.access[schemaName].read)
+              .map(list => list.listMeta(context)),
+          ...objMerge(this._extendedQueries.map(customResolver)),
+        },
+
+        Mutation: {
+          ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
+          ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
+          ...objMerge(this._extendedMutations.map(customResolver)),
+        },
       },
-
-      Mutation: {
-        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
-        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
-        ...objMerge(this._extendedMutations.map(customResolver)),
-      },
-    };
+      o => Object.entries(o).length > 0
+    );
 
     if (debugGraphQLSchemas()) {
       console.log(resolvers);
@@ -543,7 +559,13 @@ module.exports = class Keystone {
     return mergeRelationships(createdItems, createdRelationships);
   }
 
-  async prepare({ dev = false, apps = [], distDir } = {}) {
+  async prepare({
+    dev = false,
+    apps = [],
+    distDir,
+    pinoOptions,
+    cors = { origin: true, credentials: true },
+  } = {}) {
     const middlewares = flattenDeep([
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
@@ -555,6 +577,8 @@ module.exports = class Keystone {
         secureCookies: this._secureCookies,
         cookieMaxAge: this._cookieMaxAge,
       }),
+      falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
+      cors && createCorsMiddleware(cors),
       ...(await Promise.all(
         [
           // Inject any field middlewares (eg; WYSIWIG's static assets)

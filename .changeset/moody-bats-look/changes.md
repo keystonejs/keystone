@@ -1,1 +1,0 @@
-Adding new "app-nuxt" package in @keystone-alpha

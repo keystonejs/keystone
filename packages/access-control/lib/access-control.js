@@ -8,40 +8,10 @@ const validateGranularConfigTypes = (longHandAccess, validationError) => {
   if (errors.length) {
     throw new Error(errors.join('\n'));
   }
+  return longHandAccess;
 };
 
-const parseGranularAccessConfig = ({
-  accessTypes,
-  access,
-  defaultAccess,
-  onGranularParseError,
-  validateGranularType,
-}) => {
-  const longHandAccess = pick(access, accessTypes);
-
-  // An object was supplied, but it has the wrong keys (it's probably a
-  // declarative access control config being used as a shorthand, which
-  // isn't possible [due to `create` not supporting declarative config])
-  if (Object.keys(longHandAccess).length === 0) {
-    onGranularParseError();
-  }
-  // Construct an object with all keys
-  const finalAccess = {
-    ...defaultObj(accessTypes, defaultAccess),
-    ...longHandAccess,
-  };
-  validateGranularConfigTypes(finalAccess, validateGranularType);
-
-  return finalAccess;
-};
-
-const parseAccessCore = ({
-  accessTypes,
-  access,
-  defaultAccess,
-  onGranularParseError,
-  validateGranularType,
-}) => {
+const parseAccessCore = ({ accessTypes, access, defaultAccess, onGranularParseError }) => {
   const type = getType(access);
   switch (type) {
     case 'Boolean':
@@ -49,13 +19,13 @@ const parseAccessCore = ({
       return defaultObj(accessTypes, access);
 
     case 'Object':
-      return parseGranularAccessConfig({
-        accessTypes,
-        access,
-        defaultAccess,
-        onGranularParseError,
-        validateGranularType,
-      });
+      // An object was supplied, but it has the wrong keys (it's probably a
+      // declarative access control config being used as a shorthand, which
+      // isn't possible [due to `create` not supporting declarative config])
+      if (Object.keys(pick(access, accessTypes)).length === 0) {
+        onGranularParseError();
+      }
+      return { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
 
     default:
       throw new Error(
@@ -83,44 +53,45 @@ const parseAccess = ({
 
   const providedNameCount = intersection(Object.keys(access), schemaNames).length;
   const type = getType(access);
-  if (type === 'Object' && providedNameCount === Object.keys(access).length) {
-    // If all the keys are in schemaNames, parse each on their own
-    return schemaNames.reduce(
-      (acc, schemaName) => ({
-        ...acc,
-        [schemaName]: parseAccessCore({
-          accessTypes,
-          access: access.hasOwnProperty(schemaName) ? access[schemaName] : defaultAccess,
-          defaultAccess,
-          onGranularParseError,
-          validateGranularType,
-        }),
-      }),
-      {}
-    );
-  } else if (type === 'Object' && providedNameCount > 0) {
+
+  if (
+    type === 'Object' &&
+    providedNameCount > 0 &&
+    providedNameCount < Object.keys(access).length
+  ) {
     // If some are in, and some are out, throw an error!
     throw new Error(
       `Invalid schema names: ${JSON.stringify(
         Object.keys(access).filter(k => !schemaNames.includes(k))
       )}`
     );
-  } else {
-    // Otherwise, treat it as common across all schemaNames
-    const commonAccess = parseAccessCore({
-      accessTypes,
-      access,
-      defaultAccess,
-      onGranularParseError,
-      validateGranularType,
-    });
-    return schemaNames.reduce((acc, schemaName) => ({ ...acc, [schemaName]: commonAccess }), {});
   }
+
+  const namesProvided = type === 'Object' && providedNameCount === Object.keys(access).length;
+  return schemaNames.reduce(
+    (acc, schemaName) => ({
+      ...acc,
+      [schemaName]: validateGranularConfigTypes(
+        parseAccessCore({
+          accessTypes,
+          access: namesProvided
+            ? access.hasOwnProperty(schemaName) // If all the keys are in schemaNames, parse each on their own
+              ? access[schemaName]
+              : defaultAccess
+            : access, // Otherwise, treat it as common across all schemaNames
+          defaultAccess,
+          onGranularParseError,
+        }),
+        validateGranularType
+      ),
+    }),
+    {}
+  );
 };
 
 module.exports = {
   parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
-    const accessTypes = ['create', 'read', 'update', 'delete'];
+    const accessTypes = ['create', 'read', 'update', 'delete', 'auth'];
 
     return parseAccess({
       schemaNames,

@@ -286,6 +286,7 @@ describe('new List()', () => {
         delete: true,
         read: true,
         update: true,
+        auth: true,
       },
     });
   });
@@ -437,6 +438,7 @@ describe('getAdminMeta()', () => {
       delete: true,
       read: true,
       update: true,
+      auth: true,
     });
     expect(adminMeta.label).toEqual('Tests');
     expect(adminMeta.singular).toEqual('Test');
@@ -527,212 +529,224 @@ describe('getAdminMeta()', () => {
 });
 
 [false, true].forEach(withAuth => {
-  test(`getGqlTypes() ${withAuth ? 'with' : 'without'} auth`, () => {
-    const otherInput = `input OtherRelateToOneInput {
-      create: createOther
-      connect: OtherWhereUniqueInput
-      disconnect: OtherWhereUniqueInput
-      disconnectAll: Boolean
-    }`;
-    const type = `""" A keystone list """
-    type Test {
+  [false, true].forEach(auth => {
+    describe(`getGqlTypes() ${
+      withAuth ? 'with' : 'without'
+    } auth (access: { auth: ${auth} })`, () => {
+      const type = `""" A keystone list """
+      type Test {
+        """
+        This virtual field will be resolved in one of the following ways (in this order):
+        1. Execution of 'labelResolver' set on the Test List config, or
+        2. As an alias to the field set on 'labelField' in the Test List config, or
+        3. As an alias to a 'name' field on the Test List (if one exists), or
+        4. As an alias to the 'id' field on the Test List.
+        """
+        _label_: String
+        id: ID
+        name: String
+        email: String
+        other: Other
+        writeOnce: String
+      }`;
+      const whereInput = `input TestWhereInput {
+        AND: [TestWhereInput]
+        OR: [TestWhereInput]
+        id: ID
+        name: String
+        name_not: String
+        name_contains: String
+        name_not_contains: String
+        name_starts_with: String
+        name_not_starts_with: String
+        name_ends_with: String
+        name_not_ends_with: String
+        name_i: String
+        name_not_i: String
+        name_contains_i: String
+        name_not_contains_i: String
+        name_starts_with_i: String
+        name_not_starts_with_i: String
+        name_ends_with_i: String
+        name_not_ends_with_i: String
+        name_in: [String]
+        name_not_in: [String]
+        email: String
+        email_not: String
+        email_contains: String
+        email_not_contains: String
+        email_starts_with: String
+        email_not_starts_with: String
+        email_ends_with: String
+        email_not_ends_with: String
+        email_i: String
+        email_not_i: String
+        email_contains_i: String
+        email_not_contains_i: String
+        email_starts_with_i: String
+        email_not_starts_with_i: String
+        email_ends_with_i: String
+        email_not_ends_with_i: String
+        email_in: [String]
+        email_not_in: [String]
+        other: OtherWhereInput
+        other_is_null: Boolean
+        writeOnce: String
+        writeOnce_not: String
+        writeOnce_contains: String
+        writeOnce_not_contains: String
+        writeOnce_starts_with: String
+        writeOnce_not_starts_with: String
+        writeOnce_ends_with: String
+        writeOnce_not_ends_with: String
+        writeOnce_i: String
+        writeOnce_not_i: String
+        writeOnce_contains_i: String
+        writeOnce_not_contains_i: String
+        writeOnce_starts_with_i: String
+        writeOnce_not_starts_with_i: String
+        writeOnce_ends_with_i: String
+        writeOnce_not_ends_with_i: String
+        writeOnce_in: [String]
+        writeOnce_not_in: [String]
+      }`;
+      const whereUniqueInput = `input TestWhereUniqueInput {
+        id: ID!
+      }`;
+      const updateInput = `input TestUpdateInput {
+        name: String
+        email: String
+        other: OtherRelateToOneInput
+        hidden: String
+      }`;
+      const updateManyInput = `input TestsUpdateInput {
+        id: ID!
+        data: TestUpdateInput
+      }`;
+      const createInput = `input TestCreateInput {
+        name: String
+        email: String
+        other: OtherRelateToOneInput
+        hidden: String
+        writeOnce: String
+      }`;
+      const createManyInput = `input TestsCreateInput {
+        data: TestCreateInput
+      }`;
+      const unauthenticateOutput = `type unauthenticateTestOutput {
       """
-      This virtual field will be resolved in one of the following ways (in this order):
-       1. Execution of 'labelResolver' set on the Test List config, or
-       2. As an alias to the field set on 'labelField' in the Test List config, or
-       3. As an alias to a 'name' field on the Test List (if one exists), or
-       4. As an alias to the 'id' field on the Test List.
-      """
-      _label_: String
-      id: ID
-      name: String
-      email: String
-      other: Other
-      writeOnce: String
-    }`;
-    const whereInput = `input TestWhereInput {
-      AND: [TestWhereInput]
-      OR: [TestWhereInput]
-      id: ID
-      name: String
-      name_not: String
-      name_contains: String
-      name_not_contains: String
-      name_starts_with: String
-      name_not_starts_with: String
-      name_ends_with: String
-      name_not_ends_with: String
-      name_i: String
-      name_not_i: String
-      name_contains_i: String
-      name_not_contains_i: String
-      name_starts_with_i: String
-      name_not_starts_with_i: String
-      name_ends_with_i: String
-      name_not_ends_with_i: String
-      name_in: [String]
-      name_not_in: [String]
-      email: String
-      email_not: String
-      email_contains: String
-      email_not_contains: String
-      email_starts_with: String
-      email_not_starts_with: String
-      email_ends_with: String
-      email_not_ends_with: String
-      email_i: String
-      email_not_i: String
-      email_contains_i: String
-      email_not_contains_i: String
-      email_starts_with_i: String
-      email_not_starts_with_i: String
-      email_ends_with_i: String
-      email_not_ends_with_i: String
-      email_in: [String]
-      email_not_in: [String]
-      other: OtherWhereInput
-      other_is_null: Boolean
-      writeOnce: String
-      writeOnce_not: String
-      writeOnce_contains: String
-      writeOnce_not_contains: String
-      writeOnce_starts_with: String
-      writeOnce_not_starts_with: String
-      writeOnce_ends_with: String
-      writeOnce_not_ends_with: String
-      writeOnce_i: String
-      writeOnce_not_i: String
-      writeOnce_contains_i: String
-      writeOnce_not_contains_i: String
-      writeOnce_starts_with_i: String
-      writeOnce_not_starts_with_i: String
-      writeOnce_ends_with_i: String
-      writeOnce_not_ends_with_i: String
-      writeOnce_in: [String]
-      writeOnce_not_in: [String]
-    }`;
-    const whereUniqueInput = `input TestWhereUniqueInput {
-      id: ID!
-    }`;
-    const updateInput = `input TestUpdateInput {
-      name: String
-      email: String
-      other: OtherRelateToOneInput
-      hidden: String
-    }`;
-    const updateManyInput = `input TestsUpdateInput {
-      id: ID!
-      data: TestUpdateInput
-    }`;
-    const createInput = `input TestCreateInput {
-      name: String
-      email: String
-      other: OtherRelateToOneInput
-      hidden: String
-      writeOnce: String
-    }`;
-    const createManyInput = `input TestsCreateInput {
-      data: TestCreateInput
-    }`;
-    const unauthenticateOutput = `type unauthenticateTestOutput {
-      """
-      \`true\` when unauthentication succeeds.
-      NOTE: unauthentication always succeeds when the request has an invalid or missing authentication token.
-      """
-      success: Boolean
-    }`;
-    const authenticateOutput = `type authenticateTestOutput {
-      """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
-      token: String
-      """ Retreive information on the newly authenticated Test here. """
-      item: Test
-    }`;
+        \`true\` when unauthentication succeeds.
+        NOTE: unauthentication always succeeds when the request has an invalid or missing authentication token.
+        """
+        success: Boolean
+      }`;
+      const authenticateOutput = `type authenticateTestOutput {
+        """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
+        token: String
+        """ Retreive information on the newly authenticated Test here. """
+        item: Test
+      }`;
 
-    const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
-    const schemaName = 'public';
-    expect(
-      setup({ access: true }, getAuth)
-        .getGqlTypes({ schemaName })
-        .map(s => print(gql(s)))
-    ).toEqual(
-      [
-        otherInput,
-        type,
-        whereInput,
-        whereUniqueInput,
-        updateInput,
-        updateManyInput,
-        createInput,
-        createManyInput,
-        ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
-      ].map(s => print(gql(s)))
-    );
-
-    expect(
-      setup({ access: false }, getAuth)
-        .getGqlTypes({ schemaName })
-        .map(s => print(gql(s)))
-    ).toEqual(
-      [...(withAuth ? [unauthenticateOutput, authenticateOutput] : [])].map(s => print(gql(s)))
-    );
-
-    expect(
-      setup({ access: { read: true, create: false, update: false, delete: false } }, getAuth)
-        .getGqlTypes({ schemaName })
-        .map(s => print(gql(s)))
-    ).toEqual(
-      [
-        otherInput,
-        type,
-        whereInput,
-        whereUniqueInput,
-        ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
-      ].map(s => print(gql(s)))
-    );
-
-    expect(
-      setup({ access: { read: false, create: true, update: false, delete: false } }, getAuth)
-        .getGqlTypes({ schemaName })
-        .map(s => print(gql(s)))
-    ).toEqual(
-      [
-        otherInput,
-        type,
-        whereInput,
-        whereUniqueInput,
-        createInput,
-        createManyInput,
-        ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
-      ].map(s => print(gql(s)))
-    );
-    expect(
-      setup({ access: { read: false, create: false, update: true, delete: false } }, getAuth)
-        .getGqlTypes({ schemaName })
-        .map(s => print(gql(s)))
-    ).toEqual(
-      [
-        otherInput,
-        type,
-        whereInput,
-        whereUniqueInput,
-        updateInput,
-        updateManyInput,
-        ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
-      ].map(s => print(gql(s)))
-    );
-    expect(
-      setup({ access: { read: false, create: false, update: false, delete: true } }, getAuth)
-        .getGqlTypes({ schemaName })
-        .map(s => print(gql(s)))
-    ).toEqual(
-      [
-        otherInput,
-        type,
-        whereInput,
-        whereUniqueInput,
-        ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
-      ].map(s => print(gql(s)))
-    );
+      const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
+      const schemaName = 'public';
+      test('access: true', () => {
+        expect(
+          setup({ access: true }, getAuth)
+            .getGqlTypes({ schemaName })
+            .map(s => print(gql(s)))
+        ).toEqual(
+          [
+            type,
+            whereInput,
+            whereUniqueInput,
+            updateInput,
+            updateManyInput,
+            createInput,
+            createManyInput,
+            ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
+          ].map(s => print(gql(s)))
+        );
+      });
+      test('access: false', () => {
+        expect(
+          setup({ access: false }, getAuth)
+            .getGqlTypes({ schemaName })
+            .map(s => print(gql(s)))
+        ).toEqual([]);
+      });
+      test('read: true', () => {
+        expect(
+          setup(
+            { access: { read: true, create: false, update: false, delete: false, auth } },
+            getAuth
+          )
+            .getGqlTypes({ schemaName })
+            .map(s => print(gql(s)))
+        ).toEqual(
+          [
+            type,
+            whereInput,
+            whereUniqueInput,
+            ...(withAuth && auth ? [unauthenticateOutput, authenticateOutput] : []),
+          ].map(s => print(gql(s)))
+        );
+      });
+      test('create: true', () => {
+        expect(
+          setup(
+            { access: { read: false, create: true, update: false, delete: false, auth } },
+            getAuth
+          )
+            .getGqlTypes({ schemaName })
+            .map(s => print(gql(s)))
+        ).toEqual(
+          [
+            type,
+            whereInput,
+            whereUniqueInput,
+            createInput,
+            createManyInput,
+            ...(withAuth && auth ? [unauthenticateOutput, authenticateOutput] : []),
+          ].map(s => print(gql(s)))
+        );
+      });
+      test('update: true', () => {
+        expect(
+          setup(
+            { access: { read: false, create: false, update: true, delete: false, auth } },
+            getAuth
+          )
+            .getGqlTypes({ schemaName })
+            .map(s => print(gql(s)))
+        ).toEqual(
+          [
+            type,
+            whereInput,
+            whereUniqueInput,
+            updateInput,
+            updateManyInput,
+            ...(withAuth && auth ? [unauthenticateOutput, authenticateOutput] : []),
+          ].map(s => print(gql(s)))
+        );
+      });
+      test('delete: true', () => {
+        expect(
+          setup(
+            { access: { read: false, create: false, update: false, delete: true, auth } },
+            getAuth
+          )
+            .getGqlTypes({ schemaName })
+            .map(s => print(gql(s)))
+        ).toEqual(
+          [
+            type,
+            whereInput,
+            whereUniqueInput,
+            ...(withAuth && auth ? [unauthenticateOutput, authenticateOutput] : []),
+          ].map(s => print(gql(s)))
+        );
+      });
+    });
   });
 });
 
@@ -748,16 +762,17 @@ test('getGraphqlFilterFragment', () => {
 });
 
 [false, true].forEach(withAuth => {
-  test(`getGqlQueries() ${withAuth ? 'with' : 'without'} auth`, () => {
+  describe(`getGqlQueries() ${withAuth ? 'with' : 'without'} auth`, () => {
     const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
     const schemaName = 'public';
-    expect(
-      setup({ access: true }, getAuth)
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual(
-      [
-        `""" Search for all Test items which match the where clause. """
+    test('access: true', () => {
+      expect(
+        setup({ access: true }, getAuth)
+          .getGqlQueries({ schemaName })
+          .map(normalise)
+      ).toEqual(
+        [
+          `""" Search for all Test items which match the where clause. """
           allTests(
           where: TestWhereInput
           search: String
@@ -765,11 +780,11 @@ test('getGraphqlFilterFragment', () => {
           first: Int
           skip: Int
         ): [Test]`,
-        `""" Search for the Test item with the matching ID. """
+          `""" Search for the Test item with the matching ID. """
           Test(
           where: TestWhereUniqueInput!
         ): Test`,
-        `""" Perform a meta-query on all Test items which match the where clause. """
+          `""" Perform a meta-query on all Test items which match the where clause. """
           _allTestsMeta(
           where: TestWhereInput
           search: String
@@ -777,17 +792,19 @@ test('getGraphqlFilterFragment', () => {
           first: Int
           skip: Int
         ): _QueryMeta`,
-        `""" Retrieve the meta-data for the Test list. """
+          `""" Retrieve the meta-data for the Test list. """
         _TestsMeta: _ListMeta`,
-        ...(withAuth ? [`authenticatedTest: Test`] : []),
-      ].map(normalise)
-    );
-
-    expect(
-      setup({ access: false }, getAuth)
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual(withAuth ? [`authenticatedTest: Test`].map(normalise) : []);
+          ...(withAuth ? [`authenticatedTest: Test`] : []),
+        ].map(normalise)
+      );
+    });
+    test('access: false', () => {
+      expect(
+        setup({ access: false }, getAuth)
+          .getGqlQueries({ schemaName })
+          .map(normalise)
+      ).toEqual([]);
+    });
   });
 });
 
@@ -861,120 +878,137 @@ test('gqlAuxMutationResolvers', () => {
 });
 
 [false, true].forEach(withAuth => {
-  test(`getGqlMutations() ${withAuth ? 'with' : 'without'} auth`, () => {
-    const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
-    const extraConfig = {};
-    const schemaName = 'public';
-    expect(
-      setup({ access: true, ...extraConfig }, getAuth)
-        .getGqlMutations({ schemaName })
-        .map(normalise)
-    ).toEqual(
-      [
-        `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
-        `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
-        `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
-        `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
-        `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
-        `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
-        ...(withAuth
-          ? [
-              `unauthenticateTest: unauthenticateTestOutput`,
-              `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
-            ]
-          : []),
-      ].map(normalise)
-    );
-
-    expect(
-      setup({ access: false, ...extraConfig }, getAuth)
-        .getGqlMutations({ schemaName })
-        .map(normalise)
-    ).toEqual(
-      [
-        ...(withAuth
-          ? [
-              `unauthenticateTest: unauthenticateTestOutput`,
-              `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
-            ]
-          : []),
-      ].map(normalise)
-    );
-
-    expect(
-      setup(
-        { access: { read: true, create: false, update: false, delete: false }, ...extraConfig },
-        getAuth
-      )
-        .getGqlMutations({ schemaName })
-        .map(normalise)
-    ).toEqual(
-      [
-        ...(withAuth
-          ? [
-              `unauthenticateTest: unauthenticateTestOutput`,
-              `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
-            ]
-          : []),
-      ].map(normalise)
-    );
-    expect(
-      setup(
-        { access: { read: false, create: true, update: false, delete: false }, ...extraConfig },
-        getAuth
-      )
-        .getGqlMutations({ schemaName })
-        .map(normalise)
-    ).toEqual(
-      [
-        `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
-        `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
-        ...(withAuth
-          ? [
-              `unauthenticateTest: unauthenticateTestOutput`,
-              `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
-            ]
-          : []),
-      ].map(normalise)
-    );
-    expect(
-      setup(
-        { access: { read: false, create: false, update: true, delete: false }, ...extraConfig },
-        getAuth
-      )
-        .getGqlMutations({ schemaName })
-        .map(normalise)
-    ).toEqual(
-      [
-        `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
-        `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
-        ...(withAuth
-          ? [
-              `unauthenticateTest: unauthenticateTestOutput`,
-              `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
-            ]
-          : []),
-      ].map(normalise)
-    );
-    expect(
-      setup(
-        { access: { read: false, create: false, update: false, delete: true }, ...extraConfig },
-        getAuth
-      )
-        .getGqlMutations({ schemaName })
-        .map(normalise)
-    ).toEqual(
-      [
-        `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
-        `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
-        ...(withAuth
-          ? [
-              `unauthenticateTest: unauthenticateTestOutput`,
-              `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
-            ]
-          : []),
-      ].map(normalise)
-    );
+  [false, true].forEach(auth => {
+    describe(`getGqlMutations() ${
+      withAuth ? 'with' : 'without'
+    } auth (access: { auth: ${auth} })`, () => {
+      const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
+      const extraConfig = {};
+      const schemaName = 'public';
+      test('access: true', () => {
+        expect(
+          setup({ access: true, ...extraConfig }, getAuth)
+            .getGqlMutations({ schemaName })
+            .map(normalise)
+        ).toEqual(
+          [
+            `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
+            `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
+            `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
+            `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
+            `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
+            `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
+            ...(withAuth
+              ? [
+                  `unauthenticateTest: unauthenticateTestOutput`,
+                  `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
+                ]
+              : []),
+          ].map(normalise)
+        );
+      });
+      test('access: false', () => {
+        expect(
+          setup({ access: false, ...extraConfig }, getAuth)
+            .getGqlMutations({ schemaName })
+            .map(normalise)
+        ).toEqual([]);
+      });
+      test('read: true', () => {
+        expect(
+          setup(
+            {
+              access: { read: true, create: false, update: false, delete: false, auth },
+              ...extraConfig,
+            },
+            getAuth
+          )
+            .getGqlMutations({ schemaName })
+            .map(normalise)
+        ).toEqual(
+          [
+            ...(withAuth && auth
+              ? [
+                  `unauthenticateTest: unauthenticateTestOutput`,
+                  `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
+                ]
+              : []),
+          ].map(normalise)
+        );
+      });
+      test('create: true', () => {
+        expect(
+          setup(
+            {
+              access: { read: false, create: true, update: false, delete: false, auth },
+              ...extraConfig,
+            },
+            getAuth
+          )
+            .getGqlMutations({ schemaName })
+            .map(normalise)
+        ).toEqual(
+          [
+            `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
+            `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
+            ...(withAuth && auth
+              ? [
+                  `unauthenticateTest: unauthenticateTestOutput`,
+                  `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
+                ]
+              : []),
+          ].map(normalise)
+        );
+      });
+      test('update: true', () => {
+        expect(
+          setup(
+            {
+              access: { read: false, create: false, update: true, delete: false, auth },
+              ...extraConfig,
+            },
+            getAuth
+          )
+            .getGqlMutations({ schemaName })
+            .map(normalise)
+        ).toEqual(
+          [
+            `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
+            `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
+            ...(withAuth && auth
+              ? [
+                  `unauthenticateTest: unauthenticateTestOutput`,
+                  `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
+                ]
+              : []),
+          ].map(normalise)
+        );
+      });
+      test('delete: true', () => {
+        expect(
+          setup(
+            {
+              access: { read: false, create: false, update: false, delete: true, auth },
+              ...extraConfig,
+            },
+            getAuth
+          )
+            .getGqlMutations({ schemaName })
+            .map(normalise)
+        ).toEqual(
+          [
+            `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
+            `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
+            ...(withAuth && auth
+              ? [
+                  `unauthenticateTest: unauthenticateTestOutput`,
+                  `""" Authenticate and generate a token for a Test with the Password Authentication Strategy. """ authenticateTestWithPassword(password: String): authenticateTestOutput`,
+                ]
+              : []),
+          ].map(normalise)
+        );
+      });
+    });
   });
 });
 
@@ -1226,11 +1260,13 @@ test('listQueryMeta', async () => {
     expect(access.getDelete).toBeInstanceOf(Function);
     expect(access.getRead).toBeInstanceOf(Function);
     expect(access.getUpdate).toBeInstanceOf(Function);
+    expect(access.getAuth).toBeInstanceOf(Function);
 
     expect(access.getCreate()).toEqual(true);
     expect(access.getDelete()).toEqual(true);
     expect(access.getRead()).toEqual(true);
     expect(access.getUpdate()).toEqual(true);
+    expect(access.getAuth()).toEqual(true);
 
     const schema = meta.getSchema();
     expect(schema).toEqual({
@@ -1273,89 +1309,97 @@ test('authenticatedQuery', async () => {
 });
 
 [false, true].forEach(withAuth => {
-  test(`gqlMutationResolvers ${withAuth ? 'with' : 'without'} auth`, () => {
-    const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
-    const schemaName = 'public';
-    let resolvers = setup({ access: true }, getAuth).gqlMutationResolvers({ schemaName });
-    expect(resolvers['createTest']).toBeInstanceOf(Function);
-    expect(resolvers['updateTest']).toBeInstanceOf(Function);
-    expect(resolvers['deleteTest']).toBeInstanceOf(Function);
-    expect(resolvers['deleteTests']).toBeInstanceOf(Function);
-    if (withAuth) {
-      expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
-      expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
-    } else {
-      expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
-      expect(resolvers['unauthenticateTest']).toBe(undefined);
-    }
-    resolvers = setup({ access: false }, getAuth).gqlMutationResolvers({ schemaName });
-    if (withAuth) {
-      expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
-      expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
-    } else {
-      expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
-      expect(resolvers['unauthenticateTest']).toBe(undefined);
-    }
-
-    resolvers = setup(
-      { access: { read: true, create: false, update: false, delete: false } },
-      getAuth
-    ).gqlMutationResolvers({ schemaName });
-    if (withAuth) {
-      expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
-      expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
-    } else {
-      expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
-      expect(resolvers['unauthenticateTest']).toBe(undefined);
-    }
-
-    resolvers = setup(
-      { access: { read: false, create: true, update: false, delete: false } },
-      getAuth
-    ).gqlMutationResolvers({ schemaName });
-    expect(resolvers['createTest']).toBeInstanceOf(Function);
-    expect(resolvers['updateTest']).toBe(undefined);
-    expect(resolvers['deleteTest']).toBe(undefined);
-    expect(resolvers['deleteTests']).toBe(undefined);
-    if (withAuth) {
-      expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
-      expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
-    } else {
-      expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
-      expect(resolvers['unauthenticateTest']).toBe(undefined);
-    }
-
-    resolvers = setup(
-      { access: { read: false, create: false, update: true, delete: false } },
-      getAuth
-    ).gqlMutationResolvers({ schemaName });
-    expect(resolvers['createTest']).toBe(undefined);
-    expect(resolvers['updateTest']).toBeInstanceOf(Function);
-    expect(resolvers['deleteTest']).toBe(undefined);
-    expect(resolvers['deleteTests']).toBe(undefined);
-    if (withAuth) {
-      expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
-      expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
-    } else {
-      expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
-      expect(resolvers['unauthenticateTest']).toBe(undefined);
-    }
-
-    resolvers = setup(
-      { access: { read: false, create: false, update: false, delete: true } },
-      getAuth
-    ).gqlMutationResolvers({ schemaName });
-    expect(resolvers['createTest']).toBe(undefined);
-    expect(resolvers['updateTest']).toBe(undefined);
-    expect(resolvers['deleteTest']).toBeInstanceOf(Function);
-    expect(resolvers['deleteTests']).toBeInstanceOf(Function);
-    if (withAuth) {
-      expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
-      expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
-    } else {
-      expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
-      expect(resolvers['unauthenticateTest']).toBe(undefined);
-    }
+  [false, true].forEach(auth => {
+    describe(`gqlMutationResolvers ${
+      withAuth ? 'with' : 'without'
+    } auth (access: { auth: ${auth} })`, () => {
+      const getAuth = withAuth ? () => ({ password: new MockPasswordAuthStrategy() }) : undefined;
+      const schemaName = 'public';
+      let resolvers;
+      test('access: true', () => {
+        resolvers = setup({ access: true }, getAuth).gqlMutationResolvers({ schemaName });
+        expect(resolvers['createTest']).toBeInstanceOf(Function);
+        expect(resolvers['updateTest']).toBeInstanceOf(Function);
+        expect(resolvers['deleteTest']).toBeInstanceOf(Function);
+        expect(resolvers['deleteTests']).toBeInstanceOf(Function);
+        if (withAuth) {
+          expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
+          expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
+        } else {
+          expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
+          expect(resolvers['unauthenticateTest']).toBe(undefined);
+        }
+      });
+      test('access: false', () => {
+        resolvers = setup({ access: false }, getAuth).gqlMutationResolvers({ schemaName });
+        expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
+        expect(resolvers['unauthenticateTest']).toBe(undefined);
+      });
+      test('read: true', () => {
+        resolvers = setup(
+          { access: { read: true, create: false, update: false, delete: false, auth } },
+          getAuth
+        ).gqlMutationResolvers({ schemaName });
+        if (withAuth && auth) {
+          expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
+          expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
+        } else {
+          expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
+          expect(resolvers['unauthenticateTest']).toBe(undefined);
+        }
+      });
+      test('create: true', () => {
+        resolvers = setup(
+          { access: { read: false, create: true, update: false, delete: false, auth } },
+          getAuth
+        ).gqlMutationResolvers({ schemaName });
+        expect(resolvers['createTest']).toBeInstanceOf(Function);
+        expect(resolvers['updateTest']).toBe(undefined);
+        expect(resolvers['deleteTest']).toBe(undefined);
+        expect(resolvers['deleteTests']).toBe(undefined);
+        if (withAuth && auth) {
+          expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
+          expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
+        } else {
+          expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
+          expect(resolvers['unauthenticateTest']).toBe(undefined);
+        }
+      });
+      test('update: true', () => {
+        resolvers = setup(
+          { access: { read: false, create: false, update: true, delete: false, auth } },
+          getAuth
+        ).gqlMutationResolvers({ schemaName });
+        expect(resolvers['createTest']).toBe(undefined);
+        expect(resolvers['updateTest']).toBeInstanceOf(Function);
+        expect(resolvers['deleteTest']).toBe(undefined);
+        expect(resolvers['deleteTests']).toBe(undefined);
+        if (withAuth && auth) {
+          expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
+          expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
+        } else {
+          expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
+          expect(resolvers['unauthenticateTest']).toBe(undefined);
+        }
+      });
+      test('delete: true', () => {
+        resolvers = setup(
+          { access: { read: false, create: false, update: false, delete: true, auth } },
+          getAuth
+        ).gqlMutationResolvers({ schemaName });
+        expect(resolvers['createTest']).toBe(undefined);
+        expect(resolvers['updateTest']).toBe(undefined);
+        expect(resolvers['deleteTest']).toBeInstanceOf(Function);
+        expect(resolvers['deleteTests']).toBeInstanceOf(Function);
+        if (withAuth && auth) {
+          expect(resolvers['authenticateTestWithPassword']).toBeInstanceOf(Function);
+          expect(resolvers['unauthenticateTest']).toBeInstanceOf(Function);
+        } else {
+          expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
+          expect(resolvers['unauthenticateTest']).toBe(undefined);
+        }
+      });
+    });
   });
 });
 

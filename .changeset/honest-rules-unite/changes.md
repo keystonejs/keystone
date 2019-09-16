@@ -1,0 +1,1 @@
+Add `filterValues(object, predicate)` to remove entries from an object where the value does not match the predicate.

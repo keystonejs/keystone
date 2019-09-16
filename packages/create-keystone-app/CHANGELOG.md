@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.1.0
+
+### Minor Changes
+
+- [32b9faff](https://github.com/keystonejs/keystone-5/commit/32b9faff): Fix an error when yarn install failed and it wasn't falling back to npm correctly
+
 ## 1.0.1
 
 ### Patch Changes
