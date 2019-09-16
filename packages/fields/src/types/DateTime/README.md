@@ -9,10 +9,10 @@ title: DateTime
 ## Usage
 
 ```js
+const { DateTime } = require('@keystone-alpha/fields');
+
 keystone.createList('User', {
   fields: {
-    email: { type: Text },
-    password: { type: Password },
     lastOnline: {
       type: DateTime,
       format: 'MM/DD/YYYY h:mm A',
