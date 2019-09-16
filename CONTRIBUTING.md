@@ -174,6 +174,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://dcousens.com"><img src="https://avatars0.githubusercontent.com/u/413395?v=4" width="100px;" alt="Daniel Cousens"/><br /><sub><b>Daniel Cousens</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=dcousens" title="Documentation">📖</a></td>
     <td align="center"><a href="http://simonswiss.com"><img src="https://avatars1.githubusercontent.com/u/485747?v=4" width="100px;" alt="Simon Vrachliotis"/><br /><sub><b>Simon Vrachliotis</b></sub></a><br /><a href="#example-simonswiss" title="Examples">💡</a> <a href="#tutorial-simonswiss" title="Tutorials">✅</a> <a href="#video-simonswiss" title="Videos">📹</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Vultraz"><img src="https://avatars0.githubusercontent.com/u/3558659?v=4" width="100px;" alt="Charles Dang"/><br /><sub><b>Charles Dang</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=Vultraz" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone-5/commits?author=Vultraz" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->

@@ -194,7 +194,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
       },
     });
 
-    keystone.extendGraphQLSchema({ types: ['type FooBar { foo: Int, bar: Float }'] });
+    keystone.extendGraphQLSchema({ types: [{ type: 'type FooBar { foo: Int, bar: Float }' }] });
     const schemaName = 'public';
     const schema = keystone.getTypeDefs({ schemaName }).join('\n');
     expect(schema.match(/type FooBar {\s*foo: Int\s*bar: Float\s*}/g) || []).toHaveLength(1);

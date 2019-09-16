@@ -1,5 +1,11 @@
 # @keystone-alpha/app-static
 
+## 1.1.1
+
+### Patch Changes
+
+- [5598701f](https://github.com/keystonejs/keystone-5/commit/5598701f): throwing errors when the StaticApp doesn't have a string valued passed to the "path" or "src" properties
+
 ## 1.1.0
 
 ### Minor Changes

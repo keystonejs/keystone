@@ -1,5 +1,89 @@
 # @keystone-alpha/keystone
 
+## 14.0.0
+
+### Major Changes
+
+- [decf7319](https://github.com/keystonejs/keystone-5/commit/decf7319): Remove `skipAccessControl` option from `keystone.getTypeDefs()`, `List.getGqlTypes()`, `List.getGqlQueries()`, and `List.getGqlMutations()`.
+- [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9): The `.access` property of Lists is now keyed by `schemaName`. As such, a number of getters and methods have been replaced with methods which take `{ schemaName }`.
+
+  - `getGqlTypes()` -> `getGqlTypes({ schemaName })`
+  - `getGqlQueries()` -> `getGqlQueries({ schemaName })`
+  - `get gqlFieldResolvers()` -> `gqlFieldResolvers({ schemaName })`
+  - `get gqlAuxFieldResolvers()` -> `gqlAuxFieldResolvers({ schemaName })`
+  - `get gqlAuxQueryResolvers()` -> `gqlAuxQueryResolvers({ schemaName })`
+  - `get gqlAuxMutationResolvers()` -> `gqlAuxMutationResolvers({ schemaName })`
+  - `getGqlMutations()` -> `getGqlMutations({ schemaName })`
+  - `get gqlQueryResolvers()` -> `gqlQueryResolvers({ schemaName })`
+  - `get gqlMutationResolvers()` -> `gqlMutationResolvers({ schemaName })`
+
+- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+  - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
+  - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
+  - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
+  - `keystone.getAdminMeta()` -> `keystone.getAdminMeta({ schemaName })`
+  - `list.getAdminMeta()` -> `list.getAdminMeta({ schemaName })`
+  - `field.getAdminMeta()` -> `field.getAdminMeta({ schemaName })`
+
+### Minor Changes
+
+- [0a627ef9](https://github.com/keystonejs/keystone-5/commit/0a627ef9): Adds a `cookieMaxAge` and `secureCookies` option to the keystone constructor.
+
+  These will default to 30 days for `cookieMaxAge` and `true` in production `false` in other environments for `secureCookies`.
+
+  ### Usage
+
+  ```javascript
+  const keystone = new Keystone({
+    cookieMaxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    secureCookies: true,
+  });
+  ```
+
+  Note: `commonSessionMiddleware` now accepts a config object rather than multiple arguments.
+
+- [f8ad0975](https://github.com/keystonejs/keystone-5/commit/f8ad0975): The `cors` and `pinoOptions` parameters now live on `keystone.prepare()` rather than `new GraphQLApp()`
+
+### Patch Changes
+
+- [bc0b9813](https://github.com/keystonejs/keystone-5/commit/bc0b9813): `parseListAccess` and `parseFieldAccess` now take `schemaNames` as an argument, and return a nested access object, with the `schemaNames` as keys.
+
+  For example,
+
+  ```js
+  parseListAccess({ defaultAccess: false, access: { public: true }, schemaNames: ['public', 'internal'] }
+  ```
+
+  will return
+
+  ```js
+  {
+    public: { create: true, read: true, update: true, delete: true },
+    internal: { create: false, read: false, update: false, delete: false },
+  }
+  ```
+
+  These changes are backwards compatible with regard to the `access` argument, so
+
+  ```js
+  const access = { create: true, read: true, update: true, delete: true };
+  parseListAccess({ access, schemaNames: ['public', 'internal'] }
+  ```
+
+  will return
+
+  ```js
+  {
+    public: { create: true, read: true, update: true, delete: true },
+    internal: { create: true, read: true, update: true, delete: true },
+  }
+  ```
+
+- [76c3efa9](https://github.com/keystonejs/keystone-5/commit/76c3efa9): `keystone.getGraphQlContext()` no longer provides a default value for `schemaName`.
+
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
+  - @keystone-alpha/fields@11.0.0
+
 ## 13.1.0
 
 ### Minor Changes

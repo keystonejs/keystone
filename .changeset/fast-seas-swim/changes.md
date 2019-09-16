@@ -1,0 +1,1 @@
+New Nuxt example site + CLI starter project

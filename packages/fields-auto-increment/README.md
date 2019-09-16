@@ -12,7 +12,7 @@ It's important to note, this type..
 - Has [important limitations](#limitations) due to varying support from the underlying DB platform
 - Has [non-standard defaults](#non-standard-defaults) for much of it's configuration
 
-**Currently, outside it's use as a primary key, this field type will only work on PostgreSQL.**
+**Currently, outside its use as a primary key, this field type will only work on PostgreSQL.**
 
 ## Limitations
 

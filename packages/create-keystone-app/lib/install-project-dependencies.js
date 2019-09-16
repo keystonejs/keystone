@@ -8,10 +8,11 @@ const installProjectDependencies = async () => {
     return true;
   }
 
-  console.log('Installing dependencies. This could take a few minutes.');
-  const result = await exec('yarn install');
+  console.log('Installing dependencies with yarn. This could take a few minutes.');
+  const result = await exec('yarn');
 
   if (result.failed) {
+    console.log('Failed to detect yarn. Installing dependencies with npm.');
     const result = await exec('npm install');
     if (result.failed) {
       console.error(

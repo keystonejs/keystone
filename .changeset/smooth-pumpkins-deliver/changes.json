@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/keystone", "type": "minor" },
-    { "name": "@keystone-alpha/session", "type": "major" }
-  ],
-  "dependents": []
-}

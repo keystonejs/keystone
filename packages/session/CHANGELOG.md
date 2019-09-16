@@ -1,5 +1,24 @@
 # @keystone-alpha/session
 
+## 3.0.0
+
+### Major Changes
+
+- [0a627ef9](https://github.com/keystonejs/keystone-5/commit/0a627ef9): Adds a `cookieMaxAge` and `secureCookies` option to the keystone constructor.
+
+  These will default to 30 days for `cookieMaxAge` and `true` in production `false` in other environments for `secureCookies`.
+
+  ### Usage
+
+  ```javascript
+  const keystone = new Keystone({
+    cookieMaxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    secureCookies: true,
+  });
+  ```
+
+  Note: `commonSessionMiddleware` now accepts a config object rather than multiple arguments.
+
 ## 2.0.1
 
 ### Patch Changes
