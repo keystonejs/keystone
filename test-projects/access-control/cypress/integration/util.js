@@ -7,7 +7,7 @@ function yesNo(truthy) {
 
 function getPrefix(access) {
   // prettier-ignore
-  let prefix = `${yesNo(access.create)}Create${yesNo(access.read)}Read${yesNo(access.update)}Update`;
+  let prefix = `${yesNo(access.create)}Create${yesNo(access.read)}Read${yesNo(access.update)}Update${yesNo(access.auth)}Auth`;
   if (Object.prototype.hasOwnProperty.call(access, 'delete')) {
     prefix = `${prefix}${yesNo(access.delete)}Delete`;
   }

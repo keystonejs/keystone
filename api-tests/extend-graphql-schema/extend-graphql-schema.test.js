@@ -1,6 +1,13 @@
 const { Text } = require('@keystone-alpha/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const {
+  multiAdapterRunners,
+  setupServer,
+  graphqlRequest,
+  networkedGraphqlRequest,
+} = require('@keystone-alpha/test-utils');
 const cuid = require('cuid');
+
+const falseFn = () => false;
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -16,6 +23,11 @@ function setupKeystone(adapterName) {
             schema: 'double(x: Int): Int',
             resolver: (_, { x }) => 2 * x,
             access: true,
+          },
+          {
+            schema: 'quads(x: Int): Int',
+            resolver: (_, { x }) => 4 * x,
+            access: falseFn,
           },
         ],
         mutations: [
@@ -37,6 +49,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ keystone }) => {
           expect(keystone._extendedQueries.map(({ access }) => access)).toEqual([
             { testing: true },
+            { testing: falseFn },
           ]);
           expect(keystone._extendedMutations.map(({ access }) => access)).toEqual([
             { testing: true },
@@ -63,7 +76,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data.double).toEqual(20);
         })
       );
-
+      it(
+        'Denies access acording to access control',
+        runner(setupKeystone, async ({ app }) => {
+          const { data, errors } = await networkedGraphqlRequest({
+            app,
+            query: `
+              query {
+                quads(x: 10)
+              }
+            `,
+          });
+          expect(data.quads).toBe(null);
+          expect(errors).not.toBe(undefined);
+          expect(errors).toHaveLength(1);
+        })
+      );
       it(
         'Executes custom mutations correctly',
         runner(setupKeystone, async ({ keystone }) => {
