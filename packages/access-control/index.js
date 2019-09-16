@@ -1,4 +1,5 @@
 const {
+  parseCustomAccess,
   parseListAccess,
   parseFieldAccess,
   validateListAccessControl,
@@ -6,6 +7,7 @@ const {
 } = require('./lib/access-control');
 
 module.exports = {
+  parseCustomAccess,
   parseListAccess,
   parseFieldAccess,
   validateListAccessControl,

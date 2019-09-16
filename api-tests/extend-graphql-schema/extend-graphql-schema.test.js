@@ -15,12 +15,14 @@ function setupKeystone(adapterName) {
           {
             schema: 'double(x: Int): Int',
             resolver: (_, { x }) => 2 * x,
+            access: true,
           },
         ],
         mutations: [
           {
             schema: 'triple(x: Int): Int',
             resolver: (_, { x }) => 3 * x,
+            access: { testing: true },
           },
         ],
       });
@@ -30,6 +32,18 @@ function setupKeystone(adapterName) {
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('keystone.extendGraphQLSchema()', () => {
+      it(
+        'Sets up access control properly',
+        runner(setupKeystone, async ({ keystone }) => {
+          expect(keystone._extendedQueries.map(({ access }) => access)).toEqual([
+            { testing: true },
+          ]);
+          expect(keystone._extendedMutations.map(({ access }) => access)).toEqual([
+            { testing: true },
+          ]);
+        })
+      );
+
       it(
         'Executes custom queries correctly',
         runner(setupKeystone, async ({ keystone }) => {
