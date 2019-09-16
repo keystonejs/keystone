@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "create-keystone-app", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "patch" }
+  ],
+  "dependents": []
+}
