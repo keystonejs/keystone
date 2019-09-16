@@ -20,20 +20,20 @@ const keystone = new Keystone({
 
 ### Config
 
-| Option                  | Type       | Default    | Description                                                                                                                                                 |
-| ----------------------- | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                           |
-| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://v5.keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details.           |
-| `adapters`              | `Array`    | `[]`       |                                                                                                                                                             |
-| `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                             |
-| `adapterConnectOptions` | `Object`   | `{}`       |                                                                                                                                                             |
-| `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                             |
-| `onConnect`             | `Function` | `null`     |                                                                                                                                                             |
-| `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                             |
-| `cookieMaxAge`          | `Int`      | 30 days    |                                                                                                                                                             |
-| `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                                       |
-| `sessionStore`          | `Object`   | `null`     |                                                                                                                                                             |
-| `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                             |
+| Option                  | Type       | Default    | Description                                                                                                                                       |
+| ----------------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                 |
+| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://v5.keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details. |
+| `adapters`              | `Array`    | `[]`       |                                                                                                                                                   |
+| `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                   |
+| `adapterConnectOptions` | `Object`   | `{}`       |                                                                                                                                                   |
+| `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                   |
+| `onConnect`             | `Function` | `null`     |                                                                                                                                                   |
+| `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                   |
+| `cookieMaxAge`          | `Int`      | 30 days    |                                                                                                                                                   |
+| `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                             |
+| `sessionStore`          | `Object`   | `null`     |                                                                                                                                                   |
+| `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                   |
 
 ## Methods
 

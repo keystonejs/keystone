@@ -19,6 +19,7 @@ const {
 const {
   validateFieldAccessControl,
   validateListAccessControl,
+  parseCustomAccess,
 } = require('@keystone-alpha/access-control');
 const {
   startAuthedSession,
@@ -53,7 +54,7 @@ module.exports = class Keystone {
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
-    this.defaultAccess = { list: true, field: true, ...defaultAccess };
+    this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
     this.listsArray = [];
@@ -239,9 +240,18 @@ module.exports = class Keystone {
   }
 
   extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
-    this._extendedTypes = this._extendedTypes.concat(types);
-    this._extendedQueries = this._extendedQueries.concat(queries);
-    this._extendedMutations = this._extendedMutations.concat(mutations);
+    const _parseAccess = obj => ({
+      ...obj,
+      access: parseCustomAccess({
+        access: obj.access,
+        schemaNames: this._schemaNames,
+        defaultAccess: this.defaultAccess.custom,
+      }),
+    });
+
+    this._extendedTypes = this._extendedTypes.concat(types.map(_parseAccess));
+    this._extendedQueries = this._extendedQueries.concat(queries.map(_parseAccess));
+    this._extendedMutations = this._extendedMutations.concat(mutations.map(_parseAccess));
   }
 
   /**
@@ -296,7 +306,9 @@ module.exports = class Keystone {
     const mutations = unique(
       flatten([
         ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
-        this._extendedMutations.map(({ schema }) => schema),
+        this._extendedMutations
+          .filter(({ access }) => access[schemaName])
+          .map(({ schema }) => schema),
       ])
     );
 
@@ -307,7 +319,9 @@ module.exports = class Keystone {
     // Deduping here avoids that problem.
     return [
       ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ schemaName })))),
-      ...unique(this._extendedTypes),
+      ...unique(
+        this._extendedTypes.filter(({ access }) => access[schemaName]).map(({ type }) => type)
+      ),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -373,7 +387,9 @@ module.exports = class Keystone {
           ${unique(
             flatten([
               ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
-              this._extendedQueries.map(({ schema }) => schema),
+              this._extendedQueries
+                .filter(({ access }) => access[schemaName])
+                .map(({ schema }) => schema),
             ])
           ).join('\n')}
           """ Retrieve the meta-data for all lists. """
@@ -486,13 +502,17 @@ module.exports = class Keystone {
             this.listsArray
               .filter(list => list.access[schemaName].read)
               .map(list => list.listMeta(context)),
-          ...objMerge(this._extendedQueries.map(customResolver)),
+          ...objMerge(
+            this._extendedQueries.filter(({ access }) => access[schemaName]).map(customResolver)
+          ),
         },
 
         Mutation: {
           ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
           ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
-          ...objMerge(this._extendedMutations.map(customResolver)),
+          ...objMerge(
+            this._extendedMutations.filter(({ access }) => access[schemaName]).map(customResolver)
+          ),
         },
       },
       o => Object.entries(o).length > 0
