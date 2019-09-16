@@ -120,7 +120,7 @@ const parseAccess = ({
 
 module.exports = {
   parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
-    const accessTypes = ['create', 'read', 'update', 'delete'];
+    const accessTypes = ['create', 'read', 'update', 'delete', 'auth'];
 
     return parseAccess({
       schemaNames,

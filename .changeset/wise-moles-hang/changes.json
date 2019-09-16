@@ -1,0 +1,230 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/access-control", "type": "major" },
+    { "name": "@keystone-alpha/fields", "type": "major" },
+    { "name": "@keystone-alpha/keystone", "type": "major" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/auth-password",
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/test-utils",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/auth-password",
+        "@keystone-alpha/fields-markdown",
+        "@keystone-alpha/fields-wysiwyg-tinymce",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-meetup",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/auth-password",
+        "@keystone-alpha/fields-wysiwyg-tinymce",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-todo",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/app-admin-ui",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/auth-passport",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/auth-password",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/example-projects-nuxt",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/example-projects-starter",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/auth-password",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/example-projects-todo",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/field-content",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/fields-auto-increment",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/adapter-knex", "@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/fields-datetime-utc",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/fields-markdown",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/fields-mongoid",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/fields-wysiwyg-tinymce",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/list-plugins",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/auth-password",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/field-content",
+        "@keystone-alpha/fields-markdown",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-client-validation",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/auth-password",
+        "@keystone-alpha/list-plugins",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/auth-passport",
+        "@keystone-alpha/auth-password",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/adapter-knex",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields-auto-increment", "@keystone-alpha/keystone"]
+    },
+    {
+      "name": "@keystone-alpha/adapter-mongoose",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields-mongoid", "@keystone-alpha/keystone"]
+    },
+    {
+      "name": "@keystone-alpha/example-projects-blank",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/test-utils",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    }
+  ]
+}

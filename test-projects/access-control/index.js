@@ -92,6 +92,7 @@ function createListWithImperativeAccess(access) {
       read: () => access.read,
       update: () => access.update,
       delete: () => access.delete,
+      auth: () => access.auth,
     },
   });
 }
@@ -132,6 +133,7 @@ function createListWithDeclarativeAccess(access) {
         }
         return false;
       },
+      auth: true,
     },
   });
 }
