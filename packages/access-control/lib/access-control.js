@@ -151,6 +151,24 @@ module.exports = {
     return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
   },
 
+  validateCustomAccessControl({ access, authentication = {} }) {
+    // Either a boolean or an object describing a where clause
+    let result;
+    if (typeof access !== 'function') {
+      result = access;
+    } else {
+      result = access({ authentication: authentication.item ? authentication : {} });
+    }
+    const type = getType(result);
+
+    if (!['Object', 'Boolean'].includes(type)) {
+      throw new Error(
+        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${type}`
+      );
+    }
+    return result;
+  },
+
   validateListAccessControl({ access, listKey, operation, authentication = {}, originalInput }) {
     // Either a boolean or an object describing a where clause
     let result;
