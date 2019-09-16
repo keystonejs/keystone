@@ -22,6 +22,7 @@ describe('Access control package tests', () => {
             read: defaultAccess,
             update: defaultAccess,
             delete: defaultAccess,
+            auth: defaultAccess,
           },
         });
       });
@@ -42,6 +43,7 @@ describe('Access control package tests', () => {
               read: access,
               update: access,
               delete: access,
+              auth: access,
             },
           });
         });
@@ -51,7 +53,7 @@ describe('Access control package tests', () => {
     test('StaticAccess | ImperativeAccess | DeclarativeAccess are valid per-operation access modes', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         // NOTE: create is handled differently below
-        ['read', 'update', 'delete'].forEach(operation => {
+        ['read', 'update', 'delete', 'auth'].forEach(operation => {
           [...statics, ...imperatives, ...declaratives].forEach(opAccess => {
             const access = { [operation]: opAccess };
             expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
@@ -60,6 +62,7 @@ describe('Access control package tests', () => {
                 read: defaultAccess,
                 update: defaultAccess,
                 delete: defaultAccess,
+                auth: defaultAccess,
                 // Override the specific operation we are trying
                 ...{ [operation]: opAccess },
               },
@@ -84,6 +87,7 @@ describe('Access control package tests', () => {
               read: defaultAccess,
               update: defaultAccess,
               delete: defaultAccess,
+              auth: defaultAccess,
             },
           });
         });
@@ -113,8 +117,8 @@ describe('Access control package tests', () => {
       const access = { public: true };
       const defaultAccess = false;
       expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
-        public: { create: true, read: true, update: true, delete: true },
-        internal: { create: false, read: false, update: false, delete: false },
+        public: { create: true, read: true, update: true, delete: true, auth: true },
+        internal: { create: false, read: false, update: false, delete: false, auth: false },
       });
     });
 
