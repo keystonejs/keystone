@@ -1,5 +1,12 @@
 # @keystone-alpha/fields-markdown
 
+## 1.0.5
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @keystone-alpha/fields@12.0.0
+  - @arch-ui/input@0.1.0
+
 ## 1.0.4
 
 - Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):

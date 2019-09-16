@@ -1,1 +1,0 @@
-Add `parseCustomAccess()` for parsing the access control directives on custom types/queries/mutations.
