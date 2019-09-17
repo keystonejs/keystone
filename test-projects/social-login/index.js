@@ -17,7 +17,7 @@ const { StaticApp } = require('@keystone-alpha/app-static');
 const { staticRoute, staticPath, cloudinary, cookieSecret } = require('./config');
 
 const { DISABLE_AUTH } = process.env;
-const LOCAL_FILE_PATH = `${staticPath}/avatars`;
+const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
@@ -35,8 +35,8 @@ const authStrategy = keystone.createAuthStrategy({
 });
 
 const fileAdapter = new LocalFileAdapter({
-  directory: LOCAL_FILE_PATH,
-  route: LOCAL_FILE_ROUTE,
+  src: LOCAL_FILE_SRC,
+  path: LOCAL_FILE_ROUTE,
 });
 
 let cloudinaryAdapter;

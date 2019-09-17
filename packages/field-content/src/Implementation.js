@@ -167,6 +167,7 @@ export class Content extends Relationship.implementation {
             };
           },
         },
+        access: listConfig.listAccess,
       });
     }
 
