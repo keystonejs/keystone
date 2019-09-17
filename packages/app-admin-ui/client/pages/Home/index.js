@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
@@ -9,8 +8,8 @@ import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
+import Link from 'next/link';
 import ContainerQuery from '../../components/ContainerQuery';
-import { gqlCountQueries } from '../../classes/List';
 
 class HomePage extends Component {
   state = { createFromList: null };
@@ -88,7 +87,11 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
       <Fragment>
         <DocTitle>Home</DocTitle>
         <PageError>
-          <p>No lists defined. Get started by creating your first list.</p>
+          <p>
+            No lists defined.{' '}
+            <Link href="https://v5.keystonejs.com/guides/add-lists">Get started</Link> by creating
+            your first list.
+          </p>
         </PageError>
       </Fragment>
     );
