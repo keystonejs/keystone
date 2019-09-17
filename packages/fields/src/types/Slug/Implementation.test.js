@@ -17,7 +17,7 @@ const generateListName = () =>
   // Add randomness
   cuid.slug() +
   // Ensure plurality isn't a problem
-  'n';
+  'foo';
 
 const setupList = (adapterName, fields) =>
   setupServer({

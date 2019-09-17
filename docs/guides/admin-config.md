@@ -6,6 +6,6 @@ draft: true
 
 # Configuring the Admin UI
 
-In this guide we will learn how to config the behaviour of our Admin UI.
+In this guide we will learn how to configure the behaviour of our Admin UI.
 
 Let's start using the CLI to create a starter project.

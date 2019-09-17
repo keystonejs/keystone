@@ -9,7 +9,7 @@ In this guide we will learn how to manually create and run a new Keystone projec
 
 ## Initialization and basic packages
 
-First things first. Create a directry for your future project and init npm package there.
+First things first. Create a directory for your future project and init npm package there.
 
 ```
 mkdir new-project
@@ -31,7 +31,7 @@ yarn add @keystone-alpha/keystone @keystone-alpha/adapter-mongoose
 After installation we can start to write our code. Main entry point of Keystone app is `index.js` file placed in root folder. Create it and type following:
 
 ```javascript
-// import neccessary modules
+// import necessary modules
 const { Keystone } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
@@ -62,7 +62,7 @@ Let's create some routes! For this we will use another powerful Keystone's featu
 
 ## Setting up GraphQL interface
 
-As in previous step install neccessary package.
+As in previous step install necessary package.
 
 ```
 yarn add @keystone-alpha/app-graphql

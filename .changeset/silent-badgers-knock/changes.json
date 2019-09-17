@@ -1,0 +1,30 @@
+{
+  "releases": [{ "name": "@keystone-alpha/file-adapters", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/file-adapters"]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-meetup",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/file-adapters"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/file-adapters"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-client-validation",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/file-adapters"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/file-adapters"]
+    }
+  ]
+}

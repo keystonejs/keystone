@@ -14,7 +14,6 @@ export const inputStyles = (props: InputProps = {}) => ({
   ...uniformHeight,
   backgroundColor: props.disabled ? colors.N10 : 'white',
   borderColor: colors.N20,
-  // boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
   color: 'inherit',
   width: '100%',
 
@@ -24,12 +23,10 @@ export const inputStyles = (props: InputProps = {}) => ({
   },
   ':focus': {
     borderColor: colors.primary,
-    // boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px ${alpha(colors.primary, 0.2)}`,
     outline: 0,
   },
   '&[disabled]': {
     borderColor: colors.N15,
-    // boxShadow: 'none',
     backgroundColor: colors.N05,
   },
   ...(props.isMultiline
@@ -37,6 +34,7 @@ export const inputStyles = (props: InputProps = {}) => ({
         lineHeight: 'inherit',
         minHeight: 100,
         resize: 'vertical',
+        whiteSpace: 'wrap',
       }
     : undefined),
 });

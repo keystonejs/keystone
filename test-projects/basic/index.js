@@ -28,7 +28,7 @@ const { staticRoute, staticPath, cloudinary, iframely, unsplash } = require('./c
 const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
-const LOCAL_FILE_PATH = `${staticPath}/avatars`;
+const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
@@ -45,8 +45,8 @@ const keystone = new Keystone({
 });
 
 const fileAdapter = new LocalFileAdapter({
-  directory: LOCAL_FILE_PATH,
-  route: LOCAL_FILE_ROUTE,
+  src: LOCAL_FILE_SRC,
+  path: LOCAL_FILE_ROUTE,
 });
 
 let embedAdapter;

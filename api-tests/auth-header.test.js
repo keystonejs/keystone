@@ -20,6 +20,7 @@ const initialData = {
 };
 
 const COOKIE_SECRET = 'qwerty';
+const defaultAccess = ({ authentication: { item } }) => !!item;
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -39,6 +40,13 @@ function setupKeystone(adapterName) {
           email: { type: Text },
           password: { type: Password },
         },
+        access: {
+          create: defaultAccess,
+          read: defaultAccess,
+          update: defaultAccess,
+          delete: defaultAccess,
+          auth: true,
+        },
       });
 
       keystone.createAuthStrategy({
@@ -49,7 +57,7 @@ function setupKeystone(adapterName) {
     keystoneOptions: {
       cookieSecret: COOKIE_SECRET,
       defaultAccess: {
-        list: ({ authentication: { item } }) => !!item,
+        list: defaultAccess,
       },
     },
   });

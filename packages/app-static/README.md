@@ -36,11 +36,11 @@ module.exports = {
 
 ### `path`
 
-The path to serve files from.
+The path to serve files from. This is required and must be a string.
 
 ### `src`
 
-The path to the folder containing static files.
+The path to the folder containing static files. This is required and must be a string.
 
 #### `fallback` (optional)
 

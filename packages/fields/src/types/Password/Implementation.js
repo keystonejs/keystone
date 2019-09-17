@@ -24,10 +24,10 @@ export class Password extends Implementation {
     }
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}_is_set: Boolean`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {
       [`${this.path}_is_set`]: item => {
         const val = item[this.path];
@@ -36,7 +36,7 @@ export class Password extends Implementation {
     };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [`${this.path}_is_set: Boolean`];
   }
   get gqlUpdateInputFields() {

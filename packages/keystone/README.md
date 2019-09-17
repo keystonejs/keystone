@@ -6,6 +6,35 @@ order: 1
 
 # keystone
 
+## Constructor
+
+### Usage
+
+```javascript
+const { Keystone } = require('@keystone-alpha/keystone');
+
+const keystone = new Keystone({
+  /*...config */
+});
+```
+
+### Config
+
+| Option                  | Type       | Default    | Description                                                                                                                                       |
+| ----------------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                 |
+| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://v5.keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details. |
+| `adapters`              | `Array`    | `[]`       |                                                                                                                                                   |
+| `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                   |
+| `adapterConnectOptions` | `Object`   | `{}`       |                                                                                                                                                   |
+| `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                   |
+| `onConnect`             | `Function` | `null`     |                                                                                                                                                   |
+| `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                   |
+| `cookieMaxAge`          | `Int`      | 30 days    |                                                                                                                                                   |
+| `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                             |
+| `sessionStore`          | `Object`   | `null`     |                                                                                                                                                   |
+| `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                   |
+
 ## Methods
 
 | Method                | Description                                                                  |
@@ -13,7 +42,7 @@ order: 1
 | `createList`          | Add a list to the Keystone schema.                                           |
 | `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
 | `connect`             | Manually connect to Adapters.                                                |
-| `prepare`             | Manually peapare Keystone middlewares.                                       |
+| `prepare`             | Manually prepare Keystone middlewares.                                       |
 | `createItems`         | Add items to a Keystone list.                                                |
 | `disconnect`          | Disconnect from all adapters.                                                |
 | `executeQuery`        | Run GraphQL queries and mutations directly against a Keystone instance.      |
@@ -146,12 +175,12 @@ Note an error is thrown if no items match the query.
 
 ## prepare(config)
 
-Manually prepare middlewares.
+Manually prepare middlewares. Returns a promise representing the processed middlewares. They are available as an array through the `middlewares` property of the returned object.
 
 ### Usage
 
 ```javascript
-keystone.prepare({
+const { middlewares } = await keystone.prepare({
   apps,
   dev: process.env.NODE_ENV !== 'production',
 });
@@ -185,10 +214,19 @@ Disconnect all adapters.
 
 ## executeQuery(queryString, config)
 
-### Usage
-
 Use this method to execute queries or mutations directly against a Keystone
 instance.
+
+**Note:** When querying or mutating via `keystone.executeQuery`, there are differences to keep in mind:
+
+- No access control checks are run (everything is set to `() => true`)
+- The `context.req` object is set to `{}` (you can override this if necessary,
+  see options below)
+- Attempting to authenticate will throw errors (due to `req` being mocked)
+
+Returns a Promise representing the result of the given query or mutation.
+
+### Usage
 
 ```javascript
 keystone.executeQuery(queryString, config);
@@ -223,13 +261,3 @@ mutation newTodo($name: String) {
 | ----------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `variables` | `Object` | `{}`    | The variables passed to the graphql query for the given queryString.                                                      |
 | `context`   | `Object` | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName` |
-
-ℹ️ When querying or mutating via `keystone.executeQuery`, there are differences
-to keep in mind:
-
-- No access control checks are run (everything is set to `() => true`)
-- The `context.req` object is set to `{}` (you can override this if necessary,
-  see options below)
-- Attempting to authenticate will throw errors (due to `req` being mocked)
-
-Returns a Promise representing the result of the given query or mutation.

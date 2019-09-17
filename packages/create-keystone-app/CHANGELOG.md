@@ -1,5 +1,21 @@
 # create-keystone-app
 
+## 1.2.0
+
+### Minor Changes
+
+- [399a2e41](https://github.com/keystonejs/keystone-5/commit/399a2e41): New Nuxt example site + CLI starter project
+
+### Patch Changes
+
+- [d253220f](https://github.com/keystonejs/keystone-5/commit/d253220f): Updates the arg package that resolves a possible bug with connection strings in the CLI
+
+## 1.1.0
+
+### Minor Changes
+
+- [32b9faff](https://github.com/keystonejs/keystone-5/commit/32b9faff): Fix an error when yarn install failed and it wasn't falling back to npm correctly
+
 ## 1.0.1
 
 ### Patch Changes

@@ -65,25 +65,27 @@ const Spacer = styled.div({
 });
 
 class SigninPage extends Component {
-  reloading = false;
   state = {
     identity: '',
     secret: '',
+    reloading: false,
   };
   onSubmit = e => {
     e.preventDefault();
     const { isLoading, signIn } = this.props;
     const { identity, secret } = this.state;
     if (isLoading) return;
-    signIn({ identity, secret });
+    signIn({ identity, secret }).then(() => {
+      // Flag so the "Submit" button doesn't temporarily flash as available
+      // while reloading the page.
+      this.setState(() => ({ reloading: true }));
+      // Let the server-side redirects kick in to send the user to the right
+      // place
+      window.location.reload(true);
+    });
   };
   render() {
-    const { error, isLoading, isSignedIn, authStrategy } = this.props;
-    if (isSignedIn && !this.reloading) {
-      // Avoid reloading on subsequent renders
-      this.reloading = true;
-      window.location.reload(true);
-    }
+    const { error, isLoading, authStrategy } = this.props;
     const { identity, secret } = this.state;
     return (
       <Container>
@@ -115,7 +117,7 @@ class SigninPage extends Component {
             <LoadingButton
               appearance="primary"
               type="submit"
-              isLoading={isLoading}
+              isLoading={isLoading || this.state.reloading}
               indicatorVariant="dots"
             >
               Sign In

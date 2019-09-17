@@ -10,6 +10,12 @@ const getDistDir = (src, distDir) => {
 
 class StaticApp {
   constructor({ path, src, fallback }) {
+    if (typeof path !== 'string') {
+      throw new Error('StaticApp requires a "path" option, which must be a string.');
+    }
+    if (typeof src !== 'string') {
+      throw new Error('StaticApp requires a "src" option, which must be a string.');
+    }
     this._path = path;
     this._src = src;
     this._fallback = fallback;

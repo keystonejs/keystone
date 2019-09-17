@@ -43,7 +43,7 @@ Make sure to relaunch keystone's instance and check, that everything still works
 
 ## Adding fields
 
-Tasks usually have a few more fields, let's add an ability to set deadlines and assignee of a task:
+Tasks usually have a few more fields. Let's add an ability to set deadlines and assignee of a task:
 
 ```javascript
 // import another field type - CalendarDay
@@ -69,7 +69,7 @@ module.exports = {
 }
 ```
 
-If you're curious about the usage options you can read more about `CalendarDay` [here](https://v5.keystonejs.com/keystone-alpha/fields/src/types/calendar-day/). Now it's a time to explore docs about other field types and get a bit familiar with them, it will help you make your schema cleaner.
+If you're curious about the usage options you can read more about `CalendarDay` [here](https://v5.keystonejs.com/keystone-alpha/fields/src/types/calendar-day/). Now it's time to explore docs on other field types and get a bit familiar with them. It will help you make your schema cleaner.
 
 ## Defining User list
 
@@ -101,7 +101,7 @@ const UsersSchema = require('./lists/Users.js');
 keystone.createList('User', UsersSchema);
 ```
 
-Realunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user. But how can we assign a task to specific user? Let's proceed with [Defining Relationships](https://v5.keystonejs.com/guides/relationships)
+Relaunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user. But how can we assign a task to specific user? Let's proceed with [Defining Relationships](https://v5.keystonejs.com/guides/relationships)
 
 See also:
 [Schema - Lists & Fields](https://v5.keystonejs.com/guides/schema)

@@ -70,6 +70,12 @@ export const objMerge = objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), 
 // [x, y, z] => { x: val, y: val, z: val}
 export const defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
 
+export const filterValues = (obj, predicate) =>
+  Object.entries(obj).reduce(
+    (acc, [key, value]) => (predicate(value) ? { ...acc, [key]: value } : acc),
+    {}
+  );
+
 // [x, y, z] => { x[keyedBy]: mapFn(x), ... }
 // [{ name: 'a', animal: 'cat' },
 //  { name: 'b', animal: 'dog' },

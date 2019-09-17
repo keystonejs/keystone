@@ -1,5 +1,22 @@
 # @keystone-alpha/fields-mongoid
 
+## 1.1.2
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @keystone-alpha/fields@12.0.0
+  - @arch-ui/input@0.1.0
+  - @keystone-alpha/adapter-knex@4.0.9
+  - @keystone-alpha/adapter-mongoose@4.0.6
+
+## 1.1.1
+
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
+- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d):
+  - @keystone-alpha/adapter-knex@4.0.8
+  - @keystone-alpha/fields@11.0.0
+  - @keystone-alpha/adapter-mongoose@4.0.5
+
 ## 1.1.0
 
 ### Minor Changes
