@@ -96,7 +96,7 @@ module.exports = function() {
       obj[listPath] = views;
       return obj;
     },
-    { __pages__: pageComponents, __hooks__: adminMeta.hooks }
+    { __pages__: pageComponents, __hooks__: adminMeta.hooks || {} }
   );
 
   const stringifiedObject = serialize(allViews, allPaths);
