@@ -21,7 +21,7 @@ const RelationshipWrapper = {
 };
 
 export class ImageBlock extends Block {
-  constructor({ adapter }, { fromList, joinList, createAuxList, getListByKey }) {
+  constructor({ adapter }, { fromList, joinList, createAuxList, getListByKey, listConfig }) {
     super(...arguments);
 
     this.joinList = joinList;
@@ -57,6 +57,7 @@ export class ImageBlock extends Block {
               'A reference back to the Slate.js Serialised Document this image is embedded within',
           },
         },
+        access: listConfig.listAccess,
       });
     }
 
