@@ -575,8 +575,17 @@ module.exports = class List {
   }
 
   gqlAuxFieldResolvers({ schemaName }) {
-    // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
+    const schemaAccess = this.access[schemaName];
+    if (
+      schemaAccess.read ||
+      schemaAccess.create ||
+      schemaAccess.update ||
+      schemaAccess.delete ||
+      schemaAccess.auth
+    ) {
+      return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
+    }
+    return {};
   }
 
   gqlAuxQueryResolvers() {
