@@ -1,19 +1,20 @@
 # Number of days of inactivity before an issue becomes stale
 daysUntilStale: 60
 # Number of days of inactivity before a stale issue is closed
-daysUntilClose: 180
+daysUntilClose: 360
 # Issues with these labels will never be considered stale
 exemptLabels:
   - pinned
   - high-priority
   - security
 # Label to use when marking an issue as stale
-staleLabel: stale
+staleLabel: needs-review
 # Comment to post when marking an issue as stale. Set to `false` to disable
 markComment: >
-  This issue has been automatically marked as stale because it has not had
-  any recent activity. We will look at all stale issues before closing them. 
-  If you have any information to help us determine if the issue is still
-  relevant please leave a comment here. Thanks for your contributions.
+  It looks like you haven't had a response in over 3 months. 
+  Sorry about that! We've flagged this issue for special attention. 
+  It wil be manually reviewed by maintainers, not automatically closed.
+  If you have any additional information please leave us a comment. 
+  It really helps! Thank you for you contributions. :)
 # Comment to post when closing a stale issue. Set to `false` to disable
 closeComment: false

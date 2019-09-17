@@ -2,7 +2,9 @@
 
 # *Required* Comment to reply with
 requestInfoReplyComment: >
-  We would appreciate it if you could provide us with more info about this issue/pr!
+  It looks like we could use some more details. 
+  Good titles and descriptions help us fix things faster.
+  If you can provide more information please update this issue. 
 
 # *OPTIONAL* default titles to check against for lack of descriptiveness
 # MUST BE ALL LOWERCASE
