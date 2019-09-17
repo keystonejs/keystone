@@ -1,0 +1,1 @@
+Show correct pluralised value in admin-ui sidebar nav
