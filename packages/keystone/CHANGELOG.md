@@ -1,5 +1,21 @@
 # @keystone-alpha/keystone
 
+## 15.0.0
+
+### Major Changes
+
+- [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4): Allow passing `{ access: ...}` when calling `keystone.extendGraphQLSchema()`. The `types` argument is now a list of objects of the form `{ access: ..., type: ...}`, rather than a list of strings.
+- [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07): Check access control on custom queries/mutations before executing custom resolvers.
+- [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d): Add support for `access: { auth: ... }` which controls whether authentication queries and mutations are accessible on a List
+
+  If you have a `List` which is being used as the target of an Authentication Strategy, you should set `access: { auth: true }` on that list.
+
+### Patch Changes
+
+- [857386db](https://github.com/keystonejs/keystone-5/commit/857386db): Fix bug where a schema with no mutations would fail at schema generation time
+- [d253220f](https://github.com/keystonejs/keystone-5/commit/d253220f): Updates the arg package that resolves a possible bug with connection strings in the CLI
+- [9498c690](https://github.com/keystonejs/keystone-5/commit/9498c690): Fix meta queries with maxResults limits
+
 ## 14.0.0
 
 ### Major Changes

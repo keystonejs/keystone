@@ -1,5 +1,28 @@
 # @keystone-alpha/fields
 
+## 12.0.0
+
+### Major Changes
+
+- [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d): Add support for `access: { auth: ... }` which controls whether authentication queries and mutations are accessible on a List
+
+  If you have a `List` which is being used as the target of an Authentication Strategy, you should set `access: { auth: true }` on that list.
+
+### Minor Changes
+
+- [e5ad5ef1](https://github.com/keystonejs/keystone-5/commit/e5ad5ef1): Only generate relationship update types when needed
+
+### Patch Changes
+
+- [c681f476](https://github.com/keystonejs/keystone-5/commit/c681f476): Fix test flake
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+  - @arch-ui/controls@0.0.10
+  - @arch-ui/day-picker@0.0.12
+  - @keystone-alpha/field-content@3.0.1
+  - @arch-ui/filters@0.0.11
+  - @arch-ui/input@0.1.0
+
 ## 11.0.0
 
 ### Major Changes
