@@ -4,10 +4,8 @@ const definitionLimit = maxDefinitions => validationContext => {
   const doc = validationContext.getDocument();
   if (doc.definitions.length > maxDefinitions) {
     validationContext.reportError(
-      new Error(
-        `Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`,
-        doc
-      )
+      new Error(`Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`),
+      doc
     );
   }
   return validationContext;
@@ -25,7 +23,8 @@ const fieldLimit = maxFields => validationContext => {
   });
   if (numFields > maxFields) {
     validationContext.reportError(
-      new Error(`Request contains ${numFields} fields (max: ${maxFields})`, doc)
+      new Error(`Request contains ${numFields} fields (max: ${maxFields})`),
+      doc
     );
   }
   return validationContext;
@@ -83,14 +82,13 @@ const depthLimit = maxDepth => validationContext => {
   // Calculate the total depth
   // I.e., total from explicit fields and from fragment interpolations
   const getTotalDepth = def => {
-    if (def.totalDepth !== null) return def.totalDepth;
-
     // This is for catching infinite loops caused by fragments mutually including each other.
     // We temporarily set the totalDepth to undefined while calculating, and if we hit that value again, we're in a loop.
     if (def.totalDepth === undefined) {
       def.totalDepth = Infinity;
       return def.totalDepth;
     }
+    if (def.totalDepth !== null) return def.totalDepth;
     def.totalDepth = undefined;
 
     const fragmentDepths = def.fragments.map(({ atDepth, name }) => {

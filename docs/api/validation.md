@@ -24,7 +24,7 @@ const app = new GraphQLApp({
 ## Validators
 
 - `depthLimit`: limit nesting depth of queries
-- `definitionLimit`: limit number of defintions (queries, fragments, mutations)
+- `definitionLimit`: limit number of definitions (queries, fragments, mutations)
 - `fieldLimit`: limit total number of fields returned in results
 
 The following query has one definition, four fields, and a total depth of three:
