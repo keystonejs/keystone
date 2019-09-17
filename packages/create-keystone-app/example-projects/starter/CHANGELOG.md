@@ -1,5 +1,11 @@
 # @keystone-alpha/example-projects-starter
 
+## 1.1.12
+
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+  - @keystone-alpha/adapter-mongoose@4.0.7
+  - @keystone-alpha/keystone@15.1.0
+
 ## 1.1.11
 
 - Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):

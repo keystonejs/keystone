@@ -1,5 +1,11 @@
 # @keystone-alpha/field-content
 
+## 3.1.0
+
+### Minor Changes
+
+- [f56ffdfd](https://github.com/keystonejs/keystone-5/commit/f56ffdfd): Apply access control to auxiliary lists
+
 ## 3.0.1
 
 - Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):

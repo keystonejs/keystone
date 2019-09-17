@@ -1,5 +1,11 @@
 # @keystone-alpha/fields
 
+## 12.1.0
+
+### Minor Changes
+
+- [f56ffdfd](https://github.com/keystonejs/keystone-5/commit/f56ffdfd): Apply access control to auxiliary lists
+
 ## 12.0.0
 
 ### Major Changes
