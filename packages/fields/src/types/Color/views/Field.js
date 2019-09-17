@@ -12,7 +12,7 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
 
   const colorPickerValue = useMemo(() => {
     // keystone previously stored values as a hex string and this should still be supported
-    // it is now stored as a JSON stringified object containing the rgba values
+    // it is now stored as an rgba string
     if (value) {
       if (value.indexOf('rgba', 0) === 0) {
         const rgbaValues = value.replace(/^rgba?\(|\s+|\)$/g, '').split(',');
