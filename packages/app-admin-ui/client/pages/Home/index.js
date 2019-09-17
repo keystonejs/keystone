@@ -89,8 +89,8 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
         <PageError>
           <p>
             No lists defined.{' '}
-            <Link href="https://v5.keystonejs.com/guides/add-lists">Get started</Link> by creating
-            your first list.
+            <Link href="https://v5.keystonejs.com/guides/add-lists">Get started by creating
+            your first list.</Link> 
           </p>
         </PageError>
       </Fragment>
