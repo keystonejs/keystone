@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/field-content", "type": "minor" },
+    { "name": "@keystone-alpha/fields", "type": "minor" },
+    { "name": "@keystone-alpha/keystone", "type": "minor" }
+  ],
+  "dependents": []
+}
