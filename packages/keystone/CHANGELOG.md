@@ -1,5 +1,21 @@
 # @keystone-alpha/keystone
 
+## 15.1.1
+
+### Patch Changes
+
+- [bb3b389b](https://github.com/keystonejs/keystone-5/commit/bb3b389b): Correctly apply access control to gqlAuxFieldResolvers()
+
+## 15.1.0
+
+### Minor Changes
+
+- [f56ffdfd](https://github.com/keystonejs/keystone-5/commit/f56ffdfd): Apply access control to auxiliary lists
+
+### Patch Changes
+
+- [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd): Remove hard-coded paths from app build process
+
 ## 15.0.0
 
 ### Major Changes

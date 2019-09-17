@@ -21,7 +21,7 @@ const RelationshipWrapper = {
 export class UnsplashBlock extends Block {
   constructor(
     { accessKey, secretKey, attribution },
-    { fromList, joinList, createAuxList, getListByKey }
+    { fromList, joinList, createAuxList, getListByKey, listConfig }
   ) {
     super(...arguments);
 
@@ -63,6 +63,7 @@ export class UnsplashBlock extends Block {
               'A reference back to the Slate.js Serialised Document this unsplash image is contained within',
           },
         },
+        access: listConfig.listAccess,
       });
     }
 
