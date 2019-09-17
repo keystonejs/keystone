@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { withRouter, Link } from 'react-router-dom';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
@@ -8,7 +9,6 @@ import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
-import Link from 'next/link';
 import ContainerQuery from '../../components/ContainerQuery';
 
 class HomePage extends Component {
