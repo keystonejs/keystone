@@ -23,14 +23,7 @@ module.exports = async keystone => {
   // Check the users list to see if there are any; if we find none, assume
   // it's a new database and initialise the demo data set.
   const users = await keystone.lists.User.adapter.findAll();
-  if (!users.length || shouldRecreateDatabase()) {
-    // Ensure a valid initial password is available to be used
-    validatePassword();
-    // Drop the connected database to ensure no existing collections remain
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    console.log('💾 Creating initial data...');
+  if (!users.length) {
     await keystone.createItems(initialData);
   }
 };

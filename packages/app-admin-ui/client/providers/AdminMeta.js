@@ -1,11 +1,11 @@
 /* global KEYSTONE_ADMIN_META */
 
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import List from '../classes/List';
 import { views, readViews, preloadViews } from '../FIELD_TYPES';
 
-const { __pages__: pageViews, ...listViews } = views;
+const { __pages__: pageViews, __hooks__: hookViews, ...listViews } = views;
 
 // TODO: Pull this off `window.X` to support server side permission queries
 const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
@@ -26,6 +26,7 @@ const adminMeta = {
     return listsByPath[path];
   },
   pageViews,
+  hookViews,
   readViews,
   preloadViews,
 };
@@ -66,6 +67,30 @@ export const AdminMetaProvider = ({ children }) => children(readAdminMeta());
 // we can do a permission query
 export const useAdminMeta = () => {
   return readAdminMeta();
+};
+
+// Hooks are functions that take an array of React components and a data object
+// They can append, prepend or modify the array but cannot modify the hook data
+// They must return an array of React components
+export const resolveAdminUIHooks = (originalHook, newHook, hookData) => (...params) => {
+  let resolvedData = params;
+  if (originalHook) {
+    resolvedData = originalHook(params, { ...hookData });
+  }
+  return newHook([...resolvedData], hookData);
+};
+
+export const useHook = (hookName, hookData = {}) => {
+  const adminMeta = readAdminMeta();
+  if (adminMeta.hookViews && adminMeta.hookViews[hookName]) {
+    const resolvedHook = readViews(adminMeta.hookViews[hookName]).reduce(
+      (prev, next) => resolveAdminUIHooks(prev, next, hookData),
+      null
+    );
+    return c => resolvedHook(c).map((c, i) => <Fragment key={`${hookName}-${i}`}>{c}</Fragment>);
+  } else {
+    return c => c; // return component unchanged
+  }
 };
 
 // HOC Wrapper

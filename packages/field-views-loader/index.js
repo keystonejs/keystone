@@ -40,6 +40,9 @@ module.exports = function() {
 
   /* adminMeta gives us a `lists` object in the shape:
     {
+      hooks: {
+        hookName: ['absolute/path/to/hook'],
+      },
       pages: [
         {
           label: 'Hello World',
@@ -64,9 +67,10 @@ module.exports = function() {
       }
     }
 
-  and our loader simply tranforms it into usuable code that looks like this:
+  and our loader simply transforms it into useable code that looks like this:
 
   module.exports = {
+    "__hooks__": {hookName:[require('absolute/path/to/hook')]}
     "__pages__": {
       "/hello": require('absolute/path/to/page'),
     },
@@ -92,7 +96,7 @@ module.exports = function() {
       obj[listPath] = views;
       return obj;
     },
-    { __pages__: pageComponents }
+    { __pages__: pageComponents, __hooks__: adminMeta.hooks }
   );
 
   const stringifiedObject = serialize(allViews, allPaths);

@@ -4,6 +4,7 @@ const { Text } = require('@keystone-alpha/fields');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { StaticApp } = require('@keystone-alpha/app-static');
+const path = require('path');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -23,6 +24,11 @@ module.exports = {
     new GraphQLApp(),
     new StaticApp({ path: '/', src: 'public' }),
     // Setup the optional Admin UI
-    new AdminUIApp({ enableDefaultRoute: true }),
+    new AdminUIApp({
+      enableDefaultRoute: true,
+      hooks: {
+        hookName: [path.resolve('./hooks/component')],
+      },
+    }),
   ],
 };

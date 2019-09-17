@@ -1,0 +1,1 @@
+Add framework for hooks in the adminUI

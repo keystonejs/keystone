@@ -16,6 +16,7 @@ class AdminUIApp {
     graphiqlPath = '/admin/graphiql',
     authStrategy,
     pages,
+    hooks,
     enableDefaultRoute = false,
     isAccessAllowed = () => true,
     schemaName = 'public',
@@ -31,6 +32,7 @@ class AdminUIApp {
     this.adminPath = adminPath;
     this.authStrategy = authStrategy;
     this.pages = pages;
+    this.hooks = hooks;
     this.apiPath = apiPath;
     this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
@@ -47,6 +49,7 @@ class AdminUIApp {
     return {
       adminPath: this.adminPath,
       pages: this.pages,
+      hooks: this.hooks,
       ...this.routes,
       ...(this.authStrategy
         ? {

@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/app-admin-ui", "type": "minor" },
+    { "name": "@keystone-alpha/field-views-loader", "type": "minor" }
+  ],
+  "dependents": []
+}
