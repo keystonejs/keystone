@@ -1,1 +1,0 @@
-Check access control on custom queries/mutations before executing custom resolvers.

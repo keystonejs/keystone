@@ -184,7 +184,7 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, on
     throw new Error(`Unable to resolve list for key ${key}`);
   }
 
-  const label = node.label || list.label;
+  const label = node.label || list.plural;
   const maybeSearchParam = list.getPersistedSearch() || '';
   const path = getPath(location.pathname);
   const href = `${adminPath}/${list.path}`;

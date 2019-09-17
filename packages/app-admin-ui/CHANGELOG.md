@@ -1,5 +1,13 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.8.1
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @arch-ui/controls@0.0.10
+  - @keystone-alpha/fields@12.0.0
+  - @arch-ui/input@0.1.0
+
 ## 5.8.0
 
 ### Minor Changes

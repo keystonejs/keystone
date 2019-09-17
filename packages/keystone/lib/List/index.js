@@ -301,6 +301,7 @@ module.exports = class List {
           defaultAccess: this.defaultAccess.field,
           createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
+          listAccess: this.access,
         })
     );
     this.fields = Object.values(this.fieldsByPath);
@@ -574,8 +575,17 @@ module.exports = class List {
   }
 
   gqlAuxFieldResolvers({ schemaName }) {
-    // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
+    const schemaAccess = this.access[schemaName];
+    if (
+      schemaAccess.read ||
+      schemaAccess.create ||
+      schemaAccess.update ||
+      schemaAccess.delete ||
+      schemaAccess.auth
+    ) {
+      return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
+    }
+    return {};
   }
 
   gqlAuxQueryResolvers() {
@@ -1273,13 +1283,14 @@ module.exports = class List {
     }
   }
 
-  async _beforeChange(resolvedData, existingItem, context, originalInput) {
+  async _beforeChange(resolvedData, existingItem, context, operation, originalInput) {
     const args = {
       resolvedData,
       existingItem,
       context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, resolvedData, 'beforeChange');
   }
@@ -1293,13 +1304,14 @@ module.exports = class List {
     await this._runHook(args, existingItem, 'beforeDelete');
   }
 
-  async _afterChange(updatedItem, existingItem, context, originalInput) {
+  async _afterChange(updatedItem, existingItem, context, operation, originalInput) {
     const args = {
       updatedItem,
       originalInput,
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, updatedItem, 'afterChange');
   }

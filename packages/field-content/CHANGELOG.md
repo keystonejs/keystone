@@ -1,5 +1,18 @@
 # @keystone-alpha/field-content
 
+## 3.1.0
+
+### Minor Changes
+
+- [f56ffdfd](https://github.com/keystonejs/keystone-5/commit/f56ffdfd): Apply access control to auxiliary lists
+
+## 3.0.1
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @keystone-alpha/fields@12.0.0
+  - @arch-ui/input@0.1.0
+
 ## 3.0.0
 
 ### Major Changes

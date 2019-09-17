@@ -42,9 +42,7 @@ module.exports = {
       await Promise.all(
         apps.map(app => {
           return app.build({
-            apiPath: '/admin/api',
             distDir: resolvedDistDir,
-            graphiqlPath: '/admin/graphiql',
             keystone,
           });
         })

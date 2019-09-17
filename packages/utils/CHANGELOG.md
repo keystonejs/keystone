@@ -1,5 +1,11 @@
 # @keystone-alpha/utils
 
+## 3.1.0
+
+### Minor Changes
+
+- [857386db](https://github.com/keystonejs/keystone-5/commit/857386db): Add `filterValues(object, predicate)` to remove entries from an object where the value does not match the predicate.
+
 ## 3.0.2
 
 ### Patch Changes
