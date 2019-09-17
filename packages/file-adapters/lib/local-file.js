@@ -3,9 +3,9 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 
 module.exports = class LocalFileAdapter {
-  constructor({ src, path }) {
+  constructor({ src, path: inputPath }) {
     this.src = path.resolve(src);
-    this.path = path;
+    this.path = inputPath;
 
     mkdirp.sync(this.src);
   }
