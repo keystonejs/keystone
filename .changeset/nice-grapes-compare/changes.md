@@ -1,0 +1,1 @@
+Added alpha channel support to the color field
