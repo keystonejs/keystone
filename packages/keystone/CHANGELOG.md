@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 15.1.1
+
+### Patch Changes
+
+- [bb3b389b](https://github.com/keystonejs/keystone-5/commit/bb3b389b): Correctly apply access control to gqlAuxFieldResolvers()
+
 ## 15.1.0
 
 ### Minor Changes
