@@ -2,23 +2,32 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import * as React from 'react';
+import { Fragment, useMemo } from 'react';
 import type { CellProps } from '../../../types';
 
 type Props = CellProps<string>;
 
 const Cell = (props: Props) => {
-  if (!props.data) {
-    return null;
-  }
+  const cellValue = useMemo(() => {
+    if (!props.data) {
+      return null;
+    }
+    try {
+      const parsedValue = JSON.parse(props.data);
+      const { r, g, b, a } = parsedValue.rgba;
+      return `rgba(${r}, ${g}, ${b}, ${a})`;
+    } catch (e) {
+      return props.data;
+    }
+  }, [props.data]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <div
         style={{
           // using inline styles instead of emotion for setting the color
           // since emotion doesn't escape styles so it could be used for CSS injection
-          backgroundColor: props.data,
+          backgroundColor: cellValue,
         }}
         css={{
           borderRadius: 3,
@@ -34,9 +43,9 @@ const Cell = (props: Props) => {
           verticalAlign: 'middle',
         }}
       >
-        {props.data}
+        {cellValue}
       </span>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
