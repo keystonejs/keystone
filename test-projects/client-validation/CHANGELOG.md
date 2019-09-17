@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-client-validation
 
+## 1.0.13
+
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+  - @keystone-alpha/adapter-mongoose@4.0.7
+  - @keystone-alpha/keystone@15.1.0
+
 ## 1.0.12
 
 ### Patch Changes
