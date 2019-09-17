@@ -1,5 +1,41 @@
 # @keystone-alpha/test-utils
 
+## 2.3.4
+
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+  - @keystone-alpha/adapter-knex@4.0.10
+  - @keystone-alpha/adapter-mongoose@4.0.7
+  - @keystone-alpha/keystone@15.1.0
+
+## 2.3.3
+
+- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):
+- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @keystone-alpha/adapter-knex@4.0.9
+  - @keystone-alpha/adapter-mongoose@4.0.6
+  - @keystone-alpha/keystone@15.0.0
+
+## 2.3.2
+
+### Patch Changes
+
+- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+  - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
+  - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
+  - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
+  - `keystone.getAdminMeta()` -> `keystone.getAdminMeta({ schemaName })`
+  - `list.getAdminMeta()` -> `list.getAdminMeta({ schemaName })`
+  - `field.getAdminMeta()` -> `field.getAdminMeta({ schemaName })`
+
+* Updated dependencies [decf7319](https://github.com/keystonejs/keystone-5/commit/decf7319):
+* Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
+* Updated dependencies [f8ad0975](https://github.com/keystonejs/keystone-5/commit/f8ad0975):
+  - @keystone-alpha/adapter-knex@4.0.8
+  - @keystone-alpha/adapter-mongoose@4.0.5
+  - @keystone-alpha/keystone@14.0.0
+  - @keystone-alpha/app-graphql@8.0.0
+
 ## 2.3.1
 
 ### Patch Changes

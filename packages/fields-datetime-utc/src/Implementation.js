@@ -4,13 +4,13 @@ import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 
 export class DateTimeUtcImplementation extends Implementation {
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] && item[this.path].toISOString() };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.orderingInputFields('String'),

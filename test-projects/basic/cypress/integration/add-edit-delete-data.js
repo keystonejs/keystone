@@ -27,7 +27,7 @@ describe('Adding data', () => {
       cy.get('#list-page-create-button').click({ force: true });
 
       Object.keys(data).forEach(item => {
-        cy.get(`#${item}`).type(data[item]);
+        cy.get(`#${item}`).type(data[item], { force: true });
       });
 
       cy.get('#create-item-modal-submit-button').click({ force: true });
@@ -105,7 +105,7 @@ describe('Editing data', () => {
         .type(field.newValue);
       cy.get('#item-page-save-button').click({ force: true });
       cy.get(`nav a:contains("${section}")`).click({ force: true });
-      cy.get('body').should('contain', field.newValue);
+      cy.get('#ks-list-table').should('contain', field.newValue);
     });
   });
 
@@ -176,7 +176,7 @@ describe('Deleting data', () => {
       cy.get(`a:contains("${item}"):first`).click({ force: true });
       cy.get('button:contains("Delete"):first').click({ force: true });
       cy.get('body:last footer button:first').click({ force: true });
-      cy.get('body').should('not.contain', item);
+      cy.get('#ks-list-table').should('not.contain', item);
     });
   });
 });

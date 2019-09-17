@@ -34,10 +34,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'users',
           runner(setupKeystone, async ({ keystone, create }) => {
-            await Promise.all([
+            const users = await Promise.all([
               create('User', { name: 'Jess', favNumber: 1 }),
               create('User', { name: 'Johanna', favNumber: 8 }),
               create('User', { name: 'Sam', favNumber: 5 }),
+              create('User', { name: 'Theo', favNumber: 2 }),
             ]);
 
             // 2 results is okay
@@ -76,6 +77,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
             expect(data.allUsers.length).toEqual(0);
+
+            // Count is still correct
+            ({ data, errors } = await graphqlRequest({
+              keystone,
+              query: `
+          query {
+            meta: _allUsersMeta {
+              count
+            }
+          }
+      `,
+            }));
+
+            expect(errors).toBe(undefined);
+            expect(data).toHaveProperty('meta');
+            expect(data.meta.count).toBe(users.length);
 
             // This query is only okay because of the "first" parameter
             ({ data, errors } = await graphqlRequest({

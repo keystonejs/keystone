@@ -147,6 +147,7 @@ keystone.createList('Post', {
       authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
     delete: ({ item, authentication }) =>
       authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+    auth: true,
   },
 });
 
@@ -160,6 +161,7 @@ keystone.createList('PostCategory', {
     read: true,
     update: false,
     delete: false,
+    auth: true,
   },
 });
 

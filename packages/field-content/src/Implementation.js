@@ -167,6 +167,7 @@ export class Content extends Relationship.implementation {
             };
           },
         },
+        access: listConfig.listAccess,
       });
     }
 
@@ -222,12 +223,12 @@ export class Content extends Relationship.implementation {
     };
   }
 
-  getGqlAuxTypes(...args) {
-    return [...super.getGqlAuxTypes(...args), ...this.auxList.getGqlTypes(...args)];
+  getGqlAuxTypes({ schemaName }) {
+    return [...super.getGqlAuxTypes({ schemaName }), ...this.auxList.getGqlTypes({ schemaName })];
   }
 
-  get gqlAuxFieldResolvers() {
-    return this.auxList.gqlFieldResolvers;
+  gqlAuxFieldResolvers({ schemaName }) {
+    return this.auxList.gqlFieldResolvers({ schemaName });
   }
 }
 

@@ -56,7 +56,14 @@ const HomepageContent = () => (
       <a css={{ color: colors.N80 }} href="https://www.thinkmill.com.au">
         Thinkmill
       </a>{' '}
-      and contributors around the world.
+      and{' '}
+      <a
+        css={{ color: colors.N80 }}
+        href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md"
+      >
+        contributors
+      </a>{' '}
+      around the world.
     </p>
     <div css={mq({ display: 'flex', margin: [`2em auto`, `1em 0`, `2em 0`] })}>
       <IconTwitter href="https://twitter.com/keystonejs" target="_blank" title="Twitter" />
