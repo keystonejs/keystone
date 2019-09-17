@@ -15,7 +15,7 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
     // it is now stored as an rgba string
     if (value) {
       if (value.indexOf('rgba', 0) === 0) {
-        const rgbaValues = value.replace(/^rgba?\(|\s+|\)$/g, '').split(',');
+        const rgbaValues = value.replace(/^rgba\(|\s+|\)$/g, '').split(',');
         return { r: rgbaValues[0], g: rgbaValues[1], b: rgbaValues[2], a: rgbaValues[3] };
       }
       return value;
