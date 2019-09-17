@@ -1283,13 +1283,14 @@ module.exports = class List {
     }
   }
 
-  async _beforeChange(resolvedData, existingItem, context, originalInput) {
+  async _beforeChange(resolvedData, existingItem, context, operation, originalInput) {
     const args = {
       resolvedData,
       existingItem,
       context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, resolvedData, 'beforeChange');
   }
@@ -1303,13 +1304,14 @@ module.exports = class List {
     await this._runHook(args, existingItem, 'beforeDelete');
   }
 
-  async _afterChange(updatedItem, existingItem, context, originalInput) {
+  async _afterChange(updatedItem, existingItem, context, operation, originalInput) {
     const args = {
       updatedItem,
       originalInput,
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, updatedItem, 'afterChange');
   }
