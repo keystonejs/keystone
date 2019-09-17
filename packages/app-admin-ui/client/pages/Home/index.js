@@ -82,8 +82,19 @@ class HomePage extends Component {
 const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
-  const query = gqlCountQueries(lists);
 
+  if (lists.length === 0) {
+    return (
+      <Fragment>
+        <DocTitle>Home</DocTitle>
+        <PageError>
+          <p>No lists defined. Get started by creating your first list.</p>
+        </PageError>
+      </Fragment>
+    );
+  }
+
+  const query = gqlCountQueries(lists);
   return (
     <Fragment>
       <DocTitle>Home</DocTitle>
