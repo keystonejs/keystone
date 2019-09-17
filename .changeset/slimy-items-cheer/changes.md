@@ -1,1 +1,0 @@
-Add `validateCustomAccessControl()` for use by custom queries/mutations access control checking.
