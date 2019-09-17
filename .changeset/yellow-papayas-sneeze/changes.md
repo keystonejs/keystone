@@ -1,0 +1,1 @@
+Remove hard-coded paths from app build process
