@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.2.1
+
+### Patch Changes
+
+- [25cfa799](https://github.com/keystonejs/keystone-5/commit/25cfa799): republish
+
 ## 1.2.0
 
 ### Minor Changes

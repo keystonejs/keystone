@@ -1,5 +1,11 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.8.2
+
+### Patch Changes
+
+- [8b087627](https://github.com/keystonejs/keystone-5/commit/8b087627): Show correct pluralised value in admin-ui sidebar nav
+
 ## 5.8.1
 
 - Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):

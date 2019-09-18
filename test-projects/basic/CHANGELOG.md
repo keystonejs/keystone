@@ -1,5 +1,10 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.14
+
+- Updated dependencies [d316166e](https://github.com/keystonejs/keystone-5/commit/d316166e):
+  - @keystone-alpha/file-adapters@2.0.0
+
 ## 1.3.13
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
