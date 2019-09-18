@@ -1,5 +1,11 @@
 # @keystone-alpha/file-adapters
 
+## 2.0.0
+
+### Major Changes
+
+- [d316166e](https://github.com/keystonejs/keystone-5/commit/d316166e): Change FileAdapter API from: `{ route, directory }` to `{ path, src }` to match other packages.
+
 ## 1.1.1
 
 ### Patch Changes

@@ -1,5 +1,10 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.3.4
+
+- Updated dependencies [d316166e](https://github.com/keystonejs/keystone-5/commit/d316166e):
+  - @keystone-alpha/file-adapters@2.0.0
+
 ## 0.3.3
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
