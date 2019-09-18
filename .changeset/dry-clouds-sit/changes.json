@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/field-content", "type": "patch" },
-    { "name": "@keystone-alpha/fields", "type": "patch" }
-  ],
-  "dependents": []
-}

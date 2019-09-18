@@ -1,1 +1,0 @@
-Fix regression when parent list of a Content field had a `where` clause as its access control.
