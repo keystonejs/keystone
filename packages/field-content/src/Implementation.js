@@ -167,7 +167,16 @@ export class Content extends Relationship.implementation {
             };
           },
         },
-        access: listConfig.listAccess,
+        access: Object.entries(listConfig.listAccess).reduce(
+          (acc, [schemaName, access]) => ({
+            ...acc,
+            [schemaName]: Object.entries(access).reduce(
+              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+              {}
+            ),
+          }),
+          {}
+        ),
       });
     }
 
