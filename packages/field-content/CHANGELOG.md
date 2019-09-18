@@ -1,5 +1,11 @@
 # @keystone-alpha/field-content
 
+## 3.1.1
+
+### Patch Changes
+
+- [04aa6a08](https://github.com/keystonejs/keystone-5/commit/04aa6a08): Fix regression when parent list of a Content field had a `where` clause as its access control.
+
 ## 3.1.0
 
 ### Minor Changes
