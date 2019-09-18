@@ -1,5 +1,102 @@
 # @keystone-alpha/fields
 
+## 12.2.1
+
+### Patch Changes
+
+- [04aa6a08](https://github.com/keystonejs/keystone-5/commit/04aa6a08): Fix regression when parent list of a Content field had a `where` clause as its access control.
+
+## 12.2.0
+
+### Minor Changes
+
+- [ee000a7f](https://github.com/keystonejs/keystone-5/commit/ee000a7f): Added alpha channel support to the `Color` field. NOTE: This introduces a backwards-compatible change in the format saved to the database. The old format was a 6-character hex string preceded by a `#`, eg; `#663399`. The new format is an `rgba` string, eg; `rgba(102, 51, 153, 1)`. Both formats are fully supported in CSS, and the `Color` field will correctly handle old values stored in the hex format.
+
+## 12.1.0
+
+### Minor Changes
+
+- [f56ffdfd](https://github.com/keystonejs/keystone-5/commit/f56ffdfd): Apply access control to auxiliary lists
+
+## 12.0.0
+
+### Major Changes
+
+- [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d): Add support for `access: { auth: ... }` which controls whether authentication queries and mutations are accessible on a List
+
+  If you have a `List` which is being used as the target of an Authentication Strategy, you should set `access: { auth: true }` on that list.
+
+### Minor Changes
+
+- [e5ad5ef1](https://github.com/keystonejs/keystone-5/commit/e5ad5ef1): Only generate relationship update types when needed
+
+### Patch Changes
+
+- [c681f476](https://github.com/keystonejs/keystone-5/commit/c681f476): Fix test flake
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+  - @arch-ui/controls@0.0.10
+  - @arch-ui/day-picker@0.0.12
+  - @keystone-alpha/field-content@3.0.1
+  - @arch-ui/filters@0.0.11
+  - @arch-ui/input@0.1.0
+
+## 11.0.0
+
+### Major Changes
+
+- [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9): The `.access` property of Fields is now keyed by `schemaName`. As such, a number of getters have been replaced with methods which take `{ schemaName }`.
+
+  - `get gqlOutputFields()` -> `gqlOutputFields({ schemaName })`
+  - `get gqlOutputFieldResolvers()` -> `gqlOutputFieldResolvers({ schemaName })`
+  - `get gqlAuxFieldResolvers() -> gqlAuxFieldResolvers({ schemaName })`
+  - `get gqlAuxQueryResolvers()` -> `gqlAuxQueryResolvers({ schemaName })`
+  - `get gqlAuxMutationResolvers()` -> `gqlAuxMutationResolvers({ schemaName })`
+  - `get gqlQueryInputFields()` -> `gqlQueryInputFields({ schemaName })`
+
+- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+  - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
+  - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
+  - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
+  - `keystone.getAdminMeta()` -> `keystone.getAdminMeta({ schemaName })`
+  - `list.getAdminMeta()` -> `list.getAdminMeta({ schemaName })`
+  - `field.getAdminMeta()` -> `field.getAdminMeta({ schemaName })`
+
+### Patch Changes
+
+- [bc0b9813](https://github.com/keystonejs/keystone-5/commit/bc0b9813): `parseListAccess` and `parseFieldAccess` now take `schemaNames` as an argument, and return a nested access object, with the `schemaNames` as keys.
+
+  For example,
+
+  ```js
+  parseListAccess({ defaultAccess: false, access: { public: true }, schemaNames: ['public', 'internal'] }
+  ```
+
+  will return
+
+  ```js
+  {
+    public: { create: true, read: true, update: true, delete: true },
+    internal: { create: false, read: false, update: false, delete: false },
+  }
+  ```
+
+  These changes are backwards compatible with regard to the `access` argument, so
+
+  ```js
+  const access = { create: true, read: true, update: true, delete: true };
+  parseListAccess({ access, schemaNames: ['public', 'internal'] }
+  ```
+
+  will return
+
+  ```js
+  {
+    public: { create: true, read: true, update: true, delete: true },
+    internal: { create: true, read: true, update: true, delete: true },
+  }
+  ```
+
 ## 10.7.2
 
 ### Patch Changes

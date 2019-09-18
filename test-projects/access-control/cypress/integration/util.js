@@ -7,7 +7,7 @@ function yesNo(truthy) {
 
 function getPrefix(access) {
   // prettier-ignore
-  let prefix = `${yesNo(access.create)}Create${yesNo(access.read)}Read${yesNo(access.update)}Update`;
+  let prefix = `${yesNo(access.create)}Create${yesNo(access.read)}Read${yesNo(access.update)}Update${yesNo(access.auth)}Auth`;
   if (Object.prototype.hasOwnProperty.call(access, 'delete')) {
     prefix = `${prefix}${yesNo(access.delete)}Delete`;
   }
@@ -47,7 +47,7 @@ module.exports = {
 
   /* Generated with:
   const result = [];
-  const options = ['create', 'read', 'update', 'delete'];
+  const options = ['create', 'read', 'update', 'delete', 'auth'];
   // All possible combinations are contained in the set 0..2^n-1
   for(let flags = 0; flags < Math.pow(2, options.length); flags++) {
     // Generate an object of true/false values for the particular combination
@@ -60,22 +60,38 @@ module.exports = {
   */
   // prettier-ignore
   listAccessVariations: [
-    { create: false, read: false, update: false, delete: false },
-    { create: true,  read: false, update: false, delete: false },
-    { create: false, read: true,  update: false, delete: false },
-    { create: true,  read: true,  update: false, delete: false },
-    { create: false, read: false, update: true,  delete: false },
-    { create: true,  read: false, update: true,  delete: false },
-    { create: false, read: true,  update: true,  delete: false },
-    { create: true,  read: true,  update: true,  delete: false },
-    { create: false, read: false, update: false, delete: true },
-    { create: true,  read: false, update: false, delete: true },
-    { create: false, read: true,  update: false, delete: true },
-    { create: true,  read: true,  update: false, delete: true },
-    { create: false, read: false, update: true,  delete: true },
-    { create: true,  read: false, update: true,  delete: true },
-    { create: false, read: true,  update: true,  delete: true },
-    { create: true,  read: true,  update: true,  delete: true },
+    { create: false, read: false, update: false, delete: false, auth: true },
+    { create: true,  read: false, update: false, delete: false, auth: true },
+    { create: false, read: true,  update: false, delete: false, auth: true },
+    { create: true,  read: true,  update: false, delete: false, auth: true },
+    { create: false, read: false, update: true,  delete: false, auth: true },
+    { create: true,  read: false, update: true,  delete: false, auth: true },
+    { create: false, read: true,  update: true,  delete: false, auth: true },
+    { create: true,  read: true,  update: true,  delete: false, auth: true },
+    { create: false, read: false, update: false, delete: true, auth: true },
+    { create: true,  read: false, update: false, delete: true, auth: true },
+    { create: false, read: true,  update: false, delete: true, auth: true },
+    { create: true,  read: true,  update: false, delete: true, auth: true },
+    { create: false, read: false, update: true,  delete: true, auth: true },
+    { create: true,  read: false, update: true,  delete: true, auth: true },
+    { create: false, read: true,  update: true,  delete: true, auth: true },
+    { create: true,  read: true,  update: true,  delete: true, auth: true },
+    { create: false, read: false, update: false, delete: false, auth: false },
+    { create: true,  read: false, update: false, delete: false, auth: false },
+    { create: false, read: true,  update: false, delete: false, auth: false },
+    { create: true,  read: true,  update: false, delete: false, auth: false },
+    { create: false, read: false, update: true,  delete: false, auth: false },
+    { create: true,  read: false, update: true,  delete: false, auth: false },
+    { create: false, read: true,  update: true,  delete: false, auth: false },
+    { create: true,  read: true,  update: true,  delete: false, auth: false },
+    { create: false, read: false, update: false, delete: true, auth: false },
+    { create: true,  read: false, update: false, delete: true, auth: false },
+    { create: false, read: true,  update: false, delete: true, auth: false },
+    { create: true,  read: true,  update: false, delete: true, auth: false },
+    { create: false, read: false, update: true,  delete: true, auth: false },
+    { create: true,  read: false, update: true,  delete: true, auth: false },
+    { create: false, read: true,  update: true,  delete: true, auth: false },
+    { create: true,  read: true,  update: true,  delete: true, auth: false },
   ],
 
   fieldAccessVariations: [

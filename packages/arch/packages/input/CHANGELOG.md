@@ -1,5 +1,11 @@
 # @arch-ui/input
 
+## 0.1.0
+
+### Minor Changes
+
+- [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c): Allows multiline input content to wrap
+
 ## 0.0.9
 
 ### Patch Changes

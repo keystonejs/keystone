@@ -54,12 +54,12 @@ _Note_: `resolveInput` is not executed for deleted items.
 <!-- prettier-ignore -->
 
 ```javascript
-const resolveInput = ({ 
-  resolvedData, 
-  existingItem, 
-  originalInput, 
-  context, 
-  list 
+const resolveInput = ({
+  resolvedData,
+  existingItem,
+  originalInput,
+  context,
+  list
 }) => resolvedData;
 ```
 
@@ -88,7 +88,7 @@ _Note_: `validateInput` is not executed for deleted items. See: [`validateDelete
 
 ### `beforeChange`
 
-Executed after `validateInput`. `beforeChange` is not used to maniputate data but can be used to preform actions before data is saved.
+Executed after `validateInput`. `beforeChange` is not used to manipulate data but can be used to preform actions before data is saved.
 
 _Note_: `beforeChange` is not executed for deleted items. See: [`beforeDelete`](#before-delete)
 
@@ -101,12 +101,12 @@ Executed once the mutation has been completed and all transactions finalised.
 <!-- prettier-ignore -->
 
 ```javascript
-const afterChange = ({ 
-  updatedItem, 
-  existingItem, 
-  originalInput, 
-  context, 
-  list 
+const afterChange = ({
+  updatedItem,
+  existingItem,
+  originalInput,
+  context,
+  list
 }) => {
   /* side effects here */
 };

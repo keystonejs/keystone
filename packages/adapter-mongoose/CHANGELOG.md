@@ -1,5 +1,30 @@
 # @keystone-alpha/adapter-mongoose
 
+## 4.0.7
+
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+  - @keystone-alpha/keystone@15.1.0
+
+## 4.0.6
+
+- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):
+- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @keystone-alpha/keystone@15.0.0
+  - @keystone-alpha/fields-mongoid@1.1.2
+
+## 4.0.5
+
+### Patch Changes
+
+- [a7ac4264](https://github.com/keystonejs/keystone-5/commit/a7ac4264): Enabled useUnifiedTopology to address deprecation warning
+
+- Updated dependencies [decf7319](https://github.com/keystonejs/keystone-5/commit/decf7319):
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
+- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d):
+  - @keystone-alpha/keystone@14.0.0
+  - @keystone-alpha/fields-mongoid@1.1.1
+
 ## 4.0.4
 
 - Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):

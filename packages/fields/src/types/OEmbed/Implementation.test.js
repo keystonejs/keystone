@@ -6,7 +6,7 @@ const newOEmbed = ({ config = {} } = {}) => {
   return new OEmbed(
     path,
     { access: true, ...config },
-    { listAdapter: { newFieldAdapter: () => {} } }
+    { listAdapter: { newFieldAdapter: () => {} }, schemaNames: ['public'] }
   );
 };
 

@@ -13,10 +13,10 @@ export class CalendarDay extends Implementation {
     this.yearPickerType = yearPickerType;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.orderingInputFields('String'),

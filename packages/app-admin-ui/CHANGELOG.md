@@ -1,5 +1,44 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.8.2
+
+### Patch Changes
+
+- [8b087627](https://github.com/keystonejs/keystone-5/commit/8b087627): Show correct pluralised value in admin-ui sidebar nav
+
+## 5.8.1
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @arch-ui/controls@0.0.10
+  - @keystone-alpha/fields@12.0.0
+  - @arch-ui/input@0.1.0
+
+## 5.8.0
+
+### Minor Changes
+
+- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+  - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
+  - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
+  - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
+  - `keystone.getAdminMeta()` -> `keystone.getAdminMeta({ schemaName })`
+  - `list.getAdminMeta()` -> `list.getAdminMeta({ schemaName })`
+  - `field.getAdminMeta()` -> `field.getAdminMeta({ schemaName })`
+
+### Patch Changes
+
+- [087ceeac](https://github.com/keystonejs/keystone-5/commit/087ceeac): Add robots exclusion meta tags to Admin UI
+
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
+  - @keystone-alpha/fields@11.0.0
+
+## 5.7.0
+
+### Minor Changes
+
+- [2350a9fd](https://github.com/keystonejs/keystone-5/commit/2350a9fd): Admin UI has a new config option: `isAccessAllowed({ authentication: { user, listKey } }) => Boolean` to restrict who can login to the Admin UI.
+
 ## 5.6.1
 
 ### Patch Changes

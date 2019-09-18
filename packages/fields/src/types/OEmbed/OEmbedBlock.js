@@ -20,7 +20,7 @@ const RelationshipWrapper = {
 };
 
 export class OEmbedBlock extends Block {
-  constructor({ adapter }, { fromList, joinList, createAuxList, getListByKey }) {
+  constructor({ adapter }, { fromList, joinList, createAuxList, getListByKey, listConfig }) {
     super(...arguments);
 
     this.joinList = joinList;
@@ -51,6 +51,16 @@ export class OEmbedBlock extends Block {
               'A reference back to the Slate.js Serialised Document this embed is contained within',
           },
         },
+        access: Object.entries(listConfig.listAccess).reduce(
+          (acc, [schemaName, access]) => ({
+            ...acc,
+            [schemaName]: Object.entries(access).reduce(
+              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+              {}
+            ),
+          }),
+          {}
+        ),
       });
     }
 

@@ -17,6 +17,8 @@ class AdminUIApp {
     authStrategy,
     pages,
     enableDefaultRoute = false,
+    isAccessAllowed = () => true,
+    schemaName = 'public',
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -32,6 +34,8 @@ class AdminUIApp {
     this.apiPath = apiPath;
     this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
+    this._isAccessAllowed = isAccessAllowed;
+    this._schemaName = schemaName;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -52,6 +56,19 @@ class AdminUIApp {
     };
   }
 
+  isAccessAllowed(req) {
+    if (!this.authStrategy) {
+      return true;
+    }
+
+    return (
+      req.user &&
+      this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } }) &&
+      req.session.audiences &&
+      req.session.audiences.includes('admin')
+    );
+  }
+
   createSessionMiddleware() {
     const { signinPath } = this.routes;
 
@@ -62,9 +79,7 @@ class AdminUIApp {
     app.get(signinPath, (req, res, next) =>
       // This session is currently authenticated as part of the 'admin'
       // audience.
-      req.user && req.session.audiences && req.session.audiences.includes('admin')
-        ? res.redirect(this.adminPath)
-        : next()
+      this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
     );
 
     // TODO: Attach a server-side signout to signoutPath
@@ -124,21 +139,45 @@ class AdminUIApp {
       apiPath: this.apiPath,
       graphiqlPath: this.graphiqlPath,
       ...this.getAdminMeta(),
-      ...keystone.getAdminMeta(),
+      ...keystone.getAdminMeta({ schemaName: this._schemaName }),
     };
   }
 
   prepareMiddleware({ keystone, distDir, dev }) {
+    const app = express.Router();
+
+    app.use(this.adminPath, (req, res, next) => {
+      // Depending on what was requested, we might redirect the user based on
+      // their access
+      res.format({
+        // For everything other than html requests, we have middleware to handle
+        // it later down the line.
+        // From the docs: "If the header is not specified, the first callback is
+        // invoked."
+        default: () => {
+          next();
+        },
+        '*/*': () => {
+          next();
+        },
+        // For page loads, we want to redirect back to signin page
+        'text/html': () => {
+          if (req.originalUrl !== this.routes.signinPath && !this.isAccessAllowed(req)) {
+            return res.redirect(this.routes.signinPath);
+          }
+          next();
+        },
+      });
+    });
+
     if (dev) {
-      return this.createDevMiddleware({ keystone });
+      return this.createDevMiddleware({ keystone, app });
     } else {
-      return this.createProdMiddleware({ keystone, distDir });
+      return this.createProdMiddleware({ keystone, distDir, app });
     }
   }
 
-  createProdMiddleware({ keystone, distDir }) {
-    const app = express.Router();
-
+  createProdMiddleware({ distDir, app }) {
     app.use(compression());
 
     const builtAdminRoot = path.join(distDir, 'admin');
@@ -149,22 +188,26 @@ class AdminUIApp {
     }
     const secureBuiltRoot = path.join(builtAdminRoot, 'secure');
     const secureStaticMiddleware = express.static(secureBuiltRoot);
-    const secureFallbackMiddleware = fallback('index.html', { root: secureBuiltRoot });
+    const secureFallbackMiddleware = fallback('index.html', {
+      root: secureBuiltRoot,
+    });
 
     if (this.authStrategy) {
       const publicBuiltRoot = path.join(builtAdminRoot, 'public');
       const publicStaticMiddleware = express.static(publicBuiltRoot);
-      const publicFallbackMiddleware = fallback('index.html', { root: publicBuiltRoot });
+      const publicFallbackMiddleware = fallback('index.html', {
+        root: publicBuiltRoot,
+      });
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
-        return req.user
+        return this.isAccessAllowed(req)
           ? secureStaticMiddleware(req, res, next)
           : publicStaticMiddleware(req, res, next);
       });
 
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
-        return req.user
+        return this.isAccessAllowed(req)
           ? secureFallbackMiddleware(req, res, next)
           : publicFallbackMiddleware(req, res, next);
       });
@@ -176,7 +219,7 @@ class AdminUIApp {
     const _app = express.Router();
 
     if (this.authStrategy) {
-      _app.use(this.createSessionMiddleware(keystone));
+      _app.use(this.createSessionMiddleware());
     }
 
     _app.use(this.adminPath, app);
@@ -190,12 +233,10 @@ class AdminUIApp {
     return _app;
   }
 
-  createDevMiddleware({ keystone }) {
-    const app = express();
-
+  createDevMiddleware({ keystone, app }) {
     const { adminPath } = this;
     if (this.authStrategy) {
-      app.use(this.createSessionMiddleware(keystone));
+      app.use(this.createSessionMiddleware());
     }
 
     // ensure any non-resource requests are rewritten for history api fallback
@@ -203,6 +244,7 @@ class AdminUIApp {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings
       // was appended.
+
       if (/^[\w\/\-]+$/.test(req.path)) req.url = '/';
       next();
     });
@@ -243,14 +285,17 @@ class AdminUIApp {
       const publicMiddleware = webpackDevMiddleware(publicCompiler, webpackMiddlewareConfig);
       const publicHotMiddleware = webpackHotMiddleware(publicCompiler, webpackHotMiddlewareConfig);
 
-      // app.use(adminMiddleware);
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
-        return req.user ? secureMiddleware(req, res, next) : publicMiddleware(req, res, next);
+        return this.isAccessAllowed(req)
+          ? secureMiddleware(req, res, next)
+          : publicMiddleware(req, res, next);
       });
 
       app.use((req, res, next) => {
-        return req.user ? secureHotMiddleware(req, res, next) : publicHotMiddleware(req, res, next);
+        return this.isAccessAllowed(req)
+          ? secureHotMiddleware(req, res, next)
+          : publicHotMiddleware(req, res, next);
       });
     } else {
       // No auth required? Everyone can access the "secure" area

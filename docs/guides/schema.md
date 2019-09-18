@@ -452,7 +452,7 @@ The data stored in the database for the `createdBy` field will be a single ID:
 #### To-many Relationships
 
 When you have multiple items you want to refer to from a single field, a
-_to-many_ relationship will store an array, also exposing that array viat the
+_to-many_ relationship will store an array, also exposing that array via the
 GraphQL API.
 
 ```javascript
@@ -611,7 +611,7 @@ The database would look like:
 
 </div>
 
-Note the two Relationship fields in this example _know nothing about eachother_.
+Note the two Relationship fields in this example _know nothing about each other_.
 They are not specially linked. This means if you update data in one place, you
 must update it in both. To automate this and link two Relationship fields, read
 on about _[Relationship Back References](#relationship-back-references)_.

@@ -51,10 +51,10 @@ export class Relationship extends Implementation {
     return { refList, refField };
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
 
-    if (!refList.access.read) {
+    if (!refList.access[schemaName].read) {
       // It's not accessible in any way, so we can't expose the related field
       return [];
     }
@@ -75,10 +75,10 @@ export class Relationship extends Implementation {
     return { ...meta, ref, refFieldPath, many };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
 
-    if (!refList.access.read) {
+    if (!refList.access[schemaName].read) {
       // It's not accessible in any way, so we can't expose the related field
       return [];
     }
@@ -99,10 +99,10 @@ export class Relationship extends Implementation {
     }
   }
 
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers({ schemaName }) {
     const { refList } = this.tryResolveRefList();
 
-    if (!refList.access.read) {
+    if (!refList.access[schemaName].read) {
       // It's not accessible in any way, so we can't expose the related field
       return [];
     }
@@ -291,8 +291,11 @@ export class Relationship extends Implementation {
     // Beware of circular delete hooks!
   }
 
-  getGqlAuxTypes() {
+  getGqlAuxTypes({ schemaName }) {
     const { refList } = this.tryResolveRefList();
+    if (!refList.access[schemaName].update) {
+      return [];
+    }
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
     //

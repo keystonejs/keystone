@@ -1,5 +1,10 @@
 # @arch-ui/controls
 
+## 0.0.10
+
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+  - @arch-ui/input@0.1.0
+
 ## 0.0.9
 
 ### Patch Changes

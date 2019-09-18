@@ -145,7 +145,7 @@ function createApolloServer(keystone, apolloConfig, schemaName, dev) {
     maxFileSize: 200 * 1024 * 1024,
     maxFiles: 5,
     ...apolloConfig,
-    ...keystone.getAdminSchema(),
+    ...keystone.getAdminSchema({ schemaName }),
     context: ({ req }) => ({
       ...keystone.getGraphQlContext({ schemaName, req }),
       req,

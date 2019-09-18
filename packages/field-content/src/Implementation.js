@@ -167,6 +167,16 @@ export class Content extends Relationship.implementation {
             };
           },
         },
+        access: Object.entries(listConfig.listAccess).reduce(
+          (acc, [schemaName, access]) => ({
+            ...acc,
+            [schemaName]: Object.entries(access).reduce(
+              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+              {}
+            ),
+          }),
+          {}
+        ),
       });
     }
 
@@ -222,12 +232,12 @@ export class Content extends Relationship.implementation {
     };
   }
 
-  getGqlAuxTypes(...args) {
-    return [...super.getGqlAuxTypes(...args), ...this.auxList.getGqlTypes(...args)];
+  getGqlAuxTypes({ schemaName }) {
+    return [...super.getGqlAuxTypes({ schemaName }), ...this.auxList.getGqlTypes({ schemaName })];
   }
 
-  get gqlAuxFieldResolvers() {
-    return this.auxList.gqlFieldResolvers;
+  gqlAuxFieldResolvers({ schemaName }) {
+    return this.auxList.gqlFieldResolvers({ schemaName });
   }
 }
 
