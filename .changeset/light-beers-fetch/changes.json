@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/keystone", "type": "patch" },
+    { "name": "@keystone-alpha/test-utils", "type": "patch" }
+  ],
+  "dependents": []
+}

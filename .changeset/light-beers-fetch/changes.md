@@ -1,0 +1,1 @@
+Make executeQuery() backwards compatible with old, single-schema KS
