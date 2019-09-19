@@ -1,5 +1,11 @@
 # @keystone-alpha/api-tests
 
+## 1.6.0
+
+### Minor Changes
+
+- [b9e2c45b](https://github.com/keystonejs/keystone-5/commit/b9e2c45b): Add support for query validation
+
 ## 1.5.3
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
