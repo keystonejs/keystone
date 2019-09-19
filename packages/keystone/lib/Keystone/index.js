@@ -188,7 +188,10 @@ module.exports = class Keystone {
      *
      * @return Promise<Object> The graphql query response
      */
-    return (queryString, { skipAccessControl = false, variables, context = {} } = {}) => {
+    return (
+      queryString,
+      { skipAccessControl = false, variables, context = {}, operationName } = {}
+    ) => {
       let passThroughContext = {
         ...defaultContext,
         ...context,
@@ -210,7 +213,7 @@ module.exports = class Keystone {
         );
       }
 
-      return graphQLQuery(queryString, passThroughContext, variables);
+      return graphQLQuery(queryString, passThroughContext, variables, operationName);
     };
   }
 
@@ -424,8 +427,8 @@ module.exports = class Keystone {
   // once one is, Keystone wants to be able to expose the ability to query that
   // schema, so this function enables other modules to register that function.
   registerSchema(schemaName, schema) {
-    this._graphQLQuery[schemaName] = (query, context, variables) =>
-      graphql(schema, query, null, context, variables);
+    this._graphQLQuery[schemaName] = (query, context, variables, operationName) =>
+      graphql(schema, query, null, context, variables, operationName);
   }
 
   getAdminSchema({ schemaName }) {

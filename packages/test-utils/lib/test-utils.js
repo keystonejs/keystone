@@ -10,7 +10,13 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
-async function setupServer({ name, adapterName, createLists = () => {}, keystoneOptions }) {
+async function setupServer({
+  name,
+  adapterName,
+  createLists = () => {},
+  keystoneOptions,
+  graphqlOptions = {},
+}) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
 
   const argGenerator = {
@@ -36,6 +42,7 @@ async function setupServer({ name, adapterName, createLists = () => {}, keystone
       schemaName: SCHEMA_NAME,
       apiPath: '/admin/api',
       graphiqlPath: '/admin/graphiql',
+      ...graphqlOptions,
     }),
   ];
 
@@ -47,19 +54,30 @@ async function setupServer({ name, adapterName, createLists = () => {}, keystone
   return { keystone, app };
 }
 
-function graphqlRequest({ keystone, query, variables }) {
-  return keystone.executeQuery(query, { context: { schemaName: SCHEMA_NAME }, variables });
+function graphqlRequest({ keystone, query, variables, operationName }) {
+  return keystone.executeQuery(query, {
+    context: { schemaName: SCHEMA_NAME },
+    variables,
+    operationName,
+  });
 }
 
-function networkedGraphqlRequest({ app, query, variables = undefined, headers = {} }) {
+function networkedGraphqlRequest({
+  app,
+  query,
+  variables = undefined,
+  headers = {},
+  expectedStatusCode = 200,
+  operationName,
+}) {
   const request = supertest(app).set('Accept', 'application/json');
 
   Object.entries(headers).forEach(([key, value]) => request.set(key, value));
 
   return request
-    .post('/admin/api', { query, variables })
+    .post('/admin/api', { query, variables, operationName })
     .then(res => {
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(expectedStatusCode);
       return JSON.parse(res.text);
     })
     .catch(error => ({
