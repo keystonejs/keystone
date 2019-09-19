@@ -1,0 +1,9 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/api-tests", "type": "minor" },
+    { "name": "@keystone-alpha/app-graphql", "type": "minor" },
+    { "name": "@keystone-alpha/keystone", "type": "minor" },
+    { "name": "@keystone-alpha/test-utils", "type": "minor" }
+  ],
+  "dependents": []
+}
