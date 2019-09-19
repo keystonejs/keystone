@@ -1,5 +1,11 @@
 # @keystone-alpha/test-utils
 
+## 2.4.0
+
+### Minor Changes
+
+- [b9e2c45b](https://github.com/keystonejs/keystone-5/commit/b9e2c45b): Add support for query validation
+
 ## 2.3.4
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):

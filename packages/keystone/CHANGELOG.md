@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 15.2.0
+
+### Minor Changes
+
+- [b9e2c45b](https://github.com/keystonejs/keystone-5/commit/b9e2c45b): Add support for query validation
+
 ## 15.1.2
 
 ### Patch Changes
