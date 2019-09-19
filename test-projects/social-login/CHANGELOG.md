@@ -1,5 +1,10 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 2.2.6
+
+- Updated dependencies [d316166e](https://github.com/keystonejs/keystone-5/commit/d316166e):
+  - @keystone-alpha/file-adapters@2.0.0
+
 ## 2.2.5
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):

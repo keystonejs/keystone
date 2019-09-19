@@ -1,5 +1,17 @@
 # @keystone-alpha/fields
 
+## 12.2.1
+
+### Patch Changes
+
+- [04aa6a08](https://github.com/keystonejs/keystone-5/commit/04aa6a08): Fix regression when parent list of a Content field had a `where` clause as its access control.
+
+## 12.2.0
+
+### Minor Changes
+
+- [ee000a7f](https://github.com/keystonejs/keystone-5/commit/ee000a7f): Added alpha channel support to the `Color` field. NOTE: This introduces a backwards-compatible change in the format saved to the database. The old format was a 6-character hex string preceded by a `#`, eg; `#663399`. The new format is an `rgba` string, eg; `rgba(102, 51, 153, 1)`. Both formats are fully supported in CSS, and the `Color` field will correctly handle old values stored in the hex format.
+
 ## 12.1.0
 
 ### Minor Changes
