@@ -1,0 +1,20 @@
+# Number of days of inactivity before an issue becomes stale
+daysUntilStale: 60
+# Number of days of inactivity before a stale issue is closed
+daysUntilClose: 360
+# Issues with these labels will never be considered stale
+exemptLabels:
+  - pinned
+  - high-priority
+  - security
+# Label to use when marking an issue as stale
+staleLabel: needs-review
+# Comment to post when marking an issue as stale. Set to `false` to disable
+markComment: >
+  It looks like you haven't had a response in over 3 months. 
+  Sorry about that! We've flagged this issue for special attention. 
+  It wil be manually reviewed by maintainers, not automatically closed.
+  If you have any additional information please leave us a comment. 
+  It really helps! Thank you for you contributions. :)
+# Comment to post when closing a stale issue. Set to `false` to disable
+closeComment: false

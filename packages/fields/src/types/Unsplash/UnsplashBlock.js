@@ -63,7 +63,16 @@ export class UnsplashBlock extends Block {
               'A reference back to the Slate.js Serialised Document this unsplash image is contained within',
           },
         },
-        access: listConfig.listAccess,
+        access: Object.entries(listConfig.listAccess).reduce(
+          (acc, [schemaName, access]) => ({
+            ...acc,
+            [schemaName]: Object.entries(access).reduce(
+              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+              {}
+            ),
+          }),
+          {}
+        ),
       });
     }
 

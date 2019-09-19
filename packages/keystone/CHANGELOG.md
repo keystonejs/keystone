@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 15.1.2
+
+### Patch Changes
+
+- [258424d7](https://github.com/keystonejs/keystone-5/commit/258424d7): Correctly pass `originalInput` argument through to `beforeChange()` and `afterChange()` hooks.
+
 ## 15.1.1
 
 ### Patch Changes
