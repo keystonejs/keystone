@@ -58,6 +58,7 @@ module.exports = class Keystone {
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
+    expressOptions = {},
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -77,6 +78,7 @@ module.exports = class Keystone {
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
+    this._expressOptions = Object.entries(expressOptions);
 
     if (adapters) {
       this.adapters = adapters;
@@ -685,13 +687,18 @@ module.exports = class Keystone {
           ...apps,
         ]
           .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
-          .map(app =>
-            app.prepareMiddleware({
+          .map(app => {
+            const expressInstance = app.prepareMiddleware({
               keystone: this,
               dev,
               distDir: distDir || DEFAULT_DIST_DIR,
-            })
-          )
+            });
+
+            // Apply Express settings
+            this._expressOptions.forEach(([setting, value]) => expressInstance.set(setting, value));
+
+            return expressInstance;
+          })
       )),
     ]).filter(middleware => !!middleware);
 

@@ -1,0 +1,1 @@
+Added expressConfig ctor option to pass settings to middleware Express instances
