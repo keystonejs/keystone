@@ -10,6 +10,7 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
+import { gqlCountQueries } from '../../classes/List';
 
 class HomePage extends Component {
   state = { createFromList: null };
@@ -89,8 +90,9 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
         <PageError>
           <p>
             No lists defined.{' '}
-            <Link href="https://v5.keystonejs.com/guides/add-lists">Get started by creating
-            your first list.</Link> 
+            <Link href="https://v5.keystonejs.com/guides/add-lists">
+              Get started by creating your first list.
+            </Link>
           </p>
         </PageError>
       </Fragment>
