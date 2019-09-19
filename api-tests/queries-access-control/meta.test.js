@@ -55,6 +55,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read
                 update
                 delete
+                auth
               }
             }
           }
@@ -68,6 +69,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             read: true,
             update: true,
             delete: true,
+            auth: true,
           });
         })
       );
@@ -125,6 +127,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read
                 update
                 delete
+                auth
               }
             }
           }
@@ -141,6 +144,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read: true,
                 update: true,
                 delete: true,
+                auth: true,
               },
             },
             {
@@ -150,6 +154,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read: true,
                 update: true,
                 delete: true,
+                auth: true,
               },
             },
           ]);

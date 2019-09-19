@@ -9,34 +9,24 @@ title: Access Control
 
 ## Intro
 
-There are 2 ways of affecting the available actions of a user in Keystone:
+What a user _can_ and _cannot_ do in Keystone depends on two things: _authentication_ and _access control_.
 
-1. Admin UI authentication
-2. GraphQL access control
+This guide focuses on the GraphQL API _access control_, which refers to the specific actions an authenticated or anonymous user can take.
 
-Note on Terminology:
-
-- _Authentication_ refers to a user identifying themselves.
-  The specifics of how this is done is outside the scope of this document.
-  Within this document, we abbreviate _Authentication_ to _Auth_.
-  See [Authentication](https://v5.keystonejs.com/guides/authentication) for more.
-- _Access Control_ refers to the specific actions an authenticated or anonymous
-  user can take. Often referred to as _authorization_ elsewhere.
-
-## Admin UI Authentication
-
-See [Authentication](https://v5.keystonejs.com/guides/authentication).
+_Authentication_, on the other hand, refers to a user identifying themselves in the Admin UI. You can learn about it in the [Authentication guide](/guides/authentication).
 
 ## GraphQL Access Control
 
-Access control is about limiting CRUD (Create, Read, Update, Delete) actions that can be performed based on the
-access level of the currently authenticated (or anonymous) user.
+Access control is about limiting CRUD (Create, Read, Update, Delete) actions that can be performed based on the current user (authenticated or anonymous).
 
-For example, the below access control states:
+In Keystone, both [Lists](/api/create-list) and [Fields](keystone-alpha/fields) take an `access` option, which lets you define rules of access control with fine precision - see [Access Control API](/api/access-control) docs for more details.
 
-1. Only admins can read deactivated user accounts.
-2. Only authenticated users can read/update their own email, not any other
-   user's. Admins can read/update anyone's email.
+### Example
+
+Let's assume we want set the following access controls for a `User` list:
+
+1. Only admins can _read_ deactivated user accounts.
+2. Only authenticated users can _read/update_ their own email, not any other user's. Admins can _read/update_ anyone's email.
 3. Only admins can see if a password is set. No-one can read their own or other
    user's passwords.
    - _NOTE: It is **never** possible in Keystone to read a password via the
@@ -44,7 +34,9 @@ For example, the below access control states:
 4. Only authenticated users can update their own password. Admins can update
    anyone's password.
 
-_NOTE: The code below depends on having a correct [authentication setup](https://v5.keystonejs.com/guides/authentication)._
+Here's how we would set that up:
+
+_NOTE: The code below depends on having a correct [authentication setup](/guides/authentication)._
 
 ```javascript
 const { Text, Select, Checkbox, Password } = require('@keystone-alpha/fields');
@@ -109,7 +101,7 @@ When logged in to the Admin UI as "Jess", will result in a list view like:
 | Jess    | jess@thinkmill.com.au |          | active |
 | Lauren  |                       |          | active |
 
-Notice Jess can only read his own email, and cannot read any passwords.
+Note that Jess can only read _his own_ email, and cannot read any passwords.
 
 ---
 

@@ -27,7 +27,7 @@ describe('Adding data', () => {
       cy.get('#list-page-create-button').click({ force: true });
 
       Object.keys(data).forEach(item => {
-        cy.get(`#${item}`).type(data[item]);
+        cy.get(`#${item}`).type(data[item], { force: true });
       });
 
       cy.get('#create-item-modal-submit-button').click({ force: true });

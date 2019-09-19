@@ -1,7 +1,7 @@
 {
   "name": "create-keystone-app",
   "description": "Generate starter apps for Keystone 5",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "bin": {
     "create-keystone-app": "bin/cli.js"
   },
@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@sindresorhus/slugify": "^0.6.0",
-    "arg": "^4.1.0",
+    "arg": "^4.1.1",
     "cfonts": "^2.4.4",
     "chalk": "^2.4.2",
     "execa": "^2.0.4",

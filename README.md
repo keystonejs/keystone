@@ -43,6 +43,11 @@ yarn start
 For more details and system requirements, check out the [5 Minute Quick Start
 Guide](https://v5.keystonejs.com/quick-start/).
 
+
+### API
+
+The [API documentation](https://v5.keystonejs.com/api/) contains a reference for all Keystone packages.
+
 ### Demo Projects
 
 These projects are designed to show off different aspects of KeystoneJS features

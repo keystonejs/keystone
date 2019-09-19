@@ -1,5 +1,18 @@
 # @keystone-alpha/adapter-knex
 
+## 4.0.10
+
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+  - @keystone-alpha/keystone@15.1.0
+
+## 4.0.9
+
+- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):
+- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+  - @keystone-alpha/keystone@15.0.0
+  - @keystone-alpha/fields-auto-increment@2.0.1
+
 ## 4.0.8
 
 - Updated dependencies [decf7319](https://github.com/keystonejs/keystone-5/commit/decf7319):

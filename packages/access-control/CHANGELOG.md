@@ -1,5 +1,22 @@
 # @keystone-alpha/access-control
 
+## 3.0.0
+
+### Major Changes
+
+- [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d): Add support for `access: { auth: ... }` which controls whether authentication queries and mutations are accessible on a List
+
+  If you have a `List` which is being used as the target of an Authentication Strategy, you should set `access: { auth: true }` on that list.
+
+### Minor Changes
+
+- [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4): Add `parseCustomAccess()` for parsing the access control directives on custom types/queries/mutations.
+- [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07): Add `validateCustomAccessControl()` for use by custom queries/mutations access control checking.
+
+### Patch Changes
+
+- [9ece715c](https://github.com/keystonejs/keystone-5/commit/9ece715c): Refactor access-control internals to better support future changes
+
 ## 2.0.0
 
 ### Major Changes
