@@ -1,5 +1,11 @@
 # @keystone-alpha/app-graphql
 
+## 8.1.0
+
+### Minor Changes
+
+- [b9e2c45b](https://github.com/keystonejs/keystone-5/commit/b9e2c45b): Add support for query validation
+
 ## 8.0.0
 
 ### Major Changes
