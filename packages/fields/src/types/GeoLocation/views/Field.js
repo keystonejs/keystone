@@ -8,20 +8,15 @@ import GoogleMapReact from 'google-map-react';
 import debounce from 'lodash.debounce';
 
 class Maker extends Component {
-  render = () => (
-    <div>
-      <LocationIcon />
-    </div>
-  );
+  render = () => <LocationIcon />;
 }
 export default class TextField extends Component {
   constructor(props) {
     super(props);
     this.state = {
       displayMap: true,
-      location: {},
+      location: this.props.value || this.props.field.config.defaultCenter,
     };
-    // throttle(this.onMapClick
   }
 
   onSubFieldChange = type => event => {
@@ -78,7 +73,7 @@ export default class TextField extends Component {
           defaultZoom={defaultZoom}
           onClick={this.onMapClick}
         >
-          <Maker lat={lat} lng={lng} text="My Marker" />
+          {lat && lng && <Maker lat={lat} lng={lng} />}
         </GoogleMapReact>
       </div>
     );
@@ -90,7 +85,9 @@ export default class TextField extends Component {
           <Input
             autoComplete="off"
             autoFocus={autoFocus}
-            type="text"
+            type="number"
+            min="0"
+            max="90"
             value={this.valueToString(lat)}
             onChange={this.onSubFieldChange('lat')}
             id={`${htmlID}['lat']`}
@@ -101,13 +98,17 @@ export default class TextField extends Component {
           <Input
             autoComplete="off"
             autoFocus={autoFocus}
-            type="text"
+            type="number"
+            min="0"
+            max="180"
             value={this.valueToString(lng)}
             onChange={this.onSubFieldChange('lng')}
             id={`${htmlID}['lng']`}
           />
         </FieldInput>
-        <CheckboxPrimitive checked={displayMap} onChange={this.onDisplayMapChange} />
+        <CheckboxPrimitive checked={displayMap} onChange={this.onDisplayMapChange}>
+          Show Map?
+        </CheckboxPrimitive>
         {displayMap && mapComponent}
       </FieldContainer>
     );
