@@ -18,3 +18,4 @@ export { default as Text } from './types/Text';
 export { default as Unsplash } from './types/Unsplash';
 export { default as Url } from './types/Url';
 export { default as Uuid } from './types/Uuid';
+export { default as GeoLocation } from './types/GeoLocation';
