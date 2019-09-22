@@ -13,46 +13,33 @@ export default class TextController extends FieldController {
   };
   serialize = data => {
     const value = data[this.path];
-    console.log({ data });
     // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'object') {
-      return encodeURI(JSON.stringify(value));
+      return value;
     } else {
       // If it is neither string nor number then it must be empty.
-      return encodeURI('{}');
+      return {};
     }
   };
-  deserialize = data => JSON.parse(decodeURI(data[this.path]));
-  getFilterTypes = () => [
-    {
-      type: 'is',
-      label: 'Is exactly',
-      getInitialValue: () => '',
-    },
-    {
-      type: 'not',
-      label: 'Is not exactly',
-      getInitialValue: () => '',
-    },
-    {
-      type: 'gt',
-      label: 'Is greater than',
-      getInitialValue: () => '',
-    },
-    {
-      type: 'lt',
-      label: 'Is less than',
-      getInitialValue: () => '',
-    },
-    {
-      type: 'gte',
-      label: 'Is greater than or equal to',
-      getInitialValue: () => '',
-    },
-    {
-      type: 'lte',
-      label: 'Is less than or equal to',
-      getInitialValue: () => '',
-    },
-  ];
+  deserialize = data => data[this.path];
+  validateInput = ({ addFieldValidationError, originalInput }) => {
+    const rangeCheck = (input, min, max) => input >= min && input <= max;
+    if (!originalInput.location.lng) {
+      addFieldValidationError('Longitude not found');
+    } else if (!rangeCheck(originalInput.location.lng, 0, 180)) {
+      addFieldValidationError('Longitude should be in range 0 ~ 180');
+    }
+    if (!originalInput.location.lat) {
+      addFieldValidationError('Latitude not found');
+    } else if (!rangeCheck(originalInput.location.lat, 0, 90)) {
+      addFieldValidationError('Latitude should be in range 0 ~ 90');
+    }
+  };
+  getFilterTypes = () => [];
+  getQueryFragment = () => `
+    ${this.path} {
+       lng
+       lat
+    }
+  `;
 }

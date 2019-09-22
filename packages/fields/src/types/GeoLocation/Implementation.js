@@ -5,8 +5,9 @@ import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 import isEqual from 'lodash.isequal';
 
 export class GeoLocation extends Implementation {
-  constructor(path, { defaultZoom, defaultCenter, googleApiKey, defaultValue }) {
+  constructor(path, { defaultZoom, defaultCenter, googleApiKey, defaultValue, showMap }) {
     super(...arguments);
+    this.graphQLOutputType = 'GeoLocation';
     this.defaultCenter = defaultCenter || {
       lat: 22.28552,
       lng: 114.15769,
@@ -14,10 +15,15 @@ export class GeoLocation extends Implementation {
     this.defaultValue = defaultValue || defaultCenter;
     this.defaultZoom = defaultZoom || 11;
     this.googleApiKey = googleApiKey;
+    if (typeof showMap == 'undefined') {
+      this.showMap = true;
+    } else {
+      this.showMap = showMap || false;
+    }
   }
 
   gqlOutputFields() {
-    return [`${this.path}: String`];
+    return [`${this.path}: ${this.graphQLOutputType}`];
   }
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -31,10 +37,10 @@ export class GeoLocation extends Implementation {
     ];
   }
   get gqlUpdateInputFields() {
-    return [`${this.path}: String`];
+    return [`${this.path}: ${this.graphQLOutputType}Input`];
   }
   get gqlCreateInputFields() {
-    return [`${this.path}: String`];
+    return [`${this.path}: ${this.graphQLOutputType}Input`];
   }
   extendAdminMeta(meta) {
     return {
@@ -42,33 +48,51 @@ export class GeoLocation extends Implementation {
       defaultCenter: this.defaultCenter,
       defaultZoom: this.defaultZoom,
       googleApiKey: this.googleApiKey,
+      showMap: this.showMap,
     };
+  }
+  getGqlAuxTypes() {
+    return [
+      `
+      type ${this.graphQLOutputType} {
+        lat: Float
+        lng: Float
+      }
+      input ${this.graphQLOutputType}Input {
+        lat: Float
+        lng: Float
+      }
+    `,
+    ];
   }
 }
 
 export class MongoGeoLocationInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const validator = a => {
-      if (typeof a !== 'string') {
+    const validator = location => {
+      if (typeof location !== 'object') {
         return false;
       }
-      const deserialized = JSON.parse(decodeURI(a));
       return (
-        (isEqual(Object.keys(deserialized), ['lng', 'lat']) ||
-          isEqual(Object.keys(deserialized), ['lat', 'lng'])) &&
-        deserialized.lng >= 0 &&
-        deserialized.lng <= 180 &&
-        deserialized.lat >= 0 &&
-        deserialized.lat <= 90
+        (isEqual(Object.keys(location), ['lng', 'lat']) ||
+          isEqual(Object.keys(location), ['lat', 'lng'])) &&
+        location.lng >= 0 &&
+        location.lng <= 180 &&
+        location.lat >= 0 &&
+        location.lat <= 90
       );
     };
     const schemaOptions = {
-      type: mongoose.Mixed,
+      type: {
+        lng: mongoose.Decimal128,
+        lat: mongoose.Decimal128,
+      },
       validate: {
         validator: this.buildValidator(validator),
         message: '{VALUE} is not a Decimal value',
       },
     };
+    console.log({ t: this.mergeSchemaOptions(schemaOptions, this.config) });
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 
@@ -90,9 +114,9 @@ export class MongoGeoLocationInterface extends MongooseFieldAdapter {
 
   getQueryConditions(dbPath) {
     return {
-      ...this.equalityConditions(dbPath, mongoose.Types.Decimal128.fromString),
-      ...this.orderingConditions(dbPath, mongoose.Types.Decimal128.fromString),
-      ...this.inConditions(dbPath, mongoose.Types.Decimal128.fromString),
+      ...this.equalityConditions(dbPath),
+      ...this.stringConditions(dbPath),
+      ...this.inConditions(dbPath),
     };
   }
 }

@@ -13,9 +13,10 @@ class Maker extends Component {
 export default class TextField extends Component {
   constructor(props) {
     super(props);
+    const { field, value } = this.props;
     this.state = {
-      displayMap: true,
-      location: this.props.value || this.props.field.config.defaultCenter,
+      displayMap: field.config.showMap,
+      location: value || field.config.defaultCenter,
     };
   }
 
@@ -86,8 +87,9 @@ export default class TextField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             type="number"
-            min="0"
-            max="90"
+            min="0.0"
+            max="90.0"
+            step="any"
             value={this.valueToString(lat)}
             onChange={this.onSubFieldChange('lat')}
             id={`${htmlID}['lat']`}
@@ -97,10 +99,11 @@ export default class TextField extends Component {
           <label>Longitude </label>
           <Input
             autoComplete="off"
-            autoFocus={autoFocus}
+            autoFocus={false}
             type="number"
-            min="0"
-            max="180"
+            min="0.0"
+            max="180.0"
+            step="any"
             value={this.valueToString(lng)}
             onChange={this.onSubFieldChange('lng')}
             id={`${htmlID}['lng']`}

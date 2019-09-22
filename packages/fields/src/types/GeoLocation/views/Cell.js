@@ -5,9 +5,17 @@ import type { CellProps } from '../../../types';
 
 type Props = CellProps<boolean>;
 
+const roundToDecimalPlace = (value, decimalPlace) =>
+  Math.round(value * 10 ** decimalPlace) / 10 ** decimalPlace;
+
 export default class CheckboxCellView extends Component<Props> {
   render() {
     const { data } = this.props;
-    return <span>{`Lng: ${data.lng}, Lat: ${data.lat}`}</span>;
+    return (
+      <span>{`Lng: ${roundToDecimalPlace(data.lng, 5)}, Lat: ${roundToDecimalPlace(
+        data.lat,
+        5
+      )}`}</span>
+    );
   }
 }
