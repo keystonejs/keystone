@@ -13,21 +13,16 @@ class Maker extends Component {
 export default class TextField extends Component {
   constructor(props) {
     super(props);
-    const { field, value } = this.props;
+    const { field } = this.props;
     this.state = {
       displayMap: field.config.showMap,
-      location: value || field.config.defaultCenter,
     };
   }
 
   onSubFieldChange = type => event => {
     const value = event.target.value;
-    const { location } = this.state;
-    location[type] = parseFloat(value.replace(/[^0-9.,]+/g, ''));
-    this.setState({
-      location,
-    });
-    this.props.onChange(location);
+    const { value: location } = this.props;
+    this.props.onChange(Object.assign({}, location, { [type]: parseFloat(value) }));
   };
 
   valueToString = value => {
@@ -51,10 +46,7 @@ export default class TextField extends Component {
   onMapClick = debounce(
     ({ lat, lng }) => {
       const location = { lat, lng };
-      this.setState({
-        location,
-      });
-      this.props.onChange(location);
+      this.props.onChange(Object.assign({}, location));
     },
     400,
     { leading: false, trailing: true }
