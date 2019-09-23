@@ -56,7 +56,6 @@ async function setupServer({
 
 function graphqlRequest({ keystone, query, variables, operationName }) {
   return keystone.executeQuery(query, {
-    context: { schemaName: SCHEMA_NAME },
     variables,
     operationName,
   });

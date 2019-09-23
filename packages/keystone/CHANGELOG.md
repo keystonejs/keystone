@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 15.2.1
+
+### Patch Changes
+
+- [d218cd55](https://github.com/keystonejs/keystone-5/commit/d218cd55): Make executeQuery() backwards compatible with old, single-schema KS
+
 ## 15.2.0
 
 ### Minor Changes
