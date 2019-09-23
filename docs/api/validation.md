@@ -6,7 +6,7 @@ order: 6
 
 # Query Validation
 
-Stop maliciously complex or invalid queries against your Keystone instance.
+Stop maliciously complex or invalid queries against your `Keystone` instance.
 
 ```javascript
 const { validation } = require('@keystone-alpha/app-graphql');

@@ -9,7 +9,7 @@ This document describes the role of data store adapters in Keystone 5 and how th
 
 A `Keystone` system consists of multiple `Lists`, each of which contains multiple `Fields`.
 This data structure needs to be backed by a persistent data store of some kind.
-The _Keystone Adapter Framework_ facilitates this by providing an abstraction layer which can be implemented
+The _KeystoneJS Adapter Framework_ facilitates this by providing an abstraction layer which can be implemented
 by adapters for different data stores (e.g. Mongoose, Postgres, etc).
 
 ## Usage
@@ -58,13 +58,13 @@ keystone.createList('Pages', {
 
 ## The Adapter Data Model
 
-The adapter framework data model mirrors the Keystone data model.
+The adapter framework data model mirrors the KeystoneJS data model.
 
 - Each `Keystone` object has one or more `KeystoneAdapter` instances, accessible by the `.adapters` property
 - Each `List` object has one `ListAdapter`, accessible by the `.adapter` property
 - Each `Field` object has one `FieldAdapter`, accessible by the `.adapter` property
 
-The adapters do not contain references back to the Keystone objects.
+The adapters do not contain references back to the KeystoneJS objects.
 All required information is passed in to the adapter as paramaters to the constructor/methods.
 
 Each `KeystoneAdapter` contains references to its associated `ListAdapter` intances, via the `.listAdapters` property.
