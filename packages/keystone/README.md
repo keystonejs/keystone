@@ -78,7 +78,7 @@ keystone.createList('Posts', {
 
 ### Config
 
-Registers a new list with `Keystone` and returns a `Keystone` list object.
+Registers a new list with KeystoneJS and returns a `Keystone` list object.
 
 | Option    | Type     | Default | Description                                                                                                 |
 | --------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
@@ -188,11 +188,11 @@ const { middlewares } = await keystone.prepare({
 
 ### Config
 
-| Option    | Type      | default | Description                                         |
-| --------- | --------- | ------- | --------------------------------------------------- |
-| `dev`     | `Boolean` | `false` | Sets the dev flag in KeystoneJS express middleware. |
-| `apps`    | `Array`   | `[]`    | An array of 'Apps' which are express middleware.    |
-| `distDir` | `String`  | `dist`  | The build directory for keystone.                   |
+| Option    | Type      | default | Description                                          |
+| --------- | --------- | ------- | ---------------------------------------------------- |
+| `dev`     | `Boolean` | `false` | Sets the dev flag in KeystoneJS' express middleware. |
+| `apps`    | `Array`   | `[]`    | An array of 'Apps' which are express middleware.     |
+| `distDir` | `String`  | `dist`  | The build directory for keystone.                    |
 
 ## connect()
 
