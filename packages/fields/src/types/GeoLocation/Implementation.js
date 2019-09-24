@@ -22,30 +22,6 @@ export class GeoLocation extends Implementation {
     }
   }
 
-  gqlOutputFields() {
-    return [`${this.path}: ${this.graphQLOutputType}`];
-  }
-  gqlOutputFieldResolvers() {
-    return {
-      [this.path]: item => item[this.path]
-    };
-  }
-
-  get gqlUpdateInputFields() {
-    return [`${this.path}: ${this.graphQLOutputType}Format`];
-  }
-  get gqlCreateInputFields() {
-    return [`${this.path}: ${this.graphQLOutputType}Format`];
-  }
-  extendAdminMeta(meta) {
-    return {
-      ...meta,
-      defaultCenter: this.defaultCenter,
-      defaultZoom: this.defaultZoom,
-      googleApiKey: this.googleApiKey,
-      showMap: this.showMap,
-    };
-  }
   getGqlAuxTypes() {
     return [
       `
@@ -59,6 +35,34 @@ export class GeoLocation extends Implementation {
       }
     `,
     ];
+  }
+
+  gqlOutputFields() {
+    return [`${this.path}: ${this.graphQLOutputType}`];
+  }
+
+  gqlOutputFieldResolvers() {
+    return {
+      [this.path]: item => item[this.path]
+    };
+  }
+
+  get gqlUpdateInputFields() {
+    return [`${this.path}: ${this.graphQLOutputType}Format`];
+  }
+
+  get gqlCreateInputFields() {
+    return [`${this.path}: ${this.graphQLOutputType}Format`];
+  }
+
+  extendAdminMeta(meta) {
+    return {
+      ...meta,
+      defaultCenter: this.defaultCenter,
+      defaultZoom: this.defaultZoom,
+      googleApiKey: this.googleApiKey,
+      showMap: this.showMap,
+    };
   }
 }
 
@@ -106,7 +110,7 @@ export class KnexGeoLocationInterface extends KnexFieldAdapter {
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
 
     throw new Error('Knex is not supported');
-    
+
     // In addition to the standard knexOptions this type supports precision and scale
     const { precision, scale } = this.knexOptions;
     this.precision = precision === null ? null : parseInt(precision) || 18;
