@@ -66,17 +66,17 @@ const Logo = () => (
         KeystoneJS{' '}
       </span>
     </Link>
-    <abbr
+    <span
       css={{
-        cursor: 'help',
-        fontSize: '1.2em',
-        marginLeft: '0.2em',
-        textDecoration: 'none',
+        display: 'inline-block',
+        color: colors.N40,
+        fontStyle: 'italic',
+        marginLeft: '1.5em',
+        textDecoration: 'underline',
       }}
-      title="Keystone 5 is currently in alpha"
     >
-      (α)
-    </abbr>
+      v5.x alpha
+    </span>
   </div>
 );
 const NavItem = ({ as, lgOnly, ...props }) => {
