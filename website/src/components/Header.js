@@ -63,20 +63,19 @@ const Logo = () => (
           },
         }}
       >
-        KeystoneJS{' '}
+        KeystoneJS
+      </span>
+      <span
+        css={{
+          display: 'inline-block',
+          color: colors.N40,
+          fontStyle: 'italic',
+          marginLeft: '0.5em',
+        }}
+      >
+        v5.x alpha
       </span>
     </Link>
-    <span
-      css={{
-        display: 'inline-block',
-        color: colors.N40,
-        fontStyle: 'italic',
-        marginLeft: '1.5em',
-        textDecoration: 'underline',
-      }}
-    >
-      v5.x alpha
-    </span>
   </div>
 );
 const NavItem = ({ as, lgOnly, ...props }) => {

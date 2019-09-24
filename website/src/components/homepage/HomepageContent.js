@@ -7,26 +7,7 @@ import { media, mediaMax, mq } from '../../utils/media';
 
 const HomepageContent = () => (
   <Content>
-    <div
-      css={{
-        display: 'flex',
-        alignItems: 'baseline',
-      }}
-    >
-      <Heading>Keystone 5</Heading>
-      <span
-        css={{
-          display: 'inline-block',
-          color: colors.N40,
-          fontSize: '0.9em',
-          fontStyle: 'italic',
-          marginLeft: '1em',
-          textDecoration: 'underline',
-        }}
-      >
-        v5.x alpha
-      </span>
-    </div>
+    <Heading>Keystone 5</Heading>
     <div css={{ color: colors.N80, maxWidth: 640 }}>
       <p>A scalable platform and CMS to build Node.js applications.</p>
       <p>
