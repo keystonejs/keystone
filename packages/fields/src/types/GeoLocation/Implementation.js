@@ -43,7 +43,7 @@ export class GeoLocation extends Implementation {
 
   gqlOutputFieldResolvers() {
     return {
-      [this.path]: item => item[this.path]
+      [this.path]: item => item[this.path],
     };
   }
 
@@ -94,46 +94,17 @@ export class MongoGeoLocationInterface extends MongooseFieldAdapter {
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 
-  getQueryConditions(dbPath) {
-    return {
-      ...this.equalityConditions(dbPath),
-      ...this.stringConditions(dbPath),
-      ...this.inConditions(dbPath),
-    };
+  getQueryConditions() {
+    return {};
   }
 }
 
 export class KnexGeoLocationInterface extends KnexFieldAdapter {
-  constructor() {
-    super(...arguments);
-    this.isUnique = !!this.config.isUnique;
-    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
-
-    throw new Error('Knex is not supported');
-
-    // In addition to the standard knexOptions this type supports precision and scale
-    const { precision, scale } = this.knexOptions;
-    this.precision = precision === null ? null : parseInt(precision) || 18;
-    this.scale = scale === null ? null : (this.precision, parseInt(scale) || 4);
-    if (this.scale !== null && this.precision !== null && this.scale > this.precision) {
-      throw `The scale configured for Decimal field '${this.path}' (${this.scale}) ` +
-        `must not be larger than the field's precision (${this.precision})`;
-    }
-  }
-
   addToTableSchema(table) {
-    const column = table.decimal(this.path, this.precision, this.scale);
-    if (this.isUnique) column.unique();
-    else if (this.isIndexed) column.index();
-    if (this.isNotNullable) column.notNullable();
-    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
+    table.jsonb(this.path);
   }
 
-  getQueryConditions(dbPath) {
-    return {
-      ...this.equalityConditions(dbPath),
-      ...this.orderingConditions(dbPath),
-      ...this.inConditions(dbPath),
-    };
+  getQueryConditions() {
+    return {};
   }
 }
