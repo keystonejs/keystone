@@ -84,7 +84,7 @@ export class MongoGeoLocationInterface extends MongooseFieldAdapter {
       },
       validate: {
         validator: this.buildValidator(validator),
-        message: '{VALUE} is not a Decimal value',
+        message: '{VALUE} is not a valid geo coordinate',
       },
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
@@ -105,6 +105,8 @@ export class KnexGeoLocationInterface extends KnexFieldAdapter {
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
 
+    throw new Error('Knex is not supported');
+    
     // In addition to the standard knexOptions this type supports precision and scale
     const { precision, scale } = this.knexOptions;
     this.precision = precision === null ? null : parseInt(precision) || 18;
