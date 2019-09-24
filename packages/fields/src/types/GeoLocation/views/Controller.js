@@ -13,11 +13,9 @@ export default class TextController extends FieldController {
   };
   serialize = data => {
     const value = data[this.path];
-    // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'object') {
-      return value;
+      return Object.assign({}, { lat: value.lat, lng: value.lng });
     } else {
-      // If it is neither string nor number then it must be empty.
       return {};
     }
   };

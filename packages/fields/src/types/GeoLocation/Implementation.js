@@ -26,21 +26,16 @@ export class GeoLocation extends Implementation {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
   gqlOutputFieldResolvers() {
-    return { [`${this.path}`]: item => item[this.path] };
+    return {
+      [this.path]: item => item[this.path]
+    };
   }
 
-  gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.orderingInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
-  }
   get gqlUpdateInputFields() {
-    return [`${this.path}: ${this.graphQLOutputType}Input`];
+    return [`${this.path}: ${this.graphQLOutputType}Format`];
   }
   get gqlCreateInputFields() {
-    return [`${this.path}: ${this.graphQLOutputType}Input`];
+    return [`${this.path}: ${this.graphQLOutputType}Format`];
   }
   extendAdminMeta(meta) {
     return {
@@ -58,7 +53,7 @@ export class GeoLocation extends Implementation {
         lat: Float
         lng: Float
       }
-      input ${this.graphQLOutputType}Input {
+      input ${this.graphQLOutputType}Format{
         lat: Float
         lng: Float
       }
@@ -92,24 +87,7 @@ export class MongoGeoLocationInterface extends MongooseFieldAdapter {
         message: '{VALUE} is not a Decimal value',
       },
     };
-    console.log({ t: this.mergeSchemaOptions(schemaOptions, this.config) });
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
-  }
-
-  setupHooks({ addPreSaveHook, addPostReadHook }) {
-    // Updates the relevant value in the item provided (by reference)
-    addPreSaveHook(item => {
-      if (!item[this.path]) {
-        item[this.path] = null;
-      }
-      return item;
-    });
-    addPostReadHook(item => {
-      if (item[this.path]) {
-        item[this.path] = item[this.path];
-      }
-      return item;
-    });
   }
 
   getQueryConditions(dbPath) {

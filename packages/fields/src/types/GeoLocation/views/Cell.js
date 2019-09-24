@@ -11,6 +11,9 @@ const roundToDecimalPlace = (value, decimalPlace) =>
 export default class CheckboxCellView extends Component<Props> {
   render() {
     const { data } = this.props;
+    if (!data || !data.lat || !data.lng) {
+      return null;
+    }
     return (
       <span>{`Lng: ${roundToDecimalPlace(data.lng, 5)}, Lat: ${roundToDecimalPlace(
         data.lat,
