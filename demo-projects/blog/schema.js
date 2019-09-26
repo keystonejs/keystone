@@ -27,13 +27,13 @@ if (process.env.IFRAMELY_API_KEY) {
 }
 
 const fileAdapter = new LocalFileAdapter({
-  directory: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
-  route: `${staticRoute}/uploads`,
+  src: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
+  path: `${staticRoute}/uploads`,
 });
 
 const avatarFileAdapter = new LocalFileAdapter({
-  directory: `${staticPath}/avatars`,
-  route: `${staticRoute}/avatars`,
+  src: `${staticPath}/avatars`,
+  path: `${staticRoute}/avatars`,
 });
 
 exports.User = {

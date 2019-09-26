@@ -110,3 +110,9 @@ Specifies whether the field is required or not. Will return an error if mutation
 Options for `create`, `read`, `update` and `delete` - can be a function or Boolean. See the [access control API documentation](https://v5.keystonejs.com/api/access-control) for more details.
 
 _Note_: Field level access control does not accept graphQL where clauses.
+
+### `cacheHint`
+
+[HTTP cache hint](https://v5.keystonejs.com/api/create-list#cacheHint) for field.
+
+Only static hints are supported for fields.
