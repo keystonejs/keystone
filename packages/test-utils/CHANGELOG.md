@@ -1,5 +1,11 @@
 # @keystone-alpha/test-utils
 
+## 2.5.0
+
+### Minor Changes
+
+- [66e1c33e](https://github.com/keystonejs/keystone-5/commit/66e1c33e): Add `schemaName` and `schemaNames` parameters to `setupServer()`.
+
 ## 2.4.1
 
 ### Patch Changes
