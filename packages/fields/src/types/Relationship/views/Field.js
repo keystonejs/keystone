@@ -16,6 +16,32 @@ import RelationshipSelect from './RelationshipSelect';
 
 const MAX_IDS_IN_FILTER = 100;
 
+//parse filter to insert values from item
+function parseFilters(filters, item) {
+  if (!filters) return;
+
+  const result = {};
+
+  for (const key in filters) {
+    if (typeof filters[key] === 'object') {
+      result[key] = parseFilters(filters[key], item);
+    } else if (
+      typeof filters[key] === 'string' &&
+      (filters[key][0] === ':' || filters[key][0] === '$')
+    ) {
+      result[key] = item[filters[key].substring(1)];
+
+      if (result[key].id) {
+        result[key] = { id: result[key].id.toString() };
+      }
+    } else {
+      result[key] = filters[key];
+    }
+  }
+
+  return result;
+}
+
 function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
   let path = 'authenticated' + listKey;
   return (
@@ -186,6 +212,8 @@ export default class RelationshipField extends Component {
     const { autoFocus, field, value, renderContext, errors, onChange, item, list } = this.props;
     const { many, ref } = field.config;
     const { authStrategy } = field.adminMeta;
+    const filters =
+      field.config.adminConfig && parseFilters(field.config.adminConfig.filters, item);
     const htmlID = `ks-input-${field.path}`;
     return (
       <FieldContainer>
@@ -196,6 +224,8 @@ export default class RelationshipField extends Component {
               autoFocus={autoFocus}
               isMulti={many}
               field={field}
+              filters={filters}
+              item={item}
               value={value}
               errors={errors}
               renderContext={renderContext}

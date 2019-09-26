@@ -46,6 +46,7 @@ const Relationship = forwardRef(
       canRead,
       isMulti,
       search,
+      where,
       autoFocus,
       serverErrors,
       onChange,
@@ -94,11 +95,19 @@ const Relationship = forwardRef(
           useIntersectionObserver(([{ isIntersecting }]) => {
             if (!props.isLoading && isIntersecting && props.options.length < count) {
               fetchMore({
-                query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
-                  refList.gqlNames.listQueryName,
-                  `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
-                )}}`,
+                query: gql`query RelationshipSelectMore(
+                  $where: ${refList.key}WhereInput,
+                  $search: String!,
+                  $skip: Int!) {
+                    ${refList.buildQuery(
+                      refList.gqlNames.listQueryName,
+                      `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
+                    )}
+                  }
+                `,
+
                 variables: {
+                  where,
                   search,
                   skip: props.options.length,
                 },
@@ -161,6 +170,7 @@ const RelationshipSelect = ({
   innerRef,
   autoFocus,
   field,
+  filters: where,
   errors: serverErrors,
   renderContext,
   htmlID,
@@ -170,10 +180,17 @@ const RelationshipSelect = ({
 }: Props) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
-  const query = gql`query RelationshipSelect($search: String!, $skip: Int!) {${refList.buildQuery(
-    refList.gqlNames.listQueryName,
-    `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`
-  )}${refList.countQuery(`(search: $search)`)}}`;
+
+  const query = gql`query RelationshipSelect(
+    $where: ${refList.key}WhereInput,
+    $search: String!,
+    $skip: Int!) {
+      ${refList.buildQuery(
+        refList.gqlNames.listQueryName,
+        `(where: $where, first: ${initalItemsToLoad}, search: $search, skip: $skip)`
+      )}${refList.countQuery(`(where: $where, search: $search)`)}
+    }
+  `;
 
   const canRead =
     !serverErrors ||
@@ -181,7 +198,7 @@ const RelationshipSelect = ({
   const selectProps = renderContext === 'dialog' ? { menuShouldBlockScroll: true } : null;
 
   return (
-    <Query query={query} variables={{ search, skip: 0 }}>
+    <Query query={query} variables={{ where, search, skip: 0 }}>
       {({ data, error, loading, fetchMore }) => {
         // TODO: better error UI
         // TODO: Handle permission errors
@@ -200,6 +217,7 @@ const RelationshipSelect = ({
               canRead,
               isMulti,
               search,
+              where,
               autoFocus,
               serverErrors,
               onChange,

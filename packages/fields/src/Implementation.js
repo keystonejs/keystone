@@ -173,6 +173,7 @@ class Field {
         read: !!schemaAccess.read,
         update: !!schemaAccess.update,
       },
+      adminConfig: this.config.adminConfig,
     });
   }
   extendAdminMeta(meta) {
