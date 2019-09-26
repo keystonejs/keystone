@@ -27,13 +27,13 @@ if (process.env.IFRAMELY_API_KEY) {
 }
 
 const fileAdapter = new LocalFileAdapter({
-  directory: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
-  route: `${staticRoute}/uploads`,
+  src: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
+  path: `${staticRoute}/uploads`,
 });
 
 const avatarFileAdapter = new LocalFileAdapter({
-  directory: `${staticPath}/avatars`,
-  route: `${staticRoute}/avatars`,
+  src: `${staticPath}/avatars`,
+  path: `${staticRoute}/avatars`,
 });
 
 exports.User = {
@@ -70,6 +70,9 @@ exports.Post = {
       type: Relationship,
       ref: 'PostCategory',
       many: true,
+      adminConfig: {
+        filters: { person: ':author' },
+      },
     },
     status: {
       type: Select,
@@ -92,6 +95,7 @@ exports.PostCategory = {
   fields: {
     name: { type: Text },
     slug: { type: Slug, from: 'name' },
+    person: { type: Relationship, ref: 'User' },
   },
 };
 
