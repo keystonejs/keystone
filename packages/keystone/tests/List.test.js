@@ -840,10 +840,10 @@ test('_throwAccessDenied', () => {
   });
 });
 
-test('wrapFieldResolverWithAC', () => {
+test('_wrapFieldResolverWith', () => {
   const resolver = () => 'result';
   const list = setup();
-  const newResolver = list.wrapFieldResolverWithAC(list.fieldsByPath['name'], resolver);
+  const newResolver = list._wrapFieldResolver(list.fieldsByPath['name'], resolver);
   expect(newResolver({}, {}, context)).toEqual('result');
   expect(() => newResolver({ makeFalse: true }, {}, context)).toThrow(AccessDeniedError);
 });
