@@ -70,9 +70,6 @@ exports.Post = {
       type: Relationship,
       ref: 'PostCategory',
       many: true,
-      adminConfig: {
-        filters: { person: ':author' },
-      },
     },
     status: {
       type: Select,
@@ -95,7 +92,6 @@ exports.PostCategory = {
   fields: {
     name: { type: Text },
     slug: { type: Slug, from: 'name' },
-    person: { type: Relationship, ref: 'User' },
   },
 };
 
