@@ -13,6 +13,7 @@ type Props = {
   innerRef?: React.Ref<*>,
   autoFocus?: boolean,
   field: Object,
+  filters: Object,
   errors?: Array<Error>,
   renderContext: string | null,
   htmlID: string,
