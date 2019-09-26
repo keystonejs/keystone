@@ -110,7 +110,7 @@ export class Relationship extends Implementation {
     // to-one relationships are much easier to deal with.
     if (!this.many) {
       return {
-        [this.path]: (item, _, context) => {
+        [this.path]: (item, _, context, info) => {
           // No ID set, so we return null for the value
           if (!item[this.path]) {
             return null;
@@ -118,7 +118,7 @@ export class Relationship extends Implementation {
           const filteredQueryArgs = { where: { id: item[this.path].toString() } };
           // We do a full query to ensure things like access control are applied
           return refList
-            .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
+            .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName, info)
             .then(items => (items && items.length ? items[0] : null));
         },
       };
@@ -143,15 +143,15 @@ export class Relationship extends Implementation {
     };
 
     return {
-      [this.path]: (item, args, context, { fieldName }) => {
+      [this.path]: (item, args, context, info) => {
         const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.listQuery(filteredQueryArgs, context, fieldName);
+        return refList.listQuery(filteredQueryArgs, context, info.fieldName, info);
       },
 
       ...(this.withMeta && {
-        [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
+        [`_${this.path}Meta`]: (item, args, context, info) => {
           const filteredQueryArgs = buildManyQueryArgs(item, args);
-          return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
+          return refList.listQueryMeta(filteredQueryArgs, context, info.fieldName, info);
         },
       }),
     };
