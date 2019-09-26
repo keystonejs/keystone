@@ -1,21 +1,21 @@
 {
   "releases": [
-    { "name": "@keystone-alpha/demo-project-blog", "type": "minor" },
-    { "name": "@keystone-alpha/demo-project-todo", "type": "minor" },
-    { "name": "@keystone-alpha/adapter-knex", "type": "minor" },
-    { "name": "@keystone-alpha/adapter-mongoose", "type": "minor" },
-    { "name": "@keystone-alpha/apollo-helpers", "type": "minor" },
-    { "name": "@keystone-alpha/app-graphql-playground", "type": "minor" },
-    { "name": "@keystone-alpha/app-graphql", "type": "minor" },
-    { "name": "@keystone-alpha/app-schema-router", "type": "minor" },
-    { "name": "@keystone-alpha/app-static", "type": "minor" },
-    { "name": "@keystone-alpha/auth-password", "type": "minor" },
-    { "name": "@keystone-alpha/fields", "type": "minor" },
-    { "name": "@keystone-alpha/file-adapters", "type": "minor" },
-    { "name": "@keystone-alpha/keystone", "type": "minor" },
-    { "name": "@keystone-alpha/session", "type": "minor" },
-    { "name": "@keystone-alpha/test-utils", "type": "minor" },
-    { "name": "@keystone-alpha/cypress-project-basic", "type": "minor" }
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-todo", "type": "patch" },
+    { "name": "@keystone-alpha/adapter-knex", "type": "patch" },
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" },
+    { "name": "@keystone-alpha/apollo-helpers", "type": "patch" },
+    { "name": "@keystone-alpha/app-graphql-playground", "type": "patch" },
+    { "name": "@keystone-alpha/app-graphql", "type": "patch" },
+    { "name": "@keystone-alpha/app-schema-router", "type": "patch" },
+    { "name": "@keystone-alpha/app-static", "type": "patch" },
+    { "name": "@keystone-alpha/auth-password", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/file-adapters", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "patch" },
+    { "name": "@keystone-alpha/session", "type": "patch" },
+    { "name": "@keystone-alpha/test-utils", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" }
   ],
   "dependents": []
 }
