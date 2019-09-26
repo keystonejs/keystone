@@ -5,12 +5,12 @@ Finally this is available in Keystone 5 🎉.
 
 In this post we will be creating a simple custom Field Type for star ratings ⭐️ ⭐️ ⭐️ ⭐️ ⭐️!
 
-![Screenshot of the Stars input field in Keystone Admin UI](<>)
+![Screenshot of the Stars input field in Keystone Admin UI]()
 
 For this component, our data requirements are simple. We need to store an Integer in the database
 to represent the number of stars on a blog post. This makes things easy because Integer is a built
 in field type so we can leverage much of the Integer field type's default implementation and then
-provide custom UI components for Keystone's admin interface.
+provide custom UI components for KeystoneJS' admin interface.
 
 ## Directory structure
 

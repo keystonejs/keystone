@@ -6,7 +6,7 @@ title: Static App
 
 # KeystoneJS Static File App
 
-A Keystone App to serve static files such as images, CSS and JavaScript with support for client side routing.
+A KeystoneJS App to serve static files such as images, CSS and JavaScript with support for client side routing.
 
 ## Usage
 

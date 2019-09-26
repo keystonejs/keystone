@@ -33,7 +33,7 @@ title: Mutation Lifecycle
 
 ## Introduction
 
-The Keystone GraphQL API implements a CRUD API with `create`, `update` and `delete` mutations for each `List`.
+The KeystoneJS GraphQL API implements a CRUD API with `create`, `update` and `delete` mutations for each `List`.
 Each of these mutations can be applied to either a single item or many items at once.
 
 For a `List` called `User` the GraphQL mutations would be:
@@ -47,7 +47,7 @@ For a `List` called `User` the GraphQL mutations would be:
   - `updateUsers`
   - `deleteUsers`
 
-Each of these mutations is implemented within Keystone by a corresponding resolver, implemented as a method on the core `List` object.
+Each of these mutations is implemented within KeystoneJS by a corresponding resolver, implemented as a method on the core `List` object.
 
 - **GraphQL mutation** → **List resolver method**
 - `createUser` → `createMutation`
@@ -61,7 +61,7 @@ Each of these mutations is implemented within Keystone by a corresponding resolv
 Please refer to the [API documentation](LINK_TODO)) for full details on how to call these mutations either from [GraphQL](LINK_TODO)) or directly from [Keystone](LINK_TODO)).
 -->
 
-Keystone provides [access control](https://v5.keystonejs.com/guides/access-control)) mechanisms and a [hook system](https://v5.keystonejs.com/guides/hooks)) which allows the developer to customise the behaviour of each of these mutations.
+KeystoneJS provides [access control](https://v5.keystonejs.com/guides/access-control)) mechanisms and a [hook system](https://v5.keystonejs.com/guides/hooks)) which allows the developer to customise the behaviour of each of these mutations.
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.
 

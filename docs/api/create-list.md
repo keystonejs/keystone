@@ -27,8 +27,8 @@ keystone.createList('Post', {
 | `adapterConfig` | `Object`                            |                               | Override the adapter config options for a specific list.                                |
 | `itemQueryName` | `String`                            |                               | Changes the _item_ name in GraphQL queries and mutations.                               |
 | `listQueryName` | `String`                            |                               | Changes the _list_ name in GraphQL queries and mutations.                               |
-| `singular`      | `String`                            |                               | Specify a singular noun for Keystone to use for the list.                               |
-| `plural`        | `String`                            |                               | Specify a plural for Keystone to use for the list.                                      |
+| `singular`      | `String`                            |                               | Specify a singular noun for `Keystone` to use for the list.                             |
+| `plural`        | `String`                            |                               | Specify a plural for `Keystone` to use for the list.                                    |
 | `path`          | `String`                            |                               | Changes the path in the Admin UI.                                                       |
 | `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.                                  |
 
@@ -121,7 +121,7 @@ keystone.createList('User', {
 
 [Access control](https://v5.keystonejs.com/guides/access-control) options for the list.
 
-Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the (access control API documentation)[https://v5.keystonejs.com/api/access-control] for more details.
+Options for `create`, `read`, `update` and `delete` - can be a function, GraphQL where clause or Boolean. See the [access control API documentation](https://v5.keystonejs.com/api/access-control) for more details.
 
 #### Usage
 
@@ -214,13 +214,13 @@ query {
 
 ### `singular`
 
-Keystone list names should be singular and Keystone will attempt to determine a plural.
+KeystoneJS list names should be singular and KeystoneJS will attempt to determine a plural.
 
-Where Keystone can't determine a plural you may be forced to use a different list name.
+Where KeystoneJS can't determine a plural you may be forced to use a different list name.
 
 The `singular` option allows you to change the display label for singular items.
 
-E.g. Keystone can't determine a plural for 'Sheep'. Let's change the `singular` option:
+E.g. KeystoneJS can't determine a plural for 'Sheep'. Let's change the `singular` option:
 
 ```javascript
 keystone.createList('WoolyBoi', {
@@ -236,9 +236,9 @@ _Note_: This will override labels in the AdminUI but will not change graphQL que
 
 ### `plural`
 
-Keystone will attempt to determine a plural for list items. Sometimes Keystone will not be able to determine the plural forcing you to change the list name. Or sometimes Keystone may get it wrong, especially for non-English words.
+KeystoneJS will attempt to determine a plural for list items. Sometimes KeystoneJS will not be able to determine the plural forcing you to change the list name. Or sometimes KeystoneJS may get it wrong, especially for non-English words.
 
-E.g. Keystone thinks the correct plural for Octopus is "Octopi". Everyone knows the scientifically accurate plural is "Octopodes":
+E.g. KeystoneJS thinks the correct plural for Octopus is "Octopi". Everyone knows the scientifically accurate plural is "Octopodes":
 
 ```javascript
 keystone.createList('Octopus', {
@@ -255,7 +255,7 @@ Changes the path in the Admin UI. Updating `plural` and `singular` values will n
 
 ### `adapterConfig`
 
-Override the adapter config options for a specific list. Normally `adapterConfig` is provided when initialising Keystone:
+Override the adapter config options for a specific list. Normally `adapterConfig` is provided when initialising KeystoneJS:
 
 ```javascript
 const keystone = new Keystone({

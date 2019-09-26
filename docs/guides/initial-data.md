@@ -48,11 +48,7 @@ module.exports = {
 
 Initialising a list is not always the straight forward problem it seems.
 
-```javascript
-
-```
-
-You can achieve this setup by running the Keystone CLI and selecting the `Starter` template.
+You can achieve this setup by running the KeystoneJS CLI and selecting the `Starter` template.
 
 This method's primary use is intended for migration scripts, or initial seeding of databases.
 
@@ -72,7 +68,7 @@ _Note_: The format of the data must match the schema setup with calls to `keysto
 
 #### Relationships
 
-It is possible to create relationships upon insertion by using the Keystone
+It is possible to create relationships upon insertion by using the KeystoneJS
 query syntax.
 
 ##### Single Relationships
@@ -101,7 +97,7 @@ keystone.createList('Post', {
 });
 ```
 
-Upon insertion, Keystone will resolve the `{ where: { name: 'Ticiana' } }` query
+Upon insertion, KeystoneJS will resolve the `{ where: { name: 'Ticiana' } }` query
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
@@ -136,7 +132,7 @@ keystone.createItems({
     { title: 'Hello Everyone' },
     { title: 'Talking about React' },
     { title: 'React is the Best' },
-    { title: 'Keystone Rocks' },
+    { title: 'KeystoneJS Rocks' },
   ],
 });
 ```
@@ -151,7 +147,7 @@ keystone.createItems({
       posts: [
         // Notice the Array of queries
         { where: { title: 'Hello Everyone' } },
-        { where: { title: 'Keystone Rocks' } },
+        { where: { title: 'KeystoneJS Rocks' } },
       ],
     },
     { name: 'Lauren' },
@@ -160,7 +156,7 @@ keystone.createItems({
     { title: 'Hello Everyone' },
     { title: 'Talking about React' },
     { title: 'React is the Best' },
-    { title: 'Keystone Rocks' },
+    { title: 'KeystoneJS Rocks' },
   ],
 });
 ```
@@ -170,7 +166,7 @@ any items, an Error will be thrown._
 
 ---
 
-The entire power of Keystone Query Syntax is supported.
+The entire power of KeystoneJS Query Syntax is supported.
 
 If you need to related to the 3rd item, you'd use a query like:
 
