@@ -47,7 +47,7 @@ The `DEFAULT_CONNECTION_URL` will be either one of the following environmental v
 - `DATABASE_URL`,
 - `KNEX_URI`
 
-or `'postgres://localhost/<DATABASE_NAME>'`where `DATABASE_NAME` is be derived from the Keystone project name.
+or `'postgres://localhost/<DATABASE_NAME>'`where `DATABASE_NAME` is be derived from the KeystoneJS project name.
 
 ## Debugging
 

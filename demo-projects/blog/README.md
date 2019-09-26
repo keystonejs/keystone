@@ -13,7 +13,7 @@ The Keystone Admin UI is reachable from `localhost:3000/admin`. To log in, use t
 Username: `admin@keystonejs.com`
 Password: `password`
 
-To see an example Next.js app using Keystone's GraphQl APIs, head to `localhost:3000`.
+To see an example Next.js app using KeystoneJS' GraphQl APIs, head to `localhost:3000`.
 
 You can change the port that this demo runs on by setting the `PORT` environment variable.
 

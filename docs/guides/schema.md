@@ -162,7 +162,7 @@ Let's imagine we have a single item in our `Todo` list:
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
-| 1    | Use Keystone | Tici        |
+| 1    | Use KeystoneJS | Tici        |
 
 </div>
 
@@ -179,7 +179,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use Keystone', createdBy: 'Tici' }
+#     { task: 'Use KeystoneJS', createdBy: 'Tici' }
 #   ]
 # }
 ```
@@ -191,7 +191,7 @@ Everything looks great so far. Now, let's add another task:
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
-| 1    | Use Keystone | Tici        |
+| 1    | Use KeystoneJS | Tici        |
 | 2    | Setup linter | Tici        |
 
 </div>
@@ -207,7 +207,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use Keystone', createdBy: 'Tici' }
+#     { task: 'Use KeystoneJS', createdBy: 'Tici' }
 #     { task: 'Setup linter', createdBy: 'Tici' }
 #   ]
 # }
@@ -232,7 +232,7 @@ keystone.createList('Todo', {
 
 | `id` | `task`       | `createdBy` | `email`          |
 | ---- | ------------ | ----------- | ---------------- |
-| 1    | Use Keystone | Tici        | tici@example.com |
+| 1    | Use KeystoneJS | Tici        | tici@example.com |
 | 2    | Setup Linter | Tici        | tici@example.com |
 
 </div>
@@ -249,7 +249,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use Keystone', createdBy: 'Tici', email: 'tici@example.com' }
+#     { task: 'Use KeystoneJS', createdBy: 'Tici', email: 'tici@example.com' }
 #     { task: 'Setup linter', createdBy: 'Tici', email: 'tici@example.com' }
 #   ]
 # }
@@ -267,7 +267,7 @@ We can avoid the duplicate data by moving it out into its own `User` list:
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
-| 1    | Use Keystone | 1           |
+| 1    | Use KeystoneJS | 1           |
 | 2    | Setup Linter | 1           |
 
 </div>
@@ -299,7 +299,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use Keystone', createdBy: 1 }
+#     { task: 'Use KeystoneJS', createdBy: 1 }
 #     { task: 'Setup linter', createdBy: 1 }
 #   ]
 # }
@@ -370,7 +370,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use Keystone', createdBy: { name: 'Tici', email: 'tici@example.com' } }
+#     { task: 'Use KeystoneJS', createdBy: { name: 'Tici', email: 'tici@example.com' } }
 #     { task: 'Setup linter', createdBy: { name: 'Tici', email: 'tici@example.com' } }
 #   ]
 # }
@@ -435,7 +435,7 @@ The data stored in the database for the `createdBy` field will be a single ID:
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
-| 1    | Use Keystone | 1           |
+| 1    | Use KeystoneJS | 1           |
 | 2    | Setup Linter | 1           |
 
 </div>
@@ -487,7 +487,7 @@ query {
 # {
 #   User: {
 #     todoList: [
-#       { task: 'Use Keystone' },
+#       { task: 'Use KeystoneJS' },
 #       { task: 'Setup linter' },
 #     ]
 #   ]
@@ -502,7 +502,7 @@ IDs:
 
 | `id` | `task`       |
 | ---- | ------------ |
-| 1    | Use Keystone |
+| 1    | Use KeystoneJS |
 | 2    | Setup Linter |
 | 3    | Be Awesome   |
 | 4    | Write docs   |
@@ -576,7 +576,7 @@ query {
 # {
 #   User: {
 #     todoList: [
-#       { task: 'Use Keystone' },
+#       { task: 'Use KeystoneJS' },
 #       { task: 'Setup linter' },
 #     ]
 #   ],
@@ -593,7 +593,7 @@ The database would look like:
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
-| 1    | Use Keystone | 1           |
+| 1    | Use KeystoneJS | 1           |
 | 2    | Setup Linter | 1           |
 | 3    | Be Awesome   | 2           |
 | 4    | Write docs   | 2           |

@@ -6,7 +6,7 @@ order: 3
 
 # Fields
 
-Keystone contains a set of primitive fields types that can be imported from `@keystone-alpha/fields`. These include:
+KeystoneJS contains a set of primitive fields types that can be imported from `@keystone-alpha/fields`. These include:
 
 - [CalendarDay](keystone-alpha/fields/src/types/calendar-day)
 - [Checkbox](keystone-alpha/fields/src/types/checkbox)
@@ -61,7 +61,7 @@ _Note_: Many field types have additional config options. See the documentation f
 
 ### `type`
 
-A valid Keystone field type.
+A valid `Keystone` field type.
 
 ### `label`
 
@@ -107,6 +107,12 @@ Specifies whether the field is required or not. Will return an error if mutation
 
 [Access control](https://v5.keystonejs.com/guides/access-control) options for fields.
 
-Options for `create`, `read`, `update` and `delete` - can be a function or Boolean. See the (access control API documentation)[https://v5.keystonejs.com/api/access-control] for more details.
+Options for `create`, `read`, `update` and `delete` - can be a function or Boolean. See the [access control API documentation](https://v5.keystonejs.com/api/access-control) for more details.
 
 _Note_: Field level access control does not accept graphQL where clauses.
+
+### `cacheHint`
+
+[HTTP cache hint](https://v5.keystonejs.com/api/create-list#cacheHint) for field.
+
+Only static hints are supported for fields.

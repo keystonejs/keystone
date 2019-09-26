@@ -42,6 +42,12 @@ async function setupServer({
       schemaName,
       apiPath: '/admin/api',
       graphiqlPath: '/admin/graphiql',
+      apollo: {
+        tracing: true,
+        cacheControl: {
+          defaultMaxAge: 3600,
+        },
+      },
       ...graphqlOptions,
     }),
   ];
@@ -77,7 +83,10 @@ function networkedGraphqlRequest({
     .post('/admin/api', { query, variables, operationName })
     .then(res => {
       expect(res.statusCode).toBe(expectedStatusCode);
-      return JSON.parse(res.text);
+      return {
+        ...JSON.parse(res.text),
+        res,
+      };
     })
     .catch(error => ({
       errors: [error],
