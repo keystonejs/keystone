@@ -13,7 +13,13 @@ import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
-const emptyCountQuery = gql`{_ksListsMeta{name}}`;
+const emptyCountQuery = gql`
+  {
+    _ksListsMeta {
+      name
+    }
+  }
+`;
 
 class HomePage extends Component {
   state = { createFromList: null };
