@@ -1,15 +1,13 @@
-const {
-  getRelatedListAdapterFromQueryPathFactory,
-} = require('../lib/tokenizers/relationship-path');
+const { getRelatedListAdapterFromQueryPath } = require('../lib/tokenizers/relationship-path');
 
 describe('Relationship Path parser', () => {
   describe('factory function', () => {
     test('returns a function', () => {
-      expect(getRelatedListAdapterFromQueryPathFactory({})).toEqual(expect.any(Function));
+      expect(getRelatedListAdapterFromQueryPath({})).toEqual(expect.any(Function));
     });
 
     test('Throws if no list adapter provided', () => {
-      expect(() => getRelatedListAdapterFromQueryPathFactory()).toThrow(
+      expect(() => getRelatedListAdapterFromQueryPath()).toThrow(
         /Must provide a list adapter instance/
       );
     });
@@ -30,7 +28,7 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
+      const getlistAdapter = getRelatedListAdapterFromQueryPath(fooListAdapter);
       expect(getlistAdapter(['bar', 'zip'])).toEqual(zipListAdapter);
     });
 
@@ -39,7 +37,7 @@ describe('Relationship Path parser', () => {
       const fieldAdapter = { getRefListAdapter: jest.fn(() => listAdapter) };
       listAdapter = { findFieldAdapterForQuerySegment: jest.fn(() => fieldAdapter) };
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(listAdapter);
+      const getlistAdapter = getRelatedListAdapterFromQueryPath(listAdapter);
       expect(getlistAdapter(['foo', 'foo', 'foo'])).toEqual(listAdapter);
     });
 
@@ -57,7 +55,7 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
+      const getlistAdapter = getRelatedListAdapterFromQueryPath(fooListAdapter);
       expect(getlistAdapter(['bar_koodle', 'zip-boom_zap'])).toEqual(zipListAdapter);
     });
 
@@ -75,7 +73,7 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
+      const getlistAdapter = getRelatedListAdapterFromQueryPath(fooListAdapter);
       expect(getlistAdapter(['bar_koodle', 'AND', 1, 'zip-boom_zap'])).toEqual(zipListAdapter);
     });
 
@@ -93,7 +91,7 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
+      const getlistAdapter = getRelatedListAdapterFromQueryPath(fooListAdapter);
       expect(getlistAdapter(['bar_koodle', 'OR', 1, 'zip-boom_zap'])).toEqual(zipListAdapter);
     });
   });
@@ -114,7 +112,7 @@ describe('Relationship Path parser', () => {
       };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
+      const getlistAdapter = getRelatedListAdapterFromQueryPath(fooListAdapter);
       expect(() => getlistAdapter(['bar_koodle', 'zip-boom_zap'])).toThrow(
         /'foo' Mongo List Adapter failed to determine field responsible for the query condition 'bar_koodle'/
       );
