@@ -69,7 +69,6 @@ jobs:
       - checkout
       - restore_cache: *restore-cache
       - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client-9.6
       - run: sudo yarn global add bolt
       # Set Cypress cache dir here, in case this job runs/completes first, and
       # hence clobbers the `node_modules` cache with a non-cypress version,
@@ -89,6 +88,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: /home/circleci/repo
+      - run: sudo apt-get install postgresql-client-9.6
       - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
       - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
       - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
