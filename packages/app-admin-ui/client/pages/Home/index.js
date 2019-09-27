@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
@@ -11,6 +12,8 @@ import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
+
+const emptyCountQuery = gql`{_ksListsMeta{name}}`;
 
 class HomePage extends Component {
   state = { createFromList: null };
@@ -83,7 +86,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
-  const query = gqlCountQueries(lists);
+  const query = lists.length ? gqlCountQueries(lists) : emptyCountQuery;
   const { data, error } = useQuery(query, {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
@@ -97,9 +100,9 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
         <PageError>
           <p>
             No lists defined.{' '}
-            <Link href="https://v5.keystonejs.com/guides/add-lists">
+            <a href="https://v5.keystonejs.com/guides/add-lists" target="_blank">
               Get started by creating your first list.
-            </Link>
+            </a>
           </p>
         </PageError>
       </Fragment>
