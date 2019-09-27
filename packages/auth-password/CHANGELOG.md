@@ -1,5 +1,11 @@
 # @keystone-alpha/auth-password
 
+## 1.0.3
+
+### Patch Changes
+
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
 ## 1.0.2
 
 - Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
