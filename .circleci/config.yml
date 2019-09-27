@@ -34,6 +34,9 @@ x-integration-steps: &integration-steps
     - attach_workspace:
         at: /home/circleci/repo
     - run:
+        name: Install Bolt
+        command: sudo yarn global add bolt
+    - run:
         name: Bolt - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
     - run:
@@ -79,7 +82,6 @@ jobs:
           root: /home/circleci/repo
           paths:
             - node_modules
-            - $CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/
 
   simple_tests:
     <<: *job-setup
@@ -90,6 +92,9 @@ jobs:
       - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
       - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
       - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
+      - run:
+          name: Install Bolt
+          command: sudo yarn global add bolt
       - run:
           name: Bolt - Install packages
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
