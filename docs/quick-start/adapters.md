@@ -7,7 +7,7 @@ title: Configuring Adapters
 
 ## Choosing an adapter
 
-Keystone currently provides two database adapters. Choose the [Mongoose Adapter](/keystone-alpha/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystone-alpha/adapter-knex/) for PostgreSQL.
+KeystoneJS currently provides two database adapters. Choose the [Mongoose Adapter](/keystone-alpha/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystone-alpha/adapter-knex/) for PostgreSQL.
 
 _Note_: PostgreSQL requires an additional step to create a database.
 

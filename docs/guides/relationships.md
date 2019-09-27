@@ -38,7 +38,7 @@ Now we can set a task for the User from the admin panel. But something is wrong!
 
 ## Enabling Back Reference between Users and Todos
 
-Back Reference is Keystone's mechanism that can overwrite fields of the referenced entity.
+Back Reference is KeystoneJS' mechanism that can overwrite fields of the referenced entity.
 It is better seen in action, so let's write some code first.
 
 In `Users.js` adjust the `task` field to the following:
@@ -63,7 +63,7 @@ Take a look at admin panel and try to assign a Todo to a user. Notice that the u
 
 ## Assigning a user to multiple tasks (to-many relationship)
 
-What if we need user to do multiple tasks? Keystone provides a way to do this easily.
+What if we need user to do multiple tasks? KeystoneJS provides a way to do this easily.
 Take a look at following code in `Users.js`:
 
 ```javascript

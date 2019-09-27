@@ -1,0 +1,1 @@
+When no list is defined the AdminUI will now load with an error message.

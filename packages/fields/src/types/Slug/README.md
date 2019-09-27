@@ -143,7 +143,7 @@ A mutation to create a new item will auto-generate a slug:
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS" }) {
     id
     title
     url
@@ -154,8 +154,8 @@ mutation {
 # {
 #   createPost: {
 #     id: "1",
-#     title: "Why I ♥ Keystone",
-#     url: "why-i-love-keystone"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "why-i-love-keystonejs"
 #   }
 # }
 ```
@@ -165,7 +165,7 @@ subsequently created item with the same `title` will generate a unique slug:
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS" }) {
     id
     title
     url
@@ -176,8 +176,8 @@ mutation {
 # {
 #   createPost: {
 #     id: "2",
-#     title: "Why I ♥ Keystone",
-#     url: "why-i-love-keystone-2108fh3"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "why-i-love-keystonejs-2108fh3"
 #   }
 # }
 ```
@@ -186,7 +186,7 @@ You can also manually override the slug's value:
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone", url: "keystone-is-great" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS", url: "keystonejs-is-great" }) {
     id
     title
     url
@@ -197,8 +197,8 @@ mutation {
 # {
 #   createPost: {
 #     id: "2",
-#     title: "Why I ♥ Keystone",
-#     url: "keystone-is-great"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "keystonejs-is-great"
 #   }
 # }
 ```
@@ -208,7 +208,7 @@ And overwritten slugs will be uniquified for you when `isUnique: true` (with
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone", url: "keystone-is-great" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS", url: "keystonejs-is-great" }) {
     id
     title
     url
@@ -219,8 +219,8 @@ mutation {
 # {
 #   createPost: {
 #     id: "2",
-#     title: "Why I ♥ Keystone",
-#     url: "keystone-is-great-f80p5sm"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "keystonejs-is-great-f80p5sm"
 #   }
 # }
 ```

@@ -1,11 +1,11 @@
 <!--[meta]
 section: guides
-title: Creating a New Keystone Project
+title: Creating a New KeystoneJS Project
 [meta]-->
 
-# Creating a New Keystone Project
+# Creating a New KeystoneJS Project
 
-In this guide we will learn how to manually create and run a new Keystone project.
+In this guide we will learn how to manually create and run a new KeystoneJS project.
 
 ## Initialization and basic packages
 
@@ -18,7 +18,7 @@ yarn init
 ```
 
 Let's start from minimal setup. We will need two packages here:
-`@keystone-alpha/keystone` which is Keystone's core and `@keystone-alpha/adapter-mongoose` which allows our app to connect to MongoDB.
+`@keystone-alpha/keystone` which is KeystoneJS' core and `@keystone-alpha/adapter-mongoose` which allows our app to connect to MongoDB.
 
 Do
 
@@ -28,7 +28,7 @@ yarn add @keystone-alpha/keystone @keystone-alpha/adapter-mongoose
 
 ## First steps in coding
 
-After installation we can start to write our code. Main entry point of Keystone app is `index.js` file placed in root folder. Create it and type following:
+After installation we can start to write our code. Main entry point of KeystoneJS app is `index.js` file placed in root folder. Create it and type following:
 
 ```javascript
 // import necessary modules
@@ -42,7 +42,7 @@ const keystone = new Keystone({
 });
 ```
 
-You can specify any suitable name for your application. Note that we created an instance of Mongoose adapter and passed it to Keystone's constructor.
+You can specify any suitable name for your application. Note that we created an instance of Mongoose adapter and passed it to KeystoneJS' constructor.
 
 Now we can export our instance and make it available for running. Add following to the end of `index.js`:
 
@@ -58,7 +58,7 @@ That's it. But now our app does nothing, just starting and connecting to databas
 TypeError: Router.use() requires a middleware function
 ```
 
-Let's create some routes! For this we will use another powerful Keystone's feature - GraphQL explorer UI.
+Let's create some routes! For this we will use another powerful KeystoneJS' feature - GraphQL explorer UI.
 
 ## Setting up GraphQL interface
 
@@ -83,7 +83,7 @@ module.exports = {
 };
 ```
 
-In order to be able to start an app we need to add at least one List. List is a model that is compatible with Keystone's admin UI.
+In order to be able to start an app we need to add at least one List. List is a model that is compatible with KeystoneJS' admin UI.
 
 ## Adding first List
 

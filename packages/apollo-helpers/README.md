@@ -7,7 +7,7 @@ title: Apollo Helpers
 # Apollo Helpers
 
 A set of functions and components to ease using
-[Apollo](https://www.apollographql.com/docs/react/) with Keystone.
+[Apollo](https://www.apollographql.com/docs/react/) with KeystoneJS.
 
 ## Installation
 
@@ -269,7 +269,7 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 
 Now everything's up to date and we didn't have to use `writeQuery` or couple any of our components.
 
-### But why is this coupled to Keystone?
+### But why is this coupled to KeystoneJS?
 
 Let's continue the example above with another query:
 
@@ -331,7 +331,7 @@ Now the cache is:
 
 Not only are `allEvents` & `Group:xyz789` out of date, but so is `_allEventsMeta` (it should be `{ count: 3 }`).
 
-If we were to use this module's `<Mutation>` component, _but decoupled from Keystone_, the cache at this point would be:
+If we were to use this module's `<Mutation>` component, _but decoupled from KeystoneJS_, the cache at this point would be:
 
 ```json
 {
@@ -348,9 +348,9 @@ If we were to use this module's `<Mutation>` component, _but decoupled from Keys
 
 This example highlights the limits of other approaches (see below for possible workarounds / other solutions to this).
 
-In swoops Keystone to the rescue! 🦅
+In swoops KeystoneJS to the rescue! 🦅
 
-We _do_ know the related type information within Keystone! It's a walled garden which we control, so can extract further information such as _`_allEventsMeta` is a query that relates to `Event`s_.
+We _do_ know the related type information within KeystoneJS! It's a walled garden which we control, so can extract further information such as _`_allEventsMeta` is a query that relates to `Event`s_.
 
 So, using this module's `<Mutation>` component:
 
@@ -395,7 +395,7 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 }
 ```
 
-### Can we decouple from Keystone?
+### Can we decouple from KeystoneJS?
 
 If we only cared about queries that explicitly relate to a given type, then we can scan the GraphQL AST / Introspection query to get all the correct queries. This will miss queries such as `_allEventsMeta`.
 
@@ -423,4 +423,4 @@ type Query {
 }
 ```
 
-If we went with this method, we could automatically inject that directive into Keystone generated GraphQL schemas.
+If we went with this method, we could automatically inject that directive into KeystoneJS generated GraphQL schemas.

@@ -7,7 +7,7 @@ draft: true
 
 # GraphQL Schema Router
 
-A Keystone App that route requests to different GraphQL schemas.
+A KeystoneJS App that route requests to different GraphQL schemas.
 
 The `SchemaRouterApp` allows you to define a `routerFn` which takes `(req, res)` and returns
 a `routerId`, which is used to pick between different GraphQL schemas which exist at the same

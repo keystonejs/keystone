@@ -39,13 +39,13 @@ const keystone = new Keystone({
 
 | Method                | Description                                                                  |
 | --------------------- | ---------------------------------------------------------------------------- |
-| `createList`          | Add a list to the Keystone schema.                                           |
+| `createList`          | Add a list to the `Keystone` schema.                                         |
 | `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
 | `connect`             | Manually connect to Adapters.                                                |
-| `prepare`             | Manually prepare Keystone middlewares.                                       |
-| `createItems`         | Add items to a Keystone list.                                                |
+| `prepare`             | Manually prepare `Keystone` middlewares.                                     |
+| `createItems`         | Add items to a `Keystone` list.                                              |
 | `disconnect`          | Disconnect from all adapters.                                                |
-| `executeQuery`        | Run GraphQL queries and mutations directly against a Keystone instance.      |
+| `executeQuery`        | Run GraphQL queries and mutations directly against a `Keystone` instance.    |
 
 <!--
 
@@ -78,7 +78,7 @@ keystone.createList('Posts', {
 
 ### Config
 
-Registers a new list with Keystone and returns a Keystone list object.
+Registers a new list with KeystoneJS and returns a `Keystone` list object.
 
 | Option    | Type     | Default | Description                                                                                                 |
 | --------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
@@ -163,11 +163,11 @@ keystone.createList('Post', {
 
 _Note_: The format of the data must match the lists and fields setup with `keystone.createList()`
 
-It is possible to create relationships at insertion using the Keystone query syntax.
+It is possible to create relationships at insertion using the KeystoneJS query syntax.
 
 E.g. `author: { where: { name: 'Ticiana' } }`
 
-Upon insertion, Keystone will resolve the `{ where: { name: 'Ticiana' } }` query
+Upon insertion, KeystoneJS will resolve the `{ where: { name: 'Ticiana' } }` query
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
@@ -188,15 +188,15 @@ const { middlewares } = await keystone.prepare({
 
 ### Config
 
-| Option    | Type      | default | Description                                         |
-| --------- | --------- | ------- | --------------------------------------------------- |
-| `dev`     | `Boolean` | `false` | Sets the dev flag in Keystone's express middleware. |
-| `apps`    | `Array`   | `[]`    | An array of 'Apps' which are express middleware.    |
-| `distDir` | `String`  | `dist`  | The build directory for keystone.                   |
+| Option    | Type      | default | Description                                          |
+| --------- | --------- | ------- | ---------------------------------------------------- |
+| `dev`     | `Boolean` | `false` | Sets the dev flag in KeystoneJS' express middleware. |
+| `apps`    | `Array`   | `[]`    | An array of 'Apps' which are express middleware.     |
+| `distDir` | `String`  | `dist`  | The build directory for keystone.                    |
 
 ## connect()
 
-Manually connect Keystone to the adapters.
+Manually connect KeystoneJS to the adapters.
 
 ### Usage
 
@@ -214,8 +214,7 @@ Disconnect all adapters.
 
 ## executeQuery(queryString, config)
 
-Use this method to execute queries or mutations directly against a Keystone
-instance.
+Use this method to execute queries or mutations directly against a `Keystone` instance.
 
 **Note:** When querying or mutating via `keystone.executeQuery`, there are differences to keep in mind:
 

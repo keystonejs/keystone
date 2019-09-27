@@ -9,7 +9,7 @@ title: Access Control
 
 ## Intro
 
-What a user _can_ and _cannot_ do in Keystone depends on two things: _authentication_ and _access control_.
+What a user _can_ and _cannot_ do in KeystoneJS depends on two things: _authentication_ and _access control_.
 
 This guide focuses on the GraphQL API _access control_, which refers to the specific actions an authenticated or anonymous user can take.
 
@@ -19,7 +19,7 @@ _Authentication_, on the other hand, refers to a user identifying themselves in 
 
 Access control is about limiting CRUD (Create, Read, Update, Delete) actions that can be performed based on the current user (authenticated or anonymous).
 
-In Keystone, both [Lists](/api/create-list) and [Fields](keystone-alpha/fields) take an `access` option, which lets you define rules of access control with fine precision - see [Access Control API](/api/access-control) docs for more details.
+In KeystoneJS, both [Lists](/api/create-list) and [Fields](keystone-alpha/fields) take an `access` option, which lets you define rules of access control with fine precision - see [Access Control API](/api/access-control) docs for more details.
 
 ### Example
 
@@ -29,7 +29,7 @@ Let's assume we want set the following access controls for a `User` list:
 2. Only authenticated users can _read/update_ their own email, not any other user's. Admins can _read/update_ anyone's email.
 3. Only admins can see if a password is set. No-one can read their own or other
    user's passwords.
-   - _NOTE: It is **never** possible in Keystone to read a password via the
+   - _NOTE: It is **never** possible in KeystoneJS to read a password via the
      Admin UI or the API)_
 4. Only authenticated users can update their own password. Admins can update
    anyone's password.

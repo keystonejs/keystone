@@ -8,7 +8,7 @@ title: Hooks
 > _NOTE: Below is an overview of hooks. For API docs see
 > [Hooks API](https://v5.keystonejs.com/api/hooks)._
 
-Keystone provide a system of hooks on the `create`, `update`, and `delete` mutations which allow developers to customise the behaviour of their system.
+KeystoneJS provide a system of hooks on the `create`, `update`, and `delete` mutations which allow developers to customise the behaviour of their system.
 
 There are 7 hooks available to use, which can be grouped into pre- and post-hooks depending on whether they get invoked before or after the database update operation.
 
