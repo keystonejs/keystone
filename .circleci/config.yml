@@ -31,12 +31,8 @@ x-save-cache: &save-cache
 x-integration-steps: &integration-steps
   steps:
     - checkout
-    - restore_cache: *restore-cache
-    - run: sudo yarn global add bolt
-    - run:
-        name: Bolt - Install packages
-        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
-    - save_cache: *save-cache
+    - attach_workspace:
+        at: /home/circleci/repo
     - run:
         name: E2E Cypress tests
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs $PROJECT_DIRECTORY
@@ -61,7 +57,7 @@ x-integration-steps: &integration-steps
         path: /tmp/screenshots
 
 jobs:
-  simple_tests:
+  install_dependencies:
     <<: *job-setup
     steps:
       - checkout
@@ -77,6 +73,17 @@ jobs:
       # causing the other job to fail with a "Missing Cypress" error.
       - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
       - save_cache: *save-cache
+      - persist_to_workspace:
+          root: /home/circleci/repo
+          paths:
+            - node_modules
+
+  simple_tests:
+    <<: *job-setup
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/repo
       # run tests!
       - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
       - run: yarn lint:prettier
@@ -136,9 +143,24 @@ workflows:
   version: 2
   tests:
     jobs:
+      # First we install dependencies
+      - install_dependencies
+      # Then we run all sorts of tests
       - simple_tests
+          requires:
+            - install_dependencies
       - integration_tests_basic
+          requires:
+            - install_dependencies
       - integration_tests_login
+          requires:
+            - install_dependencies
       # - integration_tests_twitterlogin
+      #     requires:
+      #       - install_dependencies
       - integration_tests_accesscontrol
+          requires:
+            - install_dependencies
       - integration_tests_clientvalidation
+          requires:
+            - install_dependencies
