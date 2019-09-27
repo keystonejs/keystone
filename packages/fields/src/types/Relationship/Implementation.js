@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import omitBy from 'lodash.omitby';
 import { mergeWhereClause } from '@keystone-alpha/utils';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';

@@ -50,7 +50,6 @@
     "intersection-observer": "^0.5.1",
     "lodash.groupby": "^4.6.0",
     "lodash.isequal": "^4.5.0",
-    "lodash.omitby": "^4.6.0",
     "luxon": "^1.11.4",
     "mongoose": "^5.6.5",
     "node-fetch": "^2.3.0",

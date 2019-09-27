@@ -11,7 +11,7 @@ const flattenQueries = (parsedQueries, joinOp) => ({
   relationships: objMerge(parsedQueries.map(q => q.relationships)),
 });
 
-function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
+function queryParser({ tokenizer }, query, pathSoFar = []) {
   if (getType(query) !== 'Object') {
     throw new Error(
       `Expected an Object for query, got ${getType(query)} at path ${pathSoFar.join('.')}`
@@ -23,12 +23,12 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
     if (['AND', 'OR'].includes(key)) {
       // An AND/OR query component
       return flattenQueries(
-        value.map((_query, index) => parser({ tokenizer, getUID }, _query, [...path, index])),
+        value.map((_query, index) => queryParser({ tokenizer }, _query, [...path, index])),
         { AND: '$and', OR: '$or' }[key]
       );
     } else if (getType(value) === 'Object') {
       // A relationship query component
-      const uid = getUID(key);
+      const uid = cuid(key);
       const queryAst = tokenizer.relationship(query, key, path, uid);
       if (getType(queryAst) !== 'Object') {
         throw new Error(
@@ -40,7 +40,7 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
         // parent item is included in the final list
         matchTerm: queryAst.matchTerm,
         postJoinPipeline: [],
-        relationships: { [uid]: { ...queryAst, ...parser({ tokenizer, getUID }, value, path) } },
+        relationships: { [uid]: { ...queryAst, ...queryParser({ tokenizer }, value, path) } },
       };
     } else {
       // A simple field query component
@@ -60,4 +60,4 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
   return flattenQueries(parsedQueries, '$and');
 }
 
-module.exports = { queryParser: parser };
+module.exports = { queryParser };

@@ -1,11 +1,13 @@
 const { queryParser } = require('./query-parser');
 const joinBuilder = require('./join-builder');
 
-module.exports = parserOptions => {
+const mongoJoinBuilder = ({ tokenizer }) => {
   return async (query, aggregate) => {
-    const queryTree = queryParser(parserOptions, query);
+    const queryTree = queryParser({ tokenizer }, query);
     const { pipeline, postQueryMutations } = joinBuilder(queryTree);
     // Run the query against the given database and collection
     return await aggregate(pipeline).then(postQueryMutations);
   };
 };
+
+module.exports = { mongoJoinBuilder };

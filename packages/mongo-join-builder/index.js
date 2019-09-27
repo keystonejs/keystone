@@ -1,3 +1,3 @@
-const mongoJoinBuilder = require('./lib/index');
+const { mongoJoinBuilder } = require('./lib/index');
 
 module.exports = { mongoJoinBuilder };
