@@ -1,4 +1,4 @@
-module.exports = function getRelatedListAdapterFromQueryPathFactory(listAdapter) {
+const getRelatedListAdapterFromQueryPathFactory = listAdapter => {
   if (!listAdapter) {
     throw new Error('Must provide a list adapter instance');
   }
@@ -46,3 +46,5 @@ module.exports = function getRelatedListAdapterFromQueryPathFactory(listAdapter)
     return foundListAdapter;
   };
 };
+
+module.exports = { getRelatedListAdapterFromQueryPathFactory };
