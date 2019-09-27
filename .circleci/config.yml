@@ -146,21 +146,21 @@ workflows:
       # First we install dependencies
       - install_dependencies
       # Then we run all sorts of tests
-      - simple_tests
+      - simple_tests:
           requires:
             - install_dependencies
-      - integration_tests_basic
+      - integration_tests_basic:
           requires:
             - install_dependencies
-      - integration_tests_login
+      - integration_tests_login:
           requires:
             - install_dependencies
       # - integration_tests_twitterlogin
       #     requires:
       #       - install_dependencies
-      - integration_tests_accesscontrol
+      - integration_tests_accesscontrol:
           requires:
             - install_dependencies
-      - integration_tests_clientvalidation
+      - integration_tests_clientvalidation:
           requires:
             - install_dependencies
