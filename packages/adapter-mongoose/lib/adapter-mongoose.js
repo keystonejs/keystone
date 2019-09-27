@@ -14,7 +14,7 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
-const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
+const { queryParser, pipelineBuilder, mutationBuilder } = require('@keystone-alpha/mongo-join-builder');
 const logger = require('@keystone-alpha/logger').logger('mongoose');
 
 const { simpleTokenizer } = require('./tokenizers/simple');
@@ -245,8 +245,22 @@ class MongooseListAdapter extends BaseListAdapter {
       query.$count = 'count';
     }
 
-    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
-      foundItems => {
+    const queryTree = queryParser(
+      {
+        tokenizer: {
+          // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
+          simple: simpleTokenizer({ listAdapter: this }),
+          // executed for complex query components (eg; items: { ... })
+          relationship: relationshipTokenizer({ listAdapter: this }),
+        },
+      },
+      query
+    );
+    return this.model
+      .aggregate(pipelineBuilder(queryTree))
+      .exec()
+      .then(mutationBuilder(queryTree.relationships))
+      .then(foundItems => {
         if (meta) {
           // When there are no items, we get undefined back, so we simulate the
           // normal result of 0 items.
@@ -256,8 +270,7 @@ class MongooseListAdapter extends BaseListAdapter {
           return foundItems[0];
         }
         return foundItems;
-      }
-    );
+      });
   }
 }
 

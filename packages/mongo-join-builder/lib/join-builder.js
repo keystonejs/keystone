@@ -91,9 +91,9 @@ function mutationBuilder(relationships, path = []) {
   );
 }
 
-function pipelineBuilder({ matchTerm, postJoinPipeline, relationshipIdTerm, relationships }) {
+function pipelineBuilder({ matchTerm, postJoinPipeline, relationships, relationshipIdTerm }) {
   const relationshipPipelines = Object.entries(relationships).map(([uid, relationship]) => {
-    const { field, many, from } = relationship;
+    const { field, many, from, matchTerm, postJoinPipeline, relationships } = relationship;
     const uniqueField = `${uid}_${field}`;
     const idsName = `${uniqueField}_id${many ? 's' : ''}`;
     const fieldSize = { $size: `$${uniqueField}` };
@@ -104,7 +104,9 @@ function pipelineBuilder({ matchTerm, postJoinPipeline, relationshipIdTerm, rela
           as: uniqueField,
           let: { [idsName]: `$${field}` },
           pipeline: pipelineBuilder({
-            ...relationship,
+            matchTerm,
+            postJoinPipeline,
+            relationships,
             // The ID / list of IDs we're joining by. Do this very first so it limits any work
             // required in subsequent steps / $and's.
             relationshipIdTerm: { $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${idsName}`] } },
