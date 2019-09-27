@@ -30,31 +30,27 @@ function queryParser({ tokenizer }, query, pathSoFar = []) {
       // A relationship query component
       const uid = cuid(key);
       const queryAst = tokenizer.relationship(query, key, path, uid);
-      if (getType(queryAst) !== 'Object') {
-        throw new Error(
-          `Must return an Object from 'tokenizer.relationship' function, given ${path.join('.')}`
-        );
-      }
+      const { from, field, postQueryMutation, many, matchTerm } = queryAst;
+      // queryAst.matchTerm is our filtering expression. This determines if the
+      // parent item is included in the final list
       return {
-        // queryAst.matchTerm is our filtering expression. This determines if the
-        // parent item is included in the final list
-        matchTerm: queryAst.matchTerm,
+        matchTerm,
         postJoinPipeline: [],
-        relationships: { [uid]: { ...queryAst, ...queryParser({ tokenizer }, value, path) } },
+        relationships: {
+          [uid]: {
+            from,
+            field,
+            postQueryMutation,
+            matchTerm,
+            many,
+            ...queryParser({ tokenizer }, value, path),
+          },
+        },
       };
     } else {
       // A simple field query component
-      const queryAst = tokenizer.simple(query, key, path);
-      if (getType(queryAst) !== 'Object') {
-        throw new Error(
-          `Must return an Object from 'tokenizer.simple' function, given ${path.join('.')}`
-        );
-      }
-      return {
-        matchTerm: queryAst.matchTerm,
-        postJoinPipeline: queryAst.postJoinPipeline || [],
-        relationships: {},
-      };
+      const { matchTerm, postJoinPipeline = [] } = tokenizer.simple(query, key, path);
+      return { matchTerm, postJoinPipeline, relationships: {} };
     }
   });
   return flattenQueries(parsedQueries, '$and');

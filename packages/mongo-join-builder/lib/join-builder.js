@@ -44,12 +44,6 @@ const { flatten } = require('@keystone-alpha/utils');
     ],
   }
  */
-function joinBuilder(query) {
-  return {
-    pipeline: pipelineBuilder(query),
-    postQueryMutations: mutationBuilder(query.relationships),
-  };
-}
 
 function mutation(postQueryMutation, lookupPath) {
   return queryResult => {
@@ -82,9 +76,9 @@ function mutation(postQueryMutation, lookupPath) {
   };
 }
 
-const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
-
 function mutationBuilder(relationships, path = []) {
+  const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
+
   return compose(
     Object.entries(relationships).map(([uid, { postQueryMutation, field, relationships }]) => {
       const uniqueField = `${uid}_${field}`;
@@ -97,9 +91,7 @@ function mutationBuilder(relationships, path = []) {
   );
 }
 
-function pipelineBuilder(query) {
-  const { matchTerm, postJoinPipeline, relationshipIdTerm, relationships } = query;
-
+function pipelineBuilder({ matchTerm, postJoinPipeline, relationshipIdTerm, relationships }) {
   const relationshipPipelines = Object.entries(relationships).map(([uid, relationship]) => {
     const { field, many, from } = relationship;
     const uniqueField = `${uid}_${field}`;
@@ -138,4 +130,4 @@ function pipelineBuilder(query) {
   ].filter(i => i);
 }
 
-module.exports = joinBuilder;
+module.exports = { pipelineBuilder, mutationBuilder };
