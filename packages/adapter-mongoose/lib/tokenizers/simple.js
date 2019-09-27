@@ -1,4 +1,4 @@
-const { objMerge, escapeRegExp } = require('@keystone-alpha/utils');
+const { objMerge, escapeRegExp, getType } = require('@keystone-alpha/utils');
 
 const { getRelatedListAdapterFromQueryPath } = require('./relationship-path');
 
