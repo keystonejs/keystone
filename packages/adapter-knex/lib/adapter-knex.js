@@ -345,11 +345,10 @@ class KnexListAdapter extends BaseListAdapter {
           .select(a.refListId)
           .from(tableName)
           .where(`${this.key}_id`, item.id);
+        const currentRefIds = currentValues.map(x => x[a.refListId].toString());
 
         // Delete what needs to be deleted
-        const needsDelete = currentValues
-          .filter(x => !newValues.includes(x[a.refListId]))
-          .map(row => row[a.refListId]);
+        const needsDelete = currentRefIds.filter(x => !newValues.includes(x));
         if (needsDelete.length) {
           await this._query()
             .table(tableName)
@@ -358,7 +357,6 @@ class KnexListAdapter extends BaseListAdapter {
             .del();
         }
         // Add what needs to be added
-        const currentRefIds = currentValues.map(x => x[a.refListId]);
         const valuesToInsert = newValues
           .filter(id => !currentRefIds.includes(id))
           .map(id => ({
