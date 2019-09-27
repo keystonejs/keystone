@@ -1,1 +1,0 @@
-Updated the instantiation of fileAdapter and avatarFileAdapter to match the recently changed attribute names in the LocalFileAdapter constructor

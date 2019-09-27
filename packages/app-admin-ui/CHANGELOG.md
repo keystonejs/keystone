@@ -1,5 +1,11 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.9.0
+
+### Minor Changes
+
+- [b88c4038](https://github.com/keystonejs/keystone-5/commit/b88c4038): When no list is defined the AdminUI will now load with an error message.
+
 ## 5.8.2
 
 ### Patch Changes

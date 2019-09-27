@@ -1,5 +1,11 @@
 # @keystone-alpha/demo-project-todo
 
+## 1.1.15
+
+### Patch Changes
+
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
 ## 1.1.14
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):

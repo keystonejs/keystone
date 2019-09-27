@@ -1,5 +1,15 @@
 # @keystone-alpha/keystone
 
+## 15.3.0
+
+### Minor Changes
+
+- [552e6fb6](https://github.com/keystonejs/keystone-5/commit/552e6fb6): Add support for schema cache hints
+
+### Patch Changes
+
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
 ## 15.2.1
 
 ### Patch Changes
