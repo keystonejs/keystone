@@ -14,7 +14,8 @@
     "start": "cross-env NODE_ENV=production node -r dotenv-safe/config `yarn bin`/keystone start"
   },
   "dependencies": {
-    "@apollo/react-hooks": "^3.0.1",
+    "@apollo/react-hooks": "^3.1.1",
+    "@apollo/react-ssr": "^3.1.1",
     "@arch-ui/layout": "^0.2.4",
     "@arch-ui/typography": "^0.0.8",
     "@emotion/core": "^10.0.14",
@@ -42,7 +43,6 @@
     "next": "^9.0.0",
     "node-fetch": "^2.3.0",
     "react": "^16.8.6",
-    "react-apollo": "^3.0.1",
     "react-dom": "^16.8.6"
   }
 }

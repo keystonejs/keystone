@@ -1,4 +1,4 @@
-import { withApollo } from 'react-apollo';
+import { withApollo } from '@apollo/react-hoc';
 import { Component } from 'react';
 import gql from 'graphql-tag';
 

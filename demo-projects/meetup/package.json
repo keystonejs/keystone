@@ -14,7 +14,9 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@apollo/react-hooks": "^3.0.1",
+    "@apollo/react-hoc": "^3.1.1",
+    "@apollo/react-hooks": "^3.1.1",
+    "@apollo/react-ssr": "^3.1.1",
     "@emotion/core": "^10.0.14",
     "@keystone-alpha/adapter-mongoose": "^5.0.0",
     "@keystone-alpha/app-admin-ui": "^5.10.0",
@@ -43,7 +45,6 @@
     "next": "^9.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
-    "react-apollo": "^3.0.1",
     "react-dom": "^16.8.6",
     "react-toast-notifications": "^2.2.4",
     "react-use-form-state": "^0.10.0",

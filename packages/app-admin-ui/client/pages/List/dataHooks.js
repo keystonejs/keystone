@@ -162,7 +162,7 @@ export function useListItems(listKey) {
   const [itemCount, setCount] = useState(0);
 
   const list = useList(listKey);
-  const { data } = useListQuery(listKey);
+  const { data = {} } = useListQuery(listKey);
 
   useEffect(() => {
     if (data[list.gqlNames.listQueryName]) {

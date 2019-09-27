@@ -1,5 +1,5 @@
 import React, { Component, createContext, useContext } from 'react';
-import { withApollo } from 'react-apollo';
+import { withApollo } from '@apollo/react-hoc';
 import gql from 'graphql-tag';
 
 /**
