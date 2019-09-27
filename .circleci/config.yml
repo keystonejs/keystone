@@ -34,6 +34,9 @@ x-integration-steps: &integration-steps
     - attach_workspace:
         at: /home/circleci/repo
     - run:
+        name: Install Bolt
+        command: sudo yarn global add bolt
+    - run:
         name: Bolt - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
     - run:
@@ -89,6 +92,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: /home/circleci/repo
+      - run:
+          name: Install Bolt
+          command: sudo yarn global add bolt
       - run:
           name: Bolt - Install packages
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
