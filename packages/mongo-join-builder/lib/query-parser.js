@@ -33,19 +33,11 @@ function queryParser({ tokenizer }, query, pathSoFar = []) {
       const { from, field, postQueryMutation, many, matchTerm } = queryAst;
       // queryAst.matchTerm is our filtering expression. This determines if the
       // parent item is included in the final list
+      const recurse = queryParser({ tokenizer }, value, path);
       return {
         matchTerm,
         postJoinPipeline: [],
-        relationships: {
-          [uid]: {
-            from,
-            field,
-            postQueryMutation,
-            matchTerm,
-            many,
-            ...queryParser({ tokenizer }, value, path),
-          },
-        },
+        relationships: { [uid]: { from, field, postQueryMutation, many, ...recurse } },
       };
     } else {
       // A simple field query component
