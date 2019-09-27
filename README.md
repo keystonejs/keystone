@@ -74,6 +74,7 @@ Add a script to your `package.json`:
 Create a file `index.js`:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');

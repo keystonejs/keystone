@@ -25,9 +25,11 @@ describe('MongooseListAdapter', () => {
 
     // Mock things before we require other things
     jest.doMock('../lib/tokenizers/relationship-path', () => {
-      return jest.fn(() => {
-        return jest.fn(() => listAdapter);
-      });
+      return {
+        getRelatedListAdapterFromQueryPathFactory: jest.fn(() => {
+          return jest.fn(() => listAdapter);
+        }),
+      };
     });
 
     const { MongooseListAdapter } = require('../');
@@ -50,8 +52,8 @@ describe('MongooseListAdapter', () => {
     let postListAdapter;
 
     // Mock things before we require other things
-    jest.doMock('../lib/tokenizers/relationship-path', () =>
-      jest.fn(() =>
+    jest.doMock('../lib/tokenizers/relationship-path', () => ({
+      getRelatedListAdapterFromQueryPathFactory: jest.fn(() =>
         jest.fn(query => {
           if (query[query.length - 1] === 'posts_some') {
             return postListAdapter;
@@ -59,8 +61,8 @@ describe('MongooseListAdapter', () => {
             return userListAdapter;
           }
         })
-      )
-    );
+      ),
+    }));
 
     const { MongooseListAdapter } = require('../');
 
@@ -139,9 +141,9 @@ describe('MongooseListAdapter', () => {
     let postListAdapter;
 
     // Mock things before we require other things
-    jest.doMock('../lib/tokenizers/relationship-path', () =>
-      jest.fn(() => jest.fn(() => postListAdapter))
-    );
+    jest.doMock('../lib/tokenizers/relationship-path', () => ({
+      getRelatedListAdapterFromQueryPathFactory: jest.fn(() => jest.fn(() => postListAdapter)),
+    }));
 
     const { MongooseListAdapter } = require('../');
 

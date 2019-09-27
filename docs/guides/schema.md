@@ -160,8 +160,8 @@ Let's imagine we have a single item in our `Todo` list:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-| ---- | ------------ | ----------- |
+| `id` | `task`         | `createdBy` |
+| ---- | -------------- | ----------- |
 | 1    | Use KeystoneJS | Tici        |
 
 </div>
@@ -189,10 +189,10 @@ Everything looks great so far. Now, let's add another task:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-| ---- | ------------ | ----------- |
+| `id` | `task`         | `createdBy` |
+| ---- | -------------- | ----------- |
 | 1    | Use KeystoneJS | Tici        |
-| 2    | Setup linter | Tici        |
+| 2    | Setup linter   | Tici        |
 
 </div>
 
@@ -230,10 +230,10 @@ keystone.createList('Todo', {
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` | `email`          |
-| ---- | ------------ | ----------- | ---------------- |
+| `id` | `task`         | `createdBy` | `email`          |
+| ---- | -------------- | ----------- | ---------------- |
 | 1    | Use KeystoneJS | Tici        | tici@example.com |
-| 2    | Setup Linter | Tici        | tici@example.com |
+| 2    | Setup Linter   | Tici        | tici@example.com |
 
 </div>
 
@@ -265,10 +265,10 @@ We can avoid the duplicate data by moving it out into its own `User` list:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-| ---- | ------------ | ----------- |
+| `id` | `task`         | `createdBy` |
+| ---- | -------------- | ----------- |
 | 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter | 1           |
+| 2    | Setup Linter   | 1           |
 
 </div>
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
@@ -433,10 +433,10 @@ The data stored in the database for the `createdBy` field will be a single ID:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-| ---- | ------------ | ----------- |
+| `id` | `task`         | `createdBy` |
+| ---- | -------------- | ----------- |
 | 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter | 1           |
+| 2    | Setup Linter   | 1           |
 
 </div>
 
@@ -500,13 +500,13 @@ IDs:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       |
-| ---- | ------------ |
+| `id` | `task`         |
+| ---- | -------------- |
 | 1    | Use KeystoneJS |
-| 2    | Setup Linter |
-| 3    | Be Awesome   |
-| 4    | Write docs   |
-| 5    | Buy milk     |
+| 2    | Setup Linter   |
+| 3    | Be Awesome     |
+| 4    | Write docs     |
+| 5    | Buy milk       |
 
 </div>
 
@@ -591,13 +591,13 @@ The database would look like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-| ---- | ------------ | ----------- |
+| `id` | `task`         | `createdBy` |
+| ---- | -------------- | ----------- |
 | 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter | 1           |
-| 3    | Be Awesome   | 2           |
-| 4    | Write docs   | 2           |
-| 5    | Buy milk     | 2           |
+| 2    | Setup Linter   | 1           |
+| 3    | Be Awesome     | 2           |
+| 4    | Write docs     | 2           |
+| 5    | Buy milk       | 2           |
 
 </div>
 
