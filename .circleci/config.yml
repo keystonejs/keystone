@@ -34,6 +34,9 @@ x-integration-steps: &integration-steps
     - attach_workspace:
         at: /home/circleci/repo
     - run:
+        name: Bolt - Install packages
+        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+    - run:
         name: E2E Cypress tests
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs $PROJECT_DIRECTORY
     - run:
@@ -71,7 +74,9 @@ jobs:
       # Set Cypress cache dir here, in case this job runs/completes first, and
       # hence clobbers the `node_modules` cache with a non-cypress version,
       # causing the other job to fail with a "Missing Cypress" error.
-      - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+      - run:
+          name: Bolt - Install packages
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
       - save_cache: *save-cache
       - persist_to_workspace:
           root: /home/circleci/repo
@@ -84,6 +89,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: /home/circleci/repo
+      - run:
+          name: Bolt - Install packages
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
       # run tests!
       - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
       - run: yarn lint:prettier
