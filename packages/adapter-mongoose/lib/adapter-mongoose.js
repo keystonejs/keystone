@@ -15,9 +15,6 @@ const {
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
 const {
-  simpleTokenizer,
-  relationshipTokenizer,
-  getRelatedListAdapterFromQueryPathFactory,
   queryParser,
   pipelineBuilder,
   mutationBuilder,
@@ -120,28 +117,6 @@ class MongooseListAdapter extends BaseListAdapter {
 
     // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
-
-    this.queryBuilder = async (query, aggregate) => {
-      const queryTree = queryParser(
-        {
-          tokenizer: {
-            // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
-            simple: simpleTokenizer({
-              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-            }),
-            // executed for complex query components (eg; items: { ... })
-            relationship: relationshipTokenizer({
-              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-            }),
-          },
-        },
-        query
-      );
-      const pipeline = pipelineBuilder(queryTree);
-      const postQueryMutations = mutationBuilder(queryTree.relationships);
-      // Run the query against the given database and collection
-      return await aggregate(pipeline).then(postQueryMutations);
-    };
   }
 
   prepareFieldAdapter(fieldAdapter) {
@@ -263,8 +238,14 @@ class MongooseListAdapter extends BaseListAdapter {
       query.$count = 'count';
     }
 
-    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
-      foundItems => {
+    const queryTree = queryParser({ listAdapter: this }, query);
+
+    // Run the query against the given database and collection
+    return this.model
+      .aggregate(pipelineBuilder(queryTree))
+      .exec()
+      .then(mutationBuilder(queryTree.relationships))
+      .then(foundItems => {
         if (meta) {
           // When there are no items, we get undefined back, so we simulate the
           // normal result of 0 items.
@@ -274,8 +255,7 @@ class MongooseListAdapter extends BaseListAdapter {
           return foundItems[0];
         }
         return foundItems;
-      }
-    );
+      });
   }
 }
 

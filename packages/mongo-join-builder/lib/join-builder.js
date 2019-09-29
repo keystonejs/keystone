@@ -56,7 +56,7 @@ function mutation(postQueryMutation, lookupPath) {
 
         if (restOfLookupPath.length === 0) {
           // Now we can execute the mutation
-          return postQueryMutation(value, keyToMutate, queryResult, [...pathSoFar, index]);
+          return postQueryMutation(value);
         }
 
         // Recurse
