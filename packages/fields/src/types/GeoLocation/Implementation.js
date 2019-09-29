@@ -4,6 +4,18 @@ import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 import isEqual from 'lodash.isequal';
 
+// Ref: https://mongoosejs.com/docs/geojson.html
+const pointSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true,
+  },
+  coordinates: {
+    type: [Number],
+    required: true,
+  },
+});
 export class GeoLocation extends Implementation {
   constructor(path, { defaultZoom, defaultCenter, googleApiKey, defaultValue, showMap }) {
     super(...arguments);
@@ -26,12 +38,12 @@ export class GeoLocation extends Implementation {
     return [
       `
       type ${this.graphQLOutputType} {
-        lat: Float
-        lng: Float
+        type: String!,
+        coordinates: [Float!]!
       }
       input ${this.graphQLOutputType}Format{
-        lat: Float
-        lng: Float
+        type: String!,
+        coordinates: [Float!]!
       }
     `,
     ];
@@ -67,25 +79,20 @@ export class GeoLocation extends Implementation {
 }
 
 export class MongoGeoLocationInterface extends MongooseFieldAdapter {
+  rangeCheck = (target, min, max) => target !== NaN && min <= target && target <= max;
   addToMongooseSchema(schema) {
-    const validator = location => {
-      if (typeof location !== 'object') {
-        return false;
-      }
+    const validator = locationObject => {
+      if (typeof locationObject !== 'object') return false;
+      if (locationObject.type !== 'Point') return false;
+      if (!locationObject.coordinates) return false;
+
       return (
-        (isEqual(Object.keys(location), ['lng', 'lat']) ||
-          isEqual(Object.keys(location), ['lat', 'lng'])) &&
-        location.lng >= 0 &&
-        location.lng <= 180 &&
-        location.lat >= 0 &&
-        location.lat <= 90
+        this.rangeCheck(locationObject.coordinates[0], -180, 180) &&
+        this.rangeCheck(locationObject.coordinates[1], -90, 90)
       );
     };
     const schemaOptions = {
-      type: {
-        lng: mongoose.Decimal128,
-        lat: mongoose.Decimal128,
-      },
+      type: pointSchema,
       validate: {
         validator: this.buildValidator(validator),
         message: '{VALUE} is not a valid geo coordinate',

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 import { CheckboxPrimitive } from '@arch-ui/controls';
+import { Button } from '@arch-ui/button';
 import { LocationIcon } from '@arch-ui/icons';
 import GoogleMapReact from 'google-map-react';
 import debounce from 'lodash.debounce';
@@ -23,6 +24,19 @@ export default class TextField extends Component {
     const value = event.target.value;
     const { value: location } = this.props;
     this.props.onChange(Object.assign({}, location, { [type]: parseFloat(value) }));
+  };
+
+  setCurrentGeoLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(({ coords: { latitude: lat, longitude: lng } }) => {
+        this.props.onChange({
+          lat,
+          lng,
+        });
+      });
+    } else {
+      alert('Browser does not support location fetching');
+    }
   };
 
   valueToString = value => {
@@ -61,8 +75,13 @@ export default class TextField extends Component {
     const mapComponent = (
       <div style={{ height: '300px', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: googleApiKey }}
+          bootstrapURLKeys={{
+            key: googleApiKey,
+            language: 'en',
+            region: 'en',
+          }}
           defaultCenter={defaultCenter}
+          center={value}
           defaultZoom={defaultZoom}
           onClick={this.onMapClick}
         >
@@ -74,37 +93,42 @@ export default class TextField extends Component {
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldInput>
-          <label>Latitude </label>
+          <label style={{ lineHeight: '2.2em' }}>Latitude </label>
           <Input
             autoComplete="off"
             autoFocus={autoFocus}
             type="number"
-            min="0.0"
+            min="-90.0"
             max="90.0"
             step="any"
             value={this.valueToString(lat)}
             onChange={this.onSubFieldChange('lat')}
             id={`${htmlID}['lat']`}
+            placeholder={'Latitude'}
           />
-        </FieldInput>
-        <FieldInput>
-          <label>Longitude </label>
+          <label style={{ lineHeight: '2.2em' }}>Longitude </label>
           <Input
             autoComplete="off"
             autoFocus={false}
             type="number"
-            min="0.0"
+            min="-180.0"
             max="180.0"
             step="any"
             value={this.valueToString(lng)}
             onChange={this.onSubFieldChange('lng')}
             id={`${htmlID}['lng']`}
+            placeholder={'Longitude'}
           />
         </FieldInput>
+
         <CheckboxPrimitive checked={displayMap} onChange={this.onDisplayMapChange}>
           Show Map?
         </CheckboxPrimitive>
+
         {displayMap && mapComponent}
+        <Button onClick={this.setCurrentGeoLocation} variant="ghost">
+          Set to current location
+        </Button>
       </FieldContainer>
     );
   }

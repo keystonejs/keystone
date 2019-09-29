@@ -14,30 +14,38 @@ export default class TextController extends FieldController {
   serialize = data => {
     const value = data[this.path];
     if (typeof value === 'object') {
-      return Object.assign({}, { lat: value.lat, lng: value.lng });
+      return { type: 'Point', coordinates: [value.lng, value.lat] };
     } else {
       return {};
     }
   };
-  deserialize = data => data[this.path];
+  deserialize = data => ({
+    lng: data[this.path].coordinates[0],
+    lat: data[this.path].coordinates[1],
+  });
   validateInput = ({ addFieldValidationError, originalInput }) => {
     const rangeCheck = (input, min, max) => input >= min && input <= max;
-    if (!originalInput.location.lng) {
+    if (!originalInput.location.coordinates) return false;
+    const [lng, lat] = originalInput.location.coordinates;
+    if (!lng) {
       addFieldValidationError('Longitude not found');
-    } else if (!rangeCheck(originalInput.location.lng, 0, 180)) {
-      addFieldValidationError('Longitude should be in range 0 ~ 180');
+    } else if (lng == NaN) {
+      addFieldValidationError('Longitude must be a number');
+    } else if (!rangeCheck(lng, -180, 180)) {
+      addFieldValidationError('Longitude should be in range -180 ~ 180');
     }
-    if (!originalInput.location.lat) {
+    if (!lat) {
       addFieldValidationError('Latitude not found');
-    } else if (!rangeCheck(originalInput.location.lat, 0, 90)) {
-      addFieldValidationError('Latitude should be in range 0 ~ 90');
+    } else if (lat == NaN) {
+      addFieldValidationError('Latitude must be a number');
+    } else if (!rangeCheck(lat, -90, 90)) {
+      addFieldValidationError('Latitude should be in range -90 ~ 90');
     }
   };
   getFilterTypes = () => [];
   getQueryFragment = () => `
     ${this.path} {
-       lng
-       lat
+       coordinates
     }
   `;
 }
