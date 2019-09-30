@@ -14,12 +14,14 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
-const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
+const {
+  mongoJoinBuilder,
+  simpleTokenizer,
+  relationshipTokenizer,
+  getRelatedListAdapterFromQueryPathFactory,
+} = require('@keystone-alpha/mongo-join-builder');
 const logger = require('@keystone-alpha/logger').logger('mongoose');
 
-const { simpleTokenizer } = require('./tokenizers/simple');
-const { relationshipTokenizer } = require('./tokenizers/relationship');
-const { getRelatedListAdapterFromQueryPathFactory } = require('./tokenizers/relationship-path');
 const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
