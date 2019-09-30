@@ -1,4 +1,4 @@
-const { flatten } = require('@keystone-alpha/utils');
+const { flatten, compose } = require('@keystone-alpha/utils');
 
 /**
  * Format of input object:
@@ -81,8 +81,6 @@ function mutation(postQueryMutation, lookupPath) {
     return mutate(queryResult, lookupPath);
   };
 }
-
-const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
 
 function mutationBuilder(relationships, path = []) {
   return compose(
