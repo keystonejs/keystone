@@ -1,3 +1,5 @@
+import omitBy from 'lodash.omitby';
+
 const relationshipTokenizer = ({ getRelatedListAdapterFromQueryPath }) => (
   query,
   queryKey,
@@ -14,7 +16,49 @@ const relationshipTokenizer = ({ getRelatedListAdapterFromQueryPath }) => (
 
   // Nothing found, return an empty operation
   // TODO: warn?
-  return (fieldAdapter && fieldAdapter.getRelationshipQueryCondition(queryKey, uid)) || {};
+  if (!fieldAdapter) return {};
+  const filterType = {
+    [fieldAdapter.path]: 'every',
+    [`${fieldAdapter.path}_every`]: 'every',
+    [`${fieldAdapter.path}_some`]: 'some',
+    [`${fieldAdapter.path}_none`]: 'none',
+  }[queryKey];
+
+  return {
+    from: fieldAdapter.getRefListAdapter().model.collection.name, // the collection name to join with
+    field: fieldAdapter.path, // The field on this collection
+    // A mutation to run on the data post-join. Useful for merging joined
+    // data back into the original object.
+    // Executed on a depth-first basis for nested relationships.
+    postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
+      return omitBy(
+        parentObj,
+        /*
+        {
+          ...parentObj,
+          // Given there could be sorting and limiting that's taken place, we
+          // want to overwrite the entire object rather than merging found items
+          // in.
+          [field]: parentObj[keyOfRelationship],
+        },
+        */
+        // Clean up the result to remove the intermediate results
+        (_, keyToOmit) => keyToOmit.startsWith(uid)
+      );
+    },
+    // The conditions under which an item from the 'orders' collection is
+    // considered a match and included in the end result
+    // All the keys on an 'order' are available, plus 3 special keys:
+    // 1) <uid>_<field>_every - is `true` when every joined item matches the
+    //    query
+    // 2) <uid>_<field>_some - is `true` when some joined item matches the
+    //    query
+    // 3) <uid>_<field>_none - is `true` when none of the joined items match
+    //    the query
+    matchTerm: { [`${uid}_${fieldAdapter.path}_${filterType}`]: true },
+    // Flag this is a to-many relationship
+    many: fieldAdapter.field.many,
+  };
 };
 
 module.exports = { relationshipTokenizer };

@@ -76,13 +76,9 @@ describe('MongooseListAdapter', () => {
         isRelationship: true,
         getQueryConditions: () => {},
         supportsRelationshipQuery: query => query === 'posts_some',
-        getRelationshipQueryCondition: () => ({
-          from: 'posts',
-          field: 'posts',
-          matchTerm: { posts_some: true },
-          // Flag this is a to-many relationship
-          many: true,
-        }),
+        getRefListAdapter: () => ({ model: { collection: { name: 'posts' } } }),
+        field: { many: true },
+        path: 'posts',
       },
     ];
 
@@ -109,7 +105,7 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { $and: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
+      { $match: { $and: [expect.any(Object), { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
 
@@ -131,7 +127,7 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { $or: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
+      { $match: { $or: [expect.any(Object), { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
   });
@@ -163,13 +159,9 @@ describe('MongooseListAdapter', () => {
         isRelationship: true,
         getQueryConditions: () => ({}),
         supportsRelationshipQuery: query => query === 'posts_some',
-        getRelationshipQueryCondition: () => ({
-          from: 'posts',
-          field: 'posts',
-          matchTerm: { posts_some: true },
-          // Flag this is a to-many relationship
-          many: true,
-        }),
+        getRefListAdapter: () => ({ model: { collection: { name: 'posts' } } }),
+        field: { many: true },
+        path: 'posts',
       },
     ];
 
@@ -191,7 +183,7 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { posts_some: true } },
+      { $match: expect.any(Object) },
       { $addFields: { id: '$_id' } },
     ]);
 
@@ -213,7 +205,7 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { posts_some: true } },
+      { $match: expect.any(Object) },
       { $addFields: { id: '$_id' } },
     ]);
   });
