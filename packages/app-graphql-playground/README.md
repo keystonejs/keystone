@@ -7,7 +7,7 @@ draft: true
 
 # GraphQL Playground App
 
-A Keystone App that creates an Apollo GraphQL playground.
+A KeystoneJS App that creates an Apollo GraphQL playground.
 
 ## Usage
 

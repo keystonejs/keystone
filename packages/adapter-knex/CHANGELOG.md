@@ -1,5 +1,12 @@
 # @keystone-alpha/adapter-knex
 
+## 4.0.11
+
+### Patch Changes
+
+- [629e1ea9](https://github.com/keystonejs/keystone-5/commit/629e1ea9): Fix a bug which limited the number of items in a many-relatinoship to 65K
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
 ## 4.0.10
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):

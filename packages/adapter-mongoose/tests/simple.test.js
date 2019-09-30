@@ -1,4 +1,4 @@
-const tokenizerFactory = require('../lib/tokenizers/simple');
+const { simpleTokenizer } = require('../lib/tokenizers/simple');
 
 describe('Simple tokenizer', () => {
   test('Uses correct conditions', () => {
@@ -8,7 +8,7 @@ describe('Simple tokenizer', () => {
       fieldAdapters: [{ getQueryConditions }],
     }));
 
-    const simple = tokenizerFactory({ getRelatedListAdapterFromQueryPath });
+    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath });
 
     expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject({
       matchTerm: { foo: 'bar' },
@@ -24,7 +24,7 @@ describe('Simple tokenizer', () => {
       fieldAdapters: [{ getQueryConditions }],
     }));
 
-    const simple = tokenizerFactory({ getRelatedListAdapterFromQueryPath, modifierConditions });
+    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath, modifierConditions });
 
     expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject({
       postJoinPipeline: [{ zip: 'quux' }],
@@ -40,7 +40,7 @@ describe('Simple tokenizer', () => {
       fieldAdapters: [{ getQueryConditions }],
     }));
 
-    const simple = tokenizerFactory({ getRelatedListAdapterFromQueryPath, modifierConditions });
+    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath, modifierConditions });
 
     const result = simple({ name: 'hi' }, 'name', ['name']);
     expect(result).toMatchObject({});
@@ -55,7 +55,7 @@ describe('Simple tokenizer', () => {
       fieldAdapters: [{ getQueryConditions }],
     }));
 
-    const simple = tokenizerFactory({ getRelatedListAdapterFromQueryPath });
+    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath });
 
     expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject({
       matchTerm: { foo: 'bar' },

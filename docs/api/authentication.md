@@ -6,7 +6,7 @@ order: 4
 
 # Authentication
 
-Authentication strategies allow users to identify themselves to Keystone. This can be used to restrict access to the AdminUI, and to configure [access controls](https://v5.keystonejs.com/guides/access-control/).
+Authentication strategies allow users to identify themselves to KeystoneJS. This can be used to restrict access to the AdminUI, and to configure [access controls](https://v5.keystonejs.com/guides/access-control/).
 
 - For password logins see: [`auth-password`](https://v5.keystonejs.com/keystone-alpha/auth-password/)
 - For social logins using [Passport.js](http://www.passportjs.org/) see: [`auth-passport`](https://v5.keystonejs.com/keystone-alpha/auth-passport/)

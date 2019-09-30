@@ -24,7 +24,7 @@ keystone.createList('User', {
 });
 ```
 
-We can configure the Keystone auth strategy as:
+We can configure the KeystoneJS auth strategy as:
 
 ```js
 const authStrategy = keystone.createAuthStrategy({
@@ -86,7 +86,7 @@ The build in `Password` field type fulfils this requirements.
 
 #### `protectIdentities`
 
-Generally, Keystone strives to provide users with detailed error messages.
+Generally, KeystoneJS strives to provide users with detailed error messages.
 In the context of authentication this is often not desirable.
 Information about existing accounts can inadvertently leaked to malicious actors.
 

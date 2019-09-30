@@ -1,5 +1,11 @@
 # @keystone-alpha/apollo-helpers
 
+## 1.0.5
+
+### Patch Changes
+
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
 ## 1.0.4
 
 ### Patch Changes

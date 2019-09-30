@@ -1,4 +1,4 @@
-const tokenizerFactory = require('../lib/tokenizers/relationship');
+const { relationshipTokenizer } = require('../lib/tokenizers/relationship');
 
 describe('Relationship tokenizer', () => {
   test('Uses correct conditions', () => {
@@ -8,7 +8,7 @@ describe('Relationship tokenizer', () => {
     }));
     const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
 
-    const relationship = tokenizerFactory({
+    const relationship = relationshipTokenizer({
       getRelatedListAdapterFromQueryPath,
     });
 
@@ -23,7 +23,7 @@ describe('Relationship tokenizer', () => {
     }));
     const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
 
-    const relationship = tokenizerFactory({
+    const relationship = relationshipTokenizer({
       getRelatedListAdapterFromQueryPath,
     });
 
@@ -38,7 +38,7 @@ describe('Relationship tokenizer', () => {
     const findFieldAdapterForQuerySegment = jest.fn(() => relationshipConditions);
     const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
 
-    const relationship = tokenizerFactory({
+    const relationship = relationshipTokenizer({
       getRelatedListAdapterFromQueryPath,
     });
 

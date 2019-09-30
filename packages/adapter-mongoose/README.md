@@ -25,7 +25,7 @@ This is used as the `uri` parameter for `mongoose.connect()`.
 
 _**Default:**_ Environmental variable (see below) or `'mongodb://localhost/<DATABASE_NAME>'`
 
-If not specified, Keystone will first look for one of the following environmental variables:
+If not specified, KeystoneJS will first look for one of the following environmental variables:
 
 - `CONNECT_TO`,
 - `DATABASE_URL`,
@@ -36,7 +36,7 @@ If not specified, Keystone will first look for one of the following environmenta
 - `MONGOLAB_URI`,
 - `MONGOLAB_URL`
 
-If none of these are found a connection string is derived with a `DATABASE_NAME` from the Keystone project name.
+If none of these are found a connection string is derived with a `DATABASE_NAME` from the KeystoneJS project name.
 
 ### `mongooseOptions` (optional)
 

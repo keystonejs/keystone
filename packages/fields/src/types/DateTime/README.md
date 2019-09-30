@@ -79,7 +79,7 @@ On the Mongoose adapter the `DateTime` value are stored across three fields:
 | `${path}_utc`    | `Date`      | The timestamp in as a native JS-style epoch        |
 | `${path}_offset` | `String`    | The offset component as string                     |
 
-The `isRequired` config option is enforces by Keystone only.
+The `isRequired` config option is enforces by KeystoneJS only.
 
 ### Knex Adaptor
 
@@ -90,4 +90,4 @@ On the Knex adapter the `DateTime` value are stored across two fields:
 | `${path}_utc`    | `timestamp` | The timestamp in UTC           |
 | `${path}_offset` | `text`      | The offset component as string |
 
-The `isRequired` config option is enforces by Keystone and, if equal to `true`, the column is set as not nullable.
+The `isRequired` config option is enforces by KeystoneJS and, if equal to `true`, the column is set as not nullable.

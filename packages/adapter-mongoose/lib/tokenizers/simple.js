@@ -1,6 +1,6 @@
 const { objMerge } = require('@keystone-alpha/utils');
 
-module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions }) => (
+const simpleTokenizer = ({ getRelatedListAdapterFromQueryPath, modifierConditions }) => (
   query,
   queryKey,
   path
@@ -32,3 +32,5 @@ module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions }) =>
   // TODO: warn?
   return {};
 };
+
+module.exports = { simpleTokenizer };

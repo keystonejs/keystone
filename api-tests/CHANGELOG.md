@@ -1,5 +1,11 @@
 # @keystone-alpha/api-tests
 
+## 1.7.0
+
+### Minor Changes
+
+- [552e6fb6](https://github.com/keystonejs/keystone-5/commit/552e6fb6): Add support for schema cache hints
+
 ## 1.6.0
 
 ### Minor Changes

@@ -22,7 +22,7 @@ Server must handle initialising a http server which correctly executes any given
 
 _Note_: Before reaching for a custom server, consider using a KeystoneJS
 App which can enhance the functionality of the default server. Apps
-available in Keystone include:
+available in KeystoneJS include:
 
 - [Static App](../../keystone-alpha/app-static) for serving static files.
 - [Next.js App](../../keystone-alpha/app-next) for serving a Next.js App on the same server as the API
@@ -145,13 +145,13 @@ Promise.all(preparations)
 
 ## Custom Server as a Lambda
 
-Keystone is powered by Node, so can run in "Serverless" environments such as
+KeystoneJS is powered by Node, so can run in "Serverless" environments such as
 [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) which
 support Node >= 10.x.
 
 With a little finesse (and the [`serverless-http`
 library](https://github.com/dougmoscrop/serverless-http)), we can run our
-Keystone instance in AWS Lambda:
+KeystoneJS instance in AWS Lambda:
 
 `lambda.js`
 
