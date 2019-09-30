@@ -711,7 +711,7 @@ describe('query parser', () => {
             postJoinPipeline: [{ $orderBy: 'title_ASC' }],
             postQueryMutation: expect.any(Function),
             many: true,
-            relationships: expect.any(Object),
+            relationships: {},
           },
         },
         matchTerm: {
@@ -759,8 +759,9 @@ describe('query parser', () => {
             field: 'posts',
             matchTerm: { title: { $eq: 'hello' } },
             postQueryMutation: expect.any(Function),
+            postJoinPipeline: [],
             many: true,
-            relationships: expect.any(Object),
+            relationships: {},
           },
         },
         matchTerm: {
@@ -805,9 +806,11 @@ describe('query parser', () => {
           posts: {
             from: 'posts-collection',
             field: 'posts',
+            matchTerm: undefined,
             postQueryMutation: expect.any(Function),
+            postJoinPipeline: [],
             many: true,
-            relationships: expect.any(Object),
+            relationships: {},
           },
         },
         matchTerm: {
@@ -854,7 +857,9 @@ describe('query parser', () => {
             field: 'company',
             matchTerm: { name: { $eq: 'hello' } },
             postQueryMutation: expect.any(Function),
+            postJoinPipeline: [],
             many: false,
+            relationships: {},
           },
         },
         matchTerm: {
@@ -904,6 +909,7 @@ describe('query parser', () => {
             field: 'posts',
             matchTerm: { $and: [{ title: { $eq: 'hello' } }, { tags_some: { $eq: true } }] },
             postQueryMutation: expect.any(Function),
+            postJoinPipeline: [],
             many: true,
             relationships: {
               tags_some: {
@@ -911,6 +917,7 @@ describe('query parser', () => {
                 field: 'tags',
                 matchTerm: { $and: [{ name: { $eq: 'React' } }, { posts_every: { $eq: true } }] },
                 postQueryMutation: expect.any(Function),
+                postJoinPipeline: [],
                 many: true,
                 relationships: {
                   posts_every: {
@@ -918,7 +925,9 @@ describe('query parser', () => {
                     field: 'posts',
                     matchTerm: { title: { $eq: 'foo' } },
                     postQueryMutation: expect.any(Function),
+                    postJoinPipeline: [],
                     many: true,
+                    relationships: {},
                   },
                 },
               },
@@ -960,16 +969,21 @@ describe('query parser', () => {
       expect(queryTree).toMatchObject({
         relationships: {
           posts_every: {
+            field: 'posts',
             from: 'posts-collection',
             matchTerm: { $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
             postQueryMutation: expect.any(Function),
+            postJoinPipeline: [],
             many: true,
             relationships: {
               labels_some: {
+                field: 'labels',
                 from: 'labels-collection',
                 matchTerm: { name: { $eq: 'foo' } },
                 postQueryMutation: expect.any(Function),
+                postJoinPipeline: [],
                 many: true,
+                relationships: {},
               },
             },
           },
@@ -1009,16 +1023,21 @@ describe('query parser', () => {
       expect(queryTree).toMatchObject({
         relationships: {
           posts_every: {
+            field: 'posts',
             from: 'posts-collection',
             matchTerm: { $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
             postQueryMutation: expect.any(Function),
+            postJoinPipeline: [],
             many: true,
             relationships: {
               labels_some: {
+                field: 'labels',
                 from: 'labels-collection',
                 matchTerm: { name: { $eq: 'foo' } },
                 postQueryMutation: expect.any(Function),
+                postJoinPipeline: [],
                 many: true,
+                relationships: {},
               },
             },
           },
@@ -1058,16 +1077,21 @@ describe('query parser', () => {
       expect(queryTree).toMatchObject({
         relationships: {
           posts_every: {
+            field: 'posts',
             from: 'posts-collection',
             matchTerm: { $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
             postQueryMutation: expect.any(Function),
+            postJoinPipeline: [],
             many: true,
             relationships: {
               labels_some: {
+                field: 'labels',
                 from: 'labels-collection',
                 matchTerm: { name: { $eq: 'foo' } },
                 postQueryMutation: expect.any(Function),
+                postJoinPipeline: [],
                 many: true,
+                relationships: {},
               },
             },
           },
@@ -1107,16 +1131,21 @@ describe('query parser', () => {
       expect(queryTree).toMatchObject({
         relationships: {
           posts_every: {
+            field: 'posts',
             from: 'posts-collection',
             matchTerm: { $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
+            postJoinPipeline: [],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               labels_some: {
+                field: 'labels',
                 from: 'labels-collection',
                 matchTerm: { name: { $eq: 'foo' } },
+                postJoinPipeline: [],
                 postQueryMutation: expect.any(Function),
                 many: true,
+                relationships: {},
               },
             },
           },
