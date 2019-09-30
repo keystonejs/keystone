@@ -15,10 +15,12 @@ const {
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
 const {
-  mongoJoinBuilder,
   simpleTokenizer,
   relationshipTokenizer,
   getRelatedListAdapterFromQueryPathFactory,
+  queryParser,
+  pipelineBuilder,
+  mutationBuilder,
 } = require('@keystone-alpha/mongo-join-builder');
 const logger = require('@keystone-alpha/logger').logger('mongoose');
 
@@ -119,18 +121,27 @@ class MongooseListAdapter extends BaseListAdapter {
     // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
 
-    this.queryBuilder = mongoJoinBuilder({
-      tokenizer: {
-        // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
-        simple: simpleTokenizer({
-          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-        }),
-        // executed for complex query components (eg; items: { ... })
-        relationship: relationshipTokenizer({
-          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-        }),
-      },
-    });
+    this.queryBuilder = async (query, aggregate) => {
+      const queryTree = queryParser(
+        {
+          tokenizer: {
+            // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
+            simple: simpleTokenizer({
+              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+            }),
+            // executed for complex query components (eg; items: { ... })
+            relationship: relationshipTokenizer({
+              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+            }),
+          },
+        },
+        query
+      );
+      const pipeline = pipelineBuilder(queryTree);
+      const postQueryMutations = mutationBuilder(queryTree.relationships);
+      // Run the query against the given database and collection
+      return await aggregate(pipeline).then(postQueryMutations);
+    };
   }
 
   prepareFieldAdapter(fieldAdapter) {
