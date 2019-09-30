@@ -14,61 +14,19 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
-const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
+const {
+  simpleTokenizer,
+  relationshipTokenizer,
+  getRelatedListAdapterFromQueryPathFactory,
+  queryParser,
+  pipelineBuilder,
+  mutationBuilder,
+} = require('@keystone-alpha/mongo-join-builder');
 const logger = require('@keystone-alpha/logger').logger('mongoose');
 
-const { simpleTokenizer } = require('./tokenizers/simple');
-const { relationshipTokenizer } = require('./tokenizers/relationship');
-const { getRelatedListAdapterFromQueryPathFactory } = require('./tokenizers/relationship-path');
 const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
-
-const modifierConditions = {
-  // TODO: Implement configurable search fields for lists
-  $search: value => {
-    if (!value || (getType(value) === 'String' && !value.trim())) {
-      return undefined;
-    }
-    return {
-      $match: {
-        name: new RegExp(`${escapeRegExp(value)}`, 'i'),
-      },
-    };
-  },
-
-  $orderBy: (value, _, listAdapter) => {
-    const [orderField, orderDirection] = value.split('_');
-
-    const mongoField = listAdapter.graphQlQueryPathToMongoField(orderField);
-
-    return {
-      $sort: {
-        [mongoField]: orderDirection === 'DESC' ? -1 : 1,
-      },
-    };
-  },
-
-  $skip: value => {
-    if (value < Infinity && value > 0) {
-      return {
-        $skip: value,
-      };
-    }
-  },
-
-  $first: value => {
-    if (value < Infinity && value > 0) {
-      return {
-        $limit: value,
-      };
-    }
-  },
-
-  $count: value => ({
-    $count: value,
-  }),
-};
 
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
@@ -163,19 +121,27 @@ class MongooseListAdapter extends BaseListAdapter {
     // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
 
-    this.queryBuilder = mongoJoinBuilder({
-      tokenizer: {
-        // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
-        simple: simpleTokenizer({
-          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-          modifierConditions,
-        }),
-        // executed for complex query components (eg; items: { ... })
-        relationship: relationshipTokenizer({
-          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-        }),
-      },
-    });
+    this.queryBuilder = async (query, aggregate) => {
+      const queryTree = queryParser(
+        {
+          tokenizer: {
+            // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
+            simple: simpleTokenizer({
+              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+            }),
+            // executed for complex query components (eg; items: { ... })
+            relationship: relationshipTokenizer({
+              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+            }),
+          },
+        },
+        query
+      );
+      const pipeline = pipelineBuilder(queryTree);
+      const postQueryMutations = mutationBuilder(queryTree.relationships);
+      // Run the query against the given database and collection
+      return await aggregate(pipeline).then(postQueryMutations);
+    };
   }
 
   prepareFieldAdapter(fieldAdapter) {

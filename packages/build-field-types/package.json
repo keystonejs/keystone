@@ -37,7 +37,6 @@
     "install-packages": "^0.2.5",
     "jest-worker": "^24.6.0",
     "lodash.isempty": "^4.4.0",
-    "lodash.omitby": "^4.6.0",
     "magic-string": "^0.25.1",
     "meow": "^5.0.0",
     "ms": "^2.1.1",

@@ -1,4 +1,4 @@
-const joinBuilder = require('../lib/join-builder');
+const { pipelineBuilder, mutationBuilder } = require('../lib/join-builder');
 
 describe('join builder', () => {
   test('correctly generates joins for simple queries', () => {
@@ -11,7 +11,7 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       postJoinPipeline: [],
       relationships: {},
@@ -36,7 +36,7 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'user-collection',
@@ -102,7 +102,7 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
@@ -166,7 +166,7 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
@@ -240,7 +240,7 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
@@ -380,7 +380,7 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -487,7 +487,7 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -594,7 +594,7 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -701,7 +701,7 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -805,20 +805,16 @@ describe('join builder', () => {
     const mutationResult = {};
     const postQueryMutation = jest.fn(() => mutationResult);
 
-    const { postQueryMutations } = joinBuilder({
-      relationships: {
-        zip567: {
-          from: 'posts-collection',
-          field: 'posts',
-          matchTerm: { title: { $eq: 'hello' } },
-          postJoinPipeline: [],
-          postQueryMutation,
-          many: true,
-          relationships: {},
-        },
+    const postQueryMutations = mutationBuilder({
+      zip567: {
+        from: 'posts-collection',
+        field: 'posts',
+        matchTerm: { title: { $eq: 'hello' } },
+        postJoinPipeline: [],
+        postQueryMutation,
+        many: true,
+        relationships: {},
       },
-      matchTerm: { $and: [{ age: { $eq: 23 } }, { zip567_posts_every: { $eq: true } }] },
-      postJoinPipeline: [],
     });
 
     /*
@@ -916,40 +912,36 @@ describe('join builder', () => {
       }
 
     */
-    const { postQueryMutations } = joinBuilder({
-      relationships: {
-        abc123: {
-          from: 'posts-collection',
-          field: 'posts',
-          postJoinPipeline: [],
-          matchTerm: { def456_tags_some: { $eq: true } },
-          postQueryMutation: abc123_postQueryMutation,
-          many: true,
-          relationships: {
-            def456: {
-              from: 'tags-collection',
-              field: 'tags',
-              postJoinPipeline: [],
-              matchTerm: { xyz890_posts_every: { $eq: true } },
-              postQueryMutation: def456_postQueryMutation,
-              many: true,
-              relationships: {
-                xyz890: {
-                  from: 'posts-collection',
-                  field: 'posts',
-                  matchTerm: { published: { $eq: true } },
-                  postJoinPipeline: [],
-                  postQueryMutation: xyz890_postQueryMutation,
-                  many: true,
-                  relationships: {},
-                },
+    const postQueryMutations = mutationBuilder({
+      abc123: {
+        from: 'posts-collection',
+        field: 'posts',
+        postJoinPipeline: [],
+        matchTerm: { def456_tags_some: { $eq: true } },
+        postQueryMutation: abc123_postQueryMutation,
+        many: true,
+        relationships: {
+          def456: {
+            from: 'tags-collection',
+            field: 'tags',
+            postJoinPipeline: [],
+            matchTerm: { xyz890_posts_every: { $eq: true } },
+            postQueryMutation: def456_postQueryMutation,
+            many: true,
+            relationships: {
+              xyz890: {
+                from: 'posts-collection',
+                field: 'posts',
+                matchTerm: { published: { $eq: true } },
+                postJoinPipeline: [],
+                postQueryMutation: xyz890_postQueryMutation,
+                many: true,
+                relationships: {},
               },
             },
           },
         },
       },
-      matchTerm: { abc123_posts_some: { $eq: true } },
-      postJoinPipeline: [],
     });
 
     /*

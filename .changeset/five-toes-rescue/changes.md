@@ -1,0 +1,1 @@
+MongoRelationshipInterface.getRelationshipQueryCondition() has been removed.

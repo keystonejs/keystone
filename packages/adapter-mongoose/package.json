@@ -14,7 +14,9 @@
     "@keystone-alpha/mongo-join-builder": "^2.0.3",
     "@keystone-alpha/utils": "^3.1.0",
     "@sindresorhus/slugify": "^0.6.0",
+    "lodash.omitby": "^4.6.0",
     "mongoose": "^5.6.5",
-    "p-settle": "^3.1.0"
+    "p-settle": "^3.1.0",
+    "pluralize": "^7.0.0"
   }
 }
