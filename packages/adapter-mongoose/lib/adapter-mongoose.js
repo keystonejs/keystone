@@ -24,52 +24,6 @@ const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
-const modifierConditions = {
-  // TODO: Implement configurable search fields for lists
-  $search: value => {
-    if (!value || (getType(value) === 'String' && !value.trim())) {
-      return undefined;
-    }
-    return {
-      $match: {
-        name: new RegExp(`${escapeRegExp(value)}`, 'i'),
-      },
-    };
-  },
-
-  $orderBy: (value, _, listAdapter) => {
-    const [orderField, orderDirection] = value.split('_');
-
-    const mongoField = listAdapter.graphQlQueryPathToMongoField(orderField);
-
-    return {
-      $sort: {
-        [mongoField]: orderDirection === 'DESC' ? -1 : 1,
-      },
-    };
-  },
-
-  $skip: value => {
-    if (value < Infinity && value > 0) {
-      return {
-        $skip: value,
-      };
-    }
-  },
-
-  $first: value => {
-    if (value < Infinity && value > 0) {
-      return {
-        $limit: value,
-      };
-    }
-  },
-
-  $count: value => ({
-    $count: value,
-  }),
-};
-
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
@@ -168,7 +122,6 @@ class MongooseListAdapter extends BaseListAdapter {
         // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
         simple: simpleTokenizer({
           getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-          modifierConditions,
         }),
         // executed for complex query components (eg; items: { ... })
         relationship: relationshipTokenizer({

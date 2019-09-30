@@ -18,29 +18,27 @@ describe('Simple tokenizer', () => {
 
   test('Falls back to modifier conditions when no simple condition found', () => {
     const simpleConditions = { notinuse: () => ({ foo: 'bar' }) };
-    const modifierConditions = { name: () => ({ zip: 'quux' }) };
     const getQueryConditions = jest.fn(() => simpleConditions);
     const getRelatedListAdapterFromQueryPath = jest.fn(() => ({
       fieldAdapters: [{ getQueryConditions }],
     }));
 
-    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath, modifierConditions });
+    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath });
 
-    expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject({
-      postJoinPipeline: [{ zip: 'quux' }],
+    expect(simple({ $count: 'hi' }, '$count', ['$count'])).toMatchObject({
+      postJoinPipeline: [{ $count: 'hi' }],
     });
     expect(getQueryConditions).toHaveBeenCalledTimes(1);
   });
 
   test('returns empty array when no matches found', () => {
     const simpleConditions = { notinuse: () => ({ foo: 'bar' }) };
-    const modifierConditions = { idontexist: () => ({ zip: 'quux' }) };
     const getQueryConditions = jest.fn(() => simpleConditions);
     const getRelatedListAdapterFromQueryPath = jest.fn(() => ({
       fieldAdapters: [{ getQueryConditions }],
     }));
 
-    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath, modifierConditions });
+    const simple = simpleTokenizer({ getRelatedListAdapterFromQueryPath });
 
     const result = simple({ name: 'hi' }, 'name', ['name']);
     expect(result).toMatchObject({});
