@@ -44,13 +44,6 @@ const { flatten, compose } = require('@keystone-alpha/utils');
     ],
   }
  */
-function joinBuilder(query) {
-  return {
-    pipeline: pipelineBuilder(query),
-    postQueryMutations: mutationBuilder(query.relationships),
-  };
-}
-
 function mutation(postQueryMutation, lookupPath) {
   return queryResult => {
     function mutate(arrayToMutate, lookupPathFragment, pathSoFar = []) {
@@ -136,4 +129,4 @@ function pipelineBuilder(query) {
   ].filter(i => i);
 }
 
-module.exports = joinBuilder;
+module.exports = { pipelineBuilder, mutationBuilder };
