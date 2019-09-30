@@ -1,7 +1,17 @@
-const { mongoJoinBuilder } = require('../');
+const { queryParser, pipelineBuilder, mutationBuilder } = require('../');
 
 const { MongoClient } = require('mongodb');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
+
+const mongoJoinBuilder = parserOptions => {
+  return async (query, aggregate) => {
+    const queryTree = queryParser(parserOptions, query);
+    const pipeline = pipelineBuilder(queryTree);
+    const postQueryMutations = mutationBuilder(queryTree.relationships);
+    // Run the query against the given database and collection
+    return await aggregate(pipeline).then(postQueryMutations);
+  };
+};
 
 function getAggregate(database, collection) {
   return pipeline => {
