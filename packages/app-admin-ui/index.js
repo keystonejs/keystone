@@ -202,7 +202,7 @@ class AdminUIApp {
       }
     } else {
       for (const pair of middlewarePairs) {
-        app.use(mountPath, pair.secret);
+        app.use(mountPath, pair.secure);
       }
     }
 
