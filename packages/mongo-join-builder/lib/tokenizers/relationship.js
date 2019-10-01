@@ -1,4 +1,3 @@
-import omitBy from 'lodash.omitby';
 const { getRelatedListAdapterFromQueryPath } = require('./relationship-path');
 
 const relationshipTokenizer = (listAdapter, query, queryKey, path, uid) => {
@@ -23,25 +22,6 @@ const relationshipTokenizer = (listAdapter, query, queryKey, path, uid) => {
   return {
     from: fieldAdapter.getRefListAdapter().model.collection.name, // the collection name to join with
     field: fieldAdapter.path, // The field on this collection
-    // A mutation to run on the data post-join. Useful for merging joined
-    // data back into the original object.
-    // Executed on a depth-first basis for nested relationships.
-    postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
-      return omitBy(
-        parentObj,
-        /*
-        {
-          ...parentObj,
-          // Given there could be sorting and limiting that's taken place, we
-          // want to overwrite the entire object rather than merging found items
-          // in.
-          [field]: parentObj[keyOfRelationship],
-        },
-        */
-        // Clean up the result to remove the intermediate results
-        (_, keyToOmit) => keyToOmit.startsWith(uid)
-      );
-    },
     // The conditions under which an item from the 'orders' collection is
     // considered a match and included in the end result
     // All the keys on an 'order' are available, plus 3 special keys:

@@ -1,3 +1,5 @@
+import omitBy from 'lodash.omitby';
+
 const { flatten, compose } = require('@keystone-alpha/utils');
 
 /**
@@ -12,7 +14,6 @@ const { flatten, compose } = require('@keystone-alpha/utils');
   type Relationship: {
     from: String,
     field: String,
-    postQueryMutation: Function,
     many?: Boolean, (default: true)
     ...Query,
   }
@@ -23,7 +24,6 @@ const { flatten, compose } = require('@keystone-alpha/utils');
       abc123: {
         from: 'posts-collection',
         field: 'posts',
-        postQueryMutation: jest.fn(),
         many: true,
         matchTerm: { title: { $eq: 'hello' } },
         postJoinPipeline: [
@@ -44,7 +44,7 @@ const { flatten, compose } = require('@keystone-alpha/utils');
     ],
   }
  */
-function mutation(postQueryMutation, lookupPath) {
+function mutation(uid, lookupPath) {
   return queryResult => {
     function mutate(arrayToMutate, lookupPathFragment, pathSoFar = []) {
       const [keyToMutate, ...restOfLookupPath] = lookupPathFragment;
@@ -56,7 +56,7 @@ function mutation(postQueryMutation, lookupPath) {
 
         if (restOfLookupPath.length === 0) {
           // Now we can execute the mutation
-          return postQueryMutation(value, keyToMutate, queryResult, [...pathSoFar, index]);
+          return omitBy(value, (_, keyToOmit) => keyToOmit.startsWith(uid));
         }
 
         // Recurse
@@ -77,13 +77,11 @@ function mutation(postQueryMutation, lookupPath) {
 
 function mutationBuilder(relationships, path = []) {
   return compose(
-    Object.entries(relationships).map(([uid, { postQueryMutation, field, relationships }]) => {
+    Object.entries(relationships).map(([uid, { field, relationships }]) => {
       const uniqueField = `${uid}_${field}`;
       const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
       // NOTE: Order is important. We want depth first, so we perform the related mutators first.
-      return postQueryMutation
-        ? compose([postQueryMutations, mutation(postQueryMutation, [...path, uniqueField])])
-        : postQueryMutations;
+      return compose([postQueryMutations, mutation(uid, [...path, uniqueField])]);
     })
   );
 }
