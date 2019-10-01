@@ -14,6 +14,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
 import PageLoading from './components/PageLoading';
+import ToastContainer from './components/ToastContainer';
 import { useAdminMeta } from './providers/AdminMeta';
 
 import HomePage from './pages/Home';
@@ -41,7 +42,7 @@ const Keystone = () => {
     <ApolloProvider client={apolloClient}>
       <ApolloHooksProvider client={apolloClient}>
         <KeyboardShortcuts>
-          <ToastProvider>
+          <ToastProvider components={{ ToastContainer }}>
             <ConnectivityListener />
             <Global styles={globalStyles} />
             <BrowserRouter>
