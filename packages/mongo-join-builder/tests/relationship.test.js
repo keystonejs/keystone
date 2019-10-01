@@ -8,10 +8,11 @@ describe('Relationship tokenizer', () => {
       path: 'name',
     };
     const findFieldAdapterForQuerySegment = jest.fn(() => relationshipConditions);
-    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
-    const relationship = relationshipTokenizer({ getRelatedListAdapterFromQueryPath });
+    const listAdapter = { findFieldAdapterForQuerySegment };
 
-    expect(relationship({ name: 'hi' }, 'name', ['name'], 'abc123')).toMatchObject({
+    expect(
+      relationshipTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'], 'abc123')
+    ).toMatchObject({
       field: 'name',
       from: 'name',
       matchTerm: { abc123_name_every: true },
@@ -22,13 +23,9 @@ describe('Relationship tokenizer', () => {
 
   test('returns empty array when no matches found', () => {
     const findFieldAdapterForQuerySegment = jest.fn(() => {});
-    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
+    const listAdapter = { findFieldAdapterForQuerySegment };
 
-    const relationship = relationshipTokenizer({
-      getRelatedListAdapterFromQueryPath,
-    });
-
-    const result = relationship({ name: 'hi' }, 'name', ['name']);
+    const result = relationshipTokenizer(listAdapter, { name: 'hi' }, 'name', ['name']);
     expect(result).toMatchObject({});
     expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
   });
