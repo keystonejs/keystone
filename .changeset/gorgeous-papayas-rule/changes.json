@@ -1,0 +1,4 @@
+{
+  "releases": [{ "name": "@keystone-alpha/mongo-join-builder", "type": "patch" }],
+  "dependents": []
+}
