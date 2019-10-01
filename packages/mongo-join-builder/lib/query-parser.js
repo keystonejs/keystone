@@ -3,7 +3,6 @@ const { getType, flatten, objMerge } = require('@keystone-alpha/utils');
 
 const { simpleTokenizer } = require('./tokenizers/simple');
 const { relationshipTokenizer } = require('./tokenizers/relationship');
-const { getRelatedListAdapterFromQueryPathFactory } = require('./tokenizers/relationship-path');
 
 // If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
 const joinTerms = (matchTerms, joinOp) =>
@@ -16,8 +15,6 @@ const flattenQueries = (parsedQueries, joinOp) => ({
 });
 
 function parser({ listAdapter, getUID = cuid }, query, pathSoFar = []) {
-  const getRelatedListAdapterFromQueryPath = getRelatedListAdapterFromQueryPathFactory(listAdapter);
-
   if (getType(query) !== 'Object') {
     throw new Error(
       `Expected an Object for query, got ${getType(query)} at path ${pathSoFar.join('.')}`
@@ -35,12 +32,7 @@ function parser({ listAdapter, getUID = cuid }, query, pathSoFar = []) {
     } else if (getType(value) === 'Object') {
       // A relationship query component
       const uid = getUID(key);
-      const queryAst = relationshipTokenizer({ getRelatedListAdapterFromQueryPath })(
-        query,
-        key,
-        path,
-        uid
-      );
+      const queryAst = relationshipTokenizer(listAdapter, query, key, path, uid);
       if (getType(queryAst) !== 'Object') {
         throw new Error(
           `Must return an Object from 'relationshipTokenizer' function, given ${path.join('.')}`
@@ -55,7 +47,7 @@ function parser({ listAdapter, getUID = cuid }, query, pathSoFar = []) {
       };
     } else {
       // A simple field query component
-      const queryAst = simpleTokenizer({ getRelatedListAdapterFromQueryPath })(query, key, path);
+      const queryAst = simpleTokenizer(listAdapter, query, key, path);
       if (getType(queryAst) !== 'Object') {
         throw new Error(
           `Must return an Object from 'simpleTokenizer' function, given ${path.join('.')}`
