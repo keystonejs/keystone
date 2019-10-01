@@ -1,1 +1,0 @@
-Add a compose() function to utils.

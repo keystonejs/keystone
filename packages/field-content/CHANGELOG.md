@@ -1,5 +1,10 @@
 # @keystone-alpha/field-content
 
+## 3.1.2
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
+
 ## 3.1.1
 
 ### Patch Changes
