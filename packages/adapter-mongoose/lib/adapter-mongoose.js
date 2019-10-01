@@ -15,9 +15,6 @@ const {
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
 const {
-  simpleTokenizer,
-  relationshipTokenizer,
-  getRelatedListAdapterFromQueryPathFactory,
   queryParser,
   pipelineBuilder,
   mutationBuilder,
@@ -122,21 +119,7 @@ class MongooseListAdapter extends BaseListAdapter {
     this.model = null;
 
     this.queryBuilder = async (query, aggregate) => {
-      const queryTree = queryParser(
-        {
-          tokenizer: {
-            // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
-            simple: simpleTokenizer({
-              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-            }),
-            // executed for complex query components (eg; items: { ... })
-            relationship: relationshipTokenizer({
-              getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-            }),
-          },
-        },
-        query
-      );
+      const queryTree = queryParser({ listAdapter: this }, query);
       const pipeline = pipelineBuilder(queryTree);
       const postQueryMutations = mutationBuilder(queryTree.relationships);
       // Run the query against the given database and collection
