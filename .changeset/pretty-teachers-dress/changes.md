@@ -1,0 +1,1 @@
+Remove `.queryBuilder` property of the `MongooseListAdapter`.

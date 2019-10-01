@@ -1,20 +1,6 @@
-const {
-  getRelatedListAdapterFromQueryPathFactory,
-} = require('../lib/tokenizers/relationship-path');
+const { getRelatedListAdapterFromQueryPath } = require('../lib/tokenizers/relationship-path');
 
 describe('Relationship Path parser', () => {
-  describe('factory function', () => {
-    test('returns a function', () => {
-      expect(getRelatedListAdapterFromQueryPathFactory({})).toEqual(expect.any(Function));
-    });
-
-    test('Throws if no list adapter provided', () => {
-      expect(() => getRelatedListAdapterFromQueryPathFactory()).toThrow(
-        /Must provide a list adapter instance/
-      );
-    });
-  });
-
   describe('paths', () => {
     test('Handles simple paths correctly', () => {
       let fooListAdapter;
@@ -30,8 +16,9 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
-      expect(getlistAdapter(['bar', 'zip'])).toEqual(zipListAdapter);
+      expect(getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar', 'zip'])).toEqual(
+        zipListAdapter
+      );
     });
 
     test('Handles circular paths correctly', () => {
@@ -39,8 +26,9 @@ describe('Relationship Path parser', () => {
       const fieldAdapter = { getRefListAdapter: jest.fn(() => listAdapter) };
       listAdapter = { findFieldAdapterForQuerySegment: jest.fn(() => fieldAdapter) };
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(listAdapter);
-      expect(getlistAdapter(['foo', 'foo', 'foo'])).toEqual(listAdapter);
+      expect(getRelatedListAdapterFromQueryPath(listAdapter, ['foo', 'foo', 'foo'])).toEqual(
+        listAdapter
+      );
     });
 
     test('Handles arbitrary path strings correctly', () => {
@@ -57,8 +45,9 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
-      expect(getlistAdapter(['bar_koodle', 'zip-boom_zap'])).toEqual(zipListAdapter);
+      expect(
+        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'zip-boom_zap'])
+      ).toEqual(zipListAdapter);
     });
 
     test('Handles paths with AND correctly', () => {
@@ -75,8 +64,9 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
-      expect(getlistAdapter(['bar_koodle', 'AND', 1, 'zip-boom_zap'])).toEqual(zipListAdapter);
+      expect(
+        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'AND', 1, 'zip-boom_zap'])
+      ).toEqual(zipListAdapter);
     });
 
     test('Handles paths with OR correctly', () => {
@@ -93,8 +83,9 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
-      expect(getlistAdapter(['bar_koodle', 'OR', 1, 'zip-boom_zap'])).toEqual(zipListAdapter);
+      expect(
+        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'OR', 1, 'zip-boom_zap'])
+      ).toEqual(zipListAdapter);
     });
   });
 
@@ -114,8 +105,9 @@ describe('Relationship Path parser', () => {
       };
       zipListAdapter = {};
 
-      const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
-      expect(() => getlistAdapter(['bar_koodle', 'zip-boom_zap'])).toThrow(
+      expect(() =>
+        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'zip-boom_zap'])
+      ).toThrow(
         /'foo' Mongo List Adapter failed to determine field responsible for the query condition 'bar_koodle'/
       );
     });

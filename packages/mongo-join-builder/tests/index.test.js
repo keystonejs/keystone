@@ -1,76 +1,23 @@
 const { queryParser, pipelineBuilder, mutationBuilder } = require('../');
+const { listAdapter } = require('./utils');
 
 describe('Test main export', () => {
-  describe('throws if tokenising function returns non-Object', () => {
-    test('simple', async () => {
-      let tokenizer = { simple: () => undefined, relationship: () => ({}) };
-      expect(() => queryParser({ tokenizer }, { name: 'foobar' })).toThrow(Error);
+  test('throws if listAdapter is non-Object', async () => {
+    expect(() => queryParser({ listAdapter: undefined }, { name: 'foobar' })).toThrow(Error);
 
-      tokenizer = { simple: () => 10, relationship: () => ({}) };
-      expect(() => queryParser({ tokenizer }, { name: 'foobar' })).toThrow(Error);
-
-      tokenizer = { simple: () => 'hello', relationship: () => ({}) };
-      expect(() => queryParser({ tokenizer }, { name: 'foobar' })).toThrow(Error);
-
-      // Shouldn't throw
-      tokenizer = { simple: () => ({}), relationship: () => ({}) };
-      await queryParser({ tokenizer }, { name: 'foobar' });
-
-      // Shouldn't throw
-      tokenizer = { simple: () => ({}), relationship: () => [] };
-      await queryParser({ tokenizer }, { name: 'foobar' });
-    });
-
-    test('relationship', async () => {
-      let tokenizer = { relationship: () => undefined, simple: () => ({}) };
-      expect(() => queryParser({ tokenizer }, { posts: {} })).toThrow(Error);
-
-      tokenizer = { relationship: () => 10, simple: () => ({}) };
-      expect(() => queryParser({ tokenizer }, { posts: {} })).toThrow(Error);
-
-      tokenizer = { relationship: () => 'hello', simple: () => ({}) };
-      expect(() => queryParser({ tokenizer }, { posts: {} })).toThrow(Error);
-
-      // Shouldn't throw
-      tokenizer = { relationship: () => ({}), simple: () => ({}) };
-      await queryParser({ tokenizer }, { posts: {} });
-
-      // Shouldn't throw
-      tokenizer = { relationship: () => ({}), simple: () => [] };
-      await queryParser({ tokenizer }, { posts: {} });
-    });
+    // Shouldn't throw
+    await queryParser({ listAdapter }, { name: 'foobar' });
   });
 
   test('runs the query', async () => {
-    // Purposely mutate the objects down to a simple object for the lolz
-    // called with (parentValue, keyOfRelationship, rootObject, path)
-    const postQueryMutation = jest.fn((parentValue, key, rootObject, path) => ({
-      ...parentValue,
-      mutated: path.join('.'),
-    }));
-
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key) => {
-        const [table] = key.split('_');
-        return {
-          from: `${table}-collection`,
-          field: table,
-          postQueryMutation,
-          matchTerm: { $exists: true, $ne: [] },
-          many: true,
-        };
-      }),
-    };
-
     const query = {
       AND: [
         { name: 'foobar' },
         { age: 23 },
-        { posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
+        { posts_every: { AND: [{ title: 'hello' }, { tags_some: { name: 'foo' } }] } },
       ],
     };
-    const queryTree = queryParser({ tokenizer, getUID: jest.fn(key => key) }, query);
+    const queryTree = queryParser({ listAdapter, getUID: jest.fn(key => key) }, query);
 
     const aggregateResponse = [
       {
@@ -82,8 +29,8 @@ describe('Test main export', () => {
           {
             id: 1,
             title: 'hello',
-            labels: [4, 5],
-            labels_some_labels: [
+            tags: [4, 5],
+            tags_some_tags: [
               {
                 id: 4,
                 name: 'foo',
@@ -97,8 +44,8 @@ describe('Test main export', () => {
           {
             id: 3,
             title: 'hello',
-            labels: [6],
-            labels_some_labels: [
+            tags: [6],
+            tags_some_tags: [
               {
                 id: 6,
                 name: 'foo',
@@ -116,18 +63,18 @@ describe('Test main export', () => {
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'posts_every_posts',
           let: { posts_every_posts_ids: '$posts' },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$posts_every_posts_ids'] } } },
             {
               $lookup: {
-                from: 'labels-collection',
-                as: 'labels_some_labels',
-                let: { labels_some_labels_ids: '$labels' },
+                from: 'tags',
+                as: 'tags_some_tags',
+                let: { tags_some_tags_ids: '$tags' },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$labels_some_labels_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tags_some_tags_ids'] } } },
                   { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
@@ -135,16 +82,16 @@ describe('Test main export', () => {
             },
             {
               $addFields: {
-                labels_some_labels_every: {
-                  $eq: [{ $size: '$labels_some_labels' }, { $size: '$labels' }],
+                tags_some_tags_every: {
+                  $eq: [{ $size: '$tags_some_tags' }, { $size: '$tags' }],
                 },
-                labels_some_labels_none: { $eq: [{ $size: '$labels_some_labels' }, 0] },
-                labels_some_labels_some: { $gt: [{ $size: '$labels_some_labels' }, 0] },
+                tags_some_tags_none: { $eq: [{ $size: '$tags_some_tags' }, 0] },
+                tags_some_tags_some: { $gt: [{ $size: '$tags_some_tags' }, 0] },
               },
             },
             {
               $match: {
-                $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }],
+                $and: [{ title: { $eq: 'hello' } }, { tags_some_tags_some: true }],
               },
             },
             {
@@ -162,7 +109,11 @@ describe('Test main export', () => {
       },
       {
         $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { posts_every_posts_every: true },
+          ],
         },
       },
       { $addFields: { id: '$_id' } },
@@ -170,66 +121,10 @@ describe('Test main export', () => {
 
     expect(result).toMatchObject([
       {
-        mutated: '0',
         name: 'foobar',
         age: 23,
         posts: [1, 3],
-        posts_every_posts: [
-          {
-            id: 1,
-            mutated: '0.posts_every_posts.0',
-            title: 'hello',
-            labels: [4, 5],
-            labels_some_labels: [
-              {
-                id: 4,
-                name: 'foo',
-              },
-              {
-                id: 5,
-                name: 'foo',
-              },
-            ],
-          },
-          {
-            mutated: '0.posts_every_posts.1',
-            id: 3,
-            title: 'hello',
-            labels: [6],
-            labels_some_labels: [
-              {
-                id: 6,
-                name: 'foo',
-              },
-            ],
-          },
-        ],
       },
     ]);
-  });
-
-  test('correctly rejects when error in simple tokeniser', async () => {
-    const tokenizer = {
-      simple: () => {
-        throw new Error('Whoops');
-      },
-      relationship: () => {},
-    };
-
-    const query = { name: 'foobar' };
-
-    await expect(() => queryParser({ tokenizer }, query)).toThrow('Whoops');
-  });
-
-  test('correctly rejects when error in relationship tokeniser', async () => {
-    const tokenizer = {
-      simple: () => {},
-      relationship: () => {
-        throw new Error('Uh-oh');
-      },
-    };
-
-    const query = { user: { name: 'foobar' } };
-    await expect(() => queryParser({ tokenizer }, query)).toThrow('Uh-oh');
   });
 });
