@@ -285,12 +285,12 @@ const ItemDetails = withRouter(
     openDuplicateModal = () => this.setState({ showDuplicateModal: true });
     closeDuplicateModal = () => this.setState({ showDuplicateModal: false });
     renderDuplicateModal = () => (
-      <CreateItemModal
+      this.state.showDuplicateModal && <CreateItemModal
         isOpen={this.state.showDuplicateModal}
         list={this.props.list}
         onClose={this.closeDuplicateModal}
         onCreate={this.onCreate}
-        prefillData={this.props.item}
+        prefillData={this.state.item}
       />
     );
     onDuplicate = ({ data }) => {
