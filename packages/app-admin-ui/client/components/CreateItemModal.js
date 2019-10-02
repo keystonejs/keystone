@@ -73,8 +73,8 @@ class CreateItemModal extends Component {
       variables: { data },
     })
       .then(data => {
-        this.props.onCreate(data);
         this.setState({ item: this.props.list.getInitialItemData({}) });
+        this.props.onCreate(data);
       })
       .catch(error => {
         toastError({ addToast, options: { autoDismiss: true } }, error);

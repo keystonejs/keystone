@@ -178,7 +178,7 @@ class ListRow extends Component {
         isOpen={showDuplicateModal}
         list={list}
         onClose={this.closeDuplicateModal}
-        onCreate={this.onCreate}
+        onCreate={this.onDuplicate}
         prefillData={item}
       />
     );
@@ -334,6 +334,7 @@ export default function ListTable(props) {
     queryErrors = [],
     list,
     onChange,
+    onCreateItem,
     onSelectChange,
     selectedItems,
     currentPage,
@@ -459,7 +460,7 @@ export default function ListTable(props) {
                         link={({ path, id }) => `${adminPath}/${path}/${id}`}
                         list={list}
                         onDelete={onChange}
-                        onDuplicate={onChange}
+                        onDuplicate={onCreateItem}
                         onSelectChange={onSelectChange}
                       />
                     ))}

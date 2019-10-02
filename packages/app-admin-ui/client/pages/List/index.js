@@ -233,6 +233,7 @@ function ListLayout(props: LayoutProps) {
           queryErrors={queryErrors}
           list={list}
           onChange={onDeleteItem}
+          onCreateItem={onCreate}
           onSelectChange={onSelectChange}
           selectedItems={selectedItems}
           sortBy={sortBy}

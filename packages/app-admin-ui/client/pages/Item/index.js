@@ -284,15 +284,16 @@ const ItemDetails = withRouter(
      */
     openDuplicateModal = () => this.setState({ showDuplicateModal: true });
     closeDuplicateModal = () => this.setState({ showDuplicateModal: false });
-    renderDuplicateModal = () => (
-      this.state.showDuplicateModal && <CreateItemModal
-        isOpen={this.state.showDuplicateModal}
-        list={this.props.list}
-        onClose={this.closeDuplicateModal}
-        onCreate={this.onCreate}
-        prefillData={this.state.item}
-      />
-    );
+    renderDuplicateModal = () =>
+      this.state.showDuplicateModal && (
+        <CreateItemModal
+          isOpen={this.state.showDuplicateModal}
+          list={this.props.list}
+          onClose={this.closeDuplicateModal}
+          onCreate={this.onCreate}
+          prefillData={this.state.item}
+        />
+      );
     onDuplicate = ({ data }) => {
       const { list, adminPath, history } = this.props;
       const { id } = data[list.gqlNames.createMutationName];
