@@ -1,1 +1,0 @@
-Temporarily add simpleTokenizer, relationshipTokenizer and getRelatedListAdapterFromQueryPathFactory to the package API.

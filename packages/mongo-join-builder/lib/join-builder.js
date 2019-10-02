@@ -1,5 +1,4 @@
-import omitBy from 'lodash.omitby';
-
+const omitBy = require('lodash.omitby');
 const { flatten, compose } = require('@keystone-alpha/utils');
 
 /**
