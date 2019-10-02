@@ -36,6 +36,68 @@ keystone.createList('Org', {
 | ---------- | --------- | ------- | --------------------------------------------------------------- |
 | `isUnique` | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
 
+### Admin Config
+
+#### Filters
+
+You can filter the items shown in the Admin UI on the relationship field using the filters option.
+
+The filters option is an object of key/value pairs, in which the keys correspond to the fields of the related item to be filtered, and the values will either be literals or field names in the current item, the value of which will be used to filter the relationship field.
+
+In the example below, the author field in the Admin UI will only show a selection of Users whose group field is equal to 'admin'.
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    name: { type: Text },
+    category: {
+      type: Select,
+      options: [
+        { value: 'user', label: 'User' },
+        { value: 'editor', label: 'Editor' },
+        { value: 'admin', label: 'Admin' },
+      ],
+      default: 'user',
+    },
+    author: {
+      type: Relationship,
+      ref: 'User',
+      adminConfig: {
+        filters: { group: 'admin' },
+      },
+    },
+  },
+});
+```
+
+You can also filter by the value of another field on the item. You do this setting the value of the filter to the name of the field, prefixed by `:` or `$`.
+
+In the example below, the author field will only show a selection of Users whose group field is equal to the value of the category field of the Post items.
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    name: { type: Text },
+    category: {
+      type: Select,
+      options: [
+        { value: 'user', label: 'User' },
+        { value: 'editor', label: 'Editor' },
+        { value: 'admin', label: 'Admin' },
+      ],
+      default: 'user',
+    },
+    author: {
+      type: Relationship,
+      ref: 'User',
+      adminConfig: {
+        filters: { group: ':category' },
+      },
+    },
+  },
+});
+```
+
 ### Nested Mutations
 
 Using the example list config above,
