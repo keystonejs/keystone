@@ -1,5 +1,23 @@
 # @keystone-alpha/mongo-join-builder
 
+## 3.0.0
+
+### Major Changes
+
+- [da4013e4](https://github.com/keystonejs/keystone-5/commit/da4013e4): Remove the `mongoJoinBuilder()` function and expose the component functions `{ queryParser, pipelineBuilder, mutationBuilder }`.
+- [157a439d](https://github.com/keystonejs/keystone-5/commit/157a439d): Update queryParser to access a `{ listAdapter }` rather than a `{ tokenizer }`. This means that `{ simpleTokenizer, relationshipTokenizer, getRelatedListAdapterFromQueryPathFactory}` do not need to be exported from `mongo-join-builder`.
+
+### Minor Changes
+
+- [82dfef03](https://github.com/keystonejs/keystone-5/commit/82dfef03): Temporarily add simpleTokenizer, relationshipTokenizer and getRelatedListAdapterFromQueryPathFactory to the package API.
+
+### Patch Changes
+
+- [d4fb1326](https://github.com/keystonejs/keystone-5/commit/d4fb1326): Refactor internals to simplify tokenizer interfaces.
+- [de352135](https://github.com/keystonejs/keystone-5/commit/de352135): Internal refactor to remove `postQueryMutation`.
+- [3f0a45da](https://github.com/keystonejs/keystone-5/commit/3f0a45da): Internal refactor to decompose joinBuilder()
+- [b2c5277e](https://github.com/keystonejs/keystone-5/commit/b2c5277e): Use compose() function from utils package.
+
 ## 2.0.3
 
 ### Patch Changes

@@ -1,5 +1,10 @@
 # @keystone-alpha/list-plugins
 
+## 1.0.3
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
+
 ## 1.0.2
 
 - Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
