@@ -1,5 +1,11 @@
 # @keystone-alpha/mongo-join-builder
 
+## 3.0.1
+
+### Patch Changes
+
+- [9baf6d4d](https://github.com/keystonejs/keystone-5/commit/9baf6d4d): Fix import/require mixup
+
 ## 3.0.0
 
 ### Major Changes
