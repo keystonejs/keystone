@@ -1,0 +1,1 @@
+enabled Duplicate button in List Item dropdown as well as on Item Details page

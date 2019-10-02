@@ -1,6 +1,6 @@
 describe('Home page', () => {
   it('Ensure Create Modal opens inside the detail view when Duplicating, has the correct field values, and Cancels', async () => {
-    const schema = "Post";
+    const schema = 'Post';
     const url = '/admin/posts';
     const data = {
       'ks-input-name': 'Post to be duplicated',
@@ -25,7 +25,7 @@ describe('Home page', () => {
     cy.get('#item-page-duplicate-button').click({ force: true });
 
     Object.entries(data).forEach(([field, value]) => {
-      cy.get(`#${field}`).should("have.value", value);
+      cy.get(`#${field}`).should('have.value', value);
     });
     cy.contains('div', `Create ${schema} Dialog`)
       .contains('button', 'Cancel')

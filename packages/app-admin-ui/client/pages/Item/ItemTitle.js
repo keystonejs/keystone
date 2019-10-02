@@ -16,7 +16,14 @@ const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
 
-export let ItemTitle = memo(function ItemTitle({ titleText, id, list, adminPath, onCreateClick, onDuplicateClick }) {
+export let ItemTitle = memo(function ItemTitle({
+  titleText,
+  id,
+  list,
+  adminPath,
+  onCreateClick,
+  onDuplicateClick,
+}) {
   const listHref = `${adminPath}/${list.path}`;
   const cypressCreateId = 'item-page-create-button';
   const cypressDuplicateId = 'item-page-duplicate-button';
