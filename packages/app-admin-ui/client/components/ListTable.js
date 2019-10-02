@@ -14,6 +14,7 @@ import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
 import { Card } from '@arch-ui/card';
 import DeleteItemModal from './DeleteItemModal';
+import CreateItemModal from './CreateItemModal';
 import copyToClipboard from 'clipboard-copy';
 import { useListSort } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
@@ -140,7 +141,7 @@ class SortLink extends React.Component<SortLinkProps> {
 
 class ListRow extends Component {
   static defaultProps = { itemErrors: {} };
-  state = { showDeleteModal: false };
+  state = { showDeleteModal: false, showDuplicateModal: false };
   componentDidMount() {
     this.mounted = true;
   }
@@ -157,6 +158,31 @@ class ListRow extends Component {
   // Display
   // ==============================
 
+  showDuplicateModal = () => {
+    this.setState({ showDuplicateModal: true });
+  };
+  closeDuplicateModal = () => {
+    this.setState({ showDuplicateModal: false });
+  };
+  onDuplicate = result => {
+    if (this.props.onDuplicate) this.props.onDuplicate(result);
+    if (!this.mounted) return;
+    this.setState({ showDuplicateModal: false });
+  };
+  renderDuplicateModal() {
+    const { showDuplicateModal } = this.state;
+    const { item, list } = this.props;
+
+    return (
+      <CreateItemModal
+        isOpen={showDuplicateModal}
+        list={list}
+        onClose={this.closeDuplicateModal}
+        onCreate={this.onCreate}
+        prefillData={item}
+      />
+    );
+  }
   showDeleteModal = () => {
     this.setState({ showDeleteModal: true });
   };
@@ -189,8 +215,8 @@ class ListRow extends Component {
       {
         content: 'Duplicate',
         icon: <DiffIcon />,
-        isDisabled: true, // TODO: implement duplicate
-        onClick: () => console.log('TODO'),
+        isDisabled: !list.access.create,
+        onClick: this.showDuplicateModal,
       },
       {
         content: 'Copy Link',
@@ -215,6 +241,7 @@ class ListRow extends Component {
             tabIndex="0"
           />
           {this.renderDeleteModal()}
+          {this.renderDuplicateModal()}
         </BodyCell>
         {fields.map(field => {
           const { path } = field;
@@ -432,6 +459,7 @@ export default function ListTable(props) {
                         link={({ path, id }) => `${adminPath}/${path}/${id}`}
                         list={list}
                         onDelete={onChange}
+                        onDuplicate={onChange}
                         onSelectChange={onSelectChange}
                       />
                     ))}

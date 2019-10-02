@@ -231,6 +231,20 @@ describe('Access Control Lists > Admin UI', () => {
                   .then(() => cy.get('#item-page-create-button').should('exist'))
               );
           });
+
+          it(`shows duplicate option when creatable (item view): ${JSON.stringify(access)}`, () => {
+            const name = getStaticListName(access);
+            const queryName = `all${name}s`;
+            const slug = listSlug(name);
+
+            return cy
+              .graphql_query('/admin/api', `query { ${queryName}(first: 1) { id } }`)
+              .then(({ data }) =>
+                cy
+                  .visit(`/admin/${slug}/${data[queryName][0].id}`)
+                  .then(() => cy.get('#item-page-duplicate-button').should('exist'))
+              );
+          });
         });
 
       listAccessVariations
@@ -260,6 +274,22 @@ describe('Access Control Lists > Admin UI', () => {
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
                   .then(() => cy.get('#item-page-create-button').should('not.exist'))
+              );
+          });
+
+          it(`does not show duplicate option when not creatable (item view): ${JSON.stringify(
+            access
+          )}`, () => {
+            const name = getStaticListName(access);
+            const queryName = `all${name}s`;
+            const slug = listSlug(name);
+
+            return cy
+              .graphql_query('/admin/api', `query { ${queryName}(first: 1) { id } }`)
+              .then(({ data }) =>
+                cy
+                  .visit(`/admin/${slug}/${data[queryName][0].id}`)
+                  .then(() => cy.get('#item-page-duplicate-button').should('not.exist'))
               );
           });
         });
@@ -299,6 +329,20 @@ describe('Access Control Lists > Admin UI', () => {
                   .then(() => cy.get('#item-page-create-button').should('exist'))
               );
           });
+
+          it(`shows duplicate option when creatable (item view): ${JSON.stringify(access)}`, () => {
+            const name = getImperativeListName(access);
+            const queryName = `all${name}s`;
+            const slug = listSlug(name);
+
+            return cy
+              .graphql_query('/admin/api', `query { ${queryName}(first: 1) { id } }`)
+              .then(({ data }) =>
+                cy
+                  .visit(`/admin/${slug}/${data[queryName][0].id}`)
+                  .then(() => cy.get('#item-page-duplicate-button').should('exist'))
+              );
+          });
         });
     });
 
@@ -334,6 +378,20 @@ describe('Access Control Lists > Admin UI', () => {
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
                   .then(() => cy.get('#item-page-create-button').should('exist'))
+              );
+          });
+
+          it(`shows duplicate option when creatable (item view): ${JSON.stringify(access)}`, () => {
+            const name = getDeclarativeListName(access);
+            const queryName = `all${name}s`;
+            const slug = listSlug(name);
+
+            return cy
+              .graphql_query('/admin/api', `query { ${queryName}(first: 1) { id } }`)
+              .then(({ data }) =>
+                cy
+                  .visit(`/admin/${slug}/${data[queryName][0].id}`)
+                  .then(() => cy.get('#item-page-duplicate-button').should('exist'))
               );
           });
         });

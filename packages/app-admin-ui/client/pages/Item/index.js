@@ -74,6 +74,7 @@ const ItemDetails = withRouter(
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
+      showDuplicateModal: false,
       validationErrors: {},
       validationWarnings: {},
     };
@@ -278,6 +279,26 @@ const ItemDetails = withRouter(
       history.push(`${adminPath}/${list.path}/${id}`);
     };
 
+    /**
+     * Duplicate item
+     */
+    openDuplicateModal = () => this.setState({ showDuplicateModal: true });
+    closeDuplicateModal = () => this.setState({ showDuplicateModal: false });
+    renderDuplicateModal = () => (
+      <CreateItemModal
+        isOpen={this.state.showDuplicateModal}
+        list={this.props.list}
+        onClose={this.closeDuplicateModal}
+        onCreate={this.onCreate}
+        prefillData={this.props.item}
+      />
+    );
+    onDuplicate = ({ data }) => {
+      const { list, adminPath, history } = this.props;
+      const { id } = data[list.gqlNames.createMutationName];
+      history.push(`${adminPath}/${list.path}/${id}`);
+    };
+
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
       const { item, itemHasChanged, validationErrors, validationWarnings } = this.state;
@@ -287,6 +308,7 @@ const ItemDetails = withRouter(
           {itemHasChanged && <PreventNavigation />}
           <ItemTitle
             onCreateClick={this.openCreateModal}
+            onDuplicateClick={this.openDuplicateModal}
             id={item.id}
             list={list}
             adminPath={adminPath}
@@ -365,6 +387,7 @@ const ItemDetails = withRouter(
           </Card>
 
           {this.renderCreateModal()}
+          {this.renderDuplicateModal()}
           {this.renderDeleteModal()}
         </Fragment>
       );
