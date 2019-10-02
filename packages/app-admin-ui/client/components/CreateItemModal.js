@@ -25,6 +25,12 @@ class CreateItemModal extends Component {
 
     this.state = { item, validationErrors, validationWarnings };
   }
+  componentDidMount() {
+    this.mounted = true;
+  }
+  componentWillUnmount() {
+    this.mounted = false;
+  }
   onCreate = async event => {
     // prevent form submission
     event.preventDefault();
@@ -73,8 +79,9 @@ class CreateItemModal extends Component {
       variables: { data },
     })
       .then(data => {
-        this.setState({ item: this.props.list.getInitialItemData({}) });
         this.props.onCreate(data);
+        if (!this.mounted) return;
+        this.setState({ item: this.props.list.getInitialItemData({}) });
       })
       .catch(error => {
         toastError({ addToast, options: { autoDismiss: true } }, error);
