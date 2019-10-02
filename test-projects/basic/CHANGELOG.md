@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.3.15
+
+### Patch Changes
+
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
 ## 1.3.14
 
 - Updated dependencies [d316166e](https://github.com/keystonejs/keystone-5/commit/d316166e):

@@ -1,3 +1,4 @@
+const pluralize = require('pluralize');
 function createListAdapter(MongooseListAdapter, key, { aggregateResult = [] } = {}) {
   const listAdapter = new MongooseListAdapter(
     key,
@@ -10,6 +11,7 @@ function createListAdapter(MongooseListAdapter, key, { aggregateResult = [] } = 
 
   listAdapter.model = {
     aggregate: jest.fn(() => ({ exec: () => Promise.resolve(aggregateResult) })),
+    collection: { name: pluralize.plural(key) },
   };
 
   return listAdapter;
@@ -21,20 +23,9 @@ beforeEach(() => {
 
 describe('MongooseListAdapter', () => {
   test('Correctly applies simple conditions', async () => {
-    let listAdapter;
-
-    // Mock things before we require other things
-    jest.doMock('../lib/tokenizers/relationship-path', () => {
-      return {
-        getRelatedListAdapterFromQueryPathFactory: jest.fn(() => {
-          return jest.fn(() => listAdapter);
-        }),
-      };
-    });
-
     const { MongooseListAdapter } = require('../');
 
-    listAdapter = createListAdapter(MongooseListAdapter, 'user');
+    const listAdapter = createListAdapter(MongooseListAdapter, 'user');
     listAdapter.fieldAdapters = [
       { getQueryConditions: () => ({ title: value => ({ title: { $eq: value } }) }) },
     ];
@@ -48,25 +39,13 @@ describe('MongooseListAdapter', () => {
   });
 
   test('Correctly applies conditions of relationships in nested AND/OR fields', async () => {
-    let userListAdapter;
-    let postListAdapter;
-
-    // Mock things before we require other things
-    jest.doMock('../lib/tokenizers/relationship-path', () => ({
-      getRelatedListAdapterFromQueryPathFactory: jest.fn(() =>
-        jest.fn(query => {
-          if (query[query.length - 1] === 'posts_some') {
-            return postListAdapter;
-          } else {
-            return userListAdapter;
-          }
-        })
-      ),
-    }));
-
     const { MongooseListAdapter } = require('../');
+    const postListAdapter = createListAdapter(MongooseListAdapter, 'post');
+    postListAdapter.fieldAdapters = [
+      { getQueryConditions: () => ({ name: value => ({ name: { $eq: value } }) }) },
+    ];
 
-    userListAdapter = createListAdapter(MongooseListAdapter, 'user');
+    const userListAdapter = createListAdapter(MongooseListAdapter, 'user');
     userListAdapter.fieldAdapters = [
       {
         isRelationship: false,
@@ -76,25 +55,15 @@ describe('MongooseListAdapter', () => {
         isRelationship: true,
         getQueryConditions: () => {},
         supportsRelationshipQuery: query => query === 'posts_some',
-        getRelationshipQueryCondition: () => ({
-          from: 'posts',
-          field: 'posts',
-          matchTerm: { posts_some: true },
-          // Flag this is a to-many relationship
-          many: true,
-        }),
+        getRefListAdapter: () => postListAdapter,
+        field: { many: true },
+        path: 'posts',
       },
-    ];
-
-    postListAdapter = createListAdapter(MongooseListAdapter, 'post');
-    postListAdapter.fieldAdapters = [
-      { getQueryConditions: () => ({ name: value => ({ name: { $eq: value } }) }) },
     ];
 
     await userListAdapter.itemsQuery({
       where: { AND: [{ posts_some: { name: 'foo' } }, { title: 'bar' }] },
     });
-
     expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
       {
         $lookup: {
@@ -109,7 +78,7 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { $and: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
+      { $match: { $and: [expect.any(Object), { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
 
@@ -131,25 +100,15 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { $or: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
+      { $match: { $or: [expect.any(Object), { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
   });
 
   test('Correctly applies conditions of AND/OR fields nested in relationships', async () => {
-    let userListAdapter;
-    let postListAdapter;
-
-    // Mock things before we require other things
-    jest.doMock('../lib/tokenizers/relationship-path', () => ({
-      getRelatedListAdapterFromQueryPathFactory: jest.fn(() => jest.fn(() => postListAdapter)),
-    }));
-
     const { MongooseListAdapter } = require('../');
 
-    userListAdapter = createListAdapter(MongooseListAdapter, 'user');
-
-    postListAdapter = createListAdapter(MongooseListAdapter, 'post');
+    const postListAdapter = createListAdapter(MongooseListAdapter, 'post');
     postListAdapter.fieldAdapters = [
       {
         isRelationship: false,
@@ -163,13 +122,21 @@ describe('MongooseListAdapter', () => {
         isRelationship: true,
         getQueryConditions: () => ({}),
         supportsRelationshipQuery: query => query === 'posts_some',
-        getRelationshipQueryCondition: () => ({
-          from: 'posts',
-          field: 'posts',
-          matchTerm: { posts_some: true },
-          // Flag this is a to-many relationship
-          many: true,
-        }),
+        getRefListAdapter: () => ({ model: { collection: { name: 'posts' } } }),
+        field: { many: true },
+        path: 'posts',
+      },
+    ];
+
+    const userListAdapter = createListAdapter(MongooseListAdapter, 'user');
+    userListAdapter.fieldAdapters = [
+      {
+        isRelationship: true,
+        getQueryConditions: () => {},
+        supportsRelationshipQuery: query => query === 'posts_some',
+        getRefListAdapter: () => postListAdapter,
+        field: { many: true },
+        path: 'posts',
       },
     ];
 
@@ -191,7 +158,7 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { posts_some: true } },
+      { $match: expect.any(Object) },
       { $addFields: { id: '$_id' } },
     ]);
 
@@ -213,7 +180,7 @@ describe('MongooseListAdapter', () => {
         },
       },
       { $addFields: expect.any(Object) },
-      { $match: { posts_some: true } },
+      { $match: expect.any(Object) },
       { $addFields: { id: '$_id' } },
     ]);
   });

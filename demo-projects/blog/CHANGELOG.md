@@ -1,5 +1,12 @@
 # keystone_demo_blog
 
+## 2.3.5
+
+### Patch Changes
+
+- [f160bbf4](https://github.com/keystonejs/keystone-5/commit/f160bbf4): Updated the instantiation of fileAdapter and avatarFileAdapter to match the recently changed attribute names in the LocalFileAdapter constructor
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
 ## 2.3.4
 
 - Updated dependencies [d316166e](https://github.com/keystonejs/keystone-5/commit/d316166e):

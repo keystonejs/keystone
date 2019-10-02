@@ -9,10 +9,10 @@
   },
   "dependencies": {
     "@keystone-alpha/utils": "^3.0.2",
-    "cuid": "^2.1.6"
+    "cuid": "^2.1.6",
+    "lodash.omitby": "^4.6.0"
   },
   "devDependencies": {
-    "lodash.omitby": "^4.6.0",
     "mongodb": "^3.2.7",
     "mongodb-memory-server": "^5.1.5"
   }
