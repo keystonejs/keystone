@@ -38,7 +38,7 @@ x-integration-steps: &integration-steps
     - save_cache: *save-cache
     - run:
         name: E2E Cypress tests
-        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs $PROJECT_DIRECTORY
+        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn --cwd $PROJECT_DIRECTORY workspace run cypress:run:ci
     - run:
         name: Prepare artifacts
         command: |
