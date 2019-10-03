@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import { useMemo } from 'react';
-import ReactSelect from 'react-select';
+import BaseSelect from 'react-select';
+import AsyncSelect from 'react-select/async';
 import { colors } from '@arch-ui/theme';
 
 // ==============================
@@ -76,12 +77,26 @@ const selectStyles = {
   },
   menuPortal: provided => ({ ...provided, zIndex: 3 }),
 };
-const Select = ({ innerRef, styles, ...props }: { innerRef?: React.Ref<*>, styles?: Object }) => (
-  <ReactSelect
-    ref={innerRef}
-    styles={useMemo(() => ({ ...selectStyles, ...styles }), [styles])}
-    {...props}
-  />
-);
+const Select = ({
+  isAsync,
+  innerRef,
+  styles,
+  ...props
+}: {
+  innerRef?: React.Ref<*>,
+  styles?: Object,
+}) => {
+  const ReactSelect = isAsync ? AsyncSelect : BaseSelect;
+
+  console.log('ReactSelect', ReactSelect);
+
+  return (
+    <ReactSelect
+      ref={innerRef}
+      styles={useMemo(() => ({ ...selectStyles, ...styles }), [styles])}
+      {...props}
+    />
+  );
+};
 
 export default Select;
