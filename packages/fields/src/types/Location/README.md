@@ -4,32 +4,89 @@ subSection: field-types
 title: Location
 [meta]-->
 
-# Color
+# Location
 
 ## Usage
 
-```js
+```javascript
+const { Location } = require('@keystone-alpha/fields');
+const { Keystone } = require('@keystone-alpha/keystone');
+
+const keystone = new Keystone(/* ... */);
+
 keystone.createList('Event', {
   fields: {
-    location: {
+    venue: {
       type: Location,
-      googleMapsKey: 'GOOGLE_MAPS_API_KEY',
+      googleMapsKey: 'GOOGLE_MAPS_KEY',
     },
-    // ...
   },
 });
 ```
 
-## Querying
+## GraphQL
 
-```
-allEvents {
-  location {
-    id
-    googlePlaceID
-    formattedAddress
-    lat
-    lng
+**Query**
+
+```graphql
+query {
+  allEvents {
+    venue {
+      id
+      googlePlaceID
+      formattedAddress
+      lat
+      lng
+    }
   }
 }
+
+# Result:
+
+# {
+#   "data": {
+#     "allEvents": [
+#       {
+#         "venue": {
+#           "id": "1",
+#           googlePlaceID: "ChIJOza7MD-uEmsRrf4t12uji6Y",
+#           "formattedAddress": "10/191 Clarence St, Sydney NSW 2000, Australia",
+#           "lat": -33.869374,
+#           "lng": 151.205097
+#         }
+#       }
+#     ]
+#   }
+# }
+```
+
+### Mutations
+
+To create a `Location`, pass the Google `place_id` for the desired field path.
+
+```graphql
+mutation {
+  createEvent(data: { venue: "ChIJOza7MD-uEmsRrf4t12uji6Y" }) {
+    venue {
+      id
+      googlePlaceID
+      formattedAddress
+      lat
+      lng
+    }
+  }
+}
+
+# Result:
+# {
+#   "data": {
+#     "venue": {
+#       "id": "1",
+#       googlePlaceID: "ChIJOza7MD-uEmsRrf4t12uji6Y",
+#       "formattedAddress": "10/191 Clarence St, Sydney NSW 2000, Australia",
+#       "lat": -33.869374,
+#       "lng": 151.205097
+#     }
+#   }
+# }
 ```
