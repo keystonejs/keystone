@@ -25,7 +25,6 @@
     "@mdx-js/react": "^1.0.20",
     "@reach/skip-nav": "^0.1.2",
     "@sindresorhus/slugify": "^0.6.0",
-    "babel-plugin-extract-react-types": "^0.1.0",
     "bolt": "^0.22.6",
     "facepaint": "^1.2.1",
     "gatsby": "^2.13.25",

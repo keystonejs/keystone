@@ -26,14 +26,14 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](code-of-conduct
 
 ## Version management
 
-Keystone uses @noviny's [@changesets/cli](https://github.com/noviny/changesets) in combination with `bolt` to track package versions and publish packages.
+Keystone uses @noviny's [@changesets/cli](https://github.com/noviny/changesets) to track package versions and publish packages.
 This tool allows each PR to indicate which packages need a version bump along with a changelog snippet.
 This information is then collated when performing a release to update package versions and `CHANGELOG.md` files.
 
 ### What all contributors need to do
 
 - Make your changes (as per usual)
-- Before you make a Pull Request, run the `bolt changeset` command and answer the questions that are asked. It will want to know:
+- Before you make a Pull Request, run the `yarn changeset` command and answer the questions that are asked. It will want to know:
   - which packages you want to publish
   - what version you are releasing them at
   - a message to summarise the changes (this message will be written to the changelog of bumped packages)
@@ -65,31 +65,11 @@ You can have multiple changesets in a single PR. This will give you more granula
 
 > This should only ever be done by a very short list of core contributors
 
-Releasing is a two-step process. The first step updates the packages, and the second step publishes updated packages to npm.
+Releasing is a two-step process. The first step updates the packages by merging the versioning PR, and the second step publishes updated packages to npm.
 
-#### Steps to version packages
+#### Versioning packages
 
-The first step is `bolt version-packages`. This will find all changesets that have been created since the last release, and update the version in package.json as specified in those changesets, flattening out multiple bumps to a single package into a single version update.
-
-The `bolt version-packages` command will generate a release commit, which will bump all versions, necessary dependency version changes, and update changelog.mds.
-
-The commands to run are:
-
-```sh
-git checkout master && \
-git pull && \
-git branch -D temp-release-branch && \
-git checkout -b temp-release-branch && \
-bolt fresh && \
-bolt build && \
-bolt version-packages && \
-bolt format && \
-git add . && \
-git commit -m "Prepare release" && \
-git push --set-upstream origin temp-release-branch
-```
-
-Once you have run this you will need to make a pull request to merge this back into master.
+The [Changesets release GitHub action](https://github.com/changesets/action) will open a
 
 #### Release Process
 
@@ -98,17 +78,16 @@ Once the version changes are merged back in to master, to do a manual release:
 ```sh
 git checkout master && \
 git pull && \
-bolt && \
-bolt publish-changed && \
+yarn && \
+yarn publish-changed && \
 git push --tags && \
-bolt
+yarn
 ```
 
-The `bolt publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
+The `yarn publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
 
 Because of this, we should keep the following in mind:
 
-- Once the `publish-changed` command has been run, the PR from the `temp-release-branch` should be merged before any other PRs are merged into master, to ensure that no changesets are skipped from being included in a release.
 - There is no reason you should ever manually edit the version in the `package.json`
 
 ### A quick note on changelogs
@@ -136,7 +115,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 
 <!-- prettier-ignore -->
-
 <table>
   <tr>
     <td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="100px;" alt="Jed Watson"/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=JedWatson" title="Code">💻</a></td>

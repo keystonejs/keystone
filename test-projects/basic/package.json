@@ -44,6 +44,7 @@
     "mocha-multi-reporters": "^1.1.7",
     "moment": "^2.24.0",
     "pino-colada": "^1.4.4",
-    "start-server-and-test": "^1.10.2"
+    "start-server-and-test": "^1.10.2",
+    "execa": "^2.0.4"
   }
 }
