@@ -1,6 +1,6 @@
 {
   "name": "@keystone-alpha/mono-repo",
-  "description": "KeystoneJS monorepo for all the @keystone-alpha / @arch-ui (and more) packages. Powered by Bolt Package Manager.",
+  "description": "KeystoneJS monorepo for all the @keystone-alpha / @arch-ui (and more) packages. Powered by Yarn.",
   "private": true,
   "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
@@ -11,10 +11,10 @@
     "website": "yarn --cwd ./website",
     "arch-docs": "yarn --cwd ./packages/arch/docs",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
-    "cypress:run": "status=0; bolt w @keystone-alpha/cypress-project-basic run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-login run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-twitter-login run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-access-control run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-client-validation run cypress:run || status=$?; exit $status",
+    "cypress:run": "status=0; yarn workspace @keystone-alpha/cypress-project-basic run cypress:run || status=$?; yarn workspace @keystone-alpha/cypress-project-login run cypress:run || status=$?; yarn workspace @keystone-alpha/cypress-project-twitter-login run cypress:run || status=$?; yarn workspace @keystone-alpha/cypress-project-access-control run cypress:run || status=$?; yarn workspace @keystone-alpha/cypress-project-client-validation run cypress:run || status=$?; exit $status",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js{,on}\" \"**/*.md\" && remark . --output",
-    "fresh": "yarn clean && bolt",
+    "fresh": "yarn clean && yarn",
     "clean": "bolt ws exec -- rimraf node_modules website/.cache && rimraf node_modules",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
@@ -27,12 +27,12 @@
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
     "build:build-field-types": "rimraf packages/build-field-types/lib && babel packages/build-field-types/src --out-dir packages/build-field-types/dist --ignore '**/__tests__/**/*','**/__mocks__/**/*'",
-    "build": "preconstruct build && bolt w @keystone-alpha/build-field-types build && node ./packages/build-field-types/bin.js build",
+    "build": "preconstruct build && yarn workspace @keystone-alpha/build-field-types build && node ./packages/build-field-types/bin.js build",
     "prepare": "manypkg check && yarn build:build-field-types && preconstruct dev && node ./packages/build-field-types/bin.js dev  && yarn run --silent contributing-guide",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md\"",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "heroku-postbuild": "bolt && yarn build && bolt w @keystone-alpha/demo-project-blog build"
+    "heroku-postbuild": "yarn build && yarn workspace @keystone-alpha/demo-project-blog build"
   },
   "dependencies": {
     "@babel/cli": "^7.1.2",
@@ -54,7 +54,6 @@
     "apollo-client": "^2.5.1",
     "babel-eslint": "^10.0.1",
     "babel-plugin-emotion": "^10.0.14",
-    "bolt": "^0.22.6",
     "chalk": "^2.4.2",
     "chalk-cli": "^4.1.0",
     "cross-env": "^5.2.0",
