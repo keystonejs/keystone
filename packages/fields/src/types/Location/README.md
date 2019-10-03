@@ -6,6 +6,8 @@ title: Location
 
 # Location
 
+The Location Field Type enables storing data from the Google Maps API.
+
 ## Usage
 
 ```javascript
