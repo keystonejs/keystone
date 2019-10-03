@@ -34,7 +34,7 @@ const Cell = (props: Props) => {
           verticalAlign: 'middle',
         }}
       >
-        {props.data}
+        {JSON.stringify(props.data)}
       </span>
     </Fragment>
   );

@@ -1,77 +1,92 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import Popout from '@arch-ui/popout';
-import { Input } from '@arch-ui/input';
-import SketchPicker from 'react-color/lib/Sketch';
-
+import Select from '@arch-ui/select';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
-const ColorField = ({ field, value: serverValue, errors, onChange, google }) => {
-  const value = serverValue || '';
+const LocationField = ({ field, value: serverValue, errors, onChange, google, renderContext }) => {
   const htmlID = `ks-input-${field.path}`;
-
-  const [options, setOptions] = useState(null);
-  const [inputValue, setInputvalue] = useState(value);
-  const [marker, setMarker] = useState(null);
-
+  const { googlePlaceID, formattedAddress } = serverValue || {};
   const autocompleteService = new google.maps.places.AutocompleteService();
   const geocoder = new google.maps.Geocoder();
 
-  useEffect(() => {
-    autocompleteService.getPlacePredictions({ input: inputValue }, results => {
-      setOptions(results);
-    });
-  }, [inputValue]);
+  const [inputValue, setInputvalue] = useState(
+    googlePlaceID ? { label: formattedAddress, value: googlePlaceID } : null
+  );
+  const [marker, setMarker] = useState(null);
 
-  const handleOptionClick = ({ id, description, place_id, reference }) => {
-    geocoder.geocode({ placeId: place_id }, (results, status) => {
+  const handleOptionChange = option => setInputvalue(option);
+
+  useEffect(() => {
+    if (!inputValue) {
+      onChange(null);
+      setMarker(null);
+      return;
+    }
+    geocoder.geocode({ placeId: inputValue.value }, (results, status) => {
       if (status === 'OK') {
         if (results[0]) {
           const { lat, lng } = results[0].geometry.location;
           setMarker({ lat: lat(), lng: lng() });
-          console.log(results[0]);
-          // infowindow.setContent();
+          onChange(inputValue.value);
         } else {
-          window.alert('No results found');
+          // window.alert('No results found');
         }
       } else {
-        window.alert('Geocoder failed due to: ' + status);
+        // window.alert('Geocoder failed due to: ' + status);
       }
     });
+  }, [inputValue]);
 
-    setOptions(null);
-    // onChange(JSON.stringify({ id, description, place_id, reference }));
-  };
+  const selectProps =
+    renderContext === 'dialog'
+      ? {
+          menuPortalTarget: document.body,
+          menuShouldBlockScroll: true,
+        }
+      : null;
+
+  const loadOptions = inputValue =>
+    new Promise(resolve => {
+      autocompleteService.getPlacePredictions({ input: inputValue }, results => {
+        resolve(
+          results.map(result => ({
+            label:
+              result.structured_formatting.main_text +
+              ' ' +
+              result.structured_formatting.secondary_text,
+            value: result.place_id,
+          }))
+        );
+      });
+    });
 
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldInput>
-        <div>
-          <Input onChange={e => setInputvalue(e.target.value)} />
-          {options &&
-            options.map((option, index) => (
-              <div key={index} onClick={() => handleOptionClick(option)}>
-                {option.structured_formatting.main_text}{' '}
-                {option.structured_formatting.secondary_text}
-              </div>
-            ))}
-          {marker && (
-            <div style={{ width: 500, height: 250 }}>
-              <Map
-                style={{ width: 500, height: 250 }}
-                google={google}
-                initialCenter={marker}
-                center={marker}
-                zoom={16}
-              >
-                {marker && <Marker position={marker} />}
-              </Map>
-            </div>
-          )}
-        </div>
+      <FieldInput css={{ flexDirection: 'column' }}>
+        <Select
+          isAsync
+          isClearable
+          cacheOptions
+          placeholder="Search for a location ..."
+          value={inputValue}
+          onChange={handleOptionChange}
+          loadOptions={loadOptions}
+          id={`react-select-${htmlID}`}
+          inputId={htmlID}
+          instanceId={htmlID}
+          css={{ width: '100%' }}
+          {...selectProps}
+        />
+        {marker && (
+          <div css={{ position: 'relative', height: '14rem', marginTop: '1rem' }}>
+            <Map google={google} initialCenter={marker} center={marker} zoom={16}>
+              {marker && <Marker position={marker} />}
+            </Map>
+          </div>
+        )}
       </FieldInput>
     </FieldContainer>
   );
@@ -79,4 +94,4 @@ const ColorField = ({ field, value: serverValue, errors, onChange, google }) => 
 
 export default GoogleApiWrapper({
   apiKey: 'AIzaSyDml6rqKwjgQgPomyAhC-WxVt4aLodlraU',
-})(ColorField);
+})(LocationField);

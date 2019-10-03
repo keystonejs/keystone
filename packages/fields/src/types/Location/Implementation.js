@@ -1,4 +1,3 @@
-import inflection from 'inflection';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
@@ -15,18 +14,23 @@ const {
 } = mongoose;
 
 export class Location extends Implementation {
-  // DONE
-  constructor() {
+  constructor(_, { googleMapsKey }) {
     super(...arguments);
     this.graphQLOutputType = 'Location';
+
+    if (!googleMapsKey) {
+      throw new Error(
+        'Must provide an googleMapsKey to Location Field. See https://developers.google.com/maps/documentation/javascript/get-api-key'
+      );
+    }
+
+    this._googleMapsKey = googleMapsKey;
   }
 
-  // DONE
   gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
 
-  // DONE
   gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
@@ -35,7 +39,6 @@ export class Location extends Implementation {
     ];
   }
 
-  // DONE
   getGqlAuxTypes() {
     return [
       `
@@ -50,7 +53,6 @@ export class Location extends Implementation {
     ];
   }
 
-  // DONE
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
@@ -77,13 +79,13 @@ export class Location extends Implementation {
     }
 
     if (placeId === null) {
-      // `null` was specifically uploaded, and we should set the field value to
-      // null. To do that we... return `null`
+      // `null` was specifically set, and we should set the field value to null
+      // To do that we... return `null`
       return null;
     }
 
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?place_id=${placeId}&key=AIzaSyDml6rqKwjgQgPomyAhC-WxVt4aLodlraU`
+      `https://maps.googleapis.com/maps/api/geocode/json?place_id=${placeId}&key=${this._googleMapsKey}`
     ).then(r => r.json());
 
     if (response.results && response.results[0]) {
@@ -101,11 +103,10 @@ export class Location extends Implementation {
     return null;
   }
 
-  // DONE
   get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  // DONE
+
   get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
