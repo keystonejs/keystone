@@ -31,10 +31,10 @@ const LocationField = ({ field, value: serverValue, errors, onChange, google, re
           setMarker({ lat: lat(), lng: lng() });
           onChange(inputValue.value);
         } else {
-          // window.alert('No results found');
+          // No results found
         }
       } else {
-        // window.alert('Geocoder failed due to: ' + status);
+        // Geocoder failed due to: ' + status
       }
     });
   }, [inputValue]);
