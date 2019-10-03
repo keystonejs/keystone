@@ -30,5 +30,8 @@
     ]
   },
   "main": "dist/fields-wysiwyg-tinymce.cjs.js",
-  "module": "dist/fields-wysiwyg-tinymce.esm.js"
+  "module": "dist/fields-wysiwyg-tinymce.esm.js",
+  "devDependencies": {
+    "express": "^4.17.1"
+  }
 }
