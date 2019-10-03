@@ -27,6 +27,13 @@ export class Location extends Implementation {
     this._googleMapsKey = googleMapsKey;
   }
 
+  extendAdminMeta(meta) {
+    return {
+      ...meta,
+      googleMapsKey: this._googleMapsKey,
+    };
+  }
+
   gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }

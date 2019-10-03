@@ -92,6 +92,6 @@ const LocationField = ({ field, value: serverValue, errors, onChange, google, re
   );
 };
 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyDml6rqKwjgQgPomyAhC-WxVt4aLodlraU',
-})(LocationField);
+export default GoogleApiWrapper(props => ({
+  apiKey: props.field.config.googleMapsKey,
+}))(LocationField);
