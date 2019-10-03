@@ -1,15 +1,15 @@
-const bolt = require('bolt');
+const getWorkspaces = require('get-workspaces').default;
 const fs = require('fs');
 const path = require('path');
 
 async function getPackagePlugins() {
-  const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
+  const rootDir = path.resolve(__dirname, '..');
   const docSections = fs.readdirSync(`${rootDir}/docs/`).filter(dir => {
     const fullDir = path.join(`${rootDir}/docs/`, dir);
     return fs.existsSync(fullDir) && fs.lstatSync(fullDir).isDirectory();
   });
 
-  const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
+  const workspaces = await getWorkspaces({ cwd: rootDir });
 
   return [
     ...docSections.map(name => ({
