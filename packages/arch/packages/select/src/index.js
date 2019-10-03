@@ -3,7 +3,9 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import BaseSelect from 'react-select';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import AsyncSelect from 'react-select/async';
+import CreatableSelect from 'react-select/creatable';
 import { colors } from '@arch-ui/theme';
 
 // ==============================
@@ -77,8 +79,24 @@ const selectStyles = {
   },
   menuPortal: provided => ({ ...provided, zIndex: 3 }),
 };
+
+const getSelectVariant = ({ isAsync, isCreatable }) => {
+  if (isAsync && isCreatable) {
+    return AsyncCreatableSelect;
+  }
+  if (isAsync) {
+    return AsyncSelect;
+  }
+  if (isCreatable) {
+    return CreatableSelect;
+  }
+
+  return BaseSelect;
+};
+
 const Select = ({
   isAsync,
+  isCreatable,
   innerRef,
   styles,
   ...props
@@ -86,9 +104,7 @@ const Select = ({
   innerRef?: React.Ref<*>,
   styles?: Object,
 }) => {
-  const ReactSelect = isAsync ? AsyncSelect : BaseSelect;
-
-  console.log('ReactSelect', ReactSelect);
+  const ReactSelect = getSelectVariant({ isAsync, isCreatable });
 
   return (
     <ReactSelect
