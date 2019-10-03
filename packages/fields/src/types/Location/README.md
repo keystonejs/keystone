@@ -81,7 +81,7 @@ mutation {
 
 # Result:
 # {
-#   "data": {
+#   "createEvent": {
 #     "venue": {
 #       "id": "1",
 #       googlePlaceID: "ChIJOza7MD-uEmsRrf4t12uji6Y",
