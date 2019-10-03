@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: Color
+title: Location
 [meta]-->
 
 # Color
@@ -9,17 +9,27 @@ title: Color
 ## Usage
 
 ```js
-keystone.createList('Product', {
+keystone.createList('Event', {
   fields: {
-    heroColor: { type: Color },
+    location: {
+      type: Location,
+      googleMapsKey: 'GOOGLE_MAPS_API_KEY',
+    },
     // ...
   },
 });
 ```
 
-### Config
+## Querying
 
-| Option       | Type      | Default | Description                                                     |
-| ------------ | --------- | ------- | --------------------------------------------------------------- |
-| `isRequired` | `Boolean` | `false` | Does this field require a value?                                |
-| `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
+```
+allEvents {
+  location {
+    id
+    googlePlaceID
+    formattedAddress
+    lat
+    lng
+  }
+}
+```
