@@ -19,10 +19,15 @@ export default class TextController extends FieldController {
       return {};
     }
   };
-  deserialize = data => ({
-    lng: data[this.path].coordinates[0],
-    lat: data[this.path].coordinates[1],
-  });
+  deserialize = data => {
+    if(data[this.path]){
+      return {
+        lng: data[this.path].coordinates[0],
+        lat: data[this.path].coordinates[1],
+      };
+    }
+    return {};
+  };
   validateInput = ({ addFieldValidationError, originalInput }) => {
     const rangeCheck = (input, min, max) => input >= min && input <= max;
     if (!originalInput.location.coordinates) return false;
