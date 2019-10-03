@@ -1,17 +1,17 @@
-import { Text, MongoTextInterface, KnexTextInterface } from '../Text/Implementation';
+import { Location, MongoLocationInterface, KnexLocationInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
 export default {
   type: 'Location',
-  implementation: Text,
+  implementation: Location,
   views: {
-    Controller: importView('../Text/views/Controller'),
+    Controller: importView('./views/Controller'),
     Field: importView('./views/Field'),
     Cell: importView('./views/Cell'),
     Filter: importView('../Text/views/Filter'),
   },
   adapters: {
-    mongoose: MongoTextInterface,
-    knex: KnexTextInterface,
+    mongoose: MongoLocationInterface,
+    knex: KnexLocationInterface,
   },
 };
