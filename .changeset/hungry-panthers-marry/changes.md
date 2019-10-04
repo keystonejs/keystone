@@ -1,0 +1,1 @@
+Throw an error if the 'dir' option does get passed into NextApp
