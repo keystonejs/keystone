@@ -1,43 +1,74 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useToasts } from 'react-toast-notifications';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
-const LocationField = ({ field, value: serverValue, errors, onChange, google, renderContext }) => {
+const LocationField = ({
+  field,
+  value: { googlePlaceID, formattedAddress, lat, lng } = {},
+  errors,
+  onChange,
+  google,
+  renderContext,
+}) => {
   const htmlID = `ks-input-${field.path}`;
-  const { googlePlaceID, formattedAddress } = serverValue || {};
   const autocompleteService = new google.maps.places.AutocompleteService();
   const geocoder = new google.maps.Geocoder();
-
-  const [inputValue, setInputvalue] = useState(
+  const { addToast } = useToasts();
+  const [inputValue, setInputValue] = useState(
     googlePlaceID ? { label: formattedAddress, value: googlePlaceID } : null
   );
-  const [marker, setMarker] = useState(null);
+  const [marker, setMarker] = useState(lat && lng ? { lat, lng } : null);
 
-  const handleOptionChange = option => setInputvalue(option);
-
-  useEffect(() => {
-    if (!inputValue) {
+  const handleOptionChange = option => {
+    if (!option) {
       onChange(null);
       setMarker(null);
+      setInputValue(null);
       return;
     }
-    geocoder.geocode({ placeId: inputValue.value }, (results, status) => {
+
+    const placeId = option.value;
+
+    geocoder.geocode({ placeId }, (results, status) => {
       if (status === 'OK') {
         if (results[0]) {
-          const { lat, lng } = results[0].geometry.location;
+          const {
+            formatted_address,
+            geometry: {
+              location: { lat, lng },
+            },
+          } = results[0];
+          setInputValue({ label: formatted_address, value: placeId });
           setMarker({ lat: lat(), lng: lng() });
-          onChange(inputValue.value);
-        } else {
-          // No results found
+          onChange(placeId);
         }
       } else {
-        // Geocoder failed due to: ' + status
+        addToast('Could not find the provided location.', {
+          appearance: 'error',
+          autoDismiss: true,
+        });
       }
     });
-  }, [inputValue]);
+  };
+
+  const loadOptions = inputValue =>
+    new Promise(resolve => {
+      autocompleteService.getPlacePredictions({ input: inputValue }, results => {
+        if (results) {
+          resolve(
+            results.map(({ description, place_id }) => ({
+              label: description,
+              value: place_id,
+            }))
+          );
+        }
+        resolve(null);
+      });
+    });
 
   const selectProps =
     renderContext === 'dialog'
@@ -46,21 +77,6 @@ const LocationField = ({ field, value: serverValue, errors, onChange, google, re
           menuShouldBlockScroll: true,
         }
       : null;
-
-  const loadOptions = inputValue =>
-    new Promise(resolve => {
-      autocompleteService.getPlacePredictions({ input: inputValue }, results => {
-        resolve(
-          results.map(result => ({
-            label:
-              result.structured_formatting.main_text +
-              ' ' +
-              result.structured_formatting.secondary_text,
-            value: result.place_id,
-          }))
-        );
-      });
-    });
 
   return (
     <FieldContainer>
