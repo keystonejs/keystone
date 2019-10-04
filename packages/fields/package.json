@@ -65,6 +65,7 @@
     "react-popper": "^1.3.3",
     "react-popper-tooltip": "^2.8.1",
     "react-select": "^3.0.4",
+    "react-toast-notifications": "^2.2.4",
     "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.22.4",
