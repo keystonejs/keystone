@@ -1,1 +1,1 @@
-Update documentation
+Update documentation for the Admin UI app.
