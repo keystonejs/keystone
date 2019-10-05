@@ -1,0 +1,1 @@
+Support insensitive filter in adminui for field type Text. 
