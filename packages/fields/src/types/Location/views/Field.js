@@ -93,7 +93,7 @@ const LocationField = ({ field, value: serverValue, errors, onChange, google, re
         {marker && (
           <div css={{ position: 'relative', height: '14rem', marginTop: '1rem' }}>
             <Map google={google} initialCenter={marker} center={marker} zoom={16}>
-              {marker && <Marker position={marker} />}
+              <Marker position={marker} />
             </Map>
           </div>
         )}
