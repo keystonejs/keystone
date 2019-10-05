@@ -101,6 +101,8 @@ const Select = ({
   styles,
   ...props
 }: {
+  isAsync?: Boolean,
+  isCreatable?: Boolean,
   innerRef?: React.Ref<*>,
   styles?: Object,
 }) => {
