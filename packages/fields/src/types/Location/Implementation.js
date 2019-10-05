@@ -20,7 +20,7 @@ export class Location extends Implementation {
 
     if (!googleMapsKey) {
       throw new Error(
-        'Must provide an googleMapsKey to Location Field. See https://developers.google.com/maps/documentation/javascript/get-api-key'
+        'You must provide a `googleMapsKey` to Location Field. To generate a Google Maps API please visit: https://developers.google.com/maps/documentation/javascript/get-api-key'
       );
     }
 
