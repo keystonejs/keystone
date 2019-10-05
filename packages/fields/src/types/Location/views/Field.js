@@ -6,14 +6,8 @@ import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
-const LocationField = ({
-  field,
-  value: { googlePlaceID, formattedAddress, lat, lng } = {},
-  errors,
-  onChange,
-  google,
-  renderContext,
-}) => {
+const LocationField = ({ field, value: serverValue, errors, onChange, google, renderContext }) => {
+  const { googlePlaceID, formattedAddress, lat, lng } = serverValue || {};
   const htmlID = `ks-input-${field.path}`;
   const autocompleteService = new google.maps.places.AutocompleteService();
   const geocoder = new google.maps.Geocoder();
