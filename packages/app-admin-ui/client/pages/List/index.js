@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
 
 import { IconButton } from '@arch-ui/button';
@@ -27,7 +27,6 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
-import PageLoading from '../../components/PageLoading';
 
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />

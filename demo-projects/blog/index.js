@@ -24,10 +24,6 @@ const keystone = new Keystone({
   },
 });
 
-function exportFile(list, fields) {
-  keystone.executeQuery(keystone.getListByKey(list));
-}
-
 keystone.extendGraphQLSchema({
   types: [{ type: 'type FileDownloadType { ready: Boolean, file: String }' }],
   mutations: [
