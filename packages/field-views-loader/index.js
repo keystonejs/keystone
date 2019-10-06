@@ -34,7 +34,7 @@ function findPageComponents(pages, pageComponents = {}) {
   return pageComponents;
 }
 
-module.exports = function() {
+module.exports = function () {
   const options = loaderUtils.getOptions(this);
   const adminMeta = options.adminMeta;
 
@@ -90,17 +90,23 @@ module.exports = function() {
   let allViews = Object.entries(adminMeta.lists).reduce(
     (obj, [listPath, { views, adminConfig }]) => {
       obj[listPath] = views;
-      if(adminConfig.listActions) {
-        obj[`${listPath}-listActions`] = adminConfig.listActions;
-      }
-      if(adminConfig.toolbarActions) {
-        obj[`${listPath}-toolbarActions`] = adminConfig.toolbarActions;
+      if (adminConfig.customActions) {
+        Object.entries(adminConfig.customActions).forEach(([name, options]) => {
+          if (typeof options === 'string') {
+            obj[`${listPath}-${name}`] = options;
+          } else {
+            if (options.path) {
+              obj[`${listPath}-${name}`] = options.path;
+            }
+          }
+        });
       }
       return obj;
     },
     { __pages__: pageComponents }
   );
 
+  // const stringifiedObject = serialize([allViews, customViews], allPaths);
   const stringifiedObject = serialize(allViews, allPaths);
 
   let loaders = `{\n${[...allPaths]

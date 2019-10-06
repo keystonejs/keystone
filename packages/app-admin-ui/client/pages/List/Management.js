@@ -11,6 +11,14 @@ import { colors, gridSize } from '@arch-ui/theme';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
+const renderManagementActions = ({ list, adminMeta, ...props }) => {
+  if(list.adminConfig.customActions && list.adminConfig.customActions.listManagementActions) {
+    const [View] = adminMeta.readViews([list.adminConfig.customActions.listManagementActions]);
+    return (<View {...{ list, adminMeta, ...props }} />);
+  }
+  return null;
+};
+
 export const ManageToolbar = styled.div(({ isVisible }) => ({
   height: 35,
   marginBottom: gridSize * 2,
@@ -24,6 +32,7 @@ const SelectedCount = styled.div({
 
 type Props = {
   list: Object,
+  adminMeta: Object,
   onDeleteMany: (*) => void,
   onUpdateMany: (*) => void,
   selectedItems: Array<string>,
@@ -76,6 +85,7 @@ export default function ListManage(props: Props) {
             Delete
           </IconButton>
         ) : null}
+        {renderManagementActions(props)}
       </FlexGroup>
 
       <UpdateManyItemsModal

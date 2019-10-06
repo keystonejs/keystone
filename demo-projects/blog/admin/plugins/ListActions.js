@@ -33,7 +33,7 @@ export default () => {
 };
 
 export const DownloadModal = ({ isOpen, onClose }) => {
-  const { data, error, loading } = useQuery(gql`
+  const { data, loading } = useQuery(gql`
     query {
       allPosts {
         id title slug posted body

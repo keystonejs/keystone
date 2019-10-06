@@ -47,9 +47,9 @@ type LayoutProps = Props & {
 const renderListActions = (list, { readViews, ...adminMeta }) => {
   // console.log(list);
   // console.log(adminMeta);
-  if(list.adminConfig.listActions) {
+  if(list.adminConfig.customActions && list.adminConfig.customActions.listActions) {
     // const [View] = readViews([list.listActions]);
-    const [View] = readViews([list.adminConfig.listActions]);
+    const [View] = readViews([list.adminConfig.customActions.listActions]);
     return (<View {...{ list, adminMeta }} />);
   }
   return null;
@@ -154,6 +154,7 @@ function ListLayout(props: LayoutProps) {
           <ManageToolbar isVisible css={{ marginLeft: 2 }}>
             {selectedItems.length ? (
               <Management
+                adminMeta={adminMeta}
                 list={list}
                 onDeleteMany={onDeleteSelectedItems}
                 onUpdateMany={onUpdateSelectedItems}
