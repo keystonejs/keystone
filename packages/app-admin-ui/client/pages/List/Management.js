@@ -12,9 +12,9 @@ import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
 const renderManagementActions = ({ list, adminMeta, ...props }) => {
-  if(list.adminConfig.customActions && list.adminConfig.customActions.listManagementActions) {
+  if (list.adminConfig.customActions && list.adminConfig.customActions.listManagementActions) {
     const [View] = adminMeta.readViews([list.adminConfig.customActions.listManagementActions]);
-    return (<View {...{ list, adminMeta, ...props }} />);
+    return <View {...{ list, adminMeta, ...props }} />;
   }
   return null;
 };

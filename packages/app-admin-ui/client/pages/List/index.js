@@ -45,12 +45,9 @@ type LayoutProps = Props & {
 };
 
 const renderListActions = (list, { readViews, ...adminMeta }) => {
-  // console.log(list);
-  // console.log(adminMeta);
-  if(list.adminConfig.customActions && list.adminConfig.customActions.listActions) {
-    // const [View] = readViews([list.listActions]);
+  if (list.adminConfig.customActions && list.adminConfig.customActions.listActions) {
     const [View] = readViews([list.adminConfig.customActions.listActions]);
-    return (<View {...{ list, adminMeta }} />);
+    return <View {...{ list, adminMeta }} />;
   }
   return null;
 };
@@ -136,11 +133,9 @@ function ListLayout(props: LayoutProps) {
                   id={cypressCreateId}
                 >
                   Create
-              </IconButton>
+                </IconButton>
               ) : null}
-              <Suspense fallback={<PageLoading />}>
-                {renderListActions(list, adminMeta)}
-              </Suspense>
+              {renderListActions(list, adminMeta)}
             </FlexGroup>
           </FlexGroup>
           <div
