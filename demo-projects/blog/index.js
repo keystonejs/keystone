@@ -24,6 +24,20 @@ const keystone = new Keystone({
   },
 });
 
+function exportFile(list, fields) {
+  keystone.executeQuery(keystone.getListByKey(list));
+}
+
+keystone.extendGraphQLSchema({
+  types: [{ type: 'type FileDownloadType { ready: Boolean, file: String }' }],
+  mutations: [
+    {
+      schema: 'ExportList(list: String!, fields: [String!]!): FileDownloadType',
+      resolver: (_, { list }) => ({ ready: true, file: `2 - ${list}` }),
+    },
+  ],
+});
+
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',

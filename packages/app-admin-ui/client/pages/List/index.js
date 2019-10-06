@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
 import { Query } from 'react-apollo';
 
 import { IconButton } from '@arch-ui/button';
@@ -27,6 +27,7 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+import PageLoading from '../../components/PageLoading';
 
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
@@ -41,6 +42,17 @@ type LayoutProps = Props & {
   items: Array<Object>,
   itemCount: number,
   queryErrors: Array<Object>,
+};
+
+const renderListActions = (list, { readViews, ...adminMeta }) => {
+  // console.log(list);
+  // console.log(adminMeta);
+  if(list.adminConfig.listActions) {
+    // const [View] = readViews([list.listActions]);
+    const [View] = readViews([list.adminConfig.listActions]);
+    return (<View {...{ list, adminMeta }} />);
+  }
+  return null;
 };
 
 function ListLayout(props: LayoutProps) {
@@ -115,16 +127,21 @@ function ListLayout(props: LayoutProps) {
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
             <PageTitle>{list.plural}</PageTitle>
-            {list.access.create ? (
-              <IconButton
-                appearance="primary"
-                icon={PlusIcon}
-                onClick={openCreateModal}
-                id={cypressCreateId}
-              >
-                Create
+            <FlexGroup align="center" justify="flex-end">
+              {list.access.create ? (
+                <IconButton
+                  appearance="primary"
+                  icon={PlusIcon}
+                  onClick={openCreateModal}
+                  id={cypressCreateId}
+                >
+                  Create
               </IconButton>
-            ) : null}
+              ) : null}
+              <Suspense fallback={<PageLoading />}>
+                {renderListActions(list, adminMeta)}
+              </Suspense>
+            </FlexGroup>
           </FlexGroup>
           <div
             css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}

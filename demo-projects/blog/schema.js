@@ -84,6 +84,7 @@ exports.Post = {
     defaultPageSize: 20,
     defaultColumns: 'title, status',
     defaultSort: 'title',
+    listActions: require.resolve('./admin/plugins/ListActions')
   },
   labelResolver: item => item.title,
 };

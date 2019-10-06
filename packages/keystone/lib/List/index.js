@@ -333,6 +333,7 @@ module.exports = class List {
         .map(field => field.getAdminMeta({ schemaName })),
       views: this.views,
       adminConfig: {
+        ...this.adminConfig,
         defaultPageSize: this.adminConfig.defaultPageSize,
         defaultColumns: this.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
         defaultSort: this.adminConfig.defaultSort,

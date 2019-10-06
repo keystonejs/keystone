@@ -88,8 +88,14 @@ module.exports = function() {
   let pageComponents = findPageComponents(adminMeta.pages);
 
   let allViews = Object.entries(adminMeta.lists).reduce(
-    (obj, [listPath, { views }]) => {
+    (obj, [listPath, { views, adminConfig }]) => {
       obj[listPath] = views;
+      if(adminConfig.listActions) {
+        obj[`${listPath}-listActions`] = adminConfig.listActions;
+      }
+      if(adminConfig.toolbarActions) {
+        obj[`${listPath}-toolbarActions`] = adminConfig.toolbarActions;
+      }
       return obj;
     },
     { __pages__: pageComponents }
