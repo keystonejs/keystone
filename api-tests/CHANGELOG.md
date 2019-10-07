@@ -1,5 +1,15 @@
 # @keystone-alpha/api-tests
 
+## 1.7.1
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/auth-password@1.0.4
+  - @keystone-alpha/keystone@15.3.1
+  - @keystone-alpha/fields@13.0.0
+  - @keystone-alpha/test-utils@2.6.1
+  - @keystone-alpha/adapter-mongoose@5.0.0
+
 ## 1.7.0
 
 ### Minor Changes

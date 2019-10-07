@@ -1,5 +1,11 @@
 # @keystone-alpha/build-field-types
 
+## 1.0.6
+
+### Patch Changes
+
+- [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d): Remove lodash.omitby dependency
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,5 +1,10 @@
 # @keystone-alpha/test-utils
 
+## 2.6.1
+
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/adapter-mongoose@5.0.0
+
 ## 2.6.0
 
 ### Minor Changes

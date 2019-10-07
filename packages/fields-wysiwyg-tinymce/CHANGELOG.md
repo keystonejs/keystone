@@ -1,5 +1,10 @@
 # @keystone-alpha/fields-wysiwyg-tinymce
 
+## 3.0.8
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
+
 ## 3.0.7
 
 - Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):

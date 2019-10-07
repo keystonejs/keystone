@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/utils",
   "description": "Common utility functions used throughout @keystone-alpha packages.",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/utils.cjs.js",

@@ -1,5 +1,10 @@
 # @keystone-alpha/auth-password
 
+## 1.0.4
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
+
 ## 1.0.3
 
 ### Patch Changes

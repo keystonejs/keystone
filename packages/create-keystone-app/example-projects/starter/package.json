@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/example-projects-starter",
   "description": "An example KeystoneJS project with a User list and Authentication.",
   "private": true,
-  "version": "1.1.12",
+  "version": "1.1.13",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,12 +14,12 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^4.0.7",
-    "@keystone-alpha/app-admin-ui": "^5.8.1",
+    "@keystone-alpha/adapter-mongoose": "^5.0.0",
+    "@keystone-alpha/app-admin-ui": "^5.10.0",
     "@keystone-alpha/app-graphql": "^8.0.0",
-    "@keystone-alpha/auth-password": "^1.0.2",
-    "@keystone-alpha/fields": "^12.1.0",
-    "@keystone-alpha/keystone": "^15.1.0",
+    "@keystone-alpha/auth-password": "^1.0.4",
+    "@keystone-alpha/fields": "^13.0.0",
+    "@keystone-alpha/keystone": "^15.3.1",
     "cross-env": "^5.2.0"
   }
 }
