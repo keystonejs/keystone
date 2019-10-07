@@ -1,5 +1,15 @@
 # @keystone-alpha/fields
 
+## 13.0.0
+
+### Major Changes
+
+- [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d): MongoRelationshipInterface.getRelationshipQueryCondition() has been removed.
+
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/test-utils@2.6.1
+  - @keystone-alpha/adapter-mongoose@5.0.0
+
 ## 12.3.0
 
 ### Minor Changes

@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/field-content",
   "description": "A block-based content field for KeystoneJS",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,9 +18,9 @@
     "@arch-ui/typography": "^0.0.8",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.14",
-    "@keystone-alpha/build-field-types": "^1.0.5",
-    "@keystone-alpha/fields": "^12.2.1",
-    "@keystone-alpha/utils": "^3.1.0",
+    "@keystone-alpha/build-field-types": "^1.0.6",
+    "@keystone-alpha/fields": "^13.0.0",
+    "@keystone-alpha/utils": "^3.2.0",
     "apply-ref": "^0.2.0",
     "get-selection-range": "^0.1.0",
     "image-extensions": "^1.1.0",

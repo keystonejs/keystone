@@ -1,5 +1,14 @@
 # @keystone-alpha/keystone
 
+## 15.3.1
+
+### Patch Changes
+
+- [b2c5277e](https://github.com/keystonejs/keystone-5/commit/b2c5277e): Use compose() function from utils package.
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
+
 ## 15.3.0
 
 ### Minor Changes
