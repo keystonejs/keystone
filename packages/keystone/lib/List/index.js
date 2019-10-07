@@ -1006,7 +1006,7 @@ module.exports = class List {
     if (results.length > maxResults) {
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
-    if (extra.context) {
+    if (extra && extra.context) {
       const context = extra.context;
       context.totalResults += results.length;
       if (context.totalResults > context.maxTotalResults) {

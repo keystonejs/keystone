@@ -311,7 +311,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
             // All subqueries are within limits, but the total isn't
-            ({ data, errors } = await graphqlRequest({
+            ({ errors } = await graphqlRequest({
               keystone,
               query: `
           query {
@@ -327,7 +327,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             }));
 
-            console.log(JSON.stringify(errors));
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
           })
         );
