@@ -1,4 +1,4 @@
-const joinBuilder = require('../lib/join-builder');
+const { pipelineBuilder, mutationBuilder } = require('../lib/join-builder');
 
 describe('join builder', () => {
   test('correctly generates joins for simple queries', () => {
@@ -11,7 +11,7 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       postJoinPipeline: [],
       relationships: {},
@@ -36,14 +36,13 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'user-collection',
           field: 'author',
           matchTerm: { name: { $eq: 'Alice' } },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: false,
           relationships: {},
         },
@@ -102,13 +101,12 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {},
         },
@@ -166,13 +164,12 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
           postJoinPipeline: [{ $orderBy: 'title' }],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {},
         },
@@ -240,14 +237,13 @@ describe('join builder', () => {
       }
 
     */
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
           matchTerm: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             def456: {
@@ -257,7 +253,6 @@ describe('join builder', () => {
                 $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
               },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {
                 xyz890: {
@@ -265,7 +260,6 @@ describe('join builder', () => {
                   field: 'posts',
                   matchTerm: { published: { $eq: true } },
                   postJoinPipeline: [],
-                  postQueryMutation: jest.fn(),
                   many: true,
                   relationships: {},
                 },
@@ -380,7 +374,7 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -389,7 +383,6 @@ describe('join builder', () => {
             $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
           },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -397,7 +390,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -487,14 +479,13 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
           matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -502,7 +493,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -594,14 +584,13 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
           matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -609,7 +598,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -701,7 +689,7 @@ describe('join builder', () => {
       }
     */
 
-    const { pipeline } = joinBuilder({
+    const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -710,7 +698,6 @@ describe('join builder', () => {
             $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
           },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -718,7 +705,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -803,22 +789,16 @@ describe('join builder', () => {
     */
 
     const mutationResult = {};
-    const postQueryMutation = jest.fn(() => mutationResult);
 
-    const { postQueryMutations } = joinBuilder({
-      relationships: {
-        zip567: {
-          from: 'posts-collection',
-          field: 'posts',
-          matchTerm: { title: { $eq: 'hello' } },
-          postJoinPipeline: [],
-          postQueryMutation,
-          many: true,
-          relationships: {},
-        },
+    const postQueryMutations = mutationBuilder({
+      zip567: {
+        from: 'posts-collection',
+        field: 'posts',
+        matchTerm: { title: { $eq: 'hello' } },
+        postJoinPipeline: [],
+        many: true,
+        relationships: {},
       },
-      matchTerm: { $and: [{ age: { $eq: 23 } }, { zip567_posts_every: { $eq: true } }] },
-      postJoinPipeline: [],
     });
 
     /*
@@ -861,300 +841,6 @@ describe('join builder', () => {
 
     const mutatedResult = postQueryMutations(mockQueryResult);
 
-    // (parentValue, keyOfRelationship, rootObject, path)
-    expect(postQueryMutation).toHaveBeenCalledTimes(2);
-    expect(postQueryMutation).toHaveBeenCalledWith(mockResult1, 'zip567_posts', mockQueryResult, [
-      0,
-    ]);
-    expect(postQueryMutation).toHaveBeenCalledWith(mockResult2, 'zip567_posts', mockQueryResult, [
-      1,
-    ]);
     expect(mutatedResult).toMatchObject([mutationResult, mutationResult]);
-  });
-
-  test('executes nested relationship mutators with correct parameters', () => {
-    let abc123_mutationResult;
-    const abc123_postQueryMutation = jest.fn(objToMutate => {
-      abc123_mutationResult = {
-        ...objToMutate,
-        abc123_mutated: true,
-      };
-      return abc123_mutationResult;
-    });
-
-    let def456_mutationResult;
-    //const def456_postQueryMutation = jest.fn(() => def456_mutationResult);
-    const def456_postQueryMutation = jest.fn(objToMutate => {
-      def456_mutationResult = {
-        ...objToMutate,
-        def456_mutated: true,
-      };
-      return def456_mutationResult;
-    });
-
-    let xyz890_mutationResult;
-    //const xyz890_postQueryMutation = jest.fn(() => xyz890_mutationResult);
-    const xyz890_postQueryMutation = jest.fn(objToMutate => {
-      xyz890_mutationResult = {
-        ...objToMutate,
-        xyz890_mutated: true,
-      };
-      return xyz890_mutationResult;
-    });
-
-    /*
-     * From this query:
-
-      {
-        posts_every: {
-          tags_some: {
-            posts_every: {
-              published: true,
-            },
-          },
-        },
-      }
-
-    */
-    const { postQueryMutations } = joinBuilder({
-      relationships: {
-        abc123: {
-          from: 'posts-collection',
-          field: 'posts',
-          postJoinPipeline: [],
-          matchTerm: { def456_tags_some: { $eq: true } },
-          postQueryMutation: abc123_postQueryMutation,
-          many: true,
-          relationships: {
-            def456: {
-              from: 'tags-collection',
-              field: 'tags',
-              postJoinPipeline: [],
-              matchTerm: { xyz890_posts_every: { $eq: true } },
-              postQueryMutation: def456_postQueryMutation,
-              many: true,
-              relationships: {
-                xyz890: {
-                  from: 'posts-collection',
-                  field: 'posts',
-                  matchTerm: { published: { $eq: true } },
-                  postJoinPipeline: [],
-                  postQueryMutation: xyz890_postQueryMutation,
-                  many: true,
-                  relationships: {},
-                },
-              },
-            },
-          },
-        },
-      },
-      matchTerm: { abc123_posts_some: { $eq: true } },
-      postJoinPipeline: [],
-    });
-
-    /*
-      {
-        posts_every: {
-          tags_some: {
-            posts_every: {
-              published: true,
-            },
-          },
-        },
-      }
-    */
-    const mockQueryResult = [
-      {
-        abc123_posts: [
-          {
-            def456_tags: [
-              {
-                xyz890_posts: [{ published: true, title: 'zap' }],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        abc123_posts: [
-          {
-            def456_tags: [
-              {
-                xyz890_posts: [{ published: true, title: 'bang' }],
-              },
-              {
-                xyz890_posts: [
-                  { published: true, title: 'itchy' },
-                  { published: true, title: 'scratchy' },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ];
-
-    const mutatedResult = postQueryMutations(mockQueryResult);
-
-    // xyz890 relationship
-    expect(xyz890_postQueryMutation).toHaveBeenCalledTimes(3);
-    // Only sanity check one invokation
-    expect(xyz890_postQueryMutation).toHaveBeenCalledWith(
-      mockQueryResult[1].abc123_posts[0].def456_tags[1],
-      'xyz890_posts',
-      mockQueryResult,
-      [1, 'abc123_posts', 0, 'def456_tags', 1]
-    );
-
-    // def456 relationship
-    expect(def456_postQueryMutation).toHaveBeenCalledTimes(2);
-    // Only sanity check one invokation
-    expect(def456_postQueryMutation).toHaveBeenCalledWith(
-      {
-        def456_tags: [
-          {
-            xyz890_mutated: true,
-            xyz890_posts: [{ published: true, title: 'bang' }],
-          },
-          {
-            xyz890_mutated: true,
-            xyz890_posts: [
-              { published: true, title: 'itchy' },
-              { published: true, title: 'scratchy' },
-            ],
-          },
-        ],
-      },
-      'def456_tags',
-      [
-        {
-          abc123_posts: [
-            {
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'zap' }],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          abc123_posts: [
-            {
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'bang' }],
-                },
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'itchy' },
-                    { published: true, title: 'scratchy' },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      [1, 'abc123_posts', 0]
-    );
-
-    // (parentValue, keyOfRelationship, rootObject, path)
-    // abc123 relationship
-    expect(abc123_postQueryMutation).toHaveBeenCalledTimes(2);
-    // Only sanity check one invokation
-    expect(abc123_postQueryMutation).toHaveBeenCalledWith(
-      {
-        abc123_posts: [
-          {
-            def456_mutated: true,
-            def456_tags: [
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [{ published: true, title: 'zap' }],
-              },
-            ],
-          },
-        ],
-      },
-      'abc123_posts',
-      [
-        {
-          abc123_posts: [
-            {
-              def456_mutated: true,
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'zap' }],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          abc123_posts: [
-            {
-              def456_mutated: true,
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'bang' }],
-                },
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'itchy' },
-                    { published: true, title: 'scratchy' },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      [0]
-    );
-
-    expect(mutatedResult).toMatchObject([
-      {
-        abc123_mutated: true,
-        abc123_posts: [
-          {
-            def456_mutated: true,
-            def456_tags: [
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [{ published: true, title: 'zap' }],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        abc123_mutated: true,
-        abc123_posts: [
-          {
-            def456_mutated: true,
-            def456_tags: [
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [{ published: true, title: 'bang' }],
-              },
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [
-                  { published: true, title: 'itchy' },
-                  { published: true, title: 'scratchy' },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ]);
   });
 });

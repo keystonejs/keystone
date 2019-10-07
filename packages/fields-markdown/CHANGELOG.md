@@ -1,5 +1,10 @@
 # @keystone-alpha/fields-markdown
 
+## 1.0.6
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
+
 ## 1.0.5
 
 - Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):

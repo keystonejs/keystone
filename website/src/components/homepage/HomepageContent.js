@@ -7,21 +7,7 @@ import { media, mediaMax, mq } from '../../utils/media';
 
 const HomepageContent = () => (
   <Content>
-    <Heading>
-      Keystone 5
-      <abbr
-        css={{
-          cursor: 'help',
-          // fontSize: '0.8em',
-          marginLeft: '0.2em',
-          textDecoration: 'none',
-          fontWeight: 'normal',
-        }}
-        title="Keystone 5 is currently in alpha"
-      >
-        (α)
-      </abbr>
-    </Heading>
+    <Heading>Keystone 5</Heading>
     <div css={{ color: colors.N80, maxWidth: 640 }}>
       <p>A scalable platform and CMS to build Node.js applications.</p>
       <p>

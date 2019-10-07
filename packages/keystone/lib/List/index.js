@@ -129,6 +129,7 @@ module.exports = class List {
       path,
       adapterConfig = {},
       queryLimits = {},
+      cacheHint,
     },
     {
       getListByKey,
@@ -230,6 +231,11 @@ module.exports = class List {
     if (this.queryLimits.maxResults < 1) {
       throw new Error(`List ${label}'s queryLimits.maxResults can't be < 1`);
     }
+
+    if (!['object', 'function', 'undefined'].includes(typeof this.cacheHint)) {
+      throw new Error(`List ${label}'s cacheHint must be an object or function`);
+    }
+    this.cacheHint = cacheHint;
 
     this.hooksActions = {
       /**
@@ -528,10 +534,10 @@ module.exports = class List {
     });
   }
 
-  // Wrap the "inner" resolver for a single output field with an access control check
-  wrapFieldResolverWithAC(field, innerResolver) {
-    return (item, args, context, ...rest) => {
-      // If not allowed access
+  // Wrap the "inner" resolver for a single output field with list-specific modifiers
+  _wrapFieldResolver(field, innerResolver) {
+    return (item, args, context, info) => {
+      // Check access
       const operation = 'read';
       const access = context.getFieldAccessControlForUser(
         this.key,
@@ -547,8 +553,13 @@ module.exports = class List {
         this._throwAccessDenied(operation, context, field.path, { itemId: item ? item.id : null });
       }
 
-      // Otherwise, execute the original/inner resolver
-      return innerResolver(item, args, context, ...rest);
+      // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
+      if (field.config.cacheHint) {
+        info.cacheControl.setCacheHint(field.config.cacheHint);
+      }
+
+      // Execute the original/inner resolver
+      return innerResolver(item, args, context, info);
     };
   }
 
@@ -564,9 +575,9 @@ module.exports = class List {
         this.fields
           .filter(field => field.access[schemaName].read)
           .map(field =>
-            // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
+            // Get the resolvers for the (possibly multiple) output fields and wrap each with list-specific modifiers
             mapKeys(field.gqlOutputFieldResolvers({ schemaName }), innerResolver =>
-              this.wrapFieldResolverWithAC(field, innerResolver)
+              this._wrapFieldResolver(field, innerResolver)
             )
           )
       ),
@@ -724,7 +735,7 @@ module.exports = class List {
     return access;
   }
 
-  async getAccessControlledItem(id, access, { context, operation, gqlName }) {
+  async getAccessControlledItem(id, access, { context, operation, gqlName, info }) {
     const throwAccessDenied = msg => {
       graphqlLogger.debug({ id, operation, access, gqlName }, msg);
       graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
@@ -759,7 +770,7 @@ module.exports = class List {
       // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
       // have been caught earlier, so this spread and overwrite can only
       // ever be additive or overwrite with the same value
-      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }))[0];
+      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }, { info }))[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
@@ -779,7 +790,7 @@ module.exports = class List {
     return item;
   }
 
-  async getAccessControlledItems(ids, access) {
+  async getAccessControlledItems(ids, access, { info } = {}) {
     if (ids.length === 0) {
       return [];
     }
@@ -788,7 +799,7 @@ module.exports = class List {
 
     // Early out - the user has full access to operate on this list
     if (access === true) {
-      return await this._itemsQuery({ where: { id_in: uniqueIds } });
+      return await this._itemsQuery({ where: { id_in: uniqueIds } }, { info });
     }
 
     let idFilters = {};
@@ -835,7 +846,7 @@ module.exports = class List {
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
     const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
-    return await this._itemsQuery({ where: { ...remainingAccess, ...idFilters } });
+    return await this._itemsQuery({ where: { ...remainingAccess, ...idFilters } }, { info });
   }
 
   gqlQueryResolvers({ schemaName }) {
@@ -846,16 +857,16 @@ module.exports = class List {
     // the graphql schema
     if (schemaAccess.read) {
       resolvers = {
-        [this.gqlNames.listQueryName]: (_, args, context) =>
-          this.listQuery(args, context, this.gqlNames.listQueryName),
+        [this.gqlNames.listQueryName]: (_, args, context, info) =>
+          this.listQuery(args, context, this.gqlNames.listQueryName, info),
 
-        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
-          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName),
+        [this.gqlNames.listQueryMetaName]: (_, args, context, info) =>
+          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName, info),
 
         [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
 
-        [this.gqlNames.itemQueryName]: (_, args, context) =>
-          this.itemQuery(args, context, this.gqlNames.itemQueryName),
+        [this.gqlNames.itemQueryName]: (_, args, context, info) =>
+          this.itemQuery(args, context, this.gqlNames.itemQueryName, info),
       };
     }
 
@@ -863,20 +874,20 @@ module.exports = class List {
     // authenticate themselves, then they already have access to know that the
     // list exists
     if (this.hasAuth() && schemaAccess.auth) {
-      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
-        this.authenticatedQuery(context);
+      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context, info) =>
+        this.authenticatedQuery(context, info);
     }
 
     return resolvers;
   }
 
-  async listQuery(args, context, queryName) {
+  async listQuery(args, context, queryName, info) {
     const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
-    return this._itemsQuery(mergeWhereClause(args, access));
+    return this._itemsQuery(mergeWhereClause(args, access), { info });
   }
 
-  async listQueryMeta(args, context, queryName) {
+  async listQueryMeta(args, context, queryName, info) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
@@ -884,7 +895,7 @@ module.exports = class List {
       getCount: () => {
         const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), { meta: true }).then(
+        return this._itemsQuery(mergeWhereClause(args, access), { meta: true, info }).then(
           ({ count }) => count
         );
       },
@@ -932,14 +943,20 @@ module.exports = class List {
     // prettier-ignore
     { where: { id } },
     context,
-    gqlName
+    gqlName,
+    info
   ) {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
     const access = this.checkListAccess(context, undefined, operation, { gqlName, itemId: id });
 
-    const result = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+    const result = await this.getAccessControlledItem(id, access, {
+      context,
+      operation,
+      gqlName,
+      info,
+    });
 
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
     return result;
@@ -963,7 +980,7 @@ module.exports = class List {
     const { first = Infinity } = args;
     // We want to help devs by failing fast and noisily if limits are violated.
     // Unfortunately, we can't always be sure of intent.
-    // E.g., if the query has a "first: 10", is it bad if more results that could come back?
+    // E.g., if the query has a "first: 10", is it bad if more results could come back?
     // Maybe yes, or maybe the dev is just paginating posts.
     // But we can be sure there's a problem in two cases:
     // * The query explicitly has a "first" that exceeds the limit
@@ -986,10 +1003,33 @@ module.exports = class List {
     if (results.length > maxResults) {
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
+
+    if (extra && extra.info) {
+      switch (typeof this.cacheHint) {
+        case 'object':
+          extra.info.cacheControl.setCacheHint(this.cacheHint);
+          break;
+
+        case 'function':
+          const operationName = extra.info.operation.name && extra.info.operation.name.value;
+          extra.info.cacheControl.setCacheHint(
+            this.cacheHint({ results, operationName, meta: !!extra.meta })
+          );
+          break;
+
+        case 'undefined':
+          break;
+      }
+    }
+
     return results;
   }
 
-  authenticatedQuery(context) {
+  authenticatedQuery(context, info) {
+    if (info) {
+      info.cacheControl.setCacheHint({ scope: 'PRIVATE' });
+    }
+
     if (!context.authedItem || context.authedListKey !== this.key) {
       return null;
     }

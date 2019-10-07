@@ -1,5 +1,20 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.10.0
+
+### Minor Changes
+
+- [7ee3b0ad](https://github.com/keystonejs/keystone-5/commit/7ee3b0ad): Display an error toast in the admin-ui if there was an error when creating an item. Also created a custom ToastContainer to fix an issue with z-indexing.
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
+
+## 5.9.0
+
+### Minor Changes
+
+- [b88c4038](https://github.com/keystonejs/keystone-5/commit/b88c4038): When no list is defined the AdminUI will now load with an error message.
+
 ## 5.8.2
 
 ### Patch Changes

@@ -14,7 +14,7 @@ It is currently in alpha and under intensive development by [Thinkmill](https://
 
 ## What's new?
 
-Keystone 5 is a complete re-imagining of KeystoneJS for the future. It builds on the lessons we learned over the last 5 years of the Keystone's history and focuses on the things we believe are the most powerful features for modern web and mobile applications.
+Keystone 5 is a complete re-imagining of KeystoneJS for the future. It builds on the lessons we learned over the last 5 years of the KeystoneJS' history and focuses on the things we believe are the most powerful features for modern web and mobile applications.
 
 This means less focus on hand-holding Node.js template-driven websites and more focus on flexible architecture, a powerful GraphQL API with deep access control features, an extensible Admin UI and plugins for rich field types, file and database adapters, and session management.
 
@@ -43,10 +43,9 @@ yarn start
 For more details and system requirements, check out the [5 Minute Quick Start
 Guide](https://v5.keystonejs.com/quick-start/).
 
-
 ### API
 
-The [API documentation](https://v5.keystonejs.com/api/) contains a reference for all Keystone packages.
+The [API documentation](https://v5.keystonejs.com/api/) contains a reference for all KeystoneJS packages.
 
 ### Demo Projects
 
@@ -104,7 +103,7 @@ module.exports = {
 };
 ```
 
-Now you have everything you need to run a Keystone instance:
+Now you have everything you need to run a `Keystone` instance:
 
 ```bash
 yarn dev

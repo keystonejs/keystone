@@ -1,5 +1,26 @@
 # @keystone-alpha/test-utils
 
+## 2.6.1
+
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/adapter-mongoose@5.0.0
+
+## 2.6.0
+
+### Minor Changes
+
+- [552e6fb6](https://github.com/keystonejs/keystone-5/commit/552e6fb6): Add support for schema cache hints
+
+### Patch Changes
+
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+
+## 2.5.0
+
+### Minor Changes
+
+- [66e1c33e](https://github.com/keystonejs/keystone-5/commit/66e1c33e): Add `schemaName` and `schemaNames` parameters to `setupServer()`.
+
 ## 2.4.1
 
 ### Patch Changes

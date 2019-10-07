@@ -6,7 +6,7 @@ title: Test Utils
 
 # Test Utils
 
-This package is an internal Keystone package which contains utility functions to assist in running tests against the GraphQL API.
+This package is an internal KeystoneJS package which contains utility functions to assist in running tests against the GraphQL API.
 
 ## Installation
 

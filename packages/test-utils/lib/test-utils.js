@@ -8,11 +8,11 @@ const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
-const SCHEMA_NAME = 'testing';
-
 async function setupServer({
   name,
   adapterName,
+  schemaName = 'testing',
+  schemaNames = ['testing'],
   createLists = () => {},
   keystoneOptions,
   graphqlOptions = {},
@@ -31,7 +31,7 @@ async function setupServer({
     name,
     adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
-    schemaNames: [SCHEMA_NAME],
+    schemaNames,
     ...keystoneOptions,
   });
 
@@ -39,9 +39,15 @@ async function setupServer({
 
   const apps = [
     new GraphQLApp({
-      schemaName: SCHEMA_NAME,
+      schemaName,
       apiPath: '/admin/api',
       graphiqlPath: '/admin/graphiql',
+      apollo: {
+        tracing: true,
+        cacheControl: {
+          defaultMaxAge: 3600,
+        },
+      },
       ...graphqlOptions,
     }),
   ];
@@ -77,7 +83,10 @@ function networkedGraphqlRequest({
     .post('/admin/api', { query, variables, operationName })
     .then(res => {
       expect(res.statusCode).toBe(expectedStatusCode);
-      return JSON.parse(res.text);
+      return {
+        ...JSON.parse(res.text),
+        res,
+      };
     })
     .catch(error => ({
       errors: [error],

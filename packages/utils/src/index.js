@@ -101,6 +101,9 @@ export const zipObj = obj =>
     Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
   );
 
+// compose([f, g, h])(o) = h(g(f(o)))
+export const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
+
 export const mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   if (
     getType(whereClauseToMergeIn) !== 'Object' ||

@@ -29,18 +29,18 @@ class KnexAdapter extends BaseKeystoneAdapter {
   async _connect({ name }) {
     const { knexOptions = {} } = this.config;
     const { connection } = knexOptions;
-    let uri =
+    let knexConnection =
       connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
 
-    if (!uri) {
+    if (!knexConnection) {
       const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
-      uri = `postgres://localhost/${defaultDbName}`;
-      logger.warn(`No Knex connection URI specified. Defaulting to '${uri}'`);
+      knexConnection = `postgres://localhost/${defaultDbName}`;
+      logger.warn(`No Knex connection URI specified. Defaulting to '${knexConnection}'`);
     }
 
     this.knex = knex({
       client: this.client,
-      connection: uri,
+      connection: knexConnection,
       ...knexOptions,
     });
 
@@ -51,11 +51,17 @@ class KnexAdapter extends BaseKeystoneAdapter {
     }));
     if (result.error) {
       const connectionError = result.error;
-      console.error(`Could not connect to database: '${uri}'`);
+      let dbName;
+      if (typeof knexConnection === 'string') {
+        dbName = knexConnection.split('/').pop();
+      } else {
+        dbName = knexConnection.database;
+      }
+      console.error(`Could not connect to database: '${dbName}'`);
       console.warn(
         `If this is the first time you've run Keystone, you can create your database with the following command:`
       );
-      console.warn(`createdb postgres ${uri.split('/').pop()}`);
+      console.warn(`createdb postgres ${dbName}`);
       throw connectionError;
     }
 
@@ -345,11 +351,10 @@ class KnexListAdapter extends BaseListAdapter {
           .select(a.refListId)
           .from(tableName)
           .where(`${this.key}_id`, item.id);
+        const currentRefIds = currentValues.map(x => x[a.refListId].toString());
 
         // Delete what needs to be deleted
-        const needsDelete = currentValues
-          .filter(x => !newValues.includes(x[a.refListId]))
-          .map(row => row[a.refListId]);
+        const needsDelete = currentRefIds.filter(x => !newValues.includes(x));
         if (needsDelete.length) {
           await this._query()
             .table(tableName)
@@ -358,7 +363,6 @@ class KnexListAdapter extends BaseListAdapter {
             .del();
         }
         // Add what needs to be added
-        const currentRefIds = currentValues.map(x => x[a.refListId]);
         const valuesToInsert = newValues
           .filter(id => !currentRefIds.includes(id))
           .map(id => ({

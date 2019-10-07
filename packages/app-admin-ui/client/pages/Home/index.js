@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
@@ -82,8 +82,24 @@ class HomePage extends Component {
 const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
-  const query = gqlCountQueries(lists);
 
+  if (lists.length === 0) {
+    return (
+      <Fragment>
+        <DocTitle>Home</DocTitle>
+        <PageError>
+          <p>
+            No lists defined.{' '}
+            <Link href="https://v5.keystonejs.com/guides/add-lists">
+              Get started by creating your first list.
+            </Link>
+          </p>
+        </PageError>
+      </Fragment>
+    );
+  }
+
+  const query = gqlCountQueries(lists);
   return (
     <Fragment>
       <DocTitle>Home</DocTitle>
