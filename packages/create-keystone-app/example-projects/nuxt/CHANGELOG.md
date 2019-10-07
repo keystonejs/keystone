@@ -1,5 +1,14 @@
 # @keystone-alpha/example-projects-nuxt
 
+## 0.0.2
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/app-admin-ui@5.10.0
+  - @keystone-alpha/keystone@15.3.1
+  - @keystone-alpha/fields@13.0.0
+  - @keystone-alpha/adapter-mongoose@5.0.0
+
 ## 0.0.1
 
 - Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):

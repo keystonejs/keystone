@@ -1,5 +1,11 @@
 # @keystone-alpha/utils
 
+## 3.2.0
+
+### Minor Changes
+
+- [b2c5277e](https://github.com/keystonejs/keystone-5/commit/b2c5277e): Add a compose() function to utils.
+
 ## 3.1.0
 
 ### Minor Changes

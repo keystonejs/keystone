@@ -1,1 +1,0 @@
-Rename Keystone to KeystoneJS in docs where possible in docs

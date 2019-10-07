@@ -1,5 +1,28 @@
 # @keystone-alpha/adapter-mongoose
 
+## 5.0.0
+
+### Major Changes
+
+- [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58): Remove `.queryBuilder` property of the `MongooseListAdapter`.
+
+### Patch Changes
+
+- [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d): Internal refactor to inline the logic which was previously computed by getRelationshipQueryCondition().
+- [a48ff0a3](https://github.com/keystonejs/keystone-5/commit/a48ff0a3): Internal refactor to move defintion of modifierConditions closer to where they're used.
+- [82dfef03](https://github.com/keystonejs/keystone-5/commit/82dfef03): Move tokenizer functions out of this package and into `mongo-join-builder`.
+
+- Updated dependencies [da4013e4](https://github.com/keystonejs/keystone-5/commit/da4013e4):
+- Updated dependencies [157a439d](https://github.com/keystonejs/keystone-5/commit/157a439d):
+  - @keystone-alpha/mongo-join-builder@3.0.0
+
+## 4.0.8
+
+### Patch Changes
+
+- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+- [a7a9249b](https://github.com/keystonejs/keystone-5/commit/a7a9249b): Internal refactor
+
 ## 4.0.7
 
 - Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
