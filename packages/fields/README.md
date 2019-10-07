@@ -17,6 +17,7 @@ KeystoneJS contains a set of primitive fields types that can be imported from `@
 - [File](keystone-alpha/fields/src/types/file)
 - [Float](keystone-alpha/fields/src/types/float)
 - [Integer](keystone-alpha/fields/src/types/integer)
+- [Location](keystone-alpha/fields/src/types/location)
 - [OEmbed](keystone-alpha/fields/src/types/o-embed)
 - [Password](keystone-alpha/fields/src/types/password)
 - [Relationship](keystone-alpha/fields/src/types/relationship)

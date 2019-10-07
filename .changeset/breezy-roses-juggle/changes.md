@@ -1,0 +1,1 @@
+Fix Admin UI redirects in prod mode
