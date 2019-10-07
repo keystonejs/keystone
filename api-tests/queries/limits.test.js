@@ -34,6 +34,11 @@ function setupKeystone(adapterName) {
         },
       });
     },
+    keystoneOptions: {
+      queryLimits: {
+        maxTotalResults: 6,
+      },
+    },
     graphqlOptions: {
       apollo: {
         validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
@@ -161,14 +166,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('Relationship querying', () => {
         test(
           'posts by user',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone, create, update }) => {
             const users = await Promise.all([
               create('User', { name: 'Jess', favNumber: 1 }),
               create('User', { name: 'Johanna', favNumber: 8 }),
               create('User', { name: 'Sam', favNumber: 5 }),
             ]);
 
-            await Promise.all([
+            const posts = await Promise.all([
               create('Post', { author: [users[0].id], title: 'One author' }),
               create('Post', { author: [users[0].id, users[1].id], title: 'Two authors' }),
               create('Post', {
@@ -176,6 +181,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 title: 'Three authors',
               }),
             ]);
+
+            for (const user of users) {
+              user.posts = [];
+            }
+            for (const post of posts) {
+              for (const authorId of post.author) {
+                users.find(u => Number(u.id) === authorId).posts.push(post.id);
+              }
+            }
+            for (const user of users) {
+              update('User', user.id, { posts: user.posts });
+            }
 
             // A basic query that should work
             let { data, errors } = await graphqlRequest({
@@ -291,6 +308,26 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             }));
 
+            expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+
+            // All subqueries are within limits, but the total isn't
+            ({ data, errors } = await graphqlRequest({
+              keystone,
+              query: `
+          query {
+            allPosts(where: { title: "Two authors" }) {
+              title
+              author {
+                posts {
+                  title 
+                }
+              }
+            }
+          }
+      `,
+            }));
+
+            console.log(JSON.stringify(errors));
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
           })
         );
