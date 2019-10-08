@@ -746,10 +746,7 @@ module.exports = class List {
     };
 
     let item;
-    // Early out - the user has full access to update this list
-    if (access === true) {
-      item = await this.adapter.findById(id);
-    } else if (
+    if (
       (access.id && access.id !== id) ||
       (access.id_not && access.id_not === id) ||
       (access.id_in && !access.id_in.includes(id)) ||
@@ -759,10 +756,6 @@ module.exports = class List {
       // the user has access to. So we have to do a check here to see if the
       // ID they're requesting matches that ID.
       // Nice side-effect: We can throw without having to ever query the DB.
-      // NOTE: Don't try to early out here by doing
-      // if(access.id === id) return findById(id)
-      // this will result in a possible false match if a declarative access
-      // control clause has other items in it
       throwAccessDenied('Item excluded this id from filters');
     } else {
       // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
@@ -824,10 +817,6 @@ module.exports = class List {
     // the user has access to. So we have to do a check here to see if the
     // ID they're requesting matches that ID.
     // Nice side-effect: We can throw without having to ever query the DB.
-    // NOTE: Don't try to early out here by doing
-    // if(access.id === id) return findById(id)
-    // this will result in a possible false match if the access control
-    // has other items in it
     if (
       // Only some ids are allowed, and none of them have been passed in
       (idFilters.id_in && idFilters.id_in.length === 0) ||
