@@ -34,17 +34,22 @@
     "contributors:generate": "all-contributors generate",
     "heroku-postbuild": "yarn build && yarn workspace @keystone-alpha/demo-project-blog build"
   },
+  "resolutions": {
+    "**/@babel/core": "^7.6.2",
+    "**/@babel/parser": "^7.6.2",
+    "**/@babel/preset-env": "^7.6.2"
+  },
   "dependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.4.3",
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
     "@babel/helper-module-imports": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/plugin-transform-flow-strip-types": "^7.4.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.4.3",
-    "@babel/plugin-transform-runtime": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
+    "@babel/plugin-transform-flow-strip-types": "^7.4.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.6.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@changesets/cli": "^2.0.3",
@@ -157,7 +162,9 @@
       "website",
       "packages/create-keystone-app/example-projects/*"
     ],
-    "nohoist": ["**/mocha-multi-reporters"]
+    "nohoist": [
+      "**/mocha-multi-reporters"
+    ]
   },
   "preconstruct": {
     "packages": [
