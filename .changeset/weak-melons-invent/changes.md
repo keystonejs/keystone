@@ -1,0 +1,1 @@
+Add a global maxTotalResults limit to Keystone object

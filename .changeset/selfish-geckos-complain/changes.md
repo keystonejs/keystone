@@ -1,0 +1,1 @@
+Support protection against Billion Laughs DoS attacks
