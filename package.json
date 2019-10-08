@@ -145,17 +145,20 @@
       "remark-toc"
     ]
   },
-  "workspaces": [
-    "packages/*",
-    "!packages/arch",
-    "packages/arch/docs",
-    "packages/arch/packages/*",
-    "demo-projects/*",
-    "test-projects/*",
-    "api-tests",
-    "website",
-    "packages/create-keystone-app/example-projects/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "!packages/arch",
+      "packages/arch/docs",
+      "packages/arch/packages/*",
+      "demo-projects/*",
+      "test-projects/*",
+      "api-tests",
+      "website",
+      "packages/create-keystone-app/example-projects/*"
+    ],
+    "nohoist": ["**/mocha-multi-reporters"]
+  },
   "preconstruct": {
     "packages": [
       "packages/arch/packages/*",
