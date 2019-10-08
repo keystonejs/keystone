@@ -770,7 +770,7 @@ module.exports = class List {
       // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
       // have been caught earlier, so this spread and overwrite can only
       // ever be additive or overwrite with the same value
-      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }, { info }))[0];
+      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }, { context, info }))[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
@@ -790,7 +790,7 @@ module.exports = class List {
     return item;
   }
 
-  async getAccessControlledItems(ids, access, { info } = {}) {
+  async getAccessControlledItems(ids, access, { context, info } = {}) {
     if (ids.length === 0) {
       return [];
     }
@@ -799,7 +799,7 @@ module.exports = class List {
 
     // Early out - the user has full access to operate on this list
     if (access === true) {
-      return await this._itemsQuery({ where: { id_in: uniqueIds } }, { info });
+      return await this._itemsQuery({ where: { id_in: uniqueIds } }, { context, info });
     }
 
     let idFilters = {};
@@ -846,7 +846,10 @@ module.exports = class List {
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
     const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
-    return await this._itemsQuery({ where: { ...remainingAccess, ...idFilters } }, { info });
+    return await this._itemsQuery(
+      { where: { ...remainingAccess, ...idFilters } },
+      { context, info }
+    );
   }
 
   gqlQueryResolvers({ schemaName }) {
@@ -884,7 +887,7 @@ module.exports = class List {
   async listQuery(args, context, queryName, info) {
     const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
-    return this._itemsQuery(mergeWhereClause(args, access), { info });
+    return this._itemsQuery(mergeWhereClause(args, access), { context, info });
   }
 
   async listQueryMeta(args, context, queryName, info) {
@@ -895,7 +898,7 @@ module.exports = class List {
       getCount: () => {
         const access = this.checkListAccess(context, undefined, 'read', { queryName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), { meta: true, info }).then(
+        return this._itemsQuery(mergeWhereClause(args, access), { meta: true, context, info }).then(
           ({ count }) => count
         );
       },
@@ -1002,6 +1005,13 @@ module.exports = class List {
     const results = await this.adapter.itemsQuery(args, extra);
     if (results.length > maxResults) {
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
+    }
+    if (extra && extra.context) {
+      const context = extra.context;
+      context.totalResults += results.length;
+      if (context.totalResults > context.maxTotalResults) {
+        throwLimitsExceeded({ type: 'maxTotalResults', limit: context.maxTotalResults });
+      }
     }
 
     if (extra && extra.info) {
