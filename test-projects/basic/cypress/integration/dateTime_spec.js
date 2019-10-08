@@ -35,20 +35,20 @@ describe('CalendarDay Component - Functionality', () => {
   });
 
   it('can accept natural language like today', () => {
-    cy.get(calendarDayInputSelector).type('today');
+    cy.get(calendarDayInputSelector).type('today', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
 
     cy.get(calendarDayInputSelector).should('have.value', '3rd March 2019');
   });
 
   it(`can accept natural language like tomorrow`, () => {
-    cy.get(calendarDayInputSelector).type('tomorrow');
+    cy.get(calendarDayInputSelector).type('tomorrow', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
     cy.get(calendarDayInputSelector).should('have.value', '4th March 2019');
   });
 
   it(`can accept a date`, () => {
-    cy.get(calendarDayInputSelector).type('20 september 2015');
+    cy.get(calendarDayInputSelector).type('20 september 2015', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
     cy.get(calendarDayInputSelector).should('have.value', '20th September 2015');
   });
@@ -78,7 +78,7 @@ describe('DateTime Component - Functionality', () => {
   });
 
   it('can accept natural language like today at 4pm', () => {
-    cy.get(dateTimeInputSelector).type('today at 4pm');
+    cy.get(dateTimeInputSelector).type('today at 4pm', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
 
     cy.get(dateTimeInputSelector).should('have.value', '4:00 PM 3rd March 2019 +00:00');
@@ -87,7 +87,7 @@ describe('DateTime Component - Functionality', () => {
   it('can accept natural language like tomorrow at 4pm', () => {
     cy.get(dateTimeInputSelector)
       .clear()
-      .type('tomorrow at 4pm');
+      .type('tomorrow at 4pm', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
 
     cy.get(dateTimeInputSelector).should('have.value', '4:00 PM 4th March 2019 +00:00');
@@ -96,7 +96,7 @@ describe('DateTime Component - Functionality', () => {
   it(`can accept a date time`, () => {
     cy.get(dateTimeInputSelector)
       .clear()
-      .type('1:28 am 12 september 2018 +10:00');
+      .type('1:28 am 12 september 2018 +10:00', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
     cy.get(dateTimeInputSelector).should('have.value', '1:28 AM 12th September 2018 +10:00');
   });
