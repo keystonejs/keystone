@@ -32,13 +32,44 @@ function setupKeystone(adapterName) {
     },
   });
 }
+
+const getTeacher = async (keystone, teacherId) =>
+  (await graphqlRequest({
+    keystone,
+    query: `query getTeacher($teacherId: ID!){
+  Teacher(where: { id: $teacherId }) {
+    id
+    students { id }
+  }
+}`,
+    variables: { teacherId },
+  })).data.Teacher;
+
+const getStudent = async (keystone, studentId) =>
+  (await graphqlRequest({
+    keystone,
+    query: `query getStudent($studentId: ID!){
+  Student(where: { id: $studentId }) {
+    id
+    teachers { id }
+  }
+}`,
+    variables: { studentId },
+  })).data.Student;
+
+// We can't assume what IDs get assigned, or what order they come back in
+const compareIds = (list, ids) =>
+  expect(toStr(list.map(({ id }) => id).sort())).toMatchObject(
+    ids.map(({ id }) => id.toString()).sort()
+  );
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('update many to many relationship back reference', () => {
       describe('nested connect', () => {
         test(
           'during create mutation',
-          runner(setupKeystone, async ({ keystone, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             // Manually setup a connected Student <-> Teacher
             let teacher1 = await create('Teacher', {});
             await new Promise(resolve => process.nextTick(resolve));
@@ -47,9 +78,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // canaryStudent is used as a canary to make sure nothing crosses over
             let canaryStudent = await create('Student', {});
 
-            teacher1 = await findById('Teacher', teacher1.id);
-            teacher2 = await findById('Teacher', teacher2.id);
-            canaryStudent = await findById('Student', canaryStudent.id);
+            teacher1 = await getTeacher(keystone, teacher1.id);
+            teacher2 = await getTeacher(keystone, teacher2.id);
+            canaryStudent = await getStudent(keystone, canaryStudent.id);
 
             // Sanity check the links are setup correctly
             expect(toStr(canaryStudent.teachers)).toHaveLength(0);
@@ -80,24 +111,21 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             let newStudent = data.createStudent;
 
             // Check the link has been broken
-            teacher1 = await findById('Teacher', teacher1.id);
-            teacher2 = await findById('Teacher', teacher2.id);
-            newStudent = await findById('Student', newStudent.id);
-            canaryStudent = await findById('Student', canaryStudent.id);
+            teacher1 = await getTeacher(keystone, teacher1.id);
+            teacher2 = await getTeacher(keystone, teacher2.id);
+            newStudent = await getStudent(keystone, newStudent.id);
+            canaryStudent = await getStudent(keystone, canaryStudent.id);
 
-            expect(toStr(canaryStudent.teachers)).toHaveLength(0);
-            expect(toStr(newStudent.teachers)).toMatchObject([
-              teacher1.id.toString(),
-              teacher2.id.toString(),
-            ]);
-            expect(toStr(teacher1.students)).toMatchObject([newStudent.id.toString()]);
-            expect(toStr(teacher2.students)).toMatchObject([newStudent.id.toString()]);
+            compareIds(canaryStudent.teachers, []);
+            compareIds(newStudent.teachers, [teacher1, teacher2]);
+            compareIds(teacher1.students, [newStudent]);
+            compareIds(teacher2.students, [newStudent]);
           })
         );
 
         test(
           'during update mutation',
-          runner(setupKeystone, async ({ keystone, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             // Manually setup a connected Student <-> Teacher
             let teacher1 = await create('Teacher', {});
             let teacher2 = await create('Teacher', {});
@@ -106,10 +134,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // cross over
             let student2 = await create('Student', {});
 
-            teacher1 = await findById('Teacher', teacher1.id);
-            teacher2 = await findById('Teacher', teacher2.id);
-            student1 = await findById('Student', student1.id);
-            student2 = await findById('Student', student2.id);
+            teacher1 = await getTeacher(keystone, teacher1.id);
+            teacher2 = await getTeacher(keystone, teacher2.id);
+            student1 = await getStudent(keystone, student1.id);
+            student2 = await getStudent(keystone, student2.id);
 
             // Sanity check the links are setup correctly
             expect(toStr(student1.teachers)).toHaveLength(0);
@@ -140,19 +168,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toBe(undefined);
 
             // Check the link has been broken
-            teacher1 = await findById('Teacher', teacher1.id);
-            teacher2 = await findById('Teacher', teacher2.id);
-            student1 = await findById('Student', student1.id);
-            student2 = await findById('Student', student2.id);
+            teacher1 = await getTeacher(keystone, teacher1.id);
+            teacher2 = await getTeacher(keystone, teacher2.id);
+            student1 = await getStudent(keystone, student1.id);
+            student2 = await getStudent(keystone, student2.id);
 
             // Sanity check the links are setup correctly
-            expect(toStr(student1.teachers)).toMatchObject([
-              teacher1.id.toString(),
-              teacher2.id.toString(),
-            ]);
-            expect(toStr(student2.teachers)).toHaveLength(0);
-            expect(toStr(teacher1.students)).toMatchObject([student1.id.toString()]);
-            expect(toStr(teacher2.students)).toMatchObject([student1.id.toString()]);
+            compareIds(student1.teachers, [teacher1, teacher2]);
+            compareIds(student2.teachers, []);
+            compareIds(teacher1.students, [student1]);
+            compareIds(teacher2.students, [student1]);
           })
         );
       });
@@ -160,7 +185,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('nested create', () => {
         test(
           'during create mutation',
-          runner(setupKeystone, async ({ keystone, findById }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             const teacherName1 = sampleOne(alphanumGenerator);
             const teacherName2 = sampleOne(alphanumGenerator);
 
@@ -189,22 +214,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             let newTeachers = data.createStudent.teachers;
 
             // Check the link has been broken
-            const teacher1 = await findById('Teacher', newTeachers[0].id);
-            const teacher2 = await findById('Teacher', newTeachers[1].id);
-            newStudent = await findById('Student', newStudent.id);
+            const teacher1 = await getTeacher(keystone, newTeachers[0].id);
+            const teacher2 = await getTeacher(keystone, newTeachers[1].id);
+            newStudent = await getStudent(keystone, newStudent.id);
 
-            // We can't assume what IDs get assigned, or what order they come back in
-            expect(toStr(newStudent.teachers.sort())).toMatchObject(
-              [teacher1.id.toString(), teacher2.id.toString()].sort()
-            );
-            expect(toStr(teacher1.students)).toMatchObject([newStudent.id.toString()]);
-            expect(toStr(teacher2.students)).toMatchObject([newStudent.id.toString()]);
+            compareIds(newStudent.teachers, [teacher1, teacher2]);
+            compareIds(teacher1.students, [newStudent]);
+            compareIds(teacher2.students, [newStudent]);
           })
         );
 
         test(
           'during update mutation',
-          runner(setupKeystone, async ({ keystone, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             let student = await create('Student', {});
             const teacherName1 = sampleOne(alphanumGenerator);
             const teacherName2 = sampleOne(alphanumGenerator);
@@ -234,23 +256,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             let newTeachers = data.updateStudent.teachers;
 
             // Check the link has been broken
-            const teacher1 = await findById('Teacher', newTeachers[0].id);
-            const teacher2 = await findById('Teacher', newTeachers[1].id);
-            student = await findById('Student', student.id);
+            const teacher1 = await getTeacher(keystone, newTeachers[0].id);
+            const teacher2 = await getTeacher(keystone, newTeachers[1].id);
+            student = await getStudent(keystone, student.id);
 
-            // We can't assume what IDs get assigned, or what order they come back in
-            expect(toStr(student.teachers.sort())).toMatchObject(
-              [teacher1.id.toString(), teacher2.id.toString()].sort()
-            );
-            expect(toStr(teacher1.students)).toMatchObject([student.id.toString()]);
-            expect(toStr(teacher2.students)).toMatchObject([student.id.toString()]);
+            compareIds(student.teachers, [teacher1, teacher2]);
+            compareIds(teacher1.students, [student]);
+            compareIds(teacher2.students, [student]);
           })
         );
       });
 
       test(
         'nested disconnect during update mutation',
-        runner(setupKeystone, async ({ keystone, create, update, findById }) => {
+        runner(setupKeystone, async ({ keystone, create, update }) => {
           // Manually setup a connected Student <-> Teacher
           let teacher1 = await create('Teacher', {});
           let teacher2 = await create('Teacher', {});
@@ -260,28 +279,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await update('Teacher', teacher1.id, { students: [student1.id, student2.id] });
           await update('Teacher', teacher2.id, { students: [student1.id, student2.id] });
 
-          teacher1 = await findById('Teacher', teacher1.id);
-          teacher2 = await findById('Teacher', teacher2.id);
-          student1 = await findById('Student', student1.id);
-          student2 = await findById('Student', student2.id);
+          teacher1 = await getTeacher(keystone, teacher1.id);
+          teacher2 = await getTeacher(keystone, teacher2.id);
+          student1 = await getStudent(keystone, student1.id);
+          student2 = await getStudent(keystone, student2.id);
 
           // Sanity check the links are setup correctly
-          expect(toStr(student1.teachers)).toMatchObject([
-            teacher1.id.toString(),
-            teacher2.id.toString(),
-          ]);
-          expect(toStr(student2.teachers)).toMatchObject([
-            teacher1.id.toString(),
-            teacher2.id.toString(),
-          ]);
-          expect(toStr(teacher1.students)).toMatchObject([
-            student1.id.toString(),
-            student2.id.toString(),
-          ]);
-          expect(toStr(teacher2.students)).toMatchObject([
-            student1.id.toString(),
-            student2.id.toString(),
-          ]);
+          compareIds(student1.teachers, [teacher1, teacher2]);
+          compareIds(student2.teachers, [teacher1, teacher2]);
+          compareIds(teacher1.students, [student1, student2]);
+          compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
           const { errors } = await graphqlRequest({
@@ -306,28 +313,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toBe(undefined);
 
           // Check the link has been broken
-          teacher1 = await findById('Teacher', teacher1.id);
-          teacher2 = await findById('Teacher', teacher2.id);
-          student1 = await findById('Student', student1.id);
-          student2 = await findById('Student', student2.id);
+          teacher1 = await getTeacher(keystone, teacher1.id);
+          teacher2 = await getTeacher(keystone, teacher2.id);
+          student1 = await getStudent(keystone, student1.id);
+          student2 = await getStudent(keystone, student2.id);
 
           // Sanity check the links are setup correctly
-          expect(toStr(student1.teachers)).toMatchObject([teacher2.id.toString()]);
-          expect(toStr(student2.teachers)).toMatchObject([
-            teacher1.id.toString(),
-            teacher2.id.toString(),
-          ]);
-          expect(toStr(teacher1.students)).toMatchObject([student2.id.toString()]);
-          expect(toStr(teacher2.students)).toMatchObject([
-            student1.id.toString(),
-            student2.id.toString(),
-          ]);
+          compareIds(student1.teachers, [teacher2]);
+          compareIds(student2.teachers, [teacher1, teacher2]);
+          compareIds(teacher1.students, [student2]);
+          compareIds(teacher2.students, [student1, student2]);
         })
       );
 
       test(
         'nested disconnectAll during update mutation',
-        runner(setupKeystone, async ({ keystone, create, update, findById }) => {
+        runner(setupKeystone, async ({ keystone, create, update }) => {
           // Manually setup a connected Student <-> Teacher
           let teacher1 = await create('Teacher', {});
           let teacher2 = await create('Teacher', {});
@@ -337,28 +338,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await update('Teacher', teacher1.id, { students: [student1.id, student2.id] });
           await update('Teacher', teacher2.id, { students: [student1.id, student2.id] });
 
-          teacher1 = await findById('Teacher', teacher1.id);
-          teacher2 = await findById('Teacher', teacher2.id);
-          student1 = await findById('Student', student1.id);
-          student2 = await findById('Student', student2.id);
+          teacher1 = await getTeacher(keystone, teacher1.id);
+          teacher2 = await getTeacher(keystone, teacher2.id);
+          student1 = await getStudent(keystone, student1.id);
+          student2 = await getStudent(keystone, student2.id);
 
           // Sanity check the links are setup correctly
-          expect(toStr(student1.teachers)).toMatchObject([
-            teacher1.id.toString(),
-            teacher2.id.toString(),
-          ]);
-          expect(toStr(student2.teachers)).toMatchObject([
-            teacher1.id.toString(),
-            teacher2.id.toString(),
-          ]);
-          expect(toStr(teacher1.students)).toMatchObject([
-            student1.id.toString(),
-            student2.id.toString(),
-          ]);
-          expect(toStr(teacher2.students)).toMatchObject([
-            student1.id.toString(),
-            student2.id.toString(),
-          ]);
+          compareIds(student1.teachers, [teacher1, teacher2]);
+          compareIds(student2.teachers, [teacher1, teacher2]);
+          compareIds(teacher1.students, [student1, student2]);
+          compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
           const { errors } = await graphqlRequest({
@@ -383,26 +372,23 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toBe(undefined);
 
           // Check the link has been broken
-          teacher1 = await findById('Teacher', teacher1.id);
-          teacher2 = await findById('Teacher', teacher2.id);
-          student1 = await findById('Student', student1.id);
-          student2 = await findById('Student', student2.id);
+          teacher1 = await getTeacher(keystone, teacher1.id);
+          teacher2 = await getTeacher(keystone, teacher2.id);
+          student1 = await getStudent(keystone, student1.id);
+          student2 = await getStudent(keystone, student2.id);
 
           // Sanity check the links are setup correctly
-          expect(toStr(student1.teachers)).toHaveLength(0);
-          expect(toStr(student2.teachers)).toMatchObject([
-            teacher1.id.toString(),
-            teacher2.id.toString(),
-          ]);
-          expect(toStr(teacher1.students)).toMatchObject([student2.id.toString()]);
-          expect(toStr(teacher2.students)).toMatchObject([student2.id.toString()]);
+          compareIds(student1.teachers, []);
+          compareIds(student2.teachers, [teacher1, teacher2]);
+          compareIds(teacher1.students, [student2]);
+          compareIds(teacher2.students, [student2]);
         })
       );
     });
 
     test(
       'delete mutation updates back references in to-many relationship',
-      runner(setupKeystone, async ({ keystone, create, update, findById }) => {
+      runner(setupKeystone, async ({ keystone, create, update }) => {
         // Manually setup a connected Student <-> Teacher
         let teacher1 = await create('Teacher', {});
         let teacher2 = await create('Teacher', {});
@@ -412,28 +398,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         await update('Teacher', teacher1.id, { students: [student1.id, student2.id] });
         await update('Teacher', teacher2.id, { students: [student1.id, student2.id] });
 
-        teacher1 = await findById('Teacher', teacher1.id);
-        teacher2 = await findById('Teacher', teacher2.id);
-        student1 = await findById('Student', student1.id);
-        student2 = await findById('Student', student2.id);
+        teacher1 = await getTeacher(keystone, teacher1.id);
+        teacher2 = await getTeacher(keystone, teacher2.id);
+        student1 = await getStudent(keystone, student1.id);
+        student2 = await getStudent(keystone, student2.id);
 
         // Sanity check the links are setup correctly
-        expect(toStr(student1.teachers)).toMatchObject([
-          teacher1.id.toString(),
-          teacher2.id.toString(),
-        ]);
-        expect(toStr(student2.teachers)).toMatchObject([
-          teacher1.id.toString(),
-          teacher2.id.toString(),
-        ]);
-        expect(toStr(teacher1.students)).toMatchObject([
-          student1.id.toString(),
-          student2.id.toString(),
-        ]);
-        expect(toStr(teacher2.students)).toMatchObject([
-          student1.id.toString(),
-          student2.id.toString(),
-        ]);
+        compareIds(student1.teachers, [teacher1, teacher2]);
+        compareIds(student2.teachers, [teacher1, teacher2]);
+        compareIds(teacher1.students, [student1, student2]);
+        compareIds(teacher2.students, [student1, student2]);
 
         // Run the query to delete the student
         const { errors } = await graphqlRequest({
@@ -448,19 +422,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         });
         expect(errors).toBe(undefined);
 
-        teacher1 = await findById('Teacher', teacher1.id);
-        teacher2 = await findById('Teacher', teacher2.id);
-        student1 = await findById('Student', student1.id);
-        student2 = await findById('Student', student2.id);
+        teacher1 = await getTeacher(keystone, teacher1.id);
+        teacher2 = await getTeacher(keystone, teacher2.id);
+        student1 = await getStudent(keystone, student1.id);
+        student2 = await getStudent(keystone, student2.id);
 
         // Check the link has been broken
         expect(student1).toBe(null);
-        expect(toStr(student2.teachers)).toMatchObject([
-          teacher1.id.toString(),
-          teacher2.id.toString(),
-        ]);
-        expect(toStr(teacher1.students)).toMatchObject([student2.id.toString()]);
-        expect(toStr(teacher2.students)).toMatchObject([student2.id.toString()]);
+        compareIds(student2.teachers, [teacher1, teacher2]);
+        compareIds(teacher1.students, [student2]);
+        compareIds(teacher2.students, [student2]);
       })
     );
   })

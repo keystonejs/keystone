@@ -1,0 +1,39 @@
+{
+  "releases": [{ "name": "@keystone-alpha/adapter-knex", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/test-utils",
+        "@keystone-alpha/adapter-knex"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/fields",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/test-utils", "@keystone-alpha/adapter-knex"]
+    },
+    {
+      "name": "@keystone-alpha/fields-auto-increment",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields", "@keystone-alpha/adapter-knex"]
+    },
+    {
+      "name": "@keystone-alpha/fields-datetime-utc",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields", "@keystone-alpha/adapter-knex"]
+    },
+    {
+      "name": "@keystone-alpha/fields-mongoid",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields", "@keystone-alpha/adapter-knex"]
+    },
+    {
+      "name": "@keystone-alpha/test-utils",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/adapter-knex"]
+    }
+  ]
+}
