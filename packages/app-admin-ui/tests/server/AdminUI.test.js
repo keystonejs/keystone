@@ -38,16 +38,11 @@ describe('Add Middleware', () => {
       adminPath,
     });
 
-    // Fake express app
-    const app = {
-      use: () => {},
-    };
+    const adminMeta = adminUI.getAdminUIMeta(keystone);
 
-    //expect(adminUI.createSessionMiddleware()).not.toBe(null);
     expect(
       adminUI.createDevMiddleware({
-        keystone,
-        app,
+        adminMeta,
       })
     ).not.toBe(null);
   });

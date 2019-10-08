@@ -650,6 +650,142 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
         })
       );
+
+      test(
+        'fragments',
+        runner(setupKeystone, async ({ app }) => {
+          const { errors } = await networkedGraphqlRequest({
+            app,
+            expectedStatusCode: 400,
+            operationName: 'a',
+            query: `
+            fragment f on User {
+              name
+              favNumber
+            }
+            query a {
+              allPosts {
+                title
+                author {
+                  ...f
+                }
+              }
+              users1: allUsers {
+                ...f
+              }
+              users2: allUsers {
+                ...f
+              }
+            }
+          `,
+          });
+
+          expect(errors).toMatchObject([{ message: 'Request contains 11 fields (max: 8)' }]);
+        })
+      );
+
+      test(
+        'unused fragment',
+        runner(setupKeystone, async ({ app }) => {
+          const { errors } = await networkedGraphqlRequest({
+            app,
+            expectedStatusCode: 400,
+            operationName: 'a',
+            query: `
+            fragment unused on User {
+              name
+              favNumber
+            }
+            fragment f on User {
+              name
+              favNumber
+            }
+            query a {
+              allPosts {
+                title
+                author {
+                  ...f
+                }
+              }
+              users1: allUsers {
+                ...f
+              }
+              users2: allUsers {
+                ...f
+              }
+            }
+          `,
+          });
+
+          // We also get an "internal server error" from other code that doesn't handle this case
+          expect(errors).toContainEqual({
+            message: 'Request contains 13 fields (max: 8)',
+            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+            name: 'ValidationError',
+            uid: expect.anything(),
+          });
+        })
+      );
+
+      test(
+        'billion laughs',
+        runner(setupKeystone, async ({ app }) => {
+          // https://en.wikipedia.org/wiki/Billion_laughs
+          const { errors } = await networkedGraphqlRequest({
+            app,
+            expectedStatusCode: 400,
+            operationName: 'a',
+            query: `
+            query a {
+              u1: allUsers {
+                ...lol1
+              }
+              u2: allUsers {
+                ...lol1
+              }
+              u3: allUsers {
+                ...lol1
+              }
+              u4: allUsers {
+                ...lol1
+              }
+              u5: allUsers {
+                ...lol1
+              }
+            }
+            fragment lol1 on User {
+              p1: allPosts {
+                ...lol2
+              }
+              p2: allPosts {
+                ...lol2
+              }
+              p3: allPosts {
+                ...lol2
+              }
+              p4: allPosts {
+                ...lol2
+              }
+              p5: allPosts {
+                ...lol2
+              }
+            }
+            fragment lol2 on Post {
+              title
+              author
+            }
+          `,
+          });
+
+          // We also get an "internal server error" from other code that doesn't handle this case
+          expect(errors).toContainEqual({
+            message: 'Request contains 80 fields (max: 8)',
+            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+            name: 'ValidationError',
+            uid: expect.anything(),
+          });
+        })
+      );
     });
   })
 );
