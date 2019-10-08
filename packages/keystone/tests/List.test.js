@@ -117,13 +117,13 @@ class MockListAdapter {
   itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
     if (meta) {
       return {
-        count: (id
+        count: (id !== undefined
           ? [this.items[id]]
           : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
         ).length,
       };
     } else {
-      return id
+      return id !== undefined
         ? [this.items[id]]
         : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
     }
