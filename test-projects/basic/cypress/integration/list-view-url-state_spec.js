@@ -58,7 +58,7 @@ describe('List view URL state', () => {
     // Avoid accidentally mocking routes
     cy.server({ enable: false });
 
-    cy.get('#ks-list-search-input').type('Why');
+    cy.get('#ks-list-search-input').type('Why', { force: true });
 
     cy.wait('@graphqlPost');
 
@@ -142,7 +142,7 @@ describe('List view URL state', () => {
     cy.get('#app ~ div')
       .find('input[placeholder="Name contains"]')
       .clear()
-      .type(`keystone{enter}`);
+      .type(`keystone{enter}`, { force: true });
     cy.location('search').should('eq', '?!name_contains=%22keystone%22');
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
       'contain',

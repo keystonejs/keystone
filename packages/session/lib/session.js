@@ -73,7 +73,11 @@ function populateAuthedItemMiddleware(keystone) {
       // TODO: probably destroy the session
       return next();
     }
-    const item = await list.adapter.findById(req.session.keystoneItemId);
+    const item = await list.getAccessControlledItem(req.session.keystoneItemId, true, {
+      operation: 'read',
+      context: {},
+      info: {},
+    });
     if (!item) {
       // TODO: probably destroy the session
       return next();

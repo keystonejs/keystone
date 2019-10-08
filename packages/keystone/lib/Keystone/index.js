@@ -54,6 +54,7 @@ module.exports = class Keystone {
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
+    queryLimits = {},
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
@@ -85,6 +86,14 @@ module.exports = class Keystone {
       this.defaultAdapter = adapter.constructor.name;
     } else {
       throw new Error('No database adapter provided');
+    }
+
+    this.queryLimits = {
+      maxTotalResults: Infinity,
+      ...queryLimits,
+    };
+    if (this.queryLimits.maxTotalResults < 1) {
+      throw new Error("queryLimits.maxTotalResults can't be < 1");
     }
 
     // Placeholder until keystone.prepare() is run during which this function
@@ -162,6 +171,8 @@ module.exports = class Keystone {
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
+      totalResults: 0,
+      maxTotalResults: this.queryLimits.maxTotalResults,
     };
   }
 

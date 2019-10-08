@@ -31,6 +31,8 @@ keystone.createList('Post', {
 | `plural`        | `String`                            |                               | Specify a plural for `Keystone` to use for the list.                                    |
 | `path`          | `String`                            |                               | Changes the path in the Admin UI.                                                       |
 | `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.                                  |
+| `queryLimits`   | `Object`                            | `{}`                          | Configures list-level query limits.                                                     |
+| `cacheHint`     | `Object`                            | `{}`                          | Configures a default caching hint for list.                                             |
 
 ### `fields`
 
@@ -294,6 +296,8 @@ This provides a method for packaging features that can be applied to multiple li
 ### `queryLimits`
 
 Configuration for limiting the kinds of queries that can be made against the list, to avoid queries that might overload the server.
+
+See also [global query limits on the Keystone object](https://v5.keystonejs.com/api/keystone#query-limits).
 
 - `maxResults`: maximum number of results that can be returned in a query (or subquery)
 
