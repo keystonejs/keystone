@@ -18,9 +18,6 @@ jobs:
         with:
           node-version: 10.x
 
-      - name: Install Yarn
-        run: npm install --global Yarn
-
       - name: Install Dependencies
         # we have a postinstall script that uses is-ci which doesn't yet detect GitHub Actions
         run: CI=true yarn
