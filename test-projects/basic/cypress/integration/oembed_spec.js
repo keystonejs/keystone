@@ -10,7 +10,7 @@ const getCellFromSecondRow = index =>
 const saveValue = value => {
   cy.get(oembedInputSelector).clear();
   if (value) {
-    cy.get(oembedInputSelector).type(value);
+    cy.get(oembedInputSelector).type(value, { force: true });
   }
   const alias = cuid.slug();
   // Setup to track XHR requests
@@ -42,7 +42,7 @@ describe('OEmbed <Field> view', () => {
 
     it('displays a placeholder preview when adding a value', () => {
       cy.get(oembedInputSelector).should('have.value', '');
-      cy.get(oembedInputSelector).type('http://example.com');
+      cy.get(oembedInputSelector).type('http://example.com', { force: true });
       cy.get(oembedPreviewSelector)
         .should('exist')
         .should('contain', 'Preview will be generated after save')
@@ -102,7 +102,7 @@ describe('OEmbed <Field> view', () => {
     it('displays a placeholder preview when editing a value', () => {
       cy.get(oembedInputSelector).should('not.have.value', '');
       cy.get(oembedInputSelector).clear();
-      cy.get(oembedInputSelector).type('http://example.com');
+      cy.get(oembedInputSelector).type('http://example.com', { force: true });
       cy.get(oembedPreviewSelector)
         .should('exist')
         .should('contain', 'Preview will be generated after save')

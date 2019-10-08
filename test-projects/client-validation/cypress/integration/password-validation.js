@@ -13,7 +13,7 @@ describe('Adding users', () => {
           cy.get(`#ks-input-password-button`).click({ force: true });
         }
 
-        cy.get(`#${item}`).type(data[item]);
+        cy.get(`#${item}`).type(data[item], { force: true });
       });
 
       // Why force? Because Cypress has lots of issues with determining
@@ -28,11 +28,11 @@ describe('Adding users', () => {
     cy.visit('/admin/users');
     cy.get('#list-page-create-button').click({ force: true });
 
-    cy.get('#ks-input-name').type('John Doe');
-    cy.get('#ks-input-email').type('john@gmail.com');
+    cy.get('#ks-input-name').type('John Doe', { force: true });
+    cy.get('#ks-input-email').type('john@gmail.com', { force: true });
     cy.get('#ks-input-password-button').click({ force: true });
-    cy.get('#ks-input-password').type('password');
-    cy.get('#ks-input-password-confirm').type('password');
+    cy.get('#ks-input-password').type('password', { force: true });
+    cy.get('#ks-input-password-confirm').type('password', { force: true });
 
     cy.get('#create-item-modal-submit-button').click({ force: true });
 
@@ -59,7 +59,7 @@ describe('Editing data', () => {
         }
 
         if (!data[item]) {
-          cy.get(`#${item}`).type(' ');
+          cy.get(`#${item}`).type(' ', { force: true });
           cy.get(`#${item}`).clear();
         } else {
           cy.get(`#${item}`).type(data[item]);
@@ -76,10 +76,10 @@ describe('Editing data', () => {
     cy.get(`a:contains("John Doe"):first`).click({ force: true });
 
     cy.get('#ks-input-name').clear();
-    cy.get('#ks-input-name').type('test name');
+    cy.get('#ks-input-name').type('test name', { force: true });
     cy.get(`#ks-input-password-button`).click({ force: true });
-    cy.get(`#ks-input-password`).type('new password');
-    cy.get(`#ks-input-password-confirm`).type('new password');
+    cy.get(`#ks-input-password`).type('new password', { force: true });
+    cy.get(`#ks-input-password-confirm`).type('new password', { force: true });
 
     cy.get('#item-page-save-button').click({ force: true });
     cy.get(`nav a:contains("Users")`).click({ force: true });

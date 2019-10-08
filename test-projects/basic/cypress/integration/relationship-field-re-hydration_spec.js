@@ -27,7 +27,7 @@ describe('Testing re-hydration', () => {
 
     cy.visit('/admin/post-categories');
     cy.get('#list-page-create-button').click({ force: true });
-    cy.get('#ks-input-name').type('New Category');
+    cy.get('#ks-input-name').type('New Category', { force: true });
     cy.get('#create-item-modal-submit-button').click({ force: true });
     cy.get('body').should('contain', 'New Category');
 
