@@ -4,7 +4,9 @@ subSection: apps
 title: Next.js App
 [meta]-->
 
-# Next.js App
+# KeystoneJS Next.js App
+
+A KeystoneJS App for serving a [Next.js](https://nextjs.org/) application.
 
 ## Usage
 
@@ -23,3 +25,9 @@ module.exports = {
   distDir,
 };
 ```
+
+### Config
+
+| Option | Type     | Default | Required | Description                       |
+| ------ | -------- | ------- | -------- | --------------------------------- |
+| `dir`  | `String` | `null`  | `true`   | The directory of the Next.js app. |
