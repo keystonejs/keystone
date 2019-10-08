@@ -1,0 +1,1 @@
+`KnexListAdapter.findById()` will no longer populate `many` relationship fields.
