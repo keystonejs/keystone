@@ -1,5 +1,5 @@
 <!--[meta]
-section: quick-start
+section: guides
 title: GraphQL Philosophy
 order: 1
 [meta]-->
