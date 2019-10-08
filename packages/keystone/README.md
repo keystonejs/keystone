@@ -34,7 +34,7 @@ const keystone = new Keystone({
 | `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                             |
 | `sessionStore`          | `Object`   | `null`     |                                                                                                                                                   |
 | `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                   |
-| `queryLimits` | `Object` | `{}`    | Configures global query limits |
+| `queryLimits`           | `Object`   | `{}`       | Configures global query limits                                                                                                                    |
 
 ### `queryLimits`
 
