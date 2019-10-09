@@ -1,1 +1,0 @@
-Update `getAccessControlledItem()` to remove short-circuit code which code lead to future data inconsistency.

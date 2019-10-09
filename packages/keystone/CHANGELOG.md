@@ -1,5 +1,16 @@
 # @keystone-alpha/keystone
 
+## 15.4.0
+
+### Minor Changes
+
+- [b12e4ccb](https://github.com/keystonejs/keystone-5/commit/b12e4ccb): Add a global maxTotalResults limit to Keystone object
+
+### Patch Changes
+
+- [3a52447d](https://github.com/keystonejs/keystone-5/commit/3a52447d): Update `getAccessControlledItem()` to remove short-circuit code which code lead to future data inconsistency.
+- [65d32b54](https://github.com/keystonejs/keystone-5/commit/65d32b54): Fix session storage
+
 ## 15.3.1
 
 ### Patch Changes

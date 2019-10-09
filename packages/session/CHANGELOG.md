@@ -1,5 +1,11 @@
 # @keystone-alpha/session
 
+## 3.0.2
+
+### Patch Changes
+
+- [a6d384b1](https://github.com/keystonejs/keystone-5/commit/a6d384b1): Populate session item using `getAccessControlledItem()` rather than `findById()`.
+
 ## 3.0.1
 
 ### Patch Changes

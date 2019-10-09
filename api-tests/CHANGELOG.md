@@ -1,5 +1,17 @@
 # @keystone-alpha/api-tests
 
+## 1.8.0
+
+### Minor Changes
+
+- [588c50cd](https://github.com/keystonejs/keystone-5/commit/588c50cd): Support protection against Billion Laughs DoS attacks
+- [b12e4ccb](https://github.com/keystonejs/keystone-5/commit/b12e4ccb): Add a global maxTotalResults limit to Keystone object
+
+- Updated dependencies [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466):
+  - @keystone-alpha/fields@13.1.0
+  - @keystone-alpha/test-utils@2.6.2
+  - @keystone-alpha/adapter-knex@5.0.0
+
 ## 1.7.1
 
 - Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
