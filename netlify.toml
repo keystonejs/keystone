@@ -1,6 +1,6 @@
 [build]
   # we're doing rm -rf node_modules because otherwise things are broken
-  command = "rm -rf node_modules && yarn website build"
+  command = "rm -rf node_modules && yarn && yarn website build"
   publish = "website/public"
 [build.environment]
   NODE_VERSION = "10"
