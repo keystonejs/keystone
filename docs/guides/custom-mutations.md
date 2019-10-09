@@ -11,13 +11,13 @@ Custom Queries and Mutations may be required if you wish to preform non-CRUD ope
 
 See the [GraphQL Philosophy](https://v5.keystonejs.com/guides/graphql-philosophy) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
-You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.\
+You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
 
 # Creating an Custom Mutation
 
 A common example where a custom mutation might be beneficial is if you want to increment a value.
 
-Like any problem there are multiple solutions. You can implement an incrementing value with (Hooks)[https://v5.keystonejs.com/guides/hooks] but in this example we're going to look at how to do this with a custom mutation.
+Like any problem there are multiple solutions. You can implement an incrementing value with [Hooks](https://v5.keystonejs.com/guides/hooks) but in this example we're going to look at how to do this with a custom mutation.
 
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
@@ -102,6 +102,8 @@ const Page = {
 };
 ```
 
+The last step is to define the resolver function `incrementPageViews`.
+
 Our function will by-pass access control and update the value directly by getting the list item and then by calling `findById` on the list adapter. Once we have the old item we can call `update` with the new values.
 
 ```js
@@ -118,7 +120,7 @@ const incrementPageViews = async (_, { id }) => {
 
 Note: The value of `views` may be `undefined` initially, so before we increment it we make sure to convert any `falsey` values to `0`.
 
-Our custom mutation is now available to the client that trigger it with the following graphQL query:
+Our custom mutation is now available to the client that can use it to increment page views like this:
 
 ```
 mutation incrementPageViews($id: ID!) {
