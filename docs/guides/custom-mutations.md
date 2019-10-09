@@ -82,7 +82,6 @@ keystone.extendGraphQLSchema({
 });
 ```
 
-The last step is to define the resolver function `incrementPageViews`.
 
 In this mutation we want to access an existing item in the list. We don't care about access control, in-fact we will make the field read-only so that it cannot be updated with normal mutations or in the AdminUI. Our new Page definition is:
 
