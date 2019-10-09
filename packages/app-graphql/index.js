@@ -1,4 +1,3 @@
-const assert = require('nanoassert');
 const express = require('express');
 const { restrictAudienceMiddleware } = require('@keystone-alpha/session');
 const { GraphQLPlaygroundApp } = require('@keystone-alpha/app-graphql-playground');
