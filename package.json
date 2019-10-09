@@ -34,11 +34,6 @@
     "contributors:generate": "all-contributors generate",
     "heroku-postbuild": "yarn build && yarn workspace @keystone-alpha/demo-project-blog build"
   },
-  "resolutions": {
-    "**/@babel/core": "^7.6.2",
-    "**/@babel/parser": "^7.6.2",
-    "**/@babel/preset-env": "^7.6.2"
-  },
   "dependencies": {
     "@babel/cli": "^7.6.2",
     "@babel/core": "^7.6.2",
