@@ -1,1 +1,0 @@
-NextApp: Throw an error if the 'dir' config option is not set. Also set the default config to an empty object.

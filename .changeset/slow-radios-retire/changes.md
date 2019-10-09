@@ -1,1 +1,0 @@
-handle errors better when knex connection is an object
