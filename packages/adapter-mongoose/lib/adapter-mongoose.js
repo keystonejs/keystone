@@ -39,6 +39,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   async _connect({ name }) {
     const { mongoUri, ...mongooseConfig } = this.config;
     // Default to the localhost instance
+    // These env vars are used as a convenience for when no connection string is configured but can be easily overwritten.
     let uri =
       mongoUri ||
       process.env.CONNECT_TO ||

@@ -29,6 +29,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
   async _connect({ name }) {
     const { knexOptions = {} } = this.config;
     const { connection } = knexOptions;
+    // These env vars are used as a convenience for when no connection string is configured but can be easily overwritten.
     let knexConnection =
       connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
 
