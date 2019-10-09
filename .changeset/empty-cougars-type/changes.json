@@ -1,6 +1,6 @@
 {
   "releases": [
-    { "name": "@keystone-alpha/api-tests", "type": "minor" },
+    { "name": "@keystone-alpha/access-control", "type": "minor" },
     { "name": "@keystone-alpha/keystone", "type": "minor" }
   ],
   "dependents": []

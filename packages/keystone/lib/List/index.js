@@ -720,7 +720,10 @@ module.exports = class List {
   }
 
   checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
-    const access = context.getListAccessControlForUser(this.key, originalInput, operation);
+    const access = context.getListAccessControlForUser(this.key, originalInput, operation, {
+      gqlName,
+      ...extraInternalData,
+    });
     if (!access) {
       graphqlLogger.debug(
         { operation, access, gqlName, ...extraInternalData },

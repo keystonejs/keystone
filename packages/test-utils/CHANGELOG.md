@@ -1,5 +1,10 @@
 # @keystone-alpha/test-utils
 
+## 2.6.2
+
+- Updated dependencies [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466):
+  - @keystone-alpha/adapter-knex@5.0.0
+
 ## 2.6.1
 
 - Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):

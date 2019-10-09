@@ -1,5 +1,15 @@
 # @keystone-alpha/adapter-knex
 
+## 5.0.0
+
+### Major Changes
+
+- [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466): `KnexListAdapter.findById()` will no longer populate `many` relationship fields.
+
+### Patch Changes
+
+- [84f4dbad](https://github.com/keystonejs/keystone-5/commit/84f4dbad): handle errors better when knex connection is an object
+
 ## 4.0.11
 
 ### Patch Changes

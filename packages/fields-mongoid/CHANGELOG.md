@@ -1,5 +1,11 @@
 # @keystone-alpha/fields-mongoid
 
+## 1.1.4
+
+- Updated dependencies [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466):
+  - @keystone-alpha/fields@13.1.0
+  - @keystone-alpha/adapter-knex@5.0.0
+
 ## 1.1.3
 
 - Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):

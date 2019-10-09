@@ -136,18 +136,30 @@ module.exports = class Keystone {
         });
       });
 
-      getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
-        return validateListAccessControl({
-          access: this.lists[listKey].access[schemaName],
-          originalInput,
-          operation,
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-        });
-      });
+      getListAccessControlForUser = fastMemoize(
+        (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+          return validateListAccessControl({
+            access: this.lists[listKey].access[schemaName],
+            originalInput,
+            operation,
+            authentication: { item: req.user, listKey: req.authedListKey },
+            listKey,
+            gqlName,
+            itemId,
+            itemIds,
+          });
+        }
+      );
 
       getFieldAccessControlForUser = fastMemoize(
-        (listKey, fieldKey, originalInput, existingItem, operation) => {
+        (
+          listKey,
+          fieldKey,
+          originalInput,
+          existingItem,
+          operation,
+          { gqlName, itemId, itemIds } = {}
+        ) => {
           return validateFieldAccessControl({
             access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
             originalInput,
@@ -156,6 +168,9 @@ module.exports = class Keystone {
             authentication: { item: req.user, listKey: req.authedListKey },
             fieldKey,
             listKey,
+            gqlName,
+            itemId,
+            itemIds,
           });
         }
       );
@@ -648,10 +663,11 @@ module.exports = class Keystone {
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
+      // TODO: set up a session test rig (maybe by wrapping an in-memory store)
       commonSessionMiddleware({
         keystone: this,
         cookieSecret: this._cookieSecret,
-        sessionStore: this.sessionStore,
+        sessionStore: this._sessionStore,
         secureCookies: this._secureCookies,
         cookieMaxAge: this._cookieMaxAge,
       }),
