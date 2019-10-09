@@ -20,7 +20,7 @@ class AdminUIApp {
     isAccessAllowed = () => true,
     schemaName = 'public',
     enableDevFeatures = false,
-    mode = process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    buildMode = process.env.NODE_ENV === 'production' ? 'production' : 'development',
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -39,7 +39,7 @@ class AdminUIApp {
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
     this._enableDevFeatures = enableDevFeatures;
-    this._mode = mode;
+    this._mode = buildMode;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
