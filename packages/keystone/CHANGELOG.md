@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 15.3.2
+
+### Patch Changes
+
+- [e58af667](https://github.com/keystonejs/keystone-5/commit/e58af667): Fix session storage
+
 ## 15.3.1
 
 ### Patch Changes
