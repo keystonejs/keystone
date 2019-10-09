@@ -1,5 +1,11 @@
 # @keystone-alpha/access-control
 
+## 3.1.0
+
+### Minor Changes
+
+- [1405eb07](https://github.com/keystonejs/keystone-5/commit/1405eb07): Add `listKey`, `fieldKey` (fields only), `operation`, `gqlName`, `itemId` and `itemIds` as arguments to imperative access control functions.
+
 ## 3.0.0
 
 ### Major Changes
