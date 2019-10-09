@@ -1799,6 +1799,15 @@
     "@changesets/types" "^0.3.0"
     semver "^5.4.1"
 
+"@changesets/changelog-github@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.1.0.tgz#32b9b025e3686c3c0563763540e97af4a88cc794"
+  integrity sha512-0s9vT743lkJwkuCrOIl7V7uEJq2vSY3GQ7u2haALHEAJSDkh7B/IoiL774cj9nzLbuVJE+B1pALJC/5TNtr/0w==
+  dependencies:
+    "@changesets/get-github-info" "^0.3.0"
+    "@changesets/types" "^0.3.0"
+    dotenv "^8.1.0"
+
 "@changesets/cli@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.0.3.tgz#2108e0e1fb9cc6c2a4a10e9c9afe56a3ea5304dd"
@@ -1846,10 +1855,10 @@
     "@changesets/types" "^0.3.0"
     fs-extra "^7.0.1"
 
-"@changesets/get-github-info@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@changesets/get-github-info/-/get-github-info-0.2.1.tgz#a9886fde67df5bb9fdbddf2c4ce8c0f5b1ff83dd"
-  integrity sha512-0NKwnpcFcV0IqQpDQ9xe/m3p0BzTWvv+DWmF+hC0QBrCqUdCfx4bHM85JD8jYQ157S2h6d28ZdGLY4/IVdi5bQ==
+"@changesets/get-github-info@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@changesets/get-github-info/-/get-github-info-0.3.0.tgz#1776a6b5ed2f9f1d16d076ef19acbc29003ef81c"
+  integrity sha512-PTFJk1hiMUZ1YGzULmRNo6a6w6LTV6iCY1muCBTby+k4WWGbGgAaqKfUVhpZBosd1fvFIlXl3wqxdA93PLkRaQ==
   dependencies:
     dataloader "^1.4.0"
     node-fetch "^2.5.0"
@@ -8189,6 +8198,11 @@ dotenv@^8.0.0:
   version "8.0.0"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-8.0.0.tgz#ed310c165b4e8a97bb745b0a9d99c31bda566440"
   integrity sha512-30xVGqjLjiUOArT4+M5q9sYdvuR4riM6yK9wMcas9Vbp6zZa+ocC9dp6QoftuhTPhFAiLK/0C5Ni2nou/Bk8lg==
+
+dotenv@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.1.0.tgz#d811e178652bfb8a1e593c6dd704ec7e90d85ea2"
+  integrity sha512-GUE3gqcDCaMltj2++g6bRQ5rBJWtkWTmqmD0fo1RnnMuUqHNCt2oTPeDnS9n6fKYvlhn7AeBkb38lymBtWBQdA==
 
 download@^6.2.2:
   version "6.2.5"

@@ -1,1 +1,0 @@
-Allow async and creatable react-selects

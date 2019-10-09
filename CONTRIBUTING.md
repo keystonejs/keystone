@@ -73,42 +73,183 @@ You can have multiple changesets in a single PR. This will give you more granula
 
 ### Release Guidelines
 
-### Publishing
-
 #### How to do a release
 
 > This should only ever be done by a very short list of core contributors
 
-Releasing is a two-step process. The first step updates the packages by merging the versioning PR, and the second step publishes updated packages to npm.
+Releasing is a two-step process. The first step updates the packages, and the second step publishes updated packages to npm.
 
-#### Versioning packages
+##### Update Packages (automatic)
 
-The [Changesets release GitHub action](https://github.com/changesets/action) will open a PR that versions all of the packages
+This step is handled for us by the Changesets GitHub Action. As PRs are opened
+against `master`, the bot will open and update a PR which generates the
+appropriate `CHANGELOG.md` entries and `package.json` version bumps.
 
-#### Release Process
+Once ready for a release, merge the bot's PR into `master`.
+
+> _NOTE: For information on manually updating packages, see [Update Packages
+> (manual)](#update-packages-manual)_
+
+##### Publish Packages
 
 Once the version changes are merged back in to master, to do a manual release:
 
 ```sh
-git checkout master && \
-git pull && \
-yarn && \
+yarn fresh && \
 yarn publish-changed && \
-git push --tags && \
-yarn
+git push --tags
 ```
 
 The `yarn publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
 
-Because of this, we should keep the following in mind:
+NOTE: There is no reason you should ever manually edit the version in the `package.json`
 
-- There is no reason you should ever manually edit the version in the `package.json`
+##### Update Packages (manual)
+
+If you wish to do a manual release (useful for back-porting fixes), follow these
+steps. Otherwise, skip on to the next section for _Publishing Packages_.
+
+The first step is `yarn version-packages`. This will find all changesets that have been created since the last release, and update the version in package.json as specified in those changesets, flattening out multiple bumps to a single package into a single version update.
+
+The `yarn version-packages` command will generate a release commit, which will bump all versions, necessary dependency version changes, and update changelog.mds.
+
+The commands to run are:
+
+```sh
+git checkout master && \
+git pull && \
+git branch -D temp-release-branch && \
+git checkout -b temp-release-branch && \
+yarn fresh && \
+yarn build && \
+yarn version-packages && \
+yarn format && \
+git add . && \
+git commit -m "Version packages" && \
+git push --set-upstream origin temp-release-branch
+```
+
+Once you have run this you will need to make a pull request to merge this back into master.
+
+Finally, make sure you've got the latest of everything locally
+
+```sh
+git checkout master && \
+git pull && \
+yarn
+```
 
 #### A quick note on changelogs
 
 The release process will automatically generate and update a `CHANGELOG.md` file, however this does not need to be the only way this file is modified. The changelogs are deliberately static assets so past changelogs can be updated or expanded upon.
 
 In addition, content added above the last released version will automatically be appended to the next release. If your changes do not fit comfortably within the summary of a changelog, we encourage you to add a more detailed account directly into the `CHANGELOG.md`.
+
+#### Backporting Fixes
+
+Occasionally a bug goes undetected for a few versions. When a fix is discovered,
+it may need to be applied to all affected versions (depending on the
+severity, security considerations, etc). This is called _backporting_.
+
+First, find out the oldest version which was affected. This can be done using
+`git blame`, browsing the `CHANGELOG.md`s, etc.
+
+Once we know which version introduced the bug, walk forward through the
+`CHANGELOG.md` noting all the _minor_ and _major_ releases made since.
+
+> Example: If a bug was introduced in `14.0.0`, but not discovered until after
+> `15.1.1` was released, the list of _minor_ and _major_ releases may look like:
+>
+> - `14.0.x`
+> - `14.1.x`
+> - `15.0.x`
+> - `15.1.x`
+
+We're going to do a backport and release for the HEAD of every _minor_ and
+_major_ release, ignoring any interim patch releases.
+
+> Example: These may be the releases we'd backport to:
+>
+> - ❌ `14.0.0`
+> - ✅ `14.0.1`
+> - ✅ `14.1.0`
+> - ❌ `15.0.0`
+> - ❌ `15.0.1`
+> - ✅ `15.0.2`
+> - ✅ `15.1.0`
+
+Now, for each release we want to backport to, we follow this process:
+
+1. Checkout the tag of the release
+
+   Let's say the package being patched is `@keystone-alpha/keystone`, then we
+   want to run:
+
+   ```sh
+   git checkout -b backport-keystone-14.0.1 @keystone-alpha/keystone@14.0.1
+   ```
+
+2. Cherry pick the commit across.
+
+   Fix any merge conflicts that might arise.
+
+   NOTE: Make sure the changeset is either regenerated or edited to accurately
+   relfect the change to the one package you're bumping, otherwise weirdness
+   will happen.
+
+   ```sh
+   git cherry-pick abc123123
+   ```
+
+3. Bump package versions
+
+   ```sh
+   yarn fresh --prefer-offline && \
+   yarn build && \
+   yarn version-packages && \
+   yarn format && \
+   git add . && \
+   git commit -m "Backport fix"
+   ```
+
+4. Do _NOT_ open a PR
+
+   This change is not going to be PR'd into master. Instead we'll later push
+   the tag which contains the commits.
+
+   To confirm everything is as expected, look at the git log:
+
+   ```sh
+   git log -p
+   ```
+
+5. Publish the newly version bumped package
+
+   Note we can't use changesets to do this special publish as it doesn't handle backports.
+
+   ```sh
+   (\
+   export PACKAGE_NAME=@keystone-alpha/keystone && \
+   export OTP_CODE= && \
+   cd packages/keystone && \
+   yarn publish --tag=backport --otp=$OTP_CODE && \
+   export BACKPORTED_VERSION=`npm dist-tag ls $PACKAGE_NAME | grep 'backport' | sed -e 's/backport: //'` && \
+   yarn tag remove $PACKAGE_NAME backport --otp=$OTP_CODE && \
+   git tag -a "$PACKAGE_NAME@$BACKPORTED_VERSION" -m "$PACKAGE_NAME@$BACKPORTED_VERSION"
+   git push --tags \
+   )
+   ```
+
+     <!-- this was the cd command but we don't have a command to replace the exact bolt part yet    cd `bolt ws $PACKAGE_NAME exec -- pwd | grep pwd | sed -e 's/.*pwd[ ]*//'` && \ w
+   -->
+
+   _NOTE: When prompted for "New version", just hit Enter_
+
+6. Confirm it was published
+
+   ```sh
+   npm show <PACKAGE_NAME> versions
+   ```
 
 ### Build Process
 
@@ -174,3 +315,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+```
+
+```

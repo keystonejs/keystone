@@ -1,5 +1,10 @@
 # @keystone-alpha/website
 
+## 1.1.4
+
+- Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+  - @arch-ui/select@0.1.0
+
 ## 1.1.3
 
 - Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
