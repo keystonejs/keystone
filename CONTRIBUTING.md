@@ -134,7 +134,8 @@ In addition, content added above the last released version will automatically be
 ### Backporting Fixes
 
 Occasionally a bug goes undetected for a few versions. When a fix is discovered,
-it needs to be applied to all affected versions. This is called _backporting_.
+it may need to be applied to all affected versions (depending on the
+severity, security considerations, etc). This is called _backporting_.
 
 First, find out the oldest version which was affected. This can be done using
 `git blame`, browsing the `CHANGELOG.md`s, etc.
