@@ -3,5 +3,5 @@
   publish = "website/public"
 [build.environment]
   NODE_VERSION = "10"
-  YARN_VERSION = "1.19.0"
+  YARN_VERSION = "1.15.2"
   YARN_FLAGS = "--frozen-lockfile"
