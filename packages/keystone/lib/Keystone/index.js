@@ -556,10 +556,11 @@ module.exports = class Keystone {
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
+      // TODO: set up a session test rig (maybe by wrapping an in-memory store)
       commonSessionMiddleware({
         keystone: this,
         cookieSecret: this._cookieSecret,
-        sessionStore: this.sessionStore,
+        sessionStore: this._sessionStore,
         secureCookies: this._secureCookies,
         cookieMaxAge: this._cookieMaxAge,
       }),
