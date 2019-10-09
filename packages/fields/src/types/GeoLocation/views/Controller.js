@@ -20,18 +20,19 @@ export default class TextController extends FieldController {
     }
   };
   deserialize = data => {
-    if(data[this.path]){
-      return {
-        lng: data[this.path].coordinates[0],
-        lat: data[this.path].coordinates[1],
-      };
-    }
-    return {};
+    if (!data[this.path]) return {};
+    const [lng, lat] = data[this.path].coordinates;
+    return {
+      lng,
+      lat,
+    };
   };
-  validateInput = ({ addFieldValidationError, originalInput }) => {
+  validateInput = ({ addFieldValidationError, resolvedData }) => {
     const rangeCheck = (input, min, max) => input >= min && input <= max;
-    if (!originalInput.location.coordinates) return false;
-    const [lng, lat] = originalInput.location.coordinates;
+    if (!resolvedData) return;
+    const location = resolvedData[this.path];
+    if (!location) return;
+    const [lng, lat] = location.coordinates;
     if (!lng) {
       addFieldValidationError('Longitude not found');
     } else if (lng == NaN) {
