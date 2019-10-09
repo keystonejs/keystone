@@ -1,1 +1,0 @@
-Correctly pass `gqlName` for all access checks
