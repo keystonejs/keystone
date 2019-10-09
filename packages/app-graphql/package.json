@@ -8,9 +8,9 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@keystone-alpha/app-graphql-playground": "^1.0.1",
     "@keystone-alpha/logger": "^2.0.1",
     "@keystone-alpha/session": "^3.0.2",
-    "@keystone-alpha/app-graphql-playground": "^1.0.1",
     "@keystone-alpha/utils": "^3.0.2",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.9.1",
@@ -22,6 +22,9 @@
     "stack-utils": "^1.0.2"
   },
   "peerDependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
     "express": "^4.17.1"
   }
 }

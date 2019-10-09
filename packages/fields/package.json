@@ -72,8 +72,7 @@
     "unsplash-js": "^5.0.0"
   },
   "devDependencies": {
-    "@keystone-alpha/test-utils": "^2.6.2",
-    "cuid": "^2.1.6"
+    "@keystone-alpha/test-utils": "^2.6.2"
   },
   "field-types": {
     "entrypoints": [
