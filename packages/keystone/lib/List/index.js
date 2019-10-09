@@ -876,19 +876,19 @@ module.exports = class List {
     return resolvers;
   }
 
-  async listQuery(args, context, queryName, info) {
-    const access = this.checkListAccess(context, undefined, 'read', { queryName });
+  async listQuery(args, context, gqlName, info) {
+    const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
     return this._itemsQuery(mergeWhereClause(args, access), { context, info });
   }
 
-  async listQueryMeta(args, context, queryName, info) {
+  async listQueryMeta(args, context, gqlName, info) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
       // Evalutation takes place in ../Keystone/index.js
       getCount: () => {
-        const access = this.checkListAccess(context, undefined, 'read', { queryName });
+        const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
         return this._itemsQuery(mergeWhereClause(args, access), { meta: true, context, info }).then(
           ({ count }) => count
@@ -1036,8 +1036,8 @@ module.exports = class List {
       return null;
     }
 
-    const queryName = this.gqlNames.authenticatedQueryName;
-    const access = this.checkListAccess(context, undefined, 'auth', { queryName });
+    const gqlName = this.gqlNames.authenticatedQueryName;
+    const access = this.checkListAccess(context, undefined, 'auth', { gqlName });
     return this.itemQuery(
       mergeWhereClause({ where: { id: context.authedItem.id } }, access),
       context,
@@ -1046,8 +1046,8 @@ module.exports = class List {
   }
 
   async authenticateMutation(authType, args, context) {
-    const queryName = getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType);
-    this.checkListAccess(context, undefined, 'auth', { queryName });
+    const gqlName = getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType);
+    this.checkListAccess(context, undefined, 'auth', { gqlName });
 
     // This is currently hard coded to enable authenticating with the admin UI.
     // In the near future we will set up the admin-ui application and api to be
@@ -1071,8 +1071,8 @@ module.exports = class List {
   }
 
   async unauthenticateMutation(context) {
-    const queryName = this.gqlNames.unauthenticateMutationName;
-    this.checkListAccess(context, undefined, 'auth', { queryName });
+    const gqlName = this.gqlNames.unauthenticateMutationName;
+    this.checkListAccess(context, undefined, 'auth', { gqlName });
 
     await context.endAuthedSession();
     return { success: true };
