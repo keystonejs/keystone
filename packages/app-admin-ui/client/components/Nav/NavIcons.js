@@ -1,4 +1,3 @@
-/* global EXPERIMENTAL_FEATURES */
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
