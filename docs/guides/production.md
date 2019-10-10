@@ -5,13 +5,13 @@ title: Production Readiness Checklist
 
 # Production Readiness Checklist
 
-Yes, Keystone can be (and is!) used for production websites. Here's a handy list of tips for using Keystone with real workloads:
+Yes, KeystoneJS can be (and is!) used for production websites. Here's a handy list of tips for using KeystoneJS with real workloads:
 
 ## Session Handling
 
 ### Cookie Secret
 
-Make sure the production deployment sets a long, unguessable value for [Keystone's `cookieSecret`](https://v5.keystonejs.com/keystone-alpha/keystone/#config).
+Make sure the production deployment sets a long, unguessable value for [KeystoneJS' `cookieSecret`](https://v5.keystonejs.com/keystone-alpha/keystone/#config).
 
 A randomly generated value is suitable (but keep it secret):
 
@@ -21,10 +21,10 @@ openssl rand -hex 32
 
 ### Session Store
 
-Sessions are stored inside the Keystone app by default, but in production it's recommended to store them in an external server such as Redis instead. You can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores). The advantages of using an external server are that
+Sessions are stored inside the KeystoneJS app by default, but in production it's recommended to store them in an external server such as Redis instead. You can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores). The advantages of using an external server are that
 
 - You can restart your app for upgrades without breaking sessions
-- You can replicate your Keystone app for availability, while keeping sessions consistent
+- You can replicate your KeystoneJS app for availability, while keeping sessions consistent
 
 ## Caching
 
@@ -40,15 +40,9 @@ Add [query limits](https://v5.keystonejs.com/api/create-list/#querylimits) and [
 
 ## Using Reverse Proxies
 
-It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)).
+NB: If you're using a third-party hosted environment, you might already be using a reverse proxy, but Keystone will need to be [configured for it](https://v5.keystonejs.com/keystone-alpha/keystone/#trustproxies).
 
-You'll need to let your Javascript web app know that you're running behind a proxy, so that it can correctly handle `X-Forwarded-For-*` HTTP headers. Here's how you might set up an Express app to work behind one proxy:
-
-```javascript
-const app = express();
-app.set('trust proxy', 1); // behind one reverse proxy
-app.use(keystoneMiddlewares);
-```
+It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](<https://en.wikipedia.org/wiki/Slowloris_(computer_security)>).
 
 ## Environment Variables
 

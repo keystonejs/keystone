@@ -62,7 +62,9 @@ keystone
   .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
-    express()
+    const app = express();
+    keystone
+      .configureServerApp(app)
       .use(middlewares)
       .listen(3000);
   });
@@ -98,7 +100,9 @@ keystone
   .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
-    express()
+    const app = express();
+    keystone
+      .configureServerApp(app)
       .use(middlewares)
       .listen(3000);
   });
@@ -139,7 +143,10 @@ const preparations = [
 Promise.all(preparations)
   .then(middlewares => {
     await keystone.connect();
-    express().use(middlewares).listen(3000);
+    const app = express();
+    keystone.configureServerApp(app)
+      .use(middlewares)
+      .listen(3000);
   });
 ```
 
@@ -170,7 +177,8 @@ const setup = keystone
   .prepare({ apps: [new GraphQLApp()], dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
-    const app = express().use(middlewares);
+    const app = express();
+    keystone.configureServerApp(app).use(middlewares);
     return serverless(app);
   });
 
