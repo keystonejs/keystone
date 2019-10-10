@@ -26,8 +26,8 @@ export class GeoLocation extends Implementation {
     };
     this.defaultValue = defaultValue || defaultCenter;
     this.defaultZoom = defaultZoom || 11;
-    this.googleApiKey = googleApiKey;
-    if (typeof showMap == 'undefined') {
+    this.googleApiKey = googleApiKey || process.env.GOOGLE_API_KEY;
+    if (typeof showMap === 'undefined') {
       this.showMap = true;
     } else {
       this.showMap = showMap || false;
