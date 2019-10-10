@@ -79,7 +79,10 @@ export class GeoLocation extends Implementation {
 }
 
 export class MongoGeoLocationInterface extends MongooseFieldAdapter {
-  rangeCheck = (target, min, max) => target !== NaN && min <= target && target <= max;
+  rangeCheck(target, min, max) {
+    return target !== NaN && min <= target && target <= max;
+  }
+
   addToMongooseSchema(schema) {
     const validator = locationObject => {
       if (typeof locationObject !== 'object') return false;
@@ -98,7 +101,9 @@ export class MongoGeoLocationInterface extends MongooseFieldAdapter {
         message: '{VALUE} is not a valid geo coordinate',
       },
     };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+    schema.add({
+      [this.path]: this.mergeSchemaOptions(schemaOptions, this.config),
+    });
   }
 
   getQueryConditions() {
