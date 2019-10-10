@@ -20,7 +20,6 @@ class AdminUIApp {
     isAccessAllowed = () => true,
     schemaName = 'public',
     enableDevFeatures = false,
-    buildMode = process.env.NODE_ENV === 'production' ? 'production' : 'development',
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -39,7 +38,6 @@ class AdminUIApp {
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
     this._enableDevFeatures = enableDevFeatures;
-    this._mode = buildMode;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -104,7 +102,7 @@ class AdminUIApp {
         entry: 'index',
         outputPath: path.join(builtAdminRoot, 'secure'),
         enableDevFeatures: this._enableDevFeatures,
-        mode: this._mode,
+        mode: 'production',
       })
     );
     compilers.push(secureCompiler);
@@ -117,7 +115,7 @@ class AdminUIApp {
           entry: 'public',
           outputPath: path.join(builtAdminRoot, 'public'),
           enableDevFeatures: this._enableDevFeatures,
-          mode: this._mode,
+          mode: 'production',
         })
       );
       compilers.push(publicCompiler);
@@ -288,7 +286,7 @@ class AdminUIApp {
         adminMeta,
         entry: 'index',
         enableDevFeatures: this._enableDevFeatures,
-        mode: this._mode,
+        mode: 'development',
       })
     );
 
@@ -302,7 +300,7 @@ class AdminUIApp {
           adminMeta: { ...adminMeta, lists: {} },
           entry: 'public',
           enableDevFeatures: this._enableDevFeatures,
-          mode: this._mode,
+          mode: 'development',
         })
       );
 
