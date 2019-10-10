@@ -1,7 +1,6 @@
-/* global ENABLE_DEV_FEATURES */
+/* global EXPERIMENTAL_FEATURES */
 /** @jsx jsx */
 
-import { Fragment } from 'react';
 import { jsx } from '@emotion/core';
 
 import { TerminalIcon, MarkGithubIcon, SignOutIcon } from '@arch-ui/icons';
@@ -13,7 +12,7 @@ const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 export function NavIcons() {
   let { graphiqlPath, signoutPath, authStrategy } = useAdminMeta();
-  return ENABLE_DEV_FEATURES || authStrategy ? (
+  return (
     <NavGroupIcons>
       {authStrategy ? (
         <PrimaryNavItem href={signoutPath} title="Sign Out">
@@ -21,18 +20,18 @@ export function NavIcons() {
           <A11yText>Sign Out</A11yText>
         </PrimaryNavItem>
       ) : null}
-      {ENABLE_DEV_FEATURES ? (
-        <Fragment>
-          <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
-            <MarkGithubIcon />
-            <A11yText>GitHub</A11yText>
-          </PrimaryNavItem>
-          <PrimaryNavItem target="_blank" href={graphiqlPath} title="Graphiql Console">
-            <TerminalIcon />
-            <A11yText>Graphiql Console</A11yText>
-          </PrimaryNavItem>
-        </Fragment>
+
+      <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
+        <MarkGithubIcon />
+        <A11yText>GitHub</A11yText>
+      </PrimaryNavItem>
+
+      {graphiqlPath ? (
+        <PrimaryNavItem target="_blank" href={graphiqlPath} title="Graphiql Console">
+          <TerminalIcon />
+          <A11yText>Graphiql Console</A11yText>
+        </PrimaryNavItem>
       ) : null}
     </NavGroupIcons>
-  ) : null;
+  );
 }

@@ -19,7 +19,7 @@ class AdminUIApp {
     enableDefaultRoute = false,
     isAccessAllowed = () => true,
     schemaName = 'public',
-    enableDevFeatures = false,
+    experimentalFeatures = false,
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -37,7 +37,7 @@ class AdminUIApp {
     this.enableDefaultRoute = enableDefaultRoute;
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
-    this._enableDevFeatures = enableDevFeatures;
+    this._experimentalFeatures = experimentalFeatures;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -101,7 +101,7 @@ class AdminUIApp {
         adminMeta,
         entry: 'index',
         outputPath: path.join(builtAdminRoot, 'secure'),
-        enableDevFeatures: this._enableDevFeatures,
+        experimentalFeatures: this._experimentalFeatures,
         mode: 'production',
       })
     );
@@ -114,7 +114,7 @@ class AdminUIApp {
           adminMeta: { ...adminMeta, lists: {} },
           entry: 'public',
           outputPath: path.join(builtAdminRoot, 'public'),
-          enableDevFeatures: this._enableDevFeatures,
+          experimentalFeatures: this._experimentalFeatures,
           mode: 'production',
         })
       );
@@ -285,7 +285,7 @@ class AdminUIApp {
       getWebpackConfig({
         adminMeta,
         entry: 'index',
-        enableDevFeatures: this._enableDevFeatures,
+        experimentalFeatures: this._experimentalFeatures,
         mode: 'development',
       })
     );
@@ -299,7 +299,7 @@ class AdminUIApp {
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
           entry: 'public',
-          enableDevFeatures: this._enableDevFeatures,
+          experimentalFeatures: this._experimentalFeatures,
           mode: 'development',
         })
       );

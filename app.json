@@ -5,7 +5,7 @@
     "CI": {
       "required": true
     },
-    "ENABLE_DEV_FEATURES": {
+    "EXPERIMENTAL_FEATURES": {
       "required": true
     },
     "MONGODB_URI": {
