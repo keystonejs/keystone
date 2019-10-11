@@ -131,8 +131,8 @@ class BaseListAdapter {
     return this.onPostRead(this._findOne(condition));
   }
 
-  async itemsQuery(args, { meta = false } = {}) {
-    const results = await this._itemsQuery(args, { meta });
+  async itemsQuery(args, { meta = false, from = {} } = {}) {
+    const results = await this._itemsQuery(args, { meta, from });
     return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
   }
 
