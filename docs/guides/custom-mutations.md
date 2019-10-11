@@ -61,7 +61,7 @@ You can add to Keystone's generated schema using `keystone.extendGraphQLSchema()
 
 Each item in the mutation array requires a `schema` and a `resolver`.
 
-The Schema defines the input and return types of the mutation. You can [learn more about schemas and types](https://graphql.org/learn/schema/) on [https://graphql.org](https://graphql.org).
+The Schema defines the input and return types of the mutation. You can [learn more about schemas and types](https://graphql.org/learn/schema/) on <https://graphql.org>.
 
 Our Schema is simple: `incrementPageViews(id: ID!): Page`. It's called `incrementPageViews` and requires an `id` parameter that must be of an `ID` type. It returns a `Page` type.
 
@@ -81,7 +81,6 @@ keystone.extendGraphQLSchema({
   ],
 });
 ```
-
 
 In this mutation we want to access an existing item in the list. We don't care about access control, in-fact we will make the field read-only so that it cannot be updated with normal mutations or in the AdminUI. Our new Page definition is:
 
