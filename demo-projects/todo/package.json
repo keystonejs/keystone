@@ -17,9 +17,9 @@
     "@keystone-alpha/adapter-mongoose": "^5.0.0",
     "@keystone-alpha/app-admin-ui": "^5.10.0",
     "@keystone-alpha/app-graphql": "^8.1.1",
+    "@keystone-alpha/app-static": "^1.1.2",
     "@keystone-alpha/fields": "^13.0.0",
     "@keystone-alpha/keystone": "^15.3.1",
-    "@keystone-alpha/app-static": "^1.1.2",
     "cross-env": "^5.2.0"
   }
 }

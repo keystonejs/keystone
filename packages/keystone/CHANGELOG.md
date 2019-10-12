@@ -1,5 +1,23 @@
 # @keystone-alpha/keystone
 
+## 15.4.1
+
+### Patch Changes
+
+- [14fee364](https://github.com/keystonejs/keystone-5/commit/14fee364): Correctly pass `gqlName` for all access checks
+
+## 15.4.0
+
+### Minor Changes
+
+- [b12e4ccb](https://github.com/keystonejs/keystone-5/commit/b12e4ccb): Add a global maxTotalResults limit to Keystone object
+- [1405eb07](https://github.com/keystonejs/keystone-5/commit/1405eb07): Add `listKey`, `fieldKey` (fields only), `operation`, `gqlName`, `itemId` and `itemIds` as arguments to imperative access control functions.
+
+### Patch Changes
+
+- [3a52447d](https://github.com/keystonejs/keystone-5/commit/3a52447d): Update `getAccessControlledItem()` to remove short-circuit code which code lead to future data inconsistency.
+- [65d32b54](https://github.com/keystonejs/keystone-5/commit/65d32b54): Fix session storage
+
 ## 15.3.1
 
 ### Patch Changes

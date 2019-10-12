@@ -1,1 +1,0 @@
-Populate session item using `getAccessControlledItem()` rather than `findById()`.

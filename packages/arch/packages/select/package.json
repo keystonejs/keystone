@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/select",
   "description": "Select Component used in @keystone-alpha Admin UI.",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/select.cjs.js",

@@ -391,9 +391,9 @@ When `first` and `skip` are used together, skip works as an offset for the `firs
 
 Both `skip` and `first` respect the values of the `where`, `search` and `orderBy` arguments.
 
-## Custom queries and Mutations
+## Custom Queries and Mutations
 
-You can add to KeystoneJS' generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
+You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
 
 ### Usage
 
