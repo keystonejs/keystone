@@ -1,8 +1,7 @@
 import FieldController from '../../../Controller';
 
 export default class TextController extends FieldController {
-
-  parseFilter = (key) => {
+  parseFilter = key => {
     let type = key;
     if (type.endsWith('_i')) {
       this.isFilterInsensitive = true;
@@ -11,20 +10,20 @@ export default class TextController extends FieldController {
     return this.getFilterTypes().find(t => {
       return type === `${this.path}_${t.type}`;
     });
-  }
+  };
   encodeFilter = (type, value) => {
     if (this.getFilterInsensitive()) {
       return [`${this.path}_${type}_i`, JSON.stringify(value)];
     }
     return [`${this.path}_${type}`, JSON.stringify(value)];
-  }
+  };
 
-  setFilterInsensitive = (isFilterInsensitive) => {
+  setFilterInsensitive = isFilterInsensitive => {
     this.isFilterInsensitive = isFilterInsensitive;
-  }
+  };
   getFilterInsensitive = () => {
     return this.isFilterInsensitive;
-  }
+  };
   getFilterGraphQL = ({ type, value }) => {
     let key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     if (this.getFilterInsensitive()) {

@@ -67,7 +67,7 @@ export default class FieldController {
    * @param {addFieldWarningOrError} options.addFieldValidationWarning
    * @return undefined
    */
-  validateInput = () => { };
+  validateInput = () => {};
 
   // When receiving data from the server, it needs to be processed into a
   // format ready for display. The format received will be the same as specified
@@ -102,22 +102,22 @@ export default class FieldController {
    * @param value value of the query
    * @return a filter object
    */
-  parseFilter = (key) => {
+  parseFilter = key => {
     let type = key;
     return this.getFilterTypes().find(t => {
       return type === `${this.path}_${t.type}`;
     });
-  }
+  };
 
   /**
-  * @description encode filter to url query
-  * @param type filter type in string
-  * @param value value of the filter
-  * @return an array of [key, value]
-  */
+   * @description encode filter to url query
+   * @param type filter type in string
+   * @param value value of the filter
+   * @return an array of [key, value]
+   */
   encodeFilter = (type, value) => {
     return [`${this.path}_${type}`, JSON.stringify(value)];
-  }
+  };
 
   getFilterTypes = () => [];
 
