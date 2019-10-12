@@ -1,5 +1,22 @@
 # @keystone-alpha/fields
 
+## 13.1.0
+
+### Minor Changes
+
+- [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579): Add Location field
+
+### Patch Changes
+
+- [3a52447d](https://github.com/keystonejs/keystone-5/commit/3a52447d): Ensure updateMutation() is always called with a string ID when resolving backlinks.
+
+- Updated dependencies [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466):
+- Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+  - @keystone-alpha/test-utils@2.6.2
+  - @keystone-alpha/adapter-knex@5.0.0
+  - @arch-ui/day-picker@0.0.13
+  - @arch-ui/select@0.1.0
+
 ## 13.0.0
 
 ### Major Changes

@@ -102,7 +102,7 @@ describe('Editing data', () => {
       cy.get(`a:contains("${field.value}"):first`).click({ force: true });
       cy.get(field.id)
         .clear()
-        .type(field.newValue);
+        .type(field.newValue, { force: true });
       cy.get('#item-page-save-button').click({ force: true });
       cy.get(`nav a:contains("${section}")`).click({ force: true });
       cy.get('#ks-list-table').should('contain', field.newValue);

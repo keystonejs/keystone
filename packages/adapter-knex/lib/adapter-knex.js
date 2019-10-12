@@ -377,7 +377,8 @@ class KnexListAdapter extends BaseListAdapter {
       })
     );
 
-    return this._findById(item.id);
+    const result = await this._findById(item.id);
+    return result ? this._populateMany(result) : null;
   }
 
   async _findAll() {
@@ -385,10 +386,11 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _findById(id) {
-    const item = (await this._query()
-      .from(this.key)
-      .where('id', id))[0];
-    return item ? this._populateMany(item) : null;
+    return (
+      (await this._query()
+        .from(this.key)
+        .where('id', id))[0] || null
+    );
   }
 
   async _find(condition) {

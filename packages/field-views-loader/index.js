@@ -12,6 +12,7 @@ function serialize(value, allPaths) {
     return (
       '{\n' +
       Object.keys(value)
+        .filter(key => value[key] !== undefined)
         .map(key => {
           // we need to use getters so circular dependencies work
           return `${JSON.stringify(key)}: ${serialize(value[key], allPaths)}`;

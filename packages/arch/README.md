@@ -12,8 +12,8 @@ Resources, tooling, and design guidelines by KeystoneJS using [GastbyJS](https:/
 To start, run
 
 ```sh
-cd www && bolt
-bolt start
+cd docs
+yarn start
 ```
 
 You can now view Arch in the browser:
