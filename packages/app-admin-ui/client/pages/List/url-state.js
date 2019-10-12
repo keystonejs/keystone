@@ -97,7 +97,7 @@ const parseFilter = (filter: [string, string], list): FilterType | null => {
   let label;
   const field = list.fields.find(f => {
     if (key.indexOf(f.path) !== 0) return false;
-    const filterType = f.parseFilter(filter);
+    const filterType = f.parseFilter(key, value);
     if (filterType) {
       type = filterType.type;
       label = filterType.label;
@@ -129,7 +129,7 @@ const parseFilter = (filter: [string, string], list): FilterType | null => {
 
 const encodeFilter = (filter: FilterType): [string, string] => {
   const { field, type, value } = filter;
-  return field.encodeFilter({ type, value });
+  return field.encodeFilter(type, value);
 };
 
 type Props = {

@@ -2,6 +2,23 @@ import FieldController from '../../../Controller';
 
 export default class TextController extends FieldController {
 
+  parseFilter = (key) => {
+    let type = key;
+    if (type.endsWith('_i')) {
+      this.isFilterInsensitive = true;
+      type = type.slice(0, -2);
+    }
+    return this.getFilterTypes().find(t => {
+      return type === `${this.path}_${t.type}`;
+    });
+  }
+  encodeFilter = (type, value) => {
+    if (this.getFilterInsensitive()) {
+      return [`${this.path}_${type}_i`, JSON.stringify(value)];
+    }
+    return [`${this.path}_${type}`, JSON.stringify(value)];
+  }
+
   setFilterInsensitive = (isFilterInsensitive) => {
     this.isFilterInsensitive = isFilterInsensitive;
   }
@@ -10,7 +27,7 @@ export default class TextController extends FieldController {
   }
   getFilterGraphQL = ({ type, value }) => {
     let key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    if(this.getFilterInsensitive()){
+    if (this.getFilterInsensitive()) {
       key = `${key}_i`;
     }
     return `${key}: "${value}"`;
@@ -21,23 +38,6 @@ export default class TextController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  parseFilter = (filter: [string, string]) => {
-   let type = filter[0];
-   if(type.endsWith('_i')){
-    this.isFilterInsensitive = true;
-    type = type.slice(0, -2);
-   }
-   return this.getFilterTypes().find(t => {
-    return type === `${this.path}_${t.type}`;
-   });
-  }
-  encodeFilter = ({ type, value }) => {
-    if(this.getFilterInsensitive()){
-      return [`${this.path}_${type}_i`, JSON.stringify(value)];
-    }
-    return [`${this.path}_${type}`, JSON.stringify(value)];
-  }
-
   getFilterTypes = () => [
     {
       type: 'contains',
