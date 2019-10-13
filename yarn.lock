@@ -1773,15 +1773,15 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@changesets/apply-release-plan@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-0.2.1.tgz#8d6eaceb6c812d81cc3ca4b5e47884cc133c3242"
-  integrity sha512-zsd6GzYJLC8BaU2iS8vr437qkKBAf1/tF+wkYRyWFVBGmIjf8Gs7lKxYXkV5LMfE1EDpRBMX+VzMGjhsRfVc3w==
+"@changesets/apply-release-plan@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-0.2.2.tgz#2ed578ca59dd1129b9671e1337e7819e59d25733"
+  integrity sha512-E5BvR7p+J86BQBZjUdx7vTf7NLenHFqLtAaocyN2T8KM9SdYLVw/KPt+Ng2VnrbrG0pCPlTOYdAWNQ4eCb+t6w==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@changesets/config" "^0.2.1"
     "@changesets/get-version-range-type" "^0.1.1"
-    "@changesets/git" "^0.2.1"
+    "@changesets/git" "^0.2.3"
     "@changesets/types" "^0.3.0"
     fs-extra "^7.0.1"
     get-workspaces "^0.5.0"
@@ -1808,21 +1808,20 @@
     "@changesets/types" "^0.3.0"
     dotenv "^8.1.0"
 
-"@changesets/cli@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.0.3.tgz#2108e0e1fb9cc6c2a4a10e9c9afe56a3ea5304dd"
-  integrity sha512-+Fcy71xK/2q8R+mHsonNEzituo8OH2TOMMh34E6o6SN62kIND2b+CgKE7ChlCwDOuyqkSLlHaCrBMhuVeA6ROA==
+"@changesets/cli@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.0.4.tgz#9bf90f3c607a30b612de1777c4b871b42fc2bd25"
+  integrity sha512-9Nc4NsKEV+n2eNjTqgnzn9/S0ZPTTxWhDDKEQTv381v0LpxdQlLciEZ10DjwoSm1PGoUfwwxmqApt6U2mZfxsw==
   dependencies:
     "@babel/runtime" "^7.4.4"
-    "@changesets/apply-release-plan" "^0.2.1"
+    "@changesets/apply-release-plan" "^0.2.2"
     "@changesets/assemble-release-plan" "^0.2.1"
     "@changesets/config" "^0.2.1"
     "@changesets/get-release-plan" "^0.1.2"
-    "@changesets/git" "^0.2.2"
+    "@changesets/git" "^0.2.3"
     "@changesets/read" "^0.2.2"
     "@changesets/types" "^0.3.0"
     "@types/semver" "^6.0.0"
-    "@types/uuid" "^3.4.4"
     boxen "^1.3.0"
     chalk "^2.1.0"
     cli-table "^0.3.1"
@@ -1845,7 +1844,6 @@
     spawndamnit "^2.0.0"
     term-size "^2.1.0"
     tty-table "^2.7.0"
-    uuid "^3.3.2"
 
 "@changesets/config@^0.2.1":
   version "0.2.1"
@@ -1854,6 +1852,11 @@
   dependencies:
     "@changesets/types" "^0.3.0"
     fs-extra "^7.0.1"
+
+"@changesets/errors@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@changesets/errors/-/errors-0.1.0.tgz#3062bf45049833378d84bc5c4900f9e9e1e87f72"
+  integrity sha512-to3U6z9D+anEFLiY0rgQdv8pRnZ95gzjZk5Gkw+3Gko7tLkoqROlb5ot6aOHNHwUYFCGJReYe02sIMXuwRjVyQ==
 
 "@changesets/get-github-info@^0.3.0":
   version "0.3.0"
@@ -1881,12 +1884,24 @@
   resolved "https://registry.yarnpkg.com/@changesets/get-version-range-type/-/get-version-range-type-0.1.1.tgz#1a0872073b9ea599c7076fcb2ca89a6e56c7564a"
   integrity sha512-c61mf/okSm3LjAfU1ximmFxG+sJck82N5mlCy3BBKfM53aJTmaX4Kg6MVsAcg/qae2R60K1fnv5EGfmaSmjCeg==
 
-"@changesets/git@^0.2.1", "@changesets/git@^0.2.2":
+"@changesets/git@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@changesets/git/-/git-0.2.2.tgz#8df2399da32aae4595051878c7caf013d6d92658"
   integrity sha512-XDl/Z0LeVMkFjjbvGxA5NoS6QFwMm7G2+HLeBL2IwOJHTXrrIvlM9dE2I6RgJYPS3Opkq1tCaq3KilxmBKIrlQ==
   dependencies:
     "@babel/runtime" "^7.4.4"
+    "@changesets/types" "^0.3.0"
+    get-workspaces "^0.5.0"
+    pkg-dir "^4.1.0"
+    spawndamnit "^2.0.0"
+
+"@changesets/git@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@changesets/git/-/git-0.2.3.tgz#1f97a982c0931195012fc905f8650f6eb7684c4b"
+  integrity sha512-QiNzuxa11vgj/woNMPXMilK4OIELHDR5JRkr7w/WXf+LP5ROI4A0k9No3teJoINIZ5XusgYq43CgOAYLtM7xZg==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@changesets/errors" "^0.1.0"
     "@changesets/types" "^0.3.0"
     get-workspaces "^0.5.0"
     pkg-dir "^4.1.0"
@@ -3234,13 +3249,6 @@
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.2.tgz#5dc0a7f76809b7518c0df58689cd16a19bd751c6"
   integrity sha512-iHI60IbyfQilNubmxsq4zqSjdynlmc2Q/QvH9kjzg9+CCYVVzq1O6tc7VBzSygIwnmOt07w80IG6HDQvjv3Liw==
-
-"@types/uuid@^3.4.4":
-  version "3.4.4"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.4.4.tgz#7af69360fa65ef0decb41fd150bf4ca5c0cefdf5"
-  integrity sha512-tPIgT0GUmdJQNSHxp0X2jnpQfBSTfGxUMc/2CXBU2mnyTFVYVa2ojpoQ74w0U2yn2vw3jnC640+77lkFFpdVDw==
-  dependencies:
-    "@types/node" "*"
 
 "@types/vfile-message@*":
   version "1.0.1"
