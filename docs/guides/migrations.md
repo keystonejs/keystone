@@ -5,27 +5,79 @@ title: Migrations
 
 ## Migrations in Keystone
 
-**Keystone does not handle migrations**.
+Migrations are required when you update a List in Keystone after the database has been initialised. **Keystone can't automatically manage these migrations for you** because it doesn't know what to do with the existing data. This guide will explain when and why you need database migrations and offer some basic solutions to get you started. As your project grows to include production deployments, how you manage the seeding and migration of data, will depend on your specific situation. Keystone tries not to limit type of applications you build and therefor cannot offer a "one size fits all" solution to migrations.
 
-When you create a new List, depending on the adapter, Keystone will initialise a database table with columns for each of the fields defined in the List.
+When you create a new List, depending on the adapter, Keystone will initialise a database table with columns for each of the fields defined in the List. Let's look at an example.
 
-If you update the List either by renaming a field, or adding new fields, you might encounter errors next time you start Keystone. This is because the database schema has changed and Keystone doesn't know what to do with existing data, or it won't be able to save new data.
+```javascript
+const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
-How this happens depends on the database. Mongo will happily store new objects and immediately forget about existing data, while Postgres is more likely to throw errors.
+const keystone = new Keystone({
+  name: 'KnexMigrationDemo',
+  adapter: new KnexAdapter(),
+});
 
-In development where you experiment you probably want change the shape of Lists frequently and it can be helpful to drop the database everytime Keystone is restarted. To do this the `KnexAdapter` has a `dropDatabase` option:
+keystone.createList('ExampleList', {
+  fields: {
+    age: { type: Integer },
+  },
+});
+```
+
+Using the KnexAdapter if we create an `ExampleList` that contains an `Integer` field called `age` when we start Keystone for the first time it will generate a table with an `id` and `age` column:
+
+| table_name  | column_name | data_type |
+| ----------- | ----------- | --------- |
+| ExampleList | id          | integer   |
+| ExampleList | age         | integer   |
+
+If we update our Keystone List either by renaming fields or adding new fields, we might encounter errors next time we start Keystone. This is because the database schema has changed and Keystone doesn't know what to do with existing data or won't be able to save new data. Let's imagine that because we are responsible with data collection we want to update the list to only include an age range rather than a specific age. We might update the field to use a select type:
+
+```javascript
+keystone.createList('MigrationExample', {
+  fields: {
+    age: { type: Select, options: '0-18, 19-35, 36-50, 50+' },
+  },
+});
+```
+
+If we restart Keystone after this change it will throw an error. The `data_type` of the `age` column is now a `text` value and it should contain a string representation of the age range. The table should be change to something like the following:
+
+| table_name  | column_name | data_type |
+| ----------- | ----------- | --------- |
+| ExampleList | id          | integer   |
+| ExampleList | age         | text      |
+
+Keystone cannot make this change for you because there may be existing data with a type of `integer`. Sometimes migration is as simple as converting an `integer` to a `string` but in certian cases, such as this, it requires programatically resolving the appropriate.
+
+## Migration options
+
+In development sometimes it can be helpful to drop the database everytime Keystone is restarted. To do this using the `KnexAdapter` you can pass the `dropDatabase` option to the adapter:
 
 ```js
 const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const adapter = new KnexAdapter({ dropDatabase: true });
 ```
 
-This might be enough for simple projects but it won't be ideal for everyone, you might want data to persist, even in development, and almost all projects eventually need to manage changes to a database table in production. For this there are a number of solutions.
+This might be enough for small projects but it won't be ideal for everyone. If you want data to persist in development you need to re-initialise the database or preform migrations. And regardless of the development environment, almost all projects will eventually need to make changes to a List table in production. For this there are a number of solutions.
 
-The most basic solution is to run update scripts directly on the database via a CLI or GUI. If you're reading this guide you're probably looking for a GUI to help you view and manage tables created by Keystone.
+The most basic solution is to make these changes on the database. You can do this via a command-line, but if you're reading this guide you're probably looking for an application to help you view and manage tables created by Keystone. For Mongo you might try (Studio 3T)[https://studio3t.com/download/] which is free for non-commercial use. For Postgres you can try (pgadmin)[https://www.pgadmin.org/]. There are a lot of other options and you should find one that works for you.
 
-For Mongo you can try ?(https://studio3t.com/download/)? which is free for non-commercial use. For Postgres try \_\_\_\_. There are a lot of other options.
+Once you get familiar with your database GUI you will be able to look at the tables Keystone creates for you, manually drop them, make change to Lists and see how the data-structure differs, and eventually write migration queries such as:
 
+```sql
+ALTER TABLE "ExampleList"
+ALTER COLUMN "age" TYPE text
+    USING (
+    CASE WHEN age<=18 THEN '0-18'
+        WHEN age<=35 THEN '19-35'
+        WHEN age<=50 THEN '36-50'
+        ELSE '50+'
+    END);
 ```
 
-```
+Keystone database adapters use Mongoose and Knex under the hood, both of which have migrations solutions. Rather than running SQL queries directly, you can write migrations using JavaScript, and tools like the (Knex CLI)[http://knexjs.org/#Migrations] allow you to keep track of which migrations have been applied. You seed the database, run or rollback specific migrations or apply all missing migrations in the correct order.
+
+Knex migrations or similar tools are probably the right solution for a commercial scale project.
+
+For small scale projects you can avoid the need for many migrations with careful planning, drop the database frequently while in development and use GUI tools to apply manual updates.
