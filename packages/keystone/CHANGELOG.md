@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 15.4.1
+
+### Patch Changes
+
+- [14fee364](https://github.com/keystonejs/keystone-5/commit/14fee364): Correctly pass `gqlName` for all access checks
+
 ## 15.4.0
 
 ### Minor Changes

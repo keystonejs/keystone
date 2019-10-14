@@ -4,7 +4,7 @@ This folder contains projects used for Cypress tests. You do not want to use the
 
 ## Cypress Projects
 
-Each directory here is part of the Bolt monorepo, and represents a single
+Each directory here is part of the Yarn Workspaces monorepo, and represents a single
 runnable project which tests can be run against.
 
 This is to help with unique setups (eg; testing mongo vs postgres, etc).

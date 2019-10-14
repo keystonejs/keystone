@@ -18,8 +18,8 @@
     "@keystone-alpha/app-admin-ui": "^5.10.0",
     "@keystone-alpha/app-graphql": "^8.0.0",
     "@keystone-alpha/app-nuxt": "^1.0.0",
-    "@keystone-alpha/keystone": "^15.3.1",
     "@keystone-alpha/fields": "^13.0.0",
+    "@keystone-alpha/keystone": "^15.3.1",
     "cross-env": "^5.2.0",
     "express": "^4.17.1",
     "nuxt": "^2.9.2"
