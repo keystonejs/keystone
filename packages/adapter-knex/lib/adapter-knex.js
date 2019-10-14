@@ -61,7 +61,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
       console.warn(
         `If this is the first time you've run Keystone, you can create your database with the following command:`
       );
-      console.warn(`createdb postgres ${dbName}`);
+      console.warn(`createdb ${dbName}`);
       throw connectionError;
     }
 
