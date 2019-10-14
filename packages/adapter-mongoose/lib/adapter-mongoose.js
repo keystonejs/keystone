@@ -64,7 +64,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     });
   }
 
-  async initialise() {
+  async _initialise() {
     return await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.initialise())
     );

@@ -30,7 +30,7 @@ class BaseKeystoneAdapter {
 
     // Set up all list adapters
     try {
-      const taskResults = await this.initialise();
+      const taskResults = await this._initialise();
       const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
       if (errors.length) {
@@ -54,7 +54,7 @@ class BaseKeystoneAdapter {
     }
   }
 
-  async initialise() {}
+  async _initialise() {}
 }
 
 class BaseListAdapter {

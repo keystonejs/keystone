@@ -68,7 +68,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return result;
   }
 
-  async initialise() {
+  async _initialise() {
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
