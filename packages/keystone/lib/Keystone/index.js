@@ -136,18 +136,30 @@ module.exports = class Keystone {
         });
       });
 
-      getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
-        return validateListAccessControl({
-          access: this.lists[listKey].access[schemaName],
-          originalInput,
-          operation,
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-        });
-      });
+      getListAccessControlForUser = fastMemoize(
+        (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+          return validateListAccessControl({
+            access: this.lists[listKey].access[schemaName],
+            originalInput,
+            operation,
+            authentication: { item: req.user, listKey: req.authedListKey },
+            listKey,
+            gqlName,
+            itemId,
+            itemIds,
+          });
+        }
+      );
 
       getFieldAccessControlForUser = fastMemoize(
-        (listKey, fieldKey, originalInput, existingItem, operation) => {
+        (
+          listKey,
+          fieldKey,
+          originalInput,
+          existingItem,
+          operation,
+          { gqlName, itemId, itemIds } = {}
+        ) => {
           return validateFieldAccessControl({
             access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
             originalInput,
@@ -156,6 +168,9 @@ module.exports = class Keystone {
             authentication: { item: req.user, listKey: req.authedListKey },
             fieldKey,
             listKey,
+            gqlName,
+            itemId,
+            itemIds,
           });
         }
       );

@@ -4,14 +4,14 @@ This is the todo list - the simplest implementation of Keystone. The todo list a
 
 ## Running the Project.
 
-To run this demo project, all you need to do is run `bolt` within the Keystone project root to install all required packages, then run `bolt start todo` to begin running Keystone.
+To run this demo project, all you need to do is run `yarn` within the Keystone project root to install all required packages, then run `yarn start todo` to begin running Keystone.
 
 Once running, the Keystone Admin UI is reachable from `localhost:3000/admin`. To see an example React app using KeystoneJS' GraphQl APIs, head to `localhost:3000`.
 
 You can change the port that this application runs on by setting the `PORT` environment variable.
 
 ```sh
-PORT=5000 bolt start todo
+PORT=5000 yarn start todo
 ```
 
 ## Demo React App
