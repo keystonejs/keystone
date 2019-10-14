@@ -58,6 +58,7 @@ module.exports = class Keystone {
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
+    initialiseOnConnect = false,
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -66,6 +67,7 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
+    this._initialiseOnConnect = initialiseOnConnect;
     this._extendedTypes = [];
     this._extendedQueries = [];
     this._extendedMutations = [];
@@ -304,11 +306,20 @@ module.exports = class Keystone {
    */
   connect() {
     const { adapters, name } = this;
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name }))).then(() => {
+    return resolveAllKeys(
+      mapKeys(adapters, adapter =>
+        adapter.connect({ name, initialiseOnConnect: this._initialiseOnConnect })
+      )
+    ).then(() => {
       if (this.eventHandlers.onConnect) {
         return this.eventHandlers.onConnect(this);
       }
     });
+  }
+
+  initialise() {
+    const { adapters, name } = this;
+    return resolveAllKeys(mapKeys(adapters, adapter => adapter.initialise({ name })));
   }
 
   /**

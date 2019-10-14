@@ -17,18 +17,25 @@ class BaseKeystoneAdapter {
     return this.listAdapters[key];
   }
 
-  async connect({ name }) {
+  async connect({ name, initialiseOnConnect }) {
     // Connect to the database
+    await this._connect({ name }, this.config);
+    if (initialiseOnConnect) {
+      this.initialise({ name });
+    }
+  }
+
+  async initialise({ name }) {
     await this._connect({ name }, this.config);
 
     // Set up all list adapters
     try {
-      const taskResults = await this.postConnect();
+      const taskResults = await this._initialise();
       const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
       if (errors.length) {
         if (errors.length === 1) throw errors[0];
-        const error = new Error('Multiple errors in BaseKeystoneAdapter.postConnect():');
+        const error = new Error('Multiple errors in BaseKeystoneAdapter.initialise():');
         error.errors = errors;
         throw error;
       }
@@ -47,7 +54,7 @@ class BaseKeystoneAdapter {
     }
   }
 
-  async postConnect() {}
+  async _initialise() {}
 }
 
 class BaseListAdapter {

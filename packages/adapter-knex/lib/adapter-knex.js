@@ -68,7 +68,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return result;
   }
 
-  async postConnect() {
+  async initialise() {
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
@@ -84,7 +84,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
     if (errors.length) {
       if (errors.length === 1) throw errors[0];
-      const error = new Error('Multiple errors in KnexAdapter.postConnect():');
+      const error = new Error('Multiple errors in KnexAdapter.initialise():');
       error.errors = errors;
       throw error;
     }

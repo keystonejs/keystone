@@ -63,9 +63,10 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       ...mongooseConfig,
     });
   }
-  async postConnect() {
+
+  async initialise() {
     return await pSettle(
-      Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect())
+      Object.values(this.listAdapters).map(listAdapter => listAdapter.initialise())
     );
   }
 
@@ -115,7 +116,6 @@ class MongooseListAdapter extends BaseListAdapter {
       { ...DEFAULT_MODEL_SCHEMA_OPTIONS, ...mongooseSchemaOptions }
     );
 
-    // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
   }
 
@@ -130,7 +130,7 @@ class MongooseListAdapter extends BaseListAdapter {
    *
    * @return Promise<>
    */
-  async postConnect() {
+  async initialise() {
     if (this.configureMongooseSchema) {
       this.configureMongooseSchema(this.schema, { mongoose: this.mongoose });
     }
@@ -159,9 +159,8 @@ class MongooseListAdapter extends BaseListAdapter {
     // http://thecodebarbarian.com/whats-new-in-mongoose-5-2-syncindexes
     // NOTE: If an index has changed and needs recreating, this can have a
     // performance impact when dealing with large datasets!
-    return this.model.syncIndexes();
+    await this.model.syncIndexes();
   }
-
   _create(data) {
     return this.model.create(data);
   }
