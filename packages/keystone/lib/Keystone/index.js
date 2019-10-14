@@ -58,7 +58,7 @@ module.exports = class Keystone {
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
-    setTrustProxy = false
+    setTrustProxy = false,
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
