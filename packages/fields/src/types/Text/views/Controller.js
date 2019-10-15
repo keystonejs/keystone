@@ -17,7 +17,6 @@ export default class TextController extends FieldController {
     }
     return [`${this.path}_${type}`, JSON.stringify(value)];
   };
-
   setFilterSensitive = isFilterSensitive => {
     this.isFilterSensitive = isFilterSensitive;
   };
@@ -25,7 +24,7 @@ export default class TextController extends FieldController {
     return this.isFilterSensitive === undefined ? false : this.isFilterSensitive;
   };
   getFilterGraphQL = ({ type, value }) => {
-    let key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
+    let key = type === 'is_i' ? `${this.path}_i` : `${this.path}_${type}`;
     if (this.getFilterSensitive()) {
       key = `${key.slice(0, -2)}`;
     }
