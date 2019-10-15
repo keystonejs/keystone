@@ -10,12 +10,12 @@ import { gridSize } from '@arch-ui/theme';
 
 type Props = FilterProps<string>;
 
-type State = { isInsesitive: boolean };
+type State = { isSensesitive: boolean };
 
 export default class TextFilterView extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { isInsesitive: this.props.field.getFilterInsensitive() };
+    this.state = { isSensesitive: this.props.field.getFilterSensitive() };
   }
 
   handleChange = ({ target: { value } }: Object) => {
@@ -23,13 +23,13 @@ export default class TextFilterView extends Component<Props, State> {
   };
 
   checkboxOnChange = ({ target: { checked } }: Object) => {
-    this.setState({ isInsesitive: checked });
-    this.props.field.setFilterInsensitive(checked);
+    this.setState({ isSensesitive: checked });
+    this.props.field.setFilterSensitive(checked);
   };
 
   render() {
     const { filter, field, innerRef, value } = this.props;
-    const { isInsesitive } = this.state;
+    const { isSensesitive } = this.state;
     if (!filter) return null;
 
     const placeholder = field.getFilterLabel(filter);
@@ -53,10 +53,10 @@ export default class TextFilterView extends Component<Props, State> {
           <input
             type="checkbox"
             autoFocus={false}
-            checked={isInsesitive}
+            checked={isSensesitive}
             onChange={this.checkboxOnChange}
           />
-          <label>Insensitive</label>
+          <label>Sensitive</label>
         </div>
       </FieldContainer>
     );
