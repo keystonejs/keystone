@@ -1,5 +1,11 @@
 # @keystone-alpha/adapter-knex
 
+## 6.0.1
+
+### Patch Changes
+
+- [`64ac0665`](https://github.com/keystonejs/keystone-5/commit/64ac0665a0b8b52a7c68678f6d478c8206d82e95) [#1770](https://github.com/keystonejs/keystone-5/pull/1770) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fixes the help text shown when no db is initialised
+
 ## 6.0.0
 
 ### Major Changes
