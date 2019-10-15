@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { mergeWhereClause } from '@keystone-alpha/utils';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
@@ -123,34 +122,22 @@ export class Relationship extends Implementation {
       };
     }
 
-    const buildManyQueryArgs = (item, args) => {
-      let ids = [];
-      if (item[this.path]) {
-        ids = item[this.path]
-          .map(value => {
-            // The field may have already been filled in during an early DB lookup
-            // (ie; joining when doing a filter)
-            if (value && value.id) {
-              return value.id;
-            }
-
-            return value;
-          })
-          .filter(value => value);
-      }
-      return mergeWhereClause(args, { id_in: ids });
-    };
-
     return {
       [this.path]: (item, args, context, info) => {
-        const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.listQuery(filteredQueryArgs, context, info.fieldName, info);
+        return refList.listQuery(args, context, info.fieldName, info, {
+          fromList: this.getListByKey(this.listKey),
+          fromId: item.id,
+          fromField: this.path,
+        });
       },
 
       ...(this.withMeta && {
         [`_${this.path}Meta`]: (item, args, context, info) => {
-          const filteredQueryArgs = buildManyQueryArgs(item, args);
-          return refList.listQueryMeta(filteredQueryArgs, context, info.fieldName, info);
+          return refList.listQueryMeta(args, context, info.fieldName, info, {
+            fromList: this.getListByKey(this.listKey),
+            fromId: item.id,
+            fromField: this.path,
+          });
         },
       }),
     };
@@ -213,10 +200,21 @@ export class Relationship extends Implementation {
       });
     }
 
-    let currentValue = item && item[this.path];
+    let currentValue;
     if (this.many) {
-      currentValue = (currentValue || []).map(id => id.toString());
+      const info = { fieldName: this.path };
+      currentValue = item
+        ? await refList.listQuery(
+            {},
+            { ...context, getListAccessControlForUser: () => true },
+            info.fieldName,
+            info,
+            { fromList: this.getListByKey(this.listKey), fromId: item.id, fromField: this.path }
+          )
+        : [];
+      currentValue = currentValue.map(({ id }) => id.toString());
     } else {
+      currentValue = item && item[this.path];
       currentValue = currentValue && currentValue.toString();
     }
 
@@ -242,7 +240,7 @@ export class Relationship extends Implementation {
       );
     }
 
-    return { create, connect, disconnect };
+    return { create, connect, disconnect, currentValue };
   }
 
   // This function codifies the order of operations for nested mutations:
@@ -250,14 +248,12 @@ export class Relationship extends Implementation {
   // 2. disconnect
   // 3. create
   // 4. connect
-  convertResolvedOperationsToFieldValue({ create, connect, disconnect }, item) {
+  convertResolvedOperationsToFieldValue({ create, connect, disconnect, currentValue }) {
     if (this.many) {
-      const currentValue = ((item && item[this.path]) || []).map(id => id.toString());
       return [...currentValue.filter(id => !disconnect.includes(id)), ...connect, ...create].filter(
         id => !!id
       );
     } else {
-      const currentValue = (item && item[this.path] && item[this.path].toString()) || null;
       return create && create[0]
         ? create[0]
         : connect && connect[0]

@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/benchmarks",
   "description": "A set of benchmarks for running against the KeystoneJS API.",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -12,13 +12,13 @@
     "go": "node fixtures/index.js"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-knex": "^5.0.0",
-    "@keystone-alpha/adapter-mongoose": "^5.0.0",
+    "@keystone-alpha/adapter-knex": "^6.0.0",
+    "@keystone-alpha/adapter-mongoose": "^6.0.0",
     "@keystone-alpha/app-graphql": "^8.2.0",
-    "@keystone-alpha/fields": "^13.1.0",
-    "@keystone-alpha/keystone": "^15.4.0",
+    "@keystone-alpha/fields": "^14.0.0",
+    "@keystone-alpha/keystone": "^16.0.0",
     "@keystone-alpha/session": "^3.0.2",
-    "@keystone-alpha/test-utils": "^2.6.2",
+    "@keystone-alpha/test-utils": "^2.6.3",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.6",
