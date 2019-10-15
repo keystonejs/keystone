@@ -1,5 +1,18 @@
 # keystone_demo_blog
 
+## 2.3.7
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/adapter-mongoose@6.0.0
+  - @keystone-alpha/fields@14.0.0
+  - @keystone-alpha/keystone@16.0.0
+  - @keystone-alpha/app-admin-ui@5.10.2
+  - @keystone-alpha/auth-password@1.0.5
+  - @keystone-alpha/fields-markdown@1.0.7
+  - @keystone-alpha/fields-wysiwyg-tinymce@3.0.9
+
 ## 2.3.6
 
 - Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):

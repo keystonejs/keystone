@@ -1,5 +1,20 @@
 # @keystone-alpha/keystone
 
+## 16.0.0
+
+### Major Changes
+
+- [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9) [#1729](https://github.com/keystonejs/keystone-5/pull/1729) Thanks [@timleslie](https://github.com/timleslie)! - This change significantly changes how and when we populate `many`-relationships during queries and mutations.
+  The behaviour of the GraphQL API has not changed, but queries should be more performant, particularly for items with many related items.
+  The `existingItem` parameter in hooks will no longer have the `many`-relationship fields populated.
+  `List.listQuery()` no longer populates `many` relationship fields.
+  For most users there should not need to be any changes to code unless they are explicitly relying on a `many`-relationship field in a hook, in which case they will need to execute an explicit query to obtain the desired values.
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/fields@14.0.0
+
 ## 15.4.1
 
 ### Patch Changes
