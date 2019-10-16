@@ -1,5 +1,13 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.10.2
+
+### Patch Changes
+
+- Updated dependencies [[`68134f7a`](https://github.com/keystonejs/keystone-5/commit/68134f7ac6d56122640c42304ab8796c1aa2f17c), [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/field-views-loader@2.2.1
+  - @keystone-alpha/fields@14.0.0
+
 ## 5.10.1
 
 ### Patch Changes

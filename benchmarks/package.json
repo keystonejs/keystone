@@ -1,14 +1,17 @@
 {
-  "name": "@keystone-alpha/api-tests",
-  "description": "A set of tests for running against the KeystoneJS API.",
+  "name": "@keystone-alpha/benchmarks",
+  "description": "A set of benchmarks for running against the KeystoneJS API.",
   "private": true,
-  "version": "1.8.1",
+  "version": "1.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
-  "devDependencies": {
+  "scripts": {
+    "go": "node fixtures/index.js"
+  },
+  "dependencies": {
     "@keystone-alpha/adapter-knex": "^6.0.0",
     "@keystone-alpha/adapter-mongoose": "^6.0.0",
     "@keystone-alpha/app-graphql": "^8.2.0",
@@ -21,9 +24,5 @@
     "cuid": "^2.1.6",
     "supertest-light": "^1.0.2",
     "testcheck": "^1.0.0-rc.2"
-  },
-  "dependencies": {
-    "@keystone-alpha/auth-password": "^1.0.5",
-    "express": "^4.17.1"
   }
 }

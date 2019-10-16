@@ -1,5 +1,5 @@
 const omitBy = require('lodash.omitby');
-const { flatten, compose } = require('@keystone-alpha/utils');
+const { flatten, compose, defaultObj } = require('@keystone-alpha/utils');
 
 /**
  * Format of input object:
@@ -86,7 +86,7 @@ function mutationBuilder(relationships, path = []) {
 }
 
 function pipelineBuilder(query) {
-  const { matchTerm, postJoinPipeline, relationshipIdTerm, relationships } = query;
+  const { matchTerm, postJoinPipeline, relationshipIdTerm, relationships, excludeFields } = query;
 
   const relationshipPipelines = Object.entries(relationships).map(([uid, relationship]) => {
     const { field, many, from } = relationship;
@@ -122,6 +122,7 @@ function pipelineBuilder(query) {
     ...flatten(relationshipPipelines),
     matchTerm && { $match: matchTerm },
     { $addFields: { id: '$_id' } },
+    excludeFields && excludeFields.length && { $project: defaultObj(excludeFields, 0) },
     ...postJoinPipeline,
   ].filter(i => i);
 }
