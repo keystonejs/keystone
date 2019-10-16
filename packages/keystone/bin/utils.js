@@ -95,6 +95,8 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   const { keystone, apps = [] } = require(path.resolve(entryFile));
 
+  keystone.configureServerApp(app);
+
   spinner.succeed('Initialised Keystone instance');
   spinner.start('Connecting to database');
 
