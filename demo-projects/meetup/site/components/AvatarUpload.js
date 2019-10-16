@@ -12,7 +12,7 @@ const validImageTypes = 'image/gif, image/jpeg, image/jpg, image/png';
 export const AvatarUpload = ({ userId, size }) => {
   const [loadingImage, setLoadingImage] = useState(false);
   const [updateAvatar] = useMutation(UPDATE_AVATAR);
-  const { data, loading } = useQuery(USER, { variables: { userId } });
+  const { data = {}, loading } = useQuery(USER, { variables: { userId } });
   const { addToast } = useToasts();
   if (loading) return null;
 
