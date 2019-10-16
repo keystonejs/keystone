@@ -1,5 +1,11 @@
 # @keystone-alpha/keystone
 
+## 16.0.1
+
+### Patch Changes
+
+- [`b0aee895`](https://github.com/keystonejs/keystone-5/commit/b0aee895f664cf5665fa700e68ffc532c35f424d) [#1776](https://github.com/keystonejs/keystone-5/pull/1776) Thanks [@jesstelford](https://github.com/jesstelford)! - Avoid the build command from hanging when an entry file may have a long-running process.
+
 ## 16.0.0
 
 ### Major Changes

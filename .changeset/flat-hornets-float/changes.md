@@ -1,1 +1,0 @@
-Avoid the build command from hanging when an entry file may have a long-running process.
