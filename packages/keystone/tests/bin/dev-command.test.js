@@ -63,6 +63,7 @@ describe('dev command', () => {
           auth: {},
           prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
           connect: () => Promise.resolve(),
+          configureServerApp: app => app,
         }
       }`
     );
@@ -89,6 +90,7 @@ describe('dev command', () => {
           auth: {},
           prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
           connect: () => Promise.resolve(),
+          configureServerApp: app => app,
         }
       }`
     );
