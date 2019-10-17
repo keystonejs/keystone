@@ -5,7 +5,9 @@ title: Migrations
 
 ## Migrations in Keystone
 
-Migrations are required when you update a List in Keystone after the database has been initialised. **Keystone can't automatically manage these migrations for you** because it doesn't know what to do with the existing data. This guide will explain when and why you need database migrations and offer some basic solutions to get you started. As your project grows to include production deployments, how you manage the seeding and migration of data, will depend on your specific situation. Keystone tries not to limit type of applications you build and therefor cannot offer a "one size fits all" solution to migrations.
+As your app grows new features, you'll inevitably need to change some of your existing List definitions. When you do, you'll also need to migrate the data and schema in your database backend.
+
+**Keystone can't automatically manage these migrations for you** because it doesn't know what to do with the existing data. This guide will explain when and why you need database migrations and offer some basic solutions to get you started.
 
 When you create a new List, depending on the adapter, Keystone will initialise a database table with columns for each of the fields defined in the List. Let's look at an example.
 
@@ -48,7 +50,7 @@ If we restart Keystone after this change it will throw an error. The `data_type`
 | ExampleList | id          | integer   |
 | ExampleList | age         | text      |
 
-Keystone cannot make this change for you because there may be existing data with a type of `integer`. Sometimes migration is as simple as converting an `integer` to a `string` but in certian cases, such as this, it requires programatically resolving the appropriate.
+Keystone cannot make this change for you because there could be existing data with a type of `integer`. Sometimes migrations can be as simple as converting an `integer` to a `string` but in this case we need to programatically resolving the appropriate value.
 
 ## Migration options
 
