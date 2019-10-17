@@ -9,7 +9,7 @@ title: Database Adapter - Mongoose
 ## Usage
 
 ```javascript
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
