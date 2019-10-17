@@ -1,1 +1,0 @@
-changing the require path to @keystone-alpha instead of @keystonejs
