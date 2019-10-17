@@ -93,9 +93,9 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   // Allow the spinner time to flush its output to the console.
   await new Promise(resolve => setTimeout(resolve, 100));
 
-  const { keystone, apps = [] } = require(path.resolve(entryFile));
+  const { keystone, apps = [], configureExpress = () => {} } = require(path.resolve(entryFile));
 
-  keystone.configureServerApp(app);
+  configureExpress(app);
 
   spinner.succeed('Initialised Keystone instance');
   spinner.start('Connecting to database');
