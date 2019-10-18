@@ -31,18 +31,9 @@ const keystone = new Keystone({
 | `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                   |
 | `cookieMaxAge`          | `Int`      | 30 days    |                                                                                                                                                   |
 | `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                             |
-| `trustProxies`          | `Int`      | `0`        | Number of reverse proxies to trust                                                                                                                |
 | `sessionStore`          | `Object`   | `null`     |                                                                                                                                                   |
 | `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                   |
 | `queryLimits`           | `Object`   | `{}`       | Configures global query limits                                                                                                                    |
-
-### `trustProxies`
-
-This needs to be configured if running Keystone behind a reverse proxy (such as a CDN or load balancer).
-
-It's recommended to set it to the number of reverse proxies in your deployment (e.g., 1 CDN + 1 load balancer, or just 1 load balancer). Most hosting environments need at least 1 for sessions to work properly. Warning: values that are too high will "work" but allow users to fake their IP addresses.
-
-In rare cases, you might need to use [the more complex proxy settings supported by Express](https://expressjs.com/en/api.html#trust.proxy.options.table).
 
 ### `queryLimits`
 

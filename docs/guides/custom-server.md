@@ -50,6 +50,9 @@ const keystone = new Keystone(/* ... */);
 module.exports = {
   keystone,
   apps: [new GraphQLApp()],
+  configureExpress: app => {
+    /* ... */
+  },
 };
 ```
 
@@ -57,16 +60,14 @@ module.exports = {
 
 ```javascript
 const express = require('express');
-const { keystone, apps } = require('./index.js');
+const { keystone, apps, configureExpress } = require('./index.js');
 keystone
   .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    keystone
-      .configureServerApp(app)
-      .use(middlewares)
-      .listen(3000);
+    configureExpress(app);
+    keystone.use(middlewares).listen(3000);
   });
 ```
 
@@ -101,10 +102,7 @@ keystone
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    keystone
-      .configureServerApp(app)
-      .use(middlewares)
-      .listen(3000);
+    keystone.use(middlewares).listen(3000);
   });
 ```
 
@@ -139,12 +137,14 @@ const preparations = [
   new GraphQLApp(),
   new AdminUIApp()
 ].map(app => app.prepareMiddleware({ keystone, dev }));
+const configureExpress = app => { /* ... */ },
 
 Promise.all(preparations)
   .then(middlewares => {
     await keystone.connect();
     const app = express();
-    keystone.configureServerApp(app)
+    configureExpress(app);
+    keystone
       .use(middlewares)
       .listen(3000);
   });
@@ -169,7 +169,7 @@ const { Keystone } = require('@keystone-alpha/keystone');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
-
+const configureExpress = app => { /* ... */ },
 // ...
 
 // Only setup once per instance
@@ -178,7 +178,8 @@ const setup = keystone
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    keystone.configureServerApp(app).use(middlewares);
+    configureExpress(app);
+    keystone.use(middlewares);
     return serverless(app);
   });
 

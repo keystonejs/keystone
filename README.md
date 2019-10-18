@@ -20,14 +20,6 @@ This means less focus on hand-holding Node.js template-driven websites and more 
 
 We believe it's the ideal back-end for rich React / Vue / Angular applications, Gatsby and Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
-🚨🚨🚨
-
-This project is currently very much in the **alpha** phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
-
-To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm.
-
-🚨🚨🚨
-
 ## Getting Started
 
 ### Quick start
@@ -74,7 +66,6 @@ Add a script to your `package.json`:
 Create a file `index.js`:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
@@ -127,7 +118,6 @@ must handle executing the different parts of Keystone.
 Create the `server.js` file:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const express = require('express');
 const { keystone, apps } = require('./index');
@@ -227,7 +217,6 @@ To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const { Keystone } = require('@keystone-alpha/keystone');
 const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');

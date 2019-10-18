@@ -57,7 +57,6 @@ module.exports = class Keystone {
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
-    trustProxies = 0,
   }) {
     this.name = name;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
@@ -76,7 +75,6 @@ module.exports = class Keystone {
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
-    this._trustProxies = trustProxies;
 
     if (adapters) {
       this.adapters = adapters;
@@ -650,12 +648,6 @@ module.exports = class Keystone {
 
     // 4. Merge the data back together again
     return mergeRelationships(createdItems, createdRelationships);
-  }
-
-  // Configures an Express server app
-  configureServerApp(app) {
-    app.set('trust proxy', this._trustProxies);
-    return app;
   }
 
   async prepare({
