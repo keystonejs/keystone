@@ -876,13 +876,13 @@ module.exports = class List {
     return resolvers;
   }
 
-  async listQuery(args, context, gqlName, info) {
+  async listQuery(args, context, gqlName, info, from) {
     const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-    return this._itemsQuery(mergeWhereClause(args, access), { context, info });
+    return this._itemsQuery(mergeWhereClause(args, access), { context, info, from });
   }
 
-  async listQueryMeta(args, context, gqlName, info) {
+  async listQueryMeta(args, context, gqlName, info, from) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
@@ -890,9 +890,12 @@ module.exports = class List {
       getCount: () => {
         const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), { meta: true, context, info }).then(
-          ({ count }) => count
-        );
+        return this._itemsQuery(mergeWhereClause(args, access), {
+          meta: true,
+          context,
+          info,
+          from,
+        }).then(({ count }) => count);
       },
     };
   }
@@ -1171,7 +1174,7 @@ module.exports = class List {
         getItem,
         mutationState
       );
-      return field.convertResolvedOperationsToFieldValue(operations, existingItem);
+      return field.convertResolvedOperationsToFieldValue(operations);
     });
 
     return {

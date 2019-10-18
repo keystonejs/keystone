@@ -36,7 +36,7 @@ Inside of `index.js` import the defined schema and replace the existing one with
 ```javascript
 const TodosSchema = require('./lists/Todos.js');
 
-keystone.createList('Todos', TodosSchema);
+keystone.createList('Todo', TodosSchema);
 ```
 
 Make sure to relaunch keystone's instance and check, that everything still works fine.

@@ -56,8 +56,9 @@ describe('MongooseListAdapter', () => {
         getQueryConditions: () => {},
         supportsRelationshipQuery: query => query === 'posts_some',
         getRefListAdapter: () => postListAdapter,
-        field: { many: true },
+        field: { config: { many: true }, many: true },
         path: 'posts',
+        dbPath: 'posts',
       },
     ];
 
@@ -74,6 +75,7 @@ describe('MongooseListAdapter', () => {
             { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
             { $match: { name: { $eq: 'foo' } } },
             { $addFields: { id: '$_id' } },
+            { $project: { posts: 0 } },
           ],
         },
       },
@@ -96,6 +98,7 @@ describe('MongooseListAdapter', () => {
             { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
             { $match: { name: { $eq: 'foo' } } },
             { $addFields: { id: '$_id' } },
+            { $project: { posts: 0 } },
           ],
         },
       },
@@ -113,18 +116,21 @@ describe('MongooseListAdapter', () => {
       {
         isRelationship: false,
         getQueryConditions: () => ({ name: value => ({ name: { $eq: value } }) }),
+        field: { config: { many: false }, many: false },
       },
       {
         isRelationship: false,
         getQueryConditions: () => ({ title: value => ({ title: { $eq: value } }) }),
+        field: { config: { many: false }, many: false },
       },
       {
         isRelationship: true,
         getQueryConditions: () => ({}),
         supportsRelationshipQuery: query => query === 'posts_some',
         getRefListAdapter: () => ({ model: { collection: { name: 'posts' } } }),
-        field: { many: true },
+        field: { config: { many: true }, many: true },
         path: 'posts',
+        dbPath: 'posts',
       },
     ];
 
@@ -135,8 +141,9 @@ describe('MongooseListAdapter', () => {
         getQueryConditions: () => {},
         supportsRelationshipQuery: query => query === 'posts_some',
         getRefListAdapter: () => postListAdapter,
-        field: { many: true },
+        field: { config: { many: true }, many: true },
         path: 'posts',
+        dbPath: 'posts',
       },
     ];
 
@@ -154,6 +161,7 @@ describe('MongooseListAdapter', () => {
             { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
             { $match: { $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] } },
             { $addFields: { id: '$_id' } },
+            { $project: { posts: 0 } },
           ],
         },
       },
@@ -176,6 +184,7 @@ describe('MongooseListAdapter', () => {
             { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
             { $match: { $or: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] } },
             { $addFields: { id: '$_id' } },
+            { $project: { posts: 0 } },
           ],
         },
       },
