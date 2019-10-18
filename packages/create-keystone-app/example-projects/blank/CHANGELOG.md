@@ -1,5 +1,14 @@
 # @keystone-alpha/example-projects-blank
 
+## 1.1.15
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/adapter-mongoose@6.0.0
+  - @keystone-alpha/keystone@16.0.0
+  - @keystone-alpha/app-admin-ui@5.10.2
+
 ## 1.1.14
 
 - Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):

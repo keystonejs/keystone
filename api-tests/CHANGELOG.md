@@ -1,5 +1,17 @@
 # @keystone-alpha/api-tests
 
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/adapter-knex@6.0.0
+  - @keystone-alpha/adapter-mongoose@6.0.0
+  - @keystone-alpha/fields@14.0.0
+  - @keystone-alpha/keystone@16.0.0
+  - @keystone-alpha/test-utils@2.6.3
+  - @keystone-alpha/auth-password@1.0.5
+
 ## 1.8.0
 
 ### Minor Changes
