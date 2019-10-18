@@ -43,7 +43,7 @@ keystone.createList('MigrationExample', {
 });
 ```
 
-If we restart Keystone after this change it will throw an error. The `data_type` of the `age` column is now a `text` value and it should contain a string representation of the age range. The table should be change to something like the following:
+If we restart Keystone after this change it will throw an error. The `data_type` of the `age` column is now a `text` value and it should contain a string representation of the age range. The table should change to something like the following:
 
 | table_name  | column_name | data_type |
 | ----------- | ----------- | --------- |
@@ -54,6 +54,8 @@ Keystone cannot make this change for you because there could be existing data wi
 
 ## Migration options
 
+### Drop and replace
+
 In development sometimes it can be helpful to drop the database everytime Keystone is restarted. To do this using the `KnexAdapter` you can pass the `dropDatabase` option to the adapter:
 
 ```js
@@ -63,9 +65,11 @@ const adapter = new KnexAdapter({ dropDatabase: true });
 
 This might be enough for small projects but it won't be ideal for everyone. If you want data to persist in development you need to re-initialise the database or preform migrations. And regardless of the development environment, almost all projects will eventually need to make changes to a List table in production. For this there are a number of solutions.
 
-The most basic solution is to make these changes on the database. You can do this via a command-line, but if you're reading this guide you're probably looking for an application to help you view and manage tables created by Keystone. For Mongo you might try (Studio 3T)[https://studio3t.com/download/] which is free for non-commercial use. For Postgres you can try (pgadmin)[https://www.pgadmin.org/]. There are a lot of other options and you should find one that works for you.
+### Manual migrations
 
-Once you get familiar with your database GUI you will be able to look at the tables Keystone creates for you, manually drop them, make change to Lists and see how the data-structure differs, and eventually write migration queries such as:
+The most basic solution is to make these changes on the database. You can do this via a command-line, or you might prefer a graphical DB admin interface. For Mongo you might try [Studio 3T](https://studio3t.com/download/) which is free for non-commercial use. For Postgres you can try [pgadmin](https://www.pgadmin.org/). There are a lot of other options and you should find one that works for you.
+
+Here's how you might do a data migration for the `ExampleList` above in Postgres:
 
 ```sql
 ALTER TABLE "ExampleList"
@@ -78,8 +82,10 @@ ALTER COLUMN "age" TYPE text
     END);
 ```
 
-Keystone database adapters use Mongoose and Knex under the hood, both of which have migrations solutions. Rather than running SQL queries directly, you can write migrations using JavaScript, and tools like the (Knex CLI)[http://knexjs.org/#Migrations] allow you to keep track of which migrations have been applied. You seed the database, run or rollback specific migrations or apply all missing migrations in the correct order.
+### Managed migrations
 
-Knex migrations or similar tools are probably the right solution for a commercial scale project.
+Keystone database adapters use Mongoose and Knex under the hood, both of which have migrations solutions. Rather than running SQL queries directly, you can write migrations using JavaScript, and tools like the [Knex CLI](http://knexjs.org/#Migrations) allow you to keep track of which migrations have been applied. You seed the database, run or rollback specific migrations or apply all missing migrations in the correct order.
+
+Managed migrations are useful when working in a team or with duplicated deployments (e.g., development and production).  They help keep database changes consistent, even when multiple developers are working with multiple databases.
 
 For small scale projects you can avoid the need for many migrations with careful planning, drop the database frequently while in development and use GUI tools to apply manual updates.
