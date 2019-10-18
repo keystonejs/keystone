@@ -1,5 +1,11 @@
 # @keystone-alpha/field-views-loader
 
+## 2.2.1
+
+### Patch Changes
+
+- [`68134f7a`](https://github.com/keystonejs/keystone-5/commit/68134f7ac6d56122640c42304ab8796c1aa2f17c) [#1760](https://github.com/keystonejs/keystone-5/pull/1760) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Don't serialize undefined values on objects
+
 ## 2.2.0
 
 ### Minor Changes

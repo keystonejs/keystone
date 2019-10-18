@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/session",
   "description": "Tools to assist with setting up session management in your Keystone system.",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
