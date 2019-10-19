@@ -197,6 +197,7 @@ export class Relationship extends Implementation {
         create: [],
         connect: [],
         disconnect: [],
+        currentValue: this.many ? [] : undefined,
       });
     }
 
