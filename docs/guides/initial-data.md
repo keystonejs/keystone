@@ -1,5 +1,5 @@
 <!--[meta]
-section: api
+section: guides
 title: Adding initial data
 [meta]-->
 
