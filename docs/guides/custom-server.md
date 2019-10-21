@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Custom Server
+subSection: advanced
 [meta]-->
 
 # Custom Server
@@ -29,6 +30,30 @@ available in KeystoneJS include:
   The following are some possible ways of setting up a custom server, roughly in
   order of complexity.
 
+## You might not need a custom server if...
+
+If all you want to do is some basic configuration of the default Express instance, you don't need a
+custom server. The KeystoneJS CLI accepts an additional `configureExpress` export in your `index.js` file:
+
+```javascript
+module.exports = {
+  configureExpress: app => {
+    /* ... */
+  },
+};
+```
+
+This function takes a single `app` parameter. The running Express instance will be passed to this function
+before any middlewares are set up, so you can perform any Express configuration you need here. For example:
+
+```javascript
+module.exports = {
+  configureExpress: app => {
+    app.set('view engine', 'pug')
+  },
+};
+```
+
 ## Minimal Custom Server
 
 `package.json`
@@ -50,9 +75,6 @@ const keystone = new Keystone(/* ... */);
 module.exports = {
   keystone,
   apps: [new GraphQLApp()],
-  configureExpress: app => {
-    /* ... */
-  },
 };
 ```
 
@@ -60,13 +82,12 @@ module.exports = {
 
 ```javascript
 const express = require('express');
-const { keystone, apps, configureExpress } = require('./index.js');
+const { keystone, apps } = require('./index.js');
 keystone
   .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    configureExpress(app);
     app.use(middlewares).listen(3000);
   });
 ```
@@ -137,13 +158,11 @@ const preparations = [
   new GraphQLApp(),
   new AdminUIApp()
 ].map(app => app.prepareMiddleware({ keystone, dev }));
-const configureExpress = app => { /* ... */ },
 
 Promise.all(preparations)
   .then(middlewares => {
     await keystone.connect();
     const app = express();
-    configureExpress(app);
     app
       .use(middlewares)
       .listen(3000);
@@ -169,7 +188,6 @@ const { Keystone } = require('@keystone-alpha/keystone');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
-const configureExpress = app => { /* ... */ },
 // ...
 
 // Only setup once per instance
@@ -178,7 +196,6 @@ const setup = keystone
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    configureExpress(app);
     app.use(middlewares);
     return serverless(app);
   });

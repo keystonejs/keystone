@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: GraphQL
+subSection: graphql
+order: 1
 [meta]-->
 
 # Introduction to the GraphQL API

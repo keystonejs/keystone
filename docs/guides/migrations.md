@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Migrations
+subSection: advanced
 [meta]-->
 
 ## Migrations in Keystone

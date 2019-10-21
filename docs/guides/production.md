@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Production Readiness Checklist
+subSection: deployment
 [meta]-->
 
 # Production Readiness Checklist

@@ -1,7 +1,8 @@
 <!--[meta]
-section: quick-start
+section: guides
 title: GraphQL Philosophy
-order: 1
+subSection: graphql
+order: 3
 [meta]-->
 
 # GraphQL Philosophy

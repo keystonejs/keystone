@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Custom Mutations
+subSection: advanced
 [meta]-->
 
 # Custom Mutations

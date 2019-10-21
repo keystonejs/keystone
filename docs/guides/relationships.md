@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: Creating Relationships Between Lists
+subSection: setup
+order: 4
 [meta]-->
 
 # Creating Relationships Between Lists

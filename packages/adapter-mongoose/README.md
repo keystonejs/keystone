@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
-subSection: adapters
-title: Database Adapter - Mongoose
+subSection: database-adapters
+title: Mongoose Adapter
 [meta]-->
 
 # Mongoose Database Adapter
