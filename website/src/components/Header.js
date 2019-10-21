@@ -73,7 +73,7 @@ const Logo = () => (
           marginLeft: '0.5em',
         }}
       >
-        v5.x alpha
+        v5
       </span>
     </Link>
   </div>

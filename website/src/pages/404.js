@@ -44,6 +44,10 @@ const NotFound = () => (
         Page Not Found
       </h1>
       <p>We couldn't find what you were looking for.</p>
+      <p>
+        If you were looking for the Keystone version 4 the docs these have moved to:{' '}
+        <a href="https://v4.keystonejs.com/">https://v4.keystonejs.com/</a>.
+      </p>
     </Container>
   </div>
 );
