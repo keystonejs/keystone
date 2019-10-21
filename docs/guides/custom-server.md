@@ -67,7 +67,7 @@ keystone
     await keystone.connect();
     const app = express();
     configureExpress(app);
-    keystone.use(middlewares).listen(3000);
+    app.use(middlewares).listen(3000);
   });
 ```
 
@@ -102,7 +102,7 @@ keystone
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    keystone.use(middlewares).listen(3000);
+    app.use(middlewares).listen(3000);
   });
 ```
 
@@ -144,7 +144,7 @@ Promise.all(preparations)
     await keystone.connect();
     const app = express();
     configureExpress(app);
-    keystone
+    app
       .use(middlewares)
       .listen(3000);
   });
@@ -179,7 +179,7 @@ const setup = keystone
     await keystone.connect();
     const app = express();
     configureExpress(app);
-    keystone.use(middlewares);
+    app.use(middlewares);
     return serverless(app);
   });
 
