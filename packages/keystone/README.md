@@ -26,7 +26,6 @@ const keystone = new Keystone({
 | `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://v5.keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details. |
 | `adapters`              | `Array`    | `[]`       |                                                                                                                                                   |
 | `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                   |
-| `adapterConnectOptions` | `Object`   | `{}`       |                                                                                                                                                   |
 | `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                   |
 | `onConnect`             | `Function` | `null`     |                                                                                                                                                   |
 | `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                   |

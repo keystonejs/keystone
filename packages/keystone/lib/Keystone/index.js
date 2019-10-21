@@ -50,7 +50,6 @@ module.exports = class Keystone {
     adapter,
     defaultAdapter,
     name,
-    adapterConnectOptions = {},
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
@@ -60,7 +59,6 @@ module.exports = class Keystone {
     schemaNames = ['public'],
   }) {
     this.name = name;
-    this.adapterConnectOptions = adapterConnectOptions;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
