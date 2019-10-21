@@ -1,0 +1,1 @@
+Removed adapterConnectOptions key (unused as of 144e6e86)

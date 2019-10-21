@@ -164,9 +164,7 @@ export class Relationship extends Implementation {
    * The indexes within the return arrays are guaranteed to match the indexes as
    * passed in `operations`.
    * Due to Access Control, it is possible thata some operations result in a
-   * value of `null`. Be sure to guard against this in your code (or use the
-   * .convertResolvedOperationsToFieldValue() method which handles this for
-   * you).
+   * value of `null`. Be sure to guard against this in your code.
    * NOTE: If `disconnectAll` is true, `disconnect` will be an array of all
    * previous stored values, which means indecies may not match those passed in
    * `operations`.
@@ -241,27 +239,6 @@ export class Relationship extends Implementation {
     }
 
     return { create, connect, disconnect, currentValue };
-  }
-
-  // This function codifies the order of operations for nested mutations:
-  // 1. disconnectAll
-  // 2. disconnect
-  // 3. create
-  // 4. connect
-  convertResolvedOperationsToFieldValue({ create, connect, disconnect, currentValue }) {
-    if (this.many) {
-      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect, ...create].filter(
-        id => !!id
-      );
-    } else {
-      return create && create[0]
-        ? create[0]
-        : connect && connect[0]
-        ? connect[0]
-        : disconnect && disconnect[0]
-        ? null
-        : currentValue;
-    }
   }
 
   registerBacklink(data, item, mutationState) {

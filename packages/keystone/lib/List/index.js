@@ -1167,14 +1167,33 @@ module.exports = class List {
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
     const resolvedRelationships = await this._mapToFields(fields, async field => {
-      const operations = await field.resolveNestedOperations(
+      const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
         existingItem,
         context,
         getItem,
         mutationState
       );
-      return field.convertResolvedOperationsToFieldValue(operations);
+      // This code codifies the order of operations for nested mutations:
+      // 1. disconnectAll
+      // 2. disconnect
+      // 3. create
+      // 4. connect
+      if (field.many) {
+        return [
+          ...currentValue.filter(id => !disconnect.includes(id)),
+          ...connect,
+          ...create,
+        ].filter(id => !!id);
+      } else {
+        return create && create[0]
+          ? create[0]
+          : connect && connect[0]
+          ? connect[0]
+          : disconnect && disconnect[0]
+          ? null
+          : currentValue;
+      }
     });
 
     return {
