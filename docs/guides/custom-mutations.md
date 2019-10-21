@@ -1,5 +1,5 @@
 <!--[meta]
-section: tutorials
+section: guides
 title: Custom Mutations
 [meta]-->
 
