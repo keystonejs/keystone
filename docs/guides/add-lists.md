@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: Adding Lists To Your Keystone Project
+subSection: setup
+order: 2
 [meta]-->
 
 # Adding Lists To Your Keystone Project

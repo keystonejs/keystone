@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Authentication
+subSection: advanced
 [meta]-->
 
 # Authentication

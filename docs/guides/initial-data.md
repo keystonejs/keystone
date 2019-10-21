@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: Adding initial data
+subSection: setup
+order: 3
 [meta]-->
 
 ## Adding initial data to Lists

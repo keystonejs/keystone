@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Custom Server
+subSection: advanced
 [meta]-->
 
 # Custom Server

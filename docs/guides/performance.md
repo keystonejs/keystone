@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: GraphQL Performance Monitoring
+subSection: graphql
+order: 2
 [meta]-->
 
 # Performance

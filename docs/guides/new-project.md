@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: Creating a New KeystoneJS Project
+subSection: setup
+order: 1
 [meta]-->
 
 # Creating a New KeystoneJS Project
