@@ -66,6 +66,7 @@ Add a script to your `package.json`:
 Create a file `index.js`:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
@@ -118,6 +119,7 @@ must handle executing the different parts of Keystone.
 Create the `server.js` file:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const express = require('express');
 const { keystone, apps } = require('./index');
@@ -217,6 +219,7 @@ To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const { Keystone } = require('@keystone-alpha/keystone');
 const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');

@@ -86,6 +86,6 @@ ALTER COLUMN "age" TYPE text
 
 Keystone database adapters use Mongoose and Knex under the hood, both of which have migrations solutions. Rather than running SQL queries directly, you can write migrations using JavaScript, and tools like the [Knex CLI](http://knexjs.org/#Migrations) allow you to keep track of which migrations have been applied. You seed the database, run or rollback specific migrations or apply all missing migrations in the correct order.
 
-Managed migrations are useful when working in a team or with duplicated deployments (e.g., development and production).  They help keep database changes consistent, even when multiple developers are working with multiple databases.
+Managed migrations are useful when working in a team or with duplicated deployments (e.g., development and production). They help keep database changes consistent, even when multiple developers are working with multiple databases.
 
 For small scale projects you can avoid the need for many migrations with careful planning, drop the database frequently while in development and use GUI tools to apply manual updates.
