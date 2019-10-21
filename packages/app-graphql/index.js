@@ -1,4 +1,3 @@
-const assert = require('nanoassert');
 const express = require('express');
 const { restrictAudienceMiddleware } = require('@keystone-alpha/session');
 const { GraphQLPlaygroundApp } = require('@keystone-alpha/app-graphql-playground');
@@ -11,30 +10,7 @@ class GraphQLApp {
     graphiqlPath = '/admin/graphiql',
     schemaName = 'public',
     apollo = {},
-    // Deprecated options:
-    cors,
-    pinoOptions,
-    cookieSecret,
-    sessionStore,
   } = {}) {
-    // Remove these assertions after March 1st, 2019 (6 months from when they
-    // were added)
-    assert(
-      typeof cookieSecret === 'undefined',
-      'The `cookieSecret` option has moved to the Keystone constructor: `new Keystone({ cookieSecret: "abc" })`'
-    );
-    assert(
-      typeof sessionStore === 'undefined',
-      'The `sessionStore` option has moved to the Keystone constructor: `new Keystone({ sessionStore: myStore })`'
-    );
-    assert(
-      typeof pinoOptions === 'undefined',
-      'The `pinoOptions` option has moved to the Keystone.pepare() method: `keystone.prepare({ pinoOptions })`'
-    );
-    assert(
-      typeof cors === 'undefined',
-      'The `cors` option has moved to the Keystone.pepare() method: `keystone.prepare({ cors })`'
-    );
     this._apiPath = apiPath;
     this._graphiqlPath = graphiqlPath;
     this._apollo = apollo;

@@ -42,7 +42,7 @@ Add [query limits](https://v5.keystonejs.com/api/create-list/#querylimits) and [
 
 NB: If you're using a third-party hosted environment, you might already be using a reverse proxy, but Keystone will need to be [configured for it](https://v5.keystonejs.com/keystone-alpha/keystone/#trustproxies).
 
-It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](<https://en.wikipedia.org/wiki/Slowloris_(computer_security)>).
+It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)).
 
 ## Environment Variables
 
