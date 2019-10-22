@@ -6,7 +6,7 @@ order: 1
 
 # Roadmap
 
-### Overview
+## Overview
 
 The **core goals of Keystone** are:
 
@@ -33,7 +33,13 @@ There may be complementary services, plugins or packages that tie in with the ab
 
 We also want to ensure Keystone works well with static sites and serverless architecture. This goal will help keep Keystone light-weight, nimble, customisable and not tied to a specific architecture, in-line with our core goals.
 
-The following list of features and bugs represent identified tasks that align with Keystone's core goals. Although the core goals of this project will remain the same, some tasks may evolve, new tasks may be added and priorities might change. For the latest list of Roadmap tasks, take a look at our [Roadmap milestone on Github](https://github.com/keystonejs/keystone-5/milestone/6).
+## Our Current Focus
+
+A lot of work has been done on Keystone's core architecture. In this area Keystone 5 is significantly more mature than Keystone 4 was. We'd like to add database transactions, slightly refactor some of the internal workings of relationship fields and make the experience of database migrations easier. Aside from this we imagine the core architecture will remain largely the same.
+
+In the short term we want to focus on a better onboarding experience and making it easier to build typical applications with Keystone. This involves better error messages, documentation and examples, extensibility of the AdminUI as well as new field types and adapters.
+
+All PRs in these areas will be welcome. The list of features and bugs below represents identified tasks that align with Keystone's core goals and current focus. Although the core goals of this project will remain the same, some tasks may evolve, new tasks may be added and priorities might change. For the latest list of Roadmap tasks, take a look at our [Roadmap Milestone on Github](https://github.com/keystonejs/keystone-5/milestone/6).
 
 ### Features
 
