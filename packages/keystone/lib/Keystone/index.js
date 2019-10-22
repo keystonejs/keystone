@@ -257,6 +257,11 @@ module.exports = class Keystone {
   createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
+    const isReservedName = !isAuxList && key[0] === '_';
+
+    if (isReservedName) {
+      throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
+    }
 
     const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
