@@ -2,4 +2,4 @@
 '@keystone-alpha/app-admin-ui': patch
 ---
 
-export `useAdminMeta` which an be useful in custom pages
+export `useAdminMeta` which is useful in developing custom pages
