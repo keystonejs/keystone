@@ -19,6 +19,7 @@ import {
 import { Title } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
+import { PersonIcon } from '@arch-ui/icons';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
@@ -142,7 +143,15 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, onRenderIndexPage) {
+function renderChildren(
+  node,
+  authListKey,
+  mouseIsOverNav,
+  getListByKey,
+  adminPath,
+  depth,
+  onRenderIndexPage
+) {
   if (node.children) {
     const groupKey = uid(node.children);
     depth += 1;
@@ -151,7 +160,15 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, on
       <React.Fragment key={groupKey}>
         {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
         {node.children.map(child =>
-          renderChildren(child, mouseIsOverNav, getListByKey, adminPath, depth, onRenderIndexPage)
+          renderChildren(
+            child,
+            authListKey,
+            mouseIsOverNav,
+            getListByKey,
+            adminPath,
+            depth,
+            onRenderIndexPage
+          )
         )}
       </React.Fragment>
     );
@@ -199,13 +216,28 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, on
       isSelected={isSelected}
       to={`${href}${maybeSearchParam}`}
       mouseIsOverNav={mouseIsOverNav}
+      css={{
+        display: 'flex',
+        alignItems: 'center',
+        ':hover > svg': {
+          color: colors.primary,
+        },
+      }}
     >
       {label}
+      {key === authListKey ? <PersonIcon title={label} css={{ paddingLeft: '4px' }} /> : null}
     </PrimaryNavItem>
   );
 }
 
-function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOverNav }) {
+function PrimaryNavItems({
+  adminPath,
+  authListKey,
+  getListByKey,
+  pages,
+  listKeys,
+  mouseIsOverNav,
+}) {
   let hasRenderedIndexPage = false;
   let onRenderIndexPage = () => {
     hasRenderedIndexPage = true;
@@ -213,10 +245,26 @@ function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOver
   let pageNavItems =
     pages && pages.length
       ? pages.map(node =>
-          renderChildren(node, mouseIsOverNav, getListByKey, adminPath, 0, onRenderIndexPage)
+          renderChildren(
+            node,
+            authListKey,
+            mouseIsOverNav,
+            getListByKey,
+            adminPath,
+            0,
+            onRenderIndexPage
+          )
         )
       : listKeys.map(key =>
-          renderChildren(key, mouseIsOverNav, getListByKey, adminPath, 0, onRenderIndexPage)
+          renderChildren(
+            key,
+            authListKey,
+            mouseIsOverNav,
+            getListByKey,
+            adminPath,
+            0,
+            onRenderIndexPage
+          )
         );
   return (
     <Relative>
@@ -246,8 +294,14 @@ function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOver
 }
 
 let PrimaryNavContent = ({ mouseIsOverNav }) => {
-  let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
-
+  let {
+    adminPath,
+    getListByKey,
+    listKeys,
+    name,
+    pages,
+    authStrategy: { listKey: authListKey } = {},
+  } = useAdminMeta();
   return (
     <Inner>
       <Title
@@ -267,6 +321,7 @@ let PrimaryNavContent = ({ mouseIsOverNav }) => {
       </Title>
       <PrimaryNavItems
         adminPath={adminPath}
+        authListKey={authListKey}
         getListByKey={getListByKey}
         listKeys={listKeys.sort()}
         pages={pages}
