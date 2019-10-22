@@ -8,6 +8,7 @@ const {
   mapKeyNames,
   identity,
   mergeWhereClause,
+  versionGreaterOrEqualTo,
 } = require('@keystonejs/utils');
 
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
@@ -23,6 +24,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     super(...arguments);
     this.name = 'mongoose';
     this.mongoose = new mongoose.Mongoose();
+    this.minVer = '4.0.0';
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
@@ -75,6 +77,22 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     // Required here due to circular refs
     const { MongoId } = require('@keystonejs/fields-mongoid');
     return MongoId.primaryKeyDefaults[this.name].getConfig();
+  }
+
+  async checkDatabaseVersion() {
+    let info;
+
+    try {
+      info = await new this.mongoose.mongo.Admin(this.mongoose.connection.db).buildInfo();
+    } catch (error) {
+      console.log(`Error reading version from MongoDB: ${error}`);
+    }
+
+    if (!versionGreaterOrEqualTo(info.version, this.minVer)) {
+      throw new Error(
+        `MongoDB version ${info.version} is incompatible. Version ${this.minVer} or later is required.`
+      );
+    }
   }
 }
 
