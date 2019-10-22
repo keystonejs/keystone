@@ -44,7 +44,7 @@
     "@keystone-alpha/session": "^3.0.2",
     "@keystone-alpha/utils": "^3.2.0",
     "apollo-cache-inmemory": "^1.5.1",
-    "apollo-client": "^2.5.1",
+    "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.9",
     "apollo-link-error": "^1.1.8",
     "apollo-link-state": "^0.4.2",
