@@ -1,21 +1,21 @@
 <!--[meta]
 section: quick-start
-title: Configuring Adapters
+title: Database Setup and Adapters
 [meta]-->
 
-# Adapter Configuration
+## Choosing an Adapter
 
-## Choosing an adapter
+KeystoneJS currently provides two adapters for connecting to either a MongoDB or PostgreSQL database. Choose the [Mongoose Adapter](/keystone-alpha/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystone-alpha/adapter-knex/) for PostgreSQL.
 
-KeystoneJS currently provides two database adapters. Choose the [Mongoose Adapter](/keystone-alpha/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystone-alpha/adapter-knex/) for PostgreSQL.
+If you're following the [quick start guide](/quick-start/adapters), simply select the appropriate adapter for your database of choice when prompted. More information on adapter configuration can be found under the *Setup* sections.
 
 _Note_: PostgreSQL requires an additional step to create a database.
 
 ## Installing MongoDB
 
-The simplest way to install [MongoDB](https://www.mongodb.com/) is using [Homebrew](https://brew.sh/).
+### MacOS
 
-### OSX
+The simplest way to install [MongoDB](https://www.mongodb.com/) is using [Homebrew](https://brew.sh/).
 
 ```sh
 brew install mongodb
@@ -24,7 +24,7 @@ brew services start mongodb
 
 ### Other Platforms
 
-Follow the [official MongoDB installation guide](https://www.mongodb.com/download-center/community).
+Follow the [official MongoDB installation guide](https://www.mongodb.com/download-center/community) for your system.
 
 ### Setup
 
@@ -32,9 +32,9 @@ By default the Mongoose Adapter will attempt to connect to MongoDB as the curren
 
 ## Installing Postgres
 
-The simplest way to install [Postgres](https://www.postgresql.org/) is using [Homebrew](https://brew.sh/).
+### MacOS
 
-### OSX
+The simplest way to install [Postgres](https://www.postgresql.org/) is using [Homebrew](https://brew.sh/).
 
 ```sh
 brew install postgres
@@ -50,4 +50,6 @@ By default the Knex Adapter will attempt to connect to a PostgreSQL database as 
 
 To create database run the following command:
 
-`createdb my-database-name`
+```sh
+createdb my-database-name
+```

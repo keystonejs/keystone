@@ -13,7 +13,7 @@ Minimum requirements for the Demo Projects:
 
 - [Node.js](https://nodejs.org/) >= 10.x
 - [Yarn](https://yarnpkg.com/)
-- [MongoDB](https://v5.keystonejs.com/quick-start/mongodb) >= 4.x
+- [MongoDB](https://www.mongodb.com/) >= 4.x
 
 Download a copy of the Keystone 5 repo, and check out the latest release:
 

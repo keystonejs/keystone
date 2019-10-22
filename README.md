@@ -20,14 +20,6 @@ This means less focus on hand-holding Node.js template-driven websites and more 
 
 We believe it's the ideal back-end for rich React / Vue / Angular applications, Gatsby and Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
-🚨🚨🚨
-
-This project is currently very much in the **alpha** phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
-
-To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm.
-
-🚨🚨🚨
-
 ## Getting Started
 
 ### Quick start
@@ -41,11 +33,11 @@ yarn start
 ```
 
 For more details and system requirements, check out the [5 Minute Quick Start
-Guide](https://v5.keystonejs.com/quick-start/).
+Guide](https://keystonejs.com/quick-start/).
 
 ### API
 
-The [API documentation](https://v5.keystonejs.com/api/) contains a reference for all KeystoneJS packages.
+The [API documentation](https://keystonejs.com/api/) contains a reference for all KeystoneJS packages.
 
 ### Demo Projects
 
@@ -74,6 +66,7 @@ Add a script to your `package.json`:
 Create a file `index.js`:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
@@ -126,6 +119,7 @@ must handle executing the different parts of Keystone.
 Create the `server.js` file:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const express = require('express');
 const { keystone, apps } = require('./index');
@@ -156,7 +150,7 @@ _Note that when using a custom server, you will no longer get the formatted
 console output when starting a server._
 
 For more, see the [Custom Server
-Discussion](https://v5.keystonejs.com/guides/custom-server).
+Discussion](https://keystonejs.com/guides/custom-server).
 
 ### Production Build
 
@@ -219,12 +213,13 @@ tightly coupled to the API.
 
 ### Adding Authentication
 
-_See [Authentication docs](https://v5.keystonejs.com/guides/authentication)._
+_See [Authentication docs](https://keystonejs.com/guides/authentication)._
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const { Keystone } = require('@keystone-alpha/keystone');
 const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');

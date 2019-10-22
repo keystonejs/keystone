@@ -60,5 +60,11 @@ module.exports = {
         )}`
       );
     }
+
+    // It's possible the developer's entry file has an accidentally long-lived
+    // process (for example, using 'connect-mongodb-session').
+    // To avoid that long-lived process from making the build command hang, we
+    // signal that we wish the process to end here.
+    return { endProcessWithSuccess: true };
   },
 };

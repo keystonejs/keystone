@@ -7,6 +7,7 @@ const {
   mapKeys,
   mapKeyNames,
   identity,
+  mergeWhereClause,
 } = require('@keystone-alpha/utils');
 
 const {
@@ -203,7 +204,16 @@ class MongooseListAdapter extends BaseListAdapter {
     return fieldAdapter.getMongoFieldName();
   }
 
-  _itemsQuery(args, { meta = false } = {}) {
+  async _itemsQuery(args, { meta = false, from, include } = {}) {
+    if (from && Object.keys(from).length) {
+      const ids = await from.fromList.adapter._itemsQuery(
+        { where: { id: from.fromId } },
+        { include: from.fromField }
+      );
+      if (ids.length) {
+        args = mergeWhereClause(args, { id: { $in: ids[0][from.fromField] } });
+      }
+    }
     function graphQlQueryToMongoJoinQuery(query) {
       const _query = {
         ...query.where,
@@ -239,7 +249,7 @@ class MongooseListAdapter extends BaseListAdapter {
       query.$count = 'count';
     }
 
-    const queryTree = queryParser({ listAdapter: this }, query);
+    const queryTree = queryParser({ listAdapter: this }, query, [], include);
 
     // Run the query against the given database and collection
     return this.model

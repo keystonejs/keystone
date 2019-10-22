@@ -2,7 +2,6 @@
 
 Contributions to KeystoneJS in the form of issues and PRs are welcomed.
 
-During the alpha stage of development we are focussing on getting the core systems working smoothly.
 Contributions which improve the documentation and test coverage are particularly welcomed.
 
 ### Community Ecosystem
@@ -268,7 +267,6 @@ We also build commonjs builds to run in node (for testing with jest or etc.) and
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 <!-- prettier-ignore -->
 <table>
   <tr>
@@ -309,6 +307,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/Vultraz"><img src="https://avatars0.githubusercontent.com/u/3558659?v=4" width="100px;" alt="Charles Dang"/><br /><sub><b>Charles Dang</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=Vultraz" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone-5/commits?author=Vultraz" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/dzigg"><img src="https://avatars1.githubusercontent.com/u/4436922?v=4" width="100px;" alt="dzigg"/><br /><sub><b>dzigg</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=dzigg" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/cmosgh"><img src="https://avatars0.githubusercontent.com/u/911925?v=4" width="100px;" alt="Cristian Mos"/><br /><sub><b>Cristian Mos</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=cmosgh" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://arnaud-zg.github.io/"><img src="https://avatars1.githubusercontent.com/u/10991546?v=4" width="100px;" alt="Arnaud Zheng"/><br /><sub><b>Arnaud Zheng</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=arnaud-zg" title="Documentation">📖</a></td>
   </tr>
 </table>
 

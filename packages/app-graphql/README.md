@@ -9,7 +9,7 @@ draft: true
 
 A KeystoneJS App that creates a GraphQL API and Apollo GraphQL playground.
 
-For information about writing queries and mutations for KeystoneJS see the [Introduction to KeystoneJS' GraphQL API](https://v5.keystonejs.com/guides/intro-to-graphql).
+For information about writing queries and mutations for KeystoneJS see the [Introduction to KeystoneJS' GraphQL API](https://keystonejs.com/guides/intro-to-graphql).
 
 ## Usage
 

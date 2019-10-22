@@ -280,6 +280,9 @@ module.exports = class List {
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
+      if (!this.isAuxList && fieldKey[0] === '_') {
+        throw `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`;
+      }
       if (typeof fieldConfig.type === 'undefined') {
         throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
           `(${this.key}.${fieldKey}.type is undefined)`;
@@ -876,13 +879,13 @@ module.exports = class List {
     return resolvers;
   }
 
-  async listQuery(args, context, gqlName, info) {
+  async listQuery(args, context, gqlName, info, from) {
     const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-    return this._itemsQuery(mergeWhereClause(args, access), { context, info });
+    return this._itemsQuery(mergeWhereClause(args, access), { context, info, from });
   }
 
-  async listQueryMeta(args, context, gqlName, info) {
+  async listQueryMeta(args, context, gqlName, info, from) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
@@ -890,9 +893,12 @@ module.exports = class List {
       getCount: () => {
         const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), { meta: true, context, info }).then(
-          ({ count }) => count
-        );
+        return this._itemsQuery(mergeWhereClause(args, access), {
+          meta: true,
+          context,
+          info,
+          from,
+        }).then(({ count }) => count);
       },
     };
   }
@@ -1164,14 +1170,33 @@ module.exports = class List {
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
     const resolvedRelationships = await this._mapToFields(fields, async field => {
-      const operations = await field.resolveNestedOperations(
+      const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
         existingItem,
         context,
         getItem,
         mutationState
       );
-      return field.convertResolvedOperationsToFieldValue(operations, existingItem);
+      // This code codifies the order of operations for nested mutations:
+      // 1. disconnectAll
+      // 2. disconnect
+      // 3. create
+      // 4. connect
+      if (field.many) {
+        return [
+          ...currentValue.filter(id => !disconnect.includes(id)),
+          ...connect,
+          ...create,
+        ].filter(id => !!id);
+      } else {
+        return create && create[0]
+          ? create[0]
+          : connect && connect[0]
+          ? connect[0]
+          : disconnect && disconnect[0]
+          ? null
+          : currentValue;
+      }
     });
 
     return {

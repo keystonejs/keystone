@@ -6,7 +6,7 @@ title: Hooks
 # Hooks
 
 > _NOTE: Below is an overview of hooks. For API docs see
-> [Hooks API](https://v5.keystonejs.com/api/hooks)._
+> [Hooks API](/api/hooks)._
 
 KeystoneJS provide a system of hooks on the `create`, `update`, and `delete` mutations which allow developers to customise the behaviour of their system.
 
