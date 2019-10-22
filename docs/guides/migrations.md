@@ -37,7 +37,7 @@ Using the KnexAdapter if we create an `ExampleList` that contains an `Integer` f
 If we update our Keystone List either by renaming fields or adding new fields, we might encounter errors next time we start Keystone. This is because the database schema has changed and Keystone doesn't know what to do with existing data or won't be able to save new data. Let's imagine that because we are responsible with data collection we want to update the list to only include an age range rather than a specific age. We might update the field to use a select type:
 
 ```javascript
-keystone.createList('MigrationExample', {
+keystone.createList('ExampleList', {
   fields: {
     age: { type: Select, options: '0-18, 19-35, 36-50, 50+' },
   },
