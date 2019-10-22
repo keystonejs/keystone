@@ -2,369 +2,81 @@
 section: road-map
 title: Road Map
 order: 1
-draft: true
 [meta]-->
 
 # Roadmap
 
-- [Admin UI authentication](#admin-ui-authentication)
-- [Admin UI display & forms](#admin-ui-display--forms)
-  - [true/false](#truefalse)
-  - [Array of field names to allow access to](#array-of-field-names-to-allow-access-to)
-  - [A function which receives an auth object and returns either 1. or 2.](#a-function-which-receives-an-auth-object-and-returns-either-1-or-2)
-- [GraphQL access control](#graphql-access-control-1)
-- [Access Control Queries](#access-control-queries)
-- [Schema isolation](#schema-isolation)
-  - [createGraphQLMiddleware(config) => function(req, res, next)](#creategraphqlmiddlewareconfig--functionreq-res-next)
-  - [Schema Isolation Examples](#schema-isolation-examples)
-    - [Role based schemas](#role-based-schemas)
+## Overview
 
-> The above documents the current state of Access Control in Keystone.
-> Below, we outline one possible roadmap for enhancing Access Control in the
-> future.
->
-> _**NOTE**: This is a draft, and should not be considered final._
+The **core goals of Keystone** are:
 
-2 additional ways of effecting the available actions of a user in Keystone:
+- allow fast definition of schema and application structure
+- provide content management that matches any application structure
+- allow effortless and flexible access control configuration
+- provide the most intuitive GraphQL API
+- comprise small independent packages that can be added and combined as required
+- allow freedom of choice and interoperability outside these narrow areas of control
 
-1. Admin UI authentication
-2. _New:_ Admin UI display & forms
-3. GraphQL access control
-4. _New:_ Schema isolation
+**Keystone is not trying to be**:
 
-## Admin UI authentication
+- an ORM like Knex or Mongoose
+- a simple database wrapper like Prisma
+- a front-end hosting service like Netlify
+- an application hosting service like Heroku
+- a database provisioning service like MongoLab
+- a build or deployment tool
+- a template engine (Keystone is headless)
 
-As above
+We want people to use these types of services interchangeably with Keystone with as little effort as possible. Rather than position itself as a competitor to any of the above, Keystone empowers people by not limiting these choices.
 
-## Admin UI display & forms
+There may be complementary services, plugins or packages that tie in with the above. Although we will avoid adding these features to 'core' we want to provide a supportive environment for these to be developed within the Keystone community.
 
-You are able to control which fields are available within the Admin UI
-independently of the access control options (but access control still governs
-the final data displayed / mutated, see _[GraphQL access control](#graphql-access-control)_).
+We also want to ensure Keystone works well with static sites and serverless architecture. This goal will help keep Keystone light-weight, nimble, customisable and not tied to a specific architecture, in-line with our core goals.
 
-Given a list configured like so:
+## Our Current Focus
 
-```js
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: Email },
-    password: { type: Password },
-  },
-});
-```
+A lot of work has been done on Keystone's core architecture. In this area Keystone 5 is significantly more mature than Keystone 4 was. We'd like to add database transactions, slightly refactor some of the internal workings of relationship fields and make the experience of database migrations easier. Aside from this we imagine the core architecture will remain largely the same.
 
-You can add an `admin` config to change what fields are displayed in the Admin
-UI, like so:
+In the short term we want to focus on a better onboarding experience and making it easier to build typical applications with Keystone. This involves better error messages, documentation and examples, extensibility of the AdminUI as well as new field types and adapters.
 
-```js
-function getAdminUiFields(auth) {
-  if (isSuperUser(auth)) {
-    return true; // All fields are available
-  }
+All PRs in these areas will be welcome. The list of features and bugs below represents identified tasks that align with Keystone's core goals and current focus. Although the core goals of this project will remain the same, some tasks may evolve, new tasks may be added and priorities might change. For the latest list of Roadmap tasks, take a look at our [Roadmap Milestone on Github](https://github.com/keystonejs/keystone-5/milestone/6).
 
-  return ['name', 'email', 'password']; // Only some fields are available
-}
+### Features
 
-keystone.createList('User', {
-  fields: {
-    /* ... */
-  },
-  admin: {
-    createFields: auth => getAdminUiFields(auth),
-    readFields: auth => getAdminUiFields(auth),
-    updateFields: auth => getAdminUiFields(auth),
-  },
-});
-```
+- Options pages ([#1639](https://github.com/keystonejs/keystone-5/issues/1639))
+- Better seeding of initial data ([#301](https://github.com/keystonejs/keystone-5/issues/301))
+- Migrations ([#299](https://github.com/keystonejs/keystone-5/issues/299))
+- Virtual\Dynamic fields ([#1117](https://github.com/keystonejs/keystone-5/issues/1117))
+- Repeating sections ([#313](https://github.com/keystonejs/keystone-5/issues/313), [#195](https://github.com/keystonejs/keystone-5/issues/195))
+- Ability to deploy the Admin UI to a static server ([#734](https://github.com/keystonejs/keystone-5/issues/734), [#1258](https://github.com/keystonejs/keystone-5/issues/1258), [#1257](https://github.com/keystonejs/keystone-5/issues/1257))
+- Add a DateRange field type ([#215](https://github.com/keystonejs/keystone-5/issues/215))
+- Add case options to text fields ([#1639](https://github.com/keystonejs/keystone-5/issues/1639))
+- A React App ([#1669](https://github.com/keystonejs/keystone-5/issues/1669))
+- Transaction Support ([#211](https://github.com/keystonejs/keystone-5/issues/211))
+- Admin UI Hooks ([#1665](https://github.com/keystonejs/keystone-5/issues/1665))
+- StateMachine Type ([#1528](https://github.com/keystonejs/keystone-5/issues/1528))
+- Make Hooks an Array ([#1495](https://github.com/keystonejs/keystone-5/issues/1495))
+- Finalise query limits ([#1469](https://github.com/keystonejs/keystone-5/issues/1469))
+- JSON & Memory Adapters ([#947](https://github.com/keystonejs/keystone-5/issues/947), [#324](https://github.com/keystonejs/keystone-5/issues/324))
+- Allow `where` clauses on single relationships ([#699](https://github.com/keystonejs/keystone-5/issues/699))
+- Allow upsert mutations ([#182](https://github.com/keystonejs/keystone-5/issues/182))
+- Auth Strategy and Authentication improvement ([#878](https://github.com/keystonejs/keystone-5/issues/878))
 
-There are 3 ways to define the fields, in increasing levels of verbosity:
+### Developer Experience & Maintenance
 
-1. `true` for 'all access allowed' / `false` for 'no access allowed'
-2. An array of field names to allow access to
-3. A function which receives an `auth` object and returns either 1. or 2.
+- Creating custom field types ([#1054](https://github.com/keystonejs/keystone-5/issues/1054), [#1218](https://github.com/keystonejs/keystone-5/issues/1218))
+- Creating new adapters
+- Error messages ([#1659](https://github.com/keystonejs/keystone-5/issues/1659))
+- Upgrade to Next.js v9 ([#1670](https://github.com/keystonejs/keystone-5/issues/1670))
+- Improve the speed of our CI ([#1672](https://github.com/keystonejs/keystone-5/issues/1672))
 
-NOTE: When creating a list item, any fields not specified in `createFields` will
-use the field's default value. If no default value is set, an error will be thrown.
+### Planning
 
-### `true`/`false`
+- Plugin Architecture ([#1489](https://github.com/keystonejs/keystone-5/issues/1489))
+- Relationship field types ([#1322](https://github.com/keystonejs/keystone-5/issues/1322))
 
-```js
-keystone.createList('User', {
-  fields: {
-    /* ... */
-  },
-  admin: {
-    createFields: false, // no access allowed to create list items
-    readFields: true, // full access allowed to read all fields of a list item
-    updateFields: true, // full access allowed to update any field in a list item
-  },
-});
-```
+### High Priority Bugs
 
-### Array of field names to allow access to
-
-```js
-keystone.createList('User', {
-  fields: {
-    /* ... */
-  },
-  admin: {
-    createFields: ['name', 'email', 'password'], // can set only these fields when creating
-    readFields: ['name', 'email'], // Only these fields are visible when reading
-    updateFields: ['email'], // Only `email` can be updated
-  },
-});
-```
-
-### A function which receives an `auth` object and returns either 1. or 2.
-
-```js
-keystone.createList('User', {
-  fields: {
-    /* ... */
-  },
-  admin: {
-    // below, admin gets super access
-    createFields: auth => (auth.item.isAdmin ? true : ['name', 'email', 'password']),
-    readFields: auth => (auth.item.isAdmin ? true : ['name', 'email']),
-    updateFields: auth => (auth.item.isAdmin ? true : ['email']),
-  },
-});
-```
-
-<details>
- <summary>Complete example</summary>
-
-```js
-function isSuperUser(auth) {
-  return auth.role === 'su';
-}
-
-function getAdminUiFields(auth) {
-  if (isSuperUser(auth)) {
-    return true; // All fields are available
-  }
-
-  return ['name', 'email', 'password']; // Only some fields are available
-}
-
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: Email },
-    password: { type: Password },
-    address: { type: Text },
-  },
-  admin: {
-    createFields: auth => getAdminUiFields(auth),
-    readFields: auth => getAdminUiFields(auth),
-    updateFields: auth => getAdminUiFields(auth),
-  },
-});
-```
-
----
-
-</details>
-
-## GraphQL access control
-
-When combined with [Admin UI display & forms](#admin-ui-display--forms), it is
-possible to display fields, while limiting the data.
-
-For example, the below access control states:
-
-- Only authenticated users can read/update their own email, not any other
-  user's.
-- Only authenticated users can update their own password, they cannot read their
-  own or other user's passwords.
-- Display only the fields `name`, `email`, `password` in the Admin UI
-
-```js
-function getAdminUiFields(auth) {
-  if (isSuperUser(auth)) {
-    return true; // All fields are available
-  }
-  return; // Only some fields are available
-}
-
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    address: { type: Text },
-    email: {
-      type: Email,
-      access: ({ existingItem, auth }) => existingItem.id === auth.id,
-    },
-    password: {
-      type: Password,
-      access: {
-        read: false,
-        update: ({ existingItem, auth }) => existingItem.id === auth.id,
-      },
-    },
-  },
-  admin: {
-    createFields: ['name', 'email', 'password'],
-    readFields: ['name', 'email', 'password'],
-    updateFields: ['name', 'email', 'password'],
-  },
-});
-```
-
-When logged in as "Jess", will result in a list view like:
-
-| name         | email                 | password |
-| ------------ | --------------------- | -------- |
-| Jed Watson   |                       |          |
-| Jess Telford | jess@thinkmill.com.au |          |
-| John Molomby |                       |          |
-
-Notice Jess can only read his own email, and cannot read any passwords. Also
-notice the address column is not shown (as it wasn't included in the `admin`
-config).
-
----
-
-## Access Control Queries
-
-It is also possible to determine access control of the current user via queries:
-
-```graphql
-query {
-  _allUsersMeta(where: { id: "abc123" }) {
-    access: {
-      create
-      read
-      update
-      delete
-
-      fields: {
-        name: {
-          create
-          read
-          update
-        }
-        email: {
-          create
-          read
-          update
-        }
-        // ..etc
-      }
-    }
-  }
-}
-```
-
-This can be useful for clients to construct views around the given user's access to fields and lists.
-
-<!-- TODO: Flesh this out more -->
-
-## Schema isolation
-
-By default, Keystone generates a single GraphQL endpoint with an
-include-by-default approach to what schema is available.
-
-In some cases (see [examples](#schema-isolation-examples) below), it is
-desirable to have an entirely separate schema available at different endpoints
-or to different users.
-
-<!-- TODO @jed: Insert links to discussions on security through obscurity & privacy of
-certain fields, etc -->
-
-<!-- TODO @jed: How does this fit in with the Admin UI? How can a new Admin UI
-be generated based on a given schema? -->
-
-### `createGraphQLMiddleware(config) => function(req, res, next)`
-
-Keystone exposes a `.createGraphQLMiddleware()` function which generates an
-express middleware you can then add to a route to serve your graphql api.
-
-`config` takes the form:
-
-```js
-var config = {
-  // Set the default value for all lists with a root level `access` option
-  // Takes the same form as the `access` option on lists
-  access: true,
-
-  // Configure individual lists
-  lists: {
-    // Lists are identified by the name passed to `.createList()`
-    [listKey]: {
-      // Set access config for this list.
-      // Takes the same form as the `access` option on lists
-      access: {
-        create: true,
-        read: true,
-        update: true,
-        delete: true,
-
-        // Overwite access config for specific fields
-        fields: {
-          // Overwrite the `.createList()` config to give full CRU access for
-          // admin
-          email: true,
-          password: true,
-        },
-      },
-    },
-  },
-};
-```
-
-### Schema Isolation Examples
-
-#### Role based schemas
-
-```js
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    address: { type: Text },
-    email: {
-      type: Email,
-      access: ({ existingItem, auth }) => existingItem.id === auth.id,
-    },
-    password: {
-      type: Password,
-      access: {
-        read: false,
-        update: ({ existingItem, auth }) => existingItem.id === auth.id,
-      },
-    },
-  },
-});
-
-// This schema assumes if you can hit the route, then you have god-mode.
-const adminSchema = keystone.createGraphQLMiddleware({
-  // grant access to everything by default, however is not enough to overwrite
-  // the specific rules setup in the above `.createList()`
-  access: true,
-  lists: {
-    // Overrides for specific fields
-    User: {
-      access: {
-        fields: {
-          // Overwrite the `.createList()` config to give full CRUD access for
-          // admin
-          email: true,
-          password: true,
-        },
-      },
-    },
-  },
-});
-
-const publicSchema = keystone.createGraphQLMiddleware();
-
-app.use('/graphql', (req, res, next) => {
-  // Assuming req.user is set by some earlier authentication middleware
-  if (req.user.role === 'ADMIN') {
-    return adminSchema(req, res, next);
-  }
-  publicSchema(req, res, next);
-});
-```
+- Removing items form to many relationships ([#1548](https://github.com/keystonejs/keystone-5/issues/1548))
+- Create form submits unedited values ([#1398](https://github.com/keystonejs/keystone-5/issues/1398))
+- Create many mutation not connecting relationships ([#1318](https://github.com/keystonejs/keystone-5/issues/1318))
