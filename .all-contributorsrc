@@ -297,6 +297,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "arnaud-zg",
+      "name": "Arnaud Zheng",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10991546?v=4",
+      "profile": "https://arnaud-zg.github.io/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
