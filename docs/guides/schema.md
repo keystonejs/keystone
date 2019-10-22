@@ -117,15 +117,15 @@ keystone.createList('Todo', {
 
 In this example, the `adminConfig` options will apply only to the `Todo` list
 (setting how many items are shown per page in the [Admin
-UI](https://v5.keystonejs.com/tutorials/admin-ui)). The `isRequired` option will ensure an API error
+UI](/tutorials/admin-ui)). The `isRequired` option will ensure an API error
 is thrown if a `task` value is not provided when creating/updating items.
 
 <!-- TODO: Screenshot -->
 
 _For more List options, see the [`createList()` API
-docs](https://v5.keystonejs.com/api/create-list)._
+docs](/api/create-list)._
 
-_[There are many different field types available](https://v5.keystonejs.com/keystone-alpha/fields/),
+_[There are many different field types available](/keystone-alpha/fields/),
 each specifying their own options._
 
 ### Related Lists

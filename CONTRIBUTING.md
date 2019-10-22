@@ -2,7 +2,6 @@
 
 Contributions to KeystoneJS in the form of issues and PRs are welcomed.
 
-During the alpha stage of development we are focussing on getting the core systems working smoothly.
 Contributions which improve the documentation and test coverage are particularly welcomed.
 
 ### Community Ecosystem
@@ -24,54 +23,94 @@ If you develop custom fields, adapters, apps or any other Keystone feature, (or 
 
 KeystoneJS adheres to the [Contributor Covenant Code of Conduct](code-of-conduct.md).
 
-## Version management
+## Repository Setup
 
-Keystone uses @noviny's [@changesets/cli](https://github.com/noviny/changesets) in combination with `bolt` to track package versions and publish packages.
+KeystoneJS follows the [Thinkmill Monorepo Style Guide](https://github.com/Thinkmill/monorepo). For more information on the reasoning behind using certain tooling, please refer to it.
+
+### Version management
+
+Keystone uses @noviny's [@changesets/cli](https://github.com/noviny/changesets) to track package versions and publish packages.
 This tool allows each PR to indicate which packages need a version bump along with a changelog snippet.
 This information is then collated when performing a release to update package versions and `CHANGELOG.md` files.
 
-### What all contributors need to do
+#### What all contributors need to do
 
 - Make your changes (as per usual)
-- Before you make a Pull Request, run the `bolt changeset` command and answer the questions that are asked. It will want to know:
+- Before you make a Pull Request, run the `yarn changeset` command and answer the questions that are asked. It will want to know:
   - which packages you want to publish
   - what version you are releasing them at
   - a message to summarise the changes (this message will be written to the changelog of bumped packages)
-- Before you accept the changeset, it will inform you of any other dependent packages within the repo that will also be bumped by this changeset. If this looks fine, agree, and a changeset will be generated in the `.changeset` directory.
+- Before you accept the changeset, it will display all the data that will be written to the changeset. If this looks fine, agree, and a changeset will be generated in the `.changeset` directory.
 
-Each changeset contains two files; `changes.json`, which contains structured data which indicates the packages which need to be updated, and `changes.md`, which contains a markdown snippet which will be included in the `CHANGELOG.md` files for the updated packages.
-
-Here is what a `changeset.json` looks like:
+After this, a new changeset will be added which is a markdown file with YAML front matter.
 
 ```
-{
-  "releases": [
-    { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" },
-    { "name": "@keystone-alpha/keystone", "type": "minor" }
-  ],
-  "dependents": []
-}
+-| .changeset/
+-|-| UNIQUE_ID.md
 ```
+
+The message you typed can be found in the markdown file. If you want to expand on it, you can write as much markdown as you want, which will all be added to the changelog on publish. If you want to add more packages or change the bump types of any packages, that's also fine.
+
+While not every changeset is going to need a huge amount of detail, a good idea of what should be in a changeset is:
+
+- WHAT the change is
+- WHY the change was made
+- HOW a consumer should update their code
 
 An example, if you generate a changeset that includes `adapter-mongoose` as a patch, and `keystone` as a minor, you can merge your PR, and the next time the `version-packages` command is run, these will both be updated.
 
+```md
+---
+'@keystone-alpha/adapter-mongoose': patch
+'@keystone-alpha/keystone': minor
+---
+
+A very useful description of the changes should be here.
+```
+
 You can have multiple changesets in a single PR. This will give you more granular changelogs, and is encouraged.
 
-## Release Guidelines
+### Release Guidelines
 
-## Publishing
-
-### How to do a release
+#### How to do a release
 
 > This should only ever be done by a very short list of core contributors
 
 Releasing is a two-step process. The first step updates the packages, and the second step publishes updated packages to npm.
 
-#### Steps to version packages
+##### Update Packages (automatic)
 
-The first step is `bolt version-packages`. This will find all changesets that have been created since the last release, and update the version in package.json as specified in those changesets, flattening out multiple bumps to a single package into a single version update.
+This step is handled for us by the Changesets GitHub Action. As PRs are opened
+against `master`, the bot will open and update a PR which generates the
+appropriate `CHANGELOG.md` entries and `package.json` version bumps.
 
-The `bolt version-packages` command will generate a release commit, which will bump all versions, necessary dependency version changes, and update changelog.mds.
+Once ready for a release, merge the bot's PR into `master`.
+
+> _NOTE: For information on manually updating packages, see [Update Packages
+> (manual)](#update-packages-manual)_
+
+##### Publish Packages
+
+Once the version changes are merged back in to master, to do a manual release:
+
+```sh
+yarn fresh && \
+yarn publish-changed && \
+git push --tags
+```
+
+The `yarn publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
+
+NOTE: There is no reason you should ever manually edit the version in the `package.json`
+
+##### Update Packages (manual)
+
+If you wish to do a manual release (useful for back-porting fixes), follow these
+steps. Otherwise, skip on to the next section for _Publishing Packages_.
+
+The first step is `yarn version-packages`. This will find all changesets that have been created since the last release, and update the version in package.json as specified in those changesets, flattening out multiple bumps to a single package into a single version update.
+
+The `yarn version-packages` command will generate a release commit, which will bump all versions, necessary dependency version changes, and update changelog.mds.
 
 The commands to run are:
 
@@ -80,44 +119,138 @@ git checkout master && \
 git pull && \
 git branch -D temp-release-branch && \
 git checkout -b temp-release-branch && \
-bolt fresh && \
-bolt build && \
-bolt version-packages && \
-bolt format && \
+yarn fresh && \
+yarn build && \
+yarn version-packages && \
+yarn format && \
 git add . && \
-git commit -m "Prepare release" && \
+git commit -m "Version packages" && \
 git push --set-upstream origin temp-release-branch
 ```
 
 Once you have run this you will need to make a pull request to merge this back into master.
 
-#### Release Process
-
-Once the version changes are merged back in to master, to do a manual release:
+Finally, make sure you've got the latest of everything locally
 
 ```sh
 git checkout master && \
 git pull && \
-bolt && \
-bolt publish-changed && \
-git push --tags && \
-bolt
+yarn
 ```
 
-The `bolt publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
-
-Because of this, we should keep the following in mind:
-
-- Once the `publish-changed` command has been run, the PR from the `temp-release-branch` should be merged before any other PRs are merged into master, to ensure that no changesets are skipped from being included in a release.
-- There is no reason you should ever manually edit the version in the `package.json`
-
-### A quick note on changelogs
+#### A quick note on changelogs
 
 The release process will automatically generate and update a `CHANGELOG.md` file, however this does not need to be the only way this file is modified. The changelogs are deliberately static assets so past changelogs can be updated or expanded upon.
 
 In addition, content added above the last released version will automatically be appended to the next release. If your changes do not fit comfortably within the summary of a changelog, we encourage you to add a more detailed account directly into the `CHANGELOG.md`.
 
-## Build Process
+#### Backporting Fixes
+
+Occasionally a bug goes undetected for a few versions. When a fix is discovered,
+it may need to be applied to all affected versions (depending on the
+severity, security considerations, etc). This is called _backporting_.
+
+First, find out the oldest version which was affected. This can be done using
+`git blame`, browsing the `CHANGELOG.md`s, etc.
+
+Once we know which version introduced the bug, walk forward through the
+`CHANGELOG.md` noting all the _minor_ and _major_ releases made since.
+
+> Example: If a bug was introduced in `14.0.0`, but not discovered until after
+> `15.1.1` was released, the list of _minor_ and _major_ releases may look like:
+>
+> - `14.0.x`
+> - `14.1.x`
+> - `15.0.x`
+> - `15.1.x`
+
+We're going to do a backport and release for the HEAD of every _minor_ and
+_major_ release, ignoring any interim patch releases.
+
+> Example: These may be the releases we'd backport to:
+>
+> - ❌ `14.0.0`
+> - ✅ `14.0.1`
+> - ✅ `14.1.0`
+> - ❌ `15.0.0`
+> - ❌ `15.0.1`
+> - ✅ `15.0.2`
+> - ✅ `15.1.0`
+
+Now, for each release we want to backport to, we follow this process:
+
+1. Checkout the tag of the release
+
+   Let's say the package being patched is `@keystone-alpha/keystone`, then we
+   want to run:
+
+   ```sh
+   git checkout -b backport-keystone-14.0.1 @keystone-alpha/keystone@14.0.1
+   ```
+
+2. Cherry pick the commit across.
+
+   Fix any merge conflicts that might arise.
+
+   NOTE: Make sure the changeset is either regenerated or edited to accurately
+   relfect the change to the one package you're bumping, otherwise weirdness
+   will happen.
+
+   ```sh
+   git cherry-pick abc123123
+   ```
+
+3. Bump package versions
+
+   ```sh
+   yarn fresh --prefer-offline && \
+   yarn build && \
+   yarn version-packages && \
+   yarn format && \
+   git add . && \
+   git commit -m "Backport fix"
+   ```
+
+4. Do _NOT_ open a PR
+
+   This change is not going to be PR'd into master. Instead we'll later push
+   the tag which contains the commits.
+
+   To confirm everything is as expected, look at the git log:
+
+   ```sh
+   git log -p
+   ```
+
+5. Publish the newly version bumped package
+
+   Note we can't use changesets to do this special publish as it doesn't handle backports.
+
+   ```sh
+   (\
+   export PACKAGE_NAME=@keystone-alpha/keystone && \
+   export OTP_CODE= && \
+   cd packages/keystone && \
+   yarn publish --tag=backport --otp=$OTP_CODE && \
+   export BACKPORTED_VERSION=`npm dist-tag ls $PACKAGE_NAME | grep 'backport' | sed -e 's/backport: //'` && \
+   yarn tag remove $PACKAGE_NAME backport --otp=$OTP_CODE && \
+   git tag -a "$PACKAGE_NAME@$BACKPORTED_VERSION" -m "$PACKAGE_NAME@$BACKPORTED_VERSION"
+   git push --tags \
+   )
+   ```
+
+     <!-- this was the cd command but we don't have a command to replace the exact bolt part yet    cd `bolt ws $PACKAGE_NAME exec -- pwd | grep pwd | sed -e 's/.*pwd[ ]*//'` && \ w
+   -->
+
+   _NOTE: When prompted for "New version", just hit Enter_
+
+6. Confirm it was published
+
+   ```sh
+   npm show <PACKAGE_NAME> versions
+   ```
+
+### Build Process
 
 Some of the packages in keystone-5 need to compiled before they're published, we use [preconstruct](https://github.com/preconstruct/preconstruct) to do this.
 
@@ -134,9 +267,7 @@ We also build commonjs builds to run in node (for testing with jest or etc.) and
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 <!-- prettier-ignore -->
-
 <table>
   <tr>
     <td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="100px;" alt="Jed Watson"/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=JedWatson" title="Code">💻</a></td>
@@ -176,9 +307,16 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/Vultraz"><img src="https://avatars0.githubusercontent.com/u/3558659?v=4" width="100px;" alt="Charles Dang"/><br /><sub><b>Charles Dang</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=Vultraz" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone-5/commits?author=Vultraz" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/dzigg"><img src="https://avatars1.githubusercontent.com/u/4436922?v=4" width="100px;" alt="dzigg"/><br /><sub><b>dzigg</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=dzigg" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/cmosgh"><img src="https://avatars0.githubusercontent.com/u/911925?v=4" width="100px;" alt="Cristian Mos"/><br /><sub><b>Cristian Mos</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=cmosgh" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://arnaud-zg.github.io/"><img src="https://avatars1.githubusercontent.com/u/10991546?v=4" width="100px;" alt="Arnaud Zheng"/><br /><sub><b>Arnaud Zheng</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=arnaud-zg" title="Documentation">📖</a></td>
   </tr>
 </table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+```
+
+```

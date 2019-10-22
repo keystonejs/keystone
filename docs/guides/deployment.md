@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Deployment Recommendations
+subSection: deployment
 [meta]-->
 
 # Deployment Recommendations

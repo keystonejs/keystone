@@ -1,5 +1,11 @@
 # @keystone-alpha/app-graphql
 
+## 8.2.0
+
+### Minor Changes
+
+- [588c50cd](https://github.com/keystonejs/keystone-5/commit/588c50cd): Support protection against Billion Laughs DoS attacks
+
 ## 8.1.1
 
 ### Patch Changes

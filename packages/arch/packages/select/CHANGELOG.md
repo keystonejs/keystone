@@ -1,5 +1,11 @@
 # @arch-ui/select
 
+## 0.1.0
+
+### Minor Changes
+
+- [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579): Allow async and creatable react-selects
+
 ## 0.0.8
 
 ### Patch Changes

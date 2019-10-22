@@ -19,27 +19,26 @@ x-job-setup: &job-setup
 # Download and cache dependencies
 x-restore-cache: &restore-cache
   keys:
-    - v12-dependencies-{{ checksum "yarn.lock" }}
+    - v13-dependencies-{{ checksum "yarn.lock" }}
       # fallback to using the latest cache if no exact match is found
-    - v12-dependencies-
+    - v13-dependencies-
 
 x-save-cache: &save-cache
   paths:
     - node_modules
-  key: v12-dependencies-{{ checksum "yarn.lock" }}
+  key: v13-dependencies-{{ checksum "yarn.lock" }}
 
 x-integration-steps: &integration-steps
   steps:
     - checkout
     - restore_cache: *restore-cache
-    - run: sudo yarn global add bolt
     - run:
-        name: Bolt - Install packages
-        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+        name: Yarn - Install packages
+        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
     - save_cache: *save-cache
     - run:
         name: E2E Cypress tests
-        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs $PROJECT_DIRECTORY
+        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn --cwd $PROJECT_DIRECTORY cypress:run:ci
     - run:
         name: Prepare artifacts
         command: |
@@ -71,11 +70,10 @@ jobs:
       - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
       - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
       - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
-      - run: sudo yarn global add bolt
       # Set Cypress cache dir here, in case this job runs/completes first, and
       # hence clobbers the `node_modules` cache with a non-cypress version,
       # causing the other job to fail with a "Missing Cypress" error.
-      - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+      - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
       - save_cache: *save-cache
       # run tests!
       - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml

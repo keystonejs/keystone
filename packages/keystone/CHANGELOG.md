@@ -1,5 +1,44 @@
 # @keystone-alpha/keystone
 
+## 16.0.1
+
+### Patch Changes
+
+- [`b0aee895`](https://github.com/keystonejs/keystone-5/commit/b0aee895f664cf5665fa700e68ffc532c35f424d) [#1776](https://github.com/keystonejs/keystone-5/pull/1776) Thanks [@jesstelford](https://github.com/jesstelford)! - Avoid the build command from hanging when an entry file may have a long-running process.
+
+## 16.0.0
+
+### Major Changes
+
+- [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9) [#1729](https://github.com/keystonejs/keystone-5/pull/1729) Thanks [@timleslie](https://github.com/timleslie)! - This change significantly changes how and when we populate `many`-relationships during queries and mutations.
+  The behaviour of the GraphQL API has not changed, but queries should be more performant, particularly for items with many related items.
+  The `existingItem` parameter in hooks will no longer have the `many`-relationship fields populated.
+  `List.listQuery()` no longer populates `many` relationship fields.
+  For most users there should not need to be any changes to code unless they are explicitly relying on a `many`-relationship field in a hook, in which case they will need to execute an explicit query to obtain the desired values.
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/fields@14.0.0
+
+## 15.4.1
+
+### Patch Changes
+
+- [14fee364](https://github.com/keystonejs/keystone-5/commit/14fee364): Correctly pass `gqlName` for all access checks
+
+## 15.4.0
+
+### Minor Changes
+
+- [b12e4ccb](https://github.com/keystonejs/keystone-5/commit/b12e4ccb): Add a global maxTotalResults limit to Keystone object
+- [1405eb07](https://github.com/keystonejs/keystone-5/commit/1405eb07): Add `listKey`, `fieldKey` (fields only), `operation`, `gqlName`, `itemId` and `itemIds` as arguments to imperative access control functions.
+
+### Patch Changes
+
+- [3a52447d](https://github.com/keystonejs/keystone-5/commit/3a52447d): Update `getAccessControlledItem()` to remove short-circuit code which code lead to future data inconsistency.
+- [65d32b54](https://github.com/keystonejs/keystone-5/commit/65d32b54): Fix session storage
+
 ## 15.3.1
 
 ### Patch Changes

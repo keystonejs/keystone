@@ -20,14 +20,6 @@ This means less focus on hand-holding Node.js template-driven websites and more 
 
 We believe it's the ideal back-end for rich React / Vue / Angular applications, Gatsby and Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
-🚨🚨🚨
-
-This project is currently very much in the **alpha** phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
-
-To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm.
-
-🚨🚨🚨
-
 ## Getting Started
 
 ### Quick start
@@ -41,11 +33,11 @@ yarn start
 ```
 
 For more details and system requirements, check out the [5 Minute Quick Start
-Guide](https://v5.keystonejs.com/quick-start/).
+Guide](https://keystonejs.com/quick-start/).
 
 ### API
 
-The [API documentation](https://v5.keystonejs.com/api/) contains a reference for all KeystoneJS packages.
+The [API documentation](https://keystonejs.com/api/) contains a reference for all KeystoneJS packages.
 
 ### Demo Projects
 
@@ -158,7 +150,7 @@ _Note that when using a custom server, you will no longer get the formatted
 console output when starting a server._
 
 For more, see the [Custom Server
-Discussion](https://v5.keystonejs.com/guides/custom-server).
+Discussion](https://keystonejs.com/guides/custom-server).
 
 ### Production Build
 
@@ -221,7 +213,7 @@ tightly coupled to the API.
 
 ### Adding Authentication
 
-_See [Authentication docs](https://v5.keystonejs.com/guides/authentication)._
+_See [Authentication docs](https://keystonejs.com/guides/authentication)._
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
@@ -274,23 +266,17 @@ the auth strategy._
 All source code should be formatted with [Prettier](https://github.com/prettier/prettier).
 Code is not automatically formatted in commit hooks to avoid unexpected behaviour,
 so we recommended using an editor plugin to format your code as you work.
-You can also run `bolt format` to prettier all the things.
+You can also run `yarn format` to prettier all the things.
 The `lint` script will validate source code with both ESLint and prettier.
 
 ### Setup
 
-Keystone 5 is set up as a monorepo, using [Bolt](http://boltpkg.com).
+Keystone 5 is set up as a monorepo, using [Yarn Workspaces](https://yarnpkg.com/lang/en/docs/workspaces/). Make sure to [install Yarn](https://yarnpkg.com/lang/en/docs/install) if you haven't already.
 
 First, clone the Keystone 5 repository
 
 ```
 git clone https://github.com/keystonejs/keystone-5.git
-```
-
-Then make sure you've got Bolt installed:
-
-```sh
-yarn global add bolt
 ```
 
 Also make sure you have a local MongoDB server running
@@ -299,8 +285,8 @@ Also make sure you have a local MongoDB server running
 Then install the dependencies and start the test project:
 
 ```sh
-bolt
-bolt dev
+yarn
+yarn dev
 ```
 
 See [`demo-projects/README.md`](./demo-projects/README.md) for more details on
@@ -316,20 +302,20 @@ All tests can be run locally and on [CircleCI](https://circleci.com/gh/keystonej
 To run the unit tests, run the script:
 
 ```sh
-bolt jest
+yarn jest
 ```
 
 Unit tests for each package can be found in `packages/<package>/tests` and following the naming pattern `<module>.test.js`.
 To see test coverage of the files touched by the unit tests, run:
 
 ```sh
-bolt jest --coverage
+yarn jest --coverage
 ```
 
 To see test coverage of the entire monorepo, including files which have zero test coverage, use the special script:
 
 ```sh
-bolt coverage
+yarn coverage
 ```
 
 ### End-to-End Tests
@@ -339,21 +325,21 @@ Each project (ie; `test-projects/basic`, `test-projects/login`, etc) have their 
 To run an individual project's tests, `cd` into that directory and run:
 
 ```sh
-bolt cypress:run
+yarn cypress:run
 ```
 
 Cypress can be run in interactive mode from project directories with its built in GUI,
 which is useful when developing and debugging tests:
 
 ```sh
-cd test-projects/basic && bolt cypress:open
+cd test-projects/basic && yarn cypress:open
 ```
 
 End-to-end tests live in `project/**/cypress/integration/*spec.js`.
 It is possible to run all cypress tests at once from the monorepo root with the command:
 
 ```sh
-bolt cypress:run
+yarn cypress:run
 ```
 
 _NOTE: The output from this command will mix together the output from each project being tested in parallel._

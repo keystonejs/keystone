@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Custom Field Types
+subSection: advanced
 [meta]-->
 
 # Custom Field Types

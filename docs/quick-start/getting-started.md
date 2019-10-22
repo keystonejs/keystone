@@ -21,9 +21,9 @@ Before we start, check that your computer or server meets the following requirem
 
 - [Node.js](https://nodejs.org/) >= 10.x: Node.js is a server platform which runs JavaScript.
 
-And, ONE of the following:
+And ONE of the following databases:
 
-- [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful document store.
+- [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful NoSQL document storage database.
 - [Postgres](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
 
 Finally, make sure [your database is configured and running](/quick-start/adapters).
@@ -44,9 +44,13 @@ or with yarn:
 yarn create keystone-app my-app
 ```
 
-You'll be prompted with a few questions, like the name of your project. When asked, select the "ToDo" application if you wish to follow this guide.
+You'll be prompted with a few questions:
 
-Once you're done, here's your next step:
+1. **What is your project name?** Pick any name for your project. You can change it later if you like.
+2. **Select a starter project.** Select the `Todo` application if you wish to follow this guide.
+3. **Select an adapter.** We'll go more into database adapters later. For now, simply choose `Mongoose` if you're running a MongoDB database and `Knex` if you're running a Postgres one.
+
+Wait a few minutes for all the project dependencies to install. Once that's finished, run this:
 
 ```sh
 cd my-app
@@ -55,7 +59,7 @@ npm run dev
 
 ## Congratulations! 🎉
 
-You are now running your very own KeystoneJS application. Here's what you get, out of the box:
+You are now running your very own KeystoneJS application! Here's what you get out of the box:
 
 ### A simple todo application
 
