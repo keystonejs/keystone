@@ -81,7 +81,7 @@
     "jest-junit": "^6.4.0",
     "jest-resolve": "^24.8.0",
     "kleur": "^3.0.3",
-    "knex": "^0.19.0",
+    "knex": "^0.19.5",
     "luxon": "^1.11.4",
     "magic-string": "^0.25.1",
     "mdast-util-to-string": "^1.0.6",
