@@ -246,7 +246,7 @@ export class Unsplash extends Implementation {
     // Unsplash.
     this.unsplash.photos.downloadPhoto(apiResponse);
 
-    // NOTE: we need to provide a uuid to avoid the issues with Apollo
+    // NOTE: we need to provide a uuid to avoid issues with Apollo
     // More info here: https://github.com/keystonejs/keystone-5/pull/1799
     return {
       id: uuidv4(),
