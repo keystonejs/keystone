@@ -9,8 +9,8 @@ order: 5
 Control who can do what with your GraphQL API.
 
 _Note_: This is the API documentation for Access Control. For getting started,
-see the [Access Control Guide](https://v5.keystonejs.com/guides/access-control) or the
-[Authentication Guide](https://v5.keystonejs.com/guides/authentication).
+see the [Access Control Guide](/guides/access-control) or the
+[Authentication Guide](/guides/authentication).
 
 ## Table of Contents
 

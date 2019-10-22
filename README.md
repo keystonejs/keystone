@@ -33,11 +33,11 @@ yarn start
 ```
 
 For more details and system requirements, check out the [5 Minute Quick Start
-Guide](https://v5.keystonejs.com/quick-start/).
+Guide](https://keystonejs.com/quick-start/).
 
 ### API
 
-The [API documentation](https://v5.keystonejs.com/api/) contains a reference for all KeystoneJS packages.
+The [API documentation](https://keystonejs.com/api/) contains a reference for all KeystoneJS packages.
 
 ### Demo Projects
 
@@ -150,7 +150,7 @@ _Note that when using a custom server, you will no longer get the formatted
 console output when starting a server._
 
 For more, see the [Custom Server
-Discussion](https://v5.keystonejs.com/guides/custom-server).
+Discussion](https://keystonejs.com/guides/custom-server).
 
 ### Production Build
 
@@ -213,7 +213,7 @@ tightly coupled to the API.
 
 ### Adding Authentication
 
-_See [Authentication docs](https://v5.keystonejs.com/guides/authentication)._
+_See [Authentication docs](https://keystonejs.com/guides/authentication)._
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:

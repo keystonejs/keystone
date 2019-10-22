@@ -10,7 +10,7 @@ Out of the box Keystone provides predictable CRUD operations (Create, Read, Upda
 
 Custom Queries and Mutations may be required if you wish to preform non-CRUD operations or actions that don't relate to a specific List.
 
-See the [GraphQL Philosophy](https://v5.keystonejs.com/guides/graphql-philosophy) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
+See the [GraphQL Philosophy](/guides/graphql-philosophy) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
 You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
 
@@ -18,7 +18,7 @@ You can add to Keystone's generated schema with custom types, queries, and mutat
 
 A common example where a custom mutation might be beneficial is if you want to increment a value.
 
-Like any problem there are multiple solutions. You can implement an incrementing value with [Hooks](https://v5.keystonejs.com/guides/hooks) but in this example we're going to look at how to do this with a custom mutation.
+Like any problem there are multiple solutions. You can implement an incrementing value with [Hooks](/guides/hooks) but in this example we're going to look at how to do this with a custom mutation.
 
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
