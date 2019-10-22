@@ -4,8 +4,9 @@ import React, { useEffect, useRef, useState } from 'react'; // eslint-disable-li
 import { jsx } from '@emotion/core';
 import { gridSize } from '@arch-ui/theme';
 import throttle from 'lodash.throttle';
+import { colors } from '@arch-ui/theme';
 
-import { Footer, SidebarNav, Search } from '../components';
+import { Footer, SidebarNav, Search, SocialIconsNav } from '../components';
 import { media, mediaMax } from '../utils/media';
 
 const layoutGutter = gridSize * 4;
@@ -85,7 +86,24 @@ export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
         },
       }}
     >
+      <SocialIconsNav
+        css={{
+          marginBottom: '2.4em',
+          display: 'none',
+          [mediaMax.sm]: {
+            display: 'block',
+          },
+        }}
+      />
+
       <Search />
+      <p css={{ color: colors.N40, fontSize: '0.9em' }}>
+        Looking for{' '}
+        <a css={{ color: colors.N80 }} href="http://v4.keystonejs.com">
+          v4 docs
+        </a>
+        ?{' '}
+      </p>
       <SidebarNav />
       <Footer />
     </aside>

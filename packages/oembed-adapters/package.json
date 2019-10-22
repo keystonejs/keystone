@@ -8,13 +8,16 @@
   "author": "The Keystone Development Team",
   "license": "MIT",
   "dependencies": {
+    "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.14",
     "@iframely/embed.js": "^1.1.1",
     "@keystone-alpha/build-field-types": "^1.0.4",
-    "node-fetch": "^2.3.0",
-    "@babel/runtime": "^7.4.3"
+    "node-fetch": "^2.3.0"
   },
   "peerDependencies": {
+    "react": "^16.8.6"
+  },
+  "devDependencies": {
     "react": "^16.8.6"
   }
 }

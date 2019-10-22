@@ -16,14 +16,11 @@ jobs:
       - name: Setup Node.js 10.x
         uses: actions/setup-node@master
         with:
-          version: 10.x
-
-      - name: Install Bolt
-        run: npm install --global bolt
+          node-version: 10.x
 
       - name: Install Dependencies
         # we have a postinstall script that uses is-ci which doesn't yet detect GitHub Actions
-        run: CI=true bolt
+        run: CI=true yarn
 
       - name: Create Release Pull Request
         uses: changesets/action@master

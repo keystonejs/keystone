@@ -9,8 +9,8 @@ order: 5
 Control who can do what with your GraphQL API.
 
 _Note_: This is the API documentation for Access Control. For getting started,
-see the [Access Control Guide](https://v5.keystonejs.com/guides/access-control) or the
-[Authentication Guide](https://v5.keystonejs.com/guides/authentication).
+see the [Access Control Guide](/guides/access-control) or the
+[Authentication Guide](/guides/authentication).
 
 ## Table of Contents
 
@@ -92,7 +92,12 @@ type AccessInput = {
     item?: {},
     listKey?: string,
   },
+  listKey?: string,
+  operation?: string,
   originalInput?: {},
+  gqlName?: string,
+  itemId?: string,
+  itemIds?: [string],
 };
 
 type StaticAccess = boolean;
@@ -121,7 +126,12 @@ ie; for a list `User`, it would match the input type `UserWhereInput`.
 - `authentication` describes the currently authenticated user.
   - `.item` is the details of the current user. Will be `undefined` for anonymous users.
   - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
+- `listKey` is the key of the list being operated on.
+- `operation` is the CRUDA operation being peformed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).
 - `originalInput` for `create` & `update` mutations, this is the data as passed in the mutation.
+- `gqlName` is the name of the query or mutation which triggered the access check
+- `itemId` is the `id` of the item being updated/deleted in singular `update` and `delete` operations.
+- `itemIds` are the `ids` of the items being updated/deleted in multiple `update` and `delete` operations.
 
 When resolving `StaticAccess`;
 
@@ -314,8 +324,14 @@ type AccessInput = {
     item?: {},
     listKey?: string,
   },
+  listKey?: string,
+  fieldKey?: string,
   originalInput?: {},
   existingItem?: {},
+  operation?: string,
+  gqlName?: string,
+  itemId?: string,
+  itemIds?: [string],
 };
 
 type StaticAccess = boolean;
@@ -346,8 +362,14 @@ only to modify it).
 - `authentication` describes the currently authenticated user.
   - `.item` is the details of the current user. Will be `undefined` for anonymous users.
   - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
+- `listKey` is the key of the list being operated on.
+- `fieldKey` is the key of the field being operated on.
 - `originalInput`is the data as passed in the mutation for `create` & `update` mutations (`undefined` for `read`).
 - `existingItem` is the existing item this field belongs to for `update` mutations & `read` queries (`undefined` for `create`).
+- `operation` is the CRUDA operation being peformed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).
+- `gqlName` is the name of the query or mutation which triggered the access check
+- `itemId` is the `id` of the item being updated/deleted in singular `update` and `delete` operations.
+- `itemIds` are the `ids` of the items being updated/deleted in multiple `update` and `delete` operations.
 
 When defining `StaticAccess`;
 

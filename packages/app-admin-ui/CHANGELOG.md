@@ -1,5 +1,24 @@
 # @keystone-alpha/app-admin-ui
 
+## 5.10.2
+
+### Patch Changes
+
+- Updated dependencies [[`68134f7a`](https://github.com/keystonejs/keystone-5/commit/68134f7ac6d56122640c42304ab8796c1aa2f17c), [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/field-views-loader@2.2.1
+  - @keystone-alpha/fields@14.0.0
+
+## 5.10.1
+
+### Patch Changes
+
+- [afcc2fa4](https://github.com/keystonejs/keystone-5/commit/afcc2fa4): Fix Admin UI redirects in prod mode
+- [1463d535](https://github.com/keystonejs/keystone-5/commit/1463d535): Update documentation for the Admin UI app.
+
+* Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+  - @keystone-alpha/fields@13.1.0
+  - @arch-ui/select@0.1.0
+
 ## 5.10.0
 
 ### Minor Changes

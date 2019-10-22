@@ -9,8 +9,6 @@ const f = fixturez(__dirname);
 
 jest.mock('../../prompt');
 
-jest.mock('install-packages');
-
 let unsafeRequire = require;
 
 test('monorepo', async () => {

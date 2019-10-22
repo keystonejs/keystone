@@ -1,6 +1,7 @@
 <!--[meta]
 section: guides
 title: Authentication
+subSection: advanced
 [meta]-->
 
 # Authentication
@@ -12,7 +13,7 @@ _Note on terminology_:
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
   The specifics of how this is done is outside the scope of this document.
-  See [Access Control](https://v5.keystonejs.com/guides/access-control) for more.
+  See [Access Control](/guides/access-control) for more.
 
 ## Admin UI
 
@@ -21,7 +22,7 @@ Username / Password authentication can be enabled on the Admin UI.
 > NOTE: Admin Authentication will only restrict access to the Admin _UI_.
 >
 > To also restrict access to the _API_,
-> you must setup [Access Control](https://v5.keystonejs.com/guides/access-control) config.
+> you must setup [Access Control](/guides/access-control) config.
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
@@ -70,6 +71,19 @@ the `new AdminUIApp()` call:
 + const admin = new AdminUIApp({ });
 ```
 
+Second, disable access control by removing `access` from the 
+`keystone.createList('User', ...` call:
+
+```diff
+-  access: {
+-    read: access.userIsAdminOrOwner,
+-    update: access.userIsAdminOrOwner,
+-    create: access.userIsAdmin,
+-    delete: access.userIsAdmin,
+-    auth: true,
+-  },
+```
+
 Restart your KeystoneJS App, and visit <http://localhost:3000/users> - you should now be able to access the Admin UI without logging in.
 
 Next, create a User (be sure to set both a username and password).
@@ -90,4 +104,4 @@ Finally; login with the newly created `User`'s credentials.
 Adding Authentication as above will only enable login to the Admin UI, it _will
 not_ restrict API access.
 
-**To restrict API access, you must setup [Access Control](https://v5.keystonejs.com/guides/access-control).**
+**To restrict API access, you must setup [Access Control](/guides/access-control).**

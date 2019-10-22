@@ -1,5 +1,15 @@
 # @keystone-alpha/app-next
 
+## 2.1.0
+
+### Minor Changes
+
+- [700cd9c6](https://github.com/keystonejs/keystone-5/commit/700cd9c6): NextApp: Throw an error if the 'dir' config option is not set. Also set the default config to an empty object.
+
+### Patch Changes
+
+- [7c0908d7](https://github.com/keystonejs/keystone-5/commit/7c0908d7): Update documentation for NextApp
+
 ## 2.0.0
 
 ### Major Changes

@@ -12,11 +12,13 @@ KeystoneJS contains a set of primitive fields types that can be imported from `@
 - [Checkbox](keystone-alpha/fields/src/types/checkbox)
 - [CloudinaryImage](keystone-alpha/fields/src/types/cloudinary-image)
 - [Color](keystone-alpha/fields/src/types/color)
+- [Content](/keystone-alpha/field-content)
 - [DateTime](keystone-alpha/fields/src/types/date-time)
 - [Decimal](keystone-alpha/fields/src/types/decimal)
 - [File](keystone-alpha/fields/src/types/file)
 - [Float](keystone-alpha/fields/src/types/float)
 - [Integer](keystone-alpha/fields/src/types/integer)
+- [Location](keystone-alpha/fields/src/types/location)
 - [OEmbed](keystone-alpha/fields/src/types/o-embed)
 - [Password](keystone-alpha/fields/src/types/password)
 - [Relationship](keystone-alpha/fields/src/types/relationship)
@@ -105,14 +107,14 @@ Specifies whether the field is required or not. Will return an error if mutation
 
 ### `access`
 
-[Access control](https://v5.keystonejs.com/guides/access-control) options for fields.
+[Access control](https://keystonejs.com/guides/access-control) options for fields.
 
-Options for `create`, `read`, `update` and `delete` - can be a function or Boolean. See the [access control API documentation](https://v5.keystonejs.com/api/access-control) for more details.
+Options for `create`, `read`, `update` and `delete` - can be a function or Boolean. See the [access control API documentation](https://keystonejs.com/api/access-control) for more details.
 
 _Note_: Field level access control does not accept graphQL where clauses.
 
 ### `cacheHint`
 
-[HTTP cache hint](https://v5.keystonejs.com/api/create-list#cacheHint) for field.
+[HTTP cache hint](https://keystonejs.com/api/create-list#cacheHint) for field.
 
 Only static hints are supported for fields.

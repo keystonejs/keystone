@@ -1,5 +1,17 @@
 # @keystone-alpha/session
 
+## 3.0.3
+
+### Patch Changes
+
+- [`61d0f428`](https://github.com/keystonejs/keystone-5/commit/61d0f428097f8fe3c164d3d123ec5e4b5040a6fa) [#1773](https://github.com/keystonejs/keystone-5/pull/1773) Thanks [@timleslie](https://github.com/timleslie)! - Cleanly handle the situation where an authed session item is no longer in the system.
+
+## 3.0.2
+
+### Patch Changes
+
+- [a6d384b1](https://github.com/keystonejs/keystone-5/commit/a6d384b1): Populate session item using `getAccessControlledItem()` rather than `findById()`.
+
 ## 3.0.1
 
 ### Patch Changes

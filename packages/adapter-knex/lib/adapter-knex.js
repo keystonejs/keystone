@@ -29,18 +29,18 @@ class KnexAdapter extends BaseKeystoneAdapter {
   async _connect({ name }) {
     const { knexOptions = {} } = this.config;
     const { connection } = knexOptions;
-    let uri =
+    let knexConnection =
       connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
 
-    if (!uri) {
+    if (!knexConnection) {
       const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
-      uri = `postgres://localhost/${defaultDbName}`;
-      logger.warn(`No Knex connection URI specified. Defaulting to '${uri}'`);
+      knexConnection = `postgres://localhost/${defaultDbName}`;
+      logger.warn(`No Knex connection URI specified. Defaulting to '${knexConnection}'`);
     }
 
     this.knex = knex({
       client: this.client,
-      connection: uri,
+      connection: knexConnection,
       ...knexOptions,
     });
 
@@ -51,11 +51,17 @@ class KnexAdapter extends BaseKeystoneAdapter {
     }));
     if (result.error) {
       const connectionError = result.error;
-      console.error(`Could not connect to database: '${uri}'`);
+      let dbName;
+      if (typeof knexConnection === 'string') {
+        dbName = knexConnection.split('/').pop();
+      } else {
+        dbName = knexConnection.database;
+      }
+      console.error(`Could not connect to database: '${dbName}'`);
       console.warn(
         `If this is the first time you've run Keystone, you can create your database with the following command:`
       );
-      console.warn(`createdb postgres ${uri.split('/').pop()}`);
+      console.warn(`createdb ${dbName}`);
       throw connectionError;
     }
 
@@ -371,7 +377,8 @@ class KnexListAdapter extends BaseListAdapter {
       })
     );
 
-    return this._findById(item.id);
+    const result = await this._findById(item.id);
+    return result ? this._populateMany(result) : null;
   }
 
   async _findAll() {
@@ -379,10 +386,11 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _findById(id) {
-    const item = (await this._query()
-      .from(this.key)
-      .where('id', id))[0];
-    return item ? this._populateMany(item) : null;
+    return (
+      (await this._query()
+        .from(this.key)
+        .where('id', id))[0] || null
+    );
   }
 
   async _find(condition) {
@@ -402,8 +410,8 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
-  async _itemsQuery(args, { meta = false } = {}) {
-    const query = new QueryBuilder(this, args, { meta }).get();
+  async _itemsQuery(args, { meta = false, from = {} } = {}) {
+    const query = new QueryBuilder(this, args, { meta, from }).get();
     const results = await query;
 
     if (meta) {
@@ -422,12 +430,12 @@ class KnexListAdapter extends BaseListAdapter {
       return { count };
     }
 
-    return Promise.all(results.map(result => this._populateMany(result)));
+    return results;
   }
 }
 
 class QueryBuilder {
-  constructor(listAdapter, { where = {}, first, skip, orderBy }, { meta = false }) {
+  constructor(listAdapter, { where = {}, first, skip, orderBy }, { meta = false, from = {} }) {
     this._tableAliases = {};
     this._nextBaseTableAliasId = 0;
     const baseTableAlias = this._getNextBaseTableAlias();
@@ -439,9 +447,21 @@ class QueryBuilder {
     }
 
     this._addJoins(this._query, listAdapter, where, baseTableAlias);
-    // Dumb sentinel to avoid juggling where() vs andWhere()
-    // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
-    this._query.whereRaw('true');
+    if (Object.keys(from).length) {
+      const otherList = from.fromList.adapter._manyTable(from.fromField);
+      const otherTableAlias = this._getNextBaseTableAlias();
+      this._query.leftOuterJoin(
+        `${otherList} as ${otherTableAlias}`,
+        `${otherTableAlias}.${listAdapter.key}_id`,
+        `${baseTableAlias}.id`
+      );
+      this._query.whereRaw('true');
+      this._query.andWhere(`t1.${from.fromList.adapter.key}_id`, `=`, from.fromId);
+    } else {
+      // Dumb sentinel to avoid juggling where() vs andWhere()
+      // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
+      this._query.whereRaw('true');
+    }
     this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias);
 
     // Add query modifiers as required

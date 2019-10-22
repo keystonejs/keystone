@@ -1,5 +1,19 @@
 # @keystone-alpha/test-utils
 
+## 2.6.3
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/adapter-knex@6.0.0
+  - @keystone-alpha/adapter-mongoose@6.0.0
+  - @keystone-alpha/keystone@16.0.0
+
+## 2.6.2
+
+- Updated dependencies [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466):
+  - @keystone-alpha/adapter-knex@5.0.0
+
 ## 2.6.1
 
 - Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):

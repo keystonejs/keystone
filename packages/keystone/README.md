@@ -23,10 +23,9 @@ const keystone = new Keystone({
 | Option                  | Type       | Default    | Description                                                                                                                                       |
 | ----------------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                 |
-| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://v5.keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details. |
+| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details. |
 | `adapters`              | `Array`    | `[]`       |                                                                                                                                                   |
 | `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                   |
-| `adapterConnectOptions` | `Object`   | `{}`       |                                                                                                                                                   |
 | `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                   |
 | `onConnect`             | `Function` | `null`     |                                                                                                                                                   |
 | `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                   |
@@ -34,6 +33,28 @@ const keystone = new Keystone({
 | `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                             |
 | `sessionStore`          | `Object`   | `null`     |                                                                                                                                                   |
 | `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                   |
+| `queryLimits`           | `Object`   | `{}`       | Configures global query limits                                                                                                                    |
+
+### `queryLimits`
+
+Configures global query limits.
+
+These should be used together with [list query limits](https://keystonejs.com/api/create-list#query-limits).
+
+#### Usage
+
+```javascript
+const keystone = new Keystone({
+  /* ...config */
+  queryLimits: {
+    maxTotalResults: 1000,
+  },
+});
+```
+
+- `maxTotalResults`: limit of the total results of all relationship subqueries
+
+Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
 
 ## Methods
 
@@ -83,7 +104,7 @@ Registers a new list with KeystoneJS and returns a `Keystone` list object.
 | Option    | Type     | Default | Description                                                                                                 |
 | --------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
 | `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                     |
-| `config`  | `Object` | `{}`    | The list config. See the [createList API](https://v5.keystonejs.com/api/create-list) page for more details. |
+| `config`  | `Object` | `{}`    | The list config. See the [createList API](https://keystonejs.com/api/create-list) page for more details. |
 
 ## extendGraphQLSchema(config)
 
@@ -206,7 +227,7 @@ keystone.connect();
 
 _Note_: `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
 
-See: [Custom Server](https://v5.keystonejs.com/guides/custom-server).
+See: [Custom Server](https://keystonejs.com/guides/custom-server).
 
 ## disconnect()
 

@@ -1,8 +1,10 @@
 <!--[meta]
 section: api
-subSection: adapters
-title: Database Adapter - Knex
+subSection: database-adapters
+title: Knex Adapter
 [meta]-->
+
+# Knex Database Adapter
 
 The [Knex](https://knexjs.org/#changelog) adapter is a general purpose adapter which can be used to connect to a range of different database backends.
 At present, the only fully tested backend is `Postgres`, however Knex gives the potential for `MSSQL`, `MySQL`, `MariaDB`, `SQLite3`, `Oracle`, and `Amazon Redshift` to be supported.
@@ -10,7 +12,7 @@ At present, the only fully tested backend is `Postgres`, however Knex gives the 
 ## Usage
 
 ```javascript
-const { KnexAdapter } = require('@keystonejs/adapter-knex');
+const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
