@@ -7,7 +7,7 @@ order: 2
 
 # Adding Lists To Your Keystone Project
 
-We've already created one list during [previous tutorial](https://v5.keystonejs.com/quick-start).
+We've already created one list during [previous tutorial](/guides/new-project).
 Now it's the time to dive deeper. Let's make ToDos object a bit more complex.
 
 ## Creating basic list in separate file
