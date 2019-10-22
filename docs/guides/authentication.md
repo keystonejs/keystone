@@ -71,6 +71,19 @@ the `new AdminUIApp()` call:
 + const admin = new AdminUIApp({ });
 ```
 
+Second, disable access control by removing `access` from the 
+`keystone.createList('User', ...` call:
+
+```diff
+-  access: {
+-    read: access.userIsAdminOrOwner,
+-    update: access.userIsAdminOrOwner,
+-    create: access.userIsAdmin,
+-    delete: access.userIsAdmin,
+-    auth: true,
+-  },
+```
+
 Restart your KeystoneJS App, and visit <http://localhost:3000/users> - you should now be able to access the Admin UI without logging in.
 
 Next, create a User (be sure to set both a username and password).
