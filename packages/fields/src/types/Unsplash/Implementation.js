@@ -5,6 +5,8 @@ import queryString from 'query-string';
 
 import { Implementation } from '../../Implementation';
 
+const uuidv4 = require('uuid/v4');
+
 // Polyfill fetch so unsplash-js works
 global.fetch = global.fetch || require('node-fetch');
 
@@ -244,7 +246,10 @@ export class Unsplash extends Implementation {
     // Unsplash.
     this.unsplash.photos.downloadPhoto(apiResponse);
 
-    return transformImageFromApiToKs5(apiResponse);
+    return {
+      id: uuidv4(),
+      ...transformImageFromApiToKs5(apiResponse),
+    };
   }
 
   get gqlUpdateInputFields() {
