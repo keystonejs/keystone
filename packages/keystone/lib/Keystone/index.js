@@ -57,6 +57,7 @@ module.exports = class Keystone {
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
+    setTrustProxy = false,
   }) {
     this.name = name;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
@@ -75,6 +76,7 @@ module.exports = class Keystone {
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
+    this._setTrustProxy = setTrustProxy;
 
     if (adapters) {
       this.adapters = adapters;
@@ -660,6 +662,7 @@ module.exports = class Keystone {
     apps = [],
     distDir,
     pinoOptions,
+    disableLogging = falsey(process.env.DISABLE_LOGGING),
     cors = { origin: true, credentials: true },
   } = {}) {
     const middlewares = flattenDeep([
@@ -674,7 +677,7 @@ module.exports = class Keystone {
         secureCookies: this._secureCookies,
         cookieMaxAge: this._cookieMaxAge,
       }),
-      falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
+      disableLogging && require('express-pino-logger')(pinoOptions),
       cors && createCorsMiddleware(cors),
       ...(await Promise.all(
         [

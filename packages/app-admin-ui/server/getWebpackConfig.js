@@ -2,15 +2,13 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-const { enableDevFeatures, mode } = require('./env');
-
-module.exports = function({ adminMeta, entry, outputPath }) {
+module.exports = function({ adminMeta, entry, outputPath, experimentalFeatures, mode }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
   });
   const environmentPlugin = new webpack.DefinePlugin({
-    ENABLE_DEV_FEATURES: enableDevFeatures,
+    EXPERIMENTAL_FEATURES: experimentalFeatures,
     IS_PUBLIC_BUNDLE: entry === 'public',
     KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
   });

@@ -1,4 +1,4 @@
-/* global ENABLE_DEV_FEATURES */
+/* global EXPERIMENTAL_FEATURES */
 
 import React, { Fragment, useState } from 'react';
 import styled from '@emotion/styled';
@@ -52,7 +52,7 @@ export default function ListManage(props: Props) {
         <SelectedCount>
           {selectedCount} of {Math.min(pageSize, totalItems)} Selected
         </SelectedCount>
-        {ENABLE_DEV_FEATURES ? (
+        {EXPERIMENTAL_FEATURES ? (
           list.access.update ? (
             <IconButton
               appearance="primary"

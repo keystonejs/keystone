@@ -144,5 +144,8 @@ listAccessVariations.forEach(createListWithDeclarativeAccess);
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ adminPath: '/admin', authStrategy })],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({ adminPath: '/admin', authStrategy, experimentalFeatures: true }),
+  ],
 };
