@@ -18,7 +18,7 @@ handles the GraphQL API and Admin UI. Things such as:
 - ... etc
 
 A **Custom Server** can replace the default and act as the entry point to your
-application which consumes your [schema definition](https://v5.keystonejs.com/guides/schema). A Custom
+application which consumes your [schema definition](/guides/schema). A Custom
 Server must handle initialising a http server which correctly executes any given KeystoneJS Apps.
 
 _Note_: Before reaching for a custom server, consider using a KeystoneJS

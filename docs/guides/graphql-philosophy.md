@@ -7,7 +7,7 @@ order: 3
 
 # GraphQL Philosophy
 
-> 💡 _This is a conceptural introduction to how the Keystone team think about GraphQL APIs (and hence how Keystone's GraphQL API is generated). For more specific API docs, see [**Introduction to the GraphQL API**](https://v5.keystonejs.com/guides/intro-to-graphql)._
+> 💡 _This is a conceptural introduction to how the Keystone team think about GraphQL APIs (and hence how Keystone's GraphQL API is generated). For more specific API docs, see [**Introduction to the GraphQL API**](/guides/intro-to-graphql)._
 
 ## Goals
 

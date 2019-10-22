@@ -139,4 +139,4 @@ You should see something like this
 🔗 GraphQL API:          http://localhost:3000/admin/api
 ```
 
-Now it's the time to check those routes in browser to ensure that everything works as expected. Then proceed to second step - [Adding Lists](https://v5.keystonejs.com/guides/add-lists)
+Now it's the time to check those routes in browser to ensure that everything works as expected. Then proceed to second step - [Adding Lists](/guides/add-lists)

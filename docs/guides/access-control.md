@@ -45,7 +45,7 @@ const { Text, Select, Checkbox, Password } = require('@keystone-alpha/fields');
 const keystone = // ...
 
 // Setup the Authentication Strategy.
-// See https://v5.keystonejs.com/guides/authentication for more
+// See /guides/authentication for more
 const authStrategy = // ...
 
 keystone.createList('User', {
@@ -106,4 +106,4 @@ Note that Jess can only read _his own_ email, and cannot read any passwords.
 
 ---
 
-Read more in the [Access Control API docs](https://v5.keystonejs.com/api/access-control).
+Read more in the [Access Control API docs](/api/access-control).
