@@ -216,16 +216,11 @@ function renderChildren(
       isSelected={isSelected}
       to={`${href}${maybeSearchParam}`}
       mouseIsOverNav={mouseIsOverNav}
-      css={{
-        display: 'flex',
-        alignItems: 'center',
-        ':hover > svg': {
-          color: colors.primary,
-        },
-      }}
     >
       {label}
-      {key === authListKey ? <PersonIcon title={label} css={{ paddingLeft: '4px' }} /> : null}
+      {key === authListKey ? (
+        <PersonIcon title={label} color={colors.N20} css={{ paddingLeft: 8, paddingTop: 4 }} />
+      ) : null}
     </PrimaryNavItem>
   );
 }
