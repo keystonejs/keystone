@@ -310,6 +310,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/dzigg"><img src="https://avatars1.githubusercontent.com/u/4436922?v=4" width="100px;" alt="dzigg"/><br /><sub><b>dzigg</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=dzigg" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/cmosgh"><img src="https://avatars0.githubusercontent.com/u/911925?v=4" width="100px;" alt="Cristian Mos"/><br /><sub><b>Cristian Mos</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=cmosgh" title="Documentation">📖</a></td>
     <td align="center"><a href="https://arnaud-zg.github.io/"><img src="https://avatars1.githubusercontent.com/u/10991546?v=4" width="100px;" alt="Arnaud Zheng"/><br /><sub><b>Arnaud Zheng</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=arnaud-zg" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://twitter.com/ashinzekene"><img src="https://avatars2.githubusercontent.com/u/20991583?v=4" width="100px;" alt="Ashinze Ekene"/><br /><sub><b>Ashinze Ekene</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=ashinzekene" title="Documentation">📖</a></td>
   </tr>
 </table>
 
