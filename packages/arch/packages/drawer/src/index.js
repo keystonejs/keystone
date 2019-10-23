@@ -123,7 +123,7 @@ const Body = styled.div({
 // ------------------------------
 
 type Props = {
-  attachTo: HTMLElement,
+  attachTo: HTMLElement | HTMLBodyElement,
   children: Node,
   closeOnBlanketClick: boolean,
   isOpen: boolean,
@@ -145,7 +145,6 @@ function useKeydownHandler(handler) {
   });
   useEffect(() => {
     function handle(event: KeyboardEvent) {
-      // $FlowFixMe flow's definition of useRef is wrong
       handlerRef.current(event);
     }
     document.addEventListener('keydown', handle, false);
@@ -155,7 +154,7 @@ function useKeydownHandler(handler) {
   }, []);
 }
 
-let ModalDialog = memo<Props>(function ModalDialog({
+const ModalDialogComponent = ({
   attachTo,
   children,
   closeOnBlanketClick,
@@ -169,7 +168,7 @@ let ModalDialog = memo<Props>(function ModalDialog({
   onKeyDown,
   transitionState,
   isOpen,
-}) {
+}) => {
   let stackIndex = useStackIndex(
     transitionState === 'entered' || transitionState === 'entering',
     slideInFrom
@@ -218,14 +217,15 @@ let ModalDialog = memo<Props>(function ModalDialog({
     </Fragment>,
     attachTo
   );
-});
+};
 
-// $FlowFixMe
-ModalDialog.defaultProps = {
-  attachTo: ((document.body: any): HTMLElement),
+ModalDialogComponent.defaultProps = {
+  attachTo: document.body,
   closeOnBlanketClick: false,
   component: 'div',
   width: 640,
 };
 
-export default withTransitionState(ModalDialog);
+const ModalDialog = memo<Props>(ModalDialogComponent);
+
+export default withTransitionState<Props>(ModalDialog);

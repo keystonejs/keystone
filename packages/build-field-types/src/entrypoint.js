@@ -7,7 +7,7 @@ import resolve from 'resolve';
 import { EXTENSIONS } from './constants';
 
 /*::
-import { Package } from './package'
+import type { Package } from './package'
 */
 
 export class Entrypoint extends Item {

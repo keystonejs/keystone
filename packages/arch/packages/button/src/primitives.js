@@ -53,7 +53,6 @@ function makeVariant({
   if (variant === 'subtle') {
     variantStyles = makeSubtleVariant(config);
   } else if (variant === 'nuance') {
-    // $FlowFixMe
     variantStyles = makeNuanceVariant(config);
   } else if (variant === 'bold') {
     variantStyles = makeBoldVariant(config);
@@ -85,8 +84,7 @@ function makeVariant({
 }
 
 // remove props that will create react DOM warnings
-const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
-  (props, ref) => {
+function ButtonElementComponent(props: ButtonProps, ref) {
     const { isDisabled, isActive, isFocus, isHover, isSelected, focusOrigin, ...rest } = props;
     const variant = makeVariant(props);
 
@@ -99,7 +97,6 @@ const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElem
         <a
           css={variant}
           {...rest}
-          // $FlowFixMe
           ref={ref}
         />
       );
@@ -109,19 +106,18 @@ const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElem
         type="button"
         disabled={isDisabled}
         css={variant}
-        {...rest}
-        // $FlowFixMe
         ref={ref}
+        {...rest}
       />
     );
-  }
-);
+  };
 
-// $FlowFixMe
-ButtonElement.defaultProps = {
+ButtonElementComponent.defaultProps = {
   appearance: 'default',
   spacing: 'comfortable',
   variant: 'bold',
 };
+
+const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(ButtonElementComponent);
 
 export const Button = withPseudoState(ButtonElement);

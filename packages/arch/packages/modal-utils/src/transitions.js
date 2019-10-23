@@ -27,14 +27,16 @@ export const TransitionProvider = ({ children, isOpen, ...props }: ProviderProps
     ) : null}
   </TransitionGroup>
 );
-export const withTransitionState = <Config>(
-  Comp: AbstractComponent<Config>
-): AbstractComponent<$Diff<Config, { transitionState: TransitionState }>> => ({
+
+export const withTransitionState = <Config: {}>(
+  Comp: AbstractComponent<{| ...$Exact<Config>, transitionState: TransitionState |}>
+): AbstractComponent<Config> => ({
+  // $flow: understand how to define this prop
   isOpen,
   ...props
 }) => {
   return (
-    <TransitionProvider isOpen={isOpen}>
+    <TransitionProvider isOpen={Boolean(isOpen)}>
       {state => <Comp transitionState={state} {...props} />}
     </TransitionProvider>
   );

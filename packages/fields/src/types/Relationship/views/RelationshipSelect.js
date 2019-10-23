@@ -140,7 +140,6 @@ const Relationship = forwardRef(
         getOptionValue={option => option.value.id}
         value={currentValue}
         placeholder={
-          // $FlowFixMe
           canRead ? undefined : serverError && serverError.message
         }
         options={options}

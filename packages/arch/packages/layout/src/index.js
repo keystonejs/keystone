@@ -60,8 +60,7 @@ type FlexGroupProps = {
   spacing: number,
   stretch?: boolean,
 };
-export const FlexGroup = forwardRef<FlexGroupProps, any>(
-  (
+export function FlexGroupComponent(
     {
       align,
       as: Tag,
@@ -76,8 +75,8 @@ export const FlexGroup = forwardRef<FlexGroupProps, any>(
       stretch,
       ...props
     }: FlexGroupProps,
-    ref
-  ) => {
+    ref: { current: mixed } | ((mixed) => mixed)
+  ) {
     const gutter = spacing / 2;
     const length = Children.count(children);
     const childArray = Children.toArray(children).filter(child => child); // filter out null and undefined children
@@ -127,17 +126,17 @@ export const FlexGroup = forwardRef<FlexGroupProps, any>(
         })}
       </Tag>
     );
-  }
-);
+  };
 
-// $FlowFixMe
-FlexGroup.defaultProps = {
+FlexGroupComponent.defaultProps = {
   align: 'stretch',
   as: 'div',
   growIndexes: [],
   justify: 'flex-start',
   spacing: gridSize,
 };
+
+export const FlexGroup = forwardRef<FlexGroupProps, any>(FlexGroupComponent);
 
 // ==============================
 // Grid

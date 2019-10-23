@@ -46,13 +46,11 @@ let map = new WeakMap();
 export default function flowAndNodeDevProdEntry(): Plugin {
   return {
     name: 'flow-and-prod-dev-entry',
-    // eslint-disable-next-line no-unused-vars
-    async generateBundle(opts, bundle, something) {
+    async generateBundle(opts, bundle) {
       map.set(this.addWatchFile, opts.dir);
       let chunkKeys = Object.keys(bundle).filter(
-        x =>
-          // $FlowFixMe
-          !bundle[x].isAsset
+        // $flow: this is acceptable to have non existent isAsset
+        x => !bundle[x].isAsset
       );
 
       let format: string = (opts.format: any);
@@ -75,8 +73,8 @@ export default function flowAndNodeDevProdEntry(): Plugin {
       }
       for (const n in bundle) {
         const file = bundle[n];
-        // $FlowFixMe
-        let facadeModuleId = file.facadeModuleId;
+
+        const facadeModuleId = typeof file.facadeModuleId === 'string' ? file.facadeModuleId : null;
         if (!file.isAsset && file.isDynamicEntry && facadeModuleId != null) {
           let hash = hashString(path.relative(pkgDir, facadeModuleId));
           let pkgJsonFileName = path.join(pkgDir, 'dist', hash, 'package.json');

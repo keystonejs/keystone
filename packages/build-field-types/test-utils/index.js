@@ -9,9 +9,9 @@ import spawn from 'spawndamnit';
 let f = fixturez(__dirname);
 
 require('chalk').enabled = false;
-// $FlowFixMe
+// $flow: mocking console methods
 console.error = jest.fn();
-// $FlowFixMe
+// $flow: mocking console methods
 console.log = jest.fn();
 
 export let logMock = {
@@ -28,8 +28,10 @@ import init from '../src/init';
 import { confirms } from '../src/messages';
 
 export async function initBasic(directory: string) {
+  // $flow: mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
   await init(directory);
+  // $flow: mocked dataloader
   confirms.writeMainModuleFields.mockReset();
 }
 

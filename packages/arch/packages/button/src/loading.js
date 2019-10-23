@@ -23,14 +23,12 @@ function getAppearance(appearance) {
   return 'inverted';
 }
 
-// Export
-
 type Loading = ButtonProps & {
   isLoading: boolean,
   indicatorVariant: 'spinner' | 'dots',
 };
-export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonElement>(
-  ({ children, indicatorVariant, isLoading, ...props }: Loading, ref) => {
+
+function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...props }: Loading, ref) {
     const appearance = getAppearance(props.appearance);
     const textCSS = isLoading ? { visibility: 'hidden' } : null;
     const isSpinner = indicatorVariant === 'spinner';
@@ -51,13 +49,14 @@ export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonE
         </LoadingButtonInner>
       </Button>
     );
-  }
-);
+  };
 
-// $FlowFixMe
-LoadingButton.defaultProps = {
+LoadingButtonComponent.defaultProps = {
   appearance: 'default',
   isLoading: false,
   variant: 'bold',
   indicatorVariant: 'dots',
 };
+
+// Export
+export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonElement>(LoadingButtonComponent);
