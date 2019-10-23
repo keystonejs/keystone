@@ -15,10 +15,35 @@ Different contexts are supported by different file adapters. This package contai
 ### Usage
 
 ```javascript
+const { LocalFileAdapter } = require('@keystonejs/file-adapters');
+
 const fileAdapter = new LocalFileAdapter({
-  src: './files',
-  path: '/public',
+  /*...config */
 });
 ```
 
+### Config
+
+| Option | Type     | Default | Description                                                            |
+| ------ | -------- | ------- | ---------------------------------------------------------------------- |
+| `src`  | `String` | `null`  | The path where uploaded files will be stored on the server.            |
+| `path` | `String` | `null`  | The path from which requests for files will be served from the server. |
+
+_Note:_ `src` and `path` may be the same.
+
 ## `CloudinaryFileAdapter`
+
+```javascript
+const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
+
+const fileAdapter = new CloudinaryAdapter({
+  /*...config */
+});
+```
+
+| Option      | Type     | Default     | Description |
+| ----------- | -------- | ----------- | ----------- |
+| `cloudName` | `String` | Required    |             |
+| `apiKey`    | `String` | Required    |             |
+| `apiSecret` | `String` | Required    |             |
+| `folder`    | `String` | `undefined` |             |
