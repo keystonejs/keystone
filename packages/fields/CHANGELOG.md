@@ -1,5 +1,18 @@
 # @keystone-alpha/fields
 
+## 15.0.0
+
+### Major Changes
+
+- [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901) [#1789](https://github.com/keystonejs/keystone-5/pull/1789) Thanks [@timleslie](https://github.com/timleslie)! - `Relationship.convertResolvedOperationsToFieldValue()` has been removed.
+
+### Patch Changes
+
+- Updated dependencies [[`768420f5`](https://github.com/keystonejs/keystone-5/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d)]:
+  - @keystone-alpha/adapter-knex@6.0.2
+  - @keystone-alpha/adapter-mongoose@6.0.1
+  - @keystone-alpha/field-content@3.1.4
+
 ## 14.0.0
 
 ### Major Changes
