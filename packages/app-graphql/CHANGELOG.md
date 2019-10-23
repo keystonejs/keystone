@@ -1,5 +1,11 @@
 # @keystone-alpha/app-graphql
 
+## 8.2.1
+
+### Patch Changes
+
+- [`7129c887`](https://github.com/keystonejs/keystone-5/commit/7129c8878a825d961f2772be497dcd5bd6b2b697) [#1757](https://github.com/keystonejs/keystone-5/pull/1757) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Removed warnings about deprecated packages
+
 ## 8.2.0
 
 ### Minor Changes

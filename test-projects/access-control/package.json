@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-access-control",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.2.7",
+  "version": "1.2.8",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,12 +18,12 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/access-control/.env file.\nSee test-projects/access-control/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^6.0.0",
-    "@keystone-alpha/app-admin-ui": "^5.10.2",
-    "@keystone-alpha/app-graphql": "^8.0.0",
-    "@keystone-alpha/auth-password": "^1.0.5",
-    "@keystone-alpha/fields": "^14.0.0",
-    "@keystone-alpha/keystone": "^16.0.0",
+    "@keystone-alpha/adapter-mongoose": "^6.0.1",
+    "@keystone-alpha/app-admin-ui": "^5.10.3",
+    "@keystone-alpha/app-graphql": "^8.2.1",
+    "@keystone-alpha/auth-password": "^1.0.6",
+    "@keystone-alpha/fields": "^15.0.0",
+    "@keystone-alpha/keystone": "^16.1.0",
     "@keystone-alpha/utils": "^3.2.0",
     "cross-env": "^5.2.0",
     "express": "^4.17.1"
