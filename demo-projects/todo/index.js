@@ -1,9 +1,9 @@
-const { Keystone } = require('@keystone-alpha/keystone');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { Text } = require('@keystone-alpha/fields');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { StaticApp } = require('@keystone-alpha/app-static');
+const { Keystone } = require('@keystone/keystone');
+const { MongooseAdapter } = require('@keystone/adapter-mongoose');
+const { Text } = require('@keystone/fields');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
+const { StaticApp } = require('@keystone/app-static');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',

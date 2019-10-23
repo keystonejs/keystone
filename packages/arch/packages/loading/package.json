@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/loading",
-  "description": "Loading UI as used in @keystone-alpha Admin UI.",
+  "description": "Loading UI as used in @keystone Admin UI.",
   "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",

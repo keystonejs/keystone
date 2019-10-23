@@ -1,8 +1,8 @@
 {
-  "name": "@keystone-alpha/example-projects-nuxt",
+  "name": "@keystone/example-projects-nuxt",
   "description": "A NuxtJS example project.",
   "private": true,
-  "version": "0.0.3",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,12 +14,12 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^6.0.0",
-    "@keystone-alpha/app-admin-ui": "^5.10.2",
-    "@keystone-alpha/app-graphql": "^8.0.0",
-    "@keystone-alpha/app-nuxt": "^1.0.0",
-    "@keystone-alpha/fields": "^14.0.0",
-    "@keystone-alpha/keystone": "^16.0.0",
+    "@keystone/adapter-mongoose": "^5.0.0",
+    "@keystone/app-admin-ui": "^5.0.0",
+    "@keystone/app-graphql": "^5.0.0",
+    "@keystone/app-nuxt": "^5.0.0",
+    "@keystone/fields": "^5.0.0",
+    "@keystone/keystone": "^5.0.0",
     "cross-env": "^5.2.0",
     "express": "^4.17.1",
     "nuxt": "^2.9.2"

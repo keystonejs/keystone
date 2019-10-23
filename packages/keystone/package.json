@@ -1,7 +1,7 @@
 {
-  "name": "@keystone-alpha/keystone",
-  "description": "The main @keystone-alpha class & CLI. This is where the magic happens.",
-  "version": "16.0.1",
+  "name": "@keystone/keystone",
+  "description": "The main @keystone class & CLI. This is where the magic happens.",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -11,13 +11,13 @@
     "keystone": "bin/cli.js"
   },
   "dependencies": {
-    "@keystone-alpha/access-control": "^3.1.0",
-    "@keystone-alpha/app-graphql": "^8.2.0",
-    "@keystone-alpha/build-field-types": "^1.0.6",
-    "@keystone-alpha/fields": "^14.0.0",
-    "@keystone-alpha/logger": "^2.0.1",
-    "@keystone-alpha/session": "^3.0.2",
-    "@keystone-alpha/utils": "^3.2.0",
+    "@keystone/access-control": "^5.0.0",
+    "@keystone/app-graphql": "^5.0.0",
+    "@keystone/build-field-types": "^5.0.0",
+    "@keystone/fields": "^5.0.0",
+    "@keystone/logger": "^5.0.0",
+    "@keystone/session": "^5.0.0",
+    "@keystone/utils": "^5.0.0",
     "apollo-errors": "^1.9.0",
     "arg": "^4.1.1",
     "chalk": "^2.4.2",

@@ -1,8 +1,8 @@
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystone/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystone/adapter-knex';
 
 export class CalendarDay extends Implementation {
   constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {

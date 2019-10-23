@@ -12,10 +12,10 @@ A KeystoneJS App that creates an Apollo GraphQL playground.
 ## Usage
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { GraphQLAppPlayground } = require('@keystone-alpha/app-graphql-playground');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystone/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { GraphQLAppPlayground } = require('@keystone/app-graphql-playground');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 
 // Ensure that the GraphQLApp and GraphQLAppPlayground are referring to the same endpoint
 const apiPath = '/admin/api';

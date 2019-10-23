@@ -1,4 +1,4 @@
-const { Integer } = require('@keystone-alpha/fields');
+const { Integer } = require('@keystone/fields');
 
 class Stars extends Integer.implementation {
   extendAdminMeta(meta) {

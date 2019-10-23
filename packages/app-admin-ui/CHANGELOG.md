@@ -1,4 +1,32 @@
+# @keystone/app-admin-ui
+
+## 5.0.0
+
+### Major Changes
+
+- [`c7ba40ec`](https://github.com/keystonejs/keystone-5/commit/c7ba40ec98116603c6b7a501d2442e16170ec6be) [#1813](https://github.com/keystonejs/keystone-5/pull/1813) Thanks [@jesstelford](https://github.com/jesstelford)! - - This is the first release of `@keystone/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystone` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystone/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`c7ba40ec`](https://github.com/keystonejs/keystone-5/commit/c7ba40ec98116603c6b7a501d2442e16170ec6be)]:
+  - @keystone/build-field-types@5.0.0
+  - @keystone/field-views-loader@5.0.0
+  - @keystone/fields@5.0.0
+  - @keystone/session@5.0.0
+  - @keystone/utils@5.0.0
+
 # @keystone-alpha/app-admin-ui
+
+## 5.10.3
+
+### Patch Changes
+
+- [`a8ee0179`](https://github.com/keystonejs/keystone-5/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26) [#1805](https://github.com/keystonejs/keystone-5/pull/1805) Thanks [@gautamsi](https://github.com/gautamsi)! - export `useAdminMeta` which is useful in developing custom pages
+
+- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/fields@15.0.0
 
 ## 5.10.2
 
@@ -306,6 +334,8 @@
 - [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
 
   Fix Admin UI building on Windows
+
+# @keystone/admin-ui
 
 # @keystone-alpha/admin-ui
 

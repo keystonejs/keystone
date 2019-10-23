@@ -1,4 +1,43 @@
+# @keystone/keystone
+
+## 5.0.0
+
+### Major Changes
+
+- [`c7ba40ec`](https://github.com/keystonejs/keystone-5/commit/c7ba40ec98116603c6b7a501d2442e16170ec6be) [#1813](https://github.com/keystonejs/keystone-5/pull/1813) Thanks [@jesstelford](https://github.com/jesstelford)! - - This is the first release of `@keystone/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystone` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystone/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`c7ba40ec`](https://github.com/keystonejs/keystone-5/commit/c7ba40ec98116603c6b7a501d2442e16170ec6be)]:
+  - @keystone/access-control@5.0.0
+  - @keystone/app-graphql@5.0.0
+  - @keystone/build-field-types@5.0.0
+  - @keystone/fields@5.0.0
+  - @keystone/logger@5.0.0
+  - @keystone/session@5.0.0
+  - @keystone/utils@5.0.0
+
 # @keystone-alpha/keystone
+
+## 16.1.0
+
+### Minor Changes
+
+- [`3bc02545`](https://github.com/keystonejs/keystone-5/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb) [#1803](https://github.com/keystonejs/keystone-5/pull/1803) Thanks [@Vultraz](https://github.com/Vultraz)! - Disallow leading underscores in list and field names
+
+* [`a48281ba`](https://github.com/keystonejs/keystone-5/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec) [#1783](https://github.com/keystonejs/keystone-5/pull/1783) Thanks [@timleslie](https://github.com/timleslie)! - The `keystone` cli now accepts a return of `{ keystone, apps, configureExpress }` from the entry file. `configureExpress` will be called on the Express app before applying the keystone middlewares.
+
+### Patch Changes
+
+- [`0a36b0f4`](https://github.com/keystonejs/keystone-5/commit/0a36b0f403da73a76106b5e14940a789466b4f94) [#1784](https://github.com/keystonejs/keystone-5/pull/1784) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed adapterConnectOptions key (unused as of 144e6e86)
+
+* [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901) [#1789](https://github.com/keystonejs/keystone-5/pull/1789) Thanks [@timleslie](https://github.com/timleslie)! - `Relationship.convertResolvedOperationsToFieldValue()` has been removed.
+
+* Updated dependencies [[`7129c887`](https://github.com/keystonejs/keystone-5/commit/7129c8878a825d961f2772be497dcd5bd6b2b697), [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/app-graphql@8.2.1
+  - @keystone-alpha/fields@15.0.0
 
 ## 16.0.1
 
@@ -912,6 +951,8 @@
 ## 0.1.1
 
 - [patch] Remove tests and markdown from npm [dc3ee7d](dc3ee7d)
+
+# @keystone/core
 
 # @keystone-alpha/core
 

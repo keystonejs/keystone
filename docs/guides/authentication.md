@@ -30,9 +30,9 @@ list used for authentication in `index.js`:
 Here, we will setup a `PasswordAuthStrategy` instance:
 
 ```javascript
-const { Text, Password } = require('@keystone-alpha/fields');
-const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Text, Password } = require('@keystone/fields');
+const { PasswordAuthStrategy } = require('@keystone/auth-password');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 
 const keystone = keystone.createList('User', {
   // ...
@@ -69,6 +69,19 @@ the `new AdminUIApp()` call:
 ```diff
 - const admin = new AdminUIApp({ authStrategy });
 + const admin = new AdminUIApp({ });
+```
+
+Second, disable access control by removing `access` from the 
+`keystone.createList('User', ...` call:
+
+```diff
+-  access: {
+-    read: access.userIsAdminOrOwner,
+-    update: access.userIsAdminOrOwner,
+-    create: access.userIsAdmin,
+-    delete: access.userIsAdmin,
+-    auth: true,
+-  },
 ```
 
 Restart your KeystoneJS App, and visit <http://localhost:3000/users> - you should now be able to access the Admin UI without logging in.

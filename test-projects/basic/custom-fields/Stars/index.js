@@ -1,6 +1,6 @@
 const { Stars, MongoIntegerInterface, KnexIntegerInterface } = require('./Implementation');
 
-const { Integer } = require('@keystone-alpha/fields');
+const { Integer } = require('@keystone/fields');
 
 module.exports = {
   type: 'Stars',

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer } = require('@keystone-alpha/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystone/test-utils');
 
 // `mongodb-memory-server` downloads a binary on first run in CI, which can take
 // a while, so we bump up the timeout here.

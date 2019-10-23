@@ -16,7 +16,7 @@ To improve maintainability of your code it is convenient to split List schemas t
 named 'lists', with a file `Todos.js` inside of it and put the following code inside.
 
 ```javascript
-const { Text, Checkbox } = require('@keystone-alpha/fields');
+const { Text, Checkbox } = require('@keystone/fields');
 
 module.exports = {
   fields: {
@@ -49,7 +49,7 @@ Tasks usually have a few more fields. Let's add an ability to set deadlines and 
 
 ```javascript
 // import another field type - CalendarDay
-const { Text, CalendarDay } = require('@keystone-alpha/fields');
+const { Text, CalendarDay } = require('@keystone/fields');
 
 // define new field
 module.exports = {
@@ -79,7 +79,7 @@ Take a look at the `assignee` field. Now we're just typing in a name. Why don't 
 Create another file `Users.js` in the `lists` directory. It should look like this:
 
 ```javascript
-const { Text, Password } = require('@keystone-alpha/fields');
+const { Text, Password } = require('@keystone/fields');
 
 module.exports = {
   fields: {

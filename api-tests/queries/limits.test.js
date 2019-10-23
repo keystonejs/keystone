@@ -1,13 +1,13 @@
-const { Integer, Text, Relationship } = require('@keystone-alpha/fields');
+const { Integer, Text, Relationship } = require('@keystone/fields');
 const {
   multiAdapterRunners,
   setupServer,
   graphqlRequest,
   networkedGraphqlRequest,
-} = require('@keystone-alpha/test-utils');
+} = require('@keystone/test-utils');
 const {
   validation: { depthLimit, definitionLimit, fieldLimit },
-} = require('@keystone-alpha/app-graphql');
+} = require('@keystone/app-graphql');
 
 const cuid = require('cuid');
 

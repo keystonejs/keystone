@@ -69,8 +69,8 @@ module.exports = {
 `index.js`
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { Keystone } = require('@keystone/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
 const keystone = new Keystone(/* ... */);
 module.exports = {
   keystone,
@@ -112,8 +112,8 @@ In this example there is no `index.js` file, instead the `keystone` instance and
 
 ```javascript
 const express = require('express');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { Keystone } = require('@keystone/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
@@ -147,9 +147,9 @@ function directly.
 
 ```javascript
 const express = require('express');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystone/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
@@ -184,8 +184,8 @@ KeystoneJS instance in AWS Lambda:
 ```javascript
 const express = require('express');
 const serverless = require('serverless-http');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { Keystone } = require('@keystone/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
