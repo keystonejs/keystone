@@ -88,7 +88,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       console.log(`Error reading version from MongoDB: ${error}`);
     }
 
-    if (!versionGreaterOrEqualTo(info.version, this.minVer)) {
+    if (!versionGreaterOrEqualTo(info.versionArray, this.minVer)) {
       throw new Error(
         `MongoDB version ${info.version} is incompatible. Version ${this.minVer} or later is required.`
       );
