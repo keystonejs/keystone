@@ -2,7 +2,7 @@
 // flow-typed version: sarcastic_v1.5.0/flow_v0.110.0
 
 declare module 'sarcastic' {
-  declare type Name = string | (...keyPath: Array<string | number>) => string;
+  declare type Name = string | ((...keyPath: Array<string | number>) => string);
   declare type Assertion<T> = (val: mixed, name: Name) => T;
   declare type AssertionMap = { [key: string]: Assertion<any> };
   declare type ExtractAssertionType = <T>(Assertion<T>) => T;
@@ -13,7 +13,6 @@ declare module 'sarcastic' {
     target: string;
     value: mixed;
   }
-
 
   declare module.exports: {
     is: <T>(val: mixed, assertion: Assertion<T>, name?: Name) => T,

@@ -85,32 +85,18 @@ function makeVariant({
 
 // remove props that will create react DOM warnings
 function ButtonElementComponent(props: ButtonProps, ref) {
-    const { isDisabled, isActive, isFocus, isHover, isSelected, focusOrigin, ...rest } = props;
-    const variant = makeVariant(props);
+  const { isDisabled, isActive, isFocus, isHover, isSelected, focusOrigin, ...rest } = props;
+  const variant = makeVariant(props);
 
-    if (rest.to) {
-      return <Link innerRef={ref} css={variant} {...rest} />;
-    }
+  if (rest.to) {
+    return <Link innerRef={ref} css={variant} {...rest} />;
+  }
 
-    if (rest.href) {
-      return (
-        <a
-          css={variant}
-          {...rest}
-          ref={ref}
-        />
-      );
-    }
-    return (
-      <button
-        type="button"
-        disabled={isDisabled}
-        css={variant}
-        ref={ref}
-        {...rest}
-      />
-    );
-  };
+  if (rest.href) {
+    return <a css={variant} {...rest} ref={ref} />;
+  }
+  return <button type="button" disabled={isDisabled} css={variant} ref={ref} {...rest} />;
+}
 
 ButtonElementComponent.defaultProps = {
   appearance: 'default',
@@ -118,6 +104,8 @@ ButtonElementComponent.defaultProps = {
   variant: 'bold',
 };
 
-const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(ButtonElementComponent);
+const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
+  ButtonElementComponent
+);
 
 export const Button = withPseudoState(ButtonElement);

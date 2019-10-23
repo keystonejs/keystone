@@ -23,7 +23,6 @@ declare module 'fixturez' {
  * needed.
  */
 
-
 // Filename aliases
 declare module 'fixturez/index' {
   declare module.exports: $Exports<'fixturez'>;

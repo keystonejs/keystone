@@ -8,7 +8,7 @@ type ItemProps = {
   mouseIsOverNav?: boolean,
   to?: string,
   href?: string,
-  as?: string
+  as?: string,
 };
 
 export const ItemElement = ({ as: Tag, isSelected, mouseIsOverNav, ...props }: ItemProps) => {
