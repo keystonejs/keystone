@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import crypto from 'crypto';
-import { importView } from '@keystone-alpha/build-field-types';
+import { importView } from '@keystone/build-field-types';
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;

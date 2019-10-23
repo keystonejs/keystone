@@ -1,3 +1,5 @@
+# @keystone/app-nuxt
+
 # @keystone-alpha/app-nuxt
 
 ## 1.0.0

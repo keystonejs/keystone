@@ -1,4 +1,4 @@
-import { importView } from '@keystone-alpha/build-field-types';
+import { importView } from '@keystone/build-field-types';
 import { Block } from '../Block';
 import { paragraph } from '../blocks';
 

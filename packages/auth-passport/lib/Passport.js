@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const assert = require('nanoassert');
-const { startAuthedSession } = require('@keystone-alpha/session');
+const { startAuthedSession } = require('@keystone/session');
 
 const FIELD_SERVICE_NAME = 'service';
 const FIELD_USER_ID = 'serviceUserId';
@@ -332,7 +332,7 @@ class PassportAuthStrategy {
 
   _createSessionList() {
     if (!this._getSessionList()) {
-      const { Text, Relationship } = require('@keystone-alpha/fields');
+      const { Text, Relationship } = require('@keystone/fields');
 
       // TODO: Set read permissions to be 'internal' (within keystone) only so
       // it doesn't expose a graphQL endpoint, or can be read or modified by

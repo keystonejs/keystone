@@ -9,7 +9,7 @@ order: 6
 Stop maliciously complex or invalid queries against your `Keystone` instance.
 
 ```javascript
-const { validation } = require('@keystone-alpha/app-graphql');
+const { validation } = require('@keystone/app-graphql');
 
 // ...
 

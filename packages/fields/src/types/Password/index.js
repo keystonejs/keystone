@@ -1,5 +1,5 @@
 import { Password, MongoPasswordInterface, KnexPasswordInterface } from './Implementation';
-import { importView } from '@keystone-alpha/build-field-types';
+import { importView } from '@keystone/build-field-types';
 
 export default {
   type: 'Password',

@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/modal-utils",
-  "description": "Modal Utilities as used in @keystone-alpha Admin UI.",
+  "description": "Modal Utilities as used in @keystone Admin UI.",
   "version": "1.0.2",
   "author": "Jed Watson",
   "license": "MIT",

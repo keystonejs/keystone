@@ -1,3 +1,5 @@
+# @keystone/app-graphql-playground
+
 # @keystone-alpha/app-graphql-playground
 
 ## 1.0.1

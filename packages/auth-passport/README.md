@@ -88,12 +88,12 @@ To run this example: `keystone dev`, then visit
 `index.js`
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystone/keystone');
+const { MongooseAdapter } = require('@keystone/adapter-mongoose');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 
-const { GoogleAuthStrategy } = require('@keystone-alpha/auth-passport');
+const { GoogleAuthStrategy } = require('@keystone/auth-passport');
 
 const cookieSecret = '<Something super secret>';
 
@@ -163,13 +163,13 @@ the Google authentication process.
 `server.js`
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystone/keystone');
+const { MongooseAdapter } = require('@keystone/adapter-mongoose');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 const express = require('express');
 
-const { GoogleAuthStrategy } = require('@keystone-alpha/auth-passport');
+const { GoogleAuthStrategy } = require('@keystone/auth-passport');
 
 const cookieSecret = '<Something super secret>';
 
@@ -300,7 +300,7 @@ You can create your own strategies to work with KeystoneJS by extending the
 
 ```javascript
 const PassportWordPress = require('passport-wordpress').Strategy;
-const { PassportAuthStrategy } = require('@keystone-alpha/auth-passport');
+const { PassportAuthStrategy } = require('@keystone/auth-passport');
 
 class WordPressAuthStrategy extends PassportAuthStrategy {
   constructor(keystone, listKey, config) {

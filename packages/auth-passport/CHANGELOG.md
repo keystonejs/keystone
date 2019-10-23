@@ -1,4 +1,13 @@
+# @keystone/auth-passport
+
 # @keystone-alpha/auth-passport
+
+## 4.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/fields@15.0.0
 
 ## 4.1.4
 

@@ -1,4 +1,4 @@
-const IDENTITY = 'boris@keystone-alpha.com';
+const IDENTITY = 'boris@keystone.com';
 const SECRET = 'correctbattery';
 
 describe.only('Can access Admin UI', () => {
@@ -43,7 +43,7 @@ describe.only('Can access Admin UI', () => {
 
     cy.get('input[name="identity"]')
       .clear({ force: true })
-      .type('sam@keystone-alpha.com', { force: true });
+      .type('sam@keystone.com', { force: true });
 
     cy.get('[name="secret"]')
       .clear({ force: true })

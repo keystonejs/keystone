@@ -105,7 +105,7 @@ module.exports = function() {
     .join(',\n')}\n}`;
 
   const source = `
-    import { captureSuspensePromises } from '@keystone-alpha/utils';
+    import { captureSuspensePromises } from '@keystone/utils';
     let promiseCache = new Map();
     let valueCache = new Map();
 

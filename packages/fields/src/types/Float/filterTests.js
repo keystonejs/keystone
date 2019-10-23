@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystone-alpha/test-utils';
+import { matchFilter } from '@keystone/test-utils';
 import Text from '../Text';
 import Float from '.';
 

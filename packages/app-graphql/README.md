@@ -14,9 +14,9 @@ For information about writing queries and mutations for KeystoneJS see the [Intr
 ## Usage
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystone/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 
 module.exports = {
   new Keystone(),

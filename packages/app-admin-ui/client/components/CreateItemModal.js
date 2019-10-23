@@ -6,7 +6,7 @@ import { useToasts } from 'react-toast-notifications';
 
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { arrayToObject, captureSuspensePromises, countArrays } from '@keystone-alpha/utils';
+import { arrayToObject, captureSuspensePromises, countArrays } from '@keystone/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 

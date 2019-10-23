@@ -1,4 +1,15 @@
+# @keystone/app-admin-ui
+
 # @keystone-alpha/app-admin-ui
+
+## 5.10.3
+
+### Patch Changes
+
+- [`a8ee0179`](https://github.com/keystonejs/keystone-5/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26) [#1805](https://github.com/keystonejs/keystone-5/pull/1805) Thanks [@gautamsi](https://github.com/gautamsi)! - export `useAdminMeta` which is useful in developing custom pages
+
+- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/fields@15.0.0
 
 ## 5.10.2
 
@@ -306,6 +317,8 @@
 - [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
 
   Fix Admin UI building on Windows
+
+# @keystone/admin-ui
 
 # @keystone-alpha/admin-ui
 

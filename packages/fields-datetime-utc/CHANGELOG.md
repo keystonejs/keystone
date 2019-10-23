@@ -1,4 +1,15 @@
+# @keystone/fields-datetime-utc
+
 # @keystone-alpha/fields-datetime-utc
+
+## 2.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`768420f5`](https://github.com/keystonejs/keystone-5/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d), [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/adapter-knex@6.0.2
+  - @keystone-alpha/adapter-mongoose@6.0.1
+  - @keystone-alpha/fields@15.0.0
 
 ## 2.0.4
 

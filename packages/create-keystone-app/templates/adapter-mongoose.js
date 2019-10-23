@@ -1,1 +1,1 @@
-const { MongooseAdapter: Adapter } = require('@keystone-alpha/adapter-mongoose');
+const { MongooseAdapter: Adapter } = require('@keystone/adapter-mongoose');

@@ -11,9 +11,9 @@ const {
   Relationship,
   Select,
   Text,
-} = require('@keystone-alpha/fields');
-const { CloudinaryAdapter } = require('@keystone-alpha/file-adapters');
-const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
+} = require('@keystone/fields');
+const { CloudinaryAdapter } = require('@keystone/file-adapters');
+const { Wysiwyg } = require('@keystone/fields-wysiwyg-tinymce');
 
 const cloudinaryAdapter = new CloudinaryAdapter({
   cloudName: process.env.CLOUDINARY_CLOUD_NAME,

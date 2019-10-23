@@ -1,19 +1,19 @@
-const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
-const { Text, Password, DateTime } = require('@keystone-alpha/fields');
-const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystone-alpha/test-utils');
-const { setupServer } = require('@keystone-alpha/test-utils');
+const { PasswordAuthStrategy } = require('@keystone/auth-password');
+const { Text, Password, DateTime } = require('@keystone/fields');
+const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystone/test-utils');
+const { setupServer } = require('@keystone/test-utils');
 const cuid = require('cuid');
 
 const initialData = {
   User: [
     {
       name: 'Boris Bozic',
-      email: 'boris@keystone-alpha.com',
+      email: 'boris@keystone.com',
       password: 'correctbattery',
     },
     {
       name: 'Jed Watson',
-      email: 'jed@keystone-alpha.com',
+      email: 'jed@keystone.com',
       password: 'horsestaple',
     },
   ],

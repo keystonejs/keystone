@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/tooltip",
-  "description": "Tooltip UI as used in @keystone-alpha Admin UI.",
+  "description": "Tooltip UI as used in @keystone Admin UI.",
   "version": "0.1.2",
   "author": "Jed Watson",
   "license": "MIT",

@@ -1,6 +1,6 @@
 import getByPath from 'lodash.get';
-import { Relationship, Text } from '@keystone-alpha/fields';
-import { flatMap, unique, objMerge } from '@keystone-alpha/utils';
+import { Relationship, Text } from '@keystone/fields';
+import { flatMap, unique, objMerge } from '@keystone/utils';
 import { paragraph } from './blocks';
 import { walkSlateNode } from './slate-walker';
 
@@ -194,7 +194,7 @@ export class Content extends Relationship.implementation {
    * 1. The block implementation (eg; ./views/editor/blocks/embed.js)
    * 2. The config (eg; { apiKey: process.env.EMBEDLY_API_KEY })
    * Because of the way we bundle the admin UI, we have to split apart these
-   * two halves and send them seperately (see `@keystone-alpha/field-views-loader`):
+   * two halves and send them seperately (see `@keystone/field-views-loader`):
    * 1. Sent as a "view" (see `extendAdminViews` below), which will be required
    *    (so it's included in the bundle).
    * 2. Sent as a serialized JSON object (see `extendAdminMeta` below), which

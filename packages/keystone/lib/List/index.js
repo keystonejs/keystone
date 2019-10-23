@@ -12,9 +12,9 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-} = require('@keystone-alpha/utils');
-const { parseListAccess } = require('@keystone-alpha/access-control');
-const { logger } = require('@keystone-alpha/logger');
+} = require('@keystone/utils');
+const { parseListAccess } = require('@keystone/access-control');
+const { logger } = require('@keystone/logger');
 
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
@@ -62,7 +62,7 @@ const opToType = {
 const getAuthMutationName = (prefix, authType) => `${prefix}With${upcase(authType)}`;
 
 const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
-  const { Text, Checkbox, Float } = require('@keystone-alpha/fields');
+  const { Text, Checkbox, Float } = require('@keystone/fields');
 
   const nativeTypeMap = new Map([
     [
@@ -96,7 +96,7 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 
   keystoneLogger.warn(
     { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone-alpha/fields package.`
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone/fields package.`
   );
 
   return keystoneType;
@@ -280,6 +280,9 @@ module.exports = class List {
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
+      if (!this.isAuxList && fieldKey[0] === '_') {
+        throw `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`;
+      }
       if (typeof fieldConfig.type === 'undefined') {
         throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
           `(${this.key}.${fieldKey}.type is undefined)`;
@@ -1400,7 +1403,7 @@ module.exports = class List {
   }
 
   async _nestedMutation(mutationState, context, mutation) {
-    const { Relationship } = require('@keystone-alpha/fields');
+    const { Relationship } = require('@keystone/fields');
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {

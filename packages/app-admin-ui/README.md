@@ -11,9 +11,9 @@ A KeystoneJS App which provides an Admin UI for content management.
 ## Usage
 
 ```js
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystone/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 
 const authStrategy = keystone.createAuthStrategy({ ... });
 
