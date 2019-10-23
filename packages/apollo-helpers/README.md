@@ -12,7 +12,7 @@ A set of functions and components to ease using
 ## Installation
 
 ```bash
-yarn add @keystone-alpha/apollo-helpers
+yarn add @keystone/apollo-helpers
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ import { ApolloProvider } from 'react-apollo';
 import {
   Query,
   KeystoneProvider,
-} from '@keystone-alpha/apollo-helpers';
+} from '@keystone/apollo-helpers';
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: /* ... */ }),
@@ -70,7 +70,7 @@ import {
   KeystoneProvider,
   injectIsOptimisticFlag,
   flattenApollo,
-} from '@keystone-alpha/apollo-helpers';
+} from '@keystone/apollo-helpers';
 
 const cache = new InMemoryCache();
 

@@ -18,7 +18,7 @@ import {
   omitBy,
   captureSuspensePromises,
   countArrays,
-} from '@keystone-alpha/utils';
+} from '@keystone/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';

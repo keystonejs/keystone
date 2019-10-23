@@ -30,9 +30,9 @@ list used for authentication in `index.js`:
 Here, we will setup a `PasswordAuthStrategy` instance:
 
 ```javascript
-const { Text, Password } = require('@keystone-alpha/fields');
-const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Text, Password } = require('@keystone/fields');
+const { PasswordAuthStrategy } = require('@keystone/auth-password');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 
 const keystone = keystone.createList('User', {
   // ...

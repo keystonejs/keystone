@@ -1,3 +1,5 @@
+# @keystone/app-admin-ui
+
 # @keystone-alpha/app-admin-ui
 
 ## 5.10.3
@@ -315,6 +317,8 @@
 - [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
 
   Fix Admin UI building on Windows
+
+# @keystone/admin-ui
 
 # @keystone-alpha/admin-ui
 

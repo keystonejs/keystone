@@ -1,3 +1,5 @@
+# @keystone/example-projects-nuxt
+
 # @keystone-alpha/example-projects-nuxt
 
 ## 0.0.4

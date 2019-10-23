@@ -1,3 +1,5 @@
+# @keystone/list-plugins
+
 # @keystone-alpha/list-plugins
 
 ## 1.0.5

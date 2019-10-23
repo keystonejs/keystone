@@ -1,5 +1,5 @@
-const { Text } = require('@keystone-alpha/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const { Text } = require('@keystone/fields');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone/test-utils');
 const cuid = require('cuid');
 
 function setupKeystone(adapterName) {

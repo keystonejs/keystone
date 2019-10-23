@@ -1,3 +1,5 @@
+# @keystone/app-graphql
+
 # @keystone-alpha/app-graphql
 
 ## 8.2.1
@@ -134,6 +136,8 @@
 - [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
 
   Remove usage of `port` arg from `prepareMiddleware()` and stop doing inline console.logs
+
+# @keystone/server
 
 # @keystone-alpha/server
 

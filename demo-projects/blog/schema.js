@@ -9,9 +9,9 @@ const {
   CalendarDay,
   DateTime,
   OEmbed,
-} = require('@keystone-alpha/fields');
-const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
-const { LocalFileAdapter } = require('@keystone-alpha/file-adapters');
+} = require('@keystone/fields');
+const { Wysiwyg } = require('@keystone/fields-wysiwyg-tinymce');
+const { LocalFileAdapter } = require('@keystone/file-adapters');
 const getYear = require('date-fns/get_year');
 
 const { staticRoute, staticPath, distDir } = require('./config');
@@ -20,7 +20,7 @@ const dev = process.env.NODE_ENV !== 'production';
 let iframelyAdapter;
 
 if (process.env.IFRAMELY_API_KEY) {
-  const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+  const { IframelyOEmbedAdapter } = require('@keystone/oembed-adapters');
   iframelyAdapter = new IframelyOEmbedAdapter({
     apiKey: process.env.IFRAMELY_API_KEY,
   });

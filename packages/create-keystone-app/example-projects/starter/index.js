@@ -1,10 +1,10 @@
-const { Keystone } = require('@keystone-alpha/keystone');
-const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
-const { Text, Checkbox, Password } = require('@keystone-alpha/fields');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystone/keystone');
+const { PasswordAuthStrategy } = require('@keystone/auth-password');
+const { Text, Checkbox, Password } = require('@keystone/fields');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
 /* keystone-cli: generated-code */
-const { MongooseAdapter: Adapter } = require('@keystone-alpha/adapter-mongoose');
+const { MongooseAdapter: Adapter } = require('@keystone/adapter-mongoose');
 const PROJECT_NAME = 'My KeystoneJS Project';
 /* /keystone-cli: generated-code */
 
