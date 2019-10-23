@@ -123,11 +123,11 @@ const Body = styled.div({
 // ------------------------------
 
 type Props = {
-  attachTo: HTMLElement | HTMLBodyElement,
+  attachTo?: HTMLElement | ?HTMLBodyElement,
   children: Node,
-  closeOnBlanketClick: boolean,
+  closeOnBlanketClick?: boolean,
   isOpen: boolean,
-  component: ComponentType<*> | string,
+  component?: ComponentType<*> | string,
   footer?: Element<*>,
   heading?: string,
   initialFocus?: FocusTarget,
@@ -135,7 +135,7 @@ type Props = {
   onKeyDown: (*) => void,
   slideInFrom: 'left' | 'right',
   transitionState: TransitionState,
-  width: number,
+  width?: number,
 };
 
 function useKeydownHandler(handler) {
@@ -154,7 +154,7 @@ function useKeydownHandler(handler) {
   }, []);
 }
 
-const ModalDialogComponent = ({
+function ModalDialogComponent({
   attachTo,
   children,
   closeOnBlanketClick,
@@ -168,7 +168,7 @@ const ModalDialogComponent = ({
   onKeyDown,
   transitionState,
   isOpen,
-}) => {
+}) {
   let stackIndex = useStackIndex(
     transitionState === 'entered' || transitionState === 'entering',
     slideInFrom
@@ -179,6 +179,10 @@ const ModalDialogComponent = ({
     }
   });
   const dialogTitleId = useMemo(generateUEID, []);
+
+  if (!attachTo) {
+    return null;
+  }
 
   return createPortal(
     <Fragment>
