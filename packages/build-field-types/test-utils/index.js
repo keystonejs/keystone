@@ -5,7 +5,6 @@ import * as fs from 'fs-extra';
 import globby from 'globby';
 import fixturez from 'fixturez';
 import spawn from 'spawndamnit';
-import hashString from '@emotion/hash';
 
 let f = fixturez(__dirname);
 
