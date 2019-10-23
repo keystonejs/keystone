@@ -16,7 +16,7 @@ test('basic field type', async () => {
 
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath, 'all');
+  await snapshotDirectory(tmpPath, { files: 'all' });
 
   let { MyCoolFieldType } = unsafeRequire(tmpPath);
   let Field = unsafeRequire(MyCoolFieldType.views.Field);

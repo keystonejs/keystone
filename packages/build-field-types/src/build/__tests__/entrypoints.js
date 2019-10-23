@@ -2,12 +2,29 @@
 import build from '../';
 import fixturez from 'fixturez';
 import { snapshotDistFiles, snapshotDirectory } from '../../../test-utils';
+import hashString from '@emotion/hash';
 
 const f = fixturez(__dirname);
 
 jest.setTimeout(10000);
 
 jest.mock('../../prompt');
+
+let stripHashes = (chunkName: string) => {
+  let transformer = (pathname: string, content: string) => {
+    return pathname.replace(new RegExp(`${chunkName}-[^\\.]+`, 'g'), () => {
+      return `chunk-this-is-not-the-real-hash-${hashString(content)}`;
+    });
+  };
+  return {
+    transformPath: transformer,
+    transformContent: (content: string) => {
+      return content.replace(new RegExp(`${chunkName}-[^\\.]+`, 'g'), () => {
+        return 'chunk-some-hash';
+      });
+    },
+  };
+};
 
 test('source entrypoint option', async () => {
   let tmpPath = f.copy('source-entrypoint-option');
@@ -41,5 +58,5 @@ test('two entrypoints with a common dependency', async () => {
 
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath);
+  await snapshotDirectory(tmpPath, await stripHashes('identity'));
 });
