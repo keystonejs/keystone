@@ -149,6 +149,9 @@ export async function snapshotDirectory(
   await Promise.all(
     paths.map(async x => {
       let content = transformContent(await fs.readFile(path.join(tmpPath, x), 'utf-8'));
+      if (x.endsWith('.json')) {
+        content = JSON.parse(content);
+      }
       expect(content).toMatchSnapshot(transformPath(x, content));
     })
   );
