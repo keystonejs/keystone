@@ -18,19 +18,18 @@ export default thing;
 `;
 
 exports[`typescript: package.json 1`] = `
-"{
-  \\"name\\": \\"typescript\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"main\\": \\"dist/typescript.cjs.js\\",
-  \\"license\\": \\"MIT\\",
-  \\"private\\": true,
-  \\"module\\": \\"dist/typescript.esm.js\\",
-  \\"dependencies\\": {
-    \\"@babel/core\\": \\"^7.4.3\\",
-    \\"@babel/preset-typescript\\": \\"^7.3.3\\"
-  }
+Object {
+  "dependencies": Object {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
+  },
+  "license": "MIT",
+  "main": "dist/typescript.cjs.js",
+  "module": "dist/typescript.esm.js",
+  "name": "typescript",
+  "private": true,
+  "version": "1.0.0",
 }
-"
 `;
 
 exports[`typescript: src/index.ts 1`] = `

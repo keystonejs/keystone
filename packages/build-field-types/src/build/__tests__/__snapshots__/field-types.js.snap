@@ -1,11 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`basic field type: chunk-this-is-not-the-real-hash 1`] = `
-"{
-  \\"main\\": \\"../chunk-some-hash.cjs.js\\",
-  \\"module\\": \\"../chunk-some-hash.esm.js\\"
+Object {
+  "main": "../chunk-some-hash.cjs.js",
+  "module": "../chunk-some-hash.esm.js",
 }
-"
 `;
 
 exports[`basic field type: dist/basic-field-type.cjs.js 1`] = `
@@ -57,15 +56,14 @@ export default Field;
 `;
 
 exports[`basic field type: package.json 1`] = `
-"{
-  \\"name\\": \\"basic-field-type\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"main\\": \\"dist/basic-field-type.cjs.js\\",
-  \\"module\\": \\"dist/basic-field-type.esm.js\\",
-  \\"license\\": \\"MIT\\",
-  \\"private\\": true
+Object {
+  "license": "MIT",
+  "main": "dist/basic-field-type.cjs.js",
+  "module": "dist/basic-field-type.esm.js",
+  "name": "basic-field-type",
+  "private": true,
+  "version": "1.0.0",
 }
-"
 `;
 
 exports[`basic field type: src/index.js 1`] = `
