@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "cypress": "^3.4.0",
+    "cypress-file-upload": "^3.4.0",
     "dotenv-safe": "^6.0.0",
     "execa": "^2.0.4",
     "mocha": "^5.2.0",
