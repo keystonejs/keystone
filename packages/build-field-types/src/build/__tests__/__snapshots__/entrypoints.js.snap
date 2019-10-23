@@ -67,19 +67,19 @@ export { something };
 "
 `;
 
-exports[`two entrypoints with a common dependency: dist/chunk-this-is-not-the-real-hash-1s7saow.esm.js 1`] = `
-"let identity = x => x;
-
-export { identity as i };
-"
-`;
-
-exports[`two entrypoints with a common dependency: dist/chunk-this-is-not-the-real-hash-s38jin.cjs.js 1`] = `
+exports[`two entrypoints with a common dependency: dist/chunk-this-is-not-the-real-hash.cjs.js 1`] = `
 "'use strict';
 
 let identity = x => x;
 
 exports.identity = identity;
+"
+`;
+
+exports[`two entrypoints with a common dependency: dist/chunk-this-is-not-the-real-hash.esm.js 1`] = `
+"let identity = x => x;
+
+export { identity as i };
 "
 `;
 

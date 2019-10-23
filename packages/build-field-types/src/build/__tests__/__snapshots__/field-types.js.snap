@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`basic field type: chunk-this-is-not-the-real-hash-1mu4pax 1`] = `
+exports[`basic field type: chunk-this-is-not-the-real-hash 1`] = `
 "{
   \\"main\\": \\"../chunk-some-hash.cjs.js\\",
   \\"module\\": \\"../chunk-some-hash.esm.js\\"
@@ -36,7 +36,7 @@ export { MyCoolFieldType };
 "
 `;
 
-exports[`basic field type: dist/chunk-this-is-not-the-real-hash-1kjitg3.cjs.js 1`] = `
+exports[`basic field type: dist/chunk-this-is-not-the-real-hash.cjs.js 1`] = `
 "'use strict';
 
 var Field = () => {
@@ -47,7 +47,7 @@ exports.default = Field;
 "
 `;
 
-exports[`basic field type: dist/chunk-this-is-not-the-real-hash-s93jzu.esm.js 1`] = `
+exports[`basic field type: dist/chunk-this-is-not-the-real-hash.esm.js 1`] = `
 "var Field = () => {
   return 'my cool react component stuff';
 };

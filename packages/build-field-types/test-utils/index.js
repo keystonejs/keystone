@@ -110,11 +110,11 @@ export async function snapshotDistFiles(tmpPath: string) {
 }
 
 export let stripHashes = (chunkName: string) => {
-  let transformer = (pathname: string, content: string) => {
+  let transformer = (pathname: string) => {
     return pathname.replace(
       new RegExp(`(${chunkName}-[^\\.]+|dist\\/[^\\.]+\\/package.json)`, 'g'),
       () => {
-        return `chunk-this-is-not-the-real-hash-${hashString(content)}`;
+        return `chunk-this-is-not-the-real-hash`;
       }
     );
   };
