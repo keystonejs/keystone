@@ -58,5 +58,5 @@ test('two entrypoints with a common dependency', async () => {
 
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath, await stripHashes('identity'));
+  await snapshotDirectory(tmpPath, stripHashes('identity'));
 });
