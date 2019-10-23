@@ -5,6 +5,7 @@ import * as fs from 'fs-extra';
 import globby from 'globby';
 import fixturez from 'fixturez';
 import spawn from 'spawndamnit';
+import hashString from '@emotion/hash';
 
 let f = fixturez(__dirname);
 
@@ -107,6 +108,25 @@ export async function snapshotDistFiles(tmpPath: string) {
     })
   );
 }
+
+export let stripHashes = (chunkName: string) => {
+  let transformer = (pathname: string, content: string) => {
+    return pathname.replace(
+      new RegExp(`(${chunkName}-[^\\.]+|dist\\/[^\\.]+\\/package.json)`, 'g'),
+      () => {
+        return `chunk-this-is-not-the-real-hash-${hashString(content)}`;
+      }
+    );
+  };
+  return {
+    transformPath: transformer,
+    transformContent: (content: string) => {
+      return content.replace(new RegExp(`${chunkName}-[^\\.]+`, 'g'), () => {
+        return 'chunk-some-hash';
+      });
+    },
+  };
+};
 
 export async function snapshotDirectory(
   tmpPath: string,
