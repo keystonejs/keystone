@@ -1,3 +1,5 @@
+# @keystone/app-static
+
 # @keystone-alpha/app-static
 
 ## 1.1.2

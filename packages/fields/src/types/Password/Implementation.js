@@ -1,6 +1,6 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystone/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystone/adapter-knex';
 import bcrypt from 'bcrypt';
 import dumbPasswords from 'dumb-passwords';
 

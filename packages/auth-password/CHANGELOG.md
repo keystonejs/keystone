@@ -1,3 +1,5 @@
+# @keystone/auth-password
+
 # @keystone-alpha/auth-password
 
 ## 1.0.6

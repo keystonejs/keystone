@@ -1,3 +1,5 @@
+# @keystone/adapter-mongoose
+
 # @keystone-alpha/adapter-mongoose
 
 ## 6.0.1

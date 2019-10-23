@@ -25,8 +25,8 @@ API](../../keystone-alpha/app-graphql):
 `index.js`
 
 ```javascript
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { Keystone } = require('@keystone/keystone');
 
 const keystone = new Keystone(/* ... */);
 
@@ -44,9 +44,9 @@ provides the functionality of the KeystoneJS Admin UI:
 `index.js`
 
 ```diff
- const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
- const { Keystone } = require('@keystone-alpha/keystone');
+ const { GraphQLApp } = require('@keystone/app-graphql');
++const { AdminUIApp } = require('@keystone/app-admin-ui');
+ const { Keystone } = require('@keystone/keystone');
 
  const keystone = new Keystone(/* ... */);
 

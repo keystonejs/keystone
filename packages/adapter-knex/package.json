@@ -1,17 +1,17 @@
 {
-  "name": "@keystone-alpha/adapter-knex",
+  "name": "@keystone/adapter-knex",
   "description": "KeystoneJS Knex Database Adapter",
-  "version": "6.0.2",
+  "version": "4.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/fields-auto-increment": "^2.0.5",
-    "@keystone-alpha/keystone": "^16.1.0",
-    "@keystone-alpha/logger": "^2.0.1",
-    "@keystone-alpha/utils": "^3.1.0",
+    "@keystone/fields-auto-increment": "^4.0.0",
+    "@keystone/keystone": "^4.0.0",
+    "@keystone/logger": "^4.0.0",
+    "@keystone/utils": "^4.0.0",
     "@sindresorhus/slugify": "^0.6.0",
     "knex": "^0.19.5",
     "p-settle": "^3.1.0",

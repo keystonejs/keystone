@@ -1,3 +1,5 @@
+# @keystone/email
+
 # @keystone-alpha/email
 
 ## 3.0.1

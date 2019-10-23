@@ -12,11 +12,11 @@ This guide will show you how to create a User list and initialise it manually or
 First let's create a User list and add a `PasswordAuthStrategy`. Our `index.js` might look like this:
 
 ```javascript
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-const { Text, Checkbox, Password } = require('@keystone-alpha/fields');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { Keystone, PasswordAuthStrategy } = require('@keystone/keystone');
+const { Text, Checkbox, Password } = require('@keystone/fields');
+const { GraphQLApp } = require('@keystone/app-graphql');
+const { AdminUIApp } = require('@keystone/app-admin-ui');
+const { MongooseAdapter } = require('@keystone/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'example-project',

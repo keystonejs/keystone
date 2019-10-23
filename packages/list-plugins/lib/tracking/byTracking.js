@@ -1,4 +1,4 @@
-const { Relationship } = require('@keystone-alpha/fields');
+const { Relationship } = require('@keystone/fields');
 const { composeResolveInput } = require('../utils');
 
 const _byTracking = ({ created = true, updated = true }) => ({

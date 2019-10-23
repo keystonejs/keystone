@@ -1,3 +1,5 @@
+# @keystone/keystone
+
 # @keystone-alpha/keystone
 
 ## 16.1.0
@@ -930,6 +932,8 @@
 ## 0.1.1
 
 - [patch] Remove tests and markdown from npm [dc3ee7d](dc3ee7d)
+
+# @keystone/core
 
 # @keystone-alpha/core
 

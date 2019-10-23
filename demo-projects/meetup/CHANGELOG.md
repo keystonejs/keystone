@@ -1,3 +1,5 @@
+# @keystone/demo-project-meetup
+
 # @keystone-alpha/demo-project-meetup
 
 ## 0.3.7

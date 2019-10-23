@@ -1,3 +1,5 @@
+# @keystone/adapter-knex
+
 # @keystone-alpha/adapter-knex
 
 ## 6.0.2
