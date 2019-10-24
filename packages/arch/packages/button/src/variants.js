@@ -66,8 +66,8 @@ const subtleAppearance = {
     textHover: colors.primary,
   },
   create: {
-    text: colors.create,
-    textHover: colors.create,
+    text: null,
+    textHover: null,
   },
   warning: {
     text: colors.N40,
@@ -86,7 +86,7 @@ const nuanceAppearance = {
     text: colors.primary,
   },
   create: {
-    text: colors.create,
+    text: null,
   },
   warning: {
     text: colors.danger,
