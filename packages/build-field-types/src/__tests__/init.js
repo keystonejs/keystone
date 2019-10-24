@@ -27,7 +27,7 @@ test('no entrypoint', async () => {
 test('do not allow write', async () => {
   let tmpPath = f.copy('basic-package');
 
-  // $flow: mocked dataloader
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(Promise.resolve(false));
 
   try {
@@ -41,7 +41,7 @@ test('do not allow write', async () => {
 test('set main and module field', async () => {
   let tmpPath = f.copy('basic-package');
 
-  // $flow: mocked dataloader
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
 
   await init(tmpPath);
@@ -64,7 +64,7 @@ test('set main and module field', async () => {
 test('scoped package', async () => {
   let tmpPath = f.copy('scoped');
 
-  // $flow: mocked dataloader
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
 
   await init(tmpPath);
@@ -87,9 +87,9 @@ test('scoped package', async () => {
 test('monorepo', async () => {
   let tmpPath = f.copy('monorepo');
 
-  // $flow: mocked dataloader
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
-  // $flow: mocked dataloader
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
 
   await init(tmpPath);
@@ -145,7 +145,7 @@ test('does not prompt or modify if already valid', async () => {
 test('invalid fields', async () => {
   let tmpPath = f.copy('invalid-fields');
 
-  // $flow: mocked dataloader
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
 
   await init(tmpPath);
@@ -187,7 +187,7 @@ let basicThreeEntrypoints = {
 };
 
 testInit('three entrypoints, no main, add main and module', basicThreeEntrypoints, async run => {
-  // $flow: mocked dataloader
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
 
   let result = await run();

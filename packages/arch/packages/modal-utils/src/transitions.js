@@ -31,7 +31,7 @@ export const TransitionProvider = ({ children, isOpen, ...props }: ProviderProps
 export const withTransitionState = <Config: {}>(
   Comp: AbstractComponent<{| ...$Exact<Config>, transitionState: TransitionState |}>
 ): AbstractComponent<Config> => ({
-  // $flow: understand how to define this prop
+  // $FlowFixMe understand how to define this prop
   isOpen,
   ...props
 }) => {

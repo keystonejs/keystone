@@ -22,9 +22,9 @@ export type PaginationProps = {
   pageSize: number,
   total: number,
   isLoading: boolean,
-  justify: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
-  spacing: number,
-  growIndexes: Array<number>,
+  justify?: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
+  spacing?: number,
+  growIndexes?: Array<number>,
 };
 
 const PageChildren = ({ page, isLoading, isSelected }) => {

@@ -86,7 +86,7 @@ export default function withModalHandlers(
       const { target } = event;
       const { isOpen } = this.state;
 
-      // $flow: remove when this issue will be closed https://github.com/facebook/flow/pull/4551
+      // $FlowFixMe remove when this issue will be closed https://github.com/facebook/flow/pull/4551
       if (!(target instanceof HTMLElement) && !(target instanceof SVGElement)) {
         return;
       }

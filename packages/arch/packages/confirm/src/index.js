@@ -107,6 +107,7 @@ class ModalConfirm extends PureComponent<Props> {
         <Blanket style={fade(transitionState)} isTinted isLight />
         <Positioner style={zoomInDown(transitionState)}>
           <FocusTrap>
+            {/* $$FlowFixMe default props */}
             <Dialog component={component} width={width}>
               <Body>{children}</Body>
             </Dialog>

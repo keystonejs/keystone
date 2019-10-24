@@ -49,7 +49,7 @@ export default function flowAndNodeDevProdEntry(): Plugin {
     async generateBundle(opts, bundle) {
       map.set(this.addWatchFile, opts.dir);
       let chunkKeys = Object.keys(bundle).filter(
-        // $flow: this is acceptable to have non existent isAsset
+        // $FlowFixMe this is acceptable to have non existent isAsset
         x => !bundle[x].isAsset
       );
 

@@ -2,8 +2,6 @@
 
 [ignore]
 .*/node_modules/react-window/.*
-.*/node_modules/@emotion/core/.*
-.*/node_modules/@emotion/styled-base/.*
 .*/node_modules/sarcastic/.*
 .*/node_modules/fixturez/.*
 
@@ -26,7 +24,6 @@ module.name_mapper='^@keystonejs\/\(.+\)$' -> '<PROJECT_ROOT>/packages/\1'
 module.name_mapper='.*FIELD_TYPES' -> '<PROJECT_ROOT>/packages/field-views-loader/field-types'
 module.name_mapper='^@arch-ui\/\([^\/]+\)$' -> '@arch-ui/\1/src/index.js'
 server.max_workers=4
-suppress_comment= \\(.\\|\n\\)*\\$flow:
 suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
 lazy_mode=fs
 
