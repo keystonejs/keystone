@@ -1,6 +1,6 @@
 import groupBy from 'lodash.groupby';
 import pSettle from 'p-settle';
-import { intersection, pick } from '@keystone/utils';
+import { intersection, pick } from '@keystonejs/utils';
 import { ParameterError } from './graphqlErrors';
 
 const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];

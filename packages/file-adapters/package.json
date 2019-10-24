@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/file-adapters",
+  "name": "@keystonejs/file-adapters",
   "description": "Adapters for handling storage of the File type",
   "version": "5.0.0",
   "main": "index.js",

@@ -11,7 +11,7 @@ A KeystoneJS App for serving a [Next.js](https://nextjs.org/) application.
 ## Usage
 
 ```javascript
-const { NextApp } = require('@keystone/app-next');
+const { NextApp } = require('@keystonejs/app-next');
 
 ...
 

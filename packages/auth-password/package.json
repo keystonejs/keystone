@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/auth-password",
+  "name": "@keystonejs/auth-password",
   "description": "Provides a basic password authentication strategy.",
   "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone/fields": "^5.0.0",
-    "@keystone/session": "^5.0.0"
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/session": "^5.0.0"
   }
 }

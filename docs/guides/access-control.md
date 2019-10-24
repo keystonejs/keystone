@@ -40,7 +40,7 @@ Here's how we would set that up:
 _NOTE: The code below depends on having a correct [authentication setup](/guides/authentication)._
 
 ```javascript
-const { Text, Select, Checkbox, Password } = require('@keystone/fields');
+const { Text, Select, Checkbox, Password } = require('@keystonejs/fields');
 
 const keystone = // ...
 

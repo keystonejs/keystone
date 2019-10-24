@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystone/test-utils';
+import { matchFilter } from '@keystonejs/test-utils';
 import Text from '../Text';
 import CalendarDay from './';
 
