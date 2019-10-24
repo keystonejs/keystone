@@ -98,7 +98,8 @@ export class File extends Implementation {
       return null;
     }
 
-    const { stream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const stream = createReadStream();
 
     if (!stream && previousData) {
       // TODO: FIXME: Handle when stream is null. Can happen when:
