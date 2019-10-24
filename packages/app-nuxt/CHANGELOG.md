@@ -1,4 +1,4 @@
-# @keystone/app-nuxt
+# @keystonejs/app-nuxt
 
 # @keystone-alpha/app-nuxt
 

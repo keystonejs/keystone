@@ -1,4 +1,4 @@
-# @keystone/utils
+# @keystonejs/utils
 
 # @keystone-alpha/utils
 

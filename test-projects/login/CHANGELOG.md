@@ -1,4 +1,4 @@
-# @keystone/cypress-project-login
+# @keystonejs/cypress-project-login
 
 # @keystone-alpha/cypress-project-login
 

@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/adapter-knex",
+  "name": "@keystonejs/adapter-knex",
   "description": "KeystoneJS Knex Database Adapter",
   "version": "4.0.0",
   "author": "The KeystoneJS Development Team",
@@ -8,10 +8,10 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone/fields-auto-increment": "^4.0.0",
-    "@keystone/keystone": "^4.0.0",
-    "@keystone/logger": "^4.0.0",
-    "@keystone/utils": "^4.0.0",
+    "@keystonejs/fields-auto-increment": "^4.0.0",
+    "@keystonejs/keystone": "^4.0.0",
+    "@keystonejs/logger": "^4.0.0",
+    "@keystonejs/utils": "^4.0.0",
     "@sindresorhus/slugify": "^0.6.0",
     "knex": "^0.19.5",
     "p-settle": "^3.1.0",

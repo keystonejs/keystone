@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/filters",
-  "description": "Filter UI as used in @keystone Admin UI.",
+  "description": "Filter UI as used in @keystonejs Admin UI.",
   "version": "0.0.11",
   "author": "Jed Watson",
   "license": "MIT",

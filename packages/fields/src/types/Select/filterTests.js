@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystone/test-utils';
+import { matchFilter } from '@keystonejs/test-utils';
 import Select from './';
 import Text from '../Text';
 

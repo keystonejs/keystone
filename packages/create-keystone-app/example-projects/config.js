@@ -1,14 +1,14 @@
 const adapters = {
   Mongoose: {
     file: 'adapter-mongoose.js',
-    dependencies: ['@keystone/adapter-mongoose'],
+    dependencies: ['@keystonejs/adapter-mongoose'],
     description: 'Connect to a Mongo database.',
   },
   Knex: {
     file: 'adapter-knex.js',
-    dependencies: ['@keystone/adapter-knex'],
+    dependencies: ['@keystonejs/adapter-knex'],
     description: 'Connect to a Postgres database.',
-    removeDependencies: ['@keystone/adapter-mongoose'],
+    removeDependencies: ['@keystonejs/adapter-mongoose'],
   },
 };
 

@@ -1,4 +1,4 @@
-# @keystone/benchmarks
+# @keystonejs/benchmarks
 
 # @keystone-alpha/benchmarks
 

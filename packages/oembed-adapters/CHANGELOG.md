@@ -1,4 +1,4 @@
-# @keystone/oembed-adapters
+# @keystonejs/oembed-adapters
 
 # @keystone-alpha/oembed-adapters
 

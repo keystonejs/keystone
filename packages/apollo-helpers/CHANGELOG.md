@@ -1,4 +1,4 @@
-# @keystone/apollo-helpers
+# @keystonejs/apollo-helpers
 
 # @keystone-alpha/apollo-helpers
 

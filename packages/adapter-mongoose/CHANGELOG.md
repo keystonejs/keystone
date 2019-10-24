@@ -1,4 +1,4 @@
-# @keystone/adapter-mongoose
+# @keystonejs/adapter-mongoose
 
 # @keystone-alpha/adapter-mongoose
 

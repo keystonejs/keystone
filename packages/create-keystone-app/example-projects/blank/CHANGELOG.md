@@ -1,4 +1,4 @@
-# @keystone/example-projects-blank
+# @keystonejs/example-projects-blank
 
 # @keystone-alpha/example-projects-blank
 

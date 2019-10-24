@@ -1,4 +1,4 @@
-# @keystone/session
+# @keystonejs/session
 
 # @keystone-alpha/session
 

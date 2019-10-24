@@ -1,4 +1,4 @@
-# @keystone/mongo-join-builder
+# @keystonejs/mongo-join-builder
 
 # @keystone-alpha/mongo-join-builder
 

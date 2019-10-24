@@ -1,5 +1,5 @@
-import { Implementation } from '@keystone/fields';
-import { KnexFieldAdapter } from '@keystone/adapter-knex';
+import { Implementation } from '@keystonejs/fields';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class AutoIncrementImplementation extends Implementation {
   constructor(path, config = {}, context = {}) {

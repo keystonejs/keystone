@@ -1,4 +1,4 @@
-# @keystone/cypress-project-basic
+# @keystonejs/cypress-project-basic
 
 # @keystone-alpha/cypress-project-basic
 

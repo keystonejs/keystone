@@ -1,4 +1,4 @@
-# @keystone/cypress-project-facebook-login
+# @keystonejs/cypress-project-facebook-login
 
 # @keystone-alpha/cypress-project-facebook-login
 

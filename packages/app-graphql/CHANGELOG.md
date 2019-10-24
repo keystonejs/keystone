@@ -1,4 +1,4 @@
-# @keystone/app-graphql
+# @keystonejs/app-graphql
 
 # @keystone-alpha/app-graphql
 
@@ -137,7 +137,7 @@
 
   Remove usage of `port` arg from `prepareMiddleware()` and stop doing inline console.logs
 
-# @keystone/server
+# @keystonejs/server
 
 # @keystone-alpha/server
 

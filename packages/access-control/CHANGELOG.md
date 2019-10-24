@@ -1,4 +1,4 @@
-# @keystone/access-control
+# @keystonejs/access-control
 
 # @keystone-alpha/access-control
 

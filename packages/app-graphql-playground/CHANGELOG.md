@@ -1,4 +1,4 @@
-# @keystone/app-graphql-playground
+# @keystonejs/app-graphql-playground
 
 # @keystone-alpha/app-graphql-playground
 

@@ -1,12 +1,12 @@
-const { Keystone } = require('@keystone/keystone');
-const { Text, Password, Checkbox } = require('@keystone/fields');
-const { GraphQLApp } = require('@keystone/app-graphql');
-const { AdminUIApp } = require('@keystone/app-admin-ui');
-const { StaticApp } = require('@keystone/app-static');
+const { Keystone } = require('@keystonejs/keystone');
+const { Text, Password, Checkbox } = require('@keystonejs/fields');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { StaticApp } = require('@keystonejs/app-static');
 
 const { staticRoute, staticPath } = require('./config');
 
-const { MongooseAdapter } = require('@keystone/adapter-mongoose');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project Client Validation',

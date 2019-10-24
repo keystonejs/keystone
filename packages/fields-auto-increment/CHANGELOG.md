@@ -1,4 +1,4 @@
-# @keystone/fields-auto-increment
+# @keystonejs/fields-auto-increment
 
 # @keystone-alpha/fields-auto-increment
 

@@ -8,11 +8,11 @@ const {
   mapKeyNames,
   identity,
   mergeWhereClause,
-} = require('@keystone/utils');
+} = require('@keystonejs/utils');
 
-const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystone/keystone');
-const { queryParser, pipelineBuilder, mutationBuilder } = require('@keystone/mongo-join-builder');
-const logger = require('@keystone/logger').logger('mongoose');
+const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
+const { queryParser, pipelineBuilder, mutationBuilder } = require('@keystonejs/mongo-join-builder');
+const logger = require('@keystonejs/logger').logger('mongoose');
 
 const slugify = require('@sindresorhus/slugify');
 
@@ -73,7 +73,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { MongoId } = require('@keystone/fields-mongoid');
+    const { MongoId } = require('@keystonejs/fields-mongoid');
     return MongoId.primaryKeyDefaults[this.name].getConfig();
   }
 }

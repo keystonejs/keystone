@@ -1,4 +1,4 @@
-# @keystone/fields-datetime-utc
+# @keystonejs/fields-datetime-utc
 
 # @keystone-alpha/fields-datetime-utc
 

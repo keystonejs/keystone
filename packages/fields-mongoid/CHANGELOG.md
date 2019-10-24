@@ -1,4 +1,4 @@
-# @keystone/fields-mongoid
+# @keystonejs/fields-mongoid
 
 # @keystone-alpha/fields-mongoid
 

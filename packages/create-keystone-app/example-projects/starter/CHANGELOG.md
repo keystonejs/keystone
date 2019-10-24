@@ -1,4 +1,4 @@
-# @keystone/example-projects-starter
+# @keystonejs/example-projects-starter
 
 # @keystone-alpha/example-projects-starter
 

@@ -1,4 +1,4 @@
-# @keystone/adapter-knex
+# @keystonejs/adapter-knex
 
 # @keystone-alpha/adapter-knex
 

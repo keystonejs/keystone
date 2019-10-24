@@ -1,4 +1,4 @@
-# @keystone/api-tests
+# @keystonejs/api-tests
 
 # @keystone-alpha/api-tests
 

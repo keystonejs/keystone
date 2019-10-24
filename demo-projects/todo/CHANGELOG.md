@@ -1,4 +1,4 @@
-# @keystone/demo-project-todo
+# @keystonejs/demo-project-todo
 
 # @keystone-alpha/demo-project-todo
 

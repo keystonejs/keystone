@@ -1,4 +1,4 @@
-# @keystone/website
+# @keystonejs/website
 
 # @keystone-alpha/website
 

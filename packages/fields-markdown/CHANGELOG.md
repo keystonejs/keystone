@@ -1,4 +1,4 @@
-# @keystone/fields-markdown
+# @keystonejs/fields-markdown
 
 # @keystone-alpha/fields-markdown
 

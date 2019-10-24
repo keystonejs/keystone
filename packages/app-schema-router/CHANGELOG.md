@@ -1,4 +1,4 @@
-# @keystone/app-schema-router
+# @keystonejs/app-schema-router
 
 # @keystone-alpha/app-schema-router
 

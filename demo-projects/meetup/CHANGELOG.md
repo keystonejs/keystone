@@ -1,4 +1,4 @@
-# @keystone/demo-project-meetup
+# @keystonejs/demo-project-meetup
 
 # @keystone-alpha/demo-project-meetup
 

@@ -1,4 +1,4 @@
-# @keystone/app-static
+# @keystonejs/app-static
 
 # @keystone-alpha/app-static
 

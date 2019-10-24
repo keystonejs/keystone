@@ -1,6 +1,6 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class UuidImplementation extends Implementation {
   constructor(path, { caseTo = 'lower' }) {

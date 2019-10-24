@@ -1,4 +1,4 @@
-# @keystone/example-projects-nuxt
+# @keystonejs/example-projects-nuxt
 
 # @keystone-alpha/example-projects-nuxt
 

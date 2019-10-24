@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/list-plugins",
+  "name": "@keystonejs/list-plugins",
   "description": "List level plugins which can update list config during list initialization including adding additional fields",
   "version": "4.0.0",
   "author": "The KeystoneJS Development Team",
@@ -8,6 +8,6 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone/fields": "^4.0.0"
+    "@keystonejs/fields": "^4.0.0"
   }
 }

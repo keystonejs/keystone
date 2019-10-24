@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/app-schema-router",
+  "name": "@keystonejs/app-schema-router",
   "description": "KeystoneJS GraphQL App.",
   "version": "4.0.0",
   "author": "The KeystoneJS Development Team",

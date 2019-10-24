@@ -88,12 +88,12 @@ To run this example: `keystone dev`, then visit
 `index.js`
 
 ```javascript
-const { Keystone } = require('@keystone/keystone');
-const { MongooseAdapter } = require('@keystone/adapter-mongoose');
-const { GraphQLApp } = require('@keystone/app-graphql');
-const { AdminUIApp } = require('@keystone/app-admin-ui');
+const { Keystone } = require('@keystonejs/keystone');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
-const { GoogleAuthStrategy } = require('@keystone/auth-passport');
+const { GoogleAuthStrategy } = require('@keystonejs/auth-passport');
 
 const cookieSecret = '<Something super secret>';
 
@@ -163,13 +163,13 @@ the Google authentication process.
 `server.js`
 
 ```javascript
-const { Keystone } = require('@keystone/keystone');
-const { MongooseAdapter } = require('@keystone/adapter-mongoose');
-const { GraphQLApp } = require('@keystone/app-graphql');
-const { AdminUIApp } = require('@keystone/app-admin-ui');
+const { Keystone } = require('@keystonejs/keystone');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const express = require('express');
 
-const { GoogleAuthStrategy } = require('@keystone/auth-passport');
+const { GoogleAuthStrategy } = require('@keystonejs/auth-passport');
 
 const cookieSecret = '<Something super secret>';
 
@@ -300,7 +300,7 @@ You can create your own strategies to work with KeystoneJS by extending the
 
 ```javascript
 const PassportWordPress = require('passport-wordpress').Strategy;
-const { PassportAuthStrategy } = require('@keystone/auth-passport');
+const { PassportAuthStrategy } = require('@keystonejs/auth-passport');
 
 class WordPressAuthStrategy extends PassportAuthStrategy {
   constructor(keystone, listKey, config) {

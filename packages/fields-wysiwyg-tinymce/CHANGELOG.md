@@ -1,4 +1,4 @@
-# @keystone/fields-wysiwyg-tinymce
+# @keystonejs/fields-wysiwyg-tinymce
 
 # @keystone-alpha/fields-wysiwyg-tinymce
 

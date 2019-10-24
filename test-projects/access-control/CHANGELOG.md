@@ -1,4 +1,4 @@
-# @keystone/cypress-project-access-control
+# @keystonejs/cypress-project-access-control
 
 # @keystone-alpha/cypress-project-access-control
 

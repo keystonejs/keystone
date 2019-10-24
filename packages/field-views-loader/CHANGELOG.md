@@ -1,4 +1,4 @@
-# @keystone/field-views-loader
+# @keystonejs/field-views-loader
 
 # @keystone-alpha/field-views-loader
 

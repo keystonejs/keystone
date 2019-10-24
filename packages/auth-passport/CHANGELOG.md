@@ -1,4 +1,4 @@
-# @keystone/auth-passport
+# @keystonejs/auth-passport
 
 # @keystone-alpha/auth-passport
 

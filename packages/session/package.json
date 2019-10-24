@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/session",
+  "name": "@keystonejs/session",
   "description": "Tools to assist with setting up session management in your Keystone system.",
   "version": "4.0.0",
   "author": "The KeystoneJS Development Team",

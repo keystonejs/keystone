@@ -1,4 +1,4 @@
-# @keystone/app-admin-ui
+# @keystonejs/app-admin-ui
 
 # @keystone-alpha/app-admin-ui
 
@@ -318,7 +318,7 @@
 
   Fix Admin UI building on Windows
 
-# @keystone/admin-ui
+# @keystonejs/admin-ui
 
 # @keystone-alpha/admin-ui
 

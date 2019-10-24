@@ -1,4 +1,4 @@
-# @keystone/file-adapters
+# @keystonejs/file-adapters
 
 # @keystone-alpha/file-adapters
 

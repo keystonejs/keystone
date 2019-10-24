@@ -1,4 +1,4 @@
-# @keystone/keystone
+# @keystonejs/keystone
 
 # @keystone-alpha/keystone
 
@@ -933,7 +933,7 @@
 
 - [patch] Remove tests and markdown from npm [dc3ee7d](dc3ee7d)
 
-# @keystone/core
+# @keystonejs/core
 
 # @keystone-alpha/core
 

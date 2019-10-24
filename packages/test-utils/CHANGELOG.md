@@ -1,4 +1,4 @@
-# @keystone/test-utils
+# @keystonejs/test-utils
 
 # @keystone-alpha/test-utils
 

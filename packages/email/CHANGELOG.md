@@ -1,4 +1,4 @@
-# @keystone/email
+# @keystonejs/email
 
 # @keystone-alpha/email
 

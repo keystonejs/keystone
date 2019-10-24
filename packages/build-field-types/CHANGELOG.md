@@ -1,4 +1,4 @@
-# @keystone/build-field-types
+# @keystonejs/build-field-types
 
 # @keystone-alpha/build-field-types
 

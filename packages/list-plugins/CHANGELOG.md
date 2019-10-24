@@ -1,4 +1,4 @@
-# @keystone/list-plugins
+# @keystonejs/list-plugins
 
 # @keystone-alpha/list-plugins
 

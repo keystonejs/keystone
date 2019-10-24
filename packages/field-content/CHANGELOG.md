@@ -1,4 +1,4 @@
-# @keystone/field-content
+# @keystonejs/field-content
 
 # @keystone-alpha/field-content
 

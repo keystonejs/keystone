@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/controls",
-  "description": "Form Controls as used in @keystone Admin UI.",
+  "description": "Form Controls as used in @keystonejs Admin UI.",
   "version": "0.0.10",
   "author": "Jed Watson",
   "license": "MIT",

@@ -1,4 +1,4 @@
-# @keystone/logger
+# @keystonejs/logger
 
 # @keystone-alpha/logger
 

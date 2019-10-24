@@ -1,4 +1,4 @@
-# @keystone/cypress-project-client-validation
+# @keystonejs/cypress-project-client-validation
 
 # @keystone-alpha/cypress-project-client-validation
 

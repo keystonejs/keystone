@@ -1,4 +1,4 @@
-# @keystone/auth-password
+# @keystonejs/auth-password
 
 # @keystone-alpha/auth-password
 

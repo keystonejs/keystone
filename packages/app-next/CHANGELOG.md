@@ -1,4 +1,4 @@
-# @keystone/app-next
+# @keystonejs/app-next
 
 # @keystone-alpha/app-next
 
