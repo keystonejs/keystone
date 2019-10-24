@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/benchmarks",
+  "name": "@keystonejs/benchmarks",
   "description": "A set of benchmarks for running against the KeystoneJS API.",
   "private": true,
   "version": "5.0.0",
@@ -12,13 +12,13 @@
     "go": "node fixtures/index.js"
   },
   "dependencies": {
-    "@keystone/adapter-knex": "^5.0.0",
-    "@keystone/adapter-mongoose": "^5.0.0",
-    "@keystone/app-graphql": "^5.0.0",
-    "@keystone/fields": "^5.0.0",
-    "@keystone/keystone": "^5.0.0",
-    "@keystone/session": "^5.0.0",
-    "@keystone/test-utils": "^5.0.0",
+    "@keystonejs/adapter-knex": "^5.0.0",
+    "@keystonejs/adapter-mongoose": "^5.0.0",
+    "@keystonejs/app-graphql": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/keystone": "^5.0.0",
+    "@keystonejs/session": "^5.0.0",
+    "@keystonejs/test-utils": "^5.0.0",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.6",

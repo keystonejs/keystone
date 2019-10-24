@@ -1,1 +1,1 @@
-const { KnexAdapter: Adapter } = require('@keystone/adapter-knex');
+const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');

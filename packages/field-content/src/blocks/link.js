@@ -1,4 +1,4 @@
-import { importView } from '@keystone/build-field-types';
+import { importView } from '@keystonejs/build-field-types';
 import { Block } from '../Block';
 
 export default class LinkBlock extends Block {

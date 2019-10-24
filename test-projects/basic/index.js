@@ -1,4 +1,4 @@
-const { Keystone } = require('@keystone/keystone');
+const { Keystone } = require('@keystonejs/keystone');
 const {
   File,
   Text,
@@ -15,17 +15,17 @@ const {
   Decimal,
   OEmbed,
   Unsplash,
-} = require('@keystone/fields');
-const { Content } = require('@keystone/field-content');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone/file-adapters');
-const { Markdown } = require('@keystone/fields-markdown');
-const { GraphQLApp } = require('@keystone/app-graphql');
-const { AdminUIApp } = require('@keystone/app-admin-ui');
-const { StaticApp } = require('@keystone/app-static');
+} = require('@keystonejs/fields');
+const { Content } = require('@keystonejs/field-content');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
+const { Markdown } = require('@keystonejs/fields-markdown');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { StaticApp } = require('@keystonejs/app-static');
 const { graphql } = require('graphql');
 
 const { staticRoute, staticPath, cloudinary, iframely, unsplash } = require('./config');
-const { IframelyOEmbedAdapter } = require('@keystone/oembed-adapters');
+const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
 const LOCAL_FILE_SRC = `${staticPath}/avatars`;
@@ -37,7 +37,7 @@ const getYear = require('date-fns/get_year');
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
-const { MongooseAdapter } = require('@keystone/adapter-mongoose');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',

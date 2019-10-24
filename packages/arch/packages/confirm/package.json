@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/confirm",
-  "description": "Confirmation UI as used in @keystone Admin UI.",
+  "description": "Confirmation UI as used in @keystonejs Admin UI.",
   "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",

@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/app-nuxt",
+  "name": "@keystonejs/app-nuxt",
   "description": "KeystoneJS Nuxt.js App.",
   "version": "5.0.0",
   "author": "The KeystoneJS Development Team",

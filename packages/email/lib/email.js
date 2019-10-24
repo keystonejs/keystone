@@ -72,7 +72,7 @@ const mjmlConfigDefault = {
  * There is also a `jsx` renderer powered by `express-react-views`.
  *
  * Usage:
- * const { emailSender } = require('@keystone/email');
+ * const { emailSender } = require('@keystonejs/email');
  *
  * const jsxEmailSender = emailSender.jsx({
  *   // The directory containing the email templates

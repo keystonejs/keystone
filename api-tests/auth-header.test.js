@@ -1,7 +1,7 @@
-const { PasswordAuthStrategy } = require('@keystone/auth-password');
-const { Text, Password, DateTime } = require('@keystone/fields');
-const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystone/test-utils');
-const { setupServer } = require('@keystone/test-utils');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { Text, Password, DateTime } = require('@keystonejs/fields');
+const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystonejs/test-utils');
+const { setupServer } = require('@keystonejs/test-utils');
 const cuid = require('cuid');
 
 const initialData = {

@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/example-projects-starter",
+  "name": "@keystonejs/example-projects-starter",
   "description": "An example KeystoneJS project with a User list and Authentication.",
   "private": true,
   "version": "5.0.0",
@@ -14,12 +14,12 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystone/adapter-mongoose": "^5.0.0",
-    "@keystone/app-admin-ui": "^5.0.0",
-    "@keystone/app-graphql": "^5.0.0",
-    "@keystone/auth-password": "^5.0.0",
-    "@keystone/fields": "^5.0.0",
-    "@keystone/keystone": "^5.0.0",
+    "@keystonejs/adapter-mongoose": "^5.0.0",
+    "@keystonejs/app-admin-ui": "^5.0.0",
+    "@keystonejs/app-graphql": "^5.0.0",
+    "@keystonejs/auth-password": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/keystone": "^5.0.0",
     "cross-env": "^5.2.0"
   }
 }

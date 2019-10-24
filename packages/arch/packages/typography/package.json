@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/typography",
-  "description": "Typography Components used throughout @arch-ui packages and @keystone Admin UI.",
+  "description": "Typography Components used throughout @arch-ui packages and @keystonejs Admin UI.",
   "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",

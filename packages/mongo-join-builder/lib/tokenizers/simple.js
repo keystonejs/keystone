@@ -1,4 +1,4 @@
-const { objMerge, getType, escapeRegExp } = require('@keystone/utils');
+const { objMerge, getType, escapeRegExp } = require('@keystonejs/utils');
 const { getRelatedListAdapterFromQueryPath } = require('./relationship-path');
 
 const simpleTokenizer = (listAdapter, query, queryKey, path) => {

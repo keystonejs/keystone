@@ -52,8 +52,8 @@ Specifically:
 ## Usage
 
 ```js
-const { Keystone } = require('@keystone/keystone');
-const { AutoIncrement } = require('@keystone/fields-auto-increment');
+const { Keystone } = require('@keystonejs/keystone');
+const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
 
 const keystone = new Keystone(/* ... */);
 
