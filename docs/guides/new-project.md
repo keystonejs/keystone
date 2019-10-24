@@ -20,12 +20,12 @@ yarn init
 ```
 
 Let's start with minimal setup. We will need two packages here:
-`@keystone-alpha/keystone` which is KeystoneJS' core and `@keystone-alpha/adapter-mongoose` which allows our app to connect to MongoDB.
+`@keystonejs/keystone` which is KeystoneJS' core and `@keystonejs/adapter-mongoose` which allows our app to connect to MongoDB.
 
 Do
 
 ```
-yarn add @keystone-alpha/keystone @keystone-alpha/adapter-mongoose
+yarn add @keystonejs/keystone @keystonejs/adapter-mongoose
 ```
 
 ## First Steps
@@ -34,8 +34,8 @@ After installation we can start coding. Main entry point of a KeystoneJS app is 
 
 ```javascript
 // import necessary modules
-const { Keystone } = require('@keystone-alpha/keystone');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { Keystone } = require('@keystonejs/keystone');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 // create an instance of Keystone app
 const keystone = new Keystone({
@@ -67,13 +67,13 @@ Let's create some routes! For this we will enable a powerful KeystoneJS feature 
 As in the previous step install necessary the package.
 
 ```
-yarn add @keystone-alpha/app-graphql
+yarn add @keystonejs/app-graphql
 ```
 
 Import it...
 
 ```javascript
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
 ```
 
 And add a new array export named `apps` with a new instance of `GraphQLApp`, like so.
@@ -104,13 +104,13 @@ This code snippet creates a List named 'Todos'. The second argument is a config 
 In our example, the `Todo` list has a single field called `name` of type `Text`. Note the type is *not* a string; it must be imported like so:
 
 ```
-yarn add @keystone-alpha/fields
+yarn add @keystonejs/fields
 ```
 
 and
 
 ```javascript
-const { Text } = require('@keystone-alpha/fields');
+const { Text } = require('@keystonejs/fields');
 ```
 
 That's it!

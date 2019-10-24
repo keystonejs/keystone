@@ -1,5 +1,5 @@
 const omitBy = require('lodash.omitby');
-const { flatten, compose, defaultObj } = require('@keystone-alpha/utils');
+const { flatten, compose, defaultObj } = require('@keystonejs/utils');
 
 /**
  * Format of input object:

@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/drawer",
-  "description": "Drawer Portal UI as used in @keystone-alpha Admin UI.",
+  "description": "Drawer Portal UI as used in @keystonejs Admin UI.",
   "version": "0.0.10",
   "author": "Jed Watson",
   "license": "MIT",

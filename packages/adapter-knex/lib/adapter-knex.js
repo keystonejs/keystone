@@ -1,11 +1,7 @@
 const knex = require('knex');
 const pSettle = require('p-settle');
-const {
-  BaseKeystoneAdapter,
-  BaseListAdapter,
-  BaseFieldAdapter,
-} = require('@keystone-alpha/keystone');
-const logger = require('@keystone-alpha/logger').logger('knex');
+const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
+const logger = require('@keystonejs/logger').logger('knex');
 
 const {
   escapeRegExp,
@@ -14,7 +10,7 @@ const {
   arrayToObject,
   resolveAllKeys,
   identity,
-} = require('@keystone-alpha/utils');
+} = require('@keystonejs/utils');
 const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
@@ -128,7 +124,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { AutoIncrement } = require('@keystone-alpha/fields-auto-increment');
+    const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
     return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
   }
 }

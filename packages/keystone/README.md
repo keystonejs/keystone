@@ -11,7 +11,7 @@ order: 1
 ### Usage
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone({
   /*...config */

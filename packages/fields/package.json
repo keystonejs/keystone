@@ -1,7 +1,7 @@
 {
-  "name": "@keystone-alpha/fields",
+  "name": "@keystonejs/fields",
   "description": "KeystoneJS Field Types including Text, Password, DateTime, Integer, and more.",
-  "version": "15.0.0",
+  "version": "5.0.0",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "author": "The KeystoneJS Development Team",
@@ -30,12 +30,12 @@
     "@arch-ui/typography": "^0.0.8",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.14",
-    "@keystone-alpha/access-control": "^3.0.0",
-    "@keystone-alpha/adapter-knex": "^6.0.2",
-    "@keystone-alpha/adapter-mongoose": "^6.0.1",
-    "@keystone-alpha/build-field-types": "^1.0.6",
-    "@keystone-alpha/field-content": "^3.1.4",
-    "@keystone-alpha/utils": "^3.2.0",
+    "@keystonejs/access-control": "^5.0.0",
+    "@keystonejs/adapter-knex": "^5.0.0",
+    "@keystonejs/adapter-mongoose": "^5.0.0",
+    "@keystonejs/build-field-types": "^5.0.0",
+    "@keystonejs/field-content": "^5.0.0",
+    "@keystonejs/utils": "^5.0.0",
     "@sindresorhus/slugify": "^0.6.0",
     "apollo-errors": "^1.9.0",
     "bcrypt": "^3.0.6",
@@ -72,7 +72,7 @@
     "unsplash-js": "^5.0.0"
   },
   "devDependencies": {
-    "@keystone-alpha/test-utils": "^2.6.3"
+    "@keystonejs/test-utils": "^5.0.0"
   },
   "field-types": {
     "entrypoints": [
