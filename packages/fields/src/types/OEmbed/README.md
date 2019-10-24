@@ -16,9 +16,9 @@ title: OEmbed
 ## Usage
 
 ```js
-const { Keystone } = require('@keystone/keystone');
-const { OEmbed } = require('@keystone/fields');
-const { IframelyOEmbedAdapter } = require('@keystone/oembed-adapters');
+const { Keystone } = require('@keystonejs/keystone');
+const { OEmbed } = require('@keystonejs/fields');
+const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 
 const keystone = new Keystone(/* ... */);
 

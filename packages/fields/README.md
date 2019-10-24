@@ -6,7 +6,7 @@ order: 3
 
 # Fields
 
-KeystoneJS contains a set of primitive fields types that can be imported from `@keystone/fields`. These include:
+KeystoneJS contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
 
 - [CalendarDay](keystone-alpha/fields/src/types/calendar-day)
 - [Checkbox](keystone-alpha/fields/src/types/checkbox)

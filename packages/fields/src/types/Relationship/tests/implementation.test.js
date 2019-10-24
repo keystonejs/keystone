@@ -43,7 +43,7 @@ class MockList {
       },
     };
   }
-  // The actual implementation in `@keystone/keystone/List/index.js` returns
+  // The actual implementation in `@keystonejs/keystone/List/index.js` returns
   // more, but we only want to test that this codepath is called
   getGraphqlFilterFragment = () => mockFilterFragment;
 }

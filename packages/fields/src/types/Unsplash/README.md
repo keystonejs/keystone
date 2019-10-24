@@ -17,8 +17,8 @@ generating URLs to dynamically transformed images.
 ## Usage
 
 ```javascript
-const { Keystone } = require('@keystone/keystone');
-const { Unsplash } = require('@keystone/fields');
+const { Keystone } = require('@keystonejs/keystone');
+const { Unsplash } = require('@keystonejs/fields');
 
 const keystone = new Keystone(/* ... */);
 

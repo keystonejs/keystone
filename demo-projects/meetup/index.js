@@ -1,11 +1,11 @@
 require('dotenv').config();
 
-const { Keystone } = require('@keystone/keystone');
-const { PasswordAuthStrategy } = require('@keystone/auth-password');
-const { MongooseAdapter } = require('@keystone/adapter-mongoose');
-const { GraphQLApp } = require('@keystone/app-graphql');
-const { AdminUIApp } = require('@keystone/app-admin-ui');
-const { NextApp } = require('@keystone/app-next');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { NextApp } = require('@keystonejs/app-next');
 
 const { Event, Talk, User, Rsvp, Organiser, Sponsor, ForgottenPasswordToken } = require('./schema');
 

@@ -4,7 +4,7 @@ import React, { Component, Suspense, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { captureSuspensePromises, noop } from '@keystone/utils';
+import { captureSuspensePromises, noop } from '@keystonejs/utils';
 import { DiffIcon, KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
