@@ -221,7 +221,7 @@ function ModalDialogComponent({
     </Fragment>,
     attachTo
   );
-};
+}
 
 ModalDialogComponent.defaultProps = {
   attachTo: document.body,
