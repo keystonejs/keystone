@@ -2,7 +2,7 @@
   "name": "@keystone/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "5.0.0",
+  "version": "4.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
