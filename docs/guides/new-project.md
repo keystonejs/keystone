@@ -92,7 +92,7 @@ In order to be able to start an app we need to add at least one List. A List is 
 In `index.js` add following before `module.exports`:
 
 ```
-keystone.createList('Todos', {
+keystone.createList('Todo', {
   fields: {
     name: { type: Text },
   }
