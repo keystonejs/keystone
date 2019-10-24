@@ -9,7 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
+    "@emotion/core": "^10.0.22",
     "@iframely/embed.js": "^1.1.1",
     "@keystonejs/build-field-types": "^5.0.0",
     "node-fetch": "^2.3.0"

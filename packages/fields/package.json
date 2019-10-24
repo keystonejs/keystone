@@ -29,7 +29,7 @@
     "@arch-ui/tooltip": "^0.1.2",
     "@arch-ui/typography": "^0.0.8",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
+    "@emotion/core": "^10.0.22",
     "@keystonejs/access-control": "^5.0.0",
     "@keystonejs/adapter-knex": "^5.0.1",
     "@keystonejs/adapter-mongoose": "^5.1.0",
