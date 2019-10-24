@@ -24,10 +24,10 @@ const fileAdapter = new LocalFileAdapter({
 
 ### Config
 
-| Option | Type     | Default | Description                                                            |
-| ------ | -------- | ------- | ---------------------------------------------------------------------- |
-| `src`  | `String` | `null`  | The path where uploaded files will be stored on the server.            |
-| `path` | `String` | `null`  | The path from which requests for files will be served from the server. |
+| Option | Type     | Default        | Description                                                            |
+| ------ | -------- | -------------- | ---------------------------------------------------------------------- |
+| `src`  | `String` | Required       | The path where uploaded files will be stored on the server.            |
+| `path` | `String` | Value of `src` | The path from which requests for files will be served from the server. |
 
 _Note:_ `src` and `path` may be the same.
 
