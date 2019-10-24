@@ -8,6 +8,11 @@ const showSuccessMessage = async () => {
   console.log(`
   🎉  KeystoneJS created a starter project in: ${c.bold(projectDir)}
 
+  ${c.bold('To launch your app, run:')}
+
+  - cd ${projectDir}
+  - yarn dev
+
   ${c.bold('Next steps:')}
 
   - Edit ${c.bold(`${projectDir}${path.sep}index.js`)} to customize your app.
