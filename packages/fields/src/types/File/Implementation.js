@@ -18,6 +18,10 @@ export class File extends Implementation {
     this.directory = directory;
     this.route = route;
     this.fileAdapter = adapter;
+
+    if (!this.fileAdapter) {
+      throw new Error(`No file adapter provided for File field.`);
+    }
   }
 
   gqlOutputFields() {
