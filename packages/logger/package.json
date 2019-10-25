@@ -1,6 +1,6 @@
 {
-  "name": "@keystone/logger",
-  "description": "Common logging functionality used within @keystone/* packages.",
+  "name": "@keystonejs/logger",
+  "description": "Common logging functionality used within @keystonejs/* packages.",
   "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",

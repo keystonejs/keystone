@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/mongo-join-builder",
+  "name": "@keystonejs/mongo-join-builder",
   "description": "Programatically build JOIN-like Mongo aggregations based on arbitrarily nested relationships.",
   "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone/utils": "^5.0.0",
+    "@keystonejs/utils": "^5.0.0",
     "cuid": "^2.1.6",
     "lodash.omitby": "^4.6.0"
   },

@@ -1,11 +1,11 @@
 //imports for Keystone app core
-const { Keystone } = require('@keystone/keystone');
-const { PasswordAuthStrategy } = require('@keystone/auth-password');
-const { MongooseAdapter } = require('@keystone/adapter-mongoose');
-const { GraphQLApp } = require('@keystone/app-graphql');
-const { AdminUIApp } = require('@keystone/app-admin-ui');
-const { NextApp } = require('@keystone/app-next');
-const { StaticApp } = require('@keystone/app-static');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { NextApp } = require('@keystonejs/app-next');
+const { StaticApp } = require('@keystonejs/app-static');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');

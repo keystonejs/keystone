@@ -20,12 +20,12 @@ yarn init
 ```
 
 Let's start with minimal setup. We will need two packages here:
-`@keystone/keystone` which is KeystoneJS' core and `@keystone/adapter-mongoose` which allows our app to connect to MongoDB.
+`@keystonejs/keystone` which is KeystoneJS' core and `@keystonejs/adapter-mongoose` which allows our app to connect to MongoDB.
 
 Do
 
 ```
-yarn add @keystone/keystone @keystone/adapter-mongoose
+yarn add @keystonejs/keystone @keystonejs/adapter-mongoose
 ```
 
 ## First Steps
@@ -34,8 +34,8 @@ After installation we can start coding. Main entry point of a KeystoneJS app is 
 
 ```javascript
 // import necessary modules
-const { Keystone } = require('@keystone/keystone');
-const { MongooseAdapter } = require('@keystone/adapter-mongoose');
+const { Keystone } = require('@keystonejs/keystone');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 // create an instance of Keystone app
 const keystone = new Keystone({
@@ -67,13 +67,13 @@ Let's create some routes! For this we will enable a powerful KeystoneJS feature 
 As in the previous step install necessary the package.
 
 ```
-yarn add @keystone/app-graphql
+yarn add @keystonejs/app-graphql
 ```
 
 Import it...
 
 ```javascript
-const { GraphQLApp } = require('@keystone/app-graphql');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
 ```
 
 And add a new array export named `apps` with a new instance of `GraphQLApp`, like so.
@@ -92,7 +92,7 @@ In order to be able to start an app we need to add at least one List. A List is 
 In `index.js` add following before `module.exports`:
 
 ```
-keystone.createList('Todos', {
+keystone.createList('Todo', {
   fields: {
     name: { type: Text },
   }
@@ -104,13 +104,13 @@ This code snippet creates a List named 'Todos'. The second argument is a config 
 In our example, the `Todo` list has a single field called `name` of type `Text`. Note the type is *not* a string; it must be imported like so:
 
 ```
-yarn add @keystone/fields
+yarn add @keystonejs/fields
 ```
 
 and
 
 ```javascript
-const { Text } = require('@keystone/fields');
+const { Text } = require('@keystonejs/fields');
 ```
 
 That's it!
