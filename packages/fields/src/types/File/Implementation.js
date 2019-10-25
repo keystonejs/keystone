@@ -18,6 +18,10 @@ export class File extends Implementation {
     this.directory = directory;
     this.route = route;
     this.fileAdapter = adapter;
+
+    if (!this.fileAdapter) {
+      throw new Error(`No file adapter provided for File field.`);
+    }
   }
 
   gqlOutputFields() {
@@ -94,7 +98,8 @@ export class File extends Implementation {
       return null;
     }
 
-    const { stream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const stream = createReadStream();
 
     if (!stream && previousData) {
       // TODO: FIXME: Handle when stream is null. Can happen when:
