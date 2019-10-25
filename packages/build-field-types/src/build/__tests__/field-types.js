@@ -1,7 +1,7 @@
 // @flow
 import build from '../';
 import fixturez from 'fixturez';
-import { snapshotDirectory } from '../../../test-utils';
+import { snapshotDirectory, stripHashes } from '../../../test-utils';
 
 const f = fixturez(__dirname);
 
@@ -16,7 +16,7 @@ test('basic field type', async () => {
 
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath, 'all');
+  await snapshotDirectory(tmpPath, { ...stripHashes('(Field)'), files: 'all' });
 
   let { MyCoolFieldType } = unsafeRequire(tmpPath);
   let Field = unsafeRequire(MyCoolFieldType.views.Field);
