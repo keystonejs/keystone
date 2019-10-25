@@ -157,7 +157,8 @@
       "api-tests",
       "benchmarks",
       "website",
-      "packages/create-keystone-app/example-projects/*"
+      "packages/create-keystone-app/example-projects/*",
+      "projects/*"
     ],
     "nohoist": [
       "**/mocha-multi-reporters"
