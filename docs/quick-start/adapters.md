@@ -11,30 +11,29 @@ If you're following the [quick start guide](/quick-start/adapters), simply selec
 
 _Note_: PostgreSQL requires an additional step to create a database.
 
-## Installing MongoDB
+## Installing [MongoDB](https://www.mongodb.com/)
 
 ### MacOS
 
-The simplest way to install [MongoDB](https://www.mongodb.com/) is using [Homebrew](https://brew.sh/).
+The simplest way to install MongoDB is using [Homebrew](https://brew.sh/). Refer the [official guide](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/) for more information.
 
-```sh
-brew install mongodb
-brew services start mongodb
-```
+### Windows
+
+Follow the [official guide](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/) for installing MongoDB on Windows.
 
 ### Other Platforms
 
-Follow the [official MongoDB installation guide](https://www.mongodb.com/download-center/community) for your system.
+[Downloads](https://www.mongodb.com/download-center/community) and [instructions](https://docs.mongodb.com/manual/administration/install-on-linux/) for installation on various Linux systems are also available.
 
 ### Setup
 
 By default the Mongoose Adapter will attempt to connect to MongoDB as the current user and create a new database using the project name. You can override these options when [configuring the Mongoose Adapter](/keystone-alpha/adapter-mongoose/).
 
-## Installing Postgres
+## Installing [Postgres](https://www.postgresql.org/)
 
 ### MacOS
 
-The simplest way to install [Postgres](https://www.postgresql.org/) is using [Homebrew](https://brew.sh/).
+The simplest way to install Postgres is using [Homebrew](https://brew.sh/).
 
 ```sh
 brew install postgres
