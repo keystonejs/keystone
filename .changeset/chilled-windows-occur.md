@@ -1,7 +1,7 @@
 ---
-'@keystone/cypress-project-access-control': patch
-'@keystone/cypress-project-basic': patch
-'@keystone/cypress-project-login': patch
+'@keystonejs/cypress-project-access-control': patch
+'@keystonejs/cypress-project-basic': patch
+'@keystonejs/cypress-project-login': patch
 ---
 
 Deployed cypress-file-upload instead of a custom implementation
