@@ -15,7 +15,7 @@
     "@keystonejs/utils": "^5.0.0",
     "@sindresorhus/slugify": "^0.6.0",
     "lodash.omitby": "^4.6.0",
-    "mongoose": "^5.6.5",
+    "mongoose": "^5.7.7",
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0"
   }
