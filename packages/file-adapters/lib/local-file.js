@@ -7,6 +7,14 @@ module.exports = class LocalFileAdapter {
     this.src = path.resolve(src);
     this.path = inputPath;
 
+    if (!this.src) {
+      throw new Error('LocalFileAdapter requires a src attribute.');
+    }
+
+    if (!this.path) {
+      this.path = src;
+    }
+
     mkdirp.sync(this.src);
   }
 

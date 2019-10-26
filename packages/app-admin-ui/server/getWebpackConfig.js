@@ -16,7 +16,7 @@ module.exports = function({ adminMeta, entry, outputPath, experimentalFeatures, 
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!(?:\/|\\)@keystone-alpha(?:\/|\\)app-admin-ui)/],
+      exclude: [/node_modules(?!(?:\/|\\)@keystonejs(?:\/|\\)app-admin-ui)/],
       use: [
         {
           loader: 'babel-loader',
@@ -51,7 +51,7 @@ module.exports = function({ adminMeta, entry, outputPath, experimentalFeatures, 
       test: /FIELD_TYPES/,
       use: [
         {
-          loader: '@keystone-alpha/field-views-loader',
+          loader: '@keystonejs/field-views-loader',
           options: {
             adminMeta,
           },

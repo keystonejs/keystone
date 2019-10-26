@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/popout",
-  "description": "Popout Component used in @keystone-alpha Admin UI.",
+  "description": "Popout Component used in @keystonejs Admin UI.",
   "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",

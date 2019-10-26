@@ -1,8 +1,8 @@
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 import { DateTime, FixedOffsetZone } from 'luxon';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { Implementation } from '../../Implementation';
 
 class _DateTime extends Implementation {

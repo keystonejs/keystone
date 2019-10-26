@@ -12,7 +12,7 @@ At present, the only fully tested backend is `Postgres`, however Knex gives the 
 ## Usage
 
 ```javascript
-const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
+const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',

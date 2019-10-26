@@ -1,9 +1,9 @@
-const { Integer, Text, Relationship } = require('@keystone-alpha/fields');
+const { Integer, Text, Relationship } = require('@keystonejs/fields');
 const {
   multiAdapterRunners,
   setupServer,
   networkedGraphqlRequest,
-} = require('@keystone-alpha/test-utils');
+} = require('@keystonejs/test-utils');
 
 const cuid = require('cuid');
 

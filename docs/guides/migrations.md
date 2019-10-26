@@ -60,7 +60,7 @@ Keystone cannot make this change for you because there could be existing data wi
 In development sometimes it can be helpful to drop the database everytime Keystone is restarted. To do this using the `KnexAdapter` you can pass the `dropDatabase` option to the adapter:
 
 ```js
-const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
+const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const adapter = new KnexAdapter({ dropDatabase: true });
 ```
 

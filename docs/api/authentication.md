@@ -14,7 +14,7 @@ Authentication strategies allow users to identify themselves to KeystoneJS. This
 ## Usage
 
 ```javascript
-const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,

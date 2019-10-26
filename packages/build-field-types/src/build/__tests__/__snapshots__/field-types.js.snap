@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`basic field type: dist/11z4har/package.json 1`] = `
+exports[`basic field type: chunk-this-is-not-the-real-hash 1`] = `
 Object {
-  "main": "../chunk-9ca5ae48.cjs.js",
-  "module": "../chunk-605adae5.esm.js",
+  "main": "../chunk-some-hash.cjs.js",
+  "module": "../chunk-some-hash.esm.js",
 }
 `;
 
@@ -35,7 +35,7 @@ export { MyCoolFieldType };
 "
 `;
 
-exports[`basic field type: dist/chunk-9ca5ae48.cjs.js 1`] = `
+exports[`basic field type: dist/chunk-this-is-not-the-real-hash.cjs.js 1`] = `
 "'use strict';
 
 var Field = () => {
@@ -46,7 +46,7 @@ exports.default = Field;
 "
 `;
 
-exports[`basic field type: dist/chunk-605adae5.esm.js 1`] = `
+exports[`basic field type: dist/chunk-this-is-not-the-real-hash.esm.js 1`] = `
 "var Field = () => {
   return 'my cool react component stuff';
 };
@@ -67,7 +67,7 @@ Object {
 `;
 
 exports[`basic field type: src/index.js 1`] = `
-"import { importView } from '@keystone-alpha/build-field-types';
+"import { importView } from '@keystonejs/build-field-types';
 
 export let MyCoolFieldType = {
   views: {
