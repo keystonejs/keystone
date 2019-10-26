@@ -1,5 +1,16 @@
 # @keystonejs/cypress-project-login
 
+## 5.0.1
+
+### Patch Changes
+
+- [`ce6e98f2`](https://github.com/keystonejs/keystone/commit/ce6e98f2cf63f5c27a7433e932e8bfbd00376874) [#1836](https://github.com/keystonejs/keystone/pull/1836) Thanks [@timleslie](https://github.com/timleslie)! - Deployed cypress-file-upload instead of a custom implementation
+
+- Updated dependencies [[`209b7078`](https://github.com/keystonejs/keystone/commit/209b7078c7fa4f4d87568c58cb6cb6ad8162fe46), [`19b08a30`](https://github.com/keystonejs/keystone/commit/19b08a30b3dbfb7c7a0056f210769bbf6e171c85), [`3c19cddd`](https://github.com/keystonejs/keystone/commit/3c19cddd0b8b8d1e17385a01a813a9e84ec14bb5)]:
+  - @keystonejs/fields@5.0.1
+  - @keystonejs/app-admin-ui@5.0.1
+  - @keystonejs/adapter-mongoose@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
