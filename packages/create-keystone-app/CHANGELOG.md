@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.3.1
+
+### Patch Changes
+
+- [`58a79e23`](https://github.com/keystonejs/keystone/commit/58a79e234003ae2971125226aafc4d5f180994b0) [#1826](https://github.com/keystonejs/keystone/pull/1826) Thanks [@Vultraz](https://github.com/Vultraz)! - Improve startup instructions
+
 ## 1.3.0
 
 ### Minor Changes

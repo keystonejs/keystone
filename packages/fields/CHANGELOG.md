@@ -1,5 +1,14 @@
 # @keystonejs/fields
 
+## 5.0.1
+
+### Patch Changes
+
+- [`209b7078`](https://github.com/keystonejs/keystone/commit/209b7078c7fa4f4d87568c58cb6cb6ad8162fe46) [#1817](https://github.com/keystonejs/keystone/pull/1817) Thanks [@Vultraz](https://github.com/Vultraz)! - Doc updates and minor functionality improvements for file field/adapters
+
+- Updated dependencies [[`3c19cddd`](https://github.com/keystonejs/keystone/commit/3c19cddd0b8b8d1e17385a01a813a9e84ec14bb5)]:
+  - @keystonejs/adapter-mongoose@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
