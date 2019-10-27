@@ -13,7 +13,7 @@
     "lodash.omitby": "^4.6.0"
   },
   "devDependencies": {
-    "mongodb": "^3.2.7",
-    "mongodb-memory-server": "^5.1.5"
+    "mongodb": "^3.3.3",
+    "mongodb-memory-server": "^6.0.1"
   }
 }

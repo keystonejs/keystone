@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/adapter-mongoose",
   "description": "KeystoneJS Mongoose Database adapter.",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -15,7 +15,7 @@
     "@keystonejs/utils": "^5.0.0",
     "@sindresorhus/slugify": "^0.6.0",
     "lodash.omitby": "^4.6.0",
-    "mongoose": "^5.6.5",
+    "mongoose": "^5.7.7",
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0"
   }
