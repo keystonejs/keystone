@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { __RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from 'react-apollo';
 
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
@@ -162,7 +162,7 @@ export function useListItems(listKey) {
   const [itemCount, setCount] = useState(0);
 
   const list = useList(listKey);
-  const { data } = useListQuery(listKey);
+  const { data = {} } = useListQuery(listKey);
 
   useEffect(() => {
     if (data[list.gqlNames.listQueryName]) {
