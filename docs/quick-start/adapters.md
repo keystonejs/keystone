@@ -5,7 +5,7 @@ title: Database Setup and Adapters
 
 ## Choosing an Adapter
 
-KeystoneJS currently provides two adapters for connecting to either a MongoDB or PostgreSQL database. Choose the [Mongoose Adapter](/keystone-alpha/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystone-alpha/adapter-knex/) for PostgreSQL.
+KeystoneJS currently provides two adapters for connecting to either a MongoDB or PostgreSQL database. Choose the [Mongoose Adapter](/keystonejs/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystonejs/adapter-knex/) for PostgreSQL.
 
 If you're following the [quick start guide](/quick-start/adapters), simply select the appropriate adapter for your database of choice when prompted. More information on adapter configuration can be found under the *Setup* sections.
 
@@ -27,7 +27,7 @@ Follow the [official guide](https://docs.mongodb.com/manual/tutorial/install-mon
 
 ### Setup
 
-By default the Mongoose Adapter will attempt to connect to MongoDB as the current user and create a new database using the project name. You can override these options when [configuring the Mongoose Adapter](/keystone-alpha/adapter-mongoose/).
+By default the Mongoose Adapter will attempt to connect to MongoDB as the current user and create a new database using the project name. You can override these options when [configuring the Mongoose Adapter](/keystonejs/adapter-mongoose/).
 
 ## Installing [Postgres](https://www.postgresql.org/)
 
@@ -45,7 +45,7 @@ For Windows and other platforms see the [download instructions](https://www.post
 
 ### Setup
 
-By default the Knex Adapter will attempt to connect to a PostgreSQL database as the current user. It will look for a a database matching the project name. You can override these options when [configuring the Knex Adapter](/keystone-alpha/adapter-knex/).
+By default the Knex Adapter will attempt to connect to a PostgreSQL database as the current user. It will look for a a database matching the project name. You can override these options when [configuring the Knex Adapter](/keystonejs/adapter-knex/).
 
 To create database run the following command:
 

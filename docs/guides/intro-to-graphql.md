@@ -222,9 +222,9 @@ A good next step is to write an `executeQuery` function that accepts a query and
 
 ## Executing Queries and Mutations on the Server
 
-In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/keystone-alpha/keystone/#executequeryquerystring-config).
+In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/keystonejs/keystone/#executequeryquerystring-config).
 
-**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/keystone-alpha/keystone/#executequeryquerystring-config)
+**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/keystonejs/keystone/#executequeryquerystring-config)
 
 ## Filter, Limit and Sorting
 

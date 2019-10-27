@@ -1,5 +1,15 @@
 # @keystonejs/adapter-knex
 
+## 5.0.1
+
+### Patch Changes
+
+- [`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469) [#1851](https://github.com/keystonejs/keystone/pull/1851) Thanks [@jesstelford](https://github.com/jesstelford)! - Added runtime database version validation
+
+- Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469)]:
+  - @keystonejs/keystone@5.1.0
+  - @keystonejs/utils@5.1.0
+
 ## 5.0.0
 
 ### Major Changes

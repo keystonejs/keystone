@@ -51,6 +51,7 @@ export class File extends Implementation {
         id: ID
         path: String
         filename: String
+        originalFilename: String
         mimetype: String
         encoding: String
         publicUrl: String
@@ -118,7 +119,7 @@ export class File extends Implementation {
       id: newId,
     });
 
-    return { id, filename, mimetype, encoding, _meta };
+    return { id, filename, originalFilename, mimetype, encoding, _meta };
   }
 
   get gqlUpdateInputFields() {
