@@ -71,7 +71,7 @@ module.exports = {
 }
 ```
 
-If you're curious about the usage options you can read more about `CalendarDay` [here](/keystone-alpha/fields/src/types/calendar-day/). Now it's time to explore docs on other field types and get a bit familiar with them. It will help you make your schema cleaner.
+If you're curious about the usage options you can read more about `CalendarDay` [here](/keystonejs/fields/src/types/calendar-day/). Now it's time to explore docs on other field types and get a bit familiar with them. It will help you make your schema cleaner.
 
 ## Defining User list
 

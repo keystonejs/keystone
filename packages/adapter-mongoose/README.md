@@ -38,7 +38,7 @@ If not specified, KeystoneJS will first look for one of the following environmen
 
 If none of these are found a connection string is derived with a `DATABASE_NAME` from the KeystoneJS project name.
 
-### `mongooseOptions` (optional)
+### `mongooseConfig` (optional)
 
 These options are passed directly through to `mongoose.connect()`.
 
