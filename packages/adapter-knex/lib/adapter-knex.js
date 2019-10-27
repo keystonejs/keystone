@@ -127,6 +127,10 @@ class KnexAdapter extends BaseKeystoneAdapter {
     const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
     return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
   }
+
+  async checkDatabaseVersion() {
+    // TODO: implement
+  }
 }
 
 class KnexListAdapter extends BaseListAdapter {

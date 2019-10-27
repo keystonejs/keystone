@@ -1,0 +1,9 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "minor" },
+    { "name": "@keystone-alpha/keystone", "type": "minor" },
+    { "name": "@keystone-alpha/utils", "type": "minor" },
+    { "name": "@keystone-alpha/adapter-knex", "type": "patch" }
+  ],
+  "dependents": []
+}
