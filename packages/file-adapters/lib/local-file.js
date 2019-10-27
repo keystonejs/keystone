@@ -3,9 +3,14 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 
 module.exports = class LocalFileAdapter {
-  constructor({ src, path: inputPath }) {
+  constructor({ src, path: inputPath, getFilename }) {
     this.src = path.resolve(src);
     this.path = inputPath;
+    this.getFilename = getFilename;
+
+    if (!this.getFilename) {
+      this.getFilename = ({ id, originalFilename }) => `${id}-${originalFilename}`;
+    }
 
     if (!this.src) {
       throw new Error('LocalFileAdapter requires a src attribute.');
@@ -22,7 +27,13 @@ module.exports = class LocalFileAdapter {
    * Params: { stream, filename, mimetype, encoding, id }
    */
   save({ stream, filename: originalFilename, id }) {
-    const filename = `${id}-${originalFilename}`;
+    const filename = this.getFilename({ id, originalFilename });
+    if (!filename) {
+      throw new Error(
+        'Custom function LocalFileAdapter.getFilename() returned no or invalid value.'
+      );
+    }
+
     const filePath = path.join(this.src, filename);
     return new Promise((resolve, reject) =>
       stream

@@ -126,7 +126,7 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: '$posts' },
+          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
             { $addFields: { id: '$_id' } },
@@ -135,7 +135,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
+          abc123_posts_every: {
+            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
@@ -189,7 +191,7 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: '$posts' },
+          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
             { $addFields: { id: '$_id' } },
@@ -199,7 +201,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
+          abc123_posts_every: {
+            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
@@ -283,21 +287,21 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: '$posts' },
+          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
             {
               $lookup: {
                 from: 'tags-collection',
                 as: 'def456_tags',
-                let: { def456_tags_ids: '$tags' },
+                let: { def456_tags_ids: { $ifNull: ['$tags', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$def456_tags_ids'] } } },
                   {
                     $lookup: {
                       from: 'posts-collection',
                       as: 'xyz890_posts',
-                      let: { xyz890_posts_ids: '$posts' },
+                      let: { xyz890_posts_ids: { $ifNull: ['$posts', []] } },
                       pipeline: [
                         { $match: { $expr: { $in: ['$_id', '$$xyz890_posts_ids'] } } },
                         { $match: { published: { $eq: true } } },
@@ -308,7 +312,7 @@ describe('join builder', () => {
                   {
                     $addFields: {
                       xyz890_posts_every: {
-                        $eq: [{ $size: '$xyz890_posts' }, { $size: '$posts' }],
+                        $eq: [{ $size: '$xyz890_posts' }, { $size: { $ifNull: ['$posts', []] } }],
                       },
                       xyz890_posts_none: { $eq: [{ $size: '$xyz890_posts' }, 0] },
                       xyz890_posts_some: { $gt: [{ $size: '$xyz890_posts' }, 0] },
@@ -325,7 +329,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                def456_tags_every: { $eq: [{ $size: '$def456_tags' }, { $size: '$tags' }] },
+                def456_tags_every: {
+                  $eq: [{ $size: '$def456_tags' }, { $size: { $ifNull: ['$tags', []] } }],
+                },
                 def456_tags_none: { $eq: [{ $size: '$def456_tags' }, 0] },
                 def456_tags_some: { $gt: [{ $size: '$def456_tags' }, 0] },
               },
@@ -339,7 +345,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
+          abc123_posts_every: {
+            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
@@ -411,14 +419,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   { $match: { name: { $eq: 'foo' } } },
@@ -428,7 +436,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -444,7 +454,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
@@ -514,14 +526,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   {
@@ -533,7 +545,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -549,7 +563,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
@@ -619,14 +635,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   {
@@ -638,7 +654,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -654,7 +672,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
@@ -726,14 +746,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   { $match: { name: { $eq: 'foo' } } },
@@ -743,7 +763,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -759,7 +781,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },

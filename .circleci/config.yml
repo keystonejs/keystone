@@ -11,7 +11,7 @@ x-job-setup: &job-setup
       environment:
         TEST_DATABASE_URL: postgresql://root@localhost/circle_test
         KNEX_URI: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
-    - image: mongo:3.6.7
+    - image: mongo:4.0.0
     - image: circleci/postgres:9.6.5-alpine-ram
 
   working_directory: /home/circleci/repo

@@ -1,5 +1,16 @@
 # @keystonejs/mongo-join-builder
 
+## 5.0.1
+
+### Patch Changes
+
+- [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f) [#1837](https://github.com/keystonejs/keystone/pull/1837) Thanks [@timleslie](https://github.com/timleslie)! - Updated mongo-related dependencies
+
+* [`e4a19e3f`](https://github.com/keystonejs/keystone/commit/e4a19e3f3e261ef476aee61d24dd2639eaf61881) [#1844](https://github.com/keystonejs/keystone/pull/1844) Thanks [@jesstelford](https://github.com/jesstelford)! - Adding a new Relationship field when using the Mongoose adapter will no longer cause an "\$in requires an array as a second argument, found: missing" error to be thrown.
+
+* Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469)]:
+  - @keystonejs/utils@5.1.0
+
 ## 5.0.0
 
 ### Major Changes

@@ -25,8 +25,8 @@ _Note_: Before reaching for a custom server, consider using a KeystoneJS
 App which can enhance the functionality of the default server. Apps
 available in KeystoneJS include:
 
-- [Static App](../../keystone-alpha/app-static) for serving static files.
-- [Next.js App](../../keystone-alpha/app-next) for serving a Next.js App on the same server as the API
+- [Static App](../../keystonejs/app-static) for serving static files.
+- [Next.js App](../../keystonejs/app-next) for serving a Next.js App on the same server as the API
   The following are some possible ways of setting up a custom server, roughly in
   order of complexity.
 
