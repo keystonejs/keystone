@@ -20,20 +20,20 @@ const keystone = new Keystone({
 
 ### Config
 
-| Option           | Type       | Default    | Description                                                                                                                                    |
-| ---------------- | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`           | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                              |
-| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details.        |
-| `adapters`       | `Array`    | `[]`       |                                                                                                                                                |
-| `defaultAdapter` | `Object`   | `null`     |                                                                                                                                                |
-| `defaultAccess`  | `Object`   | `{}`       |                                                                                                                                                |
-| `onConnect`      | `Function` | `null`     |                                                                                                                                                |
-| `cookieSecret`   | `String`   | `qwerty`   |                                                                                                                                                |
-| `cookieMaxAge`   | `Int`      | 30 days    |                                                                                                                                                |
-| `secureCookies`  | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                          |
-| `sessionStore`   | `Object`   | `null`     | A compatible Express session middleware.                                                                                                       |
-| `schemaNames`    | `Array`    | `[public]` |                                                                                                                                                |
-| `queryLimits`    | `Object`   | `{}`       | Configures global query limits                                                                                                                 |
+| Option           | Type       | Default    | Description                                                                                                                                |
+| ---------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`           | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                          |
+| `adapter`        | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details. |
+| `adapters`       | `Object`   | `{}`       | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                               |
+| `defaultAdapter` | `String`   | `null`     | The name of the database adapter to use by default if multiple are provided.                                                               |
+| `defaultAccess`  | `Object`   | `{}`       |                                                                                                                                            |
+| `onConnect`      | `Function` | `null`     |                                                                                                                                            |
+| `cookieSecret`   | `String`   | `qwerty`   |                                                                                                                                            |
+| `cookieMaxAge`   | `Int`      | 30 days    |                                                                                                                                            |
+| `secureCookies`  | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                      |
+| `sessionStore`   | `Object`   | `null`     | A compatible Express session middleware.                                                                                                   |
+| `schemaNames`    | `Array`    | `[public]` |                                                                                                                                            |
+| `queryLimits`    | `Object`   | `{}`       | Configures global query limits                                                                                                             |
 
 ### `sessionStore`
 
