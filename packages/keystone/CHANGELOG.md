@@ -1,5 +1,17 @@
 # @keystonejs/keystone
 
+## 5.1.0
+
+### Minor Changes
+
+- [`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469) [#1851](https://github.com/keystonejs/keystone/pull/1851) Thanks [@jesstelford](https://github.com/jesstelford)! - Added runtime database version validation
+
+### Patch Changes
+
+- Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469), [`ebbcad70`](https://github.com/keystonejs/keystone/commit/ebbcad7042596a9c83c32c8e08dad50f9fcb59fd), [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f)]:
+  - @keystonejs/utils@5.1.0
+  - @keystonejs/fields@5.0.2
+
 ## 5.0.0
 
 ### Major Changes

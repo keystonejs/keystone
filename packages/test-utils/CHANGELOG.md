@@ -1,5 +1,16 @@
 # @keystonejs/test-utils
 
+## 5.0.1
+
+### Patch Changes
+
+- [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f) [#1837](https://github.com/keystonejs/keystone/pull/1837) Thanks [@timleslie](https://github.com/timleslie)! - Updated mongo-related dependencies
+
+- Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469), [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f)]:
+  - @keystonejs/adapter-mongoose@5.1.0
+  - @keystonejs/keystone@5.1.0
+  - @keystonejs/adapter-knex@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
