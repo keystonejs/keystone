@@ -23,7 +23,7 @@ const keystone = new Keystone({
 | Option                  | Type       | Default    | Description                                                                                                                                       |
 | ----------------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                 |
-| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details. |
+| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details.        |
 | `adapters`              | `Array`    | `[]`       |                                                                                                                                                   |
 | `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                   |
 | `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                   |

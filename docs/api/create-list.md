@@ -48,7 +48,7 @@ keystone.createList('Post', {
 });
 ```
 
-See: [Fields](/keystone-alpha/fields/) for more information on configuring field options.
+See: [Fields](/keystonejs/fields/) for more information on configuring field options.
 
 ### `schemaDoc`
 
