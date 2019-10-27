@@ -220,7 +220,7 @@ class MongooseListAdapter extends BaseListAdapter {
         { include: from.fromField }
       );
       if (ids.length) {
-        args = mergeWhereClause(args, { id: { $in: ids[0][from.fromField] } });
+        args = mergeWhereClause(args, { id: { $in: ids[0][from.fromField] || [] } });
       }
     }
     function graphQlQueryToMongoJoinQuery(query) {

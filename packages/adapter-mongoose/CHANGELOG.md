@@ -1,5 +1,12 @@
 # @keystonejs/adapter-mongoose
 
+## 5.0.1
+
+### Patch Changes
+
+- [`3c19cddd`](https://github.com/keystonejs/keystone/commit/3c19cddd0b8b8d1e17385a01a813a9e84ec14bb5) [#1838](https://github.com/keystonejs/keystone/pull/1838) Thanks [@jesstelford](https://github.com/jesstelford)! - Adding a new Relationship field when using the Mongoose adapter will no longer
+  cause an "\$in needs an array" error to be thrown.
+
 ## 5.0.0
 
 ### Major Changes
