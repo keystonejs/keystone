@@ -112,7 +112,7 @@ The hooks are invoked in a specific order during a mutation operation.
 3. Database operation
 4. `afterDelete`
 
-For full details of the mutation lifecycle, and where hooks fit within this, please see [here].
+For full details of the mutation lifecycle, and where hooks fit within this, please see [here](/guides/mutation-lifecycle).
 
 ### Intra-hook Execution Order
 

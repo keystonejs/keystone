@@ -1,5 +1,14 @@
 # @keystonejs/app-admin-ui
 
+## 5.0.1
+
+### Patch Changes
+
+- [`19b08a30`](https://github.com/keystonejs/keystone/commit/19b08a30b3dbfb7c7a0056f210769bbf6e171c85) [#1806](https://github.com/keystonejs/keystone/pull/1806) Thanks [@gautamsi](https://github.com/gautamsi)! - indicate which list is auth list by adding a person icon afetr label
+
+- Updated dependencies [[`209b7078`](https://github.com/keystonejs/keystone/commit/209b7078c7fa4f4d87568c58cb6cb6ad8162fe46)]:
+  - @keystonejs/fields@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
