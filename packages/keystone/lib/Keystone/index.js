@@ -662,7 +662,7 @@ module.exports = class Keystone {
     apps = [],
     distDir,
     pinoOptions,
-    disableLogging = falsey(process.env.DISABLE_LOGGING),
+    enableLogging = falsey(process.env.DISABLE_LOGGING),
     cors = { origin: true, credentials: true },
   } = {}) {
     const middlewares = flattenDeep([
@@ -677,7 +677,7 @@ module.exports = class Keystone {
         secureCookies: this._secureCookies,
         cookieMaxAge: this._cookieMaxAge,
       }),
-      disableLogging && require('express-pino-logger')(pinoOptions),
+      enableLogging && require('express-pino-logger')(pinoOptions),
       cors && createCorsMiddleware(cors),
       ...(await Promise.all(
         [

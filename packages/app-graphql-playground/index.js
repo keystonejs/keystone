@@ -8,11 +8,11 @@ class GraphQLPlaygroundApp {
   constructor({
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
-    disableLogging = falsey(process.env.DISABLE_LOGGING),
+    enableLogging = falsey(process.env.DISABLE_LOGGING),
   } = {}) {
     this._apiPath = apiPath;
     this._graphiqlPath = graphiqlPath;
-    this._disableLogging = disableLogging;
+    this._enableLogging = enableLogging;
   }
 
   /**
@@ -22,7 +22,7 @@ class GraphQLPlaygroundApp {
     const graphiqlPath = this._graphiqlPath;
     const apiPath = this._apiPath;
     const app = express();
-    if (dev && this._disableLogging) {
+    if (dev && this._enableLogging) {
       // NOTE: Must come before we setup the GraphQL API
       const devQueryPath = `${graphiqlPath}/go`;
       addDevQueryMiddlewares(app, apiPath, graphiqlPath, devQueryPath);
