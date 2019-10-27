@@ -20,20 +20,38 @@ const keystone = new Keystone({
 
 ### Config
 
-| Option                  | Type       | Default    | Description                                                                                                                                       |
-| ----------------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                 |
-| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details.        |
-| `adapters`              | `Array`    | `[]`       |                                                                                                                                                   |
-| `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                   |
-| `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                   |
-| `onConnect`             | `Function` | `null`     |                                                                                                                                                   |
-| `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                   |
-| `cookieMaxAge`          | `Int`      | 30 days    |                                                                                                                                                   |
-| `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                             |
-| `sessionStore`          | `Object`   | `null`     |                                                                                                                                                   |
-| `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                   |
-| `queryLimits`           | `Object`   | `{}`       | Configures global query limits                                                                                                                    |
+| Option           | Type       | Default    | Description                                                                                                                                |
+| ---------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`           | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                          |
+| `adapter`        | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details. |
+| `adapters`       | `Object`   | `{}`       | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                               |
+| `defaultAdapter` | `String`   | `null`     | The name of the database adapter to use by default if multiple are provided.                                                               |
+| `defaultAccess`  | `Object`   | `{}`       |                                                                                                                                            |
+| `onConnect`      | `Function` | `null`     |                                                                                                                                            |
+| `cookieSecret`   | `String`   | `qwerty`   |                                                                                                                                            |
+| `cookieMaxAge`   | `Int`      | 30 days    |                                                                                                                                            |
+| `secureCookies`  | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                      |
+| `sessionStore`   | `Object`   | `null`     | A compatible Express session middleware.                                                                                                   |
+| `schemaNames`    | `Array`    | `[public]` |                                                                                                                                            |
+| `queryLimits`    | `Object`   | `{}`       | Configures global query limits                                                                                                             |
+
+### `sessionStore`
+
+Sets the Express server's [session middleware](https://github.com/expressjs/session). This should be configured before deploying your app.
+
+This example uses the [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) middleware, but you can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores).
+
+#### Usage
+
+```javascript
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')(expressSession);
+
+const keystone = new Keystone({
+  /* ...config */
+  sessionStore: new MongoStore({ url: 'mongodb://localhost/my-app' }),
+});
+```
 
 ### `queryLimits`
 
@@ -101,9 +119,9 @@ keystone.createList('Posts', {
 
 Registers a new list with KeystoneJS and returns a `Keystone` list object.
 
-| Option    | Type     | Default | Description                                                                                                 |
-| --------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
-| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                     |
+| Option    | Type     | Default | Description                                                                                              |
+| --------- | -------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                  |
 | `config`  | `Object` | `{}`    | The list config. See the [createList API](https://keystonejs.com/api/create-list) page for more details. |
 
 ## extendGraphQLSchema(config)
