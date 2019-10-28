@@ -366,6 +366,7 @@ only to modify it).
 - `fieldKey` is the key of the field being operated on.
 - `originalInput`is the data as passed in the mutation for `create` & `update` mutations (`undefined` for `read`).
 - `existingItem` is the existing item this field belongs to for `update` mutations & `read` queries (`undefined` for `create`).
+  - **Note**: To maintain performance, the values of `Relationship` fields are _not_ available on `existingItem`. To get those values, you can use [`keystone.executeQuery()`](/keystonejs/keystone/#executequeryquerystring-config).
 - `operation` is the CRUDA operation being peformed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).
 - `gqlName` is the name of the query or mutation which triggered the access check
 - `itemId` is the `id` of the item being updated/deleted in singular `update` and `delete` operations.
