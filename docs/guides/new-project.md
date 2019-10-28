@@ -44,7 +44,7 @@ const keystone = new Keystone({
 });
 ```
 
-You can specify any suitable name for your application. Note that we created an instance of the [Mongoose Adapter](/keystone-alpha/adapter-mongoose/) and passed it to KeystoneJS' constructor.
+You can specify any suitable name for your application. Note that we created an instance of the [Mongoose Adapter](/keystonejs/adapter-mongoose/) and passed it to KeystoneJS' constructor.
 
 Now we can export our instance and make it available for running. Add following to the end of `index.js`:
 
