@@ -2,7 +2,7 @@
   "name": "@keystonejs/mono-repo",
   "description": "KeystoneJS monorepo for all the @keystonejs / @arch-ui (and more) packages. Powered by Yarn.",
   "private": true,
-  "version": "4.0.0",
+  "version": "5.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "scripts": {
