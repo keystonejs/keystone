@@ -1,4 +1,4 @@
-const { DateTime } = require('@keystone-alpha/fields');
+const { DateTime } = require('@keystonejs/fields');
 const { composeResolveInput } = require('../utils');
 
 const _atTracking = ({ created = true, updated = true }) => ({

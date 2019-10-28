@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/options",
-  "description": "Options UI as used in @keystone-alpha Admin UI.",
+  "description": "Options UI as used in @keystonejs Admin UI.",
   "version": "0.0.9",
   "author": "Jed Watson",
   "license": "MIT",

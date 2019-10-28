@@ -1,5 +1,5 @@
 const cuid = require('cuid');
-const { getType, flatten, objMerge } = require('@keystone-alpha/utils');
+const { getType, flatten, objMerge } = require('@keystonejs/utils');
 
 const { simpleTokenizer } = require('./tokenizers/simple');
 const { relationshipTokenizer } = require('./tokenizers/relationship');

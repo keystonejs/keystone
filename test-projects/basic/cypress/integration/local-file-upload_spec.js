@@ -18,7 +18,7 @@ describe('Adding a file', function() {
         const fileContent = `Some important content ${Math.random()}`;
         cy.visit(`/admin/users/${user.id}`);
         cy.writeFile('cypress/mock/upload.txt', fileContent);
-        cy.upload_file('input[name=attachment][type=file]', '../mock/upload.txt');
+        cy.upload_file('input[name=attachment][type=file]', '../mock/upload.txt', 'text/plain');
 
         // Setup to track XHR requests
         cy.server();

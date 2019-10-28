@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/input",
-  "description": "Input component as used in @keystone-alpha Admin UI.",
+  "description": "Input component as used in @keystonejs Admin UI.",
   "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",

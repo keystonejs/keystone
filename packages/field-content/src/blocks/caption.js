@@ -1,4 +1,4 @@
-import { importView } from '@keystone-alpha/build-field-types';
+import { importView } from '@keystonejs/build-field-types';
 import { Block } from '../Block';
 
 export default class CaptionBlock extends Block {

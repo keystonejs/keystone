@@ -199,3 +199,22 @@ export const captureSuspensePromises = executors => {
 // { a: [1, 2], b: [1, 2, 3] } => 5
 export const countArrays = obj =>
   Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
+
+/**
+ * Compares two version strings or number arrays in the major.minor.patch format.
+ * Returns true if comp if each element of comp is greater than than base.
+ */
+export const versionGreaterOrEqualTo = (comp, base) => {
+  const parseVersion = input => {
+    if (typeof input === 'object') {
+      return input;
+    } else {
+      return input.split('.').map(v => Number(v));
+    }
+  };
+
+  const v1 = parseVersion(comp);
+  const v2 = parseVersion(base);
+
+  return v1[0] >= v2[0] && v1[1] >= v2[1] && v1[2] >= v2[2];
+};

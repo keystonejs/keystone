@@ -20,13 +20,13 @@ A KeystoneJS **App** has two primary purposes
 2. Provide a `build()` method to create a static production build for this app
 
 The mimimum KeystoneJS application requires at least one app, the [GraphQL
-API](../../keystone-alpha/app-graphql):
+API](../../keystonejs/app-graphql):
 
 `index.js`
 
 ```javascript
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone(/* ... */);
 
@@ -44,9 +44,9 @@ provides the functionality of the KeystoneJS Admin UI:
 `index.js`
 
 ```diff
- const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
- const { Keystone } = require('@keystone-alpha/keystone');
+ const { GraphQLApp } = require('@keystonejs/app-graphql');
++const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+ const { Keystone } = require('@keystonejs/keystone');
 
  const keystone = new Keystone(/* ... */);
 
@@ -71,5 +71,5 @@ http server you setup.
 
 Other interesting KeystoneJS compatible Apps are:
 
-- [Static App](/keystone-alpha/app-static) for serving static files.
-- [Next.js App](/keystone-alpha/app-next) for serving a Next.js App on the same server as the API
+- [Static App](/keystonejs/app-static) for serving static files.
+- [Next.js App](/keystonejs/app-next) for serving a Next.js App on the same server as the API

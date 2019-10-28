@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/fields",
-  "description": "Form Field Components used in @keystone-alpha Admin UI.",
+  "description": "Form Field Components used in @keystonejs Admin UI.",
   "version": "2.0.1",
   "author": "Jed Watson",
   "license": "MIT",

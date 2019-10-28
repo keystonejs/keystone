@@ -9,7 +9,7 @@ title: Nuxt.js App
 ## Usage
 
 ```javascript
-const { NuxtApp } = require('@keystone-alpha/app-nuxt');
+const { NuxtApp } = require('@keystonejs/app-nuxt');
 
 ...
 

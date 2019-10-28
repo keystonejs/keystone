@@ -6,28 +6,28 @@ order: 3
 
 # Fields
 
-KeystoneJS contains a set of primitive fields types that can be imported from `@keystone-alpha/fields`. These include:
+KeystoneJS contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
 
-- [CalendarDay](keystone-alpha/fields/src/types/calendar-day)
-- [Checkbox](keystone-alpha/fields/src/types/checkbox)
-- [CloudinaryImage](keystone-alpha/fields/src/types/cloudinary-image)
-- [Color](keystone-alpha/fields/src/types/color)
-- [Content](/keystone-alpha/field-content)
-- [DateTime](keystone-alpha/fields/src/types/date-time)
-- [Decimal](keystone-alpha/fields/src/types/decimal)
-- [File](keystone-alpha/fields/src/types/file)
-- [Float](keystone-alpha/fields/src/types/float)
-- [Integer](keystone-alpha/fields/src/types/integer)
-- [Location](keystone-alpha/fields/src/types/location)
-- [OEmbed](keystone-alpha/fields/src/types/o-embed)
-- [Password](keystone-alpha/fields/src/types/password)
-- [Relationship](keystone-alpha/fields/src/types/relationship)
-- [Select](keystone-alpha/fields/src/types/select)
-- [Slug](keystone-alpha/fields/src/types/slug)
-- [Text](keystone-alpha/fields/src/types/text)
-- [Unsplash](keystone-alpha/fields/src/types/unsplash)
-- [Url](keystone-alpha/fields/src/types/url)
-- [Uuid](keystone-alpha/fields/src/types/uuid)
+- [CalendarDay](keystonejs/fields/src/types/calendar-day)
+- [Checkbox](keystonejs/fields/src/types/checkbox)
+- [CloudinaryImage](keystonejs/fields/src/types/cloudinary-image)
+- [Color](keystonejs/fields/src/types/color)
+- [Content](keystonejs/field-content)
+- [DateTime](keystonejs/fields/src/types/date-time)
+- [Decimal](keystonejs/fields/src/types/decimal)
+- [File](keystonejs/fields/src/types/file)
+- [Float](keystonejs/fields/src/types/float)
+- [Integer](keystonejs/fields/src/types/integer)
+- [Location](keystonejs/fields/src/types/location)
+- [OEmbed](keystonejs/fields/src/types/o-embed)
+- [Password](keystonejs/fields/src/types/password)
+- [Relationship](keystonejs/fields/src/types/relationship)
+- [Select](keystonejs/fields/src/types/select)
+- [Slug](keystonejs/fields/src/types/slug)
+- [Text](keystonejs/fields/src/types/text)
+- [Unsplash](keystonejs/fields/src/types/unsplash)
+- [Url](keystonejs/fields/src/types/url)
+- [Uuid](keystonejs/fields/src/types/uuid)
 
 In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
 

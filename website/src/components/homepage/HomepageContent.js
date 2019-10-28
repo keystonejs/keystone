@@ -45,7 +45,7 @@ const HomepageContent = () => (
       and{' '}
       <a
         css={{ color: colors.N80 }}
-        href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md"
+        href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md#contributors"
       >
         Contributors
       </a>{' '}
