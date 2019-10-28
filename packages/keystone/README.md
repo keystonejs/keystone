@@ -59,6 +59,20 @@ const keystone = new Keystone({
 });
 ```
 
+The [Mongoose adapter](https://www.keystonejs.com/keystonejs/adapter-mongoose/) also provides a convenience getter for `connect-mongo` if you want to share the same database connection:
+
+```javascript
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+
+const adapter = new MongooseAdapter();
+
+const keystone = new Keystone({
+  /* ...config */
+  adapter: adapter,
+  sessionStore: adapter.getSessionMiddleware(),
+});
+```
+
 ### `queryLimits`
 
 Configures global query limits.

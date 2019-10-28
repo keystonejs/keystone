@@ -21,6 +21,9 @@ const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')(expressSession);
+
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
@@ -96,6 +99,10 @@ class MongooseAdapter extends BaseKeystoneAdapter {
         `MongoDB version ${info.version} is incompatible. Version ${this.minVer} or later is required.`
       );
     }
+  }
+
+  getSessionMiddleware() {
+    return new MongoStore({ mongooseConnection: this.mongoose.connection });
   }
 }
 

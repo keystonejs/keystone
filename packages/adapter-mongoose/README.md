@@ -43,3 +43,9 @@ If none of these are found a connection string is derived with a `DATABASE_NAME`
 Additional Mongoose config options are passed directly through to `mongoose.connect()`.
 
 See the [Mongoose docs](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect) for a detailed list of options.
+
+## Methods
+
+### getSessionMiddleware()
+
+Returns a new [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) session middleware that shares this adapter's connection to the database. This should be passed to the `sessionStore` option in the [keystone constructor](keystonejs/keystone/).
