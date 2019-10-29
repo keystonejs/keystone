@@ -5,8 +5,6 @@ import queryString from 'query-string';
 
 import { Implementation } from '../../Implementation';
 
-const uuidv4 = require('uuid/v4');
-
 // Polyfill fetch so unsplash-js works
 global.fetch = global.fetch || require('node-fetch');
 
@@ -249,8 +247,7 @@ export class Unsplash extends Implementation {
     // NOTE: we need to provide a uuid to avoid issues with Apollo
     // More info here: https://github.com/keystonejs/keystone-5/pull/1799
     return {
-      id: uuidv4(),
-      ...transformImageFromApiToKs5(apiResponse),
+      ...transformImageFromApiToKs5(apiResponse, { includeId: true }),
     };
   }
 
