@@ -13,7 +13,14 @@ export const NavGroupIcons = styled.div({
   display: 'flex',
   flexFlow: 'row nowrap',
   justifyContent: 'space-between',
-  padding: PRIMARY_NAV_GUTTER,
+  padding: 0,
+
+  '> *': {
+    marginBottom: 0,
+    padding: '1em 0',
+    textAlign: 'center',
+    width: '100%',
+  },
 });
 
 export const PrimaryNav = styled.nav({
