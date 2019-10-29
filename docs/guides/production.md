@@ -8,6 +8,10 @@ subSection: deployment
 
 Yes, KeystoneJS can be (and is!) used for production websites. Here's a handy list of tips for using KeystoneJS with real workloads:
 
+## Secure Cookies
+
+In production builds, [KeystoneJS' `secureCookies`](/keystonejs/keystone/#config) defaults to true. Make sure your server is HTTPS-enabled when `secureCookies` is enabled or you will be unable to log in.
+
 ## Session Handling
 
 ### Cookie Secret
