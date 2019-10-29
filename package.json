@@ -2,7 +2,7 @@
   "name": "@keystonejs/mono-repo",
   "description": "KeystoneJS monorepo for all the @keystonejs / @arch-ui (and more) packages. Powered by Yarn.",
   "private": true,
-  "version": "5.1.0",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "scripts": {
@@ -34,6 +34,10 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keystonejs/keystone.git"
   },
   "dependencies": {
     "@babel/cli": "^7.6.2",
