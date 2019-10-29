@@ -10,8 +10,6 @@ A KeystoneJS App for serving a [Next.js](https://nextjs.org/) application.
 
 ## Usage
 
-/!\ Pay attention, don't forget to disable `enableDefaultRoute` option on `AdminUIApp`.
-
 ```javascript
 const { NextApp } = require('@keystonejs/app-next');
 
@@ -21,7 +19,7 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    new AdminUIApp(authStrategy),
+    new AdminUIApp({ enableDefaultRoute: false }),
     new NextApp({ dir: 'app' }),
   ],
   distDir,
