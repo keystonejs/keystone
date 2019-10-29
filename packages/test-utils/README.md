@@ -11,7 +11,7 @@ This package is an internal KeystoneJS package which contains utility functions 
 ## Installation
 
 ```bash
-yarn add @keystone-alpha/test-utils
+yarn add @keystonejs/test-utils
 ```
 
 ## Usage

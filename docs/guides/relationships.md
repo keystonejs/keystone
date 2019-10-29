@@ -81,4 +81,4 @@ The `many: true` option indicates that `User` can store multiple references to t
 See also:
 
 - [Schema - Lists & Fields](/guides/schema)
-- [Field Types - Relationship](/keystone-alpha/fields/src/types/relationship/)
+- [Field Types - Relationship](/keystonejs/fields/src/types/relationship/)

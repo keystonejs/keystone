@@ -25,8 +25,8 @@ _Note_: Before reaching for a custom server, consider using a KeystoneJS
 App which can enhance the functionality of the default server. Apps
 available in KeystoneJS include:
 
-- [Static App](../../keystone-alpha/app-static) for serving static files.
-- [Next.js App](../../keystone-alpha/app-next) for serving a Next.js App on the same server as the API
+- [Static App](../../keystonejs/app-static) for serving static files.
+- [Next.js App](../../keystonejs/app-next) for serving a Next.js App on the same server as the API
   The following are some possible ways of setting up a custom server, roughly in
   order of complexity.
 
@@ -69,8 +69,8 @@ module.exports = {
 `index.js`
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { Keystone } = require('@keystonejs/keystone');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
 const keystone = new Keystone(/* ... */);
 module.exports = {
   keystone,
@@ -112,8 +112,8 @@ In this example there is no `index.js` file, instead the `keystone` instance and
 
 ```javascript
 const express = require('express');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { Keystone } = require('@keystonejs/keystone');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
@@ -147,9 +147,9 @@ function directly.
 
 ```javascript
 const express = require('express');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { Keystone } = require('@keystonejs/keystone');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
@@ -184,8 +184,8 @@ KeystoneJS instance in AWS Lambda:
 ```javascript
 const express = require('express');
 const serverless = require('serverless-http');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { Keystone } = require('@keystonejs/keystone');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
 const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...

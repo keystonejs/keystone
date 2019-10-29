@@ -1,4 +1,57 @@
+# @keystonejs/keystone
+
+## 5.1.0
+
+### Minor Changes
+
+- [`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469) [#1851](https://github.com/keystonejs/keystone/pull/1851) Thanks [@jesstelford](https://github.com/jesstelford)! - Added runtime database version validation
+
+### Patch Changes
+
+- Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469), [`ebbcad70`](https://github.com/keystonejs/keystone/commit/ebbcad7042596a9c83c32c8e08dad50f9fcb59fd), [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f)]:
+  - @keystonejs/utils@5.1.0
+  - @keystonejs/fields@5.0.2
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/access-control@5.0.0
+  - @keystonejs/app-graphql@5.0.0
+  - @keystonejs/build-field-types@5.0.0
+  - @keystonejs/fields@5.0.0
+  - @keystonejs/logger@5.0.0
+  - @keystonejs/session@5.0.0
+  - @keystonejs/utils@5.0.0
+
 # @keystone-alpha/keystone
+
+## 16.1.0
+
+### Minor Changes
+
+- [`3bc02545`](https://github.com/keystonejs/keystone-5/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb) [#1803](https://github.com/keystonejs/keystone-5/pull/1803) Thanks [@Vultraz](https://github.com/Vultraz)! - Disallow leading underscores in list and field names
+
+* [`a48281ba`](https://github.com/keystonejs/keystone-5/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec) [#1783](https://github.com/keystonejs/keystone-5/pull/1783) Thanks [@timleslie](https://github.com/timleslie)! - The `keystone` cli now accepts a return of `{ keystone, apps, configureExpress }` from the entry file. `configureExpress` will be called on the Express app before applying the keystone middlewares.
+
+### Patch Changes
+
+- [`0a36b0f4`](https://github.com/keystonejs/keystone-5/commit/0a36b0f403da73a76106b5e14940a789466b4f94) [#1784](https://github.com/keystonejs/keystone-5/pull/1784) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed adapterConnectOptions key (unused as of 144e6e86)
+
+* [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901) [#1789](https://github.com/keystonejs/keystone-5/pull/1789) Thanks [@timleslie](https://github.com/timleslie)! - `Relationship.convertResolvedOperationsToFieldValue()` has been removed.
+
+* Updated dependencies [[`7129c887`](https://github.com/keystonejs/keystone-5/commit/7129c8878a825d961f2772be497dcd5bd6b2b697), [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/app-graphql@8.2.1
+  - @keystone-alpha/fields@15.0.0
 
 ## 16.0.1
 
@@ -912,6 +965,8 @@
 ## 0.1.1
 
 - [patch] Remove tests and markdown from npm [dc3ee7d](dc3ee7d)
+
+# @keystonejs/core
 
 # @keystone-alpha/core
 

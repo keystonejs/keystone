@@ -23,7 +23,7 @@ Like any problem there are multiple solutions. You can implement an incrementing
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
 ```js
-const { Text, Integer } = require('@keystone-alpha/fields');
+const { Text, Integer } = require('@keystonejs/fields');
 const Page = {
   fields: {
     title: { type: Text },

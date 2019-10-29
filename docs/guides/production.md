@@ -8,11 +8,15 @@ subSection: deployment
 
 Yes, KeystoneJS can be (and is!) used for production websites. Here's a handy list of tips for using KeystoneJS with real workloads:
 
+## Secure Cookies
+
+In production builds, [KeystoneJS' `secureCookies`](/keystonejs/keystone/#config) defaults to true. Make sure your server is HTTPS-enabled when `secureCookies` is enabled or you will be unable to log in.
+
 ## Session Handling
 
 ### Cookie Secret
 
-Make sure the production deployment sets a long, unguessable value for [KeystoneJS' `cookieSecret`](/keystone-alpha/keystone/#config).
+Make sure the production deployment sets a long, unguessable value for [KeystoneJS' `cookieSecret`](/keystonejs/keystone/#config).
 
 A randomly generated value is suitable (but keep it secret):
 
@@ -27,9 +31,11 @@ Sessions are stored inside the KeystoneJS app by default, but in production it's
 - You can restart your app for upgrades without breaking sessions
 - You can replicate your KeystoneJS app for availability, while keeping sessions consistent
 
+This option [can be set](/keystonejs/keystone/) in the `Keystone` constructor.
+
 ## Caching
 
-Improve performance and responsiveness by adding cache hints to your [lists](/api/create-list/#cachehint) and [fields](/keystone-alpha/fields/#cachehint).
+Improve performance and responsiveness by adding cache hints to your [lists](/api/create-list/#cachehint) and [fields](/keystonejs/fields/#cachehint).
 
 ## Access Control
 
@@ -41,7 +47,7 @@ Add [query limits](/api/create-list/#querylimits) and [validation](/api/validati
 
 ## Using Reverse Proxies
 
-NB: If you're using a third-party hosted environment, you might already be using a reverse proxy, but Keystone will need to be [configured for it](/keystone-alpha/keystone/#trustproxies).
+NB: If you're using a third-party hosted environment, you might already be using a reverse proxy, but Keystone will need to be [configured for it](/keystonejs/keystone/#trustproxies).
 
 It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)).
 

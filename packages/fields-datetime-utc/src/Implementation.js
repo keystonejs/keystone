@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
-import { Implementation } from '@keystone-alpha/fields';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
+import { Implementation } from '@keystonejs/fields';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 
 export class DateTimeUtcImplementation extends Implementation {
   gqlOutputFields() {

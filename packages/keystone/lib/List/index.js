@@ -12,9 +12,9 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-} = require('@keystone-alpha/utils');
-const { parseListAccess } = require('@keystone-alpha/access-control');
-const { logger } = require('@keystone-alpha/logger');
+} = require('@keystonejs/utils');
+const { parseListAccess } = require('@keystonejs/access-control');
+const { logger } = require('@keystonejs/logger');
 
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
@@ -62,7 +62,7 @@ const opToType = {
 const getAuthMutationName = (prefix, authType) => `${prefix}With${upcase(authType)}`;
 
 const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
-  const { Text, Checkbox, Float } = require('@keystone-alpha/fields');
+  const { Text, Checkbox, Float } = require('@keystonejs/fields');
 
   const nativeTypeMap = new Map([
     [
@@ -96,7 +96,7 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 
   keystoneLogger.warn(
     { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone-alpha/fields package.`
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystonejs/fields package.`
   );
 
   return keystoneType;
@@ -1403,7 +1403,7 @@ module.exports = class List {
   }
 
   async _nestedMutation(mutationState, context, mutation) {
-    const { Relationship } = require('@keystone-alpha/fields');
+    const { Relationship } = require('@keystonejs/fields');
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {

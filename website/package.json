@@ -1,8 +1,8 @@
 {
-  "name": "@keystone-alpha/website",
+  "name": "@keystonejs/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "1.1.4",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

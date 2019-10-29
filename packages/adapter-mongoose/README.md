@@ -9,7 +9,7 @@ title: Mongoose Adapter
 ## Usage
 
 ```javascript
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
@@ -38,8 +38,8 @@ If not specified, KeystoneJS will first look for one of the following environmen
 
 If none of these are found a connection string is derived with a `DATABASE_NAME` from the KeystoneJS project name.
 
-### `mongooseOptions` (optional)
+### Mongoose Options (optional)
 
-These options are passed directly through to `mongoose.connect()`.
+Additional Mongoose config options are passed directly through to `mongoose.connect()`.
 
-See: <https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect> for a detailed list of options.
+See the [Mongoose docs](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect) for a detailed list of options.

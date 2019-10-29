@@ -1,6 +1,6 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import mongoose from 'mongoose';
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -18,6 +18,10 @@ export class File extends Implementation {
     this.directory = directory;
     this.route = route;
     this.fileAdapter = adapter;
+
+    if (!this.fileAdapter) {
+      throw new Error(`No file adapter provided for File field.`);
+    }
   }
 
   gqlOutputFields() {
@@ -47,6 +51,7 @@ export class File extends Implementation {
         id: ID
         path: String
         filename: String
+        originalFilename: String
         mimetype: String
         encoding: String
         publicUrl: String
@@ -94,7 +99,8 @@ export class File extends Implementation {
       return null;
     }
 
-    const { stream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const stream = createReadStream();
 
     if (!stream && previousData) {
       // TODO: FIXME: Handle when stream is null. Can happen when:
@@ -113,7 +119,7 @@ export class File extends Implementation {
       id: newId,
     });
 
-    return { id, filename, mimetype, encoding, _meta };
+    return { id, filename, originalFilename, mimetype, encoding, _meta };
   }
 
   get gqlUpdateInputFields() {

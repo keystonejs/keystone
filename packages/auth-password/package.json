@@ -1,14 +1,14 @@
 {
-  "name": "@keystone-alpha/auth-password",
+  "name": "@keystonejs/auth-password",
   "description": "Provides a basic password authentication strategy.",
-  "version": "1.0.5",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/fields": "^14.0.0",
-    "@keystone-alpha/session": "^3.0.1"
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/session": "^5.0.0"
   }
 }

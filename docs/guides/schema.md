@@ -125,7 +125,7 @@ is thrown if a `task` value is not provided when creating/updating items.
 _For more List options, see the [`createList()` API
 docs](/api/create-list)._
 
-_[There are many different field types available](/keystone-alpha/fields/),
+_[There are many different field types available](/keystonejs/fields/),
 each specifying their own options._
 
 ### Related Lists
@@ -333,7 +333,7 @@ Relationships are defined using the `Relationship` field type, and require at
 least 2 configured lists (one will refer to the other).
 
 ```javascript
-const { Relationship } = require('@keystone-alpha/fields');
+const { Relationship } = require('@keystonejs/fields');
 
 keystone.createList('Todo', {
   fields: {
@@ -654,7 +654,7 @@ mutation {
 ```
 
 _See [the Relationship API docs for more on
-`connect`](../../keystone-alpha/fields/src/types/relationship)._
+`connect`](../../keystonejs/fields/src/types/relationship)._
 
 If this was the first `Todo` item created, the database would now look like:
 
@@ -819,7 +819,7 @@ keystone.createList('User', {
 
 In this case, we'll create the first task along with creating the user. _For
 more info on the `create` syntax, see [the Relationship API
-docs](../../keystone-alpha/fields/src/types/relationship/)._
+docs](../../keystonejs/fields/src/types/relationship/)._
 
 ```graphql
 mutation {
