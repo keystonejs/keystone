@@ -19,7 +19,7 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    new AdminUIApp(),
+    new AdminUIApp({ enableDefaultRoute: false }),
     new NextApp({ dir: 'app' }),
   ],
   distDir,
