@@ -139,10 +139,7 @@ const Relationship = forwardRef(
         components={selectComponents}
         getOptionValue={option => option.value.id}
         value={currentValue}
-        placeholder={
-          // $FlowFixMe
-          canRead ? undefined : serverError && serverError.message
-        }
+        placeholder={canRead ? undefined : serverError && serverError.message}
         options={options}
         onChange={onChange}
         id={`react-select-${htmlID}`}

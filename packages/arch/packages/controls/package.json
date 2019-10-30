@@ -15,8 +15,8 @@
     "@arch-ui/input": "^0.1.0",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14",
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22",
     "memoize-one": "^4.0.2",
     "react-pseudo-state": "^2.2.2",
     "react-radios": "^1.1.0"

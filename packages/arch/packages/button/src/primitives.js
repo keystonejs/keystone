@@ -38,22 +38,21 @@ export type ButtonProps = {
 };
 
 function makeVariant({
-  appearance,
+  appearance = 'default',
   isActive,
   isBlock,
   isHover,
   isFocus,
   isDisabled,
   isSelected,
-  variant,
-  spacing,
+  variant = 'bold',
+  spacing = 'comfortable',
 }) {
   let variantStyles;
   const config = { appearance, isDisabled, isActive, isHover, isFocus, isSelected };
   if (variant === 'subtle') {
     variantStyles = makeSubtleVariant(config);
   } else if (variant === 'nuance') {
-    // $FlowFixMe
     variantStyles = makeNuanceVariant(config);
   } else if (variant === 'bold') {
     variantStyles = makeBoldVariant(config);
@@ -85,43 +84,22 @@ function makeVariant({
 }
 
 // remove props that will create react DOM warnings
-const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
-  (props, ref) => {
-    const { isDisabled, isActive, isFocus, isHover, isSelected, focusOrigin, ...rest } = props;
-    const variant = makeVariant(props);
+function ButtonElementComponent(props: ButtonProps, ref) {
+  const { isDisabled, isActive, isFocus, isHover, isSelected, focusOrigin, ...rest } = props;
+  const variant = makeVariant(props);
 
-    if (rest.to) {
-      return <Link innerRef={ref} css={variant} {...rest} />;
-    }
-
-    if (rest.href) {
-      return (
-        <a
-          css={variant}
-          {...rest}
-          // $FlowFixMe
-          ref={ref}
-        />
-      );
-    }
-    return (
-      <button
-        type="button"
-        disabled={isDisabled}
-        css={variant}
-        {...rest}
-        // $FlowFixMe
-        ref={ref}
-      />
-    );
+  if (rest.to) {
+    return <Link innerRef={ref} css={variant} {...rest} />;
   }
-);
 
-// $FlowFixMe
-ButtonElement.defaultProps = {
-  appearance: 'default',
-  spacing: 'comfortable',
-  variant: 'bold',
-};
+  if (rest.href) {
+    return <a css={variant} {...rest} ref={ref} />;
+  }
+  return <button type="button" disabled={isDisabled} css={variant} ref={ref} {...rest} />;
+}
+
+const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
+  ButtonElementComponent
+);
 
 export const Button = withPseudoState(ButtonElement);

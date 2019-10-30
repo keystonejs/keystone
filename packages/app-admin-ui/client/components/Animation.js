@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 import { jsx, keyframes } from '@emotion/core';
-import { Component, type ElementType } from 'react';
+import { Component } from 'react';
 
 const pulse = keyframes`
   from { transform: scale3d(1, 1, 1); }
@@ -29,7 +29,7 @@ const animations = {
 
 type Props = {
   name: $Keys<typeof animations>,
-  tag: ElementType,
+  tag: string,
   duration: string,
   isInfinite: boolean,
   timing: string,
