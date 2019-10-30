@@ -138,7 +138,7 @@ Extends keystones generated schema with custom types, queries, and mutations.
 
 ```javascript
 keystone.extendGraphQLSchema({
-  types: ['type FooBar { foo: Int, bar: Float }'],
+  types: [{ type: 'type FooBar { foo: Int, bar: Float }' }],
   queries: [
     {
       schema: 'double(x: Int): Int',
@@ -156,11 +156,11 @@ keystone.extendGraphQLSchema({
 
 ### Config
 
-| Option    | Type    | Description                                         |
-| --------- | ------- | --------------------------------------------------- |
-| types     | `array` | A list of strings defining graphQL types.           |
-| queries   | `array` | A list of objects of the form { schema, resolver }. |
-| mutations | `array` | A list of objects of the form { schema, resolver }. |
+| Option    | Type    | Description                                                                                  |
+| --------- | ------- | -------------------------------------------------------------------------------------------- |
+| types     | `array` | A list of objects of the form { type, access } where the type string defines a graphQL type. |
+| queries   | `array` | A list of objects of the form { schema, resolver, access }.                                  |
+| mutations | `array` | A list of objects of the form { schema, resolver, access }.                                  |
 
 The `schema` for both queries and mutations should be a string defining the graphQL schema element for the query/mutation, e.g.
 
@@ -171,6 +171,8 @@ The `schema` for both queries and mutations should be a string defining the grap
 ```
 
 The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info)`. See the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature) for more details.
+
+The `access` argument for `types`, `queries`, and `mutations` are all boolean values which are used at schema generation time to include or exclude the item from the schema.
 
 ## createItems(items)
 

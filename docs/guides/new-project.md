@@ -101,7 +101,7 @@ keystone.createList('Todo', {
 
 This code snippet creates a List named 'Todos'. The second argument is a config object. For now it have only one key (`fields`) which is used to define the schema for newly created model.
 
-In our example, the `Todo` list has a single field called `name` of type `Text`. Note the type is *not* a string; it must be imported like so:
+In our example, the `Todo` list has a single field called `name` of type `Text`. Note the type is _not_ a string; it must be imported like so:
 
 ```
 yarn add @keystonejs/fields

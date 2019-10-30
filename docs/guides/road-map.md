@@ -46,7 +46,7 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 - Options pages ([#1639](https://github.com/keystonejs/keystone-5/issues/1639))
 - Better seeding of initial data ([#301](https://github.com/keystonejs/keystone-5/issues/301))
 - Migrations ([#299](https://github.com/keystonejs/keystone-5/issues/299))
-- Virtual\Dynamic fields ([#1117](https://github.com/keystonejs/keystone-5/issues/1117))
+- Virtual\\Dynamic fields ([#1117](https://github.com/keystonejs/keystone-5/issues/1117))
 - Repeating sections ([#313](https://github.com/keystonejs/keystone-5/issues/313), [#195](https://github.com/keystonejs/keystone-5/issues/195))
 - Ability to deploy the Admin UI to a static server ([#734](https://github.com/keystonejs/keystone-5/issues/734), [#1258](https://github.com/keystonejs/keystone-5/issues/1258), [#1257](https://github.com/keystonejs/keystone-5/issues/1257))
 - Add a DateRange field type ([#215](https://github.com/keystonejs/keystone-5/issues/215))
