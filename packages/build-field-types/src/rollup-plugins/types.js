@@ -78,7 +78,7 @@ export interface SourceDescription {
 }
 
 export interface ResolvedId {
-  external?: boolean | void;
+  external?: boolean;
   id: string;
 }
 
@@ -92,7 +92,7 @@ export interface RenderedModule {
 export interface RenderedChunk {
   dynamicImports: string[];
   exports: string[];
-  facadeModuleId: string | null;
+  facadeModuleId: ?string;
   fileName: string;
   imports: string[];
   isDynamicEntry: boolean;
@@ -291,7 +291,7 @@ export interface Plugin {
   generateBundle?: (
     options: OutputOptions,
     bundle: OutputBundle,
-    isWrite: boolean
+    isWrite?: boolean
   ) => void | Promise<void>;
   intro?: AddonHook;
   load?: LoadHook;

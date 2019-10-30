@@ -13,7 +13,7 @@
     "@arch-ui/input": "^0.1.0",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
+    "@emotion/core": "^10.0.22",
     "@keystonejs/build-field-types": "^5.0.0",
     "@keystonejs/fields": "^5.0.0",
     "cuid": "^2.1.6",

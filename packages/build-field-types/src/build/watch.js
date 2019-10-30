@@ -13,8 +13,8 @@ import { success, info } from '../logger';
 import { successes } from '../messages';
 import { createWorker } from '../worker-client';
 
-function relativePath(id: string) {
-  return path.relative(process.cwd(), id);
+function relativePath(id: mixed) {
+  return path.relative(process.cwd(), String(id));
 }
 
 async function watchPackage(pkg: Package, aliases: Aliases) {
@@ -63,7 +63,6 @@ async function watchPackage(pkg: Package, aliases: Aliases) {
                 : Array.isArray(event.input)
                 ? event.input.map(relativePath).join(', ')
                 : Object.values(event.input)
-                    // $FlowFixMe
                     .map(relativePath)
                     .join(', ')
             )} → ${chalk.bold(event.output.map(relativePath).join(', '))}...`

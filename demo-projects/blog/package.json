@@ -16,8 +16,8 @@
   "dependencies": {
     "@arch-ui/layout": "^0.2.4",
     "@arch-ui/typography": "^0.0.8",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14",
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22",
     "@keystonejs/adapter-mongoose": "^5.0.0",
     "@keystonejs/app-admin-ui": "^5.0.0",
     "@keystonejs/app-graphql": "^5.0.0",

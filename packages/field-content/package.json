@@ -17,7 +17,7 @@
     "@arch-ui/tooltip": "^0.1.2",
     "@arch-ui/typography": "^0.0.8",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
+    "@emotion/core": "^10.0.22",
     "@keystonejs/build-field-types": "^5.0.0",
     "@keystonejs/fields": "^5.0.0",
     "@keystonejs/utils": "^5.0.0",

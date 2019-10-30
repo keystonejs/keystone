@@ -30,10 +30,16 @@ const keystone = new Keystone({
 | `onConnect`      | `Function` | `null`     |                                                                                                                                            |
 | `cookieSecret`   | `String`   | `qwerty`   |                                                                                                                                            |
 | `cookieMaxAge`   | `Int`      | 30 days    |                                                                                                                                            |
-| `secureCookies`  | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                      |
+| `secureCookies`  | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise. See below for important details.                                                     |
 | `sessionStore`   | `Object`   | `null`     | A compatible Express session middleware.                                                                                                   |
 | `schemaNames`    | `Array`    | `[public]` |                                                                                                                                            |
 | `queryLimits`    | `Object`   | `{}`       | Configures global query limits                                                                                                             |
+
+### `secureCookies`
+
+A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+
+You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
 
 ### `sessionStore`
 
@@ -132,7 +138,7 @@ Extends keystones generated schema with custom types, queries, and mutations.
 
 ```javascript
 keystone.extendGraphQLSchema({
-  types: ['type FooBar { foo: Int, bar: Float }'],
+  types: [{ type: 'type FooBar { foo: Int, bar: Float }' }],
   queries: [
     {
       schema: 'double(x: Int): Int',
@@ -150,11 +156,11 @@ keystone.extendGraphQLSchema({
 
 ### Config
 
-| Option    | Type    | Description                                         |
-| --------- | ------- | --------------------------------------------------- |
-| types     | `array` | A list of strings defining graphQL types.           |
-| queries   | `array` | A list of objects of the form { schema, resolver }. |
-| mutations | `array` | A list of objects of the form { schema, resolver }. |
+| Option    | Type    | Description                                                                                  |
+| --------- | ------- | -------------------------------------------------------------------------------------------- |
+| types     | `array` | A list of objects of the form { type, access } where the type string defines a graphQL type. |
+| queries   | `array` | A list of objects of the form { schema, resolver, access }.                                  |
+| mutations | `array` | A list of objects of the form { schema, resolver, access }.                                  |
 
 The `schema` for both queries and mutations should be a string defining the graphQL schema element for the query/mutation, e.g.
 
@@ -165,6 +171,8 @@ The `schema` for both queries and mutations should be a string defining the grap
 ```
 
 The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info)`. See the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature) for more details.
+
+The `access` argument for `types`, `queries`, and `mutations` are all boolean values which are used at schema generation time to include or exclude the item from the schema.
 
 ## createItems(items)
 

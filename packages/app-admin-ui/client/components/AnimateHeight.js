@@ -29,11 +29,7 @@ export default class AnimateHeight extends Component<Props, State> {
   scrollToTop = () => {
     const { autoScroll } = this.props;
     const element = autoScroll instanceof HTMLElement ? autoScroll : this.node;
-    if (
-      !element ||
-      // $FlowFixMe
-      typeof element.scrollTo !== 'function'
-    ) {
+    if (!element || typeof element.scrollTo !== 'function') {
       return;
     }
     element.scrollTo(0, 0);
