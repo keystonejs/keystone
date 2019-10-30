@@ -204,7 +204,7 @@ const Search = ({ onSelect }) => {
             <div
               css={{
                 display: 'flex',
-                flexDirection: 'colunm',
+                flexDirection: 'column',
                 justifyContent: 'space-between',
                 paddingTop: '16px',
                 paddingBottom: '16px',
