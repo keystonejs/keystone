@@ -84,7 +84,7 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected, mouseIsO
     flexGrow: 1,
     flexBasis: '100%',
 
-    ':hover': {
+    ':hover, :focus': {
       backgroundColor: colors.N10,
       textDecoration: 'none',
     },
@@ -118,7 +118,7 @@ export const NavIcon = styled(ItemElement)(({ mouseIsOverNav }) => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    ':hover': {
+    ':hover, :focus': {
       backgroundColor: colors.N10,
       textDecoration: 'none',
     },
