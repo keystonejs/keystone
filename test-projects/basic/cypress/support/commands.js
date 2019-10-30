@@ -25,6 +25,8 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 const gql = require('graphql-tag');
 
+import 'cypress-file-upload';
+
 /**
  * Uploads a file to an input
  * @memberOf Cypress.Chainable#
@@ -39,29 +41,14 @@ const gql = require('graphql-tag');
  * Usage:
  * // Dynamically create a file, or save one into the fixtures folder, your call
  * cy.writeFile('cypress/fixtures/notice.pdf', 'Hi, this content is created by cypress!')
- * cy.upload_file('input[name=file1]', 'notice.pdf')
+ * cy.upload_file('input[name=file1]', 'notice.pdf', 'application/pdf')
  */
-Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') =>
-  cy.get(selector).then(subject =>
-    cy.window().then(appWindow =>
-      cy
-        .fixture(fileUrl, 'base64')
-        .then(Cypress.Blob.base64StringToBlob)
-        .then(blob => {
-          const el = subject[0];
-          const nameSegments = fileUrl.split('/');
-          const name = nameSegments[nameSegments.length - 1];
-          // `File` is different from appWindow.File (the one in the app's iframe).
-          // Need to access the application's instance of `File` so the types match elsewhere.
-          const testFile = new appWindow.File([blob], name, { type });
-          const dataTransfer = new appWindow.DataTransfer();
-          dataTransfer.items.add(testFile);
-          el.files = dataTransfer.files;
-          subject.trigger('change');
-          return subject;
-        })
+Cypress.Commands.add('upload_file', (selector, fileUrl, type) =>
+  cy
+    .fixture(fileUrl)
+    .then(fileContent =>
+      cy.get(selector).upload({ fileContent, fileName: fileUrl, mimeType: type })
     )
-  )
 );
 
 function graphqlOperation(type) {

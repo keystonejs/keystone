@@ -3,8 +3,8 @@ import {
   MongooseMongoIdInterface,
   KnexMongoIdInterface,
 } from './Implementation';
-import { Text } from '@keystone-alpha/fields';
-import { importView } from '@keystone-alpha/build-field-types';
+import { Text } from '@keystonejs/fields';
+import { importView } from '@keystonejs/build-field-types';
 
 export const MongoId = {
   type: 'MongoId',
@@ -24,7 +24,7 @@ export const MongoId = {
       getConfig: () => {
         throw `The Uuid field type doesn't provide a default primary key field configuration for knex. ` +
           `You'll need to supply your own 'id' field for each list or use a different field type for your ` +
-          `ids (eg '@keystone-alpha/fields-auto-increment').`;
+          `ids (eg '@keystonejs/fields-auto-increment').`;
       },
     },
     mongoose: {

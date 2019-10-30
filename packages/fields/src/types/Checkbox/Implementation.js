@@ -1,6 +1,6 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class Checkbox extends Implementation {
   constructor() {

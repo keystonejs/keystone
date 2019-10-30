@@ -1,8 +1,8 @@
 {
-  "name": "@keystone-alpha/website",
+  "name": "@keystonejs/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "1.1.4",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,8 +18,8 @@
     "@arch-ui/input": "^0.1.0",
     "@arch-ui/select": "^0.1.0",
     "@arch-ui/theme": "^0.0.5",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14",
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22",
     "@mapbox/rehype-prism": "^0.3.1",
     "@mdx-js/mdx": "^1.0.20",
     "@mdx-js/react": "^1.0.20",

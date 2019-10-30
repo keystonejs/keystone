@@ -11,7 +11,7 @@ A KeystoneJS App for serving a [Next.js](https://nextjs.org/) application.
 ## Usage
 
 ```javascript
-const { NextApp } = require('@keystone-alpha/app-next');
+const { NextApp } = require('@keystonejs/app-next');
 
 ...
 
@@ -19,7 +19,7 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    new AdminUIApp(),
+    new AdminUIApp({ enableDefaultRoute: false }),
     new NextApp({ dir: 'app' }),
   ],
   distDir,

@@ -1,11 +1,13 @@
 <!--[meta]
 section: guides
 title: Adding Lists To Your Keystone Project
+subSection: setup
+order: 2
 [meta]-->
 
 # Adding Lists To Your Keystone Project
 
-We've already created one list during [previous tutorial](https://v5.keystonejs.com/quick-start).
+We've already created one list during [previous tutorial](/guides/new-project).
 Now it's the time to dive deeper. Let's make ToDos object a bit more complex.
 
 ## Creating basic list in separate file
@@ -14,7 +16,7 @@ To improve maintainability of your code it is convenient to split List schemas t
 named 'lists', with a file `Todos.js` inside of it and put the following code inside.
 
 ```javascript
-const { Text, Checkbox } = require('@keystone-alpha/fields');
+const { Text, Checkbox } = require('@keystonejs/fields');
 
 module.exports = {
   fields: {
@@ -47,7 +49,7 @@ Tasks usually have a few more fields. Let's add an ability to set deadlines and 
 
 ```javascript
 // import another field type - CalendarDay
-const { Text, CalendarDay } = require('@keystone-alpha/fields');
+const { Text, CalendarDay } = require('@keystonejs/fields');
 
 // define new field
 module.exports = {
@@ -69,7 +71,7 @@ module.exports = {
 }
 ```
 
-If you're curious about the usage options you can read more about `CalendarDay` [here](https://v5.keystonejs.com/keystone-alpha/fields/src/types/calendar-day/). Now it's time to explore docs on other field types and get a bit familiar with them. It will help you make your schema cleaner.
+If you're curious about the usage options you can read more about `CalendarDay` [here](/keystonejs/fields/src/types/calendar-day/). Now it's time to explore docs on other field types and get a bit familiar with them. It will help you make your schema cleaner.
 
 ## Defining User list
 
@@ -77,7 +79,7 @@ Take a look at the `assignee` field. Now we're just typing in a name. Why don't 
 Create another file `Users.js` in the `lists` directory. It should look like this:
 
 ```javascript
-const { Text, Password } = require('@keystone-alpha/fields');
+const { Text, Password } = require('@keystonejs/fields');
 
 module.exports = {
   fields: {
@@ -101,8 +103,8 @@ const UsersSchema = require('./lists/Users.js');
 keystone.createList('User', UsersSchema);
 ```
 
-Relaunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user. But how can we assign a task to specific user? Let's proceed with [Defining Relationships](https://v5.keystonejs.com/guides/relationships)
+Relaunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user. But how can we assign a task to specific user? Let's proceed with [Defining Relationships](/guides/relationships)
 
 See also:
-[Schema - Lists & Fields](https://v5.keystonejs.com/guides/schema)
-[API - createList](https://v5.keystonejs.com/api/create-list)
+[Schema - Lists & Fields](/guides/schema)
+[API - createList](/api/create-list)

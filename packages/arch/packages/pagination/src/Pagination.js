@@ -22,6 +22,9 @@ export type PaginationProps = {
   pageSize: number,
   total: number,
   isLoading: boolean,
+  justify?: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
+  spacing?: number,
+  growIndexes?: Array<number>,
 };
 
 const PageChildren = ({ page, isLoading, isSelected }) => {
@@ -190,7 +193,6 @@ class Pagination extends Component<PaginationProps, State> {
       ...rest
     } = this.props;
     return (
-      // $FlowFixMe flex group doesn't understand default props for some reason, in this instance...
       <FlexGroup as="nav" align="center" aria-label="Pagination" isContiguous isInline {...rest}>
         {this.renderPages()}
       </FlexGroup>

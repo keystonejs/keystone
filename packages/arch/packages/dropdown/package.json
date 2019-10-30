@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/dropdown",
-  "description": "Dropdown UI as used in @keystone-alpha Admin UI.",
+  "description": "Dropdown UI as used in @keystonejs Admin UI.",
   "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",
@@ -17,8 +17,8 @@
     "@arch-ui/modal-utils": "^1.0.2",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14",
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22",
     "react-focus-marshal": "^1.0.1",
     "react-router-dom": "5.0.0"
   },

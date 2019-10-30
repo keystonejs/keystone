@@ -1,5 +1,5 @@
 const omitBy = require('lodash.omitby');
-const { flatten, compose, defaultObj } = require('@keystone-alpha/utils');
+const { flatten, compose, defaultObj } = require('@keystonejs/utils');
 
 /**
  * Format of input object:
@@ -98,7 +98,10 @@ function pipelineBuilder(query) {
         $lookup: {
           from,
           as: uniqueField,
-          let: { [idsName]: `$${field}` },
+          // We use `ifNull` here to handle the case unique to mongo where a
+          // record may be entirely missing a field (or have the value set to
+          // `null`)
+          let: { [idsName]: many ? { $ifNull: [`$${field}`, []] } : `$${field}` },
           pipeline: pipelineBuilder({
             ...relationship,
             // The ID / list of IDs we're joining by. Do this very first so it limits any work
@@ -109,7 +112,12 @@ function pipelineBuilder(query) {
       },
       {
         $addFields: {
-          [`${uniqueField}_every`]: { $eq: [fieldSize, many ? { $size: `$${field}` } : 1] },
+          [`${uniqueField}_every`]: {
+            // We use `ifNull` here to handle the case unique to mongo where a
+            // record may be entirely missing a field (or have the value set to
+            // `null`)
+            $eq: [fieldSize, many ? { $size: { $ifNull: [`$${field}`, []] } } : 1],
+          },
           [`${uniqueField}_none`]: { $eq: [fieldSize, 0] },
           [`${uniqueField}_some`]: { $gt: [fieldSize, 0] },
         },

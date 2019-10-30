@@ -10,7 +10,7 @@ Adds `createdAt` and `updatedAt` fields to a list. These fields are read-only by
 ## Usage
 
 ```js
-const { atTracking } = require('@keystone-alpha/list-plugins');
+const { atTracking } = require('@keystonejs/list-plugins');
 
 keystone.createList('ListWithPlugin', {
   fields: {
@@ -50,7 +50,7 @@ By default access control on at tracking fields is read only:
 You can import _either_ `createdAt` or `updatedAt` to apply a single tracking field:
 
 ```javascript
-const { createdAt, updatedAt } = require('@keystone-alpha/list-plugins');
+const { createdAt, updatedAt } = require('@keystonejs/list-plugins');
 ```
 
 _Note_: The API is the same.

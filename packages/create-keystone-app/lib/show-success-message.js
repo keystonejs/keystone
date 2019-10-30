@@ -8,11 +8,16 @@ const showSuccessMessage = async () => {
   console.log(`
   🎉  KeystoneJS created a starter project in: ${c.bold(projectDir)}
 
+  ${c.bold('To launch your app, run:')}
+
+  - cd ${projectDir}
+  - yarn dev
+
   ${c.bold('Next steps:')}
 
   - Edit ${c.bold(`${projectDir}${path.sep}index.js`)} to customize your app.
   - ${terminalLink('Open the Admin UI', 'http://localhost:3000/admin')}
-  - ${terminalLink('Read the docs', 'https://v5.keystonejs.com')}
+  - ${terminalLink('Read the docs', 'https://keystonejs.com')}
   - ${terminalLink('Star KeystoneJS on GitHub', 'https://github.com/keystonejs/keystone-5')}
 `);
 };

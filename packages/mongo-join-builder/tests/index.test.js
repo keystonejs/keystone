@@ -65,14 +65,14 @@ describe('Test main export', () => {
         $lookup: {
           from: 'posts',
           as: 'posts_every_posts',
-          let: { posts_every_posts_ids: '$posts' },
+          let: { posts_every_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$posts_every_posts_ids'] } } },
             {
               $lookup: {
                 from: 'tags',
                 as: 'tags_some_tags',
-                let: { tags_some_tags_ids: '$tags' },
+                let: { tags_some_tags_ids: { $ifNull: ['$tags', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$tags_some_tags_ids'] } } },
                   { $match: { name: { $eq: 'foo' } } },
@@ -83,7 +83,7 @@ describe('Test main export', () => {
             {
               $addFields: {
                 tags_some_tags_every: {
-                  $eq: [{ $size: '$tags_some_tags' }, { $size: '$tags' }],
+                  $eq: [{ $size: '$tags_some_tags' }, { $size: { $ifNull: ['$tags', []] } }],
                 },
                 tags_some_tags_none: { $eq: [{ $size: '$tags_some_tags' }, 0] },
                 tags_some_tags_some: { $gt: [{ $size: '$tags_some_tags' }, 0] },
@@ -102,7 +102,9 @@ describe('Test main export', () => {
       },
       {
         $addFields: {
-          posts_every_posts_every: { $eq: [{ $size: '$posts_every_posts' }, { $size: '$posts' }] },
+          posts_every_posts_every: {
+            $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           posts_every_posts_none: { $eq: [{ $size: '$posts_every_posts' }, 0] },
           posts_every_posts_some: { $gt: [{ $size: '$posts_every_posts' }, 0] },
         },

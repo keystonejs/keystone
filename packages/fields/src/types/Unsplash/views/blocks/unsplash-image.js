@@ -204,7 +204,7 @@ const Search = ({ onSelect }) => {
             <div
               css={{
                 display: 'flex',
-                flexFlow: 'colunm nowrap',
+                flexDirection: 'column',
                 justifyContent: 'space-between',
                 paddingTop: '16px',
                 paddingBottom: '16px',
@@ -251,7 +251,8 @@ const Search = ({ onSelect }) => {
                 margin: 0,
                 padding: 0,
                 display: 'flex',
-                flexFlow: 'row wrap',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
                 justifyContent: 'space-evenly',
                 width: 'calc(100% + 4px)',
               }}

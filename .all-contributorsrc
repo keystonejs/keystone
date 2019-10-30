@@ -1,5 +1,5 @@
 {
-  "projectName": "keystone-5",
+  "projectName": "keystone",
   "projectOwner": "keystonejs",
   "repoType": "github",
   "repoHost": "https://github.com",
@@ -285,6 +285,42 @@
       "name": "dzigg",
       "avatar_url": "https://avatars1.githubusercontent.com/u/4436922?v=4",
       "profile": "https://github.com/dzigg",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cmosgh",
+      "name": "Cristian Mos",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/911925?v=4",
+      "profile": "https://github.com/cmosgh",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "arnaud-zg",
+      "name": "Arnaud Zheng",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10991546?v=4",
+      "profile": "https://arnaud-zg.github.io/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ashinzekene",
+      "name": "Ashinze Ekene",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20991583?v=4",
+      "profile": "https://twitter.com/ashinzekene",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Fabyao",
+      "name": "Fabyao",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5112982?v=4",
+      "profile": "https://github.com/Fabyao",
       "contributions": [
         "doc"
       ]

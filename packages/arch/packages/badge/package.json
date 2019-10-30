@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/badge",
-  "description": "Badge Component used in @keystone-alpha Admin UI.",
+  "description": "Badge Component used in @keystonejs Admin UI.",
   "version": "0.0.7",
   "author": "Jed Watson",
   "license": "MIT",
@@ -14,8 +14,8 @@
   "dependencies": {
     "@arch-ui/theme": "0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14"
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22"
   },
   "module": "dist/badge.esm.js"
 }

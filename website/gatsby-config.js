@@ -38,7 +38,7 @@ async function getGatsbyConfig() {
   return {
     siteMetadata: {
       title: `KeystoneJS`,
-      siteUrl: `https://v5.keystonejs.com`,
+      siteUrl: `https://keystonejs.com`,
       description: `A scalable platform and CMS to build Node.js applications.`,
       twitter: `@keystonejs`,
     },
