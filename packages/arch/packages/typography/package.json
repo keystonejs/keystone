@@ -14,8 +14,8 @@
   "dependencies": {
     "@arch-ui/theme": "0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14"
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22"
   },
   "module": "dist/typography.esm.js"
 }

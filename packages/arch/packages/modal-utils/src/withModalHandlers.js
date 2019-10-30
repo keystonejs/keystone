@@ -86,8 +86,7 @@ export default function withModalHandlers(
       const { target } = event;
       const { isOpen } = this.state;
 
-      // NOTE: Flow doesn't yet have a definition for `SVGElement`
-      // $FlowFixMe
+      // $FlowFixMe remove when this issue will be closed https://github.com/facebook/flow/pull/4551
       if (!(target instanceof HTMLElement) && !(target instanceof SVGElement)) {
         return;
       }

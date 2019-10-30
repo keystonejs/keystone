@@ -2,7 +2,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
-import * as React from 'react';
 
 import { colors, gridSize } from '@arch-ui/theme';
 
@@ -30,7 +29,7 @@ export const PageTitle = styled.h1({
 });
 
 type TruncateProps = {
-  as: React.ElementType,
+  as: string,
 };
 
 export const Truncate = ({ as: Tag, ...props }: TruncateProps) => <Tag css={truncate} {...props} />;
@@ -40,7 +39,7 @@ Truncate.defaultProps = {
 };
 
 type TitleProps = {
-  as: React.ElementType,
+  as: string,
   crop: boolean,
   margin: 'none' | 'both' | 'bottom' | 'top',
 };
@@ -94,7 +93,7 @@ export const Kbd = styled.kbd({
 });
 
 type A11yTextProps = {
-  tag: React.ElementType,
+  tag: string,
 };
 
 export const A11yText = ({ tag: Tag, ...props }: A11yTextProps) => (
