@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { Component, Fragment } from 'react'; // eslint-disable-line no-unused-vars
+import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 import { withRouter, Route, Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
@@ -298,34 +298,32 @@ let PrimaryNavContent = ({ mouseIsOverNav }) => {
     authStrategy: { listKey: authListKey } = {},
   } = useAdminMeta();
   return (
-    <Fragment>
-      <Inner>
-        <Title
-          as={Link}
-          to={adminPath}
-          margin="both"
-          crop
-          css={{
-            color: colors.N90,
-            textDecoration: 'none',
-            alignSelf: 'stretch',
-            marginLeft: PRIMARY_NAV_GUTTER,
-            marginRight: PRIMARY_NAV_GUTTER,
-          }}
-        >
-          {name}
-        </Title>
-        <PrimaryNavItems
-          adminPath={adminPath}
-          authListKey={authListKey}
-          getListByKey={getListByKey}
-          listKeys={listKeys.sort()}
-          pages={pages}
-          mouseIsOverNav={mouseIsOverNav}
-        />
-      </Inner>
+    <Inner>
+      <Title
+        as={Link}
+        to={adminPath}
+        margin="both"
+        crop
+        css={{
+          color: colors.N90,
+          textDecoration: 'none',
+          alignSelf: 'stretch',
+          marginLeft: PRIMARY_NAV_GUTTER,
+          marginRight: PRIMARY_NAV_GUTTER,
+        }}
+      >
+        {name}
+      </Title>
+      <PrimaryNavItems
+        adminPath={adminPath}
+        authListKey={authListKey}
+        getListByKey={getListByKey}
+        listKeys={listKeys.sort()}
+        pages={pages}
+        mouseIsOverNav={mouseIsOverNav}
+      />
       <NavIcons />
-    </Fragment>
+    </Inner>
   );
 };
 
