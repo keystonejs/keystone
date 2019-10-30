@@ -1,5 +1,5 @@
 ---
-'@keystone-alpha/app-admin-ui': patch
+'@keystonejs/app-admin-ui': patch
 '@arch-ui/button': patch
 '@arch-ui/confirm': patch
 '@arch-ui/controls': patch
@@ -11,8 +11,8 @@
 '@arch-ui/navbar': patch
 '@arch-ui/pagination': patch
 '@arch-ui/typography': patch
-'@keystone-alpha/build-field-types': patch
-'@keystone-alpha/fields': patch
+'@keystonejs/build-field-types': patch
+'@keystonejs/fields': patch
 ---
 
 Upgrade flow & fix flow errors and (probably) bugs

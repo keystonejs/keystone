@@ -49,7 +49,7 @@ before any middlewares are set up, so you can perform any Express configuration 
 ```javascript
 module.exports = {
   configureExpress: app => {
-    app.set('view engine', 'pug')
+    app.set('view engine', 'pug');
   },
 };
 ```
