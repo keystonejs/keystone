@@ -11,22 +11,13 @@ export const NavGroupIcons = styled.div({
   alignItems: 'center',
   alignSelf: 'stretch',
   display: 'flex',
-  flexFlow: 'row nowrap',
   justifyContent: 'space-between',
-  padding: 0,
-
-  '> *': {
-    marginBottom: 0,
-    padding: '1em 0',
-    textAlign: 'center',
-    width: '100%',
-  },
 });
 
 export const PrimaryNav = styled.nav({
   boxSizing: 'border-box',
   display: 'flex',
-  flexFlow: 'column nowrap',
+  flexDirection: 'column',
   height: '100vh',
   position: 'fixed',
   zIndex: 2,
@@ -82,15 +73,16 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected, mouseIsO
     display: 'block',
     marginBottom: 2,
     overflow: 'hidden',
+    padding: PRIMARY_NAV_GUTTER,
     paddingLeft: depth ? PRIMARY_NAV_GUTTER * depth : PRIMARY_NAV_GUTTER,
-    paddingRight: PRIMARY_NAV_GUTTER,
-    paddingBottom: gridSize,
-    paddingTop: gridSize,
     position: 'relative',
     textDecoration: 'none',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     transition: 'color 110ms',
+
+    flexGrow: 1,
+    flexBasis: '100%',
 
     ':hover': {
       backgroundColor: colors.N10,
@@ -115,6 +107,27 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected, mouseIsO
     ...selectedStyles,
   };
 });
+
+export const NavIcon = styled(ItemElement)(({ mouseIsOverNav }) => {
+  return {
+    color: mouseIsOverNav ? colors.N70 : colors.N40,
+    padding: PRIMARY_NAV_GUTTER,
+    textDecoration: 'none',
+    flexGrow: 1,
+    flexBasis: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    ':hover': {
+      backgroundColor: colors.N10,
+      textDecoration: 'none',
+    },
+    ':active': {
+      backgroundColor: colors.N10,
+    },
+  };
+});
+
 export const PrimaryNavHeading = styled.h3(({ depth }) => ({
   color: colors.N40,
   fontSize: '0.85em',
