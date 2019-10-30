@@ -29,12 +29,12 @@ type Loading = ButtonProps & {
 };
 
 function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...props }: Loading, ref) {
-  const appearance = getAppearance(props.appearance);
+  const appearance = getAppearance(props.appearance || 'default');
   const textCSS = isLoading ? { visibility: 'hidden' } : null;
   const isSpinner = indicatorVariant === 'spinner';
 
   return (
-    <Button ref={ref} {...props}>
+    <Button ref={ref} variant="bold" indicatorVariant="dots" {...props}>
       <LoadingButtonInner>
         {isLoading ? (
           <LoadingIndicatorWrapper>
@@ -50,13 +50,6 @@ function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...prop
     </Button>
   );
 }
-
-LoadingButtonComponent.defaultProps = {
-  appearance: 'default',
-  isLoading: false,
-  variant: 'bold',
-  indicatorVariant: 'dots',
-};
 
 // Export
 export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonElement>(

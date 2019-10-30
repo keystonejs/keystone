@@ -62,16 +62,16 @@ type FlexGroupProps = {
 };
 export function FlexGroupComponent(
   {
-    align,
-    as: Tag,
+    align = 'stretch',
+    as: Tag = 'div',
     children,
-    growIndexes,
+    growIndexes = [],
     isContiguous,
     isInline,
     isVertical,
-    justify,
+    justify = 'flex-start',
     wrap,
-    spacing,
+    spacing = gridSize,
     stretch,
     ...props
   }: FlexGroupProps,
@@ -127,14 +127,6 @@ export function FlexGroupComponent(
     </Tag>
   );
 }
-
-FlexGroupComponent.defaultProps = {
-  align: 'stretch',
-  as: 'div',
-  growIndexes: [],
-  justify: 'flex-start',
-  spacing: gridSize,
-};
 
 export const FlexGroup = forwardRef<FlexGroupProps, any>(FlexGroupComponent);
 

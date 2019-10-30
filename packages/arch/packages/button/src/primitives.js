@@ -38,15 +38,15 @@ export type ButtonProps = {
 };
 
 function makeVariant({
-  appearance,
+  appearance = 'default',
   isActive,
   isBlock,
   isHover,
   isFocus,
   isDisabled,
   isSelected,
-  variant,
-  spacing,
+  variant = 'bold',
+  spacing = 'comfortable',
 }) {
   let variantStyles;
   const config = { appearance, isDisabled, isActive, isHover, isFocus, isSelected };
@@ -97,12 +97,6 @@ function ButtonElementComponent(props: ButtonProps, ref) {
   }
   return <button type="button" disabled={isDisabled} css={variant} ref={ref} {...rest} />;
 }
-
-ButtonElementComponent.defaultProps = {
-  appearance: 'default',
-  spacing: 'comfortable',
-  variant: 'bold',
-};
 
 const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
   ButtonElementComponent
