@@ -1,35 +1,11 @@
 import FieldController from '../../../Controller';
 
 export default class TextController extends FieldController {
-  parseFilter = key => {
-    let type = key;
-    if (!type.endsWith('_i')) {
-      this.setFilterSensitive(true);
-      type = `${type}_i`;
-    }
-    return this.getFilterTypes().find(t => {
-      return type === `${this.path}_${t.type}`;
-    });
-  };
-  encodeFilter = (type, value) => {
-    if (this.getFilterSensitive()) {
-      return [`${this.path}_${type.slice(0, -2)}`, JSON.stringify(value)];
-    }
-    return [`${this.path}_${type}`, JSON.stringify(value)];
-  };
-  setFilterSensitive = isFilterSensitive => {
-    this.isFilterSensitive = isFilterSensitive;
-  };
-  getFilterSensitive = () => {
-    return this.isFilterSensitive === undefined ? false : this.isFilterSensitive;
-  };
   getFilterGraphQL = ({ type, value }) => {
-    let key = type === 'is_i' ? `${this.path}_i` : `${this.path}_${type}`;
-    if (this.getFilterSensitive()) {
-      key = `${key.slice(0, -2)}`;
-    }
+    const key = type === 'is_i' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: "${value}"`;
   };
+
   getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;
   };
