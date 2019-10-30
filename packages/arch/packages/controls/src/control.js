@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, type Node, type Ref, type ElementType } from 'react';
+import React, { Component, type Node, type Ref } from 'react';
 import memoize from 'memoize-one';
 import { PseudoState } from 'react-pseudo-state';
 import styled from '@emotion/styled';
@@ -37,9 +37,9 @@ type Props = {
 };
 
 type Components = {
-  Wrapper?: ElementType,
-  Label?: ElementType,
-  Text?: ElementType,
+  Wrapper?: React$ComponentType<*>,
+  Label?: React$ComponentType<*>,
+  Text?: React$ComponentType<*>,
 };
 
 export type ControlProps = Props & {

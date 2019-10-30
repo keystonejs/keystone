@@ -4,7 +4,6 @@ import querystring from 'querystring';
 import * as React from 'react';
 
 import List from '../../classes/List';
-// $FlowFixMe flow doesn't recognise the `*/Controller` entry point
 import type { FieldControllerType } from '@keystonejs/fields/Controller';
 import { pseudoLabelField } from './FieldSelect';
 import type { AdminMeta } from '../../providers/AdminMeta';

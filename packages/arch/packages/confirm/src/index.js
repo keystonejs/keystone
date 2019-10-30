@@ -65,19 +65,24 @@ const Body = styled.div({
 // Dialog
 // ------------------------------
 
-type Props = {
-  attachTo: HTMLElement,
+type OwnProps = {|
+  attachTo?: HTMLElement | ?HTMLBodyElement,
   children: Node,
-  component: ComponentType<*> | string,
+  component?: ComponentType<*> | string,
   onClose?: (*) => void,
   onKeyDown: (*) => void,
+  width?: number,
+  isOpen?: boolean,
+|};
+
+type Props = {|
+  ...OwnProps,
   transitionState: TransitionState,
-  width: number,
-};
+|};
 
 class ModalConfirm extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: ((document.body: any): HTMLElement),
+    attachTo: document.body,
     component: 'div',
     width: 400,
   };
@@ -93,11 +98,16 @@ class ModalConfirm extends PureComponent<Props> {
   render() {
     const { attachTo, children, component, width, transitionState } = this.props;
 
+    if (!attachTo) {
+      return null;
+    }
+
     return createPortal(
       <Fragment>
         <Blanket style={fade(transitionState)} isTinted isLight />
         <Positioner style={zoomInDown(transitionState)}>
           <FocusTrap>
+            {/* $$FlowFixMe default props */}
             <Dialog component={component} width={width}>
               <Body>{children}</Body>
             </Dialog>
@@ -110,4 +120,4 @@ class ModalConfirm extends PureComponent<Props> {
   }
 }
 
-export default withTransitionState(ModalConfirm);
+export default withTransitionState<OwnProps>(ModalConfirm);
