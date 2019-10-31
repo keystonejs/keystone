@@ -48,7 +48,7 @@ module.exports = {
 };
 ```
 
-Initialising a list is not always the straight forward problem it seems.
+Initialising a list is not always the straight forward solution it seems.
 
 You can achieve this setup by running the KeystoneJS CLI and selecting the `Starter` template.
 
