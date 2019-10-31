@@ -103,11 +103,11 @@ Upon insertion, KeystoneJS will resolve the `{ where: { name: 'Ticiana' } }` que
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
-Note an error is thrown if no items match the query.
+_Note_: An error is thrown if no items match the query.
 
 ##### Many Relationships
 
-When inserting an item with a to-many relationship, such as:
+When inserting an item with a `*-to-many` relationship, such as:
 
 ```javascript
 keystone.createList('User', {
