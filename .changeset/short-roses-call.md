@@ -1,5 +1,5 @@
 ---
-'@keystone-alpha/fields': minor
+'@keystonejs/fields': minor
 ---
 
 Added a default getFilterTypes method to FieldController
