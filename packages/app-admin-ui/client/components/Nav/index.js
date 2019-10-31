@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { Component, memo } from 'react'; // eslint-disable-line no-unused-vars
+import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
 import { withRouter, Route, Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
@@ -37,7 +37,7 @@ const Col = styled.div({
   alignItems: 'flex-start',
   display: 'flex',
   flex: 1,
-  flexFlow: 'column nowrap',
+  flexDirection: 'column',
   justifyContent: 'flex-start',
   overflow: 'hidden',
   width: '100%',

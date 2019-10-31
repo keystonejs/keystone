@@ -5,7 +5,7 @@ title: atTracking
 
 # atTracking
 
-Adds `createdAt` and `updatedAt` fields to a list. These fields are read-only by will be updated automatically when items are created or updated.
+Adds `createdAt` and `updatedAt` fields to a list. These fields are read-only but they will be updated automatically when items are created or updated.
 
 ## Usage
 

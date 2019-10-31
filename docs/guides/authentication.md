@@ -71,7 +71,7 @@ the `new AdminUIApp()` call:
 + const admin = new AdminUIApp({ });
 ```
 
-Second, disable access control by removing `access` from the 
+Second, disable access control by removing `access` from the
 `keystone.createList('User', ...` call:
 
 ```diff

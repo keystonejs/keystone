@@ -232,7 +232,7 @@ module.exports = class List {
       throw new Error(`List ${label}'s queryLimits.maxResults can't be < 1`);
     }
 
-    if (!['object', 'function', 'undefined'].includes(typeof this.cacheHint)) {
+    if (!['object', 'function', 'undefined'].includes(typeof cacheHint)) {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
