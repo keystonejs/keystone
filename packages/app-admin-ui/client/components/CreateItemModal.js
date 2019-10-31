@@ -18,7 +18,7 @@ let Render = ({ children }) => children();
 class CreateItemModal extends Component {
   constructor(props) {
     super(props);
-    const { list, prefillData } = props;
+    const { list, prefillData = {} } = props;
     const item = list.getInitialItemData({ prefill: prefillData });
     const validationErrors = {};
     const validationWarnings = {};
@@ -168,6 +168,7 @@ class CreateItemModal extends Component {
                             /* TODO: Permission query results */
                             errors={validationErrors[field.path] || []}
                             warnings={validationWarnings[field.path] || []}
+                            createItemModal={CreateItemModalWithMutation}
                             onChange={onChange}
                             renderContext="dialog"
                           />

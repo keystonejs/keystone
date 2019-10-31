@@ -11,7 +11,6 @@ import { gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
-import CreateItemModal from './CreateItemModal';
 import RelationshipSelect from './RelationshipSelect';
 
 const MAX_IDS_IN_FILTER = 100;
@@ -110,7 +109,7 @@ function LinkToRelatedItems({ field, value }) {
   );
 }
 
-function CreateAndAddItem({ field, item, list, onCreate }) {
+function CreateAndAddItem({ field, item, list, onCreate, createItemModal: CreateItemModal }) {
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
   let [isOpen, setIsOpen] = useState(false);
   let label = `Create and add ${relatedList.singular}`;
@@ -183,7 +182,17 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, value, renderContext, errors, onChange, item, list } = this.props;
+    const {
+      autoFocus,
+      field,
+      value,
+      renderContext,
+      errors,
+      onChange,
+      item,
+      list,
+      createItemModal,
+    } = this.props;
     const { many, ref } = field.config;
     const { authStrategy } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
@@ -210,6 +219,7 @@ export default class RelationshipField extends Component {
             field={field}
             item={item}
             list={list}
+            createItemModal={createItemModal}
           />
           {authStrategy && ref === authStrategy.listKey && (
             <SetAsCurrentUser

@@ -10,6 +10,7 @@ import { omit, arrayToObject, countArrays } from '@keystonejs/utils';
 import { LoadingIndicator } from '@arch-ui/loading';
 
 import { validateFields } from '../util';
+import CreateItemModal from './CreateItemModal';
 
 let Render = ({ children }) => children();
 
@@ -178,6 +179,7 @@ class UpdateManyModal extends Component {
                         warnings={validationWarnings[field.path] || []}
                         onChange={onChange}
                         renderContext="dialog"
+                        createItemModal={CreateItemModal}
                       />
                     ),
                     [
