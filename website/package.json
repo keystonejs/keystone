@@ -13,6 +13,10 @@
     "start:debug": "node --inspect-brk `yarn bin`/gatsby develop",
     "build": "gatsby build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keystonejs/keystone.git"
+  },
   "dependencies": {
     "@arch-ui/icons": "^0.0.5",
     "@arch-ui/input": "^0.1.0",
