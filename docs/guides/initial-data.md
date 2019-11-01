@@ -7,7 +7,7 @@ order: 3
 
 ## Adding initial data to Lists
 
-This guide will show you how to create a User list and initialise it manually or with the `createItems` method.
+This guide will show you how to create a User list and add initial data to it using the `createItems` method. This process is also called `seeding`
 
 First let's create a User list and add a `PasswordAuthStrategy`. Our `index.js` might look like this:
 
@@ -48,15 +48,13 @@ module.exports = {
 };
 ```
 
-Initialising a list is not always the straight forward solution it seems.
-
 You can achieve this setup by running the KeystoneJS CLI and selecting the `Starter` template.
 
-This method's primary use is intended for migration scripts, or initial seeding of databases.
+This method's primary use is intended towards initial seeding of databases or running manual migration scripts.
 
 ### Usage
 
-An object where keys are list keys, and values are arrays of items to insert.
+`createItems` requires an object where keys are list keys, and values are arrays of items to insert.
 For example;
 
 ```javascript
@@ -107,7 +105,7 @@ _Note_: An error is thrown if no items match the query.
 
 ##### Many Relationships
 
-When inserting an item with a `*-to-many` relationship, such as:
+When inserting an item with a `to-many` relationship, such as:
 
 ```javascript
 keystone.createList('User', {
@@ -117,7 +115,7 @@ keystone.createList('User', {
 });
 ```
 
-There is 2 ways to write the relationship query:
+There is 2 ways to write the query for `to-many` relationships:
 
 1. _Single Relation syntax_, using the same query as a Single Relationship, but
    instead of picking only the first item found, it will pick _all_ the items
