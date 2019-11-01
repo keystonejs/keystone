@@ -1,4 +1,43 @@
+# @keystonejs/app-admin-ui
+
+## 5.0.1
+
+### Patch Changes
+
+- [`19b08a30`](https://github.com/keystonejs/keystone/commit/19b08a30b3dbfb7c7a0056f210769bbf6e171c85) [#1806](https://github.com/keystonejs/keystone/pull/1806) Thanks [@gautamsi](https://github.com/gautamsi)! - indicate which list is auth list by adding a person icon afetr label
+
+- Updated dependencies [[`209b7078`](https://github.com/keystonejs/keystone/commit/209b7078c7fa4f4d87568c58cb6cb6ad8162fe46)]:
+  - @keystonejs/fields@5.0.1
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/build-field-types@5.0.0
+  - @keystonejs/field-views-loader@5.0.0
+  - @keystonejs/fields@5.0.0
+  - @keystonejs/session@5.0.0
+  - @keystonejs/utils@5.0.0
+
 # @keystone-alpha/app-admin-ui
+
+## 5.10.3
+
+### Patch Changes
+
+- [`a8ee0179`](https://github.com/keystonejs/keystone-5/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26) [#1805](https://github.com/keystonejs/keystone-5/pull/1805) Thanks [@gautamsi](https://github.com/gautamsi)! - export `useAdminMeta` which is useful in developing custom pages
+
+- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/fields@15.0.0
 
 ## 5.10.2
 
@@ -306,6 +345,8 @@
 - [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
 
   Fix Admin UI building on Windows
+
+# @keystonejs/admin-ui
 
 # @keystone-alpha/admin-ui
 

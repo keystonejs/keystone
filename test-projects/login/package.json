@@ -1,8 +1,8 @@
 {
-  "name": "@keystone-alpha/cypress-project-login",
-  "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
+  "name": "@keystonejs/cypress-project-login",
+  "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
-  "version": "1.5.5",
+  "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,27 +18,28 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/login/.env file.\nSee test-projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^6.0.0",
-    "@keystone-alpha/app-admin-ui": "^5.10.2",
-    "@keystone-alpha/app-graphql": "^8.0.0",
-    "@keystone-alpha/app-static": "^1.1.1",
-    "@keystone-alpha/auth-password": "^1.0.5",
-    "@keystone-alpha/fields": "^14.0.0",
-    "@keystone-alpha/keystone": "^16.0.0",
-    "@keystone-alpha/list-plugins": "^1.0.4",
-    "@keystone-alpha/session": "^3.0.0",
+    "@keystonejs/adapter-mongoose": "^5.0.1",
+    "@keystonejs/app-admin-ui": "^5.0.1",
+    "@keystonejs/app-graphql": "^5.0.0",
+    "@keystonejs/app-static": "^5.0.0",
+    "@keystonejs/auth-password": "^5.0.0",
+    "@keystonejs/fields": "^5.0.1",
+    "@keystonejs/keystone": "^5.0.0",
+    "@keystonejs/list-plugins": "^5.0.0",
+    "@keystonejs/session": "^5.0.0",
     "body-parser": "^1.18.2",
     "cross-env": "^5.2.0",
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "cypress": "^3.4.0",
-    "dotenv-safe": "^6.0.0",
+    "cypress": "^3.5.0",
+    "cypress-file-upload": "^3.4.0",
+    "dotenv-safe": "^8.1.0",
     "execa": "^2.0.4",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.21.0",
     "mocha-multi-reporters": "^1.1.7",
-    "pino-colada": "^1.4.4",
-    "start-server-and-test": "^1.10.2"
+    "pino-colada": "^1.4.5",
+    "start-server-and-test": "^1.10.6"
   }
 }

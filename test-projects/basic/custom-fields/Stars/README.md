@@ -5,7 +5,7 @@ Finally this is available in Keystone 5 🎉.
 
 In this post we will be creating a simple custom Field Type for star ratings ⭐️ ⭐️ ⭐️ ⭐️ ⭐️!
 
-![Screenshot of the Stars input field in Keystone Admin UI]()
+![Screenshot of the Stars input field in Keystone Admin UI](<>)
 
 For this component, our data requirements are simple. We need to store an Integer in the database
 to represent the number of stars on a blog post. This makes things easy because Integer is a built
@@ -91,7 +91,7 @@ For now, `Implementation.js` is only going to re-export from the `Integer` imple
 const {
   Integer,
   MongoIntegerInterface,
-} = require('@keystone-alpha/fields/types/Integer/Implementation');
+} = require('@keystonejs/fields/types/Integer/Implementation');
 
 class Stars extends Integer {}
 
@@ -104,7 +104,7 @@ module.exports = {
 `Controller.js` is also going to re-export from the `Integer` Controller.
 
 ```jsx
-export { default } from '@keystone-alpha/fields/types/Integer/Controller';
+export { default } from '@keystonejs/fields/types/Integer/Controller';
 ```
 
 ### Views
@@ -126,7 +126,7 @@ export default function Cell(props) {
 We're going to reuse the Integer filter here so we'll re-export it.
 
 ```jsx
-export { default } from '@keystone-alpha/fields/types/Integer/views/Filter';
+export { default } from '@keystonejs/fields/types/Integer/views/Filter';
 ```
 
 #### views/Field.js
@@ -134,7 +134,7 @@ export { default } from '@keystone-alpha/fields/types/Integer/views/Filter';
 For now, we're also going to re-export the Integer Field Type.
 
 ```jsx
-export { default } from '@keystone-alpha/fields/types/Integer/views/Field';
+export { default } from '@keystonejs/fields/types/Integer/views/Field';
 ```
 
 ## Use the Field Type
@@ -212,7 +212,7 @@ First we need to expose it to the Admin UI, to do this, we can define a `extendA
 const {
   Integer,
   MongoIntegerInterface,
-} = require('@keystone-alpha/fields/types/Integer/Implementation');
+} = require('@keystonejs/fields/types/Integer/Implementation');
 
 class Stars extends Integer {
   extendAdminMeta(meta) {

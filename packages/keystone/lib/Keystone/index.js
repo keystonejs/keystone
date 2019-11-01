@@ -16,19 +16,19 @@ const {
   unique,
   filterValues,
   compose,
-} = require('@keystone-alpha/utils');
+} = require('@keystonejs/utils');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
   validateCustomAccessControl,
   parseCustomAccess,
-} = require('@keystone-alpha/access-control');
+} = require('@keystonejs/access-control');
 const {
   startAuthedSession,
   endAuthedSession,
   commonSessionMiddleware,
-} = require('@keystone-alpha/session');
-const { logger } = require('@keystone-alpha/logger');
+} = require('@keystonejs/session');
+const { logger } = require('@keystonejs/logger');
 
 const {
   unmergeRelationships,
@@ -50,7 +50,6 @@ module.exports = class Keystone {
     adapter,
     defaultAdapter,
     name,
-    adapterConnectOptions = {},
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
@@ -60,7 +59,6 @@ module.exports = class Keystone {
     schemaNames = ['public'],
   }) {
     this.name = name;
-    this.adapterConnectOptions = adapterConnectOptions;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -235,7 +233,7 @@ module.exports = class Keystone {
       if (!graphQLQuery) {
         return Promise.reject(
           new Error(
-            `No executable schema named '${passThroughContext.schemaName}' is available. Have you setup '@keystone-alpha/app-graphql'?`
+            `No executable schema named '${passThroughContext.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
           )
         );
       }
@@ -259,6 +257,11 @@ module.exports = class Keystone {
   createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
+    const isReservedName = !isAuxList && key[0] === '_';
+
+    if (isReservedName) {
+      throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
+    }
 
     const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,

@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/drawer",
-  "description": "Drawer Portal UI as used in @keystone-alpha Admin UI.",
+  "description": "Drawer Portal UI as used in @keystonejs Admin UI.",
   "version": "0.0.10",
   "author": "Jed Watson",
   "license": "MIT",
@@ -19,8 +19,8 @@
     "@arch-ui/theme": "^0.0.5",
     "@arch-ui/typography": "^0.0.8",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14",
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22",
     "react-focus-marshal": "^1.0.1",
     "react-scrolllock": "^4.0.1"
   },

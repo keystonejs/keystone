@@ -3,7 +3,7 @@
 import { Component } from 'react';
 import { jsx } from '@emotion/core';
 import { Options } from '@arch-ui/options';
-import { arrayToObject } from '@keystone-alpha/utils';
+import { arrayToObject } from '@keystonejs/utils';
 
 function isOptionSelected(opt, selected) {
   return Boolean(selected.filter(x => x.path === opt.path).length);

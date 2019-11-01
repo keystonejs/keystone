@@ -1,4 +1,4 @@
-# @keystone-alpha/build-field-types
+# @keystonejs/build-field-types
 
 This package is an internal helper package used by Keystone to package field types for the adminUI.
 

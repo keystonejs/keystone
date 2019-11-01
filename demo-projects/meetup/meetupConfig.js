@@ -36,7 +36,7 @@ const MEETUP = {
 `,
     callToActionButtonLabel: `Join us now`,
     copyrightText: `
-<p>Copyright &copy; Thinkmill Pty Ltd, powered by <a href="https://v5.keystonejs.com">KeystoneJS</a>.</p>
+<p>Copyright &copy; Thinkmill Pty Ltd, powered by <a href="https://keystonejs.com">KeystoneJS</a>.</p>
 <p>If you run a meetup, please feel free to clone our site and make your own!
   <a href="https://github.com/keystonejs/keystone-5/tree/master/demo-projects/meetup">You can find it on GitHub</a>.
 </p>

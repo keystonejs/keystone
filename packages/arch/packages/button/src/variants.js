@@ -12,21 +12,25 @@ const boldAppearance = {
   primary: {
     bg: colors.primary,
     border: colors.primary,
+    focusRing: null,
     text: '#fff',
   },
   create: {
     bg: colors.create,
     border: colors.create,
+    focusRing: null,
     text: '#fff',
   },
   danger: {
     bg: colors.danger,
     border: colors.danger,
+    focusRing: null,
     text: '#fff',
   },
   warning: {
     bg: colors.warning,
     border: colors.warning,
+    focusRing: null,
     text: '#fff',
   },
 };
@@ -61,6 +65,10 @@ const subtleAppearance = {
     text: colors.N40,
     textHover: colors.primary,
   },
+  create: {
+    text: null,
+    textHover: null,
+  },
   warning: {
     text: colors.N40,
     textHover: colors.danger,
@@ -76,6 +84,9 @@ const nuanceAppearance = {
   },
   primary: {
     text: colors.primary,
+  },
+  create: {
+    text: null,
   },
   warning: {
     text: colors.danger,
@@ -165,7 +176,6 @@ export function makeBoldVariant({
   isFocus: boolean,
   isSelected?: boolean,
 }) {
-  // $FlowFixMe
   const { bg, border, focusRing, text } = boldAppearance[appearance];
   const activeBg = appearance === 'default' ? colors.N10 : darken(bg, 12);
 

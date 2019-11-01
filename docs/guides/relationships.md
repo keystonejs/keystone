@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: Creating Relationships Between Lists
+subSection: setup
+order: 4
 [meta]-->
 
 # Creating Relationships Between Lists
@@ -78,5 +80,5 @@ The `many: true` option indicates that `User` can store multiple references to t
 
 See also:
 
-- [Schema - Lists & Fields](https://v5.keystonejs.com/guides/schema)
-- [Field Types - Relationship](https://v5.keystonejs.com/keystone-alpha/fields/src/types/relationship/)
+- [Schema - Lists & Fields](/guides/schema)
+- [Field Types - Relationship](/keystonejs/fields/src/types/relationship/)
