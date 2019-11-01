@@ -120,7 +120,7 @@ describe('List view URL state', () => {
       .type(`categories{enter}`, { force: true });
     cy.location('search').should('eq', '?sortBy=categories');
   });
-  it.only('Stores filter state in the url', () => {
+  it('Stores filter state in the url', () => {
     // Filter defined in the url
     cy.visit('/admin/posts?!name_contains_i="Hello"');
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
