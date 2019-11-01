@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+
 const pSettle = require('p-settle');
 const {
   escapeRegExp,
@@ -8,19 +10,12 @@ const {
   mapKeyNames,
   identity,
   mergeWhereClause,
-} = require('@keystone-alpha/utils');
+  versionGreaterOrEqualTo,
+} = require('@keystonejs/utils');
 
-const {
-  BaseKeystoneAdapter,
-  BaseListAdapter,
-  BaseFieldAdapter,
-} = require('@keystone-alpha/keystone');
-const {
-  queryParser,
-  pipelineBuilder,
-  mutationBuilder,
-} = require('@keystone-alpha/mongo-join-builder');
-const logger = require('@keystone-alpha/logger').logger('mongoose');
+const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
+const { queryParser, pipelineBuilder, mutationBuilder } = require('@keystonejs/mongo-join-builder');
+const logger = require('@keystonejs/logger').logger('mongoose');
 
 const slugify = require('@sindresorhus/slugify');
 
@@ -31,9 +26,11 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     super(...arguments);
     this.name = 'mongoose';
     this.mongoose = new mongoose.Mongoose();
+    this.minVer = '4.0.0';
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
+    this.mongoose.plugin(uniqueValidator);
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
@@ -81,8 +78,24 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { MongoId } = require('@keystone-alpha/fields-mongoid');
+    const { MongoId } = require('@keystonejs/fields-mongoid');
     return MongoId.primaryKeyDefaults[this.name].getConfig();
+  }
+
+  async checkDatabaseVersion() {
+    let info;
+
+    try {
+      info = await new this.mongoose.mongo.Admin(this.mongoose.connection.db).buildInfo();
+    } catch (error) {
+      console.log(`Error reading version from MongoDB: ${error}`);
+    }
+
+    if (!versionGreaterOrEqualTo(info.versionArray, this.minVer)) {
+      throw new Error(
+        `MongoDB version ${info.version} is incompatible. Version ${this.minVer} or later is required.`
+      );
+    }
   }
 }
 
@@ -174,7 +187,11 @@ class MongooseListAdapter extends BaseListAdapter {
   _update(id, data) {
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
     // Return the modified item, not the original
-    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
+    return this.model.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true, context: 'query' }
+    );
   }
 
   _findAll() {
@@ -210,7 +227,7 @@ class MongooseListAdapter extends BaseListAdapter {
         { include: from.fromField }
       );
       if (ids.length) {
-        args = mergeWhereClause(args, { id: { $in: ids[0][from.fromField] } });
+        args = mergeWhereClause(args, { id: { $in: ids[0][from.fromField] || [] } });
       }
     }
     function graphQlQueryToMongoJoinQuery(query) {

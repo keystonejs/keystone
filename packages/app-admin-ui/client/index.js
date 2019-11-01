@@ -1,7 +1,6 @@
 import React, { Suspense, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'; // FIXME: Use the provided API when hooks ready
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
@@ -40,95 +39,89 @@ const Keystone = () => {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <ApolloHooksProvider client={apolloClient}>
-        <KeyboardShortcuts>
-          <ToastProvider components={{ ToastContainer }}>
-            <ConnectivityListener />
-            <Global styles={globalStyles} />
-            <BrowserRouter>
-              <Switch>
-                <Route exact path={signinPath}>
-                  <Redirect to={adminPath} />
-                </Route>
-                <Route exact path={signoutPath} render={() => <SignoutPage {...adminMeta} />} />
-                <Route>
-                  <ScrollToTop>
-                    <Nav>
-                      <Suspense fallback={<PageLoading />}>
-                        <Switch>
-                          {findCustomPages(pages).map(page => (
-                            <Route
-                              exact
-                              key={page.path}
-                              path={`${adminPath}/${page.path}`}
-                              render={() => {
-                                const [Page] = readViews([pageViews[page.path]]);
-                                return <Page />;
-                              }}
-                            />
-                          ))}
+      <KeyboardShortcuts>
+        <ToastProvider components={{ ToastContainer }}>
+          <ConnectivityListener />
+          <Global styles={globalStyles} />
+          <BrowserRouter>
+            <Switch>
+              <Route exact path={signinPath}>
+                <Redirect to={adminPath} />
+              </Route>
+              <Route exact path={signoutPath} render={() => <SignoutPage {...adminMeta} />} />
+              <Route>
+                <ScrollToTop>
+                  <Nav>
+                    <Suspense fallback={<PageLoading />}>
+                      <Switch>
+                        {findCustomPages(pages).map(page => (
                           <Route
                             exact
-                            path={adminPath}
-                            render={() => <HomePage {...adminMeta} />}
-                          />
-                          <Route
-                            path={`${adminPath}/:listKey`}
-                            render={({
-                              match: {
-                                params: { listKey },
-                              },
-                            }) => {
-                              // TODO: Permission query to show/hide a list from the
-                              // menu
-                              const list = adminMeta.getListByPath(listKey);
-                              return list ? (
-                                <Switch>
-                                  <Route
-                                    exact
-                                    path={`${adminPath}/:list`}
-                                    render={routeProps => (
-                                      <ListPage
-                                        key={listKey}
-                                        list={list}
-                                        adminMeta={adminMeta}
-                                        routeProps={routeProps}
-                                      />
-                                    )}
-                                  />
-                                  <Route
-                                    exact
-                                    path={`${adminPath}/:list/:itemId`}
-                                    render={({
-                                      match: {
-                                        params: { itemId },
-                                      },
-                                    }) => (
-                                      <ItemPage
-                                        key={`${listKey}-${itemId}`}
-                                        list={list}
-                                        itemId={itemId}
-                                        {...adminMeta}
-                                      />
-                                    )}
-                                  />
-                                  <Route render={() => <InvalidRoutePage {...adminMeta} />} />
-                                </Switch>
-                              ) : (
-                                <ListNotFoundPage listKey={listKey} {...adminMeta} />
-                              );
+                            key={page.path}
+                            path={`${adminPath}/${page.path}`}
+                            render={() => {
+                              const [Page] = readViews([pageViews[page.path]]);
+                              return <Page />;
                             }}
                           />
-                        </Switch>
-                      </Suspense>
-                    </Nav>
-                  </ScrollToTop>
-                </Route>
-              </Switch>
-            </BrowserRouter>
-          </ToastProvider>
-        </KeyboardShortcuts>
-      </ApolloHooksProvider>
+                        ))}
+                        <Route exact path={adminPath} render={() => <HomePage {...adminMeta} />} />
+                        <Route
+                          path={`${adminPath}/:listKey`}
+                          render={({
+                            match: {
+                              params: { listKey },
+                            },
+                          }) => {
+                            // TODO: Permission query to show/hide a list from the
+                            // menu
+                            const list = adminMeta.getListByPath(listKey);
+                            return list ? (
+                              <Switch>
+                                <Route
+                                  exact
+                                  path={`${adminPath}/:list`}
+                                  render={routeProps => (
+                                    <ListPage
+                                      key={listKey}
+                                      list={list}
+                                      adminMeta={adminMeta}
+                                      routeProps={routeProps}
+                                    />
+                                  )}
+                                />
+                                <Route
+                                  exact
+                                  path={`${adminPath}/:list/:itemId`}
+                                  render={({
+                                    match: {
+                                      params: { itemId },
+                                    },
+                                  }) => (
+                                    <ItemPage
+                                      key={`${listKey}-${itemId}`}
+                                      list={list}
+                                      itemId={itemId}
+                                      {...adminMeta}
+                                    />
+                                  )}
+                                />
+                                <Route render={() => <InvalidRoutePage {...adminMeta} />} />
+                              </Switch>
+                            ) : (
+                              <ListNotFoundPage listKey={listKey} {...adminMeta} />
+                            );
+                          }}
+                        />
+                      </Switch>
+                    </Suspense>
+                  </Nav>
+                </ScrollToTop>
+              </Route>
+            </Switch>
+          </BrowserRouter>
+        </ToastProvider>
+      </KeyboardShortcuts>
     </ApolloProvider>
   );
 };

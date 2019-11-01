@@ -65,11 +65,11 @@ The adapter framework data model mirrors the KeystoneJS data model.
 - Each `Field` object has one `FieldAdapter`, accessible by the `.adapter` property
 
 The adapters do not contain references back to the KeystoneJS objects.
-All required information is passed in to the adapter as paramaters to the constructor/methods.
+All required information is passed in to the adapter as parameters to the constructor/methods.
 
-Each `KeystoneAdapter` contains references to its associated `ListAdapter` intances, via the `.listAdapters` property.
-The `ListAdapter` intances contain a back reference to the `KeystoneAdapter` via the `.parentAdapter` property.
-Each `ListAttribute` keeps a list of associated `FieldAdapter` intances, via .`fieldAdapters`.
+Each `KeystoneAdapter` contains references to its associated `ListAdapter` instances, via the `.listAdapters` property.
+The `ListAdapter` instances contain a back reference to the `KeystoneAdapter` via the `.parentAdapter` property.
+Each `ListAttribute` keeps a list of associated `FieldAdapter` instances, via .`fieldAdapters`.
 These in turn have back reference to the `ListAdapter` in the property `.listAdapter`.
 
 This data model allows all fields under a `KeystoneAdapter` to access all other fields in the same adapter,
@@ -93,7 +93,7 @@ Keystone    .adapters  ->   KeystoneAdapter   (.listAdapters)
 ### The Field Type \<- FieldAdapter Relationship
 
 Each field type definition contains a mapping from `KeystoneAdapter` to `FieldAdapter` class in `.adapters`.
-The key to this mapping is the `KeystoneAdapter` intance's `.name` property.
+The key to this mapping is the `KeystoneAdapter` instance's `.name` property.
 
 ```js
 var fieldTypeDef = {

@@ -1,13 +1,13 @@
 {
-  "name": "@keystone-alpha/list-plugins",
+  "name": "@keystonejs/list-plugins",
   "description": "List level plugins which can update list config during list initialization including adding additional fields",
-  "version": "1.0.4",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/fields": "^14.0.0"
+    "@keystonejs/fields": "^5.0.0"
   }
 }

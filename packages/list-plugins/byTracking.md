@@ -5,12 +5,12 @@ title: byTracking
 
 ## byTracking
 
-Adds `createdBy` and `updatedBy` fields to a list. These fields are read-only by will be updated automatically when items are created or updated.
+Adds `createdBy` and `updatedBy` fields to a list. These fields are read-only but they will be updated automatically when items are created or updated.
 
 ## Usage
 
 ```js
-const { byTracking } = require('@keystone-alpha/list-plugins');
+const { byTracking } = require('@keystonejs/list-plugins');
 
 keystone.createList('ListWithPlugin', {
   fields: {
@@ -50,7 +50,7 @@ By default access control on at tracking fields is read only:
 You can import _either_ `createdBy` or `updatedBy` to apply a single tracking field:
 
 ```javascript
-const { createdBy, updatedBy } = require('@keystone-alpha/list-plugins');
+const { createdBy, updatedBy } = require('@keystonejs/list-plugins');
 ```
 
 _Note_: The API is the same.

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { PureComponent, Fragment, type ComponentType, type Element, type Node } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
@@ -21,11 +21,11 @@ import { Body, Dialog, Footer, Header, Positioner, Title } from './primitives';
 // ------------------------------
 
 type Props = {
-  attachTo: HTMLElement,
-  children: Node,
+  attachTo: HTMLElement | ?HTMLBodyElement,
+  children: React$Node,
   closeOnBlanketClick: boolean,
-  component: ComponentType<*> | string,
-  footer?: Element<*>,
+  component: string,
+  footer?: React$Element<*>,
   heading?: string,
   initialFocus?: FocusTarget,
   onClose: (*) => void,
@@ -36,7 +36,7 @@ type Props = {
 
 class ModalDialog extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: ((document.body: any): HTMLElement),
+    attachTo: document.body,
     closeOnBlanketClick: false,
     component: 'div',
     width: 640,
@@ -64,6 +64,10 @@ class ModalDialog extends PureComponent<Props> {
       transitionState,
     } = this.props;
     const dialogTitleId = generateUEID();
+
+    if (!attachTo) {
+      return null;
+    }
 
     return createPortal(
       <Fragment>
@@ -98,4 +102,4 @@ class ModalDialog extends PureComponent<Props> {
   }
 }
 
-export default withTransitionState(ModalDialog);
+export default withTransitionState<Props>(ModalDialog);

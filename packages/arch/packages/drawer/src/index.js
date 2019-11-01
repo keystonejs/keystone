@@ -123,11 +123,11 @@ const Body = styled.div({
 // ------------------------------
 
 type Props = {
-  attachTo: HTMLElement,
+  attachTo?: HTMLElement | ?HTMLBodyElement,
   children: Node,
-  closeOnBlanketClick: boolean,
+  closeOnBlanketClick?: boolean,
   isOpen: boolean,
-  component: ComponentType<*> | string,
+  component?: ComponentType<*> | string,
   footer?: Element<*>,
   heading?: string,
   initialFocus?: FocusTarget,
@@ -135,7 +135,7 @@ type Props = {
   onKeyDown: (*) => void,
   slideInFrom: 'left' | 'right',
   transitionState: TransitionState,
-  width: number,
+  width?: number,
 };
 
 function useKeydownHandler(handler) {
@@ -145,7 +145,6 @@ function useKeydownHandler(handler) {
   });
   useEffect(() => {
     function handle(event: KeyboardEvent) {
-      // $FlowFixMe flow's definition of useRef is wrong
       handlerRef.current(event);
     }
     document.addEventListener('keydown', handle, false);
@@ -155,7 +154,7 @@ function useKeydownHandler(handler) {
   }, []);
 }
 
-let ModalDialog = memo<Props>(function ModalDialog({
+function ModalDialogComponent({
   attachTo,
   children,
   closeOnBlanketClick,
@@ -180,6 +179,10 @@ let ModalDialog = memo<Props>(function ModalDialog({
     }
   });
   const dialogTitleId = useMemo(generateUEID, []);
+
+  if (!attachTo) {
+    return null;
+  }
 
   return createPortal(
     <Fragment>
@@ -218,14 +221,15 @@ let ModalDialog = memo<Props>(function ModalDialog({
     </Fragment>,
     attachTo
   );
-});
+}
 
-// $FlowFixMe
-ModalDialog.defaultProps = {
-  attachTo: ((document.body: any): HTMLElement),
+ModalDialogComponent.defaultProps = {
+  attachTo: document.body,
   closeOnBlanketClick: false,
   component: 'div',
   width: 640,
 };
 
-export default withTransitionState(ModalDialog);
+const ModalDialog = memo<Props>(ModalDialogComponent);
+
+export default withTransitionState<Props>(ModalDialog);

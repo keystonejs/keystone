@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type ElementType, forwardRef } from 'react';
+import { forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
@@ -26,7 +26,7 @@ export const Positioner = styled.div(({ width }) => ({
 }));
 
 type DialogElementProps = {
-  component: ElementType,
+  component: string,
 };
 export const Dialog = forwardRef<DialogElementProps, any>(({ component: Tag, ...props }, ref) => (
   <Tag

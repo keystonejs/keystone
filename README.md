@@ -1,28 +1,33 @@
-# KeystoneJS
+<div align="center">
+  <img src="website/static/readme-header.png" width="557" height="300">
+  <h1>KeystoneJS</h1>
+  <br>
+  <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
+  <p><code>schema => ({ GraphQL, AdminUI })</code></p>
+  <br>
+  <p>Keystone comes with first-class GraphQL support, a highly extensible architecture, and a wonderful Admin UI.</p>
+  <sub>Looking for Keystone v4.x / Keystone Classic? Head over to <a href="https://www.npmjs.com/package/keystone-classic"><code>keystone-classic</code></a>.</sub>
+  <br>
+</div>
 
-[![CircleCI](https://circleci.com/gh/keystonejs/keystone-5.svg?style=shield&circle-token=6b4c9e250b2b61403b64c9b66ab7f4de6b0b4dde)](https://circleci.com/gh/keystonejs/keystone-5)
+## Contents
 
-Welcome to Keystone 5, the development project for the future of KeystoneJS.
-
-`schema => ({ GraphQL, AdminUI })`
-
-KeystoneJS is a scalable platform and CMS for Node.js applications.
-
-Keystone 5 introduces first-class GraphQL support, a new extensible architecture, and an improved Admin UI.
-
-It is currently in alpha and under intensive development by [Thinkmill](https://www.thinkmill.com.au) and contributors around the world.
+- [What's new](#whats-new)
+- [Getting Started](#getting-started)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [Code of Conduct](#code-of-conduct)
+- [License](#license)
 
 ## What's new?
 
 Keystone 5 is a complete re-imagining of KeystoneJS for the future. It builds on the lessons we learned over the last 5 years of the KeystoneJS' history and focuses on the things we believe are the most powerful features for modern web and mobile applications.
 
-This means less focus on hand-holding Node.js template-driven websites and more focus on flexible architecture, a powerful GraphQL API with deep access control features, an extensible Admin UI and plugins for rich field types, file and database adapters, and session management.
+This means less focus on hand-holding Node.js template-driven websites and more focus on flexible architecture, a powerful GraphQL API with deep authentication & access control features, an extensible Admin UI and plugins for rich field types, file and database adapters, and session management.
 
 We believe it's the ideal back-end for rich React / Vue / Angular applications, Gatsby and Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
 ## Getting Started
-
-### Quick start
 
 To get up and running with a basic project template, run the following commands.
 
@@ -33,11 +38,16 @@ yarn start
 ```
 
 For more details and system requirements, check out the [5 Minute Quick Start
-Guide](https://v5.keystonejs.com/quick-start/).
+Guide](https://keystonejs.com/quick-start/).
 
-### API
+## Documentation
 
-The [API documentation](https://v5.keystonejs.com/api/) contains a reference for all KeystoneJS packages.
+The [API documentation](https://keystonejs.com/api/) contains a reference for all KeystoneJS packages.
+
+For walk-throughs and discussions, see the [Guides
+documentation](https://www.keystonejs.com/guides/).
+
+## Contributing
 
 ### Demo Projects
 
@@ -47,218 +57,7 @@ at a range of complexities (from a simple Todo App to a complex Meetup Site).
 See the [`demo-projects/README.md`](./demo-projects/README.md) docs to get
 started.
 
-### Manual Setup
-
-```bash
-yarn add @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui
-```
-
-Add a script to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "dev": "keystone"
-  }
-}
-```
-
-Create a file `index.js`:
-
-<!-- prettier-ignore -->
-```javascript
-const { Keystone }        = require('@keystone-alpha/keystone');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { Text }            = require('@keystone-alpha/fields');
-const { GraphQLApp }      = require('@keystone-alpha/app-graphql');
-const { AdminUIApp }      = require('@keystone-alpha/app-admin-ui');
-
-const keystone = new Keystone({
-  name: 'Keystone To-Do List',
-  adapter: new MongooseAdapter(),
-});
-
-keystone.createList('Todo', {
-  fields: {
-    name: { type: Text },
-  },
-});
-
-module.exports = {
-  keystone,
-  apps: [
-    new GraphQLApp(),
-    // Setup the optional Admin UI
-    new AdminUIApp(),
-  ],
-};
-```
-
-Now you have everything you need to run a `Keystone` instance:
-
-```bash
-yarn dev
-```
-
-Keystone will automatically detect your `index.js` and start the server for you:
-
-- `http://localhost:3000/admin`: Keystone Admin UI
-- `http://localhost:3000/admin/api`: generated GraphQL API
-- `http://localhost:3000/admin/graphiql`: GraphQL Playground UI
-
-### Custom Server
-
-In some circumstances, you may want to do custom processing, or add extra routes
-the server which handles the API requests.
-
-A custom server is defined in `server.js` which will act as the entry point to
-your application (in combination with `index.js` which defines your schema) and
-must handle executing the different parts of Keystone.
-
-Create the `server.js` file:
-
-<!-- prettier-ignore -->
-```javascript
-const express = require('express');
-const { keystone, apps } = require('./index');
-
-keystone.prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
-  .then(({ middlewares }) => {
-    keystone.connect();
-    const app = express();
-    app.get('/', (req, res) => {
-      res.end('Hello world');
-    });
-    app.use(middlewares);
-    app.listen(3000);
-  })
-  .catch(error => {
-    console.error(error);
-  });
-```
-
-You'll need to change the `dev` script in your `package.json` to run the server file with node like this.
-
-```diff
-- "dev": "keystone"
-+ "dev": "NODE_ENV=development node server.js"
-```
-
-_Note that when using a custom server, you will no longer get the formatted
-console output when starting a server._
-
-For more, see the [Custom Server
-Discussion](https://v5.keystonejs.com/guides/custom-server).
-
-### Production Build
-
-When getting ready to deploy your app to production, there are performance
-optimisations which Keystone can prepare for you.
-
-Add these scripts to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "build": "keystone build",
-    "start": "keystone start"
-  }
-}
-```
-
-Run `yarn build` to generate the following outputs(this output could change in the future):
-
-```
-.
-└── dist/
-    └── admin/
-```
-
-To run your keystone instance, run the start script.
-
-```
-yarn start
-```
-
-#### Production Build Artifacts
-
-<!--
-##### `dist/index.js`
-
-An all-in-one server which will start your Keystone API and Admin UI running on
-the same port.
-
-_NOTE: If you've setup a [custom server](#custom-server), `dist/index.js` will
-be a copy of your `server.js`_
-
-##### `dist/api/`
-
-The GraphQL API code lives here. This is a combination of your code setting up
-the keystone instance, and a server to run the API.
-
-This folder contains an `index.js` file which when run via node
-(`node dist/api/index.js`) will serve the API. In this manner, it is possible to
-deploy the API independently of the [admin UI](#distadmin) by deploying the
-contents of the `dist/api/` folder only. -->
-
-##### `dist/admin/`
-
-A static export of the Admin UI lives here. Built from your code setting up the
-keystone instance, this export contains _list_ and _field_ config information
-tightly coupled to the API.
-
-<!-- commented out for now because you currently have to deploy them at the same time right now: It is therefore recommended to always deploy the Admin UI at the same time as deploying the API to avoid any inconsistencies. -->
-
-### Adding Authentication
-
-_See [Authentication docs](https://v5.keystonejs.com/guides/authentication)._
-
-To setup authentication, you must instantiate an _Auth Strategy_, and create a
-list used for authentication in `index.js`:
-
-<!-- prettier-ignore -->
-```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { Text, Password }  = require('@keystone-alpha/fields');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-
-const keystone = new Keystone({
-  name: 'Keystone With Auth',
-  adapter: new MongooseAdapter(),
-});
-
-keystone.createList('User', {
-  fields: {
-    username: { type: Text },
-    password: { type: Password },
-  },
-});
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  config: {
-    identityField: 'username', // default: 'email'
-    secretField: 'password',   // default: 'password'
-  }
-});
-
-module.exports = {
-  keystone,
-  apps: [
-    new AdminUIApp({ adminPath: '/admin', authStrategy })
-  ],
-};
-```
-
-_NOTE: It will be impossible to login the first time you load the Admin UI as
-there are no Users created. It is recommended to first run an instance of
-Keystone **without** an auth strategy, create your first User, then re-enable
-the auth strategy._
-
-## Developing
+### Development Practices
 
 All source code should be formatted with [Prettier](https://github.com/prettier/prettier).
 Code is not automatically formatted in commit hooks to avoid unexpected behaviour,
@@ -288,6 +87,16 @@ yarn dev
 
 See [`demo-projects/README.md`](./demo-projects/README.md) for more details on
 the available demo projects.
+
+#### Note For Windows Users
+
+While running `yarn` on Windows, the process may fail with an error such as this:
+
+```sh
+error { [Error: EPERM: operation not permitted, symlink 'C:\Users\user\Documents\keystone-5\packages\arch\packages\alert\src\index.js' -> 'C:\Users\user\Documents\keystone-5\packages\arch\packages\alert\dist\alert.cjs.js.flow']
+```
+
+This is due to permission restrictions regarding the creation of [symbolic links](https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/). To solve this, you should enable Windows' [Developer Mode](https://docs.microsoft.com/en-us/windows/uwp/get-started/enable-your-device-for-development?redirectedfrom=MSDN) and run `yarn` again.
 
 ### Testing
 

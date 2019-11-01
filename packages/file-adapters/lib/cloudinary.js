@@ -14,14 +14,14 @@ function uploadStream(stream, options) {
 }
 
 module.exports = class CloudinaryAdapter {
-  constructor(options) {
-    if (!options.cloudName || !options.apiKey || !options.apiSecret) {
+  constructor({ cloudName, apiKey, apiSecret, folder }) {
+    if (!cloudName || !apiKey || !apiSecret) {
       throw new Error('CloudinaryAdapter requires cloudName, apiKey, and apiSecret');
     }
-    this.cloudName = options.cloudName;
-    this.apiKey = options.apiKey;
-    this.apiSecret = options.apiSecret;
-    this.folder = options.folder || undefined;
+    this.cloudName = cloudName;
+    this.apiKey = apiKey;
+    this.apiSecret = apiSecret;
+    this.folder = folder || undefined;
   }
 
   /**

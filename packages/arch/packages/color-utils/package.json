@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/color-utils",
-  "description": "Color Utilities used throughout @arch-ui components & @keystone-alpha Admin UI.",
+  "description": "Color Utilities used throughout @arch-ui components & @keystonejs Admin UI.",
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",

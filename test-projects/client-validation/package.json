@@ -1,8 +1,8 @@
 {
-  "name": "@keystone-alpha/cypress-project-client-validation",
-  "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
+  "name": "@keystonejs/cypress-project-client-validation",
+  "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
-  "version": "1.0.16",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -19,27 +19,27 @@
   },
   "dependencies": {
     "@arch-ui/fields": "^2.0.1",
-    "@keystone-alpha/adapter-mongoose": "^6.0.0",
-    "@keystone-alpha/app-admin-ui": "^5.10.2",
-    "@keystone-alpha/app-graphql": "^8.0.0",
-    "@keystone-alpha/app-static": "^1.1.1",
-    "@keystone-alpha/fields": "^14.0.0",
-    "@keystone-alpha/file-adapters": "^2.0.0",
-    "@keystone-alpha/keystone": "^16.0.0",
+    "@keystonejs/adapter-mongoose": "^5.0.0",
+    "@keystonejs/app-admin-ui": "^5.0.0",
+    "@keystonejs/app-graphql": "^5.0.0",
+    "@keystonejs/app-static": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/file-adapters": "^5.0.0",
+    "@keystonejs/keystone": "^5.0.0",
     "cross-env": "^5.2.0",
     "date-fns": "^1.30.1",
     "express": "^4.17.1",
     "react": "^16.8.6"
   },
   "devDependencies": {
-    "cypress": "^3.4.0",
-    "dotenv-safe": "^6.0.0",
+    "cypress": "^3.5.0",
+    "dotenv-safe": "^8.1.0",
     "execa": "^2.0.4",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.21.0",
     "mocha-multi-reporters": "^1.1.7",
     "moment": "^2.24.0",
-    "pino-colada": "^1.4.4",
-    "start-server-and-test": "^1.10.2"
+    "pino-colada": "^1.4.5",
+    "start-server-and-test": "^1.10.6"
   }
 }

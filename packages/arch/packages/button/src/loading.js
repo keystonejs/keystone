@@ -23,41 +23,35 @@ function getAppearance(appearance) {
   return 'inverted';
 }
 
-// Export
-
 type Loading = ButtonProps & {
   isLoading: boolean,
   indicatorVariant: 'spinner' | 'dots',
 };
+
+function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...props }: Loading, ref) {
+  const appearance = getAppearance(props.appearance || 'default');
+  const textCSS = isLoading ? { visibility: 'hidden' } : null;
+  const isSpinner = indicatorVariant === 'spinner';
+
+  return (
+    <Button ref={ref} variant="bold" indicatorVariant="dots" {...props}>
+      <LoadingButtonInner>
+        {isLoading ? (
+          <LoadingIndicatorWrapper>
+            {isSpinner ? (
+              <LoadingSpinner appearance={appearance} size={16} />
+            ) : (
+              <LoadingIndicator appearance={appearance} size={4} />
+            )}
+          </LoadingIndicatorWrapper>
+        ) : null}
+        <span css={textCSS}>{children}</span>
+      </LoadingButtonInner>
+    </Button>
+  );
+}
+
+// Export
 export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonElement>(
-  ({ children, indicatorVariant, isLoading, ...props }: Loading, ref) => {
-    const appearance = getAppearance(props.appearance);
-    const textCSS = isLoading ? { visibility: 'hidden' } : null;
-    const isSpinner = indicatorVariant === 'spinner';
-
-    return (
-      <Button ref={ref} {...props}>
-        <LoadingButtonInner>
-          {isLoading ? (
-            <LoadingIndicatorWrapper>
-              {isSpinner ? (
-                <LoadingSpinner appearance={appearance} size={16} />
-              ) : (
-                <LoadingIndicator appearance={appearance} size={4} />
-              )}
-            </LoadingIndicatorWrapper>
-          ) : null}
-          <span css={textCSS}>{children}</span>
-        </LoadingButtonInner>
-      </Button>
-    );
-  }
+  LoadingButtonComponent
 );
-
-// $FlowFixMe
-LoadingButton.defaultProps = {
-  appearance: 'default',
-  isLoading: false,
-  variant: 'bold',
-  indicatorVariant: 'dots',
-};

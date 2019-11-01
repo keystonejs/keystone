@@ -7,8 +7,8 @@ order: 7
 # Hooks
 
 The APIs for each hook are mostly the same across the 3 hook types
-([list hooks](https://v5.keystonejs.com/guides/hooks#list-hooks), [field hooks](https://v5.keystonejs.com/guides/hooks#field-hooks), [field type
-hooks](https://v5.keystonejs.com/guides/hooks#field-type-hooks)).
+([list hooks](/guides/hooks#list-hooks), [field hooks](/guides/hooks#field-hooks), [field type
+hooks](/guides/hooks#field-type-hooks)).
 
 Any differences are called out in the documentation below.
 
@@ -52,6 +52,7 @@ _Note_: `resolveInput` is not executed for deleted items.
 #### Usage:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const resolveInput = ({
   resolvedData,
@@ -69,6 +70,7 @@ Executed after `resolveInput`. Should throw if `resolvedData` is invalid.
 #### Usage
 
 <!-- prettier-ignore -->
+
 ```javascript
 const validateInput = ({
   resolvedData,
@@ -97,6 +99,7 @@ Executed once the mutation has been completed and all transactions finalised.
 #### Usage
 
 <!-- prettier-ignore -->
+
 ```javascript
 const afterChange = ({
   updatedItem,
@@ -118,6 +121,7 @@ Executed after access control checks. Should throw if delete operation is invali
 #### Usage
 
 <!-- prettier-ignore -->
+
 ```javascript
 const validateDelete = ({
   existingItem,
@@ -136,6 +140,7 @@ Executed after `validateDelete`.
 #### Usage
 
 <!-- prettier-ignore -->
+
 ```javascript
 const beforeDelete = ({
   existingItem,
@@ -153,6 +158,7 @@ Executed once the delete mutation has been completed and all transactions finali
 #### Usage
 
 <!-- prettier-ignore -->
+
 ```javascript
 const afterDelete = ({
   existingItem,

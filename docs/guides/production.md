@@ -1,17 +1,22 @@
 <!--[meta]
 section: guides
 title: Production Readiness Checklist
+subSection: deployment
 [meta]-->
 
 # Production Readiness Checklist
 
 Yes, KeystoneJS can be (and is!) used for production websites. Here's a handy list of tips for using KeystoneJS with real workloads:
 
+## Secure Cookies
+
+In production builds, [KeystoneJS' `secureCookies`](/keystonejs/keystone/#config) defaults to true. Make sure your server is HTTPS-enabled when `secureCookies` is enabled or you will be unable to log in.
+
 ## Session Handling
 
 ### Cookie Secret
 
-Make sure the production deployment sets a long, unguessable value for [KeystoneJS' `cookieSecret`](https://v5.keystonejs.com/keystone-alpha/keystone/#config).
+Make sure the production deployment sets a long, unguessable value for [KeystoneJS' `cookieSecret`](/keystonejs/keystone/#config).
 
 A randomly generated value is suitable (but keep it secret):
 
@@ -26,23 +31,25 @@ Sessions are stored inside the KeystoneJS app by default, but in production it's
 - You can restart your app for upgrades without breaking sessions
 - You can replicate your KeystoneJS app for availability, while keeping sessions consistent
 
+This option [can be set](/keystonejs/keystone/) in the `Keystone` constructor.
+
 ## Caching
 
-Improve performance and responsiveness by adding cache hints to your [lists](https://v5.keystonejs.com/api/create-list/#cachehint) and [fields](https://v5.keystonejs.com/keystone-alpha/fields/#cachehint).
+Improve performance and responsiveness by adding cache hints to your [lists](/api/create-list/#cachehint) and [fields](/keystonejs/fields/#cachehint).
 
 ## Access Control
 
-Configure [access control](https://v5.keystonejs.com/guides/access-control/) to limit who can do what with your data.
+Configure [access control](/guides/access-control/) to limit who can do what with your data.
 
 ## DoS Hardening
 
-Add [query limits](https://v5.keystonejs.com/api/create-list/#querylimits) and [validation](https://v5.keystonejs.com/api/validation/) to protect your server against maliciously complex queries.
+Add [query limits](/api/create-list/#querylimits) and [validation](/api/validation/) to protect your server against maliciously complex queries.
 
 ## Using Reverse Proxies
 
-NB: If you're using a third-party hosted environment, you might already be using a reverse proxy, but Keystone will need to be [configured for it](https://v5.keystonejs.com/keystone-alpha/keystone/#trustproxies).
+NB: If you're using a third-party hosted environment, you might already be using a reverse proxy, but Keystone will need to be [configured for it](/keystonejs/keystone/#trustproxies).
 
-It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](<https://en.wikipedia.org/wiki/Slowloris_(computer_security)>).
+It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)).
 
 ## Environment Variables
 

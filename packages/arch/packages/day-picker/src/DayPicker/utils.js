@@ -63,7 +63,6 @@ export function isNumberInRange(num: number, start: number, end: number) {
 }
 
 export function usePrevious<V>(value: V): V {
-  // $FlowFixMe
   const ref: { current: V } = useRef(value);
 
   useEffect(() => {
