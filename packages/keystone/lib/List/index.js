@@ -170,9 +170,9 @@ module.exports = class List {
     const _singular = pluralize.singular(_label);
     const _plural = pluralize.plural(_label);
 
-    if (_plural === _label) {
+    if (_plural === _singular) {
       throw new Error(
-        `Unable to use ${_label} as a List name - it has an ambiguous plural (${_plural}). Please choose another name for your list.`
+        `Unable to use ${_label} as a List name - it has an ambiguous singular form (${_singular}) and plural form (${_plural}). Please choose another name for your list.`
       );
     }
 
