@@ -50,7 +50,7 @@ module.exports = {
 
 You can achieve this setup by running the KeystoneJS CLI and selecting the `Starter` template.
 
-This method's primary use is intended towards initial seeding of databases or running manual migration scripts.
+This method is intended for initial seeding of databases or running migration scripts.
 
 ### Usage
 
