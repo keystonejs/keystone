@@ -466,7 +466,7 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist { type: Relationship, ref: 'Todo', many: true },
+    todolist: { type: Relationship, ref: 'Todo', many: true },
   }
 });
 ```

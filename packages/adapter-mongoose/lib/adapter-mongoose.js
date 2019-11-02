@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+
 const pSettle = require('p-settle');
 const {
   escapeRegExp,
@@ -28,6 +30,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
+    this.mongoose.plugin(uniqueValidator);
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
@@ -184,7 +187,11 @@ class MongooseListAdapter extends BaseListAdapter {
   _update(id, data) {
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
     // Return the modified item, not the original
-    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
+    return this.model.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true, context: 'query' }
+    );
   }
 
   _findAll() {

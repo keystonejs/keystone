@@ -82,7 +82,7 @@ jobs:
       - run: yarn lint:markdown
       - run:
           name: Unit tests
-          command: yarn jest --ci --testResultsProcessor="jest-junit" --maxWorkers=1
+          command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
           environment:
             JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
