@@ -459,7 +459,7 @@ GraphQL API.
 keystone.createList('Todo', {
   fields: {
     task: { type: Text },
-  }
+  },
 });
 
 keystone.createList('User', {
@@ -467,7 +467,7 @@ keystone.createList('User', {
     name: { type: Text },
     email: { type: Text },
     todolist: { type: Relationship, ref: 'Todo', many: true },
-  }
+  },
 });
 ```
 
