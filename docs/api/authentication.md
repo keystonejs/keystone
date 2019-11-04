@@ -21,7 +21,7 @@ const authStrategy = keystone.createAuthStrategy({
   list: 'User',
   config: {
     /*...config */
-  }
+  },
 });
 ```
 
