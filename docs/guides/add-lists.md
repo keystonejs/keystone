@@ -64,7 +64,7 @@ module.exports = {
             defaultValue: Date.now(),
         },
         assignee: {
-            type: 'Text',
+            type: Text,
             isRequired: true,
         },
     },
