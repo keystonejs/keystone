@@ -239,7 +239,7 @@ function PrimaryNavItems({
   };
   let pageNavItems =
     pages && pages.length
-      ? pages.map(node =>
+      ? pages.filter(node => !node.hidden).map(node =>
           renderChildren(
             node,
             authListKey,
