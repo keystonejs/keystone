@@ -267,9 +267,7 @@ We also build commonjs builds to run in node (for testing with jest or etc.) and
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 <!-- prettier-ignore -->
-
 <table>
   <tr>
     <td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="100px;" alt="Jed Watson"/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=JedWatson" title="Code">💻</a></td>
@@ -314,6 +312,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://arnaud-zg.github.io/"><img src="https://avatars1.githubusercontent.com/u/10991546?v=4" width="100px;" alt="Arnaud Zheng"/><br /><sub><b>Arnaud Zheng</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=arnaud-zg" title="Documentation">📖</a></td>
     <td align="center"><a href="https://twitter.com/ashinzekene"><img src="https://avatars2.githubusercontent.com/u/20991583?v=4" width="100px;" alt="Ashinze Ekene"/><br /><sub><b>Ashinze Ekene</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=ashinzekene" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Fabyao"><img src="https://avatars3.githubusercontent.com/u/5112982?v=4" width="100px;" alt="Fabyao"/><br /><sub><b>Fabyao</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=Fabyao" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://marcosrjjunior.github.io"><img src="https://avatars1.githubusercontent.com/u/5287262?v=4" width="100px;" alt="Marcos RJJunior"/><br /><sub><b>Marcos RJJunior</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=marcosrjjunior" title="Code">💻</a></td>
   </tr>
 </table>
 

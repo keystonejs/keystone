@@ -17,7 +17,7 @@
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
-    "react-router-dom": "5.0.0"
+    "react-router-dom": "5.1.2"
   },
   "module": "dist/navbar.esm.js"
 }
