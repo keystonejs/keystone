@@ -184,7 +184,7 @@ class ListRow extends Component {
   }
   render() {
     const { list, link, isSelected, item, itemErrors, fields, linkField } = this.props;
-    const copyText = window.location.origin + link({ path: list.path, id: item.id, item });
+    const copyText = window.location.origin + link({ path: list.path, item });
     const items = [
       {
         content: 'Duplicate',
@@ -312,7 +312,7 @@ export default function ListTable(props) {
     currentPage,
     filters,
     search,
-    itemLink = ({ path, id }) => `${adminPath}/${path}/${id}`,
+    itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
     linkField = '_label_',
   } = props;
 
