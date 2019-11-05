@@ -139,7 +139,7 @@ class SortLink extends React.Component<SortLinkProps> {
 // ==============================
 
 class ListRow extends Component {
-  static defaultProps = { itemErrors: {} };
+  static defaultProps = { itemErrors: {}, linkField: '_label_' };
   state = { showDeleteModal: false };
   componentDidMount() {
     this.mounted = true;
@@ -183,8 +183,8 @@ class ListRow extends Component {
     );
   }
   render() {
-    const { list, link, isSelected, item, itemErrors, fields } = this.props;
-    const copyText = window.location.origin + link({ path: list.path, id: item.id });
+    const { list, link, isSelected, item, itemErrors, fields, linkField } = this.props;
+    const copyText = window.location.origin + link({ path: list.path, id: item.id, item });
     const items = [
       {
         content: 'Duplicate',
@@ -228,10 +228,10 @@ class ListRow extends Component {
             );
           }
 
-          if (path === '_label_') {
+          if (path === linkField) {
             return (
               <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
+                <ItemLink to={link({ path: list.path, id: item.id })}>{item[linkField]}</ItemLink>
               </BodyCellTruncated>
             );
           }
@@ -312,6 +312,8 @@ export default function ListTable(props) {
     currentPage,
     filters,
     search,
+    itemLink = ({ path, id }) => `${adminPath}/${path}/${id}`,
+    linkField = '_label_',
   } = props;
 
   const [sortBy, onSortChange] = useListSort(list.key);
@@ -429,7 +431,8 @@ export default function ListTable(props) {
                         item={item}
                         itemErrors={queryErrors[itemIndex] || {}}
                         key={item.id}
-                        link={({ path, id }) => `${adminPath}/${path}/${id}`}
+                        link={itemLink}
+                        linkField={linkField}
                         list={list}
                         onDelete={onChange}
                         onSelectChange={onSelectChange}
