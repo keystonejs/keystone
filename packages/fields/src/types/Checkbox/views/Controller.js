@@ -5,8 +5,8 @@ export default class CheckboxController extends FieldController {
     const defaultValue = 'defaultValue' in config ? config.defaultValue : false;
     super({ ...config, defaultValue }, ...args);
   }
-  serialize = data => !!data[this.path];
-  deserialize = data => !!data[this.path];
+  serialize = data => data[this.path];
+  deserialize = data => data[this.path];
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: ${value}`;
