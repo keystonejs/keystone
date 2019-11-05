@@ -240,7 +240,7 @@ function PrimaryNavItems({
   let pageNavItems =
     pages && pages.length
       ? pages
-          .filter(node => !node.hidden)
+          .filter(node => node.addToNav !== false)
           .map(node =>
             renderChildren(
               node,
