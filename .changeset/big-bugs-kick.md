@@ -1,5 +1,5 @@
 ---
-'@keystonejs/app-admin-ui': patch
+'@keystonejs/app-admin-ui': minor
 '@keystonejs/fields': patch
 ---
 
