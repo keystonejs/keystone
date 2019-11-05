@@ -231,7 +231,7 @@ class ListRow extends Component {
           if (path === linkField) {
             return (
               <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, id: item.id })}>{item[linkField]}</ItemLink>
+                <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
               </BodyCellTruncated>
             );
           }

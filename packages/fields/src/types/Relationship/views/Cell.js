@@ -22,7 +22,7 @@ export default ({ data, field, Link }: Props) => {
         .map((item, index) => (
           <Fragment key={item.id}>
             {!!index ? ', ' : ''}
-            <Link path={refList.path} id={item.id}>
+            <Link path={refList.path} item={item}>
               {item._label_}
             </Link>
           </Fragment>
