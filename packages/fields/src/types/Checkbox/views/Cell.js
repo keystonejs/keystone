@@ -1,6 +1,7 @@
 // @flow
 
 import { Component } from 'react';
+import type { CellProps } from '../../../types';
 
 type Props = CellProps<boolean>;
 
