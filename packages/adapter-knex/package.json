@@ -13,8 +13,8 @@
     "@keystonejs/logger": "^5.0.0",
     "@keystonejs/utils": "^5.1.0",
     "@sindresorhus/slugify": "^0.6.0",
-    "knex": "^0.19.5",
+    "knex": "^0.20.1",
     "p-settle": "^3.1.0",
-    "pg": "^7.10.0"
+    "pg": "^7.12.0"
   }
 }
