@@ -20,7 +20,7 @@ const authStrategy = keystone.createAuthStrategy({ ... });
 ...
 
 module.exports = {
-  new Keystone(),
+  keystone: new Keystone(),
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
