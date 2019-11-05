@@ -33,7 +33,7 @@ keystone.createList('Applicant', {
 
 | Option       | Type      | Default  | Description                                                                                            |
 | ------------ | --------- | -------- | ------------------------------------------------------------------------------------------------------ |
-| `adapter`    | `Object`  | Required | See the [File Adapters](https://www.keystonejs.com/keystone/file-adapters/) page for more information. |
+| `adapter`    | `Object`  | Required | See the [File Adapters](https://www.keystonejs.com/keystonejs/file-adapters/) page for more information. |
 | `route`      | `String`  | `null`   |                                                                                                        |
 | `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                                       |
 
