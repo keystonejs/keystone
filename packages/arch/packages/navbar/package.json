@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/navbar",
   "description": "Navbar UI as used in @keystonejs Admin UI.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/navbar.cjs.js",

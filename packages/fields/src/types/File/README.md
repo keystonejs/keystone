@@ -31,10 +31,10 @@ keystone.createList('Applicant', {
 
 ### Config
 
-| Option       | Type      | Default  | Description                                                                                            |
-| ------------ | --------- | -------- | ------------------------------------------------------------------------------------------------------ |
-| `adapter`    | `Object`  | Required | See the [File Adapters](https://www.keystonejs.com/keystone/file-adapters/) page for more information. |
-| `route`      | `String`  | `null`   |                                                                                                        |
-| `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                                       |
+| Option       | Type      | Default  | Description                                                                                          |
+| ------------ | --------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `adapter`    | `Object`  | Required | See the [File Adapters](https://keystonejs.com/keystonejs/file-adapters/) page for more information. |
+| `route`      | `String`  | `null`   |                                                                                                      |
+| `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                                     |
 
 _Note:_ `adapter` currently may be one of `LocalFileAdapter` or `CloudinaryFileAdapter`.

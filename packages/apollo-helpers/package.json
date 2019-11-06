@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/apollo-helpers",
   "description": "Utilities to make using react-apollo + KeystoneJS easier.",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -16,7 +16,7 @@
     "graphql-tag": "^2.10.1",
     "hoist-non-react-statics": "^3.0.1",
     "lodash.mapvalues": "^4.6.0",
-    "memoize-one": "^4.0.2",
+    "memoize-one": "^5.1.1",
     "react-adopt": "^0.6.0",
     "react-apollo": "^3.1.3"
   },
