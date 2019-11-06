@@ -1,5 +1,41 @@
 # @keystonejs/fields
 
+## 5.1.0
+
+### Minor Changes
+
+- [`20632bca`](https://github.com/keystonejs/keystone/commit/20632bca495058f2845d36fe95650eede0a9ebdc) [#1875](https://github.com/keystonejs/keystone/pull/1875) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Added a default `getFilterTypes` method to `FieldController`.
+
+* [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0) [#1913](https://github.com/keystonejs/keystone/pull/1913) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Improved a11y for the `Checkbox` field.
+
+### Patch Changes
+
+- [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `flow` and fixed flow errors and (probably) bugs.
+
+* [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `@emotion/core` and `@emotion/styled`.
+
+- [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475) [#1808](https://github.com/keystonejs/keystone/pull/1808) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-apollo` and replaced use of `react-apollo-hooks` with `react-apollo`. `react-apollo` has a similar hooks API to `react-apollo-hooks`.
+- Updated dependencies [[`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53), [`b68b74f3`](https://github.com/keystonejs/keystone/commit/b68b74f3e77ebd91711c72aac369ab2d5905cb36), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0), [`0154f892`](https://github.com/keystonejs/keystone/commit/0154f892a1771b4f88b35f34a1ba47eaf1721dfe), [`ba8aef71`](https://github.com/keystonejs/keystone/commit/ba8aef71d1a04f643fb7f7590d7d6d136b1d4eba), [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c)]:
+  - @keystonejs/build-field-types@5.0.1
+  - @keystonejs/adapter-knex@5.1.0
+  - @arch-ui/button@0.0.10
+  - @arch-ui/controls@0.1.0
+  - @arch-ui/day-picker@0.0.14
+  - @arch-ui/drawer@0.0.11
+  - @arch-ui/layout@0.2.5
+  - @arch-ui/typography@0.0.9
+  - @arch-ui/alert@0.0.8
+  - @arch-ui/fields@2.0.2
+  - @arch-ui/filters@0.0.12
+  - @arch-ui/input@0.1.1
+  - @arch-ui/loading@0.0.9
+  - @arch-ui/lozenge@0.0.8
+  - @arch-ui/options@0.0.10
+  - @arch-ui/popout@0.0.9
+  - @arch-ui/tooltip@0.1.3
+  - @keystonejs/field-content@5.0.1
+  - @keystonejs/adapter-mongoose@5.1.1
+
 ## 5.0.2
 
 ### Patch Changes

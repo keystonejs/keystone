@@ -1,5 +1,17 @@
 # @keystonejs/adapter-knex
 
+## 5.1.0
+
+### Minor Changes
+
+- [`b68b74f3`](https://github.com/keystonejs/keystone/commit/b68b74f3e77ebd91711c72aac369ab2d5905cb36) [#1903](https://github.com/keystonejs/keystone/pull/1903) Thanks [@timleslie](https://github.com/timleslie)! - Added `.tableName` property to `KnexListAdapter`.
+
+### Patch Changes
+
+- [`0154f892`](https://github.com/keystonejs/keystone/commit/0154f892a1771b4f88b35f34a1ba47eaf1721dfe) [#1914](https://github.com/keystonejs/keystone/pull/1914) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded `pg` and `knex` dependencies.
+- Updated dependencies [[`45fd7ab8`](https://github.com/keystonejs/keystone/commit/45fd7ab899655364d0071c0d276d188378944ff5), [`b0756c65`](https://github.com/keystonejs/keystone/commit/b0756c65525625919c72364d8cefc32d864c7c0e), [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a)]:
+  - @keystonejs/keystone@5.1.1
+
 ## 5.0.1
 
 ### Patch Changes
