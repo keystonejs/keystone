@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/apollo-helpers",
   "description": "Utilities to make using react-apollo + KeystoneJS easier.",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
