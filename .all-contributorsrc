@@ -324,6 +324,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "marcosrjjunior",
+      "name": "Marcos RJJunior",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5287262?v=4",
+      "profile": "https://marcosrjjunior.github.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7

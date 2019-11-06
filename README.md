@@ -6,7 +6,7 @@
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
   <br>
   <p>Keystone comes with first-class GraphQL support, a highly extensible architecture, and a wonderful Admin UI.</p>
-  <sub>Looking for Keystone v4.x / Keystone Classic? Head over to <a href="https://www.npmjs.com/package/keystone-classic"><code>keystone-classic</code></a>.</sub>
+  <sub>Looking for Keystone v4.x / Keystone Classic? Head over to <a href="https://github.com/keystonejs/keystone-classic"><code>keystone-classic</code></a>.</sub>
   <br>
 </div>
 
@@ -87,6 +87,16 @@ yarn dev
 
 See [`demo-projects/README.md`](./demo-projects/README.md) for more details on
 the available demo projects.
+
+#### Note For Windows Users
+
+While running `yarn` on Windows, the process may fail with an error such as this:
+
+```sh
+error { [Error: EPERM: operation not permitted, symlink 'C:\Users\user\Documents\keystone-5\packages\arch\packages\alert\src\index.js' -> 'C:\Users\user\Documents\keystone-5\packages\arch\packages\alert\dist\alert.cjs.js.flow']
+```
+
+This is due to permission restrictions regarding the creation of [symbolic links](https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/). To solve this, you should enable Windows' [Developer Mode](https://docs.microsoft.com/en-us/windows/uwp/get-started/enable-your-device-for-development?redirectedfrom=MSDN) and run `yarn` again.
 
 ### Testing
 
