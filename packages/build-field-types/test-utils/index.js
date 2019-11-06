@@ -9,9 +9,9 @@ import spawn from 'spawndamnit';
 let f = fixturez(__dirname);
 
 require('chalk').enabled = false;
-// $FlowFixMe
+// $FlowFixMe mocking console methods
 console.error = jest.fn();
-// $FlowFixMe
+// $FlowFixMe mocking console methods
 console.log = jest.fn();
 
 export let logMock = {
@@ -28,8 +28,10 @@ import init from '../src/init';
 import { confirms } from '../src/messages';
 
 export async function initBasic(directory: string) {
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReturnValue(true);
   await init(directory);
+  // $FlowFixMe mocked dataloader
   confirms.writeMainModuleFields.mockReset();
 }
 
@@ -108,7 +110,37 @@ export async function snapshotDistFiles(tmpPath: string) {
   );
 }
 
-export async function snapshotDirectory(tmpPath: string, files: 'all' | 'js' = 'js') {
+export let stripHashes = (chunkName: string) => {
+  let transformer = (pathname: string) => {
+    return pathname.replace(
+      new RegExp(`(${chunkName}-[^\\.]+|dist\\/[^\\.]+\\/package.json)`, 'g'),
+      () => {
+        return `chunk-this-is-not-the-real-hash`;
+      }
+    );
+  };
+  return {
+    transformPath: transformer,
+    transformContent: (content: string) => {
+      return content.replace(new RegExp(`${chunkName}-[^\\.]+`, 'g'), () => {
+        return 'chunk-some-hash';
+      });
+    },
+  };
+};
+
+export async function snapshotDirectory(
+  tmpPath: string,
+  {
+    files = 'js',
+    transformPath = x => x,
+    transformContent = x => x,
+  }: {
+    files?: 'all' | 'js',
+    transformPath?: (path: string, contents: string) => string,
+    transformContent?: (content: string) => string,
+  } = {}
+) {
   let paths = await globby(
     [`**/${files === 'js' ? '*.js' : '*'}`, '!node_modules/**', '!yarn.lock'],
     {
@@ -116,16 +148,13 @@ export async function snapshotDirectory(tmpPath: string, files: 'all' | 'js' = '
     }
   );
 
-  console.log(paths);
-
   await Promise.all(
     paths.map(async x => {
-      let content = await fs.readFile(path.join(tmpPath, x), 'utf-8');
+      let content = transformContent(await fs.readFile(path.join(tmpPath, x), 'utf-8'));
       if (x.endsWith('.json')) {
-        expect(JSON.parse(content)).toMatchSnapshot(x);
-      } else {
-        expect(content).toMatchSnapshot(x);
+        content = JSON.parse(content);
       }
+      expect(content).toMatchSnapshot(transformPath(x, content));
     })
   );
 }

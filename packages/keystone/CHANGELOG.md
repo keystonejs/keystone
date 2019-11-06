@@ -1,4 +1,118 @@
+# @keystonejs/keystone
+
+## 5.1.1
+
+### Patch Changes
+
+- [`45fd7ab8`](https://github.com/keystonejs/keystone/commit/45fd7ab899655364d0071c0d276d188378944ff5) [#1894](https://github.com/keystonejs/keystone/pull/1894) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed duplicate password auth implementation as it's in its own package now.
+
+* [`b0756c65`](https://github.com/keystonejs/keystone/commit/b0756c65525625919c72364d8cefc32d864c7c0e) [#1873](https://github.com/keystonejs/keystone/pull/1873) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug (#1864) where `this.cacheHint` was used before being set.
+
+- [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a) [#1883](https://github.com/keystonejs/keystone/pull/1883) Thanks [@Vultraz](https://github.com/Vultraz)! - Added output which indicates where app is running when running the create keystone script.
+- Updated dependencies [[`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`20632bca`](https://github.com/keystonejs/keystone/commit/20632bca495058f2845d36fe95650eede0a9ebdc), [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0), [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475)]:
+  - @keystonejs/build-field-types@5.0.1
+  - @keystonejs/fields@5.1.0
+
+## 5.1.0
+
+### Minor Changes
+
+- [`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469) [#1851](https://github.com/keystonejs/keystone/pull/1851) Thanks [@jesstelford](https://github.com/jesstelford)! - Added runtime database version validation
+
+### Patch Changes
+
+- Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469), [`ebbcad70`](https://github.com/keystonejs/keystone/commit/ebbcad7042596a9c83c32c8e08dad50f9fcb59fd), [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f)]:
+  - @keystonejs/utils@5.1.0
+  - @keystonejs/fields@5.0.2
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/access-control@5.0.0
+  - @keystonejs/app-graphql@5.0.0
+  - @keystonejs/build-field-types@5.0.0
+  - @keystonejs/fields@5.0.0
+  - @keystonejs/logger@5.0.0
+  - @keystonejs/session@5.0.0
+  - @keystonejs/utils@5.0.0
+
 # @keystone-alpha/keystone
+
+## 16.1.0
+
+### Minor Changes
+
+- [`3bc02545`](https://github.com/keystonejs/keystone-5/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb) [#1803](https://github.com/keystonejs/keystone-5/pull/1803) Thanks [@Vultraz](https://github.com/Vultraz)! - Disallow leading underscores in list and field names
+
+* [`a48281ba`](https://github.com/keystonejs/keystone-5/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec) [#1783](https://github.com/keystonejs/keystone-5/pull/1783) Thanks [@timleslie](https://github.com/timleslie)! - The `keystone` cli now accepts a return of `{ keystone, apps, configureExpress }` from the entry file. `configureExpress` will be called on the Express app before applying the keystone middlewares.
+
+### Patch Changes
+
+- [`0a36b0f4`](https://github.com/keystonejs/keystone-5/commit/0a36b0f403da73a76106b5e14940a789466b4f94) [#1784](https://github.com/keystonejs/keystone-5/pull/1784) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed adapterConnectOptions key (unused as of 144e6e86)
+
+* [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901) [#1789](https://github.com/keystonejs/keystone-5/pull/1789) Thanks [@timleslie](https://github.com/timleslie)! - `Relationship.convertResolvedOperationsToFieldValue()` has been removed.
+
+* Updated dependencies [[`7129c887`](https://github.com/keystonejs/keystone-5/commit/7129c8878a825d961f2772be497dcd5bd6b2b697), [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/app-graphql@8.2.1
+  - @keystone-alpha/fields@15.0.0
+
+## 16.0.1
+
+### Patch Changes
+
+- [`b0aee895`](https://github.com/keystonejs/keystone-5/commit/b0aee895f664cf5665fa700e68ffc532c35f424d) [#1776](https://github.com/keystonejs/keystone-5/pull/1776) Thanks [@jesstelford](https://github.com/jesstelford)! - Avoid the build command from hanging when an entry file may have a long-running process.
+
+## 16.0.0
+
+### Major Changes
+
+- [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9) [#1729](https://github.com/keystonejs/keystone-5/pull/1729) Thanks [@timleslie](https://github.com/timleslie)! - This change significantly changes how and when we populate `many`-relationships during queries and mutations.
+  The behaviour of the GraphQL API has not changed, but queries should be more performant, particularly for items with many related items.
+  The `existingItem` parameter in hooks will no longer have the `many`-relationship fields populated.
+  `List.listQuery()` no longer populates `many` relationship fields.
+  For most users there should not need to be any changes to code unless they are explicitly relying on a `many`-relationship field in a hook, in which case they will need to execute an explicit query to obtain the desired values.
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/fields@14.0.0
+
+## 15.4.1
+
+### Patch Changes
+
+- [14fee364](https://github.com/keystonejs/keystone-5/commit/14fee364): Correctly pass `gqlName` for all access checks
+
+## 15.4.0
+
+### Minor Changes
+
+- [b12e4ccb](https://github.com/keystonejs/keystone-5/commit/b12e4ccb): Add a global maxTotalResults limit to Keystone object
+- [1405eb07](https://github.com/keystonejs/keystone-5/commit/1405eb07): Add `listKey`, `fieldKey` (fields only), `operation`, `gqlName`, `itemId` and `itemIds` as arguments to imperative access control functions.
+
+### Patch Changes
+
+- [3a52447d](https://github.com/keystonejs/keystone-5/commit/3a52447d): Update `getAccessControlledItem()` to remove short-circuit code which code lead to future data inconsistency.
+- [65d32b54](https://github.com/keystonejs/keystone-5/commit/65d32b54): Fix session storage
+
+## 15.3.1
+
+### Patch Changes
+
+- [b2c5277e](https://github.com/keystonejs/keystone-5/commit/b2c5277e): Use compose() function from utils package.
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
 
 ## 15.3.0
 
@@ -864,6 +978,8 @@
 ## 0.1.1
 
 - [patch] Remove tests and markdown from npm [dc3ee7d](dc3ee7d)
+
+# @keystonejs/core
 
 # @keystone-alpha/core
 

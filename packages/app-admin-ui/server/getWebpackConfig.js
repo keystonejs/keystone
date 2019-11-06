@@ -8,6 +8,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
+    chunksSortMode: 'none',
   });
   const environmentPlugin = new webpack.DefinePlugin({
     ENABLE_DEV_FEATURES: enableDevFeatures,
@@ -18,7 +19,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!(?:\/|\\)@keystone-alpha(?:\/|\\)app-admin-ui)/],
+      exclude: [/node_modules(?!(?:\/|\\)@keystonejs(?:\/|\\)app-admin-ui)/],
       use: [
         {
           loader: 'babel-loader',
@@ -53,7 +54,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       test: /FIELD_TYPES/,
       use: [
         {
-          loader: '@keystone-alpha/field-views-loader',
+          loader: '@keystonejs/field-views-loader',
           options: {
             adminMeta,
           },

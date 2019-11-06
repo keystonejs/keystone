@@ -9,7 +9,7 @@ import { Container } from '@arch-ui/layout';
 
 type Props = {
   children: React.Node,
-  Icon: React.ElementType,
+  Icon: React$AbstractComponent<mixed, mixed>,
 };
 
 export default function PageError({ children, Icon, ...props }: Props) {

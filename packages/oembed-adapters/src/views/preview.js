@@ -17,6 +17,12 @@ const Preview = ({ url, options }) => {
 
     // Tell iframely to always re-render when the current ref changes
     importPromise.then(() => {
+      while (containerRef.current.lastChild) {
+        // iframely.load is not clearing old content from container,
+        // so we should do it manually
+        // @iframely/embed.js <= 1.3.1
+        containerRef.current.removeChild(containerRef.current.lastChild);
+      }
       window.iframely.load(containerRef.current, url);
     });
   }, [url, containerRef.current]);

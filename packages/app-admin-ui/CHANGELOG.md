@@ -1,4 +1,109 @@
+# @keystonejs/app-admin-ui
+
+## 5.0.2
+
+### Patch Changes
+
+- [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `flow` and fixed flow errors and (probably) bugs.
+
+* [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `@emotion/core` and `@emotion/styled`.
+
+- [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475) [#1808](https://github.com/keystonejs/keystone/pull/1808) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-apollo` and replaced use of `react-apollo-hooks` with `react-apollo`. `react-apollo` has a similar hooks API to `react-apollo-hooks`.
+
+* [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c) [#1910](https://github.com/keystonejs/keystone/pull/1910) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-router-dom` to v5.1.2 to make use of `useParams` and other hooks provided by `react-router-dom` v5.1.0.
+
+- [`479597e0`](https://github.com/keystonejs/keystone/commit/479597e0920cbedf28f76c14a95b564282f2c1d9) [#1909](https://github.com/keystonejs/keystone/pull/1909) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed a bug with loading multiple complex custom pages with `chunkSortMode` option in `HtmlWebpackPlugin`.
+- Updated dependencies [[`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`20632bca`](https://github.com/keystonejs/keystone/commit/20632bca495058f2845d36fe95650eede0a9ebdc), [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0), [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475), [`d0d84603`](https://github.com/keystonejs/keystone/commit/d0d84603628f64be3c76f6624f163aaaa46a6092), [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c)]:
+  - @keystonejs/build-field-types@5.0.1
+  - @arch-ui/button@0.0.10
+  - @arch-ui/confirm@0.0.9
+  - @arch-ui/controls@0.1.0
+  - @arch-ui/dialog@0.0.10
+  - @arch-ui/drawer@0.0.11
+  - @arch-ui/layout@0.2.5
+  - @arch-ui/navbar@0.1.2
+  - @arch-ui/pagination@0.0.10
+  - @arch-ui/typography@0.0.9
+  - @keystonejs/fields@5.1.0
+  - @arch-ui/alert@0.0.8
+  - @arch-ui/badge@0.0.8
+  - @arch-ui/card@0.0.6
+  - @arch-ui/dropdown@0.0.9
+  - @arch-ui/fields@2.0.2
+  - @arch-ui/input@0.1.1
+  - @arch-ui/loading@0.0.9
+  - @arch-ui/lozenge@0.0.8
+  - @arch-ui/options@0.0.10
+  - @arch-ui/pill@0.1.7
+  - @arch-ui/popout@0.0.9
+  - @arch-ui/tooltip@0.1.3
+
+## 5.0.1
+
+### Patch Changes
+
+- [`19b08a30`](https://github.com/keystonejs/keystone/commit/19b08a30b3dbfb7c7a0056f210769bbf6e171c85) [#1806](https://github.com/keystonejs/keystone/pull/1806) Thanks [@gautamsi](https://github.com/gautamsi)! - indicate which list is auth list by adding a person icon afetr label
+
+- Updated dependencies [[`209b7078`](https://github.com/keystonejs/keystone/commit/209b7078c7fa4f4d87568c58cb6cb6ad8162fe46)]:
+  - @keystonejs/fields@5.0.1
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/build-field-types@5.0.0
+  - @keystonejs/field-views-loader@5.0.0
+  - @keystonejs/fields@5.0.0
+  - @keystonejs/session@5.0.0
+  - @keystonejs/utils@5.0.0
+
 # @keystone-alpha/app-admin-ui
+
+## 5.10.3
+
+### Patch Changes
+
+- [`a8ee0179`](https://github.com/keystonejs/keystone-5/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26) [#1805](https://github.com/keystonejs/keystone-5/pull/1805) Thanks [@gautamsi](https://github.com/gautamsi)! - export `useAdminMeta` which is useful in developing custom pages
+
+- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/fields@15.0.0
+
+## 5.10.2
+
+### Patch Changes
+
+- Updated dependencies [[`68134f7a`](https://github.com/keystonejs/keystone-5/commit/68134f7ac6d56122640c42304ab8796c1aa2f17c), [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/field-views-loader@2.2.1
+  - @keystone-alpha/fields@14.0.0
+
+## 5.10.1
+
+### Patch Changes
+
+- [afcc2fa4](https://github.com/keystonejs/keystone-5/commit/afcc2fa4): Fix Admin UI redirects in prod mode
+- [1463d535](https://github.com/keystonejs/keystone-5/commit/1463d535): Update documentation for the Admin UI app.
+
+* Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+  - @keystone-alpha/fields@13.1.0
+  - @arch-ui/select@0.1.0
+
+## 5.10.0
+
+### Minor Changes
+
+- [7ee3b0ad](https://github.com/keystonejs/keystone-5/commit/7ee3b0ad): Display an error toast in the admin-ui if there was an error when creating an item. Also created a custom ToastContainer to fix an issue with z-indexing.
+
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+  - @keystone-alpha/fields@13.0.0
 
 ## 5.9.0
 
@@ -278,6 +383,8 @@
 - [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
 
   Fix Admin UI building on Windows
+
+# @keystonejs/admin-ui
 
 # @keystone-alpha/admin-ui
 

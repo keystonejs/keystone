@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/card",
-  "description": "Card Component used in @keystone-alpha Admin UI.",
-  "version": "0.0.5",
+  "description": "Card Component used in @keystonejs Admin UI.",
+  "version": "0.0.6",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/card.cjs.js",
@@ -14,7 +14,7 @@
   "dependencies": {
     "@arch-ui/theme": "0.0.5",
     "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14"
+    "@emotion/core": "^10.0.22"
   },
   "module": "dist/card.esm.js"
 }

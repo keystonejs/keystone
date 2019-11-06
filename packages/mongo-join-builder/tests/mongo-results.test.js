@@ -1,7 +1,18 @@
-const { mongoJoinBuilder } = require('../');
+const { queryParser, pipelineBuilder, mutationBuilder } = require('../');
+const { postsAdapter, listAdapter } = require('./utils');
 
 const { MongoClient } = require('mongodb');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
+
+const mongoJoinBuilder = parserOptions => {
+  return async (query, aggregate) => {
+    const queryTree = queryParser(parserOptions, query);
+    const pipeline = pipelineBuilder(queryTree);
+    const postQueryMutations = mutationBuilder(queryTree.relationships);
+    // Run the query against the given database and collection
+    return await aggregate(pipeline).then(postQueryMutations);
+  };
+};
 
 function getAggregate(database, collection) {
   return pipeline => {
@@ -52,22 +63,7 @@ describe('mongo memory servier is alive', () => {
 
 describe('Testing against real data', () => {
   test('performs simple queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key) => {
-        const [table] = key.split('_');
-        return {
-          from: `${table}-collection`,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: () => {},
-          matchTerm: { $exists: true, $ne: [] },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const collection = mongoDb.collection('users');
     await collection.insertMany([
@@ -120,22 +116,7 @@ describe('Testing against real data', () => {
   });
 
   test('performs AND queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key) => {
-        const [table] = key.split('_');
-        return {
-          from: `${table}-collection`,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: () => {},
-          matchTerm: { $exists: true, $ne: [] },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const collection = mongoDb.collection('users');
     await collection.insertMany([
@@ -187,29 +168,7 @@ describe('Testing against real data', () => {
   });
 
   test('performs to-one relationship queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const tableMap = {
-          author: 'users',
-        };
-
-        return {
-          from: tableMap[key],
-          field: key,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found item back into the original key
-            [key]: parentData[keyOfRelationship][0],
-          }),
-          matchTerm: { [`${uid}_${key}_every`]: true },
-          many: false,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter: postsAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
@@ -261,41 +220,13 @@ describe('Testing against real data', () => {
       {
         title: 'Hello world',
         status: 'published',
-        author: {
-          name: 'Jess',
-          type: 'author',
-        },
+        author: insertedIds[0],
       },
     ]);
   });
 
   test('performs to-many relationship queries with no filter', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
@@ -339,7 +270,6 @@ describe('Testing against real data', () => {
 
     const query = {
       type: 'author',
-      posts_every: {},
     };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
@@ -348,64 +278,18 @@ describe('Testing against real data', () => {
       {
         name: 'Jess',
         type: 'author',
-        posts: [
-          {
-            title: 'Hello world',
-            status: 'published',
-          },
-          {
-            title: 'An awesome post',
-            status: 'draft',
-          },
-        ],
+        posts: [insertedIds[0], insertedIds[2]],
       },
       {
         name: 'Alice',
         type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-        ],
+        posts: [insertedIds[1], insertedIds[3]],
       },
     ]);
   });
 
   test('performs to-many relationship queries with postJoinPipeline', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => {
-        const value = query[key];
-        if (key === '$limit') {
-          return { postJoinPipeline: [{ $limit: value }] };
-        } else if (key === '$sort') {
-          const [sortBy, sortDirection] = value.split('_');
-          return { postJoinPipeline: [{ $sort: { [sortBy]: sortDirection === 'ASC' ? 1 : -1 } }] };
-        }
-        return { matchTerm: { [key]: { $eq: value } } };
-      }),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[keyOfRelationship],
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
@@ -458,56 +342,21 @@ describe('Testing against real data', () => {
         status: 'published',
         $sort: 'title_ASC',
       },
-      $limit: 1,
+      $first: 1,
     };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
-
     expect(result).toMatchObject([
       {
         name: 'Alice',
         type: 'author',
-        posts: [
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-        ],
+        posts: [insertedIds[1], insertedIds[3]],
       },
     ]);
   });
 
   test('performs to-many relationship queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
@@ -562,47 +411,13 @@ describe('Testing against real data', () => {
       {
         name: 'Alice',
         type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-        ],
+        posts: [insertedIds[1], insertedIds[3]],
       },
     ]);
   });
 
   test('performs to-many relationship queries with nested AND', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
@@ -661,49 +476,13 @@ describe('Testing against real data', () => {
       {
         name: 'Alice',
         type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-            approved: true,
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-            approved: true,
-          },
-        ],
+        posts: [insertedIds[1], insertedIds[3]],
       },
     ]);
   });
 
   test('performs AND query with nested to-many relationship', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
@@ -762,16 +541,7 @@ describe('Testing against real data', () => {
       {
         name: 'Alice',
         type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-        ],
+        posts: [insertedIds[1], insertedIds[3]],
       },
     ]);
   });

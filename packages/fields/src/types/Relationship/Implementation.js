@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
-import { mergeWhereClause } from '@keystone-alpha/utils';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 const {
   Schema: {
@@ -123,34 +122,22 @@ export class Relationship extends Implementation {
       };
     }
 
-    const buildManyQueryArgs = (item, args) => {
-      let ids = [];
-      if (item[this.path]) {
-        ids = item[this.path]
-          .map(value => {
-            // The field may have already been filled in during an early DB lookup
-            // (ie; joining when doing a filter)
-            if (value && value.id) {
-              return value.id;
-            }
-
-            return value;
-          })
-          .filter(value => value);
-      }
-      return mergeWhereClause(args, { id_in: ids });
-    };
-
     return {
       [this.path]: (item, args, context, info) => {
-        const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.listQuery(filteredQueryArgs, context, info.fieldName, info);
+        return refList.listQuery(args, context, info.fieldName, info, {
+          fromList: this.getListByKey(this.listKey),
+          fromId: item.id,
+          fromField: this.path,
+        });
       },
 
       ...(this.withMeta && {
         [`_${this.path}Meta`]: (item, args, context, info) => {
-          const filteredQueryArgs = buildManyQueryArgs(item, args);
-          return refList.listQueryMeta(filteredQueryArgs, context, info.fieldName, info);
+          return refList.listQueryMeta(args, context, info.fieldName, info, {
+            fromList: this.getListByKey(this.listKey),
+            fromId: item.id,
+            fromField: this.path,
+          });
         },
       }),
     };
@@ -177,9 +164,7 @@ export class Relationship extends Implementation {
    * The indexes within the return arrays are guaranteed to match the indexes as
    * passed in `operations`.
    * Due to Access Control, it is possible thata some operations result in a
-   * value of `null`. Be sure to guard against this in your code (or use the
-   * .convertResolvedOperationsToFieldValue() method which handles this for
-   * you).
+   * value of `null`. Be sure to guard against this in your code.
    * NOTE: If `disconnectAll` is true, `disconnect` will be an array of all
    * previous stored values, which means indecies may not match those passed in
    * `operations`.
@@ -213,10 +198,21 @@ export class Relationship extends Implementation {
       });
     }
 
-    let currentValue = item && item[this.path];
+    let currentValue;
     if (this.many) {
-      currentValue = (currentValue || []).map(id => id.toString());
+      const info = { fieldName: this.path };
+      currentValue = item
+        ? await refList.listQuery(
+            {},
+            { ...context, getListAccessControlForUser: () => true },
+            info.fieldName,
+            info,
+            { fromList: this.getListByKey(this.listKey), fromId: item.id, fromField: this.path }
+          )
+        : [];
+      currentValue = currentValue.map(({ id }) => id.toString());
     } else {
+      currentValue = item && item[this.path];
       currentValue = currentValue && currentValue.toString();
     }
 
@@ -242,30 +238,7 @@ export class Relationship extends Implementation {
       );
     }
 
-    return { create, connect, disconnect };
-  }
-
-  // This function codifies the order of operations for nested mutations:
-  // 1. disconnectAll
-  // 2. disconnect
-  // 3. create
-  // 4. connect
-  convertResolvedOperationsToFieldValue({ create, connect, disconnect }, item) {
-    if (this.many) {
-      const currentValue = ((item && item[this.path]) || []).map(id => id.toString());
-      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect, ...create].filter(
-        id => !!id
-      );
-    } else {
-      const currentValue = (item && item[this.path] && item[this.path].toString()) || null;
-      return create && create[0]
-        ? create[0]
-        : connect && connect[0]
-        ? connect[0]
-        : disconnect && disconnect[0]
-        ? null
-        : currentValue;
-    }
+    return { create, connect, disconnect, currentValue };
   }
 
   registerBacklink(data, item, mutationState) {
@@ -460,7 +433,7 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return table
       .foreign(this.path)
       .references('id')
-      .inTable(`${schemaName}.${this.refListKey}`);
+      .inTable(`${schemaName}.${this.getRefListAdapter().tableName}`);
   }
 
   getQueryConditions(dbPath) {

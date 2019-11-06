@@ -1,6 +1,8 @@
 <!--[meta]
 section: guides
 title: GraphQL
+subSection: graphql
+order: 1
 [meta]-->
 
 # Introduction to the GraphQL API
@@ -216,13 +218,13 @@ fetch('/admin/api', {
 
 A good next step is to write an `executeQuery` function that accepts a query and variables and returns the results from the API. Take a look at the `todo` sample application in the `cli` for examples of this.
 
-**Note:** If you have configured [Access Control](https://v5.keystonejs.com/api/access-control) it can effect the result of some queries.
+**Note:** If you have configured [Access Control](/api/access-control) it can effect the result of some queries.
 
 ## Executing Queries and Mutations on the Server
 
-In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](https://v5.keystonejs.com/keystone-alpha/keystone/#executequeryquerystring-config).
+In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/keystonejs/keystone/#executequeryquerystring-config).
 
-**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](https://v5.keystonejs.com/keystone-alpha/keystone/#executequeryquerystring-config)
+**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/keystonejs/keystone/#executequeryquerystring-config)
 
 ## Filter, Limit and Sorting
 
@@ -391,9 +393,9 @@ When `first` and `skip` are used together, skip works as an offset for the `firs
 
 Both `skip` and `first` respect the values of the `where`, `search` and `orderBy` arguments.
 
-## Custom queries and Mutations
+## Custom Queries and Mutations
 
-You can add to KeystoneJS' generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
+You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
 
 ### Usage
 

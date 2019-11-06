@@ -2,17 +2,17 @@ const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
 
 // We don't want to actually log, so we mock it before we require the class
-jest.doMock('@keystone-alpha/logger', () => ({
+jest.doMock('@keystonejs/logger', () => ({
   logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
 }));
 
 const List = require('../lib/List');
 const { AccessDeniedError } = require('../lib/List/graphqlErrors');
-const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-alpha/fields');
-const { getType } = require('@keystone-alpha/utils');
+const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
+const { getType } = require('@keystonejs/utils');
 const path = require('path');
 
-let fieldsPackagePath = path.dirname(require.resolve('@keystone-alpha/fields/package.json'));
+let fieldsPackagePath = path.dirname(require.resolve('@keystonejs/fields/package.json'));
 function resolveViewPath(viewPath) {
   return path.join(fieldsPackagePath, 'src', 'types', viewPath);
 }
@@ -117,13 +117,13 @@ class MockListAdapter {
   itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
     if (meta) {
       return {
-        count: (id
+        count: (id !== undefined
           ? [this.items[id]]
           : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
         ).length,
       };
     } else {
-      return id
+      return id !== undefined
         ? [this.items[id]]
         : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
     }

@@ -43,7 +43,6 @@ describe('join builder', () => {
           field: 'author',
           matchTerm: { name: { $eq: 'Alice' } },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: false,
           relationships: {},
         },
@@ -108,7 +107,6 @@ describe('join builder', () => {
           from: 'posts-collection',
           field: 'posts',
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {},
         },
@@ -128,7 +126,7 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: '$posts' },
+          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
             { $addFields: { id: '$_id' } },
@@ -137,7 +135,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
+          abc123_posts_every: {
+            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
@@ -172,7 +172,6 @@ describe('join builder', () => {
           from: 'posts-collection',
           field: 'posts',
           postJoinPipeline: [{ $orderBy: 'title' }],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {},
         },
@@ -192,7 +191,7 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: '$posts' },
+          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
             { $addFields: { id: '$_id' } },
@@ -202,7 +201,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
+          abc123_posts_every: {
+            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
@@ -247,7 +248,6 @@ describe('join builder', () => {
           field: 'posts',
           matchTerm: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             def456: {
@@ -257,7 +257,6 @@ describe('join builder', () => {
                 $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
               },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {
                 xyz890: {
@@ -265,7 +264,6 @@ describe('join builder', () => {
                   field: 'posts',
                   matchTerm: { published: { $eq: true } },
                   postJoinPipeline: [],
-                  postQueryMutation: jest.fn(),
                   many: true,
                   relationships: {},
                 },
@@ -289,21 +287,21 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: '$posts' },
+          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
             {
               $lookup: {
                 from: 'tags-collection',
                 as: 'def456_tags',
-                let: { def456_tags_ids: '$tags' },
+                let: { def456_tags_ids: { $ifNull: ['$tags', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$def456_tags_ids'] } } },
                   {
                     $lookup: {
                       from: 'posts-collection',
                       as: 'xyz890_posts',
-                      let: { xyz890_posts_ids: '$posts' },
+                      let: { xyz890_posts_ids: { $ifNull: ['$posts', []] } },
                       pipeline: [
                         { $match: { $expr: { $in: ['$_id', '$$xyz890_posts_ids'] } } },
                         { $match: { published: { $eq: true } } },
@@ -314,7 +312,7 @@ describe('join builder', () => {
                   {
                     $addFields: {
                       xyz890_posts_every: {
-                        $eq: [{ $size: '$xyz890_posts' }, { $size: '$posts' }],
+                        $eq: [{ $size: '$xyz890_posts' }, { $size: { $ifNull: ['$posts', []] } }],
                       },
                       xyz890_posts_none: { $eq: [{ $size: '$xyz890_posts' }, 0] },
                       xyz890_posts_some: { $gt: [{ $size: '$xyz890_posts' }, 0] },
@@ -331,7 +329,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                def456_tags_every: { $eq: [{ $size: '$def456_tags' }, { $size: '$tags' }] },
+                def456_tags_every: {
+                  $eq: [{ $size: '$def456_tags' }, { $size: { $ifNull: ['$tags', []] } }],
+                },
                 def456_tags_none: { $eq: [{ $size: '$def456_tags' }, 0] },
                 def456_tags_some: { $gt: [{ $size: '$def456_tags' }, 0] },
               },
@@ -345,7 +345,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
+          abc123_posts_every: {
+            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
@@ -389,7 +391,6 @@ describe('join builder', () => {
             $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
           },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -397,7 +398,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -419,14 +419,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   { $match: { name: { $eq: 'foo' } } },
@@ -436,7 +436,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -452,7 +454,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
@@ -494,7 +498,6 @@ describe('join builder', () => {
           field: 'posts',
           matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -502,7 +505,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -524,14 +526,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   {
@@ -543,7 +545,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -559,7 +563,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
@@ -601,7 +607,6 @@ describe('join builder', () => {
           field: 'posts',
           matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -609,7 +614,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -631,14 +635,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   {
@@ -650,7 +654,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -666,7 +672,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
@@ -710,7 +718,6 @@ describe('join builder', () => {
             $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
           },
           postJoinPipeline: [],
-          postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
@@ -718,7 +725,6 @@ describe('join builder', () => {
               field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
               postJoinPipeline: [],
-              postQueryMutation: jest.fn(),
               many: true,
               relationships: {},
             },
@@ -740,14 +746,14 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: '$posts' },
+          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: '$labels' },
+                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
                 pipeline: [
                   { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
                   { $match: { name: { $eq: 'foo' } } },
@@ -757,7 +763,9 @@ describe('join builder', () => {
             },
             {
               $addFields: {
-                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_every: {
+                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
+                },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
@@ -773,7 +781,9 @@ describe('join builder', () => {
       },
       {
         $addFields: {
-          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_every: {
+            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+          },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
@@ -803,7 +813,6 @@ describe('join builder', () => {
     */
 
     const mutationResult = {};
-    const postQueryMutation = jest.fn(() => mutationResult);
 
     const postQueryMutations = mutationBuilder({
       zip567: {
@@ -811,7 +820,6 @@ describe('join builder', () => {
         field: 'posts',
         matchTerm: { title: { $eq: 'hello' } },
         postJoinPipeline: [],
-        postQueryMutation,
         many: true,
         relationships: {},
       },
@@ -857,296 +865,6 @@ describe('join builder', () => {
 
     const mutatedResult = postQueryMutations(mockQueryResult);
 
-    // (parentValue, keyOfRelationship, rootObject, path)
-    expect(postQueryMutation).toHaveBeenCalledTimes(2);
-    expect(postQueryMutation).toHaveBeenCalledWith(mockResult1, 'zip567_posts', mockQueryResult, [
-      0,
-    ]);
-    expect(postQueryMutation).toHaveBeenCalledWith(mockResult2, 'zip567_posts', mockQueryResult, [
-      1,
-    ]);
     expect(mutatedResult).toMatchObject([mutationResult, mutationResult]);
-  });
-
-  test('executes nested relationship mutators with correct parameters', () => {
-    let abc123_mutationResult;
-    const abc123_postQueryMutation = jest.fn(objToMutate => {
-      abc123_mutationResult = {
-        ...objToMutate,
-        abc123_mutated: true,
-      };
-      return abc123_mutationResult;
-    });
-
-    let def456_mutationResult;
-    //const def456_postQueryMutation = jest.fn(() => def456_mutationResult);
-    const def456_postQueryMutation = jest.fn(objToMutate => {
-      def456_mutationResult = {
-        ...objToMutate,
-        def456_mutated: true,
-      };
-      return def456_mutationResult;
-    });
-
-    let xyz890_mutationResult;
-    //const xyz890_postQueryMutation = jest.fn(() => xyz890_mutationResult);
-    const xyz890_postQueryMutation = jest.fn(objToMutate => {
-      xyz890_mutationResult = {
-        ...objToMutate,
-        xyz890_mutated: true,
-      };
-      return xyz890_mutationResult;
-    });
-
-    /*
-     * From this query:
-
-      {
-        posts_every: {
-          tags_some: {
-            posts_every: {
-              published: true,
-            },
-          },
-        },
-      }
-
-    */
-    const postQueryMutations = mutationBuilder({
-      abc123: {
-        from: 'posts-collection',
-        field: 'posts',
-        postJoinPipeline: [],
-        matchTerm: { def456_tags_some: { $eq: true } },
-        postQueryMutation: abc123_postQueryMutation,
-        many: true,
-        relationships: {
-          def456: {
-            from: 'tags-collection',
-            field: 'tags',
-            postJoinPipeline: [],
-            matchTerm: { xyz890_posts_every: { $eq: true } },
-            postQueryMutation: def456_postQueryMutation,
-            many: true,
-            relationships: {
-              xyz890: {
-                from: 'posts-collection',
-                field: 'posts',
-                matchTerm: { published: { $eq: true } },
-                postJoinPipeline: [],
-                postQueryMutation: xyz890_postQueryMutation,
-                many: true,
-                relationships: {},
-              },
-            },
-          },
-        },
-      },
-    });
-
-    /*
-      {
-        posts_every: {
-          tags_some: {
-            posts_every: {
-              published: true,
-            },
-          },
-        },
-      }
-    */
-    const mockQueryResult = [
-      {
-        abc123_posts: [
-          {
-            def456_tags: [
-              {
-                xyz890_posts: [{ published: true, title: 'zap' }],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        abc123_posts: [
-          {
-            def456_tags: [
-              {
-                xyz890_posts: [{ published: true, title: 'bang' }],
-              },
-              {
-                xyz890_posts: [
-                  { published: true, title: 'itchy' },
-                  { published: true, title: 'scratchy' },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ];
-
-    const mutatedResult = postQueryMutations(mockQueryResult);
-
-    // xyz890 relationship
-    expect(xyz890_postQueryMutation).toHaveBeenCalledTimes(3);
-    // Only sanity check one invokation
-    expect(xyz890_postQueryMutation).toHaveBeenCalledWith(
-      mockQueryResult[1].abc123_posts[0].def456_tags[1],
-      'xyz890_posts',
-      mockQueryResult,
-      [1, 'abc123_posts', 0, 'def456_tags', 1]
-    );
-
-    // def456 relationship
-    expect(def456_postQueryMutation).toHaveBeenCalledTimes(2);
-    // Only sanity check one invokation
-    expect(def456_postQueryMutation).toHaveBeenCalledWith(
-      {
-        def456_tags: [
-          {
-            xyz890_mutated: true,
-            xyz890_posts: [{ published: true, title: 'bang' }],
-          },
-          {
-            xyz890_mutated: true,
-            xyz890_posts: [
-              { published: true, title: 'itchy' },
-              { published: true, title: 'scratchy' },
-            ],
-          },
-        ],
-      },
-      'def456_tags',
-      [
-        {
-          abc123_posts: [
-            {
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'zap' }],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          abc123_posts: [
-            {
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'bang' }],
-                },
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'itchy' },
-                    { published: true, title: 'scratchy' },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      [1, 'abc123_posts', 0]
-    );
-
-    // (parentValue, keyOfRelationship, rootObject, path)
-    // abc123 relationship
-    expect(abc123_postQueryMutation).toHaveBeenCalledTimes(2);
-    // Only sanity check one invokation
-    expect(abc123_postQueryMutation).toHaveBeenCalledWith(
-      {
-        abc123_posts: [
-          {
-            def456_mutated: true,
-            def456_tags: [
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [{ published: true, title: 'zap' }],
-              },
-            ],
-          },
-        ],
-      },
-      'abc123_posts',
-      [
-        {
-          abc123_posts: [
-            {
-              def456_mutated: true,
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'zap' }],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          abc123_posts: [
-            {
-              def456_mutated: true,
-              def456_tags: [
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [{ published: true, title: 'bang' }],
-                },
-                {
-                  xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'itchy' },
-                    { published: true, title: 'scratchy' },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      [0]
-    );
-
-    expect(mutatedResult).toMatchObject([
-      {
-        abc123_mutated: true,
-        abc123_posts: [
-          {
-            def456_mutated: true,
-            def456_tags: [
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [{ published: true, title: 'zap' }],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        abc123_mutated: true,
-        abc123_posts: [
-          {
-            def456_mutated: true,
-            def456_tags: [
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [{ published: true, title: 'bang' }],
-              },
-              {
-                xyz890_mutated: true,
-                xyz890_posts: [
-                  { published: true, title: 'itchy' },
-                  { published: true, title: 'scratchy' },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ]);
   });
 });

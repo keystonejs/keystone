@@ -1,4 +1,98 @@
+# @keystonejs/adapter-mongoose
+
+## 5.1.1
+
+### Patch Changes
+
+- [`ba8aef71`](https://github.com/keystonejs/keystone/commit/ba8aef71d1a04f643fb7f7590d7d6d136b1d4eba) [#1857](https://github.com/keystonejs/keystone/pull/1857) Thanks [@Vultraz](https://github.com/Vultraz)! - Deployed `mongoose-unique-validator` for a more readable error message when unique checks fail.
+- Updated dependencies [[`45fd7ab8`](https://github.com/keystonejs/keystone/commit/45fd7ab899655364d0071c0d276d188378944ff5), [`b0756c65`](https://github.com/keystonejs/keystone/commit/b0756c65525625919c72364d8cefc32d864c7c0e), [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a)]:
+  - @keystonejs/keystone@5.1.1
+
+## 5.1.0
+
+### Minor Changes
+
+- [`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469) [#1851](https://github.com/keystonejs/keystone/pull/1851) Thanks [@jesstelford](https://github.com/jesstelford)! - Added runtime database version validation
+
+### Patch Changes
+
+- [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f) [#1837](https://github.com/keystonejs/keystone/pull/1837) Thanks [@timleslie](https://github.com/timleslie)! - Updated mongo-related dependencies
+
+- Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469), [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f), [`e4a19e3f`](https://github.com/keystonejs/keystone/commit/e4a19e3f3e261ef476aee61d24dd2639eaf61881)]:
+  - @keystonejs/keystone@5.1.0
+  - @keystonejs/utils@5.1.0
+  - @keystonejs/mongo-join-builder@5.0.1
+
+## 5.0.1
+
+### Patch Changes
+
+- [`3c19cddd`](https://github.com/keystonejs/keystone/commit/3c19cddd0b8b8d1e17385a01a813a9e84ec14bb5) [#1838](https://github.com/keystonejs/keystone/pull/1838) Thanks [@jesstelford](https://github.com/jesstelford)! - Adding a new Relationship field when using the Mongoose adapter will no longer
+  cause an "\$in needs an array" error to be thrown.
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/fields-mongoid@5.0.0
+  - @keystonejs/keystone@5.0.0
+  - @keystonejs/logger@5.0.0
+  - @keystonejs/mongo-join-builder@5.0.0
+  - @keystonejs/utils@5.0.0
+
 # @keystone-alpha/adapter-mongoose
+
+## 6.0.1
+
+### Patch Changes
+
+- [`768420f5`](https://github.com/keystonejs/keystone-5/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d) [#1781](https://github.com/keystonejs/keystone-5/pull/1781) Thanks [@simonswiss](https://github.com/simonswiss)! - changing require path to "@keystone-alpha" instead of "@keystonejs"
+
+- Updated dependencies [[`0a36b0f4`](https://github.com/keystonejs/keystone-5/commit/0a36b0f403da73a76106b5e14940a789466b4f94), [`3bc02545`](https://github.com/keystonejs/keystone-5/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb), [`a48281ba`](https://github.com/keystonejs/keystone-5/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec), [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+  - @keystone-alpha/keystone@16.1.0
+  - @keystone-alpha/fields-mongoid@1.1.6
+
+## 6.0.0
+
+### Major Changes
+
+- [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9) [#1729](https://github.com/keystonejs/keystone-5/pull/1729) Thanks [@timleslie](https://github.com/timleslie)! - This change significantly changes how and when we populate `many`-relationships during queries and mutations.
+  The behaviour of the GraphQL API has not changed, but queries should be more performant, particularly for items with many related items.
+  The `existingItem` parameter in hooks will no longer have the `many`-relationship fields populated.
+  `List.listQuery()` no longer populates `many` relationship fields.
+  For most users there should not need to be any changes to code unless they are explicitly relying on a `many`-relationship field in a hook, in which case they will need to execute an explicit query to obtain the desired values.
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/keystone@16.0.0
+  - @keystone-alpha/mongo-join-builder@4.0.0
+  - @keystone-alpha/fields-mongoid@1.1.5
+
+## 5.0.0
+
+### Major Changes
+
+- [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58): Remove `.queryBuilder` property of the `MongooseListAdapter`.
+
+### Patch Changes
+
+- [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d): Internal refactor to inline the logic which was previously computed by getRelationshipQueryCondition().
+- [a48ff0a3](https://github.com/keystonejs/keystone-5/commit/a48ff0a3): Internal refactor to move defintion of modifierConditions closer to where they're used.
+- [82dfef03](https://github.com/keystonejs/keystone-5/commit/82dfef03): Move tokenizer functions out of this package and into `mongo-join-builder`.
+
+- Updated dependencies [da4013e4](https://github.com/keystonejs/keystone-5/commit/da4013e4):
+- Updated dependencies [157a439d](https://github.com/keystonejs/keystone-5/commit/157a439d):
+  - @keystone-alpha/mongo-join-builder@3.0.0
 
 ## 4.0.8
 

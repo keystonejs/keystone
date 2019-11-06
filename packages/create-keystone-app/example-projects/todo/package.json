@@ -1,8 +1,8 @@
 {
-  "name": "@keystone-alpha/example-projects-todo",
+  "name": "@keystonejs/example-projects-todo",
   "description": "An example KeystoneJS project showcasing a simple Todo List with a Keystone StaticApp front-end.",
   "private": true,
-  "version": "1.1.12",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,12 +14,12 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^4.0.7",
-    "@keystone-alpha/app-admin-ui": "^5.8.1",
-    "@keystone-alpha/app-graphql": "^8.0.0",
-    "@keystone-alpha/fields": "^12.1.0",
-    "@keystone-alpha/keystone": "^15.1.0",
-    "@keystone-alpha/app-static": "^1.1.1",
+    "@keystonejs/adapter-mongoose": "^5.0.0",
+    "@keystonejs/app-admin-ui": "^5.0.0",
+    "@keystonejs/app-graphql": "^5.0.0",
+    "@keystonejs/app-static": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/keystone": "^5.0.0",
     "cross-env": "^5.2.0"
   }
 }

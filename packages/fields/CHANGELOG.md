@@ -1,4 +1,144 @@
+# @keystonejs/fields
+
+## 5.1.0
+
+### Minor Changes
+
+- [`20632bca`](https://github.com/keystonejs/keystone/commit/20632bca495058f2845d36fe95650eede0a9ebdc) [#1875](https://github.com/keystonejs/keystone/pull/1875) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Added a default `getFilterTypes` method to `FieldController`.
+
+* [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0) [#1913](https://github.com/keystonejs/keystone/pull/1913) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Improved a11y for the `Checkbox` field.
+
+### Patch Changes
+
+- [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `flow` and fixed flow errors and (probably) bugs.
+
+* [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `@emotion/core` and `@emotion/styled`.
+
+- [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475) [#1808](https://github.com/keystonejs/keystone/pull/1808) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-apollo` and replaced use of `react-apollo-hooks` with `react-apollo`. `react-apollo` has a similar hooks API to `react-apollo-hooks`.
+- Updated dependencies [[`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53), [`b68b74f3`](https://github.com/keystonejs/keystone/commit/b68b74f3e77ebd91711c72aac369ab2d5905cb36), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0), [`0154f892`](https://github.com/keystonejs/keystone/commit/0154f892a1771b4f88b35f34a1ba47eaf1721dfe), [`ba8aef71`](https://github.com/keystonejs/keystone/commit/ba8aef71d1a04f643fb7f7590d7d6d136b1d4eba), [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c)]:
+  - @keystonejs/build-field-types@5.0.1
+  - @keystonejs/adapter-knex@5.1.0
+  - @arch-ui/button@0.0.10
+  - @arch-ui/controls@0.1.0
+  - @arch-ui/day-picker@0.0.14
+  - @arch-ui/drawer@0.0.11
+  - @arch-ui/layout@0.2.5
+  - @arch-ui/typography@0.0.9
+  - @arch-ui/alert@0.0.8
+  - @arch-ui/fields@2.0.2
+  - @arch-ui/filters@0.0.12
+  - @arch-ui/input@0.1.1
+  - @arch-ui/loading@0.0.9
+  - @arch-ui/lozenge@0.0.8
+  - @arch-ui/options@0.0.10
+  - @arch-ui/popout@0.0.9
+  - @arch-ui/tooltip@0.1.3
+  - @keystonejs/field-content@5.0.1
+  - @keystonejs/adapter-mongoose@5.1.1
+
+## 5.0.2
+
+### Patch Changes
+
+- [`ebbcad70`](https://github.com/keystonejs/keystone/commit/ebbcad7042596a9c83c32c8e08dad50f9fcb59fd) [#1833](https://github.com/keystonejs/keystone/pull/1833) Thanks [@Vultraz](https://github.com/Vultraz)! - Added getFilename LocalFileAdapter config parameter to allow configuration of saved filename and saved original filename in database.
+
+* [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f) [#1837](https://github.com/keystonejs/keystone/pull/1837) Thanks [@timleslie](https://github.com/timleslie)! - Updated mongo-related dependencies
+
+* Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469), [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f)]:
+  - @keystonejs/adapter-mongoose@5.1.0
+  - @keystonejs/utils@5.1.0
+  - @keystonejs/adapter-knex@5.0.1
+  - @keystonejs/test-utils@5.0.1
+
+## 5.0.1
+
+### Patch Changes
+
+- [`209b7078`](https://github.com/keystonejs/keystone/commit/209b7078c7fa4f4d87568c58cb6cb6ad8162fe46) [#1817](https://github.com/keystonejs/keystone/pull/1817) Thanks [@Vultraz](https://github.com/Vultraz)! - Doc updates and minor functionality improvements for file field/adapters
+
+- Updated dependencies [[`3c19cddd`](https://github.com/keystonejs/keystone/commit/3c19cddd0b8b8d1e17385a01a813a9e84ec14bb5)]:
+  - @keystonejs/adapter-mongoose@5.0.1
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/access-control@5.0.0
+  - @keystonejs/adapter-knex@5.0.0
+  - @keystonejs/adapter-mongoose@5.0.0
+  - @keystonejs/build-field-types@5.0.0
+  - @keystonejs/field-content@5.0.0
+  - @keystonejs/test-utils@5.0.0
+  - @keystonejs/utils@5.0.0
+
 # @keystone-alpha/fields
+
+## 15.0.0
+
+### Major Changes
+
+- [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901) [#1789](https://github.com/keystonejs/keystone-5/pull/1789) Thanks [@timleslie](https://github.com/timleslie)! - `Relationship.convertResolvedOperationsToFieldValue()` has been removed.
+
+### Patch Changes
+
+- Updated dependencies [[`768420f5`](https://github.com/keystonejs/keystone-5/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d)]:
+  - @keystone-alpha/adapter-knex@6.0.2
+  - @keystone-alpha/adapter-mongoose@6.0.1
+  - @keystone-alpha/field-content@3.1.4
+
+## 14.0.0
+
+### Major Changes
+
+- [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9) [#1729](https://github.com/keystonejs/keystone-5/pull/1729) Thanks [@timleslie](https://github.com/timleslie)! - This change significantly changes how and when we populate `many`-relationships during queries and mutations.
+  The behaviour of the GraphQL API has not changed, but queries should be more performant, particularly for items with many related items.
+  The `existingItem` parameter in hooks will no longer have the `many`-relationship fields populated.
+  `List.listQuery()` no longer populates `many` relationship fields.
+  For most users there should not need to be any changes to code unless they are explicitly relying on a `many`-relationship field in a hook, in which case they will need to execute an explicit query to obtain the desired values.
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/adapter-knex@6.0.0
+  - @keystone-alpha/adapter-mongoose@6.0.0
+  - @keystone-alpha/test-utils@2.6.3
+  - @keystone-alpha/field-content@3.1.3
+
+## 13.1.0
+
+### Minor Changes
+
+- [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579): Add Location field
+
+### Patch Changes
+
+- [3a52447d](https://github.com/keystonejs/keystone-5/commit/3a52447d): Ensure updateMutation() is always called with a string ID when resolving backlinks.
+
+- Updated dependencies [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466):
+- Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+  - @keystone-alpha/test-utils@2.6.2
+  - @keystone-alpha/adapter-knex@5.0.0
+  - @arch-ui/day-picker@0.0.13
+  - @arch-ui/select@0.1.0
+
+## 13.0.0
+
+### Major Changes
+
+- [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d): MongoRelationshipInterface.getRelationshipQueryCondition() has been removed.
+
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/test-utils@2.6.1
+  - @keystone-alpha/adapter-mongoose@5.0.0
 
 ## 12.3.0
 

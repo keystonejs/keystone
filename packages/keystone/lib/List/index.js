@@ -12,9 +12,9 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-} = require('@keystone-alpha/utils');
-const { parseListAccess } = require('@keystone-alpha/access-control');
-const { logger } = require('@keystone-alpha/logger');
+} = require('@keystonejs/utils');
+const { parseListAccess } = require('@keystonejs/access-control');
+const { logger } = require('@keystonejs/logger');
 
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
@@ -62,7 +62,7 @@ const opToType = {
 const getAuthMutationName = (prefix, authType) => `${prefix}With${upcase(authType)}`;
 
 const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
-  const { Text, Checkbox, Float } = require('@keystone-alpha/fields');
+  const { Text, Checkbox, Float } = require('@keystonejs/fields');
 
   const nativeTypeMap = new Map([
     [
@@ -96,7 +96,7 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 
   keystoneLogger.warn(
     { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystone-alpha/fields package.`
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystonejs/fields package.`
   );
 
   return keystoneType;
@@ -232,7 +232,7 @@ module.exports = class List {
       throw new Error(`List ${label}'s queryLimits.maxResults can't be < 1`);
     }
 
-    if (!['object', 'function', 'undefined'].includes(typeof this.cacheHint)) {
+    if (!['object', 'function', 'undefined'].includes(typeof cacheHint)) {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
@@ -280,6 +280,9 @@ module.exports = class List {
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
+      if (!this.isAuxList && fieldKey[0] === '_') {
+        throw `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`;
+      }
       if (typeof fieldConfig.type === 'undefined') {
         throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
           `(${this.key}.${fieldKey}.type is undefined)`;
@@ -720,7 +723,10 @@ module.exports = class List {
   }
 
   checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
-    const access = context.getListAccessControlForUser(this.key, originalInput, operation);
+    const access = context.getListAccessControlForUser(this.key, originalInput, operation, {
+      gqlName,
+      ...extraInternalData,
+    });
     if (!access) {
       graphqlLogger.debug(
         { operation, access, gqlName, ...extraInternalData },
@@ -746,10 +752,7 @@ module.exports = class List {
     };
 
     let item;
-    // Early out - the user has full access to update this list
-    if (access === true) {
-      item = await this.adapter.findById(id);
-    } else if (
+    if (
       (access.id && access.id !== id) ||
       (access.id_not && access.id_not === id) ||
       (access.id_in && !access.id_in.includes(id)) ||
@@ -759,10 +762,6 @@ module.exports = class List {
       // the user has access to. So we have to do a check here to see if the
       // ID they're requesting matches that ID.
       // Nice side-effect: We can throw without having to ever query the DB.
-      // NOTE: Don't try to early out here by doing
-      // if(access.id === id) return findById(id)
-      // this will result in a possible false match if a declarative access
-      // control clause has other items in it
       throwAccessDenied('Item excluded this id from filters');
     } else {
       // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
@@ -770,7 +769,7 @@ module.exports = class List {
       // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
       // have been caught earlier, so this spread and overwrite can only
       // ever be additive or overwrite with the same value
-      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }, { info }))[0];
+      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }, { context, info }))[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
@@ -790,7 +789,7 @@ module.exports = class List {
     return item;
   }
 
-  async getAccessControlledItems(ids, access, { info } = {}) {
+  async getAccessControlledItems(ids, access, { context, info } = {}) {
     if (ids.length === 0) {
       return [];
     }
@@ -799,7 +798,7 @@ module.exports = class List {
 
     // Early out - the user has full access to operate on this list
     if (access === true) {
-      return await this._itemsQuery({ where: { id_in: uniqueIds } }, { info });
+      return await this._itemsQuery({ where: { id_in: uniqueIds } }, { context, info });
     }
 
     let idFilters = {};
@@ -824,10 +823,6 @@ module.exports = class List {
     // the user has access to. So we have to do a check here to see if the
     // ID they're requesting matches that ID.
     // Nice side-effect: We can throw without having to ever query the DB.
-    // NOTE: Don't try to early out here by doing
-    // if(access.id === id) return findById(id)
-    // this will result in a possible false match if the access control
-    // has other items in it
     if (
       // Only some ids are allowed, and none of them have been passed in
       (idFilters.id_in && idFilters.id_in.length === 0) ||
@@ -846,7 +841,10 @@ module.exports = class List {
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
     const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
-    return await this._itemsQuery({ where: { ...remainingAccess, ...idFilters } }, { info });
+    return await this._itemsQuery(
+      { where: { ...remainingAccess, ...idFilters } },
+      { context, info }
+    );
   }
 
   gqlQueryResolvers({ schemaName }) {
@@ -881,23 +879,26 @@ module.exports = class List {
     return resolvers;
   }
 
-  async listQuery(args, context, queryName, info) {
-    const access = this.checkListAccess(context, undefined, 'read', { queryName });
+  async listQuery(args, context, gqlName, info, from) {
+    const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-    return this._itemsQuery(mergeWhereClause(args, access), { info });
+    return this._itemsQuery(mergeWhereClause(args, access), { context, info, from });
   }
 
-  async listQueryMeta(args, context, queryName, info) {
+  async listQueryMeta(args, context, gqlName, info, from) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
       // Evalutation takes place in ../Keystone/index.js
       getCount: () => {
-        const access = this.checkListAccess(context, undefined, 'read', { queryName });
+        const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), { meta: true, info }).then(
-          ({ count }) => count
-        );
+        return this._itemsQuery(mergeWhereClause(args, access), {
+          meta: true,
+          context,
+          info,
+          from,
+        }).then(({ count }) => count);
       },
     };
   }
@@ -1003,6 +1004,13 @@ module.exports = class List {
     if (results.length > maxResults) {
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
+    if (extra && extra.context) {
+      const context = extra.context;
+      context.totalResults += results.length;
+      if (context.totalResults > context.maxTotalResults) {
+        throwLimitsExceeded({ type: 'maxTotalResults', limit: context.maxTotalResults });
+      }
+    }
 
     if (extra && extra.info) {
       switch (typeof this.cacheHint) {
@@ -1034,8 +1042,8 @@ module.exports = class List {
       return null;
     }
 
-    const queryName = this.gqlNames.authenticatedQueryName;
-    const access = this.checkListAccess(context, undefined, 'auth', { queryName });
+    const gqlName = this.gqlNames.authenticatedQueryName;
+    const access = this.checkListAccess(context, undefined, 'auth', { gqlName });
     return this.itemQuery(
       mergeWhereClause({ where: { id: context.authedItem.id } }, access),
       context,
@@ -1044,8 +1052,8 @@ module.exports = class List {
   }
 
   async authenticateMutation(authType, args, context) {
-    const queryName = getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType);
-    this.checkListAccess(context, undefined, 'auth', { queryName });
+    const gqlName = getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType);
+    this.checkListAccess(context, undefined, 'auth', { gqlName });
 
     // This is currently hard coded to enable authenticating with the admin UI.
     // In the near future we will set up the admin-ui application and api to be
@@ -1069,8 +1077,8 @@ module.exports = class List {
   }
 
   async unauthenticateMutation(context) {
-    const queryName = this.gqlNames.unauthenticateMutationName;
-    this.checkListAccess(context, undefined, 'auth', { queryName });
+    const gqlName = this.gqlNames.unauthenticateMutationName;
+    this.checkListAccess(context, undefined, 'auth', { gqlName });
 
     await context.endAuthedSession();
     return { success: true };
@@ -1162,14 +1170,33 @@ module.exports = class List {
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
     const resolvedRelationships = await this._mapToFields(fields, async field => {
-      const operations = await field.resolveNestedOperations(
+      const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
         existingItem,
         context,
         getItem,
         mutationState
       );
-      return field.convertResolvedOperationsToFieldValue(operations, existingItem);
+      // This code codifies the order of operations for nested mutations:
+      // 1. disconnectAll
+      // 2. disconnect
+      // 3. create
+      // 4. connect
+      if (field.many) {
+        return [
+          ...currentValue.filter(id => !disconnect.includes(id)),
+          ...connect,
+          ...create,
+        ].filter(id => !!id);
+      } else {
+        return create && create[0]
+          ? create[0]
+          : connect && connect[0]
+          ? connect[0]
+          : disconnect && disconnect[0]
+          ? null
+          : currentValue;
+      }
     });
 
     return {
@@ -1376,7 +1403,7 @@ module.exports = class List {
   }
 
   async _nestedMutation(mutationState, context, mutation) {
-    const { Relationship } = require('@keystone-alpha/fields');
+    const { Relationship } = require('@keystonejs/fields');
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {

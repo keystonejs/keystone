@@ -1,10 +1,10 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystone-alpha/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 const {
   multiAdapterRunners,
   setupServer,
   networkedGraphqlRequest,
-} = require('@keystone-alpha/test-utils');
+} = require('@keystonejs/test-utils');
 const cuid = require('cuid');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();

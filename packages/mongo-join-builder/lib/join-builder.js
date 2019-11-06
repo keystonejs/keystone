@@ -1,4 +1,5 @@
-const { flatten, compose } = require('@keystone-alpha/utils');
+const omitBy = require('lodash.omitby');
+const { flatten, compose, defaultObj } = require('@keystonejs/utils');
 
 /**
  * Format of input object:
@@ -12,7 +13,6 @@ const { flatten, compose } = require('@keystone-alpha/utils');
   type Relationship: {
     from: String,
     field: String,
-    postQueryMutation: Function,
     many?: Boolean, (default: true)
     ...Query,
   }
@@ -23,7 +23,6 @@ const { flatten, compose } = require('@keystone-alpha/utils');
       abc123: {
         from: 'posts-collection',
         field: 'posts',
-        postQueryMutation: jest.fn(),
         many: true,
         matchTerm: { title: { $eq: 'hello' } },
         postJoinPipeline: [
@@ -44,7 +43,7 @@ const { flatten, compose } = require('@keystone-alpha/utils');
     ],
   }
  */
-function mutation(postQueryMutation, lookupPath) {
+function mutation(uid, lookupPath) {
   return queryResult => {
     function mutate(arrayToMutate, lookupPathFragment, pathSoFar = []) {
       const [keyToMutate, ...restOfLookupPath] = lookupPathFragment;
@@ -56,7 +55,7 @@ function mutation(postQueryMutation, lookupPath) {
 
         if (restOfLookupPath.length === 0) {
           // Now we can execute the mutation
-          return postQueryMutation(value, keyToMutate, queryResult, [...pathSoFar, index]);
+          return omitBy(value, (_, keyToOmit) => keyToOmit.startsWith(uid));
         }
 
         // Recurse
@@ -77,19 +76,17 @@ function mutation(postQueryMutation, lookupPath) {
 
 function mutationBuilder(relationships, path = []) {
   return compose(
-    Object.entries(relationships).map(([uid, { postQueryMutation, field, relationships }]) => {
+    Object.entries(relationships).map(([uid, { field, relationships }]) => {
       const uniqueField = `${uid}_${field}`;
       const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
       // NOTE: Order is important. We want depth first, so we perform the related mutators first.
-      return postQueryMutation
-        ? compose([postQueryMutations, mutation(postQueryMutation, [...path, uniqueField])])
-        : postQueryMutations;
+      return compose([postQueryMutations, mutation(uid, [...path, uniqueField])]);
     })
   );
 }
 
 function pipelineBuilder(query) {
-  const { matchTerm, postJoinPipeline, relationshipIdTerm, relationships } = query;
+  const { matchTerm, postJoinPipeline, relationshipIdTerm, relationships, excludeFields } = query;
 
   const relationshipPipelines = Object.entries(relationships).map(([uid, relationship]) => {
     const { field, many, from } = relationship;
@@ -101,7 +98,10 @@ function pipelineBuilder(query) {
         $lookup: {
           from,
           as: uniqueField,
-          let: { [idsName]: `$${field}` },
+          // We use `ifNull` here to handle the case unique to mongo where a
+          // record may be entirely missing a field (or have the value set to
+          // `null`)
+          let: { [idsName]: many ? { $ifNull: [`$${field}`, []] } : `$${field}` },
           pipeline: pipelineBuilder({
             ...relationship,
             // The ID / list of IDs we're joining by. Do this very first so it limits any work
@@ -112,7 +112,12 @@ function pipelineBuilder(query) {
       },
       {
         $addFields: {
-          [`${uniqueField}_every`]: { $eq: [fieldSize, many ? { $size: `$${field}` } : 1] },
+          [`${uniqueField}_every`]: {
+            // We use `ifNull` here to handle the case unique to mongo where a
+            // record may be entirely missing a field (or have the value set to
+            // `null`)
+            $eq: [fieldSize, many ? { $size: { $ifNull: [`$${field}`, []] } } : 1],
+          },
           [`${uniqueField}_none`]: { $eq: [fieldSize, 0] },
           [`${uniqueField}_some`]: { $gt: [fieldSize, 0] },
         },
@@ -125,6 +130,7 @@ function pipelineBuilder(query) {
     ...flatten(relationshipPipelines),
     matchTerm && { $match: matchTerm },
     { $addFields: { id: '$_id' } },
+    excludeFields && excludeFields.length && { $project: defaultObj(excludeFields, 0) },
     ...postJoinPipeline,
   ].filter(i => i);
 }

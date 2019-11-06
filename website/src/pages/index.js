@@ -8,7 +8,7 @@ import { SkipNavContent } from '@reach/skip-nav';
 import Layout from '../templates/layout';
 import { HomepageContent } from '../components/homepage/HomepageContent';
 import { VideoIntro } from '../components/homepage/VideoIntro';
-import { CONTAINER_GUTTERS } from '../components/Container';
+import { CONTAINER_GUTTERS, CONTAINER_WIDTH } from '../components/Container';
 import { HEADER_HEIGHT } from '../components/Header';
 import { Container, Sidebar } from '../components';
 import { mq } from '../utils/media';
@@ -35,7 +35,7 @@ const CustomContainer = props => (
       marginRight: 'auto',
       paddingLeft: CONTAINER_GUTTERS,
       paddingRight: CONTAINER_GUTTERS,
-      width: [null, null, 992, 1200],
+      width: [null, null, 992, CONTAINER_WIDTH],
     })}
     {...props}
   />

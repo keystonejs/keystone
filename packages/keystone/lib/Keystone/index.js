@@ -16,19 +16,19 @@ const {
   unique,
   filterValues,
   compose,
-} = require('@keystone-alpha/utils');
+} = require('@keystonejs/utils');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
   validateCustomAccessControl,
   parseCustomAccess,
-} = require('@keystone-alpha/access-control');
+} = require('@keystonejs/access-control');
 const {
   startAuthedSession,
   endAuthedSession,
   commonSessionMiddleware,
-} = require('@keystone-alpha/session');
-const { logger } = require('@keystone-alpha/logger');
+} = require('@keystonejs/session');
+const { logger } = require('@keystonejs/logger');
 
 const {
   unmergeRelationships,
@@ -50,16 +50,15 @@ module.exports = class Keystone {
     adapter,
     defaultAdapter,
     name,
-    adapterConnectOptions = {},
     onConnect,
     cookieSecret = 'qwerty',
     sessionStore,
+    queryLimits = {},
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
   }) {
     this.name = name;
-    this.adapterConnectOptions = adapterConnectOptions;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -85,6 +84,14 @@ module.exports = class Keystone {
       this.defaultAdapter = adapter.constructor.name;
     } else {
       throw new Error('No database adapter provided');
+    }
+
+    this.queryLimits = {
+      maxTotalResults: Infinity,
+      ...queryLimits,
+    };
+    if (this.queryLimits.maxTotalResults < 1) {
+      throw new Error("queryLimits.maxTotalResults can't be < 1");
     }
 
     // Placeholder until keystone.prepare() is run during which this function
@@ -127,18 +134,30 @@ module.exports = class Keystone {
         });
       });
 
-      getListAccessControlForUser = fastMemoize((listKey, originalInput, operation) => {
-        return validateListAccessControl({
-          access: this.lists[listKey].access[schemaName],
-          originalInput,
-          operation,
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-        });
-      });
+      getListAccessControlForUser = fastMemoize(
+        (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+          return validateListAccessControl({
+            access: this.lists[listKey].access[schemaName],
+            originalInput,
+            operation,
+            authentication: { item: req.user, listKey: req.authedListKey },
+            listKey,
+            gqlName,
+            itemId,
+            itemIds,
+          });
+        }
+      );
 
       getFieldAccessControlForUser = fastMemoize(
-        (listKey, fieldKey, originalInput, existingItem, operation) => {
+        (
+          listKey,
+          fieldKey,
+          originalInput,
+          existingItem,
+          operation,
+          { gqlName, itemId, itemIds } = {}
+        ) => {
           return validateFieldAccessControl({
             access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
             originalInput,
@@ -147,6 +166,9 @@ module.exports = class Keystone {
             authentication: { item: req.user, listKey: req.authedListKey },
             fieldKey,
             listKey,
+            gqlName,
+            itemId,
+            itemIds,
           });
         }
       );
@@ -162,6 +184,8 @@ module.exports = class Keystone {
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
+      totalResults: 0,
+      maxTotalResults: this.queryLimits.maxTotalResults,
     };
   }
 
@@ -209,7 +233,7 @@ module.exports = class Keystone {
       if (!graphQLQuery) {
         return Promise.reject(
           new Error(
-            `No executable schema named '${passThroughContext.schemaName}' is available. Have you setup '@keystone-alpha/app-graphql'?`
+            `No executable schema named '${passThroughContext.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
           )
         );
       }
@@ -233,6 +257,11 @@ module.exports = class Keystone {
   createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
+    const isReservedName = !isAuxList && key[0] === '_';
+
+    if (isReservedName) {
+      throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
+    }
 
     const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
@@ -637,10 +666,11 @@ module.exports = class Keystone {
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
+      // TODO: set up a session test rig (maybe by wrapping an in-memory store)
       commonSessionMiddleware({
         keystone: this,
         cookieSecret: this._cookieSecret,
-        sessionStore: this.sessionStore,
+        sessionStore: this._sessionStore,
         secureCookies: this._secureCookies,
         cookieMaxAge: this._cookieMaxAge,
       }),

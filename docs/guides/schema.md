@@ -9,7 +9,7 @@ KeystoneJS is comprised of 3 distinct pieces, which can be described as:
 
 <pre>
   <code>
-    Schema => (&#x0007B; <a href="../tutorials/admin-ui">AdminUI</a>, <a href="../tutorials/intro-to-graphql">GraphQL</a> &#x0007D;)
+    Schema => (&#x0007B; <a href="/keystonejs/app-admin-ui">AdminUI</a>, <a href="/guides/intro-to-graphql">GraphQL</a> &#x0007D;)
   </code>
 </pre>
 
@@ -117,15 +117,15 @@ keystone.createList('Todo', {
 
 In this example, the `adminConfig` options will apply only to the `Todo` list
 (setting how many items are shown per page in the [Admin
-UI](https://v5.keystonejs.com/tutorials/admin-ui)). The `isRequired` option will ensure an API error
+UI](/keystonejs/app-admin-ui)). The `isRequired` option will ensure an API error
 is thrown if a `task` value is not provided when creating/updating items.
 
 <!-- TODO: Screenshot -->
 
 _For more List options, see the [`createList()` API
-docs](https://v5.keystonejs.com/api/create-list)._
+docs](/api/create-list)._
 
-_[There are many different field types available](https://v5.keystonejs.com/keystone-alpha/fields/),
+_[There are many different field types available](/keystonejs/fields/),
 each specifying their own options._
 
 ### Related Lists
@@ -333,7 +333,7 @@ Relationships are defined using the `Relationship` field type, and require at
 least 2 configured lists (one will refer to the other).
 
 ```javascript
-const { Relationship } = require('@keystone-alpha/fields');
+const { Relationship } = require('@keystonejs/fields');
 
 keystone.createList('Todo', {
   fields: {
@@ -459,15 +459,15 @@ GraphQL API.
 keystone.createList('Todo', {
   fields: {
     task: { type: Text },
-  }
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist { type: Relationship, ref: 'Todo', many: true },
-  }
+    todolist: { type: Relationship, ref: 'Todo', many: true },
+  },
 });
 ```
 
@@ -654,7 +654,7 @@ mutation {
 ```
 
 _See [the Relationship API docs for more on
-`connect`](../../keystone-alpha/fields/src/types/relationship)._
+`connect`](../../keystonejs/fields/src/types/relationship)._
 
 If this was the first `Todo` item created, the database would now look like:
 
@@ -819,7 +819,7 @@ keystone.createList('User', {
 
 In this case, we'll create the first task along with creating the user. _For
 more info on the `create` syntax, see [the Relationship API
-docs](../../keystone-alpha/fields/src/types/relationship/)._
+docs](../../keystonejs/fields/src/types/relationship/)._
 
 ```graphql
 mutation {

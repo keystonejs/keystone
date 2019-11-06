@@ -1,7 +1,6 @@
 import React, { useMemo, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'; // FIXME: Use the provided API when hooks ready
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
@@ -31,27 +30,25 @@ const Keystone = () => {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <ApolloHooksProvider client={apolloClient}>
-        <ToastProvider>
-          <ConnectivityListener />
-          <Global styles={globalStyles} />
+      <ToastProvider>
+        <ConnectivityListener />
+        <Global styles={globalStyles} />
 
-          {adminMeta.authStrategy ? (
-            <BrowserRouter>
-              <Switch>
-                <Route
-                  exact
-                  path={adminMeta.signoutPath}
-                  render={() => <SignoutPage {...adminMeta} />}
-                />
-                <Route render={() => <SigninPage {...adminMeta} />} />
-              </Switch>
-            </BrowserRouter>
-          ) : (
-            <InvalidRoutePage {...adminMeta} />
-          )}
-        </ToastProvider>
-      </ApolloHooksProvider>
+        {adminMeta.authStrategy ? (
+          <BrowserRouter>
+            <Switch>
+              <Route
+                exact
+                path={adminMeta.signoutPath}
+                render={() => <SignoutPage {...adminMeta} />}
+              />
+              <Route render={() => <SigninPage {...adminMeta} />} />
+            </Switch>
+          </BrowserRouter>
+        ) : (
+          <InvalidRoutePage {...adminMeta} />
+        )}
+      </ToastProvider>
     </ApolloProvider>
   );
 };

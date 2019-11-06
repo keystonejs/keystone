@@ -1,11 +1,7 @@
 const knex = require('knex');
 const pSettle = require('p-settle');
-const {
-  BaseKeystoneAdapter,
-  BaseListAdapter,
-  BaseFieldAdapter,
-} = require('@keystone-alpha/keystone');
-const logger = require('@keystone-alpha/logger').logger('knex');
+const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
+const logger = require('@keystonejs/logger').logger('knex');
 
 const {
   escapeRegExp,
@@ -14,7 +10,7 @@ const {
   arrayToObject,
   resolveAllKeys,
   identity,
-} = require('@keystone-alpha/utils');
+} = require('@keystonejs/utils');
 const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
@@ -29,18 +25,18 @@ class KnexAdapter extends BaseKeystoneAdapter {
   async _connect({ name }) {
     const { knexOptions = {} } = this.config;
     const { connection } = knexOptions;
-    let uri =
+    let knexConnection =
       connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
 
-    if (!uri) {
+    if (!knexConnection) {
       const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
-      uri = `postgres://localhost/${defaultDbName}`;
-      logger.warn(`No Knex connection URI specified. Defaulting to '${uri}'`);
+      knexConnection = `postgres://localhost/${defaultDbName}`;
+      logger.warn(`No Knex connection URI specified. Defaulting to '${knexConnection}'`);
     }
 
     this.knex = knex({
       client: this.client,
-      connection: uri,
+      connection: knexConnection,
       ...knexOptions,
     });
 
@@ -51,11 +47,17 @@ class KnexAdapter extends BaseKeystoneAdapter {
     }));
     if (result.error) {
       const connectionError = result.error;
-      console.error(`Could not connect to database: '${uri}'`);
+      let dbName;
+      if (typeof knexConnection === 'string') {
+        dbName = knexConnection.split('/').pop();
+      } else {
+        dbName = knexConnection.database;
+      }
+      console.error(`Could not connect to database: '${dbName}'`);
       console.warn(
         `If this is the first time you've run Keystone, you can create your database with the following command:`
       );
-      console.warn(`createdb postgres ${uri.split('/').pop()}`);
+      console.warn(`createdb ${dbName}`);
       throw connectionError;
     }
 
@@ -115,15 +117,19 @@ class KnexAdapter extends BaseKeystoneAdapter {
   // This will completely drop the backing database. Use wisely.
   dropDatabase() {
     const tables = Object.values(this.listAdapters)
-      .map(listAdapter => `"${this.schemaName}"."${listAdapter.key}"`)
+      .map(listAdapter => `"${this.schemaName}"."${listAdapter.tableName}"`)
       .join(',');
     return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
   }
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { AutoIncrement } = require('@keystone-alpha/fields-auto-increment');
+    const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
     return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
+  }
+
+  async checkDatabaseVersion() {
+    // TODO: implement
   }
 }
 
@@ -132,6 +138,7 @@ class KnexListAdapter extends BaseListAdapter {
     super(...arguments);
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
     this.realKeys = [];
+    this.tableName = this.key;
   }
 
   prepareFieldAdapter(fieldAdapter) {
@@ -154,7 +161,7 @@ class KnexListAdapter extends BaseListAdapter {
 
   async createTable() {
     // Let the field adapter add what it needs to the table schema
-    await this._schema().createTable(this.key, table => {
+    await this._schema().createTable(this.tableName, table => {
       this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
     });
   }
@@ -163,7 +170,7 @@ class KnexListAdapter extends BaseListAdapter {
     const relationshipAdapters = this.fieldAdapters.filter(adapter => adapter.isRelationship);
 
     // Add foreign key constraints on this table
-    await this._schema().table(this.key, table => {
+    await this._schema().table(this.tableName, table => {
       relationshipAdapters
         .filter(adapter => !adapter.config.many)
         .forEach(adapter => adapter.createForeignKey(table, this.parentAdapter.schemaName));
@@ -215,7 +222,7 @@ class KnexListAdapter extends BaseListAdapter {
       table
         .foreign(leftFkPath)
         .references(leftPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.key}`)
+        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
         .onDelete('CASCADE');
 
       rightPkFa.addToForeignTableSchema(table, {
@@ -227,7 +234,7 @@ class KnexListAdapter extends BaseListAdapter {
       table
         .foreign(rightFkPath)
         .references(rightPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.key}`)
+        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
         .onDelete('CASCADE');
     });
   }
@@ -237,7 +244,7 @@ class KnexListAdapter extends BaseListAdapter {
     const realData = pick(data, this.realKeys);
     const item = (await this._query()
       .insert(realData)
-      .into(this.key)
+      .into(this.tableName)
       .returning('*'))[0];
 
     // For every many-field, update the many-table
@@ -283,7 +290,7 @@ class KnexListAdapter extends BaseListAdapter {
                     .del()
                 : adapter
                     ._query()
-                    .table(adapter.key)
+                    .table(adapter.tableName)
                     .where(a.path, id)
                     .update({ [a.path]: null })
             )
@@ -292,7 +299,7 @@ class KnexListAdapter extends BaseListAdapter {
     );
     // Delete the actual item
     return this._query()
-      .table(this.key)
+      .table(this.tableName)
       .where({ id })
       .del();
   }
@@ -322,7 +329,7 @@ class KnexListAdapter extends BaseListAdapter {
     // Update the real data
     const realData = pick(data, this.realKeys);
     const query = this._query()
-      .table(this.key)
+      .table(this.tableName)
       .where({ id });
     if (Object.keys(realData).length) {
       query.update(realData);
@@ -371,7 +378,8 @@ class KnexListAdapter extends BaseListAdapter {
       })
     );
 
-    return this._findById(item.id);
+    const result = await this._findById(item.id);
+    return result ? this._populateMany(result) : null;
   }
 
   async _findAll() {
@@ -379,10 +387,11 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _findById(id) {
-    const item = (await this._query()
-      .from(this.key)
-      .where('id', id))[0];
-    return item ? this._populateMany(item) : null;
+    return (
+      (await this._query()
+        .from(this.tableName)
+        .where('id', id))[0] || null
+    );
   }
 
   async _find(condition) {
@@ -402,8 +411,8 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
-  async _itemsQuery(args, { meta = false } = {}) {
-    const query = new QueryBuilder(this, args, { meta }).get();
+  async _itemsQuery(args, { meta = false, from = {} } = {}) {
+    const query = new QueryBuilder(this, args, { meta, from }).get();
     const results = await query;
 
     if (meta) {
@@ -422,16 +431,16 @@ class KnexListAdapter extends BaseListAdapter {
       return { count };
     }
 
-    return Promise.all(results.map(result => this._populateMany(result)));
+    return results;
   }
 }
 
 class QueryBuilder {
-  constructor(listAdapter, { where = {}, first, skip, orderBy }, { meta = false }) {
+  constructor(listAdapter, { where = {}, first, skip, orderBy }, { meta = false, from = {} }) {
     this._tableAliases = {};
     this._nextBaseTableAliasId = 0;
     const baseTableAlias = this._getNextBaseTableAlias();
-    this._query = listAdapter._query().from(`${listAdapter.key} as ${baseTableAlias}`);
+    this._query = listAdapter._query().from(`${listAdapter.tableName} as ${baseTableAlias}`);
     if (meta) {
       this._query.count();
     } else {
@@ -439,9 +448,21 @@ class QueryBuilder {
     }
 
     this._addJoins(this._query, listAdapter, where, baseTableAlias);
-    // Dumb sentinel to avoid juggling where() vs andWhere()
-    // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
-    this._query.whereRaw('true');
+    if (Object.keys(from).length) {
+      const otherList = from.fromList.adapter._manyTable(from.fromField);
+      const otherTableAlias = this._getNextBaseTableAlias();
+      this._query.leftOuterJoin(
+        `${otherList} as ${otherTableAlias}`,
+        `${otherTableAlias}.${listAdapter.key}_id`,
+        `${baseTableAlias}.id`
+      );
+      this._query.whereRaw('true');
+      this._query.andWhere(`t1.${from.fromList.adapter.key}_id`, `=`, from.fromId);
+    } else {
+      // Dumb sentinel to avoid juggling where() vs andWhere()
+      // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
+      this._query.whereRaw('true');
+    }
     this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias);
 
     // Add query modifiers as required
@@ -497,7 +518,7 @@ class QueryBuilder {
           if (!this._tableAliases[otherTableAlias]) {
             this._tableAliases[otherTableAlias] = true;
             query.leftOuterJoin(
-              `${otherList} as ${otherTableAlias}`,
+              `${otherListAdapter.tableName} as ${otherTableAlias}`,
               `${otherTableAlias}.id`,
               `${tableAlias}.${path}`
             );
@@ -552,7 +573,7 @@ class QueryBuilder {
             .select(`${subBaseTableAlias}.${thisID}`)
             .from(`${manyTableName} as ${subBaseTableAlias}`);
           subQuery.innerJoin(
-            `${otherListAdapter.key} as ${otherTableAlias}`,
+            `${otherListAdapter.tableName} as ${otherTableAlias}`,
             `${otherTableAlias}.id`,
             `${subBaseTableAlias}.${otherList}_id`
           );

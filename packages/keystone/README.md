@@ -11,7 +11,7 @@ order: 1
 ### Usage
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone({
   /*...config */
@@ -20,20 +20,65 @@ const keystone = new Keystone({
 
 ### Config
 
-| Option                  | Type       | Default    | Description                                                                                                                                       |
-| ----------------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                  | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                                 |
-| `adapter`               | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://v5.keystonejs.com/keystone-alpha/keystone/lib/adapters/) page for more details. |
-| `adapters`              | `Array`    | `[]`       |                                                                                                                                                   |
-| `defaultAdapter`        | `Object`   | `null`     |                                                                                                                                                   |
-| `adapterConnectOptions` | `Object`   | `{}`       |                                                                                                                                                   |
-| `defaultAccess`         | `Object`   | `{}`       |                                                                                                                                                   |
-| `onConnect`             | `Function` | `null`     |                                                                                                                                                   |
-| `cookieSecret`          | `String`   | `qwerty`   |                                                                                                                                                   |
-| `cookieMaxAge`          | `Int`      | 30 days    |                                                                                                                                                   |
-| `secureCookies`         | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise.                                                                                             |
-| `sessionStore`          | `Object`   | `null`     |                                                                                                                                                   |
-| `schemaNames`           | `Array`    | `[public]` |                                                                                                                                                   |
+| Option           | Type       | Default    | Description                                                                                                                                |
+| ---------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`           | `String`   | `null`     | The name of the project. Appears in the Admin UI.                                                                                          |
+| `adapter`        | `Object`   | Required   | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details. |
+| `adapters`       | `Object`   | `{}`       | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                               |
+| `defaultAdapter` | `String`   | `null`     | The name of the database adapter to use by default if multiple are provided.                                                               |
+| `defaultAccess`  | `Object`   | `{}`       | Default list and field access. See the [Access Control](https://www.keystonejs.com/api/access-control#defaults) page for more details.     |
+| `onConnect`      | `Function` | `null`     | Callback that executes once `keystone.connect()` complete. Takes no arguments.                                                             |
+| `cookieSecret`   | `String`   | `qwerty`   | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                          |
+| `cookieMaxAge`   | `Int`      | 30 days    | The maximum time, in milliseconds, session ID cookies remain valid.                                                                        |
+| `secureCookies`  | `Boolean`  | Variable   | Defaults to true in production mode, false otherwise. See below for important details.                                                     |
+| `sessionStore`   | `Object`   | `null`     | A compatible Express session middleware.                                                                                                   |
+| `schemaNames`    | `Array`    | `[public]` |                                                                                                                                            |
+| `queryLimits`    | `Object`   | `{}`       | Configures global query limits                                                                                                             |
+
+### `secureCookies`
+
+A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+
+You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
+
+### `sessionStore`
+
+Sets the Express server's [session middleware](https://github.com/expressjs/session). This should be configured before deploying your app.
+
+This example uses the [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) middleware, but you can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores).
+
+#### Usage
+
+```javascript
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')(expressSession);
+
+const keystone = new Keystone({
+  /* ...config */
+  sessionStore: new MongoStore({ url: 'mongodb://localhost/my-app' }),
+});
+```
+
+### `queryLimits`
+
+Configures global query limits.
+
+These should be used together with [list query limits](https://keystonejs.com/api/create-list#query-limits).
+
+#### Usage
+
+```javascript
+const keystone = new Keystone({
+  /* ...config */
+  queryLimits: {
+    maxTotalResults: 1000,
+  },
+});
+```
+
+- `maxTotalResults`: limit of the total results of all relationship subqueries
+
+Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
 
 ## Methods
 
@@ -80,10 +125,10 @@ keystone.createList('Posts', {
 
 Registers a new list with KeystoneJS and returns a `Keystone` list object.
 
-| Option    | Type     | Default | Description                                                                                                 |
-| --------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
-| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                     |
-| `config`  | `Object` | `{}`    | The list config. See the [createList API](https://v5.keystonejs.com/api/create-list) page for more details. |
+| Option    | Type     | Default | Description                                                                                              |
+| --------- | -------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                  |
+| `config`  | `Object` | `{}`    | The list config. See the [createList API](https://keystonejs.com/api/create-list) page for more details. |
 
 ## extendGraphQLSchema(config)
 
@@ -93,7 +138,7 @@ Extends keystones generated schema with custom types, queries, and mutations.
 
 ```javascript
 keystone.extendGraphQLSchema({
-  types: ['type FooBar { foo: Int, bar: Float }'],
+  types: [{ type: 'type FooBar { foo: Int, bar: Float }' }],
   queries: [
     {
       schema: 'double(x: Int): Int',
@@ -111,11 +156,11 @@ keystone.extendGraphQLSchema({
 
 ### Config
 
-| Option    | Type    | Description                                         |
-| --------- | ------- | --------------------------------------------------- |
-| types     | `array` | A list of strings defining graphQL types.           |
-| queries   | `array` | A list of objects of the form { schema, resolver }. |
-| mutations | `array` | A list of objects of the form { schema, resolver }. |
+| Option    | Type    | Description                                                                                  |
+| --------- | ------- | -------------------------------------------------------------------------------------------- |
+| types     | `array` | A list of objects of the form { type, access } where the type string defines a graphQL type. |
+| queries   | `array` | A list of objects of the form { schema, resolver, access }.                                  |
+| mutations | `array` | A list of objects of the form { schema, resolver, access }.                                  |
 
 The `schema` for both queries and mutations should be a string defining the graphQL schema element for the query/mutation, e.g.
 
@@ -126,6 +171,8 @@ The `schema` for both queries and mutations should be a string defining the grap
 ```
 
 The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info)`. See the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature) for more details.
+
+The `access` argument for `types`, `queries`, and `mutations` are all boolean values which are used at schema generation time to include or exclude the item from the schema.
 
 ## createItems(items)
 
@@ -206,7 +253,7 @@ keystone.connect();
 
 _Note_: `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
 
-See: [Custom Server](https://v5.keystonejs.com/guides/custom-server).
+See: [Custom Server](https://keystonejs.com/guides/custom-server).
 
 ## disconnect()
 
@@ -260,3 +307,19 @@ mutation newTodo($name: String) {
 | ----------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `variables` | `Object` | `{}`    | The variables passed to the graphql query for the given queryString.                                                      |
 | `context`   | `Object` | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName` |
+
+## createAuthStrategy(config)
+
+Creates a new authentication middleware instance.
+
+### Usage
+
+```js
+const authStrategy = keystone.createAuthStrategy({
+  /*...config */
+});
+```
+
+### Config
+
+See the [Authentication](https://www.keystonejs.com/api/authentication) docs for full details.

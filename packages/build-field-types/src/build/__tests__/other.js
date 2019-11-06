@@ -22,7 +22,7 @@ test('typescript', async () => {
   await install(tmpPath);
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath, 'all');
+  await snapshotDirectory(tmpPath, { files: 'all' });
 });
 
 test('package resolvable but not in deps', async () => {

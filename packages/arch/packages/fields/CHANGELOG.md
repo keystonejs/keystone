@@ -1,5 +1,13 @@
 # @arch-ui/fields
 
+## 2.0.2
+
+### Patch Changes
+
+- [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `@emotion/core` and `@emotion/styled`.
+- Updated dependencies [[`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad)]:
+  - @arch-ui/lozenge@0.0.8
+
 ## 2.0.1
 
 ### Patch Changes

@@ -1,13 +1,13 @@
-const { Integer, Text, Relationship } = require('@keystone-alpha/fields');
+const { Integer, Text, Relationship } = require('@keystonejs/fields');
 const {
   multiAdapterRunners,
   setupServer,
   graphqlRequest,
   networkedGraphqlRequest,
-} = require('@keystone-alpha/test-utils');
+} = require('@keystonejs/test-utils');
 const {
   validation: { depthLimit, definitionLimit, fieldLimit },
-} = require('@keystone-alpha/app-graphql');
+} = require('@keystonejs/app-graphql');
 
 const cuid = require('cuid');
 
@@ -33,6 +33,11 @@ function setupKeystone(adapterName) {
           maxResults: 2,
         },
       });
+    },
+    keystoneOptions: {
+      queryLimits: {
+        maxTotalResults: 6,
+      },
     },
     graphqlOptions: {
       apollo: {
@@ -161,14 +166,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('Relationship querying', () => {
         test(
           'posts by user',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone, create, update }) => {
             const users = await Promise.all([
               create('User', { name: 'Jess', favNumber: 1 }),
               create('User', { name: 'Johanna', favNumber: 8 }),
               create('User', { name: 'Sam', favNumber: 5 }),
             ]);
 
-            await Promise.all([
+            const posts = await Promise.all([
               create('Post', { author: [users[0].id], title: 'One author' }),
               create('Post', { author: [users[0].id, users[1].id], title: 'Two authors' }),
               create('Post', {
@@ -176,6 +181,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 title: 'Three authors',
               }),
             ]);
+
+            for (const user of users) {
+              user.posts = [];
+            }
+            for (const post of posts) {
+              for (const authorId of post.author) {
+                users.find(u => String(u.id) === String(authorId)).posts.push(post.id);
+              }
+            }
+            for (const user of users) {
+              update('User', user.id, { posts: user.posts });
+            }
 
             // A basic query that should work
             let { data, errors } = await graphqlRequest({
@@ -285,6 +302,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               title
               author {
                 name
+              }
+            }
+          }
+      `,
+            }));
+
+            expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+
+            // All subqueries are within limits, but the total isn't
+            ({ errors } = await graphqlRequest({
+              keystone,
+              query: `
+          query {
+            allPosts(where: { title: "Two authors" }) {
+              title
+              author {
+                posts {
+                  title 
+                }
               }
             }
           }
@@ -648,6 +684,142 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
+        })
+      );
+
+      test(
+        'fragments',
+        runner(setupKeystone, async ({ app }) => {
+          const { errors } = await networkedGraphqlRequest({
+            app,
+            expectedStatusCode: 400,
+            operationName: 'a',
+            query: `
+            fragment f on User {
+              name
+              favNumber
+            }
+            query a {
+              allPosts {
+                title
+                author {
+                  ...f
+                }
+              }
+              users1: allUsers {
+                ...f
+              }
+              users2: allUsers {
+                ...f
+              }
+            }
+          `,
+          });
+
+          expect(errors).toMatchObject([{ message: 'Request contains 11 fields (max: 8)' }]);
+        })
+      );
+
+      test(
+        'unused fragment',
+        runner(setupKeystone, async ({ app }) => {
+          const { errors } = await networkedGraphqlRequest({
+            app,
+            expectedStatusCode: 400,
+            operationName: 'a',
+            query: `
+            fragment unused on User {
+              name
+              favNumber
+            }
+            fragment f on User {
+              name
+              favNumber
+            }
+            query a {
+              allPosts {
+                title
+                author {
+                  ...f
+                }
+              }
+              users1: allUsers {
+                ...f
+              }
+              users2: allUsers {
+                ...f
+              }
+            }
+          `,
+          });
+
+          // We also get an "internal server error" from other code that doesn't handle this case
+          expect(errors).toContainEqual({
+            message: 'Request contains 13 fields (max: 8)',
+            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+            name: 'ValidationError',
+            uid: expect.anything(),
+          });
+        })
+      );
+
+      test(
+        'billion laughs',
+        runner(setupKeystone, async ({ app }) => {
+          // https://en.wikipedia.org/wiki/Billion_laughs
+          const { errors } = await networkedGraphqlRequest({
+            app,
+            expectedStatusCode: 400,
+            operationName: 'a',
+            query: `
+            query a {
+              u1: allUsers {
+                ...lol1
+              }
+              u2: allUsers {
+                ...lol1
+              }
+              u3: allUsers {
+                ...lol1
+              }
+              u4: allUsers {
+                ...lol1
+              }
+              u5: allUsers {
+                ...lol1
+              }
+            }
+            fragment lol1 on User {
+              p1: allPosts {
+                ...lol2
+              }
+              p2: allPosts {
+                ...lol2
+              }
+              p3: allPosts {
+                ...lol2
+              }
+              p4: allPosts {
+                ...lol2
+              }
+              p5: allPosts {
+                ...lol2
+              }
+            }
+            fragment lol2 on Post {
+              title
+              author
+            }
+          `,
+          });
+
+          // We also get an "internal server error" from other code that doesn't handle this case
+          expect(errors).toContainEqual({
+            message: 'Request contains 80 fields (max: 8)',
+            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+            name: 'ValidationError',
+            uid: expect.anything(),
+          });
         })
       );
     });

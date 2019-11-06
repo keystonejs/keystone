@@ -23,6 +23,9 @@ class BaseKeystoneAdapter {
 
     // Set up all list adapters
     try {
+      // Validate the minimum database version requirements are met.
+      await this.checkDatabaseVersion();
+
       const taskResults = await this.postConnect();
       const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
@@ -48,6 +51,8 @@ class BaseKeystoneAdapter {
   }
 
   async postConnect() {}
+
+  async checkDatabaseVersion() {}
 }
 
 class BaseListAdapter {
@@ -131,8 +136,8 @@ class BaseListAdapter {
     return this.onPostRead(this._findOne(condition));
   }
 
-  async itemsQuery(args, { meta = false } = {}) {
-    const results = await this._itemsQuery(args, { meta });
+  async itemsQuery(args, { meta = false, from = {} } = {}) {
+    const results = await this._itemsQuery(args, { meta, from });
     return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
   }
 

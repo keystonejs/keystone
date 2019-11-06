@@ -1,4 +1,54 @@
+# @keystonejs/test-utils
+
+## 5.0.1
+
+### Patch Changes
+
+- [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f) [#1837](https://github.com/keystonejs/keystone/pull/1837) Thanks [@timleslie](https://github.com/timleslie)! - Updated mongo-related dependencies
+
+- Updated dependencies [[`9f6bcddd`](https://github.com/keystonejs/keystone/commit/9f6bcddd84cc1d60f139ca116e9006258e417469), [`31b646ac`](https://github.com/keystonejs/keystone/commit/31b646ac3c06b82e809f5e55e8443ae5d21dac0f)]:
+  - @keystonejs/adapter-mongoose@5.1.0
+  - @keystonejs/keystone@5.1.0
+  - @keystonejs/adapter-knex@5.0.1
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/adapter-knex@5.0.0
+  - @keystonejs/adapter-mongoose@5.0.0
+  - @keystonejs/app-graphql@5.0.0
+  - @keystonejs/keystone@5.0.0
+
 # @keystone-alpha/test-utils
+
+## 2.6.3
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/adapter-knex@6.0.0
+  - @keystone-alpha/adapter-mongoose@6.0.0
+  - @keystone-alpha/keystone@16.0.0
+
+## 2.6.2
+
+- Updated dependencies [6c4df466](https://github.com/keystonejs/keystone-5/commit/6c4df466):
+  - @keystone-alpha/adapter-knex@5.0.0
+
+## 2.6.1
+
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/adapter-mongoose@5.0.0
 
 ## 2.6.0
 

@@ -1,20 +1,22 @@
 <!--[meta]
-section: api
+section: guides
 title: Adding initial data
+subSection: setup
+order: 3
 [meta]-->
 
 ## Adding initial data to Lists
 
-This guide will show you how to create a User list and initialise it manually or with the `createItems` method.
+This guide will show you how to create a User list and add initial data to it using the `createItems` method. This process is also called `seeding`
 
 First let's create a User list and add a `PasswordAuthStrategy`. Our `index.js` might look like this:
 
 ```javascript
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-const { Text, Checkbox, Password } = require('@keystone-alpha/fields');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { Keystone, PasswordAuthStrategy } = require('@keystonejs/keystone');
+const { Text, Checkbox, Password } = require('@keystonejs/fields');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'example-project',
@@ -46,15 +48,13 @@ module.exports = {
 };
 ```
 
-Initialising a list is not always the straight forward problem it seems.
-
 You can achieve this setup by running the KeystoneJS CLI and selecting the `Starter` template.
 
-This method's primary use is intended for migration scripts, or initial seeding of databases.
+This method is intended for initial seeding of databases or running migration scripts.
 
 ### Usage
 
-An object where keys are list keys, and values are arrays of items to insert.
+`createItems` requires an object where keys are list keys, and values are arrays of items to insert.
 For example;
 
 ```javascript
@@ -101,11 +101,11 @@ Upon insertion, KeystoneJS will resolve the `{ where: { name: 'Ticiana' } }` que
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
-Note an error is thrown if no items match the query.
+_Note_: An error is thrown if no items match the query.
 
 ##### Many Relationships
 
-When inserting an item with a to-many relationship, such as:
+When inserting an item with a `to-many` relationship, such as:
 
 ```javascript
 keystone.createList('User', {
@@ -115,7 +115,7 @@ keystone.createList('User', {
 });
 ```
 
-There is 2 ways to write the relationship query:
+There is 2 ways to write the query for `to-many` relationships:
 
 1. _Single Relation syntax_, using the same query as a Single Relationship, but
    instead of picking only the first item found, it will pick _all_ the items

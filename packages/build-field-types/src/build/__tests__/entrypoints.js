@@ -1,7 +1,7 @@
 // @flow
 import build from '../';
 import fixturez from 'fixturez';
-import { snapshotDistFiles, snapshotDirectory } from '../../../test-utils';
+import { snapshotDistFiles, snapshotDirectory, stripHashes } from '../../../test-utils';
 
 const f = fixturez(__dirname);
 
@@ -41,5 +41,5 @@ test('two entrypoints with a common dependency', async () => {
 
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath);
+  await snapshotDirectory(tmpPath, stripHashes('identity'));
 });

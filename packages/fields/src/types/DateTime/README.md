@@ -9,7 +9,7 @@ title: DateTime
 ## Usage
 
 ```js
-const { DateTime } = require('@keystone-alpha/fields');
+const { DateTime } = require('@keystonejs/fields');
 
 keystone.createList('User', {
   fields: {

@@ -1,4 +1,38 @@
+# @keystonejs/example-projects-blank
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
+### Patch Changes
+
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+  - @keystonejs/adapter-mongoose@5.0.0
+  - @keystonejs/app-admin-ui@5.0.0
+  - @keystonejs/app-graphql@5.0.0
+  - @keystonejs/keystone@5.0.0
+
 # @keystone-alpha/example-projects-blank
+
+## 1.1.15
+
+### Patch Changes
+
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+  - @keystone-alpha/adapter-mongoose@6.0.0
+  - @keystone-alpha/keystone@16.0.0
+  - @keystone-alpha/app-admin-ui@5.10.2
+
+## 1.1.14
+
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+  - @keystone-alpha/adapter-mongoose@5.0.0
 
 ## 1.1.13
 

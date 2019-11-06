@@ -1,12 +1,12 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystone-alpha/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 const cuid = require('cuid');
 const {
   setupServer,
   graphqlRequest,
   multiAdapterRunners,
   networkedGraphqlRequest,
-} = require('@keystone-alpha/test-utils');
+} = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -149,7 +149,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when specifying disconnectAll',
-          runner(setupKeystone, async ({ app, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -180,9 +180,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             expect(errors).toBe(undefined);
-            const userData = await findById('UserToNotesNoRead', createUser.id);
 
-            expect(userData.notes).toHaveLength(0);
+            const result = await graphqlRequest({
+              keystone,
+              query: `
+                query getUserNodes($userId: ID!){
+                  UserToNotesNoRead(where: { id: $userId }) {
+                    id
+                    notes { id }
+                  }
+                }
+            `,
+              variables: { userId: createUser.id },
+            });
+            expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);
           })
         );
 
