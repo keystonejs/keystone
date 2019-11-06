@@ -1,6 +1,6 @@
 ---
 '@keystonejs/app-admin-ui': minor
-'@keystonejs/fields': patch
+'@keystonejs/fields': minor
 ---
 
 replace RelationShip field's implementation of CreateItemModel with a prop provided by admin-ui
