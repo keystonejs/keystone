@@ -3,4 +3,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Mention where app is actually running
+Added output which indicates where app is running when running the create keystone script.

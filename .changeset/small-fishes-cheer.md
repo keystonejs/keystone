@@ -3,4 +3,4 @@
 '@keystonejs/fields': minor
 ---
 
-Improved a11y for checkbox field
+Improved a11y for the `Checkbox` field.

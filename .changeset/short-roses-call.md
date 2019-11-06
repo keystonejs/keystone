@@ -2,4 +2,4 @@
 '@keystonejs/fields': minor
 ---
 
-Added a default getFilterTypes method to FieldController
+Added a default `getFilterTypes` method to `FieldController`.
