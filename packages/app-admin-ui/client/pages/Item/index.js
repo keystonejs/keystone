@@ -334,7 +334,7 @@ const ItemDetails = withRouter(
                             savedValue={savedData[field.path]}
                             onChange={onChange}
                             renderContext="page"
-                            createItemModal={CreateItemModal}
+                            CreateItemModal={CreateItemModal}
                           />
                         ),
                         [

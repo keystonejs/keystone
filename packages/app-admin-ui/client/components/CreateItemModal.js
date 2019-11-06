@@ -168,7 +168,7 @@ class CreateItemModal extends Component {
                             /* TODO: Permission query results */
                             errors={validationErrors[field.path] || []}
                             warnings={validationWarnings[field.path] || []}
-                            createItemModal={CreateItemModalWithMutation}
+                            CreateItemModal={CreateItemModalWithMutation}
                             onChange={onChange}
                             renderContext="dialog"
                           />

@@ -179,7 +179,7 @@ class UpdateManyModal extends Component {
                         warnings={validationWarnings[field.path] || []}
                         onChange={onChange}
                         renderContext="dialog"
-                        createItemModal={CreateItemModal}
+                        CreateItemModal={CreateItemModal}
                       />
                     ),
                     [

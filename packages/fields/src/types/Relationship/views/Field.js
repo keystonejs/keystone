@@ -109,7 +109,7 @@ function LinkToRelatedItems({ field, value }) {
   );
 }
 
-function CreateAndAddItem({ field, item, list, onCreate, createItemModal: CreateItemModal }) {
+function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
   let [isOpen, setIsOpen] = useState(false);
   let label = `Create and add ${relatedList.singular}`;
@@ -191,7 +191,7 @@ export default class RelationshipField extends Component {
       onChange,
       item,
       list,
-      createItemModal,
+      CreateItemModal,
     } = this.props;
     const { many, ref } = field.config;
     const { authStrategy } = field.adminMeta;
@@ -219,7 +219,7 @@ export default class RelationshipField extends Component {
             field={field}
             item={item}
             list={list}
-            createItemModal={createItemModal}
+            CreateItemModal={CreateItemModal}
           />
           {authStrategy && ref === authStrategy.listKey && (
             <SetAsCurrentUser
