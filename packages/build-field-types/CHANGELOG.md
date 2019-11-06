@@ -1,5 +1,11 @@
 # @keystonejs/build-field-types
 
+## 5.0.2
+
+### Patch Changes
+
+- [`7ee2af55`](https://github.com/keystonejs/keystone/commit/7ee2af550e9741ac0e0b08eef6533e95d7ecafc9) [#1922](https://github.com/keystonejs/keystone/pull/1922) Thanks [@Vultraz](https://github.com/Vultraz)! - Switched to @rollup/plugin-replace
+
 ## 5.0.1
 
 ### Patch Changes
