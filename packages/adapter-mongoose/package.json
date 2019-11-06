@@ -16,7 +16,6 @@
     "@sindresorhus/slugify": "^0.6.0",
     "lodash.omitby": "^4.6.0",
     "mongoose": "^5.7.7",
-    "mongoose-unique-validator": "^2.0.3",
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0"
   }
