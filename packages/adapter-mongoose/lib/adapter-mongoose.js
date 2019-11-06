@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const pSettle = require('p-settle');
 const {
@@ -30,7 +29,6 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
-    this.mongoose.plugin(uniqueValidator);
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
