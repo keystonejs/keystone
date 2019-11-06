@@ -50,16 +50,22 @@ const adminMeta = {
 // so this function should only be called inside a react render
 function readAdminMeta() {
   if (!hasInitialisedLists) {
-    let allControllers = new Set();
+    let viewsToLoad = new Set();
+    if (typeof hookView === 'function') {
+      viewsToLoad.add(hookView);
+    }
+    Object.values(pageViews).forEach(view => {
+      viewsToLoad.add(view);
+    });
 
     Object.values(listViews).forEach(list => {
       Object.values(list).forEach(({ Controller }) => {
-        allControllers.add(Controller);
+        viewsToLoad.add(Controller);
       });
     });
 
-    // we want to load all of the field controllers upfront so we don't have a waterfall of requests
-    readViews([...allControllers]);
+    // we want to load all of the field controllers, views and hooks upfront so we don't have a waterfall of requests
+    readViews([...viewsToLoad]);
     listKeys.forEach(key => {
       const list = new List(lists[key], adminMeta, views[key]);
       listsByKey[key] = list;
