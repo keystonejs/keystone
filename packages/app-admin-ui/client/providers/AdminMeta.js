@@ -13,7 +13,7 @@ const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
 const resolveCustomPages = pages => {
   if (!Array.isArray(pages)) return pages;
   pages.forEach(page => {
-    if (page.component === 'string') {
+    if (typeof page.component === 'string') {
       // this can be simplified once all pages are hooks
       const [Page] = readViews([pageViews[page.path]]);
       page.component = Page;
