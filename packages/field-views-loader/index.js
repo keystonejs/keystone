@@ -85,7 +85,6 @@ module.exports = function() {
    */
 
   let allPaths = new Set();
-
   let pageComponents = findPageComponents(adminMeta.pages);
 
   let allViews = Object.entries(adminMeta.lists).reduce(
@@ -93,7 +92,7 @@ module.exports = function() {
       obj[listPath] = views;
       return obj;
     },
-    { __pages__: pageComponents }
+    { __pages__: pageComponents, __hooks__: adminMeta.hooks }
   );
 
   const stringifiedObject = serialize(allViews, allPaths);

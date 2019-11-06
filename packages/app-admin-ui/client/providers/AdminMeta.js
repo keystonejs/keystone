@@ -5,15 +5,29 @@ import React from 'react';
 import List from '../classes/List';
 import { views, readViews, preloadViews } from '../FIELD_TYPES';
 
-const { __pages__: pageViews, ...listViews } = views;
+const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 
 // TODO: Pull this off `window.X` to support server side permission queries
 const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
 
+const resolveCustomPages = pages => {
+  if (!Array.isArray(pages)) return pages;
+  pages.forEach(page => {
+    if (page.component === 'string') {
+      // this can be simplified once all pages are hooks
+      const [Page] = readViews([pageViews[page.path]]);
+      page.component = Page;
+    }
+    if (page.children) {
+      page.children = resolveCustomPages(page.children);
+    }
+  });
+  return pages;
+};
+
 const listKeys = Object.keys(lists || {});
 const listsByKey = {};
 const listsByPath = {};
-
 let hasInitialisedLists = false;
 
 const adminMeta = {
@@ -25,7 +39,6 @@ const adminMeta = {
   getListByPath(path) {
     return listsByPath[path];
   },
-  pageViews,
   readViews,
   preloadViews,
 };
@@ -54,7 +67,12 @@ function readAdminMeta() {
     });
     hasInitialisedLists = true;
   }
-  return adminMeta;
+
+  const [hooks] = readViews([hookView]);
+  const hookPages = hooks.pages ? hooks.pages() : [];
+  const adminMataPages = adminMeta.pages ? adminMeta.pages : [];
+  const pages = resolveCustomPages([...adminMataPages, ...hookPages]);
+  return { ...adminMeta, hooks, pages };
 }
 
 // Provider

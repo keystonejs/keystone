@@ -18,6 +18,7 @@ class AdminUIApp {
     pages,
     enableDefaultRoute = false,
     isAccessAllowed = () => true,
+    hooks = path.resolve('admin-ui/'),
     schemaName = 'public',
   } = {}) {
     if (adminPath === '/') {
@@ -34,6 +35,7 @@ class AdminUIApp {
     this.apiPath = apiPath;
     this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
+    this.hooks = hooks;
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
 
@@ -47,6 +49,7 @@ class AdminUIApp {
     return {
       adminPath: this.adminPath,
       pages: this.pages,
+      hooks: this.hooks,
       ...this.routes,
       ...(this.authStrategy
         ? {
