@@ -18,7 +18,7 @@ class AdminUIApp {
     pages,
     enableDefaultRoute = false,
     isAccessAllowed = () => true,
-    hooks = path.resolve('admin-ui/'),
+    hooks = path.resolve('./admin-ui/'),
     schemaName = 'public',
   } = {}) {
     if (adminPath === '/') {

@@ -67,8 +67,10 @@ function readAdminMeta() {
     });
     hasInitialisedLists = true;
   }
-
-  const [hooks] = readViews([hookView]);
+  let hooks = {};
+  if (typeof hookView === 'function') {
+    [hooks] = readViews([hookView]);
+  }
   const hookPages = hooks.pages ? hooks.pages() : [];
   const adminMataPages = adminMeta.pages ? adminMeta.pages : [];
   const pages = resolveCustomPages([...adminMataPages, ...hookPages]);
