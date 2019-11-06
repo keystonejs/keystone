@@ -2,7 +2,7 @@
   "name": "@keystonejs/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "5.0.0",
+  "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@arch-ui/icons": "^0.0.5",
-    "@arch-ui/input": "^0.1.0",
+    "@arch-ui/input": "^0.1.1",
     "@arch-ui/select": "^0.1.0",
     "@arch-ui/theme": "^0.0.5",
     "@emotion/core": "^10.0.22",

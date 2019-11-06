@@ -1,5 +1,11 @@
 # @keystonejs/email
 
+## 5.0.1
+
+### Patch Changes
+
+- [`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53) [#1849](https://github.com/keystonejs/keystone/pull/1849) Thanks [@timleslie](https://github.com/timleslie)! - Updated the packages devDependencies.
+
 ## 5.0.0
 
 ### Major Changes

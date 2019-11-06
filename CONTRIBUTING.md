@@ -314,6 +314,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://arnaud-zg.github.io/"><img src="https://avatars1.githubusercontent.com/u/10991546?v=4" width="100px;" alt="Arnaud Zheng"/><br /><sub><b>Arnaud Zheng</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=arnaud-zg" title="Documentation">📖</a></td>
     <td align="center"><a href="https://twitter.com/ashinzekene"><img src="https://avatars2.githubusercontent.com/u/20991583?v=4" width="100px;" alt="Ashinze Ekene"/><br /><sub><b>Ashinze Ekene</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=ashinzekene" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Fabyao"><img src="https://avatars3.githubusercontent.com/u/5112982?v=4" width="100px;" alt="Fabyao"/><br /><sub><b>Fabyao</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=Fabyao" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://marcosrjjunior.github.io"><img src="https://avatars1.githubusercontent.com/u/5287262?v=4" width="100px;" alt="Marcos RJJunior"/><br /><sub><b>Marcos RJJunior</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=marcosrjjunior" title="Code">💻</a></td>
   </tr>
 </table>
 

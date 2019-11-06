@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/alert",
   "description": "Alert component as used in @keystonejs Admin UI.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/alert.cjs.js",

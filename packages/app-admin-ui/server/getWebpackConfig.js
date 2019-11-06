@@ -8,6 +8,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
+    chunksSortMode: 'none',
   });
   const environmentPlugin = new webpack.DefinePlugin({
     ENABLE_DEV_FEATURES: enableDevFeatures,

@@ -1,5 +1,13 @@
 # create-keystone-app
 
+## 1.3.2
+
+### Patch Changes
+
+- [`d9d15958`](https://github.com/keystonejs/keystone/commit/d9d15958f3f632e6c95fdc471b94d6fbc5f0f080) [#1881](https://github.com/keystonejs/keystone/pull/1881) Thanks [@timleslie](https://github.com/timleslie)! - Fixed typo.
+
+* [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a) [#1883](https://github.com/keystonejs/keystone/pull/1883) Thanks [@Vultraz](https://github.com/Vultraz)! - Added output which indicates where app is running when running the create keystone script.
+
 ## 1.3.1
 
 ### Patch Changes
