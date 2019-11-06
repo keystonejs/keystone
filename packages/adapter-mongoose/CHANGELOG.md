@@ -1,5 +1,13 @@
 # @keystonejs/adapter-mongoose
 
+## 5.1.1
+
+### Patch Changes
+
+- [`ba8aef71`](https://github.com/keystonejs/keystone/commit/ba8aef71d1a04f643fb7f7590d7d6d136b1d4eba) [#1857](https://github.com/keystonejs/keystone/pull/1857) Thanks [@Vultraz](https://github.com/Vultraz)! - Deployed `mongoose-unique-validator` for a more readable error message when unique checks fail.
+- Updated dependencies [[`45fd7ab8`](https://github.com/keystonejs/keystone/commit/45fd7ab899655364d0071c0d276d188378944ff5), [`b0756c65`](https://github.com/keystonejs/keystone/commit/b0756c65525625919c72364d8cefc32d864c7c0e), [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a)]:
+  - @keystonejs/keystone@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes

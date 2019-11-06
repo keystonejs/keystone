@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/oembed-adapters",
   "description": "Adapters for fetching oEmbed data for the OEmbed field type",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "main": "dist/oembed-adapters.cjs.js",
   "module": "dist/oembed-adapters.esm.js",
   "repository": "https://github.com/keystonejs/keystone-5.git",
@@ -11,7 +11,7 @@
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.22",
     "@iframely/embed.js": "^1.1.1",
-    "@keystonejs/build-field-types": "^5.0.0",
+    "@keystonejs/build-field-types": "^5.0.1",
     "node-fetch": "^2.3.0"
   },
   "peerDependencies": {
