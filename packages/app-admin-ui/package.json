@@ -65,7 +65,7 @@
     "html-webpack-plugin": "^3.2.0",
     "lodash.debounce": "^4.0.8",
     "lodash.set": "^4.3.2",
-    "memoize-one": "^4.0.2",
+    "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
     "raf-schd": "^4.0.0",
     "react": "^16.8.6",

@@ -26,7 +26,7 @@
     "image-extensions": "^1.1.0",
     "is-hotkey": "^0.1.4",
     "lodash.get": "^4.4.2",
-    "memoize-one": "^4.0.2",
+    "memoize-one": "^5.1.1",
     "nanoassert": "^2.0.0",
     "p-is-promise": "^3.0.0",
     "react": "^16.8.6",

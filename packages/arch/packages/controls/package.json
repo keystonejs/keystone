@@ -17,7 +17,7 @@
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
-    "memoize-one": "^4.0.2",
+    "memoize-one": "^5.1.1",
     "react-pseudo-state": "^2.2.2",
     "react-radios": "^1.1.0"
   },
