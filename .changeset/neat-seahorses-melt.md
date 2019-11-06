@@ -15,4 +15,4 @@
 '@keystonejs/fields': patch
 ---
 
-Upgrade flow & fix flow errors and (probably) bugs
+Upgraded `flow` and fixed flow errors and (probably) bugs.

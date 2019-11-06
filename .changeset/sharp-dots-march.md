@@ -36,4 +36,4 @@
 '@keystonejs/website': patch
 ---
 
-Upgrade @emotion/core & @emotion/styled
+Upgraded `@emotion/core` and `@emotion/styled`.

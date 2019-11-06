@@ -6,4 +6,4 @@
 '@keystonejs/fields': patch
 ---
 
-upgrade `react-apollo` and replace use of `react-apollo-hooks` with `react-apollo`. `react-apollo` has similar hooks api to `react-apollo-hooks`
+Upgraded `react-apollo` and replaced use of `react-apollo-hooks` with `react-apollo`. `react-apollo` has a similar hooks API to `react-apollo-hooks`.
