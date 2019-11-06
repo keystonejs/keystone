@@ -6,4 +6,4 @@
 '@arch-ui/pagination': patch
 ---
 
-Upgrade `react-router-dom` to v5.1.2 to make use of `useParams` and other hooks provided by `react-router-dom` v5.1.0.
+Upgraded `react-router-dom` to v5.1.2 to make use of `useParams` and other hooks provided by `react-router-dom` v5.1.0.

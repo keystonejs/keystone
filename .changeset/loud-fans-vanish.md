@@ -2,4 +2,4 @@
 '@keystonejs/demo-project-blog': patch
 ---
 
-fix startup issue on Windows
+Fixed a startup issue on Windows.
