@@ -43,7 +43,7 @@ type LayoutProps = Props & {
   queryErrors: Array<Object>,
 };
 
-function ListLayout(props: LayoutProps) {
+export function ListLayout(props: LayoutProps) {
   const { adminMeta, items, itemCount, queryErrors, list, routeProps, query } = props;
   const [showCreateModal, toggleCreateModal] = useState(false);
   const measureElementRef = useRef();
@@ -202,6 +202,7 @@ function ListLayout(props: LayoutProps) {
 
       <Container isFullWidth>
         <ListTable
+          {...props}
           adminPath={adminPath}
           columnControl={
             <ColumnPopout
@@ -245,7 +246,7 @@ function ListLayout(props: LayoutProps) {
   );
 }
 
-function List(props: Props) {
+export function List(props: Props) {
   const { list, query, routeProps } = props;
 
   // get item data
