@@ -1,5 +1,16 @@
 # @keystonejs/app-admin-ui
 
+## 5.2.0
+
+### Minor Changes
+
+- [`278d6dba`](https://github.com/keystonejs/keystone/commit/278d6dba345c1f8cb41f59f037191fc0713d8f54) [#1928](https://github.com/keystonejs/keystone/pull/1928) Thanks [@gautamsi](https://github.com/gautamsi)! - Added a font loader to the webpack configuration that will allow loading of css files including in custom pages
+
+### Patch Changes
+
+- Updated dependencies [[`ddfc7845`](https://github.com/keystonejs/keystone/commit/ddfc7845399e5108f7fd68169153983122554e96)]:
+  - @keystonejs/fields@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes

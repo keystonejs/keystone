@@ -1,5 +1,11 @@
 # @keystonejs/fields
 
+## 5.1.1
+
+### Patch Changes
+
+- [`ddfc7845`](https://github.com/keystonejs/keystone/commit/ddfc7845399e5108f7fd68169153983122554e96) [#1934](https://github.com/keystonejs/keystone/pull/1934) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed stray Content field implementation (it's now in the field-content package)
+
 ## 5.1.0
 
 ### Minor Changes
