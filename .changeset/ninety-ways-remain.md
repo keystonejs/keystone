@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': minor
 ---
 
-Allow loading of fonts and add loader for css styles
+Added a font loader to the webpack configuration that will allow loading of css files including in custom pages
