@@ -6,7 +6,7 @@
 
 Refactored the admin-ui custom pages feature. 
 
-You can now add customise the admin-ui by creating a folder named `admin-ui` in your project directory or by specifying a path for hooks in the AdminUI constructor:
+You can now customise the admin-ui by creating a folder named `admin-ui` in your project directory or by specifying a path for hooks in the AdminUIApp constructor:
 
 ```
 new AdminUIApp({
