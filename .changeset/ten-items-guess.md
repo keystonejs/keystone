@@ -30,8 +30,8 @@ export default {
 };
 
 
-Hooks are functions. The pages hook should be function that returns an array of pages.
+Hooks are now functions. The pages hook should be a function that returns an array of pages.
 
 The shape of the pages array hasn't changed, except you can now include page components directly rather than with `require.resolve()`.
 
-The old API will continue to work but will be depreciated in future.
+The old API will continue to work but will be deprecated in future.

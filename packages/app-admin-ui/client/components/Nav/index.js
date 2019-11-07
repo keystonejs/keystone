@@ -237,22 +237,19 @@ function PrimaryNavItems({
   let onRenderIndexPage = () => {
     hasRenderedIndexPage = true;
   };
-
   let pageNavItems =
     pages && pages.length
-      ? pages
-          .filter(node => node.addToNav !== false)
-          .map(node =>
-            renderChildren(
-              node,
-              authListKey,
-              mouseIsOverNav,
-              getListByKey,
-              adminPath,
-              0,
-              onRenderIndexPage
-            )
+      ? pages.map(node =>
+          renderChildren(
+            node,
+            authListKey,
+            mouseIsOverNav,
+            getListByKey,
+            adminPath,
+            0,
+            onRenderIndexPage
           )
+        )
       : listKeys.map(key =>
           renderChildren(
             key,
@@ -300,7 +297,6 @@ let PrimaryNavContent = ({ mouseIsOverNav }) => {
     pages,
     authStrategy: { listKey: authListKey } = {},
   } = useAdminMeta();
-
   return (
     <Inner>
       <Title
