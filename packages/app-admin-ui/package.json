@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-admin-ui",
   "description": "KeystoneJS Admin UI App.",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -38,7 +38,7 @@
     "@babel/core": "^7.6.2",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
-    "@keystonejs/build-field-types": "^5.0.1",
+    "@keystonejs/build-field-types": "^5.1.0",
     "@keystonejs/field-views-loader": "^5.0.0",
     "@keystonejs/fields": "^5.1.0",
     "@keystonejs/session": "^5.0.0",
@@ -56,6 +56,7 @@
     "clipboard-copy": "^3.0.0",
     "compression": "^1.7.4",
     "cross-fetch": "^2.2.0",
+    "css-loader": "^3.2.0",
     "express": "^4.17.1",
     "express-history-api-fallback": "^2.2.1",
     "falsey": "^1.0.0",
@@ -81,6 +82,7 @@
     "react-transition-group": "^2.6.1",
     "react-uid": "^2.2.0",
     "resize-observer-polyfill": "^1.5.1",
+    "style-loader": "^1.0.0",
     "webpack": "4.28.4",
     "webpack-dev-middleware": "^3.6.1",
     "webpack-hot-middleware": "^2.24.3"
