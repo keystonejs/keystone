@@ -1,5 +1,16 @@
 # @keystonejs/keystone
 
+## 5.2.0
+
+### Minor Changes
+
+- [`9ffa8a73`](https://github.com/keystonejs/keystone/commit/9ffa8a734c91dd6de2a31898629e1ba7feaee832) [#1931](https://github.com/keystonejs/keystone/pull/1931) Thanks [@timleslie](https://github.com/timleslie)! - Added an `appVersion` parameter to the `Keystone()` constructor. This version will be set as the `X-Keystone-App-Version` HTTP header on all requests. It can be queried via the GraphQL API as `{ appVersion }`. See the docs for more configuration details.
+
+### Patch Changes
+
+- Updated dependencies [[`a1e26deb`](https://github.com/keystonejs/keystone/commit/a1e26deb45d8c53e5d18b06c6573f66c4375b68c)]:
+  - @keystonejs/build-field-types@5.1.0
+
 ## 5.1.1
 
 ### Patch Changes
