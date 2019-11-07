@@ -1,4 +1,5 @@
 const loaderUtils = require('loader-utils');
+const fs = require('fs');
 
 function serialize(value, allPaths) {
   if (typeof value === 'string') {
@@ -85,15 +86,15 @@ module.exports = function() {
    */
 
   let allPaths = new Set();
-
   let pageComponents = findPageComponents(adminMeta.pages);
+  let hooks = fs.existsSync(adminMeta.hooks) ? adminMeta.hooks : {};
 
   let allViews = Object.entries(adminMeta.lists).reduce(
     (obj, [listPath, { views }]) => {
       obj[listPath] = views;
       return obj;
     },
-    { __pages__: pageComponents }
+    { __pages__: pageComponents, __hooks__: hooks }
   );
 
   const stringifiedObject = serialize(allViews, allPaths);

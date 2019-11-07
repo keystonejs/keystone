@@ -1,4 +1,6 @@
 packages/test-project/public
+demo-projects/test-project
+
 # Logs
 logs
 *.log
