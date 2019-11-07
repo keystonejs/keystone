@@ -8,30 +8,30 @@ order: 3
 
 KeystoneJS contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
 
-- [CalendarDay](keystonejs/fields/src/types/calendar-day)
-- [Checkbox](keystonejs/fields/src/types/checkbox)
-- [CloudinaryImage](keystonejs/fields/src/types/cloudinary-image)
-- [Color](keystonejs/fields/src/types/color)
-- [Content](keystonejs/field-content)
-- [DateTime](keystonejs/fields/src/types/date-time)
-- [Decimal](keystonejs/fields/src/types/decimal)
-- [File](keystonejs/fields/src/types/file)
-- [Float](keystonejs/fields/src/types/float)
-- [Integer](keystonejs/fields/src/types/integer)
-- [Location](keystonejs/fields/src/types/location)
-- [OEmbed](keystonejs/fields/src/types/o-embed)
-- [Password](keystonejs/fields/src/types/password)
-- [Relationship](keystonejs/fields/src/types/relationship)
-- [Select](keystonejs/fields/src/types/select)
-- [Slug](keystonejs/fields/src/types/slug)
-- [Text](keystonejs/fields/src/types/text)
-- [Unsplash](keystonejs/fields/src/types/unsplash)
-- [Url](keystonejs/fields/src/types/url)
-- [Uuid](keystonejs/fields/src/types/uuid)
+- [CalendarDay](https://keystonejs.com/keystonejs/fields/src/types/calendar-day)
+- [Checkbox](https://keystonejs.com/keystonejs/fields/src/types/checkbox)
+- [CloudinaryImage](https://keystonejs.com/keystonejs/fields/src/types/cloudinary-image)
+- [Color](https://keystonejs.com/keystonejs/fields/src/types/color)
+- [Content](https://keystonejs.com/keystonejs/field-content)
+- [DateTime](https://keystonejs.com/keystonejs/fields/src/types/date-time)
+- [Decimal](https://keystonejs.com/keystonejs/fields/src/types/decimal)
+- [File](https://keystonejs.com/keystonejs/fields/src/types/file)
+- [Float](https://keystonejs.com/keystonejs/fields/src/types/float)
+- [Integer](https://keystonejs.com/keystonejs/fields/src/types/integer)
+- [Location](https://keystonejs.com/keystonejs/fields/src/types/location)
+- [OEmbed](https://keystonejs.com/keystonejs/fields/src/types/o-embed)
+- [Password](https://keystonejs.com/keystonejs/fields/src/types/password)
+- [Relationship](https://keystonejs.com/keystonejs/fields/src/types/relationship)
+- [Select](https://keystonejs.com/keystonejs/fields/src/types/select)
+- [Slug](https://keystonejs.com/keystonejs/fields/src/types/slug)
+- [Text](https://keystonejs.com/keystonejs/fields/src/types/text)
+- [Unsplash](https://keystonejs.com/keystonejs/fields/src/types/unsplash)
+- [Url](https://keystonejs.com/keystonejs/fields/src/types/url)
+- [Uuid](https://keystonejs.com/keystonejs/fields/src/types/uuid)
 
 In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
 
-Need more? See our guide on [Custom field types](/guides/custom-field-types/).
+Need more? See our guide on [Custom field types](https://keystonejs.com/guides/custom-field-types/).
 
 ## Usage
 
@@ -49,15 +49,15 @@ keystone.createList('Post', {
 
 Fields share some standard configuration options.
 
-| Option         | Type                                | Default     | Description                                                       |
-| -------------- | ----------------------------------- | ----------- | ----------------------------------------------------------------- |
-| `type`         | `FieldType`                         | (required)  |                                                                   |
-| `schemaDoc`    | `Boolean`                           | `false`     | A description for the field used in the AdminUI.                  |
-| `defaultValue` | `Boolean` \| `Function`             | `undefined` | A default value of the field.                                     |
-| `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                        |
-| `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                     |
-| `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: (Access control)[/guides/access-control] options for fields. |
-| `label`        | `String`                            |             | Label for the field.                                              |
+| Option         | Type                                | Default     | Description                                                                             |
+| -------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
+| `type`         | `FieldType`                         | (required)  |                                                                                         |
+| `schemaDoc`    | `Boolean`                           | `false`     | A description for the field used in the AdminUI.                                        |
+| `defaultValue` | `Boolean` \| `Function`             | `undefined` | A default value of the field.                                                           |
+| `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
+| `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
+| `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: (Access control)[https://keystonejs.com/guides/access-control] options for fields. |
+| `label`        | `String`                            |             | Label for the field.                                                                    |
 
 _Note_: Many field types have additional config options. See the documentation for individual field types for more detail.
 
