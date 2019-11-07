@@ -4,7 +4,7 @@
 '@keystonejs/build-field-types': minor
 ---
 
-Refactored the admin-ui custom pages feature. 
+Refactored the admin-ui custom pages feature.
 
 You can now customise the admin-ui by creating a folder named `admin-ui` in your project directory or by specifying a path for hooks in the AdminUIApp constructor:
 
@@ -28,7 +28,7 @@ export default {
     },
   ],
 };
-
+```
 
 Hooks are now functions. The pages hook should be a function that returns an array of pages.
 
