@@ -57,6 +57,11 @@ module.exports = class Keystone {
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
     schemaNames = ['public'],
+    appVersion = {
+      version: '1.0.0',
+      addVersionToHttpHeaders: true,
+      access: true,
+    },
   }) {
     this.name = name;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
@@ -75,6 +80,12 @@ module.exports = class Keystone {
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
+    this.appVersion = appVersion;
+    this.appVersion.access = parseCustomAccess({
+      access: this.appVersion.access,
+      schemaNames: this._schemaNames,
+      defaultAccess: true,
+    });
 
     if (adapters) {
       this.adapters = adapters;
@@ -435,6 +446,12 @@ module.exports = class Keystone {
           ${unique(
             flatten([
               ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
+              this.appVersion.access[schemaName]
+                ? [
+                    `"""The version of the Keystone application serving this API."""
+                     appVersion: String`,
+                  ]
+                : [],
               this._extendedQueries
                 .filter(({ access }) => access[schemaName])
                 .map(({ schema }) => schema),
@@ -569,6 +586,11 @@ module.exports = class Keystone {
           // shouldn't be able to override list-level queries
           ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
           ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
+          ...objMerge(
+            this.appVersion.access[schemaName]
+              ? [{ appVersion: () => this.appVersion.version }]
+              : []
+          ),
           // And the Keystone meta queries must always be available
           _ksListsMeta: (_, args, context) =>
             this.listsArray
@@ -663,6 +685,11 @@ module.exports = class Keystone {
     cors = { origin: true, credentials: true },
   } = {}) {
     const middlewares = flattenDeep([
+      this.appVersion.addVersionToHttpHeaders &&
+        ((req, res, next) => {
+          res.set('X-Keystone-App-Version', this.appVersion.version);
+          next();
+        }),
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
