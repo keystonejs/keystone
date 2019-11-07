@@ -70,6 +70,14 @@ A very useful description of the changes should be here.
 
 You can have multiple changesets in a single PR. This will give you more granular changelogs, and is encouraged.
 
+#### Changeset guidelines
+
+We’re sometimes lovingly picky on the wording of our changesets because these end up in changelogs that people like you read. We want to try to get a consistent tone of voice while providing useful information to the reader.
+
+In particular, please try to write in the past tense (e.g. "Added a new feature" rather than "Add a new feature") and write in complete sentences. This means proper capitalisation and punctuation, including full stops/periods at the end of sentences. We try to be terse when possible but if needed it's fine to write multiple lines including examples for changing APIs.
+
+Thanks for your help with this.
+
 ### Release Guidelines
 
 #### How to do a release
