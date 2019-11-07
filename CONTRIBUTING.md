@@ -70,7 +70,7 @@ A very useful description of the changes should be here.
 
 You can have multiple changesets in a single PR. This will give you more granular changelogs, and is encouraged.
 
-#### Changest guidelines
+#### Changeset guidelines
 
 We’re sometimes lovingly picky on the wording of our changesets because these end up in changelogs that people like you read. We want to try to get a consistent tone of voice while providing useful information to the reader.
 
