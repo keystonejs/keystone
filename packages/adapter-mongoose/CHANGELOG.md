@@ -1,5 +1,11 @@
 # @keystonejs/adapter-mongoose
 
+## 5.1.2
+
+### Patch Changes
+
+- [`734471e7`](https://github.com/keystonejs/keystone/commit/734471e747375ac0331255a66154d119a9bfe842) [#1926](https://github.com/keystonejs/keystone/pull/1926) Thanks [@timleslie](https://github.com/timleslie)! - Removed `mongoose-unique-validator` due to upstream bug (https://github.com/blakehaswell/mongoose-unique-validator/issues/97).
+
 ## 5.1.1
 
 ### Patch Changes
