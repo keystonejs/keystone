@@ -37,8 +37,12 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       ],
     },
     {
-      test: /\.(png|svg|jpg|gif)$/,
+      test: /\.(woff(2)?|ttf|eot|png|svg|jpg|gif)$/,
       use: ['file-loader'],
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader'],
     },
     // This is a workaround for a problem with graphql@0.13.x. It can be removed
     // once we upgrade to graphql@14.0.2.
