@@ -239,17 +239,19 @@ function PrimaryNavItems({
   };
   let pageNavItems =
     pages && pages.length
-      ? pages.map(node =>
-          renderChildren(
-            node,
-            authListKey,
-            mouseIsOverNav,
-            getListByKey,
-            adminPath,
-            0,
-            onRenderIndexPage
+      ? pages
+          .filter(node => node.addToNav !== false)
+          .map(node =>
+            renderChildren(
+              node,
+              authListKey,
+              mouseIsOverNav,
+              getListByKey,
+              adminPath,
+              0,
+              onRenderIndexPage
+            )
           )
-        )
       : listKeys.map(key =>
           renderChildren(
             key,
