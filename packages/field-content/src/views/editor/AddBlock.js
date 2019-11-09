@@ -49,7 +49,10 @@ let AddBlock = ({ editorState, editor, blocks }) => {
 
   return createPortal(
     <Fragment>
-      <div ref={openCloseRef} css={{ position: 'absolute', top: -10000, left: -10000 }}>
+      <div
+        ref={openCloseRef}
+        css={{ position: 'absolute', top: -10000, left: -10000, zIndex: 1000 }}
+      >
         <button
           type="button"
           css={{
@@ -72,7 +75,10 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           />
         </button>
       </div>
-      <div css={{ position: 'absolute', top: -10000, left: -10000 }} ref={containerRef}>
+      <div
+        css={{ position: 'absolute', top: -10000, left: -10000, zIndex: 1000 }}
+        ref={containerRef}
+      >
         {isOpen && (
           <div>
             {Object.keys(blocks).map(key => {

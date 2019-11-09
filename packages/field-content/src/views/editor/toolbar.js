@@ -1,23 +1,20 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, forwardRef, useMemo } from 'react';
-import { createPortal } from 'react-dom';
-import { Popper } from 'react-popper';
+import { Fragment } from 'react';
 import { marks, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
 import { CircleSlashIcon } from '@arch-ui/icons';
-import { colors, gridSize } from '@arch-ui/theme';
-import { useMeasure } from '@arch-ui/hooks';
-import { getSelectionReference } from './utils';
-import applyRef from 'apply-ref';
+import { colors } from '@arch-ui/theme';
 
-let stopPropagation = e => {
-  e.stopPropagation();
-};
-
-function InnerToolbar({ blocks, editor, editorState }) {
+function Toolbar({ blocks, editor, editorState }) {
   return (
-    <div css={{ display: 'flex' }}>
+    <div
+      css={{
+        display: 'flex',
+        borderBottom: `2px solid ${colors.N10}`,
+        marginBottom: `0.6em`,
+      }}
+    >
       {Object.keys(blocks)
         .map(x => blocks[x].withChrome && blocks[x].Toolbar)
         .filter(x => x)
@@ -69,69 +66,6 @@ function InnerToolbar({ blocks, editor, editorState }) {
   );
 }
 
-const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children }, ref) => {
-  let { fragment } = editorState;
-  let shouldShowToolbar = fragment.text !== '';
-  let containerRef = useRef(null);
-
-  let snapshot = useMeasure(containerRef);
-
-  useLayoutEffect(() => {
-    if (shouldShowToolbar) {
-      scheduleUpdate();
-    }
-  }, [scheduleUpdate, editorState, snapshot, shouldShowToolbar]);
-
-  return createPortal(
-    <div
-      onMouseDown={stopPropagation}
-      ref={node => {
-        applyRef(ref, node);
-        applyRef(containerRef, node);
-      }}
-      style={style}
-      css={{
-        // this isn't as nice of a transition as i'd like since the time is fixed
-        // i think it would better if it was physics based but that would probably
-        // be a lot of work for little gain
-        // maybe base the transition time on the previous value?
-        transition: 'transform 100ms, opacity 100ms',
-      }}
-    >
-      <div
-        css={{
-          backgroundColor: colors.N90,
-          padding: 8,
-          borderRadius: 6,
-          margin: gridSize,
-          display: shouldShowToolbar ? 'flex' : 'none',
-        }}
-      >
-        {shouldShowToolbar && children}
-      </div>
-    </div>,
-    document.body
-  );
-});
-
-export default ({ editorState, blocks, editor }) => {
-  // this element is created here so that when the popper rerenders
-  // the inner toolbar won't have to update
-  let children = <InnerToolbar blocks={blocks} editor={editor} editorState={editorState} />;
-  return (
-    <Popper
-      placement="top"
-      referenceElement={
-        // the reason we do this rather than having the selection reference
-        // be constant is because the selection reference
-        // has some internal state and it shouldn't persist between different
-        // editor references
-        useMemo(getSelectionReference, [])
-      }
-    >
-      {({ style, ref, scheduleUpdate }) => (
-        <PopperRender {...{ scheduleUpdate, editorState, style, blocks, editor, ref, children }} />
-      )}
-    </Popper>
-  );
-};
+export default ({ editorState, blocks, editor }) => (
+  <Toolbar blocks={blocks} editor={editor} editorState={editorState} />
+);

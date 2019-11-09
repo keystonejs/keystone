@@ -64,8 +64,17 @@ function Stories({ value: editorState, onChange, blocks, className }) {
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
   return (
-    <div className={className}>
+    <div
+      className={className}
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+      }}
+    >
+      <Toolbar {...{ editorState, editor, blocks }} />
       <Editor
+        css={{ flexGrow: 1 }}
         schema={schema}
         ref={setEditor}
         plugins={plugins}
@@ -75,7 +84,6 @@ function Stories({ value: editorState, onChange, blocks, className }) {
         }}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
-      <Toolbar {...{ editorState, editor, blocks }} />
     </div>
   );
 }
