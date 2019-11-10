@@ -103,6 +103,10 @@ const keystone = new Keystone({
 });
 ```
 
+#### Why don't we just use `access` to control the HTTP header?
+
+> We want to attach the HTTP header at the very top of the middleware stack, so if something gets rejected we can at least be sure of the system version that did the rejecting. This happens well before we have worked out which schema the person is trying to access, and therefore our access control isn’t ready to be used. Also, the access control that we set up is all about controlling access to the GraphQL API, and HTTP headers are a Different Thing, so even if it was technically possible to use the same mechanism, it really makes sense to decouple those two things.
+
 ## Methods
 
 | Method                | Description                                                                  |

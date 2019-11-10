@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-option to hide custom pages from Nav
+Added a `addToNav` option to custom pages config (defaults to `true`) allowing them to be hidden from the admin UI Nav bar.
