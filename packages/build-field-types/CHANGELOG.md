@@ -1,5 +1,13 @@
 # @keystonejs/build-field-types
 
+## 5.1.1
+
+### Patch Changes
+
+- [`946eb315`](https://github.com/keystonejs/keystone/commit/946eb3157a1cc4946fe9e2c2b1101edf4918ab86) [#1950](https://github.com/keystonejs/keystone/pull/1950) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded jest-junit dependency version.
+
+* [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9) [#1947](https://github.com/keystonejs/keystone/pull/1947) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded dependencies to include correct peer dependencies.
+
 ## 5.1.0
 
 ### Minor Changes

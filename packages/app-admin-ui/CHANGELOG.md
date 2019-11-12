@@ -1,5 +1,39 @@
 # @keystonejs/app-admin-ui
 
+## 5.2.0
+
+### Minor Changes
+
+- [`1a723a54`](https://github.com/keystonejs/keystone/commit/1a723a544a918457a9de241a8387f2ce5b555e50) [#1880](https://github.com/keystonejs/keystone/pull/1880) Thanks [@gautamsi](https://github.com/gautamsi)! - Replaced `RelationShip` field's implementation of `CreateItemModel` with a prop provided by `admin-ui`
+
+  Exported following components from `admin-ui` which can be used outside of `admin-ui` to have same look and feel when working with Lists. One simple use is in custom pages where this can be customized differently than core list pages
+
+  - `List`
+  - `ListData`
+  - `ListLayout`
+  - `ListManage`
+  - `FieldSelect`
+  - `Search`
+  - `ActiveFilters`
+  - `Pagination`
+  - `CreateItemModal`
+  - `DeleteItemModal`
+  - `DeleteManyItemsModal`
+  - `ListTable`
+  - `PageLoading`
+  - `ToastContainer`
+  - `UpdateManyItemsModal`
+  - `Popout`
+
+- [`278d6dba`](https://github.com/keystonejs/keystone/commit/278d6dba345c1f8cb41f59f037191fc0713d8f54) [#1928](https://github.com/keystonejs/keystone/pull/1928) Thanks [@gautamsi](https://github.com/gautamsi)! - Added a font loader to the webpack configuration that will allow loading of css files including in custom pages
+
+### Patch Changes
+
+- [`15e8d580`](https://github.com/keystonejs/keystone/commit/15e8d580333963ae0ce9da55b798a75f0cf25a6f) [#1906](https://github.com/keystonejs/keystone/pull/1906) Thanks [@gautamsi](https://github.com/gautamsi)! - Added a `addToNav` option to custom pages config (defaults to `true`) allowing them to be hidden from the admin UI Nav bar.
+- Updated dependencies [[`1a723a54`](https://github.com/keystonejs/keystone/commit/1a723a544a918457a9de241a8387f2ce5b555e50), [`ddfc7845`](https://github.com/keystonejs/keystone/commit/ddfc7845399e5108f7fd68169153983122554e96), [`946eb315`](https://github.com/keystonejs/keystone/commit/946eb3157a1cc4946fe9e2c2b1101edf4918ab86), [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9)]:
+  - @keystonejs/fields@5.2.0
+  - @keystonejs/build-field-types@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
