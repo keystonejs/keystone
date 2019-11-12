@@ -8,9 +8,9 @@ order: 4
 
 This chapter assumes that that the reader has the code that was created in [Setup - Chapter 1](https://www.keystonejs.com/tutorials/new-project) and [Setup - Chapter 2](https://www.keystonejs.com/tutorials/add-lists).
 
-## Pick assignee from Users collection (to-single relationship)
+## Pick `assignee` from Users list
 
-Let's link the Todo list and the User list together by setting up
+Let's link the `Todo` list and the `User` list together by setting up
 a `relationship`. Tweak the `assignee` field in `Todos.js` to match the following code:
 
 Import the `Relationship` field:
@@ -40,7 +40,7 @@ assignee: {
 
 The `ref` option defines the `List` to which we will relate. The name assigned to the option is the same name that is passed to `createList`. In the Admin UI you can now pick one of the created users to make them responsible for completing the task.
 
-## Pick task from Todos collection (two-way to-single relationship)
+## Pick `task` from Todos list
 
 It is now possible to assign a task to a user, but it is not possible to assign the user to a task! Let's fix this.
 In `Users.js` add the following:
@@ -55,13 +55,11 @@ module.exports = {
 };
 ```
 
-Now we can set a task for the User from the admin panel. But something is wrong! When we pick a task for the user and then check this task, the assignee is incorrect. This can be solved by using a `Back Reference`.
+Now we can set a task for the User from the admin panel. But something is wrong! When we pick a task for the user and then check this task, the `assignee` is incorrect. This is because we have create two separate one-sided relationships. What we want is a single two-sided relationship.
 
-## Enabling Back Reference between Users and Todos
+## Setting up a two-sided relationship between Users and Todos
 
-`Back References` are Keystone's mechanism that can overwrite fields of the referenced entity.
-It is better seen in action, so let's write some code first.
-
+In order to indicate that `task` and `assignee` are just two different sides of a single relationship, we need to update our configurations
 In `Users.js` adjust the `task` field to the following:
 
 ```javascript
@@ -118,5 +116,6 @@ The `many: true` option indicates that `User` can store multiple references to t
 
 See also:
 
+- [Relationships](/docs/discussions/relationships.md)
 - [Schema - Lists & Fields](/docs/guides/schema.md)
 - [Field Types - Relationship](/packages/fields/src/types/Relationship/README.md)

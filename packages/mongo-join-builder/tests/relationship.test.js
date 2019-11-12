@@ -3,20 +3,23 @@ const { relationshipTokenizer } = require('../lib/tokenizers');
 describe('Relationship tokenizer', () => {
   test('Uses correct conditions', () => {
     const relationshipConditions = {
-      getRefListAdapter: () => ({ model: { collection: { name: 'name' } } }),
+      getRefListAdapter: () => ({ key: 'Bar', model: { collection: { name: 'name' } } }),
       field: { many: false },
       path: 'name',
+      rel: {},
     };
     const findFieldAdapterForQuerySegment = jest.fn(() => relationshipConditions);
-    const listAdapter = { findFieldAdapterForQuerySegment };
+    const listAdapter = { findFieldAdapterForQuerySegment, key: 'Foo' };
 
-    expect(relationshipTokenizer(listAdapter, 'name', ['name'], 'abc123')).toMatchObject({
+    expect(relationshipTokenizer(listAdapter, 'name', ['name'], () => 'abc123')).toMatchObject({
       matchTerm: { $expr: { $eq: [{ $size: '$abc123_name' }, 1] } },
       relationshipInfo: {
-        field: 'name',
         from: 'name',
-        many: false,
+        thisTable: 'Foo',
+        rel: {},
+        filterType: 'only',
         uniqueField: 'abc123_name',
+        farCollection: 'name',
       },
     });
     expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
@@ -26,7 +29,7 @@ describe('Relationship tokenizer', () => {
     const findFieldAdapterForQuerySegment = jest.fn(() => {});
     const listAdapter = { findFieldAdapterForQuerySegment };
 
-    const result = relationshipTokenizer(listAdapter, 'name', ['name']);
+    const result = relationshipTokenizer(listAdapter, 'name', ['name'], () => {});
     expect(result).toMatchObject({});
     expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
   });

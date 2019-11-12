@@ -19,7 +19,7 @@ Great for setting fields like `Post.author` or `Product.owner`, etc.
 keystone.createList('User', {
   fields: {
     name: { type: String },
-  }
+  },
 });
 
 keystone.createList('Post', {
@@ -28,8 +28,8 @@ keystone.createList('Post', {
     author: {
       type: AuthedRelationship,
       ref: 'User',
-    }
-  }
+    },
+  },
 });
 ```
 
@@ -42,7 +42,7 @@ keystone.createList('User', {
   fields: {
     name: { type: String },
     isAdmin: { type: Checkbox, default: false },
-  }
+  },
 });
 
 const isAdmin = ({ authentication: { item } }) => !!item && item.isAdmin;
@@ -56,16 +56,16 @@ keystone.createList('Post', {
         create: isAdmin,
         update: isAdmin,
       },
-    }
-  }
+    },
+  },
 });
 ```
 
 ### Config
 
-| Option       | Type      | Default | Description                                                     |
-| ------------ | --------- | ------- | --------------------------------------------------------------- |
-| `isRequired` | `Boolean` | `false` | Does this field require a value?                                |
+| Option       | Type      | Default | Description                      |
+| ------------ | --------- | ------- | -------------------------------- |
+| `isRequired` | `Boolean` | `false` | Does this field require a value? |
 
 ## Differences from `Relationship`
 

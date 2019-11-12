@@ -10,7 +10,6 @@ const {
 
 import { Implementation } from '../../Implementation';
 import { resolveNested } from './nested-mutations';
-import { enqueueBacklinkOperations } from './backlinks';
 
 export class Relationship extends Implementation {
   constructor(path, { ref, many, withMeta }) {
@@ -228,40 +227,7 @@ export class Relationship extends Implementation {
       mutationState,
     });
 
-    // Enqueue backlink operations for the connections and disconnections
-    if (refField) {
-      enqueueBacklinkOperations(
-        { connect: [...create, ...connect], disconnect },
-        mutationState.queues,
-        getItem || Promise.resolve(item),
-        listInfo.local,
-        listInfo.foreign
-      );
-    }
-
     return { create, connect, disconnect, currentValue };
-  }
-
-  registerBacklink(data, item, mutationState) {
-    // Early out for null'd field
-    if (!data) {
-      return;
-    }
-
-    const { refList, refField } = this.tryResolveRefList();
-    if (refField) {
-      enqueueBacklinkOperations(
-        { disconnect: this.many ? data : [data] },
-        mutationState.queues,
-        Promise.resolve(item),
-        { list: this.getListByKey(this.listKey), field: this },
-        { list: refList, field: refField }
-      );
-    }
-    // TODO: Cascade _deletion_ of any related items (not just setting the
-    // reference to null)
-    // Accept a config option for cascading: https://www.prisma.io/docs/1.4/reference/service-configuration/data-modelling-(sdl)-eiroozae8u/#the-@relation-directive
-    // Beware of circular delete hooks!
   }
 
   getGqlAuxTypes({ schemaName }) {
@@ -348,14 +314,26 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
     this.isRelationship = true;
   }
 
-  addToMongooseSchema(schema) {
-    const {
-      refListKey: ref,
-      config: { many },
-    } = this;
-    const type = many ? [ObjectId] : ObjectId;
-    const schemaOptions = { type, ref };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+  addToMongooseSchema(schema, mongoose, rels) {
+    // If we're relating to 'many' things, we don't store ids in this table
+    if (!this.field.many) {
+      // If we're the right hand side of a 1:1 relationship, do nothing.
+      const { right, cardinality } = rels.find(
+        ({ left, right }) => left.adapter === this || (right && right.adapter === this)
+      );
+      if (cardinality === '1:1' && right && right.adapter === this) {
+        return;
+      }
+
+      // Otherwise, we're are hosting a foreign key
+      const {
+        refListKey: ref,
+        config: { many },
+      } = this;
+      const type = many ? [ObjectId] : ObjectId;
+      const schemaOptions = { type, ref };
+      schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+    }
   }
 
   getRefListAdapter() {
@@ -394,7 +372,6 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
-    this.refListId = `${refListKey}_id`;
   }
 
   // Override the isNotNullable defaulting logic; default to false, not field.isRequired
@@ -413,9 +390,16 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return this.getListByKey(this.refListKey).adapter;
   }
 
-  addToTableSchema(table) {
+  addToTableSchema(table, rels) {
     // If we're relating to 'many' things, we don't store ids in this table
     if (!this.field.many) {
+      // If we're the right hand side of a 1:1 relationship, do nothing.
+      const { right, cardinality } = rels.find(
+        ({ left, right }) => left.adapter === this || (right && right.adapter === this)
+      );
+      if (cardinality === '1:1' && right && right.adapter === this) {
+        return;
+      }
       // The foreign key needs to do this work for us; we don't know what type it is
       const refList = this.getListByKey(this.refListKey);
       const refId = refList.getPrimaryKey();
