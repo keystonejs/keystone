@@ -289,7 +289,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          test.failing(
+          test(
             'With nested connect',
             runner(setupKeystone, async ({ keystone }) => {
               const { companies } = await createInitialData(keystone);
@@ -337,7 +337,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          test.failing(
+          test(
             'With nested create',
             runner(setupKeystone, async ({ keystone }) => {
               const locationName = sampleOne(alphanumGenerator);
