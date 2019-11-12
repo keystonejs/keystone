@@ -1,5 +1,11 @@
 # @keystonejs/apollo-helpers
 
+## 5.0.2
+
+### Patch Changes
+
+- [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9) [#1947](https://github.com/keystonejs/keystone/pull/1947) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded dependencies to include correct peer dependencies.
+
 ## 5.0.1
 
 ### Patch Changes

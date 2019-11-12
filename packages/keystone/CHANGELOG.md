@@ -1,5 +1,14 @@
 # @keystonejs/keystone
 
+## 5.2.1
+
+### Patch Changes
+
+- [`697082cc`](https://github.com/keystonejs/keystone/commit/697082cc9e21ea9792e005a858432a6d81b1eb3a) [#1946](https://github.com/keystonejs/keystone/pull/1946) Thanks [@timleslie](https://github.com/timleslie)! - Updated the documentation to clarify the difference between `appVersion.addVersionToHttpHeaders` and `appVersion.access`.
+- Updated dependencies [[`1a723a54`](https://github.com/keystonejs/keystone/commit/1a723a544a918457a9de241a8387f2ce5b555e50), [`ddfc7845`](https://github.com/keystonejs/keystone/commit/ddfc7845399e5108f7fd68169153983122554e96), [`946eb315`](https://github.com/keystonejs/keystone/commit/946eb3157a1cc4946fe9e2c2b1101edf4918ab86), [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9)]:
+  - @keystonejs/fields@5.2.0
+  - @keystonejs/build-field-types@5.1.1
+
 ## 5.2.0
 
 ### Minor Changes
