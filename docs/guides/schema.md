@@ -639,7 +639,7 @@ keystone.createList('User', {
 });
 ```
 
-In this exaple, when a new `Todo` item is created, we can set the `createdBy`
+In this example, when a new `Todo` item is created, we can set the `createdBy`
 field as part of the mutation:
 
 ```graphql
