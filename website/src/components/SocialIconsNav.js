@@ -12,7 +12,7 @@ const SocialIconsNav = props => (
       </li>
       <li css={{ marginRight: [`1rem`] }}>
         <IconGithub
-          href="https://github.com/keystonejs/keystone-5"
+          href="https://github.com/keystonejs/keystone"
           target="_blank"
           title="Github"
         />
