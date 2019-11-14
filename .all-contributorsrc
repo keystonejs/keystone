@@ -333,6 +333,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "LiamAttClarke",
+      "name": "Liam Clarke",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9361948?v=4",
+      "profile": "https://atticus.dev",
+      "contributions": [
+        "bug",
+        "code",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7
