@@ -13,7 +13,7 @@ const {
 } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
-const getYear = require('date-fns/get_year');
+const getYear = require('date-fns/getYear');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const dev = process.env.NODE_ENV !== 'production';

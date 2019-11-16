@@ -32,7 +32,7 @@ const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
-const getYear = require('date-fns/get_year');
+const getYear = require('date-fns/getYear');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');

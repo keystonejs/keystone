@@ -4,7 +4,7 @@ import React, { Component, type Ref } from 'react';
 import { format } from 'date-fns';
 import { TextDayPicker } from '@arch-ui/day-picker';
 
-const FORMAT = 'YYYY-MM-DD';
+const FORMAT = 'yyyy-MM-dd';
 
 type Props = {
   field: Object,
