@@ -160,7 +160,7 @@ const preparations = [
 ].map(app => app.prepareMiddleware({ keystone, dev }));
 
 Promise.all(preparations)
-  .then(middlewares => {
+  .then(async middlewares => {
     await keystone.connect();
     const app = express();
     app
