@@ -65,6 +65,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async postConnect() {
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._postConnect();
+    });
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
@@ -141,10 +144,16 @@ class KnexListAdapter extends BaseListAdapter {
     this.tableName = this.key;
   }
 
-  prepareFieldAdapter(fieldAdapter) {
-    if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
-      this.realKeys.push(...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path]));
-    }
+  prepareFieldAdapter() {}
+
+  _postConnect() {
+    this.fieldAdapters.forEach(fieldAdapter => {
+      if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
+        this.realKeys.push(
+          ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
+        );
+      }
+    });
   }
 
   _schema() {
