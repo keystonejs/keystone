@@ -102,6 +102,57 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return fkResult;
   }
 
+  async _createAdjacencyTable({ tableName, relationshipFa, leftListAdapter }) {
+    // Create an adjacency table for the (many to many) relationship field adapter provided
+    const dbAdapter = this;
+    try {
+      console.log(`Dropping table ${tableName}`);
+      await dbAdapter.schema().dropTableIfExists(tableName);
+    } catch (err) {
+      console.log('Failed to drop');
+      console.log(err);
+      throw err;
+    }
+
+    // To be clear..
+    const leftPkFa = leftListAdapter.getPrimaryKeyAdapter();
+    const leftFkPath = `${leftListAdapter.key}_${leftPkFa.path}`;
+
+    const rightListAdapter = dbAdapter.getListAdapterByKey(relationshipFa.refListKey);
+    const rightPkFa = rightListAdapter.getPrimaryKeyAdapter();
+    const rightFkPath = `${rightListAdapter.key}_${leftPkFa.path}`;
+
+    // So right now, apparently, `many: true` indicates many-to-many
+    // It's not clear how isUnique would be configured at the moment
+    // Foreign keys are always indexed for now
+    // We don't allow duplicate relationships so we don't actually need a primary key here
+    await dbAdapter.schema().createTable(tableName, table => {
+      leftPkFa.addToForeignTableSchema(table, {
+        path: leftFkPath,
+        isUnique: false,
+        isIndexed: true,
+        isNotNullable: true,
+      });
+      table
+        .foreign(leftFkPath)
+        .references(leftPkFa.path) // 'id'
+        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
+        .onDelete('CASCADE');
+
+      rightPkFa.addToForeignTableSchema(table, {
+        path: rightFkPath,
+        isUnique: false,
+        isIndexed: true,
+        isNotNullable: true,
+      });
+      table
+        .foreign(rightFkPath)
+        .references(rightPkFa.path) // 'id'
+        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
+        .onDelete('CASCADE');
+    });
+  }
+
   schema() {
     return this.knex.schema.withSchema(this.schemaName);
   }
@@ -180,63 +231,14 @@ class KnexListAdapter extends BaseListAdapter {
     await Promise.all(
       relationshipAdapters
         .filter(adapter => adapter.config.many)
-        .map(adapter => this.createAdjacencyTable(adapter))
+        .map(adapter =>
+          this.parentAdapter._createAdjacencyTable({
+            tableName: this._manyTable(adapter.path),
+            relationshipFa: adapter,
+            leftListAdapter: this,
+          })
+        )
     );
-  }
-
-  // Create an adjacency table for the (many to many) relationship field adapter provided
-  // JM: This should probably all belong in the Relationship Knex field adapter
-  async createAdjacencyTable(relationshipFa) {
-    const dbAdapter = this.parentAdapter;
-    const tableName = this._manyTable(relationshipFa.path);
-
-    try {
-      console.log(`Dropping table ${tableName}`);
-      await dbAdapter.schema().dropTableIfExists(tableName);
-    } catch (err) {
-      console.log('Failed to drop');
-      console.log(err);
-      throw err;
-    }
-
-    // To be clear..
-    const leftListAdapter = this;
-    const leftPkFa = leftListAdapter.getPrimaryKeyAdapter();
-    const leftFkPath = `${leftListAdapter.key}_${leftPkFa.path}`;
-
-    const rightListAdapter = dbAdapter.getListAdapterByKey(relationshipFa.refListKey);
-    const rightPkFa = rightListAdapter.getPrimaryKeyAdapter();
-    const rightFkPath = `${rightListAdapter.key}_${leftPkFa.path}`;
-
-    // So right now, apparently, `many: true` indicates many-to-many
-    // It's not clear how isUnique would be configured at the moment
-    // Foreign keys are always indexed for now
-    // We don't allow duplicate relationships so we don't actually need a primary key here
-    await dbAdapter.schema().createTable(tableName, table => {
-      leftPkFa.addToForeignTableSchema(table, {
-        path: leftFkPath,
-        isUnique: false,
-        isIndexed: true,
-        isNotNullable: true,
-      });
-      table
-        .foreign(leftFkPath)
-        .references(leftPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
-        .onDelete('CASCADE');
-
-      rightPkFa.addToForeignTableSchema(table, {
-        path: rightFkPath,
-        isUnique: false,
-        isIndexed: true,
-        isNotNullable: true,
-      });
-      table
-        .foreign(rightFkPath)
-        .references(rightPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
-        .onDelete('CASCADE');
-    });
   }
 
   async _create(data) {
