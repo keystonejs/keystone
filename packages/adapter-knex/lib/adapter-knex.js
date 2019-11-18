@@ -65,6 +65,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async postConnect() {
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._postConnect();
+    });
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
@@ -192,10 +195,16 @@ class KnexListAdapter extends BaseListAdapter {
     this.tableName = this.key;
   }
 
-  prepareFieldAdapter(fieldAdapter) {
-    if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
-      this.realKeys.push(...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path]));
-    }
+  prepareFieldAdapter() {}
+
+  _postConnect() {
+    this.fieldAdapters.forEach(fieldAdapter => {
+      if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
+        this.realKeys.push(
+          ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
+        );
+      }
+    });
   }
 
   _schema() {
@@ -459,7 +468,7 @@ class QueryBuilder {
         `${baseTableAlias}.id`
       );
       this._query.whereRaw('true');
-      this._query.andWhere(`t1.${from.fromList.adapter.key}_id`, `=`, from.fromId);
+      this._query.andWhere(`${otherTableAlias}.${from.fromList.adapter.key}_id`, `=`, from.fromId);
     } else {
       // Dumb sentinel to avoid juggling where() vs andWhere()
       // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
