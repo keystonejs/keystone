@@ -15,7 +15,7 @@ function setupKeystone(adapterName) {
       keystone.createList('Post', {
         fields: {
           title: { type: Text },
-          author: { type: Relationship, ref: 'User', many: true },
+          author: { type: Relationship, ref: 'User.posts', many: true },
         },
         cacheHint: {
           scope: 'PUBLIC',
