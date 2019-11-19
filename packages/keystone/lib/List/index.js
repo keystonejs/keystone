@@ -401,15 +401,14 @@ module.exports = class List {
       );
     }
 
-    if (schemaAccess.update) {
+    const updateFields = this.fields
+      .filter(({ path }) => path !== 'id') // Exclude the id fields update types
+      .filter(field => field.access[schemaName].update); // If it's globally set to false, makes sense to never let it be updated
+
+    if (schemaAccess.update && updateFields.length) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
-          ${flatten(
-            this.fields
-              .filter(({ path }) => path !== 'id') // Exclude the id fields update types
-              .filter(field => field.access[schemaName].update) // If it's globally set to false, makes sense to never let it be updated
-              .map(field => field.gqlUpdateInputFields)
-          ).join('\n')}
+          ${flatten(updateFields.map(field => field.gqlUpdateInputFields)).join('\n')}
         }
       `);
       types.push(`
@@ -420,15 +419,14 @@ module.exports = class List {
       `);
     }
 
-    if (schemaAccess.create) {
+    const createFields = this.fields
+      .filter(({ path }) => path !== 'id') // Exclude the id fields create types
+      .filter(field => field.access[schemaName].create); // If it's globally set to false, makes sense to never let it be created
+
+    if (schemaAccess.create && createFields.length) {
       types.push(`
         input ${this.gqlNames.createInputName} {
-          ${flatten(
-            this.fields
-              .filter(({ path }) => path !== 'id') // Exclude the id fields create types
-              .filter(field => field.access[schemaName].create) // If it's globally set to false, makes sense to never let it be created
-              .map(field => field.gqlCreateInputFields)
-          ).join('\n')}
+          ${flatten(createFields.map(field => field.gqlCreateInputFields)).join('\n')}
         }
       `);
       types.push(`
@@ -454,7 +452,7 @@ module.exports = class List {
         type ${this.gqlNames.authenticateOutputName} {
           """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
           token: String
-          """ Retreive information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
+          """ Retrieve information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
           item: ${this.gqlNames.outputTypeName}
         }
       `);
@@ -838,7 +836,7 @@ module.exports = class List {
     // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
     // NOTE: Unlike in the single-operation variation, there is no security risk
     // in returning the result of the query here, because if no items match, we
-    // return an empty array regarless of if that's because of lack of
+    // return an empty array regardless of if that's because of lack of
     // permissions or because of those items don't exist.
     const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
     return await this._itemsQuery(
@@ -889,7 +887,7 @@ module.exports = class List {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
+      // Evaluation takes place in ../Keystone/index.js
       getCount: () => {
         const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 

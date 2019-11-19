@@ -29,13 +29,17 @@ class Field {
     // Should be overwritten by types that implement a Relationship interface
     this.isRelationship = false;
 
-    this.access = parseFieldAccess({
+    this.access = this.parseFieldAccess({
       schemaNames,
       listKey,
       fieldKey: path,
       defaultAccess,
-      access: access,
+      access,
     });
+  }
+
+  parseFieldAccess(args) {
+    return parseFieldAccess(args);
   }
 
   // Field types should replace this if they want to any fields to the output type

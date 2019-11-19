@@ -3,6 +3,7 @@ export { Implementation } from './Implementation';
 export { default as CalendarDay } from './types/CalendarDay';
 export { default as Checkbox } from './types/Checkbox';
 export { default as CloudinaryImage } from './types/CloudinaryImage';
+export { default as Computed } from './types/Computed';
 export { default as Color } from './types/Color';
 export { default as DateTime } from './types/DateTime';
 export { default as Decimal } from './types/Decimal';
