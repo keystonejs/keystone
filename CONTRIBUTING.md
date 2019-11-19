@@ -324,6 +324,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Fabyao"><img src="https://avatars3.githubusercontent.com/u/5112982?v=4" width="100px;" alt="Fabyao"/><br /><sub><b>Fabyao</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=Fabyao" title="Documentation">📖</a></td>
     <td align="center"><a href="https://marcosrjjunior.github.io"><img src="https://avatars1.githubusercontent.com/u/5287262?v=4" width="100px;" alt="Marcos RJJunior"/><br /><sub><b>Marcos RJJunior</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=marcosrjjunior" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://ginkgoch.com"><img src="https://avatars1.githubusercontent.com/u/41072618?v=4" width="100px;" alt="Ginkgoch"/><br /><sub><b>Ginkgoch</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=ginkgoch" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->

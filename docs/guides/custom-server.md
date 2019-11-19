@@ -154,19 +154,15 @@ const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
 const dev = process.env.NODE_ENV !== 'production';
-const preparations = [
-  new GraphQLApp(),
-  new AdminUIApp()
-].map(app => app.prepareMiddleware({ keystone, dev }));
+const preparations = [new GraphQLApp(), new AdminUIApp()].map(app =>
+  app.prepareMiddleware({ keystone, dev })
+);
 
-Promise.all(preparations)
-  .then(middlewares => {
-    await keystone.connect();
-    const app = express();
-    app
-      .use(middlewares)
-      .listen(3000);
-  });
+Promise.all(preparations).then(async middlewares => {
+  await keystone.connect();
+  const app = express();
+  app.use(middlewares).listen(3000);
+});
 ```
 
 ## Custom Server as a Lambda

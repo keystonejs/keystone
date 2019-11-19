@@ -2,7 +2,7 @@
   "name": "@keystonejs/mono-repo",
   "description": "KeystoneJS monorepo for all the @keystonejs / @arch-ui (and more) packages. Powered by Yarn.",
   "private": true,
-  "version": "4.0.0",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "scripts": {
@@ -34,6 +34,10 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keystonejs/keystone.git"
   },
   "dependencies": {
     "@babel/cli": "^7.6.2",
@@ -76,10 +80,10 @@
     "graphql": "^14.4.2",
     "immutable": "^3.8.1",
     "is-ci": "^2.0.0",
-    "jest": "^24.8.0",
-    "jest-haste-map": "^24.8.1",
-    "jest-junit": "^6.4.0",
-    "jest-resolve": "^24.8.0",
+    "jest": "^24.9.0",
+    "jest-haste-map": "^24.9.0",
+    "jest-junit": "^9.0.0",
+    "jest-resolve": "^24.9.0",
     "kleur": "^3.0.3",
     "knex": "^0.20.1",
     "luxon": "^1.11.4",
@@ -124,7 +128,6 @@
     "unist-util-visit": "^1.4.0",
     "unsplash-js": "^5.0.0",
     "uuid": "^3.3.2",
-    "vue-loader": "^15.7.1",
     "webpack": "4.28.4"
   },
   "prettier": {

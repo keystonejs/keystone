@@ -1,5 +1,36 @@
 # @keystonejs/fields
 
+## 5.2.0
+
+### Minor Changes
+
+- [`1a723a54`](https://github.com/keystonejs/keystone/commit/1a723a544a918457a9de241a8387f2ce5b555e50) [#1880](https://github.com/keystonejs/keystone/pull/1880) Thanks [@gautamsi](https://github.com/gautamsi)! - Replaced `RelationShip` field's implementation of `CreateItemModel` with a prop provided by `admin-ui`
+
+  Exported following components from `admin-ui` which can be used outside of `admin-ui` to have same look and feel when working with Lists. One simple use is in custom pages where this can be customized differently than core list pages
+
+  - `List`
+  - `ListData`
+  - `ListLayout`
+  - `ListManage`
+  - `FieldSelect`
+  - `Search`
+  - `ActiveFilters`
+  - `Pagination`
+  - `CreateItemModal`
+  - `DeleteItemModal`
+  - `DeleteManyItemsModal`
+  - `ListTable`
+  - `PageLoading`
+  - `ToastContainer`
+  - `UpdateManyItemsModal`
+  - `Popout`
+
+### Patch Changes
+
+- [`ddfc7845`](https://github.com/keystonejs/keystone/commit/ddfc7845399e5108f7fd68169153983122554e96) [#1934](https://github.com/keystonejs/keystone/pull/1934) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed stray Content field implementation (it's now in the field-content package)
+- Updated dependencies [[`946eb315`](https://github.com/keystonejs/keystone/commit/946eb3157a1cc4946fe9e2c2b1101edf4918ab86), [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9)]:
+  - @keystonejs/build-field-types@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
