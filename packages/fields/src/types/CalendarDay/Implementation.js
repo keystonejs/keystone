@@ -1,21 +1,44 @@
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isValid, isWithinInterval } from 'date-fns';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd';
 
+const parseDateRangeConfig = (dateInput, keyName) => {
+  if (typeof dateInput === 'string') {
+    const parsedString = parseISO(dateInput);
+
+    if (!isValid(parsedString)) {
+      throw new Error(`Invalid date. '${keyName}' string values must be in ISO8601 format`);
+    }
+
+    return parsedString;
+  }
+
+  if (dateInput instanceof Date) {
+    if (!isValid(dateInput)) {
+      throw new Error(`Invalid date value for '${keyName}'`);
+    }
+
+    return dateInput;
+  }
+
+  throw new Error(`'${keyName}' must be either a Date object or an ISO8601 string`);
+};
+
 export class CalendarDay extends Implementation {
-  constructor(path, { format, yearRangeFrom, yearRangeTo }) {
+  constructor(path, { format, dateRangeFrom, dateRangeTo }) {
     super(...arguments);
     this.format = format;
-    this.yearRangeFrom = yearRangeFrom;
-    this.yearRangeTo = yearRangeTo;
+    this.dateRangeFrom = parseDateRangeConfig(dateRangeFrom, 'dateRangeFrom');
+    this.dateRangeTo = parseDateRangeConfig(dateRangeTo, 'dateRangeTo');
   }
 
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
+
   gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
@@ -23,18 +46,21 @@ export class CalendarDay extends Implementation {
       ...this.inInputFields('String'),
     ];
   }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
+
   get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
+
   extendAdminMeta(meta) {
     return {
       ...meta,
       format: this.format,
-      yearRangeFrom: this.yearRangeFrom,
-      yearRangeTo: this.yearRangeTo,
+      dateRangeFrom: this.dateRangeFrom,
+      dateRangeTo: this.dateRangeTo,
     };
   }
 }

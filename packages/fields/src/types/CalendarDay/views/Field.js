@@ -5,12 +5,13 @@ import { useState } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { colors, fontFamily } from '@arch-ui/theme';
+import { Alert } from '@arch-ui/alert';
 
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
-import { format as formatDate, setYear, startOfYear, endOfYear } from 'date-fns';
+import { format as formatDate, isValid, setYear, startOfYear, endOfYear } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 
 const keystoneMaterialTheme = createMuiTheme({
@@ -24,7 +25,7 @@ const keystoneMaterialTheme = createMuiTheme({
   },
 });
 
-const MuiDatePicker = ({ value, onChange, onAccept, format, yearRangeFrom, yearRangeTo }) => {
+const MuiDatePicker = ({ value, onChange, onAccept, format, dateRangeFrom, dateRangeTo }) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <ThemeProvider theme={keystoneMaterialTheme}>
@@ -33,14 +34,15 @@ const MuiDatePicker = ({ value, onChange, onAccept, format, yearRangeFrom, yearR
           onChange={date => onChange(date)}
           onAccept={onAccept}
           format={format}
-          minDate={startOfYear(setYear(new Date(), yearRangeFrom))}
-          maxDate={endOfYear(setYear(new Date(), yearRangeTo))}
+          minDate={dateRangeFrom}
+          maxDate={dateRangeTo}
           variant="dialog"
           inputVariant="outlined"
           margin="dense"
           placeholder="Select a date..."
           showTodayButton
           clearable
+          animateYearScrolling
         />
       </ThemeProvider>
     </MuiPickersUtilsProvider>
@@ -74,6 +76,13 @@ const CalendarDayField = ({ field, errors, value: initialValue, onChange }) => {
           {...field.config}
         />
       </FieldInput>
+
+      {errors.map(({ message, data }) => (
+        <Alert appearance="danger" key={message}>
+          {message}
+          {data ? ` - ${JSON.stringify(data)}` : null}
+        </Alert>
+      ))}
     </FieldContainer>
   );
 };

@@ -1,23 +1,28 @@
 import FieldController from '../../../Controller';
+import { parseISO, isWithinInterval } from 'date-fns';
 
 export default class CalendarDayController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: "${value}"`;
   };
+
   getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;
   };
+
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
+
   serialize = data => {
-    let value = data[this.path];
+    const value = data[this.path];
     if (typeof value !== 'string') {
       return null;
     }
     return value.trim() || null;
   };
+
   getFilterTypes = () => [
     {
       type: 'is',
@@ -52,4 +57,17 @@ export default class CalendarDayController extends FieldController {
     // QUESTION: should we support "in" and "not_in" filters for DateTime?
     // What does the UI look like for that.
   ];
+
+  validateInput = ({ resolvedData, addFieldValidationError }) => {
+    const { dateRangeFrom, dateRangeTo } = this.config;
+
+    const inRange = isWithinInterval(parseISO(resolvedData[this.path]), {
+      start: parseISO(dateRangeFrom),
+      end: parseISO(dateRangeTo),
+    });
+
+    if (!inRange) {
+      return addFieldValidationError(`CalendarDay input not within configured date interval.`);
+    }
+  };
 }
