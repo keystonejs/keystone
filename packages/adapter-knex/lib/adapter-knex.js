@@ -65,6 +65,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async postConnect() {
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._postConnect();
+    });
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
@@ -100,6 +103,57 @@ class KnexAdapter extends BaseKeystoneAdapter {
       }
     });
     return fkResult;
+  }
+
+  async _createAdjacencyTable({ tableName, relationshipFa, leftListAdapter }) {
+    // Create an adjacency table for the (many to many) relationship field adapter provided
+    const dbAdapter = this;
+    try {
+      console.log(`Dropping table ${tableName}`);
+      await dbAdapter.schema().dropTableIfExists(tableName);
+    } catch (err) {
+      console.log('Failed to drop');
+      console.log(err);
+      throw err;
+    }
+
+    // To be clear..
+    const leftPkFa = leftListAdapter.getPrimaryKeyAdapter();
+    const leftFkPath = `${leftListAdapter.key}_${leftPkFa.path}`;
+
+    const rightListAdapter = dbAdapter.getListAdapterByKey(relationshipFa.refListKey);
+    const rightPkFa = rightListAdapter.getPrimaryKeyAdapter();
+    const rightFkPath = `${rightListAdapter.key}_${leftPkFa.path}`;
+
+    // So right now, apparently, `many: true` indicates many-to-many
+    // It's not clear how isUnique would be configured at the moment
+    // Foreign keys are always indexed for now
+    // We don't allow duplicate relationships so we don't actually need a primary key here
+    await dbAdapter.schema().createTable(tableName, table => {
+      leftPkFa.addToForeignTableSchema(table, {
+        path: leftFkPath,
+        isUnique: false,
+        isIndexed: true,
+        isNotNullable: true,
+      });
+      table
+        .foreign(leftFkPath)
+        .references(leftPkFa.path) // 'id'
+        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
+        .onDelete('CASCADE');
+
+      rightPkFa.addToForeignTableSchema(table, {
+        path: rightFkPath,
+        isUnique: false,
+        isIndexed: true,
+        isNotNullable: true,
+      });
+      table
+        .foreign(rightFkPath)
+        .references(rightPkFa.path) // 'id'
+        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
+        .onDelete('CASCADE');
+    });
   }
 
   schema() {
@@ -141,10 +195,16 @@ class KnexListAdapter extends BaseListAdapter {
     this.tableName = this.key;
   }
 
-  prepareFieldAdapter(fieldAdapter) {
-    if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
-      this.realKeys.push(...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path]));
-    }
+  prepareFieldAdapter() {}
+
+  _postConnect() {
+    this.fieldAdapters.forEach(fieldAdapter => {
+      if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
+        this.realKeys.push(
+          ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
+        );
+      }
+    });
   }
 
   _schema() {
@@ -180,63 +240,14 @@ class KnexListAdapter extends BaseListAdapter {
     await Promise.all(
       relationshipAdapters
         .filter(adapter => adapter.config.many)
-        .map(adapter => this.createAdjacencyTable(adapter))
+        .map(adapter =>
+          this.parentAdapter._createAdjacencyTable({
+            tableName: this._manyTable(adapter.path),
+            relationshipFa: adapter,
+            leftListAdapter: this,
+          })
+        )
     );
-  }
-
-  // Create an adjacency table for the (many to many) relationship field adapter provided
-  // JM: This should probably all belong in the Relationship Knex field adapter
-  async createAdjacencyTable(relationshipFa) {
-    const dbAdapter = this.parentAdapter;
-    const tableName = this._manyTable(relationshipFa.path);
-
-    try {
-      console.log(`Dropping table ${tableName}`);
-      await dbAdapter.schema().dropTableIfExists(tableName);
-    } catch (err) {
-      console.log('Failed to drop');
-      console.log(err);
-      throw err;
-    }
-
-    // To be clear..
-    const leftListAdapter = this;
-    const leftPkFa = leftListAdapter.getPrimaryKeyAdapter();
-    const leftFkPath = `${leftListAdapter.key}_${leftPkFa.path}`;
-
-    const rightListAdapter = dbAdapter.getListAdapterByKey(relationshipFa.refListKey);
-    const rightPkFa = rightListAdapter.getPrimaryKeyAdapter();
-    const rightFkPath = `${rightListAdapter.key}_${leftPkFa.path}`;
-
-    // So right now, apparently, `many: true` indicates many-to-many
-    // It's not clear how isUnique would be configured at the moment
-    // Foreign keys are always indexed for now
-    // We don't allow duplicate relationships so we don't actually need a primary key here
-    await dbAdapter.schema().createTable(tableName, table => {
-      leftPkFa.addToForeignTableSchema(table, {
-        path: leftFkPath,
-        isUnique: false,
-        isIndexed: true,
-        isNotNullable: true,
-      });
-      table
-        .foreign(leftFkPath)
-        .references(leftPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
-        .onDelete('CASCADE');
-
-      rightPkFa.addToForeignTableSchema(table, {
-        path: rightFkPath,
-        isUnique: false,
-        isIndexed: true,
-        isNotNullable: true,
-      });
-      table
-        .foreign(rightFkPath)
-        .references(rightPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
-        .onDelete('CASCADE');
-    });
   }
 
   async _create(data) {
@@ -457,7 +468,7 @@ class QueryBuilder {
         `${baseTableAlias}.id`
       );
       this._query.whereRaw('true');
-      this._query.andWhere(`t1.${from.fromList.adapter.key}_id`, `=`, from.fromId);
+      this._query.andWhere(`${otherTableAlias}.${from.fromList.adapter.key}_id`, `=`, from.fromId);
     } else {
       // Dumb sentinel to avoid juggling where() vs andWhere()
       // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
