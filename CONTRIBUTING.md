@@ -70,6 +70,14 @@ A very useful description of the changes should be here.
 
 You can have multiple changesets in a single PR. This will give you more granular changelogs, and is encouraged.
 
+#### Changeset guidelines
+
+We’re sometimes lovingly picky on the wording of our changesets because these end up in changelogs that people like you read. We want to try to get a consistent tone of voice while providing useful information to the reader.
+
+In particular, please try to write in the past tense (e.g. "Added a new feature" rather than "Add a new feature") and write in complete sentences. This means proper capitalisation and punctuation, including full stops/periods at the end of sentences. We try to be terse when possible but if needed it's fine to write multiple lines including examples for changing APIs.
+
+Thanks for your help with this.
+
 ### Release Guidelines
 
 #### How to do a release
@@ -314,6 +322,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://arnaud-zg.github.io/"><img src="https://avatars1.githubusercontent.com/u/10991546?v=4" width="100px;" alt="Arnaud Zheng"/><br /><sub><b>Arnaud Zheng</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=arnaud-zg" title="Documentation">📖</a></td>
     <td align="center"><a href="https://twitter.com/ashinzekene"><img src="https://avatars2.githubusercontent.com/u/20991583?v=4" width="100px;" alt="Ashinze Ekene"/><br /><sub><b>Ashinze Ekene</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=ashinzekene" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Fabyao"><img src="https://avatars3.githubusercontent.com/u/5112982?v=4" width="100px;" alt="Fabyao"/><br /><sub><b>Fabyao</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=Fabyao" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://marcosrjjunior.github.io"><img src="https://avatars1.githubusercontent.com/u/5287262?v=4" width="100px;" alt="Marcos RJJunior"/><br /><sub><b>Marcos RJJunior</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=marcosrjjunior" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://ginkgoch.com"><img src="https://avatars1.githubusercontent.com/u/41072618?v=4" width="100px;" alt="Ginkgoch"/><br /><sub><b>Ginkgoch</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=ginkgoch" title="Documentation">📖</a></td>
   </tr>
 </table>
 

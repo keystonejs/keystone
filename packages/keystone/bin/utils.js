@@ -114,7 +114,7 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   router = express.Router();
   router.use(middlewares);
 
-  spinner.succeed(chalk.green.bold('Keystone instance is ready 🚀'));
+  spinner.succeed(chalk.green.bold(`Keystone instance is ready at http://localhost:${port} 🚀`));
 
   const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps);
 

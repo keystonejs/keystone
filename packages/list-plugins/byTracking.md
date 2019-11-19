@@ -5,7 +5,7 @@ title: byTracking
 
 ## byTracking
 
-Adds `createdBy` and `updatedBy` fields to a list. These fields are read-only by will be updated automatically when items are created or updated.
+Adds `createdBy` and `updatedBy` fields to a list. These fields are read-only but they will be updated automatically when items are created or updated.
 
 ## Usage
 

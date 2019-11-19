@@ -65,6 +65,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async postConnect() {
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._postConnect();
+    });
     const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
     if (this.config.dropDatabase || !isSetup) {
       console.log('Knex adapter: Dropping database');
@@ -94,7 +97,29 @@ class KnexAdapter extends BaseKeystoneAdapter {
     const fkResult = [];
     await asyncForEach(Object.values(this.listAdapters), async listAdapter => {
       try {
-        await listAdapter.createForeignKeys();
+        const relationshipAdapters = listAdapter.fieldAdapters.filter(
+          adapter => adapter.isRelationship
+        );
+
+        // Add foreign key constraints on this table
+        await this.schema().table(listAdapter.tableName, table => {
+          relationshipAdapters
+            .filter(adapter => !adapter.config.many)
+            .forEach(adapter => adapter.createForeignKey(table, this.schemaName));
+        });
+
+        // Create adjacency tables for the 'many' relationships
+        await Promise.all(
+          relationshipAdapters
+            .filter(adapter => adapter.config.many)
+            .map(adapter =>
+              this._createAdjacencyTable({
+                tableName: listAdapter._manyTable(adapter.path),
+                relationshipFa: adapter,
+                leftListAdapter: listAdapter,
+              })
+            )
+        );
       } catch (err) {
         fkResult.push({ isRejected: true, reason: err });
       }
@@ -102,93 +127,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return fkResult;
   }
 
-  schema() {
-    return this.knex.schema.withSchema(this.schemaName);
-  }
-
-  getQueryBuilder() {
-    return this.knex.withSchema(this.schemaName);
-  }
-
-  disconnect() {
-    this.knex.destroy();
-  }
-
-  // This will completely drop the backing database. Use wisely.
-  dropDatabase() {
-    const tables = Object.values(this.listAdapters)
-      .map(listAdapter => `"${this.schemaName}"."${listAdapter.key}"`)
-      .join(',');
-    return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
-  }
-
-  getDefaultPrimaryKeyConfig() {
-    // Required here due to circular refs
-    const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
-    return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
-  }
-
-  async checkDatabaseVersion() {
-    // TODO: implement
-  }
-}
-
-class KnexListAdapter extends BaseListAdapter {
-  constructor(key, parentAdapter) {
-    super(...arguments);
-    this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
-    this.realKeys = [];
-  }
-
-  prepareFieldAdapter(fieldAdapter) {
-    if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
-      this.realKeys.push(...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path]));
-    }
-  }
-
-  _schema() {
-    return this.parentAdapter.schema();
-  }
-
-  _query() {
-    return this.parentAdapter.getQueryBuilder();
-  }
-
-  _manyTable(relationshipFieldPath) {
-    return `${this.key}_${relationshipFieldPath}`;
-  }
-
-  async createTable() {
-    // Let the field adapter add what it needs to the table schema
-    await this._schema().createTable(this.key, table => {
-      this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
-    });
-  }
-
-  async createForeignKeys() {
-    const relationshipAdapters = this.fieldAdapters.filter(adapter => adapter.isRelationship);
-
-    // Add foreign key constraints on this table
-    await this._schema().table(this.key, table => {
-      relationshipAdapters
-        .filter(adapter => !adapter.config.many)
-        .forEach(adapter => adapter.createForeignKey(table, this.parentAdapter.schemaName));
-    });
-
-    // Create adjacency tables for the 'many' relationships
-    await Promise.all(
-      relationshipAdapters
-        .filter(adapter => adapter.config.many)
-        .map(adapter => this.createAdjacencyTable(adapter))
-    );
-  }
-
-  // Create an adjacency table for the (many to many) relationship field adapter provided
-  // JM: This should probably all belong in the Relationship Knex field adapter
-  async createAdjacencyTable(relationshipFa) {
-    const dbAdapter = this.parentAdapter;
-    const tableName = this._manyTable(relationshipFa.path);
-
+  async _createAdjacencyTable({ tableName, relationshipFa, leftListAdapter }) {
+    // Create an adjacency table for the (many to many) relationship field adapter provided
+    const dbAdapter = this;
     try {
       console.log(`Dropping table ${tableName}`);
       await dbAdapter.schema().dropTableIfExists(tableName);
@@ -199,7 +140,6 @@ class KnexListAdapter extends BaseListAdapter {
     }
 
     // To be clear..
-    const leftListAdapter = this;
     const leftPkFa = leftListAdapter.getPrimaryKeyAdapter();
     const leftFkPath = `${leftListAdapter.key}_${leftPkFa.path}`;
 
@@ -221,7 +161,7 @@ class KnexListAdapter extends BaseListAdapter {
       table
         .foreign(leftFkPath)
         .references(leftPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.key}`)
+        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
         .onDelete('CASCADE');
 
       rightPkFa.addToForeignTableSchema(table, {
@@ -233,8 +173,78 @@ class KnexListAdapter extends BaseListAdapter {
       table
         .foreign(rightFkPath)
         .references(rightPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.key}`)
+        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
         .onDelete('CASCADE');
+    });
+  }
+
+  schema() {
+    return this.knex.schema.withSchema(this.schemaName);
+  }
+
+  getQueryBuilder() {
+    return this.knex.withSchema(this.schemaName);
+  }
+
+  disconnect() {
+    this.knex.destroy();
+  }
+
+  // This will completely drop the backing database. Use wisely.
+  dropDatabase() {
+    const tables = Object.values(this.listAdapters)
+      .map(listAdapter => `"${this.schemaName}"."${listAdapter.tableName}"`)
+      .join(',');
+    return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
+  }
+
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
+    return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
+  }
+
+  async checkDatabaseVersion() {
+    // TODO: implement
+  }
+}
+
+class KnexListAdapter extends BaseListAdapter {
+  constructor(key, parentAdapter) {
+    super(...arguments);
+    this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
+    this.realKeys = [];
+    this.tableName = this.key;
+  }
+
+  prepareFieldAdapter() {}
+
+  _postConnect() {
+    this.fieldAdapters.forEach(fieldAdapter => {
+      if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
+        this.realKeys.push(
+          ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
+        );
+      }
+    });
+  }
+
+  _schema() {
+    return this.parentAdapter.schema();
+  }
+
+  _query() {
+    return this.parentAdapter.getQueryBuilder();
+  }
+
+  _manyTable(relationshipFieldPath) {
+    return `${this.key}_${relationshipFieldPath}`;
+  }
+
+  async createTable() {
+    // Let the field adapter add what it needs to the table schema
+    await this._schema().createTable(this.tableName, table => {
+      this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
     });
   }
 
@@ -243,7 +253,7 @@ class KnexListAdapter extends BaseListAdapter {
     const realData = pick(data, this.realKeys);
     const item = (await this._query()
       .insert(realData)
-      .into(this.key)
+      .into(this.tableName)
       .returning('*'))[0];
 
     // For every many-field, update the many-table
@@ -289,7 +299,7 @@ class KnexListAdapter extends BaseListAdapter {
                     .del()
                 : adapter
                     ._query()
-                    .table(adapter.key)
+                    .table(adapter.tableName)
                     .where(a.path, id)
                     .update({ [a.path]: null })
             )
@@ -298,7 +308,7 @@ class KnexListAdapter extends BaseListAdapter {
     );
     // Delete the actual item
     return this._query()
-      .table(this.key)
+      .table(this.tableName)
       .where({ id })
       .del();
   }
@@ -328,7 +338,7 @@ class KnexListAdapter extends BaseListAdapter {
     // Update the real data
     const realData = pick(data, this.realKeys);
     const query = this._query()
-      .table(this.key)
+      .table(this.tableName)
       .where({ id });
     if (Object.keys(realData).length) {
       query.update(realData);
@@ -388,7 +398,7 @@ class KnexListAdapter extends BaseListAdapter {
   async _findById(id) {
     return (
       (await this._query()
-        .from(this.key)
+        .from(this.tableName)
         .where('id', id))[0] || null
     );
   }
@@ -439,7 +449,7 @@ class QueryBuilder {
     this._tableAliases = {};
     this._nextBaseTableAliasId = 0;
     const baseTableAlias = this._getNextBaseTableAlias();
-    this._query = listAdapter._query().from(`${listAdapter.key} as ${baseTableAlias}`);
+    this._query = listAdapter._query().from(`${listAdapter.tableName} as ${baseTableAlias}`);
     if (meta) {
       this._query.count();
     } else {
@@ -456,7 +466,7 @@ class QueryBuilder {
         `${baseTableAlias}.id`
       );
       this._query.whereRaw('true');
-      this._query.andWhere(`t1.${from.fromList.adapter.key}_id`, `=`, from.fromId);
+      this._query.andWhere(`${otherTableAlias}.${from.fromList.adapter.key}_id`, `=`, from.fromId);
     } else {
       // Dumb sentinel to avoid juggling where() vs andWhere()
       // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
@@ -517,7 +527,7 @@ class QueryBuilder {
           if (!this._tableAliases[otherTableAlias]) {
             this._tableAliases[otherTableAlias] = true;
             query.leftOuterJoin(
-              `${otherList} as ${otherTableAlias}`,
+              `${otherListAdapter.tableName} as ${otherTableAlias}`,
               `${otherTableAlias}.id`,
               `${tableAlias}.${path}`
             );
@@ -572,7 +582,7 @@ class QueryBuilder {
             .select(`${subBaseTableAlias}.${thisID}`)
             .from(`${manyTableName} as ${subBaseTableAlias}`);
           subQuery.innerJoin(
-            `${otherListAdapter.key} as ${otherTableAlias}`,
+            `${otherListAdapter.tableName} as ${otherTableAlias}`,
             `${otherTableAlias}.id`,
             `${subBaseTableAlias}.${otherList}_id`
           );

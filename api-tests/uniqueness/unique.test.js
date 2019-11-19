@@ -41,7 +41,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(errors).toHaveProperty('0.message');
-          expect(errors[0].message).toEqual(expect.stringMatching(/duplicate key/));
+          expect(errors[0].message).toEqual(expect.stringMatching(/duplicate key|to be unique/));
         })
       );
 
@@ -59,7 +59,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(errors).toHaveProperty('0.message');
-          expect(errors[0].message).toEqual(expect.stringMatching(/duplicate key/));
+          expect(errors[0].message).toEqual(expect.stringMatching(/duplicate key|to be unique/));
         })
       );
 

@@ -32,6 +32,8 @@ type Props = {
   onChange: any => mixed,
   /** Field value */
   value: string,
+  /** Field ID */
+  id?: string,
   /** Ref to apply to the inner Element */
   innerRef?: Ref<*>,
 };
@@ -60,7 +62,7 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: Ic
   // background
   let bg = colors.N10;
   if (isDisabled && checked) {
-    bg = colors.B.D20;
+    bg = colors.N30;
   } else if (isActive) {
     bg = checked ? colors.B.D10 : colors.N20;
   } else if ((isFocus || isHover) && !checked) {
@@ -80,7 +82,7 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: Ic
   // stroke
   let innerStroke = isFocus ? colors.B.L20 : bg;
   let innerStrokeWidth = 1;
-  if (checked) {
+  if (checked && !isDisabled) {
     innerStroke = isActive ? colors.B.D20 : colors.B.base;
   }
 
@@ -95,6 +97,7 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: Ic
     color: bg,
     fill,
     lineHeight: 0,
+    cursor: isDisabled ? 'not-allowed' : null,
 
     // awkwardly apply the focus ring
     '& .outer-stroke': {
@@ -145,6 +148,7 @@ export class Control extends Component<ControlProps> {
       tabIndex,
       type,
       value,
+      id,
       ...wrapperProps
     } = this.props;
     const components = this.cacheComponents(this.props.components);
@@ -187,9 +191,10 @@ export class Control extends Component<ControlProps> {
                   innerRef={this.getRef}
                   name={name}
                   required={isRequired}
-                  tabIndex={tabIndex || checked ? '0' : '-1'}
+                  tabIndex={tabIndex}
                   type={type}
                   value={value}
+                  id={id}
                 />
                 <Icon {...iconProps}>
                   <Svg html={svg} />

@@ -433,7 +433,7 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return table
       .foreign(this.path)
       .references('id')
-      .inTable(`${schemaName}.${this.refListKey}`);
+      .inTable(`${schemaName}.${this.getRefListAdapter().tableName}`);
   }
 
   getQueryConditions(dbPath) {
