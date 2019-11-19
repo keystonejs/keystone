@@ -354,7 +354,7 @@ export default function ListTable(props) {
             <SortLink
               data-field={field.path}
               key={field.path}
-              sortable={field.path !== '_label_'}
+              sortable={field.path !== '_label_' && field.config.isSortable !== false}
               field={field}
               handleSortChange={onSortChange}
               active={sortBy.field.path === field.path}

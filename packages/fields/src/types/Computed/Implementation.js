@@ -18,16 +18,15 @@ export class Computed extends Implementation {
     return { [`${this.path}`]: this.config.resolver };
   }
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.equalityInputFieldsInsensitive('String'),
-      ...this.stringInputFieldsInsensitive('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [];
   }
   extendAdminMeta(meta) {
-    return { ...meta, graphQLSelection: this.config.graphQLReturnFragment || '', isReadOnly: true };
+    return {
+      ...meta,
+      isSortable: false,
+      graphQLSelection: this.config.graphQLReturnFragment || '',
+      isReadOnly: true,
+    };
   }
 
   parseFieldAccess(args) {
@@ -42,16 +41,8 @@ export class Computed extends Implementation {
 
 const CommonTextInterface = superclass =>
   class extends superclass {
-    // Not sure what to do here?
-    getQueryConditions(dbPath) {
-      return {
-        ...this.equalityConditions(dbPath),
-        ...this.stringConditions(dbPath),
-        ...this.equalityConditionsInsensitive(dbPath),
-        ...this.stringConditionsInsensitive(dbPath),
-        // These have no case-insensitive counter parts
-        ...this.inConditions(dbPath),
-      };
+    getQueryConditions() {
+      return {};
     }
   };
 
