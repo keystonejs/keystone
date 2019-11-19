@@ -122,7 +122,7 @@ describe('List view URL state', () => {
   });
   it('Stores filter state in the url', () => {
     // Filter defined in the url
-    cy.visit('/admin/posts?!name_contains="Hello"');
+    cy.visit('/admin/posts?!name_contains_i="Hello"');
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
       'contain',
       'Name contains: "Hello"'
@@ -143,7 +143,7 @@ describe('List view URL state', () => {
       .find('input[placeholder="Name contains"]')
       .clear()
       .type(`keystone{enter}`, { force: true });
-    cy.location('search').should('eq', '?!name_contains=%22keystone%22');
+    cy.location('search').should('eq', '?!name_contains_i=%22keystone%22');
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
       'contain',
       'Name contains: "keystone"'

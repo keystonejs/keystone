@@ -333,6 +333,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ginkgoch",
+      "name": "Ginkgoch",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/41072618?v=4",
+      "profile": "https://ginkgoch.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
