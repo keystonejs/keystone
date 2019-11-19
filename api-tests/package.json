@@ -8,6 +8,10 @@
   "engines": {
     "node": ">=8.4.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keystonejs/keystone.git"
+  },
   "devDependencies": {
     "@keystonejs/adapter-knex": "^5.0.0",
     "@keystonejs/adapter-mongoose": "^5.0.0",
