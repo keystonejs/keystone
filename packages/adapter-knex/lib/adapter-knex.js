@@ -97,7 +97,29 @@ class KnexAdapter extends BaseKeystoneAdapter {
     const fkResult = [];
     await asyncForEach(Object.values(this.listAdapters), async listAdapter => {
       try {
-        await listAdapter.createForeignKeys();
+        const relationshipAdapters = listAdapter.fieldAdapters.filter(
+          adapter => adapter.isRelationship
+        );
+
+        // Add foreign key constraints on this table
+        await this.schema().table(listAdapter.tableName, table => {
+          relationshipAdapters
+            .filter(adapter => !adapter.config.many)
+            .forEach(adapter => adapter.createForeignKey(table, this.schemaName));
+        });
+
+        // Create adjacency tables for the 'many' relationships
+        await Promise.all(
+          relationshipAdapters
+            .filter(adapter => adapter.config.many)
+            .map(adapter =>
+              this._createAdjacencyTable({
+                tableName: listAdapter._manyTable(adapter.path),
+                relationshipFa: adapter,
+                leftListAdapter: listAdapter,
+              })
+            )
+        );
       } catch (err) {
         fkResult.push({ isRejected: true, reason: err });
       }
@@ -224,30 +246,6 @@ class KnexListAdapter extends BaseListAdapter {
     await this._schema().createTable(this.tableName, table => {
       this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
     });
-  }
-
-  async createForeignKeys() {
-    const relationshipAdapters = this.fieldAdapters.filter(adapter => adapter.isRelationship);
-
-    // Add foreign key constraints on this table
-    await this._schema().table(this.tableName, table => {
-      relationshipAdapters
-        .filter(adapter => !adapter.config.many)
-        .forEach(adapter => adapter.createForeignKey(table, this.parentAdapter.schemaName));
-    });
-
-    // Create adjacency tables for the 'many' relationships
-    await Promise.all(
-      relationshipAdapters
-        .filter(adapter => adapter.config.many)
-        .map(adapter =>
-          this.parentAdapter._createAdjacencyTable({
-            tableName: this._manyTable(adapter.path),
-            relationshipFa: adapter,
-            leftListAdapter: this,
-          })
-        )
-    );
   }
 
   async _create(data) {
