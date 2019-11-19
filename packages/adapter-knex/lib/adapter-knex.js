@@ -199,7 +199,7 @@ class KnexListAdapter extends BaseListAdapter {
 
   _postConnect() {
     this.fieldAdapters.forEach(fieldAdapter => {
-      if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
+      if (fieldAdapter._hasRealKeys()) {
         this.realKeys.push(
           ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
         );
@@ -263,8 +263,7 @@ class KnexListAdapter extends BaseListAdapter {
       arrayToObject(
         this.fieldAdapters.filter(
           fieldAdapter =>
-            fieldAdapter.isRelationship &&
-            fieldAdapter.config.many &&
+            !fieldAdapter._hasRealKeys() &&
             data[fieldAdapter.path] &&
             data[fieldAdapter.path].length
         ),
@@ -351,7 +350,6 @@ class KnexListAdapter extends BaseListAdapter {
     const manyData = omit(data, this.realKeys);
     await Promise.all(
       Object.entries(manyData).map(async ([path, newValues]) => {
-        newValues = newValues.map(id => id);
         const a = this.fieldAdaptersByPath[path];
         const tableName = this._manyTable(a.path);
 
@@ -393,10 +391,6 @@ class KnexListAdapter extends BaseListAdapter {
     return result ? this._populateMany(result) : null;
   }
 
-  async _findAll() {
-    return this._itemsQuery({});
-  }
-
   async _findById(id) {
     return (
       (await this._query()
@@ -405,21 +399,16 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
+  async _findAll() {
+    return this._itemsQuery({});
+  }
+
   async _find(condition) {
     return this._itemsQuery({ where: { ...condition } });
   }
 
   async _findOne(condition) {
     return (await this._itemsQuery({ where: { ...condition }, first: 1 }))[0];
-  }
-
-  _getQueryConditionByPath(path, tableAlias) {
-    const dbPath = path.split('_', 1);
-    const fieldAdapter = this.fieldAdaptersByPath[dbPath];
-    // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
-    return (
-      fieldAdapter && fieldAdapter.getQueryConditions(`${tableAlias}.${fieldAdapter.dbPath}`)[path]
-    );
   }
 
   async _itemsQuery(args, { meta = false, from = {} } = {}) {
@@ -502,12 +491,21 @@ class QueryBuilder {
     return alias;
   }
 
+  _getQueryConditionByPath(listAdapter, path, tableAlias) {
+    const dbPath = path.split('_', 1);
+    const fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
+    // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
+    return (
+      fieldAdapter && fieldAdapter.getQueryConditions(`${tableAlias}.${fieldAdapter.dbPath}`)[path]
+    );
+  }
+
   // Recursively traverse the `where` query to identify required joins and add them to the query
   // We perform joins on non-many relationship fields which are mentioned in the where query.
   // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
   _addJoins(query, listAdapter, where, tableAlias) {
     const joinPaths = Object.keys(where).filter(
-      path => !listAdapter._getQueryConditionByPath(path)
+      path => !this._getQueryConditionByPath(listAdapter, path)
     );
     for (let path of joinPaths) {
       if (path === 'AND' || path === 'OR') {
@@ -544,7 +542,7 @@ class QueryBuilder {
   // which will normally do something like pass it to q.andWhere() to add to a query
   _addWheres(whereJoiner, listAdapter, where, tableAlias) {
     for (let path of Object.keys(where)) {
-      const condition = listAdapter._getQueryConditionByPath(path, tableAlias);
+      const condition = this._getQueryConditionByPath(listAdapter, path, tableAlias);
       if (condition) {
         whereJoiner(condition(where[path]));
       } else if (path === 'AND' || path === 'OR') {
@@ -629,6 +627,10 @@ class KnexFieldAdapter extends BaseFieldAdapter {
 
     // Just store the knexOptions; let the field types figure the rest out
     this.knexOptions = this.config.knexOptions || {};
+  }
+
+  _hasRealKeys() {
+    return !(this.isRelationship && this.config.many);
   }
 
   // Gives us a way to reference knex when configuring DB-level defaults, eg:
