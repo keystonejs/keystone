@@ -25,7 +25,7 @@ const keystoneMaterialTheme = createMuiTheme({
   },
 });
 
-const MuiDatePicker = ({ value, onChange, onAccept, format, dateRangeFrom, dateRangeTo }) => {
+const MuiDatePicker = ({ value, onChange, onAccept, format, dateInterval }) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <ThemeProvider theme={keystoneMaterialTheme}>
@@ -34,8 +34,8 @@ const MuiDatePicker = ({ value, onChange, onAccept, format, dateRangeFrom, dateR
           onChange={date => onChange(date)}
           onAccept={onAccept}
           format={format}
-          minDate={dateRangeFrom}
-          maxDate={dateRangeTo}
+          minDate={dateInterval.from}
+          maxDate={dateInterval.to}
           variant="dialog"
           inputVariant="outlined"
           margin="dense"

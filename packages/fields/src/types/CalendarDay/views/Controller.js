@@ -59,11 +59,11 @@ export default class CalendarDayController extends FieldController {
   ];
 
   validateInput = ({ resolvedData, addFieldValidationError }) => {
-    const { dateRangeFrom, dateRangeTo } = this.config;
-
+    const { dateInterval: { from, to } } = this.config;
+    console.log(typeof from);
     const inRange = isWithinInterval(parseISO(resolvedData[this.path]), {
-      start: parseISO(dateRangeFrom),
-      end: parseISO(dateRangeTo),
+      start: parseISO(from),
+      end: parseISO(to),
     });
 
     if (!inRange) {

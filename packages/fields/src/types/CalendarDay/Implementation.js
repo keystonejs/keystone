@@ -5,12 +5,11 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd';
 
-const parseDateRangeConfig = (dateInput, keyName) => {
+const parseDateRangeConfig = dateInput => {
   if (typeof dateInput === 'string') {
     const parsedString = parseISO(dateInput);
-
     if (!isValid(parsedString)) {
-      throw new Error(`Invalid date. '${keyName}' string values must be in ISO8601 format`);
+      throw new Error(`dateInterval string values must be in ISO8601 format`);
     }
 
     return parsedString;
@@ -18,21 +17,23 @@ const parseDateRangeConfig = (dateInput, keyName) => {
 
   if (dateInput instanceof Date) {
     if (!isValid(dateInput)) {
-      throw new Error(`Invalid date value for '${keyName}'`);
+      throw new Error(`Invalid date value in dateInterval`);
     }
 
     return dateInput;
   }
 
-  throw new Error(`'${keyName}' must be either a Date object or an ISO8601 string`);
+  throw new Error(`dateInterval values must be either a Date object or an ISO8601 string`);
 };
 
 export class CalendarDay extends Implementation {
-  constructor(path, { format, dateRangeFrom, dateRangeTo }) {
+  constructor(path, { format, dateInterval: { from, to }, dateRangeFrom, dateRangeTo }) {
     super(...arguments);
     this.format = format;
-    this.dateRangeFrom = parseDateRangeConfig(dateRangeFrom, 'dateRangeFrom');
-    this.dateRangeTo = parseDateRangeConfig(dateRangeTo, 'dateRangeTo');
+    this.dateInterval = {
+      from: parseDateRangeConfig(from),
+      to: parseDateRangeConfig(to),
+    };
   }
 
   gqlOutputFields() {
@@ -59,8 +60,7 @@ export class CalendarDay extends Implementation {
     return {
       ...meta,
       format: this.format,
-      dateRangeFrom: this.dateRangeFrom,
-      dateRangeTo: this.dateRangeTo,
+      dateInterval: this.dateInterval,
     };
   }
 }
