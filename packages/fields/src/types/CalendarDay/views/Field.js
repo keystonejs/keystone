@@ -11,7 +11,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
-import { format as formatDate, isValid, setYear, startOfYear, endOfYear } from 'date-fns';
+import { format as formatDate } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 
 const keystoneMaterialTheme = createMuiTheme({

@@ -1,4 +1,4 @@
-import { format, parseISO, isValid, isWithinInterval } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
