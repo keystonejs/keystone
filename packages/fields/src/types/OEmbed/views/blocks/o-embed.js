@@ -148,7 +148,7 @@ export function serialize({ node }) {
 }
 
 export function deserialize({ node, joins }) {
-  if (!joins || !joins.length) {
+  if (!joins || !Array.isArray(joins) || joins.length === 0 || !joins[0].embed) {
     console.error('No embed data received when rehydrating oEmbed block');
     return;
   }
