@@ -27,7 +27,15 @@ const parseDateRangeConfig = dateInput => {
 };
 
 export class CalendarDay extends Implementation {
-  constructor(path, { format, dateInterval: { from, to }, dateRangeFrom, dateRangeTo }) {
+  constructor(
+    path,
+    {
+      format,
+      dateInterval: { from, to },
+      dateRangeFrom,
+      dateRangeTo,
+    }
+  ) {
     super(...arguments);
     this.format = format;
     this.dateInterval = {
