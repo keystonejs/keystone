@@ -1,6 +1,6 @@
 // @flow
 
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import type { CellProps } from '../../../types';
 
 type Props = CellProps<string>;
@@ -13,7 +13,7 @@ const DateTimeCell = (props: Props) => {
   if (!formatConfig) {
     return props.data;
   }
-  return format(props.data, formatConfig);
+  return format(parseISO(props.data), formatConfig);
 };
 
 export default DateTimeCell;
