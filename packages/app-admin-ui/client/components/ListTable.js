@@ -187,12 +187,6 @@ class ListRow extends Component {
     const copyText = window.location.origin + link({ path: list.path, item });
     const items = [
       {
-        content: 'Duplicate',
-        icon: <DiffIcon />,
-        isDisabled: true, // TODO: implement duplicate
-        onClick: () => console.log('TODO'),
-      },
-      {
         content: 'Copy Link',
         icon: <LinkIcon />,
         onClick: () => copyToClipboard(copyText),
@@ -350,17 +344,20 @@ export default function ListTable(props) {
               />
             </div>
           </HeaderCell>
-          {fields.map(field => (
-            <SortLink
-              data-field={field.path}
-              key={field.path}
-              sortable={field.path !== '_label_'}
-              field={field}
-              handleSortChange={onSortChange}
-              active={sortBy.field.path === field.path}
-              sortAscending={sortBy.direction === 'ASC'}
-            />
-          ))}
+          {fields.map(field => {
+            if (!sortBy) return;
+            return (
+              <SortLink
+                data-field={field.path}
+                key={field.path}
+                sortable={field.path !== '_label_'}
+                field={field}
+                handleSortChange={onSortChange}
+                active={sortBy ? sortBy.field.path === field.path : false}
+                sortAscending={sortBy ? sortBy.direction === 'ASC' : 'ASC'}
+              />
+            );
+          })}
           <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
         </tr>
       </thead>

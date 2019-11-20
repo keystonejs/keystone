@@ -40,7 +40,10 @@ const getSearchDefaults = (props: Props): SearchType => {
 
   // Dynamic defaults
   const fields = parseFields(defaultColumns, props.list);
-  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
+  const sortBy =
+    parseSortBy(defaultSort, props.list) || fields[0]
+      ? { field: fields[0], direction: 'ASC' }
+      : null;
   fields.unshift(pseudoLabelField);
   return {
     currentPage: 1,
