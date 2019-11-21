@@ -10,6 +10,8 @@
   <br>
 </div>
 
+[![Build Status](https://img.shields.io/circleci/project/github/keystonejs/keystone/master.svg)](https://circleci.com/gh/emotion-js/emotion)
+[![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/)
 [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select)
 
 
