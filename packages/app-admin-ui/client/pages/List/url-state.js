@@ -67,6 +67,8 @@ const encodeFields = fields => {
 };
 
 const parseSortBy = (sortBy: string, list: List): SortByType | null => {
+  if (!sortBy) return null;
+
   let key = sortBy;
   let direction = 'ASC';
 
@@ -86,6 +88,7 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
 };
 
 const encodeSortBy = (sortBy: SortByType): string => {
+  if (!sortBy) return '';
   const {
     direction,
     field: { path },
