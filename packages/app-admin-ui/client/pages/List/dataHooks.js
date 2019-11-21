@@ -91,7 +91,7 @@ export function useListQuery(listKey) {
 
   // Query prep
   const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
-  const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
+  const orderBy = sortBy ? `${sortBy.field.path}_${sortBy.direction}` : null;
   const first = pageSize;
   const skip = (currentPage - 1) * pageSize;
 

@@ -152,8 +152,8 @@ module.exports = class List {
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
       defaultPageSize: 50,
-      defaultColumns: nonIdFieldNames.slice(0, 2).join(','),
-      defaultSort: nonIdFieldNames[0],
+      defaultColumns: nonIdFieldNames ? nonIdFieldNames.slice(0, 2).join(',') : 'id',
+      defaultSort: nonIdFieldNames.length ? nonIdFieldNames[0] : '',
       maximumPageSize: 1000,
       ...adminConfig,
     };
@@ -347,6 +347,12 @@ module.exports = class List {
     };
   }
 
+  getFieldsWithAccess({ schemaName, access }) {
+    return this.fields
+      .filter(({ path }) => path !== 'id') // Exclude the id fields update types
+      .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
+  }
+
   getGqlTypes({ schemaName }) {
     const schemaAccess = this.access[schemaName];
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
@@ -401,10 +407,7 @@ module.exports = class List {
       );
     }
 
-    const updateFields = this.fields
-      .filter(({ path }) => path !== 'id') // Exclude the id fields update types
-      .filter(field => field.access[schemaName].update); // If it's globally set to false, makes sense to never let it be updated
-
+    const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
     if (schemaAccess.update && updateFields.length) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
@@ -419,10 +422,7 @@ module.exports = class List {
       `);
     }
 
-    const createFields = this.fields
-      .filter(({ path }) => path !== 'id') // Exclude the id fields create types
-      .filter(field => field.access[schemaName].create); // If it's globally set to false, makes sense to never let it be created
-
+    const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
     if (schemaAccess.create && createFields.length) {
       types.push(`
         input ${this.gqlNames.createInputName} {
@@ -616,7 +616,9 @@ module.exports = class List {
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
-    if (schemaAccess.create) {
+
+    const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
+    if (schemaAccess.create && createFields.length) {
       mutations.push(`
         """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
@@ -632,7 +634,8 @@ module.exports = class List {
       `);
     }
 
-    if (schemaAccess.update) {
+    const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
+    if (schemaAccess.update && updateFields.length) {
       mutations.push(`
       """ Update a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.updateMutationName}(
@@ -1086,7 +1089,8 @@ module.exports = class List {
     const schemaAccess = this.access[schemaName];
     const mutationResolvers = {};
 
-    if (schemaAccess.create) {
+    const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
+    if (schemaAccess.create && createFields.length) {
       mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
         this.createMutation(data, context);
 
@@ -1094,7 +1098,8 @@ module.exports = class List {
         this.createManyMutation(data, context);
     }
 
-    if (schemaAccess.update) {
+    const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
+    if (schemaAccess.update && updateFields.length) {
       mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
 
