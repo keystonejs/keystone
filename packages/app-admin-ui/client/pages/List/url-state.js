@@ -11,7 +11,7 @@ import type { AdminMeta } from '../../providers/AdminMeta';
 export type SortByType = {
   field: { label: string, path: string },
   direction: 'ASC' | 'DESC',
-};
+} | null;
 
 export type FilterType = {
   field: FieldControllerType,
