@@ -23,19 +23,15 @@ const parseDateRangeConfig = dateInput => {
     return dateInput;
   }
 
-  throw new Error(`dateInterval values must be either a Date object or an ISO8601 string`);
+  if (dateInput) {
+    throw new Error(`dateInterval values must be either a Date object or an ISO8601 string`);
+  }
+
+  return undefined;
 };
 
 export class CalendarDay extends Implementation {
-  constructor(
-    path,
-    {
-      format,
-      dateInterval: { from, to },
-      dateRangeFrom,
-      dateRangeTo,
-    }
-  ) {
+  constructor(path, { format, dateInterval: { from, to } = {} }) {
     super(...arguments);
     this.format = format;
     this.dateInterval = {

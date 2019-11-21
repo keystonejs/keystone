@@ -42,7 +42,6 @@ const MuiDatePicker = ({ value, onChange, onAccept, format, dateInterval }) => {
           placeholder="Select a date..."
           showTodayButton
           clearable
-          animateYearScrolling
         />
       </ThemeProvider>
     </MuiPickersUtilsProvider>
