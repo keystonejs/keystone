@@ -105,7 +105,12 @@ class KnexAdapter extends BaseKeystoneAdapter {
         await this.schema().table(listAdapter.tableName, table => {
           relationshipAdapters
             .filter(adapter => !adapter.config.many)
-            .forEach(adapter => adapter.createForeignKey(table, this.schemaName));
+            .forEach(adapter =>
+              table
+                .foreign(adapter.path)
+                .references('id')
+                .inTable(`${this.schemaName}.${adapter.getRefListAdapter().tableName}`)
+            );
         });
 
         // Create adjacency tables for the 'many' relationships
