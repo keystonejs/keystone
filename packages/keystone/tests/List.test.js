@@ -643,7 +643,7 @@ describe('getAdminMeta()', () => {
       const authenticateOutput = `type authenticateTestOutput {
         """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
         token: String
-        """ Retreive information on the newly authenticated Test here. """
+        """ Retrieve information on the newly authenticated Test here. """
         item: Test
       }`;
 
