@@ -101,8 +101,12 @@ export default class List {
     }`;
   }
 
-  getQuery({ fields, filters, search, orderBy, skip, first }) {
-    const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
+  getQuery(args) {
+    const { fields, filters, search, orderBy, skip, first } = args;
+    const sanatisedQueryArgs = Object.keys({ first, filters, search, skip, orderBy })
+      .filter(key => args[key])
+      .reduce((acc, key) => ({ ...acc, [key]: args[key] }), {});
+    const queryArgs = List.getQueryArgs(sanatisedQueryArgs);
     const metaQueryArgs = List.getQueryArgs({ filters, search });
     const safeFields = fields.filter(field => field.path !== '_label_');
     return gql`{
