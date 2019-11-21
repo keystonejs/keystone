@@ -1,5 +1,17 @@
 # @keystonejs/apollo-helpers
 
+## 5.0.2
+
+### Patch Changes
+
+- [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9) [#1947](https://github.com/keystonejs/keystone/pull/1947) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded dependencies to include correct peer dependencies.
+
+## 5.0.1
+
+### Patch Changes
+
+- [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475) [#1808](https://github.com/keystonejs/keystone/pull/1808) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-apollo` and replaced use of `react-apollo-hooks` with `react-apollo`. `react-apollo` has a similar hooks API to `react-apollo-hooks`.
+
 ## 5.0.0
 
 ### Major Changes

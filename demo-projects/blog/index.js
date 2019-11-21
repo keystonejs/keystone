@@ -36,32 +36,9 @@ keystone.createList('Comment', Comment);
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',
+  hooks: require.resolve('./admin/'),
   authStrategy,
   isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
-  pages: [
-    {
-      label: 'A new dashboard',
-      path: '',
-      component: require.resolve('./admin/pages/dashboard'),
-    },
-    {
-      label: 'About this project',
-      path: 'about',
-      component: require.resolve('./admin/pages/about'),
-    },
-    {
-      label: 'Blog',
-      children: [
-        { listKey: 'Post' },
-        { label: 'Categories', listKey: 'PostCategory' },
-        { listKey: 'Comment' },
-      ],
-    },
-    {
-      label: 'People',
-      children: ['User'],
-    },
-  ],
 });
 
 module.exports = {

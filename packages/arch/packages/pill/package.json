@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/pill",
   "description": "Pill Component as used in @keystonejs Admin UI.",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/pill.cjs.js",

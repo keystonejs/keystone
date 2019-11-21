@@ -7,7 +7,7 @@ title: Passport Auth Strategy
 # Passport Auth Strategy
 
 Enable KeystoneJS authentication via services such as Google, Twitter, Facebook,
-GitHub, and any [others supported by `passport.js`](passportjs.org/packages/).
+GitHub, and any [others supported by `passport.js`](http://www.passportjs.org/packages/).
 
 ## Authentication Flows
 

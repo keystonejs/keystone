@@ -16,7 +16,7 @@ const projects = [
   {
     folder: 'starter',
     title: 'Starter (Users + Authentication)',
-    description: 'Simple stating point with users and basic authentication.',
+    description: 'Simple starting point with users and basic authentication.',
     adapters,
   },
   {

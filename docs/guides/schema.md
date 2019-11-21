@@ -9,7 +9,7 @@ KeystoneJS is comprised of 3 distinct pieces, which can be described as:
 
 <pre>
   <code>
-    Schema => (&#x0007B; <a href="../tutorials/admin-ui">AdminUI</a>, <a href="../tutorials/intro-to-graphql">GraphQL</a> &#x0007D;)
+    Schema => (&#x0007B; <a href="/keystonejs/app-admin-ui">AdminUI</a>, <a href="/guides/intro-to-graphql">GraphQL</a> &#x0007D;)
   </code>
 </pre>
 
@@ -117,7 +117,7 @@ keystone.createList('Todo', {
 
 In this example, the `adminConfig` options will apply only to the `Todo` list
 (setting how many items are shown per page in the [Admin
-UI](/tutorials/admin-ui)). The `isRequired` option will ensure an API error
+UI](/keystonejs/app-admin-ui)). The `isRequired` option will ensure an API error
 is thrown if a `task` value is not provided when creating/updating items.
 
 <!-- TODO: Screenshot -->
@@ -459,15 +459,15 @@ GraphQL API.
 keystone.createList('Todo', {
   fields: {
     task: { type: Text },
-  }
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist { type: Relationship, ref: 'Todo', many: true },
-  }
+    todolist: { type: Relationship, ref: 'Todo', many: true },
+  },
 });
 ```
 
@@ -639,7 +639,7 @@ keystone.createList('User', {
 });
 ```
 
-In this exaple, when a new `Todo` item is created, we can set the `createdBy`
+In this example, when a new `Todo` item is created, we can set the `createdBy`
 field as part of the mutation:
 
 ```graphql

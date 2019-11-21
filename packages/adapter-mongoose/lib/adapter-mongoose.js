@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const pSettle = require('p-settle');
 const {
   escapeRegExp,
@@ -184,7 +185,11 @@ class MongooseListAdapter extends BaseListAdapter {
   _update(id, data) {
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
     // Return the modified item, not the original
-    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
+    return this.model.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true, context: 'query' }
+    );
   }
 
   _findAll() {

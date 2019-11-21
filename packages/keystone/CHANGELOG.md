@@ -1,5 +1,38 @@
 # @keystonejs/keystone
 
+## 5.2.1
+
+### Patch Changes
+
+- [`697082cc`](https://github.com/keystonejs/keystone/commit/697082cc9e21ea9792e005a858432a6d81b1eb3a) [#1946](https://github.com/keystonejs/keystone/pull/1946) Thanks [@timleslie](https://github.com/timleslie)! - Updated the documentation to clarify the difference between `appVersion.addVersionToHttpHeaders` and `appVersion.access`.
+- Updated dependencies [[`1a723a54`](https://github.com/keystonejs/keystone/commit/1a723a544a918457a9de241a8387f2ce5b555e50), [`ddfc7845`](https://github.com/keystonejs/keystone/commit/ddfc7845399e5108f7fd68169153983122554e96), [`946eb315`](https://github.com/keystonejs/keystone/commit/946eb3157a1cc4946fe9e2c2b1101edf4918ab86), [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9)]:
+  - @keystonejs/fields@5.2.0
+  - @keystonejs/build-field-types@5.1.1
+
+## 5.2.0
+
+### Minor Changes
+
+- [`9ffa8a73`](https://github.com/keystonejs/keystone/commit/9ffa8a734c91dd6de2a31898629e1ba7feaee832) [#1931](https://github.com/keystonejs/keystone/pull/1931) Thanks [@timleslie](https://github.com/timleslie)! - Added an `appVersion` parameter to the `Keystone()` constructor. This version will be set as the `X-Keystone-App-Version` HTTP header on all requests. It can be queried via the GraphQL API as `{ appVersion }`. See the docs for more configuration details.
+
+### Patch Changes
+
+- Updated dependencies [[`a1e26deb`](https://github.com/keystonejs/keystone/commit/a1e26deb45d8c53e5d18b06c6573f66c4375b68c)]:
+  - @keystonejs/build-field-types@5.1.0
+
+## 5.1.1
+
+### Patch Changes
+
+- [`45fd7ab8`](https://github.com/keystonejs/keystone/commit/45fd7ab899655364d0071c0d276d188378944ff5) [#1894](https://github.com/keystonejs/keystone/pull/1894) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed duplicate password auth implementation as it's in its own package now.
+
+* [`b0756c65`](https://github.com/keystonejs/keystone/commit/b0756c65525625919c72364d8cefc32d864c7c0e) [#1873](https://github.com/keystonejs/keystone/pull/1873) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug (#1864) where `this.cacheHint` was used before being set.
+
+- [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a) [#1883](https://github.com/keystonejs/keystone/pull/1883) Thanks [@Vultraz](https://github.com/Vultraz)! - Added output which indicates where app is running when running the create keystone script.
+- Updated dependencies [[`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`20632bca`](https://github.com/keystonejs/keystone/commit/20632bca495058f2845d36fe95650eede0a9ebdc), [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0), [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475)]:
+  - @keystonejs/build-field-types@5.0.1
+  - @keystonejs/fields@5.1.0
+
 ## 5.1.0
 
 ### Minor Changes

@@ -19,6 +19,9 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  config: {
+    /*...config */
+  },
 });
 ```
 
@@ -33,10 +36,11 @@ module.exports = {
 
 ## Config
 
-| Option | Type           | Default    | Description                                                        |
-| ------ | -------------- | ---------- | ------------------------------------------------------------------ |
-| `type` | `AuthStrategy` | (required) | A valid authentication strategy.                                   |
-| `list` | `String`       | (required) | The list that contains and authenticated item, for example a user. |
+| Option   | Type           | Default    | Description                                                       |
+| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
+| `type`   | `AuthStrategy` | (required) | A valid authentication strategy.                                  |
+| `list`   | `String`       | (required) | The list that contains an authenticated item, for example a user. |
+| `config` | `Object`       | `{}`       | Strategy-specific config options.                                 |
 
 _Note_: Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
 

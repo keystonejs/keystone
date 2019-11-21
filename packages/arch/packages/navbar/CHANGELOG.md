@@ -1,5 +1,17 @@
 # @arch-ui/navbar
 
+## 0.1.2
+
+### Patch Changes
+
+- [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `flow` and fixed flow errors and (probably) bugs.
+
+* [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `@emotion/core` and `@emotion/styled`.
+
+- [`d0d84603`](https://github.com/keystonejs/keystone/commit/d0d84603628f64be3c76f6624f163aaaa46a6092) [#1869](https://github.com/keystonejs/keystone/pull/1869) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Made `NavIcons` section easier to click.
+
+* [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c) [#1910](https://github.com/keystonejs/keystone/pull/1910) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-router-dom` to v5.1.2 to make use of `useParams` and other hooks provided by `react-router-dom` v5.1.0.
+
 ## 0.1.1
 
 ### Patch Changes

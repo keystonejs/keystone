@@ -119,4 +119,6 @@ export default class FieldController {
     }
     this.adminMeta.readViews([Filter]);
   };
+
+  getFilterTypes = () => [];
 }

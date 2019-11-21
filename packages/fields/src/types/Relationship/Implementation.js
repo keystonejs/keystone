@@ -428,14 +428,6 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     }
   }
 
-  // JM TODO: This should be part of the addToTableSchema() function
-  createForeignKey(table, schemaName) {
-    return table
-      .foreign(this.path)
-      .references('id')
-      .inTable(`${schemaName}.${this.refListKey}`);
-  }
-
   getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_null`]: value => b =>
