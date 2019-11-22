@@ -54,31 +54,34 @@ const fileAdapter = new CloudinaryAdapter({
 ```javascript
 const { S3Adapter } = require('@keystonejs/file-adapters');
 
+const CF_DISTRIBUTION_ID = 'cloudfront-distribution-id';
+const CAT_FOLDER = '/cat-photos';
+
 const fileAdapter = new S3Adapter({
   accessKeyId: 'ACCESS_KEY_ID',
   secretAccessKey: 'SECRET_ACCESS_KEY',
   region: 'us-west-2',
   bucket: 'bucket-name',
-  folder: '/cat-photos',
-  publicUrl: ({ id, filename, _meta }) => `https://{CF_DISTRIBUTION_ID}.cloudfront.net/cat-photos/${filename}`,
+  folder: CAT_FOLDER,
+  publicUrl: ({ id, filename, _meta }) => `https://${CF_DISTRIBUTION_ID}.cloudfront.net${CAT_FOLDER}/${filename}`,
   s3Options: {
     apiVersion: '2006-03-01'
   },
   uploadParams: ({ filename, id, mimetype, encoding }) => ({
     Metadata: {
-      "db_id": id
+      "keystone_id": id
     }
   }
 });
 ```
 
-| Option             | Type              | Default     | Description |
-| ------------------ | ----------------- | ----------- | ----------- |
-| `accessKeyId`      | `String`          | Required    | AWS access key ID |
-| `secretAccessKey`  | `String`          | Required    | AWS secret access key |
-| `region`           | `String`          | Required    | AWS region |
-| `bucket`           | `String`          | Required    | S3 bucket name |
-| `folder`           | `String`          | Required    | Upload folder from root of bucket |
-| `publicUrl`        | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access. |
-| `s3Options`        | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) |
-| `uploadParams`     | `Object|Function` | `undefined` | A configuration object or function returning configuration object to be passed with each S3 upload. For available options refer to the [AWS S3 putObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property). |
+| Option            | Type              | Default     | Description                                                                                                                                                                                                                                        |
+| ----------------- | ----------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accessKeyId`     | `String`          | Required    | AWS access key ID                                                                                                                                                                                                                                  |
+| `secretAccessKey` | `String`          | Required    | AWS secret access key                                                                                                                                                                                                                              |
+| `region`          | `String`          | Required    | AWS region                                                                                                                                                                                                                                         |
+| `bucket`          | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                                     |
+| `folder`          | `String`          | Required    | Upload folder from root of bucket                                                                                                                                                                                                                  |
+| `publicUrl`       | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                                 |
+| `s3Options`       | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                                   |
+| `uploadParams`    | `Object|Function` | `undefined` | A configuration object or function returning configuration object to be passed with each S3 upload. For available options refer to the [AWS S3 putObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property). |
