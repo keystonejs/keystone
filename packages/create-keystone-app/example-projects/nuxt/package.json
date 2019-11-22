@@ -13,6 +13,10 @@
     "build": "cross-env NODE_ENV=production keystone build",
     "start": "cross-env NODE_ENV=production keystone start"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keystonejs/keystone.git"
+  },
   "dependencies": {
     "@keystonejs/adapter-mongoose": "^5.0.0",
     "@keystonejs/app-admin-ui": "^5.0.0",
