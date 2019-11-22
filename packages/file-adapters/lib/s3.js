@@ -3,22 +3,31 @@ const AWS = require('aws-sdk');
 const urlJoin = require('url-join');
 
 module.exports = class S3Adapter {
-  constructor({ accessKeyId, secretAccessKey, region, bucket, folder, publicUrl, s3Options, uploadParams }) {
-      if (!accessKeyId || !secretAccessKey || !region || !bucket || !folder) {
-          throw new Error('S3Adapter requires accessKeyId, secretAccessKey, region, bucket, folder.');
-      }
-      this.s3 = new AWS.S3({
-          accessKeyId,
-          secretAccessKey,
-          region,
-          ...s3Options
-      });
-      this.bucket = bucket;
-      this.folder = folder;
-      if (publicUrl) {
-          this.publicUrl = publicUrl;
-      }
-      this.uploadParams = uploadParams || {};
+  constructor({
+    accessKeyId,
+    secretAccessKey,
+    region,
+    bucket,
+    folder,
+    publicUrl,
+    s3Options,
+    uploadParams,
+  }) {
+    if (!accessKeyId || !secretAccessKey || !region || !bucket || !folder) {
+      throw new Error('S3Adapter requires accessKeyId, secretAccessKey, region, bucket, folder.');
+    }
+    this.s3 = new AWS.S3({
+      accessKeyId,
+      secretAccessKey,
+      region,
+      ...s3Options,
+    });
+    this.bucket = bucket;
+    this.folder = folder;
+    if (publicUrl) {
+      this.publicUrl = publicUrl;
+    }
+    this.uploadParams = uploadParams || {};
   }
 
   save({ stream, filename, id, mimetype, encoding }) {
@@ -33,7 +42,7 @@ module.exports = class S3Adapter {
           ContentType: mimetype,
           Bucket: this.bucket,
           Key: path.join(this.folder, filename),
-          ...uploadParams
+          ...uploadParams,
         },
         (error, data) => {
           if (error) {
