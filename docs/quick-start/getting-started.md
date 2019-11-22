@@ -81,6 +81,8 @@ Your application also has an Admin UI, which lets you directly manipulate the da
 	</code>
 </pre>
 
+If this is the first time you set it up, please refer to the <a href="https://www.keystonejs.com/guides/authentication">Authentication</a> document for the username and password.
+
 ### A GraphQL API
 
 Both your application and the admin UI are powered by a GraphQL API.
