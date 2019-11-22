@@ -23,7 +23,7 @@ export class Computed extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      isSortable: false,
+      isOrderable: false,
       graphQLSelection: this.config.graphQLReturnFragment || '',
       isReadOnly: true,
     };
