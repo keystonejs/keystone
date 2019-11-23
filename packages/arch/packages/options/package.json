@@ -17,7 +17,7 @@
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.22",
-    "react-select": "^3.0.4"
+    "react-select": "^3.0.8"
   },
   "module": "dist/options.esm.js"
 }

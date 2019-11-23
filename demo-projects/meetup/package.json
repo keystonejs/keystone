@@ -44,8 +44,8 @@
     "react": "^16.12.0",
     "react-apollo": "^3.1.3",
     "react-dom": "^16.12.0",
-    "react-toast-notifications": "^2.2.4",
-    "react-use-form-state": "^0.10.0",
+    "react-toast-notifications": "^2.3.0",
+    "react-use-form-state": "^0.12.0",
     "uuid": "^3.3.2"
   }
 }

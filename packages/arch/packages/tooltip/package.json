@@ -20,7 +20,7 @@
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
     "flushable": "^1.0.0",
-    "react-popper": "^1.3.3"
+    "react-popper": "^1.3.6"
   },
   "module": "dist/tooltip.esm.js"
 }
