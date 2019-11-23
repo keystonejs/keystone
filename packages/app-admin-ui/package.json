@@ -52,7 +52,7 @@
     "apply-ref": "^0.2.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-emotion": "^10.0.14",
-    "babel-preset-react-app": "^9.0.0",
+    "babel-preset-react-app": "^9.0.2",
     "clipboard-copy": "^3.0.0",
     "compression": "^1.7.4",
     "cross-fetch": "^2.2.0",
