@@ -87,46 +87,48 @@ class SigninPage extends Component {
   render() {
     const { error, isLoading, authStrategy } = this.props;
     const { identity, secret } = this.state;
-  return (
-    <Container>
-      <Alerts>
-        {error ? (
-          <Alert appearance="danger">Your username and password were incorrect</Alert>
-        ) : null}
-      </Alerts>
+    return (
+      <Container>
+        <Alerts>
+          {error ? (
+            <Alert appearance="danger">Your username and password were incorrect</Alert>
+          ) : null}
+        </Alerts>
         <Form method="post" onSubmit={this.onSubmit}>
         <KeystoneLogo />
-        <Divider />
-        <div>
-          <Fields>
-            <FieldLabel>{upcase(authStrategy.identityField)}</FieldLabel>
-            <Input
-              name="identity"
-              autoFocus
-              value={identity}
+          <Divider />
+          <div>
+            <Fields>
+              <FieldLabel>{upcase(authStrategy.identityField)}</FieldLabel>
+              <Input
+                name="identity"
+                autoComplete="username"
+                autoFocus
+                value={identity}
                 onChange={e => this.setState({ identity: e.target.value })}
-            />
-            <FieldLabel>{upcase(authStrategy.secretField)}</FieldLabel>
-            <Input
-              type="password"
-              name="secret"
-              value={secret}
+              />
+              <FieldLabel>{upcase(authStrategy.secretField)}</FieldLabel>
+              <Input
+                type="password"
+                name="secret"
+                autoComplete="current-password"
+                value={secret}
                 onChange={e => this.setState({ secret: e.target.value })}
-            />
-          </Fields>
-          <LoadingButton
-            appearance="primary"
-            type="submit"
+              />
+            </Fields>
+            <LoadingButton
+              appearance="primary"
+              type="submit"
               isLoading={isLoading || this.state.reloading}
-            indicatorVariant="dots"
-          >
-            Sign In
-          </LoadingButton>
-        </div>
-      </Form>
-      <Spacer />
-    </Container>
-  );
+              indicatorVariant="dots"
+            >
+              Sign In
+            </LoadingButton>
+          </div>
+        </Form>
+        <Spacer />
+      </Container>
+    );
   }
 }
 
