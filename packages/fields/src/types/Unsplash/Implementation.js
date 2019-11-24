@@ -244,7 +244,9 @@ export class Unsplash extends Implementation {
     // Unsplash.
     this.unsplash.photos.downloadPhoto(apiResponse);
 
-    return transformImageFromApiToKs5(apiResponse);
+    // NOTE: we need to provide an id for the image to avoid issues with Apollo
+    // More info here: https://github.com/keystonejs/keystone-5/pull/1799
+    return transformImageFromApiToKs5(apiResponse, { includeId: true });
   }
 
   get gqlUpdateInputFields() {

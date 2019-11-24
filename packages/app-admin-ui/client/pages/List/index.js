@@ -165,8 +165,14 @@ export function ListLayout(props: LayoutProps) {
                     })}
                     ,
                   </span>
-                  <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
-                  <SortPopout listKey={list.key} />
+                  {sortBy ? (
+                    <Fragment>
+                      <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
+                      <SortPopout listKey={list.key} />
+                    </Fragment>
+                  ) : (
+                    ''
+                  )}
                   <span css={{ paddingLeft: '0.5ex' }}>with</span>
                   <ColumnPopout
                     listKey={list.key}
@@ -333,7 +339,7 @@ export default function ListData(props: Props) {
   const { urlState } = useListUrlState(list.key);
 
   const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
-  const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
+  const orderBy = sortBy ? `${sortBy.field.path}_${sortBy.direction}` : null;
   const first = pageSize;
   const skip = (currentPage - 1) * pageSize;
 
