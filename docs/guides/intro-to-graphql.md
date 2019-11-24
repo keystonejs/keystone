@@ -401,7 +401,7 @@ You can add to Keystone's generated schema with custom types, queries, and mutat
 
 ```javascript
 keystone.extendGraphQLSchema({
-  types: ['type FooBar { foo: Int, bar: Float }'],
+  types: [{ type: 'type FooBar { foo: Int, bar: Float }' }],
   queries: [
     {
       schema: 'double(x: Int): Int',

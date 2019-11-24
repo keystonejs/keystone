@@ -11,7 +11,7 @@ import type { AdminMeta } from '../../providers/AdminMeta';
 export type SortByType = {
   field: { label: string, path: string },
   direction: 'ASC' | 'DESC',
-};
+} | null;
 
 export type FilterType = {
   field: FieldControllerType,
@@ -40,7 +40,10 @@ const getSearchDefaults = (props: Props): SearchType => {
 
   // Dynamic defaults
   const fields = parseFields(defaultColumns, props.list);
-  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
+  const sortBy =
+    parseSortBy(defaultSort, props.list) || fields[0]
+      ? { field: fields[0], direction: 'ASC' }
+      : null;
   fields.unshift(pseudoLabelField);
   return {
     currentPage: 1,
@@ -64,6 +67,8 @@ const encodeFields = fields => {
 };
 
 const parseSortBy = (sortBy: string, list: List): SortByType | null => {
+  if (!sortBy) return null;
+
   let key = sortBy;
   let direction = 'ASC';
 
@@ -72,7 +77,7 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
     direction = 'DESC';
   }
 
-  const field = list.fields.find(f => f.path === key);
+  const field = list.fields.filter(field => field.config.isOrderable).find(f => f.path === key);
   if (!field) {
     return null;
   }
@@ -83,6 +88,7 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
 };
 
 const encodeSortBy = (sortBy: SortByType): string => {
+  if (!sortBy) return '';
   const {
     direction,
     field: { path },

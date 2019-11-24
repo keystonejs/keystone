@@ -16,6 +16,7 @@ export class Select extends Implementation {
   constructor(path, { options }) {
     super(...arguments);
     this.options = initOptions(options);
+    this.isOrderable = true;
   }
   gqlOutputFields() {
     return [`${this.path}: ${this.getTypeName()}`];

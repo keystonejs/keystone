@@ -7,6 +7,7 @@ export class Decimal extends Implementation {
   constructor(path, { symbol }) {
     super(...arguments);
     this.symbol = symbol;
+    this.isOrderable = true;
   }
 
   gqlOutputFields() {
