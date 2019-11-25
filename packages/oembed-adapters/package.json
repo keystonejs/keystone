@@ -15,9 +15,9 @@
     "node-fetch": "^2.3.0"
   },
   "peerDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   },
   "devDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   }
 }
