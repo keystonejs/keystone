@@ -34,9 +34,11 @@ _Note:_ `src` and `path` may be the same.
 
 ### Methods
 
-### `delete`
+### `delete({ file }) => Promise`
 
-Takes an object with a `file` key representing the filename and deletes that file on disk. This can be combined with hooks to implement delete-on-file-change and delete-on-list-delete functionality:
+Takes an object with a `file` key representing the file field (as returned by `existingItem` when a list/field hook is called) and deletes that file on disk. Returns a promise.
+
+This can be combined with hooks to implement delete-on-file-change and delete-on-list-delete functionality:
 
 ```js
 const { File } = require('@keystonejs/fields');
@@ -52,12 +54,20 @@ keystone.createList('UploadTest', {
       type: File,
       adapter: fileAdapter,
       hooks: {
-        beforeChange: ({ existingItem = {} }) => fileAdapter.delete(existingItem),
+        beforeChange({ existingItem = {} }) {
+          fileAdapter.delete(existingItem).catch(error => {
+            // Handle Error
+          });
+        },
       },
     },
   },
   hooks: {
-    afterDelete: ({ existingItem = {} }) => fileAdapter.delete(existingItem),
+    afterDelete({ existingItem = {} }) {
+      fileAdapter.delete(existingItem).catch(error => {
+        // Handle Error
+      });
+    },
   },
 });
 ```
@@ -85,7 +95,7 @@ const fileAdapter = new CloudinaryAdapter({
 
 ### Methods
 
-### `delete`
+### `delete({ id }) => Promise`
 
 Takes an object with an `id` key representing the public file ID and deletes that file on the server.
 
@@ -115,13 +125,20 @@ const fileAdapter = new S3Adapter({
 });
 ```
 
-| Option            | Type              | Default     | Description                                                                                                                                                                                                                                        |
-| ----------------- | ----------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `accessKeyId`     | `String`          | Required    | AWS access key ID                                                                                                                                                                                                                                  |
-| `secretAccessKey` | `String`          | Required    | AWS secret access key                                                                                                                                                                                                                              |
-| `region`          | `String`          | Required    | AWS region                                                                                                                                                                                                                                         |
-| `bucket`          | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                                     |
-| `folder`          | `String`          | Required    | Upload folder from root of bucket                                                                                                                                                                                                                  |
-| `publicUrl`       | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                                 |
-| `s3Options`       | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                                   |
-| `uploadParams`    | `Object|Function` | `undefined` | A configuration object or function returning configuration object to be passed with each S3 upload. For available options refer to the [AWS S3 putObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property). |
+| Option            | Type              | Default     | Description                                                                                                                                                                                                                                                 |
+| ----------------- | ----------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accessKeyId`     | `String`          | Required    | AWS access key ID                                                                                                                                                                                                                                           |
+| `secretAccessKey` | `String`          | Required    | AWS secret access key                                                                                                                                                                                                                                       |
+| `region`          | `String`          | Required    | AWS region                                                                                                                                                                                                                                                  |
+| `bucket`          | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                                              |
+| `folder`          | `String`          | Required    | Upload folder from root of bucket                                                                                                                                                                                                                           |
+| `publicUrl`       | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                                          |
+| `s3Options`       | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                                            |
+| `uploadParams`    | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.putObject. For available options refer to the [AWS S3 putObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property).           |
+| `deleteParams`    | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.deleteObject. For available options refer to the AWS S3 deleteObject API](<https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property>). |
+
+### Methods
+
+### `delete({ file }) => Promise`
+
+Takes an object with a `file` key representing the file field (as returned by `existingItem` when a list/field hook is called) and deletes the object within the S3 bucket.
