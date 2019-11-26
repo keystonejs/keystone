@@ -11,7 +11,7 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <FieldInput
-        css={{ cursor: 'text' }}
+        css={{ cursor: 'text', tabIndex: 0 }}
         onClick={() => {
           const elm = document.getElementById(htmlID).querySelector('[data-slate-editor]');
           if (elm) {
