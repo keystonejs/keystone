@@ -45,7 +45,7 @@ keystone.createList('Example', {
   fields: {
     movies: {
       type: Virtual,
-      extendGraphQLTypes: [`type Movie { title: String, rating: Integer }`],
+      extendGraphQLTypes: [`type Movie { title: String, rating: Int }`],
       graphQLReturnType: `[Movie]`,
       graphQLReturnFragment: `{
         title
