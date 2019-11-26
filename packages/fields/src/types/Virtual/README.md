@@ -51,7 +51,7 @@ keystone.createList('Example', {
         title
         rating
       }`,
-      resolver: async item => {
+      resolver: async () => {
         const response = await fetch('http://example.com/api/movies/');
         const data = await response.json();
         return data.map(({ title, rating }) => ({ title, rating }));

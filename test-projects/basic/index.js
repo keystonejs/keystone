@@ -152,7 +152,7 @@ keystone.createList('Post', {
         title
         rating
       }`,
-      resolver: async item => {
+      resolver: async () => {
         const data = [{ title: 'A movie', rating: 2 }, { title: 'Another movie', rating: 4 }];
         return data.map(({ title, rating }) => ({ title, rating }));
       },

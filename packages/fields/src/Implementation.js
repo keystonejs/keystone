@@ -13,7 +13,6 @@ class Field {
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
-
     this.isOrderable = false;
     this.hooks = hooks;
     this.getListByKey = getListByKey;
