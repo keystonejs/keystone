@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/field-views-loader",
   "version": "5.0.0",
-  "description": "A webpack loader used to load all thew field views used in an app",
+  "description": "A webpack loader used to load all the field views used in an app",
   "main": "index.js",
   "author": "The Keystone Development Team",
   "license": "MIT",
