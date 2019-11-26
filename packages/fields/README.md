@@ -56,7 +56,6 @@ Fields share some standard configuration options.
 | `defaultValue` | `Boolean` \| `Function`             | `undefined` | A default value of the field.                                                           |
 | `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
-| `isOrderable`  | `Boolean`                           | `true`      | Whether or not the field can be ordered in the AdminUI.                                 |
 | `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
 | `label`        | `String`                            |             | Label for the field.                                                                    |
 
