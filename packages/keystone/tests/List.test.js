@@ -1452,13 +1452,16 @@ test('updateManyMutation', async () => {
 test('deleteMutation', async () => {
   const list = setup();
   const result = await list.deleteMutation(1, context);
-  expect(result).toBe(undefined);
+  expect(result).toEqual({ name: 'b', email: 'b@example.com', index: 1 });
 });
 
 test('deleteManyMutation', async () => {
   const list = setup();
   const result = await list.deleteManyMutation([1, 2], context);
-  expect(result).toEqual([undefined, undefined]);
+  expect(result).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
 });
 
 test('getFieldByPath', () => {

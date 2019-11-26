@@ -131,6 +131,7 @@ export class SlugImplementation extends Text {
     this.makeUnique = makeUniqueFn;
     this.regenerateOnUpdate = regenerateOnUpdate;
     this.alwaysMakeUnique = alwaysMakeUnique;
+    this.isOrderable = true;
   }
 
   async resolveInput({ resolvedData, existingItem, actions: { query } }) {

@@ -20,6 +20,7 @@ export class Relationship extends Implementation {
     const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isOrderable = true;
 
     this.isRelationship = true;
     this.many = many;
