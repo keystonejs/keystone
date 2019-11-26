@@ -29,7 +29,7 @@
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "passport-wordpress": "^0.0.4",
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   },
   "devDependencies": {
     "dotenv-safe": "^8.1.0",

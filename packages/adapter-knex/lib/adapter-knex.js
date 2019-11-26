@@ -317,27 +317,6 @@ class KnexListAdapter extends BaseListAdapter {
       .del();
   }
 
-  async _populateMany(result) {
-    // Takes an existing result and merges in all the many-relationship fields
-    // by performing a query on their join-tables.
-
-    return {
-      ...result,
-      ...(await resolveAllKeys(
-        arrayToObject(
-          this.fieldAdapters.filter(a => a.isRelationship && a.config.many),
-          'path',
-          async a =>
-            (await this._query()
-              .select(a.refListId)
-              .from(this._manyTable(a.path))
-              .where(`${this.key}_id`, result.id)
-              .returning(a.refListId)).map(x => x[a.refListId])
-        )
-      )),
-    };
-  }
-
   async _update(id, data) {
     // Update the real data
     const realData = pick(data, this.realKeys);
@@ -390,8 +369,7 @@ class KnexListAdapter extends BaseListAdapter {
       })
     );
 
-    const result = await this._findById(item.id);
-    return result ? this._populateMany(result) : null;
+    return this._findById(item.id);
   }
 
   async _findById(id) {

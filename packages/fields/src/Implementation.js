@@ -13,6 +13,7 @@ class Field {
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
+    this.isOrderable = false;
     this.hooks = hooks;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
@@ -164,6 +165,7 @@ class Field {
       path: this.path,
       type: this.constructor.name,
       isRequired: this.isRequired,
+      isOrderable: this.isOrderable,
       // We can only pass scalar default values through to the admin ui, not
       // functions
       defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,

@@ -44,6 +44,15 @@ module.exports = class CloudinaryAdapter {
     }));
   }
 
+  /**
+   * Takes a file data structure such as existingItem in a hook callback.
+   */
+  delete({ id }) {
+    if (id) {
+      cloudinary.v2.uploader.destroy(id);
+    }
+  }
+
   publicUrl({ _meta: { secure_url } = {} } = {}) {
     return secure_url || null;
   }

@@ -12,6 +12,7 @@ export class UuidImplementation extends Implementation {
     } else if (caseTo && caseTo.toString().toLowerCase() === 'lower') {
       this.normaliseValue = a => a.toString().toLowerCase();
     }
+    this.isOrderable = true;
   }
 
   gqlOutputFields() {
