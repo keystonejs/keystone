@@ -1,9 +1,9 @@
-import { Computed, MongoComputedInterface, KnexComputedInterface } from './Implementation';
+import { Virtual, MongoVirtualInterface, KnexVirtualInterface } from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
 export default {
-  type: 'Computed',
-  implementation: Computed,
+  type: 'Virtual',
+  implementation: Virtual,
   views: {
     Controller: importView('./views/Controller'),
     Cell: importView('./views/Cell'),
@@ -11,7 +11,7 @@ export default {
     Filter: importView('./views/Filter'),
   },
   adapters: {
-    mongoose: MongoComputedInterface,
-    knex: KnexComputedInterface,
+    mongoose: MongoVirtualInterface,
+    knex: KnexVirtualInterface,
   },
 };

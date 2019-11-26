@@ -1,5 +1,5 @@
 import FieldController from '../../../Controller';
-export default class ComputedController extends FieldController {
+export default class VirtualController extends FieldController {
   getQueryFragment = () => {
     return `${this.path}${this.config.graphQLSelection}`;
   };

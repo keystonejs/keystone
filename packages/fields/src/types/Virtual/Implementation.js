@@ -3,7 +3,7 @@ import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { parseFieldAccess } from '@keystonejs/access-control';
 
-export class Computed extends Implementation {
+export class Virtual extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -46,11 +46,11 @@ const CommonTextInterface = superclass =>
     }
   };
 
-export class MongoComputedInterface extends CommonTextInterface(MongooseFieldAdapter) {
+export class MongoVirtualInterface extends CommonTextInterface(MongooseFieldAdapter) {
   addToMongooseSchema() {}
 }
 
-export class KnexComputedInterface extends CommonTextInterface(KnexFieldAdapter) {
+export class KnexVirtualInterface extends CommonTextInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-// We don't know what type of data we're getting back from a computed-field
+// We don't know what type of data we're getting back from a Virtual-field
 // but I'd like to present it as best as possible.
 // ToDo: Better presentation for more types of data
 

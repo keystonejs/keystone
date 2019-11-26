@@ -34,7 +34,7 @@ export const FieldLabel = props => {
   );
 };
 
-export default class ComputedField extends Component {
+export default class VirtualField extends Component {
   onChange = event => {
     this.props.onChange(event.target.value);
   };

@@ -6,7 +6,7 @@ import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<string>;
 
-export default class ComputedFilterView extends Component<Props> {
+export default class VirtualFilterView extends Component<Props> {
   handleChange = ({ target: { value } }: Object) => {
     this.props.onChange(value);
   };

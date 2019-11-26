@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: Computed
+title: Virtual
 [meta]-->
 
-# Computed
+# Virtual
 
 ## Usage
 
@@ -16,7 +16,7 @@ keystone.createList('Example', {
     firstName: { type: Text },
     lastName: { type: Text },
     name: {
-      type: Computed,
+      type: Virtual,
       resolver: item => (`${item.firstName} ${item.lastName}`)
       };
     },
@@ -30,7 +30,7 @@ If the return type is not a string define a `graphQLReturnType`.
 keystone.createList('Example', {
   fields: {
     fortyTwo: {
-      type: Computed,
+      type: Virtual,
       graphQLReturnType: `Int`,
       resolver: () => 42,
     },
@@ -44,7 +44,7 @@ For more complex types you can define a `graphQLReturnFragment` as well as `exte
 keystone.createList('Example', {
   fields: {
     movies: {
-      type: Computed,
+      type: Virtual,
       extendGraphQLTypes: [`type Movie { title: String, rating: Integer }`],
       graphQLReturnType: `[Movie]`,
       graphQLReturnFragment: `{
