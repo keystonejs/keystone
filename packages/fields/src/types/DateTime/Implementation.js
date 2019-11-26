@@ -12,7 +12,6 @@ class _DateTime extends Implementation {
     this.yearRangeFrom = yearRangeFrom;
     this.yearRangeTo = yearRangeTo;
     this.yearPickerType = yearPickerType;
-    this.isOrderable = true;
   }
 
   gqlOutputFields() {
