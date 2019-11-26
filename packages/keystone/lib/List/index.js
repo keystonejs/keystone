@@ -1633,10 +1633,10 @@ module.exports = class List {
 
       await this._beforeDelete(existingItem, context);
 
-      const result = await this.adapter.delete(existingItem.id);
+      await this.adapter.delete(existingItem.id);
 
       return {
-        result,
+        result: existingItem,
         afterHook: () => this._afterDelete(existingItem, context),
       };
     });

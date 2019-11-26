@@ -4,16 +4,7 @@ import { parseFieldAccess } from '@keystonejs/access-control';
 class Field {
   constructor(
     path,
-    {
-      hooks = {},
-      isOrderable = true,
-      isRequired,
-      defaultValue,
-      access,
-      label,
-      schemaDoc,
-      ...config
-    },
+    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
@@ -22,7 +13,8 @@ class Field {
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
-    this.isOrderable = isOrderable;
+
+    this.isOrderable = false;
     this.hooks = hooks;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
