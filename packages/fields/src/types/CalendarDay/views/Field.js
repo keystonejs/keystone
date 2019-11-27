@@ -9,12 +9,16 @@ import { TextDayPicker } from '@arch-ui/day-picker';
 
 export default class CalendarDayField extends Component {
   handleSelectedChange = value => {
-    const { field, onChange } = this.props;
+    const {
+      field: {
+        config: { yearRangeTo, yearRangeFrom },
+      },
+      onChange,
+    } = this.props;
+    const inputYear = getYear(value);
     if (
       value === null ||
-      (getYear(value).toString().length <= 4 &&
-        getYear(value) <= field.config.yearRangeTo &&
-        getYear(value) >= field.config.yearRangeFrom)
+      (inputYear.toString().length <= 4 && inputYear <= yearRangeTo && inputYear >= yearRangeFrom)
     ) {
       onChange(value);
     }
