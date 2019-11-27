@@ -88,15 +88,52 @@ let AddBlock = ({ editorState, editor, blocks }) => {
       </div>
       <div ref={menuRef} css={{ position: 'absolute', zIndex: 10, top: -99999, left: -9999 }}>
         {isOpen && (
-          <div>
+          <ul
+            css={{
+              background: 'white',
+              listStyle: 'none',
+              padding: 0,
+              margin: 0,
+              border: 'solid 1px #eaeaea',
+            }}
+          >
+            <li
+              css={{
+                display: 'flex',
+                justifyContent: 'left',
+                alignItems: 'center',
+              }}
+            >
+              <strong
+                css={{
+                  textTransform: 'uppercase',
+                  color: '#999',
+                  fontSize: '.8rem',
+                  padding: '5px 15px',
+                }}
+              >
+                Insert Block
+              </strong>
+            </li>
+
             {Object.keys(blocks).map(key => {
               let { Sidebar } = blocks[key];
               if (!blocks[key].withChrome || Sidebar === undefined) {
                 return null;
               }
-              return <Sidebar key={key} editor={editor} blocks={blocks} />;
+              return (
+                <li
+                  css={{
+                    display: 'flex',
+                    justifyContent: 'left',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Sidebar key={key} editor={editor} blocks={blocks} />
+                </li>
+              );
             })}
-          </div>
+          </ul>
         )}
       </div>
     </Fragment>

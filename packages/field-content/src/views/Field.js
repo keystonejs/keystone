@@ -38,10 +38,7 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
               id={htmlID}
               css={{
                 ...inputStyles({ isMultiline: true }),
-                paddingLeft: 32,
-                borderLeft: 'none',
-                borderRight: 'none',
-                borderRadius: 0,
+                padding: '16px 32px',
               }}
             />
           )}
