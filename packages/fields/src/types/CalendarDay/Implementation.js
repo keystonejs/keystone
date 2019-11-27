@@ -8,7 +8,7 @@ export class CalendarDay extends Implementation {
   constructor(
     path,
     {
-      format,
+      format = 'YYYY-MM-DD',
       yearRangeFrom = new Date().getFullYear() - 100,
       yearRangeTo = new Date().getFullYear(),
     }
