@@ -10,7 +10,15 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldInput>
+      <FieldInput
+        css={{ cursor: 'text', tabIndex: 0 }}
+        onClick={() => {
+          const elm = document.getElementById(htmlID).querySelector('[data-slate-editor]');
+          if (elm) {
+            elm.focus();
+          }
+        }}
+      >
         {Object.values(field.getBlocks())
           .filter(({ Provider, options }) => Provider && options)
           .reduce(
