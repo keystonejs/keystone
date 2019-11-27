@@ -12,7 +12,8 @@ This guide will show you how to create a User list and add initial data to it us
 First let's create a User list and add a `PasswordAuthStrategy`. Our `index.js` might look like this:
 
 ```javascript
-const { Keystone, PasswordAuthStrategy } = require('@keystonejs/keystone');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
