@@ -18,26 +18,33 @@ export let getSelectionReference = () => {
   // wrt scroll position or any other reason
   // for the elements moving
   let lastRange;
+  let initialSelection = {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    hight: 0,
+    width: 0,
+  };
   let getBoundingClientRect = () => {
     let selection = window.getSelection();
     let { nodeName } = selection.anchorNode;
+
     let range =
       !selection.rangeCount || nodeName === 'INPUT' || nodeName === 'TEXTAREA'
         ? lastRange
         : selection.getRangeAt(0);
 
     if (!range) {
-      return {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        hight: 0,
-        width: 0,
-      };
+      return initialSelection;
     }
+
     let newBoundingClientRect = getRangeBoundingClientRect(range);
     if (newBoundingClientRect.width === 0 && newBoundingClientRect.height === 0) {
+      if (!lastRange) {
+        return initialSelection;
+      }
+
       return getRangeBoundingClientRect(lastRange);
     }
 
