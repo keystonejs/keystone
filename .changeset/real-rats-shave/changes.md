@@ -1,0 +1,1 @@
+Adding 'operation' argument to all hooks
