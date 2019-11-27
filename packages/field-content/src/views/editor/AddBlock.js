@@ -1,67 +1,81 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { createPortal } from 'react-dom';
-import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react';
-import { getVisibleSelectionRect } from 'get-selection-range';
-import { useScrollListener, useWindowSize } from './hooks';
-import { type as defaultType } from './blocks/paragraph';
+import { useState, useRef, useCallback, useLayoutEffect, Fragment } from 'react';
 import { PlusIcon } from '@arch-ui/icons';
+import { type as defaultType } from './blocks/paragraph';
+
+const getSelectedElement = () => {
+  if (document.selection) return document.selection.createRange().parentElement();
+  else {
+    var selection = window.getSelection();
+    if (selection.rangeCount > 0) return selection.getRangeAt(0).startContainer.parentNode;
+  }
+};
 
 let AddBlock = ({ editorState, editor, blocks }) => {
-  let windowSize = useWindowSize();
-
-  let openCloseRef = useRef(null);
-  let containerRef = useRef(null);
+  let [isOpen, setIsOpen] = useState(false);
   let focusBlock = editorState.focusBlock;
+  let iconRef = useRef(null);
+  let menuRef = useRef(null);
+
   let layout = useCallback(() => {
-    let openCloseEle = openCloseRef.current;
-    let containerEle = containerRef.current;
-    const rect = getVisibleSelectionRect();
+    let iconEle = iconRef.current;
+    let menuEle = menuRef.current;
+    const elm = getSelectedElement();
 
-    if (
-      !rect ||
-      rect.width !== 0 ||
-      focusBlock === null ||
-      focusBlock.text !== '' ||
-      focusBlock.type !== defaultType
-    ) {
-      setIsOpen(false);
-      openCloseEle.style.top = '';
-      openCloseEle.style.left = '';
-      containerEle.style.top = '';
-      containerEle.style.left = '';
-
+    if (focusBlock === null || focusBlock.text !== '' || focusBlock.type !== defaultType) {
+      iconEle.style.top = `-9999px`;
+      iconEle.style.left = `-9999px`;
+      menuEle.style.top = `-9999px`;
+      menuEle.style.left = `-9999px`;
       return;
     }
-    const top = rect.top + window.scrollY - openCloseEle.offsetHeight / 2 + rect.height / 2; // eslint-disable-line
-    openCloseEle.style.top = `${top}px`;
-    containerEle.style.top = `${top}px`;
-    const containerEleLeft = rect.left + window.scrollX;
-    containerEle.style.left = `${containerEleLeft}px`;
 
-    const left = containerEleLeft - openCloseEle.offsetWidth;
-    openCloseEle.style.left = `${left}px`;
-  }, [focusBlock, windowSize]);
-
+    if (elm && editor && editor.el.contains(elm)) {
+      iconEle.style.top = `${elm.offsetTop + elm.offsetHeight / 2}px`;
+      iconEle.style.left = 0;
+      menuEle.style.top = `${elm.offsetTop - elm.offsetHeight / 2}px`;
+      menuEle.style.left = `42px`;
+    } else {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    }
+  }, [focusBlock, iconRef.current, menuRef.current]);
   useLayoutEffect(layout);
-  useScrollListener(layout);
-  let [isOpen, setIsOpen] = useState(false);
 
-  return createPortal(
+  return (
     <Fragment>
-      <div ref={openCloseRef} css={{ position: 'absolute', zIndex: 10, top: -10000, left: -10000 }}>
+      <div
+        css={{
+          position: 'absolute',
+          zIndex: 10,
+          transform: 'translate(0, -50%)',
+          top: -99999,
+          left: -9999,
+        }}
+        ref={iconRef}
+      >
         <button
           type="button"
           css={{
-            borderRadius: '100%',
-            border: '1px black solid',
-            width: 30,
-            height: 30,
-            marginRight: 4,
+            border: 'none',
+            background: '#efefef',
+            color: '#aaa',
+            width: 24,
+            height: 24,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: 4,
+            ':hover': {
+              color: '#888',
+            },
           }}
           onClick={() => {
             setIsOpen(x => !x);
           }}
+          title="Add block"
         >
           <PlusIcon
             css={{
@@ -72,7 +86,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           />
         </button>
       </div>
-      <div css={{ position: 'absolute', zIndex: 10, top: -10000, left: -10000 }} ref={containerRef}>
+      <div ref={menuRef} css={{ position: 'absolute', zIndex: 10, top: -99999, left: -9999 }}>
         {isOpen && (
           <div>
             {Object.keys(blocks).map(key => {
@@ -85,8 +99,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           </div>
         )}
       </div>
-    </Fragment>,
-    document.body
+    </Fragment>
   );
 };
 

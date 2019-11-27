@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { plugins as markPlugins } from './marks';
@@ -63,13 +63,15 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
   }, [blocks]);
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
+
   return (
-    <div className={className} id={id}>
+    <div className={className} css={{ position: 'relative' }} id={id}>
       <Editor
         schema={schema}
         ref={setEditor}
         plugins={plugins}
         value={editorState}
+        tabIndex={0}
         onChange={({ value }) => {
           onChange(value);
         }}
