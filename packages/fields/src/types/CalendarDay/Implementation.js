@@ -5,12 +5,11 @@ import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class CalendarDay extends Implementation {
-  constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
+  constructor(path, { format, yearRangeFrom, yearRangeTo }) {
     super(...arguments);
     this.format = format;
     this.yearRangeFrom = yearRangeFrom;
     this.yearRangeTo = yearRangeTo;
-    this.yearPickerType = yearPickerType;
     this.isOrderable = true;
   }
 
@@ -36,7 +35,6 @@ export class CalendarDay extends Implementation {
       format: this.format,
       yearRangeFrom: this.yearRangeFrom,
       yearRangeTo: this.yearRangeTo,
-      yearPickerType: this.yearPickerType,
     };
   }
 }
