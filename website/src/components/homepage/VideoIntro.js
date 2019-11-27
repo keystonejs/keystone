@@ -146,7 +146,7 @@ const VideoCta = () => (
       </g>
     </svg>
     <p css={{ paddingLeft: 54, paddingTop: 24 }}>
-      Click to see how to get a "Hello World" app up and running in under 3 minutes with the
+      Click to see how to get a "To Do" app up and running in under 4 minutes with the
       Keystone 5 CLI.
     </p>
   </div>
