@@ -32,6 +32,7 @@ export default class CalendarDayField extends Component {
             id={`ks-daypicker-${field.path}`}
             autoFocus={autoFocus}
             date={value}
+            format={field.config.format}
             onChange={this.handleSelectedChange}
           />
         </FieldInput>
