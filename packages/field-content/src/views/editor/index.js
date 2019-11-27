@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { plugins as markPlugins } from './marks';

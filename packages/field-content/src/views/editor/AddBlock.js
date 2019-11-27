@@ -28,6 +28,9 @@ let AddBlock = ({ editorState, editor, blocks }) => {
       iconEle.style.left = `-9999px`;
       menuEle.style.top = `-9999px`;
       menuEle.style.left = `-9999px`;
+      if (isOpen) {
+        setIsOpen(false);
+      }
       return;
     }
 
@@ -115,7 +118,6 @@ let AddBlock = ({ editorState, editor, blocks }) => {
                 Insert Block
               </strong>
             </li>
-
             {Object.keys(blocks).map(key => {
               let { Sidebar } = blocks[key];
               if (!blocks[key].withChrome || Sidebar === undefined) {
