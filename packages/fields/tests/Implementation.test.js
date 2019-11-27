@@ -131,6 +131,7 @@ describe('getAdminMeta()', () => {
       path: 'path',
       type: 'Field',
       defaultValue: 'default',
+      isOrderable: false,
       isPrimaryKey: false,
       isRequired: false,
     });
@@ -151,6 +152,7 @@ describe('getAdminMeta()', () => {
       path: 'path',
       type: 'Field',
       defaultValue: undefined,
+      isOrderable: false,
       isPrimaryKey: false,
       isRequired: false,
     });

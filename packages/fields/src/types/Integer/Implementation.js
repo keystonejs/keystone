@@ -5,6 +5,7 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 export class Integer extends Implementation {
   constructor() {
     super(...arguments);
+    this.isOrderable = true;
   }
 
   gqlOutputFields() {

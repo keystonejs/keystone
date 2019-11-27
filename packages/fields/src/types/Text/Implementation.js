@@ -6,6 +6,7 @@ export class Text extends Implementation {
   constructor(path, { isMultiline }) {
     super(...arguments);
     this.isMultiline = isMultiline;
+    this.isOrderable = true;
   }
   gqlOutputFields() {
     return [`${this.path}: String`];
