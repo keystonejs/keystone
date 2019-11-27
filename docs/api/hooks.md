@@ -60,6 +60,7 @@ const resolveInput = ({
   originalInput,
   context,
   actions,
+  operation,
 }) => resolvedData;
 ```
 
@@ -79,6 +80,7 @@ const validateInput = ({
   addFieldValidationError,
   context,
   actions,
+  operation,
 }) => {
   /* throw any errors here */
 };
@@ -101,6 +103,7 @@ const beforeChange = ({
   context,
   originalInput,
   actions,
+  operation,
 }) => {
   /* side effects here */
 };
@@ -123,6 +126,7 @@ const afterChange = ({
   originalInput,
   context,
   actions,
+  operation,
 }) => {
   /* side effects here */
 };
@@ -144,6 +148,7 @@ const validateDelete = ({
   addFieldValidationError,
   context,
   actions,
+  operation,
 }) => {
   /* throw any errors here */
 };
@@ -162,6 +167,7 @@ const beforeDelete = ({
   existingItem,
   context,
   actions,
+  operation,
 }) => {
   /* throw any errors here */
 };
@@ -180,6 +186,7 @@ const afterDelete = ({
   existingItem,
   context,
   actions,
+  operation,
 }) => {
   /* side effects here */
 };
@@ -197,6 +204,7 @@ const afterDelete = ({
 | `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request. |
 | `addFieldValidationError` | `Function`       | Used to set a field validation error. Accepts a `String`.                                                                      |
 | `actions`                 | `Object`         | An Object providing access to List functions, see [`actions` Argument](#actions-argument).                                     |
+| `operation`               | `String`         | A key indicating the current operation being performed, ie. `'create'`, `'update'` or `'delete'`.                              |
 
 
 ### `actions` Argument
