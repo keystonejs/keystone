@@ -1,4 +1,5 @@
 ---
+'@arch-ui/alert': patch
 '@arch-ui/day-picker': patch
 '@keystonejs/fields': patch
 ---
