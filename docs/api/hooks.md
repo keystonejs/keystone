@@ -14,7 +14,7 @@ Any differences are called out in the documentation below.
 
 ## Usage
 
-```javascript
+```js
 keystone.createList('User', {
   fields: {
     name: {
@@ -53,13 +53,14 @@ _Note_: `resolveInput` is not executed for deleted items.
 
 <!-- prettier-ignore -->
 
-```javascript
+```js
 const resolveInput = ({
   resolvedData,
   existingItem,
   originalInput,
   context,
-  list
+  actions,
+  operation,
 }) => resolvedData;
 ```
 
@@ -71,14 +72,15 @@ Executed after `resolveInput`. Should throw if `resolvedData` is invalid.
 
 <!-- prettier-ignore -->
 
-```javascript
+```js
 const validateInput = ({
   resolvedData,
   existingItem,
   originalInput,
   addFieldValidationError,
   context,
-  list,
+  actions,
+  operation,
 }) => {
   /* throw any errors here */
 };
@@ -90,6 +92,23 @@ _Note_: `validateInput` is not executed for deleted items. See: [`validateDelete
 
 Executed after `validateInput`. `beforeChange` is not used to manipulate data but can be used to preform actions before data is saved.
 
+#### Usage
+
+<!-- prettier-ignore -->
+
+```js
+const beforeChange = ({
+  resolvedData,
+  existingItem,
+  context,
+  originalInput,
+  actions,
+  operation,
+}) => {
+  /* side effects here */
+};
+```
+
 _Note_: `beforeChange` is not executed for deleted items. See: [`beforeDelete`](#before-delete)
 
 ### `afterChange`
@@ -100,13 +119,14 @@ Executed once the mutation has been completed and all transactions finalised.
 
 <!-- prettier-ignore -->
 
-```javascript
+```js
 const afterChange = ({
   updatedItem,
   existingItem,
   originalInput,
   context,
-  list
+  actions,
+  operation,
 }) => {
   /* side effects here */
 };
@@ -122,12 +142,13 @@ Executed after access control checks. Should throw if delete operation is invali
 
 <!-- prettier-ignore -->
 
-```javascript
+```js
 const validateDelete = ({
   existingItem,
   addFieldValidationError,
   context,
-  list,
+  actions,
+  operation,
 }) => {
   /* throw any errors here */
 };
@@ -141,11 +162,12 @@ Executed after `validateDelete`.
 
 <!-- prettier-ignore -->
 
-```javascript
+```js
 const beforeDelete = ({
   existingItem,
   context,
-  list,
+  actions,
+  operation,
 }) => {
   /* throw any errors here */
 };
@@ -159,11 +181,12 @@ Executed once the delete mutation has been completed and all transactions finali
 
 <!-- prettier-ignore -->
 
-```javascript
+```js
 const afterDelete = ({
   existingItem,
   context,
-  list,
+  actions,
+  operation,
 }) => {
   /* side effects here */
 };
@@ -171,63 +194,35 @@ const afterDelete = ({
 
 ---
 
-## Hooks function properties
+## Hook Function Arguments
 
-| Parameter                 | Type             | Description                                                                                                                    |
+| Argument                  | Type             | Description                                                                                                                    |
 | ------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `resolvedData`            | `Object`         | An object containing data received by the graphQL mutation and defaults values.                                                |
 | `existingItem`            | `any`            | The current stored value. (`undefined` for create)                                                                             |
 | `originalInput`           | `Object`         | An object containing arguments passed to the field in the graphQL query.                                                       |
 | `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request. |
-| `list`                    | `Object`         | An Object providing access to List functions. [List properties](#List-properties).                                             |
 | `addFieldValidationError` | `Function`       | Used to set a field validation error. Accepts a `String`.                                                                      |
+| `actions`                 | `Object`         | An Object providing access to List functions, see [`actions` Argument](#actions-argument).                                     |
+| `operation`               | `String`         | A key indicating the current operation being performed, ie. `'create'`, `'update'` or `'delete'`.                              |
 
-### List properties
 
-The `list` property contain an object providing access to List functions:
+### `actions` Argument
 
-```javascript
+The `actions` argument is an object containing a query helper:
+
+```js
 {
   /**
-   * @param args Object The same arguments as the *WhereUniqueInput graphql
-   * type
-   * @param context Object The Apollo context object for this request
+   * @param queryString String A graphQL query string
    * @param options.skipAccessControl Boolean By default access control _of
    * the user making the initial request_ is still tested. Disable all
    * Access Control checks with this flag
+   * @param options.variables Object The variables passed to the graphql
+   * query for the given queryString.
    *
-   * @return Promise<Object> The found item
+   * @return Promise<Object> The graphql query response
    */
-  query: (args, context, options) => Promise<Object>,
-
-  /**
-   * @param args Object The same arguments as the *WhereInput graphql type
-   * @param context Object The Apollo context object for this request
-   * @param options.skipAccessControl Boolean By default access control _of
-   * the user making the initial request_ is still tested. Disable all
-   * Access Control checks with this flag
-   *
-   * @return Promise<[Object]|[]> The found item. May reject with Access
-   * Control errors.
-   */
-  queryMany: (args, context, options) => Promise<Object|null>,
-
-  /**
-   * @param args Object The same arguments as the *WhereInput graphql type
-   * @param context Object The Apollo context object for this request
-   * @param options.skipAccessControl Boolean By default access control _of
-   * the user making the initial request_ is still tested. Disable all
-   * Access Control checks with this flag
-   *
-   * @return Promise<Object> Meta data about the found items. Currently
-   * contains only a single key: `count`.
-   */
-  queryManyMeta: (args, context, options) => Promise<Object>,
-
-  /**
-   * @param key String The string name of a Keystone list
-   * @return Object The programatic API of the requested list.
-   */
-  getList: (key) => Object,
+  query: (queryString, options, options) => Promise({ errors, data }),
 }
 ```
