@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 import { Alert } from '@arch-ui/alert';
@@ -8,7 +8,7 @@ import { colors } from '@arch-ui/theme';
 
 import SessionProvider from '../providers/Session';
 
-import logo from '../assets/logo.png';
+import KeystoneLogo from '../components/KeystoneLogo';
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -64,71 +64,70 @@ const Spacer = styled.div({
   height: 120,
 });
 
-class SigninPage extends Component {
-  state = {
-    identity: '',
-    secret: '',
-    reloading: false,
-  };
-  onSubmit = e => {
+const SigninPage = ({ error, isLoading, signIn, authStrategy }) => {
+  const [identity, setIdentity] = useState('');
+  const [secret, setSecret] = useState('');
+  const [reloading, setReloading] = useState(false);
+
+  const onSubmit = e => {
     e.preventDefault();
-    const { isLoading, signIn } = this.props;
-    const { identity, secret } = this.state;
-    if (isLoading) return;
+
+    if (isLoading) {
+      return;
+    }
+
     signIn({ identity, secret }).then(() => {
-      // Flag so the "Submit" button doesn't temporarily flash as available
-      // while reloading the page.
-      this.setState(() => ({ reloading: true }));
-      // Let the server-side redirects kick in to send the user to the right
-      // place
+      // Flag so the "Submit" button doesn't temporarily flash as available while reloading the page.
+      setReloading(true);
+
+      // Let the server-side redirects kick in to send the user to the right place
       window.location.reload(true);
     });
   };
-  render() {
-    const { error, isLoading, authStrategy } = this.props;
-    const { identity, secret } = this.state;
-    return (
-      <Container>
-        <Alerts>
-          {error ? (
-            <Alert appearance="danger">Your username and password were incorrect</Alert>
-          ) : null}
-        </Alerts>
-        <Form method="post" onSubmit={this.onSubmit}>
-          <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
-          <Divider />
-          <div>
-            <Fields>
-              <FieldLabel>{upcase(authStrategy.identityField)}</FieldLabel>
-              <Input
-                name="identity"
-                autoFocus
-                value={identity}
-                onChange={e => this.setState({ identity: e.target.value })}
-              />
-              <FieldLabel>{upcase(authStrategy.secretField)}</FieldLabel>
-              <Input
-                type="password"
-                name="secret"
-                value={secret}
-                onChange={e => this.setState({ secret: e.target.value })}
-              />
-            </Fields>
-            <LoadingButton
-              appearance="primary"
-              type="submit"
-              isLoading={isLoading || this.state.reloading}
-              indicatorVariant="dots"
-            >
-              Sign In
-            </LoadingButton>
-          </div>
-        </Form>
-        <Spacer />
-      </Container>
-    );
-  }
-}
+
+  return (
+    <Container>
+      <Alerts>
+        {error ? (
+          <Alert appearance="danger">Your username and password were incorrect</Alert>
+        ) : null}
+      </Alerts>
+      <Form method="post" onSubmit={onSubmit}>
+        <KeystoneLogo />
+        <Divider />
+        <div>
+          <Fields>
+            <FieldLabel>{upcase(authStrategy.identityField)}</FieldLabel>
+            <Input
+              name="identity"
+              autoComplete="username"
+              autoFocus
+              value={identity}
+              onChange={e => setIdentity(e.target.value)}
+            />
+            <FieldLabel>{upcase(authStrategy.secretField)}</FieldLabel>
+            <Input
+              type="password"
+              name="secret"
+              autoComplete="current-password"
+              value={secret}
+              onChange={e => setSecret(e.target.value)}
+            />
+          </Fields>
+          <LoadingButton
+            appearance="primary"
+            type="submit"
+            isLoading={isLoading || reloading}
+            indicatorVariant="dots"
+          >
+            Sign In
+          </LoadingButton>
+        </div>
+      </Form>
+      <Spacer />
+    </Container>
+  );
+};
 
 export default ({ signinPath, signoutPath, authStrategy }) => (
   <SessionProvider signinPath={signinPath} signoutPath={signoutPath}>

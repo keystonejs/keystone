@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import styled from '@emotion/styled';
 
 import SessionProvider from '../providers/Session';
-import logo from '../assets/logo.png';
+import KeystoneLogo from '../components/KeystoneLogo';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -59,7 +59,7 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
     <Container>
       <Alerts />
       <Box>
-        <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+        <KeystoneLogo />
         <Divider />
         <Content>
           {showLoading ? (
