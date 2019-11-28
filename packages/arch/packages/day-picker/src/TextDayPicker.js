@@ -1,10 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import chrono from 'chrono-node';
 import { Input } from '@arch-ui/input';
 import { format } from 'date-fns';
-
 
 export const TextDayPicker = ({
   date,
@@ -17,10 +16,6 @@ export const TextDayPicker = ({
   };
 
   const [value, setValue] = useState(formatDate(date));
-
-  useEffect(() => {
-    setValue(formatDate(date));
-  }, [date]);
 
   return (
     <Input
@@ -40,9 +35,9 @@ export const TextDayPicker = ({
 };
 
 function parseDate(value) {
-  const parsedDates = chrono.parse(value);
-  if (parsedDates[0] === undefined) {
+  const parsed = chrono.parseDate(value);
+  if (parsed === undefined) {
     return null;
   }
-  return format(parsedDates[0].start.date(), 'YYYY-MM-DD');
+  return format(parsed, 'YYYY-MM-DD');
 }
