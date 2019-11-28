@@ -34,7 +34,7 @@ function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...prop
   const isSpinner = indicatorVariant === 'spinner';
 
   return (
-    <Button ref={ref} variant="bold" indicatorVariant="dots" {...props}>
+    <Button ref={ref} variant="bold" {...props}>
       <LoadingButtonInner>
         {isLoading ? (
           <LoadingIndicatorWrapper>

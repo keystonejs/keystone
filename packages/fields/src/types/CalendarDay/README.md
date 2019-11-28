@@ -78,7 +78,7 @@ They produce values according to their configured `format` but always expect val
 
 | Field name | Type      | Description                                 |
 | :--------- | :-------- | :------------------------------------------ |
-| `${path}`  | `Boolean` | The stored value in the configured `format` |
+| `${path}`  | `String` | The stored value in the configured `format` |
 
 ### Filters
 
