@@ -1,6 +1,5 @@
 //imports for Keystone app core
 const { Keystone } = require('@keystonejs/keystone');
-const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
@@ -29,15 +28,10 @@ keystone.createList('Post', Post);
 keystone.createList('PostCategory', PostCategory);
 keystone.createList('Comment', Comment);
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 const adminApp = new AdminUIApp({
   adminPath: '/admin',
   hooks: require.resolve('./admin/'),
-  authStrategy,
+  authStrategy: 'User.password',
   isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
 });
 

@@ -39,6 +39,7 @@ keystone.createList('User', {
     delete: defaultAccess,
     auth: true,
   },
+  authStrategies: { password: { type: PasswordAuthStrategy } },
 });
 
 keystone.createList('Post', {
@@ -66,19 +67,13 @@ keystone.createList('ListWithPlugin', {
   ],
 });
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  // config: { protectIdentities: true },
-});
-
 module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
       adminPath: '/admin',
-      authStrategy,
+      authStrategy: 'User.password',
       isAccessAllowed: ({ authentication: { item, listKey } }) =>
         !!item && listKey === 'User' && !!item.isAdmin,
     }),

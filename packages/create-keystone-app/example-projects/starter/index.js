@@ -60,11 +60,7 @@ keystone.createList('User', {
     delete: access.userIsAdmin,
     auth: true,
   },
-});
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
+  authStrategies: { password: { type: PasswordAuthStrategy } },
 });
 
 module.exports = {
@@ -73,7 +69,7 @@ module.exports = {
     new GraphQLApp(),
     new AdminUIApp({
       enableDefaultRoute: true,
-      authStrategy,
+      authStrategy: 'User.password',
     }),
   ],
 };

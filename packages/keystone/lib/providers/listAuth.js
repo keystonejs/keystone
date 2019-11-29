@@ -6,15 +6,16 @@ const { throwAccessDenied } = require('../List/graphqlErrors');
 const graphqlLogger = logger('graphql');
 
 class ListAuthProvider {
-  constructor({ authStrategy, list }) {
+  constructor({ authStrategy, strategyName = authStrategy.authType, list }) {
     this.authStrategy = authStrategy;
+    this.authName = upcase(strategyName);
     this.list = list;
     this.access = list.access;
     const { outputTypeName, itemQueryName } = list.gqlNames;
     this.gqlNames = {
       outputTypeName,
       authenticatedQueryName: `authenticated${itemQueryName}`,
-      authenticateMutationName: `authenticate${itemQueryName}With${upcase(authStrategy.authType)}`,
+      authenticateMutationName: `authenticate${itemQueryName}With${this.authName}`,
       unauthenticateMutationName: `unauthenticate${itemQueryName}`,
       authenticateOutputName: `authenticate${itemQueryName}Output`,
       unauthenticateOutputName: `unauthenticate${itemQueryName}Output`,
@@ -44,11 +45,13 @@ class ListAuthProvider {
       `,
     ];
   }
+
   getQueries({ schemaName }) {
     if (!this.access[schemaName].auth) return [];
     const { authenticatedQueryName, outputTypeName } = this.gqlNames;
     return [`${authenticatedQueryName}: ${outputTypeName}`];
   }
+
   getMutations({ schemaName }) {
     if (!this.access[schemaName].auth) return [];
     const {
@@ -59,9 +62,10 @@ class ListAuthProvider {
       outputTypeName,
     } = this.gqlNames;
     const { authStrategy } = this;
-    const authTypeTitleCase = upcase(authStrategy.authType);
     return [
-      `""" Authenticate and generate a token for a ${outputTypeName} with the ${authTypeTitleCase} Authentication Strategy. """
+      `""" Authenticate and generate a token for a ${outputTypeName} with the ${
+        this.authName
+      } Authentication Strategy. """
         ${authenticateMutationName}(${authStrategy.getInputFragment()}): ${authenticateOutputName}
       `,
       `${unauthenticateMutationName}: ${unauthenticateOutputName}`,
@@ -71,6 +75,7 @@ class ListAuthProvider {
   getTypeResolvers({}) {
     return {};
   }
+
   getQueryResolvers({ schemaName }) {
     if (!this.access[schemaName].auth) return {};
     const { authenticatedQueryName } = this.gqlNames;
@@ -78,6 +83,7 @@ class ListAuthProvider {
       [authenticatedQueryName]: (_, __, context, info) => this._authenticatedQuery(context, info),
     };
   }
+
   getMutationResolvers({ schemaName }) {
     if (!this.access[schemaName].auth) return {};
     const { authenticateMutationName, unauthenticateMutationName } = this.gqlNames;

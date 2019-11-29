@@ -25,12 +25,42 @@ class AdminUIApp {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
     }
 
-    if (authStrategy && authStrategy.authType !== 'password') {
-      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
+    this.authStrategy = null;
+    if (authStrategy) {
+      if (typeof authStrategy === 'object') {
+        throw new Error(
+          `Object values for Admin UI 'authStrategy' are deprecated. Use a string in the format <list>.<strategy>`
+        );
+      }
+
+      const [listName, strategyName] = authStrategy.split('.');
+      if (!listName || !strategyName) {
+        throw new Error(`Admin UI 'authStrategy' should follow format <list>.<strategy>`);
+      }
+
+      // Enable lazy fetching of the auth strategy when we prepare the app since
+      this.getAuthStrategy = keystone => {
+        const authList = keystone.getListByKey(listName);
+        if (!authList) {
+          throw new Error(`No list '${listName}' found when getting Admin UI auth strategy`);
+        }
+
+        const listAuthStrategy = authList.getAuthStrategy(strategyName);
+        if (!listAuthStrategy) {
+          throw new Error(
+            `No auth strategy '${strategyName}' found when getting Admin UI auth strategy`
+          );
+        }
+
+        if (listAuthStrategy.authType !== 'password') {
+          throw new Error(`Auth strategy '${strategyName}' is not a PasswordAuthStrategy`);
+        }
+
+        this.authStrategy = listAuthStrategy;
+      };
     }
 
     this.adminPath = adminPath;
-    this.authStrategy = authStrategy;
     this.pages = pages;
     this.apiPath = apiPath;
     this.graphiqlPath = graphiqlPath;
@@ -143,7 +173,13 @@ class AdminUIApp {
   }
 
   prepareMiddleware({ keystone, distDir, dev }) {
-    const { adminPath } = this;
+    const { adminPath, getAuthStrategy } = this;
+
+    // Populate the auth strategy
+    if (getAuthStrategy) {
+      getAuthStrategy(keystone);
+    }
+
     const app = express.Router();
 
     app.use(adminPath, (req, res, next) => {

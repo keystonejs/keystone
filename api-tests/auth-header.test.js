@@ -47,11 +47,7 @@ function setupKeystone(adapterName) {
           delete: defaultAccess,
           auth: true,
         },
-      });
-
-      keystone.createAuthStrategy({
-        type: PasswordAuthStrategy,
-        list: 'User',
+        authStrategies: { password: { type: PasswordAuthStrategy } },
       });
     },
     keystoneOptions: {

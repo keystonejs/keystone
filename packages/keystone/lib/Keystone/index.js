@@ -56,7 +56,6 @@ module.exports = class Keystone {
   }) {
     this.name = name;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
-    this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
@@ -269,22 +268,10 @@ module.exports = class Keystone {
     };
   }
 
-  createAuthStrategy(options) {
-    const { type: StrategyType, list: listKey, config } = options;
-    const { authType } = StrategyType;
-    if (!this.auth[listKey]) {
-      this.auth[listKey] = {};
-    }
-    const strategy = new StrategyType(this, listKey, config);
-    strategy.authType = authType;
-    this.auth[listKey][authType] = strategy;
-    if (!this.lists[listKey]) {
-      throw new Error(`List "${listKey}" does not exist.`);
-    }
-    this._providers.push(
-      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy })
+  createAuthStrategy() {
+    throw new Error(
+      `keystone.createAuthStrategy is deprecated. Use list-level 'authStrategies' config instead.`
     );
-    return strategy;
   }
 
   createList(key, config, { isAuxList = false } = {}) {
@@ -296,6 +283,23 @@ module.exports = class Keystone {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
 
+    const createAuxList = (auxKey, auxConfig) => {
+      if (isAuxList) {
+        throw new Error(
+          `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
+        );
+      }
+
+      return this.createList(auxKey, auxConfig, { isAuxList: true });
+    };
+
+    const createAuthStrategy = (authList, strategyName, { type: Strategy, ...strategyConfig }) => {
+      const authStrategy = new Strategy(this, key, strategyConfig);
+      this._providers.push(new ListAuthProvider({ list: authList, strategyName, authStrategy }));
+
+      return authStrategy;
+    };
+
     const list = new List(key, compose(config.plugins || [])(config), {
       getListByKey,
       queryHelper: this._buildQueryHelper.bind(this),
@@ -303,19 +307,15 @@ module.exports = class Keystone {
       defaultAccess: this.defaultAccess,
       registerType: type => this.registeredTypes.add(type),
       isAuxList,
-      createAuxList: (auxKey, auxConfig) => {
-        if (isAuxList) {
-          throw new Error(
-            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
-          );
-        }
-        return this.createList(auxKey, auxConfig, { isAuxList: true });
-      },
+      createAuxList,
+      createAuthStrategy,
       schemaNames: this._schemaNames,
     });
+
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);
+
     list.initFields();
     return list;
   }
@@ -517,8 +517,9 @@ module.exports = class Keystone {
           // We do this first to avoid it conflicting with any catch-all routes the
           // user may have specified
           ...this.registeredTypes,
-          ...flattenDeep(
-            Object.values(this.auth).map(authStrategies => Object.values(authStrategies))
+          ...this.listsArray.reduce(
+            (acc, { authStrategies }) => [...acc, ...Object.values(authStrategies)],
+            []
           ),
           ...apps,
         ]

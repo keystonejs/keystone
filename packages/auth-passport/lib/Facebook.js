@@ -23,6 +23,6 @@ class FacebookAuthStrategy extends PassportAuthStrategy {
   }
 }
 
-FacebookAuthStrategy.authType = 'facebook';
+FacebookAuthStrategy.prototype.authType = 'facebook';
 
 module.exports = FacebookAuthStrategy;

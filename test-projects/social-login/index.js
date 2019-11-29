@@ -15,6 +15,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
 
 const { staticRoute, staticPath, cloudinary, cookieSecret } = require('./config');
+const { authGoogle, authFacebook, authTwitter, authGithub } = require('./auth');
 
 const { DISABLE_AUTH } = process.env;
 const LOCAL_FILE_SRC = `${staticPath}/avatars`;
@@ -46,7 +47,7 @@ try {
   console.warn(e.message);
 }
 
-keystone.createList('User', {
+const authList = keystone.createList('User', {
   fields: {
     // When no access defined, defaults to all public
     name: { type: Text },
@@ -110,8 +111,17 @@ keystone.createList('User', {
     attachment: { type: File, adapter: fileAdapter },
     ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
+  authStrategies: {
+    password: { type: PasswordAuthStrategy },
+    authGoogle,
+    authFacebook,
+    authTwitter,
+    authGithub,
+  },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
+
+const passwordAuth = authList.getAuthStrategy('password');
 
 keystone.createList('Post', {
   fields: {
@@ -139,11 +149,11 @@ keystone.createList('Post', {
   access: {
     read: true,
     create: ({ item, authentication }) =>
-      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+      authentication.listKey === passwordAuth.listKey && item.user.id === authentication.item.id,
     update: ({ item, authentication }) =>
-      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+      authentication.listKey === passwordAuth.listKey && item.user.id === authentication.item.id,
     delete: ({ item, authentication }) =>
-      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+      authentication.listKey === passwordAuth.listKey && item.user.id === authentication.item.id,
     auth: true,
   },
 });
@@ -162,16 +172,12 @@ keystone.createList('PostCategory', {
   },
 });
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp({ authStrategy: DISABLE_AUTH ? undefined : authStrategy }),
+    new AdminUIApp({ authStrategy: DISABLE_AUTH ? undefined : 'User.password' }),
   ],
+  googleStrategy: authList.getAuthStrategy('authGoogle'),
 };

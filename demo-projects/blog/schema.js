@@ -14,6 +14,7 @@ const {
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const getYear = require('date-fns/get_year');
 
 const { staticRoute, staticPath, distDir } = require('./config');
@@ -57,6 +58,7 @@ exports.User = {
     isAdmin: { type: Checkbox },
     avatar: { type: File, adapter: avatarFileAdapter },
   },
+  authStrategies: { password: { type: PasswordAuthStrategy } },
   labelResolver: item => `${item.name} <${item.email}>`,
 };
 

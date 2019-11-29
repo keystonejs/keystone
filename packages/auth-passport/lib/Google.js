@@ -16,6 +16,6 @@ class GoogleAuthStrategy extends PassportAuthStrategy {
   }
 }
 
-GoogleAuthStrategy.authType = 'google';
+GoogleAuthStrategy.prototype.authType = 'google';
 
 module.exports = GoogleAuthStrategy;

@@ -58,16 +58,19 @@ keystone.createList('User', {
       type: Password,
     },
   },
-});
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
+  authStrategies: {
+    password: {
+      type: PasswordAuthStrategy,
+    },
+  },
 });
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ enableDefaultRoute: true, authStrategy })],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({ enableDefaultRoute: true, authStrategy: 'User.password' }),
+  ],
 };
 ```
 

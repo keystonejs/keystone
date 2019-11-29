@@ -513,6 +513,6 @@ class PassportAuthStrategy {
   }
 }
 
-PassportAuthStrategy.authType = 'base-abstract';
+PassportAuthStrategy.prototype.authType = 'base-abstract';
 
 module.exports = PassportAuthStrategy;

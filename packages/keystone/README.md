@@ -112,7 +112,6 @@ const keystone = new Keystone({
 | Method                | Description                                                                  |
 | --------------------- | ---------------------------------------------------------------------------- |
 | `connect`             | Manually connect to Adapters.                                                |
-| `createAuthStrategy`  | Creates a new authentication middleware instance.                            |
 | `createItems`         | Add items to a `Keystone` list.                                              |
 | `createList`          | Add a list to the `Keystone` schema.                                         |
 | `disconnect`          | Disconnect from all adapters.                                                |
@@ -151,24 +150,6 @@ keystone.connect();
 _Note_: `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
 
 See: [Custom Server](https://keystonejs.com/guides/custom-server).
-
-### `createAuthStrategy(config)`
-
-Creates a new authentication middleware instance.
-
-See: [Authentication](https://www.keystonejs.com/guides/authentication).
-
-#### Usage
-
-```js
-const authStrategy = keystone.createAuthStrategy({
-  /*...config */
-});
-```
-
-#### Config
-
-See the [Authentication API docs](https://www.keystonejs.com/api/authentication) for config options.
 
 ### `createItems(items)`
 

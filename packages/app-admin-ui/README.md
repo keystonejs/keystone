@@ -17,7 +17,7 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
-const authStrategy = keystone.createAuthStrategy({...});
+keystone.createList('User', { ... });
 
 module.exports = {
   keystone: new Keystone(),
@@ -25,7 +25,7 @@ module.exports = {
     new GraphQLApp(),
     new AdminUIApp({
       adminPath: '/admin',
-      authStrategy,
+      authStrategy: 'User.<authStrategyName>',
     }),
   ],
 };
@@ -33,16 +33,16 @@ module.exports = {
 
 ### Config
 
-| Option               | Type       | Default      | Required | Description                                                               |
-| -------------------- | ---------- | ------------ | -------- | ------------------------------------------------------------------------- |
-| `adminPath`          | `String`   | `/admin`     | `false`  | The path of the Admin UI.                                                 |
-| `apiPath`            | `String`   | `/admin/api` | `false`  | The path of the API provided to the Admin UI.                             |
-| `graphiqlPath`       | `String`   | `/admin/api` | `false`  | The path of the graphiql app, an in-browser IDE for exploring GraphQL.    |
-| `authStrategy`       | `Object`   | `null`       | `false`  | See [Authentication Guides](https://keystonejs.com/guides/authentication) |
-| `pages`              | `Array`    | `null`       | `false`  |                                                                           |
-| `enableDefaultRoute` | `Bool`     | `false`      | `false`  | If enabled, the path of the Admin UI app will be set to `/`.              |
-| `schemaName`         | `String`   | `public`     | `false`  |                                                                           |
-| `isAccessAllowed`    | `Function` | `true`       | `false`  | Controls which users have access to the Admin UI.                         |
+| Option               | Type       | Default      | Required | Description                                                                  |
+| -------------------- | ---------- | ------------ | -------- | ---------------------------------------------------------------------------- |
+| `adminPath`          | `String`   | `/admin`     | `false`  | The path of the Admin UI.                                                    |
+| `apiPath`            | `String`   | `/admin/api` | `false`  | The path of the API provided to the Admin UI.                                |
+| `graphiqlPath`       | `String`   | `/admin/api` | `false`  | The path of the graphiql app, an in-browser IDE for exploring GraphQL.       |
+| `authStrategy`       | `String`   | `undefined`  | `false`  | See the [Authentication guide](https://keystonejs.com/guides/authentication) |
+| `pages`              | `Array`    | `null`       | `false`  |                                                                              |
+| `enableDefaultRoute` | `Bool`     | `false`      | `false`  | If enabled, the path of the Admin UI app will be set to `/`.                 |
+| `schemaName`         | `String`   | `public`     | `false`  |                                                                              |
+| `isAccessAllowed`    | `Function` | `true`       | `false`  | Controls which users have access to the Admin UI.                            |
 
 ### `isAccessAllowed`
 

@@ -127,6 +127,7 @@ module.exports = class List {
       adapterConfig = {},
       queryLimits = {},
       cacheHint,
+      authStrategies = {},
     },
     {
       getListByKey,
@@ -135,6 +136,7 @@ module.exports = class List {
       defaultAccess,
       registerType,
       createAuxList,
+      createAuthStrategy,
       isAuxList,
       schemaNames,
     }
@@ -238,6 +240,11 @@ module.exports = class List {
        */
       query: queryHelper,
     };
+
+    // Creates a map of auth strategy objects keyed by their config-provided names.
+    this.authStrategies = mapKeys(authStrategies, (strategyConfig, strategyName) =>
+      createAuthStrategy(this, strategyName, strategyConfig)
+    );
 
     // Tell Keystone about all the types we've seen
     Object.values(fields).forEach(({ type }) => registerType(type));
@@ -835,7 +842,7 @@ module.exports = class List {
       name: this.key,
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
+      // Evaluation takes place in ../Keystone/index.js
       // NOTE: These could return a Boolean or a JSON object (if using the
       // declarative syntax)
       getAccess: () => ({
@@ -1504,7 +1511,12 @@ module.exports = class List {
   getFieldByPath(path) {
     return this.fieldsByPath[path];
   }
+
   getPrimaryKey() {
     return this.fieldsByPath['id'];
+  }
+
+  getAuthStrategy(name) {
+    return this.authStrategies[name];
   }
 };

@@ -38,19 +38,17 @@ keystone.createList('User', {
     username: { type: Text },
     password: { type: Password },
   },
-});
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  config: {
-    identityField: 'username', // default: 'email'
-    secretField: 'password', // default: 'password'
+  authStrategies: {
+    password: {
+      type: PasswordAuthStrategy,
+      identityField: 'username', // default: 'email'
+      secretField: 'password', // default: 'password'
+    },
   },
 });
 
 // Enable Admin UI login by adding the authentication strategy
-const admin = new AdminUIApp({ authStrategy });
+const admin = new AdminUIApp({ authStrategy: 'User.password' });
 ```
 
 Once your Keystone server is restarted, the Admin UI will now enforce
@@ -65,7 +63,7 @@ First, disable authentication on the Admin UI by removing `authStrategy` from
 the `new AdminUIApp()` call:
 
 ```diff
-- const admin = new AdminUIApp({ authStrategy });
+- const admin = new AdminUIApp({ authStrategy: 'User.password' });
 + const admin = new AdminUIApp();
 ```
 
@@ -90,7 +88,7 @@ Add the `authStrategy` config back to the `new AdminUIApp()` call
 
 ```diff
 - const admin = new AdminUIApp();
-+ const admin = new AdminUIApp({ authStrategy });
++ const admin = new AdminUIApp({ authStrategy: 'User.password' });
 ```
 
 Restart your Keystone App once more, and try to visit <http://localhost:3000/admin/users>; you will be presented with the login screen.

@@ -44,11 +44,7 @@ keystone.createList('User', {
     noRead: { type: Text, access: { read: () => false } },
     yesRead: { type: Text, access: { read: () => true } },
   },
-});
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
+  authStrategies: { password: { type: PasswordAuthStrategy } },
 });
 
 function createListWithStaticAccess(access) {
@@ -143,5 +139,5 @@ listAccessVariations.forEach(createListWithDeclarativeAccess);
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ adminPath: '/admin', authStrategy })],
+  apps: [new GraphQLApp(), new AdminUIApp({ adminPath: '/admin', authStrategy: 'User.password' })],
 };

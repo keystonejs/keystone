@@ -36,6 +36,6 @@ class TwitterAuthStrategy extends PassportAuthStrategy {
   }
 }
 
-TwitterAuthStrategy.authType = 'twitter';
+TwitterAuthStrategy.prototype.authType = 'twitter';
 
 module.exports = TwitterAuthStrategy;

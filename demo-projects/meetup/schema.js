@@ -13,6 +13,7 @@ const {
   Text,
 } = require('@keystonejs/fields');
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 const cloudinaryAdapter = new CloudinaryAdapter({
@@ -53,6 +54,7 @@ exports.User = {
       access: { update: access.userIsAdmin },
     },
   },
+  authStrategies: { password: { type: PasswordAuthStrategy } },
   hooks: {
     afterChange: async ({ updatedItem, existingItem }) => {
       if (existingItem && updatedItem.password !== existingItem.password) {

@@ -15,33 +15,40 @@ This can be used to restrict access to the AdminUI, and to configure [access con
 ## Usage
 
 ```javascript
+const { Text, Checkbox, Password } = require('@keystonejs/fields');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  config: {
-    /*...config */
+const keystone = new Keystone({...});
+
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    email: { type: Text, isUnique: true },
+    isAdmin: { type: Checkbox },
+    password: { type: Password },
+  },
+  authStrategies: {
+    password: {
+      type: PasswordAuthStrategy,
+    },
   },
 });
 ```
 
-You then provide `authStrategy` to apps that facilitate login (typically the Admin UI):
+You then provide `authStrategy` to apps that facilitate login (typically the Admin UI) in the format `<list>.<strategy>`:
 
 ```javascript
 module.exports = {
   keystone,
-  apps: [new AdminUIApp({ authStrategy })],
+  apps: [new AdminUIApp({ authStrategy: 'User.password' })],
 };
 ```
 
 ## Config
 
-| Option   | Type           | Default    | Description                                                       |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `type`   | `AuthStrategy` | (required) | A valid authentication strategy.                                  |
-| `list`   | `String`       | (required) | The list that contains an authenticated item, for example a user. |
-| `config` | `Object`       | `{}`       | Strategy-specific config options.                                 |
+| Option | Type           | Default    | Description                      |
+| ------ | -------------- | ---------- | -------------------------------- |
+| `type` | `AuthStrategy` | (required) | A valid authentication strategy. |
 
 > **Note:** Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
 
@@ -49,8 +56,6 @@ module.exports = {
 
 A valid authentication strategy.
 
-### `list`
+### Additional Config Options
 
-Authentication strategies need to authenticate an item in a Keystone list (typically a User). The authenticated item will be provided to access control functions.
-
-This list should have the `{ auth: true }` access control set. See the [Access control API](https://www.keystonejs.com/api/access-control) docs for more details.
+Any additional config options are passed directly to your chosen authentication strategy. See their documentation for valid options.

@@ -15,7 +15,7 @@ address and password).
 
 ## Usage
 
-Assuming a list of users such as:
+Assuming a list of users, we can configure the auth strategy like so:
 
 ```js
 keystone.createList('User', {
@@ -23,23 +23,15 @@ keystone.createList('User', {
     username: { type: Text },
     password: { type: Password },
   },
-});
-```
-
-We can configure the KeystoneJS auth strategy as:
-
-```js
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  config: {
-    identityField: 'username',
-    secretField: 'password',
+  authStrategies: {
+    password: {
+      type: PasswordAuthStrategy,
+      identityField: 'username',
+      secretField: 'password',
+    },
   },
 });
 ```
-
-> **Note:** The auth strategy must be created after the User list.
 
 Later, the admin UI authentication handler will do something like this:
 

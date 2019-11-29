@@ -7,6 +7,6 @@ class GitHubAuthStrategy extends PassportAuthStrategy {
   }
 }
 
-GitHubAuthStrategy.authType = 'github';
+GitHubAuthStrategy.prototype.authType = 'github';
 
 module.exports = GitHubAuthStrategy;
