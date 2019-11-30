@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useState, memo, useEffect } from 'react';
+import { useState, memo, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { colors, gridSize } from '@arch-ui/theme';
@@ -76,7 +76,7 @@ export default memo(function Footer(props) {
   const cypressId = 'item-page-save-button';
 
   return (
-    <Fragment>
+    <>
       <Toolbar key="footer">
         <div css={{ display: 'flex', alignItems: 'center' }}>
           <LoadingButton
@@ -103,6 +103,6 @@ export default memo(function Footer(props) {
           </Button>
         </div>
       </Toolbar>
-    </Fragment>
+    </>
   );
 });

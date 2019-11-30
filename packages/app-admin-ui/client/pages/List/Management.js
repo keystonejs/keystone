@@ -1,6 +1,6 @@
 /* global ENABLE_DEV_FEATURES */
 
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 import { SettingsIcon, TrashcanIcon } from '@arch-ui/icons';
@@ -40,7 +40,7 @@ export default function ListManage(props) {
   const selectedCount = selectedItems.length;
 
   return (
-    <Fragment>
+    <>
       <FlexGroup align="center">
         <SelectedCount>
           {selectedCount} of {Math.min(pageSize, totalItems)} Selected
@@ -85,6 +85,6 @@ export default function ListManage(props) {
         onClose={() => setDeleteModal(false)}
         onDelete={handleDelete}
       />
-    </Fragment>
+    </>
   );
 }

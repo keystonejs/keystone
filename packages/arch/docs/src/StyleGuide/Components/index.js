@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import Alerts from './Alerts';
 import Badges from './Badges';
@@ -13,7 +13,7 @@ import Pagination from './Pagination';
 import Pills from './Pills';
 
 const ComponentsGuide = () => (
-  <Fragment>
+  <>
     <Pagination />
     <Badges />
     <Lozenges />
@@ -25,6 +25,6 @@ const ComponentsGuide = () => (
     <Loading />
     <Alerts />
     <Grid />
-  </Fragment>
+  </>
 );
 export default ComponentsGuide;

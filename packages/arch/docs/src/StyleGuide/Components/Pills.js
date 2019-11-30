@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { Pill } from '@arch-ui/pill';
 import { FlexGroup } from '@arch-ui/layout';
 
 const appearances = ['Default', 'Primary', 'Danger', 'Create', 'Warning'];
 const PillGuide = () => (
-  <Fragment>
+  <>
     <h2>Pills</h2>
     <h4>Variant: Subtle</h4>
     <FlexGroup>
@@ -23,7 +23,7 @@ const PillGuide = () => (
         </Pill>
       ))}
     </FlexGroup>
-  </Fragment>
+  </>
 );
 
 export default PillGuide;

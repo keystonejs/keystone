@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, createRef, Fragment } from 'react';
+import { Component, createRef } from 'react';
 import { createPortal } from 'react-dom';
 import flushable from 'flushable';
 import styled from '@emotion/styled';
@@ -153,7 +153,7 @@ export default class Tooltip extends Component {
     const ref = this.ref;
 
     return (
-      <Fragment>
+      <>
         {children(ref)}
 
         <TransitionProvider isOpen={isVisible} onEntered={onShow} onExited={onHide}>
@@ -168,7 +168,7 @@ export default class Tooltip extends Component {
             </TooltipPositioner>
           )}
         </TransitionProvider>
-      </Fragment>
+      </>
     );
   }
 }

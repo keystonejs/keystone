@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, PureComponent, forwardRef } from 'react';
+import { PureComponent, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import { jsx } from '@emotion/core';
@@ -73,7 +73,7 @@ class ModalConfirm extends PureComponent {
     }
 
     return createPortal(
-      <Fragment>
+      <>
         <Blanket style={fade(transitionState)} isTinted isLight />
         <Positioner style={zoomInDown(transitionState)}>
           <FocusTrap>
@@ -83,7 +83,7 @@ class ModalConfirm extends PureComponent {
           </FocusTrap>
           <ScrollLock />
         </Positioner>
-      </Fragment>,
+      </>,
       attachTo
     );
   }

@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react';
+import React, { memo } from 'react';
 import { HiddenInput } from './HiddenInput';
 // Autocomplete Captor
 // ==============================
@@ -24,12 +24,12 @@ import { HiddenInput } from './HiddenInput';
 export const AutocompleteCaptor = memo(
   function AutocompleteCaptor() {
     return (
-      <Fragment>
+      <>
         <HiddenInput autoComplete="username" type="text" tabIndex={-1} />
         <HiddenInput autoComplete="email" type="text" tabIndex={-1} />
         <HiddenInput autoComplete="current-password" type="password" tabIndex={-1} />
         <HiddenInput autoComplete="new-password" type="password" tabIndex={-1} />
-      </Fragment>
+      </>
     );
   },
   () => true

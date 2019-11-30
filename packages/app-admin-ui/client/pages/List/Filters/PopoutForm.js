@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 
 import { colors, gridSize } from '@arch-ui/theme';
 import { Popout } from '../../../components/Popout';
@@ -63,12 +63,12 @@ export default class FilterPopout extends Component {
     if (!showFooter) return null;
 
     return (
-      <Fragment>
+      <>
         <FooterButton onClick={this.close}>Cancel</FooterButton>
         <FooterButton type="submit" isPrimary>
           Apply
         </FooterButton>
-      </Fragment>
+      </>
     );
   }
   popoutForm = props => {

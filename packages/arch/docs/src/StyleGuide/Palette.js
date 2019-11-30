@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment } from 'react';
 
 import { Grid, Cell } from '@arch-ui/layout';
 import { colors } from '@arch-ui/theme';
@@ -27,7 +26,7 @@ const Swatch = ({ color, name, prefix }) => (
 const Hue = ({ heading, group }) => {
   const groupList = Object.keys(group).reverse();
   return (
-    <Fragment>
+    <>
       <h4>{heading}</h4>
       <Grid>
         {groupList.map(k => {
@@ -39,19 +38,19 @@ const Hue = ({ heading, group }) => {
           );
         })}
       </Grid>
-    </Fragment>
+    </>
   );
 };
 
 const PaletteGuide = () => {
   return (
-    <Fragment>
+    <>
       <h2>Palette</h2>
       <Hue heading="Reds" group={colors.R} />
       <Hue heading="Greens" group={colors.G} />
       <Hue heading="Blues" group={colors.B} />
       <Hue heading="Yellows" group={colors.Y} />
-    </Fragment>
+    </>
   );
 };
 

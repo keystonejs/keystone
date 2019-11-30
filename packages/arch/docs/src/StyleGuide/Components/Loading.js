@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
@@ -30,7 +30,7 @@ export default class ProgressGuide extends Component {
   render() {
     const { appearance, size } = this.state;
     return (
-      <Fragment>
+      <>
         <h2>Loading</h2>
         <FlexGroup style={{ marginBottom: '1em' }}>
           <div css={{ alignItems: 'center', display: 'flex' }}>
@@ -65,7 +65,7 @@ export default class ProgressGuide extends Component {
             </LoadingBox>
           </div>
         </FlexGroup>
-      </Fragment>
+      </>
     );
   }
 }

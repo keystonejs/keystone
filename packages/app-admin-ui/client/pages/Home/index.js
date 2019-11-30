@@ -85,7 +85,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
 
   if (lists.length === 0) {
     return (
-      <Fragment>
+      <>
         <DocTitle>Home</DocTitle>
         <PageError>
           <p>
@@ -95,13 +95,13 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
             </Link>
           </p>
         </PageError>
-      </Fragment>
+      </>
     );
   }
 
   const query = gqlCountQueries(lists);
   return (
-    <Fragment>
+    <>
       <DocTitle>Home</DocTitle>
       <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
         {({ data, error }) => {
@@ -143,7 +143,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
           return <HomePage lists={allowedLists} data={data} {...props} />;
         }}
       </Query>
-    </Fragment>
+    </>
   );
 };
 

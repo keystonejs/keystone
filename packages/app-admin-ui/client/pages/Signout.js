@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 
 import SessionProvider from '../providers/Session';
@@ -61,12 +61,12 @@ const SignedOutPage = ({ isLoading, signinPath }) => {
           {isLoading ? (
             <LoadingIndicator />
           ) : (
-            <Fragment>
+            <>
               <p>You have been signed out.</p>
               <p>
                 <a href={signinPath}>Sign In</a>
               </p>
-            </Fragment>
+            </>
           )}
         </Content>
       </Box>

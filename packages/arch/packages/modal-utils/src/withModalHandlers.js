@@ -1,4 +1,4 @@
-import React, { Component, Fragment, memo } from 'react';
+import React, { Component, memo } from 'react';
 import ScrollLock from 'react-scrolllock';
 import { TransitionProvider } from './transitions';
 
@@ -89,7 +89,7 @@ export default function withModalHandlers(WrappedComponent, { transition }) {
       const { clientX, clientY, isOpen } = this.state;
 
       return (
-        <Fragment>
+        <>
           <Target
             targetRef={this.getTarget}
             target={target}
@@ -114,7 +114,7 @@ export default function withModalHandlers(WrappedComponent, { transition }) {
               />
             )}
           </TransitionProvider>
-        </Fragment>
+        </>
       );
     }
   }

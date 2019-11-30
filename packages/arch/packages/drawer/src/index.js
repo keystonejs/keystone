@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, forwardRef, memo, useMemo, useEffect, useRef } from 'react';
+import { forwardRef, memo, useMemo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
@@ -146,7 +146,7 @@ function ModalDialogComponent({
   }
 
   return createPortal(
-    <Fragment>
+    <>
       {isOpen ? (
         <Blanket
           style={fade(transitionState)}
@@ -179,7 +179,7 @@ function ModalDialogComponent({
         </FocusTrap>
       </Positioner>
       <ScrollLock />
-    </Fragment>,
+    </>,
     attachTo
   );
 }

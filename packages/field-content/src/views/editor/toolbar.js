@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, forwardRef, useMemo } from 'react';
+import { useRef, useLayoutEffect, forwardRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
 import { marks, markTypes } from './marks';
@@ -29,7 +29,7 @@ function InnerToolbar({ blocks, editor, editorState }) {
               </Toolbar>
             );
           },
-          <Fragment>
+          <>
             {Object.keys(marks).map(name => {
               let Icon = marks[name].icon;
               return (
@@ -63,7 +63,7 @@ function InnerToolbar({ blocks, editor, editorState }) {
               }
               return <ToolbarElement key={type} editor={editor} editorState={editorState} />;
             })}
-          </Fragment>
+          </>
         )}
     </div>
   );

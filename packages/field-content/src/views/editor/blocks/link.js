@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { useContext, useState, Fragment, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { LinkIcon, CheckIcon, CircleSlashIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { Popper } from 'react-popper';
@@ -25,7 +25,7 @@ export function Node({ node, attributes, children, isSelected, editor }) {
   }, [href]);
 
   return (
-    <Fragment>
+    <>
       <a
         {...attributes}
         ref={setAElement}
@@ -76,7 +76,7 @@ export function Node({ node, attributes, children, isSelected, editor }) {
           </Popper>,
           document.body
         )}
-    </Fragment>
+    </>
   );
 }
 

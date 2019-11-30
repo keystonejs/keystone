@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component, Suspense, Fragment } from 'react';
+import React, { Component, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
@@ -324,7 +324,7 @@ export default function ListTable(props) {
   const columns = fields.length + 2;
 
   const TableContents = ({ isLoading, children }) => (
-    <Fragment>
+    <>
       <colgroup>
         <col width="32" />
         {fields.map(f => (
@@ -362,7 +362,7 @@ export default function ListTable(props) {
         </tr>
       </thead>
       <tbody data-test-table-loaded={!isLoading}>{children}</tbody>
-    </Fragment>
+    </>
   );
 
   return (

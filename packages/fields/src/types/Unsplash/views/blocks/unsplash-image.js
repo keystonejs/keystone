@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useState, useCallback, createContext, useContext } from 'react';
+import { useState, useCallback, createContext, useContext } from 'react';
 import pluralize from 'pluralize';
 import { Input } from '@arch-ui/input';
 
@@ -200,7 +200,7 @@ const Search = ({ onSelect }) => {
       />
       <div>
         {searchResults && searchResults.results.length ? (
-          <Fragment>
+          <>
             <div
               css={{
                 display: 'flex',
@@ -266,7 +266,7 @@ const Search = ({ onSelect }) => {
                 />
               ))}
             </div>
-          </Fragment>
+          </>
         ) : (
           <div css={{ padding: '32px', textAlign: 'center', fontSize: '1rem', color: '#cdcdcd' }}>
             Start typing to search for an image on Unsplash
@@ -317,10 +317,10 @@ let Block = ({ unsplashData, onSelect }) => {
   }
 
   return (
-    <Fragment>
+    <>
       {!unsplashData && <Search onSelect={onSelect} />}
       {unsplash}
-    </Fragment>
+    </>
   );
 };
 

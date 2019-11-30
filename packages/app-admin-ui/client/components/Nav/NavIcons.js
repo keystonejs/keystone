@@ -1,7 +1,6 @@
 /* global ENABLE_DEV_FEATURES */
 /** @jsx jsx */
 
-import { Fragment } from 'react';
 import { jsx } from '@emotion/core';
 
 import { TerminalIcon, MarkGithubIcon, SignOutIcon } from '@arch-ui/icons';
@@ -22,7 +21,7 @@ export function NavIcons() {
         </NavIcon>
       ) : null}
       {ENABLE_DEV_FEATURES ? (
-        <Fragment>
+        <>
           <NavIcon target="_blank" href={GITHUB_PROJECT} title="GitHub">
             <MarkGithubIcon />
             <A11yText>GitHub</A11yText>
@@ -31,7 +30,7 @@ export function NavIcons() {
             <TerminalIcon />
             <A11yText>Graphiql Console</A11yText>
           </NavIcon>
-        </Fragment>
+        </>
       ) : null}
     </NavGroupIcons>
   ) : null;

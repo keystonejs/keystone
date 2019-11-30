@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { Alert } from '@arch-ui/alert';
 import { FlexGroup } from '@arch-ui/layout';
 
 const AlertGuide = () => (
-  <Fragment>
+  <>
     <h2>Alerts</h2>
     <h4>Variant: Subtle</h4>
     <FlexGroup isVertical>
@@ -37,7 +37,7 @@ const AlertGuide = () => (
         <code>success</code>: Toffee cheesecake chocolate cake macaroon soufflé.
       </Alert>
     </FlexGroup>
-  </Fragment>
+  </>
 );
 
 export default AlertGuide;

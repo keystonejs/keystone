@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import { AlertIcon, DashboardIcon, PencilIcon, PlusIcon, MegaphoneIcon } from '@arch-ui/icons';
 import { Button, IconButton, LoadingButton } from '@arch-ui/button';
@@ -26,7 +26,7 @@ export default class ButtonGuide extends Component {
       { appearance: 'danger', icon: AlertIcon },
     ];
     return (
-      <Fragment>
+      <>
         <h2>Buttons</h2>
         <h4>Variant: Bold</h4>
         <FlexGroup>
@@ -100,7 +100,7 @@ export default class ButtonGuide extends Component {
             </IconButton>
           ))}
         </FlexGroup>
-      </Fragment>
+      </>
     );
   }
 }

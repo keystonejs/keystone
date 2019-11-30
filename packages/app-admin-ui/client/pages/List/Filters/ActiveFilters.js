@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-import { Fragment } from 'react';
 import { jsx } from '@emotion/core';
 import { Pill } from '@arch-ui/pill';
 import { Button } from '@arch-ui/button';
@@ -20,7 +19,7 @@ export default function ActiveFilters({ list }) {
   const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key);
 
   return (
-    <Fragment>
+    <>
       {filters.length
         ? filters.map(filter => {
             const label = filter.field.formatFilter(filter);
@@ -63,6 +62,6 @@ export default function ActiveFilters({ list }) {
           Clear All
         </Button>
       ) : null}
-    </Fragment>
+    </>
   );
 }

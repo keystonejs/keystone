@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+import React, { Component, Fragment } from 'react'; // eslint-disable-line no-unused-vars
 import { withRouter, Route, Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
@@ -157,7 +157,7 @@ function renderChildren(
     depth += 1;
 
     return (
-      <React.Fragment key={groupKey}>
+      <Fragment key={groupKey}>
         {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
         {node.children.map(child =>
           renderChildren(
@@ -170,7 +170,7 @@ function renderChildren(
             onRenderIndexPage
           )
         )}
-      </React.Fragment>
+      </Fragment>
     );
   }
 

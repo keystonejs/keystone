@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 
 import { Grid, Cell } from '@arch-ui/layout';
@@ -28,7 +28,7 @@ const GridGuide = () => {
   const halves = new Array(2).fill('');
 
   return (
-    <Fragment>
+    <>
       <h2>Grid</h2>
       <h4>Traditional</h4>
       <Grid columns={12}>
@@ -37,7 +37,7 @@ const GridGuide = () => {
         {quarters.map(makeRow(3))}
         {halves.map(makeRow(6))}
       </Grid>
-    </Fragment>
+    </>
   );
 };
 

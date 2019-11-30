@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useCallback, useMemo, Suspense } from 'react';
+import { Component, useCallback, useMemo, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 import { useToasts } from 'react-toast-notifications';
 
@@ -112,7 +112,7 @@ class CreateItemModal extends Component {
         onKeyDown={this.onKeyDown}
         slideInFrom="right"
         footer={
-          <Fragment>
+          <>
             <LoadingButton
               appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
               id={cypressId}
@@ -126,7 +126,7 @@ class CreateItemModal extends Component {
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
-          </Fragment>
+          </>
         }
       >
         <div

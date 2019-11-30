@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
+import { Component, useMemo, useCallback, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
@@ -113,7 +113,7 @@ class UpdateManyModal extends Component {
         onKeyDown={this.onKeyDown}
         slideInFrom="left"
         footer={
-          <Fragment>
+          <>
             <LoadingButton
               appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
               isDisabled={hasErrors}
@@ -125,7 +125,7 @@ class UpdateManyModal extends Component {
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
-          </Fragment>
+          </>
         }
       >
         <FieldContainer>

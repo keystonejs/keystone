@@ -39,6 +39,7 @@ module.exports = {
     'import/no-unresolved': 'error',
     'object-curly-spacing': ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
+    'react/jsx-fragments': 'warn',
     'react/jsx-boolean-value': 'warn',
     'react/jsx-no-undef': 'error',
     'react/jsx-uses-react': 'error',

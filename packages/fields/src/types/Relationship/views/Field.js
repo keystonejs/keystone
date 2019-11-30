@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useState } from 'react';
+import { Component, useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -139,7 +139,7 @@ function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
   }
 
   return (
-    <Fragment>
+    <>
       <Tooltip placement="top" content={label}>
         {ref => (
           <IconButton
@@ -167,7 +167,7 @@ function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
           onCreate(data[relatedList.gqlNames.createMutationName]);
         }}
       />
-    </Fragment>
+    </>
   );
 }
 

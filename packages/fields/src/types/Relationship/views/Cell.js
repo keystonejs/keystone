@@ -6,7 +6,7 @@ export default ({ data, field, Link }) => {
   }
   const refList = field.adminMeta.getListByKey(field.config.ref);
   return (
-    <Fragment>
+    <>
       {(Array.isArray(data) ? data : [data])
         .filter(item => item)
         .map((item, index) => (
@@ -17,6 +17,6 @@ export default ({ data, field, Link }) => {
             </Link>
           </Fragment>
         ))}
-    </Fragment>
+    </>
   );
 };

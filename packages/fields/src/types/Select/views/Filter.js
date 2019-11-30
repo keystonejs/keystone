@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import Select from '@arch-ui/select';
 import { CheckMark, Options, OptionPrimitive } from '@arch-ui/options';
 import { Radio, RadioGroup } from '@arch-ui/filters';
@@ -44,7 +44,7 @@ export default class SelectFilterView extends Component {
     };
 
     return (
-      <Fragment>
+      <>
         <RadioGroup onChange={this.handleRadioChange} value={radioValue}>
           <Radio value="does_match">Matches</Radio>
           <Radio value="does_not_match">Does not match</Radio>
@@ -58,7 +58,7 @@ export default class SelectFilterView extends Component {
             <Options displaySearch={false} {...selectProps} />
           )}
         </SelectWrapper>
-      </Fragment>
+      </>
     );
   }
 }

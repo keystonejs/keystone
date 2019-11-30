@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import styled from '@emotion/styled';
 
 import { Button } from '@arch-ui/button';
@@ -32,7 +32,7 @@ export default class ModalGuide extends Component {
     ];
 
     return (
-      <Fragment>
+      <>
         <h2>Modals</h2>
 
         <h4>Tooltips</h4>
@@ -83,14 +83,14 @@ export default class ModalGuide extends Component {
           onClose={this.toggleDialog}
           heading="Dialog"
           footer={
-            <Fragment>
+            <>
               <Button appearance="primary" onClick={this.toggleDialog}>
                 Do Thing
               </Button>
               <Button appearance="warning" variant="subtle" onClick={this.toggleDialog}>
                 Cancel
               </Button>
-            </Fragment>
+            </>
           }
         >
           <p>
@@ -114,7 +114,7 @@ export default class ModalGuide extends Component {
             tart gingerbread candy macaroon gingerbread sweet. Sugar plum fruitcake wafer.
           </p>
         </Dialog>
-      </Fragment>
+      </>
     );
   }
 }

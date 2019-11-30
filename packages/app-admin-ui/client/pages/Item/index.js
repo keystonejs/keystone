@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
+import { Component, Suspense, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -284,7 +284,7 @@ const ItemDetails = withRouter(
       const { item, itemHasChanged, validationErrors, validationWarnings } = this.state;
 
       return (
-        <Fragment>
+        <>
           {itemHasChanged && <PreventNavigation />}
           <ItemTitle
             onCreateClick={this.openCreateModal}
@@ -370,7 +370,7 @@ const ItemDetails = withRouter(
 
           {this.renderCreateModal()}
           {this.renderDeleteModal()}
-        </Fragment>
+        </>
       );
     }
   }
@@ -421,10 +421,10 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
               !Object.keys(data[list.gqlNames.itemQueryName]).length)
           ) {
             return (
-              <Fragment>
+              <>
                 <DocTitle>{list.singular} not found</DocTitle>
                 <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
-              </Fragment>
+              </>
             );
           }
 

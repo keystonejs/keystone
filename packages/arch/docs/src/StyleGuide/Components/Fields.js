@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Checkbox, CheckboxGroup, RadioGroup, Radio } from '@arch-ui/controls';
@@ -7,7 +7,7 @@ import Select from '@arch-ui/select';
 import { FlexGroup } from '@arch-ui/layout';
 
 const FieldGuide = () => (
-  <Fragment>
+  <>
     <h2>Forms</h2>
     <h4>Input</h4>
     <FlexGroup isVertical>
@@ -44,7 +44,7 @@ const FieldGuide = () => (
       <Radio value="two">Radio 2</Radio>
       <Radio value="three">Radio 3</Radio>
     </RadioGroup>
-  </Fragment>
+  </>
 );
 
 export default FieldGuide;

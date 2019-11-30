@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useMemo } from 'react';
+import { useMemo } from 'react';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
@@ -26,7 +26,7 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
   const target = props => (
     <Button {...props} variant="ghost">
       {value ? (
-        <Fragment>
+        <>
           <div
             style={{
               // using inline styles instead of emotion for setting the color
@@ -51,7 +51,7 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
           >
             {value}
           </span>
-        </Fragment>
+        </>
       ) : (
         'Set Color'
       )}

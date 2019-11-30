@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { createPortal } from 'react-dom';
-import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react';
+import { useState, useCallback, useRef, useLayoutEffect } from 'react';
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
 import { type as defaultType } from './blocks/paragraph';
@@ -48,7 +48,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
   let [isOpen, setIsOpen] = useState(false);
 
   return createPortal(
-    <Fragment>
+    <>
       <div ref={openCloseRef} css={{ position: 'absolute', zIndex: 10, top: -10000, left: -10000 }}>
         <button
           type="button"
@@ -85,7 +85,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           </div>
         )}
       </div>
-    </Fragment>,
+    </>,
     document.body
   );
 };

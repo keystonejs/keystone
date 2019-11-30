@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
 
 import { IconButton } from '@arch-ui/button';
@@ -166,10 +166,10 @@ export function ListLayout(props: LayoutProps) {
                     ,
                   </span>
                   {sortBy ? (
-                    <Fragment>
+                    <>
                       <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
                       <SortPopout listKey={list.key} />
-                    </Fragment>
+                    </>
                   ) : (
                     ''
                   )}
@@ -321,7 +321,7 @@ export function List(props: Props) {
   // Success
   // ------------------------------
   return (
-    <Fragment>
+    <>
       <DocTitle>{list.plural}</DocTitle>
       <ListLayout
         {...props}
@@ -330,7 +330,7 @@ export function List(props: Props) {
         query={query}
         queryErrors={queryErrors}
       />
-    </Fragment>
+    </>
   );
 }
 

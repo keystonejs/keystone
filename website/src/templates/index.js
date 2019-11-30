@@ -46,7 +46,7 @@ export default function Template({
     const navSectionData = navData.find(d => d.navTitle === section);
     if (navSectionData) {
       return (
-        <Fragment>
+        <>
           <ul>
             {navSectionData.pages
               .filter(d => d.path !== fields.slug)
@@ -68,7 +68,7 @@ export default function Template({
                 </Fragment>
               ))
             : null}
-        </Fragment>
+        </>
       );
     }
     return null;

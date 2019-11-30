@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Suspense, Fragment, useState, createContext, useContext } from 'react';
+import { Suspense, useState, createContext, useContext } from 'react';
 import { Button } from '@arch-ui/button';
 import PreviewPlaceholder from '../preview';
 import pluralize from 'pluralize';
@@ -42,7 +42,7 @@ let Block = ({ url, oembedData, onChange, onRemove }) => {
   }
 
   return (
-    <Fragment>
+    <>
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -85,7 +85,7 @@ let Block = ({ url, oembedData, onChange, onRemove }) => {
         </div>
       </form>
       {embed}
-    </Fragment>
+    </>
   );
 };
 

@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment } from 'react';
 
 const Cell = props => {
   if (!props.data) {
@@ -9,7 +8,7 @@ const Cell = props => {
   }
 
   return (
-    <Fragment>
+    <>
       <div
         style={{
           // using inline styles instead of emotion for setting the color
@@ -32,7 +31,7 @@ const Cell = props => {
       >
         {props.data}
       </span>
-    </Fragment>
+    </>
   );
 };
 

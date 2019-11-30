@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
@@ -77,7 +77,7 @@ export default class IconsGuide extends Component {
   render() {
     const { altIsDown, copyText } = this.state;
     return (
-      <Fragment>
+      <>
         {altIsDown ? (
           <Instructions>Click an icon to copy its import code to your clipboard.</Instructions>
         ) : (
@@ -111,7 +111,7 @@ export default class IconsGuide extends Component {
             );
           })}
         </Grid>
-      </Fragment>
+      </>
     );
   }
 }

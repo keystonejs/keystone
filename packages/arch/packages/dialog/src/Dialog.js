@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import { FocusTrap } from 'react-focus-marshal';
@@ -44,7 +44,7 @@ class ModalDialog extends PureComponent {
     }
 
     return createPortal(
-      <Fragment>
+      <>
         <Blanket
           style={fade(transitionState)}
           onClick={closeOnBlanketClick ? onClose : undefined}
@@ -70,7 +70,7 @@ class ModalDialog extends PureComponent {
           </FocusTrap>
         </Positioner>
         <ScrollLock />
-      </Fragment>,
+      </>,
       attachTo
     );
   }
