@@ -9,7 +9,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.7.4",
     "@keystonejs/adapter-knex": "^6.0.0",
     "@keystonejs/fields": "^6.0.0"
   },
