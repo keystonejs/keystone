@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import SessionProvider from '../providers/Session';
 import KeystoneLogo from '../components/KeystoneLogo';
 
+import { LoadingIndicator } from '@arch-ui/loading';
+
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
@@ -57,7 +59,7 @@ const SignedOutPage = ({ isLoading, signinPath }) => {
         <Divider />
         <Content>
           {isLoading ? (
-            'Loading...'
+            <LoadingIndicator />
           ) : (
             <Fragment>
               <p>You have been signed out.</p>
