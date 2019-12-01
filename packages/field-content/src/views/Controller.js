@@ -58,7 +58,7 @@ export default class ContentController extends Controller {
         },
         // This block exists because it was passed into the Content field
         // directly.
-        // Depdencies are not allowed to show UI chrome (toolbar/sidebar) unless
+        // Dependencies are not allowed to show UI chrome (toolbar/sidebar) unless
         // they're also directly passed to the Content Field.
         withChrome: this.config.blockTypes.includes(block.type),
       }));
@@ -143,7 +143,7 @@ export default class ContentController extends Controller {
 
     const blocks = this.getBlocksSync();
 
-    // TODO: Make the .document a JSON type in GraphQL so we dont have to parse
+    // TODO: Make the .document a JSON type in GraphQL so we don't have to parse
     // it
     const parsedData = {
       ...data[path],

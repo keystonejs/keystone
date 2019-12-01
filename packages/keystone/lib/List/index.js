@@ -1244,6 +1244,7 @@ module.exports = class List {
       context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
 
     // First we run the field type hooks
@@ -1290,6 +1291,7 @@ module.exports = class List {
       context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     // Check for isRequired
     const fieldValidationErrors = this.fields
@@ -1321,6 +1323,7 @@ module.exports = class List {
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     const fields = this.fields;
     await this._validateHook(args, fields, operation, 'validateDelete');
@@ -1365,11 +1368,12 @@ module.exports = class List {
     await this._runHook(args, resolvedData, 'beforeChange');
   }
 
-  async _beforeDelete(existingItem, context) {
+  async _beforeDelete(existingItem, context, operation) {
     const args = {
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, existingItem, 'beforeDelete');
   }
@@ -1386,15 +1390,17 @@ module.exports = class List {
     await this._runHook(args, updatedItem, 'afterChange');
   }
 
-  async _afterDelete(existingItem, context) {
+  async _afterDelete(existingItem, context, operation) {
     const args = {
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, existingItem, 'afterDelete');
   }
 
+  // Used to apply hooks that only produce side effects
   async _runHook(args, fieldObject, hookName) {
     const fields = this._fieldsFromObject(fieldObject);
     await this._mapToFields(fields, field => field[hookName](args));
@@ -1631,13 +1637,13 @@ module.exports = class List {
 
       await this._validateDelete(existingItem, context, operation);
 
-      await this._beforeDelete(existingItem, context);
+      await this._beforeDelete(existingItem, context, operation);
 
       await this.adapter.delete(existingItem.id);
 
       return {
         result: existingItem,
-        afterHook: () => this._afterDelete(existingItem, context),
+        afterHook: () => this._afterDelete(existingItem, context, operation),
       };
     });
   }
