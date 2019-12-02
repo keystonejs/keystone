@@ -35,9 +35,6 @@
     "cypress": "^3.5.0",
     "dotenv-safe": "^8.1.0",
     "execa": "^2.0.4",
-    "mocha": "^5.2.0",
-    "mocha-junit-reporter": "^1.21.0",
-    "mocha-multi-reporters": "^1.1.7",
     "moment": "^2.24.0",
     "pino-colada": "^1.4.5",
     "start-server-and-test": "^1.10.6"
