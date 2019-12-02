@@ -33,6 +33,14 @@ x-integration-steps: &integration-steps
     - checkout
     - restore_cache: *restore-cache
     - run:
+        name: 'Run or bail'
+        command: |
+          if ! git diff-tree --no-commit-id --name-only -r HEAD | grep -qvE '.md$' 
+          then 
+            echo "No code changes detected, not running CI." 
+            exit 
+          fi
+    - run:
         name: Yarn - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
     - save_cache: *save-cache
