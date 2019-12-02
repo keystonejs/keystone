@@ -1,5 +1,4 @@
 import { Project } from '../project';
-import { Package } from '../package';
 import { watch } from 'rollup';
 import chalk from 'chalk';
 import path from 'path';
