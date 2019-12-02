@@ -1,25 +1,8 @@
-// @flow
 import * as React from 'react';
 import { parse } from 'date-fns';
-import { DayPicker, type YearPickerType } from './DayPicker';
+import { DayPicker } from './DayPicker';
 import { Input } from '@arch-ui/input';
 import Select from '@arch-ui/select';
-
-type Props = {
-  /** Field disabled */
-  isDisabled?: boolean,
-  date: string,
-  time: string,
-  offset: string,
-  htmlID: string,
-  autoFocus?: boolean,
-  handleDayChange: Date => void,
-  handleTimeChange: Function,
-  handleOffsetChange: Function,
-  yearRangeFrom?: number,
-  yearRangeTo?: number,
-  yearPickerType?: YearPickerType,
-};
 
 const options = [
   '-12',
@@ -49,9 +32,12 @@ const options = [
   '+12',
   '+13',
   '+14',
-].map(o => ({ value: `${o}:00`, label: `${o}:00` }));
+].map(o => ({
+  value: `${o}:00`,
+  label: `${o}:00`,
+}));
 
-export const DayTimePicker = (props: Props) => {
+export const DayTimePicker = props => {
   const { date, time, offset, htmlID, autoFocus, isDisabled } = props;
   const {
     handleDayChange,

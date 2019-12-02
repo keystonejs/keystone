@@ -7,13 +7,7 @@ import { borderRadius, gridSize, shadows } from '@arch-ui/theme';
 // Card
 // ==============================
 
-type CardProps = {
-  elevation: number,
-  isInteractive: boolean,
-  isPadded: boolean,
-};
-
-export const Card = ({ as: Tag, elevation, isInteractive, isPadded, ...props }: CardProps) => {
+export const Card = ({ as: Tag, elevation, isInteractive, isPadded, ...props }) => {
   const shadow = shadows[elevation];
   return (
     <Tag
@@ -44,11 +38,7 @@ Card.defaultProps = {
 // Canvas
 // ==============================
 
-type CanvasProps = {
-  isPadded: boolean,
-};
-
-export const Canvas = ({ as: Tag, isPadded, ...props }: CanvasProps) => {
+export const Canvas = ({ as: Tag, isPadded, ...props }) => {
   return (
     <Tag
       css={{

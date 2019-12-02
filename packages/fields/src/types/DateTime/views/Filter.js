@@ -1,14 +1,10 @@
-// @flow
 
 import React from 'react';
 import { format } from 'date-fns';
 import { DayTimePicker } from '@arch-ui/day-picker';
-import type { FilterProps } from '../../../types';
 import { stringifyDate, parseDate } from './utils';
 
-type Props = FilterProps<string>;
-
-const CalendarDayFilterView = (props: Props) => {
+const CalendarDayFilterView = props => {
   const parsedDate = props.value ? parseDate(props.value) : parseDate(new Date().toISOString());
 
   let handleDayChange = day => {

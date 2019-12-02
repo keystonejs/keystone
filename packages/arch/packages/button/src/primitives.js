@@ -1,8 +1,7 @@
-// @flow
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type Node, forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
@@ -19,22 +18,6 @@ const SPACING_OPTION = {
   comfortable: `${gridSize}px ${gridSize * 1.5}px`,
   cozy: '2px 6px',
   cramped: '1px 2px',
-};
-
-export type ButtonProps = {
-  appearance: 'default' | 'primary' | 'warning' | 'danger',
-  children: Node,
-  href?: string,
-  isBlock?: boolean,
-  isDisabled: boolean,
-  isActive: boolean,
-  isHover: boolean,
-  isFocus: boolean,
-  isSelected?: boolean,
-  focusOrigin: 'mouse' | 'keyboard',
-  spacing: 'comfortable' | 'cozy' | 'cramped',
-  to?: string,
-  variant: 'bold' | 'ghost' | 'subtle',
 };
 
 function makeVariant({
@@ -84,7 +67,7 @@ function makeVariant({
 }
 
 // remove props that will create react DOM warnings
-function ButtonElementComponent(props: ButtonProps, ref) {
+function ButtonElementComponent(props, ref) {
   const { isDisabled, isActive, isFocus, isHover, isSelected, focusOrigin, ...rest } = props;
   const variant = makeVariant(props);
 
@@ -98,8 +81,6 @@ function ButtonElementComponent(props: ButtonProps, ref) {
   return <button type="button" disabled={isDisabled} css={variant} ref={ref} {...rest} />;
 }
 
-const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
-  ButtonElementComponent
-);
+const ButtonElement = forwardRef(ButtonElementComponent);
 
 export const Button = withPseudoState(ButtonElement);

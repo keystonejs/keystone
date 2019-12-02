@@ -1,8 +1,7 @@
-// @flow
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, createRef, Fragment, type Ref, type Node } from 'react';
+import { Component, createRef, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import flushable from 'flushable';
 import styled from '@emotion/styled';
@@ -26,16 +25,7 @@ const TooltipElement = styled.div({
   zIndex: 2,
 });
 
-type PlacementType = 'top' | 'right' | 'bottom' | 'left';
-type PositionerProps = {
-  children: Node,
-  placement: PlacementType,
-  style?: Object,
-  className?: string,
-  targetNode: HTMLElement | null,
-};
-
-let TooltipPositioner = (props: PositionerProps) => {
+let TooltipPositioner = props => {
   return createPortal(
     <Popper
       referenceElement={props.targetNode}
@@ -50,7 +40,7 @@ let TooltipPositioner = (props: PositionerProps) => {
         </div>
       )}
     </Popper>,
-    (document.body: any)
+    document.body
   );
 };
 
@@ -63,7 +53,7 @@ const NOOP = () => {};
 
 let pendingHide;
 
-const showTooltip = (fn: boolean => void, defaultDelay: number) => {
+const showTooltip = (fn, defaultDelay) => {
   const isHidePending = pendingHide && pendingHide.pending();
   if (isHidePending) {
     pendingHide.flush();
@@ -72,35 +62,18 @@ const showTooltip = (fn: boolean => void, defaultDelay: number) => {
   return pendingShow.cancel;
 };
 
-const hideTooltip = (fn: boolean => void, defaultDelay: number) => {
+const hideTooltip = (fn, defaultDelay) => {
   pendingHide = flushable(flushed => fn(flushed), defaultDelay);
   return pendingHide.cancel;
 };
 
-type Props = {
-  children: (Ref<*>) => Node,
-  content: Node,
-  delay: number,
-  hideOnMouseDown?: boolean,
-  hideOnKeyDown?: boolean,
-  onHide?: () => void,
-  onShow?: () => void,
-  placement: PlacementType,
-  className?: string,
-};
-type State = {
-  immediatelyHide: boolean,
-  immediatelyShow: boolean,
-  isVisible: boolean,
-};
-
-export default class Tooltip extends Component<Props, State> {
+export default class Tooltip extends Component {
   state = {
     immediatelyHide: false,
     immediatelyShow: false,
     isVisible: false,
   };
-  ref = createRef<HTMLElement>();
+  ref = createRef();
   cancelPendingSetState = NOOP;
   static defaultProps = {
     delay: 300,

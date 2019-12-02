@@ -1,13 +1,9 @@
-// @flow
 
 import React, { Component } from 'react';
 import { RadioGroup, Radio } from '@arch-ui/filters';
-import type { FilterProps } from '../../../types';
 
-type Props = FilterProps<boolean>;
-
-export default class PasswordFilterView extends Component<Props> {
-  handleChange = (value: 'is_set' | 'is_not_set') => {
+export default class PasswordFilterView extends Component {
+  handleChange = value => {
     const boolValue = value === 'is_set' ? true : false;
     this.props.onChange(boolValue);
   };

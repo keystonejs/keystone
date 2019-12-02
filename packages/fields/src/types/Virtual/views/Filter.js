@@ -1,13 +1,9 @@
-// @flow
 
 import React, { Component } from 'react';
 import { Input } from '@arch-ui/input';
-import type { FilterProps } from '../../../types';
 
-type Props = FilterProps<string>;
-
-export default class VirtualFilterView extends Component<Props> {
-  handleChange = ({ target: { value } }: Object) => {
+export default class VirtualFilterView extends Component {
+  handleChange = ({ target: { value } }) => {
     this.props.onChange(value);
   };
 

@@ -1,18 +1,9 @@
-// @flow
 import React from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
 
-type Props = {
-  isOpen: boolean,
-  itemIds: Array<string>,
-  list: Object,
-  onClose: () => void,
-  onDelete: (Promise<*>) => void,
-};
-
-export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDelete }: Props) {
+export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDelete }) {
   return (
     <Mutation mutation={list.deleteManyMutation}>
       {(deleteItems, { loading }) => {

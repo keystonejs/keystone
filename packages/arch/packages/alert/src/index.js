@@ -1,6 +1,3 @@
-// @flow
-
-import { type Node } from 'react';
 import styled from '@emotion/styled';
 
 import { borderRadius, colors } from '@arch-ui/theme';
@@ -30,18 +27,10 @@ const subtleTextColor = {
   danger: colors.R.D20,
 };
 
-type Props = {
-  /* Affects the visual style of the alert */
-  appearance: 'info' | 'success' | 'danger' | 'warning',
-  /* The alert content */
-  children: Node,
-  /* The value displayed within the alert. */
-  variant: 'bold' | 'subtle',
-};
-
-export const Alert = styled.div(({ appearance, variant }: Props) => ({
+export const Alert = styled.div(({ appearance, variant }) => ({
   backgroundColor:
     variant === 'bold' ? boldBackgroundColor[appearance] : subtleBackgroundColor[appearance],
+
   color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
   borderRadius,
   display: 'flex',

@@ -1,4 +1,3 @@
-// @flow
 
 import * as React from 'react';
 import { useMemo } from 'react';
@@ -49,7 +48,10 @@ const selectStyles = {
   },
   clearIndicator: indicatorStyles,
   dropdownIndicator: indicatorStyles,
-  menu: provided => ({ ...provided, fontSize: '0.9em' }),
+  menu: provided => ({
+    ...provided,
+    fontSize: '0.9em',
+  }),
   option: (provided, { isDisabled, isFocused, isSelected }) => {
     let bg = 'inherit';
     if (isFocused) bg = colors.B.L90;
@@ -77,7 +79,10 @@ const selectStyles = {
       ':active': cssPseudoActive,
     };
   },
-  menuPortal: provided => ({ ...provided, zIndex: 3 }),
+  menuPortal: provided => ({
+    ...provided,
+    zIndex: 3,
+  }),
 };
 
 const getSelectVariant = ({ isAsync, isCreatable }) => {
@@ -94,24 +99,19 @@ const getSelectVariant = ({ isAsync, isCreatable }) => {
   return BaseSelect;
 };
 
-const Select = ({
-  isAsync,
-  isCreatable,
-  innerRef,
-  styles,
-  ...props
-}: {
-  isAsync?: Boolean,
-  isCreatable?: Boolean,
-  innerRef?: React.Ref<*>,
-  styles?: Object,
-}) => {
+const Select = ({ isAsync, isCreatable, innerRef, styles, ...props }) => {
   const ReactSelect = getSelectVariant({ isAsync, isCreatable });
 
   return (
     <ReactSelect
       ref={innerRef}
-      styles={useMemo(() => ({ ...selectStyles, ...styles }), [styles])}
+      styles={useMemo(
+        () => ({
+          ...selectStyles,
+          ...styles,
+        }),
+        [styles]
+      )}
       {...props}
     />
   );

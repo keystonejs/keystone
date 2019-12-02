@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import * as React from 'react';
@@ -7,12 +6,7 @@ import { StopIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 import { Container } from '@arch-ui/layout';
 
-type Props = {
-  children: React.Node,
-  Icon: React$AbstractComponent<mixed, mixed>,
-};
-
-export default function PageError({ children, Icon, ...props }: Props) {
+export default function PageError({ children, Icon, ...props }) {
   return (
     <Container>
       <div

@@ -1,4 +1,3 @@
-// @flow
 
 import React, { PureComponent } from 'react';
 import styled from '@emotion/styled';
@@ -41,6 +40,7 @@ const subtleTextColor = {
 const BadgeElement = styled.div(({ appearance, variant }) => ({
   backgroundColor:
     variant === 'bold' ? boldBackgroundColor[appearance] : subtleBackgroundColor[appearance],
+
   borderRadius: '2em',
   boxSizing: 'border-box',
   color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
@@ -53,25 +53,14 @@ const BadgeElement = styled.div(({ appearance, variant }) => ({
   textAlign: 'center',
 }));
 
-type Props = {
-  /* Affects the visual style of the badge */
-  appearance: 'default' | 'primary' | 'created' | 'removed',
-  /* The maximum value to display e.g. value = 100, max = 50; "50+" will be displayed */
-  max: number,
-  /* The value displayed within the badge. */
-  value: number,
-  /* The value displayed within the badge. */
-  variant: 'bold' | 'subtle',
-};
-
-export class Badge extends PureComponent<Props> {
+export class Badge extends PureComponent {
   static defaultProps = {
     appearance: 'default',
     max: 99,
     value: 0,
     variant: 'subtle',
   };
-  getValue = ({ value, max }: { value: number, max: number }) => {
+  getValue = ({ value, max }) => {
     if (value < 0) return '0';
     if (max > 0 && value > max) return `${max}+`;
     return value;

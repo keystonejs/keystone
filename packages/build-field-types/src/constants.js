@@ -1,4 +1,3 @@
-// @flow
 
 exports.EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
 

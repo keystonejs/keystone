@@ -1,4 +1,3 @@
-// @flow
 
 import styled from '@emotion/styled';
 
@@ -41,16 +40,7 @@ const subtleTextColor = {
   warning: colors.Y.L30,
 };
 
-type Props = {
-  /* Affects the visual style of the lozenge */
-  appearance: 'default' | 'primary' | 'danger' | 'create' | 'warning',
-  /* Which direction to crop text from */
-  crop?: 'left' | 'right',
-  /* The value displayed within the lozenge. */
-  variant: 'bold' | 'subtle',
-};
-
-export const Lozenge = styled.div(({ appearance, variant, crop }: Props) => {
+export const Lozenge = styled.div(({ appearance, variant, crop }) => {
   const isClipRight = crop === 'right';
   const cropStyles = crop
     ? {

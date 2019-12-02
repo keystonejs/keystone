@@ -1,23 +1,17 @@
-// @flow
 import FieldController from '../../../Controller';
 
-type FilterGraphQL = {| type: string, value: string |};
-type FilterLabel = {| label: string |};
-type FormatFilter = {| label: string, value: string |};
-type DataType = { [key: string]: string };
-
 export default class TextController extends FieldController {
-  getFilterGraphQL = ({ type, value }: FilterGraphQL): string => {
+  getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: ${value}`;
   };
-  getFilterLabel = ({ label }: FilterLabel): string => {
+  getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;
   };
-  formatFilter = ({ label, value }: FormatFilter) => {
+  formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  serialize = (data: DataType): ?number => {
+  serialize = data => {
     const value = data[this.path];
     if (typeof value === 'number') {
       return value;

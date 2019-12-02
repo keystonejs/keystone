@@ -1,23 +1,13 @@
-// @flow
-import { Package } from '../package';
-import { type RollupConfig, getRollupConfig } from './rollup';
-import type { OutputOptions } from './types';
-import type { Aliases } from './aliases';
+import { getRollupConfig } from './rollup';
 
-let getNames = (ext: string) => {
+let getNames = ext => {
   return {
     entryFileNames: `[name]${ext}`,
     chunkFileNames: `dist/[name]-[hash]${ext}`,
   };
 };
 
-export function getRollupConfigs(
-  pkg: Package,
-  aliases: Aliases
-): Array<{
-  config: RollupConfig,
-  outputs: Array<OutputOptions>,
-}> {
+export function getRollupConfigs(pkg, aliases) {
   let strictEntrypoints = pkg.entrypoints.map(x => x.strict());
 
   let configs = [

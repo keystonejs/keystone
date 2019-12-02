@@ -1,12 +1,8 @@
-// @flow
 
-import React, { Component, type Node } from 'react';
+import React, { Component } from 'react';
 import RelationshipSelect from './RelationshipSelect';
-import type { FilterProps } from '../../../types';
 
-type Props = FilterProps<null | string>;
-
-const EventCatcher = ({ children }: { children: Node }) => (
+const EventCatcher = ({ children }) => (
   <div
     onClick={e => {
       e.preventDefault();
@@ -17,8 +13,8 @@ const EventCatcher = ({ children }: { children: Node }) => (
   </div>
 );
 
-export default class RelationshipFilterView extends Component<Props> {
-  handleChange = (option: null | { value: { id: string } }) => {
+export default class RelationshipFilterView extends Component {
+  handleChange = option => {
     const { onChange } = this.props;
     if (option === null) {
       onChange(null);

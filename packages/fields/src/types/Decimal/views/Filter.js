@@ -1,12 +1,8 @@
-// @flow
 
 import React, { Component } from 'react';
 import { Input } from '@arch-ui/input';
-import type { FilterProps } from '../../../types';
-
-type Props = FilterProps<string>;
-export default class TextFilterView extends Component<Props> {
-  valueToString = (value: string | number) => {
+export default class TextFilterView extends Component {
+  valueToString = value => {
     // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'string') {
       return value;
@@ -18,7 +14,7 @@ export default class TextFilterView extends Component<Props> {
     }
   };
 
-  handleChange = (event: Object) => {
+  handleChange = event => {
     const value = event.target.value;
     this.props.onChange(value.replace(/[^0-9.,]+/g, ''));
   };

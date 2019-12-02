@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import * as React from 'react';
@@ -8,18 +7,6 @@ import Select from '@arch-ui/select';
 import { components } from 'react-select';
 import 'intersection-observer';
 import { useState, useMemo, useRef, useEffect, forwardRef } from 'react';
-
-type Props = {
-  innerRef?: React.Ref<*>,
-  autoFocus?: boolean,
-  field: Object,
-  errors?: Array<Error>,
-  renderContext: string | null,
-  htmlID: string,
-  onChange: Function,
-  value: *,
-  isMulti: boolean,
-};
 
 function useIntersectionObserver(cb, ref) {
   useEffect(() => {
@@ -164,7 +151,7 @@ const RelationshipSelect = ({
   onChange,
   isMulti,
   value,
-}: Props) => {
+}) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
   const query = gql`query RelationshipSelect($search: String!, $skip: Int!) {${refList.buildQuery(

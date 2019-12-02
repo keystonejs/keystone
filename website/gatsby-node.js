@@ -103,13 +103,6 @@ exports.createPages = ({ actions, graphql }) => {
   });
 };
 
-exports.onCreateBabelConfig = ({ actions, stage }) => {
-  actions.setBabelPreset({
-    name: `@babel/preset-flow`,
-    stage,
-  });
-};
-
 const getEditUrl = absPath =>
   `https://github.com/keystonejs/keystone-5/edit/master/${path.relative(PROJECT_ROOT, absPath)}`;
 
