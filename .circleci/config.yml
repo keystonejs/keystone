@@ -60,7 +60,11 @@ x-integration-steps: &integration-steps
         path: /tmp/screenshots
 
 jobs:
-  run_or_bail:
+  simple_tests:
+    <<: *job-setup
+    steps:
+      - checkout
+      - restore_cache: *restore-cache
     - run:
         name: 'Run or bail'
         command: |
@@ -69,11 +73,6 @@ jobs:
             echo "No code changes detected, not running CI." 
             exit 1
           fi
-  simple_tests:
-    <<: *job-setup
-    steps:
-      - checkout
-      - restore_cache: *restore-cache
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client-9.6
       - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
