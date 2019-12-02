@@ -1,4 +1,3 @@
-
 import { Component } from 'react';
 
 export default class CheckboxCellView extends Component {

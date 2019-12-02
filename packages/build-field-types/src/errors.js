@@ -1,4 +1,3 @@
-
 export class FatalError extends Error {
   constructor(message, item) {
     super(message);

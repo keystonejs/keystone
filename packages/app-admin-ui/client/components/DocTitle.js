@@ -1,4 +1,3 @@
-
 import React, { Children } from 'react';
 import DocumentTitle from 'react-document-title';
 

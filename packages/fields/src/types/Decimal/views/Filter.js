@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { Input } from '@arch-ui/input';
 export default class TextFilterView extends Component {

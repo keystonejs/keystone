@@ -1,4 +1,3 @@
-
 import React, { Fragment } from 'react';
 
 export default ({ data, field, Link }) => {

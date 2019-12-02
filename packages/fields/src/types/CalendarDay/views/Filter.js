@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { format } from 'date-fns';
 import { TextDayPicker } from '@arch-ui/day-picker';

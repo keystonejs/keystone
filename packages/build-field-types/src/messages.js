@@ -1,4 +1,3 @@
-
 import { PKG_JSON_CONFIG_FIELD } from './constants';
 
 export let errors = {

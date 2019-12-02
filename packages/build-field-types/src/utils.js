@@ -1,4 +1,3 @@
-
 export function getNameForDist(name) {
   return name.replace(/.*\//, '');
 }

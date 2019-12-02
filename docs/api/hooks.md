@@ -206,7 +206,6 @@ const afterDelete = ({
 | `actions`                 | `Object`         | An Object providing access to List functions, see [`actions` Argument](#actions-argument).                                     |
 | `operation`               | `String`         | A key indicating the current operation being performed, ie. `'create'`, `'update'` or `'delete'`.                              |
 
-
 ### `actions` Argument
 
 The `actions` argument is an object containing a query helper:

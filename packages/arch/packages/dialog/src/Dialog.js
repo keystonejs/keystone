@@ -1,4 +1,3 @@
-
 import React, { PureComponent, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
