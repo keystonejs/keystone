@@ -143,7 +143,6 @@ workflows:
   version: 2
   tests:
     jobs:
-      - run_or_bail
       - simple_tests
       - integration_tests_basic
       - integration_tests_login
