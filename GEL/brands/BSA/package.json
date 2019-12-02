@@ -1,0 +1,24 @@
+{
+	"name": "@westpac/bsa",
+	"version": "1.0.0",
+	"description": "BSA brand component for the Westpac GEL design language",
+	"repository": "https://github.com/WestpacGEL/GEL.git",
+	"author": "Westpac GEL Team <gel@westpac.com.au>",
+	"contributors": [
+		{
+			"name": "Dominik Wilkowski",
+			"email": "Hi@Dominik-Wilkowski.com",
+			"url": "https://dominik-wilkowski.com"
+		},
+		{
+			"name": "Joss Mackison",
+			"email": "joss@thinkmill.com.au",
+			"url": "http://jossmackison.me"
+		}
+	],
+	"license": "GPL-3.0+",
+	"scripts": {},
+	"main": "dist/bsa.cjs.js",
+	"module": "dist/bsa.esm.js",
+	"dependencies": {}
+}

@@ -1,0 +1,121 @@
+---
+name: List
+menu: Components
+route: /list
+---
+
+import { Playground, Props } from 'docz';
+import { List, ListItem } from '@westpac/list';
+import { AndroidIcon } from '@westpac/icon';
+
+# List
+
+## Bullet list
+
+<Playground>
+	<List>
+		<ListItem appearance="primary">Styled bullet list - primary</ListItem>
+		<ListItem>Styled bullet list - primary</ListItem>
+		<ListItem>
+			Styled bullet list - primary
+			<List>
+				<ListItem>Styled bullet list - primary</ListItem>
+				<ListItem>Styled bullet list - primary</ListItem>
+				<ListItem>Styled bullet list - primary</ListItem>
+			</List>
+		</ListItem>
+		<ListItem>Styled bullet list - primary</ListItem>
+	</List>
+	<br />
+	<List>
+		<ListItem>Styled bullet list - hero</ListItem>
+		<ListItem>Styled bullet list - hero</ListItem>
+		<ListItem>
+			Styled bullet list - hero
+			<List>
+				<ListItem>Styled bullet list - hero</ListItem>
+				<ListItem>Styled bullet list - hero</ListItem>
+				<ListItem>Styled bullet list - hero</ListItem>
+			</List>
+		</ListItem>
+		<ListItem>Styled bullet list - hero</ListItem>
+	</List>
+	<br />
+	<List appearance="neutral">
+		<ListItem>Styled bullet list - neutral</ListItem>
+		<ListItem>Styled bullet list - neutral</ListItem>
+		<ListItem>
+			Styled bullet list - neutral
+			<List>
+				<ListItem>Styled bullet list - neutral</ListItem>
+				<ListItem>Styled bullet list - neutral</ListItem>
+				<ListItem>Styled bullet list - neutral</ListItem>
+			</List>
+		</ListItem>
+		<ListItem>Styled bullet list - neutral</ListItem>
+	</List>
+</Playground>
+
+## Link list
+
+Use this style when the list items are clickable.
+
+<Playground>
+	<List type="link">
+		<ListItem>Styled link list</ListItem>
+		<ListItem>Styled link list</ListItem>
+		<ListItem>Styled link list</ListItem>
+	</List>
+</Playground>
+
+## Tick list
+
+<Playground>
+	<List type="tick">
+		<ListItem>Styled tick list</ListItem>
+		<ListItem>Styled tick list</ListItem>
+		<ListItem>Styled tick list</ListItem>
+	</List>
+</Playground>
+
+## Icon list
+
+You can use any GUI icon in a list if the provided options are not sufficient.
+
+<Playground>
+	<List type="icon" icon={AndroidIcon}>
+		<ListItem>Styled icon list</ListItem>
+		<ListItem>Styled icon list</ListItem>
+		<ListItem>Styled icon list</ListItem>
+	</List>
+</Playground>
+
+## Unstyled list
+
+A list without any bullets, ticks or icons.
+
+<Playground>
+	<List type="unstyled">
+		<ListItem>Unstyled list</ListItem>
+		<ListItem>Unstyled list</ListItem>
+		<ListItem>Unstyled list</ListItem>
+	</List>
+</Playground>
+
+## Large list
+
+Use a larger list when you have interactive elements. This increases the affordance on touch devices.
+
+<Playground>
+	<List spacing="large">
+		<ListItem>Large size list</ListItem>
+		<ListItem>Large size list</ListItem>
+		<ListItem>Large size list</ListItem>
+	</List>
+</Playground>
+
+## Props
+
+All styling props will be automatically passed to children components
+
+<Props of={List} />

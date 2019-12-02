@@ -1,0 +1,49 @@
+---
+name: A11y
+menu: Components
+route: /accessibility-helpers
+---
+
+import { Playground, Props } from 'docz';
+import { VisuallyHidden, SkipLink } from '@westpac/a11y';
+
+# A11y
+
+Components used to provide features for digital accessibility compliance.
+
+## VisuallyHidden
+
+The VisuallyHidden component hides an element to all devices except screen readers.
+
+<Playground>
+	<p>The text below this message is visibly hidden...</p>
+	<VisuallyHidden>This is screen reader only text</VisuallyHidden>
+</Playground>
+
+### Props
+
+<Props of={VisuallyHidden} />
+
+## SkipLink
+
+The SkipLink component hides an element to all devices except screen readers. It links via an anchor hash to an area of content on the page and becomes visible and fixed to the top of the viewport when focussed.
+
+There are generally one or more SkipLink components on a page, inserted as necessary to meet accessibility compliance requirements.
+
+<Playground>
+	<p>The link below this message is visibly hidden until focussed...</p>
+	<SkipLink href="#content">This is screen reader only text (visible when foccused)</SkipLink>
+	<br />
+	<div id="content">
+		<p>
+			This is example content, linked to by the SkipLink component above. Sit sint irure do eu. Non
+			aliquip voluptate et nisi est voluptate in aliquip. Tempor ea est et velit anim incididunt qui
+			ipsum anim id. Irure exercitation adipisicing velit minim ea aute esse elit amet minim in
+			minim cillum. Cupidatat aliqua eiusmod ipsum occaecat proident exercitation.
+		</p>
+	</div>
+</Playground>
+
+### Props
+
+<Props of={SkipLink} />

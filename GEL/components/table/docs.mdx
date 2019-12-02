@@ -1,0 +1,383 @@
+---
+name: Table
+menu: Components
+route: /table
+---
+
+import { Playground, Props } from 'docz';
+import { Table } from '@westpac/table';
+
+# Table
+
+Financial services use tables a lot. Tables should only be used for rendering data that belongs naturally in a grid, in other words where the data describes a number of objects that have the same properties.
+
+Table renders a simple table structure without borders. This default style can be used when stretching edge to edge within a container.
+
+<Playground>
+	<Table>
+		<caption>
+			Table caption this table width is: <em>(100%)</em>
+		</caption>
+		<thead>
+			<tr>
+				<th scope="col">Column 1</th>
+				<th scope="col">Column 2</th>
+				<th scope="col">Column 3</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Cell 1</td>
+				<td>Cell 7</td>
+				<td>Cell 13</td>
+			</tr>
+			<tr>
+				<td>Cell 2</td>
+				<td>Cell 8</td>
+				<td>Cell 14</td>
+			</tr>
+			<tr>
+				<td>Cell 3</td>
+				<td>Cell 9</td>
+				<td>Cell 15</td>
+			</tr>
+			<tr>
+				<td>Cell 4</td>
+				<td>Cell 10</td>
+				<td>Cell 16</td>
+			</tr>
+			<tr>
+				<td>Cell 5</td>
+				<td>Cell 11</td>
+				<td>Cell 17</td>
+			</tr>
+			<tr>
+				<td>Cell 6</td>
+				<td>Cell 12</td>
+				<td>Cell 18</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colSpan="3">Footer goes here and should colSpan all columns</td>
+			</tr>
+		</tfoot>
+	</Table>
+</Playground>
+
+## Striped
+
+The `isStriped` options styles alternate rows to help with content scanning.
+
+<Playground>
+	<Table isStriped>
+		<caption>
+			Table caption this table width is: <em>(100%)</em>
+		</caption>
+		<thead>
+			<tr>
+				<th scope="col">Column 1</th>
+				<th scope="col">Column 2</th>
+				<th scope="col">Column 3</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Cell 1</td>
+				<td>Cell 7</td>
+				<td>Cell 13</td>
+			</tr>
+			<tr>
+				<td>Cell 2</td>
+				<td>Cell 8</td>
+				<td>Cell 14</td>
+			</tr>
+			<tr>
+				<td>Cell 3</td>
+				<td>Cell 9</td>
+				<td>Cell 15</td>
+			</tr>
+			<tr>
+				<td>Cell 4</td>
+				<td>Cell 10</td>
+				<td>Cell 16</td>
+			</tr>
+			<tr>
+				<td>Cell 5</td>
+				<td>Cell 11</td>
+				<td>Cell 17</td>
+			</tr>
+			<tr>
+				<td>Cell 6</td>
+				<td>Cell 12</td>
+				<td>Cell 18</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colSpan="3">Footer goes here and should `colSpan` all columns</td>
+			</tr>
+		</tfoot>
+	</Table>
+</Playground>
+
+## Bordered
+
+The `isBordered` option outlines each cell. Use a bordered table if displaying lots of complex data e.g. spreadsheet style.
+
+<Playground>
+	<Table isBordered>
+		<caption>
+			Table caption this table width is: <em>(100%)</em>
+		</caption>
+		<thead>
+			<tr>
+				<th scope="col">Column 1</th>
+				<th scope="col">Column 2</th>
+				<th scope="col">Column 3</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Cell 1</td>
+				<td>Cell 7</td>
+				<td>Cell 13</td>
+			</tr>
+			<tr>
+				<td>Cell 2</td>
+				<td>Cell 8</td>
+				<td>Cell 14</td>
+			</tr>
+			<tr>
+				<td>Cell 3</td>
+				<td>Cell 9</td>
+				<td>Cell 15</td>
+			</tr>
+			<tr>
+				<td>Cell 4</td>
+				<td>Cell 10</td>
+				<td>Cell 16</td>
+			</tr>
+			<tr>
+				<td>Cell 5</td>
+				<td>Cell 11</td>
+				<td>Cell 17</td>
+			</tr>
+			<tr>
+				<td>Cell 6</td>
+				<td>Cell 12</td>
+				<td>Cell 18</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colSpan="3">Footer goes here and should `colSpan` all columns</td>
+			</tr>
+		</tfoot>
+	</Table>
+</Playground>
+
+## Striped & bordered
+
+Multiple styling props can be used.
+
+<Table isStriped isBordered>
+	<caption>Interest paid monthly</caption>
+	<thead>
+		<tr>
+			<th scope="col">Term</th>
+			<th scope="col">$5,000 - $10,000</th>
+			<th scope="col">$10,000 - $20,000</th>
+			<th scope="col">$20,000 - $50,000</th>
+			<th scope="col">$50,000 - $100,000</th>
+			<th scope="col">$100,000 - $250,000</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th scope="row">1-2 months</th>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+		</tr>
+		<tr>
+			<th scope="row">2-3 months</th>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+		</tr>
+		<tr>
+			<th scope="row">3-4 months</th>
+			<td>3.45%</td>
+			<td>3.45%</td>
+			<td>3.45%</td>
+			<td>3.45%</td>
+			<td>3.45%</td>
+		</tr>
+		<tr>
+			<th scope="row">4-5 months</th>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+		</tr>
+		<tr>
+			<th scope="row">5-6 months</th>
+			<td>3.45%</td>
+			<td>3.45%</td>
+			<td>3.45%</td>
+			<td>3.45%</td>
+			<td>3.45%</td>
+		</tr>
+		<tr>
+			<th scope="row">6-7 months</th>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+		</tr>
+		<tr>
+			<th scope="row">7-8 months</th>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+		</tr>
+		<tr>
+			<th scope="row">8-9 months</th>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+			<td>2.55%</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colSpan="6">Footer goes here and should `colSpan` all columns</td>
+		</tr>
+	</tfoot>
+</Table>
+
+## Highlight
+
+Use the `table-highlight` class to call out specific cells in a table. They can be added to an individual cell, multiple cells or to an entire row.
+
+<Playground>
+	<Table>
+		<caption>
+			Table caption this table width is: <em>(100%)</em>
+		</caption>
+		<thead>
+			<tr>
+				<th scope="col">Column 1</th>
+				<th scope="col">Column 2</th>
+				<th scope="col">Column 3</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Cell 1</td>
+				<td className="table-highlight">Cell 7</td>
+				<td>Cell 13</td>
+			</tr>
+			<tr>
+				<td>Cell 2</td>
+				<td>Cell 8</td>
+				<td>Cell 14</td>
+			</tr>
+			<tr className="table-highlight">
+				<td>Cell 3</td>
+				<td>Cell 9</td>
+				<td>Cell 15</td>
+			</tr>
+			<tr>
+				<td>Cell 4</td>
+				<td>Cell 10</td>
+				<td>Cell 16</td>
+			</tr>
+			<tr>
+				<td>Cell 5</td>
+				<td>Cell 11</td>
+				<td>Cell 17</td>
+			</tr>
+			<tr>
+				<td>Cell 6</td>
+				<td>Cell 12</td>
+				<td>Cell 18</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colSpan="3">Footer goes here and should `colSpan` all columns</td>
+			</tr>
+		</tfoot>
+	</Table>
+</Playground>
+
+## Responsive
+
+The `isResponsive` option renders a table wrapping element and provides horizontal overflow scrolling in the XS breakpoint.
+
+<Playground>
+	<Table isResponsive>
+		<caption>
+			Table caption this table width is: <em>(100%)</em>
+		</caption>
+		<thead>
+			<tr>
+				<th scope="col">Column 1</th>
+				<th scope="col">Column 2</th>
+				<th scope="col">Column 3</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Cell 1</td>
+				<td>Cell 7</td>
+				<td>Cell 13</td>
+			</tr>
+			<tr>
+				<td>Cell 2</td>
+				<td>Cell 8</td>
+				<td>Cell 14</td>
+			</tr>
+			<tr>
+				<td>Cell 3</td>
+				<td>Cell 9</td>
+				<td>Cell 15</td>
+			</tr>
+			<tr>
+				<td>Cell 4</td>
+				<td>Cell 10</td>
+				<td>Cell 16</td>
+			</tr>
+			<tr>
+				<td>Cell 5</td>
+				<td>Cell 11</td>
+				<td>Cell 17</td>
+			</tr>
+			<tr>
+				<td>Cell 6</td>
+				<td>Cell 12</td>
+				<td>Cell 18</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colSpan="3">Footer goes here and should colSpan all columns</td>
+			</tr>
+		</tfoot>
+	</Table>
+</Playground>
+
+## Props
+
+<Props of={Table} />

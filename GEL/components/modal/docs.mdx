@@ -1,0 +1,51 @@
+---
+name: Modal
+menu: Components
+route: /modal
+---
+
+import { useState } from 'react';
+import { Playground, Props } from 'docz';
+import { Modal, Header, Body, Footer } from '@westpac/modal';
+import { ModalProps } from './src/_utils';
+import { Button } from '@westpac/button';
+
+# Modal
+
+Modals are streamlined, but flexible, dialog prompts with the minimum required functionality and smart defaults. Modals should be easy to digest so that the user can quickly get back to what they were doing.
+Set the initial width of your modal depending on the amount of content you are showing.
+
+<Playground>
+    {
+        () => {
+            const [open, setOpen] = useState(false);
+            const openModal = () => setOpen(true);
+            const closeModal = () => setOpen(false);
+
+            return (
+                <>
+                    <Button onClick={openModal}>Open</Button>
+                    <Modal isOpen={open} onClose={closeModal}>
+                        <Header>Modal Title</Header>
+                        <Body>
+                            ‘It was much pleasanter at home’, thought poor Alice, ‘when one wasn’t always growing
+                            larger and smaller, and being ordered about by mice and rabbits. I almost wish I hadn’t
+                            gone down that rabbit-hole — and yet — and yet — it’s rather curious, you know, this sort
+                            of life! I do wonder what can have happened to me! When I used to read fairy-tales, I
+                            fancied that kind of thing never happened, and now here I am in the middle of one! There
+                            ought to be a book written about me, that there ought!’
+                        </Body>
+                        <Footer>
+                            <Button appearance="faint" onClick={closeModal}>Close</Button>
+                        </Footer>
+                    </Modal>
+                </>
+            )
+        }
+    }
+
+</Playground>
+
+## Props
+
+<Props of={ModalProps} />

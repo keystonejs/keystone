@@ -1,0 +1,1 @@
+{"ast":null,"code":"export { default } from './layout';","map":{"version":3,"sources":["/Users/mike/Development/GEL/website/site/components/layout/index.js"],"names":[],"mappings":"AAAA,SAAA,OAAA,QAAA,UAAA","sourcesContent":["export { default } from './layout';\n"]},"metadata":{},"sourceType":"module"}

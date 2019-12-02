@@ -1,0 +1,22 @@
+---
+name: Heading
+menu: Components
+route: /heading
+---
+
+import { Playground, Props } from 'docz';
+import { Heading } from '@westpac/heading';
+
+# Heading
+
+Use the heading for all headlines.
+You can chose from 9 sizes and 6 tags.
+
+<Playground>
+	<Heading size='1'>A headline of size 1 and semantic tag h1</Heading>
+
+    <Heading tag='h2' size='9'>A headline of size 9 and semantic tag h2</Heading>
+
+</Playground>
+
+<Props of={Heading} />

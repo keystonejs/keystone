@@ -1,0 +1,110 @@
+---
+name: Panel
+menu: Components
+route: /panel
+---
+
+import { Playground, Props } from 'docz';
+import { Panel, PanelHeader, PanelBody, PanelFooter } from '@westpac/panel';
+import { Table } from '@westpac/table';
+
+# Panel
+
+Containers with headers and optional footers for grouping elements and text.
+
+## Appearance
+
+Panels come in two flavours... `hero` and `faint`.
+
+<Playground>
+	<Panel appearance="hero">
+		<PanelHeader>Panel title</PanelHeader>
+		<PanelBody>
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora officiis officia omnis
+			aperiam voluptate suscipit, laudantium praesentium quas consequatur placeat, perferendis
+			eligendi saepe in unde sequi dolores excepturi doloremque autem! Lorem ipsum dolor sit amet,
+			consectetur adipisicing elit.
+		</PanelBody>
+		<PanelFooter>Panel footer</PanelFooter>
+	</Panel>
+	<Panel appearance="faint">
+		<PanelHeader>Panel title</PanelHeader>
+		<PanelBody>
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora officiis officia omnis
+			aperiam voluptate suscipit, laudantium praesentium quas consequatur placeat, perferendis
+			eligendi saepe in unde sequi dolores excepturi doloremque autem! Lorem ipsum dolor sit amet,
+			consectetur adipisicing elit.
+		</PanelBody>
+		<PanelFooter>Panel footer</PanelFooter>
+	</Panel>
+</Playground>
+
+## Tables
+
+You can place Table components within Panel.
+
+<Playground>
+	<Panel>
+		<PanelHeader>Panel title</PanelHeader>
+		<PanelBody>
+			Some default panel content here. Nulla vitae elit libero, a pharetra augue. Aenean lacinia
+			bibendum nulla sed consectetur. Aenean eu leo quam. Pellentesque ornare sem lacinia quam
+			venenatis vestibulum. Nullam id dolor id nibh ultricies vehicula ut id elit.
+		</PanelBody>
+		<Table striped responsive>
+			<caption>
+				Table caption this table width is: <em>(100%)</em>
+			</caption>
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Username</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>Justin</td>
+					<td>Spencer</td>
+					<td>
+						<i>Justin has no twitter</i>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Dominik</td>
+					<td>Wilkowski</td>
+					<td>@wilkowskidom</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Peter</td>
+					<td>Clancy</td>
+					<td>
+						<i>Pete has no twitter either... :(</i>
+					</td>
+				</tr>
+			</tbody>
+		</Table>
+	</Panel>
+</Playground>
+
+## Props
+
+### Panel
+
+<Props of={Panel} />
+
+### PanelHeader
+
+<Props of={PanelHeader} />
+
+### PanelBody
+
+<Props of={PanelBody} />
+
+### PanelFooter
+
+<Props of={PanelFooter} />

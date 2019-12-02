@@ -1,0 +1,31 @@
+---
+name: Badge
+menu: Components
+route: /badge
+---
+
+import { Playground, Props } from 'docz';
+import { Badge } from '@westpac/badge';
+
+# Badge
+
+Badges are styled elements generally used to highlight a number. They come in nine different styles and can be used alone, inside links or buttons.
+
+<Playground>
+	<Badge value="Default"/>{' '}
+
+    <Badge look="primary" value="Primary"/>{' '}
+    <Badge look="hero" value="Hero"/>{' '}
+    <Badge look="neutral" value="Neutral"/>{' '}
+    <Badge look="faint" value="Faint"/>{' '}
+
+    <Badge look="success" value="Success"/>{' '}
+    <Badge look="info" value="Info"/>{' '}
+    <Badge look="warning" value="Warning"/>{' '}
+    <Badge look="danger" value="Danger"/>
+
+</Playground>
+
+## Props
+
+<Props of={Badge} />

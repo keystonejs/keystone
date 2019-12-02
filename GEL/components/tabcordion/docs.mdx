@@ -1,0 +1,83 @@
+---
+name: Tabcordion
+menu: Components
+route: /tabcordion
+---
+
+import { Playground, Props } from 'docz';
+import { Tab } from './src/Tab';
+import { Tabcordion } from './src/Tabcordion';
+import { data } from './examples/_data';
+
+# Tabcordion
+
+A tab set that changes to an accordion based on breakpoint. Tabcordions may be
+styled in default (soft) or lego styling.
+
+## Tabs
+
+Use tab elements to switch between different views or content, soft styling
+reduces emphasis. Avoid wrapping labels in tabs.
+
+<Playground>
+	{/* try adding `justifyTabs={true}` to the Tabcordion component */}
+	<Tabcordion mode="tabs">
+		{data.map(t => (
+			<Tab key={t.label} label={t.label}>
+				{t.content}
+			</Tab>
+		))}
+	</Tabcordion>
+</Playground>
+
+### Lego tabs
+
+A stronger styling option for tabs.
+
+<Playground>
+	{/* try deleting `appearance="lego"` */}
+	<Tabcordion mode="tabs" appearance="lego">
+		{data.map(t => (
+			<Tab key={t.label} label={t.label}>
+				{t.content}
+			</Tab>
+		))}
+	</Tabcordion>
+</Playground>
+
+## Accordion
+
+Use accordion elements to vertically stack related content. Each item can be
+expanded to reveal the content associated with that item. Only one item can be
+opened (active) at a time. Any item in the accordion can be the default opened
+item.
+
+<Playground>
+	<Tabcordion mode="accordion">
+		{data.map(t => (
+			<Tab key={t.label} label={t.label}>
+				{t.content}
+			</Tab>
+		))}
+	</Tabcordion>
+</Playground>
+
+### Lego accordion
+
+A stronger styling option for accordions.
+
+<Playground>
+	<Tabcordion mode="accordion" appearance="lego">
+		{data.map(t => (
+			<Tab key={t.label} label={t.label}>
+				{t.content}
+			</Tab>
+		))}
+	</Tabcordion>
+</Playground>
+
+## Props
+
+<Props of={Tabcordion} />
+
+<Props of={Tab} />

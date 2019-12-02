@@ -1,0 +1,1 @@
+{"ast":null,"code":"export { default } from './brand-switcher';","map":{"version":3,"sources":["/Users/mike/Development/GEL/website/site/components/brand-switcher/index.js"],"names":["default"],"mappings":"AAAA,SAASA,OAAT,QAAwB,kBAAxB","sourcesContent":["export { default } from './brand-switcher';\n"]},"metadata":{},"sourceType":"module"}

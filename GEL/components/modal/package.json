@@ -1,0 +1,45 @@
+{
+	"name": "@westpac/modal",
+	"version": "0.0.1",
+	"description": "modal",
+	"repository": "https://github.com/WestpacGEL/GEL.git",
+	"author": "Westpac GEL Team <gel@westpac.com.au>",
+	"contributors": [
+		{
+			"name": "Jeremy Ortiz",
+			"email": "jeremy@jeremyortiz.io",
+			"url": "https://www.jeremyortiz.io/"
+		}
+	],
+	"license": "GPL-3.0+",
+	"scripts": {
+		"start": "PACKAGE_NAME=modal webpack-dev-server --config ../../helpers/example/webpack.config.js",
+		"test": "start-server-and-test start http://localhost:8080 test:all",
+		"test:dev": "start-server-and-test start http://localhost:8080 test:test-dev",
+		"test:all": "yarn test:integration",
+		"test:integration": "cypress run",
+		"test:test-dev": "cypress open"
+	},
+	"main": "dist/modal.cjs.js",
+	"module": "dist/modal.esm.js",
+	"dependencies": {
+		"@babel/runtime": "^7.6.2",
+		"@westpac/button": "^0.0.1",
+		"@westpac/core": "^0.0.1",
+		"@westpac/icon": "^0.0.1",
+		"prop-types": "^15.7.2",
+		"react-focus-lock": "^2.2.1",
+		"react-transition-group": "^4.3.0",
+		"shortid": "^2.2.15"
+	},
+	"peerDependencies": {
+		"react": "^16.11.0",
+		"react-dom": "^16.11.0"
+	},
+	"devDependencies": {
+		"cypress": "^3.6.0",
+		"react": "^16.11.0",
+		"react-dom": "^16.11.0",
+		"start-server-and-test": "^1.10.6"
+	}
+}

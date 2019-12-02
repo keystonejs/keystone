@@ -1,0 +1,109 @@
+---
+name: TextInput
+menu: Components
+route: /text-input
+---
+
+import { Playground, Props } from 'docz';
+import { Text, Textarea, Select } from '@westpac/text-input';
+import { Form } from '@westpac/form';
+import { Button } from '@westpac/button';
+
+# TextInput
+
+TextInput provides styling for text inputs, textareas and select input elements and includes support for all HTML5 input types such as text, password, email and number etc.
+
+Generally form TextInput components don’t exist on their own, they require additional elements such as labels, hint text, error messaging etc. Styling of these additional form elements and form layout is provided by the `@westpac/form` package.
+
+## Types
+
+The TextInput component renders text input, select and textarea elements. Use the `tag` prop to change the input type.
+
+<Playground>
+	<Text />
+	<br />
+	<Select>
+		<option>Select</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+	</Select>
+	<br />
+	<Textarea />
+</Playground>
+
+## Sizes
+
+Input fields are available in four sizes; in addition to the default (Medium) size, there are two larger sizes (Extra large and Large) and one smaller size (Small). These sizes align with other form element sizes. We generally use Large for mobile apps.
+
+<Playground>
+	<Text size="small" placeholder="Small" />
+	<br />
+	<Text size="medium" placeholder="Medium" />
+	<br />
+	<Text size="large" placeholder="Large" />
+	<br />
+	<Text size="xlarge" placeholder="Extra large" />
+</Playground>
+
+## Invalid
+
+<Playground>
+	<Text invalid />
+</Playground>
+
+## Disabled
+
+<Playground>
+	<Text disabled />
+</Playground>
+
+## Readonly
+
+<Playground>
+	<Text readOnly value="This value is readonly" />
+</Playground>
+
+## Inline
+
+TextInput components are block-level by default. You can render inline inputs by passing an `inline` prop to the wrapping Form component.
+
+<Playground>
+	<Form>
+		<Text inline /> <Text inline /> <Button type="submit">Submit</Button>
+	</Form>
+</Playground>
+
+## Fixed width
+
+Use fixed width sizing classes to set a maximum width based on character length. These classes are particularly useful for content that has a specific, known length such as postcodes, telephone numbers and dates etc.
+
+<Playground>
+	<Text width={2} placeholder={2} />
+	<br />
+	<Text width={3} placeholder={3} />
+	<br />
+	<Text width={4} placeholder={4} />
+	<br />
+	<Text width={5} placeholder={5} />
+	<br />
+	<Text width={10} placeholder={10} />
+	<br />
+	<Text width={20} placeholder={20} />
+	<br />
+	<Text width={30} placeholder={30} />
+</Playground>
+
+## Props
+
+### Text
+
+<Props of={Text} />
+
+### Textarea
+
+<Props of={Textarea} />
+
+### Select
+
+<Props of={Select} />

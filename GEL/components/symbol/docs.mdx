@@ -1,0 +1,44 @@
+---
+name: Symbol
+menu: Components
+route: /symbol
+---
+
+import { Playground, Props } from 'docz';
+import { MastercardAcceptedSymbol } from '@westpac/symbol';
+import * as ALL_SYMBOLS from '@westpac/symbol';
+import { Cell, Grid, Name, Row } from './examples/_utils';
+import { Symbol } from './src/Symbol';
+
+# Symbol
+
+These symbols are commonly used in Westpac user interfaces. They are implemented as scalable vector graphics (SVGs). Using SVGs ensures the highest quality rendering on all devices, allows us to style the symbols using code and also complies with AA accessibility requirements.
+
+<Playground>
+	<MastercardAcceptedSymbol />
+</Playground>
+
+## Sizing
+
+Pass a `width` or `height` prop to set size in px. The width value will take presidence over height if both props are provided.
+
+<Playground>
+	<MastercardAcceptedSymbol width={200} />
+</Playground>
+
+## All Symbols
+
+<Playground>
+	<Grid>
+		{Object.entries(ALL_SYMBOLS).map(([name, Glyph]) => (
+			<Cell key={name}>
+				<Glyph />
+				<Name>{name}</Name>
+			</Cell>
+		))}
+	</Grid>
+</Playground>
+
+## Props
+
+<Props of={Symbol} />

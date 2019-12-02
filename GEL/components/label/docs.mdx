@@ -1,0 +1,50 @@
+---
+name: Label
+menu: Components
+route: /label
+---
+
+import { Playground, Props } from 'docz';
+import { Label } from '@westpac/label';
+
+# Label
+
+Labels are styled elements to highlight words or links.
+
+<Playground>
+	<Label>Default</Label>{' '}
+
+    <Label look="primary" value="Primary"/>{' '}
+    <Label look="hero" value="Hero"/>{' '}
+    <Label look="neutral" value="Neutral"/>{' '}
+    <Label look="faint" value="Faint"/>{' '}
+
+    <Label look="success" value="Success"/>{' '}
+    <Label look="information" value="Information"/>{' '}
+    <Label look="warning" value="Warning"/>{' '}
+    <Label look="danger" value="Danger"/>
+
+</Playground>
+
+## Label as a link
+
+Simply pass a `href` prop to render Label as a link.
+
+<Playground>
+	<Label href="#0">Default</Label>{' '}
+
+    <Label href="#0" look="primary" value="Primary"/>{' '}
+    <Label href="#0" look="hero" value="Hero"/>{' '}
+    <Label href="#0" look="neutral" value="Neutral"/>{' '}
+    <Label href="#0" look="faint" value="Faint"/>{' '}
+
+    <Label href="#0" look="success" value="Success"/>{' '}
+    <Label href="#0" look="information" value="Information"/>{' '}
+    <Label href="#0" look="warning" value="Warning"/>{' '}
+    <Label href="#0" look="danger" value="Danger"/>
+
+</Playground>
+
+## Props
+
+<Props of={Label} />

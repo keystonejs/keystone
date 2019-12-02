@@ -1,0 +1,30 @@
+---
+name: ProgressBar
+menu: Components
+route: /progress-bar
+---
+
+import { Playground, Props } from 'docz';
+import { ProgressBar } from '@westpac/progress-bar';
+
+# ProgressBar
+
+A visual indication of progress. Use when loading content or to indicate how far along the user is in a journey.
+
+Set the progress value via the `value` prop.
+
+<Playground>
+	<ProgressBar value={45} />
+</Playground>
+
+## Skinny
+
+Use the `isSkinny` prop to render a thin ProgressBar.
+
+<Playground>
+	<ProgressBar value={74} isSkinny />
+</Playground>
+
+## Props
+
+<Props of={ProgressBar} />

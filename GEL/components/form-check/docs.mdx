@@ -1,0 +1,178 @@
+---
+name: FormCheck
+menu: Components
+route: /form-check
+---
+
+import { Playground, Props } from 'docz';
+import { FormCheck, Option } from '@westpac/form-check';
+import { Alert, AlertHeading } from '@westpac/alert';
+
+# FormCheck
+
+Checkbox and radio inputs are provided by the FormCheck component.
+
+FormCheck items are block-level by default; inline layout is available via the `inline` prop. FormCheck toggles can sit on the left (default) of the label text, but can be configured to render on the right via the `flipped` prop.
+
+<Alert appearance="information">
+	<AlertHeading>Accessibility requirement</AlertHeading>
+	<p>
+		Checkbox and radio inputs must be Fieldset wrapped in order to meet accessibility compliance
+		requirements. Fieldset and other form components are found in the `@westpac/form` package.
+	</p>
+	<p>
+		Due to accessiblity compliance requirements `&lt;input&gt;` and `&lt;label&gt;` elements must
+		use the slightly more verbose ‘explicit association’ syntax. This requires `id` and `for`
+		(`htmlFor` in React) attributes to associate the input and label elements, rather than simply
+		wrapping inputs with label elements.
+	</p>
+</Alert>
+
+## Type
+
+Use the `type` prop to render FormCheck as a `checkbox` or `radio` control.
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox">
+		<Option value="1">Default checkbox 1</Option>
+		<Option value="2">Default checkbox 2</Option>
+		<Option value="2" disabled>
+			Disabled checkbox 3
+		</Option>
+	</FormCheck>
+</Playground>
+
+<Playground>
+	<FormCheck type="radio" name="example-radio">
+		<Option value="1">Default radio 1</Option>
+		<Option value="2">Default radio 2</Option>
+		<Option value="2" disabled>
+			Disabled radio 3
+		</Option>
+	</FormCheck>
+</Playground>
+
+## Size
+
+Use the `size` prop to set size.
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox-medium" size="medium">
+		<Option value="1">Medium checkbox 1</Option>
+		<Option value="2">Medium checkbox 2</Option>
+	</FormCheck>
+	<FormCheck type="radio" name="example-radio-medium" size="medium">
+		<Option value="1">Medium radio 1</Option>
+		<Option value="2">Medium radio 2</Option>
+	</FormCheck>
+</Playground>
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox-large" size="large">
+		<Option value="1">Large checkbox 1</Option>
+		<Option value="2">Large checkbox 2</Option>
+	</FormCheck>
+	<FormCheck type="radio" name="example-radio-large" size="large">
+		<Option value="1">Large radio 1</Option>
+		<Option value="2">Large radio 2</Option>
+	</FormCheck>
+</Playground>
+
+## Inline
+
+Use the `inline` prop to render inline FormCheck items.
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox-inline" inline>
+		<Option value="1">Inline checkbox 1</Option>
+		<Option value="2">Inline checkbox 2</Option>
+	</FormCheck>
+	<FormCheck type="radio" name="example-radio-inline" inline>
+		<Option value="1">Inline radio 1</Option>
+		<Option value="2">Inline radio 2</Option>
+	</FormCheck>
+</Playground>
+
+## Flipped
+
+Use the `flipped` prop to change the orientation and render the control on the right.
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox-flipped" flipped>
+		<Option value="1">Flipped checkbox 1</Option>
+		<Option value="2">Flipped checkbox 2</Option>
+	</FormCheck>
+	<FormCheck type="radio" name="example-radio-flipped" flipped>
+		<Option value="1">Flipped radio 1</Option>
+		<Option value="2">Flipped radio 2</Option>
+	</FormCheck>
+</Playground>
+
+## Flipped & inline
+
+The `flipped` and `inline` props can be used together.
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox-flipped-inline" flipped inline>
+		<Option value="1">Flipped inline checkbox 1</Option>
+		<Option value="2">Flipped inline checkbox 2</Option>
+	</FormCheck>
+	<FormCheck type="radio" name="example-radio-flipped-inline" flipped inline>
+		<Option value="1">Flipped inline radio 1</Option>
+		<Option value="2">Flipped inline radio 2</Option>
+	</FormCheck>
+</Playground>
+
+## Checked
+
+Check FormCheck items by passing a `checked` prop.
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox-checked">
+		<Option value="1" checked>
+			Checked checkbox 1
+		</Option>
+		<Option value="2" checked>
+			Checked checkbox 2
+		</Option>
+	</FormCheck>
+	<FormCheck type="radio" name="example-radio-checked">
+		<Option value="1">Default radio 1</Option>
+		<Option value="2" checked>
+			Checked radio 2
+		</Option>
+	</FormCheck>
+</Playground>
+
+## Disabled
+
+Disable FormCheck items by passing a `disabled` prop.
+
+<Playground>
+	<FormCheck type="checkbox" name="example-checkbox-disabled">
+		<Option value="1" disabled>
+			Disabled checkbox 1
+		</Option>
+		<Option value="2" disabled>
+			Disabled checkbox 2
+		</Option>
+	</FormCheck>
+	<FormCheck type="radio" name="example-radio-disabled">
+		<Option value="1" disabled>
+			Disabled radio 1
+		</Option>
+		<Option value="2" disabled>
+			Disabled radio 2
+		</Option>
+	</FormCheck>
+</Playground>
+
+## Props
+
+### FormCheck
+
+<Props of={FormCheck} />
+
+### Option
+
+<Props of={Option} />

@@ -1,0 +1,130 @@
+---
+name: Switch
+menu: Components
+route: /switch
+---
+
+import { Playground, Props } from 'docz';
+import { Switch } from './src';
+
+# Switch
+
+These are very simple toggle switches ideal for use in settings or preference screens. The switch can be blank or contain simple toggle text labels (no/yes, off/on etc).
+
+<Playground>
+	<Switch name="example-default">Turn notifications</Switch>
+</Playground>
+
+## Label text
+
+Form switches require label text in order to meet accessibility compliance requirements. Label text is set via children. You can visually hide this text by providing a `isSrOnlyText` prop if necessary.
+
+<Playground>
+	<Switch name="example-text" toggleText={['Yes', 'No']}>
+		Enable notifications
+	</Switch>
+	<Switch name="example-text-sronlytext" toggleText={['Yes', 'No']} isSrOnlyText>
+		Enable notifications
+	</Switch>
+</Playground>
+
+## Toggle text
+
+Pass the `toggleText` prop an array to set the switch yes/no text. Remove this text completely by passing an empty array.
+
+<Playground>
+	<Switch name="example-text" toggleText={['1', '0']}>
+		Enable notifications
+	</Switch>
+	<Switch name="example-text" toggleText={[]}>
+		Enable notifications
+	</Switch>
+</Playground>
+
+## Sizes
+
+Form switches come in four sizes.
+
+<Playground>
+	<Switch name="example-small" size="small">
+		Small
+	</Switch>
+	<Switch name="example-medium" size="medium">
+		Medium
+	</Switch>
+	<Switch name="example-large" size="large">
+		Large
+	</Switch>
+	<Switch name="example-xlarge" size="xlarge">
+		Extra large
+	</Switch>
+</Playground>
+
+Form switches can be sized responsively by passing an array of size values for each breakpoint.
+
+<Playground>
+	<Switch name="example-responsive" size={['small', 'medium', 'large', 'xlarge']}>
+		Responsive form switch
+	</Switch>
+</Playground>
+
+## Flipped
+
+Flipped mode renders the toggle on the left of the label text.
+
+<Playground>
+	<Switch name="example-flipped-1" isFlipped>
+		Flipped mode
+	</Switch>
+	<Switch name="example-flipped-2" isFlipped>
+		Flipped mode
+	</Switch>
+</Playground>
+
+## Block
+
+Block mode extends the width so it spans the full width of its parent.
+
+<Playground>
+	<Switch name="example-block-1" isBlock>
+		Block mode
+	</Switch>
+	<Switch name="example-block-2" isBlock>
+		Block mode
+	</Switch>
+</Playground>
+
+## Flipped & block
+
+You can set `isFlipped` and `isBlock` together.
+
+<Playground>
+	<Switch name="example-flipped-block-1" isFlipped isBlock>
+		Flip & block mode
+	</Switch>
+	<Switch name="example-flipped-block-2" isFlipped isBlock>
+		Flip & block mode
+	</Switch>
+</Playground>
+
+## Checked
+
+Enable the Switch component by passing a `isChecked` prop.
+
+<Playground>
+	<Switch name="example-checked" isChecked>
+		Checked by default
+	</Switch>
+</Playground>
+
+## Disabled
+
+Disable by passing a `disabled` prop.
+
+<Playground>
+	<Switch name="example-disabled" disabled>
+		Disabled
+	</Switch>
+</Playground>
+
+<Props of={Switch} />

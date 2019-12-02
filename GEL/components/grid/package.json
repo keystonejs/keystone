@@ -1,0 +1,44 @@
+{
+	"name": "@westpac/grid",
+	"version": "0.0.1",
+	"description": "Grid component for the Westpac GEL",
+	"repository": "https://github.com/WestpacGEL/GEL.git",
+	"author": "Westpac GEL Team <gel@westpac.com.au>",
+	"contributors": [
+		{
+			"name": "Dominik Wilkowski",
+			"email": "Hi@Dominik-Wilkowski.com",
+			"url": "https://dominik-wilkowski.com"
+		},
+		{
+			"name": "Joss Mackison",
+			"email": "joss@thinkmill.com.au",
+			"url": "http://jossmackison.me"
+		}
+	],
+	"license": "GPL-3.0+",
+	"scripts": {
+		"start": "PACKAGE_NAME=grid webpack-dev-server --config ../../helpers/example/webpack.config.js",
+		"test": "start-server-and-test start http://localhost:8080 test:all",
+		"test:dev": "start-server-and-test start http://localhost:8080 test:test-dev",
+		"test:all": "yarn test:integration",
+		"test:integration": "cypress run",
+		"test:test-dev": "cypress open"
+	},
+	"main": "dist/grid.cjs.js",
+	"module": "dist/grid.esm.js",
+	"dependencies": {
+		"@babel/runtime": "^7.6.2",
+		"@westpac/core": "^0.0.1",
+		"prop-types": "^15.7.2"
+	},
+	"peerDependencies": {
+		"react": "^16.11.0"
+	},
+	"devDependencies": {
+		"@westpac/hooks": "*",
+		"cypress": "^3.6.0",
+		"react": "^16.11.0",
+		"start-server-and-test": "^1.10.6"
+	}
+}

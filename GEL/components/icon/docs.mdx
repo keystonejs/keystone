@@ -1,0 +1,132 @@
+---
+name: Icon
+menu: Components
+route: /icon
+---
+
+import { Playground, Props } from 'docz';
+import {
+	AtmIcon,
+	EftposIcon,
+	PadlockIcon,
+	BusinessPersonIcon,
+	SecurityIcon,
+	VerifiedIcon,
+	KeyholeIcon,
+	CreditCardIcon,
+	TransportIcon,
+} from '@westpac/icon';
+import * as ALL_ICONS from '@westpac/icon';
+import { Cell, Grid, Name, Row } from './examples/_util';
+import { Icon } from './src/Icon';
+
+# Icon
+
+This library of icons is intended for use across all of our brands and user
+interfaces. They are designed to aid navigation and legibility. The use of icons
+purely as page embellishment is not recommended and in some cases will be off
+brand. These icons are implemented as scalable vector graphics (SVGs) with PNG
+fallbacks for older browsers. Using SVGs ensures the highest quality rendering
+on all devices, allows us to style the icons using code and also complies with
+AA accessibility requirements.
+
+<Playground>
+	<BusinessPersonIcon />
+</Playground>
+
+## Sizing
+
+These icons were designed on a 24px grid. They must only be used at the
+following sizes: 12px, 18px, 24px, 36px and 48px. If the icons are not used at
+these sizes they will appear blurred.
+
+<Playground>
+	<Row label="xsmall">
+		<AtmIcon size="xsmall" />
+		<EftposIcon size="xsmall" />
+		<PadlockIcon size="xsmall" />
+		<BusinessPersonIcon size="xsmall" />
+		<SecurityIcon size="xsmall" />
+		<VerifiedIcon size="xsmall" />
+		<KeyholeIcon size="xsmall" />
+		<CreditCardIcon size="xsmall" />
+		<TransportIcon size="xsmall" />
+	</Row>
+	<Row label="small">
+		<AtmIcon size="small" />
+		<EftposIcon size="small" />
+		<PadlockIcon size="small" />
+		<BusinessPersonIcon size="small" />
+		<SecurityIcon size="small" />
+		<VerifiedIcon size="small" />
+		<KeyholeIcon size="small" />
+		<CreditCardIcon size="small" />
+		<TransportIcon size="small" />
+	</Row>
+	<Row label="medium">
+		<AtmIcon size="medium" />
+		<EftposIcon size="medium" />
+		<PadlockIcon size="medium" />
+		<BusinessPersonIcon size="medium" />
+		<SecurityIcon size="medium" />
+		<VerifiedIcon size="medium" />
+		<KeyholeIcon size="medium" />
+		<CreditCardIcon size="medium" />
+		<TransportIcon size="medium" />
+	</Row>
+	<Row label="large">
+		<AtmIcon size="large" />
+		<EftposIcon size="large" />
+		<PadlockIcon size="large" />
+		<BusinessPersonIcon size="large" />
+		<SecurityIcon size="large" />
+		<VerifiedIcon size="large" />
+		<KeyholeIcon size="large" />
+		<CreditCardIcon size="large" />
+		<TransportIcon size="large" />
+	</Row>
+	<Row label="xlarge">
+		<AtmIcon size="xlarge" />
+		<EftposIcon size="xlarge" />
+		<PadlockIcon size="xlarge" />
+		<BusinessPersonIcon size="xlarge" />
+		<SecurityIcon size="xlarge" />
+		<VerifiedIcon size="xlarge" />
+		<KeyholeIcon size="xlarge" />
+		<CreditCardIcon size="xlarge" />
+		<TransportIcon size="xlarge" />
+	</Row>
+</Playground>
+
+## Colors
+
+<Playground>
+	<Row>
+		<AtmIcon color="#DE350B" />
+		<EftposIcon color="#FF991F" />
+		<PadlockIcon color="#00875A" />
+		<BusinessPersonIcon color="#00A3BF" />
+		<SecurityIcon color="#0052CC" />
+		<VerifiedIcon color="#5243AA" />
+		<KeyholeIcon color="#DE350B" />
+		<CreditCardIcon color="#FF991F" />
+		<TransportIcon color="#00875A" />
+	</Row>
+</Playground>
+
+## All Icons
+
+<Playground>
+	<Grid>
+		{Object.entries(ALL_ICONS).map(([name, Glyph]) => (
+			<Cell key={name}>
+				<Glyph />
+				<Name>{name}</Name>
+			</Cell>
+		))}
+	</Grid>
+</Playground>
+
+## Props
+
+<Props of={Icon} />

@@ -1,0 +1,299 @@
+---
+name: FormPod
+menu: Components
+route: /form-pod
+---
+
+import { Playground, Props } from 'docz';
+import {
+	FormPod,
+	FormPodActions,
+	FormPodActionsText,
+	FormPodContactList,
+	FormPodIndicator,
+	FormPodPanel,
+	FormPodPanelBody,
+	FormPodPanelFooter,
+} from '@westpac/form-pod';
+import { TickIcon, HeadsetIcon, LiveChatIcon } from '@westpac/icon';
+import { Alert, AlertHeading } from '@westpac/alert';
+import { List, ListItem } from '@westpac/list';
+import { Button } from '@westpac/button';
+
+# Form Pod
+
+The form-pod package includes the form pod heading, content area, footer and controls required to assemble a form.
+
+Form pods are designed to work inside the Template component. When building a form each page should include one FormPod containing your form’s numerous form components.
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading">
+		<FormPodPanel>
+			<FormPodPanelBody>[PANEL CONTENT]</FormPodPanelBody>
+		</FormPodPanel>
+		<FormPodPanelFooter
+			left={
+				<FormPodContactList
+					items={[
+						{
+							icon: HeadsetIcon,
+							text: '1300 888 888',
+							url: 'tel:1300888888',
+							onClick: () => {},
+						},
+					]}
+				/>
+			}
+			right={<FormPodIndicator />}
+		/>
+	</FormPod>
+	<FormPodActions
+		primary={
+			<>
+				<Button appearance="primary" soft size="large" block={[true, false]}>
+					Back
+				</Button>
+				<Button appearance="primary" size="large" block={[true, false]}>
+					Next
+				</Button>
+			</>
+		}
+		secondary={
+			<Button appearance="faint" soft size="large" block={[true, false]}>
+				Cancel
+			</Button>
+		}
+	/>
+</Playground>
+
+## FormPod
+
+### Simple header
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading">
+		<FormPodPanel>
+			<FormPodPanelBody>[PANEL CONTENT]</FormPodPanelBody>
+		</FormPodPanel>
+	</FormPod>
+</Playground>
+
+### Header with icon
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading" icon={TickIcon}>
+		<FormPodPanel>
+			<FormPodPanelBody>[PANEL CONTENT]</FormPodPanelBody>
+		</FormPodPanel>
+	</FormPod>
+</Playground>
+
+<Props of={FormPod} />
+
+## FormPodPanel
+
+FormPodPanel is used within the FormPod to render the main panel area.
+
+Pass the `noBorderTop` prop to remove the top border. This is required when displaying the error summary, as shown below.
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading">
+		<FormPodPanel isNoBorderTop>
+			<Alert appearance="danger">
+				{/* Nb. Tabindex="-1" for programmatically set focus */}
+				<AlertHeading tag="h3" tabIndex="-1">
+					Please fix the 4 errors listed below
+				</AlertHeading>
+				<List type="unstyled">
+					<ListItem>
+						<a href="#title">Select a title</a>
+					</ListItem>
+					<ListItem>
+						<a href="#given-name">Enter your given name</a>
+					</ListItem>
+					<ListItem>
+						<a href="#family-name">Enter your family name</a>
+					</ListItem>
+				</List>
+			</Alert>
+			<FormPodPanelBody>[PANEL CONTENT]</FormPodPanelBody>
+		</FormPodPanel>
+	</FormPod>
+</Playground>
+
+<Props of={FormPodPanel} />
+
+### FormPodPanelBody
+
+A FormPodPanel comprises of a body and footer. FormPodPanelBody renders the main (white) content area of the FormPod.
+
+Pass the `expanded` prop to enable expanded body mode. This mode reduces padding providing a wider internal content area.
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading">
+		<FormPodPanel>
+			<FormPodPanelBody expanded>[PANEL CONTENT]</FormPodPanelBody>
+		</FormPodPanel>
+	</FormPod>
+</Playground>
+
+<Props of={FormPodPanelBody} />
+
+### FormPodPanelFooter
+
+A FormPodPanel comprises of a body and footer. FormPodPanelFooter renders the footer strip across the bottom of the panel.
+
+FormPodPanelFooter provides two content ‘slots’, accessed via two props `left` and `right`.
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading">
+		<FormPodPanel>
+			<FormPodPanelBody>[PANEL CONTENT]</FormPodPanelBody>
+			<FormPodPanelFooter
+				left={
+					<FormPodContactList
+						items={[
+							{
+								icon: HeadsetIcon,
+								text: '1300 888 888',
+								url: 'tel:1300888888',
+								onClick: () => {},
+							},
+						]}
+					/>
+				}
+				right={<FormPodIndicator />}
+			/>
+		</FormPodPanel>
+	</FormPod>
+</Playground>
+
+<Props of={FormPodPanelFooter} />
+
+## FormPodActions
+
+FormPodActions provides the form navigation controls that sit at the bottom under the FormPodPanel. These control buttons are arranged responsively to suit the available space.
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading">
+		<FormPodPanel>
+			<FormPodPanelBody>[PANEL CONTENT]</FormPodPanelBody>
+			<FormPodPanelFooter
+				left={
+					<FormPodContactList
+						items={[
+							{
+								icon: HeadsetIcon,
+								text: '1300 888 888',
+								url: 'tel:1300888888',
+								onClick: () => {},
+							},
+						]}
+					/>
+				}
+				right={<FormPodIndicator />}
+			/>
+		</FormPodPanel>
+		<FormPodActions
+			primary={
+				<>
+					<Button appearance="primary" soft size="large" block={[true, false]}>
+						Back
+					</Button>
+					<Button appearance="primary" size="large" block={[true, false]}>
+						Next
+					</Button>
+				</>
+			}
+			secondary={
+				<Button appearance="faint" soft size="large" block={[true, false]}>
+					Cancel
+				</Button>
+			}
+		/>
+	</FormPod>
+</Playground>
+
+<Props of={FormPodActions} />
+
+### FormPodActionsText
+
+FormPodActionsText provides simple styling for any text placed inside a FormPodActions slot.
+
+<Playground>
+	<FormPod preheading="Preheading" heading="Heading">
+		<FormPodPanel>
+			<FormPodPanelBody>[PANEL CONTENT]</FormPodPanelBody>
+			<FormPodPanelFooter
+				left={
+					<FormPodContactList
+						items={[
+							{
+								icon: HeadsetIcon,
+								text: '1300 888 888',
+								url: 'tel:1300888888',
+								onClick: () => {},
+							},
+						]}
+					/>
+				}
+				right={<FormPodIndicator />}
+			/>
+		</FormPodPanel>
+		<FormPodActions
+			primary={
+				<>
+					<Button appearance="primary" soft size="large" block={[true, false]}>
+						Find a branch
+					</Button>
+					<Button appearance="primary" soft size="large" block={[true, false]}>
+						Internet banking
+					</Button>
+				</>
+			}
+			secondary={<FormPodActionsText>[TEXT CAN GO HERE]</FormPodActionsText>}
+			reverse
+		/>
+	</FormPod>
+</Playground>
+
+<Props of={FormPodActionsText} />
+
+## FormPodContactList
+
+FormPodContactList renders a horizontal list of contact centre options. The component is passed to FormPodFooter’s left slot.
+
+The `items` prop takes an array of objects configuring icon, iconColor, text, url and onClick values.
+
+<Playground>
+	<FormPodContactList
+		items={[
+			{
+				icon: HeadsetIcon,
+				// iconColor: colors.muted,
+				text: '1300 888 888',
+				url: 'tel:1300888888',
+				onClick: () => {},
+			},
+			{
+				icon: LiveChatIcon,
+				// iconColor: colors.muted,
+				text: 'LiveChat',
+				url: '#0',
+				onClick: () => {},
+			},
+		]}
+	/>
+</Playground>
+
+<Props of={FormPodContactList} />
+
+## FormPodIndicator
+
+FormPodIndicator renders a status indicator. The component is passed to FormPodFooter’s right slot.
+
+<Playground>
+	<FormPodIndicator />
+</Playground>
+
+<Props of={FormPodIndicator} />

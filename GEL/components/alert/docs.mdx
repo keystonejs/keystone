@@ -1,0 +1,98 @@
+---
+name: Alert
+menu: Components
+route: /alert
+---
+
+import { Playground, Props } from 'docz';
+import { HelpIcon } from '@westpac/icon';
+import { Alert } from '@westpac/alert';
+
+# Alert
+
+User feedback and messaging is essential in UI design. Using a cross-brand palette of reserved, contextual colours provides a flexible, consistent message system for common user interactions.
+
+## Look
+
+<Playground>
+	<Alert look="success">
+		<strong>Well done!</strong> You successfully read this important alert message. Lorem ipsum
+		dolor sit amet, consectetur adipisicing elit. Quo dolor provident quasi nisi officia tempore
+		fuga autem, animi iste molestiae, qui omnis doloribus aliquid ipsam rem fugiat veniam voluptatem
+		accusamus! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est, unde quis, molestias
+		nisi quae voluptates nemo quaerat nihil, consequuntur nobis ratione rerum asperiores eveniet
+		dicta maiores quia nostrum. Pariatur, natus. Lorem ipsum dolor sit amet, consectetur adipisicing
+		elit. Fuga, magnam illum harum consequatur, quo sunt impedit quam minus eaque saepe voluptas
+		corrupti voluptatum, sapiente dolor sequi tempore maxime? Neque, obcaecati. <a href="#">Link</a>
+	</Alert>
+
+    <Alert>
+    	<strong>Heads up!</strong> This alert needs your attention, but it’s not super important.{' '}
+    	<a href="#">Link</a>
+    </Alert>
+
+    <Alert look="warning">
+    	<strong>Warning!</strong> Better check yourself, you’re not looking too good.{' '}
+    	<a href="#">Link</a>
+    </Alert>
+
+    <Alert look="danger">
+    	<strong>Oh snap!</strong> Change a few things up and try submitting again. <a href="#">Link</a>
+    </Alert>
+
+    <Alert look="system">
+    	<strong>System Error 8942:</strong> The server is no responding. Please try again later. Sorry
+    	for the inconvenience. <a href="#">Link</a>
+    </Alert>
+
+</Playground>
+
+## Headline
+
+You can add a headline to your alert with the `heading` prop.
+If you need it you can also change the semantic tag of the headline with the `headingTag` prop.
+
+<Playground>
+	<Alert look="information" heading="For your information">
+		<strong>Heads up!</strong> This alert needs your attention, but it’s not super important. Oh wow
+		look, I have a custom icon. <a href="#">Link</a>
+	</Alert>
+
+    <Alert look="information" heading="For your information" headingTag="h3">
+    	<strong>Heads up!</strong> This alert needs your attention, but it’s not super important. Oh wow
+    	look, I have a custom icon. <a href="#">Link</a>
+    </Alert>
+
+</Playground>
+
+## Icon
+
+The alert icon is automatically rendered based on look, but can be overriden via the `icon` prop. Pass a `null` value to remove completely.
+
+<Playground>
+	<Alert look="information" icon={HelpIcon}>
+		<strong>Heads up!</strong> This alert needs your attention, but it’s not super important. Oh wow
+		look, I have a custom icon. <a href="#">Link</a>
+	</Alert>
+
+    <Alert look="information" icon={null}>
+    	<strong>Heads up!</strong> This alert needs your attention, but it’s not super important. Oh wow
+    	look, I have no icon. <a href="#">Link</a>
+    </Alert>
+
+</Playground>
+
+## Closable
+
+Use the `closable` prop to render a functional close button.
+
+<Playground>
+	<Alert look="success" closable>
+		<strong>Well done!</strong> You successfully read this important alert message. Hey neato, I can
+		be closed. <a href="#">Link</a>
+	</Alert>
+</Playground>
+
+## Props
+
+<Props of={Alert} />

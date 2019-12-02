@@ -1,0 +1,164 @@
+---
+name: Grid
+menu: Components
+route: /grid
+---
+
+import { Playground, Props } from 'docz';
+import { Cell, Grid, Container } from '@westpac/grid';
+import { Box, GridOverlay } from './examples/_utils';
+
+# Grid
+
+It’s very important to pay attention to the layout and spacing of every element
+in the UI. The classes in this module provide a responsive grid for column
+layout, methods to manipulate the visibility of elements and classes to space
+elements quickly and accurately using the design system. Using a 12 column fluid
+grid allows us to use media queries to set breakpoints for any viewport. Columns
+can use different spans, be offset or hidden depending on the size of the
+viewport.
+
+## Grid
+
+### Adaptive Columns
+
+This 3 column layout stacks on xs\* (each column takes up full width) but on the
+other breakpoints it adapts to different widths.
+
+<Playground>
+	<GridOverlay>
+		<Grid>
+			<Cell width={[12, 4, 2, 8]}>
+				<Box>Column A</Box>
+			</Cell>
+			<Cell width={[12, 4, 8, 2]}>
+				<Box>Column B</Box>
+			</Cell>
+			<Cell width={[12, 4, 2, 2]}>
+				<Box>Column C</Box>
+			</Cell>
+		</Grid>
+	</GridOverlay>
+</Playground>
+
+### Nested Grids
+
+You can nest columns inside columns to achieve greater complexity and structure the page. In effect, each column can be sub-divided into further 12 columns.
+The nested columns align to their own 12 col grid based on the width of the parent column.
+
+<Playground>
+	<GridOverlay>
+		<Grid>
+			<Cell width={[12, 12, 12, 3]}>
+				<Box>Column A</Box>
+			</Cell>
+			<Cell width={[12, 12, 12, 9]}>
+				<Grid>
+					<Cell width={4}>
+						<Box>Nested column A</Box>
+					</Cell>
+					<Cell width={4}>
+						<Box>Nested column B</Box>
+					</Cell>
+					<Cell width={4}>
+						<Box>Nested column C</Box>
+					</Cell>
+				</Grid>
+			</Cell>
+		</Grid>
+	</GridOverlay>
+</Playground>
+
+### Offset Columns
+
+Columns can be offset to create empty space.
+
+<Playground>
+	<GridOverlay>
+		<Grid>
+			<Cell width={[12, 12, 10]} left={[1, 1, 2]}>
+				<Box>Offset A</Box>
+			</Cell>
+			<Cell width={[12, 12, 5]} left={[1, 1, 7]}>
+				<Box>Offset B</Box>
+			</Cell>
+			<Cell width={[12, 12, 5]} left={[1, 1, 2]} top={[3, 3, 2]}>
+				<Box>Offset C</Box>
+			</Cell>
+			<Cell width={[12, 12, 10]} left={[1, 1, 2]} top={[4, 4, 5]}>
+				<Box>Offset D</Box>
+			</Cell>
+		</Grid>
+	</GridOverlay>
+</Playground>
+
+### Complex Stacking
+
+<Playground>
+	<GridOverlay>
+		<Grid>
+			<Cell width={[12, 6, 3, 4]}>
+				<Box>Column A</Box>
+			</Cell>
+			<Cell width={[12, 6, 3, 4]}>
+				<Box>Column B</Box>
+			</Cell>
+			<Cell width={[12, 12, 3, 4]}>
+				<Box>Column C</Box>
+			</Cell>
+			<Cell width={[12, 4, 3, 2]}>
+				<Box>Column D</Box>
+			</Cell>
+			<Cell width={[12, 4, 3, 8]}>
+				<Box>Column E</Box>
+			</Cell>
+			<Cell width={[12, 4, 3, 2]}>
+				<Box>Column F</Box>
+			</Cell>
+			<Cell width={[12, 8, 3, 6]}>
+				<Box>Column G</Box>
+			</Cell>
+			<Cell width={[12, 4, 3, 6]}>
+				<Box>Column H</Box>
+			</Cell>
+		</Grid>
+	</GridOverlay>
+</Playground>
+
+### Alternate Values
+
+It's recommended to stick with the defaults for most use cases, though if you
+need to break out of the 12/8 column/gap combination you're able to.
+
+<Playground>
+	<GridOverlay columns={16} gap={4}>
+		<Grid columns={16} gap={4}>
+			<Cell width={[16, 8, 2, 8]}>
+				<Box>Column A</Box>
+			</Cell>
+			<Cell width={[16, 8, 6, 4]}>
+				<Box>Column B</Box>
+			</Cell>
+			<Cell width={[16, 8, 6, 2]}>
+				<Box>Column C</Box>
+			</Cell>
+			<Cell width={[16, 8, 2, 2]}>
+				<Box>Column D</Box>
+			</Cell>
+		</Grid>
+	</GridOverlay>
+</Playground>
+
+## Props
+
+### Grid props
+
+<Props of={Grid} />
+
+### Cell props
+
+<Props of={Cell} />
+
+### Container props
+
+<Props of={Container} />

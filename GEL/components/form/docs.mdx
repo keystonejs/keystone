@@ -1,0 +1,428 @@
+---
+name: Form
+menu: Components
+route: /form
+---
+
+import { Playground, Props } from 'docz';
+import {
+	ChitChat,
+	ErrorMessage,
+	Fieldset,
+	Form,
+	FormContext,
+	FormGroup,
+	FormLabel,
+	FormSection,
+	FormSectionImg,
+	Hint,
+	InputCluster,
+	Item,
+} from '@westpac/form';
+
+import { Text, Textarea, Select } from '@westpac/text-input';
+import { ButtonGroup, Button } from '@westpac/button';
+import { Alert } from '@westpac/alert';
+import { AlertIcon } from '@westpac/icon';
+
+# Form
+
+The `@westpac/form` package provides general form styling and layout components required to build responsive, WCAG 2.1 AA accessible and brand compliant web forms.
+
+<Alert appearance="information" icon={AlertIcon}>
+	<strong>Heads up!</strong> The TextInput component is used below for demonstrative purposes. It is
+	a dependency provided via the `@westpac/text-input` package.
+</Alert>
+
+<Playground>
+	<Form size="large" spacing="large">
+		<FormSection>
+			<ChitChat>
+				Hello, I’m the friendly conversational text component. I live at the top of the form
+				if required.
+			</ChitChat>
+		</FormSection>
+
+    	<FormSection>
+    		<FormGroup>
+    			<FormLabel htmlFor="example-textinput">This is a label</FormLabel>
+    			<Hint>This is a hint</Hint>
+    			<ErrorMessage message="This is an error message" />
+    			<Text name="example-textinput" id="example-textinput" />
+    		</FormGroup>
+
+    		<FormGroup>
+    			<FormLabel htmlFor="example-select">This is a label</FormLabel>
+    			<Hint>This is a hint</Hint>
+    			<ErrorMessage message="This is an error message" />
+    			<Select name="example-select" id="example-select">
+    					<option>Select</option>
+    					<option>Option 1</option>
+    					<option>Option 2</option>
+    					<option>Option 3</option>
+    				</Select>
+    		</FormGroup>
+    	</FormSection>
+
+    	<FormSection>
+    		<FormGroup>
+    			<FormLabel htmlFor="example-textarea">This is a label</FormLabel>
+    			<Hint>This is a hint</Hint>
+    			<ErrorMessage message="This is an error message" />
+    			<Textarea name="example-textarea" id="example-textarea" />
+    		</FormGroup>
+
+    		<FormGroup>
+    			<Fieldset legend="This is a legend">
+    				<Hint>This is a hint</Hint>
+    				<ErrorMessage message={['This is an error message', 'This is another error message']} />
+    				<InputCluster>
+    					<Item>
+    						<FormLabel htmlFor="example-fieldset-line1" sublabel>This is a sub-label</FormLabel>
+    						<Text name="example-fieldset-line1" id="example-fieldset-line1" />
+    					</Item>
+    					<Item>
+    						<FormLabel htmlFor="example-fieldset-line2" sublabel>This is a sub-label</FormLabel>
+    						<Text name="example-fieldset-line2" id="example-fieldset-line2" />
+    					</Item>
+    				</InputCluster>
+    			</Fieldset>
+    		</FormGroup>
+    	</FormSection>
+    </Form>
+
+</Playground>
+
+## Form
+
+Form is a wrapper component. It renders a `<form>` element by default; configurable via the `tag` prop. Form component size, spacing and inline options are also configurable. These settings are passed to children, available via `FormContext`.
+
+<Props of={Form} />
+
+## FormSection
+
+Optionally create sections within your form by using FormSection components to wrap related FormGroup components. This creates a divider line and spacing between each section of the form.
+
+<Playground>
+	<FormSection>
+		<FormGroup>[This is a FormSection]</FormGroup>
+	</FormSection>
+	<FormSection>
+		<FormGroup>[This is another FormSection]</FormGroup>
+	</FormSection>
+</Playground>
+
+### Remove padding
+
+Use the optional `isNoPadding` prop to remove horizontal padding. This option is necessary when rendering Compacta component children.
+
+<Playground>
+	<FormSection isNoPadding>
+		<FormGroup>[This is a FormSection with no padding]</FormGroup>
+	</FormSection>
+	<FormSection isNoPadding>
+		<FormGroup>[This is another FormSection with no padding]</FormGroup>
+	</FormSection>
+</Playground>
+
+<Props of={FormSection} />
+
+## FormGroup
+
+Forms are comprised of one or more FormGroup components.
+
+Always use the FormGroup component to wrap the components that make up each form question (label, hint text, error message text and input). This ensures all spacing and layout styling is taken care of.
+
+<Playground>
+	<FormGroup>
+		<FormLabel htmlFor="example-formgroup">This is a label</FormLabel>
+		<Hint id="example-formgroup-hint">This is a hint</Hint>
+		<ErrorMessage message="This is an error message" id="example-formgroup-error" />
+		<Text
+			name="example-formgroup"
+			id="example-formgroup"
+			aria-describedby="example-formgroup-hint example-formgroup-error"
+			invalid
+		/>
+	</FormGroup>
+</Playground>
+
+### Primary
+
+Use the `primary` prop to centre the contents of a FormGroup. This option is used exclusively to render the ‘Fork’ pattern — a primary FormGroup wrapping a ButtonGroup component.
+
+<Playground>
+	<FormGroup primary>
+		<Fieldset legend="Do you have a different mailing address?">
+			<ButtonGroup name="example-formgroup-primary">
+				<Button id="example-formgroup-primary-1" value="yes">
+					Yes
+				</Button>
+				<Button id="example-formgroup-primary-2" value="no">
+					No
+				</Button>
+			</ButtonGroup>
+		</Fieldset>
+	</FormGroup>
+</Playground>
+
+<Props of={FormGroup} />
+
+## ChitChat
+
+Form specific heading text, often used to provide a friendly conversational message at the top of a form.
+
+<Playground>
+	<FormSection>
+		<ChitChat>
+			Hello, I’m the friendly conversational text component. I live at the top of the form if
+			required.
+		</ChitChat>
+	</FormSection>
+</Playground>
+
+<Props of={ChitChat} />
+
+## Fieldset
+
+A wrapping component required to meet WCAG 2.1 AA accessibility compliance when rendering grouped inputs (e.g. the ‘Fork’, ‘Date of birth’ or multi-line ‘Street’ patterns). These patterns often require use of the InputCluster component to provide multiple-input layout styling.
+
+Fieldset takes mandatory legend text via its `legend` prop.
+
+<Playground>
+	<FormGroup>
+		<Fieldset legend="Date of birth" aria-describedby="example-fieldset-hint">
+			<Hint id="example-fieldset-hint">For example 31 3 1980</Hint>
+			<InputCluster horizontal>
+				<Item>
+					<FormLabel htmlFor="example-fieldset-input-1" sublabel>
+						Day
+					</FormLabel>
+					<Text
+						type="number"
+						autoComplete="bday-day"
+						pattern="[0-9]*"
+						min="1"
+						max="31"
+						name="example-fieldset-input-1"
+						id="example-fieldset-input-1"
+						width={2}
+					/>
+				</Item>
+				<Item>
+					<FormLabel htmlFor="example-fieldset-input-2" sublabel>
+						Month
+					</FormLabel>
+					<Text
+						type="number"
+						autoComplete="bday-month"
+						pattern="[0-9]*"
+						min="1"
+						max="12"
+						name="example-fieldset-input-2"
+						id="example-fieldset-input-2"
+						width={2}
+					/>
+				</Item>
+				<Item>
+					<FormLabel htmlFor="example-fieldset-input-3" sublabel>
+						Year
+					</FormLabel>
+					<Text
+						type="number"
+						autoComplete="bday-year"
+						pattern="[0-9]*"
+						min="1896"
+						max="2019"
+						name="example-fieldset-input-3"
+						id="example-fieldset-input-3"
+						width={4}
+					/>
+				</Item>
+			</InputCluster>
+		</Fieldset>
+	</FormGroup>
+</Playground>
+
+<Props of={Fieldset} />
+
+## FormLabel
+
+Every input component in a form requires an associated text label to describe the expected value. Using placeholder text to provide this description is not recommended.
+
+<Alert appearance="information" icon={AlertIcon}>
+	<strong>Heads up!</strong> The FormLabel component requires explicit association with its input
+	component to meet WCAG 2.1 AA accessibility compliance. Ensure the FormLabel component’s `htmlFor`
+	prop value matches the associated input component’s `id` prop value.
+</Alert>
+
+<Playground>
+	<FormGroup>
+		<FormLabel htmlFor="example-formlabel">This is a label</FormLabel>
+		<Text name="example-formlabel" id="example-formlabel" />
+	</FormGroup>
+</Playground>
+
+### Sub-label
+
+Use the `sublabel` prop when rendering FormLabel components for grouped inputs (e.g. the ‘Fork’, ‘Date of birth’ or multi-line ‘Street’ patterns).
+
+These patterns also require use of the Fieldset component to meet WCAG 2.1 AA accessibility compliance. The Fieldset component provides its own label text, known as a 'legend', so we use the smaller sub-label styling to provide visual heirarchy.
+
+<Playground>
+	<FormGroup>
+		<Fieldset legend="This is a legend">
+			<InputCluster>
+				<Item>
+					<FormLabel htmlFor="example-formlabel-sublabel-1" sublabel>
+						This is a sub-label
+					</FormLabel>
+					<Text name="example-formlabel-sublabel-1" id="example-formlabel-sublabel-1" />
+				</Item>
+				<Item>
+					<FormLabel htmlFor="example-formlabel-sublabel-2" sublabel>
+						This is another sub-label
+					</FormLabel>
+					<Text name="example-formlabel-sublabel-2" id="example-formlabel-sublabel-2" />
+				</Item>
+			</InputCluster>
+		</Fieldset>
+	</FormGroup>
+</Playground>
+
+### SrOnly
+
+Always provide a FormLabel component for every associated input to meet WCAG 2.1 AA accessibility compliance. You can visually hide FormLabel components by providing the `srOnly` (‘screen reader only’) prop if required.
+
+<Playground>
+	<FormGroup>
+		<Fieldset legend="This is a legend">
+			<InputCluster>
+				<Item>
+					<FormLabel htmlFor="example-formlabel-sronly-1" srOnly>
+						This is a ‘screen reader only’ label
+					</FormLabel>
+					<Text name="example-formlabel-sronly-1" id="example-formlabel-sronly-1" />
+				</Item>
+				<Item>
+					<FormLabel htmlFor="example-formlabel-sronly-2" srOnly>
+						This is another ‘screen reader only’ label
+					</FormLabel>
+					<Text name="example-formlabel-sronly-2" id="example-formlabel-sronly-2" />
+				</Item>
+			</InputCluster>
+		</Fieldset>
+	</FormGroup>
+</Playground>
+
+<Props of={FormLabel} />
+
+## Hint
+
+Hint text is additional text provided to aid the user in understanding the expected value and/or format. Use short and concise FormLabel text supplemented with Hint text as necessary.
+
+<Alert appearance="information" icon={AlertIcon}>
+	<strong>Heads up!</strong> The Hint component requires explicit association with its input or
+	Fieldset component to meet WCAG 2.1 AA accessibility compliance. Ensure the input or Fieldset
+	component has an `aria-describedby` prop with its value matching the associated Hint component’s
+	`id` prop value.
+</Alert>
+
+<Playground>
+	<FormGroup>
+		<FormLabel htmlFor="example-hint-input">This is a label</FormLabel>
+		<Hint id="example-hint">This is a hint</Hint>
+		<Text name="example-hint-input" id="example-hint-input" aria-describedby="example-hint" />
+	</FormGroup>
+	<FormGroup>
+		<Fieldset legend="This is a legend" aria-describedby="example-fieldset-hint">
+			<Hint id="example-fieldset-hint">This is a hint</Hint>
+			<InputCluster>
+				<Item>
+					<Text name="example-fieldset-hint-input-1" id="example-fieldset-hint-input-1" />
+				</Item>
+				<Item>
+					<Text name="example-fieldset-hint-input-2" id="example-fieldset-hint-input-2" />
+				</Item>
+			</InputCluster>
+		</Fieldset>
+	</FormGroup>
+</Playground>
+
+<Props of={Hint} />
+
+## ErrorMessage
+
+An inline error message(s) is displayed within a FormGroup component if its input value fails validation. A page-level ’Error summary’ alert must also be placed at the top of the form and list all validation errors found on the page.
+
+Inline error messages are always positioned above input elements. This best-practice approach ensures they are always visible; not scrolled out of view or covered by dropdowns etc. Set the TextInput component’s `invalid` prop to highlight the invalid text input.
+
+<Alert appearance="information" icon={AlertIcon}>
+	<strong>Heads up!</strong> The ErrorMessage component requires explicit association with its input
+	or Fieldset component to meet WCAG 2.1 AA accessibility compliance. Ensure the input or Fieldset
+	component has an `aria-describedby` prop with its value matching the associated ErrorMessage
+	component’s `id` prop value.
+</Alert>
+
+Use the `message` prop to pass error message text.
+
+<Playground>
+	<FormGroup>
+		<ErrorMessage message="This is an error message" id="example-single-error" />
+		<Text name="example-single" aria-describedby="example-single-error" invalid />
+	</FormGroup>
+</Playground>
+
+Multiple messages can be rendered by passing an array of errors.
+
+<Playground>
+	<FormGroup>
+		<ErrorMessage
+			message={['This is an error message', 'This is another error message']}
+			id="example-multiple-error"
+		/>
+		<Text name="example-multiple" aria-describedby="example-multiple-error" invalid />
+	</FormGroup>
+</Playground>
+
+<Props of={ErrorMessage} />
+
+## InputCluster
+
+InputCluster is a layout and spacing component used to wrap grouped text inputs.
+
+The default (vertical) mode is used to render the multi-line ‘Street’ pattern.
+
+<Playground>
+	<InputCluster>
+		<Item>
+			<Text name="example-inputcluster-input-1" id="example-inputcluster-input-1" />
+		</Item>
+		<Item>
+			<Text name="example-inputcluster-input-2" id="example-inputcluster-input-2" />
+		</Item>
+	</InputCluster>
+</Playground>
+
+### Horizontal
+
+The `horizontal` mode changes the layout to inline. This mode is used to render the ‘Date of birth’ and ‘Expiry date’ patterns.
+
+<Playground>
+	<InputCluster horizontal>
+		<Item>
+			<Text
+				name="example-inputcluster-horizontal-input-1"
+				id="example-inputcluster-horizontal-input-1"
+			/>
+		</Item>
+		<Item>
+			<Text
+				name="example-inputcluster-horizontal-input-2"
+				id="example-inputcluster-horizontal-input-2"
+			/>
+		</Item>
+	</InputCluster>
+</Playground>
+
+<Props of={InputCluster} />

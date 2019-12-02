@@ -1,0 +1,184 @@
+---
+name: Button
+menu: Components
+route: /button
+---
+
+import { Playground, Props } from 'docz';
+import { InfoIcon, HouseIcon } from '@westpac/icon';
+import { Button } from '@westpac/button';
+
+# Button
+
+The button system provides the flexibility of multiple styles, sizes and configurations depending on requirements.
+
+## Look
+
+Use the following button looks in your interface. These basic button styles form the base styling options for all other button variations.
+
+<Playground>
+	<Button look="primary">Primary</Button> <Button look="hero">Hero</Button>{' '}
+	<Button look="faint">Faint</Button> <Button look="link">Link</Button>
+</Playground>
+
+## Tags
+
+Use the `tag` prop to configure the Button component to render as a `<button>`, `<a>` or `<input>` element as necessary.
+
+<Playground>
+	<p>
+		<Button type="button">Button button</Button> <Button type="reset">Button reset</Button>{' '}
+		<Button type="submit">Button submit</Button>
+	</p>
+	<p>
+		<Button href="#0">Link</Button>{' '}
+		<Button href="#0" look="link">
+			Link
+		</Button>{' '}
+	</p>
+	<p>
+		<Button tag="input" type="button" value="Input button" />{' '}
+		<Button tag="input" type="reset" value="Input reset" />{' '}
+		<Button tag="input" type="submit" value="Input submit" />
+	</p>
+</Playground>
+
+## Soft
+
+Soft buttons render with less visual emphasis, often used when grouping buttons with differing importance.
+
+<Playground>
+	<Button look="primary" soft>
+		Primary soft
+	</Button>{' '}
+	<Button look="hero" soft>
+		Hero soft
+	</Button>{' '}
+	<Button look="faint" soft>
+		Faint soft
+	</Button>
+</Playground>
+
+## Sizes
+
+Buttons are available in four sizes — in addition to the Medium (default) size, there are two larger sizes (Extra large and Large) and one smaller size (Small). These sizes align with other form component sizes.
+
+Pass the `size` prop an array of size values to set size responsively for each breakpoint.
+
+<Playground>
+	<Button size="small">Small</Button> <Button size="medium">Medium</Button>{' '}
+	<Button size="large">Large</Button> <Button size="xlarge">Extra large</Button>
+</Playground>
+
+## Block
+
+Button widths are auto-sized (inline) by default — they’re as wide as their contents. Block buttons fit to the width of their parent element.
+
+Long button text content will trucate.
+
+Pass the `block` prop an array of boolean values to set this responsively for each breakpoint.
+
+<Playground>
+	<p>
+		<Button block>Block</Button>
+	</p>
+	<p>
+		<Button block>
+			We don’t recommended using long button text, but it will truncate if neccesary
+		</Button>
+	</p>
+</Playground>
+
+## Disabled
+
+Disable Button components by passing a `disabled` prop.
+
+<Playground>
+	<p>
+		<Button look="primary" disabled>
+			Primary
+		</Button>{' '}
+		<Button look="hero" disabled>
+			Hero
+		</Button>{' '}
+		<Button look="faint" disabled>
+			Faint
+		</Button>{' '}
+		<Button look="link" disabled>
+			Link
+		</Button>
+	</p>
+	<p>
+		<Button look="primary" soft disabled>
+			Primary soft
+		</Button>{' '}
+		<Button look="hero" soft disabled>
+			Hero soft
+		</Button>{' '}
+		<Button look="faint" soft disabled>
+			Faint soft
+		</Button>{' '}
+		<Button look="link" soft disabled>
+			Link soft
+		</Button>
+	</p>
+</Playground>
+
+## Icons
+
+Icons in buttons add clarity to the intention of the button action.
+
+Button icons can be positioned either before or after button text content. Simply use the `iconAfter` or `iconBefore` props to pass an Icon component. Positioning the icon after text content is preferred.
+
+Use the `justify` option to align the button’s contents with internal edges in `block` mode.
+
+<Playground>
+	<p>
+		<Button iconAfter={InfoIcon}>Icon after</Button>{' '}
+		<Button iconBefore={InfoIcon}>Icon before</Button>
+	</p>
+	<p>
+		<Button iconAfter={InfoIcon} block>
+			Icon after + block
+		</Button>
+	</p>
+	<p>
+		<Button iconBefore={InfoIcon} block>
+			Icon before + block
+		</Button>
+	</p>
+	<p>
+		<Button iconAfter={InfoIcon} justify block>
+			Icon after + block + justify
+		</Button>
+	</p>
+	<p>
+		<Button iconBefore={InfoIcon} justify block>
+			Icon before + block + justify
+		</Button>
+	</p>
+</Playground>
+
+## Trim
+
+Use the `trim` option to strip horizontal padding.
+
+<Playground>
+	<Button look="link" trim>
+		Trimmed
+	</Button>
+</Playground>
+
+## SrOnlyText
+
+Use the `srOnlyText` ‘screen reader only’ text option to visually hide button text content. This option may be required if your button has only visible icon content.
+
+<Playground>
+	<Button iconAfter={HouseIcon} srOnlyText>
+		Screen reader only text
+	</Button>
+</Playground>
+
+## Props
+
+<Props of={Button} />

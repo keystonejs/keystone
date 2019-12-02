@@ -1,0 +1,10 @@
+{
+	"name": "@westpac/utils",
+	"version": "1.0.0",
+	"description": "A private package for internal helpers and utils",
+	"private": true,
+	"main": "index.js",
+	"dependencies": {
+		"fs": "^0.0.1-security"
+	}
+}
