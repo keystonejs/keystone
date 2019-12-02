@@ -13546,7 +13546,7 @@ lodash.uniqby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
   integrity sha1-2ZwHpmnp5tJOE2Lf4mbGdhavEwI=
 
-lodash@4.17.15, lodash@^4.0.1, lodash@^4.1.1, lodash@^4.11.1, lodash@^4.11.2, lodash@^4.13.1, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0:
+lodash@4.17.15, lodash@^4.0.1, lodash@^4.1.1, lodash@^4.11.1, lodash@^4.11.2, lodash@^4.13.1, lodash@^4.15.0, lodash@^4.16.4, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -13874,7 +13874,7 @@ md5.js@^1.3.4:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-md5@^2.2.1:
+md5@^2.1.0, md5@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/md5/-/md5-2.2.1.tgz#53ab38d5fe3c8891ba465329ea23fac0540126f9"
   integrity sha1-U6s41f48iJG6RlMp6iP6wFQBJvk=
@@ -14657,6 +14657,25 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
   dependencies:
     minimist "0.0.8"
+
+mocha-junit-reporter@^1.23.1:
+  version "1.23.1"
+  resolved "https://registry.yarnpkg.com/mocha-junit-reporter/-/mocha-junit-reporter-1.23.1.tgz#ba11519c0b967f404e4123dd69bc4ba022ab0f12"
+  integrity sha512-qeDvKlZyAH2YJE1vhryvjUQ06t2hcnwwu4k5Ddwn0GQINhgEYFhlGM0DwYCVUHq5cuo32qAW6HDsTHt7zz99Ng==
+  dependencies:
+    debug "^2.2.0"
+    md5 "^2.1.0"
+    mkdirp "~0.5.1"
+    strip-ansi "^4.0.0"
+    xml "^1.0.0"
+
+mocha-multi-reporters@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/mocha-multi-reporters/-/mocha-multi-reporters-1.1.7.tgz#cc7f3f4d32f478520941d852abb64d9988587d82"
+  integrity sha1-zH8/TTL0eFIJQdhSq7ZNmYhYfYI=
+  dependencies:
+    debug "^3.1.0"
+    lodash "^4.16.4"
 
 moment@2.24.0, moment@^2.10.3, moment@^2.21.0, moment@^2.24.0:
   version "2.24.0"
@@ -22949,7 +22968,7 @@ xml2js@^0.4.5:
     sax ">=0.6.0"
     xmlbuilder "~9.0.1"
 
-xml@^1.0.1:
+xml@^1.0.0, xml@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/xml/-/xml-1.0.1.tgz#78ba72020029c5bc87b8a81a3cfcd74b4a2fc1e5"
   integrity sha1-eLpyAgApxbyHuKgaPPzXS0ovweU=
