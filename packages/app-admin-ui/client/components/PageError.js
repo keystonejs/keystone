@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
 
 import { StopIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';

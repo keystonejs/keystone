@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
 import { useMemo } from 'react';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
 import { CheckIcon } from '@arch-ui/icons';

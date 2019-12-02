@@ -1,8 +1,4 @@
-
 import querystring from 'querystring';
-import * as React from 'react';
-
-import List from '../../classes/List';
 import { pseudoLabelField } from './FieldSelect';
 
 // ==============================
