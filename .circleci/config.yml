@@ -74,6 +74,7 @@ jobs:
               echo "No code changes detected, not running CI." 
               exit 1
             fi
+            exit 1
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client-9.6
       - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
