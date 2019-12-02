@@ -34,7 +34,9 @@ const { Text, Password } = require('@keystonejs/fields');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
-const keystone = keystone.createList('User', {
+const keystone = // ...
+
+keystone.createList('User', {
   // ...
   fields: {
     username: { type: Text },
