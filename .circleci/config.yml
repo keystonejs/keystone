@@ -60,17 +60,19 @@ x-integration-steps: &integration-steps
         path: /tmp/screenshots
 
 jobs:
+  run_or_bail:
+    - run:
+        name: 'Run or bail'
+        command: |
+          if ! git diff-tree --no-commit-id --name-only -r HEAD | grep -qvE '.md$' 
+          then 
+            echo "No code changes detected, not running CI." 
+            exit 1
+          fi
   simple_tests:
     <<: *job-setup
     steps:
       - checkout
-      - run:
-          name: 'Run or bail'
-          command: |
-            if ! [[ git diff-tree --no-commit-id --name-only -r HEAD | grep -qvE '.md$ ]]; then 
-              echo "No code changes detected, not running CI." 
-              exit 1
-            fi
       - restore_cache: *restore-cache
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client-9.6
@@ -141,6 +143,7 @@ workflows:
   version: 2
   tests:
     jobs:
+      - run_or_bail
       - simple_tests
       - integration_tests_basic
       - integration_tests_login
