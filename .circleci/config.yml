@@ -63,7 +63,7 @@ x-checkout-and-verify: &checkout-and-verify
     - restore_cache: *restore-cache
     - run:
         name: 'Is test required'
-        command: node ./circle-ci/run-or-bail.js
+        command: node ./.circleci/run-or-bail.js
 
 jobs:
   simple_tests:
