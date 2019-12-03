@@ -39,4 +39,6 @@ if (changedFiles.length === 0) {
 if (shouldRunCI === false) {
   console.log('Test skipped');
   spawnSync('circleci-agent', ['step', 'halt'], { stdio: 'inherit' });
+} else {
+  console.log('Test not skipped');
 }

@@ -60,7 +60,6 @@ x-integration-steps: &integration-steps
 x-checkout-and-verify: &checkout-and-verify
   steps:
     - checkout
-    - run: git diff --name-only master
     - run:
         name: 'Is test required'
         command: node ./.circleci/run-or-bail.js
