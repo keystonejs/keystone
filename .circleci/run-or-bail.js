@@ -2,8 +2,6 @@ const { spawnSync } = require('child_process');
 
 let shouldRunCI = true;
 
-// process.env.CIRCLE_JOB;
-
 let { stdout } = spawnSync('/usr/bin/git', ['diff', '--name-only', 'origin/master'], {
   stdio: ['pipe', 'pipe', 'inherit'],
   encoding: 'utf8',
