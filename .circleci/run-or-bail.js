@@ -1,6 +1,6 @@
 const { spawnSync } = require('child_process');
 
-let shouldRunCI = false;
+let shouldRunCI = true;
 
 // process.env.CIRCLE_JOB;
 
