@@ -30,7 +30,6 @@ x-save-cache: &save-cache
 
 x-integration-steps: &integration-steps
   steps:
-    - checkout
     - restore_cache: *restore-cache
     - run:
         name: Yarn - Install packages
@@ -59,11 +58,18 @@ x-integration-steps: &integration-steps
     - store_artifacts:
         path: /tmp/screenshots
 
+x-checkout-and-verify: &checkout-and-verify
+  steps:
+    - checkout
+    - run:
+        name: 'Is test required'
+        command: node ./circle-ci/run-or-bail.js
+
 jobs:
   simple_tests:
+    <<: *checkout-and-verify
     <<: *job-setup
     steps:
-      - checkout
       - restore_cache: *restore-cache
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client-9.6
@@ -97,6 +103,7 @@ jobs:
       CLOUDINARY_KEY: $CLOUDINARY_KEY
       CLOUDINARY_SECRET: $CLOUDINARY_SECRET
       PORT: 3000
+    <<: *checkout-and-verify
     <<: *job-setup
     <<: *integration-steps
 
@@ -104,6 +111,7 @@ jobs:
     environment:
       PROJECT_DIRECTORY: test-projects/login
       PORT: 3000
+    <<: *checkout-and-verify
     <<: *job-setup
     <<: *integration-steps
 
@@ -112,6 +120,7 @@ jobs:
       PROJECT_DIRECTORY: test-projects/access-control
       PROJECT_NAME: 'Cypress Test Project For Access Control'
       PORT: 3000
+    <<: *checkout-and-verify
     <<: *job-setup
     <<: *integration-steps
 
@@ -120,6 +129,7 @@ jobs:
       PROJECT_DIRECTORY: test-projects/client-validation
       PROJECT_NAME: 'Cypress Test Project For Client Validation'
       PORT: 3000
+    <<: *checkout-and-verify
     <<: *job-setup
     <<: *integration-steps
 
