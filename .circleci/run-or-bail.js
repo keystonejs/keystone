@@ -5,8 +5,10 @@ let shouldRunCI = false;
 // process.env.CIRCLE_JOB;
 
 let { stdout } = spawnSync('/usr/bin/git', ['diff', '--name-only', 'master'], {
-  stdio: 'inherit',
+  stdio: ['pipe', 'pipe', 'inherit'],
+  encoding: 'utf8',
 });
+
 let changedFiles = stdout.toString().split('\n');
 
 if (changedFiles.every(filename => filename.endsWith('.md'))) {
