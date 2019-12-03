@@ -29,69 +29,71 @@ x-save-cache: &save-cache
   key: v14-dependencies-{{ checksum "yarn.lock" }}
 
 x-integration-steps: &integration-steps
-  - run:
-      name: Yarn - Install packages
-      command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
-  - save_cache: *save-cache
-  - run:
-      name: E2E Cypress tests
-      command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn --cwd $PROJECT_DIRECTORY cypress:run:ci
-  - run:
-      name: Prepare artifacts
-      command: |
-        mv "$PROJECT_DIRECTORY"/cypress/{videos,screenshots} /tmp || true
-      when: always
-  - run:
-      name: Prepare reports
-      command: |
-        cd "$PROJECT_DIRECTORY"
-        [ -d cypress/reports ] && `yarn bin`/junit-merge -d cypress/reports -C -o /tmp/reports/cypress/report.xml || true
-      when: always
-  - store_test_results:
-      path: /tmp/reports
-  - store_artifacts:
-      path: /tmp/reports
-  - store_artifacts:
-      path: /tmp/videos
-  - store_artifacts:
-      path: /tmp/screenshots
+  steps:
+    - run:
+        name: Yarn - Install packages
+        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
+    - save_cache: *save-cache
+    - run:
+        name: E2E Cypress tests
+        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn --cwd $PROJECT_DIRECTORY cypress:run:ci
+    - run:
+        name: Prepare artifacts
+        command: |
+          mv "$PROJECT_DIRECTORY"/cypress/{videos,screenshots} /tmp || true
+        when: always
+    - run:
+        name: Prepare reports
+        command: |
+          cd "$PROJECT_DIRECTORY"
+          [ -d cypress/reports ] && `yarn bin`/junit-merge -d cypress/reports -C -o /tmp/reports/cypress/report.xml || true
+        when: always
+    - store_test_results:
+        path: /tmp/reports
+    - store_artifacts:
+        path: /tmp/reports
+    - store_artifacts:
+        path: /tmp/videos
+    - store_artifacts:
+        path: /tmp/screenshots
 
 x-checkout-and-verify: &checkout-and-verify
-  - checkout
-  - run:
-      name: 'Is test required'
-      command: node ./.circleci/run-or-bail.js
+  steps:
+    - checkout
+    - run:
+        name: 'Is test required'
+        command: node ./.circleci/run-or-bail.js
 
 x-simple-tests: &simple-tests
-  - run: sudo apt-get update
-  - run: sudo apt-get install postgresql-client-9.6
-  - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
-  - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
-  - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
-  # Set Cypress cache dir here, in case this job runs/completes first, and
-  # hence clobbers the `node_modules` cache with a non-cypress version,
-  # causing the other job to fail with a "Missing Cypress" error.
-  - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
-  - save_cache: *save-cache
-  # run tests!
-  - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
-  - run: yarn lint:prettier
-  - run: yarn lint:flow
-  - run: yarn lint:markdown
-  - run:
-      name: Unit tests
-      command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
-      environment:
-        JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
-  - store_test_results:
-      path: reports/junit
-  - store_artifacts:
-      path: reports/junit
+  steps:
+    - run: sudo apt-get update
+    - run: sudo apt-get install postgresql-client-9.6
+    - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
+    - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
+    - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
+    # Set Cypress cache dir here, in case this job runs/completes first, and
+    # hence clobbers the `node_modules` cache with a non-cypress version,
+    # causing the other job to fail with a "Missing Cypress" error.
+    - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
+    - save_cache: *save-cache
+    # run tests!
+    - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
+    - run: yarn lint:prettier
+    - run: yarn lint:flow
+    - run: yarn lint:markdown
+    - run:
+        name: Unit tests
+        command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
+        environment:
+          JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
+    - store_test_results:
+        path: reports/junit
+    - store_artifacts:
+        path: reports/junit
 
 jobs:
   simple_tests:
     <<: *job-setup
-  steps:
     <<: *checkout-and-verify
     <<: *restore-cache
     <<: *simple-tests
@@ -104,7 +106,6 @@ jobs:
       CLOUDINARY_SECRET: $CLOUDINARY_SECRET
       PORT: 3000
     <<: *job-setup
-  steps:
     <<: *checkout-and-verify
     <<: *restore-cache
     <<: *integration-steps
@@ -114,7 +115,6 @@ jobs:
       PROJECT_DIRECTORY: test-projects/login
       PORT: 3000
     <<: *job-setup
-  steps:
     <<: *checkout-and-verify
     <<: *restore-cache
     <<: *integration-steps
@@ -125,7 +125,6 @@ jobs:
       PROJECT_NAME: 'Cypress Test Project For Access Control'
       PORT: 3000
     <<: *job-setup
-  steps:
     <<: *checkout-and-verify
     <<: *restore-cache
     <<: *integration-steps
@@ -136,7 +135,6 @@ jobs:
       PROJECT_NAME: 'Cypress Test Project For Client Validation'
       PORT: 3000
     <<: *job-setup
-  steps:
     <<: *checkout-and-verify
     <<: *restore-cache
     <<: *integration-steps
