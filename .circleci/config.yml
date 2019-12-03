@@ -30,7 +30,6 @@ x-save-cache: &save-cache
 
 x-integration-steps: &integration-steps
   steps:
-    - restore_cache: *restore-cache
     - run:
         name: Yarn - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
@@ -61,16 +60,16 @@ x-integration-steps: &integration-steps
 x-checkout-and-verify: &checkout-and-verify
   steps:
     - checkout
+    - restore_cache: *restore-cache
     - run:
         name: 'Is test required'
         command: node ./circle-ci/run-or-bail.js
 
 jobs:
   simple_tests:
-    <<: *checkout-and-verify
     <<: *job-setup
+    <<: *checkout-and-verify
     steps:
-      - restore_cache: *restore-cache
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client-9.6
       - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
@@ -103,16 +102,16 @@ jobs:
       CLOUDINARY_KEY: $CLOUDINARY_KEY
       CLOUDINARY_SECRET: $CLOUDINARY_SECRET
       PORT: 3000
-    <<: *checkout-and-verify
     <<: *job-setup
+    <<: *checkout-and-verify
     <<: *integration-steps
 
   integration_tests_login:
     environment:
       PROJECT_DIRECTORY: test-projects/login
       PORT: 3000
-    <<: *checkout-and-verify
     <<: *job-setup
+    <<: *checkout-and-verify
     <<: *integration-steps
 
   integration_tests_accesscontrol:
@@ -120,8 +119,8 @@ jobs:
       PROJECT_DIRECTORY: test-projects/access-control
       PROJECT_NAME: 'Cypress Test Project For Access Control'
       PORT: 3000
-    <<: *checkout-and-verify
     <<: *job-setup
+    <<: *checkout-and-verify
     <<: *integration-steps
 
   integration_tests_clientvalidation:
@@ -129,8 +128,8 @@ jobs:
       PROJECT_DIRECTORY: test-projects/client-validation
       PROJECT_NAME: 'Cypress Test Project For Client Validation'
       PORT: 3000
-    <<: *checkout-and-verify
     <<: *job-setup
+    <<: *checkout-and-verify
     <<: *integration-steps
 
   # integration_tests_twitterlogin:
