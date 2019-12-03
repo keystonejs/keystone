@@ -1,6 +1,6 @@
 const { execSync } = require('child_process');
 
-let shouldRunCI = true;
+let shouldRunCI = false;
 
 // process.env.CIRCLE_JOB;
 
