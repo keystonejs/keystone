@@ -4,7 +4,10 @@ let shouldRunCI = false;
 
 // process.env.CIRCLE_JOB;
 
-let stdout = execSync('git', ['diff', '--name-only', 'master'], { stdio: 'inherit' });
+let stdout = execSync('git', ['diff', '--name-only', 'master'], {
+  stdio: 'inherit',
+  shell: '/bin/bash',
+});
 let changedFiles = stdout.toString().split('\n');
 
 if (changedFiles.every(filename => filename.endsWith('.md'))) {
@@ -14,5 +17,5 @@ if (changedFiles.every(filename => filename.endsWith('.md'))) {
 
 if (shouldRunCI === false) {
   console.log('Test skipped');
-  execSync('circleci-agent', ['step', 'halt'], { stdio: 'inherit' });
+  execSync('circleci-agent', ['step', 'halt'], { stdio: 'inherit', shell: '/bin/bash' });
 }
