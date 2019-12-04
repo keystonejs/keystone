@@ -31,7 +31,9 @@ x-save-cache: &save-cache
 x-integration-steps: &integration-steps
   steps:
     - checkout
-    - restore_cache: *restore-cache
+    - run:
+        name: 'Is test required'
+        command: node ./.circleci/run-or-bail.js
     - run:
         name: Yarn - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
@@ -59,35 +61,41 @@ x-integration-steps: &integration-steps
     - store_artifacts:
         path: /tmp/screenshots
 
+x-simple-tests: &simple-tests
+  steps:
+    - checkout
+    - run:
+        name: 'Is test required'
+        command: node ./.circleci/run-or-bail.js
+    - run: sudo apt-get update
+    - run: sudo apt-get install postgresql-client-9.6
+    - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
+    - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
+    - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
+    # Set Cypress cache dir here, in case this job runs/completes first, and
+    # hence clobbers the `node_modules` cache with a non-cypress version,
+    # causing the other job to fail with a "Missing Cypress" error.
+    - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
+    - save_cache: *save-cache
+    # run tests!
+    - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
+    - run: yarn lint:prettier
+    - run: yarn lint:markdown
+    - run:
+        name: Unit tests
+        command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
+        environment:
+          JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
+    - store_test_results:
+        path: reports/junit
+    - store_artifacts:
+        path: reports/junit
+
 jobs:
   simple_tests:
     <<: *job-setup
-    steps:
-      - checkout
-      - restore_cache: *restore-cache
-      - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client-9.6
-      - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
-      - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
-      - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
-      # Set Cypress cache dir here, in case this job runs/completes first, and
-      # hence clobbers the `node_modules` cache with a non-cypress version,
-      # causing the other job to fail with a "Missing Cypress" error.
-      - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
-      - save_cache: *save-cache
-      # run tests!
-      - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
-      - run: yarn lint:prettier
-      - run: yarn lint:markdown
-      - run:
-          name: Unit tests
-          command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
-          environment:
-            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
-      - store_test_results:
-          path: reports/junit
-      - store_artifacts:
-          path: reports/junit
+    <<: *restore-cache
+    <<: *simple-tests
 
   integration_tests_basic:
     environment:
@@ -97,6 +105,7 @@ jobs:
       CLOUDINARY_SECRET: $CLOUDINARY_SECRET
       PORT: 3000
     <<: *job-setup
+    <<: *restore-cache
     <<: *integration-steps
 
   integration_tests_login:
@@ -104,6 +113,7 @@ jobs:
       PROJECT_DIRECTORY: test-projects/login
       PORT: 3000
     <<: *job-setup
+    <<: *restore-cache
     <<: *integration-steps
 
   integration_tests_accesscontrol:
@@ -112,6 +122,7 @@ jobs:
       PROJECT_NAME: 'Cypress Test Project For Access Control'
       PORT: 3000
     <<: *job-setup
+    <<: *restore-cache
     <<: *integration-steps
 
   integration_tests_clientvalidation:
@@ -120,6 +131,7 @@ jobs:
       PROJECT_NAME: 'Cypress Test Project For Client Validation'
       PORT: 3000
     <<: *job-setup
+    <<: *restore-cache
     <<: *integration-steps
 
   # integration_tests_twitterlogin:
