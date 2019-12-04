@@ -23,6 +23,7 @@ const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
   config: {...},
+  hooks: {...},
 });
 ```
 
@@ -37,11 +38,12 @@ module.exports = {
 
 ## Config
 
-| Option   | Type           | Default    | Description                                                       |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `type`   | `AuthStrategy` | (required) | A valid authentication strategy.                                  |
-| `list`   | `String`       | (required) | The list that contains an authenticated item, for example a user. |
-| `config` | `Object`       | `{}`       | Strategy-specific config options.                                 |
+| Option   | Type           | Default    | Description                                                                             |
+| -------- | -------------- | ---------- | --------------------------------------------------------------------------------------- |
+| `type`   | `AuthStrategy` | (required) | A valid authentication strategy.                                                        |
+| `list`   | `String`       | (required) | The list that contains an authenticated item, for example a user.                       |
+| `config` | `Object`       | `{}`       | Strategy-specific config options.                                                       |
+| `hooks`  | `Object`       | `{}`       | Authentication mutation hooks. See the [hooks API docs](/docs/api/hooks.md) for details |
 
 > **Note:** Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
 

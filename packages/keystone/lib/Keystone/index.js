@@ -237,7 +237,7 @@ module.exports = class Keystone {
   }
 
   createAuthStrategy(options) {
-    const { type: StrategyType, list: listKey, config } = options;
+    const { type: StrategyType, list: listKey, config, hooks } = options;
     const { authType } = StrategyType;
     if (!this.auth[listKey]) {
       this.auth[listKey] = {};
@@ -249,7 +249,7 @@ module.exports = class Keystone {
       throw new Error(`List "${listKey}" does not exist.`);
     }
     this._providers.push(
-      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy })
+      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy, hooks })
     );
     return strategy;
   }
