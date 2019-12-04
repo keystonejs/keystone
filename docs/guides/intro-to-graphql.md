@@ -163,7 +163,9 @@ mutation {
 
 ## Executing Queries and Mutations
 
-Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/). The default path for KeystoneJS' GraphQl Playground is `http://localhost:3000/admin/graphql`. Here you can execute queries and mutations against the KeystoneJS API without writing any JavaScript.
+Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/).
+The default path for KeystoneJS' GraphQl Playground is `http://localhost:3000/admin/graphql`.
+Here you can execute queries and mutations against the KeystoneJS API without writing any JavaScript.
 
 Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to KeystoneJS' API. The default API endpoint is: `http://localhost:3000/admin/api`.
 
@@ -218,13 +220,15 @@ fetch('/admin/api', {
 
 A good next step is to write an `executeQuery` function that accepts a query and variables and returns the results from the API. Take a look at the `todo` sample application in the `cli` for examples of this.
 
-**Note:** If you have configured [Access Control](/api/access-control) it can effect the result of some queries.
+**Note:** If you have configured [Access Control](/docs/api/access-control.md) it can effect the result of some queries.
 
 ## Executing Queries and Mutations on the Server
 
-In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/keystonejs/keystone/#executequeryquerystring-config).
+In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/packages/keystone/README.md#executequeryquerystring-config).
 
-**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/keystonejs/keystone/#executequeryquerystring-config)
+**Note:** No access control checks are run when executing queries on the server.
+Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`.
+See: [Keystone executeQuery()](/packages/keystone/README.md#executequeryquerystring-config)
 
 ## Filter, Limit and Sorting
 

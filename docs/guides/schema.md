@@ -98,7 +98,7 @@ type User {
 ```
 
 _(NOTE: Only a subset of all the generated types/mutations/queries are shown
-here. To see a more complete example [follow the Quick Start](../../quick-start).)_
+here. To see a more complete example [follow the Quick Start](/docs/quick-start).)_
 
 ### Customizing Lists & Fields
 
@@ -117,15 +117,14 @@ keystone.createList('Todo', {
 
 In this example, the `adminConfig` options will apply only to the `Todo` list
 (setting how many items are shown per page in the [Admin
-UI](/keystonejs/app-admin-ui)). The `isRequired` option will ensure an API error
+UI](/packages/app-admin-ui)). The `isRequired` option will ensure an API error
 is thrown if a `task` value is not provided when creating/updating items.
 
 <!-- TODO: Screenshot -->
 
-_For more List options, see the [`createList()` API
-docs](/api/create-list)._
+_For more List options, see the [`createList()` API docs](/docs/api/create-list.md)._
 
-_[There are many different field types available](/keystonejs/fields/),
+_[There are many different field types available](/packages/fields),
 each specifying their own options._
 
 ### Related Lists
@@ -653,8 +652,7 @@ mutation {
 }
 ```
 
-_See [the Relationship API docs for more on
-`connect`](../../keystonejs/fields/src/types/relationship)._
+_See [the Relationship API docs for more on `connect`](/packages/fields/src/types/Relationship)._
 
 If this was the first `Todo` item created, the database would now look like:
 
@@ -818,8 +816,8 @@ keystone.createList('User', {
 ```
 
 In this case, we'll create the first task along with creating the user. _For
-more info on the `create` syntax, see [the Relationship API
-docs](../../keystonejs/fields/src/types/relationship/)._
+more info on the `create` syntax, see
+[the Relationship API docs](/packages/fields/src/types/Relationship)._
 
 ```graphql
 mutation {

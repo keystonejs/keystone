@@ -14,13 +14,15 @@ What a user _can_ and _cannot_ do in KeystoneJS depends on two things: _authenti
 
 This guide focuses on the GraphQL API _access control_, which refers to the specific actions an authenticated or anonymous user can take.
 
-_Authentication_, on the other hand, refers to a user identifying themselves in the Admin UI. You can learn about it in the [Authentication guide](/guides/authentication).
+_Authentication_, on the other hand, refers to a user identifying themselves in the Admin UI.
+You can learn about it in the [Authentication guide](/docs/guides/authentication.md).
 
 ## GraphQL Access Control
 
 Access control is about limiting CRUD (Create, Read, Update, Delete) actions that can be performed based on the current user (authenticated or anonymous).
 
-In KeystoneJS, both [Lists](/api/create-list) and [Fields](keystone-alpha/fields) take an `access` option, which lets you define rules of access control with fine precision - see [Access Control API](/api/access-control) docs for more details.
+In KeystoneJS, both [Lists](/docs/api/create-list.md) and [Fields](/packages/fields) take an `access` option,
+which lets you define rules of access control with fine precision - see [Access Control API](/docs/api/access-control.md) docs for more details.
 
 ### Example
 
@@ -37,7 +39,7 @@ Let's assume we want set the following access controls for a `User` list:
 
 Here's how we would set that up:
 
-_NOTE: The code below depends on having a correct [authentication setup](/guides/authentication)._
+_NOTE: The code below depends on having a correct [authentication setup](/docs/guides/authentication.md)._
 
 ```javascript
 const { Text, Select, Checkbox, Password } = require('@keystonejs/fields');
@@ -106,4 +108,4 @@ Note that Jess can only read _his own_ email, and cannot read any passwords.
 
 ---
 
-Read more in the [Access Control API docs](/api/access-control).
+Read more in the [Access Control API docs](/docs/api/access-control.md).

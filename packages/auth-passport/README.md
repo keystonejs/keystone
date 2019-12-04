@@ -7,7 +7,7 @@ title: Passport Auth Strategy
 # Passport Auth Strategy
 
 Enable KeystoneJS authentication via services such as Google, Twitter, Facebook,
-GitHub, and any [others supported by `passport.js`](http://www.passportjs.org/packages/).
+GitHub, and any [others supported by `passport.js`](http://www.passportjs.org).
 
 ## Authentication Flows
 
@@ -154,10 +154,9 @@ module.exports = {
 _NOTE: The below can be done with any of the supported strategies (Twitter,
 Facebook, etc)._
 
-Due to the extra route used for gathering the user's name, this example
-implements [an All-in-one Custom
-Server](/guides/custom-server#all-in-one-custom-server) and should be run
-with `node server.js`, then visit `http://localhost:3000/auth/google` to start
+Due to the extra route used for gathering the user's name, this example implements
+[an All-in-one Custom Server](/docs/guides/custom-server.md#all-in-one-custom-server)
+and should be run with `node server.js`, then visit `http://localhost:3000/auth/google` to start
 the Google authentication process.
 
 `server.js`

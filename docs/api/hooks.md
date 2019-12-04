@@ -133,14 +133,14 @@ The result is passed to [the next function in the execution order](/docs/guides/
 
 #### Arguments
 
-| Argument        | Type                    | Description                                                                                                                   |
-| :-------------- | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `operation`     | `String`                | The operation being performed (ie. `create` or `update`)                                                                      |
-| `existingItem`  | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                              |
-| `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                     |
-| `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                                |
-| `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
-| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+| Argument        | Type                    | Description                                                                                                                  |
+| :-------------- | :---------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`     | `String`                | The operation being performed (ie. `create` or `update`)                                                                     |
+| `existingItem`  | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                             |
+| `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
+| `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
+| `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -173,15 +173,15 @@ Return values are ignored.
 
 #### Arguments
 
-| Argument                  | Type                    | Description                                                                                                                   |
-| :------------------------ | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `operation`               | `String`                | The operation being performed (ie. `create` or `update`)                                                                      |
-| `existingItem`            | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                              |
-| `originalInput`           | `Object`                | The data received by the GraphQL mutation                                                                                     |
-| `resolvedData`            | `Object`                | The data received by the GraphQL mutation plus defaults values                                                                |
-| `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
-| `actions`                 | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
-| `addFieldValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                      |
+| Argument                  | Type                    | Description                                                                                                                  |
+| :------------------------ | :---------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`               | `String`                | The operation being performed (ie. `create` or `update`)                                                                     |
+| `existingItem`            | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                             |
+| `originalInput`           | `Object`                | The data received by the GraphQL mutation                                                                                    |
+| `resolvedData`            | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
+| `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `actions`                 | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
+| `addFieldValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
 
@@ -214,14 +214,14 @@ Return values are ignored.
 
 #### Arguments
 
-| Argument        | Type                    | Description                                                                                                                   |
-| :-------------- | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `operation`     | `String`                | The operation being performed (ie. `create` or `update`)                                                                      |
-| `existingItem`  | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                              |
-| `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                     |
-| `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                                |
-| `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
-| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+| Argument        | Type                    | Description                                                                                                                  |
+| :-------------- | :---------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`     | `String`                | The operation being performed (ie. `create` or `update`)                                                                     |
+| `existingItem`  | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                             |
+| `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
+| `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
+| `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -257,14 +257,14 @@ Return values are ignored.
 
 #### Arguments
 
-| Argument        | Type                    | Description                                                                                                                   |
-| :-------------- | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `operation`     | `String`                | The operation being performed (ie. `create` or `update`)                                                                      |
-| `existingItem`  | `Object` or `undefined` | The previously stored item (or `undefined` for `create` operations)                                                           |
-| `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                     |
-| `updatedItem`   | `Object`                | The new/currently stored item                                                                                                 |
-| `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
-| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+| Argument        | Type                    | Description                                                                                                                  |
+| :-------------- | :---------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`     | `String`                | The operation being performed (ie. `create` or `update`)                                                                     |
+| `existingItem`  | `Object` or `undefined` | The previously stored item (or `undefined` for `create` operations)                                                          |
+| `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
+| `updatedItem`   | `Object`                | The new/currently stored item                                                                                                |
+| `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -295,13 +295,13 @@ Should throw or register errors with `addFieldValidationError(<String>)` if the 
 
 #### Arguments
 
-| Argument                  | Type             | Description                                                                                                                   |
-| :------------------------ | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `operation`               | `String`         | The operation being performed (`delete` in this case)                                                                         |
-| `existingItem`            | `Object`         | The current stored item                                                                                                       |
-| `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
-| `actions`                 | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
-| `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                      |
+| Argument                  | Type             | Description                                                                                                                  |
+| :------------------------ | :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`               | `String`         | The operation being performed (`delete` in this case)                                                                        |
+| `existingItem`            | `Object`         | The current stored item                                                                                                      |
+| `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `actions`                 | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
+| `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
 
@@ -332,12 +332,12 @@ Return values are ignored.
 
 #### Arguments
 
-| Argument       | Type             | Description                                                                                                                   |
-| :------------- | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                         |
-| `existingItem` | `Object`         | The current stored item                                                                                                       |
-| `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
-| `actions`      | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+| Argument       | Type             | Description                                                                                                                  |
+| :------------- | :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                        |
+| `existingItem` | `Object`         | The current stored item                                                                                                      |
+| `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `actions`      | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -369,12 +369,12 @@ Return values are ignored.
 
 #### Arguments
 
-| Argument       | Type             | Description                                                                                                                   |
-| :------------- | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                         |
-| `existingItem` | `Object`         | The previously stored item, now deleted                                                                                       |
-| `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
-| `actions`      | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+| Argument       | Type             | Description                                                                                                                  |
+| :------------- | :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                        |
+| `existingItem` | `Object`         | The previously stored item, now deleted                                                                                      |
+| `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `actions`      | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 

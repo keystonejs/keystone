@@ -50,7 +50,7 @@ Keystone recognises three _types_ of hook:
 
 - [Field Type hooks](/api/hooks.md#field-type-hooks) -
   Field Type hooks are associated with a particular _field type_ and are applied to all fields of that type across all lists.
-- [Field hooks](/api/hooks.md#field-hooks) -
+- [Field hooks](/docs/api/hooks.md#field-hooks) -
   Field hooks can be defined by the app developer by specifying the `hooks` attribute of a field configuration when calling `createList()`.
 - [List hooks](/api/hooks.md#list-hooks) -
   List hooks can be defined by the app developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.

@@ -44,7 +44,7 @@ const keystone = new Keystone({
 });
 ```
 
-You can specify any suitable name for your application. Note that we created an instance of the [Mongoose Adapter](/keystonejs/adapter-mongoose/) and passed it to KeystoneJS' constructor.
+You can specify any suitable name for your application. Note that we created an instance of the [Mongoose Adapter](/packages/adapter-mongoose/) and passed it to KeystoneJS' constructor.
 
 Now we can export our instance and make it available for running. Add following to the end of `index.js`:
 
@@ -139,4 +139,4 @@ You should see something like this
 🔗 GraphQL API:          http://localhost:3000/admin/api
 ```
 
-Now it's the time to check those routes in browser to ensure that everything works as expected. Then proceed to second step - [Adding Lists](/guides/add-lists)
+Now it's the time to check those routes in browser to ensure that everything works as expected. Then proceed to second step - [Adding Lists](/docs/guides/add-lists.md)
