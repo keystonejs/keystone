@@ -27,13 +27,14 @@ depending on where in the list schema they're attached:
 - [Field hooks](#field-hooks)
 - [Field Type hooks](#field-type-hooks)
 
-The [hook sets](/docs/guides/hooks.md#hook-set) that span these types have very similar signatures.
+Other than authentication hooks which only exist at the list level,
+the [hook sets](/docs/guides/hooks.md#hook-set) that span these types have very similar signatures.
 Any differences are called out in the documentation below.
 
 ### List Hooks
 
 List hooks can be defined by the system developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.
-Hooks for the `create`, `update` and `delete` operations are available.
+Hooks for the `create`, `update`, `delete` and `authenticate` operations are available.
 
 #### Usage
 
@@ -54,6 +55,12 @@ keystone.createList('User', {
     validateDelete: async (...) => { ... },
     beforeDelete: async (...) => { ... },
     afterDelete: async (...) => { ... },
+
+    // Hooks for authenticate operations
+    resolveAuthInput: async (...) => { ... },
+    validateAuthInput: async (...) => { ... },
+    beforeAuth: async (...) => { ... },
+    afterAuth: async (...) => { ... },
   },
   ...
 });
@@ -145,7 +152,6 @@ The result is passed to [the next function in the execution order](/docs/guides/
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const resolveInput = ({
   operation,
@@ -186,7 +192,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const validateInput = ({
   operation,
@@ -226,7 +231,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const beforeChange = ({
   operation,
@@ -269,7 +273,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const afterChange = ({
   operation,
@@ -306,7 +309,6 @@ Should throw or register errors with `addFieldValidationError(<String>)` if the 
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const validateDelete = ({
   operation,
@@ -342,7 +344,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const beforeDelete = ({
   operation,
@@ -379,11 +380,166 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const afterDelete = ({
   operation,
   existingItem,
+  context,
+  actions,
+}) => {
+  // Perform side effects
+  // Return values ignored
+};
+```
+
+### `resolveAuthInput`
+
+**Used to modify the `originalInput`, producing `resolvedData`.**
+
+- Invoked after access control is applied
+- Available for `authenticate` operations
+
+The return of `resolveAuthInput` can be a `Promise` or an `Object`.
+It should resolve to the same structure as `originalInput`.
+The result is passed to [the next function in the execution order](/docs/guides/hooks.md#hook-execution-order).
+
+#### Arguments
+
+| Argument        | Type             | Description                                                                                                                   |
+| :-------------- | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `operation`     | `String`         | The operation being performed (`authenticate` in this case)                                                                   |
+| `originalInput` | `Object`         | The data received by the GraphQL mutation                                                                                     |
+| `context`       | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `actions`       | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+
+#### Usage
+
+<!-- prettier-ignore -->
+```js
+const resolveAuthInput = ({
+  operation,
+  originalInput,
+  context,
+  actions,
+}) => {
+  // Input resolution logic
+  // Object returned is used in place of resolvedData
+  return resolvedData;
+};
+```
+
+### `validateAuthInput`
+
+**Used to verify the `resolvedData` is valid.**
+
+- Invoked after the `resolveAuthInput` hook has resolved
+- Available for `authenticate` operations
+
+If errors are found in `resolvedData` the function should either throw or call the supplied `addFieldValidationError` argument.
+Return values are ignored.
+
+#### Arguments
+
+| Argument                  | Type             | Description                                                                                                                   |
+| :------------------------ | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `operation`               | `String`         | The operation being performed (`authenticate` in this case)                                                                   |
+| `originalInput`           | `Object`         | The data received by the GraphQL mutation                                                                                     |
+| `resolvedData`            | `Object`         | The data received by the GraphQL mutation or returned by `resolveAuthInput`, if defined                                       |
+| `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `actions`                 | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+| `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                      |
+
+#### Usage
+
+<!-- prettier-ignore -->
+```js
+const validateAuthInput = ({
+  operation,
+  originalInput,
+  resolvedData,
+  context,
+  actions,
+  addFieldValidationError,
+}) => {
+  // Throw error objects or register validation errors with addFieldValidationError(<String>)
+  // Return values ignored
+};
+```
+
+### `beforeAuth`
+
+**Used to cause side effects before the authenticate operation is executed.**
+
+- Invoked after the `validateAuthInput` hook has resolved
+- Available for `authenticate` operations
+
+`beforeAuth` hooks can perform operations before the auth strategy `validate()` function is invoked.
+Return values are ignored.
+
+#### Arguments
+
+| Argument        | Type             | Description                                                                                                                   |
+| :-------------- | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `operation`     | `String`         | The operation being performed (`authenticate` in this case)                                                                   |
+| `originalInput` | `Object`         | The data received by the GraphQL mutation                                                                                     |
+| `resolvedData`  | `Object`         | The data received by the GraphQL mutation or returned by `resolveAuthInput`, if defined                                       |
+| `context`       | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `actions`       | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+
+#### Usage
+
+<!-- prettier-ignore -->
+```js
+const beforeAuth = ({
+  operation,
+  originalInput,
+  resolvedData,
+  context,
+  actions,
+}) => {
+  // Perform side effects
+  // Return values ignored
+};
+```
+
+### `afterAuth`
+
+**Used to cause side effects after the authenticate operation is executed.**
+
+- Invoked after the authenticate operation has completed
+- Available for `authenticate` operations
+
+Can cause side effects after the credentials have been validated or rejected.
+If authentication was successful, the function is passed the item being authenticated.
+
+Return values are ignored.
+
+#### Arguments
+
+| Argument        | Type             | Description                                                                                                                   |
+| :-------------- | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `operation`     | `String`         | The operation being performed (`authenticate` in this case)                                                                   |
+| `item`          | `Object`         | The item the caller has successfully authenticated as                                                                         |
+| `success`       | `Boolean`        | Indicates whether the credentials were verified successfully                                                                  |
+| `message`       | `String`         | The message being returned to caller                                                                                          |
+| `token`         | `String`         | The session token generated                                                                                                   |
+| `originalInput` | `Object`         | The data received by the GraphQL mutation                                                                                     |
+| `resolvedData`  | `Object`         | The data received by the GraphQL mutation or returned by `resolveAuthInput`, if defined                                       |
+| `context`       | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `actions`       | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)   |
+
+#### Usage
+
+<!-- prettier-ignore -->
+```js
+const afterAuth = ({
+  operation,
+  item,
+  success,
+  message,
+  token,
+  originalInput,
+  resolvedData,
   context,
   actions,
 }) => {

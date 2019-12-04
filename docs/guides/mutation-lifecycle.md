@@ -14,7 +14,7 @@ subSection: graphql
 
   - [Access Control Phase](#access-control-phase)
 
-    - [1. Check List Access (create/update/delete)](#1-check-list-access-createupdatedelete)
+    - [1. Check List Access (create/update/delete/authenticate)](#1-check-list-access-createupdatedeleteauthenticate)
     - [2. Get Item(s) (update/delete)](#2-get-items-updatedelete)
     - [3. Check Field Access (create/update)](#3-check-field-access-createupdate)
 
@@ -23,12 +23,12 @@ subSection: graphql
     - [1. Resolve Defaults (create)](#1-resolve-defaults-create)
     - [2a. Resolve Relationship (create/update)](#2a-resolve-relationship-createupdate)
     - [2b. Register Backlinks (delete)](#2b-register-backlinks-delete)
-    - [3. Resolve Input (create/update)](#3-resolve-input-createupdate)
-    - [4. Validate Data (create/update/delete)](#4-validate-data-createupdatedelete)
-    - [5. Before Operation (create/update/delete)](#5-before-operation-createupdatedelete)
-    - [6. Database Operation (create/update/delete)](#6-database-operation-createupdatedelete)
+    - [3. Resolve Input (create/update/authenticate)](#3-resolve-input-createupdateauthenticate)
+    - [4. Validate Data (create/update/delete/authenticate)](#4-validate-data-createupdatedeleteauthenticate)
+    - [5. Before Operation (create/update/delete/authenticate)](#5-before-operation-createupdatedeleteauthenticate)
+    - [6. Database Operation (create/update/delete/authenticate)](#6-database-operation-createupdatedeleteauthenticate)
     - [7. Resolve Backlinks (create/update/delete)](#7-resolve-backlinks-createupdatedelete)
-    - [8. After Operation (create/update/delete)](#8-after-operation-createupdatedelete)
+    - [8. After Operation (create/update/delete/authenticate)](#8-after-operation-createupdatedeleteauthenticate)
 
 - [Summary](#summary)
 
@@ -93,7 +93,7 @@ During the Access Control Phase the target items are retrieved from the database
 
 This phase will throw an `AccessDeniedError` if any of the access control checks fail. This error is returned in the `.errors` field of the GraphQL response. The Access Control Phase consists of three distinct steps.
 
-#### 1. Check List Access (`create/update/delete`)
+#### 1. Check List Access (`create/update/delete/authenticate`)
 
 The first step in all mutations is to check that the user has access to perform the required operation on the `List`.
 
@@ -167,29 +167,30 @@ During this step, any backlinks which need to be updated are identified and regi
 
 The actual update step for these backlinks will be performed during the [Resolve backlinks] step, once all other pre-hooks and database operations have been completed on the primary target list.
 
-#### 3. Resolve Input (`create/update`)
+#### 3. Resolve Input (`create/update/authenticate`)
 
-The `resolveInput` hook allows the developer to modify the incoming item before it is inserted/updated within the database.
+The `resolveInput` and `resolveAuthInput` hooks allows the developer to modify the incoming item before it is inserted/updated within the database.
 
 For full details of how and when to use this hook, please consult the [API docs](/docs/api/hooks.md).
 
-#### 4. Validate Data (`create/update/delete`)
+#### 4. Validate Data (`create/update/delete/authenticate`)
 
-The `validateInput` and `validateDelete` hooks allow the developer to specify validation rules which must be met before the data is inserted into the database.
+The `validateInput`, `validateDelete` and `validateAuthInput` hooks allow the developer to specify validation rules which must be met before the data is inserted into the database.
 
 These hooks can throw a `ValidationFailureError` when they encounter invalid data, which will terminate the operational phase.
 
 For full details of how and when to use these hooks, please consult the [API docs](/docs/api/hooks.md).
 
-#### 5. Before Operation (`create/update/delete`)
+#### 5. Before Operation (`create/update/delete/authenticate`)
 
-The `beforeChange` and `beforeDelete` hooks allows the developer to perform any operations which interact with external systems, such as external data stores, which depend on resolved and validated data.
+The `beforeChange`, `beforeDelete` and `beforeAuth` hooks allows the developer to perform any operations which interact with external systems, such as external data stores, which depend on resolved and validated data.
 
 For full details of how and when to use these hooks, please consult the [API docs](/docs/api/hooks.md).
 
-#### 6. Database Operation (`create/update/delete`)
+#### 6. Database Operation (`create/update/delete/authenticate`)
 
 The database operation is where the keystone database adapter is used to make the requested changes in the database.
+In the case of `authenticate` operations no data is modified; the auth strategy `verify` function in invoked instead.
 
 #### 7. Resolve Backlinks (`create/update/delete`)
 
@@ -202,9 +203,9 @@ It can still result in either an `AccessDeniedError` or `ValidationFailureError`
 
 As with [Resolve relationship], the nested `AfterChange` hooks will be returned an added to the stack of deferred hooks for this mutation.
 
-#### 8. After Operation (`create/update/delete`)
+#### 8. After Operation (`create/update/delete/authenticate`)
 
-The `afterChange` and `afterDelete` hooks are only executed once all database operations for the mutation have been completed and the transaction has been finalised.
+The `afterChange`, `afterDelete` and `afterAuth` hooks are only executed once all database operations for the mutation have been completed and the transaction has been finalised.
 This means that the database is in a consistent state when this hook is executed.
 It also means that if there is a failure of any kind during this hook, the operation will still be considered complete, and no roll back will be performed.
 

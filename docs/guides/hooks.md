@@ -34,6 +34,7 @@ Hooks are available for four of the core operations:
 - `create`
 - `update`
 - `delete`
+- `authenticate`
 
 These operations are reused used for both "single" and "many" modes.
 Eg. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
@@ -66,17 +67,18 @@ See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order sec
 
 ### Putting It Together
 
-In total there 7 _hook sets_ available.
+In total there 11 _hook sets_ available.
 This table shows the _hook set_ relevant to each combination of _stage_ and _operation_:
 
-| Stage            | `create`        | `update`        | `delete`         |
-| ---------------- | --------------- | --------------- | ---------------- |
-| Input resolution | `resolveInput`  | `resolveInput`  | n/a              |
-| Data validation  | `validateInput` | `validateInput` | `validateDelete` |
-| Before operation | `beforeChange`  | `beforeChange`  | `beforeDelete`   |
-| After operation  | `afterChange`   | `afterChange`   | `afterDelete`    |
+| Stage            | `create`        | `update`        | `delete`         | `authenticate`      |
+| ---------------- | --------------- | --------------- | ---------------- | ------------------- |
+| Input resolution | `resolveInput`  | `resolveInput`  | n/a              | `resolveAuthInput`  |
+| Data validation  | `validateInput` | `validateInput` | `validateDelete` | `validateAuthInput` |
+| Before operation | `beforeChange`  | `beforeChange`  | `beforeDelete`   | `beforeAuth`        |
+| After operation  | `afterChange`   | `afterChange`   | `afterDelete`    | `afterAuth`         |
 
 The `create`, `update` and `delete` _hook sets_ can be attached as _list_, _field_ or _field type_ hooks.
+The `authenticate` hook sets are unique in that they can only be added at the _list_ level.
 
 Due to their similarity, the `create` and `update` operations share a single set of hooks.
 To implement different logic for these operations make it conditional on either the `operation` or `existingItem` arguments;
@@ -107,6 +109,15 @@ For full details of the mutation lifecycle, and where hooks fit within this, see
 4. Database operation (after all `beforeDelete` calls have returned)
 5. `afterDelete` called on all fields (after the DB operation has completed)
 
+### Authentication
+
+1. Access control checks
+2. `resolveAuthInput` called for the list
+3. `validateAuthInput` called for the list
+4. `beforeAuth` called for the list
+5. Auth strategy `validate()` is called
+6. `afterAuth` called for the list
+
 ### Intra-Hook Execution Order
 
 Within each hook set, the different [hook types](#hook-type) are invoked in a specific order.
@@ -127,6 +138,7 @@ A few of the main stumbling blocks are:
   This operation doesn't accept any input (other than the target IDs).
 - Keystone does not currently implement `read` hooks
 - field type hooks and field hooks are run in parallel
+- The `authenticate` hook sets are unique in that they can only be added at the _list_ level
 
 These nuances aren't bugs per se -- they generally exist for good reason --
 but they can make understanding the hook system difficult.

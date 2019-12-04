@@ -70,6 +70,11 @@ Supported hooks include:
   - `validateDelete`
   - `beforeDelete`
   - `afterDelete`
+- Authenticate operations
+  - `resolveAuthInput`
+  - `validateAuthInput`
+  - `beforeAuth`
+  - `afterAuth`
 
 See [List Hooks in the API docs](/docs/api/hooks.md#list-hooks) and the [Hooks Guide](/docs/guides/hooks.md) for details.
 
