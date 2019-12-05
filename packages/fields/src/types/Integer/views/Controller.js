@@ -1,13 +1,7 @@
-// @flow
 import FieldController from '../../../Controller';
 
-type FilterGraphQL = {| path: string, type: string, value: string |};
-type FilterLabel = {| label: string, type: string |};
-type FormatFilter = {| label: string, type: string, value: string |};
-type DataType = { [key: string]: string };
-
 export default class IntegerController extends FieldController {
-  getFilterGraphQL = ({ path, type, value }: FilterGraphQL): string => {
+  getFilterGraphQL = ({ path, type, value }) => {
     const key = type === 'is' ? path : `${path}_${type}`;
     let arg = value.replace(/\s/g, '');
     if (['in', 'not_in'].includes(type)) {
@@ -15,14 +9,14 @@ export default class IntegerController extends FieldController {
     }
     return `${key}: ${arg}`;
   };
-  getFilterLabel = ({ label, type }: FilterLabel): string => {
+  getFilterLabel = ({ label, type }) => {
     const suffix = ['in', 'not_in'].includes(type) ? ' (comma separated)' : '';
     return `${this.label} ${label.toLowerCase()}${suffix}`;
   };
-  formatFilter = ({ label, type, value }: FormatFilter) => {
+  formatFilter = ({ label, type, value }) => {
     return `${this.getFilterLabel({ label, type })}: "${value.replace(/\s/g, '')}"`;
   };
-  serialize = (data: DataType): ?number => {
+  serialize = data => {
     const value = data[this.path];
     if (typeof value === 'number') {
       return value;

@@ -1,16 +1,6 @@
-// @flow
-
 import React, { Fragment } from 'react';
-import type { CellProps } from '../../../types';
 
-type Relationship = {
-  id: string,
-  _label_: string,
-};
-
-type Props = CellProps<Relationship | Array<Relationship>>;
-
-export default ({ data, field, Link }: Props) => {
+export default ({ data, field, Link }) => {
   if (!data) {
     return null;
   }

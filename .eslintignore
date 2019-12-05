@@ -1,7 +1,6 @@
 node_modules
 coverage
 dist
-flow-typed
 reports
 test-projects/**/cypress
 website/.cache/**/*

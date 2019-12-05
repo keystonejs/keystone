@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useState, useEffect, useRef } from 'react';
@@ -6,19 +5,7 @@ import chrono from 'chrono-node';
 import { Input } from '@arch-ui/input';
 import moment from 'moment';
 
-// we use a string here instead of a Date because we want to encode the offset in the date
-// (native JS Dates don't store offsets, they are based on the timezone of the user)
-// and rather than exposing the object we're using the represent the date(in this case a moment object since that's what chrono uses)
-// we're using a string so that we can change the underlying implementation without changing
-// the API
-// this proposal https://github.com/tc39/proposal-temporal looks really nice
-// and would probably be a great thing to use here when it's stage 3(with a polyfill ofc)
-type Props = {
-  date: string | null,
-  onChange: (string | null) => mixed,
-};
-
-export let TextDayTimePicker = ({ date, onChange, ...props }: Props) => {
+export let TextDayTimePicker = ({ date, onChange, ...props }) => {
   let [value, setValue] = useState('');
   let ref = useRef(null);
 

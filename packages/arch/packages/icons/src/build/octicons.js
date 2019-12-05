@@ -42,13 +42,11 @@ Object.getOwnPropertyNames(octicons).forEach(octiconName => {
   outputFileSync(path.join(iconPath, `${iconName}.js`), componentSrc);
 });
 
-const iconsIndexSrc =
-  '// @flow\n' +
-  iconsIndex
-    .map(
-      ({ iconName, componentName }) =>
-        `export { default as ${componentName} } from './icons/${iconName}';`
-    )
-    .join('\n');
+const iconsIndexSrc = iconsIndex
+  .map(
+    ({ iconName, componentName }) =>
+      `export { default as ${componentName} } from './icons/${iconName}';`
+  )
+  .join('\n');
 
 outputFileSync(path.join(__dirname, '..', 'index.js'), iconsIndexSrc);

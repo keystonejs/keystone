@@ -80,7 +80,6 @@ x-simple-tests: &simple-tests
     # run tests!
     - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
     - run: yarn lint:prettier
-    - run: yarn lint:flow
     - run: yarn lint:markdown
     - run:
         name: Unit tests

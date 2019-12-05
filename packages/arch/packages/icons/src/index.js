@@ -1,4 +1,3 @@
-// @flow
 export { default as AlertIcon } from './icons/Alert';
 export { default as ArrowDownIcon } from './icons/ArrowDown';
 export { default as ArrowLeftIcon } from './icons/ArrowLeft';

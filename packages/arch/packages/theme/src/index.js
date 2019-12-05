@@ -1,4 +1,3 @@
-// @flow
 export const fontFamily = `
   -apple-system,
   BlinkMacSystemFont,

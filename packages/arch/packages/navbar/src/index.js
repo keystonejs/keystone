@@ -1,4 +1,3 @@
-// @flow
 export {
   BrandItem,
   NavIcon,
