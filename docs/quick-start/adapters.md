@@ -3,6 +3,8 @@ section: quick-start
 title: Database Setup and Adapters
 [meta]-->
 
+# Database Setup and Adapters
+
 ## Choosing an Adapter
 
 KeystoneJS currently provides two adapters for connecting to either a MongoDB or PostgreSQL database. Choose the [Mongoose Adapter](/keystonejs/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystonejs/adapter-knex/) for PostgreSQL.

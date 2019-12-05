@@ -3,7 +3,7 @@ section: guides
 title: Hooks
 [meta]-->
 
-# Hooks Guide
+# Hooks
 
 Hooks give solution developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
 
