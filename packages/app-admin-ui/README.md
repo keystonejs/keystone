@@ -4,7 +4,7 @@ subSection: apps
 title: Admin UI
 [meta]-->
 
-# KeystoneJS Admin UI App
+# Admin UI App
 
 A KeystoneJS App which provides an Admin UI for content management.
 

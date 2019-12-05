@@ -4,7 +4,7 @@ title: Migrations
 subSection: advanced
 [meta]-->
 
-## Migrations in Keystone
+# Migrations in Keystone
 
 As your app grows new features, you'll inevitably need to change some of your existing List definitions. When you do, you'll also need to migrate the data and schema in your database backend.
 
