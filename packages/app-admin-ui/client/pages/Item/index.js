@@ -63,6 +63,7 @@ const ItemDetails = withRouter(
         arrayToObject(
           props.list.fields
             .filter(({ isPrimaryKey }) => !isPrimaryKey)
+            .filter(({ isReadOnly }) => !isReadOnly)
             .filter(({ maybeAccess }) => !!maybeAccess.update),
           'path'
         )
