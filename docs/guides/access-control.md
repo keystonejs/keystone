@@ -4,7 +4,7 @@ title: Access Control
 subSection: advanced
 [meta]-->
 
-# Access Control Guide
+# Access Control
 
 > Control who can do what with your GraphQL API.
 

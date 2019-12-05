@@ -3,7 +3,7 @@ section: guides
 title: Data modeling - Lists & Fields
 [meta]-->
 
-# Schema - Lists & Fields
+# Data modeling - Lists & Fields
 
 KeystoneJS is comprised of 3 distinct pieces, which can be described as:
 
