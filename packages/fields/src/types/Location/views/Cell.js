@@ -1,9 +1,4 @@
-// @flow
-import type { CellProps } from '../../../types';
-
-type Props = CellProps<Object>;
-
-const Cell = (props: Props) => {
+const Cell = props => {
   if (!props.data) return null;
   return props.data.formattedAddress;
 };

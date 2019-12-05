@@ -12,9 +12,6 @@ import { Button, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
-// NOTE: we need flow 😢
-// Status enum: 'empty' | 'stored' | 'removed' | 'updated'
-
 function uploadButtonLabelFn({ status }) {
   return status === 'empty' ? 'Upload Image' : 'Change Image';
 }

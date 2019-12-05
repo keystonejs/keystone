@@ -1,15 +1,13 @@
-// @flow
-import { Package } from '../package';
 import { Project } from '../project';
 import path from 'path';
 import { rollup } from './rollup';
-import { type Aliases, getAliases } from './aliases';
+import { getAliases } from './aliases';
 import * as logger from '../logger';
 import * as fs from 'fs-extra';
 import { getRollupConfigs } from './config';
 import { createWorker, destroyWorker } from '../worker-client';
 
-async function buildPackage(pkg: Package, aliases: Aliases) {
+async function buildPackage(pkg, aliases) {
   let configs = getRollupConfigs(pkg, aliases);
   await Promise.all([
     fs.remove(path.join(pkg.directory, 'dist')),
@@ -30,7 +28,7 @@ async function buildPackage(pkg: Package, aliases: Aliases) {
   );
 }
 
-async function retryableBuild(pkg: Package, aliases: Aliases) {
+async function retryableBuild(pkg, aliases) {
   try {
     await buildPackage(pkg, aliases);
   } catch (err) {
@@ -43,7 +41,7 @@ async function retryableBuild(pkg: Package, aliases: Aliases) {
   }
 }
 
-export default async function build(directory: string) {
+export default async function build(directory) {
   try {
     createWorker();
 

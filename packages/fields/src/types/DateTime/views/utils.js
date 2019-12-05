@@ -1,13 +1,6 @@
-// @flow
 import { DateTime } from 'luxon';
 
-type DateValue = {
-  date: string,
-  time: string,
-  offset: string,
-};
-
-export function parseDate(value: string): DateValue {
+export function parseDate(value) {
   // why do we use luxon instead of date-fns/native Dates?
   // native Dates don't allow you to set custom timezones
   // yes, you can parse other timezones but they're converted
@@ -22,6 +15,6 @@ export function parseDate(value: string): DateValue {
   };
 }
 
-export function stringifyDate(date: DateValue) {
+export function stringifyDate(date) {
   return `${date.date}T${date.time}${date.offset}`;
 }

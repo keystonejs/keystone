@@ -1,4 +1,3 @@
-// @flow
 import fixturez from 'fixturez';
 import spawn from 'spawndamnit';
 import path from 'path';

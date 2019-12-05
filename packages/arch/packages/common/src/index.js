@@ -1,4 +1,3 @@
-// @flow
 import { borderRadius, gridSize } from '@arch-ui/theme';
 
 export const uniformHeight = {

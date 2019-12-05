@@ -1,11 +1,10 @@
-// @flow
 import { Project } from './project';
 import { success, info } from './logger';
 import * as fs from 'fs-extra';
 import path from 'path';
 
-export default async function dev(projectDir: string) {
-  let project: Project = await Project.create(projectDir);
+export default async function dev(projectDir) {
+  let project = await Project.create(projectDir);
   project.packages.forEach(({ entrypoints }) => entrypoints.forEach(x => x.strict()));
   info('project is valid!');
 

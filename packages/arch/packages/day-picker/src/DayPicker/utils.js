@@ -1,4 +1,3 @@
-// @flow
 import {
   isSameMonth,
   startOfMonth,
@@ -10,8 +9,8 @@ import {
 } from 'date-fns';
 import { useRef, useEffect } from 'react';
 
-export const yearRange = (from: number, to: number) => {
-  const years: Array<number> = [];
+export const yearRange = (from, to) => {
+  const years = [];
   let year = from;
   while (year <= to) {
     years.push(year++);
@@ -19,11 +18,7 @@ export const yearRange = (from: number, to: number) => {
   return years;
 };
 
-export const months: Array<number> = Array.from({ length: 12 }, (_, i) => i);
-
-export type Days = $ReadOnlyArray<{ dateValue: Date, label: string }>;
-
-export type Weeks = $ReadOnlyArray<Days>;
+export const months = Array.from({ length: 12 }, (_, i) => i);
 
 // https://github.com/geeofree/kalendaryo/blob/master/src/index.js#L245-L279
 
@@ -34,13 +29,13 @@ function createDayObject(dateValue) {
   };
 }
 
-export function getWeeksInMonth(date: Date) {
+export function getWeeksInMonth(date) {
   const weekOptions = { weekStartsOn: 0 };
   const firstDayOfMonth = startOfMonth(date);
   const firstDayOfFirstWeek = startOfWeek(firstDayOfMonth, weekOptions);
   const lastDayOfFirstWeek = endOfWeek(firstDayOfMonth, weekOptions);
 
-  const getWeeks = (startDay, endDay, weekArray: Weeks): Weeks => {
+  const getWeeks = (startDay, endDay, weekArray) => {
     const week = eachDay(startDay, endDay).map(createDayObject);
     const weeks = [...weekArray, week];
     const nextWeek = addWeeks(startDay, 1);
@@ -58,12 +53,12 @@ export function getWeeksInMonth(date: Date) {
   return getWeeks(firstDayOfFirstWeek, lastDayOfFirstWeek, []);
 }
 
-export function isNumberInRange(num: number, start: number, end: number) {
+export function isNumberInRange(num, start, end) {
   return num >= start && num <= end;
 }
 
-export function usePrevious<V>(value: V): V {
-  const ref: { current: V } = useRef(value);
+export function usePrevious(value) {
+  const ref = useRef(value);
 
   useEffect(() => {
     ref.current = value;

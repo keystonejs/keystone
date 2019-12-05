@@ -1,14 +1,7 @@
-// @flow
-
-type Color = string;
-type Decimal = number;
-type Percent = number;
-type Rgba = { r: number, g: number, b: number, a?: number };
-
 // Validate Hex
 // ==============================
 
-function validateHex(color: Color) {
+function validateHex(color) {
   const hex = color.replace('#', '');
 
   if (hex.length === 3) {
@@ -24,7 +17,7 @@ function validateHex(color: Color) {
 // Hex to RGB Obj
 // ==============================
 
-function hexToRgb(hex: Color) {
+function hexToRgb(hex) {
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
@@ -35,7 +28,7 @@ function hexToRgb(hex: Color) {
 // String to RGB
 // ==============================
 
-function stringToRGB(color: Color) {
+function stringToRGB(color) {
   const tuple = color
     .substring(4, color.length - 1)
     .replace(/ /g, '')
@@ -51,7 +44,7 @@ function stringToRGB(color: Color) {
 // Hex or RGB string to RGB Obj
 // ==============================
 
-function anyToRGB(color: Color) {
+function anyToRGB(color) {
   const isRgbString = color.length > 7;
 
   if (isRgbString) {
@@ -65,14 +58,14 @@ function anyToRGB(color: Color) {
 // To RGB string
 // ==============================
 
-function toRgbString({ r, g, b, a }: Rgba) {
+function toRgbString({ r, g, b, a }) {
   return a ? `rgba(${[r, g, b, a].join(',')})` : `rgb(${[r, g, b].join(',')})`;
 }
 
 // RGB with alpha channel
 // ==============================
 
-function alpha(color: Color, opacity: Decimal = 1) {
+function alpha(color, opacity = 1) {
   const { r, g, b } = anyToRGB(color);
 
   return toRgbString({ r, g, b, a: opacity });
@@ -83,7 +76,7 @@ function alpha(color: Color, opacity: Decimal = 1) {
 
 const shader = (c, t, p) => Math.round((t - c) * p) + c;
 
-function shade(color: Color, percent: Percent) {
+function shade(color, percent) {
   const df = percent / 100; // decimal fraction
   const { r, g, b } = anyToRGB(color);
   const t = df < 0 ? 0 : 255;
@@ -98,7 +91,7 @@ function shade(color: Color, percent: Percent) {
 
 // shade aliases
 const lighten = shade;
-function darken(color: Color, percent: Percent) {
+function darken(color, percent) {
   return shade(color, percent * -1);
 }
 
@@ -107,7 +100,7 @@ function darken(color: Color, percent: Percent) {
 
 const mixer = (c1, c2, df) => Math.round((c2 - c1) * df) + c1;
 
-function mix(color1: Color, color2: Color, percent: Percent) {
+function mix(color1, color2, percent) {
   const df = percent / 100; // decimal fraction
   const { r: r1, g: g1, b: b1 } = anyToRGB(color1);
   const { r: r2, g: g2, b: b2 } = anyToRGB(color2);

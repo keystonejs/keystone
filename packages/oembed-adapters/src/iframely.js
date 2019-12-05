@@ -24,7 +24,7 @@ export class IframelyOEmbedAdapter {
   }
 
   /**
-   * @param paramters{Object} An object of paramters to be sent to the IFramely
+   * @param parameters{Object} An object of parameters to be sent to the IFramely
    * service. See more: https://iframely.com/docs/parameters
    * @param parameters.url{String} (required) The url to fetch oEmbed data for.
    */
