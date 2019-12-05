@@ -1,21 +1,19 @@
-// @flow
 import chalk from 'chalk';
-import type { ItemUnion } from './types';
 
 let preconstructEmoji = '🎁 ';
 
-function suffix(pkg?: ItemUnion) {
+function suffix(pkg) {
   return pkg !== undefined ? ` ${pkg.name}` : '';
 }
 
-export function error(message: string, pkg?: ItemUnion) {
+export function error(message, pkg) {
   console.error(preconstructEmoji + chalk.red('error') + suffix(pkg), message);
 }
 
-export function success(message: string, pkg?: ItemUnion) {
+export function success(message, pkg) {
   console.log(preconstructEmoji + chalk.green('success') + suffix(pkg), message);
 }
 
-export function info(message: string, pkg?: ItemUnion) {
+export function info(message, pkg) {
   console.log(preconstructEmoji + chalk.cyan('info') + suffix(pkg), message);
 }

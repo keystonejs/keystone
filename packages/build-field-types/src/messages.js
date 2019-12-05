@@ -1,9 +1,7 @@
-// @flow
-
 import { PKG_JSON_CONFIG_FIELD } from './constants';
 
 export let errors = {
-  noSource: (source: string) =>
+  noSource: source =>
     `no source file was provided, please create a file at ${source} or specify a custom source file with the ${PKG_JSON_CONFIG_FIELD} source option`,
   deniedWriteMainModuleFields: 'changing the main and module field is required to build',
   invalidModuleField: 'module field is invalid',

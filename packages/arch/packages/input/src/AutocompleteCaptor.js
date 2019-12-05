@@ -1,4 +1,3 @@
-// @flow
 import React, { Fragment, memo } from 'react';
 import { HiddenInput } from './HiddenInput';
 // Autocomplete Captor
@@ -22,7 +21,7 @@ import { HiddenInput } from './HiddenInput';
  *  This component *must* be rendered before your legitimate fields.
  */
 
-export const AutocompleteCaptor = memo<{}>(
+export const AutocompleteCaptor = memo(
   function AutocompleteCaptor() {
     return (
       <Fragment>

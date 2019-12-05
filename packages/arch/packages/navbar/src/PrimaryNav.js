@@ -1,5 +1,3 @@
-// @flow
-
 import styled from '@emotion/styled';
 
 import { colors, gridSize } from '@arch-ui/theme';

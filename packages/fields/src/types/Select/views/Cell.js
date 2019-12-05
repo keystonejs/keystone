@@ -1,10 +1,4 @@
-// @flow
-
-import type { CellProps } from '../../../types';
-
-type Props = CellProps<string>;
-
-const Cell = (props: Props) => {
+const Cell = props => {
   if (!props.data) {
     return null;
   }

@@ -1,8 +1,5 @@
-// @flow
-
 export class FatalError extends Error {
-  item: { +name: string };
-  constructor(message: string, item: { +name: string }) {
+  constructor(message, item) {
     super(message);
     this.item = item;
   }

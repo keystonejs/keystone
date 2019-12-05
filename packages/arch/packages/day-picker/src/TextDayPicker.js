@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useState, useEffect } from 'react';
@@ -6,12 +5,7 @@ import chrono from 'chrono-node';
 import { Input } from '@arch-ui/input';
 import { format } from 'date-fns';
 
-type Props = {
-  date: string | null,
-  onChange: (string | null) => mixed,
-};
-
-export let TextDayPicker = ({ date, onChange, ...props }: Props) => {
+export let TextDayPicker = ({ date, onChange, ...props }) => {
   let [value, setValue] = useState(formatDate(date));
 
   useEffect(() => {

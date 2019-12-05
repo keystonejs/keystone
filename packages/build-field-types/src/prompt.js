@@ -1,7 +1,5 @@
-// @flow
 import inquirer from 'inquirer';
 import pLimit from 'p-limit';
-import type { ItemUnion } from './types';
 import DataLoader from 'dataloader';
 import chalk from 'chalk';
 
@@ -11,10 +9,8 @@ export let limit = pLimit(1);
 
 let prefix = `🎁 ${chalk.green('?')}`;
 
-type NamedThing = { +name: string };
-
-export function createPromptConfirmLoader(message: string): (pkg: NamedThing) => Promise<boolean> {
-  let loader = new DataLoader<NamedThing, boolean>(pkgs =>
+export function createPromptConfirmLoader(message) {
+  let loader = new DataLoader(pkgs =>
     limit(
       () =>
         (async () => {
@@ -34,7 +30,10 @@ export function createPromptConfirmLoader(message: string): (pkg: NamedThing) =>
               type: 'checkbox',
               name: 'answers',
               message,
-              choices: pkgs.map(pkg => ({ name: pkg.name, checked: true })),
+              choices: pkgs.map(pkg => ({
+                name: pkg.name,
+                checked: true,
+              })),
               prefix,
             },
           ]);
@@ -46,14 +45,10 @@ export function createPromptConfirmLoader(message: string): (pkg: NamedThing) =>
     )
   );
 
-  return (pkg: NamedThing) => loader.load(pkg);
+  return pkg => loader.load(pkg);
 }
 
-let doPromptInput = async (
-  message: string,
-  pkg: ItemUnion,
-  defaultAnswer?: string
-): Promise<string> => {
+let doPromptInput = async (message, pkg, defaultAnswer) => {
   let { input } = await inquirer.prompt([
     {
       type: 'input',
@@ -66,5 +61,5 @@ let doPromptInput = async (
   return input;
 };
 
-export let promptInput = (message: string, pkg: ItemUnion, defaultAnswer?: string) =>
+export let promptInput = (message, pkg, defaultAnswer) =>
   limit(() => doPromptInput(message, pkg, defaultAnswer));
