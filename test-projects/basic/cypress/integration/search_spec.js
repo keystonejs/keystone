@@ -36,6 +36,7 @@ describe('Search', () => {
       // Avoid accidentally mocking routes
       cy.server({ enable: false });
 
+      cy.wait(500); // Search is now suspenseful need to wait
       cy.get('#ks-list-search-input').type(searchTerm, { force: true });
 
       cy.wait('@graphqlPost');
