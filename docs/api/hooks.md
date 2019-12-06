@@ -4,7 +4,7 @@ title: Hooks
 order: 7
 [meta]-->
 
-# Hooks APIs
+# Hooks API
 
 Hooks give solution developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
 

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
 import { Query } from 'react-apollo';
 
 import { IconButton } from '@arch-ui/button';
@@ -13,6 +13,7 @@ import { Button } from '@arch-ui/button';
 import { KebabHorizontalIcon } from '@arch-ui/icons';
 import Tooltip from '@arch-ui/tooltip';
 import { applyRefs } from 'apply-ref';
+import { LoadingIndicator } from '@arch-ui/loading';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -27,6 +28,7 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+import { captureSuspensePromises } from '@keystonejs/utils';
 
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
@@ -107,6 +109,8 @@ export function ListLayout(props: LayoutProps) {
   const cypressCreateId = 'list-page-create-button';
   const cypressFiltersId = 'ks-list-active-filters';
 
+  const Render = ({ children }) => children();
+
   return (
     <main>
       <div ref={measureElementRef} />
@@ -130,7 +134,18 @@ export function ListLayout(props: LayoutProps) {
             css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
             id={cypressFiltersId}
           >
-            <Search list={list} isLoading={query.loading} />
+            <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
+              <Render>
+                {() => {
+                  captureSuspensePromises(
+                    fields
+                      .filter(field => field.path !== '_label_')
+                      .map(field => () => field.initCellView())
+                  );
+                  return <Search list={list} isLoading={query.loading} />;
+                }}
+              </Render>
+            </Suspense>
             <ActiveFilters list={list} />
           </div>
 
@@ -191,7 +206,18 @@ export function ListLayout(props: LayoutProps) {
                   />
                 </div>
                 <FlexGroup align="center" css={{ marginLeft: '1em' }}>
-                  <Pagination listKey={list.key} isLoading={query.loading} />
+                  <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
+                    <Render>
+                      {() => {
+                        captureSuspensePromises(
+                          fields
+                            .filter(field => field.path !== '_label_')
+                            .map(field => () => field.initCellView())
+                        );
+                        return <Pagination listKey={list.key} isLoading={query.loading} />;
+                      }}
+                    </Render>
+                  </Suspense>
                 </FlexGroup>
               </FlexGroup>
             ) : null}

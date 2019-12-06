@@ -4,7 +4,7 @@ subSection: apps
 title: Static App
 [meta]-->
 
-# KeystoneJS Static File App
+# Static File App
 
 A KeystoneJS App to serve static files such as images, CSS and JavaScript with support for client side routing.
 
