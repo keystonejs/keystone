@@ -107,9 +107,7 @@ export class Content extends Relationship.implementation {
         new block(blockConfig, {
           fromList: listConfig.listKey,
           joinList: type,
-          createAuxList: listConfig.createAuxList,
-          getListByKey: listConfig.getListByKey,
-          listConfig,
+          ...listConfig,
         })
     );
 
