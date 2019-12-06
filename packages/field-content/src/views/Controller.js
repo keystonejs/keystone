@@ -109,7 +109,7 @@ export default class ContentController extends Controller {
         );
       }
 
-      // An actual error occured
+      // An actual error occurred
       throw loadingPromiseOrError;
     }
   };
@@ -174,6 +174,32 @@ export default class ContentController extends Controller {
           return;
         }
         this.adminMeta.readViews([Field]);
+      },
+      () => this.getBlocks(),
+    ]);
+  };
+
+  initCellView = () => {
+    captureSuspensePromises([
+      () => {
+        const { Cell } = this.views;
+        if (!Cell) {
+          return;
+        }
+        this.adminMeta.readViews([Cell]);
+      },
+      () => this.getBlocks(),
+    ]);
+  };
+
+  initFilterView = () => {
+    captureSuspensePromises([
+      () => {
+        const { Filter } = this.views;
+        if (!Filter) {
+          return;
+        }
+        this.adminMeta.readViews([Filter]);
       },
       () => this.getBlocks(),
     ]);
