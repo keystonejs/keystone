@@ -37,14 +37,8 @@ const createCompanyAndLocation = async keystone => {
 mutation {
   createCompany(data: {
     location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) {
-    id
-    location {
-      id
-    }
-  }
-}
-`,
+  }) { id location { id } }
+}`,
   });
   const { Company, Location } = await getCompanyAndLocation(
     keystone,
@@ -54,7 +48,6 @@ mutation {
 
   // Sanity check the links are setup correctly
   expect(Company.location.id.toString()).toBe(Location.id.toString());
-  expect(Location.company.id.toString()).toBe(Company.id.toString());
 
   return { company: createCompany, location: createCompany.location };
 };
@@ -65,7 +58,7 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
     query: `
   {
     Company(where: { id: "${companyId}"} ) { id location { id } }
-    Location(where: { id: "${locationId}"} ) { id company { id } }
+    Location(where: { id: "${locationId}"} ) { id }
   }`,
   });
   return data;
@@ -83,14 +76,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       keystone.createList('Company', {
         fields: {
           name: { type: Text },
-          location: { type: Relationship, ref: 'Location.company' },
+          location: { type: Relationship, ref: 'Location' },
         },
       });
     const createLocationList = keystone =>
       keystone.createList('Location', {
         fields: {
           name: { type: Text },
-          company: { type: Relationship, ref: 'Company.location' },
         },
       });
 
@@ -131,7 +123,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             `,
                 });
                 expect(errors).toBe(undefined);
-                expect(data.createCompany.location.id.toString()).toEqual(location.id);
+                expect(data.createCompany.location.id.toString()).toBe(location.id.toString());
 
                 const { Company, Location } = await getCompanyAndLocation(
                   keystone,
@@ -140,7 +132,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 );
                 // Everything should now be connected
                 expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
               })
             );
 
@@ -158,7 +149,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
             `,
                 });
-
                 expect(errors).toBe(undefined);
 
                 const { Company, Location } = await getCompanyAndLocation(
@@ -169,82 +159,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 // Everything should now be connected
                 expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
-              })
-            );
-
-            test.failing(
-              'With nested connect',
-              runner(setupKeystone, async ({ keystone }) => {
-                const { companies } = await createInitialData(keystone);
-                const company = companies[0];
-                const locationName = sampleOne(alphanumGenerator);
-
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
-                mutation {
-                  createCompany(data: {
-                    location: { create: { name: "${locationName}" company: { connect: { id: "${company.id}" } } } }
-                  }) { id location { id company { id }} }
-                }
-            `,
-                });
-
-                expect(errors).toBe(undefined);
-
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  data.createCompany.id,
-                  data.createCompany.location.id
-                );
-                // Everything should now be connected
-                expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
-
-                // The nested company should not have a location
-                const result = await graphqlRequest({
-                  keystone,
-                  query: `{ Company(where: { id: "${data.createCompany.location.company.id}"} ) { id location { id } } }`,
-                });
-                expect(result.data.Company.location.id).toBe(null);
-              })
-            );
-
-            test.failing(
-              'With nested create',
-              runner(setupKeystone, async ({ keystone }) => {
-                const locationName = sampleOne(alphanumGenerator);
-                const companyName = sampleOne(alphanumGenerator);
-
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
-                mutation {
-                  createCompany(data: {
-                    location: { create: { name: "${locationName}" company: { create: { name: "${companyName}" } } } }
-                  }) { id location { id company { id }} }
-                }
-            `,
-                });
-
-                expect(errors).toBe(undefined);
-
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  data.createCompany.id,
-                  data.createCompany.location.id
-                );
-                // Everything should now be connected
-                expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
-
-                // The nested company should not have a location
-                const result = await graphqlRequest({
-                  keystone,
-                  query: `{ Company(where: { id: "${data.createCompany.location.company.id}"} ) { id location { id } } }`,
-                });
-                expect(result.data.Company.location.id).toBe(null);
               })
             );
           });
@@ -259,7 +173,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Sanity check the links don't yet exist
                 // `...not.toBe(expect.anything())` allows null and undefined values
                 expect(company.location).not.toBe(expect.anything());
-                expect(location.company).not.toBe(expect.anything());
 
                 const { errors } = await graphqlRequest({
                   keystone,
@@ -267,13 +180,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 mutation {
                   updateCompany(
                     id: "${company.id}",
-                    data: {
-                      location: { connect: { id: "${location.id}" } }
-                    }
+                    data: { location: { connect: { id: "${location.id}" } } }
                   ) { id location { id } } }
             `,
                 });
-
                 expect(errors).toBe(undefined);
 
                 const { Company, Location } = await getCompanyAndLocation(
@@ -283,7 +193,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 );
                 // Everything should now be connected
                 expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
               })
             );
 
@@ -299,14 +208,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 mutation {
                   updateCompany(
                     id: "${company.id}",
-                    data: {
-                      location: { create: { name: "${locationName}" } }
-                    }
+                    data: { location: { create: { name: "${locationName}" } } }
                   ) { id location { id name } }
                 }
             `,
                 });
-
                 expect(errors).toBe(undefined);
 
                 const { Company, Location } = await getCompanyAndLocation(
@@ -317,7 +223,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 // Everything should now be connected
                 expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
               })
             );
 
@@ -334,9 +239,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 mutation {
                   updateCompany(
                     id: "${company.id}",
-                    data: {
-                      location: { disconnect: { id: "${location.id}" } }
-                    }
+                    data: { location: { disconnect: { id: "${location.id}" } } }
                   ) { id location { id name } }
                 }
             `,
@@ -348,7 +251,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Check the link has been broken
                 const result = await getCompanyAndLocation(keystone, company.id, location.id);
                 expect(result.Company.location).toBe(null);
-                expect(result.Location.company).toBe(null);
               })
             );
 
@@ -365,9 +267,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 mutation {
                   updateCompany(
                     id: "${company.id}",
-                    data: {
-                      location: { disconnectAll: true }
-                    }
+                    data: { location: { disconnectAll: true } }
                   ) { id location { id name } }
                 }
             `,
@@ -379,7 +279,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Check the link has been broken
                 const result = await getCompanyAndLocation(keystone, company.id, location.id);
                 expect(result.Company.location).toBe(null);
-                expect(result.Location.company).toBe(null);
               })
             );
           });
@@ -394,13 +293,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Run the query to disconnect the location from company
                 const { data, errors } = await graphqlRequest({
                   keystone,
-                  query: `
-                mutation {
-                  deleteCompany(id: "${company.id}") {
-                    id
-                  }
-                }
-            `,
+                  query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
                 });
                 expect(errors).toBe(undefined);
                 expect(data.deleteCompany.id).toBe(company.id);
@@ -408,7 +301,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Check the link has been broken
                 const result = await getCompanyAndLocation(keystone, company.id, location.id);
                 expect(result.Company).toBe(null);
-                expect(result.Location.company).toBe(null);
               })
             );
           });
