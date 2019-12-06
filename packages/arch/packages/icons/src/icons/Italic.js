@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { style } from '../style';
 
@@ -9,7 +8,7 @@ const svgContent = (
   />
 );
 
-const ItalicIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
+const ItalicIcon = React.memo(({ title, ...props }) => {
   return (
     <svg aria-hidden height={16} width={6} viewBox="0 0 6 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}

@@ -32,7 +32,7 @@ function getSchema(blocks) {
   return schema;
 }
 
-function Stories({ value: editorState, onChange, blocks, className }) {
+function Stories({ value: editorState, onChange, blocks, className, id }) {
   let schema = useMemo(() => {
     return getSchema(blocks);
   }, [blocks]);
@@ -64,7 +64,7 @@ function Stories({ value: editorState, onChange, blocks, className }) {
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
   return (
-    <div className={className}>
+    <div className={className} id={id}>
       <Editor
         schema={schema}
         ref={setEditor}

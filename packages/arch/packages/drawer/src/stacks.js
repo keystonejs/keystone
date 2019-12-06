@@ -1,4 +1,3 @@
-// @flow
 // inspired by https://bitbucket.org/atlassian/atlaskit-mk-2/src/75c59d2c870d7e2489d6baea9a6837f9bd4082c4/packages/core/modal-dialog/src/components/StackConsumer.js
 // but with a hook
 // some comments are new and some are from atlaskit
@@ -24,7 +23,7 @@ let updateStackConsumers = slideInFrom => {
 // - When a modal mounts, all other modals have to adjust their position
 // - When a modal unmounts, all other modals have to adjust their position
 
-export function useStackIndex(isOpen: boolean, slideInFrom: 'left' | 'right'): number {
+export function useStackIndex(isOpen, slideInFrom) {
   let [stackIndex, setStackIndex] = useState(isOpen ? 0 : -1);
   useLayoutEffect(() => {
     if (isOpen) {

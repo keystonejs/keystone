@@ -1,6 +1,4 @@
-// @flow
 import { lighten, darken, alpha } from '@arch-ui/color-utils';
-import type { Variants } from './types';
 
 // colors with intention
 const intent = {
@@ -30,7 +28,7 @@ const neutrals = {
 const source = Array.from(new Array(19), (item, index) => (index + 1) * 5);
 const darkenSource = source.slice(0, 16).reverse(); // darker than D80 is basically black...
 
-function makeVariants(color): Variants {
+function makeVariants(color) {
   const variants = {};
   source.forEach(n => (variants[`L${n}`] = lighten(color, n)));
   variants.base = color;

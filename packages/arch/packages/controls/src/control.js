@@ -1,5 +1,4 @@
-// @flow
-import React, { Component, type Node, type Ref } from 'react';
+import React, { Component } from 'react';
 import memoize from 'memoize-one';
 import { PseudoState } from 'react-pseudo-state';
 import styled from '@emotion/styled';
@@ -18,47 +17,7 @@ const Label = styled.label({
 });
 const Text = 'span';
 
-type Props = {
-  children?: Node,
-  /** Field disabled */
-  isDisabled?: boolean,
-  /** Marks this as a required field */
-  isRequired?: boolean,
-  /** Set the field as selected */
-  checked?: boolean,
-  /** Field name */
-  name?: string,
-  /** onChange event handler */
-  onChange: any => mixed,
-  /** Field value */
-  value: string,
-  /** Field ID */
-  id?: string,
-  /** Ref to apply to the inner Element */
-  innerRef?: Ref<*>,
-};
-
-type Components = {
-  Wrapper?: React$ComponentType<*>,
-  Label?: React$ComponentType<*>,
-  Text?: React$ComponentType<*>,
-};
-
-export type ControlProps = Props & {
-  svg: string, // html string
-  type: 'checkbox' | 'radio',
-  tabIndex?: string,
-  components: Components,
-};
-
-type IconProps = {
-  checked: boolean,
-  isActive: boolean,
-  isDisabled: boolean,
-  isFocus: boolean,
-  isHover: boolean,
-};
-const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: IconProps) => {
+const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }) => {
   // background
   let bg = colors.N10;
   if (isDisabled && checked) {
@@ -114,14 +73,13 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: Ic
 
 const defaultComponents = { Wrapper, Label, Text };
 
-export class Control extends Component<ControlProps> {
-  control: HTMLElement | null;
+export class Control extends Component {
   static defaultProps = {
     checked: false,
     components: {},
     isDisabled: false,
   };
-  cacheComponents = memoize((components: $Shape<Components>) => ({
+  cacheComponents = memoize(components => ({
     ...defaultComponents,
     ...components,
   }));
@@ -132,7 +90,7 @@ export class Control extends Component<ControlProps> {
   blur() {
     if (this.control) this.control.blur();
   }
-  getRef = (ref: HTMLElement | null) => {
+  getRef = ref => {
     this.control = ref;
   };
 

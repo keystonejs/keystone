@@ -1,24 +1,11 @@
-// @flow
-
-import React, { type Element, type AbstractComponent } from 'react';
+import React from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 export const transitionDurationMs = 220;
 export const transitionDuration = `${transitionDurationMs}ms`;
 export const transitionTimingFunction = 'cubic-bezier(0.2, 0, 0, 1)';
 
-// ==============================
-// Lifecycle Provider
-// ==============================
-
-export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
-
-type ProviderProps = {
-  children: TransitionState => Node | Element<*>,
-  isOpen: boolean,
-};
-
-export const TransitionProvider = ({ children, isOpen, ...props }: ProviderProps) => (
+export const TransitionProvider = ({ children, isOpen, ...props }) => (
   <TransitionGroup component={null}>
     {isOpen ? (
       <Transition appear mountOnEnter unmountOnExit timeout={transitionDurationMs} {...props}>
@@ -28,11 +15,9 @@ export const TransitionProvider = ({ children, isOpen, ...props }: ProviderProps
   </TransitionGroup>
 );
 
-export const withTransitionState = <Config: {}>(
-  Comp: AbstractComponent<{| ...$Exact<Config>, transitionState: TransitionState |}>
-): AbstractComponent<Config> => ({
-  // $FlowFixMe understand how to define this prop
+export const withTransitionState = Comp => ({
   isOpen,
+
   ...props
 }) => {
   return (
@@ -46,12 +31,13 @@ export const withTransitionState = <Config: {}>(
 // Transitions
 // ==============================
 
-function makeTransitionBase(transitionProperty: string) {
+function makeTransitionBase(transitionProperty) {
   return { transitionProperty, transitionDuration, transitionTimingFunction };
 }
 
-export const fade = (transitionState: TransitionState) => ({
+export const fade = transitionState => ({
   ...makeTransitionBase('opacity'),
+
   opacity: {
     entering: 1,
     entered: 1,
@@ -63,7 +49,7 @@ export const fade = (transitionState: TransitionState) => ({
 // Slide Up
 // ------------------------------
 
-export const slideUp = (transitionState: TransitionState) => {
+export const slideUp = transitionState => {
   const out = {
     opacity: 0,
     transform: 'scale(0.95) translate3d(0,20px,0)',
@@ -79,10 +65,7 @@ export const slideUp = (transitionState: TransitionState) => {
   };
 };
 
-export const slideDown = (
-  transitionState: TransitionState,
-  { from = '-8px' }: { from: string } = {}
-) => {
+export const slideDown = (transitionState, { from = '-8px' } = {}) => {
   const out = {
     opacity: 0,
     transform: `translate3d(0,${from},0)`,
@@ -99,10 +82,7 @@ export const slideDown = (
 };
 
 const fromMap = { left: '-100%', right: '100%' }; // NOTE: should be able to use $Keys<typeof fromMap>
-export const slideInHorizontal = (
-  transitionState: TransitionState,
-  { slideInFrom }: { slideInFrom: $Keys<typeof fromMap> }
-) => {
+export const slideInHorizontal = (transitionState, { slideInFrom }) => {
   const initial = fromMap[slideInFrom];
   return {
     ...makeTransitionBase('transform'),
@@ -115,7 +95,7 @@ export const slideInHorizontal = (
   };
 };
 
-export const zoomInDown = (transitionState: TransitionState) => {
+export const zoomInDown = transitionState => {
   return {
     transformOrigin: 'top',
     transitionProperty: 'opacity, transform',
@@ -142,7 +122,7 @@ export const zoomInDown = (transitionState: TransitionState) => {
   };
 };
 
-export const springDown = (transitionState: TransitionState) => {
+export const springDown = transitionState => {
   return {
     transformOrigin: 'top',
     transitionProperty: 'opacity, transform',

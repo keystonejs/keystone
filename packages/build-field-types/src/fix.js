@@ -1,4 +1,3 @@
-// @flow
 import { Project } from './project';
 import { success } from './logger';
 import { validateEntrypointSource } from './validate';
@@ -8,7 +7,7 @@ import { errors } from './messages';
 import { Package } from "./package";
 */
 
-export async function fixPackage(pkg: Package) {
+export async function fixPackage(pkg) {
   if (pkg.entrypoints.length === 0) {
     throw new FatalError(errors.noEntrypoints, pkg);
   }
@@ -18,7 +17,7 @@ export async function fixPackage(pkg: Package) {
   return (await Promise.all(pkg.entrypoints.map(x => x.save()))).some(x => x);
 }
 
-export default async function fix(directory: string) {
+export default async function fix(directory) {
   let { packages } = await Project.create(directory);
 
   let didModify = (await Promise.all(

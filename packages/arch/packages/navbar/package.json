@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/navbar.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   },
   "devDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.1",

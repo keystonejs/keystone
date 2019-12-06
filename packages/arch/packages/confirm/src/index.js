@@ -1,7 +1,6 @@
-// @flow
 /** @jsx jsx */
 
-import { Fragment, PureComponent, type ComponentType, type Node, forwardRef } from 'react';
+import { Fragment, PureComponent, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import { jsx } from '@emotion/core';
@@ -9,13 +8,7 @@ import styled from '@emotion/styled';
 
 import { borderRadius, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
-import {
-  fade,
-  zoomInDown,
-  withTransitionState,
-  type TransitionState,
-  Blanket,
-} from '@arch-ui/modal-utils';
+import { fade, zoomInDown, withTransitionState, Blanket } from '@arch-ui/modal-utils';
 
 const innerGutter = 15;
 
@@ -32,12 +25,7 @@ const Positioner = styled.div({
   zIndex: 2,
 });
 
-type DialogElementProps = {
-  component: ComponentType<*> | string,
-  width: number,
-};
-
-const Dialog = forwardRef(({ component: Tag, width, ...props }: DialogElementProps, ref) => (
+const Dialog = forwardRef(({ component: Tag, width, ...props }, ref) => (
   <Tag
     ref={ref}
     role="alertdialog"
@@ -62,25 +50,7 @@ const Body = styled.div({
   padding: innerGutter,
 });
 
-// Dialog
-// ------------------------------
-
-type OwnProps = {|
-  attachTo?: HTMLElement | ?HTMLBodyElement,
-  children: Node,
-  component?: ComponentType<*> | string,
-  onClose?: (*) => void,
-  onKeyDown: (*) => void,
-  width?: number,
-  isOpen?: boolean,
-|};
-
-type Props = {|
-  ...OwnProps,
-  transitionState: TransitionState,
-|};
-
-class ModalConfirm extends PureComponent<Props> {
+class ModalConfirm extends PureComponent {
   static defaultProps = {
     attachTo: document.body,
     component: 'div',
@@ -92,7 +62,7 @@ class ModalConfirm extends PureComponent<Props> {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
-  onKeyDown = (e: any) => {
+  onKeyDown = e => {
     if (this.props.onKeyDown) this.props.onKeyDown(e);
   };
   render() {
@@ -107,7 +77,6 @@ class ModalConfirm extends PureComponent<Props> {
         <Blanket style={fade(transitionState)} isTinted isLight />
         <Positioner style={zoomInDown(transitionState)}>
           <FocusTrap>
-            {/* $$FlowFixMe default props */}
             <Dialog component={component} width={width}>
               <Body>{children}</Body>
             </Dialog>
@@ -120,4 +89,4 @@ class ModalConfirm extends PureComponent<Props> {
   }
 }
 
-export default withTransitionState<OwnProps>(ModalConfirm);
+export default withTransitionState(ModalConfirm);

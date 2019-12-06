@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { style } from '../style';
 
@@ -9,7 +8,7 @@ const svgContent = (
   />
 );
 
-const GitBranchIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
+const GitBranchIcon = React.memo(({ title, ...props }) => {
   return (
     <svg aria-hidden height={16} width={10} viewBox="0 0 10 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}

@@ -1,4 +1,3 @@
-// @flow weak
 // based on https://github.com/SquidDev/MirrorMark/blob/master/src/js/mirrormark.js
 import React from 'react';
 import {

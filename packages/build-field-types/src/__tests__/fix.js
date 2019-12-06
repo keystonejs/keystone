@@ -1,4 +1,3 @@
-// @flow
 import fixturez from 'fixturez';
 import fix from '../fix';
 import path from 'path';

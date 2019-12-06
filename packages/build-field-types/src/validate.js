@@ -1,6 +1,4 @@
-// @flow
 import { Project } from './project';
-import { Entrypoint } from './entrypoint';
 import { errors, successes, infos } from './messages';
 import { FatalError, FixableError } from './errors';
 import { getValidModuleField, getValidMainField } from './utils';
@@ -12,7 +10,7 @@ import resolve from 'resolve';
 // just does validation
 // used in build and watch
 
-export function validateEntrypointSource(entrypoint: Entrypoint) {
+export function validateEntrypointSource(entrypoint) {
   try {
     resolve.sync(entrypoint.source, { extensions: EXTENSIONS });
   } catch (e) {
@@ -23,15 +21,15 @@ export function validateEntrypointSource(entrypoint: Entrypoint) {
   }
 }
 
-export function isMainFieldValid(entrypoint: Entrypoint) {
+export function isMainFieldValid(entrypoint) {
   return entrypoint.main === getValidMainField(entrypoint.package.name);
 }
 
-export function isModuleFieldValid(entrypoint: Entrypoint) {
+export function isModuleFieldValid(entrypoint) {
   return entrypoint.module === getValidModuleField(entrypoint.package.name);
 }
 
-export function validateEntrypoint(entrypoint: Entrypoint, log: boolean) {
+export function validateEntrypoint(entrypoint, log) {
   validateEntrypointSource(entrypoint);
   if (log) {
     logger.info(infos.validEntrypoint, entrypoint);
@@ -50,7 +48,7 @@ export function validateEntrypoint(entrypoint: Entrypoint, log: boolean) {
   }
 }
 
-export default async function validate(directory: string) {
+export default async function validate(directory) {
   let project = await Project.create(directory);
 
   for (let pkg of project.packages) {

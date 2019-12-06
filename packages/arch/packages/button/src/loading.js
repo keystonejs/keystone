@@ -1,12 +1,10 @@
-// @flow
-
 /** @jsx jsx */
 import { forwardRef } from 'react';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import { LoadingIndicator, LoadingSpinner } from '@arch-ui/loading';
-import { Button, type ButtonProps } from './primitives';
+import { Button } from './primitives';
 
 // Styled
 
@@ -23,18 +21,13 @@ function getAppearance(appearance) {
   return 'inverted';
 }
 
-type Loading = ButtonProps & {
-  isLoading: boolean,
-  indicatorVariant: 'spinner' | 'dots',
-};
-
-function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...props }: Loading, ref) {
+function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...props }, ref) {
   const appearance = getAppearance(props.appearance || 'default');
   const textCSS = isLoading ? { visibility: 'hidden' } : null;
   const isSpinner = indicatorVariant === 'spinner';
 
   return (
-    <Button ref={ref} variant="bold" indicatorVariant="dots" {...props}>
+    <Button ref={ref} variant="bold" {...props}>
       <LoadingButtonInner>
         {isLoading ? (
           <LoadingIndicatorWrapper>
@@ -52,6 +45,4 @@ function LoadingButtonComponent({ children, indicatorVariant, isLoading, ...prop
 }
 
 // Export
-export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonElement>(
-  LoadingButtonComponent
-);
+export const LoadingButton = forwardRef(LoadingButtonComponent);

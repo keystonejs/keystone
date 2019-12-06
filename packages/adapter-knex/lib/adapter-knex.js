@@ -253,38 +253,94 @@ class KnexListAdapter extends BaseListAdapter {
     });
   }
 
+  async _processNonRealFields(data, processFunction) {
+    return resolveAllKeys(
+      arrayToObject(
+        Object.entries(omit(data, this.realKeys)).map(([path, value]) => ({
+          path,
+          value,
+          adapter: this.fieldAdaptersByPath[path],
+        })),
+        'path',
+        processFunction
+      )
+    );
+  }
+
+  async _createOrUpdateField({ value, adapter, itemId }) {
+    if (value && value.length) {
+      const tableName = this._manyTable(adapter.path);
+      const selectCol = adapter.refListId;
+      const matchCol = `${this.key}_id`;
+      return this._query()
+        .insert(value.map(id => ({ [matchCol]: itemId, [selectCol]: id })))
+        .into(tableName)
+        .returning(selectCol);
+    } else {
+      return [];
+    }
+  }
+
   async _create(data) {
-    // Insert the real data into the table
     const realData = pick(data, this.realKeys);
+
+    // Insert the real data into the table
     const item = (await this._query()
       .insert(realData)
       .into(this.tableName)
       .returning('*'))[0];
 
     // For every many-field, update the many-table
-    const manyItem = await resolveAllKeys(
-      arrayToObject(
-        this.fieldAdapters.filter(
-          fieldAdapter =>
-            !fieldAdapter._hasRealKeys() &&
-            data[fieldAdapter.path] &&
-            data[fieldAdapter.path].length
-        ),
-        'path',
-        async a =>
-          this._query()
-            .insert(
-              data[a.path].map(id => ({
-                [`${this.key}_id`]: item.id,
-                [a.refListId]: id,
-              }))
-            )
-            .into(this._manyTable(a.path))
-            .returning(a.refListId)
-      )
+    const manyItem = await this._processNonRealFields(data, async ({ value, adapter }) =>
+      this._createOrUpdateField({ value, adapter, itemId: item.id })
     );
 
     return { ...item, ...manyItem };
+  }
+
+  async _update(id, data) {
+    // Update the real data
+    const realData = pick(data, this.realKeys);
+    const query = this._query()
+      .table(this.tableName)
+      .where({ id });
+    if (Object.keys(realData).length) {
+      query.update(realData);
+    }
+    const item = (await query.returning(['id', ...this.realKeys]))[0];
+
+    // For every many-field, update the many-table
+    await this._processNonRealFields(data, async ({ path, value: newValues, adapter }) => {
+      const { refListId } = adapter;
+      const tableName = this._manyTable(path);
+
+      // Future task: Is there some way to combine the following three
+      // operations into a single query?
+
+      const selectCol = refListId;
+      const matchCol = `${this.key}_id`;
+
+      // Work out what we've currently got
+      const currentRefIds = (await this._query()
+        .select(selectCol)
+        .from(tableName)
+        .where(matchCol, item.id)
+        .returning(selectCol)).map(x => x[selectCol].toString());
+
+      // Delete what needs to be deleted
+      const needsDelete = currentRefIds.filter(x => !newValues.includes(x));
+      if (needsDelete.length) {
+        await this._query()
+          .table(tableName)
+          .where(matchCol, item.id)
+          .whereIn(refListId, needsDelete)
+          .del();
+      }
+      // Add what needs to be added
+      const value = newValues.filter(id => !currentRefIds.includes(id));
+      await this._createOrUpdateField({ value, adapter, itemId: item.id });
+    });
+    return (await this._itemsQuery({ where: { id: item.id }, first: 1 }))[0] || null;
   }
 
   async _delete(id) {
@@ -315,103 +371,6 @@ class KnexListAdapter extends BaseListAdapter {
       .table(this.tableName)
       .where({ id })
       .del();
-  }
-
-  async _populateMany(result) {
-    // Takes an existing result and merges in all the many-relationship fields
-    // by performing a query on their join-tables.
-
-    return {
-      ...result,
-      ...(await resolveAllKeys(
-        arrayToObject(
-          this.fieldAdapters.filter(a => a.isRelationship && a.config.many),
-          'path',
-          async a =>
-            (await this._query()
-              .select(a.refListId)
-              .from(this._manyTable(a.path))
-              .where(`${this.key}_id`, result.id)
-              .returning(a.refListId)).map(x => x[a.refListId])
-        )
-      )),
-    };
-  }
-
-  async _update(id, data) {
-    // Update the real data
-    const realData = pick(data, this.realKeys);
-    const query = this._query()
-      .table(this.tableName)
-      .where({ id });
-    if (Object.keys(realData).length) {
-      query.update(realData);
-    }
-    const item = (await query.returning(['id', ...this.realKeys]))[0];
-
-    // For every many-field, update the many-table
-    const manyData = omit(data, this.realKeys);
-    await Promise.all(
-      Object.entries(manyData).map(async ([path, newValues]) => {
-        const a = this.fieldAdaptersByPath[path];
-        const tableName = this._manyTable(a.path);
-
-        // Future task: Is there some way to combine the following three
-        // operations into a single query?
-
-        // Work out what we've currently got
-        const currentValues = await this._query()
-          .select(a.refListId)
-          .from(tableName)
-          .where(`${this.key}_id`, item.id);
-        const currentRefIds = currentValues.map(x => x[a.refListId].toString());
-
-        // Delete what needs to be deleted
-        const needsDelete = currentRefIds.filter(x => !newValues.includes(x));
-        if (needsDelete.length) {
-          await this._query()
-            .table(tableName)
-            .where(`${this.key}_id`, item.id)
-            .whereIn(a.refListId, needsDelete)
-            .del();
-        }
-        // Add what needs to be added
-        const valuesToInsert = newValues
-          .filter(id => !currentRefIds.includes(id))
-          .map(id => ({
-            [`${this.key}_id`]: item.id,
-            [a.refListId]: id,
-          }));
-        if (valuesToInsert.length) {
-          await this._query()
-            .insert(valuesToInsert)
-            .into(tableName);
-        }
-      })
-    );
-
-    const result = await this._findById(item.id);
-    return result ? this._populateMany(result) : null;
-  }
-
-  async _findById(id) {
-    return (
-      (await this._query()
-        .from(this.tableName)
-        .where('id', id))[0] || null
-    );
-  }
-
-  async _findAll() {
-    return this._itemsQuery({});
-  }
-
-  async _find(condition) {
-    return this._itemsQuery({ where: { ...condition } });
-  }
-
-  async _findOne(condition) {
-    return (await this._itemsQuery({ where: { ...condition }, first: 1 }))[0];
   }
 
   async _itemsQuery(args, { meta = false, from = {} } = {}) {

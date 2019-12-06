@@ -63,6 +63,7 @@ const ItemDetails = withRouter(
         arrayToObject(
           props.list.fields
             .filter(({ isPrimaryKey }) => !isPrimaryKey)
+            .filter(({ isReadOnly }) => !isReadOnly)
             .filter(({ maybeAccess }) => !!maybeAccess.update),
           'path'
         )
@@ -297,7 +298,9 @@ const ItemDetails = withRouter(
               <AutocompleteCaptor />
               {list.fields
                 .filter(({ isPrimaryKey }) => !isPrimaryKey)
-                .filter(({ maybeAccess }) => !!maybeAccess.update)
+                .filter(({ maybeAccess, config }) => {
+                  return !!maybeAccess.update || config.isReadOnly;
+                })
                 .map((field, i) => (
                   <Render key={field.path}>
                     {() => {

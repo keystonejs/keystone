@@ -5,14 +5,15 @@ subSection: setup
 order: 3
 [meta]-->
 
-## Adding initial data to Lists
+# Adding initial data to Lists
 
 This guide will show you how to create a User list and add initial data to it using the `createItems` method. This process is also called `seeding`
 
 First let's create a User list and add a `PasswordAuthStrategy`. Our `index.js` might look like this:
 
 ```javascript
-const { Keystone, PasswordAuthStrategy } = require('@keystonejs/keystone');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
@@ -52,7 +53,7 @@ You can achieve this setup by running the KeystoneJS CLI and selecting the `Star
 
 This method is intended for initial seeding of databases or running migration scripts.
 
-### Usage
+## Usage
 
 `createItems` requires an object where keys are list keys, and values are arrays of items to insert.
 For example;
@@ -66,12 +67,12 @@ keystone.createItems({
 
 _Note_: The format of the data must match the schema setup with calls to `keystone.createList()`.
 
-#### Relationships
+### Relationships
 
 It is possible to create relationships upon insertion by using the KeystoneJS
 query syntax.
 
-##### Single Relationships
+#### Single Relationships
 
 For example;
 
@@ -103,7 +104,7 @@ _first_ `User` that is found.
 
 _Note_: An error is thrown if no items match the query.
 
-##### Many Relationships
+#### Many Relationships
 
 When inserting an item with a `to-many` relationship, such as:
 
@@ -196,7 +197,7 @@ keystone.createItems({
 Will match all users whose name starts with `'J'`, skipping the first two matches,
 ultimately matching against `'John'`.
 
-#### Errors
+### Errors
 
 If an error occurs during insertion, data may be left in an inconsistent state.
 We highly encourage you to take regular backups of your data, especially before
@@ -206,7 +207,7 @@ If an error occurs during the relationship resolution phase (see
 _[Relationships](#relationships)_), any inserted items will be automatically
 deleted for you, leaving the data in a consistent state.
 
-#### Limitations & Advanced Inserts
+### Limitations & Advanced Inserts
 
 `Keystone::createItems()` does not provide the full functionality that the
 GraphQL endpoint does.

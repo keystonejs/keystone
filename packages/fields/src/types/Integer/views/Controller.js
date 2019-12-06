@@ -1,23 +1,22 @@
-// @flow
 import FieldController from '../../../Controller';
 
-type FilterGraphQL = {| type: string, value: string |};
-type FilterLabel = {| label: string |};
-type FormatFilter = {| label: string, value: string |};
-type DataType = { [key: string]: string };
-
-export default class TextController extends FieldController {
-  getFilterGraphQL = ({ type, value }: FilterGraphQL): string => {
-    const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    return `${key}: ${value}`;
+export default class IntegerController extends FieldController {
+  getFilterGraphQL = ({ path, type, value }) => {
+    const key = type === 'is' ? path : `${path}_${type}`;
+    let arg = value.replace(/\s/g, '');
+    if (['in', 'not_in'].includes(type)) {
+      arg = `[${arg}]`;
+    }
+    return `${key}: ${arg}`;
   };
-  getFilterLabel = ({ label }: FilterLabel): string => {
-    return `${this.label} ${label.toLowerCase()}`;
+  getFilterLabel = ({ label, type }) => {
+    const suffix = ['in', 'not_in'].includes(type) ? ' (comma separated)' : '';
+    return `${this.label} ${label.toLowerCase()}${suffix}`;
   };
-  formatFilter = ({ label, value }: FormatFilter) => {
-    return `${this.getFilterLabel({ label })}: "${value}"`;
+  formatFilter = ({ label, type, value }) => {
+    return `${this.getFilterLabel({ label, type })}: "${value.replace(/\s/g, '')}"`;
   };
-  serialize = (data: DataType): ?number => {
+  serialize = data => {
     const value = data[this.path];
     if (typeof value === 'number') {
       return value;
@@ -60,7 +59,15 @@ export default class TextController extends FieldController {
       label: 'Is less than or equal to',
       getInitialValue: () => '',
     },
-    // QUESTION: should we support "in" and "not_in" filters for Integer?
-    // What does the UI look like for that.
+    {
+      type: 'in',
+      label: 'Is one of',
+      getInitialValue: () => '',
+    },
+    {
+      type: 'not_in',
+      label: 'Is not one of',
+      getInitialValue: () => '',
+    },
   ];
 }
