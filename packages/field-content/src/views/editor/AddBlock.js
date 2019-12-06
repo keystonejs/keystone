@@ -2,6 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useState, useRef, useCallback, useLayoutEffect, Fragment } from 'react';
 import { PlusIcon } from '@arch-ui/icons';
+import { colors } from '@arch-ui/theme';
 import { type as defaultType } from './blocks/paragraph';
 
 const getSelectedElement = () => {
@@ -64,7 +65,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           css={{
             border: 'none',
             background: '#efefef',
-            color: '#aaa',
+            color: colors.N50,
             width: 24,
             height: 24,
             display: 'flex',
@@ -72,7 +73,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
             justifyContent: 'center',
             marginLeft: 4,
             ':hover': {
-              color: '#888',
+              color: colors.N80,
             },
           }}
           onClick={() => {
@@ -97,7 +98,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
               listStyle: 'none',
               padding: 0,
               margin: 0,
-              border: 'solid 1px #eaeaea',
+              border: `solid 1px ${colors.N10}`,
             }}
           >
             <li
@@ -110,7 +111,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
               <strong
                 css={{
                   textTransform: 'uppercase',
-                  color: '#999',
+                  color: colors.N60,
                   fontSize: '.8rem',
                   padding: '5px 15px',
                 }}

@@ -5,6 +5,7 @@ import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
 import { findNode } from 'slate-react';
 import { Block } from 'slate';
+import { colors } from '@arch-ui/theme';
 
 export let type = 'image-container';
 
@@ -46,7 +47,7 @@ export function Sidebar({ blocks, editor }) {
         display: 'flex',
         alignItems: 'center',
         ':focus,:hover': {
-          background: '#eaeaea',
+          background: colors.N10,
         },
       }}
       type="button"
