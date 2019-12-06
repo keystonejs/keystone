@@ -44,14 +44,6 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       test: /\.css$/,
       use: ['style-loader', 'css-loader'],
     },
-    // This is a workaround for a problem with graphql@0.13.x. It can be removed
-    // once we upgrade to graphql@14.0.2.
-    // https://github.com/zeit/next.js/issues/5233#issuecomment-424738510
-    {
-      test: /\.mjs$/,
-      include: /node_modules/,
-      type: 'javascript/auto',
-    },
   ];
   if (adminMeta.lists) {
     rules.push({

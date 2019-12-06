@@ -69,10 +69,6 @@ class CloudinaryImage extends File {
           return null;
         }
 
-        // FIXME: This can hopefully be removed once graphql 14.1.0 is released.
-        // https://github.com/graphql/graphql-js/pull/1520
-        if (itemValues.id) itemValues.id = itemValues.id.toString();
-
         return {
           publicUrl: this.fileAdapter.publicUrl(itemValues),
           publicUrlTransformed: ({ transformation }) =>
