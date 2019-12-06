@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: MongoId
+title: MongoID
 [meta]-->
 
-# MongoId
+# MongoID
 
 This field allows arbitrary MongoID fields to be added to your lists.
 

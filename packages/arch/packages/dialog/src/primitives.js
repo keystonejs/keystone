@@ -1,5 +1,3 @@
-// @flow
-
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { forwardRef } from 'react';
@@ -25,10 +23,7 @@ export const Positioner = styled.div(({ width }) => ({
   zIndex: 2,
 }));
 
-type DialogElementProps = {
-  component: string,
-};
-export const Dialog = forwardRef<DialogElementProps, any>(({ component: Tag, ...props }, ref) => (
+export const Dialog = forwardRef(({ component: Tag, ...props }, ref) => (
   <Tag
     ref={ref}
     role="dialog"

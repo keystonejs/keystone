@@ -1,20 +1,12 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
 import { useMemo } from 'react';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
 import { CheckIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { uniformHeight } from '@arch-ui/common';
 
-type Props = {
-  isDisabled?: boolean,
-  isFocused?: boolean,
-  isSelected?: boolean,
-};
-
-export const CheckMark = ({ isDisabled, isFocused, isSelected }: Props) => {
+export const CheckMark = ({ isDisabled, isFocused, isSelected }) => {
   let bg;
   let fg;
   let border;
@@ -54,21 +46,7 @@ export const CheckMark = ({ isDisabled, isFocused, isSelected }: Props) => {
   );
 };
 
-type OptionPrimitiveProps = {
-  children: React.Node,
-  isDisabled: boolean,
-  isFocused: boolean,
-  isSelected: boolean,
-  innerRef: ?React.Ref<*>,
-  innerProps: Object,
-};
-
-export const OptionPrimitive = ({
-  children,
-  isDisabled,
-  innerProps,
-  innerRef,
-}: OptionPrimitiveProps) => {
+export const OptionPrimitive = ({ children, isDisabled, innerProps, innerRef }) => {
   return (
     <div
       ref={innerRef}
@@ -106,9 +84,17 @@ const optionRendererStyles = {
     padding: 0,
     minHeight: 34,
   }),
-  menu: () => ({ marginTop: 8 }),
-  menuList: provided => ({ ...provided, padding: 0 }),
-  placeholder: provided => ({ ...provided, color: colors.N50 }),
+  menu: () => ({
+    marginTop: 8,
+  }),
+  menuList: provided => ({
+    ...provided,
+    padding: 0,
+  }),
+  placeholder: provided => ({
+    ...provided,
+    color: colors.N50,
+  }),
 };
 
 const Control = ({ selectProps, ...props }) => {
@@ -139,18 +125,7 @@ const defaultComponents = {
   IndicatorSeparator: null,
 };
 
-type OptionsProps = {
-  components?: $Shape<typeof reactSelectComponents>,
-  displaySearch: boolean,
-  innerRef: ?React.Ref<*>,
-};
-
-export const Options = ({
-  displaySearch,
-  innerRef,
-  components: propComponents,
-  ...props
-}: OptionsProps) => {
+export const Options = ({ displaySearch, innerRef, components: propComponents, ...props }) => {
   const components = useMemo(
     () => ({
       ...defaultComponents,

@@ -1,11 +1,6 @@
-// @flow
-
 import { Component } from 'react';
-import type { CellProps } from '../../../types';
 
-type Props = CellProps<boolean>;
-
-export default class CheckboxCellView extends Component<Props> {
+export default class CheckboxCellView extends Component {
   render() {
     const { data } = this.props;
     if (data === true) return 'Checked';

@@ -1,6 +1,4 @@
-// @flow
 import path from 'path';
-import type { Plugin, OutputChunk } from './types';
 import { getWorker } from '../worker-client';
 import hashString from '@emotion/hash';
 import * as fse from 'fs-extra';
@@ -43,22 +41,19 @@ function transformStuff(format, code, pkgDir, filename) {
 
 let map = new WeakMap();
 
-export default function flowAndNodeDevProdEntry(): Plugin {
+export default function pkgJsonRedirectPlugin() {
   return {
     name: 'flow-and-prod-dev-entry',
     async generateBundle(opts, bundle) {
       map.set(this.addWatchFile, opts.dir);
-      let chunkKeys = Object.keys(bundle).filter(
-        // $FlowFixMe this is acceptable to have non existent isAsset
-        x => !bundle[x].isAsset
-      );
+      let chunkKeys = Object.keys(bundle).filter(x => !bundle[x].isAsset);
 
-      let format: string = (opts.format: any);
-      let pkgDir: string = (opts.dir: any);
+      let format = opts.format;
+      let pkgDir = opts.dir;
 
       await Promise.all(
         chunkKeys.map(async key => {
-          let file: OutputChunk = (bundle[key]: any);
+          let file = bundle[key];
 
           file.code = await transformStuff(format, file.code, pkgDir, file.fileName);
         })

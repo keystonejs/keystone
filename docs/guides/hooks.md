@@ -5,131 +5,130 @@ title: Hooks
 
 # Hooks
 
-> _NOTE: Below is an overview of hooks. For API docs see
-> [Hooks API](/api/hooks)._
+Hooks give solution developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
 
-KeystoneJS provide a system of hooks on the `create`, `update`, and `delete` mutations which allow developers to customise the behaviour of their system.
+This document provides an overview of the concepts, patterns and function of the Keystone hook system.
+The [Hooks API docs](/docs/api/hooks.md) describe the specific arguments and usage information.
 
-There are 7 hooks available to use, which can be grouped into pre- and post-hooks depending on whether they get invoked before or after the database update operation.
+## Conceptual Organisation
 
-- Pre-hooks
-  - `resolveInput`
-  - `validateInput`/`validateDelete`
-  - `beforeChange`/`beforeDelete`
-- Post-hooks
-  - `afterChange`/`afterDelete`
+There are several categorisations that can be applied to hooks and are useful for understanding what is run and when.
 
-## Hook Types
+> Note: the concepts listed here have some exceptions.
+> See the [Gotchas section](#gotchas).
 
-For each of these hooks, there are three _types_ of hook which can be defined.
+### Stage
 
-- [List hooks](#list-hooks)
-- [Field hooks](#field-hooks)
-- [Field Type hooks](#field-type-hooks)
+Keystone defines several _stages_ within the [hook execution order](#execution-order).
+These stages are intended to be used for different purposes; they help organise your hook functionality.
 
-### List hooks
+- Input resolution - modify the values supplied
+- Data validation - check the values are valid
+- Before operation - perform side effects _before_ the primary operation
+- After operation - perform side effects _after_ the primary operation
 
-List hooks can be defined by the system developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.
+### Operation
 
-```js
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    ...
-  },
-  hooks: {
-    resolveInput: async (...) => { ... },
-    validateInput: async (...) => { ... },
-    beforeChange: async (...) => { ... },
-    afterChange: async (...) => { ... },
-    beforeDelete: async (...) => { ... },
-    validateDelete: async (...) => { ... },
-    afterDelete: async (...) => { ... },
-  },
-  ...
-});
-```
+Hooks are available for four of the core operations:
 
-### Field hooks
+- `create`
+- `update`
+- `delete`
 
-Field hooks can be defined by the system developer by specifying the `hooks` attribute of a field configuration when calling `createList()`.
+These operations are reused used for both "single" and "many" modes.
+Eg. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
-```js
-keystone.createList('User', {
-  fields: {
-    name: {
-      type: Text,
-      hooks: {
-        resolveInput: async (...) => { ... },
-        validateInput: async (...) => { ... },
-        beforeChange: async (...) => { ... },
-        afterChange: async (...) => { ... },
-        beforeDelete: async (...) => { ... },
-        validateDelete: async (...) => { ... },
-        afterDelete: async (...) => { ... },
-      },
-      ...
-    },
-    ...
-  },
-  ...
-});
-```
+Hooks for these operations have different signatures due to the nature of the operations being performed.
+See the [Hook API docs](/docs/api/hooks.md) for specifics.
 
-### Field Type hooks
+> Note: Keystone does not currently implement `read` hooks.
 
-Field Type hooks are associated with a particular _Field Type_ and are applied to all fields of that type.
-Custom field types can implement hooks by implementing the following hook methods on the `Field` base class.
+### Hook Type
 
-```js
-class CustomFieldType extends Field {
-  async resolveInput(...) { ... }
-  async validateInput(...) { ... }
-  async beforeChange(...) { ... }
-  async afterChange(...) { ... }
-  async beforeDelete(...) { ... }
-  async validateDelete(...) { ... }
-  async afterDelete(...) { ... }
-}
-```
+A hooks _type_ is defined by where it is attached.
+Keystone recognises three _types_ of hook:
 
-## Hook Execution Order
+- [Field Type hooks](/docs/api/hooks.md#field-type-hooks) -
+  Field Type hooks are associated with a particular _field type_ and are applied to all fields of that type across all lists.
+- [Field hooks](/docs/api/hooks.md/docs/api/hooks.md#field-hooks) -
+  Field hooks can be defined by the app developer by specifying the `hooks` attribute of a field configuration when calling `createList()`.
+- [List hooks](/docs/api/hooks.md#list-hooks) -
+  List hooks can be defined by the app developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.
 
-The hooks are invoked in a specific order during a mutation operation.
+### Hook Set
+
+For most _stage_ and _operation_ combinations, different functions (hooks) can be supplied for each _hook type_.
+This group of distinct but related hooks are referred to as a _hook set_.
+
+Eg. a `beforeDelete` function could be supplied for a list, several specific fields on the list and a field type used by the list.
+All hooks in a hook set share the same functional signature but are invoked at different times.
+See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order section](#intra-hook-execution-order) for more information.
+
+### Putting It Together
+
+In total there 7 _hook sets_ available.
+This table shows the _hook set_ relevant to each combination of _stage_ and _operation_:
+
+| Stage            | `create`        | `update`        | `delete`         |
+| ---------------- | --------------- | --------------- | ---------------- |
+| Input resolution | `resolveInput`  | `resolveInput`  | n/a              |
+| Data validation  | `validateInput` | `validateInput` | `validateDelete` |
+| Before operation | `beforeChange`  | `beforeChange`  | `beforeDelete`   |
+| After operation  | `afterChange`   | `afterChange`   | `afterDelete`    |
+
+The `create`, `update` and `delete` _hook sets_ can be attached as _list_, _field_ or _field type_ hooks.
+
+Due to their similarity, the `create` and `update` operations share a single set of hooks.
+To implement different logic for these operations make it conditional on either the `operation` or `existingItem` arguments;
+for create operations `existingItem` will be `undefined`.
+
+See the [Hooks API docs](/docs/api/hooks.md) for argument details and usage.
+
+## Execution Order
+
+The hooks are invoked in a specific order during an operation.
+For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/docs/guides/mutation-lifecycle.md).
 
 ### Create/Update
 
-1. `resolveInput`
-2. `validateInput`
-3. `beforeChange`
-4. Database operation
-5. `afterChange`
+1. Access control checks
+2. Field defaults applied
+3. `resolveInput` called on all fields, even if they are not defined in the supplied data
+4. `validateInput` called on all fields which have a resolved value (after all `resolveInput` calls have returned)
+5. `beforeChange` called on all fields which have a resolved value (after all `beforeChange` calls have returned)
+6. Database operation
+7. `afterChange` called on all fields, even if their value was not changed
 
 ### Delete
 
-1. `validateDelete`
-2. `beforeDelete`
-3. Database operation
-4. `afterDelete`
+1. Access control checks
+2. `validateDelete` called on all fields
+3. `beforeDelete` called on all fields (after all `validateDelete` calls have returned)
+4. Database operation (after all `beforeDelete` calls have returned)
+5. `afterDelete` called on all fields (after the DB operation has completed)
 
-For full details of the mutation lifecycle, and where hooks fit within this, please see [here](/guides/mutation-lifecycle).
+### Intra-Hook Execution Order
 
-### Intra-hook Execution Order
+Within each hook set, the different [hook types](#hook-type) are invoked in a specific order.
 
-Within each hook, the different hook types are invoked in a specific order.
+1. All relevant and defined [field type hooks](/docs/api/hooks.md#field-type-hooks) are invoked in **parallel**
+2. All relevant and defined [field hooks](/docs/api/hooks.md#field-hooks) are invoked in **parallel**
+3. If defined the [list hook](/docs/api/hooks.md#list-hooks) is invoked
 
-1. All relevant [`Field Type hooks`](#field-type-hooks) are invoked in parallel.
-2. then, All relevant [`Field hooks`](#field-hooks) are invoked in parallel.
-3. then, The [`List hook`](#list-hooks) is invoked.
+## Gotchas
 
-Which [Field](#field-hooks) & [Field Type](#field-type-hooks) hooks are executed depend on the following flow:
+The hook system is a powerful but it's breadth and flexibility introduce some complexity.
+A few of the main stumbling blocks are:
 
-- `resolveInput`: Called on all fields, even if they are not defined in the supplied data.
-- `validateInput`: Called on all fields which have a resolved value after the `resolveInput` hook has run.
-- `beforeChange`: Called on all fields which have a resolved value after the `resolveInput` hook has run.
-- `afterChange`: Called on all fields, even if their value was not changed.
-- `validateDelete`: Called on all fields.
-- `beforeDelete`: Call on all fields.
-- `afterDelete`: Called on all fields.
+- The `create` and `update` operations share a single set of hooks.
+  To implement different logic for these operations make it conditional on either the `operation` or `existingItem` arguments;
+  for create operations `existingItem` will be `undefined`.
+- As per the table above, the `delete` operations have no hook set for the _input resolution_ stage.
+  This operation doesn't accept any input (other than the target IDs).
+- Keystone does not currently implement `read` hooks
+- field type hooks and field hooks are run in parallel
+
+These nuances aren't bugs per se -- they generally exist for good reason --
+but they can make understanding the hook system difficult.
 
 <!-- TODO: ## Error Handling -->

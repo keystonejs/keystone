@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
@@ -8,24 +7,10 @@ import { FlexGroup } from '@arch-ui/layout';
 import { LoadingSpinner } from '@arch-ui/loading';
 
 import Page from './Page';
-import type { LabelType, OnChangeType } from './types';
 
-function ariaPageLabelFn(page: number) {
+function ariaPageLabelFn(page) {
   return `Go to page ${page}`;
 }
-
-export type PaginationProps = {
-  ariaPageLabel: LabelType,
-  currentPage: number,
-  limit?: number,
-  onChange: OnChangeType,
-  pageSize: number,
-  total: number,
-  isLoading: boolean,
-  justify?: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
-  spacing?: number,
-  growIndexes?: Array<number>,
-};
 
 const PageChildren = ({ page, isLoading, isSelected }) => {
   const [shouldShowLoading, setShouldShowLoading] = useState(false);
@@ -51,9 +36,7 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
   );
 };
 
-type State = { allPagesVisible: boolean };
-
-class Pagination extends Component<PaginationProps, State> {
+class Pagination extends Component {
   static defaultProps = {
     ariaPageLabel: ariaPageLabelFn,
     currentPage: 1,
@@ -62,7 +45,9 @@ class Pagination extends Component<PaginationProps, State> {
   state = { allPagesVisible: false };
 
   toggleAllPages = () => {
-    this.setState(state => ({ allPagesVisible: !state.allPagesVisible }));
+    this.setState(state => ({
+      allPagesVisible: !state.allPagesVisible,
+    }));
   };
 
   renderPages() {

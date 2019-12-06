@@ -1,13 +1,12 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, forwardRef, type Element } from 'react';
+import { Component, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
-import { withModalHandlers, type ModalHandlerProps, springDown } from '@arch-ui/modal-utils';
+import { withModalHandlers, springDown } from '@arch-ui/modal-utils';
 
 const ARROW_WIDTH = 30;
 const CHROME_GUTTER = 30;
@@ -64,18 +63,7 @@ const Arrow = ({ left }) => (
   </div>
 );
 
-type Props = ModalHandlerProps & {
-  children: Element<*>,
-  getModalRef: (HTMLElement | null) => void,
-  style: Object,
-  targetNode: HTMLElement,
-  width: number,
-};
-
-type State = { leftOffset: number, topOffset: number, arrowLeftOffset: string };
-
-class Popout extends Component<Props, State> {
-  wrapperNode: HTMLElement;
+class Popout extends Component {
   state = { leftOffset: 0, topOffset: 0, arrowLeftOffset: '0' };
   static defaultProps = {
     width: 320,
@@ -133,7 +121,7 @@ class Popout extends Component<Props, State> {
   render() {
     const { children, getModalRef, style, width } = this.props;
     let { leftOffset, topOffset, arrowLeftOffset } = this.state;
-    const attachTo = ((document.body: any): HTMLElement); // NOTE: flow junk
+    const attachTo = document.body; // NOTE: flow junk
 
     return attachTo
       ? createPortal(

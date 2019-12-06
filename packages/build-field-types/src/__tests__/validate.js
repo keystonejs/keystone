@@ -1,4 +1,3 @@
-// @flow
 import fixturez from 'fixturez';
 import validate from '../validate';
 import { FixableError } from '../errors';

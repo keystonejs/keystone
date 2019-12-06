@@ -1,4 +1,3 @@
-// @flow
 import build from '../';
 import fixturez from 'fixturez';
 import { snapshotDistFiles, snapshotDirectory, stripHashes } from '../../../test-utils';

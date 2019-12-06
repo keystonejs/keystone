@@ -1,19 +1,12 @@
-// @flow
 import * as fs from 'fs-extra';
 import nodePath from 'path';
 import is from 'sarcastic';
 import { PKG_JSON_CONFIG_FIELD } from './constants';
 
-let itemsByPath: { [string]: Set<Item> } = {};
+let itemsByPath = {};
 
 export class Item {
-  _contents: string;
-  _stringifiedSavedJson: string;
-  path: string;
-  directory: string;
-  json: Object;
-  _config: Object;
-  constructor(filePath: string, contents: string) {
+  constructor(filePath, contents) {
     this.json = is(JSON.parse(contents), is.object);
     this._stringifiedSavedJson = JSON.stringify(this.json, null, 2);
     this._contents = contents;
@@ -26,12 +19,12 @@ export class Item {
     itemsByPath[this.path].add(this);
   }
 
-  updater(json: Object) {
+  updater(json) {
     this.json = json;
   }
 
   async refresh() {
-    let contents: string = await fs.readFile(this.path, 'utf-8');
+    let contents = await fs.readFile(this.path, 'utf-8');
     let json = is(JSON.parse(contents), is.object);
     for (let item of itemsByPath[this.path]) {
       item.updater(json);

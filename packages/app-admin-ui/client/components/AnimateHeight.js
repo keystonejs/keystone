@@ -1,25 +1,13 @@
-// @flow
-
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, type Ref, type Node, useMemo } from 'react';
+import { Component, useMemo } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
-
-type Height = number | string;
-type Props = {
-  autoScroll: boolean | HTMLElement,
-  initialHeight: Height,
-  onChange?: Height => any,
-  render: ({ ref: Ref<*> }) => Node,
-};
-type State = { height: Height, isTransitioning: boolean };
 
 function Memoize({ children, deps }) {
   return useMemo(children, deps);
 }
 
-export default class AnimateHeight extends Component<Props, State> {
-  node: HTMLElement;
+export default class AnimateHeight extends Component {
   state = { height: this.props.initialHeight, isTransitioning: false };
   static defaultProps = {
     autoScroll: false,
@@ -70,7 +58,7 @@ export default class AnimateHeight extends Component<Props, State> {
   componentWillUnmount() {
     this.observer.disconnect();
   }
-  getNode = (ref: HTMLElement | null) => {
+  getNode = ref => {
     if (!ref) return;
     if (this.node !== ref) {
       if (this.node) {
