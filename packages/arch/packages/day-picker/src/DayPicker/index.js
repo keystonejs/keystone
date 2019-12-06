@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -16,8 +15,8 @@ import { VariableSizeList as List } from 'react-window';
 import { ChevronLeftIcon, ChevronRightIcon } from '@arch-ui/icons';
 import { useLayoutEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { borderRadius, colors } from '@arch-ui/theme';
-import { yearRange, months, type Weeks, getWeeksInMonth, isNumberInRange } from './utils';
-import { type YearPickerType, SelectMonth, SelectYear } from './selects';
+import { yearRange, months, getWeeksInMonth, isNumberInRange } from './utils';
+import { SelectMonth, SelectYear } from './selects';
 import { A11yText } from '@arch-ui/typography';
 import { Month } from './month';
 import { WeekLabels, Day } from './comps';
@@ -55,25 +54,9 @@ const HeaderButton = props => (
   />
 );
 
-export type { YearPickerType } from './selects';
-
-type DayPickerProps = {
-  onSelectedChange: Date => void,
-  yearRangeFrom: number,
-  yearRangeTo: number,
-  yearPickerType: YearPickerType,
-  startCurrentDateAt: Date,
-  selectedDate: Date | null,
-};
-
 let DAY_HEIGHT = 32.5;
 
-function scrollToDate(
-  date: Date,
-  yearRangeFrom: number,
-  yearRangeTo: number,
-  list: List<*> | null
-) {
+function scrollToDate(date, yearRangeFrom, yearRangeTo, list) {
   if (list !== null) {
     const year = getYear(date);
     const month = date.getMonth();
@@ -103,7 +86,7 @@ export const DayPicker = ({
   startCurrentDateAt,
   selectedDate,
   onSelectedChange,
-}: DayPickerProps) => {
+}) => {
   const listRef = useRef(null);
 
   if (!isNumberInRange(startCurrentDateAt.getFullYear(), yearRangeFrom, yearRangeTo)) {
@@ -122,7 +105,7 @@ export const DayPicker = ({
   const shouldChangeScrollPositionRef = useRef(true);
 
   const controlledSetDate = useCallback(
-    (newDate: Date | (Date => Date)) => {
+    newDate => {
       shouldChangeScrollPositionRef.current = true;
       setDate(newDate);
     },
@@ -141,7 +124,7 @@ export const DayPicker = ({
   }, [yearRangeFrom, yearRangeTo]);
 
   const items = useMemo(() => {
-    const _items: Array<{ year: number, month: number, weeks: Weeks }> = [];
+    const _items = [];
 
     years.forEach(year => {
       months.forEach(month => {

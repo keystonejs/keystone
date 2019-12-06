@@ -1,12 +1,8 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import type { CellProps } from '../../../types';
 
-type ImageProps = { alt: string, src: string };
-
-const Image = ({ alt, src }: ImageProps) => (
+const Image = ({ alt, src }) => (
   <div
     css={{
       alignItems: 'center',
@@ -20,16 +16,7 @@ const Image = ({ alt, src }: ImageProps) => (
   </div>
 );
 
-type Props = CellProps<{
-  id: string,
-  path: string,
-  filename: string,
-  mimetype: string,
-  encoding: string,
-  publicUrl: string,
-}>;
-
-export default ({ data }: Props) => {
+export default ({ data }) => {
   if (!data) return null;
 
   const isImage = data.mimetype.includes('image');

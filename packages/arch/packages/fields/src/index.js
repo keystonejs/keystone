@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
@@ -6,11 +5,11 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { ShieldIcon } from '@arch-ui/icons';
 import { Lozenge } from '@arch-ui/lozenge';
 
-export const FieldContainer = (props: *) => (
+export const FieldContainer = props => (
   <div data-selector="field-container" css={{ marginBottom: gridSize * 2 }} {...props} />
 );
 
-export const FieldLabel = (props: { htmlFor: *, field: *, errors: * }) => {
+export const FieldLabel = props => {
   const accessError = (props.errors || []).find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
   );
@@ -36,7 +35,7 @@ export const FieldLabel = (props: { htmlFor: *, field: *, errors: * }) => {
   );
 };
 
-export const FieldInput = (props: *) => (
+export const FieldInput = props => (
   <div
     css={{
       display: 'flex',
@@ -46,7 +45,7 @@ export const FieldInput = (props: *) => (
   />
 );
 
-export const Currency = (props: *) => (
+export const Currency = props => (
   <span
     css={{
       alignContent: 'center',

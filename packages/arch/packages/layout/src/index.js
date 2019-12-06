@@ -1,8 +1,6 @@
-// @flow
-
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Children, cloneElement, type Node, forwardRef } from 'react';
+import { Children, cloneElement, forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 import { mediaQueries } from '@arch-ui/common';
@@ -47,19 +45,6 @@ function collapseBorderRadii(index, length) {
   return style;
 }
 
-type FlexGroupProps = {
-  align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
-  as: string,
-  children: Array<Node>,
-  growIndexes: Array<number>,
-  isContiguous?: boolean,
-  isInline?: boolean,
-  isVertical?: boolean,
-  justify: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
-  wrap?: boolean,
-  spacing: number,
-  stretch?: boolean,
-};
 export function FlexGroupComponent(
   {
     align = 'stretch',
@@ -74,8 +59,8 @@ export function FlexGroupComponent(
     spacing = gridSize,
     stretch,
     ...props
-  }: FlexGroupProps,
-  ref: { current: mixed } | (mixed => mixed)
+  },
+  ref
 ) {
   const gutter = spacing / 2;
   const length = Children.count(children);
@@ -128,7 +113,7 @@ export function FlexGroupComponent(
   );
 }
 
-export const FlexGroup = forwardRef<FlexGroupProps, any>(FlexGroupComponent);
+export const FlexGroup = forwardRef(FlexGroupComponent);
 
 // ==============================
 // Grid
@@ -141,17 +126,6 @@ function formatAreas(areas) {
   return areas.map(area => `"${area}"`).join(' ');
 }
 
-type GridProps = {
-  alignContent: string,
-  areas: Array<string>,
-  columns: number,
-  flow: string,
-  gap: number,
-  justifyContent: string,
-  minRowHeight: number,
-  rows: string,
-};
-
 export const Grid = ({
   alignContent,
   areas,
@@ -162,7 +136,7 @@ export const Grid = ({
   minRowHeight = 20,
   rows,
   ...props
-}: GridProps) => {
+}) => {
   const templateRows = rows ? { gridTemplateRows: rows } : {};
   const templateAreas = areas ? { gridTemplateAreas: formatAreas(areas) } : {};
   const gridTemplateColumns = Number.isInteger(columns) ? `repeat(${columns}, 1fr)` : columns;
@@ -185,20 +159,7 @@ export const Grid = ({
   );
 };
 
-// Cell
-// ------------------------------
-
-type CellProps = {
-  area: string,
-  center: boolean,
-  height: number,
-  left: number | string,
-  middle: boolean,
-  top: number | string,
-  width: number,
-};
-
-export const Cell = ({ area, height = 1, left, top, width = 1, ...props }: CellProps) => (
+export const Cell = ({ area, height = 1, left, top, width = 1, ...props }) => (
   <div
     css={{
       alignContent: 'space-around',

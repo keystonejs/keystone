@@ -1,4 +1,3 @@
-// @flow
 import meow from 'meow';
 import init from './init';
 import validate from './validate';

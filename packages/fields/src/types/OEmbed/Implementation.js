@@ -20,7 +20,7 @@ export class OEmbed extends Implementation {
 
     if (typeof parameters !== 'object') {
       throw new Error(
-        `paramters passed to the OEmbed Adapter must be an object. See the ${listKey}.${path} field.`
+        `parameters passed to the OEmbed Adapter must be an object. See the ${listKey}.${path} field.`
       );
     }
 

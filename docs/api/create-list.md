@@ -20,7 +20,7 @@ keystone.createList('Post', {
 | --------------- | ----------------------------------- | ----------------------------- | -------------------------------------------------------------- |
 | `fields`        | `Object`                            |                               | Defines the fields in a list.                                  |
 | `schemaDoc`     | `String`                            |                               | A description for the list. Used in the Admin UI.              |
-| `hooks`         | `Object`                            | `{}`                          | Specify hooks to execute functions after list actions.         |
+| `hooks`         | `Object`                            | `{}`                          | Functions to be called during list operations.                 |
 | `label`         | `String`                            | `listName`                    | Overrides label for the list in the AdminUI.                   |
 | `labelField`    | `String`                            | `name`                        | Specify a field to use as a label for individual list items.   |
 | `labelResolver` | `Function`                          | Resolves `labelField` or `id` | Function to resolve labels for individual list items.          |
@@ -58,15 +58,20 @@ A description for the list used in the GraphQL schema.
 
 ### `hooks`
 
-Specify hooks to execute functions after list actions. List actions include:
+Specify functions to be executed during list operations.
+Supported hooks include:
 
-- `resolveInput`
-- `validateInput`
-- `beforeChange`
-- `afterChange`
-- `beforeDelete`
-- `validateDelete`
-- `afterDelete`
+- Create and update operations
+  - `resolveInput`
+  - `validateInput`
+  - `beforeChange`
+  - `afterChange`
+- Delete operations
+  - `validateDelete`
+  - `beforeDelete`
+  - `afterDelete`
+
+See [List Hooks in the API docs](/docs/api/hooks.md#list-hooks) and the [Hooks Guide](/docs/guides/hooks.md) for details.
 
 #### Usage
 

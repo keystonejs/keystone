@@ -340,7 +340,7 @@ class KnexListAdapter extends BaseListAdapter {
       const value = newValues.filter(id => !currentRefIds.includes(id));
       await this._createOrUpdateField({ value, adapter, itemId: item.id });
     });
-    return this._findById(item.id);
+    return (await this._itemsQuery({ where: { id: item.id }, first: 1 }))[0] || null;
   }
 
   async _delete(id) {
@@ -371,26 +371,6 @@ class KnexListAdapter extends BaseListAdapter {
       .table(this.tableName)
       .where({ id })
       .del();
-  }
-
-  async _findById(id) {
-    return (
-      (await this._query()
-        .from(this.tableName)
-        .where('id', id))[0] || null
-    );
-  }
-
-  async _findAll() {
-    return this._itemsQuery({});
-  }
-
-  async _find(condition) {
-    return this._itemsQuery({ where: { ...condition } });
-  }
-
-  async _findOne(condition) {
-    return (await this._itemsQuery({ where: { ...condition }, first: 1 }))[0];
   }
 
   async _itemsQuery(args, { meta = false, from = {} } = {}) {

@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import SessionProvider from '../providers/Session';
 import KeystoneLogo from '../components/KeystoneLogo';
 
+import { LoadingIndicator } from '@arch-ui/loading';
+
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
@@ -48,13 +50,7 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
-  let showLoading = isLoading;
-  // If the user is still signed in, sign them out
-  if (isSignedIn) {
-    showLoading = true; // Pretend we're still loading
-    setTimeout(signOut, 1); // Will cause a re-render, so wait a moment
-  }
+const SignedOutPage = ({ isLoading, signinPath }) => {
   return (
     <Container>
       <Alerts />
@@ -62,8 +58,8 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
         <KeystoneLogo />
         <Divider />
         <Content>
-          {showLoading ? (
-            'Loading...'
+          {isLoading ? (
+            <LoadingIndicator />
           ) : (
             <Fragment>
               <p>You have been signed out.</p>
@@ -80,7 +76,7 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
 };
 
 export default ({ signinPath, signoutPath }) => (
-  <SessionProvider signinPath={signinPath} signoutPath={signoutPath}>
+  <SessionProvider signinPath={signinPath} signoutPath={signoutPath} autoSignout>
     {props => <SignedOutPage signinPath={signinPath} {...props} />}
   </SessionProvider>
 );

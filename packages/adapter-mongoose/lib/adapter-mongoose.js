@@ -192,22 +192,6 @@ class MongooseListAdapter extends BaseListAdapter {
     );
   }
 
-  _findAll() {
-    return this.model.find();
-  }
-
-  _findById(id) {
-    return this.model.findById(id);
-  }
-
-  _find(condition) {
-    return this.model.find(condition);
-  }
-
-  _findOne(condition) {
-    return this.model.findOne(condition);
-  }
-
   graphQlQueryPathToMongoField(path) {
     const fieldAdapter = this.fieldAdaptersByPath[path];
 

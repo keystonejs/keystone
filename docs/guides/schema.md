@@ -3,7 +3,7 @@ section: guides
 title: Data modeling - Lists & Fields
 [meta]-->
 
-# Schema - Lists & Fields
+# Data modeling - Lists & Fields
 
 KeystoneJS is comprised of 3 distinct pieces, which can be described as:
 
@@ -98,7 +98,7 @@ type User {
 ```
 
 _(NOTE: Only a subset of all the generated types/mutations/queries are shown
-here. To see a more complete example [follow the Quick Start](../quick-start).)_
+here. To see a more complete example [follow the Quick Start](../../quick-start).)_
 
 ### Customizing Lists & Fields
 

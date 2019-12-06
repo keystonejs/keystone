@@ -68,4 +68,4 @@ keystone.createList('Example', {
 | `resolver`              | `Function` | (required) |                                                             |
 | `graphQLReturnType`     | `String`   | 'String'   | A GraphQL Type String                                       |
 | `graphQLReturnFragment` | `String`   | ''         | A GraphQL Fragment String -required for nested return types |
-| `extendGraphQLTypes`    | `Array`    | []         | An array of custom GraphQL type definitions                 |
+| `extendGraphQLTypes`    | `Array`    | \[]        | An array of custom GraphQL type definitions                 |
