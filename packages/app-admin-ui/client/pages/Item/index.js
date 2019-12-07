@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
-import { Mutation, Query } from 'react-apollo';
+import { Mutation, Query } from '@apollo/react-components';
 import { withRouter } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
