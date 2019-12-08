@@ -87,7 +87,7 @@ See the [Hooks API docs](/docs/api/hooks.md) for argument details and usage.
 ## Execution Order
 
 The hooks are invoked in a specific order during an operation.
-For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/docs/guides/mutation-lifecycle.md).
+For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/guides/mutation-lifecycle.md).
 
 ### Create/Update
 
