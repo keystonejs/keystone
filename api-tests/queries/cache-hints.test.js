@@ -288,6 +288,31 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(res.headers['cache-control']).toBe('max-age=5, public');
         })
       );
+
+      test(
+        'mutations',
+        runner(setupKeystone, async ({ app, create }) => {
+          await addFixtures(create);
+
+          // Mutation responses shouldn't be cached.
+          // Here's a smoke test to make sure they still work.
+
+          // Basic query
+          const { data, errors } = await networkedGraphqlRequest({
+            app,
+            query: `
+              mutation {
+                deletePost(id: 1) {
+                  id
+                }
+              }
+            `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('deletePost');
+        })
+      );
     });
   })
 );
