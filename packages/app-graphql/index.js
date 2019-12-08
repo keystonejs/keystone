@@ -30,7 +30,7 @@ class GraphQLApp {
     const graphiqlPath = this._graphiqlPath;
     const app = express();
 
-    if (graphiqlPath) {
+    if (dev && graphiqlPath) {
       // This is a convenience to make the out of the box experience slightly simpler.
       // We should reconsider support for this at some point in the future. -TL
       app.use(
