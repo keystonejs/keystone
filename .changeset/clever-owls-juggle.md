@@ -2,4 +2,4 @@
 '@keystonejs/fields': minor
 ---
 
-Insensitive by default for text field filter
+`Text` field filter is now case insensitive by default.

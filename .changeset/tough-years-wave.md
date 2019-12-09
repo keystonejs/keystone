@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Fixed signOut codepath being called multiple times in succession
+Fixed `signOut` codepath being called multiple times in succession.

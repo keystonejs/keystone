@@ -3,4 +3,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Fix handling of cache headers with mutations
+Fixed handling of cache headers with mutations.

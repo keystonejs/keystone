@@ -4,4 +4,4 @@
 '@keystonejs/app-next': patch
 ---
 
-Upgraded NextJs to v^9.1.0 from v^9.0.0
+Upgraded NextJs to `^9.1.0` from `^9.0.0`.

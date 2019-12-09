@@ -4,4 +4,4 @@
 '@keystonejs/keystone': minor
 ---
 
-Added a new field type 'Computed'. This allows creation of fields that return data computed from other field values or outside Keystone.
+Added a new field type `Virtual`. This allows creation of fields that return data computed from other field values or outside Keystone.

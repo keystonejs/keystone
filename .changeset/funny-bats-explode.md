@@ -41,4 +41,4 @@
 '@keystonejs/oembed-adapters': patch
 ---
 
-Updated react and react-dom to 16.12.0
+Updated `react` and `react-dom` to 16.12.0.

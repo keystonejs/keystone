@@ -3,4 +3,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Disable GraphiQL playground in production mode
+Disabled GraphiQL playground in production mode.
