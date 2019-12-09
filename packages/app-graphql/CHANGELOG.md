@@ -1,5 +1,11 @@
 # @keystonejs/app-graphql
 
+## 5.0.1
+
+### Patch Changes
+
+- [`1f4dc33d`](https://github.com/keystonejs/keystone/commit/1f4dc33d8a5ac4e38427eb215a7a8bc3504ae153) [#2044](https://github.com/keystonejs/keystone/pull/2044) Thanks [@Vultraz](https://github.com/Vultraz)! - Disabled GraphiQL playground in production mode.
+
 ## 5.0.0
 
 ### Major Changes

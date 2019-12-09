@@ -1,5 +1,11 @@
 # @keystonejs/apollo-helpers
 
+## 5.0.3
+
+### Patch Changes
+
+- [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866) [#1995](https://github.com/keystonejs/keystone/pull/1995) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `react` and `react-dom` to 16.12.0.
+
 ## 5.0.2
 
 ### Patch Changes
