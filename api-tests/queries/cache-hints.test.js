@@ -73,7 +73,7 @@ const addFixtures = async create => {
     create('User', { name: 'Sam', favNumber: 5 }),
   ]);
 
-  await Promise.all([
+  const posts = await Promise.all([
     create('Post', { author: [users[0].id], title: 'One author' }),
     create('Post', { author: [users[0].id, users[1].id], title: 'Two authors' }),
     create('Post', {
@@ -81,6 +81,8 @@ const addFixtures = async create => {
       title: 'Three authors',
     }),
   ]);
+
+  return { users, posts };
 };
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
@@ -292,7 +294,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'mutations',
         runner(setupKeystone, async ({ app, create }) => {
-          await addFixtures(create);
+          const { posts } = await addFixtures(create);
 
           // Mutation responses shouldn't be cached.
           // Here's a smoke test to make sure they still work.
@@ -302,7 +304,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             app,
             query: `
               mutation {
-                deletePost(id: 1) {
+                deletePost(id: "${posts[0].id}") {
                   id
                 }
               }
