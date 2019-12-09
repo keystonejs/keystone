@@ -67,7 +67,6 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 - Creating custom field types ([#1054](https://github.com/keystonejs/keystone-5/issues/1054), [#1218](https://github.com/keystonejs/keystone-5/issues/1218))
 - Creating new adapters
 - Error messages ([#1659](https://github.com/keystonejs/keystone-5/issues/1659))
-- Upgrade to Next.js v9 ([#1670](https://github.com/keystonejs/keystone-5/issues/1670))
 - Improve the speed of our CI ([#1672](https://github.com/keystonejs/keystone-5/issues/1672))
 
 ### Planning

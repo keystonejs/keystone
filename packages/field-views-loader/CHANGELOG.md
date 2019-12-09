@@ -1,5 +1,11 @@
 # @keystonejs/field-views-loader
 
+## 5.1.0
+
+### Minor Changes
+
+- [`7c46673b`](https://github.com/keystonejs/keystone/commit/7c46673b927b08f3f7628ae2557156262f2e1049) [#2002](https://github.com/keystonejs/keystone/pull/2002) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added loading of hooks to `allViews`.
+
 ## 5.0.0
 
 ### Major Changes
