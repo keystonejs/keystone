@@ -1,5 +1,16 @@
 # @arch-ui/pagination
 
+## 0.0.11
+
+### Patch Changes
+
+- [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866) [#1995](https://github.com/keystonejs/keystone/pull/1995) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `react` and `react-dom` to 16.12.0.
+- Updated dependencies [[`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866), [`2a52b3ce`](https://github.com/keystonejs/keystone/commit/2a52b3ce48e0df9589f4958c4d79e2b19aa1c134)]:
+  - @arch-ui/button@0.0.11
+  - @arch-ui/icons@0.0.6
+  - @arch-ui/layout@0.2.6
+  - @arch-ui/loading@0.0.10
+
 ## 0.0.10
 
 ### Patch Changes

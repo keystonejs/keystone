@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/hooks",
   "description": "Custom Hooks used in @arch-ui packages.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/hooks.cjs.js",
