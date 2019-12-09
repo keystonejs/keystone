@@ -720,7 +720,7 @@ keystone.createList('Todo', {
     task: { type: Text },
     // The `ref` option now includes which field to update
     createdBy: { type: Relationship, ref: 'User.todolist' },
-  }
+  },
 });
 
 keystone.createList('User', {
@@ -728,7 +728,7 @@ keystone.createList('User', {
     name: { type: Text },
     email: { type: Text },
     todolist: { type: Relationship, ref: 'Todo', many: true },
-  }
+  },
 });
 ```
 

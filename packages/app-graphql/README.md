@@ -29,7 +29,7 @@ module.exports = {
       schemaName: 'admin',
       apollo: {},
     }),
-    new AdminUIApp()
+    new AdminUIApp(),
   ],
 };
 ```
