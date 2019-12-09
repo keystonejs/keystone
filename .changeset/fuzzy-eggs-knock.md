@@ -5,4 +5,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Consolidated implementation of all listAdapter.find\*() methods to use the `itemsQuery()` API for internal consistency.
+Consolidated implementation of all `listAdapter.find\*()` methods to use the `itemsQuery()` API for internal consistency.

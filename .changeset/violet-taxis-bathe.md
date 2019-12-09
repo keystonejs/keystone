@@ -2,4 +2,4 @@
 '@keystonejs/fields': patch
 ---
 
-Fixed minor error message typos
+Fixed minor error message typos.

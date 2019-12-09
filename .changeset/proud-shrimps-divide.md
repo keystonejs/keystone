@@ -2,4 +2,4 @@
 '@keystonejs/api-tests': patch
 ---
 
-Fix a test flake
+Fixed an intermittant test failure.

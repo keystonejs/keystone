@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Updated logo on signin and signout pages
+Updated logo on signin and signout pages.

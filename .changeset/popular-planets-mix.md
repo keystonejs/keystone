@@ -4,4 +4,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Cleaned up duplicate code in aux list creation
+Cleaned up duplicate code in aux list creation.

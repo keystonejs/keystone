@@ -2,4 +2,4 @@
 '@arch-ui/button': patch
 ---
 
-Removed stray indicatorVariant prop
+Removed stray `indicatorVariant` prop.

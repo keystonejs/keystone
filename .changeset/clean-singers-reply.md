@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Remove react-document-title dependency
+Removed `react-document-title` dependency.
