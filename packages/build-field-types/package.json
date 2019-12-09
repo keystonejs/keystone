@@ -1,6 +1,6 @@
 {
   "name": "@keystonejs/build-field-types",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "A build tool for KeystoneJS 5 Field Types",
   "main": "dist/index.js",
   "files": [
@@ -25,7 +25,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.6.0",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@emotion/hash": "^0.7.2",
-    "@preconstruct/hook": "0.0.1",
+    "@preconstruct/hook": "0.1.0",
     "@rollup/plugin-replace": "^2.2.0",
     "builtin-modules": "^3.0.0",
     "chalk": "^2.4.2",
