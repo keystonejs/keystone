@@ -54,23 +54,17 @@ module.exports = class LocalFileAdapter {
    * Takes a file data structure such as existingItem in a hook callback.
    */
   delete({ file }) {
-    return new Promise((resolve, reject) => {
-      if (!file) {
-        reject(new Error("'file' was not provided."));
-      } else {
-        fs.unlink(path.join(this.src, file.filename), error => {
-          if (error) {
-            if (error.code === 'ENOENT') {
-              reject(new Error(`Could not find file '${file.filename}' for deletion.`));
-            } else {
-              reject(error);
-            }
-          } else {
-            resolve();
-          }
-        });
+    if (file) {
+      try {
+        fs.unlinkSync(path.join(this.src, file.filename));
+      } catch (err) {
+        if (err.code === 'ENOENT') {
+          console.log(`Could not find file '${file.filename}' for deletion.`);
+        } else {
+          console.log(err);
+        }
       }
-    });
+    }
   }
 
   /**

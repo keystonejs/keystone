@@ -48,19 +48,9 @@ module.exports = class CloudinaryAdapter {
    * Takes a file data structure such as existingItem in a hook callback.
    */
   delete({ id }) {
-    return new Promise((resolve, reject) => {
-      if (!id) {
-        reject(new Error("'id' was not provided."));
-      } else {
-        cloudinary.v2.uploader.destroy(id, (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        });
-      }
-    });
+    if (id) {
+      cloudinary.v2.uploader.destroy(id);
+    }
   }
 
   publicUrl({ _meta: { secure_url } = {} } = {}) {
