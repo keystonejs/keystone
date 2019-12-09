@@ -56,11 +56,27 @@ module.exports = class S3Adapter {
     });
   }
 
+  /**
+   * Deletes the given file from S3
+   * @param fileData file field data
+   * @param options A config object to be passed with each call to S3.deleteObject.
+   *                Options `Bucket` and `Key` will be set by default.
+   *                For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
+   */
+  delete(file, options = {}) {
+    if (!file) throw new Error("Missing required argument 'file'.");
+    this.s3.deleteObject({
+      Bucket: this.bucket,
+      Key: path.join(this.folder, file.filename),
+      ...options,
+    });
+  }
+
   publicUrl({ filename }) {
     // This Url will only work if:
     // - the bucket is public OR
     // - the file is set to a canned ACL (ie, uploadParams: { ACL: 'public-read' }) OR
-    // - you pass credentials during your request
+    // - credentials are passed along with the request
     return urlJoin(`https://${this.bucket}.s3.amazonaws.com`, this.folder, filename);
   }
 };
