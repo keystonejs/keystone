@@ -1,5 +1,11 @@
 # @keystonejs/app-next
 
+## 5.0.1
+
+### Patch Changes
+
+- [`f3e99022`](https://github.com/keystonejs/keystone/commit/f3e990222f35889163b4976e4465729fd25d416f) [#1955](https://github.com/keystonejs/keystone/pull/1955) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded NextJs to `^9.1.0` from `^9.0.0`.
+
 ## 5.0.0
 
 ### Major Changes

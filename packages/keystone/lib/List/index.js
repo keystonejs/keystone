@@ -164,7 +164,6 @@ module.exports = class List {
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
     this.hasAuth = () => !!Object.keys(getAuth() || {}).length;
-    this.createAuxList = createAuxList;
 
     const _label = keyToLabel(key);
     const _singular = pluralize.singular(_label);
@@ -253,6 +252,21 @@ module.exports = class List {
 
     // Tell Keystone about all the types we've seen
     Object.values(fields).forEach(({ type }) => registerType(type));
+
+    this.createAuxList = (auxKey, auxConfig) =>
+      createAuxList(auxKey, {
+        access: Object.entries(this.access).reduce(
+          (acc, [schemaName, access]) => ({
+            ...acc,
+            [schemaName]: Object.entries(access).reduce(
+              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+              {}
+            ),
+          }),
+          {}
+        ),
+        ...auxConfig,
+      });
   }
 
   initFields() {
@@ -310,7 +324,6 @@ module.exports = class List {
           defaultAccess: this.defaultAccess.field,
           createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
-          listAccess: this.access,
         })
     );
     this.fields = Object.values(this.fieldsByPath);
@@ -1013,7 +1026,7 @@ module.exports = class List {
       }
     }
 
-    if (extra && extra.info) {
+    if (extra && extra.info && extra.info.cacheControl) {
       switch (typeof this.cacheHint) {
         case 'object':
           extra.info.cacheControl.setCacheHint(this.cacheHint);
