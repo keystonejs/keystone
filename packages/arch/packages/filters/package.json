@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/filters",
   "description": "Filter UI as used in @keystonejs Admin UI.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/filters.cjs.js",
@@ -12,8 +12,8 @@
     "react": "^16.12.0"
   },
   "dependencies": {
-    "@arch-ui/controls": "^0.1.0",
-    "@arch-ui/layout": "^0.2.5",
+    "@arch-ui/controls": "^0.1.1",
+    "@arch-ui/layout": "^0.2.6",
     "@arch-ui/theme": "^0.0.5",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.22",

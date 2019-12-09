@@ -1,5 +1,15 @@
 # @arch-ui/button
 
+## 0.0.11
+
+### Patch Changes
+
+- [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866) [#1995](https://github.com/keystonejs/keystone/pull/1995) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `react` and `react-dom` to 16.12.0.
+
+* [`2a52b3ce`](https://github.com/keystonejs/keystone/commit/2a52b3ce48e0df9589f4958c4d79e2b19aa1c134) [#2011](https://github.com/keystonejs/keystone/pull/2011) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed stray `indicatorVariant` prop.
+* Updated dependencies [[`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866)]:
+  - @arch-ui/loading@0.0.10
+
 ## 0.0.10
 
 ### Patch Changes
