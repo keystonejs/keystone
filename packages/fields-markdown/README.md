@@ -17,7 +17,6 @@ Then import it, and use it like any other field:
 ```js
 const { Markdown } = require('@keystonejs/fields-markdown');
 
-
 keystone.createList('Post', {
   fields: {
     content: {
@@ -25,7 +24,6 @@ keystone.createList('Post', {
     },
   },
 });
-
 ```
 
 ## Credit
