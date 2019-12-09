@@ -17,7 +17,7 @@ module.exports = async keystone => {
 
   if (count === 0) {
     const password = randomString();
-    const email = 'admin@keystonejs.com';
+    const email = 'admin@example.com';
 
     await keystone.executeQuery(
       `mutation initialUser($password: String, $email: String) {
