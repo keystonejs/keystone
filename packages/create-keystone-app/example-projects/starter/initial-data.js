@@ -1,12 +1,5 @@
-// This script will check if the User table is empty and if
-// required seed the table with an initial Admin user.
-const randomString = () =>
-  Math.random()
-    .toString(36)
-    .substring(2, 6) +
-  Math.random()
-    .toString(36)
-    .substring(2, 6);
+const crypto = require('crypto');
+const randomString = () => crypto.randomBytes(6).hexSlice();
 
 module.exports = async keystone => {
   // Count existing users
