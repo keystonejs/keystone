@@ -5,7 +5,8 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/fields-mongoid.cjs.js",
-  "repository": "https://github.com/keystonejs/keystone-5.git",
+  "repository": "https://github.com/keystonejs/keystone.git",
+  "homepage": "https://github.com/keystonejs/keystone",
   "engines": {
     "node": ">=8.4.0"
   },
