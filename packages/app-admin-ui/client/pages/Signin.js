@@ -6,11 +6,12 @@ import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
 import { colors } from '@arch-ui/theme';
 
-import SessionProvider from '../providers/Session';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
 import KeystoneLogo from '../components/KeystoneLogo';
 
-const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+const upcase = str => str[0].toUpperCase() + str.substring(1);
 
 const Container = styled.div({
   alignItems: 'center',
@@ -64,25 +65,46 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SigninPage = ({ error, isLoading, signIn, authStrategy }) => {
+const SignInPage = ({ authStrategy: { listKey, identityField, secretField } }) => {
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
   const [reloading, setReloading] = useState(false);
 
-  const onSubmit = e => {
-    e.preventDefault();
-
-    if (isLoading) {
-      return;
+  const AUTH_MUTATION = gql`
+    mutation signin($identity: String, $secret: String) {
+      authenticate: authenticate${listKey}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
+        item {
+          id
+        }
+      }
     }
+  `;
 
-    signIn({ identity, secret }).then(() => {
+  const [signIn, { error, loading, client }] = useMutation(AUTH_MUTATION, {
+    variables: { identity, secret },
+    onCompleted: ({ error }) => {
+      if (error) {
+        throw error;
+      }
+
+      // Ensure there's no old unauthenticated data hanging around
+      client.resetStore();
+
       // Flag so the "Submit" button doesn't temporarily flash as available while reloading the page.
       setReloading(true);
 
       // Let the server-side redirects kick in to send the user to the right place
       window.location.reload(true);
-    });
+    },
+    onError: console.error,
+  });
+
+  const onSubmit = e => {
+    e.preventDefault();
+
+    if (!loading) {
+      signIn();
+    }
   };
 
   return (
@@ -97,7 +119,7 @@ const SigninPage = ({ error, isLoading, signIn, authStrategy }) => {
         <Divider />
         <div>
           <Fields>
-            <FieldLabel>{upcase(authStrategy.identityField)}</FieldLabel>
+            <FieldLabel>{upcase(identityField)}</FieldLabel>
             <Input
               name="identity"
               autoComplete="username"
@@ -105,7 +127,7 @@ const SigninPage = ({ error, isLoading, signIn, authStrategy }) => {
               value={identity}
               onChange={e => setIdentity(e.target.value)}
             />
-            <FieldLabel>{upcase(authStrategy.secretField)}</FieldLabel>
+            <FieldLabel>{upcase(secretField)}</FieldLabel>
             <Input
               type="password"
               name="secret"
@@ -117,7 +139,7 @@ const SigninPage = ({ error, isLoading, signIn, authStrategy }) => {
           <LoadingButton
             appearance="primary"
             type="submit"
-            isLoading={isLoading || reloading}
+            isLoading={loading || reloading}
             indicatorVariant="dots"
           >
             Sign In
@@ -129,8 +151,4 @@ const SigninPage = ({ error, isLoading, signIn, authStrategy }) => {
   );
 };
 
-export default ({ signinPath, signoutPath, authStrategy }) => (
-  <SessionProvider signinPath={signinPath} signoutPath={signoutPath}>
-    {props => <SigninPage {...props} authStrategy={authStrategy} />}
-  </SessionProvider>
-);
+export default SignInPage;
