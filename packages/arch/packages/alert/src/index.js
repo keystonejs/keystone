@@ -37,6 +37,7 @@ export const Alert = styled.div(({ appearance, variant }) => ({
   fontWeight: variant === 'bold' ? 500 : null,
   minWidth: 1,
   padding: '0.9em 1.2em',
+  margin: '0.9em 0',
 
   '& a': {
     color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
