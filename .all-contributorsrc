@@ -4,7 +4,8 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "README.md"
   ],
   "imageSize": 100,
   "commit": false,
