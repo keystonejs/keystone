@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mutation } from 'react-apollo';
+import { Mutation } from '@apollo/react-components';
 import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
 

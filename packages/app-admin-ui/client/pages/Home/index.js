@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { Query } from 'react-apollo';
+import { Query } from '@apollo/react-components';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
