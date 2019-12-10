@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': minor
 ---
 
-Convert remaining uses of Apollo components to hooks
+Converted remaining uses of Apollo components in Admin UI to hooks.

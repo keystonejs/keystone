@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Removed unused react-node-resolver dependency
+Removed an unused react-node-resolver dependency.
