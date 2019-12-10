@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
-import { Query } from 'react-apollo';
+import { Query } from '@apollo/react-components';
 
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
