@@ -3,6 +3,8 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const initialiseData = require('./initial-data');
+
 /* keystone-cli: generated-code */
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const PROJECT_NAME = 'My KeystoneJS Project';
@@ -11,6 +13,7 @@ const PROJECT_NAME = 'My KeystoneJS Project';
 const keystone = new Keystone({
   name: PROJECT_NAME,
   adapter: new Adapter(),
+  onConnect: initialiseData,
 });
 
 // Access control functions
@@ -40,7 +43,6 @@ keystone.createList('User', {
       type: Password,
     },
   },
-  // To create an initial user you can temporarily remove access controls
   access: {
     read: access.userIsAdminOrOwner,
     update: access.userIsAdminOrOwner,
@@ -59,7 +61,9 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    // To create an initial user you can temporarily remove the authStrategy below
-    new AdminUIApp({ enableDefaultRoute: true, authStrategy }),
+    new AdminUIApp({
+      enableDefaultRoute: true,
+      authStrategy,
+    }),
   ],
 };

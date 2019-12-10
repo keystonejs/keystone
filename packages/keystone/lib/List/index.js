@@ -1026,7 +1026,7 @@ module.exports = class List {
       }
     }
 
-    if (extra && extra.info) {
+    if (extra && extra.info && extra.info.cacheControl) {
       switch (typeof this.cacheHint) {
         case 'object':
           extra.info.cacheControl.setCacheHint(this.cacheHint);

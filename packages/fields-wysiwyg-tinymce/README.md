@@ -8,7 +8,6 @@ title: Wysiwyg
 
 This field inserts a string path into your schema based on the `Text` field type implementation, and renders a WYSIWYG editor in the Admin UI using [TinyMCE](https://www.tiny.cloud/)
 
-
 ## Usage
 
 This package isn't included with the keystone fields package and needs to be installed with `yarn add @keystonejs/fields-wysiwyg-tinymce` or `npm install @keystonejs/fields-wysiwyg-tinymce`

@@ -73,7 +73,7 @@ const addFixtures = async create => {
     create('User', { name: 'Sam', favNumber: 5 }),
   ]);
 
-  await Promise.all([
+  const posts = await Promise.all([
     create('Post', { author: [users[0].id], title: 'One author' }),
     create('Post', { author: [users[0].id, users[1].id], title: 'Two authors' }),
     create('Post', {
@@ -81,6 +81,8 @@ const addFixtures = async create => {
       title: 'Three authors',
     }),
   ]);
+
+  return { users, posts };
 };
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
@@ -286,6 +288,31 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allPosts');
           expect(res.headers['cache-control']).toBe('max-age=5, public');
+        })
+      );
+
+      test(
+        'mutations',
+        runner(setupKeystone, async ({ app, create }) => {
+          const { posts } = await addFixtures(create);
+
+          // Mutation responses shouldn't be cached.
+          // Here's a smoke test to make sure they still work.
+
+          // Basic query
+          const { data, errors } = await networkedGraphqlRequest({
+            app,
+            query: `
+              mutation {
+                deletePost(id: "${posts[0].id}") {
+                  id
+                }
+              }
+            `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('deletePost');
         })
       );
     });
