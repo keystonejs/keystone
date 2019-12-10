@@ -53,6 +53,7 @@ export class MongoVirtualInterface extends CommonTextInterface(MongooseFieldAdap
 export class KnexVirtualInterface extends CommonTextInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
+    this.realKeys = [];
   }
   addToTableSchema() {}
 }
