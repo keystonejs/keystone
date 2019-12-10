@@ -1,7 +1,9 @@
 import React, { Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import SessionProvider from '../providers/Session';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
 import KeystoneLogo from '../components/KeystoneLogo';
 
 import { LoadingIndicator } from '@arch-ui/loading';
@@ -50,7 +52,31 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignedOutPage = ({ isLoading, signinPath }) => {
+const SignedOutPage = ({ authStrategy: { listKey }, signinPath }) => {
+  const UNAUTH_MUTATION = gql`
+    mutation {
+      unauthenticate: unauthenticate${listKey} {
+        success
+      }
+    }
+  `;
+
+  const [signOut, { loading, client, called }] = useMutation(UNAUTH_MUTATION, {
+    onCompleted: ({ error }) => {
+      if (error) {
+        throw error;
+      }
+
+      // Ensure there's no old authenticated data hanging around
+      client.resetStore();
+    },
+    onError: console.error,
+  });
+
+  if (!called) {
+    signOut();
+  }
+
   return (
     <Container>
       <Alerts />
@@ -58,7 +84,7 @@ const SignedOutPage = ({ isLoading, signinPath }) => {
         <KeystoneLogo />
         <Divider />
         <Content>
-          {isLoading ? (
+          {loading ? (
             <LoadingIndicator />
           ) : (
             <Fragment>
@@ -75,8 +101,4 @@ const SignedOutPage = ({ isLoading, signinPath }) => {
   );
 };
 
-export default ({ signinPath, signoutPath }) => (
-  <SessionProvider signinPath={signinPath} signoutPath={signoutPath} autoSignout>
-    {props => <SignedOutPage signinPath={signinPath} {...props} />}
-  </SessionProvider>
-);
+export default SignedOutPage;
