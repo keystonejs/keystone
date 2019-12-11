@@ -1,5 +1,26 @@
 # @keystonejs/field-content
 
+## 5.2.0
+
+### Minor Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - A fix to correctly serialize slate content in the list view of the Admin UI.
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @keystonejs/fields@6.0.2
+  - @arch-ui/fields@2.0.4
+  - @arch-ui/hooks@0.0.6
+  - @arch-ui/icons@0.0.7
+  - @arch-ui/input@0.1.3
+  - @arch-ui/theme@0.0.6
+  - @arch-ui/tooltip@0.1.5
+  - @arch-ui/typography@0.0.11
+  - @keystonejs/build-field-types@5.1.3
+  - @keystonejs/utils@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes

@@ -1,5 +1,45 @@
 # @keystonejs/app-admin-ui
 
+## 5.4.1
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Fixed an issue where creating a new item would throw an would appear: `Cannot read property 'refetch' of undefined`
+
+* [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade react-transition-group to 4.3.0
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @keystonejs/fields@6.0.2
+  - @arch-ui/badge@0.0.10
+  - @arch-ui/button@0.0.12
+  - @arch-ui/card@0.0.8
+  - @arch-ui/confirm@0.0.11
+  - @arch-ui/controls@0.1.2
+  - @arch-ui/dialog@0.0.12
+  - @arch-ui/drawer@0.0.13
+  - @arch-ui/dropdown@0.0.11
+  - @arch-ui/fields@2.0.4
+  - @arch-ui/hooks@0.0.6
+  - @arch-ui/icons@0.0.7
+  - @arch-ui/input@0.1.3
+  - @arch-ui/layout@0.2.7
+  - @arch-ui/loading@0.0.11
+  - @arch-ui/lozenge@0.0.10
+  - @arch-ui/navbar@0.1.4
+  - @arch-ui/options@0.0.12
+  - @arch-ui/pagination@0.0.12
+  - @arch-ui/pill@0.1.9
+  - @arch-ui/popout@0.0.11
+  - @arch-ui/select@0.1.2
+  - @arch-ui/theme@0.0.6
+  - @arch-ui/tooltip@0.1.5
+  - @arch-ui/typography@0.0.11
+  - @keystonejs/build-field-types@5.1.3
+  - @keystonejs/utils@5.1.1
+  - @arch-ui/alert@0.0.11
+  - @arch-ui/common@0.0.7
+
 ## 5.4.0
 
 ### Minor Changes

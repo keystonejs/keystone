@@ -1,5 +1,17 @@
 # @keystonejs/demo-project-meetup
 
+## 5.0.3
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Fixed errors in Blog demo New Post page. Includes updating apollo-boost to 0.4.4.
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @keystonejs/fields@6.0.2
+  - @keystonejs/fields-wysiwyg-tinymce@5.0.3
+  - @keystonejs/app-admin-ui@5.4.1
+  - @keystonejs/app-graphql@5.0.2
+  - @keystonejs/file-adapters@5.3.0
+
 ## 5.0.2
 
 ### Patch Changes
