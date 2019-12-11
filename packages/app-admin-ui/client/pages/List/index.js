@@ -98,9 +98,10 @@ export function ListLayout(props: LayoutProps) {
     query.refetch();
   };
   const onCreate = ({ data }) => {
-    let id = data[list.gqlNames.createMutationName].id;
-    history.push(`${adminPath}/${list.path}/${id}`);
-    query.refetch();
+    const id = data[list.gqlNames.createMutationName].id;
+    query.refetch().then(() => {
+      history.push(`${adminPath}/${list.path}/${id}`);
+    });
   };
 
   // Success

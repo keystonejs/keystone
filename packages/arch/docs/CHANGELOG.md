@@ -1,5 +1,12 @@
 # @arch-ui/docs
 
+## 1.1.8
+
+### Patch Changes
+
+- Updated dependencies [[`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290)]:
+  - @arch-ui/alert@0.0.10
+
 ## 1.1.7
 
 ### Patch Changes

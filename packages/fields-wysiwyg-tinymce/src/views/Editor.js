@@ -16,8 +16,7 @@ const defaultOptions = {
   quickbars_insert_toolbar: false,
 };
 
-const defaultPlugins =
-  'link lists code autoresize paste textcolor quickbars hr table emoticons image';
+const defaultPlugins = 'link lists code autoresize paste quickbars hr table emoticons image';
 
 const defaultToolbar =
   'formatselect forecolor | alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink | image table emoticons hr | code';
