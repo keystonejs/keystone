@@ -1,6 +1,8 @@
 {
   "name": "@keystonejs/fields-wysiwyg-tinymce",
   "description": "KeystoneJS WYSIWYG HTML Field Type, powered by TinyMCE",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "repository": "https://github.com/keystonejs/keystone-5/tree/master/packages/build-field-types",
   "version": "5.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
@@ -12,14 +14,14 @@
     "@arch-ui/icons": "^0.0.6",
     "@arch-ui/input": "^0.1.2",
     "@arch-ui/theme": "^0.0.5",
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.7.4",
     "@emotion/core": "^10.0.22",
     "@keystonejs/build-field-types": "^5.1.2",
     "@keystonejs/fields": "^6.0.0",
     "cuid": "^2.1.6",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
-    "tinymce": "^5.0.3"
+    "tinymce": "^5.1.3"
   },
   "peerDependencies": {
     "express": "^4.17.1"

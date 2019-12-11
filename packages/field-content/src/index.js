@@ -20,6 +20,7 @@ export const Content = {
   views: {
     Controller: importView('./views/Controller'),
     Field: importView('./views/Field'),
+    Cell: importView('./views/Cell'),
     Filter: Text.views.Filter,
   },
   adapters: {

@@ -9,6 +9,8 @@ title: CalendarDay
 ## Usage
 
 ```js
+const { Text, Password, CalendarDay } = require('@keystonejs/fields');
+
 keystone.createList('User', {
   fields: {
     email: { type: Text },
@@ -18,7 +20,6 @@ keystone.createList('User', {
       format: 'Do MMMM YYYY',
       yearRangeFrom: 1901,
       yearRangeTo: 2018,
-      yearPickerType: 'auto',
     },
   },
 });
@@ -26,18 +27,17 @@ keystone.createList('User', {
 
 ### Config
 
-| Option           | Type      | Default                | Description                                                                |
-| ---------------- | --------- | ---------------------- | -------------------------------------------------------------------------- |
-| `format`         | `String`  | `YYYY-MM-DD`           | Defines the format of string that the component generates                  |
-| `yearRangeFrom`  | `String`  | The current year - 100 | Defines the starting point of the year range, eg `1918`                    |
-| `yearRangeTo`    | `String`  | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018` |
-| `yearPickerType` | `String`  | `auto`                 | Defines the input type for the year selector                               |
-| `isRequired`     | `Boolean` | `false`                | Does this field require a value?                                           |
-| `isUnique`       | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored            |
+| Option          | Type      | Default                | Description                                                                |
+| --------------- | --------- | ---------------------- | -------------------------------------------------------------------------- |
+| `format`        | `String`  | `YYYY-MM-DD`           | Defines the format of string that the component will display               |
+| `yearRangeFrom` | `Integer` | The current year - 100 | Defines the starting point of the year range, eg `1918`                    |
+| `yearRangeTo`   | `Integer` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018` |
+| `isRequired`    | `Boolean` | `false`                | Does this field require a value?                                           |
+| `isUnique`      | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored            |
 
 #### `format`
 
-Defines the format of string that the component generates. For example, `Do MMMM YYYY`.
+Defines the format of string that the component will display, such as `Do MMMM YYYY`. Values will be stored in the database in ISO8601 (`YYYY-MM-DD`) format.
 
 #### `yearRangeFrom`
 
@@ -52,16 +52,6 @@ The CalendarDay component includes an input that allows the user to change the c
 This prop allows the user to set the end of that range.
 
 The default value for this field is the current year.
-
-#### `yearPickerType`
-
-The CalendarDay component includes an input that allows the user to change the current year from a range of options. This prop allows the user to change the type of that input.
-
-| Option   | Description                                                                             |
-| -------- | --------------------------------------------------------------------------------------- |
-| `input`  | Generates an input that allows the user to type in a value                              |
-| `select` | Generates a drop-down menu that allows the user to select a value from a list           |
-| `auto`   | Will generate a `select` if the range is 50 or less, otherwise will generate an `input` |
 
 ## GraphQL
 

@@ -4,12 +4,13 @@
   "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "repository": "https://github.com/keystonejs/keystone-5.git",
+  "repository": "https://github.com/keystonejs/keystone.git",
+  "homepage": "https://github.com/keystonejs/keystone",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.7.4",
     "@keystonejs/adapter-knex": "^6.0.0",
     "@keystonejs/fields": "^6.0.0"
   },
