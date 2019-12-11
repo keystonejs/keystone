@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Removed a call to to refetch the data when creating a new item, as it was causing an error to be displayed (`Cannot read property 'refetch' of undefined`)
+Fixed an issue where creating a new item would throw an would appear: `Cannot read property 'refetch' of undefined`
