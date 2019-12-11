@@ -2,4 +2,4 @@
 '@keystonejs/field-content': minor
 ---
 
-A fix to correctly serializes slate content in the list view of the Admin UI.
+A fix to correctly serialize slate content in the list view of the Admin UI.
