@@ -182,6 +182,7 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
     this.realKeys = [this.utcPath, this.offsetPath];
     this.sortKey = this.utcPath;
     this.dbPath = this.utcPath;
+    this.isOrderable = true;
 
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
