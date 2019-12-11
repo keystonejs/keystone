@@ -14,7 +14,7 @@
   "dependencies": {
     "@arch-ui/input": "^0.1.2",
     "@arch-ui/theme": "^0.0.5",
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.7.4",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
     "memoize-one": "^5.1.1",
