@@ -31,6 +31,8 @@ export const NoResults = ({ currentPage, filters, list, search }) => {
   const { onChange } = useListPagination(list.key);
   const onResetPage = () => onChange(1);
 
+  console.log(currentPage);
+
   const pageDepthMessage = (
     <NoResultsWrapper>
       <p>
@@ -42,16 +44,19 @@ export const NoResults = ({ currentPage, filters, list, search }) => {
     </NoResultsWrapper>
   );
 
+  if (currentPage !== 1) {
+    return pageDepthMessage;
+  }
+
   if (filters && filters.length) {
-    return currentPage !== 1 ? (
-      pageDepthMessage
-    ) : (
+    return (
       <NoResultsWrapper>
         No {list.plural.toLowerCase()} found matching the{' '}
         {filters.length > 1 ? 'filters' : 'filter'}
       </NoResultsWrapper>
     );
   }
+
   if (search && search.length) {
     return currentPage !== 1 ? (
       pageDepthMessage
