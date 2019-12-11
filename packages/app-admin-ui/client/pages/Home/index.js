@@ -141,7 +141,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
         // list component so we don't block rendering the lists immediately
         // to the user.
       }
-      <HomePage lists={allowedLists} data={data} {...props} />;
+      <HomePage lists={allowedLists} data={data} {...props} />
     </Fragment>
   );
 };

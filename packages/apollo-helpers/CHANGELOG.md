@@ -1,5 +1,11 @@
 # @keystonejs/apollo-helpers
 
+## 5.0.4
+
+### Patch Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - apollo-helpers package doesn't need to depend on the full react-apollo package
+
 ## 5.0.3
 
 ### Patch Changes
