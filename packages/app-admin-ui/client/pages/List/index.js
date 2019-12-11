@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
-import { Query } from '@apollo/react-components';
+import { useQuery } from '@apollo/react-hooks';
 
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
@@ -370,10 +370,7 @@ export default function ListData(props: Props) {
   const skip = (currentPage - 1) * pageSize;
 
   const query = list.getQuery({ fields, filters, search, orderBy, skip, first });
+  const res = useQuery(query, { fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
-  return (
-    <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
-      {res => <List query={res} {...props} />}
-    </Query>
-  );
+  return <List query={res} {...props} />;
 }
