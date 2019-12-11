@@ -4,6 +4,8 @@
   "private": true,
   "version": "5.0.2",
   "author": "The KeystoneJS Development Team",
+  "repository": "https://github.com/keystonejs/keystone.git",
+  "homepage": "https://github.com/keystonejs/keystone",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
@@ -12,10 +14,6 @@
     "start": "gatsby develop",
     "start:debug": "node --inspect-brk `yarn bin`/gatsby develop",
     "build": "gatsby build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/keystonejs/keystone.git"
   },
   "dependencies": {
     "@arch-ui/icons": "^0.0.6",
