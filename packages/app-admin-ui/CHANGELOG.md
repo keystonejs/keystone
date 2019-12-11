@@ -1,5 +1,20 @@
 # @keystonejs/app-admin-ui
 
+## 5.4.0
+
+### Minor Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Converted remaining uses of Apollo components in Admin UI to hooks.
+
+* [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Refactored out session provider from Admin UI and switched to individual Apollo packages as appropriate. Without the session provider, the Admin UI no longer needs the full react-apollo package.
+
+### Patch Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Removed an unused react-node-resolver dependency.
+- Updated dependencies [[`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290), [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290), [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290)]:
+  - @keystonejs/fields@6.0.1
+  - @arch-ui/alert@0.0.10
+
 ## 5.3.0
 
 ### Minor Changes

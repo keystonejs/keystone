@@ -1,5 +1,22 @@
 # @keystonejs/fields
 
+## 6.0.1
+
+### Patch Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Convert to use Apollo hooks
+
+* [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Fixed a bug in the Knex field adapter for virtual fields.
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Fixed several issues with the CalendarDay field:
+
+  - Ensured format, yearRangeFrom, and yearRangeTo defaults are set correctly
+  - Removed non-functional yearPickerType
+  - Made displayed date format consistent between list and detailed views
+  - Moved date range validation to validateInput- Updated dependencies [[`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290)]:
+  - @arch-ui/alert@0.0.10
+  - @arch-ui/day-picker@0.0.16
+
 ## 6.0.0
 
 ### Major Changes

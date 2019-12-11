@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.4.0
+
+### Minor Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Added a script that generates an initial user for the starter template.
+
 ## 1.3.2
 
 ### Patch Changes
