@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, useState, Suspense, useCallback } from 'react';
+import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { IconButton } from '@arch-ui/button';
