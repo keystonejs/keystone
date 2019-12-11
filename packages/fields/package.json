@@ -16,7 +16,7 @@
     "@arch-ui/alert": "^0.0.10",
     "@arch-ui/button": "^0.0.11",
     "@arch-ui/controls": "^0.1.1",
-    "@arch-ui/day-picker": "^0.0.16",
+    "@arch-ui/day-picker": "^0.0.15",
     "@arch-ui/drawer": "^0.0.12",
     "@arch-ui/fields": "^2.0.3",
     "@arch-ui/filters": "^0.0.13",
