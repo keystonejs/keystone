@@ -12,6 +12,7 @@ class _DateTime extends Implementation {
     this.yearRangeFrom = yearRangeFrom;
     this.yearRangeTo = yearRangeTo;
     this.yearPickerType = yearPickerType;
+    this.isOrderable = true;
   }
 
   gqlOutputFields() {
@@ -182,7 +183,6 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
     this.realKeys = [this.utcPath, this.offsetPath];
     this.sortKey = this.utcPath;
     this.dbPath = this.utcPath;
-    this.isOrderable = true;
 
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
