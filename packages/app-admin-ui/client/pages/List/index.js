@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
+import { Fragment, useEffect, useRef, useState, Suspense, useCallback } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { IconButton } from '@arch-ui/button';
@@ -98,8 +98,10 @@ export function ListLayout(props: LayoutProps) {
     query.refetch();
   };
   const onCreate = ({ data }) => {
-    let id = data[list.gqlNames.createMutationName].id;
-    history.push(`${adminPath}/${list.path}/${id}`);
+    const id = data[list.gqlNames.createMutationName].id;
+    query.refetch().then(() => {
+      history.push(`${adminPath}/${list.path}/${id}`);
+    });
   };
 
   // Success
