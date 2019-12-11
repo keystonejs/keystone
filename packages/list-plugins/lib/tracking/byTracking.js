@@ -30,9 +30,6 @@ const _byTracking = ({ created = true, updated = true }) => ({
   }
 
   const newResolveInput = ({ resolvedData, existingItem, originalInput, context }) => {
-    if (Object.keys(originalInput).length === 0) {
-      return resolvedData;
-    }
     const { authedItem: { id = null } = {} } = context;
     if (existingItem === undefined) {
       // create mode
@@ -44,6 +41,12 @@ const _byTracking = ({ created = true, updated = true }) => ({
       }
     } else {
       // update mode
+
+      // if no data received from the mutation, skip the update
+      if (Object.keys(originalInput).length === 0) {
+        return resolvedData;
+      }
+
       if (created) {
         delete resolvedData[createdByField]; // createdByField No longer sent by api/admin, but access control can be skipped!
       }
