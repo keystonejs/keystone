@@ -1,5 +1,27 @@
 # @arch-ui/day-picker
 
+## 0.0.16
+
+### Patch Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Fixed several issues with the CalendarDay field:
+
+  - Ensured format, yearRangeFrom, and yearRangeTo defaults are set correctly
+  - Removed non-functional yearPickerType
+  - Made displayed date format consistent between list and detailed views
+  - Moved date range validation to validateInput
+
+## 0.0.15
+
+### Patch Changes
+
+- [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866) [#1995](https://github.com/keystonejs/keystone/pull/1995) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `react` and `react-dom` to 16.12.0.
+- Updated dependencies [[`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866)]:
+  - @arch-ui/icons@0.0.6
+  - @arch-ui/input@0.1.2
+  - @arch-ui/select@0.1.1
+  - @arch-ui/typography@0.0.10
+
 ## 0.0.14
 
 ### Patch Changes
