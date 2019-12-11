@@ -8,7 +8,9 @@
   "author": "The Keystone Development Team",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.576.0",
     "cloudinary": "^1.13.2",
-    "mkdirp": "^0.5.1"
+    "mkdirp": "^0.5.1",
+    "url-join": "^4.0.1"
   }
 }
