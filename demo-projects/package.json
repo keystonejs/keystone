@@ -5,9 +5,7 @@
     "meetup": "yarn --cwd meetup",
     "todo": "yarn --cwd todo"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/keystonejs/keystone.git"
-  },
+  "repository": "https://github.com/keystonejs/keystone.git",
+  "homepage": "https://github.com/keystonejs/keystone",
   "license": "MIT"
 }

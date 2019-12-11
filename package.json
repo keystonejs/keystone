@@ -5,6 +5,8 @@
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "repository": "https://github.com/keystonejs/keystone.git",
+  "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "dev": "yarn demo todo dev",
     "demo": "yarn --cwd ./demo-projects",
@@ -33,10 +35,6 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/keystonejs/keystone.git"
   },
   "dependencies": {
     "@babel/cli": "^7.6.2",
@@ -74,7 +72,6 @@
     "express": "^4.17.1",
     "falsey": "^1.0.0",
     "graphql": "^14.4.2",
-    "immutable": "^3.8.1",
     "is-ci": "^2.0.0",
     "jest": "^24.9.0",
     "jest-haste-map": "^24.9.0",
@@ -116,7 +113,7 @@
     "terminal-link-cli": "^2.0.0",
     "terser": "^3.14.1",
     "testcheck": "^1.0.0-rc.2",
-    "tinymce": "^5.0.3",
+    "tinymce": "^5.1.3",
     "tmp": "^0.1.0",
     "to-pascal-case": "^1.0.0",
     "underscore.string": "^3.3.5",
