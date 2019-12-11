@@ -189,7 +189,7 @@ export default () => {
                             border: '1px solid hsl(200,20%,70%)',
                           }}
                           value={authorId}
-                          onSelect={event => {
+                          onChange={event => {
                             setAuthorId(event.target.value);
                           }}
                         >
