@@ -49,7 +49,6 @@
     "graphql": "^14.4.2",
     "graphql-tag": "^2.10.1",
     "image-extensions": "^1.1.0",
-    "immutable": "^3.8.1",
     "inflection": "^1.12.0",
     "intersection-observer": "^0.5.1",
     "lodash.groupby": "^4.6.0",
