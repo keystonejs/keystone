@@ -4,9 +4,12 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 
 export class DateTimeUtcImplementation extends Implementation {
+  constructor() {
+    super(...arguments);
+    this.isOrderable = true;
+  }
   gqlOutputFields() {
     return [`${this.path}: String`];
-    this.isOrderable = false;
   }
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] && item[this.path].toISOString() };
