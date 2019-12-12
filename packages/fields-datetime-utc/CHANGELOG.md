@@ -1,5 +1,11 @@
 # @keystonejs/fields-datetime-utc
 
+## 5.0.3
+
+### Patch Changes
+
+- [`d1505f3`](https://github.com/keystonejs/keystone/commit/d1505f3605b8b02cb516bf86c47cce62dee6d0b3) [#2093](https://github.com/keystonejs/keystone/pull/2093) - Added orderable option to the DataeUTC field.
+
 ## 5.0.2
 
 ### Patch Changes
