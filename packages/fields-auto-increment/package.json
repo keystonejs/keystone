@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-auto-increment",
   "description": "KeystoneJS AutoIncrement Field Type",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone.git",
@@ -12,7 +12,7 @@
   "dependencies": {
     "@babel/runtime": "^7.7.4",
     "@keystonejs/adapter-knex": "^6.0.0",
-    "@keystonejs/fields": "^6.0.0"
+    "@keystonejs/fields": "^6.0.2"
   },
   "main": "dist/fields-auto-increment.cjs.js",
   "module": "dist/fields-auto-increment.esm.js"

@@ -1,5 +1,15 @@
 # @arch-ui/modal-utils
 
+## 1.0.5
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+
+* [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade react-transition-group to 4.3.0
+* Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @arch-ui/theme@0.0.6
+
 ## 1.0.4
 
 ### Patch Changes
