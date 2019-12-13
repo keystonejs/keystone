@@ -68,14 +68,17 @@ class KnexAdapter extends BaseKeystoneAdapter {
     Object.values(this.listAdapters).forEach(listAdapter => {
       listAdapter._postConnect();
     });
-    const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
-    if (this.config.dropDatabase || !isSetup) {
-      console.log('Knex adapter: Dropping database');
-      await this.dropDatabase();
-    } else {
+
+    // Drop and recreate the list table, if it's been explicitly requests
+    if (!this.config.dropDatabase) {
       return [];
     }
 
+    await this.dropDatabase();
+    return this.initDatabase();
+  }
+
+  async initDatabase() {
     const createResult = await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.createTable())
     );
@@ -197,6 +200,8 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
   // This will completely drop the backing database. Use wisely.
   dropDatabase() {
+    console.log('Knex adapter: Dropping database');
+
     const tables = Object.values(this.listAdapters)
       .map(listAdapter => `"${this.schemaName}"."${listAdapter.tableName}"`)
       .join(',');
