@@ -403,20 +403,36 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   const [updateItem, { loading: updateInProgress, error: updateError }] = useMutation(
     list.updateMutation,
     {
-      onError: updateError => {
-        const [title, ...rest] = updateError.message.split(/\:/);
-        const toastContent = rest.length ? (
-          <div>
-            <strong>{title.trim()}</strong>
-            <div>{rest.join('').trim()}</div>
-          </div>
-        ) : (
-          updateError.message
-        );
-
-        addToast(toastContent, {
-          appearance: 'error',
-        });
+      errorPolicy: 'all',
+      onError: error => {
+        if (error.graphQLErrors) {
+          error.graphQLErrors.forEach(error => {
+            let toastContent;
+            if (error.data && error.data.messages && error.data.messages.length) {
+              toastContent = (
+                <div>
+                  <strong>{error.name}</strong>
+                  <ul css={{ paddingLeft: 0, listStylePosition: 'inside' }}>
+                    {error.data.messages.map((message, i) => (
+                      <li key={i}>{message}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            } else {
+              toastContent = (
+                <div>
+                  <strong>{error.name}</strong>
+                  <div>{error.message}</div>
+                </div>
+              );
+            }
+            addToast(toastContent, {
+              appearance: 'error',
+              autoDismiss: true,
+            });
+          });
+        }
       },
     }
   );
@@ -454,6 +470,11 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   const item = deserializeItem(list, data);
   const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
+  const handleUpdateItem = async args => {
+    const result = await updateItem(args);
+    if (!result) throw Error();
+  };
+
   return (
     <Suspense fallback={<PageLoading />}>
       {item ? (
@@ -475,7 +496,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
               toastManager={{ addToast }}
               updateInProgress={updateInProgress}
               updateErrorMessage={updateError && updateError.message}
-              updateItem={updateItem}
+              updateItem={handleUpdateItem}
             />
           </Container>
         </main>
