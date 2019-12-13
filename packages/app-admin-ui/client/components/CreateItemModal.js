@@ -77,7 +77,34 @@ class CreateItemModal extends Component {
         this.setState({ item: this.props.list.getInitialItemData({}) });
       })
       .catch(error => {
-        toastError({ addToast, options: { autoDismiss: true } }, error);
+        if (error.graphQLErrors) {
+          error.graphQLErrors.forEach(error => {
+            let toastContent;
+            if (error.data && error.data.messages && error.data.messages.length) {
+              toastContent = (
+                <div>
+                  <strong>{error.name}</strong>
+                  <ul css={{ paddingLeft: 0, listStylePosition: 'inside' }}>
+                    {error.data.messages.map((message, i) => (
+                      <li key={i}>{message}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            } else {
+              toastContent = (
+                <div>
+                  <strong>{error.name}</strong>
+                  <div>{error.message}</div>
+                </div>
+              );
+            }
+            addToast(toastContent, {
+              appearance: 'error',
+              autoDismiss: true,
+            });
+          });
+        }
       });
   };
   onClose = () => {
