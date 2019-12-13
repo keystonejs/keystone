@@ -1,4 +1,5 @@
-import React from 'react';
+/** @jsx jsx **/
+import { jsx } from '@emotion/core';
 import set from 'lodash.set';
 
 // When there are errors, we want to see if they're Access Denied.
@@ -58,6 +59,37 @@ export function toastError({ addToast, options = {} }, error) {
     ...options,
   });
 }
+
+export const handleCreateUpdateMutationError = ({ error, addToast }) => {
+  if (error.graphQLErrors) {
+    error.graphQLErrors.forEach(error => {
+      let toastContent;
+      if (error.data && error.data.messages && error.data.messages.length) {
+        toastContent = (
+          <div>
+            <strong>{error.name}</strong>
+            <ul css={{ paddingLeft: 0, listStylePosition: 'inside' }}>
+              {error.data.messages.map((message, i) => (
+                <li key={i}>{message}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      } else {
+        toastContent = (
+          <div>
+            <strong>{error.name}</strong>
+            <div>{error.message}</div>
+          </div>
+        );
+      }
+      addToast(toastContent, {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    });
+  }
+};
 
 // ==============================
 // Validate Fields
