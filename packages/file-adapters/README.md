@@ -88,3 +88,75 @@ const fileAdapter = new CloudinaryAdapter({
 ### `delete`
 
 Takes an object with an `id` key representing the public file ID and deletes that file on the server.
+
+## `S3FileAdapter`
+
+```javascript
+const { S3Adapter } = require('@keystonejs/file-adapters');
+
+const CF_DISTRIBUTION_ID = 'cloudfront-distribution-id';
+const S3_PATH = '/uploads';
+
+const fileAdapter = new S3Adapter({
+  accessKeyId: 'ACCESS_KEY_ID',
+  secretAccessKey: 'SECRET_ACCESS_KEY',
+  region: 'us-west-2',
+  bucket: 'bucket-name',
+  folder: S3_PATH,
+  publicUrl: ({ id, filename, _meta }) => `https://${CF_DISTRIBUTION_ID}.cloudfront.net${CAT_FOLDER}/${filename}`,
+  s3Options: {
+    apiVersion: '2006-03-01'
+  },
+  uploadParams: ({ filename, id, mimetype, encoding }) => ({
+    Metadata: {
+      "keystone_id": id
+    }
+  }
+});
+```
+
+| Option            | Type              | Default     | Description                                                                                                                                                                                                                                       |
+| ----------------- | ----------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accessKeyId`     | `String`          | Required    | AWS access key ID                                                                                                                                                                                                                                 |
+| `secretAccessKey` | `String`          | Required    | AWS secret access key                                                                                                                                                                                                                             |
+| `region`          | `String`          | Required    | AWS region                                                                                                                                                                                                                                        |
+| `bucket`          | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                                    |
+| `folder`          | `String`          | Required    | Upload folder from root of bucket                                                                                                                                                                                                                 |
+| `publicUrl`       | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                                |
+| `s3Options`       | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                                  |
+| `uploadParams`    | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.putObject. For available options refer to the [AWS S3 putObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property). |
+
+### Methods
+
+### `delete`
+
+Deletes the provided file in the S3 bucket. Takes a `file` object (such as the one returned in file field hooks) and an optional `options` argument for overriding S3.deleteObject options. Options `Bucket` and `Key` are set by default. For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
+
+```javascript
+const deleteParams = {
+  BypassGovernanceRetention: true,
+};
+
+keystone.createList('Document', {
+  fields: {
+    file: {
+      type: File,
+      adapter: fileAdapter,
+      hooks: {
+        beforeChange: ({ existingItem }) => {
+          if (existingItem && existingItem.file) {
+            fileAdapter.delete(existingItem.file, deleteParams);
+          }
+        },
+      },
+    },
+  },
+  hooks: {
+    afterDelete: ({ existingItem }) => {
+      if (existingItem.file) {
+        fileAdapter.delete(existingItem.file, deleteParams);
+      }
+    },
+  },
+});
+```

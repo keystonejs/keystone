@@ -1,5 +1,17 @@
 # @keystonejs/file-adapters
 
+## 5.3.0
+
+### Minor Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Added S3 file adapter
+
+## 5.2.0
+
+### Minor Changes
+
+- [`3d2c2b2e`](https://github.com/keystonejs/keystone/commit/3d2c2b2e65943be0bd59e448d3237c3abe983b04) [#1953](https://github.com/keystonejs/keystone/pull/1953) Thanks [@Vultraz](https://github.com/Vultraz)! - Added `delete()` method to file adapters.
+
 ## 5.1.0
 
 ### Minor Changes
