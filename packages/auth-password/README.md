@@ -63,8 +63,8 @@ app.post('/admin/signin', async (req, res) => {
 
 | Option              | Type      | Default    | Description                                                               |
 | ------------------- | --------- | ---------- | ------------------------------------------------------------------------- |
-| `identity`          | `String`  | `email`    | The field `path` for values that uniquely identifies items                |
-| `secret`            | `String`  | `password` | The field `path` for secret values known only to the authenticating party |
+| `identityField`     | `String`  | `email`    | The field `path` for values that uniquely identifies items                |
+| `secretField`       | `String`  | `password` | The field `path` for secret values known only to the authenticating party |
 | `protectIdentities` | `Boolean` | `false`    | Protect identities at the expense of usability                            |
 
 #### `identity`
