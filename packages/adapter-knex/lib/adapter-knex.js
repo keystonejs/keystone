@@ -68,8 +68,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
     Object.values(this.listAdapters).forEach(listAdapter => {
       listAdapter._postConnect();
     });
-    const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
-    if (this.config.dropDatabase || !isSetup) {
+
+    // Run this only if explicity configured and still never in production
+    if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
       console.log('Knex adapter: Dropping database');
       await this.dropDatabase();
     } else {
