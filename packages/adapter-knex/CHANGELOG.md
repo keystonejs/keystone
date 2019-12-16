@@ -1,5 +1,11 @@
 # @keystonejs/adapter-knex
 
+## 6.1.0
+
+### Minor Changes
+
+- [`045af44`](https://github.com/keystonejs/keystone/commit/045af44b1a9fa186dbc04c1d05b07a13ba58e3b0) [#2106](https://github.com/keystonejs/keystone/pull/2106) - Removed logic that (incorrectly) auto-detects when the DB needs to be setup (and nukes existing data).
+
 ## 6.0.0
 
 ### Major Changes
