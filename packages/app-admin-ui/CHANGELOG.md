@@ -1,5 +1,11 @@
 # @keystonejs/app-admin-ui
 
+## 5.5.0
+
+### Minor Changes
+
+- [`045af44`](https://github.com/keystonejs/keystone/commit/045af44b1a9fa186dbc04c1d05b07a13ba58e3b0) [#2106](https://github.com/keystonejs/keystone/pull/2106) - Improved toast messaging when creating and updating items
+
 ## 5.4.1
 
 ### Patch Changes
