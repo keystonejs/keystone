@@ -14,7 +14,7 @@ This document describes:
 - The specific arguments and usage information of different hook sets
 
 For a more general overview of the concepts, patterns and function of the Keystone hook system, see the
-[Hook Guide](/docs/guides/hooks.md).
+[Hook Guide](/guides/hooks.md).
 
 ---
 
