@@ -41,6 +41,7 @@ class Pagination extends Component {
     ariaPageLabel: ariaPageLabelFn,
     currentPage: 1,
     limit: 5,
+    showAllPages: true,
   };
   state = { allPagesVisible: false };
 
@@ -51,7 +52,7 @@ class Pagination extends Component {
   };
 
   renderPages() {
-    let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
+    let { ariaPageLabel, currentPage, limit, pageSize, total, showAllPages } = this.props;
 
     if (total <= pageSize) return [];
 
@@ -129,6 +130,20 @@ class Pagination extends Component {
       );
     }
 
+    const allPages = this.state.allPagesVisible ? (
+      pages
+    ) : (
+      <Page
+        aria-label="Click to show all pages"
+        key="page_dot"
+        onClick={this.toggleAllPages}
+        id="ks-pagination-show-pages"
+        value={1} // needs value for flow...
+      >
+        <ListOrderedIcon />
+      </Page>
+    );
+
     // return pages;
     return [
       <Page
@@ -140,19 +155,10 @@ class Pagination extends Component {
       >
         <ChevronLeftIcon />
       </Page>,
-      this.state.allPagesVisible ? (
-        pages
-      ) : (
-        <Page
-          aria-label="Click to show all pages"
-          key="page_dot"
-          onClick={this.toggleAllPages}
-          id="ks-pagination-show-pages"
-          value={1} // needs value for flow...
-        >
-          <ListOrderedIcon />
-        </Page>
-      ),
+      // Nothing should be included if the all pages aren't displayed
+      // because FlexGroup border radius formatting depends on the count of
+      // elements
+      ...(showAllPages ? allPages : []),
       <Page
         aria-label="Go to next page"
         key="page_next"

@@ -17,6 +17,7 @@ export default function ListPagination({ isLoading, listKey }) {
       isLoading={isLoading}
       pageSize={data.pageSize}
       total={data.itemCount}
+      showAllPages={false}
     />
   );
 }
