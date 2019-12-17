@@ -49,6 +49,7 @@ describe('Knex Adapter', () => {
       testAdapter.minVer = '50.5.5';
       const result = await testAdapter.checkDatabaseVersion().catch(result => result);
       expect(result).toBeInstanceOf(Error);
+      testAdapter.disconnect();
     });
 
     test('does not throw when database version is supported', async () => {
@@ -57,6 +58,7 @@ describe('Knex Adapter', () => {
       testAdapter.minVer = '1.0.0';
       const result = await testAdapter.checkDatabaseVersion().catch(result => result);
       expect(result).not.toBeInstanceOf(Error);
+      testAdapter.disconnect();
     });
   });
 });
