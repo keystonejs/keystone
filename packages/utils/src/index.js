@@ -1,8 +1,7 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import isPromise from 'p-is-promise';
-import semverCoerce from 'semver/functions/coerce';
-import semverGte from 'semver/functions/gte';
+import semver from 'semver';
 
 export const noop = x => x;
 export const identity = noop;
@@ -211,10 +210,10 @@ export const versionGreaterOrEqualTo = (comp, base) => {
     if (typeof input === 'object') {
       input = input.join('.');
     }
-    return semverCoerce(input);
+    return semver.coerce(input);
   };
 
   const v1 = parseVersion(comp);
   const v2 = parseVersion(base);
-  return semverGte(v1, v2);
+  return semver.gte(v1, v2);
 };
