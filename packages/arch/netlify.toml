@@ -1,6 +1,6 @@
 [build]
-  command = "cd ../../../ && yarn && cd ./packages/arch/docs && yarn build"
-  publish = "public"
+  command = "cd ./docs && yarn build"
+  publish = "docs/public"
 [build.environment]
   NODE_VERSION = "10"
   YARN_VERSION = "1.15.2"
