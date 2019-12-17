@@ -185,7 +185,7 @@ function ModalDialogComponent({
 }
 
 ModalDialogComponent.defaultProps = {
-  attachTo: document.body,
+  attachTo: typeof document !== 'undefined' ? document.body : null,
   closeOnBlanketClick: false,
   component: 'div',
   width: 640,
