@@ -41,4 +41,40 @@ describe('Knex Adapter', () => {
       "Could not connect to database: 'undefined_database'"
     );
   });
+
+  describe('checkDatabaseVersion', () => {
+    test('throws when database version is unsupported', async () => {
+      const testAdapter = new KnexAdapter({
+        knexOptions: {
+          connection: {
+            host: '127.0.0.1',
+            user: 'postgres',
+            password: '',
+            database: 'postgres',
+          },
+        },
+      });
+      await testAdapter._connect({ name: 'postgres' });
+      testAdapter.minVer = '50.5.5';
+      const result = await testAdapter.checkDatabaseVersion().catch(result => result);
+      expect(result).toBeInstanceOf(Error);
+    });
+
+    test('does not throw when database version is supported', async () => {
+      const testAdapter = new KnexAdapter({
+        knexOptions: {
+          connection: {
+            host: '127.0.0.1',
+            user: 'postgres',
+            password: '',
+            database: 'postgres',
+          },
+        },
+      });
+      await testAdapter._connect({ name: 'postgres' });
+      testAdapter.minVer = '1.0.0';
+      const result = await testAdapter.checkDatabaseVersion().catch(result => result);
+      expect(result).not.toBeInstanceOf(Error);
+    });
+  });
 });
