@@ -1,5 +1,5 @@
 [build]
-  command = "yarn build"
+  command = "cd ../../../ && yarn && cd ./packages/arch/docs && yarn build"
   publish = "public"
 [build.environment]
   NODE_VERSION = "10"
