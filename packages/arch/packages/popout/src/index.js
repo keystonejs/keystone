@@ -121,7 +121,7 @@ class Popout extends Component {
   render() {
     const { children, getModalRef, style, width } = this.props;
     let { leftOffset, topOffset, arrowLeftOffset } = this.state;
-    const attachTo = document.body; // NOTE: flow junk
+    const attachTo = typeof document !== 'undefined' ? document.body : null;
 
     return attachTo
       ? createPortal(
