@@ -1,6 +1,8 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import isPromise from 'p-is-promise';
+import semverCoerce from 'semver/functions/coerce';
+import semverGte from 'semver/functions/gte';
 
 export const noop = x => x;
 export const identity = noop;
@@ -207,14 +209,12 @@ export const countArrays = obj =>
 export const versionGreaterOrEqualTo = (comp, base) => {
   const parseVersion = input => {
     if (typeof input === 'object') {
-      return input;
-    } else {
-      return input.split('.').map(v => Number(v));
+      input = input.join('.');
     }
+    return semverCoerce(input);
   };
 
   const v1 = parseVersion(comp);
   const v2 = parseVersion(base);
-
-  return v1[0] >= v2[0] && v1[1] >= v2[1] && v1[2] >= v2[2];
+  return semverGte(v1, v2);
 };
