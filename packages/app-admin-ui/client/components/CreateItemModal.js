@@ -11,7 +11,7 @@ import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
 import PageLoading from './PageLoading';
-import { validateFields, toastError } from '../util';
+import { validateFields, handleCreateUpdateMutationError } from '../util';
 
 let Render = ({ children }) => children();
 
@@ -41,7 +41,6 @@ class CreateItemModal extends Component {
       list: { fields },
       createItem,
       isLoading,
-      addToast,
     } = this.props;
     if (isLoading) return;
     const { item, validationErrors, validationWarnings } = this.state;
@@ -71,14 +70,10 @@ class CreateItemModal extends Component {
 
     createItem({
       variables: { data },
-    })
-      .then(data => {
-        this.props.onCreate(data);
-        this.setState({ item: this.props.list.getInitialItemData({}) });
-      })
-      .catch(error => {
-        toastError({ addToast, options: { autoDismiss: true } }, error);
-      });
+    }).then(data => {
+      this.props.onCreate(data);
+      this.setState({ item: this.props.list.getInitialItemData({}) });
+    });
   };
   onClose = () => {
     const { isLoading } = this.props;
@@ -197,7 +192,10 @@ class CreateItemModal extends Component {
 export default function CreateItemModalWithMutation(props) {
   const { list } = props;
   const { addToast } = useToasts();
-  const [createItem, { loading }] = useMutation(list.createMutation);
+  const [createItem, { loading }] = useMutation(list.createMutation, {
+    errorPolicy: 'all',
+    onError: error => handleCreateUpdateMutationError({ error, addToast }),
+  });
   return (
     <CreateItemModal createItem={createItem} isLoading={loading} addToast={addToast} {...props} />
   );
