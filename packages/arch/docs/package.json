@@ -32,7 +32,8 @@
     "react": "^16.12.0"
   },
   "scripts": {
-    "start": "gatsby develop"
+    "start": "gatsby develop",
+    "build": "gatsby build"
   },
   "repository": {
     "type": "git",
