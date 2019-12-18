@@ -93,7 +93,13 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   // Allow the spinner time to flush its output to the console.
   await new Promise(resolve => setTimeout(resolve, 100));
 
-  const { keystone, apps = [], configureExpress = () => {} } = require(path.resolve(entryFile));
+  const {
+    keystone,
+    apps = [],
+    configureExpress = () => {},
+    cors,
+    pinoOptions,
+  } = require(path.resolve(entryFile));
 
   configureExpress(app);
 
@@ -104,7 +110,7 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   const dev = process.env.NODE_ENV !== 'production';
 
-  const { middlewares } = await keystone.prepare({ apps, distDir, dev });
+  const { middlewares } = await keystone.prepare({ apps, distDir, dev, cors, pinoOptions });
 
   await keystone.connect();
 
