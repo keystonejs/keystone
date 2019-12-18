@@ -1,3 +1,5 @@
+import { versionGreaterOrEqualTo } from '@keystonejs/utils';
+
 const knex = require('knex');
 const pSettle = require('p-settle');
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
@@ -18,6 +20,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     super(...arguments);
     this.client = knexOptions.client || 'postgres';
     this.name = 'knex';
+    this.minVer = '9.6.5';
     this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
@@ -211,7 +214,21 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async checkDatabaseVersion() {
-    // TODO: implement
+    let version;
+    try {
+      // Using `raw` due to knex not having the SHOW command
+      const result = await this.knex.raw('SHOW server_version;');
+      // the version is inside the first row "server_version"
+      version = result.rows[0].server_version;
+    } catch (error) {
+      throw new Error(`Error reading version from PostgreSQL: ${error}`);
+    }
+
+    if (!versionGreaterOrEqualTo(version, this.minVer)) {
+      throw new Error(
+        `PostgreSQL version ${version} is incompatible. Version ${this.minVer} or later is required.`
+      );
+    }
   }
 }
 
