@@ -817,7 +817,7 @@ keystone.createList('User', {
 
 In this case, we'll create the first task along with creating the user. _For
 more info on the `create` syntax, see
-[the Relationship API docs](/packages/fields/src/types/Relationship)._
+[the Relationship API docs](/packages/fields/src/types/Relationship/README.md)._
 
 ```graphql
 mutation {

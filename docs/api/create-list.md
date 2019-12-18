@@ -4,7 +4,7 @@ title: Create List
 order: 2
 [meta]-->
 
-# createList(name, options)
+# `keystone.createList(name, options)`
 
 ## Usage
 
@@ -50,7 +50,7 @@ keystone.createList('Post', {
 });
 ```
 
-See: [Fields](/packages/fields/) for more information on configuring field options.
+See: [Fields](/packages/fields/README.md) for more information on configuring field options.
 
 ### `schemaDoc`
 
