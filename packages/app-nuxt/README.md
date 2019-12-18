@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: apps
-title: Nuxt.js App
+title: Next.js App
 [meta]-->
 
-# Nuxt.js App
+# Next.js App
 
 ## Usage
 
