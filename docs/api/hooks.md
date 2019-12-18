@@ -95,7 +95,7 @@ keystone.createList('User', {
 
 Field Type hooks are associated with a particular _field type_ and are applied to all fields of that type.
 Custom field types can implement hooks by implementing the following hook methods on the `Field` base class.
-See the [Custom Field Types guide](../guides/custom-field-types.md) for more info.
+See the [Custom Field Types guide](/docs/guides/custom-field-types.md) for more info.
 
 Hooks for the `create`, `update` and `delete` operations are available.
 

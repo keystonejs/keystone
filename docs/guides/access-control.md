@@ -21,7 +21,7 @@ You can learn about it in the [Authentication guide](/docs/guides/authentication
 
 Access control is about limiting CRUD (Create, Read, Update, Delete) actions that can be performed based on the current user (authenticated or anonymous).
 
-In KeystoneJS, both [Lists](/docs/api/create-list.md) and [Fields](/packages/fields) take an `access` option,
+In KeystoneJS, both [Lists](/docs/api/create-list.md) and [Fields](/packages/fields/README.md) take an `access` option,
 which lets you define rules of access control with fine precision - see [Access Control API](/docs/api/access-control.md) docs for more details.
 
 ### Example

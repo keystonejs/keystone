@@ -81,4 +81,4 @@ The `many: true` option indicates that `User` can store multiple references to t
 See also:
 
 - [Schema - Lists & Fields](/docs/guides/schema.md)
-- [Field Types - Relationship](/packages/fields/src/types/Relationship/)
+- [Field Types - Relationship](/packages/fields/src/types/Relationship/README.md)

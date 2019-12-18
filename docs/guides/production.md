@@ -31,7 +31,7 @@ Sessions are stored inside the KeystoneJS app by default, but in production it's
 - You can restart your app for upgrades without breaking sessions
 - You can replicate your KeystoneJS app for availability, while keeping sessions consistent
 
-This option [can be set](/packages/keystone/) in the `Keystone` constructor.
+This option [can be set](/packages/keystone/README.md) in the `Keystone` constructor.
 
 ## Caching
 
