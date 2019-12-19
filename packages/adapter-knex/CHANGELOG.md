@@ -1,5 +1,14 @@
 # @keystonejs/adapter-knex
 
+## 6.1.1
+
+### Patch Changes
+
+- [`cc1f42b`](https://github.com/keystonejs/keystone/commit/cc1f42b585e630623e0b2445a6cb34e3e507e1b1) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added knex adaptar database version validiation
+- Updated dependencies [[`cc1f42b`](https://github.com/keystonejs/keystone/commit/cc1f42b585e630623e0b2445a6cb34e3e507e1b1), [`cc1f42b`](https://github.com/keystonejs/keystone/commit/cc1f42b585e630623e0b2445a6cb34e3e507e1b1), [`cc1f42b`](https://github.com/keystonejs/keystone/commit/cc1f42b585e630623e0b2445a6cb34e3e507e1b1)]:
+  - @keystonejs/keystone@5.4.0
+  - @keystonejs/utils@5.1.2
+
 ## 6.1.0
 
 ### Minor Changes

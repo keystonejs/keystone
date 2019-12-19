@@ -1,5 +1,11 @@
 # @arch-ui/drawer
 
+## 0.0.14
+
+### Patch Changes
+
+- [`cc1f42b`](https://github.com/keystonejs/keystone/commit/cc1f42b585e630623e0b2445a6cb34e3e507e1b1) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Made usages of `document.body` conditional so that the component doesn't immediately fail on the server
+
 ## 0.0.13
 
 ### Patch Changes
