@@ -1,5 +1,11 @@
 # @arch-ui/popout
 
+## 0.0.12
+
+### Patch Changes
+
+- [`ed85a3d3`](https://github.com/keystonejs/keystone/commit/ed85a3d3776873893e9ba46f3b0c4d0f71bd6b6d) [#2108](https://github.com/keystonejs/keystone/pull/2108) - Made usages of `document.body` conditional so that the component doesn't immediately fail on the server
+
 ## 0.0.11
 
 ### Patch Changes

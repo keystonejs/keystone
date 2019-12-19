@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 5.1.2
+
+### Patch Changes
+
+- [`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2) [#2112](https://github.com/keystonejs/keystone/pull/2112) - Added knex adaptar database version validiation
+
 ## 5.1.1
 
 ### Patch Changes
