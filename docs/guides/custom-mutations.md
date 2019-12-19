@@ -6,15 +6,13 @@ subSection: advanced
 
 # Custom Mutations
 
-Out of the box Keystone provides predictable CRUD operations (Create, Read, Update and Delete) for Lists. The generated graphQL queries and mutations are the primary method for updating data in a List. These should be enough for most application requirements.
+Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/guides/schema#lists). These generated GraphQL queries and mutations are the primary method for updating data in a List and should be enough for most application requirements. However custom types, queries and mutations may be required if you wish to preform non-CRUD operations or actions that don't relate to a specific List.
 
-Custom Queries and Mutations may be required if you wish to preform non-CRUD operations or actions that don't relate to a specific List.
+Adding custom types, queries and mutations to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/keystonejs/keystone/#extendgraphqlschemaconfig) method.
 
 See the [GraphQL Philosophy](/guides/graphql-philosophy) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
-You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
-
-# Creating an Custom Mutation
+## Creating an Custom Mutation
 
 A common example where a custom mutation might be beneficial is if you want to increment a value.
 
@@ -24,6 +22,7 @@ First let's define a `Page` list. For the sake of simplicity, we'll give it only
 
 ```js
 const { Text, Integer } = require('@keystonejs/fields');
+
 const Page = {
   fields: {
     title: { type: Text },
