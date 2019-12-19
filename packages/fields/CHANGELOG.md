@@ -1,5 +1,11 @@
 # @keystonejs/fields
 
+## 6.0.4
+
+### Patch Changes
+
+- [`85f21ced`](https://github.com/keystonejs/keystone/commit/85f21ced700e9630ce3d22590e4aec0694d621db) [#2122](https://github.com/keystonejs/keystone/pull/2122) - Fix for cloudinary images block error when serialized
+
 ## 6.0.3
 
 ### Patch Changes
