@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/docs",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "private": true,
   "license": "MIT",
   "dependencies": {
@@ -8,7 +8,7 @@
     "@arch-ui/badge": "^0.0.10",
     "@arch-ui/button": "^0.0.12",
     "@arch-ui/controls": "^0.1.2",
-    "@arch-ui/dialog": "^0.0.12",
+    "@arch-ui/dialog": "^0.0.13",
     "@arch-ui/dropdown": "^0.0.11",
     "@arch-ui/fields": "^2.0.4",
     "@arch-ui/icons": "^0.0.7",
@@ -19,7 +19,7 @@
     "@arch-ui/navbar": "^0.1.4",
     "@arch-ui/pagination": "^0.0.12",
     "@arch-ui/pill": "^0.1.9",
-    "@arch-ui/popout": "^0.0.11",
+    "@arch-ui/popout": "^0.0.12",
     "@arch-ui/select": "^0.1.2",
     "@arch-ui/theme": "^0.0.6",
     "@arch-ui/tooltip": "^0.1.5",

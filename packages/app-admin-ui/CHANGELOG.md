@@ -1,5 +1,17 @@
 # @keystonejs/app-admin-ui
 
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies [[`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2), [`ed85a3d3`](https://github.com/keystonejs/keystone/commit/ed85a3d3776873893e9ba46f3b0c4d0f71bd6b6d)]:
+  - @keystonejs/utils@5.1.2
+  - @arch-ui/confirm@0.0.12
+  - @arch-ui/dialog@0.0.13
+  - @arch-ui/drawer@0.0.14
+  - @arch-ui/popout@0.0.12
+  - @keystonejs/fields@6.0.3
+
 ## 5.5.0
 
 ### Minor Changes
