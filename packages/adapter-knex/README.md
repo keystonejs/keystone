@@ -65,14 +65,14 @@ To log all Knex queries, run the server with the environment variable `DEBUG=kne
 
 ## Setup
 
-Before running Keystone with the Knex adapter you should configure a database. By default Knex will look for a Postgres database on the default port, matching the project name, as the current user.
+Before running Keystone with the Knex adapter you need to configure a database. By default Knex will look for a Postgres database on the default port, matching the project name, as the current user.
 
 In most cases this database will not exist and you will want to configure a user and database for your application.
 
 Assuming you're on MacOS and have Postgres installed the `build-test-db.sh` does this for you:
 
 ```shell
-./build-test-db.sh
+node_modules/@keystonejs/adapter-knex/build-test-db.sh
 ```
 
 Otherwise, you can run these steps manually:
