@@ -8,7 +8,7 @@ subSection: advanced
 
 Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/guides/schema#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List. 
 
-They should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
+The automatically generated GraphQL API should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
 
 Adding custom types, queries and mutations to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/keystonejs/keystone/#extendgraphqlschemaconfig) method.
 
