@@ -10,7 +10,7 @@ Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and De
 
 The automatically generated GraphQL API should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
 
-Adding custom types, queries and mutations to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/keystonejs/keystone/#extendgraphqlschemaconfig) method.
+Adding to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/keystonejs/keystone/#extendgraphqlschemaconfig) method.
 
 See the [GraphQL Philosophy](/guides/graphql-philosophy) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
