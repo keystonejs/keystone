@@ -1,5 +1,11 @@
 # @keystonejs/field-content
 
+## 5.2.1
+
+### Patch Changes
+
+- [`ab5bbd66`](https://github.com/keystonejs/keystone/commit/ab5bbd664a9cdfbf522b3a02cf76982f7180be89) [#2130](https://github.com/keystonejs/keystone/pull/2130) - Error handling for field-content
+
 ## 5.2.0
 
 ### Minor Changes
