@@ -1,5 +1,11 @@
 # @keystonejs/adapter-knex
 
+## 6.1.2
+
+### Patch Changes
+
+- [`a9a00f98`](https://github.com/keystonejs/keystone/commit/a9a00f9815b872ca378a0c32295ad4fc17ded067) [#2125](https://github.com/keystonejs/keystone/pull/2125) - Fix syntax error causing hard crash on boot in Node
+
 ## 6.1.1
 
 ### Patch Changes
