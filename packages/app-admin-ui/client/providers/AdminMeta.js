@@ -59,8 +59,11 @@ function readAdminMeta() {
     });
 
     Object.values(listViews).forEach(list => {
-      Object.values(list).forEach(({ Controller }) => {
+      Object.values(list).forEach(({ Controller, blocks }) => {
         viewsToLoad.add(Controller);
+        // This is a special case for content fields
+        // FIXME: maybe we'd have less coupling if we just let each field asynchronously render its own view component
+        if (blocks) blocks.forEach(l => viewsToLoad.add(l));
       });
     });
 
