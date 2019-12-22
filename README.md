@@ -54,7 +54,7 @@ documentation](https://www.keystonejs.com/guides/).
 
 ## Contributing
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. 
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 
 **Contributions of any kind are welcome!**
 
@@ -62,7 +62,7 @@ You will find the set-up steps in this readme and full release processes and pro
 
 ### Contributors
 
-We'd like to start by thanking all our wonderful contributors: 
+We'd like to start by thanking all our wonderful contributors:
 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
