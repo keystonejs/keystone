@@ -1,5 +1,11 @@
 # @keystonejs/app-admin-ui
 
+## 5.5.2
+
+### Patch Changes
+
+- [`6f1430e4`](https://github.com/keystonejs/keystone/commit/6f1430e4b14d173d574e54e5c78ff1477528a2a6) [#2135](https://github.com/keystonejs/keystone/pull/2135) - Correctly capture suspended components in Details View in Admin UI
+
 ## 5.5.1
 
 ### Patch Changes
