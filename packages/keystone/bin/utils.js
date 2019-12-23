@@ -58,15 +58,14 @@ function extractAppMeta(apps, dev) {
 
 async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
-  let router;
   let status = 'start-server';
 
   spinner.text = 'Starting Keystone server';
   const app = express();
 
   app.use((req, res, next) => {
-    if (router) {
-      return router(req, res, next);
+    if (status === 'started') {
+      next();
     } else {
       res.format({
         default: () => res.sendFile(path.resolve(__dirname, './loading.html')),
@@ -117,9 +116,8 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   spinner.succeed('Connected to database');
   spinner.start('Preparing to accept requests');
 
-  router = express.Router();
-  router.use(middlewares);
-
+  app.use(middlewares);
+  status = 'started'
   spinner.succeed(chalk.green.bold(`Keystone instance is ready at http://localhost:${port} 🚀`));
 
   const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps, dev);
