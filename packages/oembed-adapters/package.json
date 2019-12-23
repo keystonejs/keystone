@@ -9,7 +9,7 @@
   "author": "The Keystone Development Team",
   "license": "MIT",
   "dependencies": {
-    "@babel/runtime": "^7.7.4",
+    "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
     "@iframely/embed.js": "^1.1.1",
     "@keystonejs/build-field-types": "^5.1.3",

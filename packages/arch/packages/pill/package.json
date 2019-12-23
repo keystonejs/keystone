@@ -15,7 +15,7 @@
     "@arch-ui/common": "^0.0.7",
     "@arch-ui/icons": "^0.0.7",
     "@arch-ui/theme": "0.0.6",
-    "@babel/runtime": "^7.7.4",
+    "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22"
   },

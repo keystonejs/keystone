@@ -54,7 +54,7 @@ documentation](https://www.keystonejs.com/guides/).
 
 ## Contributing
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. 
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 
 **Contributions of any kind are welcome!**
 
@@ -62,12 +62,15 @@ You will find the set-up steps in this readme and full release processes and pro
 
 ### Contributors
 
-We'd like to start by thanking all our wonderful contributors: 
+We'd like to start by thanking all our wonderful contributors:
 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+
 <!-- prettier-ignore-start -->
+
 <!-- markdownlint-disable -->
+
 <table>
   <tr>
     <td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="80px;" alt=""/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=JedWatson" title="Code">💻</a></td>
@@ -122,7 +125,9 @@ We'd like to start by thanking all our wonderful contributors:
 </table>
 
 <!-- markdownlint-enable -->
+
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ### Demo Projects
