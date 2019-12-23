@@ -117,7 +117,7 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   spinner.start('Preparing to accept requests');
 
   app.use(middlewares);
-  status = 'started'
+  status = 'started';
   spinner.succeed(chalk.green.bold(`Keystone instance is ready at http://localhost:${port} 🚀`));
 
   const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps, dev);
