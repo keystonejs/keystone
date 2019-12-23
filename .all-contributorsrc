@@ -352,7 +352,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "marxvn",
+      "name": "Martin Pham",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4975208?v=4",
+      "profile": "http://www.marxvn.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
