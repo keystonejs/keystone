@@ -41,17 +41,23 @@ const adminMeta = {
   preloadViews,
 };
 
+const getListHooks = (hooks, listKey) => {
+  const lists = hooks.lists || {};
+  return lists[listKey] || {};
+};
+
 // it's important to note that List could throw a promise in it's constructor
 // technically List should never actually throw a promise since the views that
 // it needs are preloaded before the Lists are initialised
 // but from an API perspective, it should be seen as if List could throw in it's constructor
 // so this function should only be called inside a react render
 function readAdminMeta() {
+  let hooks = {};
+  if (typeof hookView === 'function') {
+    [hooks] = readViews([hookView]);
+  }
   if (!hasInitialisedLists) {
     let viewsToLoad = new Set();
-    if (typeof hookView === 'function') {
-      viewsToLoad.add(hookView);
-    }
     Object.values(pageViews).forEach(view => {
       viewsToLoad.add(view);
     });
@@ -65,15 +71,11 @@ function readAdminMeta() {
     // we want to load all of the field controllers, views and hooks upfront so we don't have a waterfall of requests
     readViews([...viewsToLoad]);
     listKeys.forEach(key => {
-      const list = new List(lists[key], adminMeta, views[key]);
+      const list = new List(lists[key], adminMeta, views[key], getListHooks(hooks, key));
       listsByKey[key] = list;
       listsByPath[list.path] = list;
     });
     hasInitialisedLists = true;
-  }
-  let hooks = {};
-  if (typeof hookView === 'function') {
-    [hooks] = readViews([hookView]);
   }
   const hookPages = hooks.pages ? hooks.pages() : [];
   const adminMetaPages = adminMeta.pages ? adminMeta.pages : [];

@@ -6,8 +6,13 @@ export const gqlCountQueries = lists => gql`{
   ${lists.map(list => list.countQuery()).join('\n')}
 }`;
 
+const getFieldViews = (hookViews, fieldPath) => {
+  const fieldViews = hookViews.views || {};
+  return fieldViews[fieldPath] || {};
+};
+
 export default class List {
-  constructor(config, adminMeta, views) {
+  constructor(config, adminMeta, views, listHooks = {}) {
     this.config = config;
     this.adminMeta = adminMeta;
 
@@ -16,7 +21,13 @@ export default class List {
 
     this.fields = config.fields.map(fieldConfig => {
       const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
-      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
+      return new Controller(
+        fieldConfig,
+        this,
+        adminMeta,
+        views[fieldConfig.path],
+        getFieldViews(listHooks, fieldConfig.path)
+      );
     });
 
     this._fieldsByPath = arrayToObject(this.fields, 'path');
