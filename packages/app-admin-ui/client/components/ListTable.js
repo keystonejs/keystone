@@ -232,8 +232,10 @@ class ListRow extends Component {
 
           let content;
 
-          if (field.views.Cell) {
-            const [Cell] = field.adminMeta.readViews([field.views.Cell]);
+          if (field.hooks.Cell || field.views.Cell) {
+            const [Cell] = field.hooks.Cell
+              ? [field.hooks.Cell]
+              : field.adminMeta.readViews([field.views.Cell]);
 
             // TODO
             // fix this later, creating a react component on every render is really bad

@@ -292,7 +292,7 @@ export default class AddFilterPopout extends Component<Props, State> {
             />
           );
 
-          if (!field.views.Filter) {
+          if (!field.hooks.Filter && !field.views.Filter) {
             return (
               <div ref={ref} style={style}>
                 <Alert appearance="warning" variant="bold">
@@ -337,7 +337,9 @@ export default class AddFilterPopout extends Component<Props, State> {
               >
                 <Render>
                   {() => {
-                    let [Filter] = field.adminMeta.readViews([field.views.Filter]);
+                    let [Filter] = field.hooks.Filter
+                      ? [field.hooks.Filter]
+                      : field.adminMeta.readViews([field.views.Filter]);
 
                     return (
                       <Filter

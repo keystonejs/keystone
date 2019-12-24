@@ -142,7 +142,9 @@ class CreateItemModal extends Component {
                 return creatable.map((field, i) => (
                   <Render key={field.path}>
                     {() => {
-                      let [Field] = field.adminMeta.readViews([field.views.Field]);
+                      let [Field] = field.hooks.Field
+                        ? [field.hooks.Field]
+                        : field.adminMeta.readViews([field.views.Field]);
                       let onChange = useCallback(value => {
                         this.setState(({ item }) => ({
                           item: {

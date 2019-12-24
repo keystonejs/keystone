@@ -303,7 +303,9 @@ const ItemDetails = withRouter(
                 .map((field, i) => (
                   <Render key={field.path}>
                     {() => {
-                      const [Field] = field.adminMeta.readViews([field.views.Field]);
+                      const [Field] = field.hooks.Field
+                        ? [field.hooks.Field]
+                        : field.adminMeta.readViews([field.views.Field]);
 
                       let onChange = useCallback(
                         value => {

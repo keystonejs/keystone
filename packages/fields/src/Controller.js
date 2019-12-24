@@ -1,7 +1,7 @@
 import isEqual from 'lodash.isequal';
 
 export default class FieldController {
-  constructor(config, list, adminMeta, views) {
+  constructor(config, list, adminMeta, views, hooks) {
     this.config = config;
     this.label = config.label;
     this.path = config.path;
@@ -11,6 +11,7 @@ export default class FieldController {
     this.list = list;
     this.adminMeta = adminMeta;
     this.views = views;
+    this.hooks = hooks;
 
     if ('defaultValue' in config) {
       if (typeof config.defaultValue !== 'function') {
@@ -106,6 +107,9 @@ export default class FieldController {
 
   initFieldView = () => {
     const { Field } = this.views;
+    if (this.hooks.Field) {
+      return;
+    }
     if (!Field) {
       return;
     }
