@@ -99,7 +99,7 @@ export default class FieldController {
 
   initCellView = () => {
     const { Cell } = this.views;
-    if (!Cell) {
+    if (!Cell || this.hooks.Cell) {
       return;
     }
     this.adminMeta.readViews([Cell]);
@@ -107,10 +107,7 @@ export default class FieldController {
 
   initFieldView = () => {
     const { Field } = this.views;
-    if (this.hooks.Field) {
-      return;
-    }
-    if (!Field) {
+    if (!Field || this.hooks.Field) {
       return;
     }
     this.adminMeta.readViews([Field]);
@@ -118,7 +115,7 @@ export default class FieldController {
 
   initFilterView = () => {
     const { Filter } = this.views;
-    if (!Filter) {
+    if (!Filter || this.hooks.Filter) {
       return;
     }
     this.adminMeta.readViews([Filter]);
