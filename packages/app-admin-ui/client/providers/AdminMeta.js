@@ -55,6 +55,7 @@ function readAdminMeta() {
   let hooks = {};
   if (typeof hookView === 'function') {
     [hooks] = readViews([hookView]);
+    adminMeta.hooks = hooks;
   }
   if (!hasInitialisedLists) {
     let viewsToLoad = new Set();

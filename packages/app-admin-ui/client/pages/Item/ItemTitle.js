@@ -74,6 +74,12 @@ export let ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
             <AddNewItem />
           </div>
         )}
+        {(list.hooks.components &&
+          list.hooks.components.ItemTitle &&
+          list.hooks.components.ItemTitle.map(TitleComponent => (
+            <TitleComponent {...{ ItemId, AddNewItem, list }} />
+          ))) ||
+          null}
       </FlexGroup>
     </HeaderInset>
   );

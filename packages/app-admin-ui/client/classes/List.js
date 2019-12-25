@@ -15,6 +15,7 @@ export default class List {
   constructor(config, adminMeta, views, listHooks = {}) {
     this.config = config;
     this.adminMeta = adminMeta;
+    this.hooks = listHooks;
 
     // TODO: undo this
     Object.assign(this, config);
