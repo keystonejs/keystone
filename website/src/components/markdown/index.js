@@ -38,7 +38,14 @@ const Anchor = ({ href, ...props }) => {
     },
   };
 
-  if (!href || href.indexOf('http') === 0 || href.indexOf('#') === 0) {
+  if (
+    !href ||
+    href.indexOf('http') === 0 ||
+    href.indexOf('#') === 0 ||
+    // we want to use a normal anchor for anything on /static/ because
+    // it will be an image or something like that
+    href.indexOf('/static/') === 0
+  ) {
     return <a href={href} css={styles} {...props} />;
   }
   return <Link to={href} css={styles} {...props} />;
