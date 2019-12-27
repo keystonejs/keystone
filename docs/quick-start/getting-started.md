@@ -88,7 +88,7 @@ KeystoneJS provides a web interface for this API at this URL:
 
 <pre>
 	<code>
-		<a href="http://localhost:3000/admin/graphiql">http://localhost:3000/admin/graphiql</a>
+		<a href="http://localhost:3000/admin/api">http://localhost:3000/admin/api</a>
 	</code>
 </pre>
 
