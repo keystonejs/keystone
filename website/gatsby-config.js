@@ -27,7 +27,7 @@ async function getPackagePlugins() {
           // See `gatsby-node.js` for where it's used.
           name: config.name,
           path: `${dir}`,
-          ignore: [`**/**/CHANGELOG.md`],
+          ignore: [`**/**/CHANGELOG.md`, '**/*.{js,json}'],
         },
       })),
   ];
@@ -83,6 +83,12 @@ async function getGatsbyConfig() {
             default: require.resolve('./src/components/mdx-renderer.js'),
           },
           gatsbyRemarkPlugins: [
+            {
+              resolve: 'gatsby-remark-autolink-headers',
+              options: {
+                icon: false,
+              },
+            },
             { resolve: require.resolve('./plugins/gatsby-remark-fix-links') },
 
             {
@@ -94,10 +100,7 @@ async function getGatsbyConfig() {
             // This is needed to resolve svgs
             { resolve: 'gatsby-remark-copy-linked-files' },
           ],
-          rehypePlugins: [
-            require('rehype-slug'),
-            [require('@mapbox/rehype-prism'), { ignoreMissing: true }],
-          ],
+          rehypePlugins: [[require('@mapbox/rehype-prism'), { ignoreMissing: true }]],
         },
       },
       {
