@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-admin-ui",
   "description": "KeystoneJS Admin UI App.",
-  "version": "5.5.1",
+  "version": "5.5.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -36,7 +36,7 @@
     "@arch-ui/theme": "^0.0.6",
     "@arch-ui/tooltip": "^0.1.5",
     "@arch-ui/typography": "^0.0.11",
-    "@babel/core": "^7.7.4",
+    "@babel/core": "^7.7.7",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
     "@keystonejs/build-field-types": "^5.1.3",
