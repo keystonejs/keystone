@@ -4,6 +4,8 @@ const weakMemoize = require('@emotion/weak-memoize').default;
 
 let fileExtensions = ['png', 'gif'];
 
+let repoRoot = path.resolve(__dirname, '..', '..', '..');
+
 let buildFilenameToMdxNodeMap = weakMemoize(getNode =>
   weakMemoize(files => {
     let map = {};
@@ -49,19 +51,19 @@ module.exports = async function plugin({ markdownAST, markdownNode, files, getNo
   links.forEach(link => {
     let originalUrl = link.url;
     if (link.url.startsWith('#')) {
-      link.url = markdownNode.fileAbsolutePath + link.url;
+      link.url = path.relative(repoRoot, markdownNode.fileAbsolutePath) + link.url;
     }
 
     let url = new URL(link.url, 'https://keystonejs.com'); // note that the second arg here doesn't end up mattering because we only use the pathname
-    let absolutePath = path.join(path.resolve(__dirname, '..', '..', '..'), url.pathname);
+    let absolutePath = path.join(repoRoot, url.pathname);
     let mdxNode = filenameToMdxNodeMap[absolutePath];
     if (mdxNode === undefined) {
       throw new Error(
-        `Could not find file "${absolutePath}" when resolving link "${link.url}" from "${markdownNode.fileAbsolutePath}"`
+        `Could not find file "${absolutePath}" when resolving link "${originalUrl}" from "${markdownNode.fileAbsolutePath}"`
       );
     }
 
-    if (!mdxNode.fields.headingIds.includes(url.hash.replace(/^#/, ''))) {
+    if (url.hash !== '' && !mdxNode.fields.headingIds.includes(url.hash.replace(/^#/, ''))) {
       throw new Error(
         `"${
           markdownNode.fileAbsolutePath

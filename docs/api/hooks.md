@@ -129,7 +129,7 @@ class CustomFieldType extends Field {
 
 The return of `resolveInput` can be a `Promise` or an `Object`.
 It should resolve to the same structure as the `resolvedData`.
-The result is passed to [the next function in the execution order](/docs/guides/hooks.md#hook-execution-order).
+The result is passed to [the next function in the execution order](/docs/guides/hooks.md#execution-order).
 
 #### Arguments
 

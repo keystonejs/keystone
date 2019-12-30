@@ -32,7 +32,7 @@ KeystoneJS would generate the following queries:
 
 ### allUsers
 
-Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Search and Filtering](#search-and-filtering).
+Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, Limit and Sorting](#filter-limit-and-sorting).
 
 #### Usage
 
@@ -46,7 +46,7 @@ query {
 
 ### \_allUsersMeta
 
-Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [search and filtering](#search-and-filtering) parameters as the `allUsers` query.
+Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [filter, limit and sorting](#filter-limit-and-sorting) parameters as the `allUsers` query.
 
 #### Usage
 

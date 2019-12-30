@@ -40,13 +40,13 @@ Sometimes the information provided by the service is not enough to create a new
 account in KeystoneJS. For example, your application may require the user's age,
 or want to confirm the email address provided by the service.
 
-The [default Single Step Flow](#single-step-account-creation-authentication) can
+The [default Single Step Flow](#single-step-account-creation--authentication) can
 be extended to _pause_ account creation while we gather the extra information
 from the user. Pausing even works across page refreshes. This is known as _Multi
 Step Account Creation_.
 
 For example, when logging in with Google, the user will _(differences from [the
-Single Step Flow](#single-step-account-creation-authentication) are bolded)_:
+Single Step Flow](#single-step-account-creation--authentication) are bolded)_:
 
 - Click "Login with Google"
 - Be redirected to google.com's authentication page if not already logged in
