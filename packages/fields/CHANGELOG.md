@@ -1,5 +1,21 @@
 # @keystonejs/fields
 
+## 6.0.4
+
+### Patch Changes
+
+- [`85f21ced`](https://github.com/keystonejs/keystone/commit/85f21ced700e9630ce3d22590e4aec0694d621db) [#2122](https://github.com/keystonejs/keystone/pull/2122) - Fix for cloudinary images block error when serialized
+
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2), [`ed85a3d3`](https://github.com/keystonejs/keystone/commit/ed85a3d3776873893e9ba46f3b0c4d0f71bd6b6d)]:
+  - @keystonejs/adapter-knex@6.1.1
+  - @keystonejs/utils@5.1.2
+  - @arch-ui/drawer@0.0.14
+  - @arch-ui/popout@0.0.12
+
 ## 6.0.2
 
 ### Patch Changes

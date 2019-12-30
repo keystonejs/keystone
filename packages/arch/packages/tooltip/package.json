@@ -16,7 +16,7 @@
   "dependencies": {
     "@arch-ui/modal-utils": "^1.0.5",
     "@arch-ui/theme": "^0.0.6",
-    "@babel/runtime": "^7.7.4",
+    "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
     "flushable": "^1.0.0",

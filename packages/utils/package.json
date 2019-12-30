@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/utils",
   "description": "Common utility functions used throughout @keystonejs packages.",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -12,7 +12,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.7.4",
+    "@babel/runtime": "^7.7.7",
     "p-is-promise": "^3.0.0",
     "p-lazy": "^3.0.0",
     "p-reflect": "^2.1.0",

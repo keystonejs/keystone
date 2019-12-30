@@ -1,5 +1,20 @@
 # @keystonejs/adapter-knex
 
+## 6.1.2
+
+### Patch Changes
+
+- [`a9a00f98`](https://github.com/keystonejs/keystone/commit/a9a00f9815b872ca378a0c32295ad4fc17ded067) [#2125](https://github.com/keystonejs/keystone/pull/2125) - Fix syntax error causing hard crash on boot in Node
+
+## 6.1.1
+
+### Patch Changes
+
+- [`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2) [#2112](https://github.com/keystonejs/keystone/pull/2112) - Added knex adaptar database version validiation
+- Updated dependencies [[`ae078619`](https://github.com/keystonejs/keystone/commit/ae0786197713db779791bf4da5d92a144d46fe6f), [`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2), [`ae078619`](https://github.com/keystonejs/keystone/commit/ae0786197713db779791bf4da5d92a144d46fe6f)]:
+  - @keystonejs/keystone@5.4.0
+  - @keystonejs/utils@5.1.2
+
 ## 6.1.0
 
 ### Minor Changes

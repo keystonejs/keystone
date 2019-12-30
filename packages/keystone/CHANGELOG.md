@@ -1,5 +1,18 @@
 # @keystonejs/keystone
 
+## 5.4.0
+
+### Minor Changes
+
+- [`ae078619`](https://github.com/keystonejs/keystone/commit/ae0786197713db779791bf4da5d92a144d46fe6f) [#2119](https://github.com/keystonejs/keystone/pull/2119) - Allow configuring cors & pinoOptions for default server by adding them to the export in index.js
+
+### Patch Changes
+
+- [`ae078619`](https://github.com/keystonejs/keystone/commit/ae0786197713db779791bf4da5d92a144d46fe6f) [#2119](https://github.com/keystonejs/keystone/pull/2119) - Document cors & pinoOptions params for keystone.prepare()
+- Updated dependencies [[`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2)]:
+  - @keystonejs/utils@5.1.2
+  - @keystonejs/fields@6.0.3
+
 ## 5.3.0
 
 ### Minor Changes
