@@ -76,7 +76,7 @@ async function getGatsbyConfig() {
         },
       },
       {
-        resolve: `gatsby-mdx`,
+        resolve: `gatsby-plugin-mdx`,
         options: {
           extensions: ['.mdx', '.md'],
           defaultLayouts: {
@@ -86,7 +86,7 @@ async function getGatsbyConfig() {
             {
               resolve: 'gatsby-remark-autolink-headers',
               options: {
-                icon: false,
+                icon: false, // we include our own icon
               },
             },
             { resolve: require.resolve('./plugins/gatsby-remark-fix-links') },

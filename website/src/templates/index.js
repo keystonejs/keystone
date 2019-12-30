@@ -35,7 +35,7 @@ export default function Template({
 }) {
   let navData = useNavData();
 
-  const { code, fields } = mdx;
+  const { body, fields } = mdx;
   const { siteMetadata } = site;
   const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
   const title = `${
@@ -94,7 +94,7 @@ export default function Template({
               <main>
                 <SkipNavContent />
                 <MDXProvider components={mdComponents}>
-                  <MDXRenderer>{code.body}</MDXRenderer>
+                  <MDXRenderer>{body}</MDXRenderer>
                 </MDXProvider>
                 {renderNavSection(fields.navGroup)}
               </main>
@@ -217,10 +217,8 @@ const Content = props => (
 export const pageQuery = graphql`
   query($mdPageId: String!) {
     mdx(id: { eq: $mdPageId }) {
-      rawBody
-      code {
-        body
-      }
+      body
+
       fields {
         heading
         description
