@@ -568,7 +568,7 @@ module.exports = class List {
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
-      if (field.config.cacheHint) {
+      if (field.config.cacheHint && info && info.cacheControl) {
         info.cacheControl.setCacheHint(field.config.cacheHint);
       }
 
@@ -1048,7 +1048,7 @@ module.exports = class List {
   }
 
   authenticatedQuery(context, info) {
-    if (info) {
+    if (info && info.cacheControl) {
       info.cacheControl.setCacheHint({ scope: 'PRIVATE' });
     }
 
