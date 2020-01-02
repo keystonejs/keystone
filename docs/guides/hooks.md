@@ -5,7 +5,7 @@ title: Hooks
 
 # Hooks
 
-Hooks give solution developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
+Hooks give developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
 
 This document provides an overview of the concepts, patterns and function of the Keystone hook system.
 The [Hooks API docs](/api/hooks.md) describe the specific arguments and usage information.
