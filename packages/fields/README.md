@@ -52,7 +52,7 @@ Fields share some standard configuration options.
 | Option         | Type                                | Default     | Description                                                                             |
 | -------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
 | `type`         | `FieldType`                         | (required)  |                                                                                         |
-| `schemaDoc`    | `Boolean`                           | `false`     | A description for the field used in the AdminUI.                                        |
+| `schemaDoc`    | `String`                            | `false`     | A description for the field used in the AdminUI.                                        |
 | `defaultValue` | `Boolean` \| `Function`             | `undefined` | A default value of the field.                                                           |
 | `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
