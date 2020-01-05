@@ -111,7 +111,7 @@ const fileAdapter = new S3Adapter({
     Metadata: {
       "keystone_id": id
     }
-  }
+  })
 });
 ```
 
