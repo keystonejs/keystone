@@ -125,8 +125,8 @@ A few of the main stumbling blocks are:
   for create operations `existingItem` will be `undefined`.
 - As per the table above, the `delete` operations have no hook set for the _input resolution_ stage.
   This operation doesn't accept any input (other than the target IDs).
-- Keystone does not currently implement `read` hooks
-- field type hooks and field hooks are run in parallel
+- Keystone does not currently implement `read` hooks.
+- Field type hooks and field hooks run in parallel.
 
 These nuances aren't bugs per se -- they generally exist for good reason --
 but they can make understanding the hook system difficult.
