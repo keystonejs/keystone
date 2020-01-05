@@ -10,7 +10,7 @@
   },
   "scripts": {
     "go": "node fixtures/index.js"
-  }, 
+  },
   "repository": "https://github.com/keystonejs/keystone.git",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
