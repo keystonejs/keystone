@@ -10,10 +10,10 @@
   "dependencies": {
     "@keystonejs/utils": "^5.1.0",
     "cuid": "^2.1.6",
-    "lodash.omitby": "^4.6.0",
-    "mongodb-memory-server": "6.1.1"
+    "lodash.omitby": "^4.6.0"
   },
   "devDependencies": {
-    "mongodb": "^3.3.3"
+    "mongodb": "^3.3.3",
+    "mongodb-memory-server": "^6.1.1"
   }
 }
