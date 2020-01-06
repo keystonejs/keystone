@@ -122,7 +122,10 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
     },
     author: {
       type: Relationship,
@@ -153,7 +156,10 @@ keystone.createList('Post', {
         rating
       }`,
       resolver: async () => {
-        const data = [{ title: 'A movie', rating: 2 }, { title: 'Another movie', rating: 4 }];
+        const data = [
+          { title: 'A movie', rating: 2 },
+          { title: 'Another movie', rating: 4 },
+        ];
         return data.map(({ title, rating }) => ({ title, rating }));
       },
     },
