@@ -1,5 +1,24 @@
 # @keystonejs/demo-project-meetup
 
+## 5.0.4
+
+### Patch Changes
+
+- [`b265b435`](https://github.com/keystonejs/keystone/commit/b265b4358287d4b3543da676fd34c99dc0f3b8a8) [#2140](https://github.com/keystonejs/keystone/pull/2140) - Moved next.js `static` directory to `public/static`.
+
+* [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29) [#2189](https://github.com/keystonejs/keystone/pull/2189) - Upgraded prettier to 1.19.1 and formatted code accordingly.
+
+- [`83ef6bd3`](https://github.com/keystonejs/keystone/commit/83ef6bd3fe9aeab3f80536cd98c3e84a6046fe03) [#2141](https://github.com/keystonejs/keystone/pull/2141) - Fixed `next.js` warning for `<Container />` in \_app.js.
+
+* [`f0235b7d`](https://github.com/keystonejs/keystone/commit/f0235b7df9d5ee3118c40a056a559d59f186a518) [#2149](https://github.com/keystonejs/keystone/pull/2149) - Updated `eslint` dependencies.
+* Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104), [`05d07adf`](https://github.com/keystonejs/keystone/commit/05d07adf84059ff565cd2394f68d71d92e657485), [`78193f9c`](https://github.com/keystonejs/keystone/commit/78193f9c9d93655fb0d4b8dc494fbe4c622a4d64)]:
+  - @keystonejs/app-admin-ui@5.5.3
+  - @keystonejs/fields-wysiwyg-tinymce@5.0.4
+  - @keystonejs/fields@6.0.5
+  - @keystonejs/file-adapters@5.3.1
+  - @keystonejs/keystone@5.4.1
+  - @keystonejs/adapter-mongoose@5.1.4
+
 ## 5.0.3
 
 ### Patch Changes
