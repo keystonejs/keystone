@@ -95,7 +95,7 @@
     "mongodb": "^3.3.3",
     "p-is-promise": "^3.0.0",
     "pino-colada": "^1.4.5",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "prop-types": "^15.7.2",
     "pug": "2.0.4",
     "react": "^16.12.0",
