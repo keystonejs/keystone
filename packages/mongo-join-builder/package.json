@@ -14,6 +14,6 @@
   },
   "devDependencies": {
     "mongodb": "^3.3.3",
-    "mongodb-memory-server": "^6.0.1"
+    "mongodb-memory-server": "^6.1.1"
   }
 }
