@@ -56,7 +56,8 @@ const Profile = ({ user }) => {
     updatingUser ||
     (formState.touched.email && !formState.validity.email) ||
     (formState.touched.password && !formState.validity.password) ||
-    (!formState.values.password || !formState.values.confirmPassword);
+    !formState.values.password ||
+    !formState.values.confirmPassword;
 
   const handleSubmit = useCallback(
     async event => {

@@ -103,15 +103,16 @@ const fileAdapter = new S3Adapter({
   region: 'us-west-2',
   bucket: 'bucket-name',
   folder: S3_PATH,
-  publicUrl: ({ id, filename, _meta }) => `https://${CF_DISTRIBUTION_ID}.cloudfront.net${CAT_FOLDER}/${filename}`,
+  publicUrl: ({ id, filename, _meta }) =>
+    `https://${CF_DISTRIBUTION_ID}.cloudfront.net${CAT_FOLDER}/${filename}`,
   s3Options: {
-    apiVersion: '2006-03-01'
+    apiVersion: '2006-03-01',
   },
   uploadParams: ({ filename, id, mimetype, encoding }) => ({
     Metadata: {
-      "keystone_id": id
-    }
-  }
+      keystone_id: id,
+    },
+  }),
 });
 ```
 

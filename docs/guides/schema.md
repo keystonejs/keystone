@@ -536,15 +536,15 @@ keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     createdBy: { type: Relationship, ref: 'User' },
-  }
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist { type: Relationship, ref: 'Todo', many: true },
-  }
+    todolist: { type: Relationship, ref: 'Todo', many: true },
+  },
 });
 ```
 
@@ -626,15 +626,15 @@ keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     createdBy: { type: Relationship, ref: 'User' },
-  }
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist { type: Relationship, ref: 'Todo', many: true },
-  }
+    todolist: { type: Relationship, ref: 'Todo', many: true },
+  },
 });
 ```
 
@@ -803,15 +803,15 @@ keystone.createList('Todo', {
     task: { type: Text },
     // The `ref` option now includes which field to update
     createdBy: { type: Relationship, ref: 'User.todolist' },
-  }
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist { type: Relationship, ref: 'Todo.createdBy', many: true },
-  }
+    todolist: { type: Relationship, ref: 'Todo.createdBy', many: true },
+  },
 });
 ```
 

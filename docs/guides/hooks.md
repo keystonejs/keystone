@@ -29,14 +29,14 @@ These stages are intended to be used for different purposes; they help organise 
 
 ### Operation
 
-Hooks are available for four of the core operations:
+Hooks are available for these core operations:
 
 - `create`
 - `update`
 - `delete`
 
 These operations are reused used for both "single" and "many" modes.
-Eg. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
+E.g. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
 Hooks for these operations have different signatures due to the nature of the operations being performed.
 See the [Hook API docs](/docs/api/hooks.md) for specifics.
@@ -60,7 +60,7 @@ Keystone recognises three _types_ of hook:
 For most _stage_ and _operation_ combinations, different functions (hooks) can be supplied for each _hook type_.
 This group of distinct but related hooks are referred to as a _hook set_.
 
-Eg. a `beforeDelete` function could be supplied for a list, several specific fields on the list and a field type used by the list.
+E.g. a `beforeDelete` function could be supplied for a list, several specific fields on the list and a field type used by the list.
 All hooks in a hook set share the same functional signature but are invoked at different times.
 See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order section](#intra-hook-execution-order) for more information.
 
@@ -117,7 +117,7 @@ Within each hook set, the different [hook types](#hook-type) are invoked in a sp
 
 ## Gotchas
 
-The hook system is a powerful but it's breadth and flexibility introduce some complexity.
+The hook system is powerful but it's breadth and flexibility introduce some complexity.
 A few of the main stumbling blocks are:
 
 - The `create` and `update` operations share a single set of hooks.
@@ -125,8 +125,8 @@ A few of the main stumbling blocks are:
   for create operations `existingItem` will be `undefined`.
 - As per the table above, the `delete` operations have no hook set for the _input resolution_ stage.
   This operation doesn't accept any input (other than the target IDs).
-- Keystone does not currently implement `read` hooks
-- field type hooks and field hooks are run in parallel
+- Keystone does not currently implement `read` hooks.
+- Field type hooks and field hooks run in parallel.
 
 These nuances aren't bugs per se -- they generally exist for good reason --
 but they can make understanding the hook system difficult.
