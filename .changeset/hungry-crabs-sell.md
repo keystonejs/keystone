@@ -2,4 +2,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Fixed configureExpress()
+Fixed `configureExpress()`.

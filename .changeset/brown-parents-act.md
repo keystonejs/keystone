@@ -3,4 +3,4 @@
 '@keystonejs/test-utils': patch
 ---
 
-Unit tests on linux mint machines were fixed.
+Fixed the unit tests on linux mint machines.
