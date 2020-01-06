@@ -90,7 +90,12 @@ keystone
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    app.use(middlewares).listen(3000);
+    app.set(/* ... */);
+    app.use(/* ... */);
+    // must use the app instance as middleware to preserve express configuration.
+    express()
+      .use([...middlewares, app])
+      .listen(3000);
   });
 ```
 
@@ -125,7 +130,12 @@ keystone
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
-    app.use(middlewares).listen(3000);
+    app.set(/* ... */);
+    app.use(/* ... */);
+    // must use the app instance as middleware to preserve express configurations.
+    express()
+      .use([...middlewares, app])
+      .listen(3000);
   });
 ```
 
@@ -163,7 +173,12 @@ const preparations = [new GraphQLApp(), new AdminUIApp()].map(app =>
 Promise.all(preparations).then(async middlewares => {
   await keystone.connect();
   const app = express();
-  app.use(middlewares).listen(3000);
+  app.set(/* ... */);
+  app.use(/* ... */);
+  // must use the app instance as middleware to preserve express configurations.
+  express()
+    .use([...middlewares, app])
+    .listen(3000);
 });
 ```
 
@@ -195,7 +210,10 @@ const setup = keystone
     await keystone.connect();
     const app = express();
     app.use(middlewares);
-    return serverless(app);
+    app.set(/* ... */);
+    app.use(/* ... */);
+    // must use the app instance as middleware to preserve express configurations.
+    return serverless(express().use([...middlewares, app]));
   });
 
 module.exports.handler = async (event, context) => {
