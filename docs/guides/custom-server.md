@@ -39,6 +39,7 @@ custom server. The KeystoneJS CLI accepts an additional `configureExpress` expor
 module.exports = {
   configureExpress: app => {
     /* ... */
+    return app;
   },
 };
 ```
@@ -50,6 +51,7 @@ before any middlewares are set up, so you can perform any Express configuration 
 module.exports = {
   configureExpress: app => {
     app.set('view engine', 'pug');
+    return app;
   },
 };
 ```

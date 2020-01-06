@@ -95,12 +95,12 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const {
     keystone,
     apps = [],
-    configureExpress = () => {},
+    configureExpress = () => null,
     cors,
     pinoOptions,
   } = require(path.resolve(entryFile));
 
-  configureExpress(app);
+  const customApp = configureExpress(express());
 
   spinner.succeed('Initialised Keystone instance');
   spinner.start('Connecting to database');
@@ -116,7 +116,7 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   spinner.succeed('Connected to database');
   spinner.start('Preparing to accept requests');
 
-  app.use(middlewares);
+  app.use([...middlewares, ...(customApp ? [customApp] : [])]);
   status = 'started';
   spinner.succeed(chalk.green.bold(`Keystone instance is ready at http://localhost:${port} 🚀`));
 
