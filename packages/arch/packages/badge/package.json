@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/badge",
   "description": "Badge Component used in @keystonejs Admin UI.",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/badge.cjs.js",
@@ -12,7 +12,7 @@
     "react": "^16.12.0"
   },
   "dependencies": {
-    "@arch-ui/theme": "0.0.6",
+    "@arch-ui/theme": "0.0.7",
     "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22"
