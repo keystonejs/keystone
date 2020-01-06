@@ -5,7 +5,7 @@ import Router from 'next/router';
 import { jsx } from '@emotion/core';
 
 import Signin from '../components/auth/signin';
-import { useAuth } from '../lib/authetication';
+import { useAuth } from '../lib/authentication';
 import { Container, H1 } from '../primitives';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';

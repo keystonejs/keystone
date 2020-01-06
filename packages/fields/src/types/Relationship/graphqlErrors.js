@@ -1,7 +1,7 @@
 import { createError } from 'apollo-errors';
 
 export const ParameterError = createError('ParameterError', {
-  message: 'Incorrect paramters supplied',
+  message: 'Incorrect parameters supplied',
   options: {
     showPath: true,
   },

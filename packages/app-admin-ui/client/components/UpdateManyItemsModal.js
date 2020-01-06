@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
-import { Mutation } from 'react-apollo';
+import { useMutation } from '@apollo/react-hooks';
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
@@ -10,6 +10,7 @@ import { omit, arrayToObject, countArrays } from '@keystonejs/utils';
 import { LoadingIndicator } from '@arch-ui/loading';
 
 import { validateFields } from '../util';
+import CreateItemModal from './CreateItemModal';
 
 let Render = ({ children }) => children();
 
@@ -178,6 +179,7 @@ class UpdateManyModal extends Component {
                         warnings={validationWarnings[field.path] || []}
                         onChange={onChange}
                         renderContext="dialog"
+                        CreateItemModal={CreateItemModal}
                       />
                     ),
                     [
@@ -199,15 +201,9 @@ class UpdateManyModal extends Component {
   }
 }
 
-export default class UpdateManyModalWithMutation extends Component {
-  render() {
-    const { list } = this.props;
-    return (
-      <Mutation mutation={list.updateManyMutation}>
-        {(updateItem, { loading }) => (
-          <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
-        )}
-      </Mutation>
-    );
-  }
+export default function UpdateManyModalWithMutation(props) {
+  const { list } = props;
+  const [updateItem, { loading }] = useMutation(list.updateManyMutation);
+
+  return <UpdateManyModal updateItem={updateItem} isLoading={loading} {...props} />;
 }

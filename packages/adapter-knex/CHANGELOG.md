@@ -1,5 +1,75 @@
 # @keystonejs/adapter-knex
 
+## 6.1.3
+
+### Patch Changes
+
+- [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29) [#2189](https://github.com/keystonejs/keystone/pull/2189) - Upgraded prettier to 1.19.1 and formatted code accordingly.
+
+* [`4cd4499d`](https://github.com/keystonejs/keystone/commit/4cd4499d9d19a5b379b2ae6ab1028c008248629a) [#2190](https://github.com/keystonejs/keystone/pull/2190) - Upgraded `knex` to `^0.20.6` and `pg` to `^7.17.0`.
+* Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`05d07adf`](https://github.com/keystonejs/keystone/commit/05d07adf84059ff565cd2394f68d71d92e657485), [`78193f9c`](https://github.com/keystonejs/keystone/commit/78193f9c9d93655fb0d4b8dc494fbe4c622a4d64)]:
+  - @keystonejs/fields-auto-increment@5.0.3
+  - @keystonejs/utils@5.1.3
+  - @keystonejs/keystone@5.4.1
+
+## 6.1.2
+
+### Patch Changes
+
+- [`a9a00f98`](https://github.com/keystonejs/keystone/commit/a9a00f9815b872ca378a0c32295ad4fc17ded067) [#2125](https://github.com/keystonejs/keystone/pull/2125) - Fix syntax error causing hard crash on boot in Node
+
+## 6.1.1
+
+### Patch Changes
+
+- [`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2) [#2112](https://github.com/keystonejs/keystone/pull/2112) - Added knex adaptar database version validiation
+- Updated dependencies [[`ae078619`](https://github.com/keystonejs/keystone/commit/ae0786197713db779791bf4da5d92a144d46fe6f), [`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2), [`ae078619`](https://github.com/keystonejs/keystone/commit/ae0786197713db779791bf4da5d92a144d46fe6f)]:
+  - @keystonejs/keystone@5.4.0
+  - @keystonejs/utils@5.1.2
+
+## 6.1.0
+
+### Minor Changes
+
+- [`045af44`](https://github.com/keystonejs/keystone/commit/045af44b1a9fa186dbc04c1d05b07a13ba58e3b0) [#2106](https://github.com/keystonejs/keystone/pull/2106) - Removed logic that (incorrectly) auto-detects when the DB needs to be setup (and nukes existing data).
+
+## 6.0.0
+
+### Major Changes
+
+- [`44b2bc93`](https://github.com/keystonejs/keystone/commit/44b2bc938fd508ac75f6a9cbb364006b9f122711) [#1975](https://github.com/keystonejs/keystone/pull/1975) Thanks [@timleslie](https://github.com/timleslie)! - Removed `KnexListAdapter.createForeignKeys()` method.
+
+* [`a3fdc50e`](https://github.com/keystonejs/keystone/commit/a3fdc50ebb61b38814816804b04d7cb4bc0fc70a) [#1972](https://github.com/keystonejs/keystone/pull/1972) Thanks [@timleslie](https://github.com/timleslie)! - `KnexListAdapter.realKeys` are now computed in the `postConnect()` phase, rather than at object instantiation.
+
+- [`da62aa4a`](https://github.com/keystonejs/keystone/commit/da62aa4a0af9cf27fd59fdcfb6b960e24999254d) [#1971](https://github.com/keystonejs/keystone/pull/1971) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `KnexListAdapter.createAdjacencyTable()` method.
+
+### Patch Changes
+
+- [`8188d76c`](https://github.com/keystonejs/keystone/commit/8188d76cb3f5d3e112ef95fd4e1887db9a520d9d) [#1980](https://github.com/keystonejs/keystone/pull/1980) Thanks [@timleslie](https://github.com/timleslie)! - Removed `KnexRelationshipInterface.createForeignKey()`.
+
+* [`0acdae17`](https://github.com/keystonejs/keystone/commit/0acdae17c4b2bcb234a314ad1aba311981affc8f) [#1999](https://github.com/keystonejs/keystone/pull/1999) Thanks [@timleslie](https://github.com/timleslie)! - Consolidated the code paths for `create` and `update` operations for better internal consistency.
+
+- [`5540771e`](https://github.com/keystonejs/keystone/commit/5540771e52b5cb1aa33c0486dede7f2f9bc0944f) [#2006](https://github.com/keystonejs/keystone/pull/2006) Thanks [@timleslie](https://github.com/timleslie)! - Consolidated implementation of all `listAdapter.find\*()` methods to use the `itemsQuery()` API for internal consistency.
+
+* [`860dabec`](https://github.com/keystonejs/keystone/commit/860dabecacdf81aa1563cea9a5d50add8623dac1) [#1973](https://github.com/keystonejs/keystone/pull/1973) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug which generated bad queries for deeply nested queries.
+
+- [`721472e1`](https://github.com/keystonejs/keystone/commit/721472e1801584be5807d6637c646b1755366d3e) [#1976](https://github.com/keystonejs/keystone/pull/1976) Thanks [@timleslie](https://github.com/timleslie)! - Simplified code which performs update operations.
+- Updated dependencies [[`77056ebd`](https://github.com/keystonejs/keystone/commit/77056ebdb31e58d27372925e8e24311a8c7d9e33), [`733ac847`](https://github.com/keystonejs/keystone/commit/733ac847cab488dc92a30e7b458191d750fd5a3d), [`e68fc43b`](https://github.com/keystonejs/keystone/commit/e68fc43ba006f9c958f9c81ae20b230d05c2cab6), [`d4d89836`](https://github.com/keystonejs/keystone/commit/d4d89836700413c1da2b76e9b82b649c2cac859d), [`5540771e`](https://github.com/keystonejs/keystone/commit/5540771e52b5cb1aa33c0486dede7f2f9bc0944f), [`1f4dc33d`](https://github.com/keystonejs/keystone/commit/1f4dc33d8a5ac4e38427eb215a7a8bc3504ae153), [`ee6fbcb2`](https://github.com/keystonejs/keystone/commit/ee6fbcb264a640f58332c50a2f502a4380c0d071), [`6a348b93`](https://github.com/keystonejs/keystone/commit/6a348b93607c305c4ba61c1406a4acd508f33f64)]:
+  - @keystonejs/keystone@5.3.0
+  - @keystonejs/fields-auto-increment@5.0.1
+
+## 5.1.0
+
+### Minor Changes
+
+- [`b68b74f3`](https://github.com/keystonejs/keystone/commit/b68b74f3e77ebd91711c72aac369ab2d5905cb36) [#1903](https://github.com/keystonejs/keystone/pull/1903) Thanks [@timleslie](https://github.com/timleslie)! - Added `.tableName` property to `KnexListAdapter`.
+
+### Patch Changes
+
+- [`0154f892`](https://github.com/keystonejs/keystone/commit/0154f892a1771b4f88b35f34a1ba47eaf1721dfe) [#1914](https://github.com/keystonejs/keystone/pull/1914) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded `pg` and `knex` dependencies.
+- Updated dependencies [[`45fd7ab8`](https://github.com/keystonejs/keystone/commit/45fd7ab899655364d0071c0d276d188378944ff5), [`b0756c65`](https://github.com/keystonejs/keystone/commit/b0756c65525625919c72364d8cefc32d864c7c0e), [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a)]:
+  - @keystonejs/keystone@5.1.1
+
 ## 5.0.1
 
 ### Patch Changes

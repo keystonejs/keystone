@@ -184,7 +184,15 @@ describe('utils', () => {
   });
 
   test('flatten', () => {
-    const a = [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]];
+    const a = [
+      [1, 2, 3],
+      [4, 5],
+      6,
+      [
+        [7, 8],
+        [9, 10],
+      ],
+    ];
     expect(flatten([])).toEqual([]);
     expect(flatten([1, 2, 3])).toEqual([1, 2, 3]);
     expect(flatten([[1, 2, 3]])).toEqual([1, 2, 3]);
@@ -195,16 +203,17 @@ describe('utils', () => {
     expect(flatMap([])).toEqual([]);
     expect(flatMap([1, 2, 3])).toEqual([1, 2, 3]);
     expect(flatMap([[1, 2, 3]])).toEqual([1, 2, 3]);
-    expect(flatMap([[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]])).toEqual([
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      [7, 8],
-      [9, 10],
-    ]);
+    expect(
+      flatMap([
+        [1, 2, 3],
+        [4, 5],
+        6,
+        [
+          [7, 8],
+          [9, 10],
+        ],
+      ])
+    ).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
     expect(flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals)).toEqual([2, 2, 3]);
   });
 
@@ -219,7 +228,11 @@ describe('utils', () => {
 
   test('zipObj', () => {
     const obj = { foo: [1, 2, 3], bar: [4, 5, 6] };
-    expect(zipObj(obj)).toEqual([{ foo: 1, bar: 4 }, { foo: 2, bar: 5 }, { foo: 3, bar: 6 }]);
+    expect(zipObj(obj)).toEqual([
+      { foo: 1, bar: 4 },
+      { foo: 2, bar: 5 },
+      { foo: 3, bar: 6 },
+    ]);
   });
 
   test('mergeWhereClause', () => {
@@ -240,7 +253,12 @@ describe('utils', () => {
     where = { b: 20, c: 30 };
     expect(mergeWhereClause(args, where)).toEqual({
       a: 1,
-      where: { AND: [{ b: 2, c: 3, d: 4 }, { b: 20, c: 30 }] },
+      where: {
+        AND: [
+          { b: 2, c: 3, d: 4 },
+          { b: 20, c: 30 },
+        ],
+      },
     });
 
     args = { a: 1, where: {} };
@@ -257,7 +275,12 @@ describe('utils', () => {
     const where = { d: 20, c: ['3', '4'] };
     expect(mergeWhereClause(args, where)).toEqual({
       a: 1,
-      where: { AND: [{ b: 2, c: ['1', '2'] }, { d: 20, c: ['3', '4'] }] },
+      where: {
+        AND: [
+          { b: 2, c: ['1', '2'] },
+          { d: 20, c: ['3', '4'] },
+        ],
+      },
     });
   });
 

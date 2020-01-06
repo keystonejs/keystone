@@ -13,7 +13,7 @@ _Note on terminology_:
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
   The specifics of how this is done is outside the scope of this document.
-  See [Access Control](/guides/access-control) for more.
+  See [Access Control](/docs/guides/access-control.md) for more.
 
 ## Admin UI
 
@@ -22,7 +22,7 @@ Username / Password authentication can be enabled on the Admin UI.
 > NOTE: Admin Authentication will only restrict access to the Admin _UI_.
 >
 > To also restrict access to the _API_,
-> you must setup [Access Control](/guides/access-control) config.
+> you must setup [Access control](/docs/guides/access-control.md) config.
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
@@ -30,11 +30,14 @@ list used for authentication in `index.js`:
 Here, we will setup a `PasswordAuthStrategy` instance:
 
 ```javascript
+const { Keystone } = require('@keystonejs/keystone');
 const { Text, Password } = require('@keystonejs/fields');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
-const keystone = keystone.createList('User', {
+const keystone = new Keystone();
+
+keystone.createList('User', {
   // ...
   fields: {
     username: { type: Text },
@@ -71,7 +74,7 @@ the `new AdminUIApp()` call:
 + const admin = new AdminUIApp({ });
 ```
 
-Second, disable access control by removing `access` from the 
+Second, disable access control by removing `access` from the
 `keystone.createList('User', ...` call:
 
 ```diff
@@ -104,4 +107,4 @@ Finally; login with the newly created `User`'s credentials.
 Adding Authentication as above will only enable login to the Admin UI, it _will
 not_ restrict API access.
 
-**To restrict API access, you must setup [Access Control](/guides/access-control).**
+**To restrict API access, you must setup [Access control](/docs/guides/access-control.md).**

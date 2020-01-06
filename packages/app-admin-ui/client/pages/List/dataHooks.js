@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { __RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
@@ -91,7 +91,7 @@ export function useListQuery(listKey) {
 
   // Query prep
   const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
-  const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
+  const orderBy = sortBy ? `${sortBy.field.path}_${sortBy.direction}` : null;
   const first = pageSize;
   const skip = (currentPage - 1) * pageSize;
 

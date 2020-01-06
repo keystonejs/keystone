@@ -1,6 +1,6 @@
 <!--[meta]
-section: road-map
-title: Road Map
+section: roadmap
+title: Roadmap
 order: 1
 [meta]-->
 
@@ -46,7 +46,7 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 - Options pages ([#1639](https://github.com/keystonejs/keystone-5/issues/1639))
 - Better seeding of initial data ([#301](https://github.com/keystonejs/keystone-5/issues/301))
 - Migrations ([#299](https://github.com/keystonejs/keystone-5/issues/299))
-- Virtual\Dynamic fields ([#1117](https://github.com/keystonejs/keystone-5/issues/1117))
+- Virtual\\Dynamic fields ([#1117](https://github.com/keystonejs/keystone-5/issues/1117))
 - Repeating sections ([#313](https://github.com/keystonejs/keystone-5/issues/313), [#195](https://github.com/keystonejs/keystone-5/issues/195))
 - Ability to deploy the Admin UI to a static server ([#734](https://github.com/keystonejs/keystone-5/issues/734), [#1258](https://github.com/keystonejs/keystone-5/issues/1258), [#1257](https://github.com/keystonejs/keystone-5/issues/1257))
 - Add a DateRange field type ([#215](https://github.com/keystonejs/keystone-5/issues/215))
@@ -67,7 +67,6 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 - Creating custom field types ([#1054](https://github.com/keystonejs/keystone-5/issues/1054), [#1218](https://github.com/keystonejs/keystone-5/issues/1218))
 - Creating new adapters
 - Error messages ([#1659](https://github.com/keystonejs/keystone-5/issues/1659))
-- Upgrade to Next.js v9 ([#1670](https://github.com/keystonejs/keystone-5/issues/1670))
 - Improve the speed of our CI ([#1672](https://github.com/keystonejs/keystone-5/issues/1672))
 
 ### Planning

@@ -1,4 +1,3 @@
-// @flow
 /* eslint-disable import/no-extraneous-dependencies */
 import path from 'path';
 import * as fs from 'fs-extra';
@@ -9,14 +8,12 @@ import spawn from 'spawndamnit';
 let f = fixturez(__dirname);
 
 require('chalk').enabled = false;
-// $FlowFixMe
 console.error = jest.fn();
-// $FlowFixMe
 console.log = jest.fn();
 
 export let logMock = {
-  log: ((console.log: any): JestMockFn<any, void>),
-  error: ((console.error: any): JestMockFn<any, void>),
+  log: console.log,
+  error: console.error,
 };
 
 afterEach(() => {
@@ -27,21 +24,21 @@ afterEach(() => {
 import init from '../src/init';
 import { confirms } from '../src/messages';
 
-export async function initBasic(directory: string) {
+export async function initBasic(directory) {
   confirms.writeMainModuleFields.mockReturnValue(true);
   await init(directory);
   confirms.writeMainModuleFields.mockReset();
 }
 
-function getPkgPath(tmpPath: string) {
+function getPkgPath(tmpPath) {
   return path.join(tmpPath, 'package.json');
 }
 
-export async function getPkg(filepath: string): Object {
+export async function getPkg(filepath) {
   return JSON.parse(await fs.readFile(path.join(filepath, 'package.json'), 'utf-8'));
 }
 
-export async function modifyPkg(tmpPath: string, cb: Object => mixed) {
+export async function modifyPkg(tmpPath, cb) {
   let json = await getPkg(tmpPath);
   await cb(json);
 
@@ -49,12 +46,8 @@ export async function modifyPkg(tmpPath: string, cb: Object => mixed) {
   await fs.writeFile(pkgPath, JSON.stringify(json, null, 2));
 }
 
-export let createPackageCheckTestCreator = (doResult: string => Promise<void>) => {
-  let createTestCreator = testFn => async (
-    testName: string,
-    entrypoints: { [key: string]: Object },
-    cb: (doThing: () => Promise<{ [key: string]: Object }>) => Promise<void>
-  ) => {
+export let createPackageCheckTestCreator = doResult => {
+  let createTestCreator = testFn => async (testName, entrypoints, cb) => {
     testFn(testName, async () => {
       let tmpPath = f.copy('template-simple-package');
       let things = Object.keys(entrypoints);
@@ -89,7 +82,7 @@ export let createPackageCheckTestCreator = (doResult: string => Promise<void>) =
   return testFn;
 };
 
-export async function snapshotDistFiles(tmpPath: string) {
+export async function snapshotDistFiles(tmpPath) {
   let distPath = path.join(tmpPath, 'dist');
   let distFiles;
   try {
@@ -108,8 +101,8 @@ export async function snapshotDistFiles(tmpPath: string) {
   );
 }
 
-export let stripHashes = (chunkName: string) => {
-  let transformer = (pathname: string) => {
+export let stripHashes = chunkName => {
+  let transformer = pathname => {
     return pathname.replace(
       new RegExp(`(${chunkName}-[^\\.]+|dist\\/[^\\.]+\\/package.json)`, 'g'),
       () => {
@@ -119,7 +112,7 @@ export let stripHashes = (chunkName: string) => {
   };
   return {
     transformPath: transformer,
-    transformContent: (content: string) => {
+    transformContent: content => {
       return content.replace(new RegExp(`${chunkName}-[^\\.]+`, 'g'), () => {
         return 'chunk-some-hash';
       });
@@ -128,16 +121,8 @@ export let stripHashes = (chunkName: string) => {
 };
 
 export async function snapshotDirectory(
-  tmpPath: string,
-  {
-    files = 'js',
-    transformPath = x => x,
-    transformContent = x => x,
-  }: {
-    files?: 'all' | 'js',
-    transformPath?: (path: string, contents: string) => string,
-    transformContent?: (content: string) => string,
-  } = {}
+  tmpPath,
+  { files = 'js', transformPath = x => x, transformContent = x => x } = {}
 ) {
   let paths = await globby(
     [`**/${files === 'js' ? '*.js' : '*'}`, '!node_modules/**', '!yarn.lock'],
@@ -157,6 +142,6 @@ export async function snapshotDirectory(
   );
 }
 
-export async function install(tmpPath: string) {
+export async function install(tmpPath) {
   await spawn('yarn', ['install'], { cwd: tmpPath });
 }

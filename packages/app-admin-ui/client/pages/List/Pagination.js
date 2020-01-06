@@ -1,18 +1,12 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
 import { Pagination } from '@arch-ui/pagination';
 import { useListPagination } from './dataHooks';
 
-type Props = {
-  isLoading: boolean,
-  listKey: string,
-};
-
 const CYPRESS_TEST_ID = 'ks-pagination';
 
-export default function ListPagination({ isLoading, listKey }: Props) {
+export default function ListPagination({ isLoading, listKey }) {
   const { data, onChange } = useListPagination(listKey);
 
   return (
@@ -42,7 +36,7 @@ export function getPaginationLabel({
   plural = 'Items',
   singular = 'Item',
   total,
-}: *) {
+}) {
   if (!total) {
     return `No ${plural}`;
   }

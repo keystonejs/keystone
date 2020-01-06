@@ -18,15 +18,15 @@ handles the GraphQL API and Admin UI. Things such as:
 - ... etc
 
 A **Custom Server** can replace the default and act as the entry point to your
-application which consumes your [schema definition](/guides/schema). A Custom
+application which consumes your [schema definition](/docs/guides/schema.md). A Custom
 Server must handle initialising a http server which correctly executes any given KeystoneJS Apps.
 
 _Note_: Before reaching for a custom server, consider using a KeystoneJS
 App which can enhance the functionality of the default server. Apps
 available in KeystoneJS include:
 
-- [Static App](../../keystonejs/app-static) for serving static files.
-- [Next.js App](../../keystonejs/app-next) for serving a Next.js App on the same server as the API
+- [Static App](/packages/app-static/README.md) for serving static files.
+- [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
   The following are some possible ways of setting up a custom server, roughly in
   order of complexity.
 
@@ -49,7 +49,7 @@ before any middlewares are set up, so you can perform any Express configuration 
 ```javascript
 module.exports = {
   configureExpress: app => {
-    app.set('view engine', 'pug')
+    app.set('view engine', 'pug');
   },
 };
 ```
@@ -154,19 +154,15 @@ const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
 const dev = process.env.NODE_ENV !== 'production';
-const preparations = [
-  new GraphQLApp(),
-  new AdminUIApp()
-].map(app => app.prepareMiddleware({ keystone, dev }));
+const preparations = [new GraphQLApp(), new AdminUIApp()].map(app =>
+  app.prepareMiddleware({ keystone, dev })
+);
 
-Promise.all(preparations)
-  .then(middlewares => {
-    await keystone.connect();
-    const app = express();
-    app
-      .use(middlewares)
-      .listen(3000);
-  });
+Promise.all(preparations).then(async middlewares => {
+  await keystone.connect();
+  const app = express();
+  app.use(middlewares).listen(3000);
+});
 ```
 
 ## Custom Server as a Lambda

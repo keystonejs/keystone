@@ -1,13 +1,13 @@
 {
   "name": "@keystonejs/app-next",
   "description": "KeystoneJS Next.js App.",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "next": "^9.0.0"
+    "next": "^9.1.0"
   }
 }

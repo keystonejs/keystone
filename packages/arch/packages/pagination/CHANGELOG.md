@@ -1,5 +1,54 @@
 # @arch-ui/pagination
 
+## 0.0.13
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a)]:
+  - @arch-ui/button@0.0.13
+  - @arch-ui/icons@0.0.8
+  - @arch-ui/layout@0.2.8
+  - @arch-ui/loading@0.0.12
+  - @arch-ui/theme@0.0.7
+
+## 0.0.12
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @arch-ui/button@0.0.12
+  - @arch-ui/icons@0.0.7
+  - @arch-ui/layout@0.2.7
+  - @arch-ui/loading@0.0.11
+  - @arch-ui/theme@0.0.6
+
+## 0.0.11
+
+### Patch Changes
+
+- [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866) [#1995](https://github.com/keystonejs/keystone/pull/1995) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `react` and `react-dom` to 16.12.0.
+- Updated dependencies [[`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866), [`2a52b3ce`](https://github.com/keystonejs/keystone/commit/2a52b3ce48e0df9589f4958c4d79e2b19aa1c134)]:
+  - @arch-ui/button@0.0.11
+  - @arch-ui/icons@0.0.6
+  - @arch-ui/layout@0.2.6
+  - @arch-ui/loading@0.0.10
+
+## 0.0.10
+
+### Patch Changes
+
+- [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `flow` and fixed flow errors and (probably) bugs.
+
+* [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `@emotion/core` and `@emotion/styled`.
+
+- [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c) [#1910](https://github.com/keystonejs/keystone/pull/1910) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-router-dom` to v5.1.2 to make use of `useParams` and other hooks provided by `react-router-dom` v5.1.0.
+- Updated dependencies [[`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c)]:
+  - @arch-ui/button@0.0.10
+  - @arch-ui/layout@0.2.5
+  - @arch-ui/loading@0.0.9
+
 ## 0.0.9
 
 ### Patch Changes

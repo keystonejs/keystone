@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 import { captureSuspensePromises, noop } from '@keystonejs/utils';
-import { DiffIcon, KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 import { Button } from '@arch-ui/button';
@@ -139,7 +139,7 @@ class SortLink extends React.Component<SortLinkProps> {
 // ==============================
 
 class ListRow extends Component {
-  static defaultProps = { itemErrors: {} };
+  static defaultProps = { itemErrors: {}, linkField: '_label_' };
   state = { showDeleteModal: false };
   componentDidMount() {
     this.mounted = true;
@@ -183,15 +183,9 @@ class ListRow extends Component {
     );
   }
   render() {
-    const { list, link, isSelected, item, itemErrors, fields } = this.props;
-    const copyText = window.location.origin + link({ path: list.path, id: item.id });
+    const { list, link, isSelected, item, itemErrors, fields, linkField } = this.props;
+    const copyText = window.location.origin + link({ path: list.path, item });
     const items = [
-      {
-        content: 'Duplicate',
-        icon: <DiffIcon />,
-        isDisabled: true, // TODO: implement duplicate
-        onClick: () => console.log('TODO'),
-      },
       {
         content: 'Copy Link',
         icon: <LinkIcon />,
@@ -228,10 +222,10 @@ class ListRow extends Component {
             );
           }
 
-          if (path === '_label_') {
+          if (path === linkField) {
             return (
               <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
+                <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
               </BodyCellTruncated>
             );
           }
@@ -312,6 +306,8 @@ export default function ListTable(props) {
     currentPage,
     filters,
     search,
+    itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
+    linkField = '_label_',
   } = props;
 
   const [sortBy, onSortChange] = useListSort(list.key);
@@ -348,17 +344,20 @@ export default function ListTable(props) {
               />
             </div>
           </HeaderCell>
-          {fields.map(field => (
-            <SortLink
-              data-field={field.path}
-              key={field.path}
-              sortable={field.path !== '_label_'}
-              field={field}
-              handleSortChange={onSortChange}
-              active={sortBy.field.path === field.path}
-              sortAscending={sortBy.direction === 'ASC'}
-            />
-          ))}
+          {fields.map(field => {
+            if (!sortBy) return;
+            return (
+              <SortLink
+                data-field={field.path}
+                key={field.path}
+                sortable={field.path !== '_label_' && field.config.isOrderable}
+                field={field}
+                handleSortChange={onSortChange}
+                active={sortBy ? sortBy.field.path === field.path : false}
+                sortAscending={sortBy ? sortBy.direction === 'ASC' : 'ASC'}
+              />
+            );
+          })}
           <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
         </tr>
       </thead>
@@ -429,7 +428,8 @@ export default function ListTable(props) {
                         item={item}
                         itemErrors={queryErrors[itemIndex] || {}}
                         key={item.id}
-                        link={({ path, id }) => `${adminPath}/${path}/${id}`}
+                        link={itemLink}
+                        linkField={linkField}
                         list={list}
                         onDelete={onChange}
                         onSelectChange={onSelectChange}

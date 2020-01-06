@@ -1,4 +1,3 @@
-// @flow
 export {
   fade,
   slideUp,
@@ -9,12 +8,10 @@ export {
   TransitionProvider,
   withTransitionState,
 } from './transitions';
-export type { TransitionState } from './transitions';
 
 export { Blanket } from './Blanket';
 
 export { default as withModalHandlers } from './withModalHandlers';
-export type { ModalHandlerProps } from './withModalHandlers';
 
 // Generate a unique enough ID
 export function generateUEID() {

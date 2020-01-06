@@ -15,6 +15,7 @@ const {
   Decimal,
   OEmbed,
   Unsplash,
+  Virtual,
 } = require('@keystonejs/fields');
 const { Content } = require('@keystonejs/field-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
@@ -121,7 +122,10 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
     },
     author: {
       type: Relationship,
@@ -138,6 +142,27 @@ keystone.createList('Post', {
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
     markdownValue: { type: Markdown },
+    fortyTwo: {
+      type: Virtual,
+      graphQLReturnType: `Int`,
+      resolver: () => 42,
+    },
+    virtual: {
+      type: Virtual,
+      extendGraphQLTypes: [`type Movie { title: String, rating: Int }`],
+      graphQLReturnType: `[Movie]`,
+      graphQLReturnFragment: `{
+        title
+        rating
+      }`,
+      resolver: async () => {
+        const data = [
+          { title: 'A movie', rating: 2 },
+          { title: 'Another movie', rating: 4 },
+        ];
+        return data.map(({ title, rating }) => ({ title, rating }));
+      },
+    },
     value: {
       type: Content,
       blocks: [

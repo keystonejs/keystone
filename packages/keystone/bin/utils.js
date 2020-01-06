@@ -30,7 +30,7 @@ function getEntryFileFullPath(args, { exeName, _cwd }) {
   }
 }
 
-function extractAppMeta(apps) {
+function extractAppMeta(apps, dev) {
   let adminPath;
   let graphiqlPath;
   let apiPath;
@@ -43,7 +43,7 @@ function extractAppMeta(apps) {
       }
       case 'GraphQLApp': {
         apiPath = app._apiPath;
-        graphiqlPath = app._graphiqlPath;
+        graphiqlPath = dev ? app._graphiqlPath : undefined;
         break;
       }
     }
@@ -58,15 +58,14 @@ function extractAppMeta(apps) {
 
 async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
-  let router;
   let status = 'start-server';
 
   spinner.text = 'Starting Keystone server';
   const app = express();
 
   app.use((req, res, next) => {
-    if (router) {
-      return router(req, res, next);
+    if (status === 'started') {
+      next();
     } else {
       res.format({
         default: () => res.sendFile(path.resolve(__dirname, './loading.html')),
@@ -93,7 +92,13 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   // Allow the spinner time to flush its output to the console.
   await new Promise(resolve => setTimeout(resolve, 100));
 
-  const { keystone, apps = [], configureExpress = () => {} } = require(path.resolve(entryFile));
+  const {
+    keystone,
+    apps = [],
+    configureExpress = () => {},
+    cors,
+    pinoOptions,
+  } = require(path.resolve(entryFile));
 
   configureExpress(app);
 
@@ -104,19 +109,18 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   const dev = process.env.NODE_ENV !== 'production';
 
-  const { middlewares } = await keystone.prepare({ apps, distDir, dev });
+  const { middlewares } = await keystone.prepare({ apps, distDir, dev, cors, pinoOptions });
 
   await keystone.connect();
 
   spinner.succeed('Connected to database');
   spinner.start('Preparing to accept requests');
 
-  router = express.Router();
-  router.use(middlewares);
+  app.use(middlewares);
+  status = 'started';
+  spinner.succeed(chalk.green.bold(`Keystone instance is ready at http://localhost:${port} 🚀`));
 
-  spinner.succeed(chalk.green.bold('Keystone instance is ready 🚀'));
-
-  const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps);
+  const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps, dev);
 
   /* eslint-disable no-unused-expressions */
   adminPath && ttyLink('Keystone Admin UI:', adminPath, port);

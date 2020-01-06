@@ -1,5 +1,48 @@
 # @keystonejs/cypress-project-facebook-login
 
+## 5.0.3
+
+### Patch Changes
+
+- [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29) [#2189](https://github.com/keystonejs/keystone/pull/2189) - Upgraded prettier to 1.19.1 and formatted code accordingly.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104), [`05d07adf`](https://github.com/keystonejs/keystone/commit/05d07adf84059ff565cd2394f68d71d92e657485), [`78193f9c`](https://github.com/keystonejs/keystone/commit/78193f9c9d93655fb0d4b8dc494fbe4c622a4d64)]:
+  - @keystonejs/app-admin-ui@5.5.3
+  - @arch-ui/fields@2.0.5
+  - @arch-ui/input@0.1.4
+  - @keystonejs/fields@6.0.5
+  - @keystonejs/file-adapters@5.3.1
+  - @keystonejs/keystone@5.4.1
+  - @keystonejs/adapter-mongoose@5.1.4
+
+## 5.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`77056ebd`](https://github.com/keystonejs/keystone/commit/77056ebdb31e58d27372925e8e24311a8c7d9e33), [`267dab2f`](https://github.com/keystonejs/keystone/commit/267dab2fee5bbea711c417c13366862e8e0ab3be), [`8188d76c`](https://github.com/keystonejs/keystone/commit/8188d76cb3f5d3e112ef95fd4e1887db9a520d9d), [`5b81152d`](https://github.com/keystonejs/keystone/commit/5b81152d72b16bcfa2ef16620721b059cb225d05), [`af1e9e4d`](https://github.com/keystonejs/keystone/commit/af1e9e4d3b74753b903b20641b51df99184793df), [`733ac847`](https://github.com/keystonejs/keystone/commit/733ac847cab488dc92a30e7b458191d750fd5a3d), [`e68fc43b`](https://github.com/keystonejs/keystone/commit/e68fc43ba006f9c958f9c81ae20b230d05c2cab6), [`d4d89836`](https://github.com/keystonejs/keystone/commit/d4d89836700413c1da2b76e9b82b649c2cac859d), [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866), [`5540771e`](https://github.com/keystonejs/keystone/commit/5540771e52b5cb1aa33c0486dede7f2f9bc0944f), [`3d2c2b2e`](https://github.com/keystonejs/keystone/commit/3d2c2b2e65943be0bd59e448d3237c3abe983b04), [`640cbd95`](https://github.com/keystonejs/keystone/commit/640cbd9556cb8848fdfbe9689ac4aadd1be29fba), [`1f4dc33d`](https://github.com/keystonejs/keystone/commit/1f4dc33d8a5ac4e38427eb215a7a8bc3504ae153), [`ee6fbcb2`](https://github.com/keystonejs/keystone/commit/ee6fbcb264a640f58332c50a2f502a4380c0d071), [`0145f7e2`](https://github.com/keystonejs/keystone/commit/0145f7e21d9297e3037c709587eb3b4220ba3f01), [`1ad222ed`](https://github.com/keystonejs/keystone/commit/1ad222ed27b2f261f8fda8eb819027553ecd0cd2), [`2cc83b12`](https://github.com/keystonejs/keystone/commit/2cc83b12be757019ba25658139478e8f5b2b19c6), [`fb0c8331`](https://github.com/keystonejs/keystone/commit/fb0c83316c1f3e6796a24480d3cfc8055355a7fc), [`945ff089`](https://github.com/keystonejs/keystone/commit/945ff089a60e5a1e1a8cdceb8df1b04f8d6263f4), [`a1dcbd7b`](https://github.com/keystonejs/keystone/commit/a1dcbd7bd7448fdcacbfe9fb0196bfee3c4a5326), [`6a348b93`](https://github.com/keystonejs/keystone/commit/6a348b93607c305c4ba61c1406a4acd508f33f64)]:
+  - @keystonejs/keystone@5.3.0
+  - @keystonejs/fields@6.0.0
+  - @keystonejs/app-admin-ui@5.3.0
+  - @arch-ui/fields@2.0.3
+  - @arch-ui/input@0.1.2
+  - @keystonejs/adapter-mongoose@5.1.3
+  - @keystonejs/file-adapters@5.2.0
+  - @keystonejs/app-graphql@5.0.1
+  - @keystonejs/auth-passport@5.0.1
+  - @keystonejs/auth-password@5.0.1
+
+## 5.0.1
+
+### Patch Changes
+
+- [`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53) [#1849](https://github.com/keystonejs/keystone/pull/1849) Thanks [@timleslie](https://github.com/timleslie)! - Updated the packages devDependencies.
+- Updated dependencies [[`45fd7ab8`](https://github.com/keystonejs/keystone/commit/45fd7ab899655364d0071c0d276d188378944ff5), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`b0756c65`](https://github.com/keystonejs/keystone/commit/b0756c65525625919c72364d8cefc32d864c7c0e), [`20632bca`](https://github.com/keystonejs/keystone/commit/20632bca495058f2845d36fe95650eede0a9ebdc), [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0), [`d132a3c6`](https://github.com/keystonejs/keystone/commit/d132a3c64aec707b98ed9a9ceffee44a98749b0a), [`ba8aef71`](https://github.com/keystonejs/keystone/commit/ba8aef71d1a04f643fb7f7590d7d6d136b1d4eba), [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475), [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c), [`479597e0`](https://github.com/keystonejs/keystone/commit/479597e0920cbedf28f76c14a95b564282f2c1d9)]:
+  - @keystonejs/keystone@5.1.1
+  - @keystonejs/app-admin-ui@5.0.2
+  - @keystonejs/fields@5.1.0
+  - @arch-ui/fields@2.0.2
+  - @arch-ui/input@0.1.1
+  - @keystonejs/adapter-mongoose@5.1.1
+
 ## 5.0.0
 
 ### Major Changes

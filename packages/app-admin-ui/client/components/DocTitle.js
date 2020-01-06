@@ -1,20 +1,15 @@
-// @flow
-
-import React, { Children, type Node } from 'react';
-import DocumentTitle from 'react-document-title';
-
+import { Children, useEffect } from 'react';
 import { withAdminMeta } from '../providers/AdminMeta';
 
-type Props = {
-  adminMeta: Object,
-  children: Node,
-};
-
-const DocTitle = ({ adminMeta, children }: Props) => {
+const DocTitle = ({ adminMeta: { name }, children }) => {
   const text = Children.toArray(children).join('');
-  const title = `${text} - ${adminMeta.name}`;
+  const title = `${text} - ${name}`;
 
-  return <DocumentTitle title={title} />;
+  useEffect(() => {
+    document.title = title;
+  });
+
+  return null;
 };
 
 export default withAdminMeta(DocTitle);

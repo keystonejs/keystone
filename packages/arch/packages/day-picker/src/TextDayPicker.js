@@ -1,29 +1,28 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import chrono from 'chrono-node';
 import { Input } from '@arch-ui/input';
 import { format } from 'date-fns';
 
-type Props = {
-  date: string | null,
-  onChange: (string | null) => mixed,
-};
+export const TextDayPicker = ({
+  date,
+  onChange,
+  format: dateDisplayFormat = 'Do MMMM YYYY',
+  ...props
+}) => {
+  const formatDate = newDate => {
+    return newDate === null ? '' : format(newDate, dateDisplayFormat);
+  };
 
-export let TextDayPicker = ({ date, onChange, ...props }: Props) => {
-  let [value, setValue] = useState(formatDate(date));
-
-  useEffect(() => {
-    setValue(formatDate(date));
-  }, [date]);
+  const [value, setValue] = useState(formatDate(date));
 
   return (
     <Input
       value={value}
       placeholder="Enter a date..."
       onBlur={() => {
-        let newDate = parseDate(value);
+        const newDate = parseDate(value);
         onChange(newDate);
         setValue(formatDate(newDate));
       }}
@@ -35,14 +34,10 @@ export let TextDayPicker = ({ date, onChange, ...props }: Props) => {
   );
 };
 
-function formatDate(date) {
-  return date === null ? '' : format(date, 'Do MMMM YYYY');
-}
-
 function parseDate(value) {
-  let parsedDates = chrono.parse(value);
-  if (parsedDates[0] === undefined) {
+  const parsed = chrono.parseDate(value);
+  if (parsed === undefined) {
     return null;
   }
-  return format(parsedDates[0].start.date(), 'YYYY-MM-DD');
+  return format(parsed, 'YYYY-MM-DD');
 }

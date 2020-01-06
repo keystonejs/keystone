@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { forwardRef } from 'react';
@@ -10,7 +9,7 @@ import { colors } from '@arch-ui/theme';
 // Basic Input
 // ------------------------------
 
-export const inputStyles = (props: InputProps = {}) => ({
+export const inputStyles = (props = {}) => ({
   ...uniformHeight,
   backgroundColor: props.disabled ? colors.N10 : 'white',
   borderColor: colors.N20,
@@ -21,14 +20,17 @@ export const inputStyles = (props: InputProps = {}) => ({
     borderColor: colors.N30,
     outline: 0,
   },
+
   ':focus': {
     borderColor: colors.primary,
     outline: 0,
   },
+
   '&[disabled]': {
     borderColor: colors.N15,
     backgroundColor: colors.N05,
   },
+
   ...(props.isMultiline
     ? {
         lineHeight: 'inherit',
@@ -39,8 +41,7 @@ export const inputStyles = (props: InputProps = {}) => ({
     : undefined),
 });
 
-type InputProps = { isMultiline?: boolean, disabled?: boolean };
-export const Input = forwardRef<InputProps, any>((props: InputProps, ref) => {
+export const Input = forwardRef((props, ref) => {
   const { isMultiline, ...inputProps } = props;
   const Component = isMultiline ? 'textarea' : 'input';
   return <Component ref={ref} css={inputStyles(props)} {...inputProps} />;

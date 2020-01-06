@@ -1,4 +1,6 @@
 packages/test-project/public
+demo-projects/test-project
+
 # Logs
 logs
 *.log
@@ -78,8 +80,6 @@ cypress/screenshots
 cypress/videos
 cypress/mock
 
-# Ignore lower level yarn locks
-**/yarn.lock
 package-lock.json
 
 dist/

@@ -4,9 +4,10 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "README.md"
   ],
-  "imageSize": 100,
+  "imageSize": 80,
   "commit": false,
   "contributors": [
     {
@@ -324,7 +325,44 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "marcosrjjunior",
+      "name": "Marcos RJJunior",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5287262?v=4",
+      "profile": "https://marcosrjjunior.github.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ginkgoch",
+      "name": "Ginkgoch",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/41072618?v=4",
+      "profile": "https://ginkgoch.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MaisaMilena",
+      "name": "MaisaMilena",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/28612369?v=4",
+      "profile": "https://github.com/MaisaMilena",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "marxvn",
+      "name": "Martin Pham",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4975208?v=4",
+      "profile": "http://www.marxvn.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }

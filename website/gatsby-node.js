@@ -10,6 +10,9 @@ const generateUrl = require('./generateUrl');
 
 const compiler = rawMDX.createMdxAstCompiler({ remarkPlugins: [] });
 
+// we're using github-slugger for heading ids so that we're consistent with GitHub & because gatsby-remark-autolink-headers which adds the actual links uses github-slugger
+const slugs = require('github-slugger')();
+
 const PROJECT_ROOT = path.resolve('..');
 
 // Used for sorting the navigation:
@@ -103,13 +106,6 @@ exports.createPages = ({ actions, graphql }) => {
   });
 };
 
-exports.onCreateBabelConfig = ({ actions, stage }) => {
-  actions.setBabelPreset({
-    name: `@babel/preset-flow`,
-    stage,
-  });
-};
-
 const getEditUrl = absPath =>
   `https://github.com/keystonejs/keystone-5/edit/master/${path.relative(PROJECT_ROOT, absPath)}`;
 
@@ -133,6 +129,8 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const ast = compiler.parse(content);
     let description;
     let heading;
+    slugs.reset();
+    let headingIds = [];
 
     visit(ast, node => {
       if (!description && node.type === 'paragraph') {
@@ -140,6 +138,9 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       }
       if (!heading && node.type === 'heading' && node.depth === 1) {
         heading = mdastToString(node);
+      }
+      if (node.type === 'heading') {
+        headingIds.push(slugs.slug(mdastToString(node)));
       }
     });
 
@@ -165,6 +166,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       draft: Boolean(data.draft),
       description,
       heading,
+      headingIds,
     };
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348

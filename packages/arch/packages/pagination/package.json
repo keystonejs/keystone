@@ -1,26 +1,26 @@
 {
   "name": "@arch-ui/pagination",
   "description": "Pagination UI as used in @keystonejs Admin UI.",
-  "version": "0.0.9",
+  "version": "0.0.13",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/pagination.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   },
   "devDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   },
   "dependencies": {
-    "@arch-ui/button": "^0.0.9",
-    "@arch-ui/icons": "^0.0.5",
-    "@arch-ui/layout": "^0.2.4",
-    "@arch-ui/loading": "^0.0.8",
-    "@arch-ui/theme": "^0.0.5",
-    "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14",
-    "react-router-dom": "5.0.0"
+    "@arch-ui/button": "^0.0.13",
+    "@arch-ui/icons": "^0.0.8",
+    "@arch-ui/layout": "^0.2.8",
+    "@arch-ui/loading": "^0.0.12",
+    "@arch-ui/theme": "^0.0.7",
+    "@babel/runtime": "^7.7.7",
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.22",
+    "react-router-dom": "5.1.2"
   },
   "module": "dist/pagination.esm.js"
 }

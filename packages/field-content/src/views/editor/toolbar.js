@@ -130,7 +130,17 @@ export default ({ editorState, blocks, editor }) => {
       }
     >
       {({ style, ref, scheduleUpdate }) => (
-        <PopperRender {...{ scheduleUpdate, editorState, style, blocks, editor, ref, children }} />
+        <PopperRender
+          {...{
+            scheduleUpdate,
+            editorState,
+            style: { ...style, zIndex: 10 },
+            blocks,
+            editor,
+            ref,
+            children,
+          }}
+        />
       )}
     </Popper>
   );

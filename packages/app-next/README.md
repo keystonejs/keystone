@@ -4,7 +4,7 @@ subSection: apps
 title: Next.js App
 [meta]-->
 
-# KeystoneJS Next.js App
+# Next.js App
 
 A KeystoneJS App for serving a [Next.js](https://nextjs.org/) application.
 
@@ -19,7 +19,7 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    new AdminUIApp(),
+    new AdminUIApp({ enableDefaultRoute: false }),
     new NextApp({ dir: 'app' }),
   ],
   distDir,

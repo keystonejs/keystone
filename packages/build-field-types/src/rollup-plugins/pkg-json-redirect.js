@@ -1,6 +1,4 @@
-// @flow
 import path from 'path';
-import type { Plugin, OutputChunk } from './types';
 import { getWorker } from '../worker-client';
 import hashString from '@emotion/hash';
 import * as fse from 'fs-extra';
@@ -43,24 +41,19 @@ function transformStuff(format, code, pkgDir, filename) {
 
 let map = new WeakMap();
 
-export default function flowAndNodeDevProdEntry(): Plugin {
+export default function pkgJsonRedirectPlugin() {
   return {
     name: 'flow-and-prod-dev-entry',
-    // eslint-disable-next-line no-unused-vars
-    async generateBundle(opts, bundle, something) {
+    async generateBundle(opts, bundle) {
       map.set(this.addWatchFile, opts.dir);
-      let chunkKeys = Object.keys(bundle).filter(
-        x =>
-          // $FlowFixMe
-          !bundle[x].isAsset
-      );
+      let chunkKeys = Object.keys(bundle).filter(x => !bundle[x].isAsset);
 
-      let format: string = (opts.format: any);
-      let pkgDir: string = (opts.dir: any);
+      let format = opts.format;
+      let pkgDir = opts.dir;
 
       await Promise.all(
         chunkKeys.map(async key => {
-          let file: OutputChunk = (bundle[key]: any);
+          let file = bundle[key];
 
           file.code = await transformStuff(format, file.code, pkgDir, file.fileName);
         })
@@ -75,8 +68,8 @@ export default function flowAndNodeDevProdEntry(): Plugin {
       }
       for (const n in bundle) {
         const file = bundle[n];
-        // $FlowFixMe
-        let facadeModuleId = file.facadeModuleId;
+
+        const facadeModuleId = typeof file.facadeModuleId === 'string' ? file.facadeModuleId : null;
         if (!file.isAsset && file.isDynamicEntry && facadeModuleId != null) {
           let hash = hashString(path.relative(pkgDir, facadeModuleId));
           let pkgJsonFileName = path.join(pkgDir, 'dist', hash, 'package.json');

@@ -19,7 +19,6 @@ const BOX_GUTTER = `${gridSize * 2}px`;
 const BoxElement = styled(Card)`
   color: ${colors.N40};
   display: block;
-  line-height: 1.1;
   padding: ${BOX_GUTTER};
   position: relative;
 
@@ -73,13 +72,15 @@ export const Name = styled.span(
   border-bottom: 1px solid ${isHover ? colors.B.A50 : 'transparent'};
   color: ${colors.primary};
   display: inline-block;
-  font-size: 1.1em;
+  box-sizing: border-box;
+  font-size: 1.1rem;
   font-weight: 500;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   transition: border-color 80ms linear;
   white-space: nowrap;
+  padding-right: 2em;
 `
 );
 export const Count = ({ meta }) => {
@@ -91,11 +92,7 @@ export const Count = ({ meta }) => {
       <LoadingIndicator />
     </div>
   ) : (
-    <div css={{ fontSize: '0.85em' }}>
-      {count}
-      {/* append the text instead of two children so that they're a single text node for screen readers */}
-      {' Item' + (count !== 1 ? 's' : '')}
-    </div>
+    <div css={{ fontSize: '0.85em' }}>{`${count} Item${count !== 1 ? 's' : ''}`}</div>
   );
 };
 export const CreateButton = styled.button(

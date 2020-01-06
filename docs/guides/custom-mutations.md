@@ -6,24 +6,26 @@ subSection: advanced
 
 # Custom Mutations
 
-Out of the box Keystone provides predictable CRUD operations (Create, Read, Update and Delete) for Lists. The generated graphQL queries and mutations are the primary method for updating data in a List. These should be enough for most application requirements.
+Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
 
-Custom Queries and Mutations may be required if you wish to preform non-CRUD operations or actions that don't relate to a specific List.
+The automatically generated GraphQL API should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
 
-See the [GraphQL Philosophy](/guides/graphql-philosophy) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
+Adding to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/packages/keystone/README.md#extendgraphqlschemaconfig) method.
 
-You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
+See the [GraphQL Philosophy](/docs/guides/graphql-philosophy.md) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
-# Creating an Custom Mutation
+## Creating an Custom Mutation
 
 A common example where a custom mutation might be beneficial is if you want to increment a value.
 
-Like any problem there are multiple solutions. You can implement an incrementing value with [Hooks](/guides/hooks) but in this example we're going to look at how to do this with a custom mutation.
+Like any problem there are multiple solutions.
+You can implement an incrementing value with [Hooks](/docs/guides/hooks.md) but in this example we're going to look at how to do this with a custom mutation.
 
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
 ```js
 const { Text, Integer } = require('@keystonejs/fields');
+
 const Page = {
   fields: {
     title: { type: Text },

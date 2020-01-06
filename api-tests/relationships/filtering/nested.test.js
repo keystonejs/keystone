@@ -85,7 +85,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ keystone, create }) => {
           const ids = [];
 
-          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'A hello world' })).id);
           ids.push((await create('Post', { content: 'hi world' })).id);
           ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
@@ -100,7 +100,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         query {
           allUsers {
             id
-            posts (first: 1) {
+            posts (first: 1, orderBy: "content_ASC") {
               id
               content
             }

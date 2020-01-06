@@ -41,7 +41,7 @@ for the Admin UI in the browser.
 of the field type work such as: GraphQL filter options, the formatting of various labels for
 Keystone Admin UI, how data is formatted for sending via GraphQl and how it is interpreted when
 retrieved from the server. In this example our requirements are the same as for Integer so we can
-re-export the default [Integer field type's Controller](https://github.com/keystonejs/keystone-5/blob/master/packages/fields/types/Integer/Controller.js).
+re-export the default [Integer field type's Controller](/packages/fields/src/types/Integer/views/Controller.js).
 
 `Implementation.js` is used server side by Keystone. It exports an `Implementation` class and one or
 more `Database Field Adapters`.
@@ -63,7 +63,7 @@ This is where we will spend most of our time in this tutorial.
 
 ## Defining The Field Type
 
-Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](../../../../packages/fields/README.md).
+Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README.md).
 
 ```jsx
 const { Stars, MongoIntegerInterface } = require('./Implementation');

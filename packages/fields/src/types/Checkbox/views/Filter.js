@@ -1,12 +1,7 @@
-// @flow
-
 import React, { Component } from 'react';
-import type { FilterProps } from '../../../types';
 
-type Props = FilterProps<'true' | 'false' | 'null'>;
-
-export default class CheckboxFilterView extends Component<Props> {
-  handleChange = ({ target: { value } }: Object) => {
+export default class CheckboxFilterView extends Component {
+  handleChange = ({ target: { value } }) => {
     this.props.onChange(value);
   };
 

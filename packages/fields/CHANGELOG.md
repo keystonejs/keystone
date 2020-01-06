@@ -1,5 +1,223 @@
 # @keystonejs/fields
 
+## 6.0.5
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+
+* [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29) [#2189](https://github.com/keystonejs/keystone/pull/2189) - Upgraded prettier to 1.19.1 and formatted code accordingly.
+
+- [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104) [#2191](https://github.com/keystonejs/keystone/pull/2191) - Upgraded `mongoose` to `^5.8.4` and `mongodb` to `^3.4.1`.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`3d7222cd`](https://github.com/keystonejs/keystone/commit/3d7222cd589ce8accbf3a9de141976c38e2c7e23), [`4cd4499d`](https://github.com/keystonejs/keystone/commit/4cd4499d9d19a5b379b2ae6ab1028c008248629a), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104)]:
+  - @arch-ui/button@0.0.13
+  - @arch-ui/controls@0.1.3
+  - @arch-ui/day-picker@0.0.18
+  - @arch-ui/drawer@0.0.15
+  - @arch-ui/fields@2.0.5
+  - @arch-ui/filters@0.0.15
+  - @arch-ui/icons@0.0.8
+  - @arch-ui/input@0.1.4
+  - @arch-ui/layout@0.2.8
+  - @arch-ui/loading@0.0.12
+  - @arch-ui/lozenge@0.0.11
+  - @arch-ui/options@0.0.13
+  - @arch-ui/popout@0.0.13
+  - @arch-ui/select@0.1.3
+  - @arch-ui/theme@0.0.7
+  - @arch-ui/tooltip@0.1.6
+  - @arch-ui/typography@0.0.12
+  - @keystonejs/build-field-types@5.1.4
+  - @keystonejs/field-content@5.2.2
+  - @keystonejs/utils@5.1.3
+  - @keystonejs/adapter-knex@6.1.3
+  - @keystonejs/test-utils@5.0.3
+  - @keystonejs/adapter-mongoose@5.1.4
+  - @arch-ui/alert@0.0.12
+
+## 6.0.4
+
+### Patch Changes
+
+- [`85f21ced`](https://github.com/keystonejs/keystone/commit/85f21ced700e9630ce3d22590e4aec0694d621db) [#2122](https://github.com/keystonejs/keystone/pull/2122) - Fix for cloudinary images block error when serialized
+
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2), [`ed85a3d3`](https://github.com/keystonejs/keystone/commit/ed85a3d3776873893e9ba46f3b0c4d0f71bd6b6d)]:
+  - @keystonejs/adapter-knex@6.1.1
+  - @keystonejs/utils@5.1.2
+  - @arch-ui/drawer@0.0.14
+  - @arch-ui/popout@0.0.12
+
+## 6.0.2
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Removed unused 'immutable' dependency.
+
+* [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Make dates orderable in adminUI.
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @keystonejs/field-content@5.2.0
+  - @arch-ui/button@0.0.12
+  - @arch-ui/controls@0.1.2
+  - @arch-ui/day-picker@0.0.17
+  - @arch-ui/drawer@0.0.13
+  - @arch-ui/fields@2.0.4
+  - @arch-ui/filters@0.0.14
+  - @arch-ui/icons@0.0.7
+  - @arch-ui/input@0.1.3
+  - @arch-ui/layout@0.2.7
+  - @arch-ui/loading@0.0.11
+  - @arch-ui/lozenge@0.0.10
+  - @arch-ui/options@0.0.12
+  - @arch-ui/popout@0.0.11
+  - @arch-ui/select@0.1.2
+  - @arch-ui/theme@0.0.6
+  - @arch-ui/tooltip@0.1.5
+  - @arch-ui/typography@0.0.11
+  - @keystonejs/build-field-types@5.1.3
+  - @keystonejs/utils@5.1.1
+  - @arch-ui/alert@0.0.11
+
+## 6.0.1
+
+### Patch Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Convert to use Apollo hooks
+
+* [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Fixed a bug in the Knex field adapter for virtual fields.
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Fixed several issues with the CalendarDay field:
+
+  - Ensured format, yearRangeFrom, and yearRangeTo defaults are set correctly
+  - Removed non-functional yearPickerType
+  - Made displayed date format consistent between list and detailed views
+  - Moved date range validation to validateInput- Updated dependencies [[`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290)]:
+  - @arch-ui/alert@0.0.10
+  - @arch-ui/day-picker@0.0.16
+
+## 6.0.0
+
+### Major Changes
+
+- [`8188d76c`](https://github.com/keystonejs/keystone/commit/8188d76cb3f5d3e112ef95fd4e1887db9a520d9d) [#1980](https://github.com/keystonejs/keystone/pull/1980) Thanks [@timleslie](https://github.com/timleslie)! - Removed `KnexRelationshipInterface.createForeignKey()`.
+
+### Minor Changes
+
+- [`267dab2f`](https://github.com/keystonejs/keystone/commit/267dab2fee5bbea711c417c13366862e8e0ab3be) [#1799](https://github.com/keystonejs/keystone/pull/1799) Thanks [@SeanDoyleGit](https://github.com/SeanDoyleGit)! - Resolved unsplash images duplication issue in `react-slate`.
+
+* [`af1e9e4d`](https://github.com/keystonejs/keystone/commit/af1e9e4d3b74753b903b20641b51df99184793df) [#1963](https://github.com/keystonejs/keystone/pull/1963) Thanks [@gemscng](https://github.com/gemscng)! - `Text` field filter is now case insensitive by default.
+
+- [`0145f7e2`](https://github.com/keystonejs/keystone/commit/0145f7e21d9297e3037c709587eb3b4220ba3f01) [#1959](https://github.com/keystonejs/keystone/pull/1959) Thanks [@LiamAttClarke](https://github.com/LiamAttClarke)! - Added `in` and `not_in` filters to `IntegerField`.
+
+* [`2cc83b12`](https://github.com/keystonejs/keystone/commit/2cc83b12be757019ba25658139478e8f5b2b19c6) [#1988](https://github.com/keystonejs/keystone/pull/1988) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added an `isOrderable` option to field implementation that controls whether the field is sortable in the AdminUI. Defaults to false and is set to true by sortable field types.
+
+  The `parseFieldAccess` method can now also be overwritten in the field implementation class.
+
+* [`6a348b93`](https://github.com/keystonejs/keystone/commit/6a348b93607c305c4ba61c1406a4acd508f33f64) [#1978](https://github.com/keystonejs/keystone/pull/1978) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new field type `Virtual`. This allows creation of fields that return data computed from other field values or outside Keystone.
+
+### Patch Changes
+
+- [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866) [#1995](https://github.com/keystonejs/keystone/pull/1995) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `react` and `react-dom` to 16.12.0.
+
+* [`ee6fbcb2`](https://github.com/keystonejs/keystone/commit/ee6fbcb264a640f58332c50a2f502a4380c0d071) [#2047](https://github.com/keystonejs/keystone/pull/2047) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up duplicate code in aux list creation.
+
+- [`a1dcbd7b`](https://github.com/keystonejs/keystone/commit/a1dcbd7bd7448fdcacbfe9fb0196bfee3c4a5326) [#2022](https://github.com/keystonejs/keystone/pull/2022) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed minor error message typos.
+- Updated dependencies [[`5a5905d0`](https://github.com/keystonejs/keystone/commit/5a5905d07c29d6c49dffcc93a576cb2c599c4a65), [`8188d76c`](https://github.com/keystonejs/keystone/commit/8188d76cb3f5d3e112ef95fd4e1887db9a520d9d), [`0acdae17`](https://github.com/keystonejs/keystone/commit/0acdae17c4b2bcb234a314ad1aba311981affc8f), [`44b2bc93`](https://github.com/keystonejs/keystone/commit/44b2bc938fd508ac75f6a9cbb364006b9f122711), [`946a52fd`](https://github.com/keystonejs/keystone/commit/946a52fd7057bb73f4ffd465ef51498172926866), [`5540771e`](https://github.com/keystonejs/keystone/commit/5540771e52b5cb1aa33c0486dede7f2f9bc0944f), [`860dabec`](https://github.com/keystonejs/keystone/commit/860dabecacdf81aa1563cea9a5d50add8623dac1), [`ee6fbcb2`](https://github.com/keystonejs/keystone/commit/ee6fbcb264a640f58332c50a2f502a4380c0d071), [`2a52b3ce`](https://github.com/keystonejs/keystone/commit/2a52b3ce48e0df9589f4958c4d79e2b19aa1c134), [`95372949`](https://github.com/keystonejs/keystone/commit/953729498fd0c7f68c82f6d4e438808777887d36), [`a3fdc50e`](https://github.com/keystonejs/keystone/commit/a3fdc50ebb61b38814816804b04d7cb4bc0fc70a), [`721472e1`](https://github.com/keystonejs/keystone/commit/721472e1801584be5807d6637c646b1755366d3e), [`af635bc5`](https://github.com/keystonejs/keystone/commit/af635bc5684f9cf044170bea79dc31055fd275e9), [`da62aa4a`](https://github.com/keystonejs/keystone/commit/da62aa4a0af9cf27fd59fdcfb6b960e24999254d)]:
+  - @keystonejs/field-content@5.1.0
+  - @keystonejs/adapter-knex@6.0.0
+  - @arch-ui/alert@0.0.9
+  - @arch-ui/button@0.0.11
+  - @arch-ui/controls@0.1.1
+  - @arch-ui/day-picker@0.0.15
+  - @arch-ui/drawer@0.0.12
+  - @arch-ui/fields@2.0.3
+  - @arch-ui/filters@0.0.13
+  - @arch-ui/icons@0.0.6
+  - @arch-ui/input@0.1.2
+  - @arch-ui/layout@0.2.6
+  - @arch-ui/loading@0.0.10
+  - @arch-ui/lozenge@0.0.9
+  - @arch-ui/options@0.0.11
+  - @arch-ui/popout@0.0.10
+  - @arch-ui/select@0.1.1
+  - @arch-ui/tooltip@0.1.4
+  - @arch-ui/typography@0.0.10
+  - @keystonejs/build-field-types@5.1.2
+  - @keystonejs/adapter-mongoose@5.1.3
+  - @keystonejs/test-utils@5.0.2
+
+## 5.2.0
+
+### Minor Changes
+
+- [`1a723a54`](https://github.com/keystonejs/keystone/commit/1a723a544a918457a9de241a8387f2ce5b555e50) [#1880](https://github.com/keystonejs/keystone/pull/1880) Thanks [@gautamsi](https://github.com/gautamsi)! - Replaced `RelationShip` field's implementation of `CreateItemModel` with a prop provided by `admin-ui`
+
+  Exported following components from `admin-ui` which can be used outside of `admin-ui` to have same look and feel when working with Lists. One simple use is in custom pages where this can be customized differently than core list pages
+
+  - `List`
+  - `ListData`
+  - `ListLayout`
+  - `ListManage`
+  - `FieldSelect`
+  - `Search`
+  - `ActiveFilters`
+  - `Pagination`
+  - `CreateItemModal`
+  - `DeleteItemModal`
+  - `DeleteManyItemsModal`
+  - `ListTable`
+  - `PageLoading`
+  - `ToastContainer`
+  - `UpdateManyItemsModal`
+  - `Popout`
+
+### Patch Changes
+
+- [`ddfc7845`](https://github.com/keystonejs/keystone/commit/ddfc7845399e5108f7fd68169153983122554e96) [#1934](https://github.com/keystonejs/keystone/pull/1934) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed stray Content field implementation (it's now in the field-content package)
+- Updated dependencies [[`946eb315`](https://github.com/keystonejs/keystone/commit/946eb3157a1cc4946fe9e2c2b1101edf4918ab86), [`ddbf1063`](https://github.com/keystonejs/keystone/commit/ddbf10630530c7c7c9e388c6b047b2cbac96dab9)]:
+  - @keystonejs/build-field-types@5.1.1
+
+## 5.1.0
+
+### Minor Changes
+
+- [`20632bca`](https://github.com/keystonejs/keystone/commit/20632bca495058f2845d36fe95650eede0a9ebdc) [#1875](https://github.com/keystonejs/keystone/pull/1875) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Added a default `getFilterTypes` method to `FieldController`.
+
+* [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0) [#1913](https://github.com/keystonejs/keystone/pull/1913) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Improved a11y for the `Checkbox` field.
+
+### Patch Changes
+
+- [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `flow` and fixed flow errors and (probably) bugs.
+
+* [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad) [#1819](https://github.com/keystonejs/keystone/pull/1819) Thanks [@w01fgang](https://github.com/w01fgang)! - Upgraded `@emotion/core` and `@emotion/styled`.
+
+- [`5595e4c4`](https://github.com/keystonejs/keystone/commit/5595e4c45c618fa7e13a3d91e3ea3892b4f10475) [#1808](https://github.com/keystonejs/keystone/pull/1808) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgraded `react-apollo` and replaced use of `react-apollo-hooks` with `react-apollo`. `react-apollo` has a similar hooks API to `react-apollo-hooks`.
+- Updated dependencies [[`8735393e`](https://github.com/keystonejs/keystone/commit/8735393ec7b01dd0491700244e915b4b47c1cc53), [`b68b74f3`](https://github.com/keystonejs/keystone/commit/b68b74f3e77ebd91711c72aac369ab2d5905cb36), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`8226eb47`](https://github.com/keystonejs/keystone/commit/8226eb4709ea8ad5773c900eaaa96068d3cb6bad), [`3138013c`](https://github.com/keystonejs/keystone/commit/3138013c49205bd7f9b05833ae6158ebeb281dc0), [`0154f892`](https://github.com/keystonejs/keystone/commit/0154f892a1771b4f88b35f34a1ba47eaf1721dfe), [`ba8aef71`](https://github.com/keystonejs/keystone/commit/ba8aef71d1a04f643fb7f7590d7d6d136b1d4eba), [`b17b50c0`](https://github.com/keystonejs/keystone/commit/b17b50c0783dd246786aad1de41136967ad73b5c)]:
+  - @keystonejs/build-field-types@5.0.1
+  - @keystonejs/adapter-knex@5.1.0
+  - @arch-ui/button@0.0.10
+  - @arch-ui/controls@0.1.0
+  - @arch-ui/day-picker@0.0.14
+  - @arch-ui/drawer@0.0.11
+  - @arch-ui/layout@0.2.5
+  - @arch-ui/typography@0.0.9
+  - @arch-ui/alert@0.0.8
+  - @arch-ui/fields@2.0.2
+  - @arch-ui/filters@0.0.12
+  - @arch-ui/input@0.1.1
+  - @arch-ui/loading@0.0.9
+  - @arch-ui/lozenge@0.0.8
+  - @arch-ui/options@0.0.10
+  - @arch-ui/popout@0.0.9
+  - @arch-ui/tooltip@0.1.3
+  - @keystonejs/field-content@5.0.1
+  - @keystonejs/adapter-mongoose@5.1.1
+
 ## 5.0.2
 
 ### Patch Changes

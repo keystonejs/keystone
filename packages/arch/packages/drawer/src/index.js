@@ -1,29 +1,16 @@
-// @flow
-
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import {
-  Fragment,
-  forwardRef,
-  type ComponentType,
-  type Element,
-  type Node,
-  memo,
-  useMemo,
-  useEffect,
-  useRef,
-} from 'react';
+import { Fragment, forwardRef, memo, useMemo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
 
-import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
+import { FocusTrap } from 'react-focus-marshal';
 import {
   Blanket,
   fade,
   slideInHorizontal,
   withTransitionState,
-  type TransitionState,
   generateUEID,
 } from '@arch-ui/modal-utils';
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
@@ -42,10 +29,7 @@ const Positioner = ({
   stackIndex,
   style: { transform, ...style },
   ...props
-}: // using any because the transition component uses cloneElement to add the style prop
-// TODO: different api for transitions
-// could probably just be a function that accepts the transitionState and returns the style
-any) => {
+}) => {
   const stackTransforms =
     stackIndex <= 0
       ? []
@@ -73,11 +57,7 @@ any) => {
   );
 };
 
-type DialogElementProps = {
-  component: ComponentType<*> | string,
-};
-
-const Dialog = forwardRef(({ component: Tag, ...props }: DialogElementProps, ref) => (
+const Dialog = forwardRef(({ component: Tag, ...props }, ref) => (
   <Tag
     ref={ref}
     role="dialog"
@@ -119,33 +99,13 @@ const Body = styled.div({
   padding: innerGutter,
 });
 
-// Dialog
-// ------------------------------
-
-type Props = {
-  attachTo: HTMLElement,
-  children: Node,
-  closeOnBlanketClick: boolean,
-  isOpen: boolean,
-  component: ComponentType<*> | string,
-  footer?: Element<*>,
-  heading?: string,
-  initialFocus?: FocusTarget,
-  onClose: (*) => void,
-  onKeyDown: (*) => void,
-  slideInFrom: 'left' | 'right',
-  transitionState: TransitionState,
-  width: number,
-};
-
 function useKeydownHandler(handler) {
   let handlerRef = useRef(handler);
   useEffect(() => {
     handlerRef.current = handler;
   });
   useEffect(() => {
-    function handle(event: KeyboardEvent) {
-      // $FlowFixMe flow's definition of useRef is wrong
+    function handle(event) {
       handlerRef.current(event);
     }
     document.addEventListener('keydown', handle, false);
@@ -155,7 +115,7 @@ function useKeydownHandler(handler) {
   }, []);
 }
 
-let ModalDialog = memo<Props>(function ModalDialog({
+function ModalDialogComponent({
   attachTo,
   children,
   closeOnBlanketClick,
@@ -180,6 +140,10 @@ let ModalDialog = memo<Props>(function ModalDialog({
     }
   });
   const dialogTitleId = useMemo(generateUEID, []);
+
+  if (!attachTo) {
+    return null;
+  }
 
   return createPortal(
     <Fragment>
@@ -218,14 +182,15 @@ let ModalDialog = memo<Props>(function ModalDialog({
     </Fragment>,
     attachTo
   );
-});
+}
 
-// $FlowFixMe
-ModalDialog.defaultProps = {
-  attachTo: ((document.body: any): HTMLElement),
+ModalDialogComponent.defaultProps = {
+  attachTo: typeof document !== 'undefined' ? document.body : null,
   closeOnBlanketClick: false,
   component: 'div',
   width: 640,
 };
+
+const ModalDialog = memo(ModalDialogComponent);
 
 export default withTransitionState(ModalDialog);

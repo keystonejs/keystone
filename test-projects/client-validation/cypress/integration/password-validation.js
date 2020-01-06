@@ -82,6 +82,7 @@ describe('Editing data', () => {
     cy.get(`#ks-input-password-confirm`).type('new password', { force: true });
 
     cy.get('#item-page-save-button').click({ force: true });
+    cy.wait(500);
     cy.get(`nav a:contains("Users")`).click({ force: true });
     cy.get('body').should('contain', 'test name');
   });

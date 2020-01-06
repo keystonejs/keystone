@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -11,23 +10,8 @@ import {
 } from 'date-fns';
 import { memo, useRef, useEffect } from 'react';
 import { colors } from '@arch-ui/theme';
-import { months, type Weeks } from './utils';
+import { months } from './utils';
 import { WeekRow, Day } from './comps';
-
-type Props = {
-  style: Object,
-  index: number,
-  data: {
-    observer: IntersectionObserver,
-    onSelectedChange: Date => void,
-    selectedDate: Date | null,
-    items: Array<{
-      weeks: Weeks,
-      month: number,
-      year: number,
-    }>,
-  },
-};
 
 const TodayMarker = styled.div(({ isSelected }) => ({
   backgroundColor: isSelected ? 'white' : colors.danger,
@@ -38,7 +22,7 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
-export const Month = memo<Props>(({ style, index, data }) => {
+export const Month = memo(({ style, index, data }) => {
   const { items, selectedDate, onSelectedChange, observer } = data;
   const ref = useRef(null);
 

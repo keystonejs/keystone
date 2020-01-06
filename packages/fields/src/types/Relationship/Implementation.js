@@ -20,6 +20,7 @@ export class Relationship extends Implementation {
     const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isOrderable = true;
 
     this.isRelationship = true;
     this.many = many;
@@ -426,14 +427,6 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       };
       refId.adapter.addToForeignTableSchema(table, foreignKeyConfig);
     }
-  }
-
-  // JM TODO: This should be part of the addToTableSchema() function
-  createForeignKey(table, schemaName) {
-    return table
-      .foreign(this.path)
-      .references('id')
-      .inTable(`${schemaName}.${this.refListKey}`);
   }
 
   getQueryConditions(dbPath) {

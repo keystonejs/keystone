@@ -1,28 +1,6 @@
-// @flow
-
-import React, { Component, Fragment, type ComponentType, type Node, memo } from 'react';
+import React, { Component, Fragment, memo } from 'react';
 import ScrollLock from 'react-scrolllock';
-import { TransitionProvider, type TransitionState } from './transitions';
-
-type GenericFn = any => mixed;
-export type CloseType = (event: Event) => void;
-type TargetArg = {
-  isActive: boolean,
-  onClick?: Function,
-  onContextMenu?: Function,
-  ref: Function,
-};
-
-export type ModalHandlerProps = {
-  close: CloseType,
-  defaultIsOpen: boolean,
-  mode: 'click' | 'contextmenu',
-  onClose: GenericFn,
-  onOpen: GenericFn,
-  target: TargetArg => Node,
-};
-type State = { isOpen: boolean, clientX: number, clientY: number };
-type Config = {| transition: TransitionState => Object |};
+import { TransitionProvider } from './transitions';
 
 function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name || 'Component'})`;
@@ -30,20 +8,14 @@ function getDisplayName(C) {
 const NOOP = () => {};
 
 let Target = memo(function Target({ isOpen, mode, target, targetRef, open, toggle }) {
-  const cloneProps: TargetArg = { isActive: isOpen, ref: targetRef };
+  const cloneProps = { isActive: isOpen, ref: targetRef };
   if (mode === 'click') cloneProps.onClick = toggle;
   if (mode === 'contextmenu') cloneProps.onContextMenu = open;
   return target(cloneProps);
 });
 
-export default function withModalHandlers(
-  WrappedComponent: ComponentType<*>,
-  { transition }: Config
-) {
-  class IntermediateComponent extends Component<*, State> {
-    lastHover: HTMLElement;
-    contentNode: HTMLElement;
-    targetNode: HTMLElement;
+export default function withModalHandlers(WrappedComponent, { transition }) {
+  class IntermediateComponent extends Component {
     state = { isOpen: this.props.defaultIsOpen, clientX: 0, clientY: 0 };
     static defaultProps = {
       mode: 'click',
@@ -51,7 +23,7 @@ export default function withModalHandlers(
       onOpen: NOOP,
     };
 
-    open = (event: MouseEvent) => {
+    open = event => {
       if (event.defaultPrevented) return;
       if (this.props.mode === 'contextmenu') event.preventDefault();
 
@@ -62,7 +34,7 @@ export default function withModalHandlers(
       document.addEventListener('mousedown', this.handleMouseDown);
       document.addEventListener('keydown', this.handleKeyDown, false);
     };
-    close = (event: Event) => {
+    close = event => {
       if (event && event.defaultPrevented) return;
 
       this.setState({ isOpen: false, clientX: 0, clientY: 0 });
@@ -71,7 +43,7 @@ export default function withModalHandlers(
       document.removeEventListener('keydown', this.handleKeyDown, false);
     };
 
-    toggle = (event: MouseEvent) => {
+    toggle = event => {
       if (this.state.isOpen) {
         this.close(event);
       } else {
@@ -79,15 +51,13 @@ export default function withModalHandlers(
       }
     };
 
-    handleScroll = (event: WheelEvent) => {
+    handleScroll = event => {
       event.preventDefault();
     };
-    handleMouseDown = (event: MouseEvent) => {
+    handleMouseDown = event => {
       const { target } = event;
       const { isOpen } = this.state;
 
-      // NOTE: Flow doesn't yet have a definition for `SVGElement`
-      // $FlowFixMe
       if (!(target instanceof HTMLElement) && !(target instanceof SVGElement)) {
         return;
       }
@@ -99,7 +69,7 @@ export default function withModalHandlers(
         this.close(event);
       }
     };
-    handleKeyDown = (event: KeyboardEvent) => {
+    handleKeyDown = event => {
       const { key } = event;
 
       if (key === 'Escape') {
@@ -107,10 +77,10 @@ export default function withModalHandlers(
       }
     };
 
-    getTarget = (ref: HTMLElement) => {
+    getTarget = ref => {
       this.targetNode = ref;
     };
-    getContent = (ref: HTMLElement) => {
+    getContent = ref => {
       this.contentNode = ref;
     };
 

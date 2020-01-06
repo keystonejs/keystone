@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/core';
@@ -18,16 +16,8 @@ const appearanceColor = {
   primary: colors.primary,
   inverted: 'white',
 };
-// NOTE should be able to use $Keys<typeof appearanceColor>;
-type Appearance = 'default' | 'dark' | 'primary' | 'inverted';
-type LoadingIndicatorProps = {
-  /** What color should the dots be. */
-  appearance: Appearance,
-  /** Set size of the container. */
-  size: number,
-};
 
-const DotsContainer = styled.div(({ size }: LoadingIndicatorProps) => ({
+const DotsContainer = styled.div(({ size }) => ({
   alignSelf: 'center',
   fontSize: size,
   lineHeight: 1,
@@ -35,8 +25,7 @@ const DotsContainer = styled.div(({ size }: LoadingIndicatorProps) => ({
   verticalAlign: 'middle',
   display: 'inline-flex',
 }));
-type DotProps = { appearance: Appearance, delay?: number, isOffset?: boolean };
-const Dot = styled.span(({ appearance, delay = 0, isOffset }: DotProps) => ({
+const Dot = styled.span(({ appearance, delay = 0, isOffset }) => ({
   animation: `${fadeAnim} 1s infinite ${delay}ms`,
   animationTimingFunction: 'ease-in-out',
   backgroundColor: appearanceColor[appearance],
@@ -47,7 +36,7 @@ const Dot = styled.span(({ appearance, delay = 0, isOffset }: DotProps) => ({
   verticalAlign: 'top',
   width: '1em',
 }));
-export const LoadingIndicator = ({ appearance, size }: LoadingIndicatorProps) => (
+export const LoadingIndicator = ({ appearance, size }) => (
   <DotsContainer size={size}>
     <Dot appearance={appearance} />
     <Dot appearance={appearance} delay={160} isOffset />
@@ -94,7 +83,7 @@ const SpinnerSatellite = styled.div(({ color, size }) => ({
   top: 0,
 }));
 
-export const LoadingSpinner = ({ appearance, size }: LoadingIndicatorProps) => {
+export const LoadingSpinner = ({ appearance, size }) => {
   const color = appearanceColor[appearance];
 
   return (

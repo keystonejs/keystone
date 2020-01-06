@@ -152,8 +152,8 @@ module.exports = class List {
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
       defaultPageSize: 50,
-      defaultColumns: nonIdFieldNames.slice(0, 2).join(','),
-      defaultSort: nonIdFieldNames[0],
+      defaultColumns: nonIdFieldNames ? nonIdFieldNames.slice(0, 2).join(',') : 'id',
+      defaultSort: nonIdFieldNames.length ? nonIdFieldNames[0] : '',
       maximumPageSize: 1000,
       ...adminConfig,
     };
@@ -164,7 +164,6 @@ module.exports = class List {
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
     this.hasAuth = () => !!Object.keys(getAuth() || {}).length;
-    this.createAuxList = createAuxList;
 
     const _label = keyToLabel(key);
     const _singular = pluralize.singular(_label);
@@ -232,7 +231,7 @@ module.exports = class List {
       throw new Error(`List ${label}'s queryLimits.maxResults can't be < 1`);
     }
 
-    if (!['object', 'function', 'undefined'].includes(typeof this.cacheHint)) {
+    if (!['object', 'function', 'undefined'].includes(typeof cacheHint)) {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
@@ -253,6 +252,21 @@ module.exports = class List {
 
     // Tell Keystone about all the types we've seen
     Object.values(fields).forEach(({ type }) => registerType(type));
+
+    this.createAuxList = (auxKey, auxConfig) =>
+      createAuxList(auxKey, {
+        access: Object.entries(this.access).reduce(
+          (acc, [schemaName, access]) => ({
+            ...acc,
+            [schemaName]: Object.entries(access).reduce(
+              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+              {}
+            ),
+          }),
+          {}
+        ),
+        ...auxConfig,
+      });
   }
 
   initFields() {
@@ -310,7 +324,6 @@ module.exports = class List {
           defaultAccess: this.defaultAccess.field,
           createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
-          listAccess: this.access,
         })
     );
     this.fields = Object.values(this.fieldsByPath);
@@ -345,6 +358,12 @@ module.exports = class List {
         ),
       },
     };
+  }
+
+  getFieldsWithAccess({ schemaName, access }) {
+    return this.fields
+      .filter(({ path }) => path !== 'id') // Exclude the id fields update types
+      .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
   }
 
   getGqlTypes({ schemaName }) {
@@ -401,15 +420,11 @@ module.exports = class List {
       );
     }
 
-    if (schemaAccess.update) {
+    const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
+    if (schemaAccess.update && updateFields.length) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
-          ${flatten(
-            this.fields
-              .filter(({ path }) => path !== 'id') // Exclude the id fields update types
-              .filter(field => field.access[schemaName].update) // If it's globally set to false, makes sense to never let it be updated
-              .map(field => field.gqlUpdateInputFields)
-          ).join('\n')}
+          ${flatten(updateFields.map(field => field.gqlUpdateInputFields)).join('\n')}
         }
       `);
       types.push(`
@@ -420,15 +435,11 @@ module.exports = class List {
       `);
     }
 
-    if (schemaAccess.create) {
+    const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
+    if (schemaAccess.create && createFields.length) {
       types.push(`
         input ${this.gqlNames.createInputName} {
-          ${flatten(
-            this.fields
-              .filter(({ path }) => path !== 'id') // Exclude the id fields create types
-              .filter(field => field.access[schemaName].create) // If it's globally set to false, makes sense to never let it be created
-              .map(field => field.gqlCreateInputFields)
-          ).join('\n')}
+          ${flatten(createFields.map(field => field.gqlCreateInputFields)).join('\n')}
         }
       `);
       types.push(`
@@ -454,7 +465,7 @@ module.exports = class List {
         type ${this.gqlNames.authenticateOutputName} {
           """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
           token: String
-          """ Retreive information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
+          """ Retrieve information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
           item: ${this.gqlNames.outputTypeName}
         }
       `);
@@ -557,7 +568,7 @@ module.exports = class List {
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
-      if (field.config.cacheHint) {
+      if (field.config.cacheHint && info && info.cacheControl) {
         info.cacheControl.setCacheHint(field.config.cacheHint);
       }
 
@@ -618,7 +629,9 @@ module.exports = class List {
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
-    if (schemaAccess.create) {
+
+    const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
+    if (schemaAccess.create && createFields.length) {
       mutations.push(`
         """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
@@ -634,7 +647,8 @@ module.exports = class List {
       `);
     }
 
-    if (schemaAccess.update) {
+    const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
+    if (schemaAccess.update && updateFields.length) {
       mutations.push(`
       """ Update a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.updateMutationName}(
@@ -838,7 +852,7 @@ module.exports = class List {
     // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
     // NOTE: Unlike in the single-operation variation, there is no security risk
     // in returning the result of the query here, because if no items match, we
-    // return an empty array regarless of if that's because of lack of
+    // return an empty array regardless of if that's because of lack of
     // permissions or because of those items don't exist.
     const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
     return await this._itemsQuery(
@@ -889,7 +903,7 @@ module.exports = class List {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
+      // Evaluation takes place in ../Keystone/index.js
       getCount: () => {
         const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
@@ -1012,7 +1026,7 @@ module.exports = class List {
       }
     }
 
-    if (extra && extra.info) {
+    if (extra && extra.info && extra.info.cacheControl) {
       switch (typeof this.cacheHint) {
         case 'object':
           extra.info.cacheControl.setCacheHint(this.cacheHint);
@@ -1034,7 +1048,7 @@ module.exports = class List {
   }
 
   authenticatedQuery(context, info) {
-    if (info) {
+    if (info && info.cacheControl) {
       info.cacheControl.setCacheHint({ scope: 'PRIVATE' });
     }
 
@@ -1088,7 +1102,8 @@ module.exports = class List {
     const schemaAccess = this.access[schemaName];
     const mutationResolvers = {};
 
-    if (schemaAccess.create) {
+    const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
+    if (schemaAccess.create && createFields.length) {
       mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
         this.createMutation(data, context);
 
@@ -1096,7 +1111,8 @@ module.exports = class List {
         this.createManyMutation(data, context);
     }
 
-    if (schemaAccess.update) {
+    const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
+    if (schemaAccess.update && updateFields.length) {
       mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
 
@@ -1241,6 +1257,7 @@ module.exports = class List {
       context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
 
     // First we run the field type hooks
@@ -1256,8 +1273,9 @@ module.exports = class List {
     // type hooks
     resolvedData = {
       ...resolvedData,
-      ...(await this._mapToFields(this.fields.filter(field => field.hooks.resolveInput), field =>
-        field.hooks.resolveInput({ ...args, resolvedData })
+      ...(await this._mapToFields(
+        this.fields.filter(field => field.hooks.resolveInput),
+        field => field.hooks.resolveInput({ ...args, resolvedData })
       )),
     };
 
@@ -1287,6 +1305,7 @@ module.exports = class List {
       context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     // Check for isRequired
     const fieldValidationErrors = this.fields
@@ -1318,6 +1337,7 @@ module.exports = class List {
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     const fields = this.fields;
     await this._validateHook(args, fields, operation, 'validateDelete');
@@ -1330,8 +1350,9 @@ module.exports = class List {
     args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
-      field.hooks[hookName](args)
+    await this._mapToFields(
+      fields.filter(field => field.hooks[hookName]),
+      field => field.hooks[hookName](args)
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
@@ -1362,11 +1383,12 @@ module.exports = class List {
     await this._runHook(args, resolvedData, 'beforeChange');
   }
 
-  async _beforeDelete(existingItem, context) {
+  async _beforeDelete(existingItem, context, operation) {
     const args = {
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, existingItem, 'beforeDelete');
   }
@@ -1383,20 +1405,23 @@ module.exports = class List {
     await this._runHook(args, updatedItem, 'afterChange');
   }
 
-  async _afterDelete(existingItem, context) {
+  async _afterDelete(existingItem, context, operation) {
     const args = {
       existingItem,
       context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
+      operation,
     };
     await this._runHook(args, existingItem, 'afterDelete');
   }
 
+  // Used to apply hooks that only produce side effects
   async _runHook(args, fieldObject, hookName) {
     const fields = this._fieldsFromObject(fieldObject);
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
-      field.hooks[hookName](args)
+    await this._mapToFields(
+      fields.filter(field => field.hooks[hookName]),
+      field => field.hooks[hookName](args)
     );
 
     if (this.hooks[hookName]) await this.hooks[hookName](args);
@@ -1628,13 +1653,13 @@ module.exports = class List {
 
       await this._validateDelete(existingItem, context, operation);
 
-      await this._beforeDelete(existingItem, context);
+      await this._beforeDelete(existingItem, context, operation);
 
-      const result = await this.adapter.delete(existingItem.id);
+      await this.adapter.delete(existingItem.id);
 
       return {
-        result,
-        afterHook: () => this._afterDelete(existingItem, context),
+        result: existingItem,
+        afterHook: () => this._afterDelete(existingItem, context, operation),
       };
     });
   }

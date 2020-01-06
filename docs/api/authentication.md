@@ -6,10 +6,11 @@ order: 4
 
 # Authentication
 
-Authentication strategies allow users to identify themselves to KeystoneJS. This can be used to restrict access to the AdminUI, and to configure [access controls](/guides/access-control/).
+Authentication strategies allow users to identify themselves to KeystoneJS.
+This can be used to restrict access to the AdminUI, and to configure [access controls](/docs/guides/access-control.md).
 
-- For password logins see: [`auth-password`](/keystonejs/auth-password/)
-- For social logins using [Passport.js](http://www.passportjs.org/) see: [`auth-passport`](/keystonejs/auth-passport/)
+- For password logins see: [`auth-password`](/packages/auth-password/README.md)
+- For social logins using [Passport.js](http://www.passportjs.org/) see: [`auth-passport`](/packages/auth-passport/README.md)
 
 ## Usage
 
@@ -19,6 +20,9 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  config: {
+    /*...config */
+  },
 });
 ```
 
@@ -33,10 +37,11 @@ module.exports = {
 
 ## Config
 
-| Option | Type           | Default    | Description                                                        |
-| ------ | -------------- | ---------- | ------------------------------------------------------------------ |
-| `type` | `AuthStrategy` | (required) | A valid authentication strategy.                                   |
-| `list` | `String`       | (required) | The list that contains and authenticated item, for example a user. |
+| Option   | Type           | Default    | Description                                                       |
+| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
+| `type`   | `AuthStrategy` | (required) | A valid authentication strategy.                                  |
+| `list`   | `String`       | (required) | The list that contains an authenticated item, for example a user. |
+| `config` | `Object`       | `{}`       | Strategy-specific config options.                                 |
 
 _Note_: Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
 

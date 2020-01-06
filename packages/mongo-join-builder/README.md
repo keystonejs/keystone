@@ -73,7 +73,10 @@ We'd expect the following results:
       {
         id: 1,
         name: 'almonds',
-        stock: [{ id: 1, warehouse: 'A', stock: 0 }, { id: 3, warehouse: 'B', stock: 0 }],
+        stock: [
+          { id: 1, warehouse: 'A', stock: 0 },
+          { id: 3, warehouse: 'B', stock: 0 },
+        ],
       },
     ],
   },
