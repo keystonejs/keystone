@@ -5,7 +5,7 @@ import { Mutation } from 'react-apollo';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
 
-import { useAuth } from '../../lib/authetication';
+import { useAuth } from '../../lib/authentication';
 import { Button, Field, Label, Input } from '../../primitives/forms';
 import { gridSize, colors } from '../../theme';
 import { CREATE_USER } from '../../graphql/users';
