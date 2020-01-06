@@ -62,7 +62,7 @@ Each of these mutations is implemented within KeystoneJS by a corresponding reso
 Please refer to the [API documentation](LINK_TODO)) for full details on how to call these mutations either from [GraphQL](LINK_TODO)) or directly from [Keystone](LINK_TODO)).
 -->
 
-KeystoneJS provides [access control](/guides/access-control.md) mechanisms and a [hook system](/guides/hooks.md) which allows the developer to customise the behaviour of each of these mutations.
+KeystoneJS provides [access control](/docs/guides/access-control.md) mechanisms and a [hook system](/docs/guides/hooks.md) which allows the developer to customise the behaviour of each of these mutations.
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.
 
@@ -99,7 +99,7 @@ The first step in all mutations is to check that the user has access to perform 
 
 If access control has been defined statically or imperatively this check can be performed here. An `AccessDeniedError` is returned if the access control failed. If the access control mechanism for this list is defined declaratively (i.e using a GraphQL `where` statement), this check is deferred until the next step.
 
-For more information on how to define access control, please consult the [access control documentation](/guides/access-control.md)).
+For more information on how to define access control, please consult the [access control documentation](/docs/guides/access-control.md)).
 
 #### 2. Get Item(s) (`update/delete`)
 
@@ -171,7 +171,7 @@ The actual update step for these backlinks will be performed during the [Resolve
 
 The `resolveInput` hook allows the developer to modify the incoming item before it is inserted/updated within the database.
 
-For full details of how and when to use this hook, please consult the [API docs](/api/hooks.md).
+For full details of how and when to use this hook, please consult the [API docs](/docs/api/hooks.md).
 
 #### 4. Validate Data (`create/update/delete`)
 
@@ -179,13 +179,13 @@ The `validateInput` and `validateDelete` hooks allow the developer to specify va
 
 These hooks can throw a `ValidationFailureError` when they encounter invalid data, which will terminate the operational phase.
 
-For full details of how and when to use these hooks, please consult the [API docs](/api/hooks.md).
+For full details of how and when to use these hooks, please consult the [API docs](/docs/api/hooks.md).
 
 #### 5. Before Operation (`create/update/delete`)
 
 The `beforeChange` and `beforeDelete` hooks allows the developer to perform any operations which interact with external systems, such as external data stores, which depend on resolved and validated data.
 
-For full details of how and when to use these hooks, please consult the [API docs](/api/hooks.md).
+For full details of how and when to use these hooks, please consult the [API docs](/docs/api/hooks.md).
 
 #### 6. Database Operation (`create/update/delete`)
 
@@ -208,7 +208,7 @@ The `afterChange` and `afterDelete` hooks are only executed once all database op
 This means that the database is in a consistent state when this hook is executed.
 It also means that if there is a failure of any kind during this hook, the operation will still be considered complete, and no roll back will be performed.
 
-For full details of how and when to use these hooks, please consult the [API docs](/api/hooks.md).
+For full details of how and when to use these hooks, please consult the [API docs](/docs/api/hooks.md).
 
 ## Summary
 

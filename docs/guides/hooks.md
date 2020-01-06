@@ -8,7 +8,7 @@ title: Hooks
 Hooks give solution developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
 
 This document provides an overview of the concepts, patterns and function of the Keystone hook system.
-The [Hooks API docs](/api/hooks.md) describe the specific arguments and usage information.
+The [Hooks API docs](/docs/api/hooks.md) describe the specific arguments and usage information.
 
 ## Conceptual Organisation
 
@@ -39,7 +39,7 @@ These operations are reused used for both "single" and "many" modes.
 E.g. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
 Hooks for these operations have different signatures due to the nature of the operations being performed.
-See the [Hook API docs](/api/hooks.md) for specifics.
+See the [Hook API docs](/docs/api/hooks.md) for specifics.
 
 > Note: Keystone does not currently implement `read` hooks.
 
@@ -48,11 +48,11 @@ See the [Hook API docs](/api/hooks.md) for specifics.
 A hooks _type_ is defined by where it is attached.
 Keystone recognises three _types_ of hook:
 
-- [Field Type hooks](/api/hooks.md#field-type-hooks) -
+- [Field Type hooks](/docs/api/hooks.md#field-type-hooks) -
   Field Type hooks are associated with a particular _field type_ and are applied to all fields of that type across all lists.
-- [Field hooks](/api/hooks.md#field-hooks) -
+- [Field hooks](/docs/api/hooks.md#field-hooks) -
   Field hooks can be defined by the app developer by specifying the `hooks` attribute of a field configuration when calling `createList()`.
-- [List hooks](/api/hooks.md#list-hooks) -
+- [List hooks](/docs/api/hooks.md#list-hooks) -
   List hooks can be defined by the app developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.
 
 ### Hook Set
@@ -62,7 +62,7 @@ This group of distinct but related hooks are referred to as a _hook set_.
 
 E.g. a `beforeDelete` function could be supplied for a list, several specific fields on the list and a field type used by the list.
 All hooks in a hook set share the same functional signature but are invoked at different times.
-See the [Hooks API docs](/api/hooks.md) and [Intra-Hook Execution Order section](#intra-hook-execution-order) for more information.
+See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order section](#intra-hook-execution-order) for more information.
 
 ### Putting It Together
 
@@ -82,12 +82,12 @@ Due to their similarity, the `create` and `update` operations share a single set
 To implement different logic for these operations make it conditional on either the `operation` or `existingItem` arguments;
 for create operations `existingItem` will be `undefined`.
 
-See the [Hooks API docs](/api/hooks.md) for argument details and usage.
+See the [Hooks API docs](/docs/api/hooks.md) for argument details and usage.
 
 ## Execution Order
 
 The hooks are invoked in a specific order during an operation.
-For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/guides/mutation-lifecycle.md).
+For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/docs/guides/mutation-lifecycle.md).
 
 ### Create/Update
 
@@ -111,9 +111,9 @@ For full details of the mutation lifecycle, and where hooks fit within this, see
 
 Within each hook set, the different [hook types](#hook-type) are invoked in a specific order.
 
-1. All relevant and defined [field type hooks](/api/hooks.md#field-type-hooks) are invoked in **parallel**
-2. All relevant and defined [field hooks](/api/hooks.md#field-hooks) are invoked in **parallel**
-3. If defined the [list hook](/api/hooks.md#list-hooks) is invoked
+1. All relevant and defined [field type hooks](/docs/api/hooks.md#field-type-hooks) are invoked in **parallel**
+2. All relevant and defined [field hooks](/docs/api/hooks.md#field-hooks) are invoked in **parallel**
+3. If defined the [list hook](/docs/api/hooks.md#list-hooks) is invoked
 
 ## Gotchas
 
