@@ -8,6 +8,10 @@ title: Static App
 
 A KeystoneJS App to serve static files such as images, CSS and JavaScript with support for client side routing.
 
+## Install 
+
+``` npm i @keystonejs/app-static ```
+
 ## Usage
 
 `index.js`
