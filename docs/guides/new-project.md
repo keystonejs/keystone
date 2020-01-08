@@ -54,13 +54,7 @@ module.exports = {
 };
 ```
 
-That's it. But now our app does nothing, it is able to start and connect to a database. If you run the application now, it will display something like this:
-
-```
-TypeError: Router.use() requires a middleware function
-```
-
-Let's create some routes! For this we will enable a powerful KeystoneJS feature - the GraphQL explorer UI.
+That's it. But now our app does nothing, it is able to start and connect to a database.
 
 ## Setting up the GraphQL Interface
 
