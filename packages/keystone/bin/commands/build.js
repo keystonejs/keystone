@@ -40,12 +40,7 @@ module.exports = {
 
     if (apps) {
       await Promise.all(
-        apps.map(app => {
-          return app.build({
-            distDir: resolvedDistDir,
-            keystone,
-          });
-        })
+        apps.filter(app => app.build).map(app => app.build({ distDir: resolvedDistDir, keystone }))
       );
 
       spinner.succeed(

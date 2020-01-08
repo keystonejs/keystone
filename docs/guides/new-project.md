@@ -84,15 +84,16 @@ In order to be able to start an app we need to add at least one List. A List is 
 ## Adding first List
 
 To type the fields of the list, a package has to be installed:
+
 ```
 yarn add @keystonejs/fields
 ```
 
 In this example the type `Text` is used, require this in index.js:
+
 ```javascript
 const { Text } = require('@keystonejs/fields');
 ```
-
 
 In `index.js` add the following above `module.exports` and below `const keystone = new Keystone({...`:
 
