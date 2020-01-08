@@ -9,7 +9,10 @@ const joinTerms = (matchTerms, joinOp) =>
   matchTerms.length > 1 ? { [joinOp]: matchTerms } : matchTerms[0];
 
 const flattenQueries = (parsedQueries, joinOp) => ({
-  matchTerm: joinTerms(parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm), joinOp),
+  matchTerm: joinTerms(
+    parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm),
+    joinOp
+  ),
   postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline)).filter(pipe => pipe),
   relationships: objMerge(parsedQueries.map(q => q.relationships)),
 });

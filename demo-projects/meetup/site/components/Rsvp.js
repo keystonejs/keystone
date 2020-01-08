@@ -3,7 +3,7 @@ import { Mutation, Query } from 'react-apollo';
 import { jsx } from '@emotion/core';
 
 import { Button as ButtonPrimitive, CheckmarkIcon, Loading } from '../primitives';
-import { useAuth } from '../lib/authetication';
+import { useAuth } from '../lib/authentication';
 import { GET_RSVPS, UPDATE_RSVP, ADD_RSVP } from '../graphql/rsvps';
 import AuthModal from './auth/modal';
 

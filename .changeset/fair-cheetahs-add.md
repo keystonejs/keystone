@@ -2,4 +2,4 @@
 '@keystonejs/demo-project-meetup': patch
 ---
 
-Updated eslint dependencies.
+Fixed typo in filename

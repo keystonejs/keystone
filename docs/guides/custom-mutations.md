@@ -6,19 +6,20 @@ subSection: advanced
 
 # Custom Mutations
 
-Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/guides/schema#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
+Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
 
 The automatically generated GraphQL API should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
 
-Adding to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/keystonejs/keystone/#extendgraphqlschemaconfig) method.
+Adding to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/packages/keystone/README.md#extendgraphqlschemaconfig) method.
 
-See the [GraphQL Philosophy](/guides/graphql-philosophy) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
+See the [GraphQL Philosophy](/docs/guides/graphql-philosophy.md) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
 ## Creating an Custom Mutation
 
 A common example where a custom mutation might be beneficial is if you want to increment a value.
 
-Like any problem there are multiple solutions. You can implement an incrementing value with [Hooks](/guides/hooks) but in this example we're going to look at how to do this with a custom mutation.
+Like any problem there are multiple solutions.
+You can implement an incrementing value with [Hooks](/docs/guides/hooks.md) but in this example we're going to look at how to do this with a custom mutation.
 
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
