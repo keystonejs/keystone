@@ -61,7 +61,7 @@ module.exports = {
             yearRangeFrom: '2019',
             yearRangeTo: '2029',
             isRequired: false,
-            defaultValue: Date.now(),
+            defaultValue: new Date().toISOString('YYYY-MM-DD').substring(0, 10),
         },
         assignee: {
             type: Text,
