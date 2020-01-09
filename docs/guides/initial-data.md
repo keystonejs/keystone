@@ -7,9 +7,22 @@ order: 3
 
 # Adding initial data to Lists
 
-This guide will show you how to create a User list and add initial data to it using the `createItems` method. This process is also called `seeding`
+This guide will show you how to create a User list and add initial data to it using the `createItems` method. This process is also called `seeding`.
 
-First let's create a User list and add a `PasswordAuthStrategy`. Our `index.js` might look like this:
+_Note_: In a previous chapter the code was split up over separate files, while this is preferred in a real code base, in this part everything is put in one file for clarity reasons. It is best to start from an empty database (delete data from previous chapters). Also, make sure to have all of the following packages installed:
+```
+# These were installed in the previous chapters
+yarn add @keystonejs/keystone
+yarn add @keystonejs/adapter-mongoose
+yarn add @keystonejs/app-graphql
+yarn add @keystonejs/fields
+
+# These are new
+yarn add @keystonejs/app-admin-ui
+yarn add @keystonejs/auth-password
+```
+
+First let's create a User list and add a `PasswordAuthStrategy`. The code in `index.js`:
 
 ```javascript
 const { Keystone } = require('@keystonejs/keystone');
@@ -49,127 +62,223 @@ module.exports = {
 };
 ```
 
-You can achieve this setup by running the KeystoneJS CLI and selecting the `Starter` template.
-
-This method is intended for initial seeding of databases or running migration scripts.
+_Hint_: A similar same setup can be achieved by running the KeystoneJS CLI `yarn create keystone-app` and selecting `Starter (Users + Authentication)`. This starter project has a User list, PasswordAuthStrategy and seeding of the database already configured. For now, we will proceed manually.
 
 ## Usage
 
 `createItems` requires an object where keys are list keys, and values are arrays of items to insert.
-For example;
-
-```javascript
-keystone.createItems({
-  User: [{ name: 'Ticiana' }, { name: 'Lauren' }],
-  Post: [{ title: 'Hello World' }],
-});
+For example:
 ```
-
-_Note_: The format of the data must match the schema setup with calls to `keystone.createList()`.
-
-### Relationships
-
-It is possible to create relationships upon insertion by using the KeystoneJS
-query syntax.
-
-#### Single Relationships
-
-For example;
-
-```javascript
 keystone.createItems({
-  User: [{ name: 'Ticiana' }, { name: 'Lauren' }],
-  Post: [
-    {
-      title: 'Hello World',
-      author: { where: { name: 'Ticiana' } },
-    },
+  User: [
+    { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' }, 
+    { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' }
   ],
 });
 ```
+_Note_: The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the email has `isUnique: true`, therefor it would not be possible for the above code to have the same email for each user that should be generated.
 
-The `author` field of the `Post` list would have the following configuration:
+Example on how to `seed` the data upon database connection:
+```javascript
+const keystone = new Keystone({
+    name: 'New Project',
+    adapter: new MongooseAdapter(),
+    onConnect: async keystone => {
+      await keystone.createItems({
+          User: [
+            { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' }, 
+            { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' }
+          ],
+      });
+    }
+});
+```
+Start the application and visit the AdminUI, two users are available on startup.
 
+_Note_: In this example the same two users would be generated upon _every_ startup. Since email should be unique this will cause a duplicate error to show up. To avoid this, clear the database before starting KeystoneJS.
+
+### Relationships
+
+It is possible to create relationships upon insertion by using the KeystoneJS query syntax.
+
+#### Single Relationships
+
+Add the `Relationship` field to the imports:
+```javascript
+const { Text, Checkbox, Password, Relationship } = require('@keystonejs/fields');
+```
+
+Create a list with a relationship to another list: 
 ```javascript
 keystone.createList('Post', {
-  fields: {
-    author: { type: Relationship, ref: 'User' },
-  },
+    fields: {
+        title: {
+            type: Text,
+        },
+        author: {
+            type: Relationship,
+            ref: 'User'
+        },
+    },
 });
 ```
 
-Upon insertion, KeystoneJS will resolve the `{ where: { name: 'Ticiana' } }` query
+Example on how to seed an item with a relationship:
+```javascript
+Post: [
+  {
+    title: 'Hello World',
+    author: { where: { name: 'John Duck' } },
+  },
+],
+```
+
+The full example:
+```javascript
+const keystone = new Keystone({
+    name: 'New Project',
+    adapter: new MongooseAdapter(),
+    onConnect: async keystone => {
+      await keystone.createItems({
+          User: [
+            { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' }, 
+            { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' }
+          ],
+          Post: [
+            {
+              title: 'Hello World',
+              author: { where: { name: 'John Duck' } },
+            },
+          ],
+      });
+    }
+});
+```
+
+Upon insertion, KeystoneJS will resolve the `{ where: { name: 'John Duck' } }` query
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
 _Note_: An error is thrown if no items match the query.
 
+Clear the database, then start KeystoneJS and visit the AdminUI to see that two users are generated and one post is generated. The post has an `author` named `John Duck`. In the database `author` will be the ID of the user with name John Duck.
+
 #### Many Relationships
 
-When inserting an item with a `to-many` relationship, such as:
+A user can have many posts, add the `to-many` relationship field `posts` to the `User`:
 
 ```javascript
 keystone.createList('User', {
   fields: {
-    posts: { type: Relationship, ref: 'Post', many: true },
+    name: { type: Text },
+    email: {
+      type: Text,
+      isUnique: true,
+    },
+    isAdmin: { type: Checkbox },
+    password: {
+      type: Password,
+    },
+    posts: { 
+        type: Relationship, 
+        ref: 'Post', 
+        many: true,
+    },
   },
 });
 ```
+There are two ways to write the query for `to-many` relationships:
 
-There is 2 ways to write the query for `to-many` relationships:
-
-1. _Single Relation syntax_, using the same query as a Single Relationship, but
+1. _Single Relation syntax_ uses the same query as a Single Relationship, but
    instead of picking only the first item found, it will pick _all_ the items
-   found to match the query. ie; 0, 1, or _n_ items.
-2. _Array Relation syntax_, allowing to explicitly set the exact items related
-   to. ie; The exact length and items in the collection.
+   found to match the query. This could be 0, 1, or _n_ items.
+2. _Array Relation syntax_ allows to explicitly set multiple queries to match.
 
 **Single Relation syntax** example
 
+To get all posts where the `title` field contains the word `React`:
 ```javascript
-keystone.createItems({
-  User: [{ name: 'Ticiana' }, { name: 'Lauren', posts: { where: { title_contains: 'React' } } }],
-  Post: [
-    { title: 'Hello Everyone' },
-    { title: 'Talking about React' },
-    { title: 'React is the Best' },
-    { title: 'KeystoneJS Rocks' },
-  ],
+posts: { where: { title_contains: 'React' } }
+```
+
+In action:
+```javascript
+const keystone = new Keystone({
+    name: 'New Project',
+    adapter: new MongooseAdapter(),
+    onConnect: async keystone => {
+      await keystone.createItems({
+          User: [
+            { 
+                name: 'John Duck', 
+                email: 'john@duck.com', 
+                password: 'dolphins', 
+                posts: { where: { title_contains: 'React' } },
+            }, 
+            { 
+                name: 'Barry', 
+                email: 'bartduisters@bartduisters.com', 
+                password: 'dolphins', 
+                isAdmin: true, 
+            }
+          ],
+          Post: [
+            { title: 'Hello Everyone' },
+            { title: 'Talking about React' },
+            { title: 'React is the Best' },
+            { title: 'KeystoneJS Rocks' },
+          ],
+      });
+    }
 });
 ```
+Clear the database, start the KeystoneJS application and visit the AdminUI. Take a look at the user `John Duck`, he has two posts associated with him (there were two posts with the word `React` in the `title`).
 
 **Array Relation syntax** example
 
 ```javascript
-keystone.createItems({
-  User: [
-    {
-      name: 'Ticiana',
-      posts: [
-        // Notice the Array of queries
-        { where: { title: 'Hello Everyone' } },
-        { where: { title: 'KeystoneJS Rocks' } },
-      ],
-    },
-    { name: 'Lauren' },
-  ],
-  Post: [
-    { title: 'Hello Everyone' },
-    { title: 'Talking about React' },
-    { title: 'React is the Best' },
-    { title: 'KeystoneJS Rocks' },
-  ],
+const keystone = new Keystone({
+    name: 'New Project',
+    adapter: new MongooseAdapter(),
+    onConnect: async keystone => {
+      await keystone.createItems({
+          User: [
+            { 
+                name: 'John Duck', 
+                email: 'john@duck.com', 
+                password: 'dolphins', 
+                posts: { where: { title_contains: 'React' } },
+            }, 
+            { 
+                name: 'Barry', 
+                email: 'bartduisters@bartduisters.com', 
+                password: 'dolphins', 
+                isAdmin: true, 
+            }
+          ],
+          Post: [
+            { title: 'Hello Everyone' },
+            { title: 'Talking about React' },
+            { title: 'React is the Best' },
+            { title: 'KeystoneJS Rocks' },
+          ],
+      });
+    }
 });
 ```
 
 _NOTE: When using the Array Relation syntax, If any of the queries do not match
 any items, an Error will be thrown._
 
+Clear the database, start the KeystoneJS application and visit the AdminUI. Take a look at both users, they each now have two posts associated with them. `John Duck` has the posts that contain `React` in the title. `Barry` has the posts that matched any of the queries in the array.
+
+_Note_: When looking at the posts, there are *no* associated users! To have both the user associated with the post as well is called `back reference`, this will be handled in a later chapter.
+
 ---
 
-The entire power of KeystoneJS Query Syntax is supported.
+The entire power of [KeystoneJS Query Syntax](https://www.keystonejs.com/guides/intro-to-graphql#filter-limit-and-sorting) is supported.
 
-If you need to related to the 3rd item, you'd use a query like:
+If you need the 3rd item that matches the query, you'd use a query like:
 
 ```javascript
 keystone.createItems({
@@ -194,7 +303,7 @@ keystone.createItems({
 });
 ```
 
-Will match all users whose name starts with `'J'`, skipping the first two matches,
+This will match all users whose name starts with `'J'`, skipping the first two matches,
 ultimately matching against `'John'`.
 
 ### Errors
