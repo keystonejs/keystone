@@ -72,3 +72,28 @@ Other interesting KeystoneJS compatible Apps are:
 
 - [Static App](/packages/app-static/README.md) for serving static files.
 - [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
+
+## Custom Apps
+
+If you need to provide your own custom middleware for your system you can create a custom **App** and include it in your exported `apps`.
+
+```
+class CustomApp {
+  prepareMiddleware({ keystone, dev, distDir }) {
+    const middleware = express();
+    // ...
+    return middleware;
+  }
+}
+
+// ...
+
+module.exports = {
+  keystone,
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp(),
+    new CustomApp(),
+  ]
+}
+```
