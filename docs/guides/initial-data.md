@@ -9,15 +9,14 @@ order: 3
 
 This guide will show you how to create a User list and add initial data to it using the `createItems` method. This process is also called `seeding`.
 
-_Note_: In a previous chapter the code was split up over separate files, while this is preferred in a real code base, in this part everything is put in one file for clarity reasons. It is best to start from an empty database (delete data from previous chapters). Also, make sure to have all of the following packages installed:
+_Note_: In a previous chapter the code was split up over separate files, while this is preferred in a real code base, in this part everything is put in one file for clarity reasons.
+
+This chapter will use a different User schema than previous chapters and instead of a Todo list, there will be a Post list. It is best to start from a fresh project and start from an empty database (delete data from previous chapters). Also, make sure to have all of the following packages installed:
 ```
-# These were installed in the previous chapters
 yarn add @keystonejs/keystone
 yarn add @keystonejs/adapter-mongoose
 yarn add @keystonejs/app-graphql
 yarn add @keystonejs/fields
-
-# These are new
 yarn add @keystonejs/app-admin-ui
 yarn add @keystonejs/auth-password
 ```
