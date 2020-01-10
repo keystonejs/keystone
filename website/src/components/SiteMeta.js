@@ -20,7 +20,6 @@ export const SiteMeta = ({ pathname }) => (
         siteMetadata: { siteUrl, title, twitter },
       },
     }) => {
-      return null;
       // NOTE: site.webmanifest is handled in "gatsby-config.js" by "gatsby-plugin-manifest"
       return (
         <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>

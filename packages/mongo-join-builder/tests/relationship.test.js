@@ -1,4 +1,4 @@
-const { relationshipTokenizer } = require('../lib/tokenizers/relationship');
+const { relationshipTokenizer } = require('../lib/tokenizers');
 
 describe('Relationship tokenizer', () => {
   test('Uses correct conditions', () => {
