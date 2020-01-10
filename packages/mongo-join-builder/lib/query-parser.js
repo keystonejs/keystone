@@ -1,8 +1,7 @@
 const cuid = require('cuid');
 const { getType, flatten, objMerge } = require('@keystonejs/utils');
 
-const { simpleTokenizer } = require('./tokenizers/simple');
-const { relationshipTokenizer } = require('./tokenizers/relationship');
+const { simpleTokenizer, relationshipTokenizer } = require('./tokenizers');
 
 // If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
 const joinTerms = (matchTerms, joinOp) =>
