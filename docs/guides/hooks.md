@@ -12,7 +12,7 @@ The [Hooks API docs](/docs/api/hooks.md) describe the specific arguments and usa
 
 ## Conceptual Organisation
 
-There are several categorisations that can be applied to hooks and are useful for understanding what is run and when.
+There are several categorizations that can be applied to hooks and are useful for understanding what is run and when.
 
 > Note: the concepts listed here have some exceptions.
 > See the [Gotchas section](#gotchas).
@@ -20,7 +20,7 @@ There are several categorisations that can be applied to hooks and are useful fo
 ### Stage
 
 Keystone defines several _stages_ within the [hook execution order](#execution-order).
-These stages are intended to be used for different purposes; they help organise your hook functionality.
+These stages are intended to be used for different purposes; they help organize your hook functionality.
 
 - Input resolution - modify the values supplied
 - Data validation - check the values are valid
@@ -46,7 +46,7 @@ See the [Hook API docs](/docs/api/hooks.md) for specifics.
 ### Hook Type
 
 A hooks _type_ is defined by where it is attached.
-Keystone recognises three _types_ of hook:
+Keystone recognizes three _types_ of hooks:
 
 - [Field Type hooks](/docs/api/hooks.md#field-type-hooks) -
   Field Type hooks are associated with a particular _field type_ and are applied to all fields of that type across all lists.
