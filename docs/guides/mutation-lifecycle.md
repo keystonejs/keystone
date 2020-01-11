@@ -62,7 +62,7 @@ Each of these mutations is implemented within KeystoneJS by a corresponding reso
 Please refer to the [API documentation](LINK_TODO)) for full details on how to call these mutations either from [GraphQL](LINK_TODO)) or directly from [Keystone](LINK_TODO)).
 -->
 
-KeystoneJS provides [access control](/docs/guides/access-control.md) mechanisms and a [hook system](/docs/guides/hooks.md) which allows the developer to customise the behaviour of each of these mutations.
+KeystoneJS provides [access control](/docs/guides/access-control.md) mechanisms and a [hook system](/docs/guides/hooks.md) which allows the developer to customize the behavior of each of these mutations.
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.
 
@@ -99,7 +99,7 @@ The first step in all mutations is to check that the user has access to perform 
 
 If access control has been defined statically or imperatively this check can be performed here. An `AccessDeniedError` is returned if the access control failed. If the access control mechanism for this list is defined declaratively (i.e using a GraphQL `where` statement), this check is deferred until the next step.
 
-For more information on how to define access control, please consult the [access control documentation](/docs/guides/access-control.md)).
+For more information on how to define access control, please consult the [access control documentation](/docs/guides/access-control.md).
 
 #### 2. Get Item(s) (`update/delete`)
 
@@ -117,7 +117,7 @@ No error is thrown if some items do not exist or do not pass access control.
 
 The field access permissions can now be checked.
 
-Only those fields which are being set/updated have their permissions checks.
+Only those fields which are being set/updated have their permissions checked.
 
 All relevant fields for all targeted items are checked in parallel and if any of them fail an `AccessDeniedError` is returned, listing all the fields which violated access control.
 
@@ -127,25 +127,25 @@ During the Operational Phase for a `single` mutation, the following steps are pe
 
 The Operational Phase for a `many` mutation will perform the Operational Phase for the corresponding `single` mutation across each item in parallel.
 
-The Operational Phase consists of seven distinct steps.
+The Operational Phase consists of the following distinct steps.
 
 #### 1. Resolve Defaults (`create`)
 
 The first step when creating a new item is to resolve any default values.
 
-Any fields which a) are not set on the provided item and b) have a configured default value will be set to the default value.
+Any fields which are not set on the provided item _and_ have a configured default value will be set to the default value.
 
 The default value of a field can be configured at `List` definition time with the config attribute `defaultValue`.
 
 The `defaultValue` may be a static value, or a function which returns either the value or a Promise.
 
-Custom field types can override this behaviour by defining the method `getDefaultValue()`.
+Custom field types can override this behavior by defining the method `getDefaultValue()`.
 
 Relationship fields do not currently support default values.
 
 #### 2a. Resolve Relationship (`create/update`)
 
-The create and update mutations specify the value of relationship fields using the [nested mutation] pattern.
+The create and update mutations specify the value of relationship fields using the nested mutation pattern.
 
 The nested mutations need to be resolved down to specific item IDs which will be inserted into the database.
 
@@ -153,7 +153,7 @@ This step performs the necessary database queries to identify the appropriate it
 
 In the case that a nested mutation specifies a `create` operation, this will trigger a full `createMutation` on the related `List`.
 
-Any errors thrown by this nested `createMutation` will be cause the current mutation to terminate, and the errors will be passed up the call stack.
+Any errors thrown by this nested `createMutation` will cause the current mutation to terminate and the errors will be passed up the call stack.
 
 As well as resolving the IDs and performing any nested create mutations, this step must also track.
 
@@ -165,7 +165,7 @@ A backlink exists when a relationship field is configured with a `ref` attribute
 
 During this step, any backlinks which need to be updated are identified and registered internally.
 
-The actual update step for these backlinks will be performed during the [Resolve backlinks] step, once all other pre-hooks and database operations have been completed on the primary target list.
+The actual update step for these backlinks will be performed during the `Resolve backlinks` step, once all other pre-hooks and database operations have been completed on the primary target list.
 
 #### 3. Resolve Input (`create/update`)
 
@@ -196,15 +196,15 @@ The database operation is where the keystone database adapter is used to make th
 During this stage, all pending backlinks which need to be updated on referenced lists are resolved.
 This involves performing an `updateMutation` on the referenced list, performing either a `connect` or `disconnect` operation on the referenced relationship field.
 
-Unlike the [Resolve relationship] step, this operation will only ever nest one level deep.
+Unlike the `Resolve relationship` step, this operation will only ever nest one level deep.
 
 It can still result in either an `AccessDeniedError` or `ValidationFailureError`.
 
-As with [Resolve relationship], the nested `AfterChange` hooks will be returned an added to the stack of deferred hooks for this mutation.
+As with `Resolve relationship`, the nested `AfterChange` hooks will be returned an added to the stack of deferred hooks for this mutation.
 
 #### 8. After Operation (`create/update/delete`)
 
-The `afterChange` and `afterDelete` hooks are only executed once all database operations for the mutation have been completed and the transaction has been finalised.
+The `afterChange` and `afterDelete` hooks are only executed once all database operations for the mutation have been completed and the transaction has been finalized.
 This means that the database is in a consistent state when this hook is executed.
 It also means that if there is a failure of any kind during this hook, the operation will still be considered complete, and no roll back will be performed.
 
