@@ -5,19 +5,11 @@ title: Data modeling - Lists & Fields
 
 # Data modeling - Lists & Fields
 
-KeystoneJS is comprised of 3 distinct pieces, which can be described as:
-
-<pre>
-  <code>
-    Schema => (&#x0007B; <a href="/keystonejs/app-admin-ui">AdminUI</a>, <a href="/guides/intro-to-graphql">GraphQL</a> &#x0007D;)
-  </code>
-</pre>
-
 A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
 
 - a set of **Lists**
 - containing one or more **Fields**
-- which each have a **Type**.
+- which each have a **Type**
   <!-- TODO: Link to glossary -->
 
 <!-- TODO: Make this a component that can be imported somehow -->
