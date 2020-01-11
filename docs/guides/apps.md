@@ -5,7 +5,7 @@ title: KeystoneJS Apps
 
 # KeystoneJS Apps
 
-A KeystoneJS instance can be summarised as a function of your schema which
+A KeystoneJS instance can be summarized as a function of your schema which
 creates a GraphQL API for querying, and an AdminUI for managing your data:
 
 ```
@@ -68,10 +68,11 @@ If you're using a [Custom Server](/docs/guides/custom-server.md), it will be you
 responsibility to ensure each app's middleware is correctly injected into any
 http server you setup.
 
-Other interesting KeystoneJS compatible Apps are:
+Other interesting KeystoneJS compatible Apps that can be served on the same server as the API are:
 
-- [Static App](/packages/app-static/README.md) for serving static files.
-- [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
+- [Static App](/packages/app-static/README.md) for serving static files
+- [Next.js App](/packages/app-next/README.md) for serving a Next.js App
+- [Nuxt.js App](/packages/app-nuxt/README.md) for serving a Nuxt.js App
 
 ## Custom Apps
 
