@@ -14,7 +14,7 @@ Adding to Keystone's generated schema can be done using the [`keystone.extendGra
 
 See the [GraphQL Philosophy](/docs/guides/graphql-philosophy.md) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
-## Creating an Custom Mutation
+## Creating a Custom Mutation
 
 A common example where a custom mutation might be beneficial is if you want to increment a value.
 
@@ -58,7 +58,7 @@ mutation updatePageViews($id: ID!, $views: Int!) {
 
 The problem with this approach is the client can update the views with any arbitrary value. And even if there is no deliberate manipulation of the value, the GraphQL server is trusting that the update mutation is received from the same client, immediately after the view query. On heavily trafficked sites this will not always be the case.
 
-Read and Update requests from multiple clients can be received in any order depending on the speed of the their internet connections. This means updates can override each other. One solution to this problem is a custom mutation.
+Read and Update requests from multiple clients can be received in any order depending on the speed of their internet connections. This means updates can override each other. One solution to this problem is a custom mutation.
 
 You can add to Keystone's generated schema using `keystone.extendGraphQLSchema()`. This method accepts an array of types, queries and mutations. For our example we are going to add a `mutation` array with a single item.
 
