@@ -30,6 +30,9 @@ if (process.env.CIRCLE_JOB !== 'simple_tests') {
   });
 }
 
+// Remove empty
+changedFiles = changedFiles.filter(filename => filename && filename !== "");
+
 if (changedFiles.length === 0) {
   shouldRunCI = false;
 }
