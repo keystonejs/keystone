@@ -379,12 +379,12 @@ A note on definitions:
 
 - **To-single / To-many** refer to _the number of related items_ (1, or more than 1).
 - **One-way / Two-way** refer to _the direction of the query_.
-- **Backlinks** refer to a special type of two-way relationships where _one
+- **Back References** refer to a special type of two-way relationships where _one
   field can update a related list's field as it changes_.
 
 #### To-single Relationships
 
-When you have a single related item you want to refer to, a _To-single_
+When you have a single related item you want to refer to, a _to-single_
 relationship allows storing that item, and querying it via the GraphQL API.
 
 ```javascript
@@ -406,7 +406,7 @@ keystone.createList('User', {
 Here we've defined the `createdBy` field to be a `Relationship` type, and
 configured its relation to be the `User` list by setting the `ref` option.
 
-A query for a To-single Relationship field will return an object with the
+A query for a to-single relationship field will return an object with the
 requested data:
 
 ```graphql
@@ -470,7 +470,7 @@ keystone.createList('User', {
 });
 ```
 
-A query for a To-many Relationship field will return an array of objects with
+A query for a to-many relationship field will return an array of objects with
 the requested data:
 
 ```graphql
@@ -525,11 +525,11 @@ In the [to-single](#to-single-relationships) and
 [to-many](#to-many-relationships) examples above, we were only querying _in one
 direction_; always from the list with the Relationship field.
 
-Often, you will want to query _in both directions_ (aka _two-way_). For example;
-you may want to list all Todo tasks for a User, _and_ want to list the User who
+Often, you will want to query _in both directions_ (aka _two-way_). For example:
+you may want to list all Todo tasks for a User _and_ want to list the User who
 owns a Todo.
 
-A Two-way relationship requires having a `Relationship` field on both lists:
+A two-way relationship requires having a `Relationship` field on both lists:
 
 ```javascript
 keystone.createList('Todo', {
@@ -610,10 +610,10 @@ The database would look like:
 
 </div>
 
-Note the two Relationship fields in this example _know nothing about each other_.
+Note the two relationship fields in this example _know nothing about each other_.
 They are not specially linked. This means if you update data in one place, you
-must update it in both. To automate this and link two Relationship fields, read
-on about _[Relationship Back References](#relationship-back-references)_.
+must update it in both. To automate this and link two relationship fields, read
+on about `Relationship Back References` below.
 
 #### Relationship Back References
 
@@ -746,7 +746,7 @@ mutation {
 }
 ```
 
-Our database would like:
+Our database would look like:
 
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
