@@ -5,7 +5,7 @@ import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { plugins as markPlugins } from './marks';
 import { type as defaultType } from './blocks/paragraph';
-import AddBlock from './AddBlock';
+import AddBlock from './add-block';
 import { useStateWithEqualityCheck } from './hooks';
 import Toolbar from './toolbar';
 

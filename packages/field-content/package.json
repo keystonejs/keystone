@@ -43,7 +43,8 @@
       ".",
       "Block",
       "slate-serializer",
-      "blocks"
+      "blocks",
+      "block-components"
     ]
   },
   "main": "dist/field-content.cjs.js",
