@@ -82,6 +82,7 @@ describe('MongooseListAdapter', () => {
       { $addFields: expect.any(Object) },
       { $match: { $and: [expect.any(Object), { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
+      { $project: { posts: 0 } },
     ]);
 
     await userListAdapter.itemsQuery({
@@ -105,6 +106,7 @@ describe('MongooseListAdapter', () => {
       { $addFields: expect.any(Object) },
       { $match: { $or: [expect.any(Object), { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
+      { $project: { posts: 0 } },
     ]);
   });
 
@@ -168,6 +170,7 @@ describe('MongooseListAdapter', () => {
       { $addFields: expect.any(Object) },
       { $match: expect.any(Object) },
       { $addFields: { id: '$_id' } },
+      { $project: { posts: 0 } },
     ]);
 
     await userListAdapter.itemsQuery({
@@ -191,6 +194,7 @@ describe('MongooseListAdapter', () => {
       { $addFields: expect.any(Object) },
       { $match: expect.any(Object) },
       { $addFields: { id: '$_id' } },
+      { $project: { posts: 0 } },
     ]);
   });
 });
