@@ -39,11 +39,13 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
-          from: 'user-collection',
-          field: 'author',
           matchTerm: { name: { $eq: 'Alice' } },
+          relationshipInfo: {
+            from: 'user-collection',
+            field: 'author',
+            many: false,
+          },
           postJoinPipeline: [],
-          many: false,
           relationships: {},
         },
       },
@@ -104,10 +106,12 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
-          from: 'posts-collection',
-          field: 'posts',
+          relationshipInfo: {
+            from: 'posts-collection',
+            field: 'posts',
+            many: true,
+          },
           postJoinPipeline: [],
-          many: true,
           relationships: {},
         },
       },
@@ -169,10 +173,12 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
-          from: 'posts-collection',
-          field: 'posts',
+          relationshipInfo: {
+            from: 'posts-collection',
+            field: 'posts',
+            many: true,
+          },
           postJoinPipeline: [{ $orderBy: 'title' }],
-          many: true,
           relationships: {},
         },
       },
@@ -244,27 +250,33 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
-          from: 'posts-collection',
-          field: 'posts',
           matchTerm: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
+          relationshipInfo: {
+            from: 'posts-collection',
+            field: 'posts',
+            many: true,
+          },
           postJoinPipeline: [],
-          many: true,
           relationships: {
             def456: {
-              from: 'tags-collection',
-              field: 'tags',
               matchTerm: {
                 $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
               },
+              relationshipInfo: {
+                from: 'tags-collection',
+                field: 'tags',
+                many: true,
+              },
               postJoinPipeline: [],
-              many: true,
               relationships: {
                 xyz890: {
-                  from: 'posts-collection',
-                  field: 'posts',
                   matchTerm: { published: { $eq: true } },
+                  relationshipInfo: {
+                    from: 'posts-collection',
+                    field: 'posts',
+                    many: true,
+                  },
                   postJoinPipeline: [],
-                  many: true,
                   relationships: {},
                 },
               },
@@ -385,20 +397,24 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
-          from: 'posts-collection',
-          field: 'posts',
           matchTerm: {
             $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
           },
+          relationshipInfo: {
+            from: 'posts-collection',
+            field: 'posts',
+            many: true,
+          },
           postJoinPipeline: [],
-          many: true,
           relationships: {
             quux987: {
-              from: 'labels-collection',
-              field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
+              relationshipInfo: {
+                from: 'labels-collection',
+                field: 'labels',
+                many: true,
+              },
               postJoinPipeline: [],
-              many: true,
               relationships: {},
             },
           },
@@ -494,18 +510,22 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
-          from: 'posts-collection',
-          field: 'posts',
           matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+          relationshipInfo: {
+            from: 'posts-collection',
+            field: 'posts',
+            many: true,
+          },
           postJoinPipeline: [],
-          many: true,
           relationships: {
             quux987: {
-              from: 'labels-collection',
-              field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
+              relationshipInfo: {
+                from: 'labels-collection',
+                field: 'labels',
+                many: true,
+              },
               postJoinPipeline: [],
-              many: true,
               relationships: {},
             },
           },
@@ -603,18 +623,23 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
-          from: 'posts-collection',
-          field: 'posts',
           matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+
+          relationshipInfo: {
+            from: 'posts-collection',
+            field: 'posts',
+            many: true,
+          },
           postJoinPipeline: [],
-          many: true,
           relationships: {
             quux987: {
-              from: 'labels-collection',
-              field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
+              relationshipInfo: {
+                from: 'labels-collection',
+                field: 'labels',
+                many: true,
+              },
               postJoinPipeline: [],
-              many: true,
               relationships: {},
             },
           },
@@ -712,20 +737,24 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
-          from: 'posts-collection',
-          field: 'posts',
           matchTerm: {
             $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
           },
+          relationshipInfo: {
+            from: 'posts-collection',
+            field: 'posts',
+            many: true,
+          },
           postJoinPipeline: [],
-          many: true,
           relationships: {
             quux987: {
-              from: 'labels-collection',
-              field: 'labels',
               matchTerm: { name: { $eq: 'foo' } },
+              relationshipInfo: {
+                from: 'labels-collection',
+                field: 'labels',
+                many: true,
+              },
               postJoinPipeline: [],
-              many: true,
               relationships: {},
             },
           },
@@ -816,11 +845,14 @@ describe('join builder', () => {
 
     const postQueryMutations = mutationBuilder({
       zip567: {
-        from: 'posts-collection',
-        field: 'posts',
         matchTerm: { title: { $eq: 'hello' } },
+
+        relationshipInfo: {
+          from: 'posts-collection',
+          field: 'posts',
+          many: true,
+        },
         postJoinPipeline: [],
-        many: true,
         relationships: {},
       },
     });
