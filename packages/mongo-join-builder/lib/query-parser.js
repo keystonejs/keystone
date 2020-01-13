@@ -39,19 +39,20 @@ function parser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) 
       } else {
         // A relationship query component
         const uid = getUID(key);
-        const queryAst = relationshipTokenizer(listAdapter, query, key, path, uid);
-        if (getType(queryAst) !== 'Object') {
-          throw new Error(
-            `Must return an Object from 'relationshipTokenizer' function, given ${path.join('.')}`
-          );
-        }
+        const { matchTerm, relationshipInfo } = relationshipTokenizer(
+          listAdapter,
+          query,
+          key,
+          path,
+          uid
+        );
         return {
-          // queryAst.matchTerm is our filtering expression. This determines if the
+          // matchTerm is our filtering expression. This determines if the
           // parent item is included in the final list
-          matchTerm: queryAst.matchTerm,
+          matchTerm,
           postJoinPipeline: [],
           relationships: {
-            [uid]: { ...queryAst, ...parser({ listAdapter, getUID }, value, path) },
+            [uid]: { relationshipInfo, ...parser({ listAdapter, getUID }, value, path) },
           },
         };
       }

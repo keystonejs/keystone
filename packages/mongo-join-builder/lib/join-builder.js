@@ -76,8 +76,8 @@ function mutation(uid, lookupPath) {
 
 function mutationBuilder(relationships, path = []) {
   return compose(
-    Object.entries(relationships).map(([uid, { field, relationships }]) => {
-      const uniqueField = `${uid}_${field}`;
+    Object.entries(relationships).map(([uid, { relationshipInfo, relationships }]) => {
+      const uniqueField = `${uid}_${relationshipInfo.field}`;
       const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
       // NOTE: Order is important. We want depth first, so we perform the related mutators first.
       return compose([postQueryMutations, mutation(uid, [...path, uniqueField])]);
@@ -86,7 +86,7 @@ function mutationBuilder(relationships, path = []) {
 }
 
 function relationshipPipeline([uid, relationship]) {
-  const { field, many, from } = relationship;
+  const { field, many, from } = relationship.relationshipInfo;
   const uniqueField = `${uid}_${field}`;
   const idsName = `${uniqueField}_id${many ? 's' : ''}`;
   const fieldSize = { $size: `$${uniqueField}` };
