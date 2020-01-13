@@ -16,7 +16,7 @@ describe('Relationship Path parser', () => {
       barListAdapter = { findFieldAdapterForQuerySegment: jest.fn(key => fieldAdapters[key]) };
       zipListAdapter = {};
 
-      expect(getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar', 'zip'])).toEqual(
+      expect(getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar', 'zip', 'ignore'])).toEqual(
         zipListAdapter
       );
     });
@@ -26,9 +26,9 @@ describe('Relationship Path parser', () => {
       const fieldAdapter = { getRefListAdapter: jest.fn(() => listAdapter) };
       listAdapter = { findFieldAdapterForQuerySegment: jest.fn(() => fieldAdapter) };
 
-      expect(getRelatedListAdapterFromQueryPath(listAdapter, ['foo', 'foo', 'foo'])).toEqual(
-        listAdapter
-      );
+      expect(
+        getRelatedListAdapterFromQueryPath(listAdapter, ['foo', 'foo', 'foo', 'ignore'])
+      ).toEqual(listAdapter);
     });
 
     test('Handles arbitrary path strings correctly', () => {
@@ -46,7 +46,7 @@ describe('Relationship Path parser', () => {
       zipListAdapter = {};
 
       expect(
-        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'zip-boom_zap'])
+        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'zip-boom_zap', 'ignore'])
       ).toEqual(zipListAdapter);
     });
 
@@ -65,7 +65,13 @@ describe('Relationship Path parser', () => {
       zipListAdapter = {};
 
       expect(
-        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'AND', 1, 'zip-boom_zap'])
+        getRelatedListAdapterFromQueryPath(fooListAdapter, [
+          'bar_koodle',
+          'AND',
+          1,
+          'zip-boom_zap',
+          'ignore',
+        ])
       ).toEqual(zipListAdapter);
     });
 
@@ -84,7 +90,13 @@ describe('Relationship Path parser', () => {
       zipListAdapter = {};
 
       expect(
-        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'OR', 1, 'zip-boom_zap'])
+        getRelatedListAdapterFromQueryPath(fooListAdapter, [
+          'bar_koodle',
+          'OR',
+          1,
+          'zip-boom_zap',
+          'ignore',
+        ])
       ).toEqual(zipListAdapter);
     });
   });
@@ -106,7 +118,7 @@ describe('Relationship Path parser', () => {
       zipListAdapter = {};
 
       expect(() =>
-        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'zip-boom_zap'])
+        getRelatedListAdapterFromQueryPath(fooListAdapter, ['bar_koodle', 'zip-boom_zap', 'ignore'])
       ).toThrow(
         /'foo' Mongo List Adapter failed to determine field responsible for the query condition 'bar_koodle'/
       );
