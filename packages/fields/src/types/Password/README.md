@@ -81,7 +81,7 @@ A work factor of 12 will cause passwords to take _four times_ as long as 10. Etc
 
 The `Password` field exposes a `compare()` function.
 This allows `Password` fields to be specified as a `secretField` when configuring a `PasswordAuthStrategy`.
-See the [Authentication docs](https://github.com/keystonejs/keystone-5/blob/master/docs/authentication) for details.
+See the [Authentication docs](/docs/guides/authentication.md) for details.
 
 ## GraphQL
 

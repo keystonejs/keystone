@@ -1,5 +1,41 @@
 # @keystonejs/app-admin-ui
 
+## 5.5.3
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104)]:
+  - @arch-ui/badge@0.0.11
+  - @arch-ui/button@0.0.13
+  - @arch-ui/card@0.0.9
+  - @arch-ui/confirm@0.0.13
+  - @arch-ui/controls@0.1.3
+  - @arch-ui/dialog@0.0.14
+  - @arch-ui/drawer@0.0.15
+  - @arch-ui/dropdown@0.0.12
+  - @arch-ui/fields@2.0.5
+  - @arch-ui/hooks@0.0.7
+  - @arch-ui/icons@0.0.8
+  - @arch-ui/input@0.1.4
+  - @arch-ui/layout@0.2.8
+  - @arch-ui/loading@0.0.12
+  - @arch-ui/lozenge@0.0.11
+  - @arch-ui/navbar@0.1.5
+  - @arch-ui/options@0.0.13
+  - @arch-ui/pagination@0.0.13
+  - @arch-ui/pill@0.1.10
+  - @arch-ui/popout@0.0.13
+  - @arch-ui/select@0.1.3
+  - @arch-ui/theme@0.0.7
+  - @arch-ui/tooltip@0.1.6
+  - @arch-ui/typography@0.0.12
+  - @keystonejs/build-field-types@5.1.4
+  - @keystonejs/fields@6.0.5
+  - @keystonejs/utils@5.1.3
+  - @arch-ui/alert@0.0.12
+  - @arch-ui/common@0.0.8
+
 ## 5.5.2
 
 ### Patch Changes

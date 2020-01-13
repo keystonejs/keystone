@@ -1,4 +1,4 @@
-const { relationshipTokenizer } = require('../lib/tokenizers/relationship');
+const { relationshipTokenizer } = require('../lib/tokenizers');
 
 describe('Relationship tokenizer', () => {
   test('Uses correct conditions', () => {
@@ -13,10 +13,12 @@ describe('Relationship tokenizer', () => {
     expect(
       relationshipTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'], 'abc123')
     ).toMatchObject({
-      field: 'name',
-      from: 'name',
       matchTerm: { abc123_name_every: true },
-      many: false,
+      relationshipInfo: {
+        field: 'name',
+        from: 'name',
+        many: false,
+      },
     });
     expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
   });

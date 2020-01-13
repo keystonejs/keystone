@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { jsx } from '@emotion/core';
 
-import { useAuth } from '../../lib/authetication';
+import { useAuth } from '../../lib/authentication';
 import { Button, Field, Group, Label, Link, Input } from '../../primitives/forms';
 import { gridSize, colors } from '../../theme';
 

@@ -3,6 +3,7 @@ import { jsx } from '@emotion/core';
 import { Suspense, Fragment, useState, createContext, useContext } from 'react';
 import { Button } from '@arch-ui/button';
 import PreviewPlaceholder from '../preview';
+import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import pluralize from 'pluralize';
 
 export let type = 'oEmbed';
@@ -90,15 +91,27 @@ let Block = ({ url, oembedData, onChange, onRemove }) => {
 };
 
 export function Sidebar({ editor }) {
+  const icon = (
+    <svg
+      width={16}
+      height={16}
+      ariaHidden="true"
+      focusable="false"
+      role="img"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 384 512"
+    >
+      <path d="M320,32a32,32,0,0,0-64,0v96h64Zm48,128H16A16,16,0,0,0,0,176v32a16,16,0,0,0,16,16H32v32A160.07,160.07,0,0,0,160,412.8V512h64V412.8A160.07,160.07,0,0,0,352,256V224h16a16,16,0,0,0,16-16V176A16,16,0,0,0,368,160ZM128,32a32,32,0,0,0-64,0v96h64Z"></path>
+    </svg>
+  );
   return (
-    <button
-      type="button"
-      onClick={() => {
+    <BlockMenuItem
+      icon={icon}
+      text="Embed"
+      insertBlock={() => {
         editor.insertBlock({ type });
       }}
-    >
-      Embed
-    </button>
+    />
   );
 }
 export function Node({ node, editor }) {

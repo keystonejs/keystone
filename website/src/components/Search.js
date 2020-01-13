@@ -35,7 +35,10 @@ export const Search = () => {
   let [query, setQuery] = useState('');
   let [results, setResults] = useState([]);
 
-  const setQueryDebounced = useCallback(debounce(value => setQuery(value), 200), [setQuery]);
+  const setQueryDebounced = useCallback(
+    debounce(value => setQuery(value), 200),
+    [setQuery]
+  );
 
   useEffect(() => {
     let cancelled = false;

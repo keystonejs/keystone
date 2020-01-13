@@ -5,7 +5,7 @@ import { Query, Mutation } from 'react-apollo';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
 
-import { useAuth } from '../lib/authetication';
+import { useAuth } from '../lib/authentication';
 import { Container, H1, Loading, Error } from '../primitives';
 import { Button, Field, Label, Input } from '../primitives/forms';
 import Navbar from '../components/Navbar';

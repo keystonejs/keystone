@@ -1,15 +1,17 @@
 const cuid = require('cuid');
 const { getType, flatten, objMerge } = require('@keystonejs/utils');
 
-const { simpleTokenizer } = require('./tokenizers/simple');
-const { relationshipTokenizer } = require('./tokenizers/relationship');
+const { simpleTokenizer, relationshipTokenizer } = require('./tokenizers');
 
 // If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
 const joinTerms = (matchTerms, joinOp) =>
   matchTerms.length > 1 ? { [joinOp]: matchTerms } : matchTerms[0];
 
 const flattenQueries = (parsedQueries, joinOp) => ({
-  matchTerm: joinTerms(parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm), joinOp),
+  matchTerm: joinTerms(
+    parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm),
+    joinOp
+  ),
   postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline)).filter(pipe => pipe),
   relationships: objMerge(parsedQueries.map(q => q.relationships)),
 });
@@ -37,19 +39,20 @@ function parser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) 
       } else {
         // A relationship query component
         const uid = getUID(key);
-        const queryAst = relationshipTokenizer(listAdapter, query, key, path, uid);
-        if (getType(queryAst) !== 'Object') {
-          throw new Error(
-            `Must return an Object from 'relationshipTokenizer' function, given ${path.join('.')}`
-          );
-        }
+        const { matchTerm, relationshipInfo } = relationshipTokenizer(
+          listAdapter,
+          query,
+          key,
+          path,
+          uid
+        );
         return {
-          // queryAst.matchTerm is our filtering expression. This determines if the
+          // matchTerm is our filtering expression. This determines if the
           // parent item is included in the final list
-          matchTerm: queryAst.matchTerm,
+          matchTerm,
           postJoinPipeline: [],
           relationships: {
-            [uid]: { ...queryAst, ...parser({ listAdapter, getUID }, value, path) },
+            [uid]: { relationshipInfo, ...parser({ listAdapter, getUID }, value, path) },
           },
         };
       }
