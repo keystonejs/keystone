@@ -19,7 +19,7 @@ handles the GraphQL API and Admin UI. Things such as:
 
 A **Custom Server** can replace the default and act as the entry point to your
 application which consumes your [schema definition](/docs/guides/schema.md). A Custom
-Server must handle initializing a http server which correctly executes any given KeystoneJS Apps.
+Server must handle initialising a http server which correctly executes any given KeystoneJS Apps.
 
 _Note_: Before reaching for a custom server, consider using a KeystoneJS
 App which can enhance the functionality of the default server. Apps
@@ -131,8 +131,8 @@ keystone
 
 ## Custom Server with manual middleware preparation
 
-For really fine-grained control, a custom server skips calling
-`keystone.prepare()` in favor of calling an app's `.prepareMiddleware()`
+For really fine-grained control, a custom server can skip calling
+`keystone.prepare()` in favour of calling an app's `.prepareMiddleware()`
 function directly.
 
 `package.json`
