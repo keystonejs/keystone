@@ -15,28 +15,28 @@ Let's link the Todo list and the User list together by setting up
 a `relationship`. Tweak the `assignee` field in `Todos.js` to match the following code:
 
 Import the `Relationship` field:
+
 ```javascript
 const { Text, CalendarDay, Checkbox, Relationship } = require('@keystonejs/fields');
 ```
 
 Old code:
+
 ```javascript
-// ...
 assignee: {
     type: Text,
     isRequired: true,
 },
-// ...
 ```
+
 New code:
+
 ```javascript
-// ...
 assignee: {
     type: Relationship,
     ref: 'User',
     isRequired: true,
 },
-// ...
 ```
 
 The `ref` option defines the collection to which we will relate. The name assigned to the option is the same name that is passed to `createList`. In the AdminUI you can now pick one of the created users to make them responsible for completing the task.
@@ -90,14 +90,13 @@ task: {
 ```
 
 To test it out, remove the `isRequired: true` property from the `assignee` field in the `Todos` file:
+
 ```javascript
-// ...
 assignee: {
     type: Relationship,
     ref: 'User.task',
     // isRequired: true,
 },
-// ...
 ```
 Create a Todo without assigning it to a user. Then go to a user, assign a Todo to the `task` field. Go back to the todo and notice that the `assignee` field has been filled in. 
 
