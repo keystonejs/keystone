@@ -1,4 +1,4 @@
-const { getRelatedListAdapterFromQueryPath } = require('../lib/tokenizers/relationship-path');
+const { getRelatedListAdapterFromQueryPath } = require('../lib/tokenizers');
 
 describe('Relationship Path parser', () => {
   describe('paths', () => {

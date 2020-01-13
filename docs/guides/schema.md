@@ -5,19 +5,11 @@ title: Data modeling - Lists & Fields
 
 # Data modeling - Lists & Fields
 
-KeystoneJS is comprised of 3 distinct pieces, which can be described as:
-
-<pre>
-  <code>
-    Schema => (&#x0007B; <a href="/keystonejs/app-admin-ui">AdminUI</a>, <a href="/guides/intro-to-graphql">GraphQL</a> &#x0007D;)
-  </code>
-</pre>
-
 A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
 
 - a set of **Lists**
 - containing one or more **Fields**
-- which each have a **Type**.
+- which each have a **Type**
   <!-- TODO: Link to glossary -->
 
 <!-- TODO: Make this a component that can be imported somehow -->
@@ -98,7 +90,7 @@ type User {
 ```
 
 _(NOTE: Only a subset of all the generated types/mutations/queries are shown
-here. To see a more complete example [follow the Quick Start](../../quick-start).)_
+here. To see a more complete example [follow the Quick Start](/docs/quick-start/README.md).)_
 
 ### Customizing Lists & Fields
 
@@ -116,16 +108,15 @@ keystone.createList('Todo', {
 ```
 
 In this example, the `adminConfig` options will apply only to the `Todo` list
-(setting how many items are shown per page in the [Admin
-UI](/keystonejs/app-admin-ui)). The `isRequired` option will ensure an API error
+(setting how many items are shown per page in the [Admin UI](/packages/app-admin-ui/README.md)).
+The `isRequired` option will ensure an API error
 is thrown if a `task` value is not provided when creating/updating items.
 
 <!-- TODO: Screenshot -->
 
-_For more List options, see the [`createList()` API
-docs](/api/create-list)._
+_For more List options, see the [`createList()` API docs](/docs/api/create-list.md)._
 
-_[There are many different field types available](/keystonejs/fields/),
+_[There are many different field types available](/packages/fields/README.md),
 each specifying their own options._
 
 ### Related Lists
@@ -380,12 +371,12 @@ A note on definitions:
 
 - **To-single / To-many** refer to _the number of related items_ (1, or more than 1).
 - **One-way / Two-way** refer to _the direction of the query_.
-- **Backlinks** refer to a special type of two-way relationships where _one
+- **Back References** refer to a special type of two-way relationships where _one
   field can update a related list's field as it changes_.
 
 #### To-single Relationships
 
-When you have a single related item you want to refer to, a _To-single_
+When you have a single related item you want to refer to, a _to-single_
 relationship allows storing that item, and querying it via the GraphQL API.
 
 ```javascript
@@ -407,7 +398,7 @@ keystone.createList('User', {
 Here we've defined the `createdBy` field to be a `Relationship` type, and
 configured its relation to be the `User` list by setting the `ref` option.
 
-A query for a To-single Relationship field will return an object with the
+A query for a to-single relationship field will return an object with the
 requested data:
 
 ```graphql
@@ -471,7 +462,7 @@ keystone.createList('User', {
 });
 ```
 
-A query for a To-many Relationship field will return an array of objects with
+A query for a to-many relationship field will return an array of objects with
 the requested data:
 
 ```graphql
@@ -526,18 +517,18 @@ In the [to-single](#to-single-relationships) and
 [to-many](#to-many-relationships) examples above, we were only querying _in one
 direction_; always from the list with the Relationship field.
 
-Often, you will want to query _in both directions_ (aka _two-way_). For example;
-you may want to list all Todo tasks for a User, _and_ want to list the User who
+Often, you will want to query _in both directions_ (aka _two-way_). For example:
+you may want to list all Todo tasks for a User _and_ want to list the User who
 owns a Todo.
 
-A Two-way relationship requires having a `Relationship` field on both lists:
+A two-way relationship requires having a `Relationship` field on both lists:
 
 ```javascript
 keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     createdBy: { type: Relationship, ref: 'User' },
-  }
+  },
 });
 
 keystone.createList('User', {
@@ -611,10 +602,10 @@ The database would look like:
 
 </div>
 
-Note the two Relationship fields in this example _know nothing about each other_.
+Note the two relationship fields in this example _know nothing about each other_.
 They are not specially linked. This means if you update data in one place, you
-must update it in both. To automate this and link two Relationship fields, read
-on about _[Relationship Back References](#relationship-back-references)_.
+must update it in both. To automate this and link two relationship fields, read
+on about `Relationship Back References` below.
 
 #### Relationship Back References
 
@@ -627,7 +618,7 @@ keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     createdBy: { type: Relationship, ref: 'User' },
-  }
+  },
 });
 
 keystone.createList('User', {
@@ -653,8 +644,7 @@ mutation {
 }
 ```
 
-_See [the Relationship API docs for more on
-`connect`](../../keystonejs/fields/src/types/relationship)._
+_See [the Relationship API docs for more on `connect`](/packages/fields/src/types/Relationship/README.md)._
 
 If this was the first `Todo` item created, the database would now look like:
 
@@ -748,7 +738,7 @@ mutation {
 }
 ```
 
-Our database would like:
+Our database would look like:
 
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
@@ -818,8 +808,8 @@ keystone.createList('User', {
 ```
 
 In this case, we'll create the first task along with creating the user. _For
-more info on the `create` syntax, see [the Relationship API
-docs](../../keystonejs/fields/src/types/relationship/)._
+more info on the `create` syntax, see
+[the Relationship API docs](/packages/fields/src/types/Relationship/README.md)._
 
 ```graphql
 mutation {
@@ -835,20 +825,16 @@ mutation {
 
 The data would finally look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-</div>
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1]        |
 
-</div>

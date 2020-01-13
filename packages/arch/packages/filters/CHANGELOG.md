@@ -1,5 +1,15 @@
 # @arch-ui/filters
 
+## 0.0.15
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a)]:
+  - @arch-ui/controls@0.1.3
+  - @arch-ui/layout@0.2.8
+  - @arch-ui/theme@0.0.7
+
 ## 0.0.14
 
 ### Patch Changes
