@@ -56,15 +56,11 @@ export const NoResults = ({ currentPage, filters, list, search }) => {
   }
 
   if (search && search.length) {
-    return currentPage !== 1 ? (
-      pageDepthMessage
-    ) : (
-      <NoResultsWrapper>
-        No {list.plural.toLowerCase()} found matching &ldquo;
-        {search}
-        &rdquo;
-      </NoResultsWrapper>
-    );
+    <NoResultsWrapper>
+      No {list.plural.toLowerCase()} found matching &ldquo;
+      {search}
+      &rdquo;
+    </NoResultsWrapper>;
   }
 
   return <NoResultsWrapper>No {list.plural.toLowerCase()} to display yet...</NoResultsWrapper>;
