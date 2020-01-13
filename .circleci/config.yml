@@ -64,6 +64,9 @@ x-integration-steps: &integration-steps
 x-simple-tests: &simple-tests
   steps:
     - checkout
+    - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
+    - run: yarn lint:prettier
+    - run: yarn lint:markdown
     - run:
         name: 'Is test required'
         command: node ./.circleci/run-or-bail.js
@@ -78,9 +81,6 @@ x-simple-tests: &simple-tests
     - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
     - save_cache: *save-cache
     # run tests!
-    - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
-    - run: yarn lint:prettier
-    - run: yarn lint:markdown
     - run:
         name: Unit tests
         command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
