@@ -67,8 +67,6 @@ const relationshipTokenizer = (listAdapter, query, queryKey, path, uid) => {
   }[queryKey];
 
   return {
-    from: fieldAdapter.getRefListAdapter().model.collection.name, // the collection name to join with
-    field: fieldAdapter.path, // The field on this collection
     // The conditions under which an item from the 'orders' collection is
     // considered a match and included in the end result
     // All the keys on an 'order' are available, plus 3 special keys:
@@ -79,8 +77,11 @@ const relationshipTokenizer = (listAdapter, query, queryKey, path, uid) => {
     // 3) <uid>_<field>_none - is `true` when none of the joined items match
     //    the query
     matchTerm: { [`${uid}_${fieldAdapter.path}_${filterType}`]: true },
-    // Flag this is a to-many relationship
-    many: fieldAdapter.field.many,
+    relationshipInfo: {
+      from: fieldAdapter.getRefListAdapter().model.collection.name, // the collection name to join with
+      field: fieldAdapter.path, // The field on this collection
+      many: fieldAdapter.field.many, // Flag this is a to-many relationship
+    },
   };
 };
 
