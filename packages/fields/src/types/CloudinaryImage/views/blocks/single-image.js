@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
 import { findNode } from 'slate-react';
-import { Block } from 'slate';
+import { Data, Block } from 'slate';
 import pluralize from 'pluralize';
 
 export const type = 'cloudinaryImage';
@@ -215,7 +215,7 @@ export function serialize({ node, blocks }) {
 
   // zero out the data field to ensure we don't accidentally store the `file` as
   // a JSON blob
-  const newNode = node.setNode(node.getPath(imageNode.key), { data: {} });
+  const newNode = node.setNode(node.getPath(imageNode.key), { data: Data.create() });
 
   const mutations =
     joinIds && joinIds.length

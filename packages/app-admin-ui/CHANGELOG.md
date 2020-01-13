@@ -1,5 +1,120 @@
 # @keystonejs/app-admin-ui
 
+## 5.5.3
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104)]:
+  - @arch-ui/badge@0.0.11
+  - @arch-ui/button@0.0.13
+  - @arch-ui/card@0.0.9
+  - @arch-ui/confirm@0.0.13
+  - @arch-ui/controls@0.1.3
+  - @arch-ui/dialog@0.0.14
+  - @arch-ui/drawer@0.0.15
+  - @arch-ui/dropdown@0.0.12
+  - @arch-ui/fields@2.0.5
+  - @arch-ui/hooks@0.0.7
+  - @arch-ui/icons@0.0.8
+  - @arch-ui/input@0.1.4
+  - @arch-ui/layout@0.2.8
+  - @arch-ui/loading@0.0.12
+  - @arch-ui/lozenge@0.0.11
+  - @arch-ui/navbar@0.1.5
+  - @arch-ui/options@0.0.13
+  - @arch-ui/pagination@0.0.13
+  - @arch-ui/pill@0.1.10
+  - @arch-ui/popout@0.0.13
+  - @arch-ui/select@0.1.3
+  - @arch-ui/theme@0.0.7
+  - @arch-ui/tooltip@0.1.6
+  - @arch-ui/typography@0.0.12
+  - @keystonejs/build-field-types@5.1.4
+  - @keystonejs/fields@6.0.5
+  - @keystonejs/utils@5.1.3
+  - @arch-ui/alert@0.0.12
+  - @arch-ui/common@0.0.8
+
+## 5.5.2
+
+### Patch Changes
+
+- [`6f1430e4`](https://github.com/keystonejs/keystone/commit/6f1430e4b14d173d574e54e5c78ff1477528a2a6) [#2135](https://github.com/keystonejs/keystone/pull/2135) - Correctly capture suspended components in Details View in Admin UI
+
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies [[`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2), [`ed85a3d3`](https://github.com/keystonejs/keystone/commit/ed85a3d3776873893e9ba46f3b0c4d0f71bd6b6d)]:
+  - @keystonejs/utils@5.1.2
+  - @arch-ui/confirm@0.0.12
+  - @arch-ui/dialog@0.0.13
+  - @arch-ui/drawer@0.0.14
+  - @arch-ui/popout@0.0.12
+  - @keystonejs/fields@6.0.3
+
+## 5.5.0
+
+### Minor Changes
+
+- [`045af44`](https://github.com/keystonejs/keystone/commit/045af44b1a9fa186dbc04c1d05b07a13ba58e3b0) [#2106](https://github.com/keystonejs/keystone/pull/2106) - Improved toast messaging when creating and updating items
+
+## 5.4.1
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Fixed an issue where creating a new item would throw an would appear: `Cannot read property 'refetch' of undefined`
+
+* [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade react-transition-group to 4.3.0
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @keystonejs/fields@6.0.2
+  - @arch-ui/badge@0.0.10
+  - @arch-ui/button@0.0.12
+  - @arch-ui/card@0.0.8
+  - @arch-ui/confirm@0.0.11
+  - @arch-ui/controls@0.1.2
+  - @arch-ui/dialog@0.0.12
+  - @arch-ui/drawer@0.0.13
+  - @arch-ui/dropdown@0.0.11
+  - @arch-ui/fields@2.0.4
+  - @arch-ui/hooks@0.0.6
+  - @arch-ui/icons@0.0.7
+  - @arch-ui/input@0.1.3
+  - @arch-ui/layout@0.2.7
+  - @arch-ui/loading@0.0.11
+  - @arch-ui/lozenge@0.0.10
+  - @arch-ui/navbar@0.1.4
+  - @arch-ui/options@0.0.12
+  - @arch-ui/pagination@0.0.12
+  - @arch-ui/pill@0.1.9
+  - @arch-ui/popout@0.0.11
+  - @arch-ui/select@0.1.2
+  - @arch-ui/theme@0.0.6
+  - @arch-ui/tooltip@0.1.5
+  - @arch-ui/typography@0.0.11
+  - @keystonejs/build-field-types@5.1.3
+  - @keystonejs/utils@5.1.1
+  - @arch-ui/alert@0.0.11
+  - @arch-ui/common@0.0.7
+
+## 5.4.0
+
+### Minor Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Converted remaining uses of Apollo components in Admin UI to hooks.
+
+* [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Refactored out session provider from Admin UI and switched to individual Apollo packages as appropriate. Without the session provider, the Admin UI no longer needs the full react-apollo package.
+
+### Patch Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Removed an unused react-node-resolver dependency.
+- Updated dependencies [[`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290), [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290), [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290)]:
+  - @keystonejs/fields@6.0.1
+  - @arch-ui/alert@0.0.10
+
 ## 5.3.0
 
 ### Minor Changes

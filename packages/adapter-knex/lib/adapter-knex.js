@@ -1,3 +1,5 @@
+const { versionGreaterOrEqualTo } = require('@keystonejs/utils');
+
 const knex = require('knex');
 const pSettle = require('p-settle');
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
@@ -18,6 +20,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     super(...arguments);
     this.client = knexOptions.client || 'postgres';
     this.name = 'knex';
+    this.minVer = '9.6.5';
     this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
@@ -68,8 +71,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
     Object.values(this.listAdapters).forEach(listAdapter => {
       listAdapter._postConnect();
     });
-    const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
-    if (this.config.dropDatabase || !isSetup) {
+
+    // Run this only if explicity configured and still never in production
+    if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
       console.log('Knex adapter: Dropping database');
       await this.dropDatabase();
     } else {
@@ -210,7 +214,21 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async checkDatabaseVersion() {
-    // TODO: implement
+    let version;
+    try {
+      // Using `raw` due to knex not having the SHOW command
+      const result = await this.knex.raw('SHOW server_version;');
+      // the version is inside the first row "server_version"
+      version = result.rows[0].server_version;
+    } catch (error) {
+      throw new Error(`Error reading version from PostgreSQL: ${error}`);
+    }
+
+    if (!versionGreaterOrEqualTo(version, this.minVer)) {
+      throw new Error(
+        `PostgreSQL version ${version} is incompatible. Version ${this.minVer} or later is required.`
+      );
+    }
   }
 }
 
@@ -285,10 +303,12 @@ class KnexListAdapter extends BaseListAdapter {
     const realData = pick(data, this.realKeys);
 
     // Insert the real data into the table
-    const item = (await this._query()
-      .insert(realData)
-      .into(this.tableName)
-      .returning('*'))[0];
+    const item = (
+      await this._query()
+        .insert(realData)
+        .into(this.tableName)
+        .returning('*')
+    )[0];
 
     // For every many-field, update the many-table
     const manyItem = await this._processNonRealFields(data, async ({ value, adapter }) =>
@@ -321,11 +341,13 @@ class KnexListAdapter extends BaseListAdapter {
       const matchCol = `${this.key}_id`;
 
       // Work out what we've currently got
-      const currentRefIds = (await this._query()
-        .select(selectCol)
-        .from(tableName)
-        .where(matchCol, item.id)
-        .returning(selectCol)).map(x => x[selectCol].toString());
+      const currentRefIds = (
+        await this._query()
+          .select(selectCol)
+          .from(tableName)
+          .where(matchCol, item.id)
+          .returning(selectCol)
+      ).map(x => x[selectCol].toString());
 
       // Delete what needs to be deleted
       const needsDelete = currentRefIds.filter(x => !newValues.includes(x));

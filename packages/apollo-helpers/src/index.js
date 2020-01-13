@@ -1,5 +1,5 @@
 import { invalidateFields, ROOT } from '@jesstelford/apollo-cache-invalidation';
-import { Query, Mutation } from 'react-apollo';
+import { Query, Mutation } from '@apollo/react-components';
 import hoistStatics from 'hoist-non-react-statics';
 import mapValues from 'lodash.mapvalues';
 import React from 'react';
@@ -224,9 +224,11 @@ class KeystoneMutation extends React.Component {
                       // data. We might also trigger refetch() twice, which we want to
                       // avoid.
                       if (optimisticHandled) {
-                        return wrapUpdateFunc(keystoneSchemaInfo, invalidateTypes, updateOption)(
-                          ...args
-                        );
+                        return wrapUpdateFunc(
+                          keystoneSchemaInfo,
+                          invalidateTypes,
+                          updateOption
+                        )(...args);
                       } else {
                         optimisticHandled = true;
                         return updateOption(...args);

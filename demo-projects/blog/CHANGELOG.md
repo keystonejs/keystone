@@ -1,5 +1,38 @@
 # keystone_demo_blog
 
+## 5.1.3
+
+### Patch Changes
+
+- [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29) [#2189](https://github.com/keystonejs/keystone/pull/2189) - Upgraded prettier to 1.19.1 and formatted code accordingly.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104), [`05d07adf`](https://github.com/keystonejs/keystone/commit/05d07adf84059ff565cd2394f68d71d92e657485), [`78193f9c`](https://github.com/keystonejs/keystone/commit/78193f9c9d93655fb0d4b8dc494fbe4c622a4d64)]:
+  - @keystonejs/app-admin-ui@5.5.3
+  - @arch-ui/layout@0.2.8
+  - @arch-ui/typography@0.0.12
+  - @keystonejs/fields-markdown@5.0.4
+  - @keystonejs/fields-wysiwyg-tinymce@5.0.4
+  - @keystonejs/fields@6.0.5
+  - @keystonejs/oembed-adapters@5.0.4
+  - @keystonejs/file-adapters@5.3.1
+  - @keystonejs/keystone@5.4.1
+  - @keystonejs/adapter-mongoose@5.1.4
+
+## 5.1.2
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Fixed errors in Blog demo New Post page. Includes updating apollo-boost to 0.4.4.
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @keystonejs/fields@6.0.2
+  - @keystonejs/fields-wysiwyg-tinymce@5.0.3
+  - @keystonejs/app-admin-ui@5.4.1
+  - @keystonejs/app-graphql@5.0.2
+  - @arch-ui/layout@0.2.7
+  - @arch-ui/typography@0.0.11
+  - @keystonejs/fields-markdown@5.0.3
+  - @keystonejs/oembed-adapters@5.0.3
+  - @keystonejs/file-adapters@5.3.0
+
 ## 5.1.1
 
 ### Patch Changes

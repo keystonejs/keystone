@@ -30,9 +30,6 @@ const _atTracking = ({ created = true, updated = true }) => ({
   }
 
   const newResolveInput = ({ resolvedData, existingItem, originalInput }) => {
-    if (Object.keys(originalInput).length === 0) {
-      return resolvedData;
-    }
     const dateNow = new Date().toISOString();
     if (existingItem === undefined) {
       // create mode
@@ -44,6 +41,12 @@ const _atTracking = ({ created = true, updated = true }) => ({
       }
     } else {
       // update mode
+
+      // if no data received from the mutation, skip the update
+      if (Object.keys(originalInput).length === 0) {
+        return resolvedData;
+      }
+
       if (created) {
         delete resolvedData[createdAtField]; // createdAtField No longer sent by api/admin, but access control can be skipped!
       }

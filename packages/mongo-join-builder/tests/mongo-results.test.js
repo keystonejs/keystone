@@ -38,7 +38,10 @@ jest.setTimeout(60000);
 beforeAll(async () => {
   mongoServer = new MongoDBMemoryServer();
   const mongoUri = await mongoServer.getConnectionString();
-  mongoConnection = await MongoClient.connect(mongoUri, { useNewUrlParser: true });
+  mongoConnection = await MongoClient.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
   mongoDb = mongoConnection.db(await mongoServer.getDbName());
 });
 
@@ -49,7 +52,7 @@ afterAll(() => {
 
 beforeEach(async () => {
   const collections = await mongoDb.collections();
-  await Promise.all(collections.map(collection => collection.remove({})));
+  await Promise.all(collections.map(collection => collection.deleteMany({})));
 });
 
 describe('mongo memory servier is alive', () => {

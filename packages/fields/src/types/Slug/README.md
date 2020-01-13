@@ -204,7 +204,7 @@ mutation {
 ```
 
 And overwritten slugs will be uniquified for you when `isUnique: true` (with
-[one caveat](#caveats-with-updates-and-makeUnique)):
+[one caveat](#caveats-with-updates-and-makeunique)):
 
 ```graphql
 mutation {

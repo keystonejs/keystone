@@ -5,18 +5,25 @@ import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class CalendarDay extends Implementation {
-  constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
+  constructor(
+    path,
+    {
+      format = 'YYYY-MM-DD',
+      yearRangeFrom = new Date().getFullYear() - 100,
+      yearRangeTo = new Date().getFullYear(),
+    }
+  ) {
     super(...arguments);
     this.format = format;
     this.yearRangeFrom = yearRangeFrom;
     this.yearRangeTo = yearRangeTo;
-    this.yearPickerType = yearPickerType;
     this.isOrderable = true;
   }
 
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
+
   gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
@@ -24,19 +31,21 @@ export class CalendarDay extends Implementation {
       ...this.inInputFields('String'),
     ];
   }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
+
   get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
+
   extendAdminMeta(meta) {
     return {
       ...meta,
       format: this.format,
       yearRangeFrom: this.yearRangeFrom,
       yearRangeTo: this.yearRangeTo,
-      yearPickerType: this.yearPickerType,
     };
   }
 }

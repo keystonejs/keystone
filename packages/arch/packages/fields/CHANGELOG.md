@@ -1,5 +1,25 @@
 # @arch-ui/fields
 
+## 2.0.5
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a)]:
+  - @arch-ui/icons@0.0.8
+  - @arch-ui/lozenge@0.0.11
+  - @arch-ui/theme@0.0.7
+
+## 2.0.4
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @arch-ui/icons@0.0.7
+  - @arch-ui/lozenge@0.0.10
+  - @arch-ui/theme@0.0.6
+
 ## 2.0.3
 
 ### Patch Changes

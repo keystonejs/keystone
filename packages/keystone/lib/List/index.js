@@ -568,7 +568,7 @@ module.exports = class List {
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
-      if (field.config.cacheHint) {
+      if (field.config.cacheHint && info && info.cacheControl) {
         info.cacheControl.setCacheHint(field.config.cacheHint);
       }
 
@@ -1048,7 +1048,7 @@ module.exports = class List {
   }
 
   authenticatedQuery(context, info) {
-    if (info) {
+    if (info && info.cacheControl) {
       info.cacheControl.setCacheHint({ scope: 'PRIVATE' });
     }
 
@@ -1273,8 +1273,9 @@ module.exports = class List {
     // type hooks
     resolvedData = {
       ...resolvedData,
-      ...(await this._mapToFields(this.fields.filter(field => field.hooks.resolveInput), field =>
-        field.hooks.resolveInput({ ...args, resolvedData })
+      ...(await this._mapToFields(
+        this.fields.filter(field => field.hooks.resolveInput),
+        field => field.hooks.resolveInput({ ...args, resolvedData })
       )),
     };
 
@@ -1349,8 +1350,9 @@ module.exports = class List {
     args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
-      field.hooks[hookName](args)
+    await this._mapToFields(
+      fields.filter(field => field.hooks[hookName]),
+      field => field.hooks[hookName](args)
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
@@ -1417,8 +1419,9 @@ module.exports = class List {
   async _runHook(args, fieldObject, hookName) {
     const fields = this._fieldsFromObject(fieldObject);
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
-      field.hooks[hookName](args)
+    await this._mapToFields(
+      fields.filter(field => field.hooks[hookName]),
+      field => field.hooks[hookName](args)
     );
 
     if (this.hooks[hookName]) await this.hooks[hookName](args);

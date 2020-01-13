@@ -262,11 +262,13 @@ const { middlewares } = await keystone.prepare({
 
 ### Config
 
-| Option    | Type      | default | Description                                          |
-| --------- | --------- | ------- | ---------------------------------------------------- |
-| `dev`     | `Boolean` | `false` | Sets the dev flag in KeystoneJS' express middleware. |
-| `apps`    | `Array`   | `[]`    | An array of 'Apps' which are express middleware.     |
-| `distDir` | `String`  | `dist`  | The build directory for keystone.                    |
+| Option        | Type      | default                               | Description                                                                                                         |
+| ------------- | --------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `dev`         | `Boolean` | `false`                               | Sets the dev flag in KeystoneJS' express middleware.                                                                |
+| `apps`        | `Array`   | `[]`                                  | An array of 'Apps' which are express middleware.                                                                    |
+| `distDir`     | `String`  | `dist`                                | The build directory for keystone.                                                                                   |
+| `cors`        | `Object`  | `{ origin: true, credentials: true }` | CORS options passed to the [`cors` npm module](https://www.npmjs.com/package/cors)                                  |
+| `pinoOptions` | `Object`  | `undefined`                           | Logging options passed to the [`express-pino-logger` npm module](https://www.npmjs.com/package/express-pino-logger) |
 
 ## connect()
 

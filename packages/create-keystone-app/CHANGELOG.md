@@ -1,5 +1,17 @@
 # create-keystone-app
 
+## 1.4.1
+
+### Patch Changes
+
+- [`cf1999f3`](https://github.com/keystonejs/keystone/commit/cf1999f3fcf7f75af2bd3e13aea9e097ad12a53d) [#2188](https://github.com/keystonejs/keystone/pull/2188) - Bump `cfonts` dependency to `^2.4.8`.
+
+## 1.4.0
+
+### Minor Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Added a script that generates an initial user for the starter template.
+
 ## 1.3.2
 
 ### Patch Changes

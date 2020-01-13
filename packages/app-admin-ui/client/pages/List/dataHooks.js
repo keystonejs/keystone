@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useCallback } from 'react';
 import { __RouterContext } from 'react-router-dom';
-import debounce from 'lodash.debounce';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
@@ -210,14 +209,19 @@ export function useListSearch(listKey) {
   const routeProps = useRouter();
   const { history, match } = routeProps;
 
-  const onChange = debounce(newSearch => {
-    const addHistoryRecord = !searchValue;
-    setSearch({ search: newSearch }, addHistoryRecord);
-  }, 300);
-  const onClear = () => {
+  const onChange = useCallback(
+    newSearch => {
+      const addHistoryRecord = !searchValue;
+      setSearch({ search: newSearch }, addHistoryRecord);
+    },
+    [searchValue]
+  );
+
+  const onClear = useCallback(() => {
     const addHistoryRecord = !!searchValue;
     setSearch({ search: '' }, addHistoryRecord);
-  };
+  }, [searchValue]);
+
   const onSubmit = event => {
     if (event) {
       event.preventDefault();

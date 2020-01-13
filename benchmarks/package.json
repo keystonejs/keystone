@@ -11,10 +11,8 @@
   "scripts": {
     "go": "node fixtures/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/keystonejs/keystone.git"
-  },
+  "repository": "https://github.com/keystonejs/keystone.git",
+  "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
     "@keystonejs/adapter-knex": "^6.0.0",
     "@keystonejs/adapter-mongoose": "^5.1.3",

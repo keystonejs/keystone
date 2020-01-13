@@ -1,5 +1,105 @@
 # @keystonejs/fields
 
+## 6.0.5
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+
+* [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29) [#2189](https://github.com/keystonejs/keystone/pull/2189) - Upgraded prettier to 1.19.1 and formatted code accordingly.
+
+- [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104) [#2191](https://github.com/keystonejs/keystone/pull/2191) - Upgraded `mongoose` to `^5.8.4` and `mongodb` to `^3.4.1`.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`3d7222cd`](https://github.com/keystonejs/keystone/commit/3d7222cd589ce8accbf3a9de141976c38e2c7e23), [`4cd4499d`](https://github.com/keystonejs/keystone/commit/4cd4499d9d19a5b379b2ae6ab1028c008248629a), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104)]:
+  - @arch-ui/button@0.0.13
+  - @arch-ui/controls@0.1.3
+  - @arch-ui/day-picker@0.0.18
+  - @arch-ui/drawer@0.0.15
+  - @arch-ui/fields@2.0.5
+  - @arch-ui/filters@0.0.15
+  - @arch-ui/icons@0.0.8
+  - @arch-ui/input@0.1.4
+  - @arch-ui/layout@0.2.8
+  - @arch-ui/loading@0.0.12
+  - @arch-ui/lozenge@0.0.11
+  - @arch-ui/options@0.0.13
+  - @arch-ui/popout@0.0.13
+  - @arch-ui/select@0.1.3
+  - @arch-ui/theme@0.0.7
+  - @arch-ui/tooltip@0.1.6
+  - @arch-ui/typography@0.0.12
+  - @keystonejs/build-field-types@5.1.4
+  - @keystonejs/field-content@5.2.2
+  - @keystonejs/utils@5.1.3
+  - @keystonejs/adapter-knex@6.1.3
+  - @keystonejs/test-utils@5.0.3
+  - @keystonejs/adapter-mongoose@5.1.4
+  - @arch-ui/alert@0.0.12
+
+## 6.0.4
+
+### Patch Changes
+
+- [`85f21ced`](https://github.com/keystonejs/keystone/commit/85f21ced700e9630ce3d22590e4aec0694d621db) [#2122](https://github.com/keystonejs/keystone/pull/2122) - Fix for cloudinary images block error when serialized
+
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`3d2c4b3f`](https://github.com/keystonejs/keystone/commit/3d2c4b3fb8f05e79fc1a4a8e39077058466795a2), [`ed85a3d3`](https://github.com/keystonejs/keystone/commit/ed85a3d3776873893e9ba46f3b0c4d0f71bd6b6d)]:
+  - @keystonejs/adapter-knex@6.1.1
+  - @keystonejs/utils@5.1.2
+  - @arch-ui/drawer@0.0.14
+  - @arch-ui/popout@0.0.12
+
+## 6.0.2
+
+### Patch Changes
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Removed unused 'immutable' dependency.
+
+* [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Make dates orderable in adminUI.
+
+- [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62) [#2092](https://github.com/keystonejs/keystone/pull/2092) - Upgrade all Babel deps to the same version (7.7.4)
+- Updated dependencies [[`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62), [`129b0f6`](https://github.com/keystonejs/keystone/commit/129b0f61f34adb7482901d2da4ddb14ce1aedd62)]:
+  - @keystonejs/field-content@5.2.0
+  - @arch-ui/button@0.0.12
+  - @arch-ui/controls@0.1.2
+  - @arch-ui/day-picker@0.0.17
+  - @arch-ui/drawer@0.0.13
+  - @arch-ui/fields@2.0.4
+  - @arch-ui/filters@0.0.14
+  - @arch-ui/icons@0.0.7
+  - @arch-ui/input@0.1.3
+  - @arch-ui/layout@0.2.7
+  - @arch-ui/loading@0.0.11
+  - @arch-ui/lozenge@0.0.10
+  - @arch-ui/options@0.0.12
+  - @arch-ui/popout@0.0.11
+  - @arch-ui/select@0.1.2
+  - @arch-ui/theme@0.0.6
+  - @arch-ui/tooltip@0.1.5
+  - @arch-ui/typography@0.0.11
+  - @keystonejs/build-field-types@5.1.3
+  - @keystonejs/utils@5.1.1
+  - @arch-ui/alert@0.0.11
+
+## 6.0.1
+
+### Patch Changes
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Convert to use Apollo hooks
+
+* [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Fixed a bug in the Knex field adapter for virtual fields.
+
+- [`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290) [#2078](https://github.com/keystonejs/keystone/pull/2078) - Fixed several issues with the CalendarDay field:
+
+  - Ensured format, yearRangeFrom, and yearRangeTo defaults are set correctly
+  - Removed non-functional yearPickerType
+  - Made displayed date format consistent between list and detailed views
+  - Moved date range validation to validateInput- Updated dependencies [[`33d22c7`](https://github.com/keystonejs/keystone/commit/33d22c70971eb047aa670b1cd170248cbd663290)]:
+  - @arch-ui/alert@0.0.10
+  - @arch-ui/day-picker@0.0.16
+
 ## 6.0.0
 
 ### Major Changes

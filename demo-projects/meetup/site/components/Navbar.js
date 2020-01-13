@@ -5,7 +5,7 @@ import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
 import Link from 'next/link';
-import { useAuth } from '../lib/authetication';
+import { useAuth } from '../lib/authentication';
 import { SignoutIcon } from '../primitives';
 import { getForegroundColor, useLogoDimension } from '../helpers';
 import { mq } from '../helpers/media';

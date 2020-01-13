@@ -52,7 +52,7 @@ const Body = styled.div({
 
 class ModalConfirm extends PureComponent {
   static defaultProps = {
-    attachTo: document.body,
+    attachTo: typeof document !== 'undefined' ? document.body : null,
     component: 'div',
     width: 400,
   };

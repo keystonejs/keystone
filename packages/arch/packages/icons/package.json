@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/icons",
   "description": "Common Icons used in @arch-ui packages and @keystonejs Admin UI.",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/icons.cjs.js",
@@ -16,6 +16,6 @@
   },
   "module": "dist/icons.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.4.3"
+    "@babel/runtime": "^7.7.7"
   }
 }
