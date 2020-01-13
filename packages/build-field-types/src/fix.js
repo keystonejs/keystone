@@ -20,13 +20,15 @@ export async function fixPackage(pkg) {
 export default async function fix(directory) {
   let { packages } = await Project.create(directory);
 
-  let didModify = (await Promise.all(
-    packages.map(async pkg => {
-      pkg.entrypoints.forEach(validateEntrypointSource);
-      let didModifyInPkgFix = await fixPackage(pkg);
-      return didModifyInPkgFix;
-    })
-  )).some(x => x);
+  let didModify = (
+    await Promise.all(
+      packages.map(async pkg => {
+        pkg.entrypoints.forEach(validateEntrypointSource);
+        let didModifyInPkgFix = await fixPackage(pkg);
+        return didModifyInPkgFix;
+      })
+    )
+  ).some(x => x);
 
   success(didModify ? `fixed project!` : `project already valid!`);
 }

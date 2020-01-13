@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/confirm",
   "description": "Confirmation UI as used in @keystonejs Admin UI.",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/confirm.cjs.js",
@@ -14,9 +14,9 @@
     "react-dom": "^16.12.0"
   },
   "dependencies": {
-    "@arch-ui/modal-utils": "^1.0.5",
-    "@arch-ui/theme": "^0.0.6",
-    "@babel/runtime": "^7.7.4",
+    "@arch-ui/modal-utils": "^1.0.6",
+    "@arch-ui/theme": "^0.0.7",
+    "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
     "react-focus-marshal": "^1.0.1",

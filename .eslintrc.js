@@ -37,6 +37,8 @@ module.exports = {
       },
     ],
     'import/no-unresolved': 'error',
+    'jest/valid-describe': 'off',
+    'jest/valid-expect': 'off',
     'object-curly-spacing': ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     'react/jsx-boolean-value': 'warn',

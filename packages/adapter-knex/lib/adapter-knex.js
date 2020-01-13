@@ -1,4 +1,4 @@
-import { versionGreaterOrEqualTo } from '@keystonejs/utils';
+const { versionGreaterOrEqualTo } = require('@keystonejs/utils');
 
 const knex = require('knex');
 const pSettle = require('p-settle');
@@ -303,10 +303,12 @@ class KnexListAdapter extends BaseListAdapter {
     const realData = pick(data, this.realKeys);
 
     // Insert the real data into the table
-    const item = (await this._query()
-      .insert(realData)
-      .into(this.tableName)
-      .returning('*'))[0];
+    const item = (
+      await this._query()
+        .insert(realData)
+        .into(this.tableName)
+        .returning('*')
+    )[0];
 
     // For every many-field, update the many-table
     const manyItem = await this._processNonRealFields(data, async ({ value, adapter }) =>
@@ -339,11 +341,13 @@ class KnexListAdapter extends BaseListAdapter {
       const matchCol = `${this.key}_id`;
 
       // Work out what we've currently got
-      const currentRefIds = (await this._query()
-        .select(selectCol)
-        .from(tableName)
-        .where(matchCol, item.id)
-        .returning(selectCol)).map(x => x[selectCol].toString());
+      const currentRefIds = (
+        await this._query()
+          .select(selectCol)
+          .from(tableName)
+          .where(matchCol, item.id)
+          .returning(selectCol)
+      ).map(x => x[selectCol].toString());
 
       // Delete what needs to be deleted
       const needsDelete = currentRefIds.filter(x => !newValues.includes(x));

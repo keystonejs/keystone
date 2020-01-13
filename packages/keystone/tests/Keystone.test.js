@@ -370,8 +370,14 @@ describe('Keystone.createItems()', () => {
     });
 
     expect(createdItems).toEqual({
-      User: [{ id: 1, name: 'Jess' }, { id: 2, name: 'Lauren' }],
-      Post: [{ id: 3, title: 'Hello world' }, { id: 4, title: 'Goodbye' }],
+      User: [
+        { id: 1, name: 'Jess' },
+        { id: 2, name: 'Lauren' },
+      ],
+      Post: [
+        { id: 3, title: 'Hello world' },
+        { id: 4, title: 'Goodbye' },
+      ],
     });
   });
 
@@ -395,8 +401,14 @@ describe('Keystone.createItems()', () => {
     });
 
     expect(createdItems).toEqual({
-      User: [{ id: 1, name: 'Jess' }, { id: 2, name: 'Lauren' }],
-      Post: [{ id: 3, title: 'Hello world', author: 2 }, { id: 4, title: 'Goodbye', author: 1 }],
+      User: [
+        { id: 1, name: 'Jess' },
+        { id: 2, name: 'Lauren' },
+      ],
+      Post: [
+        { id: 3, title: 'Hello world', author: 2 },
+        { id: 4, title: 'Goodbye', author: 1 },
+      ],
     });
   });
 

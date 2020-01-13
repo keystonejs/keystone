@@ -61,7 +61,7 @@ describe('dev command', () => {
         // A mock keystone instance
         keystone: {
           auth: {},
-          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
+          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.sendStatus(200) }),
           connect: () => Promise.resolve(),
         }
       }`
@@ -87,7 +87,7 @@ describe('dev command', () => {
         // A mock keystone instance
         keystone: {
           auth: {},
-          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
+          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.sendStatus(200) }),
           connect: () => Promise.resolve(),
         }
       }`

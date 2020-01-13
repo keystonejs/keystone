@@ -27,11 +27,10 @@ Then when creating your list, use the field as so:
 
 ```js
 keystone.createList('Item', {
- // ...
- fields: {
-   // ...
-   image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
- }
+  // ...
+  fields: {
+    // ...
+    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
+  },
 });
 ```
-

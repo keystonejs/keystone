@@ -1,5 +1,20 @@
 # @arch-ui/popout
 
+## 0.0.13
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a)]:
+  - @arch-ui/modal-utils@1.0.6
+  - @arch-ui/theme@0.0.7
+
+## 0.0.12
+
+### Patch Changes
+
+- [`ed85a3d3`](https://github.com/keystonejs/keystone/commit/ed85a3d3776873893e9ba46f3b0c4d0f71bd6b6d) [#2108](https://github.com/keystonejs/keystone/pull/2108) - Made usages of `document.body` conditional so that the component doesn't immediately fail on the server
+
 ## 0.0.11
 
 ### Patch Changes

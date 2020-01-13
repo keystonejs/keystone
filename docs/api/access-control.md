@@ -9,8 +9,8 @@ order: 5
 Control who can do what with your GraphQL API.
 
 _Note_: This is the API documentation for Access Control. For getting started,
-see the [Access Control Guide](/guides/access-control) or the
-[Authentication Guide](/guides/authentication).
+see the [Access Control Guide](/docs/guides/access-control.md) or the
+[Authentication Guide](/docs/guides/authentication.md).
 
 ## Table of Contents
 

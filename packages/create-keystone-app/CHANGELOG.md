@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.4.1
+
+### Patch Changes
+
+- [`cf1999f3`](https://github.com/keystonejs/keystone/commit/cf1999f3fcf7f75af2bd3e13aea9e097ad12a53d) [#2188](https://github.com/keystonejs/keystone/pull/2188) - Bump `cfonts` dependency to `^2.4.8`.
+
 ## 1.4.0
 
 ### Minor Changes

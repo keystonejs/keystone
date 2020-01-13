@@ -95,124 +95,126 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       createCompanyList(keystone);
     };
 
-    [[createListsLR, 'Left -> Right'], [createListsRL, 'Right -> Left']].forEach(
-      ([createLists, order]) => {
-        describe(`One-to-one relationships - ${order}`, () => {
-          function setupKeystone(adapterName) {
-            return setupServer({
-              adapterName,
-              name: `ks5-testdb-${cuid()}`,
-              createLists,
-            });
-          }
+    [
+      [createListsLR, 'Left -> Right'],
+      [createListsRL, 'Right -> Left'],
+    ].forEach(([createLists, order]) => {
+      describe(`One-to-one relationships - ${order}`, () => {
+        function setupKeystone(adapterName) {
+          return setupServer({
+            adapterName,
+            name: `ks5-testdb-${cuid()}`,
+            createLists,
+          });
+        }
 
-          describe('Create', () => {
-            test(
-              'With connect',
-              runner(setupKeystone, async ({ keystone }) => {
-                const { locations } = await createInitialData(keystone);
-                const location = locations[0];
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+        describe('Create', () => {
+          test(
+            'With connect',
+            runner(setupKeystone, async ({ keystone }) => {
+              const { locations } = await createInitialData(keystone);
+              const location = locations[0];
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   createCompany(data: {
                     locations: { connect: [{ id: "${location.id}" }] }
                   }) { id locations { id } }
                 }
             `,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.createCompany.locations.map(({ id }) => id.toString())).toEqual([
-                  location.id,
-                ]);
+              });
+              expect(errors).toBe(undefined);
+              expect(data.createCompany.locations.map(({ id }) => id.toString())).toEqual([
+                location.id,
+              ]);
 
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  data.createCompany.id,
-                  location.id
-                );
-                // Everything should now be connected
-                expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-                  Location.id.toString(),
-                ]);
-              })
-            );
+              const { Company, Location } = await getCompanyAndLocation(
+                keystone,
+                data.createCompany.id,
+                location.id
+              );
+              // Everything should now be connected
+              expect(Company.locations.map(({ id }) => id.toString())).toEqual([
+                Location.id.toString(),
+              ]);
+            })
+          );
 
-            test(
-              'With create',
-              runner(setupKeystone, async ({ keystone }) => {
-                const locationName = sampleOne(alphanumGenerator);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+          test(
+            'With create',
+            runner(setupKeystone, async ({ keystone }) => {
+              const locationName = sampleOne(alphanumGenerator);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   createCompany(data: {
                     locations: { create: [{ name: "${locationName}" }] }
                   }) { id locations { id } }
                 }
             `,
-                });
-                expect(errors).toBe(undefined);
+              });
+              expect(errors).toBe(undefined);
 
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  data.createCompany.id,
-                  data.createCompany.locations[0].id
-                );
+              const { Company, Location } = await getCompanyAndLocation(
+                keystone,
+                data.createCompany.id,
+                data.createCompany.locations[0].id
+              );
 
-                // Everything should now be connected
-                expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-                  Location.id.toString(),
-                ]);
-              })
-            );
-          });
+              // Everything should now be connected
+              expect(Company.locations.map(({ id }) => id.toString())).toEqual([
+                Location.id.toString(),
+              ]);
+            })
+          );
+        });
 
-          describe('Update', () => {
-            test(
-              'With connect',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createCompanyAndLocation(keystone);
+        describe('Update', () => {
+          test(
+            'With connect',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createCompanyAndLocation(keystone);
 
-                // Sanity check the links don't yet exist
-                // `...not.toBe(expect.anything())` allows null and undefined values
-                expect(company.locations).not.toBe(expect.anything());
+              // Sanity check the links don't yet exist
+              // `...not.toBe(expect.anything())` allows null and undefined values
+              expect(company.locations).not.toBe(expect.anything());
 
-                const { errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+              const { errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   updateCompany(
                     id: "${company.id}",
                     data: { locations: { connect: [{ id: "${location.id}" }] } }
                   ) { id locations { id } } }
             `,
-                });
-                expect(errors).toBe(undefined);
+              });
+              expect(errors).toBe(undefined);
 
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  company.id,
-                  location.id
-                );
-                // Everything should now be connected
-                expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-                  Location.id.toString(),
-                ]);
-              })
-            );
+              const { Company, Location } = await getCompanyAndLocation(
+                keystone,
+                company.id,
+                location.id
+              );
+              // Everything should now be connected
+              expect(Company.locations.map(({ id }) => id.toString())).toEqual([
+                Location.id.toString(),
+              ]);
+            })
+          );
 
-            test(
-              'With create',
-              runner(setupKeystone, async ({ keystone }) => {
-                const { companies } = await createInitialData(keystone);
-                let company = companies[0];
-                const locationName = sampleOne(alphanumGenerator);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+          test(
+            'With create',
+            runner(setupKeystone, async ({ keystone }) => {
+              const { companies } = await createInitialData(keystone);
+              let company = companies[0];
+              const locationName = sampleOne(alphanumGenerator);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   updateCompany(
                     id: "${company.id}",
@@ -220,32 +222,32 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ) { id locations { id name } }
                 }
             `,
-                });
-                expect(errors).toBe(undefined);
+              });
+              expect(errors).toBe(undefined);
 
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  company.id,
-                  data.updateCompany.locations[0].id
-                );
+              const { Company, Location } = await getCompanyAndLocation(
+                keystone,
+                company.id,
+                data.updateCompany.locations[0].id
+              );
 
-                // Everything should now be connected
-                expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-                  Location.id.toString(),
-                ]);
-              })
-            );
+              // Everything should now be connected
+              expect(Company.locations.map(({ id }) => id.toString())).toEqual([
+                Location.id.toString(),
+              ]);
+            })
+          );
 
-            test(
-              'With disconnect',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createCompanyAndLocation(keystone);
+          test(
+            'With disconnect',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createCompanyAndLocation(keystone);
 
-                // Run the query to disconnect the location from company
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+              // Run the query to disconnect the location from company
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   updateCompany(
                     id: "${company.id}",
@@ -253,27 +255,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ) { id locations { id name } }
                 }
             `,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.updateCompany.id).toEqual(company.id);
-                expect(data.updateCompany.locations).toEqual([]);
+              });
+              expect(errors).toBe(undefined);
+              expect(data.updateCompany.id).toEqual(company.id);
+              expect(data.updateCompany.locations).toEqual([]);
 
-                // Check the link has been broken
-                const result = await getCompanyAndLocation(keystone, company.id, location.id);
-                expect(result.Company.locations).toEqual([]);
-              })
-            );
+              // Check the link has been broken
+              const result = await getCompanyAndLocation(keystone, company.id, location.id);
+              expect(result.Company.locations).toEqual([]);
+            })
+          );
 
-            test(
-              'With disconnectAll',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createCompanyAndLocation(keystone);
+          test(
+            'With disconnectAll',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createCompanyAndLocation(keystone);
 
-                // Run the query to disconnect the location from company
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+              // Run the query to disconnect the location from company
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   updateCompany(
                     id: "${company.id}",
@@ -281,41 +283,40 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ) { id locations { id name } }
                 }
             `,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.updateCompany.id).toEqual(company.id);
-                expect(data.updateCompany.locations).toEqual([]);
+              });
+              expect(errors).toBe(undefined);
+              expect(data.updateCompany.id).toEqual(company.id);
+              expect(data.updateCompany.locations).toEqual([]);
 
-                // Check the link has been broken
-                const result = await getCompanyAndLocation(keystone, company.id, location.id);
-                expect(result.Company.locations).toEqual([]);
-              })
-            );
-          });
-
-          describe('Delete', () => {
-            test(
-              'delete',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createCompanyAndLocation(keystone);
-
-                // Run the query to disconnect the location from company
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.deleteCompany.id).toBe(company.id);
-
-                // Check the link has been broken
-                const result = await getCompanyAndLocation(keystone, company.id, location.id);
-                expect(result.Company).toBe(null);
-              })
-            );
-          });
+              // Check the link has been broken
+              const result = await getCompanyAndLocation(keystone, company.id, location.id);
+              expect(result.Company.locations).toEqual([]);
+            })
+          );
         });
-      }
-    );
+
+        describe('Delete', () => {
+          test(
+            'delete',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createCompanyAndLocation(keystone);
+
+              // Run the query to disconnect the location from company
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.deleteCompany.id).toBe(company.id);
+
+              // Check the link has been broken
+              const result = await getCompanyAndLocation(keystone, company.id, location.id);
+              expect(result.Company).toBe(null);
+            })
+          );
+        });
+      });
+    });
   })
 );

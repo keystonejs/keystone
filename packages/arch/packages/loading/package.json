@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/loading",
   "description": "Loading UI as used in @keystonejs Admin UI.",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/loading.cjs.js",
@@ -12,9 +12,9 @@
     "react": "^16.12.0"
   },
   "dependencies": {
-    "@arch-ui/theme": "0.0.6",
-    "@arch-ui/typography": "0.0.11",
-    "@babel/runtime": "^7.7.4",
+    "@arch-ui/theme": "0.0.7",
+    "@arch-ui/typography": "0.0.12",
+    "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22"
   },
