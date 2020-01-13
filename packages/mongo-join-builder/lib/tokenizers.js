@@ -7,6 +7,12 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
 
   let foundListAdapter = listAdapter;
 
+  // NOTE: We slice the last path segment off because we're interested in the
+  // related list, not the field on the related list. ie, if the path is
+  // ['posts', 'comments', 'author_some'],
+  // the "virtual" field is 'author', and the related list is the one at
+  // ['posts', 'comments']
+  queryPath = queryPath.slice(0, -1);
   for (let index = 0; index < queryPath.length; index++) {
     const segment = queryPath[index];
     if (segment === 'AND' || segment === 'OR') {
@@ -48,12 +54,7 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
 };
 
 const relationshipTokenizer = (listAdapter, query, queryKey, path, uid) => {
-  // NOTE: We slice the last path segment off because we're interested in the
-  // related list, not the field on the related list. ie, if the path is
-  // ['posts', 'comments', 'author_some'],
-  // the "virtual" field is 'author', and the related list is the one at
-  // ['posts', 'comments']
-  const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path.slice(0, -1));
+  const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path);
   const fieldAdapter = refListAdapter.findFieldAdapterForQuerySegment(queryKey);
 
   // Nothing found, return an empty operation
@@ -86,64 +87,49 @@ const relationshipTokenizer = (listAdapter, query, queryKey, path, uid) => {
 };
 
 const simpleTokenizer = (listAdapter, query, queryKey, path) => {
-  // NOTE: We slice the last path segment off because we're interested in the
-  // related list, not the field on the related list. ie, if the path is
-  // ['posts', 'comments', 'author', 'name'],
-  // the field is 'name', and the related list is the one at
-  // ['posts', 'comments', 'author']
-  const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path.slice(0, -1));
-  const simpleQueryConditions = {
-    ...objMerge(
-      refListAdapter.fieldAdapters.map(fieldAdapter =>
-        fieldAdapter.getQueryConditions(fieldAdapter.dbPath)
-      )
-    ),
-  };
+  const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path);
+  const simpleQueryConditions = objMerge(
+    refListAdapter.fieldAdapters.map(a => a.getQueryConditions(a.dbPath))
+  );
   if (queryKey in simpleQueryConditions) {
-    return { matchTerm: simpleQueryConditions[queryKey](query[queryKey], query) };
+    return simpleQueryConditions[queryKey](query[queryKey], query);
   }
-
-  if (queryKey in modifierConditions) {
-    return {
-      postJoinPipeline: [modifierConditions[queryKey](query[queryKey], query, refListAdapter)],
-    };
-  }
-
-  // Nothing found, return an empty operation
-  // TODO: warn?
-  return {};
 };
 
-const modifierConditions = {
-  // TODO: Implement configurable search fields for lists
-  $search: value => {
-    if (!value || (getType(value) === 'String' && !value.trim())) {
-      return undefined;
-    }
-    return { $match: { name: new RegExp(`${escapeRegExp(value)}`, 'i') } };
-  },
+const modifierTokenizer = (listAdapter, query, queryKey, path) => {
+  const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path);
+  return {
+    // TODO: Implement configurable search fields for lists
+    $search: value => {
+      if (!value || (getType(value) === 'String' && !value.trim())) {
+        return undefined;
+      }
+      return { $match: { name: new RegExp(`${escapeRegExp(value)}`, 'i') } };
+    },
+    $orderBy: (value, _, listAdapter) => {
+      const [orderField, orderDirection] = value.split('_');
 
-  $orderBy: (value, _, listAdapter) => {
-    const [orderField, orderDirection] = value.split('_');
+      const mongoField = listAdapter.graphQlQueryPathToMongoField(orderField);
 
-    const mongoField = listAdapter.graphQlQueryPathToMongoField(orderField);
-
-    return { $sort: { [mongoField]: orderDirection === 'DESC' ? -1 : 1 } };
-  },
-
-  $skip: value => {
-    if (value < Infinity && value > 0) {
-      return { $skip: value };
-    }
-  },
-
-  $first: value => {
-    if (value < Infinity && value > 0) {
-      return { $limit: value };
-    }
-  },
-
-  $count: value => ({ $count: value }),
+      return { $sort: { [mongoField]: orderDirection === 'DESC' ? -1 : 1 } };
+    },
+    $skip: value => {
+      if (value < Infinity && value > 0) {
+        return { $skip: value };
+      }
+    },
+    $first: value => {
+      if (value < Infinity && value > 0) {
+        return { $limit: value };
+      }
+    },
+    $count: value => ({ $count: value }),
+  }[queryKey](query[queryKey], query, refListAdapter);
 };
 
-module.exports = { simpleTokenizer, relationshipTokenizer, getRelatedListAdapterFromQueryPath };
+module.exports = {
+  simpleTokenizer,
+  relationshipTokenizer,
+  modifierTokenizer,
+  getRelatedListAdapterFromQueryPath,
+};
