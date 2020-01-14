@@ -26,7 +26,7 @@ And ONE of the following databases:
 - [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful NoSQL document storage database.
 - [Postgres](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
 
-Finally, make sure [your database is configured and running](/quick-start/adapters).
+Finally, make sure [your database is configured and running](/docs/quick-start/adapters.md).
 
 All set? Great, let's get started!
 
@@ -83,7 +83,7 @@ Your application also has an Admin UI, which lets you directly manipulate the da
 
 ### A GraphQL API
 
-Both your application and the admin UI are powered by a GraphQL API.
+Both your application and the Admin UI are powered by a GraphQL API.
 KeystoneJS provides a web interface for this API at this URL:
 
 <pre>
@@ -96,4 +96,7 @@ KeystoneJS provides a web interface for this API at this URL:
 
 This todo app is a good introduction to KeystoneJS, but chances are you'll want to build something a bit more complex and secure than that!
 
-The [guides section](/guides) is a great next step. It will walk you through concepts like [creating lists](/guides/add-lists), setting up [content relationships](/guides/relationships), managing [access control](/guides/access-control) and much more.
+The [guides section](/docs/guides/index.md) is a great next step.
+It will walk you through concepts like [creating lists](/docs/guides/add-lists.md),
+setting up [content relationships](/docs/guides/relationships.md),
+managing [Access control](/docs/guides/access-control.md) and much more.

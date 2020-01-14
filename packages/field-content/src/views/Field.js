@@ -57,7 +57,10 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
                 onChange={onChange}
                 autoFocus={autoFocus}
                 id={htmlID}
-                css={inputStyles({ isMultiline: true })}
+                css={{
+                  ...inputStyles({ isMultiline: true }),
+                  padding: '16px 32px',
+                }}
               />
             )}
         </ErrorBoundary>

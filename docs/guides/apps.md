@@ -19,8 +19,7 @@ A KeystoneJS **App** has two primary purposes
 1. Prepare an `express`-compatible middleware for handling incoming http requests
 2. Provide a `build()` method to create a static production build for this app
 
-The mimimum KeystoneJS application requires at least one app, the [GraphQL
-API](../../keystonejs/app-graphql):
+The mimimum KeystoneJS application requires at least one app, the [GraphQL API](/packages/app-graphql/README.md):
 
 `index.js`
 
@@ -65,11 +64,36 @@ In both cases, the `keystone dev` and `keystone start` commands will consume the
 exported `.apps` array, making their middleware available in the order the apps
 are specified.
 
-If you're using a [Custom Server](/guides/custom-server), it will be your
+If you're using a [Custom Server](/docs/guides/custom-server.md), it will be your
 responsibility to ensure each app's middleware is correctly injected into any
 http server you setup.
 
 Other interesting KeystoneJS compatible Apps are:
 
-- [Static App](/keystonejs/app-static) for serving static files.
-- [Next.js App](/keystonejs/app-next) for serving a Next.js App on the same server as the API
+- [Static App](/packages/app-static/README.md) for serving static files.
+- [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
+
+## Custom Apps
+
+If you need to provide your own custom middleware for your system you can create a custom **App** and include it in your exported `apps`.
+
+```
+class CustomApp {
+  prepareMiddleware({ keystone, dev, distDir }) {
+    const middleware = express();
+    // ...
+    return middleware;
+  }
+}
+
+// ...
+
+module.exports = {
+  keystone,
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp(),
+    new CustomApp(),
+  ]
+}
+```
