@@ -1,5 +1,15 @@
 # @keystonejs/mongo-join-builder
 
+## 5.0.3
+
+### Patch Changes
+
+- [`311f9e9a`](https://github.com/keystonejs/keystone/commit/311f9e9a97b4b0b9ffd3f10772ae7cc520e0cc3b) [#2210](https://github.com/keystonejs/keystone/pull/2210) - Refactored the package internals for better DX.
+
+* [`03dc2af4`](https://github.com/keystonejs/keystone/commit/03dc2af44462c4715c0b2b3e6a1ebe69a7e2c174) [#2228](https://github.com/keystonejs/keystone/pull/2228) - Refactor the internal `relationshipTokenizer`, no functional changes.
+
+- [`779b6ad1`](https://github.com/keystonejs/keystone/commit/779b6ad17806f0b9f6a7fa973cacdeec05096ae8) [#2227](https://github.com/keystonejs/keystone/pull/2227) - Refactored internals of the join query builder, no functional changes.
+
 ## 5.0.2
 
 ### Patch Changes

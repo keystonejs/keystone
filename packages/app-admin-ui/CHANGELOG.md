@@ -1,5 +1,15 @@
 # @keystonejs/app-admin-ui
 
+## 5.5.4
+
+### Patch Changes
+
+- [`709d44a3`](https://github.com/keystonejs/keystone/commit/709d44a352f4e63be911a699c73304e830e2ee23) [#2198](https://github.com/keystonejs/keystone/pull/2198) - Small UX updates to item/list search input
+
+* [`6371b021`](https://github.com/keystonejs/keystone/commit/6371b021ee0b2022a3724992a6319bd0d7dd3583) [#2151](https://github.com/keystonejs/keystone/pull/2151) - Correctly load Content field views when field access set to update: false
+* Updated dependencies [[`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b), [`11586035`](https://github.com/keystonejs/keystone/commit/115860350aa901749d240cb275cada29b8d541f8)]:
+  - @keystonejs/fields@6.1.0
+
 ## 5.5.3
 
 ### Patch Changes
