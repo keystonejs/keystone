@@ -83,7 +83,7 @@ Your application also has an Admin UI, which lets you directly manipulate the da
 
 ### A GraphQL API
 
-Both your application and the admin UI are powered by a GraphQL API.
+Both your application and the Admin UI are powered by a GraphQL API.
 KeystoneJS provides a web interface for this API at this URL:
 
 <pre>

@@ -169,7 +169,7 @@ export default class RelationshipField extends Component {
     const { field, onChange } = this.props;
     const { many } = field.config;
     if (many) {
-      onChange(option.map(i => i.value));
+      onChange(option ? option.map(i => i.value) : []);
     } else {
       onChange(option ? option.value : null);
     }
