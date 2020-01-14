@@ -1,5 +1,13 @@
 # @keystonejs/keystone
 
+## 5.4.2
+
+### Patch Changes
+
+- [`cc58f0e0`](https://github.com/keystonejs/keystone/commit/cc58f0e05d1de06432e149f0767122ae51d1c31a) [#2202](https://github.com/keystonejs/keystone/pull/2202) - Apps which don't define `build()` no longer cause keystone to fail.
+- Updated dependencies [[`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b), [`11586035`](https://github.com/keystonejs/keystone/commit/115860350aa901749d240cb275cada29b8d541f8)]:
+  - @keystonejs/fields@6.1.0
+
 ## 5.4.1
 
 ### Patch Changes
