@@ -285,6 +285,8 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
+  ////////// Mutations //////////
+
   async _createOrUpdateField({ value, adapter, itemId }) {
     if (value && value.length) {
       const tableName = this._manyTable(adapter.path);
@@ -395,6 +397,8 @@ class KnexListAdapter extends BaseListAdapter {
       .del();
   }
 
+  ////////// Queries //////////
+
   async _itemsQuery(args, { meta = false, from = {} } = {}) {
     const query = new QueryBuilder(this, args, { meta, from }).get();
     const results = await query;
@@ -426,8 +430,10 @@ class QueryBuilder {
     const baseTableAlias = this._getNextBaseTableAlias();
     this._query = listAdapter._query().from(`${listAdapter.tableName} as ${baseTableAlias}`);
     if (meta) {
+      // SELECT count from <tableName> as t0
       this._query.count();
     } else {
+      // SELECT t0.* from <tableName> as t0
       this._query.column(`${baseTableAlias}.*`);
     }
 
@@ -452,12 +458,15 @@ class QueryBuilder {
     // Add query modifiers as required
     if (!meta) {
       if (first !== undefined) {
+        // SELECT ... LIMIT <first>
         this._query.limit(first);
       }
       if (skip !== undefined) {
+        // SELECT ... OFFSET <skip>
         this._query.offset(skip);
       }
       if (orderBy !== undefined) {
+        // SELECT ... ORDER BY <orderField>
         const [orderField, orderDirection] = orderBy.split('_');
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
         this._query.orderBy(sortKey, orderDirection);

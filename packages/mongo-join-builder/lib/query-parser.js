@@ -28,7 +28,6 @@ function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], incl
   const parsedQueries = Object.entries(query).map(([key, value]) => {
     const path = [...pathSoFar, key];
     if (['AND', 'OR'].includes(key)) {
-      // An AND/OR query component
       return flattenQueries(
         value.map((_query, index) =>
           queryParser({ listAdapter, getUID }, _query, [...path, index])

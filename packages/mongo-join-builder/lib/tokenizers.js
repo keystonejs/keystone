@@ -26,7 +26,6 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
     const fieldAdapter = foundListAdapter.findFieldAdapterForQuerySegment(segment);
 
     if (!fieldAdapter) {
-      // Prettier, you're testing me. Please stop.
       // prettier-ignore
       throw new Error(
           `'${listAdapter.key}' Mongo List Adapter failed to determine field responsible for the`
@@ -40,7 +39,6 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
     foundListAdapter = fieldAdapter.getRefListAdapter();
 
     if (!foundListAdapter) {
-      // Seriously, though, Prettier. Don't.
       // prettier-ignore
       throw new Error(
           `'${currentKey}' Mongo List Adapter doesn't have a related list.`
