@@ -32,12 +32,12 @@ x-integration-steps: &integration-steps
   steps:
     - checkout
     - run:
-        name: 'Is test required'
-        command: node ./.circleci/run-or-bail.js
-    - run:
         name: Yarn - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
     - save_cache: *save-cache
+    - run:
+        name: 'Is test required'
+        command: node ./.circleci/run-or-bail.js
     - run:
         name: E2E Cypress tests
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn --cwd $PROJECT_DIRECTORY cypress:run:ci
@@ -64,6 +64,14 @@ x-integration-steps: &integration-steps
 x-simple-tests: &simple-tests
   steps:
     - checkout
+    # Set Cypress cache dir here, in case this job runs/completes first, and
+    # hence clobbers the `node_modules` cache with a non-cypress version,
+    # causing the other job to fail with a "Missing Cypress" error.
+    - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
+    - save_cache: *save-cache
+    - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
+    - run: yarn lint:prettier
+    - run: yarn lint:markdown
     - run:
         name: 'Is test required'
         command: node ./.circleci/run-or-bail.js
@@ -72,15 +80,7 @@ x-simple-tests: &simple-tests
     - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
     - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
     - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
-    # Set Cypress cache dir here, in case this job runs/completes first, and
-    # hence clobbers the `node_modules` cache with a non-cypress version,
-    # causing the other job to fail with a "Missing Cypress" error.
-    - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
-    - save_cache: *save-cache
     # run tests!
-    - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
-    - run: yarn lint:prettier
-    - run: yarn lint:markdown
     - run:
         name: Unit tests
         command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
