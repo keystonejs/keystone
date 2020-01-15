@@ -1,7 +1,7 @@
 const cuid = require('cuid');
 const { getType, flatten, objMerge } = require('@keystonejs/utils');
 
-const { simpleTokenizer, relationshipTokenizer } = require('./tokenizers');
+const { simpleTokenizer, relationshipTokenizer, modifierTokenizer } = require('./tokenizers');
 
 // If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
 const joinTerms = (matchTerms, joinOp) =>
@@ -12,11 +12,11 @@ const flattenQueries = (parsedQueries, joinOp) => ({
     parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm),
     joinOp
   ),
-  postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline)).filter(pipe => pipe),
-  relationships: objMerge(parsedQueries.map(q => q.relationships)),
+  postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline || [])).filter(pipe => pipe),
+  relationships: objMerge(parsedQueries.map(q => q.relationships || {})),
 });
 
-function parser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) {
+function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) {
   if (getType(query) !== 'Object') {
     throw new Error(
       `Expected an Object for query, got ${getType(query)} at path ${pathSoFar.join('.')}`
@@ -28,46 +28,41 @@ function parser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) 
   const parsedQueries = Object.entries(query).map(([key, value]) => {
     const path = [...pathSoFar, key];
     if (['AND', 'OR'].includes(key)) {
-      // An AND/OR query component
       return flattenQueries(
-        value.map((_query, index) => parser({ listAdapter, getUID }, _query, [...path, index])),
+        value.map((_query, index) =>
+          queryParser({ listAdapter, getUID }, _query, [...path, index])
+        ),
         { AND: '$and', OR: '$or' }[key]
       );
-    } else if (getType(value) === 'Object') {
-      if (key === 'id') {
-        return { matchTerm: { _id: value }, postJoinPipeline: [], relationshipTokenizer: {} };
+    } else if (['$search', '$orderBy', '$skip', '$first', '$count'].includes(key)) {
+      return { postJoinPipeline: [modifierTokenizer(listAdapter, query, key, path)] };
+    } else if (key === 'id') {
+      if (getType(value) === 'Object') {
+        return { matchTerm: { _id: value } };
       } else {
-        // A relationship query component
-        const uid = getUID(key);
-        const queryAst = relationshipTokenizer(listAdapter, query, key, path, uid);
-        if (getType(queryAst) !== 'Object') {
-          throw new Error(
-            `Must return an Object from 'relationshipTokenizer' function, given ${path.join('.')}`
-          );
-        }
-        return {
-          // queryAst.matchTerm is our filtering expression. This determines if the
-          // parent item is included in the final list
-          matchTerm: queryAst.matchTerm,
-          postJoinPipeline: [],
-          relationships: {
-            [uid]: { ...queryAst, ...parser({ listAdapter, getUID }, value, path) },
-          },
-        };
+        return { matchTerm: simpleTokenizer(listAdapter, query, key, path) };
       }
+    } else if (getType(value) === 'Object') {
+      // A relationship query component
+      const uid = getUID(key);
+      const { matchTerm, relationshipInfo } = relationshipTokenizer(
+        listAdapter,
+        query,
+        key,
+        path,
+        uid
+      );
+      return {
+        // matchTerm is our filtering expression. This determines if the
+        // parent item is included in the final list
+        matchTerm,
+        relationships: {
+          [uid]: { relationshipInfo, ...queryParser({ listAdapter, getUID }, value, path) },
+        },
+      };
     } else {
       // A simple field query component
-      const queryAst = simpleTokenizer(listAdapter, query, key, path);
-      if (getType(queryAst) !== 'Object') {
-        throw new Error(
-          `Must return an Object from 'simpleTokenizer' function, given ${path.join('.')}`
-        );
-      }
-      return {
-        matchTerm: queryAst.matchTerm,
-        postJoinPipeline: queryAst.postJoinPipeline || [],
-        relationships: {},
-      };
+      return { matchTerm: simpleTokenizer(listAdapter, query, key, path) };
     }
   });
   const flatQueries = flattenQueries(parsedQueries, '$and');
@@ -80,4 +75,4 @@ function parser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) 
   };
 }
 
-module.exports = { queryParser: parser };
+module.exports = { queryParser };

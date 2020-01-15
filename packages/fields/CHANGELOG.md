@@ -1,5 +1,17 @@
 # @keystonejs/fields
 
+## 6.1.0
+
+### Minor Changes
+
+- [`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b) [#2005](https://github.com/keystonejs/keystone/pull/2005) - The presentation and usability of the content blocks editor was improved.
+
+### Patch Changes
+
+- [`11586035`](https://github.com/keystonejs/keystone/commit/115860350aa901749d240cb275cada29b8d541f8) [#2211](https://github.com/keystonejs/keystone/pull/2211) - Fixed work of relation select
+- Updated dependencies [[`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b)]:
+  - @keystonejs/field-content@5.3.0
+
 ## 6.0.5
 
 ### Patch Changes
