@@ -216,35 +216,27 @@ class MongooseListAdapter extends BaseListAdapter {
         args = mergeWhereClause(args, { id: { $in: ids[0][from.fromField] || [] } });
       }
     }
-    function graphQlQueryToMongoJoinQuery(query) {
-      const _query = {
-        ...query.where,
-        ...mapKeyNames(
-          // Grab all the modifiers
-          pick(query, ['search', 'orderBy', 'skip', 'first']),
-          // and prefix with a dollar symbol so they can be picked out by the
-          // query builder tokeniser
-          key => `$${key}`
-        ),
-      };
 
-      return mapKeys(_query, field => {
-        if (getType(field) !== 'Object' || !field.where) {
-          return field;
-        }
-
-        // recurse on object (ie; relationship) types
-        return graphQlQueryToMongoJoinQuery(field);
-      });
-    }
-
+    // Convert the args `where` clauses and modifiers into a data structure
+    // which can be consumed by the queryParser. Modifiers are prefixed with a
+    // $ symbol (e.g. skip => $skip) to be identified by the tokenizer.
+    // `where` keys are removed, and nested queries are handled recursively.
+    // { where: { a: 'A', b: { where: { c: 'C' } } }, skip: 10 }
+    //       => { a: 'A', b: { c: 'C' }, $skip: 10 }
+    const graphQlQueryToMongoJoinQuery = ({ where, ...modifiers }) => ({
+      ...mapKeys(where || {}, whereElement =>
+        getType(whereElement) === 'Object' && whereElement.where
+          ? graphQlQueryToMongoJoinQuery(whereElement) // Recursively traverse relationship fields
+          : whereElement
+      ),
+      ...mapKeyNames(pick(modifiers, ['search', 'orderBy', 'skip', 'first']), key => `$${key}`),
+    });
     let query;
     try {
       query = graphQlQueryToMongoJoinQuery(args);
     } catch (error) {
       return Promise.reject(error);
     }
-
     if (meta) {
       // Order is important here, which is why we do it last (v8 will append the
       // key, and keep them stable)
