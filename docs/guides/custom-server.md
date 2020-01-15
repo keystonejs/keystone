@@ -28,7 +28,6 @@ available in KeystoneJS include:
 - [Static App](/packages/app-static/README.md) for serving static files.
 - [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
 - [Nuxt.js App](/packages/app-nuxt/README.md) for serving a Nuxt.js App on the same server as the API
-  
 
 Following are some possible ways of setting up a custom server, roughly in order of complexity.
 

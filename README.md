@@ -121,6 +121,7 @@ We'd like to start by thanking all our wonderful contributors:
     <td align="center"><a href="https://ginkgoch.com"><img src="https://avatars1.githubusercontent.com/u/41072618?v=4" width="80px;" alt=""/><br /><sub><b>Ginkgoch</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=ginkgoch" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/MaisaMilena"><img src="https://avatars2.githubusercontent.com/u/28612369?v=4" width="80px;" alt=""/><br /><sub><b>MaisaMilena</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=MaisaMilena" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.marxvn.com"><img src="https://avatars2.githubusercontent.com/u/4975208?v=4" width="80px;" alt=""/><br /><sub><b>Martin Pham</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/issues?q=author%3Amarxvn" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/justintemps"><img src="https://avatars3.githubusercontent.com/u/12401179?v=4" width="80px;" alt=""/><br /><sub><b>Justin Smith</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=justintemps" title="Documentation">📖</a></td>
   </tr>
 </table>
 
