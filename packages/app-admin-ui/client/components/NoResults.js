@@ -56,11 +56,13 @@ export const NoResults = ({ currentPage, filters, list, search }) => {
   }
 
   if (search && search.length) {
-    <NoResultsWrapper>
-      No {list.plural.toLowerCase()} found matching &ldquo;
-      {search}
-      &rdquo;
-    </NoResultsWrapper>;
+    return (
+      <NoResultsWrapper>
+        No {list.plural.toLowerCase()} found matching &ldquo;
+        {search}
+        &rdquo;
+      </NoResultsWrapper>
+    );
   }
 
   return <NoResultsWrapper>No {list.plural.toLowerCase()} to display yet...</NoResultsWrapper>;
