@@ -181,7 +181,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 mutation {
                   createCompany(data: {
                     location: { create: { name: "${locationName}" company: { connect: { id: "${company.id}" } } } }
-                  }) { id location { id company { id }} }
+                  }) { id location { id company { id } } }
                 }
             `,
               });

@@ -174,6 +174,8 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.syncIndexes();
   }
 
+  ////////// Mutations //////////
+
   _create(data) {
     return this.model.create(data);
   }
@@ -191,6 +193,8 @@ class MongooseListAdapter extends BaseListAdapter {
       { new: true, runValidators: true, context: 'query' }
     );
   }
+
+  ////////// Queries //////////
 
   graphQlQueryPathToMongoField(path) {
     const fieldAdapter = this.fieldAdaptersByPath[path];

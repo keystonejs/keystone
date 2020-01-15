@@ -126,7 +126,7 @@ function pipelineBuilder({ relationships, matchTerm, excludeFields, postJoinPipe
     matchTerm && { $match: matchTerm },
     { $addFields: { id: '$_id' } },
     excludeFields && excludeFields.length && { $project: defaultObj(excludeFields, 0) },
-    ...postJoinPipeline,
+    ...postJoinPipeline, // $search / $orderBy / $skip / $first / $count
   ].filter(i => i);
 }
 
