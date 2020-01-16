@@ -39,7 +39,6 @@ export const FieldInput = props => (
   <div
     css={{
       display: 'flex',
-      maxWidth: 640,
     }}
     {...props}
   />

@@ -7,7 +7,7 @@ order: 1
 
 # Introduction to the GraphQL API
 
-_Before you begin:_ This guide assumes you have running instance of KeystoneJS with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
+_Before you begin:_ This guide assumes you have a running instance of KeystoneJS with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
 
 Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any KeystoneJS list.
 
@@ -74,7 +74,7 @@ query {
 
 ### \_UsersMeta
 
-Retrieves meta information about the `User` list itself (ie; not about items in the list) such as access control information. This query accepts no parameters.
+Retrieves meta information about the `User` list itself (i.e. not about items in the list) such as access control information. This query accepts no parameters.
 
 ## Mutations
 

@@ -6,7 +6,7 @@ subSection: advanced
 
 # Access Control
 
-> Control who can do what with your GraphQL API.
+> Controls who can do what with your GraphQL API.
 
 ## Intro
 

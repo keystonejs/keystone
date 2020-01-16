@@ -172,7 +172,8 @@
       "profile": "http://www.wesbos.com",
       "contributions": [
         "doc",
-        "ideas"
+        "ideas",
+        "maintenance"
       ]
     },
     {
@@ -360,6 +361,15 @@
       "profile": "http://www.marxvn.com",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "justintemps",
+      "name": "Justin Smith",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12401179?v=4",
+      "profile": "https://github.com/justintemps",
+      "contributions": [
+        "doc"
       ]
     }
   ],
