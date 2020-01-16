@@ -44,6 +44,7 @@ describe('join builder', () => {
             from: 'user-collection',
             field: 'author',
             many: false,
+            uniqueField: 'abc123_author',
           },
           postJoinPipeline: [],
           relationships: {},
@@ -53,7 +54,7 @@ describe('join builder', () => {
         $and: [
           { title: { $eq: 'foobar' } },
           { views: { $eq: 23 } },
-          { abc123_author_every: { $eq: true } },
+          { $expr: { $eq: [{ $size: '$abc123_author' }, 1] } },
         ],
       },
       postJoinPipeline: [],
@@ -73,18 +74,11 @@ describe('join builder', () => {
         },
       },
       {
-        $addFields: {
-          abc123_author_every: { $eq: [{ $size: '$abc123_author' }, 1] },
-          abc123_author_some: { $gt: [{ $size: '$abc123_author' }, 0] },
-          abc123_author_none: { $eq: [{ $size: '$abc123_author' }, 0] },
-        },
-      },
-      {
         $match: {
           $and: [
             { title: { $eq: 'foobar' } },
             { views: { $eq: 23 } },
-            { abc123_author_every: { $eq: true } },
+            { $expr: { $eq: [{ $size: '$abc123_author' }, 1] } },
           ],
         },
       },
@@ -110,6 +104,7 @@ describe('join builder', () => {
             from: 'posts-collection',
             field: 'posts',
             many: true,
+            uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [],
           relationships: {},
@@ -119,7 +114,7 @@ describe('join builder', () => {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { abc123_posts_some: { $eq: true } },
+          { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
         ],
       },
       postJoinPipeline: [],
@@ -138,20 +133,11 @@ describe('join builder', () => {
         },
       },
       {
-        $addFields: {
-          abc123_posts_every: {
-            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
-        },
-      },
-      {
         $match: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { abc123_posts_some: { $eq: true } },
+            { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
           ],
         },
       },
@@ -177,6 +163,7 @@ describe('join builder', () => {
             from: 'posts-collection',
             field: 'posts',
             many: true,
+            uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [{ $orderBy: 'title' }],
           relationships: {},
@@ -186,7 +173,7 @@ describe('join builder', () => {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { abc123_posts_some: { $eq: true } },
+          { $expr: { $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }] } },
         ],
       },
       postJoinPipeline: [{ $limit: 10 }],
@@ -206,20 +193,13 @@ describe('join builder', () => {
         },
       },
       {
-        $addFields: {
-          abc123_posts_every: {
-            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
-        },
-      },
-      {
         $match: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { abc123_posts_some: { $eq: true } },
+            {
+              $expr: { $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }] },
+            },
           ],
         },
       },
@@ -250,22 +230,33 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         abc123: {
-          matchTerm: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
+          matchTerm: {
+            $and: [{ title: { $eq: 'hello' } }, { $expr: { $gt: [{ $size: '$def456_tags' }, 0] } }],
+          },
           relationshipInfo: {
             from: 'posts-collection',
             field: 'posts',
             many: true,
+            uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [],
           relationships: {
             def456: {
               matchTerm: {
-                $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
+                $and: [
+                  { name: { $eq: 'React' } },
+                  {
+                    $expr: {
+                      $eq: [{ $size: '$xyz890_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+                    },
+                  },
+                ],
               },
               relationshipInfo: {
                 from: 'tags-collection',
                 field: 'tags',
                 many: true,
+                uniqueField: 'def456_tags',
               },
               postJoinPipeline: [],
               relationships: {
@@ -275,6 +266,7 @@ describe('join builder', () => {
                     from: 'posts-collection',
                     field: 'posts',
                     many: true,
+                    uniqueField: 'xyz890_posts',
                   },
                   postJoinPipeline: [],
                   relationships: {},
@@ -288,7 +280,7 @@ describe('join builder', () => {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { abc123_posts_some: { $eq: true } },
+          { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
         ],
       },
       postJoinPipeline: [],
@@ -321,18 +313,20 @@ describe('join builder', () => {
                       ],
                     },
                   },
-                  {
-                    $addFields: {
-                      xyz890_posts_every: {
-                        $eq: [{ $size: '$xyz890_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-                      },
-                      xyz890_posts_none: { $eq: [{ $size: '$xyz890_posts' }, 0] },
-                      xyz890_posts_some: { $gt: [{ $size: '$xyz890_posts' }, 0] },
-                    },
-                  },
+
                   {
                     $match: {
-                      $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
+                      $and: [
+                        { name: { $eq: 'React' } },
+                        {
+                          $expr: {
+                            $eq: [
+                              { $size: '$xyz890_posts' },
+                              { $size: { $ifNull: ['$posts', []] } },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   },
                   { $addFields: { id: '$_id' } },
@@ -340,28 +334,15 @@ describe('join builder', () => {
               },
             },
             {
-              $addFields: {
-                def456_tags_every: {
-                  $eq: [{ $size: '$def456_tags' }, { $size: { $ifNull: ['$tags', []] } }],
-                },
-                def456_tags_none: { $eq: [{ $size: '$def456_tags' }, 0] },
-                def456_tags_some: { $gt: [{ $size: '$def456_tags' }, 0] },
+              $match: {
+                $and: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$def456_tags' }, 0] } },
+                ],
               },
-            },
-            {
-              $match: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
             },
             { $addFields: { id: '$_id' } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          abc123_posts_every: {
-            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
       {
@@ -369,7 +350,7 @@ describe('join builder', () => {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { abc123_posts_some: { $eq: true } },
+            { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
           ],
         },
       },
@@ -398,12 +379,16 @@ describe('join builder', () => {
       relationships: {
         zip567: {
           matchTerm: {
-            $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+            $and: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
           },
           relationshipInfo: {
             from: 'posts-collection',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
           relationships: {
@@ -413,6 +398,7 @@ describe('join builder', () => {
                 from: 'labels-collection',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
               relationships: {},
@@ -424,7 +410,11 @@ describe('join builder', () => {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          {
+            $expr: {
+              $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+            },
+          },
         ],
       },
       postJoinPipeline: [],
@@ -451,17 +441,11 @@ describe('join builder', () => {
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $and: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
@@ -469,20 +453,15 @@ describe('join builder', () => {
         },
       },
       {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
-        },
-      },
-      {
         $match: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: {
+                $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
@@ -510,11 +489,17 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
-          matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+          matchTerm: {
+            $or: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
+          },
           relationshipInfo: {
             from: 'posts-collection',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
           relationships: {
@@ -524,6 +509,7 @@ describe('join builder', () => {
                 from: 'labels-collection',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
               relationships: {},
@@ -535,7 +521,11 @@ describe('join builder', () => {
         $or: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          {
+            $expr: {
+              $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+            },
+          },
         ],
       },
       postJoinPipeline: [],
@@ -564,17 +554,11 @@ describe('join builder', () => {
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $or: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
@@ -582,20 +566,15 @@ describe('join builder', () => {
         },
       },
       {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
-        },
-      },
-      {
         $match: {
           $or: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: {
+                $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
@@ -623,12 +602,18 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       relationships: {
         zip567: {
-          matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+          matchTerm: {
+            $or: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
+          },
 
           relationshipInfo: {
             from: 'posts-collection',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
           relationships: {
@@ -638,6 +623,7 @@ describe('join builder', () => {
                 from: 'labels-collection',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
               relationships: {},
@@ -649,7 +635,11 @@ describe('join builder', () => {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          {
+            $expr: {
+              $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+            },
+          },
         ],
       },
       postJoinPipeline: [],
@@ -678,17 +668,11 @@ describe('join builder', () => {
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $or: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
@@ -696,20 +680,15 @@ describe('join builder', () => {
         },
       },
       {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
-        },
-      },
-      {
         $match: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: {
+                $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
@@ -738,12 +717,16 @@ describe('join builder', () => {
       relationships: {
         zip567: {
           matchTerm: {
-            $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+            $and: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
           },
           relationshipInfo: {
             from: 'posts-collection',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
           relationships: {
@@ -753,6 +736,7 @@ describe('join builder', () => {
                 from: 'labels-collection',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
               relationships: {},
@@ -764,7 +748,11 @@ describe('join builder', () => {
         $or: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          {
+            $expr: {
+              $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+            },
+          },
         ],
       },
       postJoinPipeline: [],
@@ -791,17 +779,11 @@ describe('join builder', () => {
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $and: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
@@ -809,20 +791,15 @@ describe('join builder', () => {
         },
       },
       {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
-        },
-      },
-      {
         $match: {
           $or: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: {
+                $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
@@ -851,6 +828,7 @@ describe('join builder', () => {
           from: 'posts-collection',
           field: 'posts',
           many: true,
+          uniqueField: 'zip567_posts',
         },
         postJoinPipeline: [],
         relationships: {},

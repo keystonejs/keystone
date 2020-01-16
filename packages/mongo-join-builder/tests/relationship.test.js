@@ -13,11 +13,12 @@ describe('Relationship tokenizer', () => {
     expect(
       relationshipTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'], 'abc123')
     ).toMatchObject({
-      matchTerm: { abc123_name_every: true },
+      matchTerm: { $expr: { $eq: [{ $size: '$abc123_name' }, 1] } },
       relationshipInfo: {
         field: 'name',
         from: 'name',
         many: false,
+        uniqueField: 'abc123_name',
       },
     });
     expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);

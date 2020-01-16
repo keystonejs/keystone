@@ -81,32 +81,15 @@ describe('Test main export', () => {
               },
             },
             {
-              $addFields: {
-                tags_some_tags_every: {
-                  $eq: [{ $size: '$tags_some_tags' }, { $size: { $ifNull: ['$tags', []] } }],
-                },
-                tags_some_tags_none: { $eq: [{ $size: '$tags_some_tags' }, 0] },
-                tags_some_tags_some: { $gt: [{ $size: '$tags_some_tags' }, 0] },
-              },
-            },
-            {
               $match: {
-                $and: [{ title: { $eq: 'hello' } }, { tags_some_tags_some: true }],
+                $and: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$tags_some_tags' }, 0] } },
+                ],
               },
             },
-            {
-              $addFields: { id: '$_id' },
-            },
+            { $addFields: { id: '$_id' } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          posts_every_posts_every: {
-            $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          posts_every_posts_none: { $eq: [{ $size: '$posts_every_posts' }, 0] },
-          posts_every_posts_some: { $gt: [{ $size: '$posts_every_posts' }, 0] },
         },
       },
       {
@@ -114,7 +97,11 @@ describe('Test main export', () => {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { posts_every_posts_every: true },
+            {
+              $expr: {
+                $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
