@@ -95,7 +95,7 @@ Takes an object with an `id` key representing the public file ID and deletes tha
 const { S3Adapter } = require('@keystonejs/file-adapters');
 
 const CF_DISTRIBUTION_ID = 'cloudfront-distribution-id';
-const S3_PATH = '/uploads';
+const S3_PATH = 'uploads';
 
 const fileAdapter = new S3Adapter({
   accessKeyId: 'ACCESS_KEY_ID',
@@ -104,7 +104,7 @@ const fileAdapter = new S3Adapter({
   bucket: 'bucket-name',
   folder: S3_PATH,
   publicUrl: ({ id, filename, _meta }) =>
-    `https://${CF_DISTRIBUTION_ID}.cloudfront.net${CAT_FOLDER}/${filename}`,
+    `https://${CF_DISTRIBUTION_ID}.cloudfront.net/${S3_PATH}/${filename}`,
   s3Options: {
     apiVersion: '2006-03-01',
   },
@@ -125,7 +125,7 @@ const fileAdapter = new S3Adapter({
 | `folder`          | `String`          | Required    | Upload folder from root of bucket                                                                                                                                                                                                                 |
 | `publicUrl`       | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                                |
 | `s3Options`       | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                                  |
-| `uploadParams`    | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.putObject. For available options refer to the [AWS S3 putObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property). |
+| `uploadParams`    | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.upload. For available options refer to the [AWS S3 upload API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property). |
 
 ### Methods
 
