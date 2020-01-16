@@ -77,7 +77,7 @@ function mutation(uid, lookupPath) {
 function mutationBuilder(relationships, path = []) {
   return compose(
     Object.entries(relationships).map(([uid, { relationshipInfo, relationships }]) => {
-      const uniqueField = `${uid}_${relationshipInfo.field}`;
+      const { uniqueField } = relationshipInfo;
       const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
       // NOTE: Order is important. We want depth first, so we perform the related mutators first.
       return compose([postQueryMutations, mutation(uid, [...path, uniqueField])]);
@@ -85,11 +85,9 @@ function mutationBuilder(relationships, path = []) {
   );
 }
 
-function relationshipPipeline([uid, relationship]) {
-  const { field, many, from } = relationship.relationshipInfo;
-  const uniqueField = `${uid}_${field}`;
+function relationshipPipeline(relationship) {
+  const { field, many, from, uniqueField } = relationship.relationshipInfo;
   const idsName = `${uniqueField}_id${many ? 's' : ''}`;
-  const fieldSize = { $size: `$${uniqueField}` };
   return [
     {
       $lookup: {
@@ -106,23 +104,12 @@ function relationshipPipeline([uid, relationship]) {
         ],
       },
     },
-    {
-      $addFields: {
-        // We use `ifNull` here to handle the case unique to mongo where a record may be
-        // entirely missing a field (or have the value set to `null`).
-        [`${uniqueField}_every`]: {
-          $eq: [fieldSize, many ? { $size: { $ifNull: [`$${field}`, []] } } : 1],
-        },
-        [`${uniqueField}_none`]: { $eq: [fieldSize, 0] },
-        [`${uniqueField}_some`]: { $gt: [fieldSize, 0] },
-      },
-    },
   ];
 }
 
 function pipelineBuilder({ relationships, matchTerm, excludeFields, postJoinPipeline }) {
   return [
-    ...flatten(Object.entries(relationships).map(relationshipPipeline)),
+    ...flatten(Object.values(relationships).map(relationshipPipeline)),
     matchTerm && { $match: matchTerm },
     { $addFields: { id: '$_id' } },
     excludeFields && excludeFields.length && { $project: defaultObj(excludeFields, 0) },
