@@ -26,14 +26,14 @@ keystone.createList('User', {
 
 ### Config
 
-| Option           | Type      | Default                | Description                                                                |
-| ---------------- | --------- | ---------------------- | -------------------------------------------------------------------------- |
-| `format`         | `String`  | `--`                   | Defines the format of the string that the component generates                  |
-| `yearRangeFrom`  | `String`  | The current year - 100 | Defines the starting point of the year range, e.g. `1918`                    |
+| Option           | Type      | Default                | Description                                                                 |
+| ---------------- | --------- | ---------------------- | --------------------------------------------------------------------------- |
+| `format`         | `String`  | `--`                   | Defines the format of the string that the component generates               |
+| `yearRangeFrom`  | `String`  | The current year - 100 | Defines the starting point of the year range, e.g. `1918`                   |
 | `yearRangeTo`    | `String`  | The current year       | Defines the ending point of the range in the yearSelect field , e.g. `2018` |
-| `yearPickerType` | `String`  | `auto`                 | Defines the input type for the year selector                               |
-| `isRequired`     | `Boolean` | `false`                | Does this field require a value?                                           |
-| `isUnique`       | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored            |
+| `yearPickerType` | `String`  | `auto`                 | Defines the input type for the year selector                                |
+| `isRequired`     | `Boolean` | `false`                | Does this field require a value?                                            |
+| `isUnique`       | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored             |
 
 #### `format`
 

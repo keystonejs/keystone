@@ -1,5 +1,4 @@
-const omitBy = require('lodash.omitby');
-const { flatten, compose, defaultObj } = require('@keystonejs/utils');
+const { flatten, defaultObj } = require('@keystonejs/utils');
 
 /**
  * Format of input object:
@@ -43,47 +42,6 @@ const { flatten, compose, defaultObj } = require('@keystonejs/utils');
     ],
   }
  */
-function mutation(uid, lookupPath) {
-  return queryResult => {
-    function mutate(arrayToMutate, lookupPathFragment, pathSoFar = []) {
-      const [keyToMutate, ...restOfLookupPath] = lookupPathFragment;
-
-      return arrayToMutate.map((value, index) => {
-        if (!(keyToMutate in value)) {
-          return value;
-        }
-
-        if (restOfLookupPath.length === 0) {
-          // Now we can execute the mutation
-          return omitBy(value, (_, keyToOmit) => keyToOmit.startsWith(uid));
-        }
-
-        // Recurse
-        return {
-          ...value,
-          [keyToMutate]: mutate(value[keyToMutate], restOfLookupPath, [
-            ...pathSoFar,
-            index,
-            keyToMutate,
-          ]),
-        };
-      });
-    }
-
-    return mutate(queryResult, lookupPath);
-  };
-}
-
-function mutationBuilder(relationships, path = []) {
-  return compose(
-    Object.entries(relationships).map(([uid, { relationshipInfo, relationships }]) => {
-      const { uniqueField } = relationshipInfo;
-      const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
-      // NOTE: Order is important. We want depth first, so we perform the related mutators first.
-      return compose([postQueryMutations, mutation(uid, [...path, uniqueField])]);
-    })
-  );
-}
 
 function relationshipPipeline(relationship) {
   const { field, many, from, uniqueField } = relationship.relationshipInfo;
@@ -108,8 +66,9 @@ function relationshipPipeline(relationship) {
 }
 
 function pipelineBuilder({ relationships, matchTerm, excludeFields, postJoinPipeline }) {
+  excludeFields.push(...relationships.map(({ relationshipInfo }) => relationshipInfo.uniqueField));
   return [
-    ...flatten(Object.values(relationships).map(relationshipPipeline)),
+    ...flatten(relationships.map(relationshipPipeline)),
     matchTerm && { $match: matchTerm },
     { $addFields: { id: '$_id' } },
     excludeFields && excludeFields.length && { $project: defaultObj(excludeFields, 0) },
@@ -117,4 +76,4 @@ function pipelineBuilder({ relationships, matchTerm, excludeFields, postJoinPipe
   ].filter(i => i);
 }
 
-module.exports = { pipelineBuilder, mutationBuilder };
+module.exports = { pipelineBuilder };
