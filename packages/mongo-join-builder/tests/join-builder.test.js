@@ -1,4 +1,4 @@
-const { pipelineBuilder, mutationBuilder } = require('../lib/join-builder');
+const { pipelineBuilder } = require('../lib/join-builder');
 
 describe('join builder', () => {
   test('correctly generates joins for simple queries', () => {
@@ -14,7 +14,8 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       postJoinPipeline: [],
-      relationships: {},
+      excludeFields: [],
+      relationships: [],
     });
 
     expect(pipeline).toMatchObject([
@@ -37,8 +38,8 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
+      relationships: [
+        {
           matchTerm: { name: { $eq: 'Alice' } },
           relationshipInfo: {
             from: 'user-collection',
@@ -46,10 +47,11 @@ describe('join builder', () => {
             many: false,
             uniqueField: 'abc123_author',
           },
+          excludeFields: [],
           postJoinPipeline: [],
-          relationships: {},
+          relationships: [],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { title: { $eq: 'foobar' } },
@@ -57,6 +59,7 @@ describe('join builder', () => {
           { $expr: { $eq: [{ $size: '$abc123_author' }, 1] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
@@ -83,6 +86,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_author: 0 } },
     ]);
   });
 
@@ -98,8 +102,8 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
+      relationships: [
+        {
           relationshipInfo: {
             from: 'posts-collection',
             field: 'posts',
@@ -107,9 +111,10 @@ describe('join builder', () => {
             uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [],
-          relationships: {},
+          excludeFields: [],
+          relationships: [],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
@@ -117,6 +122,7 @@ describe('join builder', () => {
           { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
@@ -142,6 +148,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_posts: 0 } },
     ]);
   });
 
@@ -157,8 +164,8 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
+      relationships: [
+        {
           relationshipInfo: {
             from: 'posts-collection',
             field: 'posts',
@@ -166,9 +173,10 @@ describe('join builder', () => {
             uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [{ $orderBy: 'title' }],
-          relationships: {},
+          relationships: [],
+          excludeFields: [],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
@@ -176,6 +184,7 @@ describe('join builder', () => {
           { $expr: { $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [{ $limit: 10 }],
     });
 
@@ -204,6 +213,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_posts: 0 } },
       { $limit: 10 },
     ]);
   });
@@ -228,8 +238,8 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
+      relationships: [
+        {
           matchTerm: {
             $and: [{ title: { $eq: 'hello' } }, { $expr: { $gt: [{ $size: '$def456_tags' }, 0] } }],
           },
@@ -240,8 +250,9 @@ describe('join builder', () => {
             uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            def456: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: {
                 $and: [
                   { name: { $eq: 'React' } },
@@ -259,8 +270,9 @@ describe('join builder', () => {
                 uniqueField: 'def456_tags',
               },
               postJoinPipeline: [],
-              relationships: {
-                xyz890: {
+              excludeFields: [],
+              relationships: [
+                {
                   matchTerm: { published: { $eq: true } },
                   relationshipInfo: {
                     from: 'posts-collection',
@@ -269,13 +281,14 @@ describe('join builder', () => {
                     uniqueField: 'xyz890_posts',
                   },
                   postJoinPipeline: [],
-                  relationships: {},
+                  excludeFields: [],
+                  relationships: [],
                 },
-              },
+              ],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
@@ -283,6 +296,7 @@ describe('join builder', () => {
           { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
@@ -330,6 +344,7 @@ describe('join builder', () => {
                     },
                   },
                   { $addFields: { id: '$_id' } },
+                  { $project: { xyz890_posts: 0 } },
                 ],
               },
             },
@@ -342,6 +357,7 @@ describe('join builder', () => {
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { def456_tags: 0 } },
           ],
         },
       },
@@ -355,6 +371,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_posts: 0 } },
     ]);
   });
 
@@ -376,8 +393,8 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
+      relationships: [
+        {
           matchTerm: {
             $and: [
               { title: { $eq: 'hello' } },
@@ -391,8 +408,9 @@ describe('join builder', () => {
             uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
                 from: 'labels-collection',
@@ -401,11 +419,12 @@ describe('join builder', () => {
                 uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
@@ -417,6 +436,7 @@ describe('join builder', () => {
           },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
@@ -449,6 +469,7 @@ describe('join builder', () => {
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
         },
       },
@@ -466,6 +487,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
   });
 
@@ -487,8 +509,8 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
+      relationships: [
+        {
           matchTerm: {
             $or: [
               { title: { $eq: 'hello' } },
@@ -502,8 +524,9 @@ describe('join builder', () => {
             uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
                 from: 'labels-collection',
@@ -512,11 +535,12 @@ describe('join builder', () => {
                 uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $or: [
           { name: { $eq: 'foobar' } },
@@ -528,6 +552,7 @@ describe('join builder', () => {
           },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
@@ -562,6 +587,7 @@ describe('join builder', () => {
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
         },
       },
@@ -579,6 +605,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
   });
 
@@ -600,8 +627,8 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
+      relationships: [
+        {
           matchTerm: {
             $or: [
               { title: { $eq: 'hello' } },
@@ -616,8 +643,9 @@ describe('join builder', () => {
             uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
                 from: 'labels-collection',
@@ -626,11 +654,12 @@ describe('join builder', () => {
                 uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
@@ -642,6 +671,7 @@ describe('join builder', () => {
           },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
@@ -676,6 +706,7 @@ describe('join builder', () => {
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
         },
       },
@@ -693,6 +724,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
   });
 
@@ -714,8 +746,8 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
+      relationships: [
+        {
           matchTerm: {
             $and: [
               { title: { $eq: 'hello' } },
@@ -729,8 +761,9 @@ describe('join builder', () => {
             uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
                 from: 'labels-collection',
@@ -739,11 +772,12 @@ describe('join builder', () => {
                 uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $or: [
           { name: { $eq: 'foobar' } },
@@ -755,6 +789,7 @@ describe('join builder', () => {
           },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
@@ -787,6 +822,7 @@ describe('join builder', () => {
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
         },
       },
@@ -804,77 +840,7 @@ describe('join builder', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
-  });
-
-  test('executes relationship mutators with correct parameters', () => {
-    // TODO - check it's called with these params:
-    /*
-     * From this query:
-
-      {
-        age: 23,
-        posts_every: { title: 'hello' },
-      }
-    */
-
-    const mutationResult = {};
-
-    const postQueryMutations = mutationBuilder({
-      zip567: {
-        matchTerm: { title: { $eq: 'hello' } },
-
-        relationshipInfo: {
-          from: 'posts-collection',
-          field: 'posts',
-          many: true,
-          uniqueField: 'zip567_posts',
-        },
-        postJoinPipeline: [],
-        relationships: {},
-      },
-    });
-
-    /*
-      {
-        age: 23,
-        posts_every: { title: 'hello' },
-      }
-    */
-    const mockResult1 = {
-      age: 23,
-      name: 'foobar',
-      zip567_posts: [
-        {
-          title: 'hello',
-          views: 73,
-        },
-        {
-          title: 'hello',
-          views: 57,
-        },
-      ],
-    };
-
-    const mockResult2 = {
-      age: 23,
-      name: 'quux',
-      zip567_posts: [
-        {
-          title: 'hello',
-          views: 123,
-        },
-        {
-          title: 'hello',
-          views: 1,
-        },
-      ],
-    };
-
-    const mockQueryResult = [mockResult1, mockResult2];
-
-    const mutatedResult = postQueryMutations(mockQueryResult);
-
-    expect(mutatedResult).toMatchObject([mutationResult, mutationResult]);
   });
 });

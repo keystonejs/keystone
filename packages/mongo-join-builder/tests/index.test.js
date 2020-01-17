@@ -1,4 +1,4 @@
-const { queryParser, pipelineBuilder, mutationBuilder } = require('../');
+const { queryParser, pipelineBuilder } = require('../');
 const { listAdapter } = require('./utils');
 
 describe('Test main export', () => {
@@ -56,10 +56,9 @@ describe('Test main export', () => {
       },
     ];
     const pipeline = pipelineBuilder(queryTree);
-    const postQueryMutations = mutationBuilder(queryTree.relationships);
 
     const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
-    const result = await aggregate(pipeline).then(postQueryMutations);
+    const result = await aggregate(pipeline);
     expect(pipeline).toMatchObject([
       {
         $lookup: {
@@ -89,6 +88,7 @@ describe('Test main export', () => {
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { tags_some_tags: 0 } },
           ],
         },
       },
@@ -106,6 +106,7 @@ describe('Test main export', () => {
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { posts_every_posts: 0 } },
     ]);
 
     expect(result).toMatchObject([
