@@ -2,7 +2,13 @@
 
 import { jsx } from '@emotion/core';
 
-import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
+import {
+  FieldContainer,
+  FieldLabel,
+  FieldDescription,
+  FieldInput,
+  isReadOnly,
+} from '@arch-ui/fields';
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
 
@@ -23,6 +29,7 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
           checked={checked}
           onChange={handleChange}
           id={htmlID}
+          isDisabled={isReadOnly}
         />
         <FieldLabel
           htmlFor={htmlID}

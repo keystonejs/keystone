@@ -39,6 +39,7 @@ const Relationship = forwardRef(
       setSearch,
       selectProps,
       fetchMore,
+      isDisabled,
     },
     ref
   ) => {
@@ -134,6 +135,7 @@ const Relationship = forwardRef(
         inputId={htmlID}
         innerRef={ref}
         menuPortalTarget={document.body}
+        isDisabled={isDisabled}
         {...selectProps}
       />
     );
@@ -150,6 +152,7 @@ const RelationshipSelect = ({
   onChange,
   isMulti,
   value,
+  isDisabled,
 }) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
@@ -194,6 +197,7 @@ const RelationshipSelect = ({
         selectProps,
         fetchMore,
         ref: innerRef,
+        isDisabled,
       }}
     />
   );

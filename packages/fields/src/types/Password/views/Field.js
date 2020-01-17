@@ -18,6 +18,7 @@ const PasswordField = ({
   item: { password_is_set } = {},
   errors,
   warnings,
+  isReadOnly,
 }) => {
   const focusTarget = useRef();
 
@@ -79,6 +80,7 @@ const PasswordField = ({
               placeholder="New Password"
               type={showInputValue ? 'text' : 'password'}
               value={inputPassword}
+              disabled={isReadOnly}
             />
             <Input
               autoComplete="off"
@@ -89,19 +91,26 @@ const PasswordField = ({
               placeholder="Confirm Password"
               type={showInputValue ? 'text' : 'password'}
               value={inputConfirm}
+              disabled={isReadOnly}
             />
             <Button
               isActive={showInputValue}
               onClick={toggleMode}
               title={showInputValue ? 'Hide Text' : 'Show Text'}
               variant="ghost"
+              isDisabled={isReadOnly}
             >
               <A11yText>{showInputValue ? 'Hide Text' : 'Show Text'}</A11yText>
               <div css={{ width: 20 }}>{showInputValue ? <LockIcon /> : <EyeIcon />}</div>
             </Button>
           </FlexGroup>
         ) : (
-          <Button id={`${htmlID}-button`} onClick={toggleInterface} variant="ghost">
+          <Button
+            id={`${htmlID}-button`}
+            onClick={toggleInterface}
+            variant="ghost"
+            isDisabled={isReadOnly}
+          >
             {password_is_set ? 'Update Password' : 'Set Password'}
           </Button>
         )}
