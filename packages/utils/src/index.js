@@ -2,6 +2,7 @@ import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import isPromise from 'p-is-promise';
 import semver from 'semver';
+import ExMatch from '@mysupport/expression-match';
 
 export const noop = x => x;
 export const identity = noop;
@@ -229,4 +230,15 @@ export const asyncForEach = async (array, callback) => {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array);
   }
+};
+
+export const evalDependsOn = (dependsOn, values) => {
+  if (!dependsOn || !Object.keys(dependsOn).length) {
+    return true;
+  }
+
+  // Checks if the current field should be displayed, based on the values of
+  // other fields and the dependsOn configuration of this field
+  var Match = new ExMatch(dependsOn, values, false);
+  return Match.match();
 };

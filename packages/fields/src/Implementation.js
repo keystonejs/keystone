@@ -4,7 +4,17 @@ import { parseFieldAccess } from '@keystonejs/access-control';
 class Field {
   constructor(
     path,
-    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, adminDoc, ...config },
+    {
+      hooks = {},
+      isRequired,
+      defaultValue,
+      access,
+      label,
+      schemaDoc,
+      adminDoc,
+      dependsOn,
+      ...config
+    },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
@@ -12,6 +22,7 @@ class Field {
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
     this.config = config;
+    this.dependsOn = dependsOn;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
     this.isOrderable = false;
@@ -165,6 +176,7 @@ class Field {
       label: this.label,
       path: this.path,
       type: this.constructor.name,
+      dependsOn: this.dependsOn,
       isRequired: this.isRequired,
       isOrderable: this.isOrderable,
       // We can only pass scalar default values through to the admin ui, not

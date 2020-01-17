@@ -2645,6 +2645,13 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+"@mysupport/expression-match@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@mysupport/expression-match/-/expression-match-0.0.2.tgz#00198ee1aa4544b07f591c4f630947489516a793"
+  integrity sha512-Ii/pElssf8exc0wZh1Ft6wiwcdOL6Y6BRGN+e2rGrrjVR17bZAfn/MDpWe5fpmw/6EQX+NSQmXCtt5aPlaBvoA==
+  dependencies:
+    lodash "^4.17.15"
+
 "@next/polyfill-nomodule@9.3.2":
   version "9.3.2"
   resolved "https://registry.yarnpkg.com/@next/polyfill-nomodule/-/polyfill-nomodule-9.3.2.tgz#f8e282fdeb448eb6b70bcc18c5d46c911072687a"

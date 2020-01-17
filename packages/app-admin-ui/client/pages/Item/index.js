@@ -18,6 +18,7 @@ import {
   omitBy,
   captureSuspensePromises,
   countArrays,
+  evalDependsOn,
 } from '@keystonejs/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
@@ -262,6 +263,7 @@ const ItemDetails = ({
           {getRenderableFields(list).map((field, i) => (
             <Render key={field.path}>
               {() => {
+                const dependsOn = evalDependsOn(field.dependsOn, item);
                 const [Field] = field.adminMeta.readViews([field.views.Field]);
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
@@ -287,24 +289,25 @@ const ItemDetails = ({
                 );
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
-                  () => (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      list={list}
-                      item={item}
-                      errors={[
-                        ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                        ...(validationErrors[field.path] || []),
-                      ]}
-                      warnings={validationWarnings[field.path] || []}
-                      value={item[field.path]}
-                      savedValue={initialData[field.path]}
-                      onChange={onChange}
-                      renderContext="page"
-                      CreateItemModal={CreateItemModal}
-                    />
-                  ),
+                  () =>
+                    dependsOn && (
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        list={list}
+                        item={item}
+                        errors={[
+                          ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                          ...(validationErrors[field.path] || []),
+                        ]}
+                        warnings={validationWarnings[field.path] || []}
+                        value={item[field.path]}
+                        savedValue={initialData[field.path]}
+                        onChange={onChange}
+                        renderContext="page"
+                        CreateItemModal={CreateItemModal}
+                      />
+                    ),
                   [
                     i,
                     field,
@@ -316,6 +319,7 @@ const ItemDetails = ({
                     validationWarnings[field.path],
                     initialData[field.path],
                     onChange,
+                    dependsOn,
                   ]
                 );
               }}
