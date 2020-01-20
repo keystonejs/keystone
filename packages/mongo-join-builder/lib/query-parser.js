@@ -46,7 +46,6 @@ function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], incl
       // A relationship query component
       const { matchTerm, relationshipInfo } = relationshipTokenizer(
         listAdapter,
-        query,
         key,
         path,
         getUID(key)
