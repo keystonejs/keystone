@@ -1,4 +1,4 @@
-const { queryParser, pipelineBuilder, mutationBuilder } = require('../');
+const { queryParser, pipelineBuilder } = require('../');
 const { postsAdapter, listAdapter } = require('./utils');
 
 const { MongoClient } = require('mongodb');
@@ -8,9 +8,8 @@ const mongoJoinBuilder = parserOptions => {
   return async (query, aggregate) => {
     const queryTree = queryParser(parserOptions, query);
     const pipeline = pipelineBuilder(queryTree);
-    const postQueryMutations = mutationBuilder(queryTree.relationships);
     // Run the query against the given database and collection
-    return await aggregate(pipeline).then(postQueryMutations);
+    return await aggregate(pipeline);
   };
 };
 

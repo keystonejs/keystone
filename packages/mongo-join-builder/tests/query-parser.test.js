@@ -30,7 +30,7 @@ describe('query parser', () => {
 
       expect(queryTree).toMatchObject({
         // No relationships in this test
-        relationships: {},
+        relationships: [],
         matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       });
     });
@@ -64,7 +64,7 @@ describe('query parser', () => {
 
       expect(queryTree).toMatchObject({
         // No relationships in this test
-        relationships: {},
+        relationships: [],
         matchTerm: { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       });
     });
@@ -86,20 +86,25 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts: {
+        relationships: [
+          {
             matchTerm: { title: { $eq: 'hello' } },
             relationshipInfo: {
               from: 'posts',
               field: 'posts',
               many: true,
+              uniqueField: 'posts_posts',
             },
             postJoinPipeline: [{ $sort: { title: 1 } }],
-            relationships: {},
+            relationships: [],
           },
-        },
+        ],
         matchTerm: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { posts_posts_every: true }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { $expr: { $eq: [{ $size: '$posts_posts' }, 1] } },
+          ],
         },
         postJoinPipeline: [{ $limit: 1 }],
       });
@@ -116,20 +121,25 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts: {
+        relationships: [
+          {
             matchTerm: { title: { $eq: 'hello' } },
             relationshipInfo: {
               from: 'posts',
               field: 'posts',
               many: true,
+              uniqueField: 'posts_posts',
             },
             postJoinPipeline: [],
-            relationships: {},
+            relationships: [],
           },
-        },
+        ],
         matchTerm: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { posts_posts_every: true }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { $expr: { $eq: [{ $size: '$posts_posts' }, 1] } },
+          ],
         },
       });
     });
@@ -145,20 +155,25 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts: {
+        relationships: [
+          {
             matchTerm: undefined,
             relationshipInfo: {
               from: 'posts',
               field: 'posts',
               many: true,
+              uniqueField: 'posts_posts',
             },
             postJoinPipeline: [],
-            relationships: {},
+            relationships: [],
           },
-        },
+        ],
         matchTerm: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { posts_posts_every: true }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { $expr: { $eq: [{ $size: '$posts_posts' }, 1] } },
+          ],
         },
       });
     });
@@ -174,23 +189,24 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          company: {
+        relationships: [
+          {
             matchTerm: { name: { $eq: 'hello' } },
             relationshipInfo: {
               from: 'company-collection',
               field: 'company',
               many: false,
+              uniqueField: 'company_company',
             },
             postJoinPipeline: [],
-            relationships: {},
+            relationships: [],
           },
-        },
+        ],
         matchTerm: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { company_company_every: true },
+            { $expr: { $eq: [{ $size: '$company_company' }, 1] } },
           ],
         },
       });
@@ -213,47 +229,69 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts_every: {
-            matchTerm: { $and: [{ title: { $eq: 'hello' } }, { tags_some_tags_some: true }] },
+        relationships: [
+          {
+            matchTerm: {
+              $and: [
+                { title: { $eq: 'hello' } },
+                { $expr: { $gt: [{ $size: '$tags_some_tags' }, 0] } },
+              ],
+            },
             relationshipInfo: {
               from: 'posts',
               field: 'posts',
               many: true,
+              uniqueField: 'posts_every_posts',
             },
             postJoinPipeline: [],
-            relationships: {
-              tags_some: {
+            relationships: [
+              {
                 matchTerm: {
-                  $and: [{ name: { $eq: 'React' } }, { posts_every_posts_every: true }],
+                  $and: [
+                    { name: { $eq: 'React' } },
+                    {
+                      $expr: {
+                        $eq: [
+                          { $size: '$posts_every_posts' },
+                          { $size: { $ifNull: ['$posts', []] } },
+                        ],
+                      },
+                    },
+                  ],
                 },
                 relationshipInfo: {
                   from: 'tags',
                   field: 'tags',
                   many: true,
+                  uniqueField: 'tags_some_tags',
                 },
                 postJoinPipeline: [],
-                relationships: {
-                  posts_every: {
+                relationships: [
+                  {
                     matchTerm: { title: { $eq: 'foo' } },
                     relationshipInfo: {
                       from: 'posts',
                       field: 'posts',
                       many: true,
+                      uniqueField: 'posts_every_posts',
                     },
                     postJoinPipeline: [],
-                    relationships: {},
+                    relationships: [],
                   },
-                },
+                ],
               },
-            },
+            ],
           },
-        },
+        ],
         matchTerm: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { posts_every_posts_every: true },
+            {
+              $expr: {
+                $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       });
@@ -272,34 +310,45 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts_every: {
-            matchTerm: { $and: [{ title: { $eq: 'hello' } }, { tags_some_tags_some: true }] },
+        relationships: [
+          {
+            matchTerm: {
+              $and: [
+                { title: { $eq: 'hello' } },
+                { $expr: { $gt: [{ $size: '$tags_some_tags' }, 0] } },
+              ],
+            },
             relationshipInfo: {
               field: 'posts',
               from: 'posts',
               many: true,
+              uniqueField: 'posts_every_posts',
             },
             postJoinPipeline: [],
-            relationships: {
-              tags_some: {
+            relationships: [
+              {
                 matchTerm: { name: { $eq: 'foo' } },
                 relationshipInfo: {
                   field: 'tags',
                   from: 'tags',
                   many: true,
+                  uniqueField: 'tags_some_tags',
                 },
                 postJoinPipeline: [],
-                relationships: {},
+                relationships: [],
               },
-            },
+            ],
           },
-        },
+        ],
         matchTerm: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { posts_every_posts_every: true },
+            {
+              $expr: {
+                $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       });
@@ -318,34 +367,45 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts_every: {
-            matchTerm: { $or: [{ title: { $eq: 'hello' } }, { tags_some_tags_some: true }] },
+        relationships: [
+          {
+            matchTerm: {
+              $or: [
+                { title: { $eq: 'hello' } },
+                { $expr: { $gt: [{ $size: '$tags_some_tags' }, 0] } },
+              ],
+            },
             relationshipInfo: {
               field: 'posts',
               from: 'posts',
               many: true,
+              uniqueField: 'posts_every_posts',
             },
             postJoinPipeline: [],
-            relationships: {
-              tags_some: {
+            relationships: [
+              {
                 matchTerm: { name: { $eq: 'foo' } },
                 relationshipInfo: {
                   field: 'tags',
                   from: 'tags',
                   many: true,
+                  uniqueField: 'tags_some_tags',
                 },
                 postJoinPipeline: [],
-                relationships: {},
+                relationships: [],
               },
-            },
+            ],
           },
-        },
+        ],
         matchTerm: {
           $or: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { posts_every_posts_every: true },
+            {
+              $expr: {
+                $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       });
@@ -364,34 +424,45 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts_every: {
-            matchTerm: { $or: [{ title: { $eq: 'hello' } }, { tags_some_tags_some: true }] },
+        relationships: [
+          {
+            matchTerm: {
+              $or: [
+                { title: { $eq: 'hello' } },
+                { $expr: { $gt: [{ $size: '$tags_some_tags' }, 0] } },
+              ],
+            },
             relationshipInfo: {
               field: 'posts',
               from: 'posts',
               many: true,
+              uniqueField: 'posts_every_posts',
             },
             postJoinPipeline: [],
-            relationships: {
-              tags_some: {
+            relationships: [
+              {
                 matchTerm: { name: { $eq: 'foo' } },
                 relationshipInfo: {
                   field: 'tags',
                   from: 'tags',
                   many: true,
+                  uniqueField: 'tags_some_tags',
                 },
                 postJoinPipeline: [],
-                relationships: {},
+                relationships: [],
               },
-            },
+            ],
           },
-        },
+        ],
         matchTerm: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { posts_every_posts_every: true },
+            {
+              $expr: {
+                $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       });
@@ -410,34 +481,45 @@ describe('query parser', () => {
       );
 
       expect(queryTree).toMatchObject({
-        relationships: {
-          posts_every: {
-            matchTerm: { $and: [{ title: { $eq: 'hello' } }, { tags_some_tags_some: true }] },
+        relationships: [
+          {
+            matchTerm: {
+              $and: [
+                { title: { $eq: 'hello' } },
+                { $expr: { $gt: [{ $size: '$tags_some_tags' }, 0] } },
+              ],
+            },
             relationshipInfo: {
               field: 'posts',
               from: 'posts',
               many: true,
+              uniqueField: 'posts_every_posts',
             },
             postJoinPipeline: [],
-            relationships: {
-              tags_some: {
+            relationships: [
+              {
                 matchTerm: { name: { $eq: 'foo' } },
                 relationshipInfo: {
                   field: 'tags',
                   from: 'tags',
                   many: true,
+                  uniqueField: 'tags_some_tags',
                 },
                 postJoinPipeline: [],
-                relationships: {},
+                relationships: [],
               },
-            },
+            ],
           },
-        },
+        ],
         matchTerm: {
           $or: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { posts_every_posts_every: true },
+            {
+              $expr: {
+                $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       });

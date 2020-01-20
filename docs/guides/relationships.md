@@ -82,6 +82,7 @@ assignee: {
 ```
 
 Start the AdminUI and create a Todo and assign a user. Check the user's `task` field and notice that it is already set! When a user is created and a Todo is assigned, the `assignee` field won't be filled in. Add the following code to make it work both ways:
+
 ```javascript
 task: {
     type: Relationship,
@@ -98,7 +99,8 @@ assignee: {
     // isRequired: true,
 },
 ```
-Create a Todo without assigning it to a user. Then go to a user, assign a Todo to the `task` field. Go back to the todo and notice that the `assignee` field has been filled in. 
+
+Create a Todo without assigning it to a user. Then go to a user, assign a Todo to the `task` field. Go back to the todo and notice that the `assignee` field has been filled in.
 
 ## Assigning multiple tasks to a user (to-many relationship)
 

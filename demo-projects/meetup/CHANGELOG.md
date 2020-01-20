@@ -1,5 +1,26 @@
 # @keystonejs/demo-project-meetup
 
+## 5.0.6
+
+### Patch Changes
+
+- [`51500a82`](https://github.com/keystonejs/keystone/commit/51500a82644bf65e6a06bef0d2dd4aa1a2d5d135) [#2244](https://github.com/keystonejs/keystone/pull/2244) - Bump next.js dep to ^9.2.0
+- Updated dependencies [[`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737), [`56bb67fd`](https://github.com/keystonejs/keystone/commit/56bb67fdf794af56cb4167705d5693e0e4903a49), [`9677dc17`](https://github.com/keystonejs/keystone/commit/9677dc177b7b747397732700cab42d98e89f03f5), [`51500a82`](https://github.com/keystonejs/keystone/commit/51500a82644bf65e6a06bef0d2dd4aa1a2d5d135), [`87a17087`](https://github.com/keystonejs/keystone/commit/87a170877d9f735d909ee91b7661fa4a10b56a59)]:
+  - @keystonejs/adapter-mongoose@5.1.5
+  - @keystonejs/app-admin-ui@5.6.0
+  - @keystonejs/file-adapters@5.3.2
+  - @keystonejs/app-next@5.0.2
+
+## 5.0.5
+
+### Patch Changes
+
+- [`933b3111`](https://github.com/keystonejs/keystone/commit/933b3111af7d629183013e1b42c2026cfbaaa5f4) [#2193](https://github.com/keystonejs/keystone/pull/2193) - Fixed typo in filename
+- Updated dependencies [[`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b), [`709d44a3`](https://github.com/keystonejs/keystone/commit/709d44a352f4e63be911a699c73304e830e2ee23), [`cc58f0e0`](https://github.com/keystonejs/keystone/commit/cc58f0e05d1de06432e149f0767122ae51d1c31a), [`11586035`](https://github.com/keystonejs/keystone/commit/115860350aa901749d240cb275cada29b8d541f8), [`6371b021`](https://github.com/keystonejs/keystone/commit/6371b021ee0b2022a3724992a6319bd0d7dd3583)]:
+  - @keystonejs/fields@6.1.0
+  - @keystonejs/app-admin-ui@5.5.4
+  - @keystonejs/keystone@5.4.2
+
 ## 5.0.4
 
 ### Patch Changes
