@@ -51,7 +51,7 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
   return foundListAdapter;
 };
 
-const relationshipTokenizer = (listAdapter, query, queryKey, path, uid) => {
+const relationshipTokenizer = (listAdapter, queryKey, path, uid) => {
   const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path);
   const fieldAdapter = refListAdapter.findFieldAdapterForQuerySegment(queryKey);
 
