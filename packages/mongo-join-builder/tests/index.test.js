@@ -64,16 +64,16 @@ describe('Test main export', () => {
         $lookup: {
           from: 'posts',
           as: 'posts_every_posts',
-          let: { posts_every_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$posts_every_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
                 from: 'tags',
                 as: 'tags_some_tags',
-                let: { tags_some_tags_ids: { $ifNull: ['$tags', []] } },
+                let: { tmpVar: { $ifNull: ['$tags', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$tags_some_tags_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
