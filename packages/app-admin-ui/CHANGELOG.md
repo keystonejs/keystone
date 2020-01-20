@@ -1,5 +1,15 @@
 # @keystonejs/app-admin-ui
 
+## 5.6.0
+
+### Minor Changes
+
+- [`56bb67fd`](https://github.com/keystonejs/keystone/commit/56bb67fdf794af56cb4167705d5693e0e4903a49) [#2264](https://github.com/keystonejs/keystone/pull/2264) - Fixed a bug where the search input on the List page would gain focus when the user pressed SHIFT
+
+### Patch Changes
+
+- [`87a17087`](https://github.com/keystonejs/keystone/commit/87a170877d9f735d909ee91b7661fa4a10b56a59) [#2087](https://github.com/keystonejs/keystone/pull/2087) - Show a more helpful error in the AdminUI when the list page overflows the available number of items.
+
 ## 5.5.4
 
 ### Patch Changes

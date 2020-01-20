@@ -1,5 +1,11 @@
 # @keystonejs/app-next
 
+## 5.0.2
+
+### Patch Changes
+
+- [`51500a82`](https://github.com/keystonejs/keystone/commit/51500a82644bf65e6a06bef0d2dd4aa1a2d5d135) [#2244](https://github.com/keystonejs/keystone/pull/2244) - Bump next.js dep to ^9.2.0
+
 ## 5.0.1
 
 ### Patch Changes
