@@ -55,7 +55,7 @@ class BoostClientWithUpload extends ApolloClient {
         ? new ApolloLink(
             (operation, forward) =>
               new Observable(observer => {
-                let handle: any;
+                let handle;
                 Promise.resolve(operation)
                   .then(oper => config.request(oper))
                   .then(() => {

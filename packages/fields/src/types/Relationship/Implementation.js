@@ -266,7 +266,7 @@ export class Relationship extends Implementation {
 
   getGqlAuxTypes({ schemaName }) {
     const { refList } = this.tryResolveRefList();
-    if (!refList.access[schemaName].update) {
+    if (!refList.access[schemaName].create) {
       return [];
     }
     // We need an input type that is specific to creating nested items when
@@ -326,6 +326,10 @@ export class Relationship extends Implementation {
   }
   get gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
+    // TODO! FIX ME!!!!!!!
+    if (!refList.access['testing'].create) {
+      return [];
+    }
     if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
     }
