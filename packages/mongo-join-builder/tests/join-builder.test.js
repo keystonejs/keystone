@@ -68,9 +68,9 @@ describe('join builder', () => {
         $lookup: {
           from: 'user-collection',
           as: 'abc123_author',
-          let: { abc123_author_id: '$author' },
+          let: { tmpVar: '$author' },
           pipeline: [
-            { $match: { $expr: { $eq: ['$_id', '$$abc123_author_id'] } } },
+            { $match: { $expr: { $eq: ['$_id', '$$tmpVar'] } } },
             { $match: { name: { $eq: 'Alice' } } },
             { $addFields: { id: '$_id' } },
           ],
@@ -131,9 +131,9 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             { $addFields: { id: '$_id' } },
           ],
         },
@@ -193,9 +193,9 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             { $addFields: { id: '$_id' } },
             { $orderBy: 'title' },
           ],
@@ -305,23 +305,23 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
                 from: 'tags-collection',
                 as: 'def456_tags',
-                let: { def456_tags_ids: { $ifNull: ['$tags', []] } },
+                let: { tmpVar: { $ifNull: ['$tags', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$def456_tags_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   {
                     $lookup: {
                       from: 'posts-collection',
                       as: 'xyz890_posts',
-                      let: { xyz890_posts_ids: { $ifNull: ['$posts', []] } },
+                      let: { tmpVar: { $ifNull: ['$posts', []] } },
                       pipeline: [
-                        { $match: { $expr: { $in: ['$_id', '$$xyz890_posts_ids'] } } },
+                        { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                         { $match: { published: { $eq: true } } },
                         { $addFields: { id: '$_id' } },
                       ],
@@ -445,16 +445,16 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
@@ -561,16 +561,16 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   {
                     $match: { name: { $eq: 'foo' } },
                   },
@@ -680,16 +680,16 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   {
                     $match: { name: { $eq: 'foo' } },
                   },
@@ -798,16 +798,16 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
