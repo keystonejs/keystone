@@ -1,5 +1,15 @@
 # @keystonejs/mongo-join-builder
 
+## 6.0.0
+
+### Major Changes
+
+- [`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737) [#2251](https://github.com/keystonejs/keystone/pull/2251) - Removed the `mutationBuilder` function in favour of using `$project` operations in the main pipeline.
+
+### Patch Changes
+
+- [`7123e226`](https://github.com/keystonejs/keystone/commit/7123e226e13d3629b2ce7b6746c4292af9bf79e1) [#2247](https://github.com/keystonejs/keystone/pull/2247) - Simplified the generated queries for \_some, \_none and \_every queries.
+
 ## 5.0.3
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @keystonejs/adapter-mongoose
 
+## 5.1.5
+
+### Patch Changes
+
+- [`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737) [#2251](https://github.com/keystonejs/keystone/pull/2251) - Uses the new `mongo-join-builder` API.
+- Updated dependencies [[`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737), [`7123e226`](https://github.com/keystonejs/keystone/commit/7123e226e13d3629b2ce7b6746c4292af9bf79e1)]:
+  - @keystonejs/mongo-join-builder@6.0.0
+
 ## 5.1.4
 
 ### Patch Changes
