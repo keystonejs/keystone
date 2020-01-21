@@ -63,7 +63,7 @@ function setupKeystone(adapterName) {
       });
 
       keystone.createList('GroupNoCreateHard', {
-        fields: { name: { type: Text }, },
+        fields: { name: { type: Text } },
         access: { create: false },
       });
 
@@ -87,8 +87,8 @@ function setupKeystone(adapterName) {
       });
 
       keystone.createList('GroupNoUpdateHard', {
-        fields: { name: { type: Text }, },
-        access: { update: false, },
+        fields: { name: { type: Text } },
+        access: { update: false },
       });
 
       keystone.createList('EventToGroupNoUpdateHard', {
@@ -250,7 +250,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     });
 
     describe('with access control', () => {
-
       const accessControlGroups = [
         { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
         { name: 'GroupNoReadHard', allowed: false, func: 'read: false' },

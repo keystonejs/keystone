@@ -97,7 +97,6 @@ function setupKeystone(adapterName) {
           group: { type: Relationship, ref: 'GroupNoUpdateHard' },
         },
       });
-
     },
   });
 }
@@ -224,7 +223,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     });
 
     describe('with access control', () => {
-
       const accessControlGroups = [
         { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
         { name: 'GroupNoReadHard', allowed: true, func: 'read: false' },
@@ -302,7 +300,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 });
 
                 expect(errors).toBe(undefined);
-                expect(data).toMatchObject({ [`updateEventTo${group.name}`]: { id: expect.any(String) } });
+                expect(data).toMatchObject({
+                  [`updateEventTo${group.name}`]: { id: expect.any(String) },
+                });
 
                 // See that it actually stored the group ID on the Event record
                 const event = await findOne(`EventTo${group.name}`, { title: 'A thing' });
