@@ -346,7 +346,7 @@ export class Relationship extends Implementation {
 
     return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
   }
-  gqlCreateInputFields({ schemaName }) {``
+  gqlCreateInputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
     if (!refList.access[schemaName].create) {
       return [];

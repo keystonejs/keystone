@@ -252,69 +252,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('with access control', () => {
 
       const accessControlGroups = [
-        { name: 'GroupNoRead', canBeCreated: false, canBeConnected: false, func: 'read: () => false' },
-        { name: 'GroupNoReadHard', canBeCreated: false, canBeConnected: false, func: 'read: false' },
-        {
-          name: 'GroupNoCreate',
-          canBeCreated: true, /* TODO! FIX THIS!!!! */
-          canBeConnected: true,
-          func: 'create: () => false',
-        },
-        { name: 'GroupNoCreateHard', canBeCreated: false, canBeConnected: true, func: 'create: false' },
-        { name: 'GroupNoUpdate', canBeCreated: true, canBeConnected: true, func: 'update: () => false' },
-        { name: 'GroupNoUpdateHard', canBeCreated: true, canBeConnected: true, func: 'update: false' },
+        { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
+        { name: 'GroupNoReadHard', allowed: false, func: 'read: false' },
+        { name: 'GroupNoCreate', allowed: true, func: 'create: () => false' },
+        { name: 'GroupNoCreateHard', allowed: true, func: 'create: false' },
+        { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
+        { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
       ];
 
       accessControlGroups.forEach(group => {
         describe(`${group.func} on related list`, () => {
-          if (!group.canBeCreated) {
-            test(
-              'throws error when linking nested within create mutation',
-              runner(setupKeystone, async ({ app, create }) => {
-                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
-
-                // Create an item to link against
-                const { id } = await create(group.name, {
-                  name: groupModelName,
-                });
-
-                expect(id).toBeTruthy();
-
-                // Create an item that does the linking
-                const { errors } = await networkedGraphqlRequest({
-                  app,
-                  query: `
-                mutation {
-                  createEventTo${group.name}(data: {
-                    title: "A thing",
-                    group: { connect: { id: "${id}" } }
-                  }) {
-                    id
-                  }
-                }
-              `,
-                });
-
-                // lists with access rules `read: false` and `create: false` does not provide
-                // meaningful error message right now
-                if (group.name.match(/Hard/)) {
-                  expect(errors).toBeTruthy();
-                } else {
-                  expect(errors).toMatchObject([
-                    {
-                      data: {
-                        errors: expect.arrayContaining([
-                          expect.objectContaining({
-                            message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
-                          }),
-                        ]),
-                      },
-                    },
-                  ]);
-                }
-              })
-            );
-          } else {
+          if (group.allowed) {
             test(
               'does not throw error when linking nested within create mutation',
               runner(setupKeystone, async ({ app, create }) => {
@@ -350,8 +298,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(errors).toBe(undefined);
               })
             );
-          }
-          if (group.canBeConnected) {
             test(
               'does not throw error when linking nested within update mutation',
               runner(setupKeystone, async ({ app, create }) => {
@@ -442,6 +388,52 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       id
                       name
                     }
+                  }
+                }
+              `,
+                });
+
+                // lists with access rules `read: false` and `create: false` does not provide
+                // meaningful error message right now
+                if (group.name.match(/Hard/)) {
+                  expect(errors).toBeTruthy();
+                } else {
+                  expect(errors).toMatchObject([
+                    {
+                      data: {
+                        errors: expect.arrayContaining([
+                          expect.objectContaining({
+                            message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                          }),
+                        ]),
+                      },
+                    },
+                  ]);
+                }
+              })
+            );
+            test(
+              'throws error when linking nested within create mutation',
+              runner(setupKeystone, async ({ app, create }) => {
+                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
+
+                // Create an item to link against
+                const { id } = await create(group.name, {
+                  name: groupModelName,
+                });
+
+                expect(id).toBeTruthy();
+
+                // Create an item that does the linking
+                const { errors } = await networkedGraphqlRequest({
+                  app,
+                  query: `
+                mutation {
+                  createEventTo${group.name}(data: {
+                    title: "A thing",
+                    group: { connect: { id: "${id}" } }
+                  }) {
+                    id
                   }
                 }
               `,
