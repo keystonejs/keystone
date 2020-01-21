@@ -630,6 +630,12 @@ describe('getAdminMeta()', () => {
         hidden: String
         writeOnce: String
       }`;
+      const createInputWithoutOther = `input TestCreateInput {
+        name: String
+        email: String
+        hidden: String
+        writeOnce: String
+      }`;
       const createManyInput = `input TestsCreateInput {
         data: TestCreateInput
       }`;
@@ -661,7 +667,7 @@ describe('getAdminMeta()', () => {
             whereUniqueInput,
             updateInput,
             updateManyInput,
-            createInput,
+            createInputWithoutOther,
             createManyInput,
             ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
           ].map(s => print(gql(s)))
@@ -704,7 +710,7 @@ describe('getAdminMeta()', () => {
             type,
             whereInput,
             whereUniqueInput,
-            createInput,
+            createInputWithoutOther,
             createManyInput,
             ...(withAuth && auth ? [unauthenticateOutput, authenticateOutput] : []),
           ].map(s => print(gql(s)))

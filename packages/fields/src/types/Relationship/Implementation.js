@@ -338,7 +338,7 @@ export class Relationship extends Implementation {
       `,
     ];
   }
-  gqlUpdateInputFields() {
+  gqlUpdateInputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
     if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
