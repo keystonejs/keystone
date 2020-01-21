@@ -288,7 +288,7 @@ export class Relationship extends Implementation {
       if (refList.access[schemaName].create) {
         operations.push(`
          # Provide data to create a set of new ${refList.key}. Will also connect.
-        create: [${refList.gqlNames.createInputName}]\\n\`;
+        create: [${refList.gqlNames.createInputName}]
       `);
       }
       operations.push(`
@@ -346,7 +346,7 @@ export class Relationship extends Implementation {
 
     return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
   }
-  gqlCreateInputFields({ schemaName }) {
+  gqlCreateInputFields({ schemaName }) {``
     const { refList } = this.tryResolveRefList();
     if (!refList.access[schemaName].create) {
       return [];
