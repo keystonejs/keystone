@@ -79,7 +79,10 @@ class KnexAdapter extends BaseKeystoneAdapter {
     } else {
       return [];
     }
+    return this._createTables();
+  }
 
+  async _createTables() {
     const createResult = await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.createTable())
     );

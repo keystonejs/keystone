@@ -10,9 +10,7 @@ describe('Relationship tokenizer', () => {
     const findFieldAdapterForQuerySegment = jest.fn(() => relationshipConditions);
     const listAdapter = { findFieldAdapterForQuerySegment };
 
-    expect(
-      relationshipTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'], 'abc123')
-    ).toMatchObject({
+    expect(relationshipTokenizer(listAdapter, 'name', ['name'], 'abc123')).toMatchObject({
       matchTerm: { $expr: { $eq: [{ $size: '$abc123_name' }, 1] } },
       relationshipInfo: {
         field: 'name',
@@ -28,7 +26,7 @@ describe('Relationship tokenizer', () => {
     const findFieldAdapterForQuerySegment = jest.fn(() => {});
     const listAdapter = { findFieldAdapterForQuerySegment };
 
-    const result = relationshipTokenizer(listAdapter, { name: 'hi' }, 'name', ['name']);
+    const result = relationshipTokenizer(listAdapter, 'name', ['name']);
     expect(result).toMatchObject({});
     expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
   });
