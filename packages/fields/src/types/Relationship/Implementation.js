@@ -287,21 +287,21 @@ export class Relationship extends Implementation {
     if (this.many) {
       if (refList.access[schemaName].create) {
         operations.push(`
-         # Provide data to create a set of new ${refList.key}. Will also connect.
-        create: [${refList.gqlNames.createInputName}]
-      `);
+          # Provide data to create a set of new ${refList.key}. Will also connect.
+          create: [${refList.gqlNames.createInputName}]
+        `);
       }
       operations.push(`
-          # Provide a filter to link to a set of existing ${refList.key}.
-          connect: [${refList.gqlNames.whereUniqueInputName}]
+        # Provide a filter to link to a set of existing ${refList.key}.
+        connect: [${refList.gqlNames.whereUniqueInputName}]
       `);
       operations.push(`
-          # Provide a filter to remove to a set of existing ${refList.key}.
-          disconnect: [${refList.gqlNames.whereUniqueInputName}]
+        # Provide a filter to remove to a set of existing ${refList.key}.
+        disconnect: [${refList.gqlNames.whereUniqueInputName}]
       `);
       operations.push(`
-          # Remove all ${refList.key} in this list.
-          disconnectAll: Boolean
+        # Remove all ${refList.key} in this list.
+        disconnectAll: Boolean
       `);
 
       return [
@@ -319,16 +319,16 @@ export class Relationship extends Implementation {
     `);
     }
     operations.push(`
-          # Provide a filter to link to an existing ${refList.key}.
-          connect: ${refList.gqlNames.whereUniqueInputName}
+      # Provide a filter to link to an existing ${refList.key}.
+      connect: ${refList.gqlNames.whereUniqueInputName}
     `);
     operations.push(`
-          # Provide a filter to remove to an existing ${refList.key}.
-          disconnect: ${refList.gqlNames.whereUniqueInputName}
+      # Provide a filter to remove to an existing ${refList.key}.
+      disconnect: ${refList.gqlNames.whereUniqueInputName}
     `);
     operations.push(`
-          # Remove the existing ${refList.key} (if any).
-          disconnectAll: Boolean
+      # Remove the existing ${refList.key} (if any).
+      disconnectAll: Boolean
     `);
 
     return [
