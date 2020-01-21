@@ -27,12 +27,8 @@ function setupKeystone(adapterName) {
       });
 
       keystone.createList('GroupNoRead', {
-        fields: {
-          name: { type: Text },
-        },
-        access: {
-          read: () => false,
-        },
+        fields: { name: { type: Text } },
+        access: { read: () => false },
       });
 
       keystone.createList('EventToGroupNoRead', {
@@ -42,13 +38,21 @@ function setupKeystone(adapterName) {
         },
       });
 
-      keystone.createList('GroupNoCreate', {
+      keystone.createList('GroupNoReadHard', {
+        fields: { name: { type: Text } },
+        access: { read: false },
+      });
+
+      keystone.createList('EventToGroupNoReadHard', {
         fields: {
-          name: { type: Text },
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoReadHard' },
         },
-        access: {
-          create: () => false,
-        },
+      });
+
+      keystone.createList('GroupNoCreate', {
+        fields: { name: { type: Text } },
+        access: { create: () => false },
       });
 
       keystone.createList('EventToGroupNoCreate', {
@@ -57,6 +61,43 @@ function setupKeystone(adapterName) {
           group: { type: Relationship, ref: 'GroupNoCreate' },
         },
       });
+
+      keystone.createList('GroupNoCreateHard', {
+        fields: { name: { type: Text } },
+        access: { create: false },
+      });
+
+      keystone.createList('EventToGroupNoCreateHard', {
+        fields: {
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoCreateHard' },
+        },
+      });
+
+      keystone.createList('GroupNoUpdate', {
+        fields: { name: { type: Text } },
+        access: { update: () => false },
+      });
+
+      keystone.createList('EventToGroupNoUpdate', {
+        fields: {
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoUpdate' },
+        },
+      });
+
+      keystone.createList('GroupNoUpdateHard', {
+        fields: { name: { type: Text } },
+        access: { update: false },
+      });
+
+      keystone.createList('EventToGroupNoUpdateHard', {
+        fields: {
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoUpdateHard' },
+        },
+      });
+
     },
   });
 }
@@ -183,18 +224,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     });
 
     describe('with access control', () => {
-      describe('read: false on related list', () => {
-        test(
-          'does not throw error when creating nested within create mutation',
-          runner(setupKeystone, async ({ app, findOne, findById }) => {
-            const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-            // Create an item that does the nested create
-            const { data, errors } = await networkedGraphqlRequest({
-              app,
-              query: `
+      const accessControlGroups = [
+        { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
+        { name: 'GroupNoReadHard', allowed: true, func: 'read: false' },
+        { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
+        { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
+        { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
+        { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
+      ];
+
+      accessControlGroups.forEach(group => {
+        describe(`${group.func} on related list`, () => {
+          if (group.allowed) {
+            test(
+              'does not throw error when creating nested within create mutation',
+              runner(setupKeystone, async ({ app, findOne, findById }) => {
+                const groupName = sampleOne(gen.alphaNumString.notEmpty());
+
+                // Create an item that does the nested create
+                const { data, errors } = await networkedGraphqlRequest({
+                  app,
+                  query: `
                 mutation {
-                  createEventToGroupNoRead(data: {
+                  createEventTo${group.name}(data: {
                     title: "A thing",
                     group: { create: { name: "${groupName}" } }
                   }) {
@@ -202,41 +255,41 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }
               `,
-            });
+                });
 
-            expect(errors).toBe(undefined);
-            expect(data).toMatchObject({
-              createEventToGroupNoRead: { id: expect.any(String) },
-            });
+                expect(errors).toBe(undefined);
+                expect(data).toMatchObject({
+                  [`createEventTo${group.name}`]: { id: expect.any(String) },
+                });
 
-            // See that it actually stored the group ID on the Event record
-            const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
-            expect(event).toBeTruthy();
-            expect(event.group).toBeTruthy();
+                // See that it actually stored the group ID on the Event record
+                const event = await findOne(`EventTo${group.name}`, { title: 'A thing' });
+                expect(event).toBeTruthy();
+                expect(event.group).toBeTruthy();
 
-            const group = await findById('GroupNoRead', event.group);
-            expect(group).toBeTruthy();
-            expect(group.name).toBe(groupName);
-          })
-        );
+                const findGroup = await findById(group.name, event.group);
+                expect(findGroup).toBeTruthy();
+                expect(findGroup.name).toBe(groupName);
+              })
+            );
 
-        test(
-          'does not throw error when creating nested within update mutation',
-          runner(setupKeystone, async ({ app, create, findOne, findById }) => {
-            const groupName = sampleOne(gen.alphaNumString.notEmpty());
+            test(
+              'does not throw error when creating nested within update mutation',
+              runner(setupKeystone, async ({ app, create, findOne, findById }) => {
+                const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-            // Create an item to update
-            const createEventToGroupNoRead = await create('EventToGroupNoRead', {
-              title: 'A thing',
-            });
+                // Create an item to update
+                const eventModel = await create(`EventTo${group.name}`, {
+                  title: 'A thing',
+                });
 
-            // Update an item that does the nested create
-            const { data, errors } = await networkedGraphqlRequest({
-              app,
-              query: `
+                // Update an item that does the nested create
+                const { data, errors } = await networkedGraphqlRequest({
+                  app,
+                  query: `
                 mutation {
-                  updateEventToGroupNoRead(
-                    id: "${createEventToGroupNoRead.id}"
+                  updateEventTo${group.name}(
+                    id: "${eventModel.id}"
                     data: {
                       title: "A thing",
                       group: { create: { name: "${groupName}" } }
@@ -246,37 +299,36 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }
               `,
-            });
+                });
 
-            expect(errors).toBe(undefined);
-            expect(data).toMatchObject({ updateEventToGroupNoRead: { id: expect.any(String) } });
+                expect(errors).toBe(undefined);
+                expect(data).toMatchObject({ [`updateEventTo${group.name}`]: { id: expect.any(String) } });
 
-            // See that it actually stored the group ID on the Event record
-            const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
-            expect(event).toBeTruthy();
-            expect(event.group).toBeTruthy();
+                // See that it actually stored the group ID on the Event record
+                const event = await findOne(`EventTo${group.name}`, { title: 'A thing' });
+                expect(event).toBeTruthy();
+                expect(event.group).toBeTruthy();
 
-            const group = await findById('GroupNoRead', event.group);
-            expect(group).toBeTruthy();
-            expect(group.name).toBe(groupName);
-          })
-        );
-      });
+                const findGroup = await findById(group.name, event.group);
+                expect(findGroup).toBeTruthy();
+                expect(findGroup.name).toBe(groupName);
+              })
+            );
+          } else {
+            describe(`${group.func} on related list`, () => {
+              test(
+                'throws error when creating nested within create mutation',
+                runner(setupKeystone, async ({ app, findOne }) => {
+                  const alphaNumGenerator = gen.alphaNumString.notEmpty();
+                  const eventName = sampleOne(alphaNumGenerator);
+                  const groupName = sampleOne(alphaNumGenerator);
 
-      describe('create: false on related list', () => {
-        test(
-          'throws error when creating nested within create mutation',
-          runner(setupKeystone, async ({ keystone, app }) => {
-            const alphaNumGenerator = gen.alphaNumString.notEmpty();
-            const eventName = sampleOne(alphaNumGenerator);
-            const groupName = sampleOne(alphaNumGenerator);
-
-            // Create an item that does the nested create
-            const { data, errors } = await networkedGraphqlRequest({
-              app,
-              query: `
+                  // Create an item that does the nested create
+                  const { errors } = await networkedGraphqlRequest({
+                    app,
+                    query: `
                 mutation {
-                  createEventToGroupNoCreate(data: {
+                  createEventTo${group.name}(data: {
                     title: "${eventName}",
                     group: { create: { name: "${groupName}" } }
                   }) {
@@ -284,75 +336,52 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }
               `,
-            });
+                  });
 
-            // Assert it throws an access denied error
-            expect(data.createEventToGroupNoCreate).toBe(null);
-            expect(errors).toMatchObject([
-              {
-                data: {
-                  errors: expect.arrayContaining([
-                    expect.objectContaining({
-                      message: 'Unable to create a EventToGroupNoCreate.group<GroupNoCreate>',
-                    }),
-                  ]),
-                },
-              },
-            ]);
+                  // Assert it throws an access denied error
+                  //console.log(data, errors, group);
+                  expect(errors).toBeTruthy();
+                  if (!group.name.match(/Hard/)) {
+                    expect(errors).toMatchObject([
+                      {
+                        data: {
+                          errors: expect.arrayContaining([
+                            expect.objectContaining({
+                              message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                            }),
+                          ]),
+                        },
+                      },
+                    ]);
+                  }
 
-            // Confirm it didn't insert either of the records anyway
-            const {
-              data: { allGroupNoCreates },
-            } = await graphqlRequest({
-              keystone,
-              query: `
-          query {
-            allGroupNoCreates(where: { name: "${groupName}" }) {
-              id
-              name
-            }
-          }
-      `,
-            });
+                  // Confirm it didn't insert either of the records anyway
+                  const findGroup = await findOne(group.name, { name: groupName });
+                  expect(findGroup).toBeFalsy();
 
-            expect(allGroupNoCreates).toMatchObject([]);
+                  // Confirm it didn't insert either of the records anyway
+                  const findEvent = await findOne(`EventTo${group.name}`, { title: eventName });
+                  expect(findEvent).toBeFalsy();
+                })
+              );
 
-            // Confirm it didn't insert either of the records anyway
-            const {
-              data: { allEventToGroupNoCreates },
-            } = await graphqlRequest({
-              keystone,
-              query: `
-          query {
-            allEventToGroupNoCreates(where: { title: "${eventName}" }) {
-              id
-              title
-            }
-          }
-      `,
-            });
+              test(
+                'throws error when creating nested within update mutation',
+                runner(setupKeystone, async ({ app, create, findOne }) => {
+                  const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-            expect(allEventToGroupNoCreates).toMatchObject([]);
-          })
-        );
+                  // Create an item to update
+                  const eventModel = await create(`EventTo${group.name}`, {
+                    title: 'A thing',
+                  });
 
-        test(
-          'throws error when creating nested within update mutation',
-          runner(setupKeystone, async ({ keystone, app, create }) => {
-            const groupName = sampleOne(gen.alphaNumString.notEmpty());
-
-            // Create an item to update
-            const createEventToGroupNoCreate = await create('EventToGroupNoCreate', {
-              title: 'A thing',
-            });
-
-            // Update an item that does the nested create
-            const { data, errors } = await networkedGraphqlRequest({
-              app,
-              query: `
+                  // Update an item that does the nested create
+                  const { data, errors } = await networkedGraphqlRequest({
+                    app,
+                    query: `
                 mutation {
                   updateEventToGroupNoCreate(
-                    id: "${createEventToGroupNoCreate.id}"
+                    id: "${eventModel.id}"
                     data: {
                       title: "A thing",
                       group: { create: { name: "${groupName}" } }
@@ -362,40 +391,33 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }
               `,
+                  });
+
+                  // Assert it throws an access denied error
+                  expect(data[`updateEventTo${group.name}`]).toBeFalsy();
+                  expect(errors).toBeTruthy();
+                  if (!group.name.match(/Hard/)) {
+                    expect(errors).toMatchObject([
+                      {
+                        data: {
+                          errors: expect.arrayContaining([
+                            expect.objectContaining({
+                              message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                            }),
+                          ]),
+                        },
+                      },
+                    ]);
+                  }
+
+                  // Confirm it didn't insert the record anyway
+                  const findGroup = await findOne(group.name, { name: groupName });
+                  expect(findGroup).toBeFalsy();
+                })
+              );
             });
-
-            // Assert it throws an access denied error
-            expect(data.updateEventToGroupNoCreate).toBe(null);
-            expect(errors).toMatchObject([
-              {
-                data: {
-                  errors: expect.arrayContaining([
-                    expect.objectContaining({
-                      message: 'Unable to create a EventToGroupNoCreate.group<GroupNoCreate>',
-                    }),
-                  ]),
-                },
-              },
-            ]);
-
-            // Confirm it didn't insert the record anyway
-            const {
-              data: { allGroupNoCreates },
-            } = await graphqlRequest({
-              keystone,
-              query: `
-          query {
-            allGroupNoCreates(where: { name: "${groupName}" }) {
-              id
-              name
-            }
           }
-      `,
-            });
-
-            expect(allGroupNoCreates).toMatchObject([]);
-          })
-        );
+        });
       });
     });
   })

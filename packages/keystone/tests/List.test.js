@@ -39,10 +39,10 @@ class MockFieldImplementation {
   gqlQueryInputFields() {
     return ['id: ID'];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return ['id: ID'];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return ['id: ID'];
   }
   getGqlAuxTypes() {
@@ -633,6 +633,11 @@ describe('getAdminMeta()', () => {
       const createManyInput = `input TestsCreateInput {
         data: TestCreateInput
       }`;
+      const relateInput = `input OtherRelateToOneInput {
+        connect: OtherWhereUniqueInput
+        disconnect: OtherWhereUniqueInput
+        disconnectAll: Boolean
+      }`;
       const unauthenticateOutput = `type unauthenticateTestOutput {
       """
         \`true\` when unauthentication succeeds.
@@ -656,6 +661,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
@@ -684,6 +690,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
@@ -701,6 +708,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
@@ -720,6 +728,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
@@ -739,6 +748,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,

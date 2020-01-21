@@ -266,9 +266,6 @@ export class Relationship extends Implementation {
 
   getGqlAuxTypes({ schemaName }) {
     const { refList } = this.tryResolveRefList();
-    if (!refList.access[schemaName].update) {
-      return [];
-    }
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
     //
@@ -286,45 +283,62 @@ export class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { connect: { id: 'abc123' } }
     // }
+    const operations = [];
     if (this.many) {
-      return [
-        `
-        input ${refList.gqlNames.relateToManyInputName} {
-          # Provide data to create a set of new ${refList.key}. Will also connect.
-          create: [${refList.gqlNames.createInputName}]
-
+      if (refList.access[schemaName].create) {
+        operations.push(`
+         # Provide data to create a set of new ${refList.key}. Will also connect.
+        create: [${refList.gqlNames.createInputName}]
+      `);
+      }
+      operations.push(`
           # Provide a filter to link to a set of existing ${refList.key}.
           connect: [${refList.gqlNames.whereUniqueInputName}]
-
+      `);
+      operations.push(`
           # Provide a filter to remove to a set of existing ${refList.key}.
           disconnect: [${refList.gqlNames.whereUniqueInputName}]
-
+      `);
+      operations.push(`
           # Remove all ${refList.key} in this list.
           disconnectAll: Boolean
+      `);
+
+      return [
+        `input ${refList.gqlNames.relateToManyInputName} {
+          ${operations.join('\n')}
         }
       `,
       ];
     }
 
+    if (refList.access[schemaName].create) {
+      operations.push(`
+      # Provide data to create a new ${refList.key}.
+      create: ${refList.gqlNames.createInputName}
+    `);
+    }
+    operations.push(`
+          # Provide a filter to link to an existing ${refList.key}.
+          connect: ${refList.gqlNames.whereUniqueInputName}
+    `);
+    operations.push(`
+          # Provide a filter to remove to an existing ${refList.key}.
+          disconnect: ${refList.gqlNames.whereUniqueInputName}
+    `);
+    operations.push(`
+          # Remove the existing ${refList.key} (if any).
+          disconnectAll: Boolean
+    `);
+
     return [
-      `
-      input ${refList.gqlNames.relateToOneInputName} {
-        # Provide data to create a new ${refList.key}.
-        create: ${refList.gqlNames.createInputName}
-
-        # Provide a filter to link to an existing ${refList.key}.
-        connect: ${refList.gqlNames.whereUniqueInputName}
-
-        # Provide a filter to remove to an existing ${refList.key}.
-        disconnect: ${refList.gqlNames.whereUniqueInputName}
-
-        # Remove the existing ${refList.key} (if any).
-        disconnectAll: Boolean
-      }
-    `,
+      `input ${refList.gqlNames.relateToOneInputName} {
+          ${operations.join('\n')}
+        }
+      `,
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
     if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
@@ -332,8 +346,8 @@ export class Relationship extends Implementation {
 
     return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
   }
-  get gqlCreateInputFields() {
-    return this.gqlUpdateInputFields;
+  gqlCreateInputFields() {
+    return this.gqlUpdateInputFields();
   }
 }
 
