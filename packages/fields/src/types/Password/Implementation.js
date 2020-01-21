@@ -39,10 +39,10 @@ export class Password extends Implementation {
   gqlQueryInputFields() {
     return [`${this.path}_is_set: Boolean`];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 

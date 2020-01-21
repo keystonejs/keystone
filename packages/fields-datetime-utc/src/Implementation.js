@@ -21,10 +21,10 @@ export class DateTimeUtcImplementation extends Implementation {
       ...this.inInputFields('String'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
   getGqlAuxTypes() {

@@ -251,12 +251,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     describe('with access control', () => {
 
-      const accessGroups = [
+      const accessControlGroups = [
         { name: 'GroupNoRead', canBeCreated: false, canBeConnected: false, func: 'read: () => false' },
         { name: 'GroupNoReadHard', canBeCreated: false, canBeConnected: false, func: 'read: false' },
         {
           name: 'GroupNoCreate',
-          canBeCreated: true /* TODO! FIX THIS!!!! */,
+          canBeCreated: true, /* TODO! FIX THIS!!!! */
           canBeConnected: true,
           func: 'create: () => false',
         },
@@ -265,7 +265,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         { name: 'GroupNoUpdateHard', canBeCreated: true, canBeConnected: true, func: 'update: false' },
       ];
 
-      accessGroups.forEach(group => {
+      accessControlGroups.forEach(group => {
         describe(`${group.func} on related list`, () => {
           if (!group.canBeCreated) {
             test(

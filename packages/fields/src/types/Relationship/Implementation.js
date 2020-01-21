@@ -338,7 +338,7 @@ export class Relationship extends Implementation {
       `,
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
     if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
@@ -346,14 +346,13 @@ export class Relationship extends Implementation {
 
     return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
-    // TODO! FIX ME!!!!!!!
-    if (!refList.access['testing'].create) {
+    if (!refList.access[schemaName].create) {
       return [];
     }
 
-    return this.gqlUpdateInputFields;
+    return this.gqlUpdateInputFields({ schemaName });
   }
 }
 

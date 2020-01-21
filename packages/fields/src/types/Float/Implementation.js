@@ -22,10 +22,10 @@ export class Float extends Implementation {
       ...this.inInputFields('Float'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: Float`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: Float`];
   }
 }
