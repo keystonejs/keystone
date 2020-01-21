@@ -39,10 +39,10 @@ class MockFieldImplementation {
   gqlQueryInputFields() {
     return ['id: ID'];
   }
-  gqlUpdateInputFields() {
+  get gqlUpdateInputFields() {
     return ['id: ID'];
   }
-  gqlCreateInputFields() {
+  get gqlCreateInputFields() {
     return ['id: ID'];
   }
   getGqlAuxTypes() {
