@@ -252,12 +252,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('with access control', () => {
 
       const accessGroups = [
-        { name: 'GroupNoRead', canBeCreated: false, canRead: false, accessFunction: 'read: () => false' },
-        //{ name: 'GroupNoReadHard', canBeCreated: false, , canRead: false, accessFunction: 'read: false' },
-        { name: 'GroupNoCreate', canBeCreated: false, canRead: true, accessFunction: 'create: () => false' },
-        // { name: 'GroupNoCreateHard', canBeCreated: false, canRead: true, accessFunction: 'create: false' },
-        { name: 'GroupNoUpdate', canBeCreated: true, canRead: true, accessFunction: 'update: () => false' },
-        // { name: 'GroupNoUpdateHard', canBeCreated: true, canRead: true, accessFunction: 'update: false' },
+        { name: 'GroupNoRead', canBeCreated: false, canBeConnected: false, accessFunction: 'read: () => false' },
+        //{ name: 'GroupNoReadHard', canBeCreated: false, canBeConnected: false, accessFunction: 'read: false' },
+        { name: 'GroupNoCreate', canBeCreated: false, canBeConnected: true, accessFunction: 'create: () => false' },
+        // { name: 'GroupNoCreateHard', canBeCreated: false, canBeConnected: true, accessFunction: 'create: false' },
+        { name: 'GroupNoUpdate', canBeCreated: true, canBeConnected: true, accessFunction: 'update: () => false' },
+        // { name: 'GroupNoUpdateHard', canBeCreated: true, canBeConnected: true, accessFunction: 'update: false' },
       ];
 
       accessGroups.forEach(group => {
@@ -276,7 +276,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { errors } = await networkedGraphqlRequest({
+                const { errors, data } = await networkedGraphqlRequest({
                   app,
                   query: `
                 mutation {
@@ -290,19 +290,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               `,
                 });
 
-                console.log(JSON.stringify(errors, null, 2));
-                // expect(errors).toBeTruthy();
-                // expect(errors).toMatchObject([
-                //   {
-                //     data: {
-                //       errors: expect.arrayContaining([
-                //         expect.objectContaining({
-                //           message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
-                //         }),
-                //       ]),
-                //     },
-                //   },
-                // ]);
+                if (!errors) {
+                  console.log(data, errors, group);
+                }
+                expect(errors).toMatchObject([
+                  {
+                    data: {
+                      errors: expect.arrayContaining([
+                        expect.objectContaining({
+                          message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                        }),
+                      ]),
+                    },
+                  },
+                ]);
               })
             );
           } else {
@@ -328,6 +329,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     id
                     group {
                       id
+                      name
                     }
                   }
                 }
@@ -341,30 +343,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               })
             );
           }
-          // all access groups allows to connect existing item to relation
-          test(
-            'does not throw error when linking nested within update mutation',
-            runner(setupKeystone, async ({ app, create }) => {
-              const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
+          if (group.canBeConnected) {
+            test(
+              'does not throw error when linking nested within update mutation',
+              runner(setupKeystone, async ({ app, create }) => {
+                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
 
-              // Create an item to link against
-              const groupModel = await create(group.name, {
-                name: groupModelName,
-              });
+                // Create an item to link against
+                const groupModel = await create(group.name, {
+                  name: groupModelName,
+                });
 
-              expect(groupModel.id).toBeTruthy();
+                expect(groupModel.id).toBeTruthy();
 
-              // Create an item to update
-              const eventModel = await create(`EventTo${group.name}`, {
-                title: 'A Thing',
-              });
+                // Create an item to update
+                const eventModel = await create(`EventTo${group.name}`, {
+                  title: 'A Thing',
+                });
 
-              expect(eventModel.id).toBeTruthy();
+                expect(eventModel.id).toBeTruthy();
 
-              // Update the item and link the relationship field
-              const { errors, data } = await networkedGraphqlRequest({
-                app,
-                query: `
+                // Update the item and link the relationship field
+                const { errors, data } = await networkedGraphqlRequest({
+                  app,
+                  query: `
                 mutation {
                   updateEventTo${group.name}(
                     id: "${eventModel.id}"
@@ -374,23 +376,83 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     }
                   ) {
                     id
+                    group {
+                      id
+                      name
+                    }
                   }
                 }
               `,
-              });
+                });
 
-              expect(data).toMatchObject({
-                [`updateEventTo${group.name}`]: {
-                  id: expect.any(String),
-                  // group: {
-                  //   id: expect.any(String),
-                  //   name: groupModelName,
-                  // },
-                },
-              });
-              expect(errors).toBe(undefined);
-            })
-          );
+                expect(errors).toBe(undefined);
+                expect(data).toMatchObject({
+                  [`updateEventTo${group.name}`]: {
+                    id: expect.any(String),
+                    group: {
+                      id: expect.any(String),
+                      name: groupModelName,
+                    },
+                  },
+                });
+              })
+            );
+          } else {
+            test(
+              'throws error when linking nested within update mutation',
+              runner(setupKeystone, async ({ app, create }) => {
+                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
+
+                // Create an item to link against
+                const groupModel = await create(group.name, {
+                  name: groupModelName,
+                });
+
+                expect(groupModel.id).toBeTruthy();
+
+                // Create an item to update
+                const eventModel = await create(`EventTo${group.name}`, {
+                  title: 'A Thing',
+                });
+
+                expect(eventModel.id).toBeTruthy();
+
+                // Update the item and link the relationship field
+                const { errors, data } = await networkedGraphqlRequest({
+                  app,
+                  query: `
+                mutation {
+                  updateEventTo${group.name}(
+                    id: "${eventModel.id}"
+                    data: {
+                      title: "A thing",
+                      group: { connect: { id: "${groupModel.id}" } }
+                    }
+                  ) {
+                    id
+                    group {
+                      id
+                      name
+                    }                    
+                  }
+                }
+              `,
+                });
+
+                expect(errors).toMatchObject([
+                  {
+                    data: {
+                      errors: expect.arrayContaining([
+                        expect.objectContaining({
+                          message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                        }),
+                      ]),
+                    },
+                  },
+                ]);
+              })
+            );
+          }
         });
       });
     });
