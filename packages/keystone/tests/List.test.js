@@ -630,14 +630,13 @@ describe('getAdminMeta()', () => {
         hidden: String
         writeOnce: String
       }`;
-      const createInputWithoutOther = `input TestCreateInput {
-        name: String
-        email: String
-        hidden: String
-        writeOnce: String
-      }`;
       const createManyInput = `input TestsCreateInput {
         data: TestCreateInput
+      }`;
+      const relateInput = `input OtherRelateToOneInput {
+        connect: OtherWhereUniqueInput
+        disconnect: OtherWhereUniqueInput
+        disconnectAll: Boolean
       }`;
       const unauthenticateOutput = `type unauthenticateTestOutput {
       """
@@ -662,12 +661,13 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
             updateInput,
             updateManyInput,
-            createInputWithoutOther,
+            createInput,
             createManyInput,
             ...(withAuth ? [unauthenticateOutput, authenticateOutput] : []),
           ].map(s => print(gql(s)))
@@ -690,6 +690,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
@@ -707,10 +708,11 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
-            createInputWithoutOther,
+            createInput,
             createManyInput,
             ...(withAuth && auth ? [unauthenticateOutput, authenticateOutput] : []),
           ].map(s => print(gql(s)))
@@ -726,6 +728,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
@@ -745,6 +748,7 @@ describe('getAdminMeta()', () => {
             .map(s => print(gql(s)))
         ).toEqual(
           [
+            relateInput,
             type,
             whereInput,
             whereUniqueInput,
