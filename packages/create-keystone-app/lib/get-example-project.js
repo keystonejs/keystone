@@ -15,7 +15,7 @@ const getExampleProject = async () => {
   const argValue = args['--template'];
   if (argValue) {
     projects.map(project => {
-      if (project.folder == argValue) {
+      if (project.folder === argValue) {
         EXAMPLE_PROJECT_CHOICE = project;
       }
     });
