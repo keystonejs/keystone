@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { useRef, forwardRef, useState, useCallback, useEffect } from 'react';
+import { useRef, forwardRef, useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 
 import { SearchIcon, XIcon } from '@arch-ui/icons';
@@ -11,14 +11,13 @@ import { LoadingSpinner } from '@arch-ui/loading';
 import { colors } from '@arch-ui/theme';
 import { uniformHeight } from '@arch-ui/common';
 
-import { useListSearch, useRouter } from './dataHooks';
+import { useListSearch } from './dataHooks';
 import { elementOffsetStyles } from './Filters/ActiveFilters';
 
 export default function Search({ isLoading, list }) {
   const { searchValue, onChange, onClear, onSubmit } = useListSearch(list.key);
   const [value, setValue] = useState(searchValue);
   const inputRef = useRef();
-  const { history } = useRouter();
 
   const hasValue = searchValue && searchValue.length;
   const Icon = hasValue ? XIcon : SearchIcon;
@@ -32,13 +31,10 @@ export default function Search({ isLoading, list }) {
   };
 
   const handleClear = () => {
+    if (inputRef.current) inputRef.current.focus();
     setValue('');
     onClear();
   };
-
-  useEffect(() => {
-    if (inputRef.current) inputRef.current.focus();
-  }, [history.location.search]);
 
   const id = 'ks-list-search-input';
 

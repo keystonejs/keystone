@@ -47,7 +47,7 @@ module.exports = class S3Adapter {
       if (typeof this.uploadParams === 'function') {
         uploadParams = this.uploadParams(fileData);
       }
-      this.s3.putObject(
+      this.s3.upload(
         {
           Body: stream,
           ContentType: mimetype,

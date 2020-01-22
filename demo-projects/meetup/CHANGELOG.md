@@ -1,5 +1,16 @@
 # @keystonejs/demo-project-meetup
 
+## 5.0.6
+
+### Patch Changes
+
+- [`51500a82`](https://github.com/keystonejs/keystone/commit/51500a82644bf65e6a06bef0d2dd4aa1a2d5d135) [#2244](https://github.com/keystonejs/keystone/pull/2244) - Bump next.js dep to ^9.2.0
+- Updated dependencies [[`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737), [`56bb67fd`](https://github.com/keystonejs/keystone/commit/56bb67fdf794af56cb4167705d5693e0e4903a49), [`9677dc17`](https://github.com/keystonejs/keystone/commit/9677dc177b7b747397732700cab42d98e89f03f5), [`51500a82`](https://github.com/keystonejs/keystone/commit/51500a82644bf65e6a06bef0d2dd4aa1a2d5d135), [`87a17087`](https://github.com/keystonejs/keystone/commit/87a170877d9f735d909ee91b7661fa4a10b56a59)]:
+  - @keystonejs/adapter-mongoose@5.1.5
+  - @keystonejs/app-admin-ui@5.6.0
+  - @keystonejs/file-adapters@5.3.2
+  - @keystonejs/app-next@5.0.2
+
 ## 5.0.5
 
 ### Patch Changes
