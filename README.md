@@ -66,11 +66,8 @@ We'd like to start by thanking all our wonderful contributors:
 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 <!-- prettier-ignore-start -->
-
 <!-- markdownlint-disable -->
-
 <table>
   <tr>
     <td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="80px;" alt=""/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=JedWatson" title="Code">💻</a></td>
@@ -122,13 +119,12 @@ We'd like to start by thanking all our wonderful contributors:
     <td align="center"><a href="https://github.com/MaisaMilena"><img src="https://avatars2.githubusercontent.com/u/28612369?v=4" width="80px;" alt=""/><br /><sub><b>MaisaMilena</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=MaisaMilena" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.marxvn.com"><img src="https://avatars2.githubusercontent.com/u/4975208?v=4" width="80px;" alt=""/><br /><sub><b>Martin Pham</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/issues?q=author%3Amarxvn" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/justintemps"><img src="https://avatars3.githubusercontent.com/u/12401179?v=4" width="80px;" alt=""/><br /><sub><b>Justin Smith</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=justintemps" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/gabipetrovay"><img src="https://avatars0.githubusercontent.com/u/1170398?v=4" width="80px;" alt=""/><br /><sub><b>Gabriel Petrovay</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=gabipetrovay" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
-
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ### Demo Projects
