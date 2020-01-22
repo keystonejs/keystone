@@ -50,6 +50,8 @@ You'll be prompted with a few questions:
 2. **Select a starter project.** Select the `Todo` application if you wish to follow this guide.
 3. **Select an adapter.** We'll go more into database adapters later. For now, simply choose `Mongoose` if you're running a MongoDB database and `Knex` if you're running a Postgres one.
 
+If you want to perform an unattended app generation (i.e. skipping the prompts), see the [CLI arguments](/packages/create-keystone-app/README.md) of the `create-keystone-app` utility script.
+
 Wait a few minutes for all the project dependencies to install. Once that's finished, run this:
 
 ```sh
