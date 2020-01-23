@@ -32,19 +32,9 @@ const BoxElement = styled(Card)`
   }
 `;
 
-export const BoxComponent = ({
-  focusOrigin,
-  isActive,
-  isHover,
-  isFocus,
-  meta,
-  onCreateClick,
-  ...props
-}) => {
+export const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props }) => {
   const { list, openCreateItemModal } = useList();
-
   const { label, singular } = list;
-
   const onCreate = ({ data }) => {
     let { adminPath, history } = this.props;
     let id = data[list.gqlNames.createMutationName].id;
