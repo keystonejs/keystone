@@ -55,8 +55,8 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     }
 
     createItem({ variables: { data } }).then(data => {
-      setItem(list.getInitialItemData({}));
       closeCreateItemModal();
+      setItem(list.getInitialItemData({}));
       if (onCreate) {
         onCreate(data);
       }
@@ -66,13 +66,17 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
   const _onClose = () => {
     if (isLoading) return;
     closeCreateItemModal();
+    setItem(list.getInitialItemData({}));
+    if (onCreate) {
+      onClose(data);
+    }
   };
 
   const _onKeyDown = event => {
     if (event.defaultPrevented) return;
     switch (event.key) {
       case 'Escape':
-        return onClose();
+        return _onClose();
     }
   };
 

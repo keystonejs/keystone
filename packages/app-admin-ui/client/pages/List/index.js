@@ -255,7 +255,7 @@ export function ListLayout(props) {
   );
 }
 
-export function List(props: Props) {
+export function List(props) {
   const { list, query, routeProps } = props;
 
   // get item data
@@ -337,7 +337,7 @@ export function List(props: Props) {
   );
 }
 
-export default function ListData(props: Props) {
+export default function ListData(props) {
   const { list } = props;
   const { urlState } = useListUrlState(list.key);
 
