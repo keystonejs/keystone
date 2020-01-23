@@ -18,47 +18,7 @@ describe('Test main export', () => {
       ],
     };
     const queryTree = queryParser({ listAdapter, getUID: jest.fn(key => key) }, query);
-
-    const aggregateResponse = [
-      {
-        name: 'foobar',
-        age: 23,
-        posts: [1, 3], // the IDs are stored on the field
-        posts_every_posts: [
-          // this is the join result
-          {
-            id: 1,
-            title: 'hello',
-            tags: [4, 5],
-            tags_some_tags: [
-              {
-                id: 4,
-                name: 'foo',
-              },
-              {
-                id: 5,
-                name: 'foo',
-              },
-            ],
-          },
-          {
-            id: 3,
-            title: 'hello',
-            tags: [6],
-            tags_some_tags: [
-              {
-                id: 6,
-                name: 'foo',
-              },
-            ],
-          },
-        ],
-      },
-    ];
     const pipeline = pipelineBuilder(queryTree);
-
-    const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
-    const result = await aggregate(pipeline);
     expect(pipeline).toMatchObject([
       {
         $lookup: {
@@ -107,14 +67,6 @@ describe('Test main export', () => {
       },
       { $addFields: { id: '$_id' } },
       { $project: { posts_every_posts: 0 } },
-    ]);
-
-    expect(result).toMatchObject([
-      {
-        name: 'foobar',
-        age: 23,
-        posts: [1, 3],
-      },
     ]);
   });
 });
