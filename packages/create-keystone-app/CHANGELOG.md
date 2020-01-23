@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.5.0
+
+### Minor Changes
+
+- [`8edd7b3c`](https://github.com/keystonejs/keystone/commit/8edd7b3c172214ac1f11fbcc3d4af17f5e6836df) [#2273](https://github.com/keystonejs/keystone/pull/2273) - Added CLI arguments to support unattended Keystone app initializations
+
 ## 1.4.1
 
 ### Patch Changes
