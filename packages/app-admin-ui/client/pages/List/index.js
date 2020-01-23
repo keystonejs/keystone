@@ -37,9 +37,8 @@ const HeaderInset = props => (
 
 export function ListLayout(props) {
   const { adminMeta, items, itemCount, queryErrors, routeProps, query } = props;
-  const [showCreateModal, toggleCreateModal] = useState(false);
   const measureElementRef = useRef();
-  const { list, openCreateItemModal, closeCreateItemModal } = useList();
+  const { list, openCreateItemModal } = useList();
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
@@ -47,13 +46,6 @@ export function ListLayout(props) {
   const { adminPath } = adminMeta;
   const { history, location } = routeProps;
   const { currentPage, fields, pageSize, search } = urlState;
-
-  const closeCreateModal = () => {
-    toggleCreateModal(false);
-  };
-  const openCreateModal = () => {
-    toggleCreateModal(true);
-  };
 
   const [selectedItems, onSelectChange] = useListSelect(items);
 
@@ -215,7 +207,7 @@ export function ListLayout(props) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal onClose={closeCreateItemModal} onCreate={onCreate} />
+      <CreateItemModal onCreate={onCreate} />
 
       <Container isFullWidth>
         <ListTable
