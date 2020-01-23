@@ -1,8 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
+import { useList } from '../../providers/List';
+import CreateItemModal from '../../components/CreateItemModal';
 
 import { PlusIcon } from '@arch-ui/icons';
 import { Card } from '@arch-ui/card';
@@ -34,34 +37,47 @@ export const BoxComponent = ({
   isActive,
   isHover,
   isFocus,
-  list,
   meta,
   onCreateClick,
   ...props
 }) => {
+  const { list, openCreateItemModal } = useList();
+
   const { label, singular } = list;
 
+  const onCreate = ({ data }) => {
+    let { adminPath, history } = this.props;
+    let id = data[list.gqlNames.createMutationName].id;
+    history.push(`${adminPath}/${list.path}/${id}`);
+  };
+
   return (
-    <BoxElement as={Link} isInteractive title={`Go to ${label}`} {...props}>
-      <A11yText>Go to {label}</A11yText>
-      <Name
-        isHover={isHover || isFocus}
-        // this is aria-hidden since the label above shows the label already
-        // so if this wasn't aria-hidden screen readers would read the label twice
-        aria-hidden
-      >
-        {label}
-      </Name>
-      <Count meta={meta} />
-      <CreateButton
-        title={`Create ${singular}`}
-        isHover={isHover || isFocus}
-        onClick={onCreateClick}
-      >
-        <PlusIcon />
-        <A11yText>Create {singular}</A11yText>
-      </CreateButton>
-    </BoxElement>
+    <Fragment>
+      <BoxElement as={Link} isInteractive title={`Go to ${label}`} {...props}>
+        <A11yText>Go to {label}</A11yText>
+        <Name
+          isHover={isHover || isFocus}
+          // this is aria-hidden since the label above shows the label already
+          // so if this wasn't aria-hidden screen readers would read the label twice
+          aria-hidden
+        >
+          {label}
+        </Name>
+        <Count meta={meta} />
+        <CreateButton
+          title={`Create ${singular}`}
+          isHover={isHover || isFocus}
+          onClick={e => {
+            e.preventDefault();
+            openCreateItemModal();
+          }}
+        >
+          <PlusIcon />
+          <A11yText>Create {singular}</A11yText>
+        </CreateButton>
+      </BoxElement>
+      <CreateItemModal onCreate={onCreate} />
+    </Fragment>
   );
 };
 

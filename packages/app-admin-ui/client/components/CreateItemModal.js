@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useCallback, useMemo, Suspense } from 'react';
+import { Fragment, useCallback, useMemo, Suspense, useState, useRef } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { useToasts } from 'react-toast-notifications';
 
@@ -11,21 +11,18 @@ import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
 import PageLoading from './PageLoading';
+import { useList } from '../providers/List';
 import { validateFields, handleCreateUpdateMutationError } from '../util';
 
 let Render = ({ children }) => children();
 
-class CreateItemModal extends Component {
-  constructor(props) {
-    super(props);
-    const { list, prefillData = {} } = props;
-    const item = list.getInitialItemData({ prefill: prefillData });
-    const validationErrors = {};
-    const validationWarnings = {};
+function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onCreate }) {
+  const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
+  const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
+  const [validationErrors, setValidationErrors] = useState({});
+  const [validationWarnings, setValidationWarnings] = useState({});
 
-    this.state = { item, validationErrors, validationWarnings };
-  }
-  onCreate = async event => {
+  const _onCreate = async event => {
     // prevent form submission
     event.preventDefault();
     // we have to stop propagation so that if this modal is inside another form
@@ -36,18 +33,10 @@ class CreateItemModal extends Component {
     // it's important to remember that react events
     // propagate through portals as if they aren't there
     event.stopPropagation();
-
-    const {
-      list: { fields },
-      createItem,
-      isLoading,
-    } = this.props;
     if (isLoading) return;
-    const { item, validationErrors, validationWarnings } = this.state;
+    if (countArrays(validationErrors)) return;
 
-    if (countArrays(validationErrors)) {
-      return;
-    }
+    const { fields } = list;
 
     const creatable = fields
       .filter(({ isPrimaryKey }) => !isPrimaryKey)
@@ -59,140 +48,133 @@ class CreateItemModal extends Component {
       const { errors, warnings } = await validateFields(creatable, item, data);
 
       if (countArrays(errors) + countArrays(warnings) > 0) {
-        this.setState(() => ({
-          validationErrors: errors,
-          validationWarnings: warnings,
-        }));
-
+        setValidationErrors(errors);
+        setValidationWarnings(warnings);
         return;
       }
     }
 
-    createItem({
-      variables: { data },
-    }).then(data => {
-      this.props.onCreate(data);
-      this.setState({ item: this.props.list.getInitialItemData({}) });
+    createItem({ variables: { data } }).then(data => {
+      setItem(list.getInitialItemData({}));
+      closeCreateItemModal();
+      if (onCreate) {
+        onCreate(data);
+      }
     });
   };
-  onClose = () => {
-    const { isLoading } = this.props;
+
+  const _onClose = () => {
     if (isLoading) return;
-    this.props.onClose();
+    closeCreateItemModal();
   };
-  onKeyDown = event => {
+
+  const _onKeyDown = event => {
     if (event.defaultPrevented) return;
     switch (event.key) {
       case 'Escape':
-        return this.onClose();
+        return onClose();
     }
   };
-  formComponent = props => <form autoComplete="off" onSubmit={this.onCreate} {...props} />;
-  render() {
-    const { isLoading, isOpen, list } = this.props;
-    const { item, validationErrors, validationWarnings } = this.state;
 
-    const hasWarnings = countArrays(validationWarnings);
-    const hasErrors = countArrays(validationErrors);
+  const formComponent = props => <form autoComplete="off" onSubmit={_onCreate} {...props} />;
 
-    const cypressId = 'create-item-modal-submit-button';
-
-    return (
-      <Drawer
-        closeOnBlanketClick
-        component={this.formComponent}
-        isOpen={isOpen}
-        onClose={this.onClose}
-        heading={`Create ${list.singular}`}
-        onKeyDown={this.onKeyDown}
-        slideInFrom="right"
-        footer={
-          <Fragment>
-            <LoadingButton
-              appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
-              id={cypressId}
-              isDisabled={hasErrors}
-              isLoading={isLoading}
-              onClick={this.onUpdate}
-              type="submit"
-            >
-              {hasWarnings && !hasErrors ? 'Ignore Warnings and Create' : 'Create'}
-            </LoadingButton>
-            <Button appearance="warning" variant="subtle" onClick={this.onClose}>
-              Cancel
-            </Button>
-          </Fragment>
-        }
+  const hasWarnings = countArrays(validationWarnings);
+  const hasErrors = countArrays(validationErrors);
+  const cypressId = 'create-item-modal-submit-button';
+  return (
+    <Drawer
+      closeOnBlanketClick
+      component={formComponent}
+      isOpen={isCreateItemModalOpen}
+      onClose={_onClose}
+      heading={`Create ${list.singular}`}
+      onKeyDown={_onKeyDown}
+      slideInFrom="right"
+      footer={
+        <Fragment>
+          <LoadingButton
+            appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
+            id={cypressId}
+            isDisabled={hasErrors}
+            isLoading={isLoading}
+            type="submit"
+          >
+            {hasWarnings && !hasErrors ? 'Ignore Warnings and Create' : 'Create'}
+          </LoadingButton>
+          <Button appearance="warning" variant="subtle" onClick={_onClose}>
+            Cancel
+          </Button>
+        </Fragment>
+      }
+    >
+      <div
+        css={{
+          marginBottom: gridSize,
+          marginTop: gridSize,
+        }}
       >
-        <div
-          css={{
-            marginBottom: gridSize,
-            marginTop: gridSize,
-          }}
-        >
-          <Suspense fallback={<PageLoading />}>
-            <AutocompleteCaptor />
-            <Render>
-              {() => {
-                const creatable = list.fields
-                  .filter(({ isPrimaryKey }) => !isPrimaryKey)
-                  .filter(({ maybeAccess }) => !!maybeAccess.create);
+        <Suspense fallback={<PageLoading />}>
+          <AutocompleteCaptor />
+          <Render>
+            {() => {
+              const creatable = list.fields
+                .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                .filter(({ maybeAccess }) => !!maybeAccess.create);
 
-                captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
-                return creatable.map((field, i) => (
-                  <Render key={field.path}>
-                    {() => {
-                      let [Field] = field.adminMeta.readViews([field.views.Field]);
-                      let onChange = useCallback(value => {
-                        this.setState(({ item }) => ({
-                          item: {
-                            ...item,
-                            [field.path]: value,
-                          },
-                          validationErrors: {},
-                          validationWarnings: {},
-                        }));
-                      }, []);
-                      return useMemo(
-                        () => (
-                          <Field
-                            autoFocus={!i}
-                            value={item[field.path]}
-                            savedValue={item[field.path]}
-                            field={field}
-                            /* TODO: Permission query results */
-                            errors={validationErrors[field.path] || []}
-                            warnings={validationWarnings[field.path] || []}
-                            CreateItemModal={CreateItemModalWithMutation}
-                            onChange={onChange}
-                            renderContext="dialog"
-                          />
-                        ),
-                        [
-                          i,
-                          item[field.path],
-                          field,
-                          onChange,
-                          validationErrors[field.path],
-                          validationWarnings[field.path],
-                        ]
-                      );
-                    }}
-                  </Render>
-                ));
-              }}
-            </Render>
-          </Suspense>
-        </div>
-      </Drawer>
-    );
-  }
+              captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
+              return creatable.map((field, i) => (
+                <Render key={field.path}>
+                  {() => {
+                    let [Field] = field.adminMeta.readViews([field.views.Field]);
+                    let onChange = useCallback(value => {
+                      setItem({
+                        ...item,
+                        [field.path]: value,
+                      });
+                      setValidationErrors({});
+                      setValidationWarnings({});
+                    }, []);
+                    return useMemo(
+                      () => (
+                        <Field
+                          autoFocus={!i}
+                          value={item[field.path]}
+                          savedValue={item[field.path]}
+                          field={field}
+                          /* TODO: Permission query results */
+                          errors={validationErrors[field.path] || []}
+                          warnings={validationWarnings[field.path] || []}
+                          CreateItemModal={createItemModalWithMutation}
+                          onChange={onChange}
+                          renderContext="dialog"
+                        />
+                      ),
+                      [
+                        i,
+                        item[field.path],
+                        field,
+                        onChange,
+                        validationErrors[field.path],
+                        validationWarnings[field.path],
+                      ]
+                    );
+                  }}
+                </Render>
+              ));
+            }}
+          </Render>
+        </Suspense>
+      </div>
+    </Drawer>
+  );
 }
 
-export default function CreateItemModalWithMutation(props) {
-  const { list } = props;
+export default function createItemModalWithMutation(props) {
+  const {
+    list: { createMutation },
+  } = useList();
   const { addToast } = useToasts();
-  const [createItem, { loading }] = useMutation(list.createMutation, {
+  const [createItem, { loading }] = useMutation(createMutation, {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });

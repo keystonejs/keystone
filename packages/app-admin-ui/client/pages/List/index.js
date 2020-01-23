@@ -3,6 +3,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, useRef, useState, Suspense } from 'react';
 import { useQuery } from '@apollo/react-hooks';
+import { useList } from '../../providers/List';
 
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
@@ -34,22 +35,11 @@ const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
 
-type Props = {
-  adminMeta: Object,
-  list: Object,
-  routeProps: Object,
-};
-type LayoutProps = Props & {
-  items: Array<Object>,
-  itemCount: number,
-  queryErrors: Array<Object>,
-};
-
-export function ListLayout(props: LayoutProps) {
-  const { adminMeta, items, itemCount, queryErrors, list, routeProps, query } = props;
+export function ListLayout(props) {
+  const { adminMeta, items, itemCount, queryErrors, routeProps, query } = props;
   const [showCreateModal, toggleCreateModal] = useState(false);
   const measureElementRef = useRef();
-
+  const { list, openCreateItemModal, closeCreateItemModal } = useList();
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
@@ -111,7 +101,6 @@ export function ListLayout(props: LayoutProps) {
   const cypressFiltersId = 'ks-list-active-filters';
 
   const Render = ({ children }) => children();
-
   return (
     <main>
       <div ref={measureElementRef} />
@@ -124,7 +113,7 @@ export function ListLayout(props: LayoutProps) {
               <IconButton
                 appearance="primary"
                 icon={PlusIcon}
-                onClick={openCreateModal}
+                onClick={openCreateItemModal}
                 id={cypressCreateId}
               >
                 Create
@@ -226,12 +215,7 @@ export function ListLayout(props: LayoutProps) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal
-        isOpen={showCreateModal}
-        list={list}
-        onClose={closeCreateModal}
-        onCreate={onCreate}
-      />
+      <CreateItemModal onClose={closeCreateItemModal} onCreate={onCreate} />
 
       <Container isFullWidth>
         <ListTable
