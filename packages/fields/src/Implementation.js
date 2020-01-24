@@ -4,12 +4,13 @@ import { parseFieldAccess } from '@keystonejs/access-control';
 class Field {
   constructor(
     path,
-    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
+    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, adminDoc, ...config },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
     this.schemaDoc = schemaDoc;
+    this.adminDoc = adminDoc;
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
@@ -179,6 +180,7 @@ class Field {
         read: !!schemaAccess.read,
         update: !!schemaAccess.update,
       },
+      adminDoc: this.adminDoc,
     });
   }
   extendAdminMeta(meta) {
