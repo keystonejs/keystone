@@ -1,5 +1,13 @@
 # @keystonejs/adapter-knex
 
+## 6.1.4
+
+### Patch Changes
+
+- [`c335a196`](https://github.com/keystonejs/keystone/commit/c335a19693a804d9ff4af9eb2825c666f851a597) [#2270](https://github.com/keystonejs/keystone/pull/2270) - Added an internal method `_createTables()` to factor out table creation.
+
+* [`5a99cc7a`](https://github.com/keystonejs/keystone/commit/5a99cc7a8523ad5ca83d3e369b604247196fb8f2) [#2262](https://github.com/keystonejs/keystone/pull/2262) - Internal code modifications, no functional changes.
+
 ## 6.1.3
 
 ### Patch Changes
