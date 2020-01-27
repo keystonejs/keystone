@@ -41,7 +41,7 @@ module.exports = class S3Adapter {
         originalFilename: filename,
         filename: this.getFilename({ id, originalFilename: filename }),
         mimetype,
-        encoding
+        encoding,
       };
       let { uploadParams } = this;
       if (typeof this.uploadParams === 'function') {
