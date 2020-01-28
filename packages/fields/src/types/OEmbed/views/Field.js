@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
@@ -62,6 +62,7 @@ export default class OEmbedField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput>
           <Input
             autoComplete="off"

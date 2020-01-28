@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { TextDayTimePicker } from '@arch-ui/day-picker';
 
 const DateTimeField = ({ autoFocus, field, onChange, value, errors }) => {
@@ -11,6 +11,7 @@ const DateTimeField = ({ autoFocus, field, onChange, value, errors }) => {
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
       <FieldInput>
         <TextDayTimePicker id={htmlID} date={value} onChange={onChange} autoFocus={autoFocus} />
       </FieldInput>
