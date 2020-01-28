@@ -1,5 +1,23 @@
 # @keystonejs/mongo-join-builder
 
+## 6.0.1
+
+### Patch Changes
+
+- [`797df461`](https://github.com/keystonejs/keystone/commit/797df46132c0e77c052994c05970ef1e06660848) [#2267](https://github.com/keystonejs/keystone/pull/2267) - Improved code internals. No functional changes.
+
+* [`078dcfeb`](https://github.com/keystonejs/keystone/commit/078dcfebbd017fb257f0c7fadc1a7469adbedc9c) [#2261](https://github.com/keystonejs/keystone/pull/2261) - Query generator now uses `tmpVar` rather than a generated variable name in lookup queries.
+
+## 6.0.0
+
+### Major Changes
+
+- [`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737) [#2251](https://github.com/keystonejs/keystone/pull/2251) - Removed the `mutationBuilder` function in favour of using `$project` operations in the main pipeline.
+
+### Patch Changes
+
+- [`7123e226`](https://github.com/keystonejs/keystone/commit/7123e226e13d3629b2ce7b6746c4292af9bf79e1) [#2247](https://github.com/keystonejs/keystone/pull/2247) - Simplified the generated queries for \_some, \_none and \_every queries.
+
 ## 5.0.3
 
 ### Patch Changes

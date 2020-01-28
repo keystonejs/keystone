@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-admin-ui",
   "description": "KeystoneJS Admin UI App.",
-  "version": "5.5.4",
+  "version": "5.6.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

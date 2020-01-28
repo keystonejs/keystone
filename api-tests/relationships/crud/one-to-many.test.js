@@ -76,24 +76,20 @@ const createReadData = async keystone => {
   });
   const { createLocations } = data;
   await Promise.all(
-    [
-      [0, 1, 2, 3, 4, 5], //  -> [A, A, B, B, C, C]
-      [0, 2, 4], //  -> [A, B, C]
-      [0, 1], //  -> [A, A]
-      [0, 2], //  -> [A, B]
-      [0, 4], //  -> [A, C]
-      [2, 3], //  -> [B, B]
-      [0], //  -> [A]
-      [2], //  -> [B]
-      [], //  -> []
-    ].map(async locationIdxs => {
+    Object.entries({
+      ABC: [0, 2, 4], //  -> [A, B, C]
+      AB: [1, 3], //  -> [A, B]
+      C: [5], //  -> [C]
+      '': [], //  -> []
+    }).map(async ([name, locationIdxs]) => {
       const ids = locationIdxs.map(i => ({ id: createLocations[i].id }));
       const { data } = await graphqlRequest({
         keystone,
-        query: `mutation create($locations: [LocationWhereUniqueInput]) { createCompany(data: {
+        query: `mutation create($locations: [LocationWhereUniqueInput], $name: String) { createCompany(data: {
+          name: $name
     locations: { connect: $locations }
   }) { id locations { name }}}`,
-        variables: { locations: ids },
+        variables: { locations: ids, name },
       });
       return data.createCompany;
     })
@@ -147,14 +143,34 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         describe('Read', () => {
           test(
+            'one',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createReadData(keystone);
+              await Promise.all(
+                [
+                  ['A', 5],
+                  ['B', 5],
+                  ['C', 4],
+                  ['D', 0],
+                ].map(async ([name, count]) => {
+                  const { data } = await graphqlRequest({
+                    keystone,
+                    query: `{ allLocations(where: { company: { name_contains: "${name}"}}) { id }}`,
+                  });
+                  expect(data.allLocations.length).toEqual(count);
+                })
+              );
+            })
+          );
+          test(
             '_some',
             runner(setupKeystone, async ({ keystone }) => {
               await createReadData(keystone);
               await Promise.all(
                 [
-                  ['A', 6],
-                  ['B', 5],
-                  ['C', 3],
+                  ['A', 2],
+                  ['B', 2],
+                  ['C', 2],
                   ['D', 0],
                 ].map(async ([name, count]) => {
                   const { data } = await graphqlRequest({
@@ -172,10 +188,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               await createReadData(keystone);
               await Promise.all(
                 [
-                  ['A', 3],
-                  ['B', 4],
-                  ['C', 6],
-                  ['D', 9],
+                  ['A', 2],
+                  ['B', 2],
+                  ['C', 2],
+                  ['D', 4],
                 ].map(async ([name, count]) => {
                   const { data } = await graphqlRequest({
                     keystone,
@@ -192,9 +208,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               await createReadData(keystone);
               await Promise.all(
                 [
-                  ['A', 3],
-                  ['B', 3],
-                  ['C', 1],
+                  ['A', 1],
+                  ['B', 1],
+                  ['C', 2],
                   ['D', 1],
                 ].map(async ([name, count]) => {
                   const { data } = await graphqlRequest({

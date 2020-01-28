@@ -1,5 +1,5 @@
 const cuid = require('cuid');
-const { getType, flatten, objMerge } = require('@keystonejs/utils');
+const { getType, flatten } = require('@keystonejs/utils');
 
 const { simpleTokenizer, relationshipTokenizer, modifierTokenizer } = require('./tokenizers');
 
@@ -13,7 +13,7 @@ const flattenQueries = (parsedQueries, joinOp) => ({
     joinOp
   ),
   postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline || [])).filter(pipe => pipe),
-  relationships: objMerge(parsedQueries.map(q => q.relationships || {})),
+  relationships: flatten(parsedQueries.map(q => q.relationships || [])),
 });
 
 function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) {
@@ -44,21 +44,17 @@ function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], incl
       }
     } else if (getType(value) === 'Object') {
       // A relationship query component
-      const uid = getUID(key);
       const { matchTerm, relationshipInfo } = relationshipTokenizer(
         listAdapter,
-        query,
         key,
         path,
-        uid
+        getUID(key)
       );
       return {
         // matchTerm is our filtering expression. This determines if the
         // parent item is included in the final list
         matchTerm,
-        relationships: {
-          [uid]: { relationshipInfo, ...queryParser({ listAdapter, getUID }, value, path) },
-        },
+        relationships: [{ relationshipInfo, ...queryParser({ listAdapter, getUID }, value, path) }],
       };
     } else {
       // A simple field query component
@@ -66,7 +62,7 @@ function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], incl
     }
   });
   const flatQueries = flattenQueries(parsedQueries, '$and');
-  const includeFields = Object.values(flatQueries.relationships).map(({ field }) => field);
+  const includeFields = flatQueries.relationships.map(({ field }) => field);
   if (include) includeFields.push(include);
 
   return {

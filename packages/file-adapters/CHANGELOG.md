@@ -1,5 +1,13 @@
 # @keystonejs/file-adapters
 
+## 5.3.2
+
+### Patch Changes
+
+- [`9677dc17`](https://github.com/keystonejs/keystone/commit/9677dc177b7b747397732700cab42d98e89f03f5) [#2249](https://github.com/keystonejs/keystone/pull/2249) - Replaced s3.putObject with s3.upload
+
+  Resolves https://github.com/keystonejs/keystone/issues/2165
+
 ## 5.3.1
 
 ### Patch Changes

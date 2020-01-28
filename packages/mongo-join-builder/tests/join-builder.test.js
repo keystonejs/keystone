@@ -1,4 +1,4 @@
-const { pipelineBuilder, mutationBuilder } = require('../lib/join-builder');
+const { pipelineBuilder } = require('../lib/join-builder');
 
 describe('join builder', () => {
   test('correctly generates joins for simple queries', () => {
@@ -14,7 +14,8 @@ describe('join builder', () => {
     const pipeline = pipelineBuilder({
       matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       postJoinPipeline: [],
-      relationships: {},
+      excludeFields: [],
+      relationships: [],
     });
 
     expect(pipeline).toMatchObject([
@@ -37,46 +38,42 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
+      relationships: [
+        {
           matchTerm: { name: { $eq: 'Alice' } },
           relationshipInfo: {
-            from: 'user-collection',
+            from: 'users',
             field: 'author',
             many: false,
+            uniqueField: 'abc123_author',
           },
+          excludeFields: [],
           postJoinPipeline: [],
-          relationships: {},
+          relationships: [],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { title: { $eq: 'foobar' } },
           { views: { $eq: 23 } },
-          { abc123_author_every: { $eq: true } },
+          { $expr: { $eq: [{ $size: '$abc123_author' }, 1] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'user-collection',
+          from: 'users',
           as: 'abc123_author',
-          let: { abc123_author_id: '$author' },
+          let: { tmpVar: '$author' },
           pipeline: [
-            { $match: { $expr: { $eq: ['$_id', '$$abc123_author_id'] } } },
+            { $match: { $expr: { $eq: ['$_id', '$$tmpVar'] } } },
             { $match: { name: { $eq: 'Alice' } } },
             { $addFields: { id: '$_id' } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          abc123_author_every: { $eq: [{ $size: '$abc123_author' }, 1] },
-          abc123_author_some: { $gt: [{ $size: '$abc123_author' }, 0] },
-          abc123_author_none: { $eq: [{ $size: '$abc123_author' }, 0] },
         },
       },
       {
@@ -84,11 +81,12 @@ describe('join builder', () => {
           $and: [
             { title: { $eq: 'foobar' } },
             { views: { $eq: 23 } },
-            { abc123_author_every: { $eq: true } },
+            { $expr: { $eq: [{ $size: '$abc123_author' }, 1] } },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_author: 0 } },
     ]);
   });
 
@@ -104,46 +102,40 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
+      relationships: [
+        {
           relationshipInfo: {
-            from: 'posts-collection',
+            from: 'posts',
             field: 'posts',
             many: true,
+            uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [],
-          relationships: {},
+          excludeFields: [],
+          relationships: [],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { abc123_posts_some: { $eq: true } },
+          { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             { $addFields: { id: '$_id' } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          abc123_posts_every: {
-            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
       {
@@ -151,11 +143,12 @@ describe('join builder', () => {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { abc123_posts_some: { $eq: true } },
+            { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_posts: 0 } },
     ]);
   });
 
@@ -171,47 +164,41 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
+      relationships: [
+        {
           relationshipInfo: {
-            from: 'posts-collection',
+            from: 'posts',
             field: 'posts',
             many: true,
+            uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [{ $orderBy: 'title' }],
-          relationships: {},
+          relationships: [],
+          excludeFields: [],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { abc123_posts_some: { $eq: true } },
+          { $expr: { $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [{ $limit: 10 }],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             { $addFields: { id: '$_id' } },
             { $orderBy: 'title' },
           ],
-        },
-      },
-      {
-        $addFields: {
-          abc123_posts_every: {
-            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
       {
@@ -219,11 +206,14 @@ describe('join builder', () => {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { abc123_posts_some: { $eq: true } },
+            {
+              $expr: { $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }] },
+            },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_posts: 0 } },
       { $limit: 10 },
     ]);
   });
@@ -248,120 +238,127 @@ describe('join builder', () => {
 
     */
     const pipeline = pipelineBuilder({
-      relationships: {
-        abc123: {
-          matchTerm: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
+      relationships: [
+        {
+          matchTerm: {
+            $and: [{ title: { $eq: 'hello' } }, { $expr: { $gt: [{ $size: '$def456_tags' }, 0] } }],
+          },
           relationshipInfo: {
-            from: 'posts-collection',
+            from: 'posts',
             field: 'posts',
             many: true,
+            uniqueField: 'abc123_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            def456: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: {
-                $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
+                $and: [
+                  { name: { $eq: 'React' } },
+                  {
+                    $expr: {
+                      $eq: [{ $size: '$xyz890_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+                    },
+                  },
+                ],
               },
               relationshipInfo: {
-                from: 'tags-collection',
+                from: 'tags',
                 field: 'tags',
                 many: true,
+                uniqueField: 'def456_tags',
               },
               postJoinPipeline: [],
-              relationships: {
-                xyz890: {
+              excludeFields: [],
+              relationships: [
+                {
                   matchTerm: { published: { $eq: true } },
                   relationshipInfo: {
-                    from: 'posts-collection',
+                    from: 'posts',
                     field: 'posts',
                     many: true,
+                    uniqueField: 'xyz890_posts',
                   },
                   postJoinPipeline: [],
-                  relationships: {},
+                  excludeFields: [],
+                  relationships: [],
                 },
-              },
+              ],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { abc123_posts_some: { $eq: true } },
+          { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'abc123_posts',
-          let: { abc123_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
-                from: 'tags-collection',
+                from: 'tags',
                 as: 'def456_tags',
-                let: { def456_tags_ids: { $ifNull: ['$tags', []] } },
+                let: { tmpVar: { $ifNull: ['$tags', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$def456_tags_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   {
                     $lookup: {
-                      from: 'posts-collection',
+                      from: 'posts',
                       as: 'xyz890_posts',
-                      let: { xyz890_posts_ids: { $ifNull: ['$posts', []] } },
+                      let: { tmpVar: { $ifNull: ['$posts', []] } },
                       pipeline: [
-                        { $match: { $expr: { $in: ['$_id', '$$xyz890_posts_ids'] } } },
+                        { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                         { $match: { published: { $eq: true } } },
                         { $addFields: { id: '$_id' } },
                       ],
                     },
                   },
-                  {
-                    $addFields: {
-                      xyz890_posts_every: {
-                        $eq: [{ $size: '$xyz890_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-                      },
-                      xyz890_posts_none: { $eq: [{ $size: '$xyz890_posts' }, 0] },
-                      xyz890_posts_some: { $gt: [{ $size: '$xyz890_posts' }, 0] },
-                    },
-                  },
+
                   {
                     $match: {
-                      $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
+                      $and: [
+                        { name: { $eq: 'React' } },
+                        {
+                          $expr: {
+                            $eq: [
+                              { $size: '$xyz890_posts' },
+                              { $size: { $ifNull: ['$posts', []] } },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   },
                   { $addFields: { id: '$_id' } },
+                  { $project: { xyz890_posts: 0 } },
                 ],
               },
             },
             {
-              $addFields: {
-                def456_tags_every: {
-                  $eq: [{ $size: '$def456_tags' }, { $size: { $ifNull: ['$tags', []] } }],
-                },
-                def456_tags_none: { $eq: [{ $size: '$def456_tags' }, 0] },
-                def456_tags_some: { $gt: [{ $size: '$def456_tags' }, 0] },
+              $match: {
+                $and: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$def456_tags' }, 0] } },
+                ],
               },
             },
-            {
-              $match: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
-            },
             { $addFields: { id: '$_id' } },
+            { $project: { def456_tags: 0 } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          abc123_posts_every: {
-            $eq: [{ $size: '$abc123_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
       {
@@ -369,11 +366,12 @@ describe('join builder', () => {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { abc123_posts_some: { $eq: true } },
+            { $expr: { $gt: [{ $size: '$abc123_posts' }, 0] } },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { abc123_posts: 0 } },
     ]);
   });
 
@@ -395,86 +393,84 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
+      relationships: [
+        {
           matchTerm: {
-            $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+            $and: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
           },
           relationshipInfo: {
-            from: 'posts-collection',
+            from: 'posts',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
-                from: 'labels-collection',
+                from: 'labels',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          {
+            $expr: {
+              $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+            },
+          },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
-                from: 'labels-collection',
+                from: 'labels',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $and: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
       },
       {
@@ -482,11 +478,16 @@ describe('join builder', () => {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: {
+                $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
   });
 
@@ -508,86 +509,84 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
-          matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+      relationships: [
+        {
+          matchTerm: {
+            $or: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
+          },
           relationshipInfo: {
-            from: 'posts-collection',
+            from: 'posts',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
-                from: 'labels-collection',
+                from: 'labels',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $or: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          {
+            $expr: {
+              $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+            },
+          },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
-                from: 'labels-collection',
+                from: 'labels',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
-                  {
-                    $match: { name: { $eq: 'foo' } },
-                  },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
+                  { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $or: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
       },
       {
@@ -595,11 +594,16 @@ describe('join builder', () => {
           $or: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: {
+                $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
   });
 
@@ -621,87 +625,85 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
-          matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+      relationships: [
+        {
+          matchTerm: {
+            $or: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
+          },
 
           relationshipInfo: {
-            from: 'posts-collection',
+            from: 'posts',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
-                from: 'labels-collection',
+                from: 'labels',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $and: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          {
+            $expr: {
+              $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+            },
+          },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
-                from: 'labels-collection',
+                from: 'labels',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
-                  {
-                    $match: { name: { $eq: 'foo' } },
-                  },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
+                  { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $or: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
       },
       {
@@ -709,11 +711,16 @@ describe('join builder', () => {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: {
+                $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+              },
+            },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
   });
 
@@ -735,86 +742,80 @@ describe('join builder', () => {
     */
 
     const pipeline = pipelineBuilder({
-      relationships: {
-        zip567: {
+      relationships: [
+        {
           matchTerm: {
-            $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+            $and: [
+              { title: { $eq: 'hello' } },
+              { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+            ],
           },
           relationshipInfo: {
-            from: 'posts-collection',
+            from: 'posts',
             field: 'posts',
             many: true,
+            uniqueField: 'zip567_posts',
           },
           postJoinPipeline: [],
-          relationships: {
-            quux987: {
+          excludeFields: [],
+          relationships: [
+            {
               matchTerm: { name: { $eq: 'foo' } },
               relationshipInfo: {
-                from: 'labels-collection',
+                from: 'labels',
                 field: 'labels',
                 many: true,
+                uniqueField: 'quux987_labels',
               },
               postJoinPipeline: [],
-              relationships: {},
+              excludeFields: [],
+              relationships: [],
             },
-          },
+          ],
         },
-      },
+      ],
       matchTerm: {
         $or: [
           { name: { $eq: 'foobar' } },
           { age: { $eq: 23 } },
-          { zip567_posts_every: { $eq: true } },
+          { $expr: { $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }] } },
         ],
       },
+      excludeFields: [],
       postJoinPipeline: [],
     });
 
     expect(pipeline).toMatchObject([
       {
         $lookup: {
-          from: 'posts-collection',
+          from: 'posts',
           as: 'zip567_posts',
-          let: { zip567_posts_ids: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: { $ifNull: ['$posts', []] } },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } } },
+            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             {
               $lookup: {
-                from: 'labels-collection',
+                from: 'labels',
                 as: 'quux987_labels',
-                let: { quux987_labels_ids: { $ifNull: ['$labels', []] } },
+                let: { tmpVar: { $ifNull: ['$labels', []] } },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } } },
+                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
                   { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
               },
             },
             {
-              $addFields: {
-                quux987_labels_every: {
-                  $eq: [{ $size: '$quux987_labels' }, { $size: { $ifNull: ['$labels', []] } }],
-                },
-                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
-              },
-            },
-            {
               $match: {
-                $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                $and: [
+                  { title: { $eq: 'hello' } },
+                  { $expr: { $gt: [{ $size: '$quux987_labels' }, 0] } },
+                ],
               },
             },
             { $addFields: { id: '$_id' } },
+            { $project: { quux987_labels: 0 } },
           ],
-        },
-      },
-      {
-        $addFields: {
-          zip567_posts_every: {
-            $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }],
-          },
-          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
       },
       {
@@ -822,81 +823,14 @@ describe('join builder', () => {
           $or: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
+            {
+              $expr: { $eq: [{ $size: '$zip567_posts' }, { $size: { $ifNull: ['$posts', []] } }] },
+            },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
+      { $project: { zip567_posts: 0 } },
     ]);
-  });
-
-  test('executes relationship mutators with correct parameters', () => {
-    // TODO - check it's called with these params:
-    /*
-     * From this query:
-
-      {
-        age: 23,
-        posts_every: { title: 'hello' },
-      }
-    */
-
-    const mutationResult = {};
-
-    const postQueryMutations = mutationBuilder({
-      zip567: {
-        matchTerm: { title: { $eq: 'hello' } },
-
-        relationshipInfo: {
-          from: 'posts-collection',
-          field: 'posts',
-          many: true,
-        },
-        postJoinPipeline: [],
-        relationships: {},
-      },
-    });
-
-    /*
-      {
-        age: 23,
-        posts_every: { title: 'hello' },
-      }
-    */
-    const mockResult1 = {
-      age: 23,
-      name: 'foobar',
-      zip567_posts: [
-        {
-          title: 'hello',
-          views: 73,
-        },
-        {
-          title: 'hello',
-          views: 57,
-        },
-      ],
-    };
-
-    const mockResult2 = {
-      age: 23,
-      name: 'quux',
-      zip567_posts: [
-        {
-          title: 'hello',
-          views: 123,
-        },
-        {
-          title: 'hello',
-          views: 1,
-        },
-      ],
-    };
-
-    const mockQueryResult = [mockResult1, mockResult2];
-
-    const mutatedResult = postQueryMutations(mockQueryResult);
-
-    expect(mutatedResult).toMatchObject([mutationResult, mutationResult]);
   });
 });
