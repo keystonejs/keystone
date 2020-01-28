@@ -459,7 +459,11 @@ class KnexListAdapter extends BaseListAdapter {
 }
 
 class QueryBuilder {
-  constructor(listAdapter, { where = {}, first, skip, orderBy }, { meta = false, from = {} }) {
+  constructor(
+    listAdapter,
+    { where = {}, first, skip, orderBy, search },
+    { meta = false, from = {} }
+  ) {
     this._tableAliases = {};
     this._nextBaseTableAliasId = 0;
     const baseTableAlias = this._getNextBaseTableAlias();
@@ -506,6 +510,13 @@ class QueryBuilder {
     }
 
     this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias);
+
+    // TODO: Implement configurable search fields for lists
+    const searchField = listAdapter.fieldAdaptersByPath['name'];
+    if (search !== undefined && searchField && searchField.fieldName === 'Text') {
+      this._query.whereRaw('true');
+      this._query.andWhere(`${baseTableAlias}.name`, `LIKE`, `%${search}%`);
+    }
 
     // Add query modifiers as required
     if (!meta) {
