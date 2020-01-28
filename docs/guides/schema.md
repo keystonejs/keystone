@@ -457,7 +457,7 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist: { type: Relationship, ref: 'Todo', many: true },
+    todoList: { type: Relationship, ref: 'Todo', many: true },
   },
 });
 ```
@@ -468,7 +468,7 @@ the requested data:
 ```graphql
 query {
   User(where: { id: "<userId>" }) {
-    todolist {
+    todoList {
       task
     }
   }
@@ -504,7 +504,7 @@ IDs:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
-| `id` | `name` | `email`          | `todolist` |
+| `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1, 2]     |
 | 2    | Jess   | jess@example.com | [3, 4, 5]  |
@@ -535,22 +535,22 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist: { type: Relationship, ref: 'Todo', many: true },
-  },
+    todoList { type: Relationship, ref: 'Todo', many: true },
+  }
 });
 ```
 
 Here we have two relationships:
 
 - A _to-single_ `createdBy` field on the `Todo` list, and
-- A _to-many_ `todolist` field on the `User` list.
+- A _to-many_ `todoList` field on the `User` list.
 
 Now it's possible to query in both directions:
 
 ```graphql
 query {
   User(where: { id: "<userId>" }) {
-    todolist {
+    todoList {
       task
     }
   }
@@ -595,7 +595,7 @@ The database would look like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
-| `id` | `name` | `email`          | `todolist` |
+| `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1, 2]     |
 | 2    | Jess   | jess@example.com | [3, 4, 5]  |
@@ -625,8 +625,8 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist: { type: Relationship, ref: 'Todo', many: true },
-  },
+    todoList { type: Relationship, ref: 'Todo', many: true },
+  }
 });
 ```
 
@@ -660,21 +660,21 @@ If this was the first `Todo` item created, the database would now look like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
-| `id` | `name` | `email`          | `todolist` |
+| `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | \[]        |
 
 </div>
 
 Notice the `Todo` item's `createdBy` field is set, but the `User` item's
-`todolist` does _not_ contain the ID of the newly created `Todo`!
+`todoList` does _not_ contain the ID of the newly created `Todo`!
 
 If we were to query the data now, we would get:
 
 ```graphql
 query {
   User(where: { id: "1" }) {
-    todolist {
+    todoList {
       id
       task
     }
@@ -709,7 +709,7 @@ keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     // The `ref` option now includes which field to update
-    createdBy: { type: Relationship, ref: 'User.todolist' },
+    createdBy: { type: Relationship, ref: 'User.todoList' },
   },
 });
 
@@ -717,7 +717,7 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist: { type: Relationship, ref: 'Todo', many: true },
+    todoList: { type: Relationship, ref: 'Todo', many: true },
   },
 });
 ```
@@ -752,7 +752,7 @@ Our database would look like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
-| `id` | `name` | `email`          | `todolist` |
+| `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1]        |
 
@@ -761,7 +761,7 @@ Our database would look like:
 ```graphql
 query {
   User(where: { id: "1" }) {
-    todolist {
+    todoList {
       id
       task
     }
@@ -794,16 +794,16 @@ keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     // The `ref` option now includes which field to update
-    createdBy: { type: Relationship, ref: 'User.todolist' },
-  },
+    createdBy: { type: Relationship, ref: 'User.todoList' },
+  }
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    todolist: { type: Relationship, ref: 'Todo.createdBy', many: true },
-  },
+    todoList { type: Relationship, ref: 'Todo.createdBy', many: true },
+  }
 });
 ```
 
@@ -816,7 +816,7 @@ mutation {
   createUser(data: {
     name: 'Tici',
     email: 'tici@example.com',
-    todolist: { create: [{ task: 'Learn Node' }] },
+    todoList: { create: [{ task: 'Learn Node' }] },
   }) {
     id
   }
@@ -825,20 +825,16 @@ mutation {
 
 The data would finally look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-</div>
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
-| `id` | `name` | `email`          | `todolist` |
+| `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1]        |
 
-</div>

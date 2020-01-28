@@ -5,7 +5,7 @@ import { Component, Fragment, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { PlusIcon, PersonIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
@@ -192,6 +192,7 @@ export default class RelationshipField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput>
           <div css={{ flex: 1 }}>
             <RelationshipSelect
