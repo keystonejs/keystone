@@ -6,7 +6,7 @@ import { Component } from 'react';
 import { colors, gridSize } from '@arch-ui/theme';
 import { ShieldIcon } from '@arch-ui/icons';
 
-import { FieldContainer } from '@arch-ui/fields';
+import { FieldContainer, FieldDescription } from '@arch-ui/fields';
 import PrettyData from '../prettyData';
 
 export const FieldLabel = props => {
@@ -49,6 +49,7 @@ export default class VirtualField extends Component {
     return (
       <FieldContainer>
         <FieldLabel field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <PrettyData data={canRead ? value : undefined} />
       </FieldContainer>
     );
