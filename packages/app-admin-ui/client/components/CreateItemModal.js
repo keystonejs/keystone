@@ -141,6 +141,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
                 <Render key={field.path}>
                   {() => {
                     let [Field] = field.adminMeta.readViews([field.views.Field]);
+                    // eslint-disable-next-line react-hooks/rules-of-hooks
                     let onChange = useCallback(value => {
                       setItem({
                         ...item,
@@ -149,6 +150,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
                       setValidationErrors({});
                       setValidationWarnings({});
                     }, []);
+                    // eslint-disable-next-line react-hooks/rules-of-hooks
                     return useMemo(
                       () => (
                         <Field
@@ -159,7 +161,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
                           /* TODO: Permission query results */
                           errors={validationErrors[field.path] || []}
                           warnings={validationWarnings[field.path] || []}
-                          CreateItemModal={createItemModalWithMutation}
+                          CreateItemModal={CreateItemModalWithMutation}
                           onChange={onChange}
                           renderContext="dialog"
                         />
@@ -184,7 +186,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
   );
 }
 
-export default function createItemModalWithMutation(props) {
+export default function CreateItemModalWithMutation(props) {
   const {
     list: { createMutation },
   } = useList();
