@@ -45,8 +45,8 @@ app.post('/admin/signin', async (req, res) => {
   const password = req.body.password;
 
   const result = await this.authStrategy.validate({
-    identity: username,
-    secret: password,
+    username,
+    password,
   });
 
   if (result.success) {

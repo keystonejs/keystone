@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/core';
 import { Component, createRef } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { FlexGroup } from '@arch-ui/layout';
@@ -52,6 +52,7 @@ export default class PasswordField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput>
           {isEditing ? (
             <FlexGroup growIndexes={[0, 1]}>

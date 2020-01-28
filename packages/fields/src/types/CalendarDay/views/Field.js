@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { TextDayPicker } from '@arch-ui/day-picker';
 import { Alert } from '@arch-ui/alert';
 
@@ -12,6 +12,7 @@ const CalendarDayField = ({ autoFocus, field, value, errors, onChange }) => {
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
       <FieldInput>
         <TextDayPicker
           id={htmlID}
