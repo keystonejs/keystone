@@ -1,4 +1,4 @@
-const { queryParser, pipelineBuilder, mutationBuilder } = require('../');
+const { queryParser, pipelineBuilder } = require('../');
 const { postsAdapter, listAdapter } = require('./utils');
 
 const { MongoClient } = require('mongodb');
@@ -8,9 +8,8 @@ const mongoJoinBuilder = parserOptions => {
   return async (query, aggregate) => {
     const queryTree = queryParser(parserOptions, query);
     const pipeline = pipelineBuilder(queryTree);
-    const postQueryMutations = mutationBuilder(queryTree.relationships);
     // Run the query against the given database and collection
-    return await aggregate(pipeline).then(postQueryMutations);
+    return await aggregate(pipeline);
   };
 };
 
@@ -70,51 +69,20 @@ describe('Testing against real data', () => {
 
     const collection = mongoDb.collection('users');
     await collection.insertMany([
-      {
-        name: 'Jess',
-        age: 23,
-        address: '123 nowhere',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'Alice',
-        age: 45,
-        address: 'Ramsay Street',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
-      {
-        name: 'foobar',
-        age: 89,
-        address: '456 somewhere',
-      },
+      { name: 'Jess', age: 23, address: '123 nowhere' },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'Alice', age: 45, address: 'Ramsay Street' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
+      { name: 'foobar', age: 89, address: '456 somewhere' },
     ]);
 
-    const query = {
-      name: 'foobar',
-      age: 23,
-    };
+    const query = { name: 'foobar', age: 23 };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
     ]);
   });
 
@@ -123,50 +91,20 @@ describe('Testing against real data', () => {
 
     const collection = mongoDb.collection('users');
     await collection.insertMany([
-      {
-        name: 'Jess',
-        age: 23,
-        address: '123 nowhere',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'Alice',
-        age: 45,
-        address: 'Ramsay Street',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
-      {
-        name: 'foobar',
-        age: 89,
-        address: '456 somewhere',
-      },
+      { name: 'Jess', age: 23, address: '123 nowhere' },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'Alice', age: 45, address: 'Ramsay Street' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
+      { name: 'foobar', age: 89, address: '456 somewhere' },
     ]);
 
-    const query = {
-      AND: [{ name: 'foobar' }, { age: 23 }],
-    };
+    const query = { AND: [{ name: 'foobar' }, { age: 23 }] };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
     ]);
   });
 
@@ -177,54 +115,23 @@ describe('Testing against real data', () => {
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-      },
+      { name: 'Jess', type: 'author' },
+      { name: 'Sam', type: 'editor' },
     ]);
 
     await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-        author: insertedIds[0],
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-        author: insertedIds[1],
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-        author: insertedIds[0],
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-        author: insertedIds[1],
-      },
+      { title: 'Hello world', status: 'published', author: insertedIds[0] },
+      { title: 'Testing', status: 'published', author: insertedIds[1] },
+      { title: 'An awesome post', status: 'draft', author: insertedIds[0] },
+      { title: 'Another Thing', status: 'published', author: insertedIds[1] },
     ]);
 
-    const query = {
-      status: 'published',
-      author: {
-        name: 'Jess',
-      },
-    };
+    const query = { status: 'published', author: { name: 'Jess' } };
 
     const result = await builder(query, getAggregate(mongoDb, 'posts'));
 
     expect(result).toMatchObject([
-      {
-        title: 'Hello world',
-        status: 'published',
-        author: insertedIds[0],
-      },
+      { title: 'Hello world', status: 'published', author: insertedIds[0] },
     ]);
   });
 
@@ -235,59 +142,25 @@ describe('Testing against real data', () => {
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
-    const query = {
-      type: 'author',
-    };
+    const query = { type: 'author' };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
@@ -298,63 +171,28 @@ describe('Testing against real data', () => {
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'author',
-        posts: [insertedIds[3]],
-      },
-      {
-        name: 'Alex',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'author', posts: [insertedIds[3]] },
+      { name: 'Alex', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
     const query = {
       type: 'author',
-      posts_every: {
-        status: 'published',
-        $sort: 'title_ASC',
-      },
+      posts_every: { status: 'published', $sort: 'title_ASC' },
       $first: 1,
     };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
@@ -365,57 +203,24 @@ describe('Testing against real data', () => {
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
-    const query = {
-      type: 'author',
-      posts_every: {
-        status: 'published',
-      },
-    };
+    const query = { type: 'author', posts_every: { status: 'published' } };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
@@ -426,61 +231,27 @@ describe('Testing against real data', () => {
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-        approved: true,
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-        approved: true,
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-        approved: true,
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-        approved: true,
-      },
+      { title: 'Hello world', status: 'published', approved: true },
+      { title: 'Testing', status: 'published', approved: true },
+      { title: 'An awesome post', status: 'draft', approved: true },
+      { title: 'Another Thing', status: 'published', approved: true },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
     const query = {
       type: 'author',
-      posts_every: {
-        AND: [{ approved: true }, { status: 'published' }],
-      },
+      posts_every: { AND: [{ approved: true }, { status: 'published' }] },
     };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
@@ -491,61 +262,24 @@ describe('Testing against real data', () => {
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
-    const query = {
-      AND: [
-        { type: 'author' },
-        {
-          posts_every: {
-            status: 'published',
-          },
-        },
-      ],
-    };
+    const query = { AND: [{ type: 'author' }, { posts_every: { status: 'published' } }] };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 });

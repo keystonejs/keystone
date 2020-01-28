@@ -109,13 +109,11 @@ db.orders.aggregate([
     $lookup: {
       from: 'items',
       as: 'abc123_items',
-      let: {
-        abc123_items_items: '$items',
-      },
+      let: { tmpVar: '$items' },
       pipeline: [
         {
           $match: {
-            $and: [{ name: { $regex: /a/ } }, { $expr: { $in: ['$_id', '$$abc123_items_items'] } }],
+            $and: [{ name: { $regex: /a/ } }, { $expr: { $in: ['$_id', '$$tmpVar'] } }],
           },
         },
         {

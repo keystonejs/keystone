@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/auth-password",
   "description": "Provides a basic password authentication strategy.",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

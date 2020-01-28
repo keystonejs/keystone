@@ -242,10 +242,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
           const quietUser = await create('User', { company: adsCompany.id, posts: [] });
           await create('User', { company: otherCompany.id, posts: [content.id] });
-          await create('User', {
-            company: otherCompany.id,
-            posts: [spam1.id],
-          });
+          await create('User', { company: otherCompany.id, posts: [spam1.id] });
 
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all
