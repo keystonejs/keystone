@@ -99,7 +99,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       [createListsLR, 'Left -> Right'],
       [createListsRL, 'Right -> Left'],
     ].forEach(([createLists, order]) => {
-      describe(`One-to-one relationships - ${order}`, () => {
+      describe(`One-to-many relationships - ${order}`, () => {
         function setupKeystone(adapterName) {
           return setupServer({
             adapterName,

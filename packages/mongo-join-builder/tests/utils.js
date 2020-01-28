@@ -2,7 +2,7 @@ const findFieldAdapterForQuerySegment = ({ fieldAdapters }) => segment =>
   fieldAdapters.find(({ path }) => path === segment || path === segment.split('_')[0]);
 
 const tagsAdapter = {
-  key: 'tags',
+  key: 'Tag',
   model: { collection: { name: 'tags' } },
   fieldAdapters: [
     {
@@ -14,7 +14,7 @@ const tagsAdapter = {
 };
 
 const postsAdapter = {
-  key: 'posts',
+  key: 'Post',
   model: { collection: { name: 'posts' } },
   fieldAdapters: [
     {
@@ -36,7 +36,7 @@ const postsAdapter = {
 };
 
 const listAdapter = {
-  key: 'users',
+  key: 'User',
   model: { collection: { name: 'users' } },
   fieldAdapters: [
     {

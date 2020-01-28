@@ -1,5 +1,11 @@
 # @keystonejs/auth-password
 
+## 5.0.2
+
+### Patch Changes
+
+- [`2ed5404c`](https://github.com/keystonejs/keystone/commit/2ed5404cafd11faeb7a06bd0ef4c65d62a9e27b0) [#2280](https://github.com/keystonejs/keystone/pull/2280) - Refactor code internals to make code paths clearer.
+
 ## 5.0.1
 
 ### Patch Changes
