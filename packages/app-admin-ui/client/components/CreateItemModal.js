@@ -37,7 +37,6 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
   const creatable = fields
     .filter(({ isPrimaryKey }) => !isPrimaryKey)
     .filter(({ maybeAccess }) => !!maybeAccess.create);
-  const data = arrayToObject(creatable, 'path', field => field.serialize(item));
 
   const _onCreate = useEventCallback(async event => {
     // prevent form submission
@@ -50,6 +49,8 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // it's important to remember that react events
     // propagate through portals as if they aren't there
     event.stopPropagation();
+    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
+
     if (isLoading) return;
     if (countArrays(validationErrors)) return;
     if (!countArrays(validationWarnings)) {
@@ -75,6 +76,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     if (isLoading) return;
     closeCreateItemModal();
     setItem(list.getInitialItemData({}));
+    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
     if (onClose) {
       onClose(data);
     }
@@ -137,16 +139,17 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
                 .filter(({ maybeAccess }) => !!maybeAccess.create);
 
               captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
+
               return creatable.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
                     let [Field] = field.adminMeta.readViews([field.views.Field]);
                     // eslint-disable-next-line react-hooks/rules-of-hooks
                     let onChange = useCallback(value => {
-                      setItem({
+                      setItem(item => ({
                         ...item,
                         [field.path]: value,
-                      });
+                      }));
                       setValidationErrors({});
                       setValidationWarnings({});
                     }, []);
