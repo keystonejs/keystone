@@ -36,13 +36,12 @@ because the CLI arguments were not passed to the `create-keystone-app` script.
 
 ### Arguments
 
-| Argument     | Type      | Description                                                                                                                  |
-| :----------- | :-------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| `--name`     | `String`  | The Keystone app name visible in the Admin UI and page titles.                                                              |
-| `--template` | `String`  | One of the existing app templates (folder name). For example: `starter`, `todo`, etc.                                       |
-| `--adapter`  | `String`  | One of the adapters listed in the app template. Usually one of: `Mongoose`, `Knex`.                                         |
+| Argument     | Type      | Description                                                                                                                     |
+| :----------- | :-------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| `--name`     | `String`  | The Keystone app name visible in the Admin UI and page titles.                                                                  |
+| `--template` | `String`  | One of the existing app templates (folder name). For example: `starter`, `todo`, etc.                                           |
+| `--adapter`  | `String`  | One of the adapters listed in the app template. Usually one of: `Mongoose`, `Knex`.                                             |
 | `--dry-run`  | `Boolean` | Will go through the app generation process validating the user inputs or CLI arguments but in the end no app will be generated. |
-
 
 ## Run the App
 

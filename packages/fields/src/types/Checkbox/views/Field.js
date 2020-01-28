@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
 
@@ -19,6 +19,7 @@ export default class TextField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput css={{ height: 35 }}>
           <CheckboxPrimitive
             autoFocus={autoFocus}
