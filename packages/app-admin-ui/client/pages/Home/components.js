@@ -2,9 +2,11 @@
 import { jsx } from '@emotion/core';
 import { Fragment } from 'react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 import { useList } from '../../providers/List';
+import { useAdminMeta } from '../../providers/AdminMeta';
+
 import CreateItemModal from '../../components/CreateItemModal';
 
 import { PlusIcon } from '@arch-ui/icons';
@@ -32,14 +34,17 @@ const BoxElement = styled(Card)`
   }
 `;
 
-export const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props }) => {
+const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props }) => {
   const { list, openCreateItemModal } = useList();
-  const { label, singular } = list;
+  const history = useHistory();
+  const { adminPath } = useAdminMeta();
+
   const onCreate = ({ data }) => {
-    let { adminPath, history } = this.props;
-    let id = data[list.gqlNames.createMutationName].id;
+    const id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
+
+  const { label, singular } = list;
 
   return (
     <Fragment>
@@ -86,7 +91,7 @@ export const Name = styled.span(
   text-overflow: ellipsis;
   transition: border-color 80ms linear;
   white-space: nowrap;
-  padding-right: 2em;
+  margin-right: 2em;
 `
 );
 export const Count = ({ meta }) => {

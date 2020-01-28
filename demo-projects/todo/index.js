@@ -1,6 +1,6 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
-const { Text } = require('@keystonejs/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
@@ -12,6 +12,13 @@ const keystone = new Keystone({
 
 keystone.createList('Todo', {
   schemaDoc: 'A list of things which need to be done',
+  fields: {
+    name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
+    dsafg: { type: Relationship, ref: 'Related' },
+  },
+});
+
+keystone.createList('Related', {
   fields: {
     name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
   },

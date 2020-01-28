@@ -36,7 +36,6 @@ import {
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
-import { useList } from '../List/dataHooks';
 
 let Render = ({ children }) => children();
 

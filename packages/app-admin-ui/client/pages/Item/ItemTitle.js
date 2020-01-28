@@ -24,9 +24,9 @@ const ItemId = () => {
 };
 
 const AddNewItem = () => {
-  let { onCreateClick } = useItem();
   let {
     list: { access },
+    openCreateItemModal,
   } = useList();
   if (!access.create) return null;
   const cypressId = 'item-page-create-button';
@@ -39,7 +39,7 @@ const AddNewItem = () => {
           variant="subtle"
           icon={PlusIcon}
           id={cypressId}
-          onClick={onCreateClick}
+          onClick={openCreateItemModal}
         />
       )}
     </Tooltip>

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useCallback, useMemo, Suspense, useState, useRef } from 'react';
+import { Fragment, useCallback, useMemo, Suspense, useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { useToasts } from 'react-toast-notifications';
 
@@ -16,13 +16,30 @@ import { validateFields, handleCreateUpdateMutationError } from '../util';
 
 let Render = ({ children }) => children();
 
+function useEventCallback(callback) {
+  let callbackRef = useRef(callback);
+  let cb = useCallback((...args) => {
+    return callbackRef.current(...args);
+  }, []);
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
+  return cb;
+}
+
 function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onCreate }) {
   const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
   const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
 
-  const _onCreate = async event => {
+  const { fields } = list;
+  const creatable = fields
+    .filter(({ isPrimaryKey }) => !isPrimaryKey)
+    .filter(({ maybeAccess }) => !!maybeAccess.create);
+  const data = arrayToObject(creatable, 'path', field => field.serialize(item));
+
+  const _onCreate = useEventCallback(async event => {
     // prevent form submission
     event.preventDefault();
     // we have to stop propagation so that if this modal is inside another form
@@ -35,15 +52,6 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     event.stopPropagation();
     if (isLoading) return;
     if (countArrays(validationErrors)) return;
-
-    const { fields } = list;
-
-    const creatable = fields
-      .filter(({ isPrimaryKey }) => !isPrimaryKey)
-      .filter(({ maybeAccess }) => !!maybeAccess.create);
-
-    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
-
     if (!countArrays(validationWarnings)) {
       const { errors, warnings } = await validateFields(creatable, item, data);
 
@@ -61,13 +69,13 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
         onCreate(data);
       }
     });
-  };
+  });
 
   const _onClose = () => {
     if (isLoading) return;
     closeCreateItemModal();
     setItem(list.getInitialItemData({}));
-    if (onCreate) {
+    if (onClose) {
       onClose(data);
     }
   };
@@ -80,7 +88,10 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     }
   };
 
-  const formComponent = props => <form autoComplete="off" onSubmit={_onCreate} {...props} />;
+  const formComponent = useCallback(
+    props => <form autoComplete="off" onSubmit={_onCreate} {...props} />,
+    [_onCreate]
+  );
 
   const hasWarnings = countArrays(validationWarnings);
   const hasErrors = countArrays(validationErrors);
