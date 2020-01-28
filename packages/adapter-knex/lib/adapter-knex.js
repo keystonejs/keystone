@@ -74,9 +74,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
     // Run this only if explicity configured and still never in production
     if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
-      if (process.env.NODE_ENV !== 'test') {
-        console.log('Knex adapter: Dropping database');
-      }
+      console.log('Knex adapter: Dropping database');
       await this.dropDatabase();
     } else {
       return [];
@@ -145,9 +143,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     // Create an adjacency table for the (many to many) relationship field adapter provided
     const dbAdapter = this;
     try {
-      if (process.env.NODE_ENV !== 'test') {
-        console.log(`Dropping table ${tableName}`);
-      }
+      console.log(`Dropping table ${tableName}`);
       await dbAdapter.schema().dropTableIfExists(tableName);
     } catch (err) {
       console.log('Failed to drop');
