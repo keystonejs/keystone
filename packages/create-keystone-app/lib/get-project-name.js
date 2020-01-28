@@ -1,4 +1,5 @@
 const prompts = require('prompts');
+const { getArgs } = require('./get-args');
 
 let PROJECT_NAME = null;
 
@@ -8,6 +9,14 @@ const getProjectName = async () => {
     return PROJECT_NAME;
   }
 
+  // If the project name was provided via the CLI arguments
+  const args = getArgs();
+  if (args['--name']) {
+    PROJECT_NAME = args['--name'];
+    return PROJECT_NAME;
+  }
+
+  // Prompt for a project name
   const response = await prompts(
     {
       type: 'text',
