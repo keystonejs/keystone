@@ -513,10 +513,13 @@ class QueryBuilder {
 
     // TODO: Implement configurable search fields for lists
     const searchField = listAdapter.fieldAdaptersByPath['name'];
-    if (search !== undefined && searchField && searchField.fieldName === 'Text') {
-      const f = escapeRegExp;
-      this._query.whereRaw('true');
-      this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
+    if (search !== undefined && searchField) {
+      if (searchField.fieldName === 'Text') {
+        const f = escapeRegExp;
+        this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
+      } else {
+        this._query.whereRaw('false'); // Return no results
+      }
     }
 
     // Add query modifiers as required

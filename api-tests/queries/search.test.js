@@ -1,13 +1,5 @@
-const { Integer, Text, Relationship } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  networkedGraphqlRequest,
-} = require('@keystonejs/test-utils');
-const {
-  validation: { depthLimit, definitionLimit, fieldLimit },
-} = require('@keystonejs/app-graphql');
+const { Text, Integer } = require('@keystonejs/fields');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const cuid = require('cuid');
 
@@ -21,6 +13,11 @@ function setupKeystone(adapterName) {
           name: { type: Text },
         },
       });
+      keystone.createList('Number', {
+        fields: {
+          name: { type: Integer },
+        },
+      });
     },
   });
 }
@@ -30,10 +27,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'users',
       runner(setupKeystone, async ({ keystone, create }) => {
-        const users = await Promise.all([
+        await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
           create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
         ]);
 
         let { data, errors } = await graphqlRequest({
@@ -83,6 +81,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([]); // No results
+
+        ({ data, errors } = await graphqlRequest({
+          keystone,
+          query: `
+          query {
+            allNumbers(
+              search: "12345",
+            ) {
+              name
+            }
+          }
+      `,
+        }));
+        expect(errors).toBe(undefined);
+        expect(data).toHaveProperty('allNumbers');
+        expect(data.allNumbers).toEqual([]); // No results
       })
     );
   })
