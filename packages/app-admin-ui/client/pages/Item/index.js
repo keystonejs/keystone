@@ -35,6 +35,7 @@ import {
   handleCreateUpdateMutationError,
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
+import { ItemProvider } from '../../providers/Item';
 
 let Render = ({ children }) => children();
 
@@ -266,16 +267,8 @@ const ItemDetails = withRouter(
     /**
      * Create item
      */
-    openCreateModal = () => this.setState({ showCreateModal: true });
-    closeCreateModal = () => this.setState({ showCreateModal: false });
-    renderCreateModal = () => (
-      <CreateItemModal
-        isOpen={this.state.showCreateModal}
-        list={this.props.list}
-        onClose={this.closeCreateModal}
-        onCreate={this.onCreate}
-      />
-    );
+    renderCreateModal = () => <CreateItemModal onCreate={this.onCreate} />;
+
     onCreate = ({ data }) => {
       const { list, adminPath, history } = this.props;
       const { id } = data[list.gqlNames.createMutationName];
@@ -289,13 +282,7 @@ const ItemDetails = withRouter(
       return (
         <Fragment>
           {itemHasChanged && <PreventNavigation />}
-          <ItemTitle
-            onCreateClick={this.openCreateModal}
-            id={item.id}
-            list={list}
-            adminPath={adminPath}
-            titleText={savedData._label_}
-          />
+          <ItemTitle id={item.id} list={list} adminPath={adminPath} titleText={savedData._label_} />
           <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
             <Form>
               <AutocompleteCaptor />
@@ -462,30 +449,32 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   }
 
   return (
-    <main>
-      <DocTitle>
-        {item._label_} - {list.singular}
-      </DocTitle>
-      <Container id="toast-boundary">
-        <ItemDetails
-          adminPath={adminPath}
-          item={item}
-          itemErrors={itemErrors}
-          key={itemId}
-          list={list}
-          getListByKey={getListByKey}
-          onUpdate={() =>
-            refetch().then(refetchedData =>
-              deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])
-            )
-          }
-          toastManager={{ addToast }}
-          updateInProgress={updateInProgress}
-          updateErrorMessage={updateError && updateError.message}
-          updateItem={handleUpdateItem}
-        />
-      </Container>
-    </main>
+    <ItemProvider item={item}>
+      <main>
+        <DocTitle>
+          {item._label_} - {list.singular}
+        </DocTitle>
+        <Container id="toast-boundary">
+          <ItemDetails
+            adminPath={adminPath}
+            item={item}
+            itemErrors={itemErrors}
+            key={itemId}
+            list={list}
+            getListByKey={getListByKey}
+            onUpdate={() =>
+              refetch().then(refetchedData =>
+                deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])
+              )
+            }
+            toastManager={{ addToast }}
+            updateInProgress={updateInProgress}
+            updateErrorMessage={updateError && updateError.message}
+            updateItem={handleUpdateItem}
+          />
+        </Container>
+      </main>
+    </ItemProvider>
   );
 };
 

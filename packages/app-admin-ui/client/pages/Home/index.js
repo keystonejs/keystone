@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
 
-import CreateItemModal from '../../components/CreateItemModal';
+import { ListProvider } from '../../providers/List';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
@@ -13,23 +13,8 @@ import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
 class HomePage extends Component {
-  state = { createFromList: null };
-
-  openCreateModal = createFromList => event => {
-    event.preventDefault();
-    this.setState({ createFromList });
-  };
-  closeCreateModal = () => this.setState({ createFromList: null });
-
-  onCreate = list => ({ data }) => {
-    let { adminPath, history } = this.props;
-    let id = data[list.gqlNames.createMutationName].id;
-    history.push(`${adminPath}/${list.path}/${id}`);
-  };
-
   render() {
     const { lists, data, adminPath } = this.props;
-    const { createFromList } = this.state;
 
     return (
       <main>
@@ -43,30 +28,17 @@ class HomePage extends Component {
               if (width < 1024) cellWidth = 4;
               if (width < 768) cellWidth = 6;
               if (width < 480) cellWidth = 12;
-
               return (
                 <Grid gap={16}>
                   {lists.map(list => {
                     const { key, path } = list;
                     const meta = data && data[list.gqlNames.listQueryMetaName];
-
                     return (
-                      <Fragment key={key}>
+                      <ListProvider list={list} key={key}>
                         <Cell width={cellWidth}>
-                          <Box
-                            list={list}
-                            to={`${adminPath}/${path}`}
-                            meta={meta}
-                            onCreateClick={this.openCreateModal(key)}
-                          />
+                          <Box to={`${adminPath}/${path}`} meta={meta} />
                         </Cell>
-                        <CreateItemModal
-                          isOpen={createFromList === key}
-                          list={list}
-                          onClose={this.closeCreateModal}
-                          onCreate={this.onCreate(list)}
-                        />
-                      </Fragment>
+                      </ListProvider>
                     );
                   })}
                 </Grid>
@@ -79,7 +51,7 @@ class HomePage extends Component {
   }
 }
 
-const ListProvider = ({ getListByKey, listKeys, ...props }) => {
+const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
@@ -146,4 +118,4 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   );
 };
 
-export default withRouter(ListProvider);
+export default withRouter(HomepageListProvider);
