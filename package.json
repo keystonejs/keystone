@@ -162,6 +162,7 @@
   },
   "preconstruct": {
     "packages": [
+      "packages/app-admin-ui",
       "packages/arch/packages/*",
       "packages/apollo-helpers",
       "packages/utils"
