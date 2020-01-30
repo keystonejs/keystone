@@ -69,7 +69,7 @@ export class OEmbedBlock extends Block {
     return {
       [this.path]: {
         type: RelationshipWrapper,
-        ref: this.auxList.key,
+        ref: `${this.auxList.key}.from`,
         many: true,
         schemaDoc: 'Embeds which have been added to the Content field',
       },
