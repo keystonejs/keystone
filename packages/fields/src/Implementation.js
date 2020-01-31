@@ -171,6 +171,7 @@ class Field {
       // functions
       defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
       isPrimaryKey: this.isPrimaryKey,
+      ...this.config,
       // NOTE: This data is serialised, so we're unable to pass through any
       // access control _functions_. But we can still check for the boolean case
       // and pass that through (we assume that if there is a function, it's a
