@@ -2,4 +2,4 @@
 '@keystonejs/fields': minor
 ---
 
-Added adminDoc option to all fields
+Added `adminDoc` configuration option to all field types.
