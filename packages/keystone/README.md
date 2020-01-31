@@ -33,6 +33,7 @@ const keystone = new Keystone({
 | `secureCookies`  | `Boolean`  | Variable                        | Defaults to true in production mode, false otherwise. See [`secureCookies`](#securecookies) for important details.                                |
 | `sessionStore`   | `Object`   | `undefined`                     | A compatible Express session middleware.                                                                                                          |
 | `schemaNames`    | `Array`    | `['public']`                    |                                                                                                                                                   |
+| `publicConfig`   | `Object`   | `{}`                            | Custom configuration made available to `admin-ui` as part of `adminMeta`                                                                          |
 
 ### `appVersion`
 
