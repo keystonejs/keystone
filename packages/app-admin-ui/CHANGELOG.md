@@ -1,5 +1,11 @@
 # @keystonejs/app-admin-ui
 
+## 5.7.1
+
+### Patch Changes
+
+- [`ce8c9843`](https://github.com/keystonejs/keystone/commit/ce8c9843f2d542e4916d68b98f23abe85c5b1bb5) [#2310](https://github.com/keystonejs/keystone/pull/2310) - Added missing dependency.
+
 ## 5.7.0
 
 ### Minor Changes
