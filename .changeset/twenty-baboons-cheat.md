@@ -3,4 +3,4 @@
 '@keystonejs/website': patch
 ---
 
-Added the documentation for the keystone-create-app CLI arguments (#2276)
+Added documentation for the `keystone-create-app` CLI arguments.
