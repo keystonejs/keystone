@@ -1,5 +1,11 @@
 # @keystonejs/app-graphql
 
+## 5.0.3
+
+### Patch Changes
+
+- [`ec81468c`](https://github.com/keystonejs/keystone/commit/ec81468cb3cd046426ca8101294e635486128ef5) [#2308](https://github.com/keystonejs/keystone/pull/2308) - Fixed bug preventing configuration of apollo graph engine from `GraphQLApp()`.
+
 ## 5.0.2
 
 ### Patch Changes

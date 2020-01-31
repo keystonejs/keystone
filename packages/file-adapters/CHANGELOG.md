@@ -1,5 +1,11 @@
 # @keystonejs/file-adapters
 
+## 5.4.0
+
+### Minor Changes
+
+- [`8415f628`](https://github.com/keystonejs/keystone/commit/8415f6289933cff244a592e1379ab70dfef926fc) [#2250](https://github.com/keystonejs/keystone/pull/2250) - Added `getFilename` option to S3Adapter.
+
 ## 5.3.2
 
 ### Patch Changes
