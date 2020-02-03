@@ -1,5 +1,11 @@
 # @keystonejs/fields
 
+## 6.2.1
+
+### Patch Changes
+
+- [`b0519b55`](https://github.com/keystonejs/keystone/commit/b0519b550b00680bb7233cda0f7eb748863871dc) [#2325](https://github.com/keystonejs/keystone/pull/2325) - Bumped the dependency on the AdminUI package.
+
 ## 6.2.0
 
 ### Minor Changes
