@@ -31,7 +31,8 @@ keystone.createList('Post', {
         Content.blocks.link,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
-        Content.blocks.heading
+        Content.blocks.heading,
+        CloudinaryImage.blocks.image
         ],
     },
   },
