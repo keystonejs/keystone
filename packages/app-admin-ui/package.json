@@ -88,7 +88,7 @@
   },
   "preconstruct": {
     "entrypoints": [
-      "components/"
+      "client/"
     ]
   }
 }
