@@ -1,4 +1,5 @@
 {
   "main": "dist/app-admin-ui.cjs.js",
-  "module":"dist/app-admin-ui.esm.js"
+  "module":"dist/app-admin-ui.esm.js",
+  "preconstruct": { "source": "./" }
 }
