@@ -1,5 +1,4 @@
-// gatsby doesn't seem to look at eslintrcs in
-// higher directories than the site's directory
+// We need to set the packageDir for eslint to the parent or it thinks /client has a bunch of unmanaged deps
 const config = require('../../../.eslintrc');
 const path = require('path');
 
