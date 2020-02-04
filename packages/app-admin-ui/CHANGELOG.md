@@ -12,7 +12,7 @@
 
 - [`6bc87d43`](https://github.com/keystonejs/keystone/commit/6bc87d43de4861068de257735c1a6cf886cd3c17) [#2279](https://github.com/keystonejs/keystone/pull/2279) - Added React hooks to the AdminUI.
 
-  This PR changes the way the `<CreateItem/>` component works internally. It also paves the way for future AdminUI extensions by exporting front-end components and utilities from `@keystonejs/app-admin-ui/client`. Initially this includes a `<ListProvider/>` component that is currently being consumed by the relationship field.
+  This PR changes the way the `<CreateItem/>` component works internally. It also paves the way for future AdminUI extensions by exporting front-end components and utilities from `@keystonejs/app-admin-ui/components`. Initially this includes a `<ListProvider/>` component that is currently being consumed by the relationship field.
 
 ### Patch Changes
 
