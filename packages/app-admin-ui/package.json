@@ -85,10 +85,5 @@
     "webpack": "4.28.4",
     "webpack-dev-middleware": "^3.6.1",
     "webpack-hot-middleware": "^2.24.3"
-  },
-  "preconstruct": {
-    "entrypoints": [
-      "client/"
-    ]
   }
 }
