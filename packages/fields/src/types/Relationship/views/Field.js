@@ -12,7 +12,7 @@ import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
 import RelationshipSelect from './RelationshipSelect';
-import { ListProvider, useList } from '@keystonejs/app-admin-ui/components/';
+import { ListProvider, useList } from '@keystonejs/app-admin-ui/components';
 
 const MAX_IDS_IN_FILTER = 100;
 
