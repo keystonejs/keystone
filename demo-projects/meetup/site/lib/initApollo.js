@@ -18,7 +18,7 @@ function create(initialState, req) {
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
       // Use fetch() polyfill on the server
       fetch: !process.browser && fetch,
-      headers: req && req.headers
+      headers: req && req.headers,
     }),
     cache: new InMemoryCache().restore(initialState || {}),
   });
