@@ -1,5 +1,11 @@
 # @arch-ui/fields
 
+## 2.1.0
+
+### Minor Changes
+
+- [`ca2b043a`](https://github.com/keystonejs/keystone/commit/ca2b043a5043f6b4b110050127b2a9d759bb8569) [#2286](https://github.com/keystonejs/keystone/pull/2286) - Added `FieldDescription` to `@arch-ui/fields`.
+
 ## 2.0.5
 
 ### Patch Changes

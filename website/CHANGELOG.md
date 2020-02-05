@@ -1,5 +1,11 @@
 # @keystonejs/website
 
+## 5.0.5
+
+### Patch Changes
+
+- [`1235f8de`](https://github.com/keystonejs/keystone/commit/1235f8de8539014884b49c87d69a60a1d9e462f1) [#2278](https://github.com/keystonejs/keystone/pull/2278) - Added documentation for the `keystone-create-app` CLI arguments.
+
 ## 5.0.4
 
 ### Patch Changes

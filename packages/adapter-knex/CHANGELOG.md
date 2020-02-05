@@ -1,5 +1,16 @@
 # @keystonejs/adapter-knex
 
+## 6.2.0
+
+### Minor Changes
+
+- [`5b058a63`](https://github.com/keystonejs/keystone/commit/5b058a633c84465c9dff7cf940c8cb12bddcf215) [#2292](https://github.com/keystonejs/keystone/pull/2292) - Implemented a basic search on name field. This makes the Relationship and list search work the same as the mongoose adapter.
+
+### Patch Changes
+
+- Updated dependencies [[`eb36cf37`](https://github.com/keystonejs/keystone/commit/eb36cf3731984cc7cf60b60cb1c043962252610f), [`8f54a4eb`](https://github.com/keystonejs/keystone/commit/8f54a4eb2d63ed042d736fd20ab622f326e111b8)]:
+  - @keystonejs/keystone@5.4.3
+
 ## 6.1.4
 
 ### Patch Changes

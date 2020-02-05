@@ -14,6 +14,7 @@
     "arch-docs": "yarn --cwd ./packages/arch/docs",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "cypress:run": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:run || status=$?; exit $status",
+    "cypress:open": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:open || status=$?; exit $status",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js{,on}\" \"**/*.md\" && remark . --output",
     "fresh": "yarn clean && yarn",
@@ -60,6 +61,7 @@
     "chalk-cli": "^4.1.0",
     "cross-env": "^5.2.0",
     "cypress": "^3.5.0",
+    "cypress-multi-reporters": "^1.2.3",
     "dotenv": "^8.0.0",
     "dotenv-safe": "^8.1.0",
     "endent": "^1.3.0",
@@ -88,9 +90,8 @@
     "mjml": "^4.3.1",
     "mjml-react": "^1.0.55",
     "mkdirp": "^0.5.1",
-    "mocha": "^5.2.0",
+    "mocha": "^7.0.1",
     "mocha-junit-reporter": "^1.21.0",
-    "mocha-multi-reporters": "^1.1.7",
     "moment": "^2.24.0",
     "mongodb": "^3.4.1",
     "p-is-promise": "^3.0.0",
@@ -157,12 +158,11 @@
       "projects/*"
     ],
     "nohoist": [
-      "**/mocha-multi-reporters"
+      "**/cypress-multi-reporters"
     ]
   },
   "preconstruct": {
     "packages": [
-      "packages/app-admin-ui",
       "packages/arch/packages/*",
       "packages/apollo-helpers",
       "packages/utils"

@@ -1,5 +1,15 @@
 # @keystonejs/keystone
 
+## 5.4.3
+
+### Patch Changes
+
+- [`eb36cf37`](https://github.com/keystonejs/keystone/commit/eb36cf3731984cc7cf60b60cb1c043962252610f) [#2255](https://github.com/keystonejs/keystone/pull/2255) - Removed unused dependencies.
+
+* [`8f54a4eb`](https://github.com/keystonejs/keystone/commit/8f54a4eb2d63ed042d736fd20ab622f326e111b8) [#2269](https://github.com/keystonejs/keystone/pull/2269) - Added a check for invalid relationship configurations.
+* Updated dependencies [[`6bc87d43`](https://github.com/keystonejs/keystone/commit/6bc87d43de4861068de257735c1a6cf886cd3c17), [`6eb23086`](https://github.com/keystonejs/keystone/commit/6eb23086485d9bcbb93e35ec716d846790d611f2), [`8f54a4eb`](https://github.com/keystonejs/keystone/commit/8f54a4eb2d63ed042d736fd20ab622f326e111b8)]:
+  - @keystonejs/fields@6.2.0
+
 ## 5.4.2
 
 ### Patch Changes
