@@ -14,6 +14,7 @@
     "arch-docs": "yarn --cwd ./packages/arch/docs",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "cypress:run": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:run || status=$?; exit $status",
+    "cypress:open": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:open || status=$?; exit $status",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js{,on}\" \"**/*.md\" && remark . --output",
     "fresh": "yarn clean && yarn",
@@ -162,7 +163,6 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/app-admin-ui",
       "packages/arch/packages/*",
       "packages/apollo-helpers",
       "packages/utils"

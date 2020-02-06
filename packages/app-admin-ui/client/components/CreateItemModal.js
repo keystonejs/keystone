@@ -64,7 +64,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     const initialValues = getValues(fieldObjects, initialData);
     const currentValues = getValues(fieldObjects, item);
 
-    // 'null' is explict for the blank fields when making a GraphQL
+    // 'null' is explicit for the blank fields when making a GraphQL
     // request. This prevents the `knex` DB-level default values to be applied
     // correctly, But, if we exclude the blank field altogether, default values
     // (knex DB-level default) are respected.
