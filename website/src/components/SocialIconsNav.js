@@ -14,7 +14,7 @@ const SocialIconsNav = props => (
         <IconGithub href="https://github.com/keystonejs/keystone" target="_blank" title="Github" />
       </li>
       <li css={{ marginRight: [`0`] }}>
-        <IconSlack href="https://launchpass.com/keystonejs" target="_blank" title="Slack" />
+        <IconSlack href="http://community.keystonejs.com/" target="_blank" title="Slack" />
       </li>
     </ul>
   </nav>
