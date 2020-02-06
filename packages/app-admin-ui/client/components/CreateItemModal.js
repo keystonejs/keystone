@@ -73,7 +73,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
       path => !fieldsObject[path].hasChanged(initialValues, currentValues)
     );
 
-    const fields =  Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
+    const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
 
     if (isLoading) return;
     if (countArrays(validationErrors)) return;
