@@ -6,7 +6,13 @@ import { useToasts } from 'react-toast-notifications';
 
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { arrayToObject, captureSuspensePromises, countArrays } from '@keystonejs/utils';
+import {
+  arrayToObject,
+  captureSuspensePromises,
+  countArrays,
+  mapKeys,
+  omitBy,
+} from '@keystonejs/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
@@ -15,6 +21,8 @@ import { useList } from '../providers/List';
 import { validateFields, handleCreateUpdateMutationError } from '../util';
 
 let Render = ({ children }) => children();
+
+const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
 
 function useEventCallback(callback) {
   let callbackRef = useRef(callback);
@@ -49,7 +57,21 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // it's important to remember that react events
     // propagate through portals as if they aren't there
     event.stopPropagation();
-    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
+
+    const fieldObjects = arrayToObject(creatable, 'path');
+
+    const initialData = list.getInitialItemData({ prefill: prefillData });
+    const initialValues = getValues(fieldObjects, initialData);
+    const currentValues = getValues(fieldObjects, item);
+
+    // 'null' is explict for the blank fields when making a GraphQL
+    // request. This prevents the `knex` DB-level default values to be applied
+    // correctly, But, if we exclude the blank field altogether, default values
+    // (knex DB-level default) are respected.
+    const data = omitBy(
+      currentValues,
+      path => !fieldObjects[path].hasChanged(initialValues, currentValues)
+    );
 
     if (isLoading) return;
     if (countArrays(validationErrors)) return;
