@@ -58,11 +58,11 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // propagate through portals as if they aren't there
     event.stopPropagation();
 
-    const fieldObjects = arrayToObject(creatable, 'path');
+    const fieldsObject = arrayToObject(creatable, 'path');
 
     const initialData = list.getInitialItemData({ prefill: prefillData });
-    const initialValues = getValues(fieldObjects, initialData);
-    const currentValues = getValues(fieldObjects, item);
+    const initialValues = getValues(fieldsObject, initialData);
+    const currentValues = getValues(fieldsObject, item);
 
     // 'null' is explicit for the blank fields when making a GraphQL
     // request. This prevents the `knex` DB-level default values to be applied
@@ -70,13 +70,15 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // (knex DB-level default) are respected.
     const data = omitBy(
       currentValues,
-      path => !fieldObjects[path].hasChanged(initialValues, currentValues)
+      path => !fieldsObject[path].hasChanged(initialValues, currentValues)
     );
+
+    const fields =  Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
 
     if (isLoading) return;
     if (countArrays(validationErrors)) return;
     if (!countArrays(validationWarnings)) {
-      const { errors, warnings } = await validateFields(creatable, item, data);
+      const { errors, warnings } = await validateFields(fields, item, data);
 
       if (countArrays(errors) + countArrays(warnings) > 0) {
         setValidationErrors(errors);
