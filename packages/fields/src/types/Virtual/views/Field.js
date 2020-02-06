@@ -41,7 +41,7 @@ export default class VirtualField extends Component {
 
   render() {
     const { field, errors, value: serverValue } = this.props;
-    const value = serverValue || '';
+    const value = typeof serverValue !== 'undefined' ? value : '';
     const canRead = errors.every(
       error => !(error instanceof Error && error.name === 'AccessDeniedError')
     );

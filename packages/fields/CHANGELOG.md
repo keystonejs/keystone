@@ -1,5 +1,19 @@
 # @keystonejs/fields
 
+## 6.2.2
+
+### Patch Changes
+
+- [`8552314d`](https://github.com/keystonejs/keystone/commit/8552314d9f509010c462df6e64fe23839fbea5e3) [#2330](https://github.com/keystonejs/keystone/pull/2330) - Removed the preconstruct step that was causing issues outside the momorepo.
+- Updated dependencies [[`8552314d`](https://github.com/keystonejs/keystone/commit/8552314d9f509010c462df6e64fe23839fbea5e3)]:
+  - @keystonejs/app-admin-ui@5.7.2
+
+## 6.2.1
+
+### Patch Changes
+
+- [`b0519b55`](https://github.com/keystonejs/keystone/commit/b0519b550b00680bb7233cda0f7eb748863871dc) [#2325](https://github.com/keystonejs/keystone/pull/2325) - Bumped the dependency on the AdminUI package.
+
 ## 6.2.0
 
 ### Minor Changes
