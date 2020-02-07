@@ -67,15 +67,23 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // 'null' is explicit for the blank fields when making a GraphQL
     // request. This prevents the `knex` DB-level default values to be applied
     // correctly, But, if we exclude the blank field altogether, default values
-    // (knex DB-level default) are respected.
+    // (knex DB-level default) are respected. Additionally, we need to make sure
+    // that we don't omit the required fields.
+    function hasnotChangedAndIsNotRequired(path){
+        const hasChanged = fieldsObject[path].hasChanged(initialValues, currentValues);
+        const isRequired = fieldsObject[path].config.isRequired;
+        return !hasChanged && !isRequired;
+    }
+
     const data = omitBy(
       currentValues,
-      path => !fieldsObject[path].hasChanged(initialValues, currentValues)
+      hasnotChangedAndIsNotRequired
     );
 
     const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
 
     if (isLoading) return;
+
     if (countArrays(validationErrors)) return;
     if (!countArrays(validationWarnings)) {
       const { errors, warnings } = await validateFields(fields, item, data);
