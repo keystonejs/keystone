@@ -68,17 +68,14 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // request. This prevents the `knex` DB-level default values to be applied
     // correctly, But, if we exclude the blank field altogether, default values
     // (knex DB-level default) are respected. Additionally, we need to make sure
-    // that we don't omit the required fields.
-    function hasnotChangedAndIsNotRequired(path){
-        const hasChanged = fieldsObject[path].hasChanged(initialValues, currentValues);
-        const isRequired = fieldsObject[path].config.isRequired;
-        return !hasChanged && !isRequired;
+    // that we don't omit the required fields for client-side input validation.
+    function hasnotChangedAndIsNotRequired(path) {
+      const hasChanged = fieldsObject[path].hasChanged(initialValues, currentValues);
+      const isRequired = fieldsObject[path].config.isRequired;
+      return !hasChanged && !isRequired;
     }
 
-    const data = omitBy(
-      currentValues,
-      hasnotChangedAndIsNotRequired
-    );
+    const data = omitBy(currentValues, hasnotChangedAndIsNotRequired);
 
     const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
 
