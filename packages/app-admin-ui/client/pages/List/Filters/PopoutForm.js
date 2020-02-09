@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, Fragment } from 'react';
+import { Fragment, useRef } from 'react';
 
 import { colors, gridSize } from '@arch-ui/theme';
 import { Popout } from '../../../components/Popout';
@@ -29,15 +29,19 @@ const FooterButton = ({ isPrimary, ...props }) => (
   />
 );
 
-export default class FilterPopout extends Component {
-  onSubmit = event => {
-    const { onSubmit } = this.props;
+const FilterPopout = ({ children, ...props }) => {
+  const popoutRef = useRef();
+  const popoutBody = useRef();
 
-    this.close(event);
+  const onSubmit = event => {
+    const { onSubmit } = props;
+
+    close(event);
     onSubmit(event);
   };
-  close = event => {
-    this.popoutRef.close(event);
+
+  const close = event => {
+    popoutRef.current.close(event);
 
     // prevent form submission
     // default must be prevented after the popoutRef receives the call to close
@@ -47,52 +51,48 @@ export default class FilterPopout extends Component {
   // Refs
   // ==============================
 
-  getPopoutRef = ref => {
-    if (!ref) return;
-    this.popoutRef = ref;
-  };
-  getPopoutBody = ref => {
-    if (!ref) return;
-    this.popoutBody = ref;
+  const getPopoutRef = ref => {
+    if (ref) popoutRef.current = ref;
   };
 
-  renderFooter() {
-    const { showFooter } = this.props;
+  const getPopoutBody = ref => {
+    if (ref) popoutBody.current = ref;
+  };
+
+  const renderFooter = () => {
+    const { showFooter } = props;
 
     // bail early
     if (!showFooter) return null;
 
     return (
       <Fragment>
-        <FooterButton onClick={this.close}>Cancel</FooterButton>
+        <FooterButton onClick={close}>Cancel</FooterButton>
         <FooterButton type="submit" isPrimary>
           Apply
         </FooterButton>
       </Fragment>
     );
-  }
-  popoutForm = props => {
-    return <form onSubmit={this.onSubmit} {...props} />;
   };
 
-  render() {
-    const { children, ...props } = this.props;
+  const popoutForm = props => <form onSubmit={onSubmit} {...props} />;
 
-    return (
-      <Popout
-        component={this.popoutForm}
-        bodyRef={this.getPopoutBody}
-        innerRef={this.getPopoutRef}
-        footerContent={this.renderFooter()}
-        {...props}
-      >
-        <AnimateHeight
-          autoScroll={this.popoutBody}
-          style={{ position: 'relative' }}
-          initialHeight={0}
-          render={children}
-        />
-      </Popout>
-    );
-  }
-}
+  return (
+    <Popout
+      component={popoutForm}
+      bodyRef={getPopoutBody}
+      innerRef={getPopoutRef}
+      footerContent={renderFooter()}
+      {...props}
+    >
+      <AnimateHeight
+        autoScroll={popoutBody.current}
+        style={{ position: 'relative' }}
+        initialHeight={0}
+        render={children}
+      />
+    </Popout>
+  );
+};
+
+export default FilterPopout;

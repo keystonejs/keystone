@@ -1,76 +1,90 @@
-import { createRef, Component } from 'react';
-import PropTypes from 'prop-types';
+import { createRef, useState, useRef, useEffect } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import raf from 'raf-schd';
 
 const LISTENER_OPTIONS = { passive: true };
 
-export default class ScrollQuery extends Component {
-  scrollElement = createRef();
-  state = { hasScroll: false, isScrollable: false, scrollTop: 0 };
-  static propTypes = {
-    children: PropTypes.func,
-    isPassive: PropTypes.bool,
-  };
-  static defaultProps = {
-    isPassive: true,
-  };
+const ScrollQuery = ({ isPassive, children, render }) => {
+  const [hasScroll, setHasScroll] = useState(false);
+  const [isTop, setIsTop] = useState(false);
+  const [isBottom, setIsBottom] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(false);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
 
-  componentDidMount() {
-    const { isPassive } = this.props;
-    const scrollEl = this.scrollElement.current;
+  const scrollElement = createRef();
+  const resizeObserver = useRef();
+
+  useEffect(() => {
+    const scrollEl = scrollElement.current;
 
     if (!isPassive) {
-      scrollEl.addEventListener('scroll', this.handleScroll, LISTENER_OPTIONS);
+      scrollEl.addEventListener('scroll', handleScroll, LISTENER_OPTIONS);
     }
 
-    this.resizeObserver = new ResizeObserver(([entry]) => {
-      this.setScroll(entry.target);
+    resizeObserver.current = new ResizeObserver(([entry]) => {
+      setScroll(entry.target);
     });
-    this.resizeObserver.observe(scrollEl);
 
-    this.setScroll(scrollEl);
-  }
-  componentWillUnmount() {
-    const { isPassive } = this.props;
+    resizeObserver.current.observe(scrollEl);
+    setScroll(scrollEl);
 
-    if (!isPassive) {
-      this.scrollElement.current.removeEventListener('scroll', this.handleScroll, LISTENER_OPTIONS);
-    }
+    return () => {
+      if (!isPassive) {
+        scrollEl.removeEventListener('scroll', handleScroll, LISTENER_OPTIONS);
+      }
 
-    if (this.resizeObserver && this.scrollElement.current) {
-      this.resizeObserver.disconnect(this.scrollElement.current);
-    }
-    this.resizeObserver = null;
-  }
+      if (resizeObserver.current && scrollEl) {
+        resizeObserver.current.disconnect(scrollEl);
+      }
 
-  handleScroll = raf(event => {
-    this.setScroll(event.target);
+      resizeObserver.current = null;
+    };
   });
 
-  setScroll = target => {
-    const { clientHeight, scrollHeight, scrollTop } = target;
-    const isScrollable = scrollHeight > clientHeight;
-    const isBottom = scrollTop === scrollHeight - clientHeight;
-    const isTop = scrollTop === 0;
-    const hasScroll = !!scrollTop;
+  const handleScroll = raf(event => {
+    setScroll(event.target);
+  });
+
+  const setScroll = target => {
+    const { clientHeight, scrollHeight: _scrollHeight, scrollTop: _scrollTop } = target;
+
+    const _isScrollable = scrollHeight > clientHeight;
+    const _isBottom = scrollTop === scrollHeight - clientHeight;
+    const _isTop = scrollTop === 0;
+    const _hasScroll = !!scrollTop;
+
     if (
       // we only need to compare some parts of state
       // because some of the parts are computed from scrollTop
-      this.state.isBottom !== isBottom ||
-      this.state.isScrollable !== isScrollable ||
-      this.state.scrollHeight !== scrollHeight ||
-      this.state.scrollTop !== scrollTop
+      isBottom !== _isBottom ||
+      isScrollable !== _isScrollable ||
+      scrollHeight !== _scrollHeight ||
+      scrollTop !== _scrollTop
     ) {
-      this.setState({ isBottom, isTop, isScrollable, scrollHeight, scrollTop, hasScroll });
+      setIsBottom(_isBottom);
+      setIsTop(_isTop);
+      setIsScrollable(_isScrollable);
+      setScrollHeight(_scrollHeight);
+      setScrollTop(_scrollTop);
+      setHasScroll(_hasScroll);
     }
   };
 
-  render() {
-    const { children, render } = this.props;
-    const ref = this.scrollElement;
-    const snapshot = this.state;
+  const snapshot = {
+    hasScroll,
+    isTop,
+    isBottom,
+    isScrollable,
+    scrollHeight,
+    scrollTop,
+  };
 
-    return render ? render(ref, snapshot) : children(ref, snapshot);
-  }
-}
+  return render ? render(scrollElement, snapshot) : children(scrollElement, snapshot);
+};
+
+ScrollQuery.defaultProps = {
+  isPassive: true,
+};
+
+export default ScrollQuery;

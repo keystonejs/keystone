@@ -93,14 +93,3 @@ export const AdminMetaProvider = ({ children }) => children(readAdminMeta());
 export const useAdminMeta = () => {
   return readAdminMeta();
 };
-
-// HOC Wrapper
-
-function setDisplayName(c) {
-  c.displayName = `withAdminMeta(${c.name || c.displayName})`;
-}
-export const withAdminMeta = Component => props => {
-  setDisplayName(Component);
-  // TODO: Permission query to see which lists to provide
-  return <Component {...props} adminMeta={readAdminMeta()} />;
-};
