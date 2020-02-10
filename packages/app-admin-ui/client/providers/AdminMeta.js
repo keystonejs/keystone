@@ -1,7 +1,5 @@
 /* global KEYSTONE_ADMIN_META */
 
-import React from 'react';
-
 import List from '../classes/List';
 import { views, readViews, preloadViews } from '../FIELD_TYPES';
 

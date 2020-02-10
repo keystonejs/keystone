@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
@@ -23,11 +23,10 @@ const EditFilterPopout = ({ filter, target, onChange }) => {
 
   // Refs
   // ==============================
-  let filterRef;
-
-  const getFilterRef = ref => {
-    if (ref) filterRef = ref;
-  };
+  //const filterRef = useRef();
+  //const getFilterRef = ref => {
+  ///  if (ref) filterRef.current = ref;
+  //};
 
   let [Filter] = filter.field.adminMeta.readViews([filter.field.views.Filter]);
   const headerTitle = filter.field.getFilterLabel(filter);
@@ -37,7 +36,7 @@ const EditFilterPopout = ({ filter, target, onChange }) => {
       {({ ref }) => (
         <div ref={ref} style={{ padding: POPOUT_GUTTER }}>
           <Filter
-            innerRef={getFilterRef}
+            //innerRef={getFilterRef} FIXME: not used
             field={filter.field}
             filter={filter}
             onChange={onChangeFilter}
