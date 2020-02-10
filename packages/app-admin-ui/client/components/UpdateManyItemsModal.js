@@ -138,7 +138,7 @@ const UpdateManyModal = ({
             tabSelectsValue={false}
             value={selectedFields}
             getOptionValue={getOptionValue}
-            filterOption={filterOption}
+            //filterOption={filterOption} FIXME: this doesn't exist anymore
           />
         </FieldInput>
       </FieldContainer>

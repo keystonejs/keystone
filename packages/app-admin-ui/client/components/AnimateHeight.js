@@ -7,15 +7,15 @@ const AnimateHeight = ({ initialHeight, autoScroll, render, ...props }) => {
   const [height, setHeight] = useState(initialHeight);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  let node;
+  const node = useRef();
+  const hasMounted = useRef(false);
 
-  let hasMounted = false;
   useEffect(() => {
-    hasMounted = true;
+    hasMounted.current = true;
   });
 
   const scrollToTop = () => {
-    const element = autoScroll instanceof HTMLElement ? autoScroll : node;
+    const element = autoScroll instanceof HTMLElement ? autoScroll : node.current;
     if (element && typeof element.scrollTo === 'function') {
       element.scrollTo(0, 0);
     }
@@ -23,7 +23,7 @@ const AnimateHeight = ({ initialHeight, autoScroll, render, ...props }) => {
 
   const calculateHeight = () => {
     const { onChange } = props;
-    const newHeight = node ? node.scrollHeight : initialHeight;
+    const newHeight = node.current ? node.current.scrollHeight : initialHeight;
 
     if (newHeight !== height) {
       setHeight(newHeight);
@@ -35,7 +35,7 @@ const AnimateHeight = ({ initialHeight, autoScroll, render, ...props }) => {
         // it'd be strange for an element to increase in height immediately after it renders for the
         // first time. In the current height case, we don't want to animate because we're already at
         // that height so there's no point.
-        hasMounted
+        hasMounted.current
       ) {
         setIsTransitioning(true);
       }
@@ -60,15 +60,15 @@ const AnimateHeight = ({ initialHeight, autoScroll, render, ...props }) => {
   const getNode = ref => {
     if (!ref) return;
 
-    if (node !== ref) {
-      if (node) {
-        observer.current.unobserve(node);
+    if (node.current !== ref) {
+      if (node.current) {
+        observer.current.unobserve(node.current);
       }
 
       observer.current.observe(ref);
     }
 
-    node = ref;
+    node.current = ref;
     calculateHeight();
   };
 
@@ -91,7 +91,7 @@ const AnimateHeight = ({ initialHeight, autoScroll, render, ...props }) => {
         overflow,
       }}
       onTransitionEnd={event => {
-        if (event.target === node) {
+        if (event.target === node.current) {
           setIsTransitioning(false);
         }
       }}
