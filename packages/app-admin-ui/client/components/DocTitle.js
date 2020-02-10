@@ -8,7 +8,7 @@ const DocTitle = ({ children }) => {
 
   useEffect(() => {
     document.title = title;
-  }), [title];
+  }, [title]);
 
   return null;
 };

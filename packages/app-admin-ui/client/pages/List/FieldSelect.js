@@ -25,7 +25,7 @@ export const pseudoLabelField = { label: 'Label', path: '_label_' };
  * and returning it during `onChange`.
  */
 
-const FieldSelect = (props) => {
+const FieldSelect = props => {
   const { fields: listFields, includeLabelField, isMulti, onChange: onChangeCallback } = props;
 
   const sanitizedOptions = listFields.map(({ options, ...field }) => field);

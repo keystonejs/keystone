@@ -65,7 +65,7 @@ const UpdateManyModal = ({
     if (!isLoading) {
       resetState();
       onCloseCallback();
-    };
+    }
   };
 
   const onKeyDown = event => {
