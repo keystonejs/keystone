@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState /*, useRef*/ } from 'react';
 
 import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
