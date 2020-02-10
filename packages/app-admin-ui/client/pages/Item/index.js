@@ -71,7 +71,6 @@ const ItemDetails = ({
 }) => {
   const [item, setItem] = useState(initialData);
   const [itemHasChanged, setItemHasChanged] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
