@@ -343,6 +343,7 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
 
 const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   const itemQuery = list.getItemQuery(itemId);
+  const { addToast } = useToasts();
 
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache
