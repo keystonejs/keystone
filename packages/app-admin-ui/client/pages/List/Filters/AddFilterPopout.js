@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, createRef, Suspense } from 'react';
+import { useState, createRef, Suspense } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@arch-ui/icons';
@@ -81,58 +81,44 @@ const BackButton = ({ show, onClick }) => (
   </Transition>
 );
 
-function getInitialState() {
-  return {
-    field: null,
-    filter: null,
-    value: '',
-  };
-}
-
-type Props = {
-  existingFilters: Array<Object>,
-};
-type State = {
-  field: Object,
-  filter: Object,
-  value: string,
-};
-
 let Render = ({ children }) => children();
 
-export default class AddFilterPopout extends Component<Props, State> {
-  state = getInitialState();
+const AddFilterPopout = ({ fields, existingFilters, onChange }) => {
+  const [field, setField] = useState(null);
+  const [filter, setFilter] = useState(null);
+  const [value, setValue] = useState('');
 
   // Refs
   // ==============================
 
-  fieldSelectRef = createRef();
-  filterSelectRef = createRef();
-  filterRef = createRef();
+  const fieldSelectRef = createRef();
+  const filterSelectRef = createRef();
+  const filterRef = createRef();
 
   // Utils
   // ==============================
 
-  resetState = () => {
-    this.setState(getInitialState());
+  const resetState = () => {
+    setField(null);
+    setFilter(null);
+    setValue('');
   };
-  matchesExistingFilterType = opt => {
-    const { existingFilters } = this.props;
-    const { field } = this.state;
 
+  const matchesExistingFilterType = opt => {
     const matches = field
       ? x => x.field.path === field.path && x.type === opt.type
       : x => x.type === opt.type;
 
     return existingFilters.some(matches);
   };
-  getExistingFieldFilters = field => {
-    const { existingFilters } = this.props;
+
+  const getExistingFieldFilters = field => {
     return existingFilters.filter(x => x.field.path === field.path);
   };
-  availableFieldFilterTypes = field => {
+
+  const availableFieldFilterTypes = field => {
     // we only care about filters on the selected field
-    const existingFieldFilters = this.getExistingFieldFilters(field);
+    const existingFieldFilters = getExistingFieldFilters(field);
 
     // bail quickly if possibly
     if (field.getFilterTypes().length === existingFieldFilters.length) {
@@ -144,42 +130,48 @@ export default class AddFilterPopout extends Component<Props, State> {
       return !existingFieldFilters.filter(y => y.type === x.type).length;
     });
   };
-  hasAvailableFilterTypes = field => {
+
+  const hasAvailableFilterTypes = field => {
     if (!field.getFilterTypes()) return false;
-    return Boolean(this.availableFieldFilterTypes(field).length);
+    return Boolean(availableFieldFilterTypes(field).length);
   };
-  doesNotHaveAvailableFilterTypes = field => {
-    return !this.hasAvailableFilterTypes(field);
+
+  const doesNotHaveAvailableFilterTypes = field => {
+    return !hasAvailableFilterTypes(field);
   };
-  firstAvailableFilterType = field => {
-    const available = this.availableFieldFilterTypes(field);
+
+  const firstAvailableFilterType = field => {
+    const available = availableFieldFilterTypes(field);
     return available[0];
   };
 
   // Handlers
   // ==============================
 
-  onFieldChange = field => {
+  const onFieldChange = field => {
     if (!field) return;
 
     // preset the initial filter/value if available
-    const filter = this.firstAvailableFilterType(field);
+    const filter = firstAvailableFilterType(field);
     const value = filter ? filter.getInitialValue() : undefined;
 
-    this.setState({ field, filter, value });
-    this.fieldSelectRef.current.blur();
-  };
-  onTypeChange = filter => {
-    this.setState({ filter });
-    this.focusFilterRef();
-  };
-  onChangeFilter = value => {
-    this.setState({ value });
-  };
-  onSubmit = event => {
-    const { onChange } = this.props;
-    const { field, filter, value } = this.state;
+    setField(field);
+    setFilter(filter);
+    setValue(value);
 
+    fieldSelectRef.current.blur();
+  };
+
+  const onTypeChange = filter => {
+    setFilter(filter);
+    focusFilterRef();
+  };
+
+  const onChangeFilter = value => {
+    setValue(value);
+  };
+
+  const onSubmit = event => {
     event.preventDefault();
     if (!filter || value === null) return;
 
@@ -189,34 +181,36 @@ export default class AddFilterPopout extends Component<Props, State> {
   // Lifecycle
   // ==============================
 
-  focusFieldSelect = () => {
-    if (!this.fieldSelectRef.current) return;
-    this.fieldSelectRef.current.focus();
+  const focusFieldSelect = () => {
+    if (!fieldSelectRef.current) return;
+    fieldSelectRef.current.focus();
   };
-  focusFilterSelect = () => {
-    if (!this.filterSelectRef.current) return;
-    this.filterSelectRef.current.focus();
+
+  const focusFilterSelect = () => {
+    if (!filterSelectRef.current) return;
+    filterSelectRef.current.focus();
   };
-  focusFilterRef = () => {
-    if (!this.filterRef.current) return;
-    this.filterRef.current.focus();
+
+  const focusFilterRef = () => {
+    if (!filterRef.current) return;
+    filterRef.current.focus();
   };
 
   // Renderers
   // ==============================
 
-  getFieldOptions = () => {
-    const { fields } = this.props;
+  const getFieldOptions = () => {
     return fields.filter(f => f.getFilterTypes() && f.getFilterTypes().length);
   };
-  renderFieldSelect = ({ ref }) => {
+
+  const renderFieldSelect = ({ ref }) => {
     return (
       <Transition
         key="select"
         mountOnEnter
         unmountOnExit
         timeout={220}
-        onEntered={this.focusFieldSelect}
+        onEntered={focusFieldSelect}
       >
         {state => {
           const base = {
@@ -232,18 +226,16 @@ export default class AddFilterPopout extends Component<Props, State> {
             exiting: { transform: 'translateX(-100%)' },
             exited: { transform: 'translateX(-100%)' },
           };
-          this.props.fields[0].adminMeta.preloadViews(
-            this.props.fields.map(({ views }) => views.Filter).filter(x => x)
-          );
+          fields[0].adminMeta.preloadViews(fields.map(({ views }) => views.Filter).filter(x => x));
 
           const style = { ...base, ...states[state] };
           return (
             <div ref={ref} style={style}>
               <FieldSelect
-                fields={this.getFieldOptions()}
-                isOptionDisabled={this.doesNotHaveAvailableFilterTypes}
-                innerRef={this.fieldSelectRef}
-                onChange={this.onFieldChange}
+                fields={getFieldOptions()}
+                isOptionDisabled={doesNotHaveAvailableFilterTypes}
+                innerRef={fieldSelectRef}
+                onChange={onFieldChange}
                 placeholder="Search fields..."
                 components={{ Option: FieldOption }}
                 value={[]}
@@ -254,8 +246,8 @@ export default class AddFilterPopout extends Component<Props, State> {
       </Transition>
     );
   };
-  renderFilterUI = ({ ref }) => {
-    const { field, filter } = this.state;
+
+  const renderFilterUI = ({ ref }) => {
     const options = field.getFilterTypes();
 
     return (
@@ -264,7 +256,7 @@ export default class AddFilterPopout extends Component<Props, State> {
         mountOnEnter
         unmountOnExit
         timeout={220}
-        onEntered={filter ? this.focusFilterRef : this.focusFilterSelect}
+        onEntered={filter ? focusFilterRef : focusFilterSelect}
       >
         {state => {
           const base = {
@@ -319,10 +311,10 @@ export default class AddFilterPopout extends Component<Props, State> {
                 <EventCatcher>
                   <Select
                     getOptionValue={opt => opt.type}
-                    innerRef={this.filterSelectRef}
-                    isOptionDisabled={this.matchesExistingFilterType}
+                    innerRef={filterSelectRef}
+                    isOptionDisabled={matchesExistingFilterType}
                     menuPortalTarget={document.body}
-                    onChange={this.onTypeChange}
+                    onChange={onTypeChange}
                     options={options}
                     value={filter}
                   />
@@ -341,11 +333,11 @@ export default class AddFilterPopout extends Component<Props, State> {
 
                     return (
                       <Filter
-                        innerRef={this.filterRef}
+                        innerRef={filterRef}
                         field={field}
                         filter={filter}
-                        value={this.state.value}
-                        onChange={this.onChangeFilter}
+                        value={value}
+                        onChange={onChangeFilter}
                       />
                     );
                   }}
@@ -358,36 +350,35 @@ export default class AddFilterPopout extends Component<Props, State> {
     );
   };
 
-  render() {
-    const { field } = this.state;
-    const back = <BackButton show={!!field} onClick={this.resetState} />;
+  const back = <BackButton show={!!field} onClick={resetState} />;
 
-    return (
-      <PopoutForm
-        target={handlers => (
-          <Button
-            variant="subtle"
-            appearance="primary"
-            spacing="cozy"
-            css={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
-            {...handlers}
-          >
-            Filters
-            <DisclosureArrow />
-          </Button>
-        )}
-        headerBefore={back}
-        headerTitle={field ? field.label : 'Filter'}
-        showFooter={!!field}
-        onSubmit={this.onSubmit}
-        onClose={this.resetState}
-      >
-        {({ ref }) => (
-          <TransitionGroup component={null}>
-            {field ? this.renderFilterUI({ ref }) : this.renderFieldSelect({ ref })}
-          </TransitionGroup>
-        )}
-      </PopoutForm>
-    );
-  }
-}
+  return (
+    <PopoutForm
+      target={handlers => (
+        <Button
+          variant="subtle"
+          appearance="primary"
+          spacing="cozy"
+          css={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
+          {...handlers}
+        >
+          Filters
+          <DisclosureArrow />
+        </Button>
+      )}
+      headerBefore={back}
+      headerTitle={field ? field.label : 'Filter'}
+      showFooter={!!field}
+      onSubmit={onSubmit}
+      onClose={resetState}
+    >
+      {({ ref }) => (
+        <TransitionGroup component={null}>
+          {field ? renderFilterUI({ ref }) : renderFieldSelect({ ref })}
+        </TransitionGroup>
+      )}
+    </PopoutForm>
+  );
+};
+
+export default AddFilterPopout;

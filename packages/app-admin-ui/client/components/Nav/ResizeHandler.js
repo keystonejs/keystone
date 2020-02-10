@@ -48,7 +48,7 @@ const ResizeHandler = ({ children }) => {
     return () => {
       removeBinding(KEYBOARD_SHORTCUT);
     };
-  }, []);
+  });
 
   useEffect(() => {
     window.addEventListener('mousemove', handleResize, LISTENER_OPTIONS);
