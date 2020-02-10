@@ -254,7 +254,7 @@ const ItemDetails = ({
             <Render key={field.path}>
               {() => {
                 const [Field] = field.adminMeta.readViews([field.views.Field]);
-
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
                     setItem({
@@ -267,7 +267,7 @@ const ItemDetails = ({
                   },
                   [field]
                 );
-
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
                     <Field

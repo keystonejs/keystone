@@ -151,6 +151,7 @@ const UpdateManyModal = ({
             <Render>
               {() => {
                 let [Field] = field.adminMeta.readViews([field.views.Field]);
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 let onChange = useCallback(
                   value => {
                     setItem({
@@ -162,6 +163,7 @@ const UpdateManyModal = ({
                   },
                   [field]
                 );
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
                     <Field
