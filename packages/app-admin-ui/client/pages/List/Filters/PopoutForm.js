@@ -75,11 +75,11 @@ const FilterPopout = ({ children, ...props }) => {
     );
   };
 
-  const popoutForm = props => <form onSubmit={onSubmit} {...props} />;
+  const popoutForm = useRef(props => <form onSubmit={onSubmit} {...props} />);
 
   return (
     <Popout
-      component={popoutForm}
+      component={popoutForm.current}
       bodyRef={getPopoutBody}
       innerRef={getPopoutRef}
       footerContent={renderFooter()}
