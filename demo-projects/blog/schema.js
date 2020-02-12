@@ -11,6 +11,7 @@ const {
   DateTime,
   OEmbed,
 } = require('@keystonejs/fields');
+const { Content } = require('@keystonejs/field-content');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
 const getYear = require('date-fns/get_year');
@@ -78,6 +79,17 @@ exports.Post = {
       options: [
         { label: 'Draft', value: 'draft' },
         { label: 'Published', value: 'published' },
+      ],
+    },
+    content: {
+      type: Content,
+      blocks: [
+        [OEmbed.blocks.oEmbed, { adapter: iframelyAdapter }],
+        Content.blocks.blockquote,
+        Content.blocks.orderedList,
+        Content.blocks.unorderedList,
+        Content.blocks.link,
+        Content.blocks.heading,
       ],
     },
     body: { type: Wysiwyg },

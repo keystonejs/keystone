@@ -24,6 +24,7 @@
     "@keystonejs/app-next": "^5.0.2",
     "@keystonejs/app-static": "^5.0.0",
     "@keystonejs/auth-password": "^5.0.1",
+    "@keystonejs/field-content": "^5.3.0",
     "@keystonejs/fields": "^6.0.5",
     "@keystonejs/fields-markdown": "^5.0.4",
     "@keystonejs/fields-wysiwyg-tinymce": "^5.0.4",

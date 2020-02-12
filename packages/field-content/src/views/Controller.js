@@ -150,6 +150,19 @@ export default class ContentController extends Controller {
       document: JSON.parse(data[path].document),
     };
 
+    // Filter out oEmbeds from document that are missing from serializations
+    parsedData.document.nodes = parsedData.document.nodes.filter(node => {
+      if (node.type !== 'oEmbed') {
+        return true;
+      }
+
+      if (!node.data || !node.data._joinIds || !node.data._joinIds.length) {
+        return false;
+      }
+
+      return parsedData.oEmbeds.find(embed => embed.id === node.data._joinIds[0]);
+    });
+
     return deserialize(parsedData, blocks);
   };
 
