@@ -19,6 +19,7 @@ export const TextDayPicker = ({
 
   return (
     <Input
+      type="date"
       value={value}
       placeholder="Enter a date..."
       onBlur={() => {
