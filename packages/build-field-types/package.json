@@ -36,7 +36,6 @@
     "inquirer": "^6.2.0",
     "jest-worker": "^24.9.0",
     "lodash.isempty": "^4.4.0",
-    "magic-string": "^0.25.1",
     "meow": "^5.0.0",
     "ms": "^2.1.1",
     "p-limit": "^2.2.0",
