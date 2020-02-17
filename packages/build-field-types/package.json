@@ -37,7 +37,7 @@
     "fs-extra": "^7.0.0",
     "globby": "^9.1.0",
     "inquirer": "^6.2.0",
-    "jest-worker": "^24.9.0",
+    "jest-worker": "^25.1.0",
     "lodash.isempty": "^4.4.0",
     "meow": "^5.0.0",
     "ms": "^2.1.1",
