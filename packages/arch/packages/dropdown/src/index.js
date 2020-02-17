@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
-import { FocusTrap } from 'react-focus-marshal';
+import FocusTrap from 'focus-trap-react';
 import { withModalHandlers, slideDown } from '@arch-ui/modal-utils';
 
 const ItemElement = props => {
@@ -210,7 +210,7 @@ class Dropdown extends Component {
 
     if (attachTo) {
       return createPortal(
-        <FocusTrap options={{ clickOutsideDeactivates: true }}>
+        <FocusTrap focusTrapOptions={{ clickOutsideDeactivates: true }}>
           <Menu
             left={leftOffset}
             onMouseLeave={this.handleMenuLeave}
