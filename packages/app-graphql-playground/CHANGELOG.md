@@ -1,5 +1,11 @@
 # @keystonejs/app-graphql-playground
 
+## 5.0.1
+
+### Patch Changes
+
+- [`59fd3689`](https://github.com/keystonejs/keystone/commit/59fd3689af3bc73682e430feed21b77376e54092) [#2380](https://github.com/keystonejs/keystone/pull/2380) Thanks [@timleslie](https://github.com/timleslie)! - Updated `graphql-playground` to fix minor [UI error](https://github.com/apollographql/graphql-playground/pull/21).
+
 ## 5.0.0
 
 ### Major Changes

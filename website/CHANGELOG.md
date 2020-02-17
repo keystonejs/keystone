@@ -1,5 +1,13 @@
 # @keystonejs/website
 
+## 5.0.6
+
+### Patch Changes
+
+- [`face87ca`](https://github.com/keystonejs/keystone/commit/face87caa16221723734d8eda5f4542e4e937772) [#2386](https://github.com/keystonejs/keystone/pull/2386) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `gatsby-plugin-manifest` dependency to 2.2.41 and `gatsby-plugin-sharp` dependency to 2.4.5.
+
+* [`142a500b`](https://github.com/keystonejs/keystone/commit/142a500b354116ef2ece8f5044f8ad3ab2a940a1) [#2387](https://github.com/keystonejs/keystone/pull/2387) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed deprecated `gatsby-mdx` dependency.
+
 ## 5.0.5
 
 ### Patch Changes
