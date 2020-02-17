@@ -113,10 +113,10 @@
   resolved "https://registry.yarnpkg.com/@apollographql/graphql-playground-html/-/graphql-playground-html-1.6.24.tgz#3ce939cb127fb8aaa3ffc1e90dff9b8af9f2e3dc"
   integrity sha512-8GqG48m1XqyXh4mIZrtB5xOhUwSsh1WsrrsaZQOEYYql3YN9DEu9OOSg0ILzXHZo/h2Q74777YE4YzlArQzQEQ==
 
-"@apollographql/graphql-playground-react@^1.7.31":
-  version "1.7.31"
-  resolved "https://registry.yarnpkg.com/@apollographql/graphql-playground-react/-/graphql-playground-react-1.7.31.tgz#aec579eb0e7e929d448be6a65a1e64e5b4d0734b"
-  integrity sha512-xyKLGQg8zLIEL3mtnBrzrl+V8lIr8Ss4dUzwufOItWxzhmlQRW00yOjXknjQXGdGIV2wKqBjGCRG4yAeS3xMBA==
+"@apollographql/graphql-playground-react@^1.7.32":
+  version "1.7.32"
+  resolved "https://registry.yarnpkg.com/@apollographql/graphql-playground-react/-/graphql-playground-react-1.7.32.tgz#3cc11ee897981cb5d162beac7e733d153e2d572e"
+  integrity sha512-IRp92j+XOyiONQQDA45yJxEeylmQIRhewVwB0i+DnH2HNUp37BSk/ZzF6OPncHfiZ9qnGe6jZloQftYHQKk5Vg==
   dependencies:
     "@types/lru-cache" "^4.1.1"
     apollo-link "^1.0.7"
