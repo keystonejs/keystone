@@ -181,7 +181,7 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   _delete(id) {
-    return this.model.findByIdAndRemove(id);
+    return this.model.deleteOne({ _id: id }).then(result => result.deletedCount);
   }
 
   _update(id, data) {
