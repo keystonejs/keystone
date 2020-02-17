@@ -78,8 +78,8 @@ function readAdminMeta() {
     [hooks] = readViews([hookView]);
   }
   const hookPages = hooks.pages ? hooks.pages() : [];
-  const adminMataPages = adminMeta.pages ? adminMeta.pages : [];
-  const pages = resolveCustomPages([...adminMataPages, ...hookPages]);
+  const adminMetaPages = adminMeta.pages ? adminMeta.pages : [];
+  const pages = resolveCustomPages([...adminMetaPages, ...hookPages]);
   return { ...adminMeta, hooks, pages };
 }
 
