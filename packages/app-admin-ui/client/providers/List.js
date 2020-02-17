@@ -1,6 +1,9 @@
 import React, { useContext, createContext, useState } from 'react';
+/** @typedef {import('../classes/List').default} List */
+
 const ListContext = createContext();
 export const useList = () => {
+  /** @type {{list: List, isCreateItemModalOpen: boolean, openCreateItemModal: () => void, closeCreateItemModal: () => void }} */
   const { list, isCreateItemModalOpen, openCreateItemModal, closeCreateItemModal } = useContext(
     ListContext
   );
@@ -16,6 +19,10 @@ export const useList = () => {
   };
 };
 
+/**
+ * @param {{ list: List, children: JSX.Element }}
+ * @returns {JSX.Element}
+ */
 export const ListProvider = ({ list, children }) => {
   const [modals, setModalsOpen] = useState({ [list.key]: false });
   const isOpen = modals[list.key];

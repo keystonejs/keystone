@@ -33,9 +33,11 @@ let hasInitialisedLists = false;
 const adminMeta = {
   ...srcMeta,
   listKeys,
+  /** @returns {List} */
   getListByKey(key) {
     return listsByKey[key];
   },
+  /** @returns {List} */
   getListByPath(path) {
     return listsByPath[path];
   },
