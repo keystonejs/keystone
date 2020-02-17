@@ -1,5 +1,11 @@
 # @arch-ui/fields
 
+## 2.1.1
+
+### Patch Changes
+
+- [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a) [#2340](https://github.com/keystonejs/keystone/pull/2340) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed rendering of `false` string when value is `Boolean`
+
 ## 2.1.0
 
 ### Minor Changes

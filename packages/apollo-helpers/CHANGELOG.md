@@ -1,5 +1,18 @@
 # @keystonejs/apollo-helpers
 
+## 5.0.7
+
+### Patch Changes
+
+- [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e) [#2323](https://github.com/keystonejs/keystone/pull/2323) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Apollo-related dependencies:
+
+  apollo-boost: 0.4.4 -> 0.4.7
+  apollo-cache-inmemory: 1.5.1 -> 1.6.5
+  apollo-client: 2.6.4 -> 2.6.8
+  apollo-server-express: 2.9.1 -> 2.9.16
+  apollo-upload-client: 10.0.0 -> 12.1.0
+  apollo-utilities: 1.3.2 -> 1.3.3
+
 ## 5.0.6
 
 ### Patch Changes
