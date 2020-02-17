@@ -70,5 +70,4 @@ keystone.createList('Example', {
 | `graphQLReturnFragment` | `String`   | ''         | A GraphQL Fragment String -required for nested return types |
 | `extendGraphQLTypes`    | `Array`    | \[]        | An array of custom GraphQL type definitions                 |
 
-
 **Note**: Related fields within a virtual field resolver will not return related items. If you need to access related items, you can perform a subsequent graphql query within the resolver. The reason for this limitation is, we can't know which related items are required. Since it is possible for items to have millions of related items, it would be problematic to immediately look and return all of these.
