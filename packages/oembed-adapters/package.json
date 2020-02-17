@@ -8,6 +8,9 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "author": "The Keystone Development Team",
   "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
