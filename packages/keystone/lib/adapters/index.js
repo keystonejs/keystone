@@ -113,7 +113,7 @@ class BaseListAdapter {
   }
 
   async delete(id) {
-    return this.onPostRead(this._delete(id));
+    return this._delete(id);
   }
 
   async update(id, data) {

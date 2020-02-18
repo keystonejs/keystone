@@ -8,7 +8,7 @@ const {
 
 let apolloClient = null;
 
-function create(initialState) {
+function create(initialState, req) {
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   return new ApolloClient({
     connectToDevTools: process.browser,
@@ -18,16 +18,17 @@ function create(initialState) {
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
       // Use fetch() polyfill on the server
       fetch: !process.browser && fetch,
+      headers: req && req.headers,
     }),
     cache: new InMemoryCache().restore(initialState || {}),
   });
 }
 
-export default function initApollo(initialState) {
+export default function initApollo(initialState, req) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!process.browser) {
-    return create(initialState);
+    return create(initialState, req);
   }
 
   // Reuse client on the client-side

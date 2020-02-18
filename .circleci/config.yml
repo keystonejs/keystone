@@ -7,7 +7,7 @@ version: 2
 x-job-setup: &job-setup
   docker:
     # specify the version you desire here
-    - image: circleci/node:carbon-browsers
+    - image: circleci/node:dubnium-browsers
       environment:
         TEST_DATABASE_URL: postgresql://root@localhost/circle_test
         KNEX_URI: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
@@ -19,14 +19,14 @@ x-job-setup: &job-setup
 # Download and cache dependencies
 x-restore-cache: &restore-cache
   keys:
-    - v14-dependencies-{{ checksum "yarn.lock" }}
+    - v15-dependencies-{{ checksum "yarn.lock" }}
       # fallback to using the latest cache if no exact match is found
-    - v14-dependencies-
+    - v15-dependencies-
 
 x-save-cache: &save-cache
   paths:
     - node_modules
-  key: v14-dependencies-{{ checksum "yarn.lock" }}
+  key: v15-dependencies-{{ checksum "yarn.lock" }}
 
 x-integration-steps: &integration-steps
   steps:
