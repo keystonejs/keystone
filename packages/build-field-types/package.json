@@ -1,6 +1,6 @@
 {
   "name": "@keystonejs/build-field-types",
-  "version": "5.1.4",
+  "version": "5.2.0",
   "description": "A build tool for KeystoneJS 5 Field Types",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone-5/tree/master/packages/build-field-types",
@@ -17,6 +17,9 @@
     "build": "rimraf lib && babel src --out-dir dist --ignore '**/__tests__/**/*','**/__mocks__/**/*'"
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "dependencies": {
     "@babel/core": "^7.7.7",
     "@babel/helper-module-imports": "^7.7.4",

@@ -1,11 +1,11 @@
 {
   "name": "@keystonejs/apollo-helpers",
   "description": "Utilities to make using react-apollo + KeystoneJS easier.",
-  "version": "5.0.6",
+  "version": "5.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "build": "echo 'noop - see the Keystone package.json#build script'"

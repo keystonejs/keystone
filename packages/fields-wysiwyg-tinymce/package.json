@@ -3,11 +3,11 @@
   "description": "KeystoneJS WYSIWYG HTML Field Type, powered by TinyMCE",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone-5/tree/master/packages/build-field-types",
-  "version": "5.0.4",
+  "version": "5.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "dependencies": {
     "@arch-ui/fields": "^2.0.5",
@@ -16,8 +16,8 @@
     "@arch-ui/theme": "^0.0.7",
     "@babel/runtime": "^7.7.7",
     "@emotion/core": "^10.0.22",
-    "@keystonejs/build-field-types": "^5.1.4",
-    "@keystonejs/fields": "^6.0.5",
+    "@keystonejs/build-field-types": "^5.2.0",
+    "@keystonejs/fields": "^6.3.0",
     "cuid": "^2.1.6",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",

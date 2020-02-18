@@ -1,5 +1,19 @@
 # @keystonejs/website
 
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+## 5.0.6
+
+### Patch Changes
+
+- [`face87ca`](https://github.com/keystonejs/keystone/commit/face87caa16221723734d8eda5f4542e4e937772) [#2386](https://github.com/keystonejs/keystone/pull/2386) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `gatsby-plugin-manifest` dependency to 2.2.41 and `gatsby-plugin-sharp` dependency to 2.4.5.
+
+* [`142a500b`](https://github.com/keystonejs/keystone/commit/142a500b354116ef2ece8f5044f8ad3ab2a940a1) [#2387](https://github.com/keystonejs/keystone/pull/2387) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed deprecated `gatsby-mdx` dependency.
+
 ## 5.0.5
 
 ### Patch Changes
