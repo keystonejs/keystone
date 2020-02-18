@@ -1,5 +1,22 @@
 # @keystonejs/cypress-project-access-control
 
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/adapter-mongoose@5.2.0
+  - @keystonejs/app-admin-ui@5.8.0
+  - @keystonejs/app-graphql@5.1.0
+  - @keystonejs/auth-password@5.1.0
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/keystone@5.5.0
+  - @keystonejs/utils@5.2.0
+
 ## 5.0.4
 
 ### Patch Changes
