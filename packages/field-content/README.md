@@ -26,14 +26,14 @@ keystone.createList('Post', {
     body: {
       type: Content,
       blocks: [
-        Content.blocks.blockquote, 
+        Content.blocks.blockquote,
         Content.blocks.image,
         Content.blocks.link,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
         Content.blocks.heading,
-        CloudinaryImage.blocks.image
-        ],
+        CloudinaryImage.blocks.image,
+      ],
     },
   },
 });

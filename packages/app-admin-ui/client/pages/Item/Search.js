@@ -2,6 +2,7 @@
 
 import { jsx, keyframes } from '@emotion/core';
 import { forwardRef, useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { SearchIcon, XIcon } from '@arch-ui/icons';
 import { IconButton } from '@arch-ui/button';
@@ -11,14 +12,13 @@ import { uniformHeight } from '@arch-ui/common';
 import Tooltip from '@arch-ui/tooltip';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
-import { useRouter } from '../List/dataHooks';
 
 export function Search({ list }) {
   // const { urlState } = useListUrlState(list.key);
   const [value, setValue] = useState('');
   const [formIsVisible, setFormVisible] = useState(false);
   const inputRef = useRef(null);
-  const { history } = useRouter();
+  const history = useHistory();
   const { adminPath } = useAdminMeta();
 
   const showForm = () => {
