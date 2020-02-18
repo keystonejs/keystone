@@ -5,7 +5,7 @@ import { Component, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
-import { FocusTrap } from 'react-focus-marshal';
+import FocusTrap from 'focus-trap-react';
 import { withModalHandlers, springDown } from '@arch-ui/modal-utils';
 
 const ARROW_WIDTH = 30;
@@ -32,7 +32,9 @@ const Wrapper = forwardRef(({ left, top, width, ...props }, ref) => {
   );
 });
 
-const WrapperInner = props => <div css={{ position: 'relative' }} {...props} />;
+const WrapperInner = forwardRef((props, ref) => (
+  <div ref={ref} css={{ position: 'relative' }} {...props} />
+));
 
 const Arrow = ({ left }) => (
   <div
@@ -132,7 +134,7 @@ class Popout extends Component {
             width={width}
             style={style} // style comes from Transition
           >
-            <FocusTrap options={{ clickOutsideDeactivates: true }}>
+            <FocusTrap focusTrapOptions={{ clickOutsideDeactivates: true }}>
               <WrapperInner>
                 <Arrow left={arrowLeftOffset} />
                 {children}

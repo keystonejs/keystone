@@ -1,5 +1,20 @@
 # @arch-ui/popout
 
+## 0.0.14
+
+### Patch Changes
+
+- [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24) [#2373](https://github.com/keystonejs/keystone/pull/2373) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced `react-focus-marshal` dependency with `focus-trap-react`.
+
+## 0.0.13
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a)]:
+  - @arch-ui/modal-utils@1.0.6
+  - @arch-ui/theme@0.0.7
+
 ## 0.0.12
 
 ### Patch Changes

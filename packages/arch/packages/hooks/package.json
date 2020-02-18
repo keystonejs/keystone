@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/hooks",
   "description": "Custom Hooks used in @arch-ui packages.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/hooks.cjs.js",
@@ -13,7 +13,7 @@
   },
   "module": "dist/hooks.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.7.4",
+    "@babel/runtime": "^7.8.4",
     "resize-observer-polyfill": "^1.5.1"
   }
 }

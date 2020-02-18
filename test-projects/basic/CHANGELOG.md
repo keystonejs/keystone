@@ -1,5 +1,54 @@
 # @keystonejs/cypress-project-basic
 
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/adapter-mongoose@5.2.0
+  - @keystonejs/app-admin-ui@5.8.0
+  - @keystonejs/app-graphql@5.1.0
+  - @keystonejs/app-static@5.1.0
+  - @keystonejs/field-content@5.4.0
+  - @keystonejs/fields-markdown@5.1.0
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/file-adapters@5.5.0
+  - @keystonejs/keystone@5.5.0
+  - @keystonejs/oembed-adapters@5.1.0
+
+## 5.0.5
+
+### Patch Changes
+
+- [`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2) [#2320](https://github.com/keystonejs/keystone/pull/2320) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `graphql` dependency from 14.4.2 to 14.6.0 and `graphql-type-json` depedency from 0.2.1 to 0.3.1.
+
+- Updated dependencies [[`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2), [`29845426`](https://github.com/keystonejs/keystone/commit/29845426cb699afcc003f6a0b9ef540a61f808b4), [`ae4cf2d1`](https://github.com/keystonejs/keystone/commit/ae4cf2d108768d7ccbd23a409e7170fc92c81316), [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e), [`6c25d331`](https://github.com/keystonejs/keystone/commit/6c25d3319f89351568ad9d007b985a230e54b5b3), [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24), [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a)]:
+  - @keystonejs/app-admin-ui@5.7.3
+  - @keystonejs/app-graphql@5.0.4
+  - @keystonejs/fields@6.2.3
+  - @keystonejs/keystone@5.4.4
+  - @arch-ui/fields@2.1.1
+
+## 5.0.4
+
+### Patch Changes
+
+- [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29) [#2189](https://github.com/keystonejs/keystone/pull/2189) - Upgraded prettier to 1.19.1 and formatted code accordingly.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a), [`f3ea15f8`](https://github.com/keystonejs/keystone/commit/f3ea15f86f7bbd08abddcf3a63c5c66e86693d29), [`ef419b59`](https://github.com/keystonejs/keystone/commit/ef419b59729a050f25fc886be6ec8ce17cbb1104), [`05d07adf`](https://github.com/keystonejs/keystone/commit/05d07adf84059ff565cd2394f68d71d92e657485), [`78193f9c`](https://github.com/keystonejs/keystone/commit/78193f9c9d93655fb0d4b8dc494fbe4c622a4d64)]:
+  - @keystonejs/app-admin-ui@5.5.3
+  - @arch-ui/fields@2.0.5
+  - @keystonejs/field-content@5.2.2
+  - @keystonejs/fields-markdown@5.0.4
+  - @keystonejs/fields@6.0.5
+  - @keystonejs/oembed-adapters@5.0.4
+  - @keystonejs/file-adapters@5.3.1
+  - @keystonejs/keystone@5.4.1
+  - @keystonejs/adapter-mongoose@5.1.4
+
 ## 5.0.3
 
 ### Patch Changes

@@ -3,7 +3,7 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
-import MDXRenderer from 'gatsby-mdx/mdx-renderer';
+import { MDXRenderer } from 'gatsby-plugin-mdx';
 
 import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/core';
@@ -48,7 +48,7 @@ export default function Template({
     next = flatNavData[currentPageIndex + 1];
   }
 
-  const { code, fields } = mdx;
+  const { body, fields } = mdx;
   const { siteMetadata } = site;
   const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
   const title = `${
@@ -75,7 +75,7 @@ export default function Template({
               <main>
                 <SkipNavContent />
                 <MDXProvider components={mdComponents}>
-                  <MDXRenderer>{code.body}</MDXRenderer>
+                  <MDXRenderer>{body}</MDXRenderer>
                 </MDXProvider>
               </main>
               <EditSection>
@@ -347,10 +347,7 @@ const Content = props => (
 export const pageQuery = graphql`
   query($mdPageId: String!) {
     mdx(id: { eq: $mdPageId }) {
-      rawBody
-      code {
-        body
-      }
+      body
       fields {
         heading
         description

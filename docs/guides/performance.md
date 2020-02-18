@@ -36,7 +36,7 @@ On the second step, you will see a screen such as:
 
 Ignore the `npx apollo service:push` command for now,
 we'll need to upload the schema a slightly different way to account for any
-[Access Control](/guides/access-control.) you may have setup.
+[Access Control](/docs/guides/access-control.md) you may have setup.
 
 #### Config
 
@@ -135,10 +135,10 @@ _(Note: you do not need the `DUMP_SCHEMA` environment variable when starting the
 server - it is only used for exporting an updated schema and should not be set
 when trying to start the KeystoneJS GraphQL API)_
 
-Apollo Server will read the `ENGINE_API_KEY` env var and start sending graphQL
+Apollo Server will read the `ENGINE_API_KEY` env var and start sending GraphQL
 stats to Apollo Engine.
 
-Within seconds of triggering graphQL requests, they will begin to show in Apollo
+Within seconds of triggering GraphQL requests, they will begin to show in Apollo
 Engine:
 
 [Apollo Engine > Metrics > Slow Query > Trace > Inspect](./apollo-engine-metrics-usage.gif)

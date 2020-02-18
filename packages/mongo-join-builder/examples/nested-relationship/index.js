@@ -1,12 +1,11 @@
-const { queryParser, pipelineBuilder, mutationBuilder } = require('../../');
+const { queryParser, pipelineBuilder } = require('../../');
 const getDatabase = require('../database');
 
 const builder = async (query, aggregate, listAdapter) => {
   const queryTree = queryParser({ listAdapter }, query);
   const pipeline = pipelineBuilder(queryTree);
-  const postQueryMutations = mutationBuilder(queryTree.relationships);
   // Run the query against the given database and collection
-  return await aggregate(pipeline).then(postQueryMutations);
+  return await aggregate(pipeline);
 };
 
 // Get all unfulfilled orders that have some out of stock items

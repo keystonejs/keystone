@@ -15,6 +15,7 @@ import KeyboardShortcuts from './components/KeyboardShortcuts';
 import PageLoading from './components/PageLoading';
 import ToastContainer from './components/ToastContainer';
 import { useAdminMeta } from './providers/AdminMeta';
+import { ListProvider } from './providers/List';
 import { HooksProvider } from './providers/Hooks';
 
 import HomePage from './pages/Home';
@@ -58,39 +59,53 @@ export const KeystoneAdminUI = () => {
         // TODO: Permission query to show/hide a list from the
         // menu
         const list = adminMeta.getListByPath(listKey);
-        return list ? (
-          <Switch>
-            <Route
-              exact
-              path={`${adminPath}/:list`}
-              render={routeProps => (
-                <ListPage key={listKey} list={list} adminMeta={adminMeta} routeProps={routeProps} />
-              )}
-            />
-            ,
-            <Route
-              exact
-              path={`${adminPath}/:list/:itemId`}
-              render={({
-                match: {
-                  params: { itemId },
-                },
-              }) => (
-                <ItemPage key={`${listKey}-${itemId}`} list={list} itemId={itemId} {...adminMeta} />
-              )}
-            />
-            ,
-            <Route render={() => <InvalidRoutePage {...adminMeta} />} />,
-          </Switch>
-        ) : (
-          <ListNotFoundPage listKey={listKey} {...adminMeta} />
+        if (!list) {
+          return <ListNotFoundPage listKey={listKey} {...adminMeta} />;
+        }
+
+        return (
+          <ListProvider list={list}>
+            <Switch>
+              <Route
+                exact
+                path={`${adminPath}/:list`}
+                render={routeProps => (
+                  <ListPage
+                    key={listKey}
+                    list={list}
+                    adminMeta={adminMeta}
+                    routeProps={routeProps}
+                  />
+                )}
+              />
+              ,
+              <Route
+                exact
+                path={`${adminPath}/:list/:itemId`}
+                render={({
+                  match: {
+                    params: { itemId },
+                  },
+                }) => (
+                  <ItemPage
+                    key={`${listKey}-${itemId}`}
+                    list={list}
+                    itemId={itemId}
+                    {...adminMeta}
+                  />
+                )}
+              />
+              ,
+              <Route render={() => <InvalidRoutePage {...adminMeta} />} />,
+            </Switch>
+          </ListProvider>
         );
       },
     },
   ];
 
   return (
-    <HooksProvider value={hooks}>
+    <HooksProvider hooks={hooks}>
       <ApolloProvider client={apolloClient}>
         <KeyboardShortcuts>
           <ToastProvider components={{ ToastContainer }}>

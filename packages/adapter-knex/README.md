@@ -28,6 +28,12 @@ _**Default:**_ `'public'`
 
 All postgres tables are grouped within a schema and `public` is the default schema.
 
+### `options.dropDatabase`
+
+_**Default:**_ `false`
+
+Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application.
+
 ### `options.knexOptions`
 
 These options are passed directly through to Knex.
@@ -71,8 +77,8 @@ Otherwise, you can run these steps manually:
 
 ```shell
 createdb -U postgres keystone
-psql ks5_dev -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
-psql ks5_dev -U postgres -c "GRANT ALL ON DATABASE keystone TO keystone5;"
+psql keystone -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
+psql keystone -U postgres -c "GRANT ALL ON DATABASE keystone TO keystone5;"
 ```
 
 If using the above, you will want to set a connection string of: `postgres://keystone5:k3yst0n3@localhost:5432/keystone`

@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 
 export default class SelectField extends Component {
@@ -32,6 +32,7 @@ export default class SelectField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput>
           <div css={{ flex: 1 }}>
             <Select

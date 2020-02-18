@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { createContext, useContext } from 'react';
 
-const { Consumer, Provider } = React.createContext();
+const KeyboardContext = createContext();
 
 const LISTENER_OPTIONS = {
   capture: true,
@@ -63,12 +63,19 @@ export default class KeyboardShortcuts extends React.Component {
       unsubscribe: this.unsubscribe,
     };
 
-    return <Provider value={value}>{this.props.children}</Provider>;
+    return <KeyboardContext.Provider value={value}>{this.props.children}</KeyboardContext.Provider>;
   }
 }
 
-export const KeyboardConsumer = ({ children }) => <Consumer>{ctx => children(ctx)}</Consumer>;
+export const KeyboardConsumer = ({ children }) => (
+  <KeyboardContext.Consumer>{ctx => children(ctx)}</KeyboardContext.Consumer>
+);
 
 export const withKeyboardConsumer = Comp => props => (
   <KeyboardConsumer>{context => <Comp keyManager={context} {...props} />}</KeyboardConsumer>
 );
+
+export const useKeyboardManager = () => {
+  const { subscribe, unsubscribe } = useContext(KeyboardContext);
+  return { addBinding: subscribe, removeBinding: unsubscribe };
+};

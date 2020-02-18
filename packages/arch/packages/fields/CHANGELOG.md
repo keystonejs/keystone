@@ -1,5 +1,27 @@
 # @arch-ui/fields
 
+## 2.1.1
+
+### Patch Changes
+
+- [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a) [#2340](https://github.com/keystonejs/keystone/pull/2340) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed rendering of `false` string when value is `Boolean`
+
+## 2.1.0
+
+### Minor Changes
+
+- [`ca2b043a`](https://github.com/keystonejs/keystone/commit/ca2b043a5043f6b4b110050127b2a9d759bb8569) [#2286](https://github.com/keystonejs/keystone/pull/2286) - Added `FieldDescription` to `@arch-ui/fields`.
+
+## 2.0.5
+
+### Patch Changes
+
+- [`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a) [#2144](https://github.com/keystonejs/keystone/pull/2144) - Upgraded all @babel/\* dependencies.
+- Updated dependencies [[`38f88b62`](https://github.com/keystonejs/keystone/commit/38f88b62d9592d91b56528d4d9c40e9399440c4a)]:
+  - @arch-ui/icons@0.0.8
+  - @arch-ui/lozenge@0.0.11
+  - @arch-ui/theme@0.0.7
+
 ## 2.0.4
 
 ### Patch Changes

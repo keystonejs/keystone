@@ -7,7 +7,7 @@ order: 1
 
 # Introduction to the GraphQL API
 
-_Before you begin:_ This guide assumes you have running instance of KeystoneJS with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
+_Before you begin:_ This guide assumes you have a running instance of KeystoneJS with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
 
 Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any KeystoneJS list.
 
@@ -32,7 +32,7 @@ KeystoneJS would generate the following queries:
 
 ### allUsers
 
-Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Search and Filtering](#search-and-filtering).
+Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, Limit and Sorting](#filter-limit-and-sorting).
 
 #### Usage
 
@@ -46,7 +46,7 @@ query {
 
 ### \_allUsersMeta
 
-Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [search and filtering](#search-and-filtering) parameters as the `allUsers` query.
+Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [filter, limit and sorting](#filter-limit-and-sorting) parameters as the `allUsers` query.
 
 #### Usage
 
@@ -74,7 +74,7 @@ query {
 
 ### \_UsersMeta
 
-Retrieves meta information about the `User` list itself (ie; not about items in the list) such as access control information. This query accepts no parameters.
+Retrieves meta information about the `User` list itself (i.e. not about items in the list) such as access control information. This query accepts no parameters.
 
 ## Mutations
 
@@ -163,7 +163,9 @@ mutation {
 
 ## Executing Queries and Mutations
 
-Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/). The default path for KeystoneJS' GraphQl Playground is `http://localhost:3000/admin/graphql`. Here you can execute queries and mutations against the KeystoneJS API without writing any JavaScript.
+Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/).
+The default path for KeystoneJS' GraphQl Playground is `http://localhost:3000/admin/graphql`.
+Here you can execute queries and mutations against the KeystoneJS API without writing any JavaScript.
 
 Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to KeystoneJS' API. The default API endpoint is: `http://localhost:3000/admin/api`.
 
@@ -218,13 +220,15 @@ fetch('/admin/api', {
 
 A good next step is to write an `executeQuery` function that accepts a query and variables and returns the results from the API. Take a look at the `todo` sample application in the `cli` for examples of this.
 
-**Note:** If you have configured [Access Control](/api/access-control) it can effect the result of some queries.
+**Note:** If you have configured [Access Control](/docs/api/access-control.md) it can effect the result of some queries.
 
 ## Executing Queries and Mutations on the Server
 
-In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/keystonejs/keystone/#executequeryquerystring-config).
+In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/packages/keystone/README.md#executequeryquerystring-config).
 
-**Note: ** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/keystonejs/keystone/#executequeryquerystring-config)
+**Note:** No access control checks are run when executing queries on the server.
+Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`.
+See: [Keystone executeQuery()](/packages/keystone/README.md#executequeryquerystring-config)
 
 ## Filter, Limit and Sorting
 

@@ -1,27 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
-import { __RouterContext } from 'react-router-dom';
-import debounce from 'lodash.debounce';
+import { useEffect, useState, useCallback } from 'react';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
 import { decodeSearch, encodeSearch } from './url-state';
 import { useAdminMeta } from '../../providers/AdminMeta';
-
-// ==============================
-// Interim Measures
-// ==============================
-
-/*
- Use the provided API when these libs have hooks ready
-*/
-
-// FIXME: react-router-dom
-// https://github.com/ReactTraining/react-router
-
-export function useRouter() {
-  return useContext(__RouterContext);
-}
 
 /**
  * List Hook
@@ -66,10 +50,12 @@ export const useList = listKey => {
 // };
 
 export function useListUrlState(listKey) {
-  const routeProps = useRouter();
+  const history = useHistory();
+  const location = useLocation();
+  const match = useRouteMatch();
   const list = useList(listKey);
-  const decodeConfig = { ...routeProps, list };
-  const urlState = decodeSearch(routeProps.location.search, decodeConfig);
+  const decodeConfig = { history, location, match, list };
+  const urlState = decodeSearch(location.search, decodeConfig);
 
   return { decodeConfig, urlState };
 }
@@ -110,8 +96,8 @@ export function useListQuery(listKey) {
  */
 
 export function useListModifier(listKey) {
-  const routeProps = useRouter();
-  const { history, location } = routeProps;
+  const history = useHistory();
+  const location = useLocation();
   const list = useList(listKey);
   const { decodeConfig, urlState } = useListUrlState(listKey);
 
@@ -207,17 +193,22 @@ export function useListSearch(listKey) {
   const { search: searchValue } = urlState;
   const setSearch = useListModifier(listKey);
   const { items } = useListItems(listKey);
-  const routeProps = useRouter();
-  const { history, match } = routeProps;
+  const history = useHistory();
+  const match = useRouteMatch();
 
-  const onChange = debounce(newSearch => {
-    const addHistoryRecord = !searchValue;
-    setSearch({ search: newSearch }, addHistoryRecord);
-  }, 300);
-  const onClear = () => {
+  const onChange = useCallback(
+    newSearch => {
+      const addHistoryRecord = !searchValue;
+      setSearch({ search: newSearch }, addHistoryRecord);
+    },
+    [searchValue]
+  );
+
+  const onClear = useCallback(() => {
     const addHistoryRecord = !!searchValue;
     setSearch({ search: '' }, addHistoryRecord);
-  };
+  }, [searchValue]);
+
   const onSubmit = event => {
     if (event) {
       event.preventDefault();

@@ -16,12 +16,24 @@ editing flows.
 
 ## Usage
 
+This package isn't included with the keystone fields package and needs to be installed with `yarn add @keystonejs/field-content` or `npm install @keystonejs/field-content`.
+
 ```javascript
+const { Content } = require('@keystonejs/field-content');
+
 keystone.createList('Post', {
   fields: {
     body: {
       type: Content,
-      blocks: [Content.blocks.blockquote, CloudinaryImage.blocks.image],
+      blocks: [
+        Content.blocks.blockquote,
+        Content.blocks.image,
+        Content.blocks.link,
+        Content.blocks.orderedList,
+        Content.blocks.unorderedList,
+        Content.blocks.heading,
+        CloudinaryImage.blocks.image,
+      ],
     },
   },
 });

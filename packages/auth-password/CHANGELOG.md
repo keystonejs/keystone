@@ -1,5 +1,23 @@
 # @keystonejs/auth-password
 
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/session@5.1.0
+
+## 5.0.2
+
+### Patch Changes
+
+- [`2ed5404c`](https://github.com/keystonejs/keystone/commit/2ed5404cafd11faeb7a06bd0ef4c65d62a9e27b0) [#2280](https://github.com/keystonejs/keystone/pull/2280) - Refactor code internals to make code paths clearer.
+
 ## 5.0.1
 
 ### Patch Changes

@@ -15,20 +15,21 @@ handles the GraphQL API and Admin UI. Things such as:
 - Add additional routes
 - Setup additional server middleware (`compress`/`brotli`/etc)
 - Notify a 3rd party service when the API is ready
-- ... etc
+- ...
 
 A **Custom Server** can replace the default and act as the entry point to your
-application which consumes your [schema definition](/guides/schema). A Custom
+application which consumes your [schema definition](/docs/guides/schema.md). A Custom
 Server must handle initialising a http server which correctly executes any given KeystoneJS Apps.
 
 _Note_: Before reaching for a custom server, consider using a KeystoneJS
 App which can enhance the functionality of the default server. Apps
 available in KeystoneJS include:
 
-- [Static App](../../keystonejs/app-static) for serving static files.
-- [Next.js App](../../keystonejs/app-next) for serving a Next.js App on the same server as the API
-  The following are some possible ways of setting up a custom server, roughly in
-  order of complexity.
+- [Static App](/packages/app-static/README.md) for serving static files.
+- [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
+- [Nuxt.js App](/packages/app-nuxt/README.md) for serving a Nuxt.js App on the same server as the API
+
+Following are some possible ways of setting up a custom server, roughly in order of complexity.
 
 ## You might not need a custom server if...
 
@@ -129,7 +130,7 @@ keystone
 
 ## Custom Server with manual middleware preparation
 
-For really fine-grained control, a custom server skip calling
+For really fine-grained control, a custom server can skip calling
 `keystone.prepare()` in favour of calling an app's `.prepareMiddleware()`
 function directly.
 

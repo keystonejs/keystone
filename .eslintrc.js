@@ -8,6 +8,11 @@ module.exports = {
     'cypress/globals': true,
   },
   plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', 'emotion'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -37,6 +42,8 @@ module.exports = {
       },
     ],
     'import/no-unresolved': 'error',
+    'jest/valid-describe': 'off',
+    'jest/valid-expect': 'off',
     'object-curly-spacing': ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     'react/jsx-boolean-value': 'warn',

@@ -73,7 +73,10 @@ We'd expect the following results:
       {
         id: 1,
         name: 'almonds',
-        stock: [{ id: 1, warehouse: 'A', stock: 0 }, { id: 3, warehouse: 'B', stock: 0 }],
+        stock: [
+          { id: 1, warehouse: 'A', stock: 0 },
+          { id: 3, warehouse: 'B', stock: 0 },
+        ],
       },
     ],
   },
@@ -106,13 +109,11 @@ db.orders.aggregate([
     $lookup: {
       from: 'items',
       as: 'abc123_items',
-      let: {
-        abc123_items_items: '$items',
-      },
+      let: { tmpVar: '$items' },
       pipeline: [
         {
           $match: {
-            $and: [{ name: { $regex: /a/ } }, { $expr: { $in: ['$_id', '$$abc123_items_items'] } }],
+            $and: [{ name: { $regex: /a/ } }, { $expr: { $in: ['$_id', '$$tmpVar'] } }],
           },
         },
         {

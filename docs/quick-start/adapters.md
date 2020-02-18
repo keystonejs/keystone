@@ -7,9 +7,11 @@ title: Database Setup and Adapters
 
 ## Choosing an Adapter
 
-KeystoneJS currently provides two adapters for connecting to either a MongoDB or PostgreSQL database. Choose the [Mongoose Adapter](/keystonejs/adapter-mongoose/) for MongoDB or the [Knex Adapter](/keystonejs/adapter-knex/) for PostgreSQL.
+KeystoneJS currently provides two adapters for connecting to either a MongoDB or PostgreSQL database.
+Choose the [Mongoose Adapter](/packages/adapter-mongoose/README.md) for MongoDB or the [Knex Adapter](/packages/adapter-knex/README.md) for PostgreSQL.
 
-If you're following the [quick start guide](/quick-start/adapters), simply select the appropriate adapter for your database of choice when prompted. More information on adapter configuration can be found under the _Setup_ sections.
+If you're following the [quick start guide](/docs/quick-start/README.md), simply select the appropriate adapter for your database of choice when prompted.
+More information on adapter configuration can be found under the _Setup_ sections.
 
 _Note_: PostgreSQL requires an additional step to create a database.
 
@@ -17,7 +19,8 @@ _Note_: PostgreSQL requires an additional step to create a database.
 
 ### MacOS
 
-The simplest way to install MongoDB is using [Homebrew](https://brew.sh/). Refer the [official guide](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/) for more information.
+The simplest way to install MongoDB is using [Homebrew](https://brew.sh/).
+Refer the [official guide](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/) for more information.
 
 ### Windows
 
@@ -29,7 +32,8 @@ Follow the [official guide](https://docs.mongodb.com/manual/tutorial/install-mon
 
 ### Setup
 
-By default the Mongoose Adapter will attempt to connect to MongoDB as the current user and create a new database using the project name. You can override these options when [configuring the Mongoose Adapter](/keystonejs/adapter-mongoose/).
+By default the Mongoose Adapter will attempt to connect to MongoDB as the current user and create a new database using the project name.
+You can override these options when [configuring the Mongoose Adapter](/packages/adapter-mongoose/README.md).
 
 ## Installing [Postgres](https://www.postgresql.org/)
 
@@ -47,7 +51,9 @@ For Windows and other platforms see the [download instructions](https://www.post
 
 ### Setup
 
-By default the Knex Adapter will attempt to connect to a PostgreSQL database as the current user. It will look for a a database matching the project name. You can override these options when [configuring the Knex Adapter](/keystonejs/adapter-knex/).
+By default the Knex Adapter will attempt to connect to a PostgreSQL database as the current user.
+It will look for a database matching the project name.
+You can override these options when [configuring the Knex Adapter](/packages/adapter-knex/README.md).
 
 To create database run the following command:
 

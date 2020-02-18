@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
 
-import { useAuth } from '../lib/authetication';
+import { useAuth } from '../lib/authentication';
 import { Container } from '../primitives';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';

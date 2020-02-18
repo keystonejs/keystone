@@ -5,10 +5,10 @@ title: Hooks
 
 # Hooks
 
-Hooks give solution developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
+Hooks give developers a way to add custom logic to the framework of lists, fields and operations Keystone provides.
 
 This document provides an overview of the concepts, patterns and function of the Keystone hook system.
-The [Hooks API docs](/api/hooks.md) describe the specific arguments and usage information.
+The [Hooks API docs](/docs/api/hooks.md) describe the specific arguments and usage information.
 
 ## Conceptual Organisation
 
@@ -29,17 +29,17 @@ These stages are intended to be used for different purposes; they help organise 
 
 ### Operation
 
-Hooks are available for four of the core operations:
+Hooks are available for these core operations:
 
 - `create`
 - `update`
 - `delete`
 
 These operations are reused used for both "single" and "many" modes.
-Eg. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
+E.g. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
 Hooks for these operations have different signatures due to the nature of the operations being performed.
-See the [Hook API docs](/api/hooks.md) for specifics.
+See the [Hook API docs](/docs/api/hooks.md) for specifics.
 
 > Note: Keystone does not currently implement `read` hooks.
 
@@ -48,11 +48,11 @@ See the [Hook API docs](/api/hooks.md) for specifics.
 A hooks _type_ is defined by where it is attached.
 Keystone recognises three _types_ of hook:
 
-- [Field Type hooks](/api/hooks.md#field-type-hooks) -
+- [Field Type hooks](/docs/api/hooks.md#field-type-hooks) -
   Field Type hooks are associated with a particular _field type_ and are applied to all fields of that type across all lists.
-- [Field hooks](/api/hooks.md#field-hooks) -
+- [Field hooks](/docs/api/hooks.md#field-hooks) -
   Field hooks can be defined by the app developer by specifying the `hooks` attribute of a field configuration when calling `createList()`.
-- [List hooks](/api/hooks.md#list-hooks) -
+- [List hooks](/docs/api/hooks.md#list-hooks) -
   List hooks can be defined by the app developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.
 
 ### Hook Set
@@ -60,9 +60,9 @@ Keystone recognises three _types_ of hook:
 For most _stage_ and _operation_ combinations, different functions (hooks) can be supplied for each _hook type_.
 This group of distinct but related hooks are referred to as a _hook set_.
 
-Eg. a `beforeDelete` function could be supplied for a list, several specific fields on the list and a field type used by the list.
+E.g. a `beforeDelete` function could be supplied for a list, several specific fields on the list and a field type used by the list.
 All hooks in a hook set share the same functional signature but are invoked at different times.
-See the [Hooks API docs](/api/hooks.md) and [Intra-Hook Execution Order section](#intra-hook-execution-order) for more information.
+See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order section](#intra-hook-execution-order) for more information.
 
 ### Putting It Together
 
@@ -82,12 +82,12 @@ Due to their similarity, the `create` and `update` operations share a single set
 To implement different logic for these operations make it conditional on either the `operation` or `existingItem` arguments;
 for create operations `existingItem` will be `undefined`.
 
-See the [Hooks API docs](/api/hooks.md) for argument details and usage.
+See the [Hooks API docs](/docs/api/hooks.md) for argument details and usage.
 
 ## Execution Order
 
 The hooks are invoked in a specific order during an operation.
-For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/guides/mutation-lifecycle.md).
+For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/docs/guides/mutation-lifecycle.md).
 
 ### Create/Update
 
@@ -95,7 +95,7 @@ For full details of the mutation lifecycle, and where hooks fit within this, see
 2. Field defaults applied
 3. `resolveInput` called on all fields, even if they are not defined in the supplied data
 4. `validateInput` called on all fields which have a resolved value (after all `resolveInput` calls have returned)
-5. `beforeChange` called on all fields which have a resolved value (after all `beforeChange` calls have returned)
+5. `beforeChange` called on all fields which have a resolved value (after all `validateInput` calls have returned)
 6. Database operation
 7. `afterChange` called on all fields, even if their value was not changed
 
@@ -111,13 +111,13 @@ For full details of the mutation lifecycle, and where hooks fit within this, see
 
 Within each hook set, the different [hook types](#hook-type) are invoked in a specific order.
 
-1. All relevant and defined [field type hooks](/api/hooks.md#field-type-hooks) are invoked in **parallel**
-2. All relevant and defined [field hooks](/api/hooks.md#field-hooks) are invoked in **parallel**
-3. If defined the [list hook](/api/hooks.md#list-hooks) is invoked
+1. All relevant and defined [field type hooks](/docs/api/hooks.md#field-type-hooks) are invoked in **parallel**
+2. All relevant and defined [field hooks](/docs/api/hooks.md#field-hooks) are invoked in **parallel**
+3. If defined the [list hook](/docs/api/hooks.md#list-hooks) is invoked
 
 ## Gotchas
 
-The hook system is a powerful but it's breadth and flexibility introduce some complexity.
+The hook system is powerful but it's breadth and flexibility introduce some complexity.
 A few of the main stumbling blocks are:
 
 - The `create` and `update` operations share a single set of hooks.
@@ -125,8 +125,8 @@ A few of the main stumbling blocks are:
   for create operations `existingItem` will be `undefined`.
 - As per the table above, the `delete` operations have no hook set for the _input resolution_ stage.
   This operation doesn't accept any input (other than the target IDs).
-- Keystone does not currently implement `read` hooks
-- field type hooks and field hooks are run in parallel
+- Keystone does not currently implement `read` hooks.
+- Field type hooks and field hooks run in parallel.
 
 These nuances aren't bugs per se -- they generally exist for good reason --
 but they can make understanding the hook system difficult.

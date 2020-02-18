@@ -82,7 +82,10 @@ export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter)
   }
 
   addToTableSchema(table) {
-    const column = table.enu(this.path, this.field.options.map(({ value }) => value));
+    const column = table.enu(
+      this.path,
+      this.field.options.map(({ value }) => value)
+    );
     if (this.isUnique) column.unique();
     else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();

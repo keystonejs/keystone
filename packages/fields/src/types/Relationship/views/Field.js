@@ -1,17 +1,18 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useState } from 'react';
+import { Component, Fragment } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { PlusIcon, PersonIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
 import RelationshipSelect from './RelationshipSelect';
+import { ListProvider, useList } from '@keystonejs/app-admin-ui/components';
 
 const MAX_IDS_IN_FILTER = 100;
 
@@ -102,9 +103,10 @@ function LinkToRelatedItems({ field, value }) {
   );
 }
 
-function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
+function CreateAndAddItem({ field, item, onCreate, CreateItemModal }) {
+  const { list, openCreateItemModal } = useList();
+
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
-  let [isOpen, setIsOpen] = useState(false);
   let label = `Create and add ${relatedList.singular}`;
 
   let prefillData;
@@ -130,33 +132,25 @@ function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
         };
       }, {});
   }
-
   return (
     <Fragment>
       <Tooltip placement="top" content={label}>
-        {ref => (
-          <IconButton
-            ref={ref}
-            onClick={() => {
-              setIsOpen(true);
-            }}
-            icon={PlusIcon}
-            aria-label={label}
-            variant="ghost"
-            css={{ marginLeft: gridSize }}
-          />
-        )}
+        {ref => {
+          return (
+            <IconButton
+              ref={ref}
+              onClick={openCreateItemModal}
+              icon={PlusIcon}
+              aria-label={label}
+              variant="ghost"
+              css={{ marginLeft: gridSize }}
+            />
+          );
+        }}
       </Tooltip>
       <CreateItemModal
-        isOpen={isOpen}
-        list={relatedList}
         prefillData={prefillData}
-        onClose={() => {
-          setIsOpen(false);
-        }}
         onCreate={({ data }) => {
-          setIsOpen(false);
-          console.log(data);
           onCreate(data[relatedList.gqlNames.createMutationName]);
         }}
       />
@@ -169,7 +163,7 @@ export default class RelationshipField extends Component {
     const { field, onChange } = this.props;
     const { many } = field.config;
     if (many) {
-      onChange(option.map(i => i.value));
+      onChange(option ? option.map(i => i.value) : []);
     } else {
       onChange(option ? option.value : null);
     }
@@ -189,9 +183,13 @@ export default class RelationshipField extends Component {
     const { many, ref } = field.config;
     const { authStrategy } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
+
+    const relatedList = field.adminMeta.getListByKey(field.config.ref);
+
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput>
           <div css={{ flex: 1 }}>
             <RelationshipSelect
@@ -205,15 +203,17 @@ export default class RelationshipField extends Component {
               onChange={this.onChange}
             />
           </div>
-          <CreateAndAddItem
-            onCreate={item => {
-              onChange(many ? (value || []).concat(item) : item);
-            }}
-            field={field}
-            item={item}
-            list={list}
-            CreateItemModal={CreateItemModal}
-          />
+          <ListProvider list={relatedList}>
+            <CreateAndAddItem
+              onCreate={item => {
+                onChange(many ? (value || []).concat(item) : item);
+              }}
+              field={field}
+              item={item}
+              list={list}
+              CreateItemModal={CreateItemModal}
+            />
+          </ListProvider>
           {authStrategy && ref === authStrategy.listKey && (
             <SetAsCurrentUser
               many={many}

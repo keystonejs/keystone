@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput, Currency } from '@arch-ui/fields';
+import {
+  FieldContainer,
+  FieldLabel,
+  FieldDescription,
+  FieldInput,
+  Currency,
+} from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
 export default class TextField extends Component {
@@ -33,6 +39,7 @@ export default class TextField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput>
           {symbol && <Currency>{symbol}</Currency>}
           <Input

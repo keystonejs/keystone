@@ -224,9 +224,11 @@ class KeystoneMutation extends React.Component {
                       // data. We might also trigger refetch() twice, which we want to
                       // avoid.
                       if (optimisticHandled) {
-                        return wrapUpdateFunc(keystoneSchemaInfo, invalidateTypes, updateOption)(
-                          ...args
-                        );
+                        return wrapUpdateFunc(
+                          keystoneSchemaInfo,
+                          invalidateTypes,
+                          updateOption
+                        )(...args);
                       } else {
                         optimisticHandled = true;
                         return updateOption(...args);
