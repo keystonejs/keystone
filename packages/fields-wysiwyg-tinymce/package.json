@@ -14,7 +14,7 @@
     "@arch-ui/icons": "^0.0.8",
     "@arch-ui/input": "^0.1.4",
     "@arch-ui/theme": "^0.0.7",
-    "@babel/runtime": "^7.7.7",
+    "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.22",
     "@keystonejs/build-field-types": "^5.2.0",
     "@keystonejs/fields": "^6.3.0",

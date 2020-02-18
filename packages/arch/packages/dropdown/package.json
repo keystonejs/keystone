@@ -16,7 +16,7 @@
   "dependencies": {
     "@arch-ui/modal-utils": "^1.0.6",
     "@arch-ui/theme": "^0.0.7",
-    "@babel/runtime": "^7.7.7",
+    "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.22",
     "focus-trap-react": "^6.0.0",
