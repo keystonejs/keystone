@@ -2,13 +2,13 @@
   "name": "@keystonejs/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "5.0.5",
+  "version": "5.1.0",
   "author": "The KeystoneJS Development Team",
   "repository": "https://github.com/keystonejs/keystone.git",
   "homepage": "https://github.com/keystonejs/keystone",
   "license": "MIT",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "start": "gatsby develop",
@@ -30,13 +30,12 @@
     "@sindresorhus/slugify": "^0.6.0",
     "facepaint": "^1.2.1",
     "gatsby": "^2.13.25",
-    "gatsby-mdx": "^0.6.3",
     "gatsby-plugin-google-analytics": "^2.1.4",
     "gatsby-plugin-lunr": "^1.4.0",
-    "gatsby-plugin-manifest": "^2.2.3",
+    "gatsby-plugin-manifest": "^2.2.41",
     "gatsby-plugin-mdx": "^1.0.64",
     "gatsby-plugin-react-helmet": "^3.1.2",
-    "gatsby-plugin-sharp": "^2.2.7",
+    "gatsby-plugin-sharp": "^2.4.5",
     "gatsby-remark-autolink-headers": "^2.1.21",
     "gatsby-remark-check-links": "^2.0.4",
     "gatsby-remark-copy-linked-files": "^2.1.3",
