@@ -34,7 +34,7 @@ export const FieldLabel = props => {
 };
 
 const VirtualField = ({ field, errors, value: serverValue }) => {
-  const value = typeof serverValue !== 'undefined' ? value : '';
+  const value = typeof serverValue !== 'undefined' ? serverValue : '';
   const canRead = errors.every(
     error => !(error instanceof Error && error.name === 'AccessDeniedError')
   );
