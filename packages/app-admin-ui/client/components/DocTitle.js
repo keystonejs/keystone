@@ -1,13 +1,11 @@
-import { Children, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAdminMeta } from '../providers/AdminMeta';
 
-const DocTitle = ({ children }) => {
+const DocTitle = ({ title }) => {
   const { name } = useAdminMeta();
-  const text = Children.toArray(children).join('');
-  const title = `${text} - ${name}`;
 
   useEffect(() => {
-    document.title = title;
+    document.title = `${title} — ${name}`;
   }, [title]);
 
   return null;
