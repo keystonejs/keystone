@@ -121,7 +121,7 @@ const ItemDetails = ({
           setShowDeleteModal(false);
         }
 
-        history.push(`${adminPath}/${list.path}`);
+        history.replace(`${adminPath}/${list.path}`);
         toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
       })
       .catch(error => {
