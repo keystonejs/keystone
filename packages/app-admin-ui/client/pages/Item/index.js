@@ -94,7 +94,7 @@ const ItemDetails = ({
     return () => {
       mounted.current = false;
     };
-  });
+  }, []);
 
   useEffect(() => {
     document.addEventListener('keydown', onKeyDown, false);
