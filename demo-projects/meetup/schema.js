@@ -23,12 +23,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 
 const access = {
   userIsAdmin: ({ authentication: { item: user } }) => Boolean(user && user.isAdmin),
-  userIsCurrentAuth: ({ authentication: { item } }) => {
-    if (!item) {
-      return false;
-    }
-    return { id: item.id };
-  },
+  userIsCurrentAuth: ({ authentication: { item: user } }) => Boolean(user), // item will be undefined for anonymous user
 };
 
 // Read: public / Write: admin
