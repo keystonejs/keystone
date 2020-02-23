@@ -2,9 +2,10 @@ import React from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
+/** @typedef {import('../classes/List').default} List */
 
 /**
- * @param {{ isOpen, item, list: import(), onClose, onDelete }}
+ * @param {{ isOpen, item, list: List, onClose, onDelete }}
  * @returns {JSX.Element}
  */
 export default function DeleteItemModal({ isOpen, item, list, onClose, onDelete }) {
