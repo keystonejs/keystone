@@ -76,6 +76,7 @@ const ItemDetails = ({
 
   const itemHasChanged = useRef(false);
   const itemSaveCheckCache = useRef({});
+  const deleteConfirmed = useRef(false);
 
   const history = useHistory();
   const { addToast } = useToasts();
@@ -115,13 +116,14 @@ const ItemDetails = ({
   };
 
   const onDelete = deletePromise => {
+    deleteConfirmed.current = true;
     deletePromise
       .then(() => {
         if (mounted) {
           setShowDeleteModal(false);
         }
 
-        history.push(`${adminPath}/${list.path}`);
+        history.replace(`${adminPath}/${list.path}`);
         toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
       })
       .catch(error => {
@@ -251,7 +253,7 @@ const ItemDetails = ({
 
   return (
     <Fragment>
-      {itemHasChanged.current && <PreventNavigation />}
+      {itemHasChanged.current && !deleteConfirmed.current && <PreventNavigation />}
       <ItemTitle id={item.id} list={list} adminPath={adminPath} titleText={initialData._label_} />
       <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
         <Form>
