@@ -1,10 +1,7 @@
-import { Component } from 'react';
+const CheckboxCellView = ({ data }) => {
+  if (data === true) return 'Checked';
+  if (data === false) return 'Unchecked';
+  return 'Not set';
+};
 
-export default class CheckboxCellView extends Component {
-  render() {
-    const { data } = this.props;
-    if (data === true) return 'Checked';
-    if (data === false) return 'Unchecked';
-    return 'Not set';
-  }
-}
+export default CheckboxCellView;
