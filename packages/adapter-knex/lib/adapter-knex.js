@@ -78,8 +78,6 @@ class KnexAdapter extends BaseKeystoneAdapter {
         console.log('Knex adapter: Dropping database');
       }
       await this.dropDatabase();
-    } else {
-      return [];
     }
     return this._createTables();
   }
@@ -273,9 +271,12 @@ class KnexListAdapter extends BaseListAdapter {
 
   async createTable() {
     // Let the field adapter add what it needs to the table schema
-    await this._schema().createTable(this.tableName, table => {
-      this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
-    });
+    const exists = await this._schema().hasTable(this.tableName);
+    if(!exists) {
+      await this._schema().createTable(this.tableName, table => {
+        this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
+      });
+    }
   }
 
   async _processNonRealFields(data, processFunction) {
