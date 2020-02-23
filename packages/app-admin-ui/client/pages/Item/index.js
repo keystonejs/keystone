@@ -384,7 +384,15 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
     // Deserialising requires the field be loaded and also any of its
     // deserialisation dependencies (eg; the Content field relies on the Blocks
     // being loaded), so it too could suspend here.
-    () => deserializeItem(list, loading || !data ? {} : data[list.gqlNames.itemQueryName]),
+    () =>
+      deserializeItem(
+        list,
+        loading || !data
+          ? {}
+          : data[list.gqlNames.itemQueryName]
+          ? data[list.gqlNames.itemQueryName]
+          : {}
+      ),
   ]);
 
   // If the views load before the API request comes back, keep showing
