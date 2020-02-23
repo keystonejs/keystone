@@ -16,7 +16,7 @@
     "@arch-ui/common": "0.0.8",
     "@arch-ui/theme": "0.0.7",
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.22"
+    "@emotion/core": "^10.0.27"
   },
   "module": "dist/input.esm.js"
 }
