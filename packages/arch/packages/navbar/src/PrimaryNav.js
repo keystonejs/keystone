@@ -78,6 +78,7 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected, mouseIsO
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     transition: 'color 110ms',
+    fontWeight: isSelected ? 'bold' : 'normal',
 
     flexGrow: 1,
     flexBasis: '100%',
