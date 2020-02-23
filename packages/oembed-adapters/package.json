@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.22",
+    "@emotion/core": "^10.0.27",
     "@iframely/embed.js": "^1.1.1",
     "@keystonejs/build-field-types": "^5.2.0",
     "node-fetch": "^2.3.0"

@@ -73,6 +73,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     }
 
     createItem({ variables: { data } }).then(data => {
+      if (!data) return;
       closeCreateItemModal();
       setItem(list.getInitialItemData({}));
       if (onCreate) {
