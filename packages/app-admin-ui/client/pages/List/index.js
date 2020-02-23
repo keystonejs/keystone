@@ -325,7 +325,7 @@ export function List(props) {
   // ------------------------------
   return (
     <Fragment>
-      <DocTitle>{list.plural}</DocTitle>
+      <DocTitle title={list.plural} />
       <ListLayout
         {...props}
         items={items}

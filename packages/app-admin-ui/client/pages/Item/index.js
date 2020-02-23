@@ -411,7 +411,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   ) {
     return (
       <Fragment>
-        <DocTitle>{list.singular} not found</DocTitle>
+        <DocTitle title={`${list.singular} not found`} />
         <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
       </Fragment>
     );
@@ -434,9 +434,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   return (
     <ItemProvider item={item}>
       <main>
-        <DocTitle>
-          {item._label_} - {list.singular}
-        </DocTitle>
+        <DocTitle title={`${item._label_} — ${list.singular}`} />
         <Container id="toast-boundary">
           <ItemDetails
             adminPath={adminPath}

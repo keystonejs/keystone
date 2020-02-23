@@ -57,7 +57,7 @@ const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
   if (lists.length === 0) {
     return (
       <Fragment>
-        <DocTitle>Home</DocTitle>
+        <DocTitle title="Home" />
         <PageError>
           <p>
             No lists defined.{' '}
@@ -102,7 +102,7 @@ const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
 
   return (
     <Fragment>
-      <DocTitle>Home</DocTitle>
+      <DocTitle title="Home" />
       {
         // NOTE: `loading` is intentionally omitted here
         // the display of a loading indicator for counts is deferred to the
