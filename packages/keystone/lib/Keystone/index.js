@@ -86,6 +86,7 @@ module.exports = class Keystone {
       schemaNames: this._schemaNames,
       defaultAccess: true,
     });
+    this._providers = [];
 
     if (adapters) {
       this.adapters = adapters;
@@ -407,6 +408,7 @@ module.exports = class Keystone {
         this._extendedMutations
           .filter(({ access }) => access[schemaName])
           .map(({ schema }) => schema),
+        ...this._providers.map(p => p.getMutations({ schemaName })),
       ])
     );
 
@@ -420,6 +422,7 @@ module.exports = class Keystone {
       ...unique(
         this._extendedTypes.filter(({ access }) => access[schemaName]).map(({ type }) => type)
       ),
+      ...unique(flatten(this._providers.map(p => p.getTypes({ schemaName })))),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -494,6 +497,7 @@ module.exports = class Keystone {
               this._extendedQueries
                 .filter(({ access }) => access[schemaName])
                 .map(({ schema }) => schema),
+              ...this._providers.map(p => p.getQueries({ schemaName })),
             ])
           ).join('\n')}
           """ Retrieve the meta-data for all lists. """
@@ -620,6 +624,8 @@ module.exports = class Keystone {
         _ListAccess: listAccessResolver,
         _ListSchema: listSchemaResolver,
 
+        ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
+
         Query: {
           // Order is also important here, any TypeQuery's defined by types
           // shouldn't be able to override list-level queries
@@ -640,6 +646,7 @@ module.exports = class Keystone {
               .filter(({ access }) => access[schemaName])
               .map(customResolver('query'))
           ),
+          ...objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
         },
 
         Mutation: {
@@ -650,6 +657,7 @@ module.exports = class Keystone {
               .filter(({ access }) => access[schemaName])
               .map(customResolver('mutation'))
           ),
+          ...objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
         },
       },
       o => Object.entries(o).length > 0
