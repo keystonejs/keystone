@@ -1,29 +1,24 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { TextDayPicker } from '@arch-ui/day-picker';
 
 const FORMAT = 'YYYY-MM-DD';
 
-export default class CalendarDayFilterView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: format(new Date(), FORMAT) };
-  }
+const CalendarDayFilterView = ({ onChange, filter }) => {
+  const [value, setValue] = useState(format(new Date(), FORMAT));
 
-  handleSelectedChange = value => {
-    const { onChange } = this.props;
-    if (value === null) {
-      value = format(new Date(), FORMAT);
+  const handleSelectedChange = newValue => {
+    if (newValue === null) {
+      newValue = format(new Date(), FORMAT);
     }
-    onChange(value);
-    this.setState({ value });
+
+    onChange(newValue);
+    setValue(newValue);
   };
 
-  render() {
-    const { filter } = this.props;
+  if (!filter) return null;
 
-    if (!filter) return null;
+  return <TextDayPicker date={value} onChange={handleSelectedChange} />;
+};
 
-    return <TextDayPicker date={this.state.value} onChange={this.handleSelectedChange} />;
-  }
-}
+export default CalendarDayFilterView;

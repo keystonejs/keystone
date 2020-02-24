@@ -13,7 +13,7 @@ const {
 } = require('@keystonejs/utils');
 
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
-const { queryParser, pipelineBuilder, mutationBuilder } = require('@keystonejs/mongo-join-builder');
+const { queryParser, pipelineBuilder } = require('@keystonejs/mongo-join-builder');
 const logger = require('@keystonejs/logger').logger('mongoose');
 
 const slugify = require('@sindresorhus/slugify');
@@ -181,7 +181,7 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   _delete(id) {
-    return this.model.findByIdAndRemove(id);
+    return this.model.deleteOne({ _id: id }).then(result => result.deletedCount);
   }
 
   _update(id, data) {
@@ -249,7 +249,6 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model
       .aggregate(pipelineBuilder(queryTree))
       .exec()
-      .then(mutationBuilder(queryTree.relationships))
       .then(foundItems => {
         if (meta) {
           // When there are no items, we get undefined back, so we simulate the

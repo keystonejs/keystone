@@ -1,5 +1,89 @@
 # @keystonejs/app-admin-ui
 
+## 5.8.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/build-field-types@5.2.0
+  - @keystonejs/field-views-loader@5.2.0
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/session@5.1.0
+  - @keystonejs/utils@5.2.0
+
+## 5.7.3
+
+### Patch Changes
+
+- [`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2) [#2320](https://github.com/keystonejs/keystone/pull/2320) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `graphql` dependency from 14.4.2 to 14.6.0 and `graphql-type-json` depedency from 0.2.1 to 0.3.1.
+
+* [`29845426`](https://github.com/keystonejs/keystone/commit/29845426cb699afcc003f6a0b9ef540a61f808b4) [#2359](https://github.com/keystonejs/keystone/pull/2359) Thanks [@marcosrjjunior](https://github.com/marcosrjjunior)! - Fixed an internal typo.
+
+- [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e) [#2323](https://github.com/keystonejs/keystone/pull/2323) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Apollo-related dependencies:
+
+  apollo-boost: 0.4.4 -> 0.4.7
+  apollo-cache-inmemory: 1.5.1 -> 1.6.5
+  apollo-client: 2.6.4 -> 2.6.8
+  apollo-server-express: 2.9.1 -> 2.9.16
+  apollo-upload-client: 10.0.0 -> 12.1.0
+  apollo-utilities: 1.3.2 -> 1.3.3
+
+* [`6c25d331`](https://github.com/keystonejs/keystone/commit/6c25d3319f89351568ad9d007b985a230e54b5b3) [#2352](https://github.com/keystonejs/keystone/pull/2352) Thanks [@cowjen01](https://github.com/cowjen01)! - Fix default sort on item list view.
+
+- [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24) [#2373](https://github.com/keystonejs/keystone/pull/2373) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced `react-focus-marshal` dependency with `focus-trap-react`.
+
+- Updated dependencies [[`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2), [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24), [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a), [`1e026fff`](https://github.com/keystonejs/keystone/commit/1e026fff05f777225105ebc188c8411a3b23beac)]:
+  - @keystonejs/fields@6.2.3
+  - @arch-ui/confirm@0.0.14
+  - @arch-ui/dialog@0.0.15
+  - @arch-ui/drawer@0.0.16
+  - @arch-ui/dropdown@0.0.13
+  - @arch-ui/popout@0.0.14
+  - @arch-ui/fields@2.1.1
+  - @keystonejs/build-field-types@5.1.5
+
+## 5.7.2
+
+### Patch Changes
+
+- [`8552314d`](https://github.com/keystonejs/keystone/commit/8552314d9f509010c462df6e64fe23839fbea5e3) [#2330](https://github.com/keystonejs/keystone/pull/2330) - Removed the preconstruct step that was causing issues outside the momorepo.
+- Updated dependencies [[`8552314d`](https://github.com/keystonejs/keystone/commit/8552314d9f509010c462df6e64fe23839fbea5e3)]:
+  - @keystonejs/fields@6.2.2
+
+## 5.7.1
+
+### Patch Changes
+
+- [`ce8c9843`](https://github.com/keystonejs/keystone/commit/ce8c9843f2d542e4916d68b98f23abe85c5b1bb5) [#2310](https://github.com/keystonejs/keystone/pull/2310) - Added missing dependency.
+
+## 5.7.0
+
+### Minor Changes
+
+- [`6bc87d43`](https://github.com/keystonejs/keystone/commit/6bc87d43de4861068de257735c1a6cf886cd3c17) [#2279](https://github.com/keystonejs/keystone/pull/2279) - Added React hooks to the AdminUI.
+
+  This PR changes the way the `<CreateItem/>` component works internally. It also paves the way for future AdminUI extensions by exporting front-end components and utilities from `@keystonejs/app-admin-ui/components`. Initially this includes a `<ListProvider/>` component that is currently being consumed by the relationship field.
+
+### Patch Changes
+
+- Updated dependencies [[`6bc87d43`](https://github.com/keystonejs/keystone/commit/6bc87d43de4861068de257735c1a6cf886cd3c17), [`6eb23086`](https://github.com/keystonejs/keystone/commit/6eb23086485d9bcbb93e35ec716d846790d611f2), [`ca2b043a`](https://github.com/keystonejs/keystone/commit/ca2b043a5043f6b4b110050127b2a9d759bb8569), [`8f54a4eb`](https://github.com/keystonejs/keystone/commit/8f54a4eb2d63ed042d736fd20ab622f326e111b8)]:
+  - @keystonejs/fields@6.2.0
+  - @arch-ui/fields@2.1.0
+
+## 5.6.0
+
+### Minor Changes
+
+- [`56bb67fd`](https://github.com/keystonejs/keystone/commit/56bb67fdf794af56cb4167705d5693e0e4903a49) [#2264](https://github.com/keystonejs/keystone/pull/2264) - Fixed a bug where the search input on the List page would gain focus when the user pressed SHIFT
+
+### Patch Changes
+
+- [`87a17087`](https://github.com/keystonejs/keystone/commit/87a170877d9f735d909ee91b7661fa4a10b56a59) [#2087](https://github.com/keystonejs/keystone/pull/2087) - Show a more helpful error in the AdminUI when the list page overflows the available number of items.
+
 ## 5.5.4
 
 ### Patch Changes

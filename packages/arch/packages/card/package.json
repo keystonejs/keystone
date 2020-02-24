@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@arch-ui/theme": "0.0.7",
-    "@babel/runtime": "^7.7.7",
-    "@emotion/core": "^10.0.22"
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.27"
   },
   "module": "dist/card.esm.js"
 }

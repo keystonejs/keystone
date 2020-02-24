@@ -1,18 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Input } from '@arch-ui/input';
 
-export default class TextFilterView extends Component {
-  handleChange = event => {
+const TextFilterView = ({ onChange, filter, field, innerRef, value }) => {
+  const handleChange = event => {
     const value = event.target.value;
-    this.props.onChange(value.replace(/[^\d,\s]/g, ''));
+    onChange(value.replace(/[^\d,\s]/g, ''));
   };
 
-  render() {
-    const { filter, field, innerRef, value } = this.props;
-    if (!filter) return null;
-    const placeholder = field.getFilterLabel(filter);
-    return (
-      <Input onChange={this.handleChange} ref={innerRef} placeholder={placeholder} value={value} />
-    );
-  }
-}
+  if (!filter) return null;
+  const placeholder = field.getFilterLabel(filter);
+
+  return <Input onChange={handleChange} ref={innerRef} placeholder={placeholder} value={value} />;
+};
+
+export default TextFilterView;

@@ -1,5 +1,5 @@
 {
-  "reporter": "mocha-multi-reporters",
+  "reporter": "cypress-multi-reporters",
   "reporterOptions": {
     "configFile": "multi-reporter-config.json"
   }

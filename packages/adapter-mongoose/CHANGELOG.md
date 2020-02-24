@@ -1,5 +1,28 @@
 # @keystonejs/adapter-mongoose
 
+## 5.2.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/fields-mongoid@5.1.0
+  - @keystonejs/keystone@5.5.0
+  - @keystonejs/logger@5.1.0
+  - @keystonejs/mongo-join-builder@6.1.0
+  - @keystonejs/utils@5.2.0
+
+## 5.1.5
+
+### Patch Changes
+
+- [`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737) [#2251](https://github.com/keystonejs/keystone/pull/2251) - Uses the new `mongo-join-builder` API.
+- Updated dependencies [[`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737), [`7123e226`](https://github.com/keystonejs/keystone/commit/7123e226e13d3629b2ce7b6746c4292af9bf79e1)]:
+  - @keystonejs/mongo-join-builder@6.0.0
+
 ## 5.1.4
 
 ### Patch Changes

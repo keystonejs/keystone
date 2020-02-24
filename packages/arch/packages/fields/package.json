@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/fields",
   "description": "Form Field Components used in @keystonejs Admin UI.",
-  "version": "2.0.5",
+  "version": "2.1.1",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/fields.cjs.js",
@@ -15,9 +15,9 @@
     "@arch-ui/icons": "^0.0.8",
     "@arch-ui/lozenge": "^0.0.11",
     "@arch-ui/theme": "^0.0.7",
-    "@babel/runtime": "^7.7.7",
-    "@emotion/core": "^10.0.22",
-    "@emotion/styled": "^10.0.22"
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.27",
+    "@emotion/styled": "^10.0.27"
   },
   "module": "dist/fields.esm.js"
 }
