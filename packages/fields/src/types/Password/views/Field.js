@@ -20,10 +20,12 @@ const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors,
   const [inputConfirm, setInputConfirm] = useState('');
 
   useEffect(() => {
-    onChange({
-      inputPassword,
-      inputConfirm,
-    });
+    if (isEditing) {
+      onChange({
+        inputPassword,
+        inputConfirm,
+      });
+    }
   }, [inputPassword, inputConfirm]);
 
   useEffect(() => {
