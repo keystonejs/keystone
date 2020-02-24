@@ -9,6 +9,6 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "nuxt": "^2.9.2"
+    "nuxt": "^2.11.0"
   }
 }
