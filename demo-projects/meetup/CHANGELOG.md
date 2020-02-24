@@ -1,5 +1,66 @@
 # @keystonejs/demo-project-meetup
 
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/adapter-mongoose@5.2.0
+  - @keystonejs/app-admin-ui@5.8.0
+  - @keystonejs/app-graphql@5.1.0
+  - @keystonejs/app-next@5.1.0
+  - @keystonejs/auth-password@5.1.0
+  - @keystonejs/email@5.1.0
+  - @keystonejs/fields-wysiwyg-tinymce@5.1.0
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/file-adapters@5.5.0
+  - @keystonejs/keystone@5.5.0
+  - @keystonejs/session@5.1.0
+
+## 5.0.7
+
+### Patch Changes
+
+- [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e) [#2323](https://github.com/keystonejs/keystone/pull/2323) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Apollo-related dependencies:
+
+  apollo-boost: 0.4.4 -> 0.4.7
+  apollo-cache-inmemory: 1.5.1 -> 1.6.5
+  apollo-client: 2.6.4 -> 2.6.8
+  apollo-server-express: 2.9.1 -> 2.9.16
+  apollo-upload-client: 10.0.0 -> 12.1.0
+  apollo-utilities: 1.3.2 -> 1.3.3
+
+- Updated dependencies [[`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2), [`29845426`](https://github.com/keystonejs/keystone/commit/29845426cb699afcc003f6a0b9ef540a61f808b4), [`ae4cf2d1`](https://github.com/keystonejs/keystone/commit/ae4cf2d108768d7ccbd23a409e7170fc92c81316), [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e), [`6c25d331`](https://github.com/keystonejs/keystone/commit/6c25d3319f89351568ad9d007b985a230e54b5b3), [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24)]:
+  - @keystonejs/app-admin-ui@5.7.3
+  - @keystonejs/app-graphql@5.0.4
+  - @keystonejs/fields@6.2.3
+  - @keystonejs/keystone@5.4.4
+
+## 5.0.6
+
+### Patch Changes
+
+- [`51500a82`](https://github.com/keystonejs/keystone/commit/51500a82644bf65e6a06bef0d2dd4aa1a2d5d135) [#2244](https://github.com/keystonejs/keystone/pull/2244) - Bump next.js dep to ^9.2.0
+- Updated dependencies [[`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737), [`56bb67fd`](https://github.com/keystonejs/keystone/commit/56bb67fdf794af56cb4167705d5693e0e4903a49), [`9677dc17`](https://github.com/keystonejs/keystone/commit/9677dc177b7b747397732700cab42d98e89f03f5), [`51500a82`](https://github.com/keystonejs/keystone/commit/51500a82644bf65e6a06bef0d2dd4aa1a2d5d135), [`87a17087`](https://github.com/keystonejs/keystone/commit/87a170877d9f735d909ee91b7661fa4a10b56a59)]:
+  - @keystonejs/adapter-mongoose@5.1.5
+  - @keystonejs/app-admin-ui@5.6.0
+  - @keystonejs/file-adapters@5.3.2
+  - @keystonejs/app-next@5.0.2
+
+## 5.0.5
+
+### Patch Changes
+
+- [`933b3111`](https://github.com/keystonejs/keystone/commit/933b3111af7d629183013e1b42c2026cfbaaa5f4) [#2193](https://github.com/keystonejs/keystone/pull/2193) - Fixed typo in filename
+- Updated dependencies [[`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b), [`709d44a3`](https://github.com/keystonejs/keystone/commit/709d44a352f4e63be911a699c73304e830e2ee23), [`cc58f0e0`](https://github.com/keystonejs/keystone/commit/cc58f0e05d1de06432e149f0767122ae51d1c31a), [`11586035`](https://github.com/keystonejs/keystone/commit/115860350aa901749d240cb275cada29b8d541f8), [`6371b021`](https://github.com/keystonejs/keystone/commit/6371b021ee0b2022a3724992a6319bd0d7dd3583)]:
+  - @keystonejs/fields@6.1.0
+  - @keystonejs/app-admin-ui@5.5.4
+  - @keystonejs/keystone@5.4.2
+
 ## 5.0.4
 
 ### Patch Changes

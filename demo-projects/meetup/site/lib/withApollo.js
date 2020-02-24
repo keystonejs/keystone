@@ -13,12 +13,12 @@ export default App => {
       const {
         Component,
         router,
-        ctx: { res },
+        ctx: { res, req },
       } = ctx;
 
       // Run all GraphQL queries in the component tree
       // and extract the resulting data
-      const apollo = initApollo();
+      const apollo = initApollo(null, req);
 
       ctx.ctx.apolloClient = apollo;
 

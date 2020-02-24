@@ -1,5 +1,11 @@
 # @arch-ui/drawer
 
+## 0.0.16
+
+### Patch Changes
+
+- [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24) [#2373](https://github.com/keystonejs/keystone/pull/2373) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced `react-focus-marshal` dependency with `focus-trap-react`.
+
 ## 0.0.15
 
 ### Patch Changes

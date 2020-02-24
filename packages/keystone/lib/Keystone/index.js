@@ -1,4 +1,4 @@
-const GraphQLJSON = require('graphql-type-json');
+const { GraphQLJSON } = require('graphql-type-json');
 const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
@@ -311,6 +311,45 @@ module.exports = class Keystone {
     this._extendedTypes = this._extendedTypes.concat(types.map(_parseAccess));
     this._extendedQueries = this._extendedQueries.concat(queries.map(_parseAccess));
     this._extendedMutations = this._extendedMutations.concat(mutations.map(_parseAccess));
+  }
+
+  _consolidateRelationships() {
+    const rels = {};
+    const otherSides = {};
+    this.listsArray.forEach(list => {
+      list.fields
+        .filter(f => f.isRelationship)
+        .forEach(f => {
+          const myRef = `${f.listKey}.${f.path}`;
+          if (otherSides[myRef]) {
+            // I'm already there, go and update rels[otherSides[myRef]] with my info
+            rels[otherSides[myRef]].right = f;
+
+            // Make sure I'm actually referencing the thing on the left
+            const { left } = rels[otherSides[myRef]];
+            if (f.config.ref !== `${left.listKey}.${left.path}`) {
+              throw new Error(
+                `${myRef} refers to ${f.config.ref}. Expected ${left.listKey}.${left.path}`
+              );
+            }
+          } else {
+            // Got us a new relationship!
+            rels[myRef] = { left: f };
+            if (f.refFieldPath) {
+              // Populate otherSides
+              otherSides[f.config.ref] = myRef;
+            }
+          }
+        });
+    });
+    // See if anything failed to link up.
+    const badRel = Object.values(rels).find(({ left, right }) => left.refFieldPath && !right);
+    if (badRel) {
+      const { left } = badRel;
+      throw new Error(
+        `${left.listKey}.${left.path} refers to a non-existant field, ${left.config.ref}`
+      );
+    }
   }
 
   /**
@@ -684,6 +723,7 @@ module.exports = class Keystone {
     pinoOptions,
     cors = { origin: true, credentials: true },
   } = {}) {
+    this._consolidateRelationships();
     const middlewares = flattenDeep([
       this.appVersion.addVersionToHttpHeaders &&
         ((req, res, next) => {

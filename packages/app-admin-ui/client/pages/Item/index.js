@@ -35,6 +35,7 @@ import {
   handleCreateUpdateMutationError,
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
+import { ItemProvider } from '../../providers/Item';
 
 let Render = ({ children }) => children();
 
@@ -53,6 +54,12 @@ const getCurrentValues = memoizeOne(getValues);
 
 const deserializeItem = memoizeOne((list, data) => list.deserializeItemData(data));
 
+const getRenderableFields = memoizeOne(list =>
+  list.fields
+    .filter(({ isPrimaryKey }) => !isPrimaryKey)
+    .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
+);
+
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
     constructor(props) {
@@ -60,10 +67,8 @@ const ItemDetails = withRouter(
       // memoized function so we can call it multiple times _per component_
       this.getFieldsObject = memoizeOne(() =>
         arrayToObject(
-          props.list.fields
-            .filter(({ isPrimaryKey }) => !isPrimaryKey)
-            .filter(({ isReadOnly }) => !isReadOnly)
-            .filter(({ maybeAccess }) => !!maybeAccess.update),
+          // NOTE: We _exclude_ read only fields
+          getRenderableFields(props.list).filter(({ config }) => !config.isReadOnly),
           'path'
         )
       );
@@ -262,16 +267,8 @@ const ItemDetails = withRouter(
     /**
      * Create item
      */
-    openCreateModal = () => this.setState({ showCreateModal: true });
-    closeCreateModal = () => this.setState({ showCreateModal: false });
-    renderCreateModal = () => (
-      <CreateItemModal
-        isOpen={this.state.showCreateModal}
-        list={this.props.list}
-        onClose={this.closeCreateModal}
-        onCreate={this.onCreate}
-      />
-    );
+    renderCreateModal = () => <CreateItemModal onCreate={this.onCreate} />;
+
     onCreate = ({ data }) => {
       const { list, adminPath, history } = this.props;
       const { id } = data[list.gqlNames.createMutationName];
@@ -285,78 +282,67 @@ const ItemDetails = withRouter(
       return (
         <Fragment>
           {itemHasChanged && <PreventNavigation />}
-          <ItemTitle
-            onCreateClick={this.openCreateModal}
-            id={item.id}
-            list={list}
-            adminPath={adminPath}
-            titleText={savedData._label_}
-          />
+          <ItemTitle id={item.id} list={list} adminPath={adminPath} titleText={savedData._label_} />
           <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
             <Form>
               <AutocompleteCaptor />
-              {list.fields
-                .filter(({ isPrimaryKey }) => !isPrimaryKey)
-                .filter(({ maybeAccess, config }) => {
-                  return !!maybeAccess.update || config.isReadOnly;
-                })
-                .map((field, i) => (
-                  <Render key={field.path}>
-                    {() => {
-                      const [Field] = field.hooks.Field
-                        ? [field.hooks.Field]
-                        : field.adminMeta.readViews([field.views.Field]);
+              {getRenderableFields(list).map((field, i) => (
+                <Render key={field.path}>
+                  {() => {
+                    const [Field] = field.hooks.Field
+                      ? [field.hooks.Field]
+                      : field.adminMeta.readViews([field.views.Field]);
 
-                      let onChange = useCallback(
-                        value => {
-                          this.setState(({ item: itm }) => ({
-                            item: {
-                              ...itm,
-                              [field.path]: value,
-                            },
-                            validationErrors: {},
-                            validationWarnings: {},
-                            itemHasChanged: true,
-                          }));
-                        },
-                        [field]
-                      );
+                    let onChange = useCallback(
+                      value => {
+                        this.setState(({ item: itm }) => ({
+                          item: {
+                            ...itm,
+                            [field.path]: value,
+                          },
+                          validationErrors: {},
+                          validationWarnings: {},
+                          itemHasChanged: true,
+                        }));
+                      },
+                      [field]
+                    );
 
-                      return useMemo(
-                        () => (
-                          <Field
-                            autoFocus={!i}
-                            field={field}
-                            list={list}
-                            item={item}
-                            errors={[
-                              ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                              ...(validationErrors[field.path] || []),
-                            ]}
-                            warnings={validationWarnings[field.path] || []}
-                            value={item[field.path]}
-                            savedValue={savedData[field.path]}
-                            onChange={onChange}
-                            renderContext="page"
-                            CreateItemModal={CreateItemModal}
-                          />
-                        ),
-                        [
-                          i,
-                          field,
-                          list,
-                          itemErrors[field.path],
-                          item[field.path],
-                          item.id,
-                          validationErrors[field.path],
-                          validationWarnings[field.path],
-                          savedData[field.path],
-                          onChange,
-                        ]
-                      );
-                    }}
-                  </Render>
-                ))}
+                    return useMemo(
+                      () => (
+                        <Field
+                          autoFocus={!i}
+                          field={field}
+                          list={list}
+                          item={item}
+                          errors={[
+                            ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                            ...(validationErrors[field.path] || []),
+                          ]}
+                          warnings={validationWarnings[field.path] || []}
+                          value={item[field.path]}
+                          savedValue={savedData[field.path]}
+                          onChange={onChange}
+                          renderContext="page"
+                          CreateItemModal={CreateItemModal}
+                        />
+                      ),
+                      [
+                        i,
+                        field,
+                        list,
+                        itemErrors[field.path],
+                        item[field.path],
+                        item.id,
+                        validationErrors[field.path],
+                        validationWarnings[field.path],
+                        savedData[field.path],
+                        onChange,
+                      ]
+                    );
+                  }}
+                </Render>
+              ))}
             </Form>
             <Footer
               onSave={this.onSave}
@@ -415,10 +401,13 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   // try to initialise the fields. They are Suspense capable, so may
   // throw Promises which will be caught by the wrapping <Suspense>
   captureSuspensePromises([
-    ...list.fields
-      .filter(({ isPrimaryKey }) => !isPrimaryKey)
-      .filter(({ maybeAccess }) => !!maybeAccess.update)
-      .map(field => () => field.initFieldView()),
+    // NOTE: We should really filter out non-renderable fields here, but there's
+    // an edgecase where deserialising will include all fields (even
+    // non-renderable ones), so we have to ensure the field views are all loaded
+    // even if they may not be used. This is particularly salient for the
+    // Content field which needs its views loaded to correctly deserialize.
+    // Ideally we'd use getRenderableFields() here.
+    ...list.fields.map(field => () => field.initFieldView()),
     // Deserialising requires the field be loaded and also any of its
     // deserialisation dependencies (eg; the Content field relies on the Blocks
     // being loaded), so it too could suspend here.
@@ -462,30 +451,32 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   }
 
   return (
-    <main>
-      <DocTitle>
-        {item._label_} - {list.singular}
-      </DocTitle>
-      <Container id="toast-boundary">
-        <ItemDetails
-          adminPath={adminPath}
-          item={item}
-          itemErrors={itemErrors}
-          key={itemId}
-          list={list}
-          getListByKey={getListByKey}
-          onUpdate={() =>
-            refetch().then(refetchedData =>
-              deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])
-            )
-          }
-          toastManager={{ addToast }}
-          updateInProgress={updateInProgress}
-          updateErrorMessage={updateError && updateError.message}
-          updateItem={handleUpdateItem}
-        />
-      </Container>
-    </main>
+    <ItemProvider item={item}>
+      <main>
+        <DocTitle>
+          {item._label_} - {list.singular}
+        </DocTitle>
+        <Container id="toast-boundary">
+          <ItemDetails
+            adminPath={adminPath}
+            item={item}
+            itemErrors={itemErrors}
+            key={itemId}
+            list={list}
+            getListByKey={getListByKey}
+            onUpdate={() =>
+              refetch().then(refetchedData =>
+                deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])
+              )
+            }
+            toastManager={{ addToast }}
+            updateInProgress={updateInProgress}
+            updateErrorMessage={updateError && updateError.message}
+            updateItem={handleUpdateItem}
+          />
+        </Container>
+      </main>
+    </ItemProvider>
   );
 };
 

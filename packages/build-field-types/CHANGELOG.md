@@ -1,5 +1,17 @@
 # @keystonejs/build-field-types
 
+## 5.2.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+## 5.1.5
+
+### Patch Changes
+
+- [`1e026fff`](https://github.com/keystonejs/keystone/commit/1e026fff05f777225105ebc188c8411a3b23beac) [#2379](https://github.com/keystonejs/keystone/pull/2379) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused `magic-string` dependency.
+
 ## 5.1.4
 
 ### Patch Changes

@@ -1,5 +1,80 @@
 # @keystonejs/fields
 
+## 6.3.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/access-control@5.1.0
+  - @keystonejs/adapter-knex@6.3.0
+  - @keystonejs/adapter-mongoose@5.2.0
+  - @keystonejs/app-admin-ui@5.8.0
+  - @keystonejs/build-field-types@5.2.0
+  - @keystonejs/field-content@5.4.0
+  - @keystonejs/test-utils@5.1.0
+  - @keystonejs/utils@5.2.0
+
+## 6.2.3
+
+### Patch Changes
+
+- [`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2) [#2320](https://github.com/keystonejs/keystone/pull/2320) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `graphql` dependency from 14.4.2 to 14.6.0 and `graphql-type-json` depedency from 0.2.1 to 0.3.1.
+
+- Updated dependencies [[`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2), [`29845426`](https://github.com/keystonejs/keystone/commit/29845426cb699afcc003f6a0b9ef540a61f808b4), [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e), [`6c25d331`](https://github.com/keystonejs/keystone/commit/6c25d3319f89351568ad9d007b985a230e54b5b3), [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24), [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a), [`1e026fff`](https://github.com/keystonejs/keystone/commit/1e026fff05f777225105ebc188c8411a3b23beac)]:
+  - @keystonejs/app-admin-ui@5.7.3
+  - @arch-ui/drawer@0.0.16
+  - @arch-ui/popout@0.0.14
+  - @arch-ui/fields@2.1.1
+  - @keystonejs/build-field-types@5.1.5
+
+## 6.2.2
+
+### Patch Changes
+
+- [`8552314d`](https://github.com/keystonejs/keystone/commit/8552314d9f509010c462df6e64fe23839fbea5e3) [#2330](https://github.com/keystonejs/keystone/pull/2330) - Removed the preconstruct step that was causing issues outside the momorepo.
+- Updated dependencies [[`8552314d`](https://github.com/keystonejs/keystone/commit/8552314d9f509010c462df6e64fe23839fbea5e3)]:
+  - @keystonejs/app-admin-ui@5.7.2
+
+## 6.2.1
+
+### Patch Changes
+
+- [`b0519b55`](https://github.com/keystonejs/keystone/commit/b0519b550b00680bb7233cda0f7eb748863871dc) [#2325](https://github.com/keystonejs/keystone/pull/2325) - Bumped the dependency on the AdminUI package.
+
+## 6.2.0
+
+### Minor Changes
+
+- [`6bc87d43`](https://github.com/keystonejs/keystone/commit/6bc87d43de4861068de257735c1a6cf886cd3c17) [#2279](https://github.com/keystonejs/keystone/pull/2279) - Added React hooks to the AdminUI.
+
+  This PR changes the way the `<CreateItem/>` component works internally. It also paves the way for future AdminUI extensions by exporting front-end components and utilities from `@keystonejs/app-admin-ui/components`. Initially this includes a `<ListProvider/>` component that is currently being consumed by the relationship field.
+
+- [`6eb23086`](https://github.com/keystonejs/keystone/commit/6eb23086485d9bcbb93e35ec716d846790d611f2) [#2287](https://github.com/keystonejs/keystone/pull/2287) - Added `adminDoc` configuration option to all field types.
+
+### Patch Changes
+
+- [`8f54a4eb`](https://github.com/keystonejs/keystone/commit/8f54a4eb2d63ed042d736fd20ab622f326e111b8) [#2269](https://github.com/keystonejs/keystone/pull/2269) - Updated internal relationship configurations of `Content` fields to be self-consistent.
+- Updated dependencies [[`6bc87d43`](https://github.com/keystonejs/keystone/commit/6bc87d43de4861068de257735c1a6cf886cd3c17), [`5b058a63`](https://github.com/keystonejs/keystone/commit/5b058a633c84465c9dff7cf940c8cb12bddcf215), [`ca2b043a`](https://github.com/keystonejs/keystone/commit/ca2b043a5043f6b4b110050127b2a9d759bb8569)]:
+  - @keystonejs/app-admin-ui@5.7.0
+  - @keystonejs/adapter-knex@6.2.0
+  - @arch-ui/fields@2.1.0
+
+## 6.1.0
+
+### Minor Changes
+
+- [`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b) [#2005](https://github.com/keystonejs/keystone/pull/2005) - The presentation and usability of the content blocks editor was improved.
+
+### Patch Changes
+
+- [`11586035`](https://github.com/keystonejs/keystone/commit/115860350aa901749d240cb275cada29b8d541f8) [#2211](https://github.com/keystonejs/keystone/pull/2211) - Fixed work of relation select
+- Updated dependencies [[`220d3a4b`](https://github.com/keystonejs/keystone/commit/220d3a4bc4265dc56653bed4b292f3e4d708502b)]:
+  - @keystonejs/field-content@5.3.0
+
 ## 6.0.5
 
 ### Patch Changes

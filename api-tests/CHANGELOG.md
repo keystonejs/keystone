@@ -1,5 +1,34 @@
 # @keystonejs/api-tests
 
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/adapter-knex@6.3.0
+  - @keystonejs/adapter-mongoose@5.2.0
+  - @keystonejs/app-graphql@5.1.0
+  - @keystonejs/auth-password@5.1.0
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/keystone@5.5.0
+  - @keystonejs/session@5.1.0
+  - @keystonejs/test-utils@5.1.0
+
+## 5.0.3
+
+### Patch Changes
+
+- [`0da2ce99`](https://github.com/keystonejs/keystone/commit/0da2ce99b93a171b64c1877399fb173aa03e646c) [#2295](https://github.com/keystonejs/keystone/pull/2295) - Silenced knex adapter output during testing.
+- Updated dependencies [[`6bc87d43`](https://github.com/keystonejs/keystone/commit/6bc87d43de4861068de257735c1a6cf886cd3c17), [`eb36cf37`](https://github.com/keystonejs/keystone/commit/eb36cf3731984cc7cf60b60cb1c043962252610f), [`ec81468c`](https://github.com/keystonejs/keystone/commit/ec81468cb3cd046426ca8101294e635486128ef5), [`6eb23086`](https://github.com/keystonejs/keystone/commit/6eb23086485d9bcbb93e35ec716d846790d611f2), [`8f54a4eb`](https://github.com/keystonejs/keystone/commit/8f54a4eb2d63ed042d736fd20ab622f326e111b8), [`5b058a63`](https://github.com/keystonejs/keystone/commit/5b058a633c84465c9dff7cf940c8cb12bddcf215), [`8f54a4eb`](https://github.com/keystonejs/keystone/commit/8f54a4eb2d63ed042d736fd20ab622f326e111b8)]:
+  - @keystonejs/fields@6.2.0
+  - @keystonejs/keystone@5.4.3
+  - @keystonejs/app-graphql@5.0.3
+  - @keystonejs/adapter-knex@6.2.0
+
 ## 5.0.2
 
 ### Patch Changes

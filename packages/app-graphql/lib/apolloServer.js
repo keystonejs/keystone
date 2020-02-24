@@ -144,7 +144,6 @@ function createApolloServer(keystone, apolloConfig, schemaName, dev) {
   const server = new ApolloServer({
     maxFileSize: 200 * 1024 * 1024,
     maxFiles: 5,
-    ...apolloConfig,
     ...keystone.getAdminSchema({ schemaName }),
     context: ({ req }) => ({
       ...keystone.getGraphQlContext({ schemaName, req }),
@@ -163,6 +162,7 @@ function createApolloServer(keystone, apolloConfig, schemaName, dev) {
           tracing: dev,
         }),
     formatError: _formatError,
+    ...apolloConfig,
   });
   keystone.registerSchema(schemaName, server.schema);
 

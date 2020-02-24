@@ -1,4 +1,4 @@
-const { simpleTokenizer } = require('../lib/tokenizers');
+const { simpleTokenizer, modifierTokenizer } = require('../lib/tokenizers');
 
 describe('Simple tokenizer', () => {
   test('Uses correct conditions', () => {
@@ -7,7 +7,7 @@ describe('Simple tokenizer', () => {
     const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
 
     expect(simpleTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'])).toMatchObject({
-      matchTerm: { foo: 'bar' },
+      foo: 'bar',
     });
     expect(getQueryConditions).toHaveBeenCalledTimes(1);
   });
@@ -17,10 +17,10 @@ describe('Simple tokenizer', () => {
     const getQueryConditions = jest.fn(() => simpleConditions);
     const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
 
-    expect(simpleTokenizer(listAdapter, { $count: 'hi' }, '$count', ['$count'])).toMatchObject({
-      postJoinPipeline: [{ $count: 'hi' }],
+    expect(modifierTokenizer(listAdapter, { $count: 'hi' }, '$count', ['$count'])).toMatchObject({
+      $count: 'hi',
     });
-    expect(getQueryConditions).toHaveBeenCalledTimes(1);
+    expect(getQueryConditions).toHaveBeenCalledTimes(0);
   });
 
   test('returns empty array when no matches found', () => {
@@ -29,7 +29,7 @@ describe('Simple tokenizer', () => {
     const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
 
     const result = simpleTokenizer(listAdapter, { name: 'hi' }, 'name', ['name']);
-    expect(result).toMatchObject({});
+    expect(result).toBe(undefined);
     expect(getQueryConditions).toHaveBeenCalledTimes(1);
   });
 
@@ -40,7 +40,7 @@ describe('Simple tokenizer', () => {
     const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
 
     expect(simpleTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'])).toMatchObject({
-      matchTerm: { foo: 'bar' },
+      foo: 'bar',
     });
     expect(getQueryConditions).toHaveBeenCalledTimes(1);
     expect(nameConditions).toHaveBeenCalledTimes(1);

@@ -1,7 +1,5 @@
 /* global KEYSTONE_ADMIN_META */
 
-import React from 'react';
-
 import List from '../classes/List';
 import { views, readViews, preloadViews } from '../FIELD_TYPES';
 
@@ -80,8 +78,8 @@ function readAdminMeta() {
     hasInitialisedLists = true;
   }
   const hookPages = hooks.pages ? hooks.pages() : [];
-  const adminMataPages = adminMeta.pages ? adminMeta.pages : [];
-  const pages = resolveCustomPages([...adminMataPages, ...hookPages]);
+  const adminMetaPages = adminMeta.pages ? adminMeta.pages : [];
+  const pages = resolveCustomPages([...adminMetaPages, ...hookPages]);
   return { ...adminMeta, hooks, pages };
 }
 
@@ -94,15 +92,4 @@ export const AdminMetaProvider = ({ children }) => children(readAdminMeta());
 // we can do a permission query
 export const useAdminMeta = () => {
   return readAdminMeta();
-};
-
-// HOC Wrapper
-
-function setDisplayName(c) {
-  c.displayName = `withAdminMeta(${c.name || c.displayName})`;
-}
-export const withAdminMeta = Component => props => {
-  setDisplayName(Component);
-  // TODO: Permission query to see which lists to provide
-  return <Component {...props} adminMeta={readAdminMeta()} />;
 };

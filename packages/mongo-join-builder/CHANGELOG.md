@@ -1,5 +1,44 @@
 # @keystonejs/mongo-join-builder
 
+## 6.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/utils@5.2.0
+
+## 6.0.1
+
+### Patch Changes
+
+- [`797df461`](https://github.com/keystonejs/keystone/commit/797df46132c0e77c052994c05970ef1e06660848) [#2267](https://github.com/keystonejs/keystone/pull/2267) - Improved code internals. No functional changes.
+
+* [`078dcfeb`](https://github.com/keystonejs/keystone/commit/078dcfebbd017fb257f0c7fadc1a7469adbedc9c) [#2261](https://github.com/keystonejs/keystone/pull/2261) - Query generator now uses `tmpVar` rather than a generated variable name in lookup queries.
+
+## 6.0.0
+
+### Major Changes
+
+- [`a34f1f72`](https://github.com/keystonejs/keystone/commit/a34f1f72613d1b7c79309ffe04fae0a79baa7737) [#2251](https://github.com/keystonejs/keystone/pull/2251) - Removed the `mutationBuilder` function in favour of using `$project` operations in the main pipeline.
+
+### Patch Changes
+
+- [`7123e226`](https://github.com/keystonejs/keystone/commit/7123e226e13d3629b2ce7b6746c4292af9bf79e1) [#2247](https://github.com/keystonejs/keystone/pull/2247) - Simplified the generated queries for \_some, \_none and \_every queries.
+
+## 5.0.3
+
+### Patch Changes
+
+- [`311f9e9a`](https://github.com/keystonejs/keystone/commit/311f9e9a97b4b0b9ffd3f10772ae7cc520e0cc3b) [#2210](https://github.com/keystonejs/keystone/pull/2210) - Refactored the package internals for better DX.
+
+* [`03dc2af4`](https://github.com/keystonejs/keystone/commit/03dc2af44462c4715c0b2b3e6a1ebe69a7e2c174) [#2228](https://github.com/keystonejs/keystone/pull/2228) - Refactor the internal `relationshipTokenizer`, no functional changes.
+
+- [`779b6ad1`](https://github.com/keystonejs/keystone/commit/779b6ad17806f0b9f6a7fa973cacdeec05096ae8) [#2227](https://github.com/keystonejs/keystone/pull/2227) - Refactored internals of the join query builder, no functional changes.
+
 ## 5.0.2
 
 ### Patch Changes

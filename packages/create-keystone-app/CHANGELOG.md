@@ -1,5 +1,23 @@
 # create-keystone-app
 
+## 1.6.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+## 1.5.1
+
+### Patch Changes
+
+- [`1235f8de`](https://github.com/keystonejs/keystone/commit/1235f8de8539014884b49c87d69a60a1d9e462f1) [#2278](https://github.com/keystonejs/keystone/pull/2278) - Added documentation for the `keystone-create-app` CLI arguments.
+
+## 1.5.0
+
+### Minor Changes
+
+- [`8edd7b3c`](https://github.com/keystonejs/keystone/commit/8edd7b3c172214ac1f11fbcc3d4af17f5e6836df) [#2273](https://github.com/keystonejs/keystone/pull/2273) - Added CLI arguments to support unattended Keystone app initializations
+
 ## 1.4.1
 
 ### Patch Changes
