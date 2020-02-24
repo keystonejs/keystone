@@ -125,6 +125,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
               }
               return (
                 <li
+                  key={`sidebar-${key}`}
                   css={{
                     display: 'flex',
                     justifyContent: 'left',

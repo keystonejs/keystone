@@ -48,7 +48,7 @@ export class OEmbed extends Implementation {
       # The original input URL which the oEmbed data was generated from
       originalUrl: String!
       # The oEmbed version number. Will be 1.0.
-      version: String!
+      version: String
       # A text title, describing the resource.
       title: String
       # The suggested cache lifetime for this resource, in seconds. Consumers may choose to use this value or not.
@@ -206,6 +206,7 @@ export class OEmbed extends Implementation {
       html,
       width,
       height,
+      error,
     } = await this.adapter.fetch({
       ...this.parameters,
       // Force the url parameter
@@ -215,7 +216,7 @@ export class OEmbed extends Implementation {
     // Convert them into a more GraphQL friendly format
     return {
       originalUrl: inputUrl,
-      type,
+      type: type || 'link',
       version,
       title,
       cache_age,
@@ -248,6 +249,7 @@ export class OEmbed extends Implementation {
       html,
       width,
       height,
+      error,
     };
   }
 
