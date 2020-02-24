@@ -36,10 +36,11 @@ export const KeystoneAdminUI = () => {
       .filter(page => typeof page.path === 'string')
       .map(page => {
         const Page = page.component;
+        const config = page.config || {};
         return {
           path: `${adminPath}/${page.path}`,
           component: () => {
-            return <Page />;
+            return <Page {...config} />;
           },
           exact: true,
         };
