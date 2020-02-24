@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import RelationshipSelect from './RelationshipSelect';
 
 const EventCatcher = ({ children }) => (
@@ -12,9 +12,8 @@ const EventCatcher = ({ children }) => (
   </div>
 );
 
-export default class RelationshipFilterView extends Component {
-  handleChange = option => {
-    const { onChange } = this.props;
+const RelationshipFilterView = ({ onChange, filter, field, value }) => {
+  const handleChange = option => {
     if (option === null) {
       onChange(null);
     } else {
@@ -25,22 +24,21 @@ export default class RelationshipFilterView extends Component {
     }
   };
 
-  render() {
-    const { filter, field, value } = this.props;
-    if (!filter) return null;
+  if (!filter) return null;
 
-    const htmlID = `ks-input-${field.path}`;
-    return (
-      <EventCatcher>
-        <RelationshipSelect
-          field={field}
-          renderContext={null}
-          htmlID={htmlID}
-          onChange={this.handleChange}
-          value={value}
-          isMulti={false}
-        />
-      </EventCatcher>
-    );
-  }
-}
+  const htmlID = `ks-input-${field.path}`;
+  return (
+    <EventCatcher>
+      <RelationshipSelect
+        field={field}
+        renderContext={null}
+        htmlID={htmlID}
+        onChange={handleChange}
+        value={value}
+        isMulti={false}
+      />
+    </EventCatcher>
+  );
+};
+
+export default RelationshipFilterView;
