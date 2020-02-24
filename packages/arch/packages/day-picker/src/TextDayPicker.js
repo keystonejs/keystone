@@ -8,27 +8,44 @@ import { format } from 'date-fns';
 export const TextDayPicker = ({
   date,
   onChange,
-  format: dateDisplayFormat = 'Do MMMM YYYY',
+  format: displayFormat = 'Do MMMM YYYY',
   ...props
 }) => {
-  const formatDate = newDate => {
-    return newDate === null ? '' : format(newDate, dateDisplayFormat);
+  const formatDate = newDate => (newDate === null ? '' : format(newDate, displayFormat));
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [value, setValue] = useState({
+    raw: date,
+    formatted: formatDate(date),
+  });
+
+  const toggleEditing = () => {
+    setIsEditing(!isEditing);
   };
 
-  const [value, setValue] = useState(formatDate(date));
+  const onBlur = () => {
+    toggleEditing();
+
+    const newDate = parseDate(value.raw);
+    onChange(newDate);
+
+    setValue({
+      raw: newDate,
+      formatted: formatDate(newDate),
+    });
+  };
+
+  const handleChange = ({ target: { value: raw } }) => {
+    setValue(oldValue => ({ ...oldValue, raw }));
+  };
 
   return (
     <Input
-      value={value}
+      value={isEditing ? value.raw : value.formatted}
       placeholder="Enter a date..."
-      onBlur={() => {
-        const newDate = parseDate(value);
-        onChange(newDate);
-        setValue(formatDate(newDate));
-      }}
-      onChange={event => {
-        setValue(event.target.value);
-      }}
+      onFocus={toggleEditing}
+      onBlur={onBlur}
+      onChange={handleChange}
       {...props}
     />
   );
@@ -36,8 +53,5 @@ export const TextDayPicker = ({
 
 function parseDate(value) {
   const parsed = chrono.parseDate(value);
-  if (parsed === undefined) {
-    return null;
-  }
-  return format(parsed, 'YYYY-MM-DD');
+  return parsed === undefined ? null : format(parsed, 'YYYY-MM-DD');
 }
