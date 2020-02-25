@@ -74,7 +74,7 @@ keystone.createList('Foo', {
 
 // ---- Schema dumping ----
 if (typeof process.env.DUMP_SCHEMA === 'string') {
-  keystone.dumpSchema(process.env.DUMP_SCHEMA);
+  keystone.dumpSchema(process.env.DUMP_SCHEMA, keystone._schemaNames);
   console.log(`Schema dumped to: ${path.resolve(process.env.DUMP_SCHEMA)}`);
   process.exit(0);
 }
