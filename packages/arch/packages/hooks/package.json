@@ -13,7 +13,7 @@
   },
   "module": "dist/hooks.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.7.7",
+    "@babel/runtime": "^7.8.4",
     "resize-observer-polyfill": "^1.5.1"
   }
 }

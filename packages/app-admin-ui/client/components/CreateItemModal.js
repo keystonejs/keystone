@@ -1,6 +1,15 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useCallback, useMemo, Suspense, useState, useRef, useEffect } from 'react';
+import {
+  Fragment,
+  useCallback,
+  useMemo,
+  Suspense,
+  useState,
+  useRef,
+  useEffect,
+  forwardRef,
+} from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { useToasts } from 'react-toast-notifications';
 
@@ -64,6 +73,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     }
 
     createItem({ variables: { data } }).then(data => {
+      if (!data) return;
       closeCreateItemModal();
       setItem(list.getInitialItemData({}));
       if (onCreate) {
@@ -91,7 +101,9 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
   };
 
   const formComponent = useCallback(
-    props => <form autoComplete="off" onSubmit={_onCreate} {...props} />,
+    forwardRef((props, ref) => (
+      <form ref={ref} autoComplete="off" onSubmit={_onCreate} {...props} />
+    )),
     [_onCreate]
   );
 
