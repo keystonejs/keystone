@@ -38,6 +38,7 @@ const {
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { AccessDeniedError } = require('../List/graphqlErrors');
+const { VersionProvider } = require('../providers');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
@@ -81,12 +82,7 @@ module.exports = class Keystone {
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
     this.appVersion = appVersion;
-    this.appVersion.access = parseCustomAccess({
-      access: this.appVersion.access,
-      schemaNames: this._schemaNames,
-      defaultAccess: true,
-    });
-    this._providers = [];
+    this._providers = [new VersionProvider({ appVersion, schemaNames })];
 
     if (adapters) {
       this.adapters = adapters;
@@ -488,12 +484,6 @@ module.exports = class Keystone {
           ${unique(
             flatten([
               ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
-              this.appVersion.access[schemaName]
-                ? [
-                    `"""The version of the Keystone application serving this API."""
-                     appVersion: String`,
-                  ]
-                : [],
               this._extendedQueries
                 .filter(({ access }) => access[schemaName])
                 .map(({ schema }) => schema),
@@ -631,11 +621,6 @@ module.exports = class Keystone {
           // shouldn't be able to override list-level queries
           ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
           ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
-          ...objMerge(
-            this.appVersion.access[schemaName]
-              ? [{ appVersion: () => this.appVersion.version }]
-              : []
-          ),
           // And the Keystone meta queries must always be available
           _ksListsMeta: (_, args, context) =>
             this.listsArray
