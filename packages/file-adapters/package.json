@@ -8,6 +8,7 @@
   "author": "The Keystone Development Team",
   "license": "MIT",
   "dependencies": {
+    "@azure/storage-blob": "^12.0.2",
     "aws-sdk": "^2.576.0",
     "cloudinary": "^1.13.2",
     "mkdirp": "^0.5.1",
