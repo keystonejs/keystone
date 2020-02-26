@@ -108,7 +108,7 @@ export function useListModifier(listKey) {
    * @param {boolean} addHistoryRecord - whether to add an item to history, or not
    * @returns {undefined}
    */
-  return function setSearch(changes, addHistoryRecord = true) {
+  return function setSearch(changes, addHistoryRecord = true, listView = '') {
     let overrides = {};
 
     // NOTE: some changes should reset the currentPage number to 1.
@@ -122,7 +122,7 @@ export function useListModifier(listKey) {
     const encodedSearch = encodeSearch({ ...urlState, ...changes, ...overrides }, decodeConfig);
     const newLocation = { ...location, search: encodedSearch };
 
-    list.setPersistedSearch(encodedSearch);
+    list.setPersistedSearch(encodedSearch, listView);
 
     if (addHistoryRecord) {
       history.push(newLocation);
