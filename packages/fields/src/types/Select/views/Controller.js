@@ -8,6 +8,10 @@ export default class SelectController extends FieldController {
     this.dataType = config.dataType;
   }
   getFilterGraphQL = ({ value: { inverted, options } }) => {
+    if (!options.length) {
+      return '';
+    }
+
     const isMulti = options.length > 1;
 
     let key = this.path;
@@ -40,6 +44,9 @@ export default class SelectController extends FieldController {
     return value.inverted
       ? `${this.label} is not ${optionLabel}`
       : `${this.label} is ${optionLabel}`;
+  };
+  getFilterValue = value => {
+    return value && value.options && value.options.length ? value : null;
   };
   getFilterTypes = () => [
     {

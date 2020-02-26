@@ -37,6 +37,7 @@ const SelectFilterView = ({ innerRef, field, value, onChange }) => {
     options: field.options,
     placeholder: 'Select...',
     value: value.options,
+    isMulti: true,
   };
 
   return (
