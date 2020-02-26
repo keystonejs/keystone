@@ -221,6 +221,15 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async checkDatabaseVersion() {
+    // Knex accepts both 'postgresql' and 'pg' as aliases for 'postgres'.
+    if (!['postgres', 'postgresql', 'pg'].includes(this.client)) {
+      console.log(
+        `Knex adapter is not using a PostgreSQL client (${this.client}). Skipping database version check.`
+      );
+
+      return;
+    }
+
     let version;
     try {
       // Using `raw` due to knex not having the SHOW command
