@@ -21,14 +21,12 @@ const {
   validateFieldAccessControl,
   validateListAccessControl,
   validateCustomAccessControl,
-  parseCustomAccess,
 } = require('@keystonejs/access-control');
 const {
   startAuthedSession,
   endAuthedSession,
   commonSessionMiddleware,
 } = require('@keystonejs/session');
-const { logger } = require('@keystonejs/logger');
 
 const {
   unmergeRelationships,
@@ -37,12 +35,9 @@ const {
 } = require('./relationship-utils');
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
-const { AccessDeniedError } = require('../List/graphqlErrors');
-const { VersionProvider } = require('../providers');
+const { CustomProvider, VersionProvider } = require('../providers');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
-
-const graphqlLogger = logger('graphql');
 
 module.exports = class Keystone {
   constructor({
@@ -70,9 +65,6 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this._extendedTypes = [];
-    this._extendedQueries = [];
-    this._extendedMutations = [];
     this._graphQLQuery = {};
     this._cookieSecret = cookieSecret;
     this._secureCookies = secureCookies;
@@ -82,7 +74,13 @@ module.exports = class Keystone {
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
     this.appVersion = appVersion;
-    this._providers = [new VersionProvider({ appVersion, schemaNames })];
+
+    this._customProvider = new CustomProvider({
+      schemaNames,
+      defaultAccess: this.defaultAccess,
+      buildQueryHelper: this._buildQueryHelper,
+    });
+    this._providers = [this._customProvider, new VersionProvider({ appVersion, schemaNames })];
 
     if (adapters) {
       this.adapters = adapters;
@@ -296,18 +294,7 @@ module.exports = class Keystone {
   }
 
   extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
-    const _parseAccess = obj => ({
-      ...obj,
-      access: parseCustomAccess({
-        access: obj.access,
-        schemaNames: this._schemaNames,
-        defaultAccess: this.defaultAccess.custom,
-      }),
-    });
-
-    this._extendedTypes = this._extendedTypes.concat(types.map(_parseAccess));
-    this._extendedQueries = this._extendedQueries.concat(queries.map(_parseAccess));
-    this._extendedMutations = this._extendedMutations.concat(mutations.map(_parseAccess));
+    return this._customProvider.extendGraphQLSchema({ types, queries, mutations });
   }
 
   _consolidateRelationships() {
@@ -401,9 +388,6 @@ module.exports = class Keystone {
     const mutations = unique(
       flatten([
         ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
-        this._extendedMutations
-          .filter(({ access }) => access[schemaName])
-          .map(({ schema }) => schema),
         ...this._providers.map(p => p.getMutations({ schemaName })),
       ])
     );
@@ -415,9 +399,6 @@ module.exports = class Keystone {
     // Deduping here avoids that problem.
     return [
       ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ schemaName })))),
-      ...unique(
-        this._extendedTypes.filter(({ access }) => access[schemaName]).map(({ type }) => type)
-      ),
       ...unique(flatten(this._providers.map(p => p.getTypes({ schemaName })))),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
@@ -484,9 +465,6 @@ module.exports = class Keystone {
           ${unique(
             flatten([
               ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
-              this._extendedQueries
-                .filter(({ access }) => access[schemaName])
-                .map(({ schema }) => schema),
               ...this._providers.map(p => p.getQueries({ schemaName })),
             ])
           ).join('\n')}
@@ -569,37 +547,6 @@ module.exports = class Keystone {
     // TODO: Document this order of precendence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
-    const customResolver = type => ({ schema, resolver, access }) => {
-      const gqlName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
-
-      // Perform access control check before passing off control to the
-      // user defined resolver (along with the evalutated access).
-      const computeAccess = context => {
-        const _access = context.getCustomAccessControlForUser(access);
-        if (!_access) {
-          graphqlLogger.debug({ access, gqlName }, 'Access statically or implicitly denied');
-          graphqlLogger.info({ gqlName }, 'Access Denied');
-          // If the client handles errors correctly, it should be able to
-          // receive partial data (for the fields the user has access to),
-          // and then an `errors` array of AccessDeniedError's
-          throw new AccessDeniedError({
-            data: { type, target: gqlName },
-            internalData: {
-              authedId: context.authedItem && context.authedItem.id,
-              authedListKey: context.authedListKey,
-            },
-          });
-        }
-        return _access;
-      };
-      return {
-        [gqlName]: (obj, args, context, info) =>
-          resolver(obj, args, context, info, {
-            query: this._buildQueryHelper(context),
-            access: computeAccess(context),
-          }),
-      };
-    };
     const resolvers = filterValues(
       {
         // Order of spreading is important here - we don't want user-defined types
@@ -626,22 +573,12 @@ module.exports = class Keystone {
             this.listsArray
               .filter(list => list.access[schemaName].read)
               .map(list => list.listMeta(context)),
-          ...objMerge(
-            this._extendedQueries
-              .filter(({ access }) => access[schemaName])
-              .map(customResolver('query'))
-          ),
           ...objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
         },
 
         Mutation: {
           ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
           ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
-          ...objMerge(
-            this._extendedMutations
-              .filter(({ access }) => access[schemaName])
-              .map(customResolver('mutation'))
-          ),
           ...objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
         },
       },
