@@ -162,3 +162,55 @@ keystone.createList('Document', {
   },
 });
 ```
+
+
+
+## `AzureFileAdapter`
+
+```javascript
+const { AzureAdapter } = require('@keystonejs/file-adapters');
+
+
+const fileAdapter = new AzureAdapter({
+  accountName: `STORAGE_ACCOUNT_NAME`,
+  accountKey: `STORAGE_ACCOUNT_ACCESS_KEY`,
+  containerName: 'CONTAINER_NAME'
+});
+```
+
+| Option            | Type              | Default     | Description                                                                                                                                                                                                                              |
+| ----------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accountName`     | `String`          | Required    | Azure Storage Account Name                                                                                                                                                                                                                         |
+| `accountKey` | `String`          | Required    | Azure Storage Account Key                                                                                                                                                                                                               |
+| `containerName`          | `String`          | Required    | Azure Storage Container Name                                                                                                                                                                     
+
+### Methods
+
+### `delete`
+
+Deletes the provided file in the Azure Blob Storage Account. Takes a `file` object (such as the one returned in file field hooks).
+
+```javascript
+keystone.createList('Users', {
+  fields: {
+    avatar: {
+      type: File,
+      adapter: fileAdapter,
+      hooks: {
+        beforeChange: ({ existingItem }) => {
+          if (existingItem && existingItem.avatar) {
+            fileAdapter.delete(existingItem.avatar);
+          }
+        },
+      },
+    },
+  },
+  hooks: {
+    afterDelete: ({ existingItem }) => {
+      if (existingItem.avatar) {
+        fileAdapter.delete(existingItem.avatar);
+      }
+    },
+  },
+});
+```
