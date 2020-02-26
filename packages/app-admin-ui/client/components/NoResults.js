@@ -27,8 +27,8 @@ const NoResultsWrapper = ({ children, ...props }) => (
   </div>
 );
 
-export const NoResults = ({ currentPage, filters, list, search }) => {
-  const { onChange } = useListPagination(list.key);
+export const NoResults = ({ currentPage, filters, list, search, listView }) => {
+  const { onChange } = useListPagination(list.key, listView);
   const onResetPage = () => onChange(1);
 
   const pageDepthMessage = (

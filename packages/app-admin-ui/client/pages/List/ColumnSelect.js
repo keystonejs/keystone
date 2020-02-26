@@ -11,9 +11,9 @@ type Props = {
   listKey: string,
 };
 
-export default function ColumnPopout({ listKey, target }: Props) {
+export default function ColumnPopout({ listKey, target, listView }: Props) {
   const list = useList(listKey);
-  const [columns, handleColumnChange] = useListColumns(listKey);
+  const [columns, handleColumnChange] = useListColumns(listKey, listView);
   const cypresSelectId = 'ks-column-select';
 
   return (

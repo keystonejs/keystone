@@ -6,8 +6,8 @@ import { useListPagination } from './dataHooks';
 
 const CYPRESS_TEST_ID = 'ks-pagination';
 
-export default function ListPagination({ isLoading, listKey }) {
-  const { data, onChange } = useListPagination(listKey);
+export default function ListPagination({ isLoading, listKey, listView }) {
+  const { data, onChange } = useListPagination(listKey, listView);
 
   return (
     <Pagination

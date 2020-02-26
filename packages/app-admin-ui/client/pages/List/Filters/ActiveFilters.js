@@ -16,8 +16,8 @@ export const elementOffsetStyles = {
   marginRight: gridSize / 2,
 };
 
-export default function ActiveFilters({ list }) {
-  const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key);
+export default function ActiveFilters({ list, listView }) {
+  const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key, listView);
 
   return (
     <Fragment>

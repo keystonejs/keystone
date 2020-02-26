@@ -95,7 +95,7 @@ export function useListQuery(listKey) {
  * @returns {function} setSearch - Used for internal hooks to modify the URL
  */
 
-export function useListModifier(listKey) {
+export function useListModifier(listKey, listView) {
   const history = useHistory();
   const location = useLocation();
   const list = useList(listKey);
@@ -108,7 +108,7 @@ export function useListModifier(listKey) {
    * @param {boolean} addHistoryRecord - whether to add an item to history, or not
    * @returns {undefined}
    */
-  return function setSearch(changes, addHistoryRecord = true, listView = '') {
+  return function setSearch(changes, addHistoryRecord = true, overrideListView) {
     let overrides = {};
 
     // NOTE: some changes should reset the currentPage number to 1.
@@ -122,7 +122,7 @@ export function useListModifier(listKey) {
     const encodedSearch = encodeSearch({ ...urlState, ...changes, ...overrides }, decodeConfig);
     const newLocation = { ...location, search: encodedSearch };
 
-    list.setPersistedSearch(encodedSearch, listView);
+    list.setPersistedSearch(encodedSearch, overrideListView || listView);
 
     if (addHistoryRecord) {
       history.push(newLocation);
@@ -170,9 +170,9 @@ export function useListItems(listKey) {
  * @returns {Function} - The function to reset url state
  */
 
-export function useReset(listKey) {
+export function useReset(listKey, listView) {
   const { decodeConfig } = useListUrlState(listKey);
-  const setSearch = useListModifier(listKey);
+  const setSearch = useListModifier(listKey, listView);
 
   return () => setSearch(decodeSearch('', decodeConfig));
 }
@@ -188,10 +188,10 @@ export function useReset(listKey) {
  * - onSubmit - commit the current search to history and update the URL
  */
 
-export function useListSearch(listKey) {
+export function useListSearch(listKey, listView) {
   const { urlState } = useListUrlState(listKey);
   const { search: searchValue } = urlState;
-  const setSearch = useListModifier(listKey);
+  const setSearch = useListModifier(listKey, listView);
   const { items } = useListItems(listKey);
   const history = useHistory();
   const match = useRouteMatch();
@@ -248,10 +248,10 @@ export function useListSearch(listKey) {
 //   value: any,
 // }>
 
-export function useListFilter(listKey) {
+export function useListFilter(listKey, listView) {
   const { urlState } = useListUrlState(listKey);
   const { filters } = urlState;
-  const setSearch = useListModifier(listKey);
+  const setSearch = useListModifier(listKey, listView);
 
   const onRemove = value => () => {
     const newFilters = filters.filter(f => {
@@ -296,10 +296,10 @@ export function useListFilter(listKey) {
 //   pageSize: numnber,
 // }
 
-export function useListPagination(listKey) {
+export function useListPagination(listKey, listView) {
   const { urlState } = useListUrlState(listKey);
   const { currentPage, pageSize } = urlState;
-  const setSearch = useListModifier(listKey);
+  const setSearch = useListModifier(listKey, listView);
   const { itemCount } = useListItems(listKey);
 
   const onChange = cp => {
@@ -334,10 +334,10 @@ export function useListPagination(listKey) {
 //   field: { label: string, path: string },
 // };
 
-export function useListSort(listKey) {
+export function useListSort(listKey, listView) {
   const { urlState } = useListUrlState(listKey);
   const { sortBy } = urlState;
-  const setSearch = useListModifier(listKey);
+  const setSearch = useListModifier(listKey, listView);
 
   const onChange = sb => {
     setSearch({ sortBy: sb });
@@ -357,11 +357,11 @@ export function useListSort(listKey) {
 
 // type Fields = Array<FieldController>;
 
-export function useListColumns(listKey) {
+export function useListColumns(listKey, listView) {
   const list = useList(listKey);
   const { urlState } = useListUrlState(listKey);
   const { fields } = urlState;
-  const setSearch = useListModifier(listKey);
+  const setSearch = useListModifier(listKey, listView);
 
   const onChange = selectedFields => {
     // Ensure that the displayed fields maintain their original sortDirection

@@ -15,9 +15,9 @@ type Props = {
   listKey: string,
 };
 
-export default function SortPopout({ listKey }: Props) {
+export default function SortPopout({ listKey, listView }: Props) {
   const list = useList(listKey);
-  const [sortValue, handleSortChange] = useListSort(listKey);
+  const [sortValue, handleSortChange] = useListSort(listKey, listView);
   const altIsDown = useKeyDown('Alt');
   const popoutRef = useRef();
 
