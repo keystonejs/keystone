@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class CheckboxFilterView extends Component {
-  handleChange = ({ target: { value } }) => {
-    this.props.onChange(value);
+const CheckboxFilterView = ({ onChange, filter, innerRef, value }) => {
+  const handleChange = ({ target: { value } }) => {
+    onChange(value);
   };
 
-  render() {
-    const { filter, innerRef, value } = this.props;
-    if (!filter) return null;
+  if (!filter) return null;
 
-    return (
-      <select onChange={this.handleChange} ref={innerRef} value={value}>
-        <option value="true">Checked</option>
-        <option value="false">Unchecked</option>
-        <option value="null">Not set</option>
-      </select>
-    );
-  }
-}
+  return (
+    <select onChange={handleChange} ref={innerRef} value={value}>
+      <option value="true">Checked</option>
+      <option value="false">Unchecked</option>
+      <option value="null">Not set</option>
+    </select>
+  );
+};
+
+export default CheckboxFilterView;
