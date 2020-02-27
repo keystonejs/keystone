@@ -82,8 +82,8 @@
     "react-uid": "^2.2.0",
     "resize-observer-polyfill": "^1.5.1",
     "style-loader": "^1.0.0",
-    "webpack": "4.28.4",
-    "webpack-dev-middleware": "^3.6.1",
-    "webpack-hot-middleware": "^2.24.3"
+    "webpack": "4.41.6",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-hot-middleware": "^2.25.0"
   }
 }
