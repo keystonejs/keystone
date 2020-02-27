@@ -20,7 +20,7 @@
     "@keystonejs/fields": "^6.3.0",
     "codemirror": "^5.48.0",
     "prop-types": "^15.7.2",
-    "react": "^16.12.0",
+    "react": "^16.13.0",
     "react-codemirror2": "^6.0.0"
   },
   "main": "dist/fields-markdown.cjs.js",
