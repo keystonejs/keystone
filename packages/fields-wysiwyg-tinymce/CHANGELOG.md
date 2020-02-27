@@ -1,5 +1,35 @@
 # @keystonejs/fields-wysiwyg-tinymce
 
+## 5.1.1
+
+### Patch Changes
+
+- [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+* [`b14a513e`](https://github.com/keystonejs/keystone/commit/b14a513e3c52e3f41bd4341b7b7faea2b9f8f2e9) [#2445](https://github.com/keystonejs/keystone/pull/2445) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated tinymce to 5.2.0.
+
+- [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+- Updated dependencies [[`6929a7e3`](https://github.com/keystonejs/keystone/commit/6929a7e3339f36e712bcbafc71ddf7a133730b29), [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`9a388f01`](https://github.com/keystonejs/keystone/commit/9a388f01e388272d56f81af2247d8030e0f2c972), [`bd4096ee`](https://github.com/keystonejs/keystone/commit/bd4096ee86f7790c76db23090b38f880e5aa7ecc), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09), [`c059b63c`](https://github.com/keystonejs/keystone/commit/c059b63c6ebdbb60ac4095d1efd791d598b2756c)]:
+  - @keystonejs/build-field-types@5.2.1
+  - @arch-ui/fields@2.1.2
+  - @arch-ui/input@0.1.5
+  - @keystonejs/fields@6.3.1
+  - @arch-ui/icons@0.0.9
+  - @arch-ui/theme@0.0.8
+
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/build-field-types@5.2.0
+  - @keystonejs/fields@6.3.0
+
 ## 5.0.4
 
 ### Patch Changes

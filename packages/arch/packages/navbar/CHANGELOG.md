@@ -1,5 +1,18 @@
 # @arch-ui/navbar
 
+## 0.1.6
+
+### Patch Changes
+
+- [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+* [`aa682b4c`](https://github.com/keystonejs/keystone/commit/aa682b4c4b59f3edb7a87559049f90a06a2f26b5) [#2409](https://github.com/keystonejs/keystone/pull/2409) Thanks [@Vultraz](https://github.com/Vultraz)! - Made active nav item text bold.
+
+- [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+- Updated dependencies [[`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09)]:
+  - @arch-ui/theme@0.0.8
+
 ## 0.1.5
 
 ### Patch Changes

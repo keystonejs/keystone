@@ -52,7 +52,7 @@ For Windows and other platforms see the [download instructions](https://www.post
 ### Setup
 
 By default the Knex Adapter will attempt to connect to a PostgreSQL database as the current user.
-It will look for a a database matching the project name.
+It will look for a database matching the project name.
 You can override these options when [configuring the Knex Adapter](/packages/adapter-knex/README.md).
 
 To create database run the following command:

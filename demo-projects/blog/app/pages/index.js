@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 
 import { jsx } from '@emotion/core';
 import { format } from 'date-fns';
@@ -41,52 +41,52 @@ const Post = ({ post }) => {
   );
 };
 
-export default () => (
-  <Layout>
-    <Header />
-    <section css={{ margin: '48px 0' }}>
-      <h2>About</h2>
-      <p>
-        This blog was created in KeystoneJS, a fantastic open source framework for developing
-        database-driven websites, applications and APIs in Node.js and GraphQL.
-      </p>
-    </section>
+export default function() {
+  const { data, loading, error } = useQuery(gql`
+    query {
+      allPosts {
+        title
+        id
+        body
+        posted
+        slug
+        image {
+          publicUrl
+        }
+        author {
+          name
+        }
+      }
+    }
+  `);
 
-    <section css={{ margin: '48px 0' }}>
-      <h2>Latest Posts</h2>
-      <Query
-        query={gql`
-          {
-            allPosts {
-              title
-              id
-              body
-              posted
-              slug
-              image {
-                publicUrl
-              }
-              author {
-                name
-              }
-            }
-          }
-        `}
-      >
-        {({ data, loading, error }) => {
-          if (loading) return <p>loading...</p>;
-          if (error) return <p>Error!</p>;
-          return (
-            <div>
-              {data.allPosts.length ? (
-                data.allPosts.map(post => <Post post={post} key={post.id} />)
-              ) : (
-                <p>No posts to display</p>
-              )}
-            </div>
-          );
-        }}
-      </Query>
-    </section>
-  </Layout>
-);
+  return (
+    <Layout>
+      <Header />
+      <section css={{ margin: '48px 0' }}>
+        <h2>About</h2>
+        <p>
+          This blog was created in KeystoneJS, a fantastic open source framework for developing
+          database-driven websites, applications and APIs in Node.js and GraphQL.
+        </p>
+      </section>
+
+      <section css={{ margin: '48px 0' }}>
+        <h2>Latest Posts</h2>
+        {loading ? (
+          <p>loading...</p>
+        ) : error ? (
+          <p>Error!</p>
+        ) : (
+          <div>
+            {data.allPosts.length ? (
+              data.allPosts.map(post => <Post post={post} key={post.id} />)
+            ) : (
+              <p>No posts to display</p>
+            )}
+          </div>
+        )}
+      </section>
+    </Layout>
+  );
+}

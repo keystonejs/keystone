@@ -831,10 +831,8 @@ The data would finally look like:
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1]        |
-
