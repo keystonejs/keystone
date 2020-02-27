@@ -24,15 +24,15 @@ const keystone = new Keystone({
   },
 });
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 keystone.createList('User', User);
 keystone.createList('Post', Post);
 keystone.createList('PostCategory', PostCategory);
 keystone.createList('Comment', Comment);
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+});
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',

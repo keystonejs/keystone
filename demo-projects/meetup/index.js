@@ -18,11 +18,6 @@ const keystone = new Keystone({
   onConnect: initialiseData,
 });
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 keystone.createList('Event', Event);
 keystone.createList('Rsvp', Rsvp);
 keystone.createList('Talk', Talk);
@@ -30,6 +25,11 @@ keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
 keystone.createList('Sponsor', Sponsor);
 keystone.createList('ForgottenPasswordToken', ForgottenPasswordToken);
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+});
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',
