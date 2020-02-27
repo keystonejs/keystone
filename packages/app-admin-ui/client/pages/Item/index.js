@@ -265,15 +265,22 @@ const ItemDetails = ({
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
-                    setItem(oldItem => ({
-                      ...oldItem,
-                      [field.path]: value,
-                    }));
+                    setItem(oldItem => {
+                      // Don't flag things as changed if they're not actually changed
+                      if (oldItem[field.path] === value) {
+                        return oldItem;
+                      }
 
-                    setValidationErrors({});
-                    setValidationWarnings({});
+                      setValidationErrors({});
+                      setValidationWarnings({});
 
-                    itemHasChanged.current = true;
+                      itemHasChanged.current = true;
+
+                      return {
+                        ...oldItem,
+                        [field.path]: value,
+                      };
+                    });
                   },
                   [field]
                 );
