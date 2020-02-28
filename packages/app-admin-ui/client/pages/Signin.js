@@ -5,6 +5,7 @@ import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
 import { colors } from '@arch-ui/theme';
+import { PageTitle } from '@arch-ui/typography';
 
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -65,7 +66,7 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignInPage = ({ authStrategy: { listKey, identityField, secretField } }) => {
+const SignInPage = ({ name: siteName, authStrategy: { listKey, identityField, secretField } }) => {
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
   const [reloading, setReloading] = useState(false);
@@ -114,6 +115,7 @@ const SignInPage = ({ authStrategy: { listKey, identityField, secretField } }) =
           <Alert appearance="danger">Your username and password were incorrect</Alert>
         ) : null}
       </Alerts>
+      <PageTitle>{siteName}</PageTitle>
       <Form method="post" onSubmit={onSubmit}>
         <KeystoneLogo />
         <Divider />
@@ -141,6 +143,11 @@ const SignInPage = ({ authStrategy: { listKey, identityField, secretField } }) =
             type="submit"
             isLoading={loading || reloading}
             indicatorVariant="dots"
+            style={{
+              width: '280px',
+              height: '2.6em',
+              margin: '1em 0',
+            }}
           >
             Sign In
           </LoadingButton>
