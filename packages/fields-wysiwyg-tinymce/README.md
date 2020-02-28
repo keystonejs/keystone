@@ -18,9 +18,9 @@ Then import it, and use it like any other field:
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 ```
 
-### Config
+## Config
 
-## `editorConfig`
+### `editorConfig`
 
 _*Default:*_ `{}`
 
