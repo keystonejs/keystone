@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
+import { useEffect, useRef } from 'react';
 import { jsx } from '@emotion/core';
 import { gridSize } from '@arch-ui/theme';
 import throttle from 'lodash.throttle';
@@ -8,6 +8,8 @@ import { colors } from '@arch-ui/theme';
 
 import { Footer, SidebarNav, Search, SocialIconsNav } from '../components';
 import { media, mediaMax } from '../utils/media';
+
+import { HEADER_HEIGHT } from './Header';
 
 const layoutGutter = gridSize * 4;
 let oldSidebarOffset = 0;
@@ -17,16 +19,9 @@ export const SIDEBAR_WIDTH = 280;
 
 export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
   const asideRef = useRef();
-  const [isStuck, setSticky] = useState(false);
 
   const handleWindowScroll = () => {
     oldWindowOffset = window.pageYOffset;
-    if (window.pageYOffset > offsetTop && !isStuck) {
-      setSticky(true);
-    }
-    if (window.pageYOffset <= offsetTop && isStuck) {
-      setSticky(false);
-    }
   };
 
   const maintainSidebarScroll = throttle(() => {
@@ -54,10 +49,10 @@ export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
   }, [asideRef.current]);
 
   const stickyStyles = {
-    height: isStuck ? '100%' : `calc(100% - ${offsetTop}px)`,
-    position: isStuck ? 'fixed' : 'absolute',
+    height: '100%',
+    position: 'fixed',
     width: SIDEBAR_WIDTH,
-    top: isStuck ? 0 : offsetTop,
+    top: HEADER_HEIGHT,
   };
 
   // NOTE: the 5px gutter is to stop inner elements outline/box-shadow etc.

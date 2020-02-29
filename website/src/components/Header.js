@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { forwardRef } from 'react'; // eslint-disable-line no-unused-vars
+import { forwardRef } from 'react';
 import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
@@ -12,7 +12,15 @@ import { media, mediaOnly, mediaMax } from '../utils/media';
 export const HEADER_HEIGHT = 60;
 
 export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
-  <header ref={ref} {...props}>
+  <header
+    ref={ref}
+    css={{
+      backgroundColor: 'rgb(250, 251, 252)',
+      zIndex: 1,
+      [media.sm]: { position: 'sticky', top: 0 },
+    }}
+    {...props}
+  >
     <Container>
       <div
         css={{
