@@ -1,5 +1,128 @@
 # @keystonejs/app-admin-ui
 
+## 5.9.0
+
+### Minor Changes
+
+- [`7c552a14`](https://github.com/keystonejs/keystone/commit/7c552a14078843710b7f225a88d1cd2024514981) [#2415](https://github.com/keystonejs/keystone/pull/2415) Thanks [@gautamsi](https://github.com/gautamsi)! - Allowed use of `config` object in custom pages. This enables passing on any custom config or even a function to the custom Page component in `admin-ui`
+
+  you can now add config like this
+
+  ```js
+  {
+    label: 'About this project',
+    path: 'about',
+    config: {
+      option: 'value',
+    },
+    component: About,
+  },
+
+  ```
+
+* [`fd94849b`](https://github.com/keystonejs/keystone/commit/fd94849bccaf13426d2f7bcc2cd82fe81da7be7e) [#2429](https://github.com/keystonejs/keystone/pull/2429) Thanks [@gautamsi](https://github.com/gautamsi)! - Moved client components and react related exports from `@keystonejs/app-admin-ui/client` to `@keystonejs/app-admin-ui/components`
+
+### Patch Changes
+
+- [`0c9d3125`](https://github.com/keystonejs/keystone/commit/0c9d3125d9b4bb37047a6c6ed61796e52fba8b17) [#2443](https://github.com/keystonejs/keystone/pull/2443) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Webpack dependencies to the latest version.
+
+* [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+- [`5c6ee24c`](https://github.com/keystonejs/keystone/commit/5c6ee24ceea951d7add79af55ef5a408edd8b763) [#2396](https://github.com/keystonejs/keystone/pull/2396) Thanks [@Vultraz](https://github.com/Vultraz)! - Refactored out uses of the `withRouter` HOC.
+
+* [`6b1ea0ec`](https://github.com/keystonejs/keystone/commit/6b1ea0ec1b536b5c9098105f5e77c0cd5feaf6b0) [#2406](https://github.com/keystonejs/keystone/pull/2406) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed fatal errors when attempting to view a nonexistant item.
+
+- [`b30d1361`](https://github.com/keystonejs/keystone/commit/b30d13612c54c0a3f0ebc2fc9c777954d4c4727f) [#2403](https://github.com/keystonejs/keystone/pull/2403) Thanks [@Vultraz](https://github.com/Vultraz)! - Resolved two history issues when deleting items:
+  - Fixed being able to go back to a now-invalid item entry
+  - Fixed being able to remain on an item page even after it was deleted if it had unsaved data at the time.
+
+* [`5e8c6df3`](https://github.com/keystonejs/keystone/commit/5e8c6df3e7c8bee4c76ca4d5be38cd6aff198bd8) [#2407](https://github.com/keystonejs/keystone/pull/2407) Thanks [@Vultraz](https://github.com/Vultraz)! - Changed DocTitle component to take a single `title` prop.
+
+- [`1b3ee45e`](https://github.com/keystonejs/keystone/commit/1b3ee45e9ec6e52329b208c73e5a3597aea69799) [#2408](https://github.com/keystonejs/keystone/pull/2408) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed an error when creating an item with a valueless required field.
+
+* [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+- [`4313b645`](https://github.com/keystonejs/keystone/commit/4313b64554b1cc64e64245706b00c0510a5dd0b4) [#2368](https://github.com/keystonejs/keystone/pull/2368) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up a few React hook-related things:
+  - Replaced custom `useRouter` hook with official `react-router` hooks.
+  - Removed `withAdminMeta` HOC.
+  - Added a `useKeyboardManager` hook.
+- Updated dependencies [[`6929a7e3`](https://github.com/keystonejs/keystone/commit/6929a7e3339f36e712bcbafc71ddf7a133730b29), [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`9a388f01`](https://github.com/keystonejs/keystone/commit/9a388f01e388272d56f81af2247d8030e0f2c972), [`bd4096ee`](https://github.com/keystonejs/keystone/commit/bd4096ee86f7790c76db23090b38f880e5aa7ecc), [`aa682b4c`](https://github.com/keystonejs/keystone/commit/aa682b4c4b59f3edb7a87559049f90a06a2f26b5), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09), [`c059b63c`](https://github.com/keystonejs/keystone/commit/c059b63c6ebdbb60ac4095d1efd791d598b2756c)]:
+  - @keystonejs/build-field-types@5.2.1
+  - @arch-ui/alert@0.0.13
+  - @arch-ui/badge@0.0.12
+  - @arch-ui/button@0.0.14
+  - @arch-ui/card@0.0.10
+  - @arch-ui/confirm@0.0.15
+  - @arch-ui/controls@0.1.4
+  - @arch-ui/dialog@0.0.16
+  - @arch-ui/drawer@0.0.17
+  - @arch-ui/dropdown@0.0.14
+  - @arch-ui/fields@2.1.2
+  - @arch-ui/input@0.1.5
+  - @arch-ui/layout@0.2.9
+  - @arch-ui/loading@0.0.13
+  - @arch-ui/lozenge@0.0.12
+  - @arch-ui/navbar@0.1.6
+  - @arch-ui/options@0.0.14
+  - @arch-ui/pagination@0.0.14
+  - @arch-ui/pill@0.1.11
+  - @arch-ui/popout@0.0.15
+  - @arch-ui/tooltip@0.1.7
+  - @arch-ui/typography@0.0.13
+  - @keystonejs/fields@6.3.1
+  - @arch-ui/hooks@0.0.8
+  - @arch-ui/icons@0.0.9
+  - @arch-ui/select@0.1.4
+  - @arch-ui/theme@0.0.8
+  - @keystonejs/utils@5.2.1
+  - @arch-ui/common@0.0.9
+
+## 5.8.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/build-field-types@5.2.0
+  - @keystonejs/field-views-loader@5.2.0
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/session@5.1.0
+  - @keystonejs/utils@5.2.0
+
+## 5.7.3
+
+### Patch Changes
+
+- [`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2) [#2320](https://github.com/keystonejs/keystone/pull/2320) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `graphql` dependency from 14.4.2 to 14.6.0 and `graphql-type-json` depedency from 0.2.1 to 0.3.1.
+
+* [`29845426`](https://github.com/keystonejs/keystone/commit/29845426cb699afcc003f6a0b9ef540a61f808b4) [#2359](https://github.com/keystonejs/keystone/pull/2359) Thanks [@marcosrjjunior](https://github.com/marcosrjjunior)! - Fixed an internal typo.
+
+- [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e) [#2323](https://github.com/keystonejs/keystone/pull/2323) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Apollo-related dependencies:
+
+  apollo-boost: 0.4.4 -> 0.4.7
+  apollo-cache-inmemory: 1.5.1 -> 1.6.5
+  apollo-client: 2.6.4 -> 2.6.8
+  apollo-server-express: 2.9.1 -> 2.9.16
+  apollo-upload-client: 10.0.0 -> 12.1.0
+  apollo-utilities: 1.3.2 -> 1.3.3
+
+* [`6c25d331`](https://github.com/keystonejs/keystone/commit/6c25d3319f89351568ad9d007b985a230e54b5b3) [#2352](https://github.com/keystonejs/keystone/pull/2352) Thanks [@cowjen01](https://github.com/cowjen01)! - Fix default sort on item list view.
+
+- [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24) [#2373](https://github.com/keystonejs/keystone/pull/2373) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced `react-focus-marshal` dependency with `focus-trap-react`.
+
+- Updated dependencies [[`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2), [`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24), [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a), [`1e026fff`](https://github.com/keystonejs/keystone/commit/1e026fff05f777225105ebc188c8411a3b23beac)]:
+  - @keystonejs/fields@6.2.3
+  - @arch-ui/confirm@0.0.14
+  - @arch-ui/dialog@0.0.15
+  - @arch-ui/drawer@0.0.16
+  - @arch-ui/dropdown@0.0.13
+  - @arch-ui/popout@0.0.14
+  - @arch-ui/fields@2.1.1
+  - @keystonejs/build-field-types@5.1.5
+
 ## 5.7.2
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # @keystonejs/adapter-knex
 
+## 6.3.1
+
+### Patch Changes
+
+- [`635529c9`](https://github.com/keystonejs/keystone/commit/635529c9f227ae968332cd32e63875c4561af926) [#2431](https://github.com/keystonejs/keystone/pull/2431) Thanks [@Vultraz](https://github.com/Vultraz)! - Skip database version validation when not using a PostgreSQL client.
+
+- Updated dependencies [[`7ce804a8`](https://github.com/keystonejs/keystone/commit/7ce804a877300709375e5bc14206080ab15aec54), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09), [`3abc5883`](https://github.com/keystonejs/keystone/commit/3abc58831e0f9b5871569a3fa6b21be7dc269cf3), [`8bdbb114`](https://github.com/keystonejs/keystone/commit/8bdbb114f6b2864693ae6e534df6fe8ee8345a60)]:
+  - @keystonejs/keystone@5.6.0
+  - @keystonejs/fields-auto-increment@5.1.1
+  - @keystonejs/utils@5.2.1
+
+## 6.3.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/fields-auto-increment@5.1.0
+  - @keystonejs/keystone@5.5.0
+  - @keystonejs/logger@5.1.0
+  - @keystonejs/utils@5.2.0
+
 ## 6.2.0
 
 ### Minor Changes

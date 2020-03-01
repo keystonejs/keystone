@@ -8,6 +8,11 @@ module.exports = {
     'cypress/globals': true,
   },
   plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', 'emotion'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',

@@ -224,7 +224,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
     const schemaName = 'public';
     const schema = keystone.getTypeDefs({ schemaName }).join('\n');
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
-    expect(keystone._extendedQueries).toHaveLength(1);
+    expect(keystone._customProvider._extendedQueries).toHaveLength(1);
   });
 
   test('mutations', () => {
@@ -251,7 +251,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
     const schemaName = 'public';
     const schema = keystone.getTypeDefs({ schemaName }).join('\n');
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
-    expect(keystone._extendedMutations).toHaveLength(1);
+    expect(keystone._customProvider._extendedMutations).toHaveLength(1);
   });
 });
 
