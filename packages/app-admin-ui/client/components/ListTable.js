@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component, Suspense, Fragment } from 'react';
+import React, { Component, Suspense, Fragment, useState } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
@@ -18,6 +18,7 @@ import copyToClipboard from 'clipboard-copy';
 import { useListSort } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
 import { NoResults } from './NoResults';
+import { useUIHooks } from '../providers/Hooks';
 
 const Render = ({ children }) => children();
 
@@ -134,6 +135,63 @@ class SortLink extends React.Component<SortLinkProps> {
   }
 }
 
+const ItemDropDown = ({ list, item, link, onDelete, ...props }) => {
+  const [deleteModalIsVisible, setDeleteModal] = useState(false);
+  let { listItemActions } = useUIHooks();
+
+  const copyText = window.location.origin + link({ path: list.path, item });
+
+  const handleDelete = result => {
+    if (onDelete) onDelete(result);
+    setDeleteModal(false);
+  };
+
+  const items = [
+    {
+      content: 'Copy Link',
+      icon: <LinkIcon />,
+      onClick: () => copyToClipboard(copyText),
+    },
+    {
+      content: 'Delete',
+      icon: <TrashcanIcon />,
+      onClick: () => setDeleteModal(true),
+    },
+  ];
+  return (
+    <Fragment>
+      <DeleteItemModal
+        isOpen={deleteModalIsVisible}
+        item={item}
+        list={list}
+        onClose={() => setDeleteModal(false)}
+        onDelete={handleDelete}
+      />
+      {listItemActions ? (
+        listItemActions({ list, item, link, onDelete, ...props, items })
+      ) : (
+        <Dropdown
+          align="right"
+          target={handlers => (
+            <Button
+              variant="subtle"
+              css={{
+                opacity: 0,
+                transition: 'opacity 150ms',
+                'tr:hover > td > &': { opacity: 1 },
+              }}
+              {...handlers}
+            >
+              <KebabHorizontalIcon />
+            </Button>
+          )}
+          items={items}
+        />
+      )}
+    </Fragment>
+  );
+};
+
 // ==============================
 // Common for display & manage
 // ==============================
@@ -184,19 +242,6 @@ class ListRow extends Component {
   }
   render() {
     const { list, link, isSelected, item, itemErrors, fields, linkField } = this.props;
-    const copyText = window.location.origin + link({ path: list.path, item });
-    const items = [
-      {
-        content: 'Copy Link',
-        icon: <LinkIcon />,
-        onClick: () => copyToClipboard(copyText),
-      },
-      {
-        content: 'Delete',
-        icon: <TrashcanIcon />,
-        onClick: this.showDeleteModal,
-      },
-    ];
 
     return (
       <TableRow>
@@ -208,7 +253,6 @@ class ListRow extends Component {
             onChange={this.onCheckboxChange}
             tabIndex="0"
           />
-          {this.renderDeleteModal()}
         </BodyCell>
         {fields.map(field => {
           const { path } = field;
@@ -262,23 +306,7 @@ class ListRow extends Component {
           );
         })}
         <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
-          <Dropdown
-            align="right"
-            target={handlers => (
-              <Button
-                variant="subtle"
-                css={{
-                  opacity: 0,
-                  transition: 'opacity 150ms',
-                  'tr:hover > td > &': { opacity: 1 },
-                }}
-                {...handlers}
-              >
-                <KebabHorizontalIcon />
-              </Button>
-            )}
-            items={items}
-          />
+          <ItemDropDown {...this.props} />
         </BodyCell>
       </TableRow>
     );

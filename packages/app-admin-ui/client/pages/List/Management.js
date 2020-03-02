@@ -8,6 +8,8 @@ import { FlexGroup } from '@arch-ui/layout';
 import { IconButton } from '@arch-ui/button';
 import { colors, gridSize } from '@arch-ui/theme';
 
+import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
@@ -22,21 +24,90 @@ const SelectedCount = styled.div({
   marginRight: gridSize,
 });
 
-export default function ListManage(props) {
-  const { onDeleteMany, onUpdateMany, selectedItems } = props;
-  const [deleteModalIsVisible, setDeleteModal] = useState(false);
+const UpdateItems = ({ selectedItems, onUpdateMany }) => {
   const [updateModalIsVisible, setUpdateModal] = useState(false);
 
-  const handleDelete = () => {
-    setDeleteModal(false);
-    onDeleteMany();
-  };
+  let { list } = useList();
+  if (!list.access.update) return null;
   const handleUpdate = () => {
     setUpdateModal(false);
     onUpdateMany();
   };
 
-  const { list, pageSize, totalItems } = props;
+  return (
+    <Fragment>
+      <IconButton
+        appearance="primary"
+        icon={SettingsIcon}
+        onClick={() => setUpdateModal(true)}
+        variant="nuance"
+        data-test-name="update"
+      >
+        Update
+      </IconButton>
+      <UpdateManyItemsModal
+        isOpen={updateModalIsVisible}
+        items={selectedItems}
+        list={list}
+        onClose={() => setUpdateModal(false)}
+        onUpdate={handleUpdate}
+      />
+    </Fragment>
+  );
+};
+
+const DeleteItems = ({ selectedItems, onDeleteMany }) => {
+  const [deleteModalIsVisible, setDeleteModal] = useState(false);
+  let { list } = useList();
+
+  if (!list.access.update) return null;
+  const handleDelete = () => {
+    setDeleteModal(false);
+    onDeleteMany();
+  };
+
+  return (
+    <Fragment>
+      <IconButton
+        appearance="danger"
+        icon={TrashcanIcon}
+        onClick={() => setDeleteModal(true)}
+        variant="nuance"
+        data-test-name="delete"
+      >
+        Delete
+      </IconButton>
+      <DeleteManyItemsModal
+        isOpen={deleteModalIsVisible}
+        itemIds={selectedItems}
+        list={list}
+        onClose={() => setDeleteModal(false)}
+        onDelete={handleDelete}
+      />
+    </Fragment>
+  );
+};
+
+const renderActions = ({ ...props }) => {
+  let { listManageActions } = useUIHooks();
+
+  if (!ENABLE_DEV_FEATURES) return null;
+
+  if (listManageActions) {
+    return listManageActions({ ...props, UpdateItems, DeleteItems });
+  }
+  return (
+    <Fragment>
+      <UpdateItems {...props} />
+      <DeleteItems {...props} />
+    </Fragment>
+  );
+};
+
+export default function ListManage(props) {
+  const { selectedItems } = props;
+
+  const { pageSize, totalItems } = props;
   const selectedCount = selectedItems.length;
 
   return (
@@ -45,46 +116,8 @@ export default function ListManage(props) {
         <SelectedCount>
           {selectedCount} of {Math.min(pageSize, totalItems)} Selected
         </SelectedCount>
-        {ENABLE_DEV_FEATURES ? (
-          list.access.update ? (
-            <IconButton
-              appearance="primary"
-              icon={SettingsIcon}
-              onClick={() => setUpdateModal(true)}
-              variant="nuance"
-              data-test-name="update"
-            >
-              Update
-            </IconButton>
-          ) : null
-        ) : null}
-        {list.access.update ? (
-          <IconButton
-            appearance="danger"
-            icon={TrashcanIcon}
-            onClick={() => setDeleteModal(true)}
-            variant="nuance"
-            data-test-name="delete"
-          >
-            Delete
-          </IconButton>
-        ) : null}
+        {renderActions({ ...props })}
       </FlexGroup>
-
-      <UpdateManyItemsModal
-        isOpen={updateModalIsVisible}
-        items={selectedItems}
-        list={list}
-        onClose={() => setUpdateModal(false)}
-        onUpdate={handleUpdate}
-      />
-      <DeleteManyItemsModal
-        isOpen={deleteModalIsVisible}
-        itemIds={selectedItems}
-        list={list}
-        onClose={() => setDeleteModal(false)}
-        onDelete={handleDelete}
-      />
     </Fragment>
   );
 }

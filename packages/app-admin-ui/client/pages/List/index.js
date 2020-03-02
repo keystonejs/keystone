@@ -3,8 +3,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, useRef, Suspense } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { useList } from '../../providers/List';
-
+import { captureSuspensePromises } from '@keystonejs/utils';
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
@@ -21,7 +20,6 @@ import DocTitle from '../../components/DocTitle';
 import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
 import { DisclosureArrow } from '../../components/Popout';
-
 import ColumnPopout from './ColumnSelect';
 import ActiveFilters from './Filters/ActiveFilters';
 import SortPopout from './SortSelect';
@@ -29,16 +27,36 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
-import { captureSuspensePromises } from '@keystonejs/utils';
+import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
 
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
 
+const CreateItem = () => {
+  let {
+    list: { access },
+    openCreateItemModal,
+  } = useList();
+  if (!access.create) return null;
+  const cypressCreateId = 'list-page-create-button';
+  return (
+    <IconButton
+      appearance="primary"
+      icon={PlusIcon}
+      onClick={openCreateItemModal}
+      id={cypressCreateId}
+    >
+      Create
+    </IconButton>
+  );
+};
+
 export function ListLayout(props) {
   const { adminMeta, items, itemCount, queryErrors, routeProps, query } = props;
   const measureElementRef = useRef();
-  const { list, openCreateItemModal } = useList();
+  const { list } = useList();
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
@@ -48,6 +66,8 @@ export function ListLayout(props) {
   const { currentPage, fields, pageSize, search } = urlState;
 
   const [selectedItems, onSelectChange] = useListSelect(items);
+
+  let { listHeaderActions } = useUIHooks();
 
   // Mount with Persisted Search
   // ------------------------------
@@ -89,7 +109,6 @@ export function ListLayout(props) {
   // Success
   // ------------------------------
 
-  const cypressCreateId = 'list-page-create-button';
   const cypressFiltersId = 'ks-list-active-filters';
 
   const Render = ({ children }) => children();
@@ -101,16 +120,7 @@ export function ListLayout(props) {
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
             <PageTitle>{list.plural}</PageTitle>
-            {list.access.create ? (
-              <IconButton
-                appearance="primary"
-                icon={PlusIcon}
-                onClick={openCreateItemModal}
-                id={cypressCreateId}
-              >
-                Create
-              </IconButton>
-            ) : null}
+            {listHeaderActions ? listHeaderActions({ CreateItem }) : <CreateItem />}
           </FlexGroup>
           <div
             css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
