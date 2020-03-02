@@ -35,12 +35,13 @@ const BoxElement = styled(Card)`
 `;
 
 const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props }) => {
-  const { list, openCreateItemModal } = useList();
+  const { list, openCreateItemModal, closeCreateItemModal, isCreateItemModalOpen } = useList();
   const history = useHistory();
   const { adminPath } = useAdminMeta();
 
   const onCreate = ({ data }) => {
     const id = data[list.gqlNames.createMutationName].id;
+    closeCreateItemModal();
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 
@@ -71,7 +72,11 @@ const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props 
           <A11yText>Create {singular}</A11yText>
         </CreateButton>
       </BoxElement>
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal
+        onCreate={onCreate}
+        onClose={closeCreateItemModal}
+        isOpen={isCreateItemModalOpen}
+      />
     </Fragment>
   );
 };

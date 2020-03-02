@@ -44,8 +44,8 @@ function useEventCallback(callback) {
   return cb;
 }
 
-function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onCreate }) {
-  const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
+function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onCreate, isOpen }) {
+  const { list } = useList();
   const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
@@ -103,7 +103,6 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
 
     createItem({ variables: { data } }).then(data => {
       if (!data) return;
-      closeCreateItemModal();
       setItem(list.getInitialItemData({}));
       if (onCreate) {
         onCreate(data);
@@ -113,7 +112,6 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
 
   const _onClose = () => {
     if (isLoading) return;
-    closeCreateItemModal();
     setItem(list.getInitialItemData({}));
     const data = arrayToObject(creatable, 'path', field => field.serialize(item));
     if (onClose) {
@@ -143,7 +141,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     <Drawer
       closeOnBlanketClick
       component={formComponent}
-      isOpen={isCreateItemModalOpen}
+      isOpen={isOpen}
       onClose={_onClose}
       heading={`Create ${list.singular}`}
       onKeyDown={_onKeyDown}

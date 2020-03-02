@@ -36,6 +36,7 @@ import {
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
+import { useList } from '../../providers/List';
 
 let Render = ({ children }) => children();
 
@@ -62,7 +63,6 @@ const getRenderableFields = memoizeOne(list =>
 
 const ItemDetails = ({
   adminPath,
-  list,
   item: initialData,
   itemErrors,
   onUpdate,
@@ -73,6 +73,8 @@ const ItemDetails = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
+
+  const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
 
   const itemHasChanged = useRef(false);
   const itemSaveCheckCache = useRef({});
@@ -248,6 +250,7 @@ const ItemDetails = ({
 
   const onCreate = ({ data }) => {
     const { id } = data[list.gqlNames.createMutationName];
+    closeCreateItemModal();
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 
@@ -332,7 +335,11 @@ const ItemDetails = ({
         />
       </Card>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal
+        onCreate={onCreate}
+        onClose={closeCreateItemModal}
+        isOpen={isCreateItemModalOpen}
+      />
       <DeleteItemModal
         isOpen={showDeleteModal}
         item={initialData}

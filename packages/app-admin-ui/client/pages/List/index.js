@@ -38,7 +38,7 @@ const HeaderInset = props => (
 export function ListLayout(props) {
   const { adminMeta, items, itemCount, queryErrors, routeProps, query } = props;
   const measureElementRef = useRef();
-  const { list, openCreateItemModal } = useList();
+  const { list, openCreateItemModal, isCreateItemModalOpen, closeCreateItemModal } = useList();
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
@@ -84,6 +84,7 @@ export function ListLayout(props) {
     query.refetch().then(() => {
       history.push(`${adminPath}/${list.path}/${id}`);
     });
+    closeCreateItemModal();
   };
 
   // Success
@@ -207,7 +208,11 @@ export function ListLayout(props) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal
+        onCreate={onCreate}
+        onClose={closeCreateItemModal}
+        isOpen={isCreateItemModalOpen}
+      />
 
       <Container isFullWidth>
         <ListTable

@@ -104,7 +104,7 @@ function LinkToRelatedItems({ field, value }) {
 }
 
 function CreateAndAddItem({ field, item, onCreate, CreateItemModal }) {
-  const { list, openCreateItemModal } = useList();
+  const { list, openCreateItemModal, closeCreateItemModal, isCreateItemModalOpen } = useList();
 
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
   let label = `Create and add ${relatedList.singular}`;
@@ -152,7 +152,10 @@ function CreateAndAddItem({ field, item, onCreate, CreateItemModal }) {
         prefillData={prefillData}
         onCreate={({ data }) => {
           onCreate(data[relatedList.gqlNames.createMutationName]);
+          closeCreateItemModal();
         }}
+        onClose={closeCreateItemModal}
+        isOpen={isCreateItemModalOpen}
       />
     </Fragment>
   );
