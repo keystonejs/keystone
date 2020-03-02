@@ -12,42 +12,44 @@ import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
-const HomePage = ({ lists, data, adminPath }) => {
-  return (
-    <main>
-      <Container>
-        <HeaderInset>
-          <PageTitle>Dashboard</PageTitle>
-        </HeaderInset>
-        <ContainerQuery>
-          {({ width }) => {
-            let cellWidth = 3;
-            if (width < 1024) cellWidth = 4;
-            if (width < 768) cellWidth = 6;
-            if (width < 480) cellWidth = 12;
-            return (
-              <Grid gap={16}>
-                {lists.map(list => {
-                  const { key, path } = list;
-                  const meta = data && data[list.gqlNames.listQueryMetaName];
-                  return (
-                    <ListProvider list={list} key={key}>
-                      <Cell width={cellWidth}>
-                        <Box to={`${adminPath}/${path}`} meta={meta} />
-                      </Cell>
-                    </ListProvider>
-                  );
-                })}
-              </Grid>
-            );
-          }}
-        </ContainerQuery>
-      </Container>
-    </main>
-  );
-};
+import { useAdminMeta } from '../../providers/AdminMeta';
 
-const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
+const HomePage = ({ lists, data, adminPath }) => (
+  <main>
+    <Container>
+      <HeaderInset>
+        <PageTitle>Dashboard</PageTitle>
+      </HeaderInset>
+      <ContainerQuery>
+        {({ width }) => {
+          let cellWidth = 3;
+          if (width < 1024) cellWidth = 4;
+          if (width < 768) cellWidth = 6;
+          if (width < 480) cellWidth = 12;
+          return (
+            <Grid gap={16}>
+              {lists.map(list => {
+                const { key, path } = list;
+                const meta = data && data[list.gqlNames.listQueryMetaName];
+                return (
+                  <ListProvider list={list} key={key}>
+                    <Cell width={cellWidth}>
+                      <Box to={`${adminPath}/${path}`} meta={meta} />
+                    </Cell>
+                  </ListProvider>
+                );
+              })}
+            </Grid>
+          );
+        }}
+      </ContainerQuery>
+    </Container>
+  </main>
+);
+
+const HomepageListProvider = () => {
+  const { getListByKey, listKeys, adminPath } = useAdminMeta();
+
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
@@ -109,7 +111,7 @@ const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
         // list component so we don't block rendering the lists immediately
         // to the user.
       }
-      <HomePage lists={allowedLists} data={data} {...props} />
+      <HomePage lists={allowedLists} data={data} adminPath={adminPath} />
     </Fragment>
   );
 };
