@@ -814,32 +814,6 @@ test('getFieldsRelatedTo', () => {
   expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
 });
 
-test('_throwAccessDenied', () => {
-  const list = setup();
-  expect(() => list._throwAccessDenied('read', context, 'Test')).toThrow(AccessDeniedError);
-
-  let thrownError;
-  try {
-    list._throwAccessDenied('update', context, 'Test');
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError.data).toEqual({ target: 'Test', type: 'mutation' });
-  expect(thrownError.internalData).toEqual({ authedId: 1, authedListKey: 'Test' });
-
-  try {
-    list._throwAccessDenied('delete', context, 'Test', { extraInternal: 2 }, { extraData: 1 });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError.data).toEqual({ target: 'Test', type: 'mutation', extraData: 1 });
-  expect(thrownError.internalData).toEqual({
-    authedId: 1,
-    authedListKey: 'Test',
-    extraInternal: 2,
-  });
-});
-
 test('_wrapFieldResolverWith', () => {
   const resolver = () => 'result';
   const list = setup();
