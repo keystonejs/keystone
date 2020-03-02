@@ -150,7 +150,7 @@ export default class ContentController extends Controller {
       document: JSON.parse(data[path].document),
     };
 
-    // Filter out oEmbeds from document that are missing from serializations
+    // Filter out oEmbeds from parsedData.document that missing from parsedData.oEmbeds
     parsedData.document.nodes = parsedData.document.nodes.filter(node => {
       if (node.type !== 'oEmbed') {
         return true;
