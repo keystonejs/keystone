@@ -22,12 +22,6 @@ const keystone = new Keystone({
   adapter: new MongooseAdapter(),
 });
 
-// eslint-disable-next-line no-unused-vars
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 keystone.createList('User', {
   fields: {
     email: {
@@ -50,6 +44,11 @@ keystone.createList('User', {
     noRead: { type: Text, access: { read: () => false } },
     yesRead: { type: Text, access: { read: () => true } },
   },
+});
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
 });
 
 function createListWithStaticAccess(access) {
