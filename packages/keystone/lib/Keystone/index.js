@@ -36,7 +36,7 @@ const {
 } = require('./relationship-utils');
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
-const { CustomProvider, VersionProvider } = require('../providers');
+const { CustomProvider, ListAuthProvider, VersionProvider } = require('../providers');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
@@ -284,6 +284,12 @@ module.exports = class Keystone {
     const strategy = new StrategyType(this, listKey, config);
     strategy.authType = authType;
     this.auth[listKey][authType] = strategy;
+    if (!this.lists[listKey]) {
+      throw new Error(`List "${listKey}" does not exist.`);
+    }
+    this._providers.push(
+      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy })
+    );
     return strategy;
   }
 
@@ -301,7 +307,6 @@ module.exports = class Keystone {
       queryHelper: this._buildQueryHelper.bind(this),
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
-      getAuth: () => this.auth[key] || {},
       registerType: type => this.registeredTypes.add(type),
       isAuxList,
       createAuxList: (auxKey, auxConfig) => {
