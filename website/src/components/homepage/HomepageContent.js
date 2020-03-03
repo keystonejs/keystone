@@ -6,11 +6,10 @@ import { colors } from '@arch-ui/theme';
 import { media, mediaMax, mq } from '../../utils/media';
 
 const HomepageContent = () => (
-  <Content>
-    <Heading>Keystone 5</Heading>
-    <div css={{ color: colors.N80, maxWidth: 640 }}>
-      <p>A scalable platform and CMS to build Node.js applications.</p>
-      <p>
+  <div>
+    <Heading>A scalable platform and CMS to build Node.js applications</Heading>
+    <div>
+      <p css={{ fontSize: '1.5rem' }}>
         Keystone 5 introduces first-class GraphQL support, a new extensible architecture, and an
         improved Admin UI.
       </p>
@@ -37,29 +36,7 @@ const HomepageContent = () => (
         View on GitHub
       </Button>
     </ButtonWrapper>
-    {/* <p css={{ color: colors.N40, fontSize: '0.9em' }}>
-      Keystone 5 is built by{' '}
-      <a css={{ color: colors.N80 }} href="https://www.thinkmill.com.au">
-        Thinkmill
-      </a>{' '}
-      and{' '}
-      <a
-        css={{ color: colors.N80 }}
-        href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md#contributors"
-      >
-        Contributors
-      </a>{' '}
-      around the world.
-    </p>
-
-    <p css={{ color: colors.N40, fontSize: '0.9em' }}>
-      Keystone v4 has moved to{' '}
-      <a css={{ color: colors.N80 }} href="http://v4.keystonejs.com">
-        v4.keystonejs.com
-      </a>
-      .{' '}
-    </p> */}
-  </Content>
+  </div>
 );
 
 // ==============================
@@ -70,14 +47,10 @@ const Heading = props => (
   <h1
     css={{
       color: colors.N100,
-      fontSize: '2.4em',
+      fontSize: '3.2rem',
+      lineHeight: 1.2,
       fontWeight: 800,
-      lineHeight: 1,
       margin: 0,
-
-      [mediaMax.sm]: {
-        marginTop: '1em',
-      },
     }}
     {...props}
   />
@@ -87,6 +60,7 @@ const ButtonWrapper = props => (
     css={mq({
       alignItems: 'center',
       display: 'flex',
+      justifyContent: 'center',
       margin: ['1em 0', '1em 0', '1em 0', '2em 0'],
 
       [mediaMax.xs]: {
@@ -95,25 +69,6 @@ const ButtonWrapper = props => (
         margin: '2em auto',
       },
     })}
-    {...props}
-  />
-);
-
-const Content = props => (
-  <div
-    css={{
-      display: 'flex',
-      justifyContent: 'center',
-      flexDirection: 'column',
-      flex: '0 1 500px',
-
-      [mediaMax.xs]: {
-        textAlign: 'center',
-      },
-      // [mediaOnly.md]: {
-      //   paddingRight: '10em',
-      // },
-    }}
     {...props}
   />
 );

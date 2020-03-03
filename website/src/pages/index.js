@@ -28,7 +28,15 @@ export default () => (
         <Points />
         <Whys />
         <Technology />
-        <div css={{ paddingTop: 80, paddingBottom: 80 }}>
+        <GettingStarted />
+        <div
+          css={{
+            paddingTop: 80,
+            paddingBottom: 80,
+            textAlign: 'center',
+            borderTop: '1px solid #ccc',
+          }}
+        >
           <Container>
             <p css={{ color: colors.N40, fontSize: '0.9em' }}>
               Keystone 5 is built by{' '}
@@ -64,133 +72,151 @@ const Hero = () => (
     <SkipNavContent />
     <Container
       css={mq({
-        display: 'flex',
-        paddingTop: 80,
-        paddingBottom: 80,
-        fontSize: [14, 18],
-        lineHeight: 1.6,
+        paddingTop: 100,
+        paddingBottom: 100,
+        textAlign: 'center',
+        maxWidth: 800,
+        margin: '0 auto',
       })}
     >
       <HomepageContent />
-      <VideoIntro />
     </Container>
   </div>
 );
 
-const exampleCode = `
-const { Text } = require("@keystone-alpha/fields");
-const { Keystone } = require("@keystone-alpha/keystone");
-const { GraphQLApp } = require("@keystone-alpha/app-graphql");
-const { AdminUIApp } = require("@keystone-alpha/app-admin-ui");
-const { MongooseAdapter } = require("@keystone-alpha/adapter-mongoose");
-
-keystone.createList('Todo', {
+const exampleCode = `keystone.createList('Todo', {
   fields: {
     task: { type: Text },
   },
 });
 
-const keystone = new Keystone({
-  name: 'Todo App',
-  adapter: new MongooseAdapter()
-});
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    email: { type: Text },
+  },
+});`;
 
-module.exports = {
-  keystone,
-  apps: [
-    new GraphQLApp({
-      apiPath: "/graphql"
-    }),
-    new AdminUIApp({
-      adminPath: "/admin",
-      apiPath: "/graphql"
-    }),
-  ]
-};
+const graphqlCode = `
+type Mutation {
+  createTodo(..): Todo
+  updateTodo(..): Todo
+  deleteTodo(..): Todo
+  createUser(..): User
+  updateUser(..): User
+  deleteUser(..): User
+}
 
-`;
+type Query {
+  allTodos(..): [Todo]
+  Todo(..): Todo
+  allUsers(..): [User]
+  User(..): User
+}
+
+type Todo {
+  id: ID
+  task: String
+}
+
+type User {
+  id: ID
+  name: String
+  email: String
+}`;
 
 const Points = () => {
   return (
-    <div
-      css={{
-        backgroundColor: colors.N100,
-        color: colors.N10,
-        paddingTop: 80,
-        paddingBottom: 80,
-        textAlign: 'center',
-      }}
-    >
-      <Container>
-        <div css={{ maxWidth: 800, margin: '0 auto', marginBottom: '2em' }}>
-          <h2
-            css={{
-              marginTop: 0,
-              fontSize: '2.4em',
-              fontWeight: 'normal',
-              lineHeight: 1,
-              marginBottom: '1em',
-              fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
-            }}
-          >
-            {`schema => ({ GraphQL, AdminUI })`}
-          </h2>
-          <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
-            A KeystoneJS instance can be summarised as a function of your schema which creates a
-            GraphQL API for querying, and an AdminUI for managing your data:
-          </p>
-        </div>
-        <div css={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: 24 }}>
-          <div
-            css={{
-              boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
-              backgroundColor: colors.N90,
-              borderRadius: 4,
-              padding: 24,
-              textAlign: 'left',
-              overflow: 'scroll',
-            }}
-          >
-            <Highlight {...defaultProps} theme={prismTheme} code={exampleCode} language="js">
-              {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                <pre className={className} style={style}>
-                  {tokens.map((line, i) => (
-                    <div {...getLineProps({ line, key: i })}>
-                      {line.map((token, key) => (
-                        <span {...getTokenProps({ token, key })} />
-                      ))}
-                    </div>
-                  ))}
-                </pre>
-              )}
-            </Highlight>
+    <div>
+      <svg viewBox="0 0 10 1" css={{ transform: `translateY(4px)` }}>
+        <path fill={colors.N100} d="M0 0.6L0 1 10 1 10 0z" />
+      </svg>
+      <div
+        css={{
+          backgroundColor: colors.N100,
+          color: colors.N10,
+          paddingTop: 80,
+          paddingBottom: 80,
+          textAlign: 'center',
+        }}
+      >
+        <Container>
+          <div css={{ maxWidth: 800, margin: '0 auto', marginBottom: '2em' }}>
+            <h2
+              css={{
+                marginTop: 0,
+                fontSize: '2.4em',
+                fontWeight: 'normal',
+                lineHeight: 1,
+                marginBottom: '1em',
+                fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
+              }}
+            >
+              {`schema => ({ GraphQL, AdminUI })`}
+            </h2>
+            <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
+              A KeystoneJS instance can be summarised as a function of your schema which creates a
+              GraphQL API for querying, and an AdminUI for managing your data:
+            </p>
           </div>
-          <div
-            css={{
-              boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
-              backgroundColor: colors.N90,
-              borderRadius: 4,
-              padding: 24,
-              textAlign: 'left',
-              overflow: 'scroll',
-            }}
-          >
-            <Highlight {...defaultProps} theme={prismTheme} code={exampleCode} language="js">
-              {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                <pre className={className} style={style}>
-                  {tokens.map((line, i) => (
-                    <div {...getLineProps({ line, key: i })}>
-                      {line.map((token, key) => (
-                        <span {...getTokenProps({ token, key })} />
-                      ))}
-                    </div>
-                  ))}
-                </pre>
-              )}
-            </Highlight>
+          <div css={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: 36 }}>
+            <div
+              css={{
+                boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
+                backgroundColor: colors.N90,
+                borderRadius: 4,
+                padding: 24,
+                textAlign: 'left',
+                overflow: 'scroll',
+              }}
+            >
+              <h3>Define your Schema</h3>
+
+              <Highlight {...defaultProps} theme={prismTheme} code={exampleCode} language="js">
+                {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                  <pre className={className} style={style}>
+                    {tokens.map((line, i) => (
+                      <div {...getLineProps({ line, key: i })}>
+                        {line.map((token, key) => (
+                          <span {...getTokenProps({ token, key })} />
+                        ))}
+                      </div>
+                    ))}
+                  </pre>
+                )}
+              </Highlight>
+            </div>
+            <div
+              css={{
+                boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
+                backgroundColor: colors.N90,
+                borderRadius: 4,
+                padding: 24,
+                textAlign: 'left',
+                overflow: 'scroll',
+              }}
+            >
+              <h3>Generated GraphQL API</h3>
+              <Highlight {...defaultProps} theme={prismTheme} code={graphqlCode} language="graphql">
+                {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                  <pre className={className} style={style}>
+                    {tokens.map((line, i) => (
+                      <div {...getLineProps({ line, key: i })}>
+                        {line.map((token, key) => (
+                          <span {...getTokenProps({ token, key })} />
+                        ))}
+                      </div>
+                    ))}
+                  </pre>
+                )}
+              </Highlight>
+            </div>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </div>
+      <svg viewBox="0 0 10 1" css={{ transform: `translateY(-4px) rotate(180deg)` }}>
+        <path fill={colors.N100} d="M0 0.6L0 1 10 1 10 0z" />
+      </svg>
     </div>
   );
 };
@@ -324,87 +350,125 @@ const Whys = () => (
 );
 
 const Technology = () => (
+  <div>
+    <svg viewBox="0 0 10 1" css={{ transform: `translateY(4px)` }}>
+      <path fill={colors.N100} d="M0 0.6L0 1 10 1 10 0z" />
+    </svg>
+    <div
+      css={{
+        backgroundColor: colors.N100,
+        color: colors.N10,
+        paddingTop: 80,
+        paddingBottom: 80,
+        textAlign: 'center',
+      }}
+    >
+      <Container>
+        <div css={{ maxWidth: 800, margin: '0 auto', marginBottom: '2em' }}>
+          <h2
+            css={{
+              marginTop: 0,
+              fontSize: '2.4em',
+              fontWeight: 600,
+              lineHeight: 1,
+              marginBottom: '1em',
+            }}
+          >
+            Pair with the technology of your choice
+          </h2>
+          <p css={{ fontSize: '1.125rem', lineHeight: '1.5' }}>
+            Every framework has its own properties and advantages, fast rendering, SEO, ease of
+            deployment or progressive enhancement. Prismic integrates with every framework so that
+            you can choose the best fit for your project
+          </p>
+        </div>
+        <div css={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: 24 }}>
+          <div
+            css={{
+              boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
+              backgroundColor: colors.N90,
+              borderRadius: 4,
+              padding: 24,
+            }}
+          >
+            <h3 css={{ fontSize: '1.5em', lineHeight: '1' }}>NextJS</h3>
+            <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
+              Next is a great option if you are familiar with React but want static-site generation,
+              server-side rendering, Serverless deployment, and a growing ecosystem.
+            </p>
+            <Button appearance="primary" variant="solid">
+              Read more
+            </Button>
+          </div>
+          <div
+            css={{
+              boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
+              backgroundColor: colors.N90,
+              borderRadius: 4,
+              padding: 24,
+            }}
+          >
+            <h3 css={{ fontSize: '1.5em', lineHeight: '1' }}>NuxtJS</h3>
+            <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
+              Gatsby is an extremely popular static site generator based on React. It offers a great
+              developer experience thanks to a huge selection of plugins.{' '}
+            </p>
+            <Button appearance="primary" variant="solid">
+              Read more
+            </Button>
+          </div>
+          <div
+            css={{
+              boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
+              backgroundColor: colors.N90,
+              borderRadius: 4,
+              padding: 24,
+            }}
+          >
+            <h3 css={{ fontSize: '1.5em', lineHeight: '1' }}>Static </h3>
+            <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
+              Great for SEO, Nuxt is a good choice if you're familiar with Vue and you are looking
+              for static-site generation and server-side rendering.{' '}
+            </p>
+            <Button appearance="primary" variant="solid">
+              Read more
+            </Button>
+          </div>
+        </div>
+      </Container>
+    </div>
+    <svg viewBox="0 0 10 1" css={{ transform: `translateY(-4px) rotate(180deg)` }}>
+      <path fill={colors.N100} d="M0 0.6L0 1 10 1 10 0z" />
+    </svg>
+  </div>
+);
+
+const GettingStarted = () => (
   <div
     css={{
-      backgroundColor: colors.N100,
-      color: colors.N10,
       paddingTop: 80,
       paddingBottom: 80,
-      textAlign: 'center',
     }}
   >
     <Container>
-      <div css={{ maxWidth: 800, margin: '0 auto', marginBottom: '2em' }}>
+      <div css={{ maxWidth: 800, margin: '0 auto', marginBottom: '2em', textAlign: 'center' }}>
         <h2
           css={{
             marginTop: 0,
             fontSize: '2.4em',
-            fontWeight: 600,
+            fontWeight: 800,
             lineHeight: 1,
             marginBottom: '1em',
           }}
         >
-          Pair with the technology of your choice
+          Get started in minutes
         </h2>
-        <p css={{ fontSize: '1.125rem', lineHeight: '1.5' }}>
+        <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
           Every framework has its own properties and advantages, fast rendering, SEO, ease of
-          deployment or progressive enhancement. Prismic integrates with every framework so that you
-          can choose the best fit for your project
+          deployment or progressive enhancement.
         </p>
       </div>
-      <div css={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: 24 }}>
-        <div
-          css={{
-            boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
-            backgroundColor: colors.N90,
-            borderRadius: 4,
-            padding: 24,
-          }}
-        >
-          <h3 css={{ fontSize: '1.5em', lineHeight: '1' }}>NextJS</h3>
-          <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
-            Next is a great option if you are familiar with React but want static-site generation,
-            server-side rendering, Serverless deployment, and a growing ecosystem.
-          </p>
-          <Button appearance="primary" variant="solid">
-            Read more
-          </Button>
-        </div>
-        <div
-          css={{
-            boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
-            backgroundColor: colors.N90,
-            borderRadius: 4,
-            padding: 24,
-          }}
-        >
-          <h3 css={{ fontSize: '1.5em', lineHeight: '1' }}>NuxtJS</h3>
-          <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
-            Gatsby is an extremely popular static site generator based on React. It offers a great
-            developer experience thanks to a huge selection of plugins.{' '}
-          </p>
-          <Button appearance="primary" variant="solid">
-            Read more
-          </Button>
-        </div>
-        <div
-          css={{
-            boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
-            backgroundColor: colors.N90,
-            borderRadius: 4,
-            padding: 24,
-          }}
-        >
-          <h3 css={{ fontSize: '1.5em', lineHeight: '1' }}>Static </h3>
-          <p css={{ fontSize: '1.25em', lineHeight: '1.5' }}>
-            Great for SEO, Nuxt is a good choice if you're familiar with Vue and you are looking for
-            static-site generation and server-side rendering.{' '}
-          </p>
-          <Button appearance="primary" variant="solid">
-            Read more
-          </Button>
-        </div>
-      </div>
+      <VideoIntro />
     </Container>
   </div>
 );
