@@ -420,6 +420,13 @@ module.exports = class Keystone {
     return { lists, name: this.name };
   }
 
+  // It's not Keystone core's responsibility to create an executable schema, but
+  // once one is, Keystone wants to be able to expose the ability to query that
+  // schema, so this function enables other modules to register that function.
+  registerSchema(schemaName, schema) {
+    this._schemas[schemaName] = schema;
+  }
+
   getTypeDefs({ schemaName }) {
     const queries = unique(flatten(this._providers.map(p => p.getQueries({ schemaName }))));
     const mutations = unique(flatten(this._providers.map(p => p.getMutations({ schemaName }))));
@@ -437,38 +444,23 @@ module.exports = class Keystone {
       .map(s => print(gql(s)));
   }
 
-  // It's not Keystone core's responsibility to create an executable schema, but
-  // once one is, Keystone wants to be able to expose the ability to query that
-  // schema, so this function enables other modules to register that function.
-  registerSchema(schemaName, schema) {
-    this._schemas[schemaName] = schema;
-  }
-
-  getAdminSchema({ schemaName }) {
+  getResolvers({ schemaName }) {
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
     // - first one wins)
     // TODO: Document this order of precendence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
-    return {
-      typeDefs: this.getTypeDefs({ schemaName }).map(
-        typeDef =>
-          gql`
-            ${typeDef}
-          `
-      ),
-      resolvers: filterValues(
-        {
-          // Order of spreading is important here - we don't want user-defined types
-          // to accidentally override important things like `Query`.
-          ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
-          Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
-          Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
-        },
-        o => Object.entries(o).length > 0
-      ),
-    };
+    return filterValues(
+      {
+        // Order of spreading is important here - we don't want user-defined types
+        // to accidentally override important things like `Query`.
+        ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
+        Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
+        Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
+      },
+      o => Object.entries(o).length > 0
+    );
   }
 
   dumpSchema(file, schemaName) {
