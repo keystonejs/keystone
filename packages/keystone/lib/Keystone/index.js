@@ -66,7 +66,7 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this._graphQLQuery = {};
+    this._schemas = {};
     this._cookieSecret = cookieSecret;
     this._secureCookies = secureCookies;
     this._cookieMaxAge = cookieMaxAge;
@@ -116,6 +116,27 @@ module.exports = class Keystone {
       throw new Error('No cookieSecret set in Keystone constructor');
     }
     return this._cookieSecret;
+  }
+
+  _executeOperation({
+    requestString,
+    rootValue = null,
+    contextValue,
+    variableValues,
+    operationName,
+  }) {
+    // This method is a thin wrapper around the graphql() function which uses
+    // contextValue.schemaName to select a schema created by app-graphql to execute.
+    // https://graphql.org/graphql-js/graphql/#graphql
+    const schema = this._schemas[contextValue.schemaName];
+    if (!schema) {
+      return Promise.reject(
+        new Error(
+          `No executable schema named '${contextValue.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
+        )
+      );
+    }
+    return graphql(schema, requestString, rootValue, contextValue, variableValues, operationName);
   }
 
   // The GraphQL App uses this method to build up the context required for each
@@ -221,7 +242,7 @@ module.exports = class Keystone {
     /**
      * An executable function for running a query
      *
-     * @param queryString String A graphQL query string
+     * @param requestString String A graphQL query string
      * @param options.skipAccessControl Boolean By default access control _of
      * the user making the initial request_ is still tested. Disable all
      * Access Control checks with this flag
@@ -233,32 +254,24 @@ module.exports = class Keystone {
      * @return Promise<Object> The graphql query response
      */
     return (
-      queryString,
+      requestString,
       { skipAccessControl = false, variables, context = {}, operationName } = {}
     ) => {
-      let passThroughContext = {
-        ...defaultContext,
-        ...context,
-      };
+      let contextValue = { ...defaultContext, ...context };
 
       if (skipAccessControl) {
-        passThroughContext.getCustomAccessControlForUser = () => true;
-        passThroughContext.getListAccessControlForUser = () => true;
-        passThroughContext.getFieldAccessControlForUser = () => true;
-        passThroughContext.getAuthAccessControlForUser = () => true;
+        contextValue.getCustomAccessControlForUser = () => true;
+        contextValue.getListAccessControlForUser = () => true;
+        contextValue.getFieldAccessControlForUser = () => true;
+        contextValue.getAuthAccessControlForUser = () => true;
       }
 
-      const graphQLQuery = this._graphQLQuery[passThroughContext.schemaName];
-
-      if (!graphQLQuery) {
-        return Promise.reject(
-          new Error(
-            `No executable schema named '${passThroughContext.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
-          )
-        );
-      }
-
-      return graphQLQuery(queryString, passThroughContext, variables, operationName);
+      return this._executeOperation({
+        contextValue,
+        requestString,
+        variableValues: variables,
+        operationName,
+      });
     };
   }
 
@@ -498,8 +511,7 @@ module.exports = class Keystone {
   // once one is, Keystone wants to be able to expose the ability to query that
   // schema, so this function enables other modules to register that function.
   registerSchema(schemaName, schema) {
-    this._graphQLQuery[schemaName] = (query, context, variables, operationName) =>
-      graphql(schema, query, null, context, variables, operationName);
+    this._schemas[schemaName] = schema;
   }
 
   getAdminSchema({ schemaName }) {
