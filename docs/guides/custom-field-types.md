@@ -20,7 +20,7 @@ Type/views/
 
 ## Example
 
-For an example of a custom field, please see the [Stars field](https://github.com/keystonejs/keystone/tree/master/test-projects/basic/custom-fields/Stars) in the basic test project. 
+For an example of a custom field, please see the [Stars field](https://github.com/keystonejs/keystone/tree/master/test-projects/basic/custom-fields/Stars) in the basic test project.
 
 ## Controller
 

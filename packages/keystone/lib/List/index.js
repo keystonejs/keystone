@@ -20,9 +20,9 @@ const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
 const {
-  AccessDeniedError,
   LimitsExceededError,
   ValidationFailureError,
+  throwAccessDenied,
 } = require('./graphqlErrors');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
@@ -533,21 +533,6 @@ module.exports = class List {
     );
   }
 
-  _throwAccessDenied(operation, context, target, extraInternalData = {}, extraData = {}) {
-    throw new AccessDeniedError({
-      data: {
-        type: opToType[operation],
-        target,
-        ...extraData,
-      },
-      internalData: {
-        authedId: context.authedItem && context.authedItem.id,
-        authedListKey: context.authedListKey,
-        ...extraInternalData,
-      },
-    });
-  }
-
   // Wrap the "inner" resolver for a single output field with list-specific modifiers
   _wrapFieldResolver(field, innerResolver) {
     return (item, args, context, info) => {
@@ -564,7 +549,9 @@ module.exports = class List {
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        this._throwAccessDenied(operation, context, field.path, { itemId: item ? item.id : null });
+        throwAccessDenied(opToType[operation], context, field.path, {
+          itemId: item ? item.id : null,
+        });
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
@@ -732,7 +719,7 @@ module.exports = class List {
         });
     });
     if (restrictedFields.length) {
-      this._throwAccessDenied(operation, context, gqlName, extraData, { restrictedFields });
+      throwAccessDenied(opToType[operation], context, gqlName, extraData, { restrictedFields });
     }
   }
 
@@ -750,19 +737,33 @@ module.exports = class List {
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
-      this._throwAccessDenied(operation, context, gqlName, extraInternalData);
+      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData);
+    }
+    return access;
+  }
+
+  checkAuthAccess(type, context, { gqlName }) {
+    const operation = 'auth';
+    const access = context.getAuthAccessControlForUser(this.key, { gqlName });
+    if (!access) {
+      graphqlLogger.debug({ operation, access, gqlName }, 'Access statically or implicitly denied');
+      graphqlLogger.info({ operation, gqlName }, 'Access Denied');
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      throwAccessDenied(type, context, gqlName);
     }
     return access;
   }
 
   async getAccessControlledItem(id, access, { context, operation, gqlName, info }) {
-    const throwAccessDenied = msg => {
+    const _throwAccessDenied = msg => {
       graphqlLogger.debug({ id, operation, access, gqlName }, msg);
       graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
-      this._throwAccessDenied(operation, context, gqlName, { itemId: id });
+      throwAccessDenied(opToType[operation], context, gqlName, { itemId: id });
     };
 
     let item;
@@ -776,7 +777,7 @@ module.exports = class List {
       // the user has access to. So we have to do a check here to see if the
       // ID they're requesting matches that ID.
       // Nice side-effect: We can throw without having to ever query the DB.
-      throwAccessDenied('Item excluded this id from filters');
+      _throwAccessDenied('Item excluded this id from filters');
     } else {
       // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
       // We only want 1 item, don't make the DB do extra work
@@ -797,7 +798,7 @@ module.exports = class List {
       // that return null do not exist). Similar to how S3 returns 403's
       // always instead of ever returning 404's.
       // Our version is to always throw if not found.
-      throwAccessDenied('Zero items found');
+      _throwAccessDenied('Zero items found');
     }
     // Found the item, and it passed the filter test
     return item;
@@ -930,7 +931,7 @@ module.exports = class List {
         getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read'),
         getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update'),
         getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
-        getAuth: () => context.getListAccessControlForUser(this.key, undefined, 'auth'),
+        getAuth: () => context.getAuthAccessControlForUser(this.key),
       }),
       getSchema: () => {
         const queries = [
@@ -1057,7 +1058,7 @@ module.exports = class List {
     }
 
     const gqlName = this.gqlNames.authenticatedQueryName;
-    const access = this.checkListAccess(context, undefined, 'auth', { gqlName });
+    const access = this.checkAuthAccess('query', context, { gqlName });
     return this.itemQuery(
       mergeWhereClause({ where: { id: context.authedItem.id } }, access),
       context,
@@ -1067,7 +1068,7 @@ module.exports = class List {
 
   async authenticateMutation(authType, args, context) {
     const gqlName = getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType);
-    this.checkListAccess(context, undefined, 'auth', { gqlName });
+    this.checkAuthAccess('mutation', context, { gqlName });
 
     // This is currently hard coded to enable authenticating with the admin UI.
     // In the near future we will set up the admin-ui application and api to be
@@ -1092,7 +1093,7 @@ module.exports = class List {
 
   async unauthenticateMutation(context) {
     const gqlName = this.gqlNames.unauthenticateMutationName;
-    this.checkListAccess(context, undefined, 'auth', { gqlName });
+    this.checkAuthAccess('mutation', context, { gqlName });
 
     await context.endAuthedSession();
     return { success: true };

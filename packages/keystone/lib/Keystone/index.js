@@ -21,14 +21,13 @@ const {
   validateFieldAccessControl,
   validateListAccessControl,
   validateCustomAccessControl,
-  parseCustomAccess,
+  validateAuthAccessControl,
 } = require('@keystonejs/access-control');
 const {
   startAuthedSession,
   endAuthedSession,
   commonSessionMiddleware,
 } = require('@keystonejs/session');
-const { logger } = require('@keystonejs/logger');
 
 const {
   unmergeRelationships,
@@ -37,12 +36,9 @@ const {
 } = require('./relationship-utils');
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
-const { AccessDeniedError } = require('../List/graphqlErrors');
-const { VersionProvider } = require('../providers');
+const { CustomProvider, VersionProvider } = require('../providers');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
-
-const graphqlLogger = logger('graphql');
 
 module.exports = class Keystone {
   constructor({
@@ -70,10 +66,7 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this._extendedTypes = [];
-    this._extendedQueries = [];
-    this._extendedMutations = [];
-    this._graphQLQuery = {};
+    this._schemas = {};
     this._cookieSecret = cookieSecret;
     this._secureCookies = secureCookies;
     this._cookieMaxAge = cookieMaxAge;
@@ -82,7 +75,13 @@ module.exports = class Keystone {
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
     this.appVersion = appVersion;
-    this._providers = [new VersionProvider({ appVersion, schemaNames })];
+
+    this._customProvider = new CustomProvider({
+      schemaNames,
+      defaultAccess: this.defaultAccess,
+      buildQueryHelper: this._buildQueryHelper,
+    });
+    this._providers = [this._customProvider, new VersionProvider({ appVersion, schemaNames })];
 
     if (adapters) {
       this.adapters = adapters;
@@ -119,6 +118,27 @@ module.exports = class Keystone {
     return this._cookieSecret;
   }
 
+  _executeOperation({
+    requestString,
+    rootValue = null,
+    contextValue,
+    variableValues,
+    operationName,
+  }) {
+    // This method is a thin wrapper around the graphql() function which uses
+    // contextValue.schemaName to select a schema created by app-graphql to execute.
+    // https://graphql.org/graphql-js/graphql/#graphql
+    const schema = this._schemas[contextValue.schemaName];
+    if (!schema) {
+      return Promise.reject(
+        new Error(
+          `No executable schema named '${contextValue.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
+        )
+      );
+    }
+    return graphql(schema, requestString, rootValue, contextValue, variableValues, operationName);
+  }
+
   // The GraphQL App uses this method to build up the context required for each
   // incoming query.
   // It is also used for generating the `keystone.query` method
@@ -126,11 +146,13 @@ module.exports = class Keystone {
     let getCustomAccessControlForUser;
     let getListAccessControlForUser;
     let getFieldAccessControlForUser;
+    let getAuthAccessControlForUser;
 
     if (skipAccessControl) {
       getCustomAccessControlForUser = () => true;
       getListAccessControlForUser = () => true;
       getFieldAccessControlForUser = () => true;
+      getAuthAccessControlForUser = () => true;
     } else {
       // memoizing to avoid requests that hit the same type multiple times.
       // We do it within the request callback so we can resolve it based on the
@@ -180,6 +202,15 @@ module.exports = class Keystone {
           });
         }
       );
+
+      getAuthAccessControlForUser = fastMemoize((listKey, { gqlName } = {}) => {
+        return validateAuthAccessControl({
+          access: this.lists[listKey].access[schemaName],
+          authentication: { item: req.user, listKey: req.authedListKey },
+          listKey,
+          gqlName,
+        });
+      });
     }
 
     return {
@@ -192,6 +223,7 @@ module.exports = class Keystone {
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
+      getAuthAccessControlForUser,
       totalResults: 0,
       maxTotalResults: this.queryLimits.maxTotalResults,
     };
@@ -210,7 +242,7 @@ module.exports = class Keystone {
     /**
      * An executable function for running a query
      *
-     * @param queryString String A graphQL query string
+     * @param requestString String A graphQL query string
      * @param options.skipAccessControl Boolean By default access control _of
      * the user making the initial request_ is still tested. Disable all
      * Access Control checks with this flag
@@ -222,31 +254,24 @@ module.exports = class Keystone {
      * @return Promise<Object> The graphql query response
      */
     return (
-      queryString,
+      requestString,
       { skipAccessControl = false, variables, context = {}, operationName } = {}
     ) => {
-      let passThroughContext = {
-        ...defaultContext,
-        ...context,
-      };
+      let contextValue = { ...defaultContext, ...context };
 
       if (skipAccessControl) {
-        passThroughContext.getCustomAccessControlForUser = () => true;
-        passThroughContext.getListAccessControlForUser = () => true;
-        passThroughContext.getFieldAccessControlForUser = () => true;
+        contextValue.getCustomAccessControlForUser = () => true;
+        contextValue.getListAccessControlForUser = () => true;
+        contextValue.getFieldAccessControlForUser = () => true;
+        contextValue.getAuthAccessControlForUser = () => true;
       }
 
-      const graphQLQuery = this._graphQLQuery[passThroughContext.schemaName];
-
-      if (!graphQLQuery) {
-        return Promise.reject(
-          new Error(
-            `No executable schema named '${passThroughContext.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
-          )
-        );
-      }
-
-      return graphQLQuery(queryString, passThroughContext, variables, operationName);
+      return this._executeOperation({
+        contextValue,
+        requestString,
+        variableValues: variables,
+        operationName,
+      });
     };
   }
 
@@ -296,18 +321,7 @@ module.exports = class Keystone {
   }
 
   extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
-    const _parseAccess = obj => ({
-      ...obj,
-      access: parseCustomAccess({
-        access: obj.access,
-        schemaNames: this._schemaNames,
-        defaultAccess: this.defaultAccess.custom,
-      }),
-    });
-
-    this._extendedTypes = this._extendedTypes.concat(types.map(_parseAccess));
-    this._extendedQueries = this._extendedQueries.concat(queries.map(_parseAccess));
-    this._extendedMutations = this._extendedMutations.concat(mutations.map(_parseAccess));
+    return this._customProvider.extendGraphQLSchema({ types, queries, mutations });
   }
 
   _consolidateRelationships() {
@@ -401,9 +415,6 @@ module.exports = class Keystone {
     const mutations = unique(
       flatten([
         ...firstClassLists.map(list => list.getGqlMutations({ schemaName })),
-        this._extendedMutations
-          .filter(({ access }) => access[schemaName])
-          .map(({ schema }) => schema),
         ...this._providers.map(p => p.getMutations({ schemaName })),
       ])
     );
@@ -415,9 +426,6 @@ module.exports = class Keystone {
     // Deduping here avoids that problem.
     return [
       ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ schemaName })))),
-      ...unique(
-        this._extendedTypes.filter(({ access }) => access[schemaName]).map(({ type }) => type)
-      ),
       ...unique(flatten(this._providers.map(p => p.getTypes({ schemaName })))),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
@@ -484,9 +492,6 @@ module.exports = class Keystone {
           ${unique(
             flatten([
               ...firstClassLists.map(list => list.getGqlQueries({ schemaName })),
-              this._extendedQueries
-                .filter(({ access }) => access[schemaName])
-                .map(({ schema }) => schema),
               ...this._providers.map(p => p.getQueries({ schemaName })),
             ])
           ).join('\n')}
@@ -506,8 +511,7 @@ module.exports = class Keystone {
   // once one is, Keystone wants to be able to expose the ability to query that
   // schema, so this function enables other modules to register that function.
   registerSchema(schemaName, schema) {
-    this._graphQLQuery[schemaName] = (query, context, variables, operationName) =>
-      graphql(schema, query, null, context, variables, operationName);
+    this._schemas[schemaName] = schema;
   }
 
   getAdminSchema({ schemaName }) {
@@ -569,37 +573,6 @@ module.exports = class Keystone {
     // TODO: Document this order of precendence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
-    const customResolver = type => ({ schema, resolver, access }) => {
-      const gqlName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
-
-      // Perform access control check before passing off control to the
-      // user defined resolver (along with the evalutated access).
-      const computeAccess = context => {
-        const _access = context.getCustomAccessControlForUser(access);
-        if (!_access) {
-          graphqlLogger.debug({ access, gqlName }, 'Access statically or implicitly denied');
-          graphqlLogger.info({ gqlName }, 'Access Denied');
-          // If the client handles errors correctly, it should be able to
-          // receive partial data (for the fields the user has access to),
-          // and then an `errors` array of AccessDeniedError's
-          throw new AccessDeniedError({
-            data: { type, target: gqlName },
-            internalData: {
-              authedId: context.authedItem && context.authedItem.id,
-              authedListKey: context.authedListKey,
-            },
-          });
-        }
-        return _access;
-      };
-      return {
-        [gqlName]: (obj, args, context, info) =>
-          resolver(obj, args, context, info, {
-            query: this._buildQueryHelper(context),
-            access: computeAccess(context),
-          }),
-      };
-    };
     const resolvers = filterValues(
       {
         // Order of spreading is important here - we don't want user-defined types
@@ -626,22 +599,12 @@ module.exports = class Keystone {
             this.listsArray
               .filter(list => list.access[schemaName].read)
               .map(list => list.listMeta(context)),
-          ...objMerge(
-            this._extendedQueries
-              .filter(({ access }) => access[schemaName])
-              .map(customResolver('query'))
-          ),
           ...objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
         },
 
         Mutation: {
           ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
           ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
-          ...objMerge(
-            this._extendedMutations
-              .filter(({ access }) => access[schemaName])
-              .map(customResolver('mutation'))
-          ),
           ...objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
         },
       },
