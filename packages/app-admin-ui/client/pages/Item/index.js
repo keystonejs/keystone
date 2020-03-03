@@ -36,6 +36,7 @@ import {
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
+import { useAdminMeta } from '../../providers/AdminMeta';
 
 let Render = ({ children }) => children();
 
@@ -358,9 +359,11 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
-  const itemQuery = list.getItemQuery(itemId);
+const ItemPage = ({ list, itemId }) => {
+  const { adminPath, getListByKey } = useAdminMeta();
   const { addToast } = useToasts();
+
+  const itemQuery = list.getItemQuery(itemId);
 
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache

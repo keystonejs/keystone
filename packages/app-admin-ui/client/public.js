@@ -10,7 +10,7 @@ import { globalStyles } from '@arch-ui/theme';
 import ApolloClient from './apolloClient';
 
 import ConnectivityListener from './components/ConnectivityListener';
-import { useAdminMeta } from './providers/AdminMeta';
+import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 
 import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
@@ -24,8 +24,8 @@ import SigninPage from './pages/Signin';
 */
 
 const Keystone = () => {
-  let adminMeta = useAdminMeta();
-  let { apiPath } = adminMeta;
+  const { authStrategy, apiPath, signoutPath } = useAdminMeta();
+
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
@@ -34,19 +34,15 @@ const Keystone = () => {
         <ConnectivityListener />
         <Global styles={globalStyles} />
 
-        {adminMeta.authStrategy ? (
+        {authStrategy ? (
           <BrowserRouter>
             <Switch>
-              <Route
-                exact
-                path={adminMeta.signoutPath}
-                render={() => <SignoutPage {...adminMeta} />}
-              />
-              <Route render={() => <SigninPage {...adminMeta} />} />
+              <Route exact path={signoutPath} render={() => <SignoutPage />} />
+              <Route render={() => <SigninPage />} />
             </Switch>
           </BrowserRouter>
         ) : (
-          <InvalidRoutePage {...adminMeta} />
+          <InvalidRoutePage />
         )}
       </ToastProvider>
     </ApolloProvider>
@@ -55,7 +51,9 @@ const Keystone = () => {
 
 ReactDOM.render(
   <Suspense fallback={null}>
-    <Keystone />
+    <AdminMetaProvider>
+      <Keystone />
+    </AdminMetaProvider>
   </Suspense>,
   document.getElementById('app')
 );
