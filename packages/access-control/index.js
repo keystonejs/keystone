@@ -5,6 +5,7 @@ const {
   validateCustomAccessControl,
   validateListAccessControl,
   validateFieldAccessControl,
+  validateAuthAccessControl,
 } = require('./lib/access-control');
 
 module.exports = {
@@ -14,4 +15,5 @@ module.exports = {
   validateCustomAccessControl,
   validateListAccessControl,
   validateFieldAccessControl,
+  validateAuthAccessControl,
 };

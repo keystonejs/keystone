@@ -155,6 +155,7 @@ const context = {
   getListAccessControlForUser: () => true,
   getFieldAccessControlForUser: (listKey, fieldPath, originalInput, existingItem) =>
     !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
+  getAuthAccessControlForUser: () => true,
   authedItem: {
     id: 1,
   },
