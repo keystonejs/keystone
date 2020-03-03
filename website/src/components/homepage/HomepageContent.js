@@ -37,7 +37,7 @@ const HomepageContent = () => (
         View on GitHub
       </Button>
     </ButtonWrapper>
-    <p css={{ color: colors.N40, fontSize: '0.9em' }}>
+    {/* <p css={{ color: colors.N40, fontSize: '0.9em' }}>
       Keystone 5 is built by{' '}
       <a css={{ color: colors.N80 }} href="https://www.thinkmill.com.au">
         Thinkmill
@@ -58,7 +58,7 @@ const HomepageContent = () => (
         v4.keystonejs.com
       </a>
       .{' '}
-    </p>
+    </p> */}
   </Content>
 );
 
