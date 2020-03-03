@@ -2,4 +2,4 @@
 '@keystonejs/field-content': patch
 ---
 
-Handle missing oEmbeds in field-content document
+Changed the `deserialize` method of the content field to filter out missing oEmbeds
