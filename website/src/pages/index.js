@@ -4,6 +4,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
 import { globalStyles, colors } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
+import Highlight, { defaultProps } from 'prism-react-renderer';
 
 import Layout from '../templates/layout';
 import { HomepageContent } from '../components/homepage/HomepageContent';
@@ -12,6 +13,8 @@ import { CONTAINER_GUTTERS, CONTAINER_WIDTH } from '../components/Container';
 import { HEADER_HEIGHT } from '../components/Header';
 import { Button, Container, Sidebar } from '../components';
 import { mq } from '../utils/media';
+
+import prismTheme from '../prism-themes/custom';
 
 export default () => (
   <Layout>
@@ -74,6 +77,39 @@ const Hero = () => (
   </div>
 );
 
+const exampleCode = `
+const { Text } = require("@keystone-alpha/fields");
+const { Keystone } = require("@keystone-alpha/keystone");
+const { GraphQLApp } = require("@keystone-alpha/app-graphql");
+const { AdminUIApp } = require("@keystone-alpha/app-admin-ui");
+const { MongooseAdapter } = require("@keystone-alpha/adapter-mongoose");
+
+keystone.createList('Todo', {
+  fields: {
+    task: { type: Text },
+  },
+});
+
+const keystone = new Keystone({
+  name: 'Todo App',
+  adapter: new MongooseAdapter()
+});
+
+module.exports = {
+  keystone,
+  apps: [
+    new GraphQLApp({
+      apiPath: "/graphql"
+    }),
+    new AdminUIApp({
+      adminPath: "/admin",
+      apiPath: "/graphql"
+    }),
+  ]
+};
+
+`;
+
 const Points = () => {
   return (
     <div
@@ -111,38 +147,23 @@ const Points = () => {
               backgroundColor: colors.N90,
               borderRadius: 4,
               padding: 24,
+              textAlign: 'left',
+              overflow: 'scroll',
             }}
           >
-            <pre>{`
-            
-            keystone.createList('Todo', {
-  fields: {
-    task: { type: Text },
-  },
-});
-
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: Text },
-  },
-});
-            
-            keystone.createList('Todo', {
-  fields: {
-    task: { type: Text },
-  },
-});
-
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: Text },
-  },
-});
-
-
-`}</pre>
+            <Highlight {...defaultProps} theme={prismTheme} code={exampleCode} language="js">
+              {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                <pre className={className} style={style}>
+                  {tokens.map((line, i) => (
+                    <div {...getLineProps({ line, key: i })}>
+                      {line.map((token, key) => (
+                        <span {...getTokenProps({ token, key })} />
+                      ))}
+                    </div>
+                  ))}
+                </pre>
+              )}
+            </Highlight>
           </div>
           <div
             css={{
@@ -150,38 +171,23 @@ keystone.createList('User', {
               backgroundColor: colors.N90,
               borderRadius: 4,
               padding: 24,
+              textAlign: 'left',
+              overflow: 'scroll',
             }}
           >
-            <pre>{`
-            
-            keystone.createList('Todo', {
-  fields: {
-    task: { type: Text },
-  },
-});
-
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: Text },
-  },
-});
-            
-            keystone.createList('Todo', {
-  fields: {
-    task: { type: Text },
-  },
-});
-
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: Text },
-  },
-});
-
-
-`}</pre>
+            <Highlight {...defaultProps} theme={prismTheme} code={exampleCode} language="js">
+              {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                <pre className={className} style={style}>
+                  {tokens.map((line, i) => (
+                    <div {...getLineProps({ line, key: i })}>
+                      {line.map((token, key) => (
+                        <span {...getTokenProps({ token, key })} />
+                      ))}
+                    </div>
+                  ))}
+                </pre>
+              )}
+            </Highlight>
           </div>
         </div>
       </Container>
