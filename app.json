@@ -2,19 +2,10 @@
   "name": "keystone-5",
   "scripts": {},
   "env": {
-    "CI": {
-      "required": true
-    },
-    "ENABLE_DEV_FEATURES": {
-      "required": true
-    },
     "MONGODB_URI": {
       "required": true
     },
     "NPM_CONFIG_PRODUCTION": {
-      "required": true
-    },
-    "HEROKU": {
       "required": true
     }
   },
