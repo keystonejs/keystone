@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "node -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "build": "NODE_ENV=production keystone build",
     "start:debug": "node --inspect-brk -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` run",
     "cypress:open:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` open",

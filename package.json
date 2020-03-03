@@ -35,7 +35,7 @@
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md\"",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "heroku-postbuild": "yarn build"
+    "heroku-postbuild": "yarn build && yarn workspace @keystonejs/cypress-project-basic build"
   }, 
   "dependencies": {
     "@babel/cli": "^7.8.4",
