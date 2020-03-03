@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component, Suspense, Fragment } from 'react';
+import { Component, Suspense, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
@@ -99,40 +99,29 @@ const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) =>
 
 // Functional Components
 
-type SortLinkProps = {
-  handleSortChange: Function,
-  active: boolean,
-  sortAscending: boolean,
-};
-
-class SortLink extends React.Component<SortLinkProps> {
-  onClick = () => {
-    const { field, sortAscending, sortable } = this.props;
+const SortLink = ({
+  field,
+  'data-field': dataField,
+  active,
+  sortAscending,
+  sortable,
+  handleSortChange,
+}) => {
+  const onClick = () => {
     if (sortable) {
       // Set direction to the opposite of the current sortAscending value
-      this.props.handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
+      handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
     }
   };
 
-  render() {
-    // TODO: Do we want to make `sortable` a field config option?
-    return (
-      <HeaderCell
-        isSortable={this.props.sortable}
-        isSelected={this.props.active}
-        onClick={this.onClick}
-        data-field={this.props['data-field']}
-      >
-        {this.props.field.label}
-        {this.props.sortable && (
-          <SortDirectionArrow
-            rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
-          />
-        )}
-      </HeaderCell>
-    );
-  }
-}
+  // TODO: Do we want to make `sortable` a field config option?
+  return (
+    <HeaderCell isSortable={sortable} isSelected={active} onClick={onClick} data-field={dataField}>
+      {field.label}
+      {sortable && <SortDirectionArrow rotate={active && !sortAscending ? '180deg' : '0deg'} />}
+    </HeaderCell>
+  );
+};
 
 // ==============================
 // Common for display & manage
