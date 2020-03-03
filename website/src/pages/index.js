@@ -2,16 +2,17 @@
 
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
-import { globalStyles } from '@arch-ui/theme';
+import { globalStyles, colors } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
 
 import Layout from '../templates/layout';
-import { HomepageContent } from '../components/homepage/HomepageContent';
-import { VideoIntro } from '../components/homepage/VideoIntro';
-import { CONTAINER_GUTTERS, CONTAINER_WIDTH } from '../components/Container';
-import { HEADER_HEIGHT } from '../components/Header';
 import { Container, Sidebar } from '../components';
-import { mq } from '../utils/media';
+
+import { SectionHero } from '../components/homepage/SectionHero';
+import { SectionAbout } from '../components/homepage/SectionAbout';
+import { SectionPairing } from '../components/homepage/SectionPairing';
+import { SectionWhy } from '../components/homepage/SectionWhy';
+import { SectionGettingStarted } from '../components/homepage/SectionGettingStarted';
 
 export default () => (
   <Layout>
@@ -21,43 +22,46 @@ export default () => (
         <Container>
           <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
         </Container>
-        <Hero />
+        <SkipNavContent />
+        <SectionHero />
+        <SectionAbout />
+        <SectionWhy />
+        <SectionGettingStarted />
+        <SectionPairing />
+        <div
+          css={{
+            paddingTop: 80,
+            paddingBottom: 80,
+            textAlign: 'center',
+            borderTop: '1px solid #ccc',
+          }}
+        >
+          <Container>
+            <p css={{ color: colors.N40, fontSize: '0.9em' }}>
+              Keystone 5 is built by{' '}
+              <a css={{ color: colors.N80 }} href="https://www.thinkmill.com.au">
+                Thinkmill
+              </a>{' '}
+              and{' '}
+              <a
+                css={{ color: colors.N80 }}
+                href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md#contributors"
+              >
+                Contributors
+              </a>{' '}
+              around the world.
+            </p>
+
+            <p css={{ color: colors.N40, fontSize: '0.9em' }}>
+              Keystone v4 has moved to{' '}
+              <a css={{ color: colors.N80 }} href="http://v4.keystonejs.com">
+                v4.keystonejs.com
+              </a>
+              .{' '}
+            </p>
+          </Container>
+        </div>
       </>
     )}
   </Layout>
-);
-
-const CustomContainer = props => (
-  <div
-    css={mq({
-      boxSizing: 'border-box',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      paddingLeft: CONTAINER_GUTTERS,
-      paddingRight: CONTAINER_GUTTERS,
-      width: [null, null, 992, CONTAINER_WIDTH],
-    })}
-    {...props}
-  />
-);
-
-const Hero = () => (
-  <div css={{ overflow: 'hidden' }}>
-    <SkipNavContent />
-    <CustomContainer
-      css={mq({
-        maxWidth: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: ['flex-start', 'flex-start', 'flex-start', 'center'],
-        flexDirection: ['column', 'column', 'column', 'row'],
-        fontSize: [14, 18],
-        lineHeight: 1.6,
-        minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
-      })}
-    >
-      <HomepageContent />
-      <VideoIntro />
-    </CustomContainer>
-  </div>
 );
