@@ -19,7 +19,7 @@ A KeystoneJS **App** has two primary purposes
 1. Prepare an `express`-compatible middleware for handling incoming http requests
 2. Provide a `build()` method to create a static production build for this app
 
-The mimimum KeystoneJS application requires at least one app, the [GraphQL API](/packages/app-graphql/README.md):
+At a minimum a KeystoneJS application requires one app, the [GraphQL API](/packages/app-graphql/README.md):
 
 `index.js`
 

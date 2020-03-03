@@ -1,5 +1,15 @@
 # create-keystone-app
 
+## 1.6.1
+
+### Patch Changes
+
+- [`535ea6a9`](https://github.com/keystonejs/keystone/commit/535ea6a93d74eced46a8e5711a2e6aafa0dca95b) [#2390](https://github.com/keystonejs/keystone/pull/2390) Thanks [@Vultraz](https://github.com/Vultraz)! - Update `cross-env` dependency to 7.0.0.
+
+* [`f0eaaf0c`](https://github.com/keystonejs/keystone/commit/f0eaaf0c412e7e324690e1c98c1e1d1992503144) [#2384](https://github.com/keystonejs/keystone/pull/2384) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded to latest `cfonts` version.
+
+- [`d495f17b`](https://github.com/keystonejs/keystone/commit/d495f17b08706ee2bf297e4196248cbde25fd24f) [#2416](https://github.com/keystonejs/keystone/pull/2416) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded Nuxt dependency to 2.11.0.
+
 ## 1.6.0
 
 ### Minor Changes

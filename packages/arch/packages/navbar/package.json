@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/navbar",
   "description": "Navbar UI as used in @keystonejs Admin UI.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/navbar.cjs.js",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.1",
-    "@arch-ui/theme": "^0.0.7",
+    "@arch-ui/theme": "^0.0.8",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
