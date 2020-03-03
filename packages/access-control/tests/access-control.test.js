@@ -4,6 +4,7 @@ import {
   parseCustomAccess,
   validateListAccessControl,
   validateFieldAccessControl,
+  validateAuthAccessControl,
 } from '../';
 
 describe('Access control package tests', () => {
@@ -368,6 +369,50 @@ describe('Access control package tests', () => {
 
       expect(() =>
         validateFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
+      ).toThrow(Error);
+    });
+  });
+
+  test('validateAuthAccessControl', () => {
+    let operation = 'auth';
+    const access = { [operation]: true };
+
+    // Test the static case: returning a boolean
+    expect(validateAuthAccessControl({ access: { [operation]: true } })).toBe(true);
+    expect(validateAuthAccessControl({ access: { [operation]: false } })).toBe(false);
+    expect(() => validateAuthAccessControl({ access: { [operation]: 10 } })).toThrow(Error);
+
+    const accessFn = jest.fn(() => true);
+
+    validateAuthAccessControl({ access: { [operation]: accessFn } });
+
+    expect(accessFn).toHaveBeenCalledTimes(1);
+
+    [{}, { item: {} }].forEach(authentication => {
+      operation = 'auth';
+
+      // Boolean function
+      access[operation] = () => true;
+      expect(
+        validateAuthAccessControl({ access: { [operation]: () => true }, authentication })
+      ).toBe(true);
+      expect(
+        validateAuthAccessControl({ access: { [operation]: () => false }, authentication })
+      ).toBe(false);
+      // Object function
+      expect(
+        validateAuthAccessControl({ access: { [operation]: () => ({ a: 1 }) }, authentication })
+      ).toEqual({ a: 1 });
+
+      // Object function with create operation
+      operation = 'create';
+      expect(() =>
+        validateAuthAccessControl({ access: { [operation]: () => ({ a: 1 }) }, authentication })
+      ).toThrow(Error);
+
+      // Number function
+      expect(() =>
+        validateAuthAccessControl({ access: { [operation]: () => 10 }, authentication })
       ).toThrow(Error);
     });
   });

@@ -59,8 +59,6 @@ const opToType = {
   delete: 'mutation',
 };
 
-const getAuthMutationName = (prefix, authType) => `${prefix}With${upcase(authType)}`;
-
 const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   const { Text, Checkbox, Float } = require('@keystonejs/fields');
 
@@ -136,7 +134,6 @@ module.exports = class List {
       queryHelper,
       adapter,
       defaultAccess,
-      getAuth,
       registerType,
       createAuxList,
       isAuxList,
@@ -162,8 +159,6 @@ module.exports = class List {
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
-    this.getAuth = getAuth;
-    this.hasAuth = () => !!Object.keys(getAuth() || {}).length;
 
     const _label = keyToLabel(key);
     const _singular = pluralize.singular(_label);
@@ -191,11 +186,6 @@ module.exports = class List {
       listQueryName: `all${_listQueryName}`,
       listQueryMetaName: `_all${_listQueryName}Meta`,
       listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
-      authenticatedQueryName: `authenticated${_itemQueryName}`,
-      authenticateMutationPrefix: `authenticate${_itemQueryName}`,
-      unauthenticateMutationName: `unauthenticate${_itemQueryName}`,
-      authenticateOutputName: `authenticate${_itemQueryName}Output`,
-      unauthenticateOutputName: `unauthenticate${_itemQueryName}Output`,
       deleteMutationName: `delete${_itemQueryName}`,
       updateMutationName: `update${_itemQueryName}`,
       createMutationName: `create${_itemQueryName}`,
@@ -449,28 +439,6 @@ module.exports = class List {
       `);
     }
 
-    if (this.hasAuth() && schemaAccess.auth) {
-      // If auth is enabled for this list (doesn't matter what strategy)
-      types.push(`
-        type ${this.gqlNames.unauthenticateOutputName} {
-          """
-          \`true\` when unauthentication succeeds.
-          NOTE: unauthentication always succeeds when the request has an invalid or missing authentication token.
-          """
-          success: Boolean
-        }
-      `);
-
-      types.push(`
-        type ${this.gqlNames.authenticateOutputName} {
-          """ Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'. """
-          token: String
-          """ Retrieve information on the newly authenticated ${this.gqlNames.outputTypeName} here. """
-          item: ${this.gqlNames.outputTypeName}
-        }
-      `);
-    }
-
     return types;
   }
 
@@ -517,11 +485,6 @@ module.exports = class List {
         """ Retrieve the meta-data for the ${this.gqlNames.itemQueryName} list. """
         ${this.gqlNames.listMetaName}: _ListMeta`
       );
-    }
-
-    if (this.hasAuth() && schemaAccess.auth) {
-      // If auth is enabled for this list (doesn't matter what strategy)
-      queries.push(`${this.gqlNames.authenticatedQueryName}: ${this.gqlNames.outputTypeName}`);
     }
 
     return queries;
@@ -666,34 +629,6 @@ module.exports = class List {
           ids: [ID!]
         ): [${this.gqlNames.outputTypeName}]
       `);
-    }
-
-    if (this.hasAuth() && schemaAccess.auth) {
-      // If auth is enabled for this list (doesn't matter what strategy)
-      mutations.push(
-        `${this.gqlNames.unauthenticateMutationName}: ${this.gqlNames.unauthenticateOutputName}`
-      );
-
-      // And for each strategy, add the authentication mutation
-      mutations.push(
-        ...Object.entries(this.getAuth())
-          .filter(
-            ([, authStrategy]) =>
-              typeof authStrategy.getInputFragment === 'function' &&
-              typeof authStrategy.validate === 'function'
-          )
-          .map(([authType, authStrategy]) => {
-            const authTypeTitleCase = upcase(authType);
-            return `
-            """ Authenticate and generate a token for a ${
-              this.gqlNames.outputTypeName
-            } with the ${authTypeTitleCase} Authentication Strategy. """
-            ${getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)}(
-              ${authStrategy.getInputFragment()}
-            ): ${this.gqlNames.authenticateOutputName}
-          `;
-          })
-      );
     }
 
     return mutations;
@@ -869,14 +804,6 @@ module.exports = class List {
       };
     }
 
-    // NOTE: This query is not effected by the read permissions; if the user can
-    // authenticate themselves, then they already have access to know that the
-    // list exists
-    if (this.hasAuth() && schemaAccess.auth) {
-      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context, info) =>
-        this.authenticatedQuery(context, info);
-    }
-
     return resolvers;
   }
 
@@ -917,7 +844,7 @@ module.exports = class List {
         getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read'),
         getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update'),
         getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
-        getAuth: () => context.getListAccessControlForUser(this.key, undefined, 'auth'),
+        getAuth: () => context.getAuthAccessControlForUser(this.key),
       }),
       getSchema: () => {
         const queries = [
@@ -925,10 +852,6 @@ module.exports = class List {
           this.gqlNames.listQueryName,
           this.gqlNames.listQueryMetaName,
         ];
-
-        if (this.hasAuth()) {
-          queries.push(this.gqlNames.authenticatedQueryName);
-        }
 
         // NOTE: Other fields on this type are resolved in the main resolver in
         // ../Keystone/index.js
@@ -1034,57 +957,6 @@ module.exports = class List {
     return results;
   }
 
-  authenticatedQuery(context, info) {
-    if (info && info.cacheControl) {
-      info.cacheControl.setCacheHint({ scope: 'PRIVATE' });
-    }
-
-    if (!context.authedItem || context.authedListKey !== this.key) {
-      return null;
-    }
-
-    const gqlName = this.gqlNames.authenticatedQueryName;
-    const access = this.checkListAccess(context, undefined, 'auth', { gqlName });
-    return this.itemQuery(
-      mergeWhereClause({ where: { id: context.authedItem.id } }, access),
-      context,
-      this.gqlNames.authenticatedQueryName
-    );
-  }
-
-  async authenticateMutation(authType, args, context) {
-    const gqlName = getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType);
-    this.checkListAccess(context, undefined, 'auth', { gqlName });
-
-    // This is currently hard coded to enable authenticating with the admin UI.
-    // In the near future we will set up the admin-ui application and api to be
-    // non-public.
-    const audiences = ['admin'];
-
-    const authStrategy = this.getAuth()[authType];
-
-    // Verify incoming details
-    const { item, success, message } = await authStrategy.validate(args);
-
-    if (!success) {
-      throw new Error(message);
-    }
-
-    const token = await context.startAuthedSession({ item, list: this }, audiences);
-    return {
-      token,
-      item,
-    };
-  }
-
-  async unauthenticateMutation(context) {
-    const gqlName = this.gqlNames.unauthenticateMutationName;
-    this.checkListAccess(context, undefined, 'auth', { gqlName });
-
-    await context.endAuthedSession();
-    return { success: true };
-  }
-
   gqlMutationResolvers({ schemaName }) {
     const schemaAccess = this.access[schemaName];
     const mutationResolvers = {};
@@ -1113,26 +985,6 @@ module.exports = class List {
 
       mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
         this.deleteManyMutation(ids, context);
-    }
-
-    // NOTE: This query is not effected by the read permissions; if the user can
-    // authenticate themselves, then they already have access to know that the
-    // list exists
-    if (this.hasAuth() && schemaAccess.auth) {
-      mutationResolvers[this.gqlNames.unauthenticateMutationName] = (_, __, context) =>
-        this.unauthenticateMutation(context);
-
-      Object.entries(this.getAuth())
-        .filter(
-          ([, authStrategy]) =>
-            typeof authStrategy.getInputFragment === 'function' &&
-            typeof authStrategy.validate === 'function'
-        )
-        .forEach(([authType]) => {
-          mutationResolvers[
-            getAuthMutationName(this.gqlNames.authenticateMutationPrefix, authType)
-          ] = (_, args, context) => this.authenticateMutation(authType, args, context);
-        });
     }
 
     return mutationResolvers;

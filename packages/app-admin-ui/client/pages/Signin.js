@@ -12,6 +12,8 @@ import gql from 'graphql-tag';
 
 import KeystoneLogo from '../components/KeystoneLogo';
 
+import { useAdminMeta } from '../providers/AdminMeta';
+
 const upcase = str => str[0].toUpperCase() + str.substring(1);
 
 const Container = styled.div({
@@ -66,7 +68,12 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignInPage = ({ name: siteName, authStrategy: { listKey, identityField, secretField } }) => {
+const SignInPage = () => {
+  const {
+    name: siteName,
+    authStrategy: { listKey, identityField, secretField },
+  } = useAdminMeta();
+
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
   const [reloading, setReloading] = useState(false);
