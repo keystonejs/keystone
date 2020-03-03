@@ -1,5 +1,24 @@
 # @keystonejs/keystone
 
+## 5.6.0
+
+### Minor Changes
+
+- [`3abc5883`](https://github.com/keystonejs/keystone/commit/3abc58831e0f9b5871569a3fa6b21be7dc269cf3) [#2430](https://github.com/keystonejs/keystone/pull/2430) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the new GraphQL Provider Framework (#2418).
+
+### Patch Changes
+
+- [`7ce804a8`](https://github.com/keystonejs/keystone/commit/7ce804a877300709375e5bc14206080ab15aec54) [#2401](https://github.com/keystonejs/keystone/pull/2401) Thanks [@acoreyj](https://github.com/acoreyj)! - Made sure `createRelationships` function in `relationship-utils.js` uses the correct relatedListKey by splitting out possible field name;
+
+  This fixes an issue where createItems throws an Error when using Lists Back References.
+  Fixes #2360
+
+* [`8bdbb114`](https://github.com/keystonejs/keystone/commit/8bdbb114f6b2864693ae6e534df6fe8ee8345a60) [#2433](https://github.com/keystonejs/keystone/pull/2433) Thanks [@timleslie](https://github.com/timleslie)! - Added a VersionProvider to generate the `appVersion` graphQL query.
+
+* Updated dependencies [[`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`9a388f01`](https://github.com/keystonejs/keystone/commit/9a388f01e388272d56f81af2247d8030e0f2c972), [`bd4096ee`](https://github.com/keystonejs/keystone/commit/bd4096ee86f7790c76db23090b38f880e5aa7ecc), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09), [`c059b63c`](https://github.com/keystonejs/keystone/commit/c059b63c6ebdbb60ac4095d1efd791d598b2756c)]:
+  - @keystonejs/fields@6.3.1
+  - @keystonejs/utils@5.2.1
+
 ## 5.5.0
 
 ### Minor Changes

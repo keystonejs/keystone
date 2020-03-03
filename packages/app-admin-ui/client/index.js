@@ -14,7 +14,7 @@ import ConnectivityListener from './components/ConnectivityListener';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
 import PageLoading from './components/PageLoading';
 import ToastContainer from './components/ToastContainer';
-import { useAdminMeta } from './providers/AdminMeta';
+import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 import { ListProvider } from './providers/List';
 import { HooksProvider } from './providers/Hooks';
 
@@ -26,8 +26,15 @@ import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
 
 export const KeystoneAdminUI = () => {
-  let adminMeta = useAdminMeta();
-  let { adminPath, signinPath, signoutPath, apiPath, pages, hooks } = adminMeta;
+  const {
+    getListByPath,
+    adminPath,
+    signinPath,
+    signoutPath,
+    apiPath,
+    pages,
+    hooks,
+  } = useAdminMeta();
 
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
@@ -47,7 +54,7 @@ export const KeystoneAdminUI = () => {
       }),
     {
       path: `${adminPath}`,
-      component: () => <HomePage {...adminMeta} />,
+      component: () => <HomePage />,
       exact: true,
     },
     {
@@ -59,9 +66,9 @@ export const KeystoneAdminUI = () => {
       }) => {
         // TODO: Permission query to show/hide a list from the
         // menu
-        const list = adminMeta.getListByPath(listKey);
+        const list = getListByPath(listKey);
         if (!list) {
-          return <ListNotFoundPage listKey={listKey} {...adminMeta} />;
+          return <ListNotFoundPage listKey={listKey} />;
         }
 
         return (
@@ -71,12 +78,7 @@ export const KeystoneAdminUI = () => {
                 exact
                 path={`${adminPath}/:list`}
                 render={routeProps => (
-                  <ListPage
-                    key={listKey}
-                    list={list}
-                    adminMeta={adminMeta}
-                    routeProps={routeProps}
-                  />
+                  <ListPage key={listKey} list={list} routeProps={routeProps} />
                 )}
               />
               ,
@@ -87,17 +89,10 @@ export const KeystoneAdminUI = () => {
                   match: {
                     params: { itemId },
                   },
-                }) => (
-                  <ItemPage
-                    key={`${listKey}-${itemId}`}
-                    list={list}
-                    itemId={itemId}
-                    {...adminMeta}
-                  />
-                )}
+                }) => <ItemPage key={`${listKey}-${itemId}`} list={list} itemId={itemId} />}
               />
               ,
-              <Route render={() => <InvalidRoutePage {...adminMeta} />} />,
+              <Route render={() => <InvalidRoutePage />} />,
             </Switch>
           </ListProvider>
         );
@@ -117,22 +112,20 @@ export const KeystoneAdminUI = () => {
                 <Route exact path={signinPath}>
                   <Redirect to={adminPath} />
                 </Route>
-                <Route exact path={signoutPath} render={() => <SignoutPage {...adminMeta} />} />
+                <Route exact path={signoutPath} render={() => <SignoutPage />} />
                 <Route>
                   <ScrollToTop>
                     <Nav>
                       <Suspense fallback={<PageLoading />}>
                         <Switch>
-                          {routes.map(route => {
-                            return (
-                              <Route
-                                exact={route.exact ? true : false}
-                                key={route.path}
-                                path={route.path}
-                                render={route.component}
-                              />
-                            );
-                          })}
+                          {routes.map(route => (
+                            <Route
+                              exact={route.exact ? true : false}
+                              key={route.path}
+                              path={route.path}
+                              render={route.component}
+                            />
+                          ))}
                         </Switch>
                       </Suspense>
                     </Nav>
@@ -149,7 +142,9 @@ export const KeystoneAdminUI = () => {
 
 ReactDOM.render(
   <Suspense fallback={null}>
-    <KeystoneAdminUI />
+    <AdminMetaProvider>
+      <KeystoneAdminUI />
+    </AdminMetaProvider>
   </Suspense>,
   document.getElementById('app')
 );

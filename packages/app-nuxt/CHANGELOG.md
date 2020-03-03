@@ -1,5 +1,11 @@
 # @keystonejs/app-nuxt
 
+## 5.1.1
+
+### Patch Changes
+
+- [`d495f17b`](https://github.com/keystonejs/keystone/commit/d495f17b08706ee2bf297e4196248cbde25fd24f) [#2416](https://github.com/keystonejs/keystone/pull/2416) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded Nuxt dependency to 2.11.0.
+
 ## 5.1.0
 
 ### Minor Changes

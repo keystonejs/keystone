@@ -8,6 +8,8 @@ import KeystoneLogo from '../components/KeystoneLogo';
 
 import { LoadingIndicator } from '@arch-ui/loading';
 
+import { useAdminMeta } from '../providers/AdminMeta';
+
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
@@ -52,7 +54,12 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignedOutPage = ({ authStrategy: { listKey }, signinPath }) => {
+const SignedOutPage = () => {
+  const {
+    authStrategy: { listKey },
+    signinPath,
+  } = useAdminMeta();
+
   const UNAUTH_MUTATION = gql`
     mutation {
       unauthenticate: unauthenticate${listKey} {
