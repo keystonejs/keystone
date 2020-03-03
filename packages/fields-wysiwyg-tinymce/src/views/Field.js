@@ -52,13 +52,15 @@ const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue }
 
   if (accessError) return null;
 
+  const overrideOptions = field.config.editorConfig;
+
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <div css={{ display: 'flex', flex: 1 }}>
         <GlobalStyles />
         <Editor
-          init={{ ...defaultOptions, auto_focus: autoFocus }}
+          init={{ ...defaultOptions, auto_focus: autoFocus, ...overrideOptions }}
           onEditorChange={handleChange}
           value={value}
         />
