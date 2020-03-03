@@ -42,8 +42,6 @@ const {
   VersionProvider,
 } = require('../providers');
 
-const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
-
 module.exports = class Keystone {
   constructor({
     defaultAccess,
@@ -447,39 +445,29 @@ module.exports = class Keystone {
   }
 
   getAdminSchema({ schemaName }) {
-    const typeDefs = this.getTypeDefs({ schemaName });
-    if (debugGraphQLSchemas()) {
-      typeDefs.forEach(i => console.log(i));
-    }
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
     // - first one wins)
     // TODO: Document this order of precendence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
-    const resolvers = filterValues(
-      {
-        // Order of spreading is important here - we don't want user-defined types
-        // to accidentally override important things like `Query`.
-        ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
-        Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
-        Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
-      },
-      o => Object.entries(o).length > 0
-    );
-
-    if (debugGraphQLSchemas()) {
-      console.log(resolvers);
-    }
-
     return {
-      typeDefs: typeDefs.map(
+      typeDefs: this.getTypeDefs({ schemaName }).map(
         typeDef =>
           gql`
             ${typeDef}
           `
       ),
-      resolvers,
+      resolvers: filterValues(
+        {
+          // Order of spreading is important here - we don't want user-defined types
+          // to accidentally override important things like `Query`.
+          ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
+          Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
+          Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
+        },
+        o => Object.entries(o).length > 0
+      ),
     };
   }
 
