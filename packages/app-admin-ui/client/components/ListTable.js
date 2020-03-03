@@ -137,7 +137,7 @@ class SortLink extends React.Component<SortLinkProps> {
 
 const ItemDropDown = ({ list, item, link, onDelete, ...props }) => {
   const [deleteModalIsVisible, setDeleteModal] = useState(false);
-  let { listItemActions } = useUIHooks();
+  const { listItemActions } = useUIHooks();
 
   const copyText = window.location.origin + link({ path: list.path, item });
 

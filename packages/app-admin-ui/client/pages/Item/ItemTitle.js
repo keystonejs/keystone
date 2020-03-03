@@ -47,9 +47,9 @@ const AddNewItem = () => {
 };
 
 export let ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
-  let { list } = useList();
+  const { list } = useList();
   const listHref = `${adminPath}/${list.path}`;
-  let { itemHeaderActions } = useUIHooks();
+  const { itemHeaderActions } = useUIHooks();
   return (
     <HeaderInset>
       <PageTitle>{titleText}</PageTitle>
