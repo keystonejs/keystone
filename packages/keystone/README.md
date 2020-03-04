@@ -1,14 +1,12 @@
 <!--[meta]
 section: api
-title: Keystone
+title: Keystone Class
 order: 1
 [meta]-->
 
-# keystone
+# Keystone Class
 
-## Constructor
-
-### Usage
+## Usage
 
 ```javascript
 const { Keystone } = require('@keystonejs/keystone');
@@ -18,7 +16,7 @@ const keystone = new Keystone({
 });
 ```
 
-### Config
+## Config
 
 | Option           | Type       | Default                                                             | Description                                                                                                                                |
 | ---------------- | ---------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -138,7 +136,7 @@ Please note: We use these internally but provide no support or assurance if used
 
 -->
 
-## createList(listKey, config)
+## `createList(listKey, config)`
 
 ### Usage
 
@@ -157,7 +155,7 @@ Registers a new list with KeystoneJS and returns a `Keystone` list object.
 | `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                  |
 | `config`  | `Object` | `{}`    | The list config. See the [createList API](https://keystonejs.com/api/create-list) page for more details. |
 
-## extendGraphQLSchema(config)
+## `extendGraphQLSchema(config)`
 
 Extends keystones generated schema with custom types, queries, and mutations.
 
@@ -201,7 +199,7 @@ The `resolver` for both queries and mutations should be a resolver function with
 
 The `access` argument for `types`, `queries`, and `mutations` are all boolean values which are used at schema generation time to include or exclude the item from the schema.
 
-## createItems(items)
+## `createItems(items)`
 
 Allows bulk creation of items. This method's primary use is intended for migration scripts, or initial seeding of databases.
 
@@ -247,7 +245,7 @@ _first_ `User` that is found.
 
 Note an error is thrown if no items match the query.
 
-## prepare(config)
+## `prepare(config)`
 
 Manually prepare middlewares. Returns a promise representing the processed middlewares. They are available as an array through the `middlewares` property of the returned object.
 
@@ -270,7 +268,7 @@ const { middlewares } = await keystone.prepare({
 | `cors`        | `Object`  | `{ origin: true, credentials: true }` | CORS options passed to the [`cors` npm module](https://www.npmjs.com/package/cors)                                  |
 | `pinoOptions` | `Object`  | `undefined`                           | Logging options passed to the [`express-pino-logger` npm module](https://www.npmjs.com/package/express-pino-logger) |
 
-## connect()
+## `connect()`
 
 Manually connect KeystoneJS to the adapters.
 
@@ -284,11 +282,11 @@ _Note_: `keystone.connect()` is only required for custom servers. Most example p
 
 See: [Custom Server](https://keystonejs.com/guides/custom-server).
 
-## disconnect()
+## `disconnect()`
 
 Disconnect all adapters.
 
-## executeQuery(queryString, config)
+## `executeQuery(queryString, config)`
 
 Use this method to execute queries or mutations directly against a `Keystone` instance.
 
@@ -337,7 +335,7 @@ mutation newTodo($name: String) {
 | `variables` | `Object` | `{}`    | The variables passed to the graphql query for the given queryString.                                                      |
 | `context`   | `Object` | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName` |
 
-## createAuthStrategy(config)
+## `createAuthStrategy(config)`
 
 Creates a new authentication middleware instance.
 

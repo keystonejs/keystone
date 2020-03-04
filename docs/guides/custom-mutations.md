@@ -34,7 +34,7 @@ const Page = {
 };
 ```
 
-If we had a front-end application that updated the view count everytime someone visits the page it would require multiple CRUD operations.
+If we had a front-end application that updated the view count every time someone visits the page it would require multiple CRUD operations.
 
 Using CRUD we'd first have to fetch the current view count:
 
