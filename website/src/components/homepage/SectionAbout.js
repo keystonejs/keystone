@@ -68,26 +68,19 @@ const SectionAbout = () => (
     <Grid>
       {cards.map((card, i) => (
         <Card key={i}>
-          <CardContent>
-            <Highlight
-              {...defaultProps}
-              theme={prismTheme}
-              code={card.code}
-              language={card.language}
-            >
-              {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                <pre className={className} style={style}>
-                  {tokens.map((line, i) => (
-                    <div {...getLineProps({ line, key: i })}>
-                      {line.map((token, key) => (
-                        <span {...getTokenProps({ token, key })} />
-                      ))}
-                    </div>
-                  ))}
-                </pre>
-              )}
-            </Highlight>
-          </CardContent>
+          <Highlight {...defaultProps} theme={prismTheme} code={card.code} language={card.language}>
+            {({ className, style, tokens, getLineProps, getTokenProps }) => (
+              <pre className={className} style={style}>
+                {tokens.map((line, i) => (
+                  <div {...getLineProps({ line, key: i })}>
+                    {line.map((token, key) => (
+                      <span {...getTokenProps({ token, key })} />
+                    ))}
+                  </div>
+                ))}
+              </pre>
+            )}
+          </Highlight>
         </Card>
       ))}
     </Grid>
@@ -106,15 +99,10 @@ const Grid = props => (
 );
 
 const Card = props => (
-  <div css={{ display: 'flex', flexDirection: 'column', width: '100%' }} {...props} />
-);
-
-const CardContent = props => (
   <div
     css={{
-      flex: 1,
       boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
-      backgroundColor: colors.N90,
+      backgroundColor: colors.N100,
       borderRadius: 4,
       padding: '1rem',
       overflow: 'scroll',

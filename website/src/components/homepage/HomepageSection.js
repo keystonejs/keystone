@@ -30,7 +30,7 @@ const Section = ({ children, variant, ...props }) => (
   <section {...props}>
     {variant === 'dark' && (
       <svg viewBox="0 0 10 1" css={{ transform: `translateY(4px)` }}>
-        <path fill={colors.N100} d="M0 0.6L0 1 10 1 10 0z" />
+        <path fill={colors.B.D80} d="M0 0.6L0 1 10 1 10 0z" />
       </svg>
     )}
     <div
@@ -41,7 +41,7 @@ const Section = ({ children, variant, ...props }) => (
         minHeight: '40vh',
         paddingTop: '4rem',
         paddingBottom: '4rem',
-        backgroundColor: variant === 'dark' ? colors.N100 : null,
+        backgroundColor: variant === 'dark' ? colors.B.D80 : null,
         color: variant === 'dark' ? colors.N05 : null,
       }}
     >
@@ -49,7 +49,7 @@ const Section = ({ children, variant, ...props }) => (
     </div>
     {variant === 'dark' && (
       <svg viewBox="0 0 10 1" css={{ transform: `translateY(-4px) rotate(180deg)` }}>
-        <path fill={colors.N100} d="M0 0.6L0 1 10 1 10 0z" />
+        <path fill={colors.B.D80} d="M0 0.6L0 1 10 1 10 0z" />
       </svg>
     )}
   </section>

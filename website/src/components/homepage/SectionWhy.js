@@ -44,7 +44,7 @@ const SectionWhy = () => (
           <CardHeading>{card.heading}</CardHeading>
           <CardContent>{card.content}</CardContent>
           <Button variant="link" to="/" css={{ padding: 0, marginTop: 'auto' }}>
-            &rarr; Learn more
+            &rarr; Read more
           </Button>
         </Card>
       ))}
@@ -53,7 +53,10 @@ const SectionWhy = () => (
 );
 
 const Grid = props => (
-  <div css={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: 36 }} {...props} />
+  <div
+    css={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '1.5rem' }}
+    {...props}
+  />
 );
 
 const Card = props => (

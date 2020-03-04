@@ -25,8 +25,8 @@ const cards = [
 
 const SectionPairing = () => (
   <HomepageSection
-    description="KeystoneJS can be used as either a headless GraphQL API and optional CMS, or can be paired easily with any front-end framework."
-    heading="Pair with the any front-end framework"
+    description="KeystoneJS can be used as either a headless GraphQL API and optional CMS, or can be paired easily with any front-end framework"
+    heading="Use with the any front-end framework"
   >
     <Grid>
       {cards.map((card, i) => (
