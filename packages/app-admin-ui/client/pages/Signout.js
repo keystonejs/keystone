@@ -82,11 +82,6 @@ const SignedOutPage = () => {
           </Animation>
           <Caption>You have been signed out.</Caption>
           <FlexBox>
-            {/* TODO: handle with UI hook
-            <SignOutPageButton appearance="primary" href="/">
-              Home
-            </SignOutPageButton>
-            */}
             <SignOutPageButton variant="ghost" href={signinPath}>
               Sign In
             </SignOutPageButton>
