@@ -7,18 +7,18 @@ import { HomepageSection } from './HomepageSection';
 
 const cards = [
   {
-    heading: `NextJS`,
-    content: `Next is a great option if you are familiar with React but want static-site generation, server-side rendering, Serverless deployment, and a growing ecosystem.`,
+    heading: `Next.js App`,
+    content: `Take the pain out of creating Universal React apps with Next.js. Next.js is Zero Setup, Fully Extensible and Ready for Production.`,
     to: `/keystonejs/app-next/`,
   },
   {
-    heading: `NuxtJS`,
-    content: `Great for SEO, Nuxt is a good choice if you're familiar with Vue and you are looking for static-site generation and server-side rendering.`,
+    heading: `Nuxt.js App`,
+    content: `Nuxt is a progressive framework based on Vue.js to create modern web applications. It can be used to create from static landing pages to complex enterprise ready web applications.`,
     to: `/keystonejs/app-nuxt/`,
   },
   {
-    heading: `Static Files`,
-    content: `Use the static app to use with any front-end framework such as: Angular, Vue, React, Svelte, Eleventy.`,
+    heading: `Static App`,
+    content: `Use the Static App to serve static HTML, CSS, JS and other files`,
     to: `/keystonejs/app-static/`,
   },
 ];
@@ -26,8 +26,8 @@ const cards = [
 const SectionPairing = () => (
   <HomepageSection
     variant="dark"
-    description="KeystoneJS can be used as either a headless GraphQL API and optional CMS, or can be paired easily with any front-end framework"
-    heading="Use with the any front-end framework"
+    description="KeystoneJS is powered by Express, so it can be paired easily with many popular front-end frameworks"
+    heading="Use in headless mode, or with any front-end framework"
   >
     <Grid>
       {cards.map((card, i) => (
