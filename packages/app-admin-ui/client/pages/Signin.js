@@ -13,6 +13,7 @@ import gql from 'graphql-tag';
 import KeystoneLogo from '../components/KeystoneLogo';
 
 import { useAdminMeta } from '../providers/AdminMeta';
+import { useUIHooks } from '../providers/Hooks';
 
 const upcase = str => str[0].toUpperCase() + str.substring(1);
 
@@ -74,6 +75,8 @@ const SignInPage = () => {
     authStrategy: { listKey, identityField, secretField },
   } = useAdminMeta();
 
+  const { branding: { logo: getCustomLogo } = {} } = useUIHooks();
+
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
   const [reloading, setReloading] = useState(false);
@@ -124,7 +127,7 @@ const SignInPage = () => {
       </Alerts>
       <PageTitle>{siteName}</PageTitle>
       <Form method="post" onSubmit={onSubmit}>
-        <KeystoneLogo />
+        {getCustomLogo ? getCustomLogo({ defaultLogo: KeystoneLogo }) : <KeystoneLogo />}
         <Divider />
         <div>
           <Fields>
