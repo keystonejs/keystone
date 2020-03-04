@@ -82,10 +82,11 @@ const SignedOutPage = () => {
           </Animation>
           <Caption>You have been signed out.</Caption>
           <FlexBox>
-            {/* TODO: is it ok to use '/' as a path here? */}
+            {/* TODO: handle with UI hook
             <SignOutPageButton appearance="primary" href="/">
               Home
             </SignOutPageButton>
+            */}
             <SignOutPageButton variant="ghost" href={signinPath}>
               Sign In
             </SignOutPageButton>
