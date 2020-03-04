@@ -1,23 +1,22 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Suspense, Fragment, useState, useEffect, useRef } from 'react';
+import { Suspense, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { captureSuspensePromises, noop } from '@keystonejs/utils';
-import { KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { ShieldIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
-import { Button } from '@arch-ui/button';
 import { CheckboxPrimitive } from '@arch-ui/controls';
-import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
 import { Card } from '@arch-ui/card';
-import DeleteItemModal from './DeleteItemModal';
-import copyToClipboard from 'clipboard-copy';
 import { useListSort } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
 import { NoResults } from './NoResults';
 import { ErrorBoundary } from './ErrorBoundary';
+import { useUIHooks } from '../providers/Hooks';
+import ItemDropDown from './ItemDropDown';
+import { ItemProvider } from '../providers/Item';
 
 const Render = ({ children }) => children();
 
@@ -174,52 +173,11 @@ const ListRow = ({
   linkField = '_label_',
   isSelected,
   onSelectChange,
-  onDelete,
+  hooks: { listItemActions },
 }) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const mounted = useRef(false);
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
   const onCheckboxChange = () => {
     onSelectChange(item.id);
   };
-
-  // ==============================
-  // Display
-  // ==============================
-
-  const openDeleteModal = () => {
-    setShowDeleteModal(true);
-  };
-
-  const closeDeleteModal = () => {
-    setShowDeleteModal(false);
-  };
-
-  const handleDelete = result => {
-    if (onDelete) onDelete(result);
-    if (!mounted.current) return;
-    setShowDeleteModal(false);
-  };
-
-  const items = [
-    {
-      content: 'Copy Link',
-      icon: <LinkIcon />,
-      onClick: () => copyToClipboard(`${window.location.origin}${list.fullPath}/${item.id}`),
-    },
-    {
-      content: 'Delete',
-      icon: <TrashcanIcon />,
-      onClick: openDeleteModal,
-    },
-  ];
 
   return (
     <TableRow isSelected={isSelected}>
@@ -229,13 +187,6 @@ const ListRow = ({
           value={item.id}
           onChange={onCheckboxChange}
           tabIndex="0"
-        />
-        <DeleteItemModal
-          isOpen={showDeleteModal}
-          item={item}
-          list={list}
-          onClose={closeDeleteModal}
-          onDelete={handleDelete}
         />
       </BodyCell>
       {fields.map(field => {
@@ -291,23 +242,9 @@ const ListRow = ({
         );
       })}
       <BodyCell css={{ padding: 0 }}>
-        <Dropdown
-          align="right"
-          target={handlers => (
-            <Button
-              variant="subtle"
-              css={{
-                opacity: 0,
-                transition: 'opacity 150ms',
-                'tr:hover > td > &': { opacity: 1 },
-              }}
-              {...handlers}
-            >
-              <KebabHorizontalIcon />
-            </Button>
-          )}
-          items={items}
-        />
+        <ItemProvider item={item}>
+          {listItemActions ? listItemActions() : <ItemDropDown />}
+        </ItemProvider>
       </BodyCell>
     </TableRow>
   );
@@ -334,6 +271,7 @@ export default function ListTable({
   linkField = '_label_',
 }) {
   const [sortBy, onSortChange] = useListSort();
+  const hooks = useUIHooks();
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;
@@ -454,6 +392,7 @@ export default function ListTable({
                         linkField={linkField}
                         list={list}
                         onDelete={onDelete}
+                        hooks={hooks}
                         onSelectChange={onSelectChange}
                       />
                     ))}

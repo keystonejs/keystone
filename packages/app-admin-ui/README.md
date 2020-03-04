@@ -83,7 +83,7 @@ export default {
 
 #### `itemHeaderActions`
 
-Header components on the Item Details page can be replaced using this hook. Ths replaces the components for item Details page for all Lists.
+Header components on the Item Details page can be replaced using this hook. This replaces the components for item Details page for all Lists.
 
 > This must return a React component.
 
@@ -91,7 +91,7 @@ Header components on the Item Details page can be replaced using this hook. Ths 
 import { ItemId, AddNewItem } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default AddNewItem and ItemId button + custom text
-  listHeaderActions: () => (<div><ItemId /><AddNewItem /><p>Hello world</p></div>),
+  itemHeaderActions: () => (<div><ItemId /><AddNewItem /><p>Hello world</p></div>),
 };
 ```
 
@@ -120,6 +120,25 @@ import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default delete many and update many items buttons + custom text
   listManageActions: () => (<div><UpdateItems /><DeleteItems /><p>Hello world</p></div>),
+};
+```
+
+#### `listItemActions`
+
+Dropdown component for individual item in list view can be replaced with this hook. This replaces the item dropdown for all lists.
+
+> This must return a React component.
+
+```javascript title=/admin-ui/index.js
+import { ItemDropDown } '@keystonejs/admin-ui/components/'
+const dropDownItem = {
+  content: 'Hello world',
+  icon: <PencilIcon />,
+  onClick: () => console.log('Hello World'),
+};
+export default {
+  // re-implement the default dropdown with additional items
+  listItemActions: () => (<ItemDropDown items={[dropDownItem]} />),
 };
 ```
 
