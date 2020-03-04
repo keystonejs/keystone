@@ -35,6 +35,17 @@ export const FieldLabel = props => {
   );
 };
 
+export const FieldDescription = props => (
+  <p
+    css={{
+      margin: '0 0 8px',
+      color: colors.N60,
+      fontSize: '0.9rem',
+    }}
+    {...props}
+  />
+);
+
 export const FieldInput = props => (
   <div
     css={{

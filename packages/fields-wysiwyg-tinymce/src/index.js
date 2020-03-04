@@ -2,6 +2,7 @@ import { dirname } from 'path';
 import express from 'express';
 import { Text } from '@keystonejs/fields';
 import { importView } from '@keystonejs/build-field-types';
+import { WysiwygImplementation } from './Implementation';
 
 function prepareMiddleware() {
   const tinymcePath = dirname(require.resolve('tinymce'));
@@ -12,7 +13,7 @@ function prepareMiddleware() {
 
 export let Wysiwyg = {
   type: 'Wysiwyg',
-  implementation: Text.implementation,
+  implementation: WysiwygImplementation,
   views: {
     Controller: Text.views.Controller,
     Field: importView('./views/Field'),
