@@ -25,6 +25,7 @@ const cards = [
 
 const SectionPairing = () => (
   <HomepageSection
+    variant="dark"
     description="KeystoneJS can be used as either a headless GraphQL API and optional CMS, or can be paired easily with any front-end framework"
     heading="Use with the any front-end framework"
   >
@@ -56,9 +57,10 @@ const Card = props => (
     css={{
       display: 'flex',
       flexDirection: 'column',
+      backgroundColor: colors.B.D70,
       boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
       borderRadius: 4,
-      padding: `1.5rem`,
+      padding: `2rem`,
       textAlign: 'center',
     }}
     {...props}
@@ -72,7 +74,7 @@ const CardHeading = props => (
       fontWeight: 600,
       lineHeight: 1,
       marginTop: 0,
-      marginBottom: '1rem',
+      marginBottom: '2rem',
     }}
     {...props}
   />
@@ -80,11 +82,11 @@ const CardHeading = props => (
 
 const CardContent = props => (
   <p
-    css={{ lineHeight: 1.5, marginTop: 0, marginBottom: '2rem', color: colors.N60, flex: 1 }}
+    css={{ lineHeight: 1.5, marginTop: 0, marginBottom: '2rem', color: colors.N40, flex: 1 }}
     {...props}
   />
 );
 
-const CardCTA = props => <Button appearance="default" variant="solid" {...props} />;
+const CardCTA = props => <Button appearance="primary" variant="solid" {...props} />;
 
 export { SectionPairing };

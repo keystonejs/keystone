@@ -9,7 +9,7 @@ import { colors } from '@arch-ui/theme/src';
 const cards = [
   {
     language: `js`,
-    code: `// Define your schema
+    code: `// Define your \`lists\` and \`fields\`
 
 keystone.createList('Todo', {
   fields: {
@@ -63,7 +63,7 @@ const SectionAbout = () => (
     description="A KeystoneJS instance can be summarised as a function of your schema which creates a GraphQL API for querying, and an AdminUI for managing your data."
     heading="schema => ({ GraphQL, AdminUI })"
     ctaTo="guides/schema"
-    ctaText="Read more"
+    ctaText="Learn more creating lists and fields"
   >
     <Grid>
       {cards.map((card, i) => (

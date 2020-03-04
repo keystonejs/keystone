@@ -12,7 +12,7 @@ import { SectionHero } from '../components/homepage/SectionHero';
 import { SectionAbout } from '../components/homepage/SectionAbout';
 import { SectionPairing } from '../components/homepage/SectionPairing';
 import { SectionWhy } from '../components/homepage/SectionWhy';
-import { SectionGettingStarted } from '../components/homepage/SectionGettingStarted';
+// import { SectionGettingStarted } from '../components/homepage/SectionGettingStarted';
 
 export default () => (
   <Layout>
@@ -26,14 +26,13 @@ export default () => (
         <SectionHero />
         <SectionAbout />
         <SectionWhy />
-        <SectionGettingStarted />
+        {/* <SectionGettingStarted /> */}
         <SectionPairing />
         <div
           css={{
             paddingTop: 80,
             paddingBottom: 80,
             textAlign: 'center',
-            borderTop: '1px solid #ccc',
           }}
         >
           <Container>

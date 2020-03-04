@@ -38,7 +38,7 @@ const Section = ({ children, variant, ...props }) => (
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        minHeight: '40vh',
+        minHeight: '60vh',
         paddingTop: '4rem',
         paddingBottom: '4rem',
         backgroundColor: variant === 'dark' ? colors.B.D80 : null,
