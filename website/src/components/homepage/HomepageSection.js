@@ -4,7 +4,6 @@ import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 import { Button } from '../../components';
 import { Container } from '../Container';
-// import { media, mediaMax, mq } from '../../utils/media';
 
 const HomepageSection = ({ children, description, heading, ctaTo, ctaText, ...rest }) => (
   <Section {...rest}>

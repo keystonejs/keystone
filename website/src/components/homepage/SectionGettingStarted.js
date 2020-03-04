@@ -6,7 +6,7 @@ import { VideoIntro } from './VideoIntro';
 
 const SectionGettingStarted = () => (
   <HomepageSection
-    description="A KeystoneJS instance can be summarised as a function of your schema which creates a GraphQL API for querying, and an AdminUI for managing your data."
+    description="This quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of KeystoneJS"
     heading="Get started in minutes"
     variant="dark"
     ctaTo="guides/schema"

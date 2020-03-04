@@ -2,39 +2,40 @@
 import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
+import { Button } from '../../components/';
 import { HomepageSection } from './HomepageSection';
 
 const cards = [
   {
-    heading: `Create your schema`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    heading: `Extensible`,
+    content: `KeystoneJS ships with a powerful CMS and GraphQL API out of the box, which can be fine-tuned at any point across the stack`,
   },
   {
-    heading: `Create your schema`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    heading: `BYO Database`,
+    content: `Provide your own database for to Keystone to connect to, which can be either a MongoDB or PostgreSQL`,
   },
   {
-    heading: `Create your schema`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    heading: `Deploy anywhere`,
+    content: `Host your database and files anywhere you want to. You own your data.`,
   },
   {
-    heading: `Create your schema`,
+    heading: `Powerful Authentication`,
     content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
   },
+
   {
-    heading: `Create your schema`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    heading: `Get started in minutes`,
+    content: `KeystoneJS provides a simple node CLI to get create new projects in minutes`,
   },
   {
-    heading: `Create your schema`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great
-            developer experience thanks to a huge selection of plugins.`,
+    heading: `Production Ready`,
+    content: `KeystoneJS can be (and is!) used for production websites and applications`,
   },
 ];
 
 const SectionWhy = () => (
   <HomepageSection
-    description="A KeystoneJS instance can be summarised as a function of your schema which creates a GraphQL API for querying, and an AdminUI for managing your data."
+    description="See why KeystoneJS differs from other projects"
     heading="Why KeystoneJS"
   >
     <Grid>
@@ -42,6 +43,9 @@ const SectionWhy = () => (
         <Card key={i}>
           <CardHeading>{card.heading}</CardHeading>
           <CardContent>{card.content}</CardContent>
+          <Button variant="link" to="/" css={{ padding: 0, marginTop: 'auto' }}>
+            &rarr; Learn more
+          </Button>
         </Card>
       ))}
     </Grid>
@@ -66,7 +70,7 @@ const Card = props => (
 );
 
 const CardContent = props => (
-  <p css={{ lineHeight: 1.4, margin: 0, color: colors.N60 }} {...props} />
+  <p css={{ lineHeight: 1.4, margin: `0 0 1rem 0`, color: colors.N60, flex: 1 }} {...props} />
 );
 
 const CardHeading = props => (

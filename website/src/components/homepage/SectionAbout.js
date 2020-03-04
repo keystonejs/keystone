@@ -8,9 +8,10 @@ import { colors } from '@arch-ui/theme/src';
 
 const cards = [
   {
-    heading: `Create your schema`,
     language: `js`,
-    code: `keystone.createList('Todo', {
+    code: `// Define your schema
+
+keystone.createList('Todo', {
   fields: {
     task: { type: Text },
   },
@@ -24,9 +25,10 @@ keystone.createList('User', {
 });`,
   },
   {
-    heading: `Query your API`,
     language: `graphql`,
-    code: `type Mutation {
+    code: `// Generated GraphQL schema
+
+type Mutation {
   createTodo(..): Todo
   updateTodo(..): Todo
   deleteTodo(..): Todo
@@ -66,7 +68,6 @@ const SectionAbout = () => (
     <Grid>
       {cards.map((card, i) => (
         <Card key={i}>
-          <CardHeading>{card.heading}</CardHeading>
           <CardContent>
             <Highlight
               {...defaultProps}
@@ -97,7 +98,7 @@ const Grid = props => (
   <div
     css={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
+      gridTemplateColumns: '1fr 1fr',
       gridGap: '1.5rem',
     }}
     {...props}
@@ -117,20 +118,6 @@ const CardContent = props => (
       borderRadius: 4,
       padding: '1rem',
       overflow: 'scroll',
-    }}
-    {...props}
-  />
-);
-
-const CardHeading = props => (
-  <h3
-    css={{
-      fontSize: '1rem',
-      lineHeight: 1,
-      textAlign: 'center',
-      marginTop: 0,
-      marginBottom: '0.5rem',
-      fontWeight: 'normal',
     }}
     {...props}
   />

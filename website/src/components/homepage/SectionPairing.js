@@ -8,22 +8,22 @@ import { HomepageSection } from './HomepageSection';
 const cards = [
   {
     heading: `NextJS`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    content: `Next is a great option if you are familiar with React but want static-site generation, server-side rendering, Serverless deployment, and a growing ecosystem.`,
   },
   {
     heading: `NuxtJS`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    content: `Great for SEO, Nuxt is a good choice if you're familiar with Vue and you are looking for static-site generation and server-side rendering.`,
   },
   {
-    heading: `Static`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    heading: `Static Files`,
+    content: `Use the static app to use with any front-end framework such as: Angular, Vue, React, Svelte, Eleventy.`,
   },
 ];
 
 const SectionPairing = () => (
   <HomepageSection
-    description="Every framework has its own properties and advantages, fast rendering, SEO, ease of deployment or progressive enhancement."
-    heading="Pair with the technology of your choice"
+    description="KeystoneJS can be used as either a headless GraphQL API and optional CMS, or can be paired easily with any front-end framework."
+    heading="Pair with the any front-end framework"
   >
     <Grid>
       {cards.map((card, i) => (
@@ -70,14 +70,14 @@ const CardHeading = props => (
       fontWeight: 600,
       lineHeight: 1,
       marginTop: 0,
-      marginBottom: '2rem',
+      marginBottom: '1rem',
     }}
     {...props}
   />
 );
 
 const CardContent = props => (
-  <p css={{ lineHeight: 1.4, marginTop: 0, marginBottom: '2rem' }} {...props} />
+  <p css={{ lineHeight: 1.5, marginTop: 0, marginBottom: '2rem', color: colors.N60 }} {...props} />
 );
 
 const CardCTA = props => <Button appearance="primary" variant="solid" {...props} />;
