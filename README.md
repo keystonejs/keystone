@@ -11,7 +11,7 @@
 </div>
 <br>
 
-[![Build Status](https://img.shields.io/circleci/project/github/keystonejs/keystone/master.svg)](https://circleci.com/gh/emotion-js/emotion)
+[![Build Status](https://img.shields.io/circleci/project/github/keystonejs/keystone/master.svg)](https://circleci.com/gh/keystonejs/keystone)
 [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/)
 [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select)
 
@@ -122,6 +122,9 @@ We'd like to start by thanking all our wonderful contributors:
     <td align="center"><a href="https://github.com/MaisaMilena"><img src="https://avatars2.githubusercontent.com/u/28612369?v=4" width="80px;" alt=""/><br /><sub><b>MaisaMilena</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=MaisaMilena" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.marxvn.com"><img src="https://avatars2.githubusercontent.com/u/4975208?v=4" width="80px;" alt=""/><br /><sub><b>Martin Pham</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/issues?q=author%3Amarxvn" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/justintemps"><img src="https://avatars3.githubusercontent.com/u/12401179?v=4" width="80px;" alt=""/><br /><sub><b>Justin Smith</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=justintemps" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/gabipetrovay"><img src="https://avatars0.githubusercontent.com/u/1170398?v=4" width="80px;" alt=""/><br /><sub><b>Gabriel Petrovay</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=gabipetrovay" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone/commits?author=gabipetrovay" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://atticus.dev"><img src="https://avatars1.githubusercontent.com/u/9361948?v=4" width="80px;" alt=""/><br /><sub><b>Liam Clarke</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=LiamAttClarke" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/wbarcovsky"><img src="https://avatars2.githubusercontent.com/u/5498761?v=4" width="80px;" alt=""/><br /><sub><b>Vladimir Barcovsky</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=wbarcovsky" title="Code">💻</a></td>
   </tr>
 </table>
 

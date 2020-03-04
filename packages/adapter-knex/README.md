@@ -28,6 +28,12 @@ _**Default:**_ `'public'`
 
 All postgres tables are grouped within a schema and `public` is the default schema.
 
+### `options.dropDatabase`
+
+_**Default:**_ `false`
+
+Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application.
+
 ### `options.knexOptions`
 
 These options are passed directly through to Knex.

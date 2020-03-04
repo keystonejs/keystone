@@ -1,5 +1,43 @@
 # @arch-ui/docs
 
+## 1.1.13
+
+### Patch Changes
+
+- [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+- Updated dependencies [[`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`aa682b4c`](https://github.com/keystonejs/keystone/commit/aa682b4c4b59f3edb7a87559049f90a06a2f26b5), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09)]:
+  - @arch-ui/alert@0.0.13
+  - @arch-ui/badge@0.0.12
+  - @arch-ui/button@0.0.14
+  - @arch-ui/controls@0.1.4
+  - @arch-ui/dialog@0.0.16
+  - @arch-ui/dropdown@0.0.14
+  - @arch-ui/fields@2.1.2
+  - @arch-ui/input@0.1.5
+  - @arch-ui/layout@0.2.9
+  - @arch-ui/loading@0.0.13
+  - @arch-ui/lozenge@0.0.12
+  - @arch-ui/navbar@0.1.6
+  - @arch-ui/pagination@0.0.14
+  - @arch-ui/pill@0.1.11
+  - @arch-ui/popout@0.0.15
+  - @arch-ui/tooltip@0.1.7
+  - @arch-ui/typography@0.0.13
+  - @arch-ui/icons@0.0.9
+  - @arch-ui/select@0.1.4
+  - @arch-ui/theme@0.0.8
+
+## 1.1.12
+
+### Patch Changes
+
+- Updated dependencies [[`92d77eac`](https://github.com/keystonejs/keystone/commit/92d77eac59649430c2db810d2c701e5eab8b6e24), [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a)]:
+  - @arch-ui/dialog@0.0.15
+  - @arch-ui/dropdown@0.0.13
+  - @arch-ui/popout@0.0.14
+  - @arch-ui/fields@2.1.1
+
 ## 1.1.11
 
 ### Patch Changes

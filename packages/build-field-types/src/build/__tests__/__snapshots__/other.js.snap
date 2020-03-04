@@ -20,7 +20,7 @@ export default thing;
 exports[`typescript: package.json 1`] = `
 Object {
   "dependencies": Object {
-    "@babel/core": "^7.7.7",
+    "@babel/core": "^7.8.4",
     "@babel/preset-typescript": "^7.7.4",
   },
   "license": "MIT",

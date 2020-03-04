@@ -45,7 +45,6 @@ const { flatten, defaultObj } = require('@keystonejs/utils');
 
 function relationshipPipeline(relationship) {
   const { field, many, from, uniqueField } = relationship.relationshipInfo;
-  const idsName = `${uniqueField}_id${many ? 's' : ''}`;
   return [
     {
       $lookup: {
@@ -53,11 +52,11 @@ function relationshipPipeline(relationship) {
         as: uniqueField,
         // We use `ifNull` here to handle the case unique to mongo where a record may be
         // entirely missing a field (or have the value set to `null`).
-        let: { [idsName]: many ? { $ifNull: [`$${field}`, []] } : `$${field}` },
+        let: { tmpVar: many ? { $ifNull: [`$${field}`, []] } : `$${field}` },
         pipeline: [
           // The ID / list of IDs we're joining by. Do this very first so it limits any work
           // required in subsequent steps / $and's.
-          { $match: { $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${idsName}`] } } },
+          { $match: { $expr: { [many ? '$in' : '$eq']: ['$_id', `$$tmpVar`] } } },
           ...pipelineBuilder(relationship),
         ],
       },

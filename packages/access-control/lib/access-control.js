@@ -252,4 +252,30 @@ module.exports = {
 
     return result;
   },
+
+  validateAuthAccessControl({ access, listKey, authentication = {}, gqlName }) {
+    const operation = 'auth';
+    // Either a boolean or an object describing a where clause
+    let result;
+    if (typeof access[operation] !== 'function') {
+      result = access[operation];
+    } else {
+      result = access[operation]({
+        authentication: authentication.item ? authentication : {},
+        listKey,
+        operation,
+        gqlName,
+      });
+    }
+
+    const type = getType(result);
+
+    if (!['Object', 'Boolean'].includes(type)) {
+      throw new Error(
+        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${type}`
+      );
+    }
+
+    return result;
+  },
 };

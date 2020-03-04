@@ -8,7 +8,9 @@ const getArgs = () => {
   }
 
   const argsSpec = {
+    '--name': String,
     '--template': String,
+    '--adapter': String,
     '--help': Boolean,
     '--dry-run': Boolean,
     '-h': '--help',

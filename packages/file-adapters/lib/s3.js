@@ -9,6 +9,7 @@ module.exports = class S3Adapter {
     region,
     bucket,
     folder,
+    getFilename,
     publicUrl,
     s3Options,
     uploadParams,
@@ -24,6 +25,9 @@ module.exports = class S3Adapter {
     });
     this.bucket = bucket;
     this.folder = folder;
+    if (getFilename) {
+      this.getFilename = getFilename;
+    }
     if (publicUrl) {
       this.publicUrl = publicUrl;
     }
@@ -32,23 +36,30 @@ module.exports = class S3Adapter {
 
   save({ stream, filename, id, mimetype, encoding }) {
     return new Promise((resolve, reject) => {
+      const fileData = {
+        id,
+        originalFilename: filename,
+        filename: this.getFilename({ id, originalFilename: filename }),
+        mimetype,
+        encoding,
+      };
       let { uploadParams } = this;
       if (typeof this.uploadParams === 'function') {
-        uploadParams = this.uploadParams({ filename, id, mimetype, encoding });
+        uploadParams = this.uploadParams(fileData);
       }
       this.s3.upload(
         {
           Body: stream,
           ContentType: mimetype,
           Bucket: this.bucket,
-          Key: path.join(this.folder, filename),
+          Key: path.join(this.folder, fileData.filename),
           ...uploadParams,
         },
         (error, data) => {
           if (error) {
             reject(error);
           } else {
-            resolve({ id, filename, _meta: data });
+            resolve({ ...fileData, _meta: data });
           }
           stream.close();
         }
@@ -58,18 +69,26 @@ module.exports = class S3Adapter {
 
   /**
    * Deletes the given file from S3
-   * @param fileData file field data
+   * @param file File field data
    * @param options A config object to be passed with each call to S3.deleteObject.
    *                Options `Bucket` and `Key` will be set by default.
    *                For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
    */
   delete(file, options = {}) {
-    if (!file) throw new Error("Missing required argument 'file'.");
-    this.s3.deleteObject({
-      Bucket: this.bucket,
-      Key: path.join(this.folder, file.filename),
-      ...options,
-    });
+    if (file) {
+      return this.s3
+        .deleteObject({
+          Bucket: this.bucket,
+          Key: path.join(this.folder, file.filename),
+          ...options,
+        })
+        .promise();
+    }
+    return Promise.reject(new Error("Missing required argument 'file'."));
+  }
+
+  getFilename({ id, originalFilename }) {
+    return `${id}-${originalFilename}`;
   }
 
   publicUrl({ filename }) {
