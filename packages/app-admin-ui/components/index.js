@@ -16,3 +16,4 @@ export { Popout } from '../client/components/Popout';
 export { useAdminMeta } from '../client/providers/AdminMeta';
 export { default as AddNewItem } from '../client/pages/Item/AddNewItem';
 export { default as ItemId } from '../client/pages/Item/ItemId';
+export { default as CreateItem } from '../client/pages/List/CreateItem';
