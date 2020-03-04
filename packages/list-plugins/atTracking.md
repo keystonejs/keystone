@@ -3,7 +3,7 @@ section: list-plugins
 title: atTracking
 [meta]-->
 
-# atTracking
+# atTracking Plugin
 
 Adds `createdAt` and `updatedAt` fields to a list. These fields are read-only but they will be updated automatically when items are created or updated.
 

@@ -5,7 +5,7 @@ subSection: graphql
 order: 2
 [meta]-->
 
-# Performance
+# GraphQL Performance Monitoring
 
 ## Query Performance Monitoring with Apollo Engine
 
