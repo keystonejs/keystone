@@ -3,7 +3,6 @@
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, Suspense } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useList } from '../../providers/List';
 
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
@@ -30,6 +29,7 @@ import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
+import { useList, ListDataProvider } from '../../providers/List';
 import { useUIHooks } from '../../providers/Hooks';
 import CreateItem from './CreateItem';
 
@@ -47,15 +47,6 @@ export function ListLayout(props) {
 
   const { listHeaderActions } = useUIHooks();
 
-  // Misc.
-  // ------------------------------
-
-  const onDeleteSelectedItems = () => {
-    onSelectChange([]);
-  };
-
-  const onUpdateSelectedItems = () => {};
-
   // Success
   // ------------------------------
 
@@ -63,150 +54,148 @@ export function ListLayout(props) {
 
   const Render = ({ children }) => children();
   return (
-    <main>
-      <Container isFullWidth>
-        <HeaderInset>
-          <FlexGroup align="center" justify="space-between">
-            <PageTitle>{list.plural}</PageTitle>
-            {listHeaderActions ? listHeaderActions() : <CreateItem />}
-          </FlexGroup>
-          <ListDescription text={list.adminDoc} />
-          <div
-            css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
-            id={cypressFiltersId}
-          >
-            <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
-              <Render>
-                {() => {
-                  captureSuspensePromises(
-                    fields
-                      .filter(field => field.path !== '_label_')
-                      .map(field => () => field.initCellView())
-                  );
-                  return <Search list={list} isLoading={query.loading} />;
-                }}
-              </Render>
-            </Suspense>
-            <ActiveFilters list={list} />
-          </div>
-
-          <ManageToolbar isVisible css={{ marginLeft: 2 }}>
-            {selectedItems.length ? (
-              <Management
-                list={list}
-                onDeleteMany={onDeleteSelectedItems}
-                onUpdateMany={onUpdateSelectedItems}
-                pageSize={pageSize}
-                selectedItems={selectedItems}
-                onSelectChange={onSelectChange}
-                totalItems={itemCount}
-              />
-            ) : items && items.length ? (
-              <FlexGroup align="center" growIndexes={[0]}>
-                <div
-                  css={{
-                    alignItems: 'center',
-                    color: colors.N40,
-                    display: 'flex',
-                    marginTop: gridSize - 2,
+    <ListDataProvider {...{ query, items, selectedItems, onSelectChange }}>
+      <main>
+        <Container isFullWidth>
+          <HeaderInset>
+            <FlexGroup align="center" justify="space-between">
+              <PageTitle>{list.plural}</PageTitle>
+              {listHeaderActions ? listHeaderActions() : <CreateItem />}
+            </FlexGroup>
+            <ListDescription text={list.adminDoc} />
+            <div
+              css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
+              id={cypressFiltersId}
+            >
+              <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
+                <Render>
+                  {() => {
+                    captureSuspensePromises(
+                      fields
+                        .filter(field => field.path !== '_label_')
+                        .map(field => () => field.initCellView())
+                    );
+                    return <Search list={list} isLoading={query.loading} />;
                   }}
-                >
-                  <span id="ks-pagination-count">
-                    {getPaginationLabel({
-                      currentPage: currentPage,
-                      pageSize: pageSize,
-                      plural: list.plural,
-                      singular: list.singular,
-                      total: itemCount,
-                    })}
-                    ,
-                  </span>
-                  {sortBy ? (
-                    <Fragment>
-                      <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
-                      <SortPopout />
-                    </Fragment>
-                  ) : (
-                    ''
-                  )}
-                  <span css={{ paddingLeft: '0.5ex' }}>with</span>
-                  <ColumnPopout
-                    target={handlers => (
+                </Render>
+              </Suspense>
+              <ActiveFilters list={list} />
+            </div>
+
+            <ManageToolbar isVisible css={{ marginLeft: 2 }}>
+              {selectedItems.length ? (
+                <Management
+                  pageSize={pageSize}
+                  selectedItems={selectedItems}
+                  totalItems={itemCount}
+                />
+              ) : items && items.length ? (
+                <FlexGroup align="center" growIndexes={[0]}>
+                  <div
+                    css={{
+                      alignItems: 'center',
+                      color: colors.N40,
+                      display: 'flex',
+                      marginTop: gridSize - 2,
+                    }}
+                  >
+                    <span id="ks-pagination-count">
+                      {getPaginationLabel({
+                        currentPage: currentPage,
+                        pageSize: pageSize,
+                        plural: list.plural,
+                        singular: list.singular,
+                        total: itemCount,
+                      })}
+                      ,
+                    </span>
+                    {sortBy ? (
+                      <Fragment>
+                        <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
+                        <SortPopout />
+                      </Fragment>
+                    ) : (
+                      ''
+                    )}
+                    <span css={{ paddingLeft: '0.5ex' }}>with</span>
+                    <ColumnPopout
+                      target={handlers => (
+                        <Button
+                          variant="subtle"
+                          appearance="primary"
+                          spacing="cozy"
+                          id="ks-column-button"
+                          {...handlers}
+                        >
+                          {fields.length} Columns
+                          <DisclosureArrow />
+                        </Button>
+                      )}
+                    />
+                  </div>
+                  <FlexGroup align="center" css={{ marginLeft: '1em' }}>
+                    <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
+                      <Render>
+                        {() => {
+                          captureSuspensePromises(
+                            fields
+                              .filter(field => field.path !== '_label_')
+                              .map(field => () => field.initCellView())
+                          );
+                          return <Pagination isLoading={query.loading} />;
+                        }}
+                      </Render>
+                    </Suspense>
+                  </FlexGroup>
+                </FlexGroup>
+              ) : null}
+            </ManageToolbar>
+          </HeaderInset>
+        </Container>
+
+        <CreateItemModal />
+
+        <Container isFullWidth>
+          <ListTable
+            {...props}
+            columnControl={
+              <ColumnPopout
+                listKey={list.key}
+                target={handlers => (
+                  <Tooltip placement="top" content="Columns">
+                    {ref => (
                       <Button
                         variant="subtle"
-                        appearance="primary"
-                        spacing="cozy"
-                        id="ks-column-button"
+                        css={{
+                          background: 0,
+                          border: 0,
+                          color: colors.N40,
+                        }}
                         {...handlers}
+                        ref={applyRefs(handlers.ref, ref)}
                       >
-                        {fields.length} Columns
-                        <DisclosureArrow />
+                        <KebabHorizontalIcon />
                       </Button>
                     )}
-                  />
-                </div>
-                <FlexGroup align="center" css={{ marginLeft: '1em' }}>
-                  <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
-                    <Render>
-                      {() => {
-                        captureSuspensePromises(
-                          fields
-                            .filter(field => field.path !== '_label_')
-                            .map(field => () => field.initCellView())
-                        );
-                        return <Pagination isLoading={query.loading} />;
-                      }}
-                    </Render>
-                  </Suspense>
-                </FlexGroup>
-              </FlexGroup>
-            ) : null}
-          </ManageToolbar>
-        </HeaderInset>
-      </Container>
-
-      <CreateItemModal />
-
-      <Container isFullWidth>
-        <ListTable
-          {...props}
-          columnControl={
-            <ColumnPopout
-              listKey={list.key}
-              target={handlers => (
-                <Tooltip placement="top" content="Columns">
-                  {ref => (
-                    <Button
-                      variant="subtle"
-                      css={{
-                        background: 0,
-                        border: 0,
-                        color: colors.N40,
-                      }}
-                      {...handlers}
-                      ref={applyRefs(handlers.ref, ref)}
-                    >
-                      <KebabHorizontalIcon />
-                    </Button>
-                  )}
-                </Tooltip>
-              )}
-            />
-          }
-          fields={fields}
-          handleSortChange={handleSortChange}
-          items={items}
-          queryErrors={queryErrors}
-          list={list}
-          onSelectChange={onSelectChange}
-          selectedItems={selectedItems}
-          sortBy={sortBy}
-          currentPage={currentPage}
-          filters={filters}
-          search={search}
-        />
-      </Container>
-    </main>
+                  </Tooltip>
+                )}
+              />
+            }
+            fields={fields}
+            handleSortChange={handleSortChange}
+            items={items}
+            queryErrors={queryErrors}
+            list={list}
+            onSelectChange={onSelectChange}
+            selectedItems={selectedItems}
+            sortBy={sortBy}
+            currentPage={currentPage}
+            filters={filters}
+            search={search}
+          />
+        </Container>
+      </main>
+    </ListDataProvider>
   );
 }
 
