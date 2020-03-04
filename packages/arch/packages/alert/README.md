@@ -59,7 +59,7 @@ You can put multiple paragraphs of text in an alert—the last paragraph's botto
 ```jsx
 <Alert>
   <p>
-    This is a longer alert in it's own paragraph. It ends up looking something like this. If we keep
+    This is a longer alert in its own paragraph. It ends up looking something like this. If we keep
     adding more text, it'll eventually wrap to a new line.
   </p>
   <p>And this is another paragraph.</p>
@@ -68,7 +68,7 @@ You can put multiple paragraphs of text in an alert—the last paragraph's botto
 
 <Alert>
   <p>
-    This is a longer alert in it's own paragraph. It ends up looking something like this. If we keep
+    This is a longer alert in its own paragraph. It ends up looking something like this. If we keep
     adding more text, it'll eventually wrap to a new line.
   </p>
   <p>And this is another paragraph.</p>
