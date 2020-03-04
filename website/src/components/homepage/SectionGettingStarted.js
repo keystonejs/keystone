@@ -10,7 +10,7 @@ const SectionGettingStarted = () => (
     heading="Get started in minutes"
     variant="dark"
     ctaTo="/quick-start"
-    ctaText="Learn more"
+    ctaText="Read more"
   >
     <VideoIntro />
   </HomepageSection>
