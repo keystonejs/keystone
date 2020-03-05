@@ -1,11 +1,11 @@
 <!--[meta]
 section: guides
-title: Adding initial data
+title: Adding Initial List Data
 subSection: setup
 order: 3
 [meta]-->
 
-# Adding initial data to Lists
+# Adding Initial List Data
 
 This guide will show you how to create a User list and add initial data to it using the `createItems` method. This process is also called `seeding`.
 

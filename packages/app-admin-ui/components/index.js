@@ -14,3 +14,5 @@ export { default as ToastContainer } from '../client/components/ToastContainer';
 export { default as UpdateManyItemsModal } from '../client/components/UpdateManyItemsModal';
 export { Popout } from '../client/components/Popout';
 export { useAdminMeta } from '../client/providers/AdminMeta';
+export { default as AddNewItem } from '../client/pages/Item/AddNewItem';
+export { default as ItemId } from '../client/pages/Item/ItemId';
