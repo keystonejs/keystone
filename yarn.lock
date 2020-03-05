@@ -23624,10 +23624,10 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-unsplash-js@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-5.0.0.tgz#85bb29bff3d49220be3b335679433a0299365290"
-  integrity sha512-yPh4h0m4y0BbSjjNbn36O+8rDESIgxvElwZMwOrvsZpmbtFspwARMnrHyZ3JbAUw62ZmRxHajlsPqw55qo1iug==
+unsplash-js@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-6.0.0.tgz#f13bd12817e115f440f0526bce18e1cb7b0fde16"
+  integrity sha512-R7Zwd6mfjJ2mYGldWZpZ/LfVLh6Zi+iRUS8y3dx0jZNFU0nt6r6q4wtL+Gr/qv3TgMQFg/hRFxYKzXcdhkasyg==
   dependencies:
     form-urlencoded "1.2.0"
     lodash.get "4.4.2"
