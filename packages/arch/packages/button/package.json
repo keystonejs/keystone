@@ -22,5 +22,6 @@
     "react-pseudo-state": "^2.2.2",
     "react-router-dom": "5.1.2"
   },
-  "module": "dist/button.esm.js"
+  "module": "dist/button.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/button"
 }

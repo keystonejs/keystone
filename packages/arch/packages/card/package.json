@@ -16,5 +16,6 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27"
   },
-  "module": "dist/card.esm.js"
+  "module": "dist/card.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/card"
 }

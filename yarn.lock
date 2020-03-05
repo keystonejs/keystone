@@ -2455,21 +2455,23 @@
   dependencies:
     core-js "^2.5.7"
 
-"@manypkg/cli@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.7.0.tgz#2849798d231006d22073155482b226d40a66392a"
-  integrity sha512-yu6SDfwkgrMw/EBR8EwFI5cmgfYABK7Yttz906qDQaDiBLvmH7+KLg/j/OOc61uCqQzSWA8jNVFsx6rPX+0yJw==
+"@manypkg/cli@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.11.0.tgz#16d64b804d2f39cb52befd06e2cb33ab1ec846b7"
+  integrity sha512-JIw6i9MZTObX7L9lQsSF5ohL2T0jJuT4wU/NX/s1YwKd38A3XUORirsK6a3y2eIEfkIt0DB3AnaZYS+Vnn4QSA==
   dependencies:
     "@babel/runtime" "^7.5.5"
     chalk "^2.4.2"
     detect-indent "^6.0.0"
     find-up "^4.1.0"
-    find-workspaces-root "^0.1.0"
+    find-workspaces-root "^0.2.0"
     fs-extra "^8.1.0"
-    get-workspaces "^0.4.0"
+    get-workspaces "^0.6.0"
     meow "^5.0.0"
+    normalize-path "^3.0.0"
     p-limit "^2.2.1"
-    sembear "^0.4.0"
+    parse-github-url "^1.0.2"
+    sembear "^0.5.0"
     semver "^6.3.0"
     spawndamnit "^2.0.0"
     validate-npm-package-name "^3.0.0"
@@ -3165,13 +3167,6 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/fs-capacitor/-/fs-capacitor-2.0.0.tgz#17113e25817f584f58100fb7a08eed288b81956e"
   integrity sha512-FKVPOCFbhCvZxpVAMhdBdTfVfXUpsh15wFHgqOKxh9N9vzWZVuWCSijZ5T4U34XYNnuj2oduh6xcs1i+LPI+BQ==
-  dependencies:
-    "@types/node" "*"
-
-"@types/fs-extra@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.0.0.tgz#d3e2c313ca29f95059f198dd60d1f774642d4b25"
-  integrity sha512-bCtL5v9zdbQW86yexOlXWTEGvLNqWxMFyi7gQA7Gcthbezr2cPSOb8SkESVKA937QD5cIwOFLDFt0MQoXOEr9Q==
   dependencies:
     "@types/node" "*"
 
@@ -10029,16 +10024,15 @@ find-versions@^3.0.0:
     array-uniq "^2.0.0"
     semver-regex "^2.0.0"
 
-find-workspaces-root@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/find-workspaces-root/-/find-workspaces-root-0.1.0.tgz#0afc33920eca22ad58f87e1e9a49ac97d176c25f"
-  integrity sha512-NIVJ0SB4+BMwN0MXAPYPj5SWgcyYh2bCP2ZJTVW74uSuQ3oWp6hVPfW1HHBYqPuzWbzKbDbwk6kUKXw6Jr+Qsg==
+find-workspaces-root@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/find-workspaces-root/-/find-workspaces-root-0.2.0.tgz#46e487deed4faa02b3e30007d3ce6d13f8deb69e"
+  integrity sha512-VvMqY2reYnYztgO0CBbxSFw/Cey2W0RrZnx6/4gl4m1okp0efnP0wxNQMtfj6aYMqmo0QQFl5Z+27WV0TVWgow==
   dependencies:
     "@babel/runtime" "^7.5.5"
-    "@types/fs-extra" "^8.0.0"
     "@types/node" "^12.7.1"
     find-up "^4.1.0"
-    fs-extra "^8.1.0"
+    get-workspaces "^0.6.0"
 
 findup-sync@^3.0.0:
   version "3.0.0"
@@ -10956,14 +10950,6 @@ get-window@^1.1.1:
   integrity sha512-yjWpFcy9fjhLQHW1dPtg9ga4pmizLY8y4ZSHdGrAQ1NU277MRhnGnnLPxe19X8W5lWVsCZz++5xEuNozWMVmTw==
   dependencies:
     get-document "1"
-
-get-workspaces@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/get-workspaces/-/get-workspaces-0.4.0.tgz#512dedc0e9a96b0c17035af363236299247f4cc8"
-  integrity sha512-O4pSctjkmrLRs8GxnaQ/xy16PWoZpEUzpgtBAj9UIYNrtag1rRnFOyvJULIMPhpbZKOlswmrS5Ku6pjt35Yj+g==
-  dependencies:
-    fs-extra "^7.0.1"
-    globby "^9.2.0"
 
 get-workspaces@^0.5.0:
   version "0.5.0"
@@ -17253,6 +17239,11 @@ parse-filepath@^1.0.1:
     map-cache "^0.2.0"
     path-root "^0.1.1"
 
+parse-github-url@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/parse-github-url/-/parse-github-url-1.0.2.tgz#242d3b65cbcdda14bb50439e3242acf6971db395"
+  integrity sha512-kgBf6avCbO3Cn6+RnzRGLkUsv4ZVqv/VfAYkRsyBcgkshNvVBkRn1FEZcW0Jb+npXQWm2vHPnnOqFteZxRRGNw==
+
 parse-glob@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/parse-glob/-/parse-glob-3.0.4.tgz#b2c376cfb11f35513badd173ef0bb6e3a388391c"
@@ -21000,10 +20991,10 @@ selfsigned@^1.9.1:
   dependencies:
     node-forge "0.7.5"
 
-sembear@^0.4.0:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/sembear/-/sembear-0.4.1.tgz#c1599bba0fd29cce68a25382576891e5fae84990"
-  integrity sha512-q3LJepi7qgDbkR9eDe1OVYfbD8A14vuC8TtETtEvpAQ4GxynA9B0fhG6ts8scBMDe/GwLlVUeU+Icnl1oidH7g==
+sembear@^0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/sembear/-/sembear-0.5.1.tgz#52ce0631b2f63057e1f44a937580019e7cf059e5"
+  integrity sha512-M7Xz8IAShYntqgzyDSRFEsTAPZFgej/+u7EvxSDdNckmpHdXIyItlR6S1g8XWUI2PznkauPnew7bBT6WnUrvCg==
   dependencies:
     "@types/semver" "^6.0.1"
     semver "^6.3.0"

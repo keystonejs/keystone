@@ -19,5 +19,6 @@
     "@emotion/core": "^10.0.27",
     "react-select": "^3.0.8"
   },
-  "module": "dist/options.esm.js"
+  "module": "dist/options.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/options"
 }

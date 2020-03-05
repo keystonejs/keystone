@@ -8,5 +8,6 @@
   "dependencies": {
     "@arch-ui/theme": "^0.0.8"
   },
-  "module": "dist/common.esm.js"
+  "module": "dist/common.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/common"
 }

@@ -16,5 +16,6 @@
     "@babel/runtime": "^7.8.4",
     "react-select": "^3.0.8"
   },
-  "module": "dist/select.esm.js"
+  "module": "dist/select.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/select"
 }

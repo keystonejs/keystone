@@ -22,5 +22,6 @@
     "flushable": "^1.0.0",
     "react-popper": "^1.3.6"
   },
-  "module": "dist/tooltip.esm.js"
+  "module": "dist/tooltip.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/tooltip"
 }

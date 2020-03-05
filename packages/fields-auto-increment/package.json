@@ -4,7 +4,7 @@
   "version": "5.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "repository": "https://github.com/keystonejs/keystone.git",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-auto-increment",
   "homepage": "https://github.com/keystonejs/keystone",
   "engines": {
     "node": ">=10.0.0"
