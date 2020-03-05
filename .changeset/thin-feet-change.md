@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Tweaked Signin page design.
+Changed the design of the sign in page.
