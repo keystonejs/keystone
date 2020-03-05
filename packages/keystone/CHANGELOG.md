@@ -1,5 +1,50 @@
 # @keystonejs/keystone
 
+## 6.0.0
+
+### Major Changes
+
+- [`10e88dc3`](https://github.com/keystonejs/keystone/commit/10e88dc3d81f5e021db0bfb31f7547852c602c14) [#2468](https://github.com/keystonejs/keystone/pull/2468) Thanks [@timleslie](https://github.com/timleslie)! - Removed `Keystone.getAdminSchema` in favour of a new `Keystone.getResolvers({ schemaName })` method, along with the pre-existing `Keystone.getTypeDefs({ schemaName })`.
+
+* [`97fb01fe`](https://github.com/keystonejs/keystone/commit/97fb01fe5a32f5003a084c1fd357852fc28f74e4) [#2457](https://github.com/keystonejs/keystone/pull/2457) Thanks [@timleslie](https://github.com/timleslie)! - Introduced `ListAuthProvider` to generate authentication mutations and queries. This introduces the following breaking changes:
+  - `Keystone.createAuthStrategy()` must be called _after_ the associated `List` has been created.
+  - `List.hasAuth()` has been removed.
+  - `List.getAuth()` has been removed.
+  - `List.gqlNames.authenticatedQueryName` has been removed.
+  - `List.gqlNames.authenticateMutationPrefix` has been removed.
+  - `List.gqlNames.unauthenticateMutationName` has been removed.
+  - `List.gqlNames.authenticateOutputName` has been removed.
+  - `List.gqlNames.unauthenticateOutputName` has been removed.
+  - `List.checkAuthAccess()` has been removed.
+  - `List.authenticatedQuery()` has been removed.
+  - `List.authenticateMutation()` has been removed.
+  - `List.unauthenticateMutation()` has been removed.
+
+### Minor Changes
+
+- [`42497b8e`](https://github.com/keystonejs/keystone/commit/42497b8ebbaeaf0f4d7881dbb76c6abafde4cace) [#2456](https://github.com/keystonejs/keystone/pull/2456) Thanks [@timleslie](https://github.com/timleslie)! - Add `getAuthAccessControlForUser()` to the graphQL context to provide custom access control of authentication queries and mutations.
+
+### Patch Changes
+
+- [`e46f0adf`](https://github.com/keystonejs/keystone/commit/e46f0adf97141e1f1205787453173a0585df5bc3) [#2459](https://github.com/keystonejs/keystone/pull/2459) Thanks [@timleslie](https://github.com/timleslie)! - Refactored internal structures (removed `_graphQLQuery`, added `_schemas` and `_executeOperation()`).
+
+* [`6975f169`](https://github.com/keystonejs/keystone/commit/6975f16959bde3fe0e861977471c94a8c9f2c0b0) [#2455](https://github.com/keystonejs/keystone/pull/2455) Thanks [@timleslie](https://github.com/timleslie)! - Refactored internals to allow providers to throw consistent errors.
+
+- [`6111e065`](https://github.com/keystonejs/keystone/commit/6111e06554a6aa6db0f7df1a6c16f9da8e81fce4) [#2436](https://github.com/keystonejs/keystone/pull/2436) Thanks [@timleslie](https://github.com/timleslie)! - Refactored `Keystone.extendGraphQLSchema()` to use a `CustomProvider` graphQL provider.
+
+* [`2d1069f1`](https://github.com/keystonejs/keystone/commit/2d1069f11f5f8941b0a18e482541043c853ebb4f) [#2465](https://github.com/keystonejs/keystone/pull/2465) Thanks [@timleslie](https://github.com/timleslie)! - Added a ListCRUDProvider to generate the CRUD graphQL API for lists.
+
+- [`949f2f6a`](https://github.com/keystonejs/keystone/commit/949f2f6a3889492015281ffba45a8b3d37e6d888) [#2467](https://github.com/keystonejs/keystone/pull/2467) Thanks [@timleslie](https://github.com/timleslie)! - Removed the undocumented env-var `DEBUG_GRAPHQL_SCHEMAS`.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542), [`42497b8e`](https://github.com/keystonejs/keystone/commit/42497b8ebbaeaf0f4d7881dbb76c6abafde4cace), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/fields@6.3.2
+  - @keystonejs/access-control@5.2.0
+  - @keystonejs/logger@5.1.1
+  - @keystonejs/session@5.1.1
+  - @keystonejs/utils@5.2.2
+
 ## 5.6.0
 
 ### Minor Changes
