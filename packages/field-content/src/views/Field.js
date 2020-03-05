@@ -61,7 +61,6 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
                   ...inputStyles({ isMultiline: true }),
                   padding: '16px 32px',
                   minHeight: 200,
-                  zIndex: 0,
                 }}
               />
             )}
