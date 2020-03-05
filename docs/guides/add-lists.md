@@ -1,11 +1,11 @@
 <!--[meta]
 section: guides
-title: Adding Lists To Your Keystone Project
+title: Adding Lists To Your Project
 subSection: setup
 order: 2
 [meta]-->
 
-# Adding Lists To Your Keystone Project
+# Adding Lists To Your Project
 
 We've already created one list during [previous tutorial](/docs/guides/new-project.md).
 Now it's the time to dive deeper. Let's make ToDos object a bit more complex.
