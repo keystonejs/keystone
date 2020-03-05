@@ -34,11 +34,12 @@ const Card = ({ heading, content, to, variant, ...props }) => (
         boxShadow: `0 40px 40px rgba(0, 0, 0,  .12)`,
       },
     }}
+    to={to}
     {...props}
   >
     <CardHeading>{heading}</CardHeading>
     <CardContent>{content}</CardContent>
-    <CardCTA to={to}>Read more</CardCTA>
+    <CardCTA />
   </Link>
 );
 
