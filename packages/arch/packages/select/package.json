@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/select.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "dependencies": {
     "@arch-ui/theme": "^0.0.8",
