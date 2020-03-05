@@ -22,5 +22,6 @@
     "@emotion/styled": "^10.0.27",
     "react-router-dom": "5.1.2"
   },
-  "module": "dist/pagination.esm.js"
+  "module": "dist/pagination.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/pagination"
 }

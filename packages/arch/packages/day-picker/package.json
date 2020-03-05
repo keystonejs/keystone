@@ -26,5 +26,6 @@
     "moment": "^2.24.0",
     "react-window": "^1.7.0"
   },
-  "module": "dist/day-picker.esm.js"
+  "module": "dist/day-picker.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/day-picker"
 }

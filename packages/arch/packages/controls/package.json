@@ -21,5 +21,6 @@
     "react-pseudo-state": "^2.2.2",
     "react-radios": "^1.1.0"
   },
-  "module": "dist/controls.esm.js"
+  "module": "dist/controls.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/controls"
 }

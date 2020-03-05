@@ -24,5 +24,6 @@
     "react-codemirror2": "^6.0.0"
   },
   "main": "dist/fields-markdown.cjs.js",
-  "module": "dist/fields-markdown.esm.js"
+  "module": "dist/fields-markdown.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-markdown"
 }

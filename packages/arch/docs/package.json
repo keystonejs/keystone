@@ -35,8 +35,5 @@
     "start": "gatsby develop",
     "build": "gatsby build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/keystonejs/keystone.git"
-  }
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/docs"
 }

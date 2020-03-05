@@ -14,5 +14,6 @@
   "devDependencies": {
     "mongodb": "^3.5.3",
     "mongodb-memory-server": "^6.2.4"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/mongo-join-builder"
 }
