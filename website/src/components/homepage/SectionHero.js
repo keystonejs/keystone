@@ -13,10 +13,10 @@ const SectionHero = () => (
     <Grid>
       <div>
         <Heading>An open-source, scalable platform and CMS to build NodeJS applications</Heading>
-        <p css={{ fontSize: '1.25rem', lineHeight: 1.3, color: colors.N60 }}>
+        <Description>
           KeystoneJS comes with first-class GraphQL support, a highly extensible architecture, and a
-          wonderful Admin UI.
-        </p>
+          wonderful Admin UI
+        </Description>
         <ButtonWrapper>
           <Button
             appearance="primary"
@@ -47,7 +47,12 @@ const SectionHero = () => (
 
 const Grid = props => (
   <div
-    css={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: '1.5rem' }}
+    css={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gridGap: '2rem',
+      alignItems: 'center',
+    }}
     {...props}
   />
 );
@@ -57,13 +62,27 @@ const Heading = props => (
     css={{
       color: colors.N100,
       fontSize: '2.75rem',
-      lineHeight: 1.3,
+      lineHeight: 1.2,
       fontWeight: 600,
-      margin: `0 0 1rem 0`,
+      marginBottom: '2rem',
     }}
     {...props}
   />
 );
+
+const Description = props => (
+  <p
+    css={{
+      fontSize: '1.25rem',
+      lineHeight: 1.4,
+      color: colors.N60,
+      marginTop: 0,
+      marginBottom: '2rem',
+    }}
+    {...props}
+  />
+);
+
 const ButtonWrapper = props => (
   <div
     css={mq({
