@@ -12,5 +12,6 @@ export { default as DeleteManyItemsModal } from '../client/components/DeleteMany
 export { default as PageLoading } from '../client/components/PageLoading';
 export { default as ToastContainer } from '../client/components/ToastContainer';
 export { default as UpdateManyItemsModal } from '../client/components/UpdateManyItemsModal';
+export { default as KeystoneLogo } from '../client/components/KeystoneLogo';
 export { Popout } from '../client/components/Popout';
 export { useAdminMeta } from '../client/providers/AdminMeta';

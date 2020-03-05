@@ -75,7 +75,7 @@ const SignInPage = () => {
     authStrategy: { listKey, identityField, secretField },
   } = useAdminMeta();
 
-  const { branding: { logo: getCustomLogo } = {} } = useUIHooks();
+  const { logo: getCustomLogo } = useUIHooks();
 
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
@@ -127,7 +127,7 @@ const SignInPage = () => {
       </Alerts>
       <PageTitle>{siteName}</PageTitle>
       <Form method="post" onSubmit={onSubmit}>
-        {getCustomLogo ? getCustomLogo({ defaultLogo: KeystoneLogo }) : <KeystoneLogo />}
+        {getCustomLogo ? getCustomLogo() : <KeystoneLogo />}
         <Divider />
         <div>
           <Fields>
