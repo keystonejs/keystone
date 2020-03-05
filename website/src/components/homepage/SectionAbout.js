@@ -103,7 +103,7 @@ const Card = props => (
     css={{
       boxShadow: `0 5px 20px rgba(0,0,0,.08)`,
       backgroundColor: colors.N100,
-      borderRadius: 4,
+      borderRadius: 8,
       padding: '1rem',
       overflow: 'scroll',
     }}
