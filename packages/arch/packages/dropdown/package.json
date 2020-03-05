@@ -22,5 +22,6 @@
     "focus-trap-react": "^6.0.0",
     "react-router-dom": "5.1.2"
   },
-  "module": "dist/dropdown.esm.js"
+  "module": "dist/dropdown.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/dropdown"
 }
