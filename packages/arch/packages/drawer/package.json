@@ -24,5 +24,6 @@
     "focus-trap-react": "^6.0.0",
     "react-scrolllock": "^4.0.1"
   },
-  "module": "dist/drawer.esm.js"
+  "module": "dist/drawer.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/drawer"
 }

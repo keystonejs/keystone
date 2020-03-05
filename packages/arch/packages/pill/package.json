@@ -19,5 +19,6 @@
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27"
   },
-  "module": "dist/pill.esm.js"
+  "module": "dist/pill.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/pill"
 }

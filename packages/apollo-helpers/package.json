@@ -31,5 +31,6 @@
     "react": "^16.13.0"
   },
   "main": "dist/apollo-helpers.cjs.js",
-  "module": "dist/apollo-helpers.esm.js"
+  "module": "dist/apollo-helpers.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/apollo-helpers"
 }

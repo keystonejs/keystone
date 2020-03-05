@@ -9,5 +9,6 @@
     "@arch-ui/color-utils": "0.0.1",
     "@babel/runtime": "^7.8.4"
   },
-  "module": "dist/theme.esm.js"
+  "module": "dist/theme.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/theme"
 }

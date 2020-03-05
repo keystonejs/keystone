@@ -41,5 +41,6 @@
     "moment": "^2.24.0",
     "pino-colada": "^1.4.5",
     "start-server-and-test": "^1.10.6"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/test-projects/client-validation"
 }

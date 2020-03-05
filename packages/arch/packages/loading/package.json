@@ -18,5 +18,6 @@
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27"
   },
-  "module": "dist/loading.esm.js"
+  "module": "dist/loading.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/loading"
 }

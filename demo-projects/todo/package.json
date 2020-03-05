@@ -21,5 +21,6 @@
     "@keystonejs/fields": "^6.3.1",
     "@keystonejs/keystone": "^5.6.0",
     "cross-env": "^7.0.0"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/todo"
 }

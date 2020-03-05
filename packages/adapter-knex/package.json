@@ -16,5 +16,6 @@
     "knex": "^0.20.6",
     "p-settle": "^3.1.0",
     "pg": "^7.17.0"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-knex"
 }

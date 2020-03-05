@@ -18,5 +18,6 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27"
   },
-  "module": "dist/input.esm.js"
+  "module": "dist/input.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/input"
 }
