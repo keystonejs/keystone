@@ -50,6 +50,7 @@ const selectStyles = {
   menu: provided => ({
     ...provided,
     fontSize: '0.9em',
+    zIndex: 10,
   }),
   option: (provided, { isDisabled, isFocused, isSelected }) => {
     let bg = 'inherit';
