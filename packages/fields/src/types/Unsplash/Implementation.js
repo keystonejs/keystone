@@ -59,7 +59,7 @@ export class Unsplash extends Implementation {
     this.graphQLOutputType = 'UnsplashImage';
 
     this.unsplash = new UnsplashAPI({
-      applicationId: accessKey,
+      accessKey,
       secret: secretKey,
     });
   }

@@ -6,12 +6,12 @@
   "license": "MIT",
   "main": "dist/popout.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.1",
@@ -22,5 +22,6 @@
     "@emotion/styled": "^10.0.27",
     "focus-trap-react": "^6.0.0"
   },
-  "module": "dist/popout.esm.js"
+  "module": "dist/popout.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/popout"
 }

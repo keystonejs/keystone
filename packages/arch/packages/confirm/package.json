@@ -6,12 +6,12 @@
   "license": "MIT",
   "main": "dist/confirm.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "dependencies": {
     "@arch-ui/modal-utils": "^1.0.7",
@@ -22,5 +22,6 @@
     "focus-trap-react": "^6.0.0",
     "react-scrolllock": "^4.0.1"
   },
-  "module": "dist/confirm.esm.js"
+  "module": "dist/confirm.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/confirm"
 }

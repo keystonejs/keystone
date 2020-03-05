@@ -36,7 +36,7 @@ _Note:_ `src` and `path` may be the same.
 
 ### `delete`
 
-Takes an object with a `file` key representing the filename and deletes that file on disk. This can be combined with hooks to implement delete-on-file-change and delete-on-list-delete functionality:
+Takes a `file` object (such as the one returned in file field hooks) and deletes that file from disk.
 
 ```js
 const { File } = require('@keystonejs/fields');
@@ -52,12 +52,20 @@ keystone.createList('UploadTest', {
       type: File,
       adapter: fileAdapter,
       hooks: {
-        beforeChange: ({ existingItem = {} }) => fileAdapter.delete(existingItem),
+        beforeChange: async ({ existingItem }) => {
+          if (existingItem && existingItem.file) {
+            await fileAdapter.delete(existingItem.file);
+          }
+        },
       },
     },
   },
   hooks: {
-    afterDelete: ({ existingItem = {} }) => fileAdapter.delete(existingItem),
+    afterDelete: async ({ existingItem }) => {
+      if (existingItem.file) {
+        await fileAdapter.delete(existingItem.file);
+      }
+    },
   },
 });
 ```
@@ -87,7 +95,7 @@ const fileAdapter = new CloudinaryAdapter({
 
 ### `delete`
 
-Takes an object with an `id` key representing the public file ID and deletes that file on the server.
+Deletes the provided file from cloudinary. Takes a `file` object (such as the one returned in file field hooks) and an optional `options` argument passed to the Cloudinary destroy method. For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
 
 ## `S3FileAdapter`
 
@@ -135,6 +143,7 @@ const fileAdapter = new S3Adapter({
 Deletes the provided file in the S3 bucket. Takes a `file` object (such as the one returned in file field hooks) and an optional `options` argument for overriding S3.deleteObject options. Options `Bucket` and `Key` are set by default. For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
 
 ```javascript
+// Optional params
 const deleteParams = {
   BypassGovernanceRetention: true,
 };
@@ -145,18 +154,18 @@ keystone.createList('Document', {
       type: File,
       adapter: fileAdapter,
       hooks: {
-        beforeChange: ({ existingItem }) => {
+        beforeChange: async ({ existingItem }) => {
           if (existingItem && existingItem.file) {
-            fileAdapter.delete(existingItem.file, deleteParams);
+            await fileAdapter.delete(existingItem.file, deleteParams);
           }
         },
       },
     },
   },
   hooks: {
-    afterDelete: ({ existingItem }) => {
+    afterDelete: async ({ existingItem }) => {
       if (existingItem.file) {
-        fileAdapter.delete(existingItem.file, deleteParams);
+        await fileAdapter.delete(existingItem.file, deleteParams);
       }
     },
   },

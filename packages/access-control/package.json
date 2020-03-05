@@ -9,5 +9,6 @@
   },
   "dependencies": {
     "@keystonejs/utils": "^5.2.0"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/access-control"
 }

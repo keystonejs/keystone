@@ -29,14 +29,11 @@
     "@reach/router": "^1.2.1",
     "clipboard-copy": "^3.0.0",
     "gatsby": "^2.13.25",
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "scripts": {
     "start": "gatsby develop",
     "build": "gatsby build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/keystonejs/keystone.git"
-  }
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/docs"
 }

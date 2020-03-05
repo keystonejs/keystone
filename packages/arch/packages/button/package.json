@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/button.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.1",
@@ -22,5 +22,6 @@
     "react-pseudo-state": "^2.2.2",
     "react-router-dom": "5.1.2"
   },
-  "module": "dist/button.esm.js"
+  "module": "dist/button.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/button"
 }

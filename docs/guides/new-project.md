@@ -1,11 +1,11 @@
 <!--[meta]
 section: guides
-title: Creating a New KeystoneJS Project
+title: Creating a New Project
 subSection: setup
 order: 1
 [meta]-->
 
-# Creating a New KeystoneJS Project
+# Creating a New Project
 
 In this guide we will learn how to manually create and run a new KeystoneJS project.
 

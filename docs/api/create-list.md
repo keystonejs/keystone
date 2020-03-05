@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
-title: Create List
+title: Creating Lists
 order: 2
 [meta]-->
 
-# `keystone.createList(name, options)`
+# Creating Lists
 
 ## Usage
 

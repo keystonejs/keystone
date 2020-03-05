@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/filters.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "dependencies": {
     "@arch-ui/controls": "^0.1.4",
@@ -19,5 +19,6 @@
     "@emotion/core": "^10.0.27",
     "react-radios": "^1.1.0"
   },
-  "module": "dist/filters.esm.js"
+  "module": "dist/filters.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/filters"
 }
