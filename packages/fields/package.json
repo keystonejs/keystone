@@ -71,7 +71,7 @@
     "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.22.4",
-    "unsplash-js": "^5.0.0"
+    "unsplash-js": "^6.0.0"
   },
   "devDependencies": {
     "@keystonejs/test-utils": "*"
