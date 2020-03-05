@@ -22,5 +22,6 @@
     "focus-trap-react": "^6.0.0",
     "react-scrolllock": "^4.0.1"
   },
-  "module": "dist/confirm.esm.js"
+  "module": "dist/confirm.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/confirm"
 }

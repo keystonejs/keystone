@@ -22,5 +22,6 @@
     "@emotion/styled": "^10.0.27",
     "focus-trap-react": "^6.0.0"
   },
-  "module": "dist/popout.esm.js"
+  "module": "dist/popout.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/popout"
 }

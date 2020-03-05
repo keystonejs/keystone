@@ -20,5 +20,6 @@
     "react-scrolllock": "^4.0.1",
     "react-transition-group": "^4.3.0"
   },
-  "module": "dist/modal-utils.esm.js"
+  "module": "dist/modal-utils.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/modal-utils"
 }

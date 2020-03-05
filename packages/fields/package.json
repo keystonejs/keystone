@@ -2,7 +2,7 @@
   "name": "@keystonejs/fields",
   "description": "KeystoneJS Field Types including Text, Password, DateTime, Integer, and more.",
   "homepage": "https://github.com/keystonejs/keystone",
-  "repository": "https://github.com/keystonejs/keystone-5/tree/master/packages/build-field-types",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields",
   "version": "6.3.1",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
@@ -74,7 +74,7 @@
     "unsplash-js": "^5.0.0"
   },
   "devDependencies": {
-    "@keystonejs/test-utils": "^5.1.1"
+    "@keystonejs/test-utils": "*"
   },
   "field-types": {
     "entrypoints": [

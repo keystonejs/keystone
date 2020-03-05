@@ -48,5 +48,6 @@
     ]
   },
   "main": "dist/field-content.cjs.js",
-  "module": "dist/field-content.esm.js"
+  "module": "dist/field-content.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/field-content"
 }

@@ -9,5 +9,6 @@
   },
   "dependencies": {
     "next": "^9.2.0"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-next"
 }

@@ -9,5 +9,6 @@
   },
   "dependencies": {
     "@keystonejs/fields": "^6.3.0"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/list-plugins"
 }

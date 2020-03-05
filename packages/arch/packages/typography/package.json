@@ -17,5 +17,6 @@
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27"
   },
-  "module": "dist/typography.esm.js"
+  "module": "dist/typography.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/typography"
 }
