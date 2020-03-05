@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { colors } from '@arch-ui/theme';
 
 import { Button } from '..';
-import { colors } from '@arch-ui/theme';
 import { media, mediaMax, mq } from '../../utils/media';
 
 import { HomepageSection } from './HomepageSection';

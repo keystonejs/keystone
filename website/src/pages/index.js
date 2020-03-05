@@ -4,6 +4,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
 import { globalStyles, colors } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
+import GitHubButton from 'react-github-btn';
 
 import Layout from '../templates/layout';
 import { Container, Sidebar } from '../components';
@@ -36,7 +37,15 @@ export default () => (
           }}
         >
           <Container>
-            <p css={{ color: colors.N40, fontSize: '0.9em' }}>
+            <GitHubButton
+              href="https://github.com/keystonejs/keystone"
+              data-size="large"
+              data-show-count="true"
+              aria-label="Star keystonejs/keystone on GitHub"
+            >
+              Star
+            </GitHubButton>
+            <p css={{ color: colors.N40, fontSize: '0.9em', marginTop: '2rem' }}>
               Keystone 5 is built by{' '}
               <a css={{ color: colors.N80 }} href="https://www.thinkmill.com.au">
                 Thinkmill

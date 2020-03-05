@@ -6,32 +6,29 @@ import { Grid, Card } from './HomepageCard';
 
 const cards = [
   {
-    heading: `Extensible`,
-    content: `KeystoneJS ships with a powerful CMS and GraphQL API out of the box, which can be fine-tuned at any point across the stack`,
+    heading: `Highly extensible`,
+    content: `KeystoneJS provides an extensible Admin Interface and a powerful GraphQL API. These tools, and the building blocks Keystone provides, will allow you to create any type of application.`,
     to: '/',
   },
   {
-    heading: `BYO Database`,
-    content: `Provide your own database for to Keystone to connect to, which can be either a MongoDB or PostgreSQL`,
+    heading: `Own your data`,
+    content: `Provide your own PostgreSQL or MongoDB database for to Keystone to connect to deploy your application anywhere.`,
     to: '/',
   },
   {
-    heading: `Deploy anywhere`,
-    content: `Host your database and files anywhere you want to. You own your data.`,
+    heading: `Pair with technology of your choice`,
+    content: `KeystoneJS can be run as a headless GraphQL API and optional CMS, or be paired seamlessly with any front-end framework`,
     to: '/',
   },
   {
-    heading: `Powerful Authentication`,
-    content: `Gatsby is an extremely popular static site generator based on React. It offers a great developer experience thanks to a huge selection of plugins.`,
+    heading: `Get started in minutes`,
+    content: `This quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of Keystone 5!`,
     to: '/',
   },
 ];
 
 const SectionWhy = () => (
-  <HomepageSection
-    description="See how KeystoneJS differs from other projects"
-    heading="Why KeystoneJS"
-  >
+  <HomepageSection description="See what makes KeystoneJS so powerful" heading="Why KeystoneJS">
     <Grid>
       {cards.map((card, i) => (
         <Card {...card} key={i} />

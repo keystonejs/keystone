@@ -30,7 +30,7 @@ const cards = [
 const SectionPairing = () => (
   <HomepageSection
     variant="dark"
-    description="KeystoneJS is powered by Express, so it can be paired easily with many popular front-end frameworks"
+    description="KeystoneJS can be run as a headless GraphQL API and optional CMS, or be paired seamlessly with any front-end framework"
     heading="Pair with the technology of your choice"
   >
     <Grid>
