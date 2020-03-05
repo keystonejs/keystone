@@ -54,10 +54,10 @@ export const SidebarNav = () => {
 };
 
 const GroupHeading = props => (
-  <h3
+  <h2
     css={{
       color: colors.N80,
-      fontSize: '1rem',
+      fontSize: '1.4rem',
       fontWeight: 700,
       marginTop: '2.4em',
       textTransform: 'uppercase',

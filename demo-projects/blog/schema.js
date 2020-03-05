@@ -82,7 +82,24 @@ exports.Post = {
     },
     body: { type: Wysiwyg },
     posted: { type: DateTime, format: 'DD/MM/YYYY' },
-    image: { type: File, adapter: fileAdapter },
+    image: {
+      type: File,
+      adapter: fileAdapter,
+      hooks: {
+        beforeChange: async ({ existingItem }) => {
+          if (existingItem && existingItem.image) {
+            await fileAdapter.delete(existingItem.image);
+          }
+        },
+      },
+    },
+  },
+  hooks: {
+    afterDelete: ({ existingItem }) => {
+      if (existingItem.image) {
+        fileAdapter.delete(existingItem.image);
+      }
+    },
   },
   adminConfig: {
     defaultPageSize: 20,

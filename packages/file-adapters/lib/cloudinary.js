@@ -45,12 +45,25 @@ module.exports = class CloudinaryAdapter {
   }
 
   /**
-   * Takes a file data structure such as existingItem in a hook callback.
+   * Deletes the given file from cloudinary
+   * @param file File field data
+   * @param options Delete options passed to cloudinary.
+   *                For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
    */
-  delete({ id }) {
-    if (id) {
-      cloudinary.v2.uploader.destroy(id);
-    }
+  delete(file, options = {}) {
+    return new Promise((resolve, reject) => {
+      if (file) {
+        cloudinary.v2.uploader.destroy(file.id, options, (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
+      } else {
+        reject(new Error("Missing required argument 'file'."));
+      }
+    });
   }
 
   publicUrl({ _meta: { secure_url } = {} } = {}) {

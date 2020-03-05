@@ -1,4 +1,4 @@
-const resolve = require('rollup-plugin-node-resolve');
+const resolve = require('@rollup/plugin-node-resolve');
 const resolveFrom = require('resolve-from');
 const chalk = require('chalk');
 import path from 'path';
