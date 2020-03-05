@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Query } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
@@ -35,12 +35,19 @@ import {
   pluralLabel,
 } from '../helpers';
 import { mq } from '../helpers/media';
-import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
 
 // Featured Event
 const FeaturedEvent = ({ isLoading, error, event }) => {
+  const {
+    data: { allRsvps = {} },
+    loading: queryLoading,
+    error: queryError,
+  } = useQuery(GET_EVENT_RSVPS, { variables: { event: id } });
+
+  const attending = `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}`;
+
   if (isLoading && !event) {
     return <Loading isCentered />;
   }
@@ -147,38 +154,29 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                 <MicrophoneIcon color="#ccc" css={{ marginRight: '0.5em' }} />
                 {pluralLabel(talks.length, 'talk', 'talks')}
               </div>
-              <Query query={GET_EVENT_RSVPS} variables={{ event: id }}>
-                {({ data, loading, error }) => {
-                  if (loading && !data) return <Loading />;
-                  if (error) return <Error error={error} />;
-
-                  const { allRsvps } = data;
-
-                  if (!allRsvps) return null;
-
-                  const attending = `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}`;
-
-                  return (
-                    <>
-                      <div
-                        css={{
-                          alignItems: 'center',
-                          display: 'flex',
-                          fontWeight: 300,
-                          padding: '0 1rem',
-                        }}
-                      >
-                        <UserIcon color="#ccc" css={{ marginRight: '0.5em' }} />
-                        {attending} {isInFuture(startTime) ? 'attending' : 'attended'}
-                      </div>
-                      <AvatarStack
-                        users={allRsvps.filter(rsvp => rsvp.user).map(rsvp => rsvp.user)}
-                        size="small"
-                      />
-                    </>
-                  );
-                }}
-              </Query>
+              {queryLoading ? (
+                <Loading />
+              ) : queryError ? (
+                <Error error={queryError} />
+              ) : allRsvps ? (
+                <>
+                  <div
+                    css={{
+                      alignItems: 'center',
+                      display: 'flex',
+                      fontWeight: 300,
+                      padding: '0 1rem',
+                    }}
+                  >
+                    <UserIcon color="#ccc" css={{ marginRight: '0.5em' }} />
+                    {attending} {isInFuture(startTime) ? 'attending' : 'attended'}
+                  </div>
+                  <AvatarStack
+                    users={allRsvps.filter(rsvp => rsvp.user).map(rsvp => rsvp.user)}
+                    size="small"
+                  />
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -188,44 +186,46 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
 };
 
 const Sponsors = () => {
+  const {
+    data: { allSponsors },
+    loading,
+    error,
+  } = useQuery(GET_SPONSORS);
+
   return (
     <Container css={{ textAlign: 'center' }}>
       <H3>Our sponsors</H3>
-      <Query query={GET_SPONSORS}>
-        {({ data, loading, error }) => {
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-
-          const { allSponsors } = data;
-          return (
-            <ul
-              css={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                listStyle: 'none',
-                padding: 0,
-              }}
-            >
-              {allSponsors.map(sponsor => (
-                <li key={sponsor.id} css={{ flex: 1, margin: 12 }}>
-                  <a href={sponsor.website} target="_blank">
-                    {sponsor.logo ? (
-                      <img
-                        alt={sponsor.name}
-                        css={{ maxWidth: '100%', maxHeight: 140 }}
-                        src={sponsor.logo.publicUrl}
-                      />
-                    ) : (
-                      sponsor.name
-                    )}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          );
-        }}
-      </Query>
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <Error error={error} />
+      ) : (
+        <ul
+          css={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            listStyle: 'none',
+            padding: 0,
+          }}
+        >
+          {allSponsors.map(sponsor => (
+            <li key={sponsor.id} css={{ flex: 1, margin: 12 }}>
+              <a href={sponsor.website} target="_blank">
+                {sponsor.logo ? (
+                  <img
+                    alt={sponsor.name}
+                    css={{ maxWidth: '100%', maxHeight: 140 }}
+                    src={sponsor.logo.publicUrl}
+                  />
+                ) : (
+                  sponsor.name
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </Container>
   );
 };
@@ -258,81 +258,77 @@ function processEventsData(data) {
   };
 }
 
-export default class Home extends Component {
-  static getInitialProps() {
-    return {
-      now: new Date().toISOString(),
-    };
-  }
+const Home = ({ now }) => {
+  const { meetup } = publicRuntimeConfig;
 
-  render() {
-    const now = this.props.now;
-    const { meetup } = publicRuntimeConfig;
+  const {
+    data: eventsData = {},
+    loading: eventsLoading,
+    error: eventsError,
+  } = useQuery(GET_CURRENT_EVENTS, { variables: { now } });
 
-    return (
-      <Query query={GET_CURRENT_EVENTS} variables={{ now }}>
-        {({ data: eventsData, loading: eventsLoading, error: eventsError }) => {
-          const { featuredEvent, moreEvents } = processEventsData(eventsData);
-          return (
-            <div>
-              <Meta titleExclusive={meetup.name} description={meetup.intro} />
-              <Navbar background={colors.greyDark} />
-              <Hero title={meetup.name}>
-                <Html markup={meetup.homeIntro} />
-              </Hero>
-              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
-              <Container css={{ marginTop: '3rem' }}>
-                {featuredEvent && featuredEvent.talks ? (
-                  <Talks talks={featuredEvent.talks} />
-                ) : null}
-              </Container>
-              <Section css={{ padding: '3rem 0' }}>
-                <Container>
-                  <Sponsors />
-                </Container>
-              </Section>
-              {moreEvents.length ? (
-                <>
-                  <Section
-                    css={{
-                      backgroundColor: colors.greyLight,
-                      margin: '5rem 0',
-                      paddingTop: '5rem',
-                    }}
-                  >
-                    <Slant placement="top" fill={colors.greyLight} />
-                    <Container>
-                      <H2 hasSeparator>More Meetups</H2>
-                      <EventItems events={moreEvents} offsetTop css={{ marginTop: '3rem' }} />
-                      <Link href="/events">
-                        <a
-                          css={{
-                            color: 'black',
-                            cursor: 'pointer',
-                            fontSize: fontSizes.md,
-                            marginTop: '1rem',
+  const { featuredEvent, moreEvents } = processEventsData(eventsData);
 
-                            ':hover > span': {
-                              textDecoration: 'underline',
-                            },
-                          }}
-                        >
-                          <span>View all</span> &rarr;
-                        </a>
-                      </Link>
-                    </Container>
-                    <Slant placement="bottom" fill={colors.greyLight} />
-                  </Section>
-                </>
-              ) : null}
-              <Footer />
-            </div>
-          );
-        }}
-      </Query>
-    );
-  }
-}
+  return (
+    <div>
+      <Meta titleExclusive={meetup.name} description={meetup.intro} />
+      <Navbar background={colors.greyDark} />
+      <Hero title={meetup.name}>
+        <Html markup={meetup.homeIntro} />
+      </Hero>
+      <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
+      <Container css={{ marginTop: '3rem' }}>
+        {featuredEvent && featuredEvent.talks ? <Talks talks={featuredEvent.talks} /> : null}
+      </Container>
+      <Section css={{ padding: '3rem 0' }}>
+        <Container>
+          <Sponsors />
+        </Container>
+      </Section>
+      {moreEvents.length ? (
+        <>
+          <Section
+            css={{
+              backgroundColor: colors.greyLight,
+              margin: '5rem 0',
+              paddingTop: '5rem',
+            }}
+          >
+            <Slant placement="top" fill={colors.greyLight} />
+            <Container>
+              <H2 hasSeparator>More Meetups</H2>
+              <EventItems events={moreEvents} offsetTop css={{ marginTop: '3rem' }} />
+              <Link href="/events">
+                <a
+                  css={{
+                    color: 'black',
+                    cursor: 'pointer',
+                    fontSize: fontSizes.md,
+                    marginTop: '1rem',
+
+                    ':hover > span': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  <span>View all</span> &rarr;
+                </a>
+              </Link>
+            </Container>
+            <Slant placement="bottom" fill={colors.greyLight} />
+          </Section>
+        </>
+      ) : null}
+      <Footer />
+    </div>
+  );
+};
+
+Home.getInitialProps = async () => ({
+  now: new Date().toISOString(),
+});
+
+export default Home;
 
 // styled components
 
