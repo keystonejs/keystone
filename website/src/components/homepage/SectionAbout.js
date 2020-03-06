@@ -27,7 +27,7 @@ keystone.createList('User', {
   },
   {
     language: `graphql`,
-    code: `// Generated GraphQL schema
+    code: `# Generated GraphQL schema
 
 type Mutation {
   createTodo(..): Todo
