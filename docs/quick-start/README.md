@@ -59,6 +59,8 @@ cd my-app
 npm run dev
 ```
 
+If you run into database related errors at this stage, follow the [Database Setup and Adapters](/docs/quick-start/adapters.md) instructions.
+
 ## Congratulations! 🎉
 
 You are now running your very own KeystoneJS application! Here's what you get out of the box:
