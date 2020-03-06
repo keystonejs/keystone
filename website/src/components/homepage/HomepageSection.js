@@ -4,7 +4,7 @@ import { colors } from '@arch-ui/theme';
 
 import { Button } from '../../components';
 import { Container } from '../Container';
-import { media, mq } from '../../utils/media';
+import { media } from '../../utils/media';
 
 const HomepageSection = ({ children, description, heading, ctaTo, ctaText, ...rest }) => (
   <Section {...rest}>
@@ -61,7 +61,9 @@ const Section = ({ children, variant, ...props }) => (
   </section>
 );
 
-const SectionHeader = props => <div css={{ textAlign: 'center', marginBottom: 40 }} {...props} />;
+const SectionHeader = props => (
+  <div css={{ textAlign: 'center', maxWidth: 800, margin: '0 auto 2rem auto' }} {...props} />
+);
 
 const SectionHeading = props => (
   <h2
@@ -69,8 +71,7 @@ const SectionHeading = props => (
       fontSize: '2.25rem',
       lineHeight: 1.2,
       fontWeight: 600,
-      margin: '0 auto 1rem auto',
-      maxWidth: 800,
+      margin: 0,
 
       [media.sm]: {
         fontSize: '2.75rem',
@@ -86,8 +87,7 @@ const SectionDescription = props => (
       fontSize: '1.25rem',
       lineHeight: 1.3,
       color: colors.N60,
-      margin: '1.5rem auto 0 auto',
-      maxWidth: 640,
+      margin: '1.5rem 0 0 0',
     }}
     {...props}
   />

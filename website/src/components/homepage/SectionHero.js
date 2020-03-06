@@ -12,7 +12,9 @@ const SectionHero = () => (
   <HomepageSection>
     <Grid>
       <div>
-        <Heading>An open-source, scalable platform and CMS to build NodeJS applications</Heading>
+        <Heading>
+          A scalable, extensible and open-source platform to build NodeJS applications
+        </Heading>
         <Description>
           KeystoneJS comes with first-class GraphQL support, a highly extensible architecture, and a
           wonderful Admin UI
