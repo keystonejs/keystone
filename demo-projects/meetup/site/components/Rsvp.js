@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Mutation, Query } from 'react-apollo';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { jsx } from '@emotion/core';
 
 import { Button as ButtonPrimitive, CheckmarkIcon, Loading } from '../primitives';
@@ -28,6 +28,24 @@ const Rsvp = ({ children, event, text, themeColor }) => {
   const eventId = event.id;
   const isPast = new Date() > new Date(event.startTime);
 
+  const { data, loading: loadingData, error } = useQuery(GET_RSVPS, {
+    variables: { event: eventId, user: user.id },
+  });
+
+  const refetch = () => [
+    {
+      query: GET_RSVPS,
+      variables: { event: eventId, user: user.id },
+    },
+  ];
+
+  const [updateRsvp, { error: mutationError, loading: mutationLoading }] = useMutation(
+    hasResponded ? UPDATE_RSVP : ADD_RSVP,
+    {
+      refetchQueries: refetch,
+    }
+  );
+
   if (isLoading) {
     return null;
   }
@@ -51,91 +69,73 @@ const Rsvp = ({ children, event, text, themeColor }) => {
         });
   }
 
-  return (
-    <Query query={GET_RSVPS} variables={{ event: eventId, user: user.id }}>
-      {({ data, loading: loadingData, error }) => {
-        if (error) {
-          console.error(error);
-          return null;
-        }
+  if (error) {
+    console.error(error);
+    return null;
+  }
 
-        if (loadingData) {
-          return children({
-            component: (
-              <ButtonWrapper>
-                <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
-                <Loading size="xsmall" color={themeColor} />
-              </ButtonWrapper>
-            ),
-          });
-        }
+  if (loadingData) {
+    return children({
+      component: (
+        <ButtonWrapper>
+          <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
+          <Loading size="xsmall" color={themeColor} />
+        </ButtonWrapper>
+      ),
+    });
+  }
 
-        const { userRsvps, eventRsvps, event } = data;
-        const userResponse = userRsvps && userRsvps[0];
-        const hasResponded = Boolean(userResponse);
-        const { okay, message } = validateRsvp({ userRsvps, eventRsvps, event });
+  // TODO: is this event the same as the event passed to this component?
+  const { userRsvps, eventRsvps, event: eventName } = data;
+  const userResponse = userRsvps && userRsvps[0];
+  const hasResponded = Boolean(userResponse);
+  const { okay, message } = validateRsvp({ userRsvps, eventRsvps, eventName });
 
-        if (!okay) {
-          return children({ message });
-        }
+  if (!okay) {
+    return children({ message });
+  }
 
-        const refetch = () => [
-          {
-            query: GET_RSVPS,
-            variables: { event: eventId, user: user.id },
-          },
-        ];
+  if (mutationError) {
+    return children({ message: mutationError.message });
+  }
 
-        return (
-          <Mutation mutation={hasResponded ? UPDATE_RSVP : ADD_RSVP} refetchQueries={refetch}>
-            {(updateRsvp, { error: mutationError, loading: mutationLoading }) => {
-              if (mutationError) {
-                return children({ message: mutationError.message });
-              }
+  const doRespond = status =>
+    updateRsvp({
+      variables: {
+        rsvp: hasResponded ? userResponse.id : null,
+        event: eventId,
+        user: user.id,
+        status,
+      },
+    });
+  const respondYes = () => doRespond('yes');
+  const respondNo = () => doRespond('no');
 
-              const doRespond = status =>
-                updateRsvp({
-                  variables: {
-                    rsvp: hasResponded ? userResponse.id : null,
-                    event: eventId,
-                    user: user.id,
-                    status,
-                  },
-                });
-              const respondYes = () => doRespond('yes');
-              const respondNo = () => doRespond('no');
+  const isGoing = hasResponded ? userResponse.status === 'yes' : false;
 
-              const isGoing = hasResponded ? userResponse.status === 'yes' : false;
-
-              return children({
-                component: (
-                  <ButtonWrapper>
-                    <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
-                    <Button
-                      disabled={mutationLoading || isGoing}
-                      isSelected={hasResponded && isGoing}
-                      background={themeColor}
-                      onClick={respondYes}
-                    >
-                      Yes
-                    </Button>
-                    <Button
-                      disabled={mutationLoading || !isGoing}
-                      isSelected={hasResponded && !isGoing}
-                      background={themeColor}
-                      onClick={respondNo}
-                    >
-                      No
-                    </Button>
-                  </ButtonWrapper>
-                ),
-              });
-            }}
-          </Mutation>
-        );
-      }}
-    </Query>
-  );
+  return children({
+    component: (
+      <ButtonWrapper>
+        <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
+        <Button
+          disabled={mutationLoading || isGoing}
+          isSelected={hasResponded && isGoing}
+          background={themeColor}
+          onClick={respondYes}
+        >
+          Yes
+        </Button>
+        <Button
+          disabled={mutationLoading || !isGoing}
+          isSelected={hasResponded && !isGoing}
+          background={themeColor}
+          onClick={respondNo}
+        >
+          No
+        </Button>
+      </ButtonWrapper>
+    ),
+  });
 };
 
 Rsvp.defaultProps = {
