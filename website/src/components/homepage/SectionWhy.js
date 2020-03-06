@@ -13,17 +13,17 @@ const cards = [
   {
     heading: `Own your data`,
     content: `Provide your own PostgreSQL or MongoDB database for to Keystone to connect to deploy your application anywhere.`,
-    to: '/',
+    to: '/quick-start/adapters',
   },
   {
-    heading: `Pair with technology of your choice`,
+    heading: `GraphQL Philosphy`,
     content: `KeystoneJS can be run as a headless GraphQL API and optional CMS, or be paired seamlessly with any front-end framework`,
-    to: '/',
+    to: '/guides/graphql-philosophy',
   },
   {
     heading: `Get started in minutes`,
     content: `This quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of Keystone 5!`,
-    to: '/',
+    to: '/quick-start',
   },
 ];
 
