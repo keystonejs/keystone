@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-
 import { colors } from '@arch-ui/theme';
+
 import { Button } from '../../components';
 import { Container } from '../Container';
+import { media, mq } from '../../utils/media';
 
 const HomepageSection = ({ children, description, heading, ctaTo, ctaText, ...rest }) => (
   <Section {...rest}>
@@ -38,11 +39,16 @@ const Section = ({ children, variant, ...props }) => (
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        minHeight: '60vh',
-        paddingTop: '4rem',
-        paddingBottom: '4rem',
+        paddingTop: '2rem',
+        paddingBottom: '2rem',
         backgroundColor: variant === 'dark' ? colors.B.D80 : null,
         color: variant === 'dark' ? colors.N05 : null,
+
+        [media.sm]: {
+          paddingTop: '4rem',
+          paddingBottom: '4rem',
+          minHeight: '60vh',
+        },
       }}
     >
       {children}
@@ -60,12 +66,15 @@ const SectionHeader = props => <div css={{ textAlign: 'center', marginBottom: 40
 const SectionHeading = props => (
   <h2
     css={{
-      fontSize: '2.75rem',
+      fontSize: '2.25rem',
       lineHeight: 1.2,
       fontWeight: 600,
-
       margin: '0 auto 1rem auto',
       maxWidth: 800,
+
+      [media.sm]: {
+        fontSize: '2.75rem',
+      },
     }}
     {...props}
   />

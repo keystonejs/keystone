@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
 import { Button } from '..';
-import { media, mediaMax, mq } from '../../utils/media';
+import { media, mq } from '../../utils/media';
 
 import { HomepageSection } from './HomepageSection';
 import { VideoIntro } from './VideoIntro';
@@ -49,9 +49,15 @@ const Grid = props => (
   <div
     css={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
       gridGap: '2rem',
       alignItems: 'center',
+      justifyContent: 'start',
+      textAlign: 'center',
+
+      [media.sm]: {
+        textAlign: 'left',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+      },
     }}
     {...props}
   />
@@ -61,10 +67,15 @@ const Heading = props => (
   <h1
     css={{
       color: colors.N100,
-      fontSize: '2.75rem',
+      fontSize: '2.25rem',
       lineHeight: 1.2,
       fontWeight: 600,
+      marginTop: 0,
       marginBottom: '2rem',
+
+      [media.sm]: {
+        fontSize: '2.75rem',
+      },
     }}
     {...props}
   />
@@ -86,14 +97,12 @@ const Description = props => (
 const ButtonWrapper = props => (
   <div
     css={mq({
-      alignItems: 'center',
       display: 'flex',
-      margin: ['1em 0', '1em 0', '1em 0', '2em 0'],
+      justifyContent: 'center',
+      alignItems: 'center',
 
-      [mediaMax.xs]: {
-        alignItems: 'stretch',
-        flexDirection: 'column',
-        margin: '2em auto',
+      [media.sm]: {
+        justifyContent: 'flex-start',
       },
     })}
     {...props}

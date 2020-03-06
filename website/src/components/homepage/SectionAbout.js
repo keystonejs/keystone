@@ -1,10 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import Highlight, { defaultProps } from 'prism-react-renderer';
+import { colors } from '@arch-ui/theme/src';
 
 import { HomepageSection } from './HomepageSection';
 import prismTheme from '../../prism-themes/custom';
-import { colors } from '@arch-ui/theme/src';
+import { media } from '../../utils/media';
 
 const cards = [
   {
@@ -91,8 +92,12 @@ const Grid = props => (
   <div
     css={{
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gridGap: '1.5rem',
+      gridGap: '1rem',
+
+      [media.sm]: {
+        gridGap: '1.5rem',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+      },
     }}
     {...props}
   />

@@ -4,12 +4,18 @@ import { colors } from '@arch-ui/theme';
 import { Link } from 'gatsby';
 import { ArrowRight } from 'react-feather';
 
+import { media } from '../../utils/media';
+
 const Grid = props => (
   <div
     css={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
-      gridGap: '1.5rem',
+      gridGap: '1rem',
+
+      [media.sm]: {
+        gridGap: '1.5rem',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+      },
     }}
     {...props}
   />
