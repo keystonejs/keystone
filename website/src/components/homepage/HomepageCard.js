@@ -36,7 +36,7 @@ const Card = ({ heading, content, to, variant, ...props }) => (
       transition: 'all 200ms',
       '&:hover, &:focus': {
         textDecoration: 'none',
-        transform: 'translateY(-5px)',
+        transform: 'translateY(-3px)',
         boxShadow: `0 40px 40px rgba(0, 0, 0,  .12)`,
       },
     }}
