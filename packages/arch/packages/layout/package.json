@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/layout.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "dependencies": {
     "@arch-ui/common": "0.0.9",
@@ -18,5 +18,6 @@
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27"
   },
-  "module": "dist/layout.esm.js"
+  "module": "dist/layout.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/layout"
 }

@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/typography.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "dependencies": {
     "@arch-ui/theme": "0.0.8",
@@ -17,5 +17,6 @@
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27"
   },
-  "module": "dist/typography.esm.js"
+  "module": "dist/typography.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/typography"
 }

@@ -4,7 +4,7 @@
   "private": true,
   "version": "5.0.1",
   "author": "The KeystoneJS Development Team",
-  "repository": "https://github.com/keystonejs/keystone.git",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/create-keystone-app/example-projects/todo",
   "homepage": "https://github.com/keystonejs/keystone",
   "license": "MIT",
   "engines": {
