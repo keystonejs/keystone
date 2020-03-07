@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component, Suspense, Fragment } from 'react';
+import { Suspense, Fragment, useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
@@ -99,57 +99,55 @@ const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) =>
 
 // Functional Components
 
-type SortLinkProps = {
-  handleSortChange: Function,
-  active: boolean,
-  sortAscending: boolean,
-};
-
-class SortLink extends React.Component<SortLinkProps> {
-  onClick = () => {
-    const { field, sortAscending, sortable } = this.props;
+const SortLink = ({
+  field,
+  'data-field': dataField,
+  active,
+  sortAscending,
+  sortable,
+  handleSortChange,
+}) => {
+  const onClick = () => {
     if (sortable) {
       // Set direction to the opposite of the current sortAscending value
-      this.props.handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
+      handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
     }
   };
 
-  render() {
-    // TODO: Do we want to make `sortable` a field config option?
-    return (
-      <HeaderCell
-        isSortable={this.props.sortable}
-        isSelected={this.props.active}
-        onClick={this.onClick}
-        data-field={this.props['data-field']}
-      >
-        {this.props.field.label}
-        {this.props.sortable && (
-          <SortDirectionArrow
-            rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
-          />
-        )}
-      </HeaderCell>
-    );
-  }
-}
+  return (
+    <HeaderCell isSortable={sortable} isSelected={active} onClick={onClick} data-field={dataField}>
+      {field.label}
+      {sortable && <SortDirectionArrow rotate={active && !sortAscending ? '180deg' : '0deg'} />}
+    </HeaderCell>
+  );
+};
 
 // ==============================
 // Common for display & manage
 // ==============================
 
-class ListRow extends Component {
-  static defaultProps = { itemErrors: {}, linkField: '_label_' };
-  state = { showDeleteModal: false };
-  componentDidMount() {
-    this.mounted = true;
-  }
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+const ListRow = ({
+  list,
+  fields,
+  item,
+  itemErrors,
+  link,
+  linkField,
+  isSelected,
+  onSelectChange,
+  onDelete: onDeleteCallback,
+}) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  onCheckboxChange = () => {
-    const { item, onSelectChange } = this.props;
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const onCheckboxChange = () => {
     onSelectChange(item.id);
   };
 
@@ -157,133 +155,129 @@ class ListRow extends Component {
   // Display
   // ==============================
 
-  showDeleteModal = () => {
-    this.setState({ showDeleteModal: true });
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
   };
-  closeDeleteModal = () => {
-    this.setState({ showDeleteModal: false });
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
   };
-  onDelete = result => {
-    if (this.props.onDelete) this.props.onDelete(result);
-    if (!this.mounted) return;
-    this.setState({ showDeleteModal: false });
+
+  const onDelete = result => {
+    if (onDeleteCallback) onDeleteCallback(result);
+    if (!mounted.current) return;
+    setShowDeleteModal(false);
   };
-  renderDeleteModal() {
-    const { showDeleteModal } = this.state;
-    const { item, list } = this.props;
 
-    return (
-      <DeleteItemModal
-        isOpen={showDeleteModal}
-        item={item}
-        list={list}
-        onClose={this.closeDeleteModal}
-        onDelete={this.onDelete}
-      />
-    );
-  }
-  render() {
-    const { list, link, isSelected, item, itemErrors, fields, linkField } = this.props;
-    const copyText = window.location.origin + link({ path: list.path, item });
-    const items = [
-      {
-        content: 'Copy Link',
-        icon: <LinkIcon />,
-        onClick: () => copyToClipboard(copyText),
-      },
-      {
-        content: 'Delete',
-        icon: <TrashcanIcon />,
-        onClick: this.showDeleteModal,
-      },
-    ];
+  const copyText = window.location.origin + link({ path: list.path, item });
+  const items = [
+    {
+      content: 'Copy Link',
+      icon: <LinkIcon />,
+      onClick: () => copyToClipboard(copyText),
+    },
+    {
+      content: 'Delete',
+      icon: <TrashcanIcon />,
+      onClick: openDeleteModal,
+    },
+  ];
 
-    return (
-      <TableRow>
-        <BodyCell isSelected={isSelected} key="checkbox">
-          <CheckboxPrimitive
-            checked={isSelected}
-            innerRef={this.getCheckbox}
-            value={item.id}
-            onChange={this.onCheckboxChange}
-            tabIndex="0"
-          />
-          {this.renderDeleteModal()}
-        </BodyCell>
-        {fields.map(field => {
-          const { path } = field;
+  return (
+    <TableRow>
+      <BodyCell isSelected={isSelected} key="checkbox">
+        <CheckboxPrimitive
+          checked={isSelected}
+          value={item.id}
+          onChange={onCheckboxChange}
+          tabIndex="0"
+        />
+        <DeleteItemModal
+          isOpen={showDeleteModal}
+          item={item}
+          list={list}
+          onClose={closeDeleteModal}
+          onDelete={onDelete}
+        />
+      </BodyCell>
+      {fields.map(field => {
+        const { path } = field;
 
-          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
-            return (
-              <BodyCell key={path}>
-                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
-                <A11yText>{itemErrors[path].message}</A11yText>
-              </BodyCell>
-            );
-          }
+        if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
+          return (
+            <BodyCell key={path}>
+              <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
+              <A11yText>{itemErrors[path].message}</A11yText>
+            </BodyCell>
+          );
+        }
 
-          if (path === linkField) {
-            return (
-              <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
-              </BodyCellTruncated>
-            );
-          }
-
-          let content;
-
-          if (field.views.Cell) {
-            const [Cell] = field.adminMeta.readViews([field.views.Cell]);
-
-            // TODO
-            // fix this later, creating a react component on every render is really bad
-            // react will rerender into the DOM on every react render
-            // probably not a huge deal on a leaf component like this but still bad
-            const LinkComponent = ({ children, ...data }) => (
-              <ItemLink to={link(data)}>{children}</ItemLink>
-            );
-            content = (
-              <Cell
-                isSelected={isSelected}
-                list={list}
-                data={item[path]}
-                field={field}
-                Link={LinkComponent}
-              />
-            );
-          } else {
-            content = item[path];
-          }
-
+        if (path === linkField) {
           return (
             <BodyCellTruncated isSelected={isSelected} key={path}>
-              {content}
+              <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
             </BodyCellTruncated>
           );
-        })}
-        <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
-          <Dropdown
-            align="right"
-            target={handlers => (
-              <Button
-                variant="subtle"
-                css={{
-                  opacity: 0,
-                  transition: 'opacity 150ms',
-                  'tr:hover > td > &': { opacity: 1 },
-                }}
-                {...handlers}
-              >
-                <KebabHorizontalIcon />
-              </Button>
-            )}
-            items={items}
-          />
-        </BodyCell>
-      </TableRow>
-    );
-  }
-}
+        }
+
+        let content;
+
+        if (field.views.Cell) {
+          const [Cell] = field.adminMeta.readViews([field.views.Cell]);
+
+          // TODO
+          // fix this later, creating a react component on every render is really bad
+          // react will rerender into the DOM on every react render
+          // probably not a huge deal on a leaf component like this but still bad
+          const LinkComponent = ({ children, ...data }) => (
+            <ItemLink to={link(data)}>{children}</ItemLink>
+          );
+          content = (
+            <Cell
+              isSelected={isSelected}
+              list={list}
+              data={item[path]}
+              field={field}
+              Link={LinkComponent}
+            />
+          );
+        } else {
+          content = item[path];
+        }
+
+        return (
+          <BodyCellTruncated isSelected={isSelected} key={path}>
+            {content}
+          </BodyCellTruncated>
+        );
+      })}
+      <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
+        <Dropdown
+          align="right"
+          target={handlers => (
+            <Button
+              variant="subtle"
+              css={{
+                opacity: 0,
+                transition: 'opacity 150ms',
+                'tr:hover > td > &': { opacity: 1 },
+              }}
+              {...handlers}
+            >
+              <KebabHorizontalIcon />
+            </Button>
+          )}
+          items={items}
+        />
+      </BodyCell>
+    </TableRow>
+  );
+};
+
+ListRow.defaultProps = {
+  itemErrors: {},
+  linkField: '_label_',
+};
 
 const SingleCell = ({ columns, children }) => (
   <tr>
