@@ -2,6 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, useRef, Suspense } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { useList } from '../../providers/List';
 
@@ -38,7 +39,7 @@ const HeaderInset = props => (
 );
 
 export function ListLayout(props) {
-  const { items, itemCount, queryErrors, routeProps, query } = props;
+  const { items, itemCount, queryErrors, query } = props;
   const measureElementRef = useRef();
   const { list, openCreateItemModal } = useList();
   const { urlState } = useListUrlState(list.key);
@@ -46,8 +47,10 @@ export function ListLayout(props) {
   const [sortBy, handleSortChange] = useListSort(list.key);
 
   const { adminPath } = useAdminMeta();
-  const { history, location } = routeProps;
   const { currentPage, fields, pageSize, search } = urlState;
+
+  const history = useHistory();
+  const location = useLocation();
 
   const [selectedItems, onSelectChange] = useListSelect(items);
 
@@ -258,7 +261,7 @@ export function ListLayout(props) {
 }
 
 export function List(props) {
-  const { list, query, routeProps } = props;
+  const { list, query } = props;
 
   // get item data
   const items = query.data && query.data[list.gqlNames.listQueryName];
@@ -268,7 +271,8 @@ export function List(props) {
     itemCount = query.data[list.gqlNames.listQueryMetaName].count;
   }
 
-  const { history, location } = routeProps;
+  const history = useHistory();
+  const location = useLocation();
 
   // Mount with Persisted Search
   // ------------------------------

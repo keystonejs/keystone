@@ -77,9 +77,7 @@ export const KeystoneAdminUI = () => {
               <Route
                 exact
                 path={`${adminPath}/:list`}
-                render={routeProps => (
-                  <ListPage key={listKey} list={list} routeProps={routeProps} />
-                )}
+                render={() => <ListPage key={listKey} list={list} />}
               />
               ,
               <Route
