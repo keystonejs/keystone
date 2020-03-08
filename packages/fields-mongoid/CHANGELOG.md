@@ -1,5 +1,20 @@
 # @keystonejs/fields-mongoid
 
+## 5.1.2
+
+### Patch Changes
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b), [`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/build-field-types@5.2.2
+  - @keystonejs/fields@6.3.2
+  - @arch-ui/input@0.1.6
+  - @keystonejs/adapter-knex@6.3.2
+  - @keystonejs/adapter-mongoose@5.2.1
+
 ## 5.1.1
 
 ### Patch Changes

@@ -1,5 +1,62 @@
 # @keystonejs/app-admin-ui
 
+## 5.9.1
+
+### Patch Changes
+
+- [`5dea5561`](https://github.com/keystonejs/keystone/commit/5dea5561527a4e991d017d087f512101d53256b9) [#2478](https://github.com/keystonejs/keystone/pull/2478) Thanks [@gautamsi](https://github.com/gautamsi)! - Refactored `itemHeaderAction` to export components instead of passing as parameter.
+
+* [`d7c7d827`](https://github.com/keystonejs/keystone/commit/d7c7d8271c5da8fec01df123c954d6a03aa41146) [#2347](https://github.com/keystonejs/keystone/pull/2347) Thanks [@singhArmani](https://github.com/singhArmani)! - While submitting a create list form inside Admin-UI, **null** was `explicit` in the `mutation` request for blank unedited fields.
+  This was preventing the knex DB-level default to be applied correctly.
+
+  But omitting the blank (unchanged) and required fields, we managed to completely exclude it while making graphql mutation request, and thus respecting the knew `defaultTo` option.
+
+- [`f0148ccb`](https://github.com/keystonejs/keystone/commit/f0148ccb03abb882195b9bd44c34b780170c89ef) [#2423](https://github.com/keystonejs/keystone/pull/2423) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed items being flagged as changed even if input did not differ.
+
+* [`6790d053`](https://github.com/keystonejs/keystone/commit/6790d053effba118d0b3a51806a5c066cf022d45) [#2460](https://github.com/keystonejs/keystone/pull/2460) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up handling of admin metadata.
+
+- [`6de20ce6`](https://github.com/keystonejs/keystone/commit/6de20ce6b4aad46d2a8cc5ca8d1ada179aca7c9b) [#2461](https://github.com/keystonejs/keystone/pull/2461) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up an unnecessary use of <Route>.
+
+* [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+- [`df422e70`](https://github.com/keystonejs/keystone/commit/df422e70291ebf8660428c9a4a378611623985ae) [#2450](https://github.com/keystonejs/keystone/pull/2450) Thanks [@Vultraz](https://github.com/Vultraz)! - Changed the design of the sign in page.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b), [`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20), [`9d11d7ce`](https://github.com/keystonejs/keystone/commit/9d11d7cea6f31eeceb7326d86460a3f0e25ad01d)]:
+  - @keystonejs/build-field-types@5.2.2
+  - @keystonejs/fields@6.3.2
+  - @arch-ui/alert@0.0.14
+  - @arch-ui/badge@0.0.13
+  - @arch-ui/button@0.0.15
+  - @arch-ui/card@0.0.11
+  - @arch-ui/confirm@0.0.16
+  - @arch-ui/controls@0.1.5
+  - @arch-ui/dialog@0.0.17
+  - @arch-ui/drawer@0.0.18
+  - @arch-ui/dropdown@0.0.15
+  - @arch-ui/fields@2.1.3
+  - @arch-ui/hooks@0.0.9
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/layout@0.2.10
+  - @arch-ui/loading@0.0.14
+  - @arch-ui/lozenge@0.0.13
+  - @arch-ui/navbar@0.1.7
+  - @arch-ui/options@0.0.15
+  - @arch-ui/pagination@0.0.15
+  - @arch-ui/pill@0.1.12
+  - @arch-ui/popout@0.0.16
+  - @arch-ui/select@0.1.5
+  - @arch-ui/tooltip@0.1.8
+  - @arch-ui/typography@0.0.14
+  - @arch-ui/color-utils@0.0.2
+  - @arch-ui/common@0.0.10
+  - @arch-ui/theme@0.0.9
+  - @keystonejs/field-views-loader@5.2.1
+  - @keystonejs/session@5.1.1
+  - @keystonejs/utils@5.2.2
+
 ## 5.9.0
 
 ### Minor Changes
