@@ -7,10 +7,10 @@ import GitHubButton from 'react-github-btn';
 import { Container } from '../../components';
 
 const HomepageFooter = () => (
-  <div
+  <footer
     css={{
-      paddingTop: 80,
-      paddingBottom: 80,
+      paddingTop: '4rem',
+      paddingBottom: '4rem',
       textAlign: 'center',
     }}
   >
@@ -23,30 +23,42 @@ const HomepageFooter = () => (
       >
         Star
       </GitHubButton>
-      <p css={{ color: colors.N40, fontSize: '0.9em', marginTop: '2rem' }}>
-        Keystone 5 is built by{' '}
-        <a css={{ color: colors.N80 }} href="https://www.thinkmill.com.au">
-          Thinkmill
-        </a>{' '}
-        and{' '}
-        <a
-          css={{ color: colors.N80 }}
-          href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md#contributors"
-        >
-          Contributors
-        </a>{' '}
-        around the world.
-      </p>
-
-      <p css={{ color: colors.N40, fontSize: '0.9em' }}>
-        Keystone v4 has moved to{' '}
-        <a css={{ color: colors.N80 }} href="http://v4.keystonejs.com">
-          v4.keystonejs.com
-        </a>
-        .{' '}
-      </p>
+      <div css={{ marginTop: '2rem' }}>
+        <p css={{ color: colors.N40 }}>
+          Keystone 5 is built by{' '}
+          <a
+            css={{ color: colors.N80 }}
+            href="https://www.thinkmill.com.au"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Thinkmill
+          </a>{' '}
+          and{' '}
+          <a
+            css={{ color: colors.N80 }}
+            href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md#contributors"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Contributors
+          </a>{' '}
+          around the world.
+        </p>
+        <p css={{ color: colors.N40, fontSize: '0.875rem' }}>
+          Keystone v4 has moved to{' '}
+          <a
+            css={{ color: colors.N80 }}
+            href="https://github.com/keystonejs/keystone-5"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            v4.keystonejs.com
+          </a>
+        </p>
+      </div>
     </Container>
-  </div>
+  </footer>
 );
 
 export { HomepageFooter };

@@ -9,7 +9,7 @@ import videoThumbnailPNG from '../../assets/video-thumbnail.png';
 const VideoIntro = () => {
   const [showVideo, setShowVideo] = useState(false);
   return (
-    <MainWrapper>
+    <div>
       <VideoWrapper>
         <VideoEmbed
           showVideo={showVideo}
@@ -19,21 +19,10 @@ const VideoIntro = () => {
         {!showVideo && <VideoStartButton onClick={() => setShowVideo(true)} />}
       </VideoWrapper>
       <VideoCta />
-    </MainWrapper>
+    </div>
   );
 };
 
-// Implementation components
-const MainWrapper = ({ children }) => (
-  <div
-    css={mq({
-      marginLeft: [0, 0, 0, 50],
-      flex: [1, '0 1 600px'],
-    })}
-  >
-    {children}
-  </div>
-);
 const VideoWrapper = ({ children, ...rest }) => (
   <div
     css={{
@@ -147,8 +136,7 @@ const VideoCta = () => (
       </g>
     </svg>
     <p css={{ paddingLeft: 54, paddingTop: 24, lineHeight: 1.4 }}>
-      Click to see how to get a "To Do" app up and running in under 4 minutes with the KeystoneJS
-      CLI
+      See how to get a "To Do" app up and running in under 4 minutes with the KeystoneJS CLI
     </p>
   </div>
 );

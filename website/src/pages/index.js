@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import React from 'react'; // eslint-disable-line no-unused-vars
+import { Helmet } from 'react-helmet';
 import { jsx, Global } from '@emotion/core';
 import { globalStyles } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
@@ -9,9 +10,9 @@ import Layout from '../templates/layout';
 import { Container, Sidebar } from '../components';
 
 import { SectionHero } from '../components/homepage/SectionHero';
-import { SectionAbout } from '../components/homepage/SectionAbout';
-import { SectionPairing } from '../components/homepage/SectionPairing';
-import { SectionWhy } from '../components/homepage/SectionWhy';
+import { SectionCode } from '../components/homepage/SectionCode';
+import { SectionFeatures } from '../components/homepage/SectionFeatures';
+import { SectionTechnology } from '../components/homepage/SectionTechnology';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
 
 const Homepage = () => (
@@ -24,9 +25,9 @@ const Homepage = () => (
         </Container>
         <SkipNavContent />
         <SectionHero />
-        <SectionAbout />
-        <SectionWhy />
-        <SectionPairing />
+        <SectionCode />
+        <SectionFeatures />
+        <SectionTechnology />
         <HomepageFooter />
       </>
     )}

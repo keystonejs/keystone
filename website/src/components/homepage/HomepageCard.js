@@ -45,7 +45,7 @@ const Card = ({ heading, content, to, variant, ...props }) => (
   >
     <CardHeading>{heading}</CardHeading>
     <CardContent>{content}</CardContent>
-    <CardCTA />
+    {to && <CardCTA />}
   </Link>
 );
 

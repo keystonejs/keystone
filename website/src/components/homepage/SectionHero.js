@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
 import { Button } from '..';
-import { media, mq } from '../../utils/media';
+import { media } from '../../utils/media';
 
 import { HomepageSection } from './HomepageSection';
 import { VideoIntro } from './VideoIntro';
@@ -33,16 +33,19 @@ const SectionHero = () => (
           <Button
             variant="link"
             href="https://github.com/keystonejs/keystone-5"
+            rel="noopener noreferrer"
+            target="_blank"
             css={{
               [media.sm]: { marginLeft: 4 },
             }}
-            target="_blank"
           >
             View on GitHub
           </Button>
         </ButtonWrapper>
       </div>
-      <VideoIntro />
+      <VideoColumn>
+        <VideoIntro />
+      </VideoColumn>
     </Grid>
   </HomepageSection>
 );
@@ -73,7 +76,7 @@ const Heading = props => (
       lineHeight: 1.2,
       fontWeight: 600,
       marginTop: 0,
-      marginBottom: '2rem',
+      marginBottom: '1.75rem',
 
       [media.sm]: {
         fontSize: '2.75rem',
@@ -98,7 +101,7 @@ const Description = props => (
 
 const ButtonWrapper = props => (
   <div
-    css={mq({
+    css={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -106,7 +109,18 @@ const ButtonWrapper = props => (
       [media.sm]: {
         justifyContent: 'flex-start',
       },
-    })}
+    }}
+    {...props}
+  />
+);
+
+const VideoColumn = props => (
+  <div
+    css={{
+      [media.sm]: {
+        marginLeft: '2rem',
+      },
+    }}
     {...props}
   />
 );

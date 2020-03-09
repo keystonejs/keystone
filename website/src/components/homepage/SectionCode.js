@@ -7,7 +7,7 @@ import { HomepageSection } from './HomepageSection';
 import prismTheme from '../../prism-themes/custom';
 import { media } from '../../utils/media';
 
-const cards = [
+const CARDS = [
   {
     language: `js`,
     code: `// Define your \`lists\` and \`fields\`
@@ -58,16 +58,16 @@ type User {
   },
 ];
 
-const SectionAbout = () => (
+const SectionCode = () => (
   <HomepageSection
     variant="dark"
-    description="A KeystoneJS instance can be summarised as a function of your schema which creates a GraphQL API for querying, and an AdminUI for managing your data."
+    description="A KeystoneJS instance can be summarised as a function of your schema which creates a GraphQL API for querying, and an AdminUI for managing your data"
     heading="schema => ({ GraphQL, AdminUI })"
     ctaTo="guides/schema"
     ctaText="Learn more creating lists and fields"
   >
     <Grid>
-      {cards.map((card, i) => (
+      {CARDS.map((card, i) => (
         <Card key={i}>
           <Highlight {...defaultProps} theme={prismTheme} code={card.code} language={card.language}>
             {({ className, style, tokens, getLineProps, getTokenProps }) => (
@@ -116,4 +116,4 @@ const Card = props => (
   />
 );
 
-export { SectionAbout };
+export { SectionCode };
