@@ -2455,21 +2455,23 @@
   dependencies:
     core-js "^2.5.7"
 
-"@manypkg/cli@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.7.0.tgz#2849798d231006d22073155482b226d40a66392a"
-  integrity sha512-yu6SDfwkgrMw/EBR8EwFI5cmgfYABK7Yttz906qDQaDiBLvmH7+KLg/j/OOc61uCqQzSWA8jNVFsx6rPX+0yJw==
+"@manypkg/cli@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.11.0.tgz#16d64b804d2f39cb52befd06e2cb33ab1ec846b7"
+  integrity sha512-JIw6i9MZTObX7L9lQsSF5ohL2T0jJuT4wU/NX/s1YwKd38A3XUORirsK6a3y2eIEfkIt0DB3AnaZYS+Vnn4QSA==
   dependencies:
     "@babel/runtime" "^7.5.5"
     chalk "^2.4.2"
     detect-indent "^6.0.0"
     find-up "^4.1.0"
-    find-workspaces-root "^0.1.0"
+    find-workspaces-root "^0.2.0"
     fs-extra "^8.1.0"
-    get-workspaces "^0.4.0"
+    get-workspaces "^0.6.0"
     meow "^5.0.0"
+    normalize-path "^3.0.0"
     p-limit "^2.2.1"
-    sembear "^0.4.0"
+    parse-github-url "^1.0.2"
+    sembear "^0.5.0"
     semver "^6.3.0"
     spawndamnit "^2.0.0"
     validate-npm-package-name "^3.0.0"
@@ -3165,13 +3167,6 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/fs-capacitor/-/fs-capacitor-2.0.0.tgz#17113e25817f584f58100fb7a08eed288b81956e"
   integrity sha512-FKVPOCFbhCvZxpVAMhdBdTfVfXUpsh15wFHgqOKxh9N9vzWZVuWCSijZ5T4U34XYNnuj2oduh6xcs1i+LPI+BQ==
-  dependencies:
-    "@types/node" "*"
-
-"@types/fs-extra@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.0.0.tgz#d3e2c313ca29f95059f198dd60d1f774642d4b25"
-  integrity sha512-bCtL5v9zdbQW86yexOlXWTEGvLNqWxMFyi7gQA7Gcthbezr2cPSOb8SkESVKA937QD5cIwOFLDFt0MQoXOEr9Q==
   dependencies:
     "@types/node" "*"
 
@@ -10029,16 +10024,15 @@ find-versions@^3.0.0:
     array-uniq "^2.0.0"
     semver-regex "^2.0.0"
 
-find-workspaces-root@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/find-workspaces-root/-/find-workspaces-root-0.1.0.tgz#0afc33920eca22ad58f87e1e9a49ac97d176c25f"
-  integrity sha512-NIVJ0SB4+BMwN0MXAPYPj5SWgcyYh2bCP2ZJTVW74uSuQ3oWp6hVPfW1HHBYqPuzWbzKbDbwk6kUKXw6Jr+Qsg==
+find-workspaces-root@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/find-workspaces-root/-/find-workspaces-root-0.2.0.tgz#46e487deed4faa02b3e30007d3ce6d13f8deb69e"
+  integrity sha512-VvMqY2reYnYztgO0CBbxSFw/Cey2W0RrZnx6/4gl4m1okp0efnP0wxNQMtfj6aYMqmo0QQFl5Z+27WV0TVWgow==
   dependencies:
     "@babel/runtime" "^7.5.5"
-    "@types/fs-extra" "^8.0.0"
     "@types/node" "^12.7.1"
     find-up "^4.1.0"
-    fs-extra "^8.1.0"
+    get-workspaces "^0.6.0"
 
 findup-sync@^3.0.0:
   version "3.0.0"
@@ -10956,14 +10950,6 @@ get-window@^1.1.1:
   integrity sha512-yjWpFcy9fjhLQHW1dPtg9ga4pmizLY8y4ZSHdGrAQ1NU277MRhnGnnLPxe19X8W5lWVsCZz++5xEuNozWMVmTw==
   dependencies:
     get-document "1"
-
-get-workspaces@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/get-workspaces/-/get-workspaces-0.4.0.tgz#512dedc0e9a96b0c17035af363236299247f4cc8"
-  integrity sha512-O4pSctjkmrLRs8GxnaQ/xy16PWoZpEUzpgtBAj9UIYNrtag1rRnFOyvJULIMPhpbZKOlswmrS5Ku6pjt35Yj+g==
-  dependencies:
-    fs-extra "^7.0.1"
-    globby "^9.2.0"
 
 get-workspaces@^0.5.0:
   version "0.5.0"
@@ -17258,6 +17244,11 @@ parse-filepath@^1.0.1:
     map-cache "^0.2.0"
     path-root "^0.1.1"
 
+parse-github-url@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/parse-github-url/-/parse-github-url-1.0.2.tgz#242d3b65cbcdda14bb50439e3242acf6971db395"
+  integrity sha512-kgBf6avCbO3Cn6+RnzRGLkUsv4ZVqv/VfAYkRsyBcgkshNvVBkRn1FEZcW0Jb+npXQWm2vHPnnOqFteZxRRGNw==
+
 parse-glob@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/parse-glob/-/parse-glob-3.0.4.tgz#b2c376cfb11f35513badd173ef0bb6e3a388391c"
@@ -19293,17 +19284,6 @@ react-adopt@^0.6.0:
     react "^16.3.2"
     react-display-name "^0.2.4"
 
-react-apollo@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/react-apollo/-/react-apollo-3.1.3.tgz#5d8540b401bba36173b63e6c5e75fa561960c63e"
-  integrity sha512-orCZNoAkgveaK5b75y7fw1MSqSHOU/Wuu9rRFOGmRQBSQVZjvV4DI+hj604rHmuN9+WDABxb5W48wTa0F/xNZQ==
-  dependencies:
-    "@apollo/react-common" "^3.1.3"
-    "@apollo/react-components" "^3.1.3"
-    "@apollo/react-hoc" "^3.1.3"
-    "@apollo/react-hooks" "^3.1.3"
-    "@apollo/react-ssr" "^3.1.3"
-
 react-codemirror2@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-6.0.0.tgz#180065df57a64026026cde569a9708fdf7656525"
@@ -19370,15 +19350,15 @@ react-display-name@^0.2.3, react-display-name@^0.2.4:
   resolved "https://registry.yarnpkg.com/react-display-name/-/react-display-name-0.2.4.tgz#e2a670b81d79a2204335510c01246f4c92ff12cf"
   integrity sha512-zvU6iouW+SWwHTyThwxGICjJYCMZFk/6r/+jmOdC7ntQoPlS/Pqb81MkxaMf2bHTSq9TN3K3zX2/ayMW/jCtyA==
 
-react-dom@^16.12.0:
-  version "16.12.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.12.0.tgz#0da4b714b8d13c2038c9396b54a92baea633fe11"
-  integrity sha512-LMxFfAGrcS3kETtQaCkTKjMiifahaMySFDn71fZUNpPHZQEzmk/GiAeIT8JSOrHB23fnuCOMruL2a8NYlw+8Gw==
+react-dom@^16.13.0:
+  version "16.13.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.13.0.tgz#cdde54b48eb9e8a0ca1b3dc9943d9bb409b81866"
+  integrity sha512-y09d2c4cG220DzdlFkPTnVvGTszVvNpC73v+AaLGLHbkpy3SSgvYq8x0rNwPJ/Rk/CicTNgk0hbHNw1gMEZAXg==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.18.0"
+    scheduler "^0.19.0"
 
 react-dom@^16.3.1:
   version "16.8.6"
@@ -19706,10 +19686,10 @@ react-window@^1.7.0:
     "@babel/runtime" "^7.0.0"
     memoize-one ">=3.1.1 <6"
 
-react@^16.12.0:
-  version "16.12.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.12.0.tgz#0c0a9c6a142429e3614834d5a778e18aa78a0b83"
-  integrity sha512-fglqy3k5E+81pA8s+7K0/T3DBCF0ZDOher1elBFzF7O6arXJgzyu/FW+COxFvAWXJoJN9KIZbT2LXlukwphYTA==
+react@^16.13.0:
+  version "16.13.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.13.0.tgz#d046eabcdf64e457bbeed1e792e235e1b9934cf7"
+  integrity sha512-TSavZz2iSLkq5/oiE7gnFzmURKZMltmi193rm5HEoUDAXpzT9Kzw6oNZnGoai/4+fUnm7FqS5dwgUL34TujcWQ==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -20917,10 +20897,10 @@ scheduler@^0.13.2, scheduler@^0.13.6:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-scheduler@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.18.0.tgz#5901ad6659bc1d8f3fdaf36eb7a67b0d6746b1c4"
-  integrity sha512-agTSHR1Nbfi6ulI0kYNK0203joW2Y5W4po4l+v03tOoiJKpTBbxpNhWDvqc/4IcOw+KLmSiQLTasZ4cab2/UWQ==
+scheduler@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.19.0.tgz#a715d56302de403df742f4a9be11975b32f5698d"
+  integrity sha512-xowbVaTPe9r7y7RUejcK73/j8tt2jfiyTednOvHbA8JoClvMYCp+r8QegLwK/n8zWQAtZb1fFnER4XLBZXrCxA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -21024,10 +21004,10 @@ selfsigned@^1.9.1:
   dependencies:
     node-forge "0.7.5"
 
-sembear@^0.4.0:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/sembear/-/sembear-0.4.1.tgz#c1599bba0fd29cce68a25382576891e5fae84990"
-  integrity sha512-q3LJepi7qgDbkR9eDe1OVYfbD8A14vuC8TtETtEvpAQ4GxynA9B0fhG6ts8scBMDe/GwLlVUeU+Icnl1oidH7g==
+sembear@^0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/sembear/-/sembear-0.5.1.tgz#52ce0631b2f63057e1f44a937580019e7cf059e5"
+  integrity sha512-M7Xz8IAShYntqgzyDSRFEsTAPZFgej/+u7EvxSDdNckmpHdXIyItlR6S1g8XWUI2PznkauPnew7bBT6WnUrvCg==
   dependencies:
     "@types/semver" "^6.0.1"
     semver "^6.3.0"
@@ -23648,10 +23628,10 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-unsplash-js@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-5.0.0.tgz#85bb29bff3d49220be3b335679433a0299365290"
-  integrity sha512-yPh4h0m4y0BbSjjNbn36O+8rDESIgxvElwZMwOrvsZpmbtFspwARMnrHyZ3JbAUw62ZmRxHajlsPqw55qo1iug==
+unsplash-js@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-6.0.0.tgz#f13bd12817e115f440f0526bce18e1cb7b0fde16"
+  integrity sha512-R7Zwd6mfjJ2mYGldWZpZ/LfVLh6Zi+iRUS8y3dx0jZNFU0nt6r6q4wtL+Gr/qv3TgMQFg/hRFxYKzXcdhkasyg==
   dependencies:
     form-urlencoded "1.2.0"
     lodash.get "4.4.2"
