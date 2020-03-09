@@ -4,7 +4,7 @@ title: Keystone Class
 order: 1
 [meta]-->
 
-# Keystone Class
+# `keystone` Class
 
 ## Usage
 
@@ -12,74 +12,47 @@ order: 1
 const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone({
-  /*...config */
+  adapter,
+  adapters,
+  appVersion,
+  cookieMaxAge,
+  cookieSecret,
+  defaultAccess,
+  defaultAdapter,
+  name,
+  onConnect,
+  schemaNames,
+  secureCookies,
+  sessionStore,
+  queryLimits,
 });
 ```
 
 ## Config
 
-| Option           | Type       | Default                                                             | Description                                                                                                                                |
-| ---------------- | ---------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name`           | `String`   | `null`                                                              | The name of the project. Appears in the Admin UI.                                                                                          |
-| `adapter`        | `Object`   | Required                                                            | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details. |
-| `adapters`       | `Object`   | `{}`                                                                | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                               |
-| `defaultAdapter` | `String`   | `null`                                                              | The name of the database adapter to use by default if multiple are provided.                                                               |
-| `defaultAccess`  | `Object`   | `{}`                                                                | Default list and field access. See the [Access Control](https://www.keystonejs.com/api/access-control#defaults) page for more details.     |
-| `onConnect`      | `Function` | `null`                                                              | Callback that executes once `keystone.connect()` complete. Takes no arguments.                                                             |
-| `cookieSecret`   | `String`   | `qwerty`                                                            | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                          |
-| `cookieMaxAge`   | `Int`      | 30 days                                                             | The maximum time, in milliseconds, session ID cookies remain valid.                                                                        |
-| `secureCookies`  | `Boolean`  | Variable                                                            | Defaults to true in production mode, false otherwise. See below for important details.                                                     |
-| `sessionStore`   | `Object`   | `null`                                                              | A compatible Express session middleware.                                                                                                   |
-| `schemaNames`    | `Array`    | `['public']`                                                        |                                                                                                                                            |
-| `queryLimits`    | `Object`   | `{}`                                                                | Configures global query limits                                                                                                             |
-| `appVersion`     | `Object`   | `{ version: '1.0.0', addVersionToHttpHeaders: true, access: true }` | Configure the application version and where it is made available                                                                           |
+### `adapter: object`
 
-### `secureCookies`
+_**Default:**_ Required
 
-A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details.
 
-You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
+### `adapters: object`
 
-### `sessionStore`
+_**Default:**_ `undefined`
 
-Sets the Express server's [session middleware](https://github.com/expressjs/session). This should be configured before deploying your app.
+A list of named database adapters. Use the format `{ name: adapterObject }`.
 
-This example uses the [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) middleware, but you can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores).
+### `appVersion: object`
 
-#### Usage
+_**Default:**_
 
-```javascript
-const expressSession = require('express-session');
-const MongoStore = require('connect-mongo')(expressSession);
-
-const keystone = new Keystone({
-  /* ...config */
-  sessionStore: new MongoStore({ url: 'mongodb://localhost/my-app' }),
-});
+```js
+{
+  version: '1.0.0',
+  addVersionToHttpHeaders: true,
+  access: true
+}
 ```
-
-### `queryLimits`
-
-Configures global query limits.
-
-These should be used together with [list query limits](https://keystonejs.com/api/create-list#query-limits).
-
-#### Usage
-
-```javascript
-const keystone = new Keystone({
-  /* ...config */
-  queryLimits: {
-    maxTotalResults: 1000,
-  },
-});
-```
-
-- `maxTotalResults`: limit of the total results of all relationship subqueries
-
-Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
-
-### `appVersion`
 
 Configure the application version, which can be surfaced via HTTP headers or GraphQL
 
@@ -104,6 +77,105 @@ const keystone = new Keystone({
 #### Why don't we just use `access` to control the HTTP header?
 
 > We want to attach the HTTP header at the very top of the middleware stack, so if something gets rejected we can at least be sure of the system version that did the rejecting. This happens well before we have worked out which schema the person is trying to access, and therefore our access control isn’t ready to be used. Also, the access control that we set up is all about controlling access to the GraphQL API, and HTTP headers are a Different Thing, so even if it was technically possible to use the same mechanism, it really makes sense to decouple those two things.
+
+### `cookieMaxAge: Int`
+
+_**Default:**_ 30 days
+
+The maximum time, in milliseconds, session ID cookies remain valid.
+
+### `cookieSecret: string`
+
+_**Default:**_ `qwerty`
+
+The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!
+
+### `defaultAccess: string`
+
+_**Default:**_
+
+```js
+{
+  list: true,
+  field: true,
+  custom: true
+}
+```
+
+Default list and field access. See the [Access Control](https://www.keystonejs.com/api/access-control#defaults) page for more details.
+
+### `defaultAdapter: string`
+
+_**Default:**_ `undefined`
+
+The name of the database adapter to use by default if multiple are provided.
+
+### `name: string`
+
+_**Default:**_ `undefined`
+
+The name of the project. Appears in the Admin UI.
+
+### `onConnect: Function`
+
+_**Default:**_ `undefined`
+
+Callback that executes once `keystone.connect()` complete. Takes no arguments.
+
+### `schemaNames: array`
+
+_**Default:**_ `['public']`
+
+### `secureCookies: boolean`
+
+_**Default:**_ `true` in production mode, `false` otherwise.
+
+A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+
+You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
+
+### `sessionStore: object`
+
+_**Default:**_ `undefined`
+
+Sets the Express server's [session middleware](https://github.com/expressjs/session). This should be configured before deploying your app.
+
+This example uses the [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) middleware, but you can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores).
+
+#### Usage
+
+```javascript
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')(expressSession);
+
+const keystone = new Keystone({
+  /* ...config */
+  sessionStore: new MongoStore({ url: 'mongodb://localhost/my-app' }),
+});
+```
+
+### `queryLimits: object`
+
+_**Default:**_ `{}`
+
+Configures global query limits.
+
+These should be used together with [list query limits](https://keystonejs.com/api/create-list#query-limits).
+
+#### Usage
+
+```javascript
+const keystone = new Keystone({
+  /* ...config */
+  queryLimits: {
+    maxTotalResults: 1000,
+  },
+});
+```
+
+- `maxTotalResults`: limit of the total results of all relationship subqueries
+
+Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
 
 ## Methods
 
