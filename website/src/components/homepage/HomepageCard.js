@@ -2,7 +2,6 @@
 import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 import { Link } from 'gatsby';
-import { ArrowRight } from 'react-feather';
 
 import { media } from '../../utils/media';
 
@@ -45,7 +44,7 @@ const Card = ({ heading, content, to, variant, ...props }) => (
   >
     <CardHeading>{heading}</CardHeading>
     <CardContent>{content}</CardContent>
-    {to && <CardCTA />}
+    <CardCTA />
   </Link>
 );
 
@@ -74,5 +73,24 @@ const CardCTA = () => (
     </span>
   </div>
 );
+
+const ArrowRight = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={24}
+      height={24}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </svg>
+  );
+};
 
 export { Grid, Card };

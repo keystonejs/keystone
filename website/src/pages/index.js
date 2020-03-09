@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import React from 'react'; // eslint-disable-line no-unused-vars
-import { Helmet } from 'react-helmet';
 import { jsx, Global } from '@emotion/core';
 import { globalStyles } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
@@ -16,22 +15,24 @@ import { SectionTechnology } from '../components/homepage/SectionTechnology';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
 
 const Homepage = () => (
-  <Layout>
-    {({ sidebarIsVisible, sidebarOffset }) => (
-      <>
-        <Global styles={globalStyles} />
-        <Container>
-          <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
-        </Container>
-        <SkipNavContent />
-        <SectionHero />
-        <SectionCode />
-        <SectionFeatures />
-        <SectionTechnology />
-        <HomepageFooter />
-      </>
-    )}
-  </Layout>
+  <>
+    <Layout>
+      {({ sidebarIsVisible, sidebarOffset }) => (
+        <>
+          <Global styles={globalStyles} />
+          <Container>
+            <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
+          </Container>
+          <SkipNavContent />
+          <SectionHero />
+          <SectionCode />
+          <SectionFeatures />
+          <SectionTechnology />
+          <HomepageFooter />
+        </>
+      )}
+    </Layout>
+  </>
 );
 
 export default Homepage;
