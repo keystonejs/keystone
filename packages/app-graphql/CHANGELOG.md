@@ -1,5 +1,30 @@
 # @keystonejs/app-graphql
 
+## 5.1.2
+
+### Patch Changes
+
+- [`10e88dc3`](https://github.com/keystonejs/keystone/commit/10e88dc3d81f5e021db0bfb31f7547852c602c14) [#2468](https://github.com/keystonejs/keystone/pull/2468) Thanks [@timleslie](https://github.com/timleslie)! - Removed `Keystone.getAdminSchema` in favour of a new `Keystone.getResolvers({ schemaName })` method, along with the pre-existing `Keystone.getTypeDefs({ schemaName })`.
+
+* [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+- Updated dependencies [[`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/app-graphql-playground@5.1.1
+  - @keystonejs/logger@5.1.1
+  - @keystonejs/session@5.1.1
+  - @keystonejs/utils@5.2.2
+
+## 5.1.1
+
+### Patch Changes
+
+- [`362efbc2`](https://github.com/keystonejs/keystone/commit/362efbc2e054fa48aedb515c54b5a64757832be9) [#2437](https://github.com/keystonejs/keystone/pull/2437) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated apollo-server-express dependency to 2.10.1.
+
+- Updated dependencies [[`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09)]:
+  - @keystonejs/utils@5.2.1
+
 ## 5.1.0
 
 ### Minor Changes

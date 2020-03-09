@@ -1,5 +1,52 @@
 # @keystonejs/field-content
 
+## 5.4.2
+
+### Patch Changes
+
+- [`ca4d2178`](https://github.com/keystonejs/keystone/commit/ca4d217878c6e3829ed0c7a7e7a1909095a2eb7d) [#2464](https://github.com/keystonejs/keystone/pull/2464) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Changed the min-height of the content field. Changed the UI so the blocks menu doesn't appear if there are not blocks configured.
+
+* [`70f2101a`](https://github.com/keystonejs/keystone/commit/70f2101ab8dd57615800f11df5b72b8fedb09298) [#2458](https://github.com/keystonejs/keystone/pull/2458) Thanks [@SeanDoyleGit](https://github.com/SeanDoyleGit)! - Changed the `deserialize` method of the content field to filter out missing oEmbeds
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b), [`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/build-field-types@5.2.2
+  - @keystonejs/fields@6.3.2
+  - @arch-ui/fields@2.1.3
+  - @arch-ui/hooks@0.0.9
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/tooltip@0.1.8
+  - @arch-ui/typography@0.0.14
+  - @arch-ui/color-utils@0.0.2
+  - @arch-ui/theme@0.0.9
+  - @keystonejs/utils@5.2.2
+
+## 5.4.1
+
+### Patch Changes
+
+- [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+* [`92b8fc4f`](https://github.com/keystonejs/keystone/commit/92b8fc4f2fc83dd40a8be50fc7344d27c59a4085) [#2417](https://github.com/keystonejs/keystone/pull/2417) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fixed a console error and z-index on the content field.
+
+- [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+- Updated dependencies [[`6929a7e3`](https://github.com/keystonejs/keystone/commit/6929a7e3339f36e712bcbafc71ddf7a133730b29), [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`9a388f01`](https://github.com/keystonejs/keystone/commit/9a388f01e388272d56f81af2247d8030e0f2c972), [`bd4096ee`](https://github.com/keystonejs/keystone/commit/bd4096ee86f7790c76db23090b38f880e5aa7ecc), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09), [`c059b63c`](https://github.com/keystonejs/keystone/commit/c059b63c6ebdbb60ac4095d1efd791d598b2756c)]:
+  - @keystonejs/build-field-types@5.2.1
+  - @arch-ui/fields@2.1.2
+  - @arch-ui/input@0.1.5
+  - @arch-ui/tooltip@0.1.7
+  - @arch-ui/typography@0.0.13
+  - @keystonejs/fields@6.3.1
+  - @arch-ui/hooks@0.0.8
+  - @arch-ui/icons@0.0.9
+  - @arch-ui/theme@0.0.8
+  - @keystonejs/utils@5.2.1
+
 ## 5.4.0
 
 ### Minor Changes

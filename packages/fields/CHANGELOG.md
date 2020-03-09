@@ -1,5 +1,83 @@
 # @keystonejs/fields
 
+## 6.3.2
+
+### Patch Changes
+
+- [`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542) [#2489](https://github.com/keystonejs/keystone/pull/2489) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated to Unsplash 6.0.0.
+
+* [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+- Updated dependencies [[`ca4d2178`](https://github.com/keystonejs/keystone/commit/ca4d217878c6e3829ed0c7a7e7a1909095a2eb7d), [`5dea5561`](https://github.com/keystonejs/keystone/commit/5dea5561527a4e991d017d087f512101d53256b9), [`d7c7d827`](https://github.com/keystonejs/keystone/commit/d7c7d8271c5da8fec01df123c954d6a03aa41146), [`f0148ccb`](https://github.com/keystonejs/keystone/commit/f0148ccb03abb882195b9bd44c34b780170c89ef), [`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b), [`42497b8e`](https://github.com/keystonejs/keystone/commit/42497b8ebbaeaf0f4d7881dbb76c6abafde4cace), [`6790d053`](https://github.com/keystonejs/keystone/commit/6790d053effba118d0b3a51806a5c066cf022d45), [`6de20ce6`](https://github.com/keystonejs/keystone/commit/6de20ce6b4aad46d2a8cc5ca8d1ada179aca7c9b), [`70f2101a`](https://github.com/keystonejs/keystone/commit/70f2101ab8dd57615800f11df5b72b8fedb09298), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`df422e70`](https://github.com/keystonejs/keystone/commit/df422e70291ebf8660428c9a4a378611623985ae), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20), [`9d11d7ce`](https://github.com/keystonejs/keystone/commit/9d11d7cea6f31eeceb7326d86460a3f0e25ad01d)]:
+  - @keystonejs/field-content@5.4.2
+  - @keystonejs/app-admin-ui@5.9.1
+  - @keystonejs/build-field-types@5.2.2
+  - @keystonejs/access-control@5.2.0
+  - @arch-ui/alert@0.0.14
+  - @arch-ui/button@0.0.15
+  - @arch-ui/controls@0.1.5
+  - @arch-ui/day-picker@0.0.20
+  - @arch-ui/drawer@0.0.18
+  - @arch-ui/fields@2.1.3
+  - @arch-ui/filters@0.0.17
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/layout@0.2.10
+  - @arch-ui/loading@0.0.14
+  - @arch-ui/lozenge@0.0.13
+  - @arch-ui/options@0.0.15
+  - @arch-ui/popout@0.0.16
+  - @arch-ui/select@0.1.5
+  - @arch-ui/tooltip@0.1.8
+  - @arch-ui/typography@0.0.14
+  - @keystonejs/adapter-knex@6.3.2
+  - @keystonejs/adapter-mongoose@5.2.1
+  - @arch-ui/theme@0.0.9
+  - @keystonejs/test-utils@5.1.2
+  - @keystonejs/utils@5.2.2
+
+## 6.3.1
+
+### Patch Changes
+
+- [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+* [`9a388f01`](https://github.com/keystonejs/keystone/commit/9a388f01e388272d56f81af2247d8030e0f2c972) [#2356](https://github.com/keystonejs/keystone/pull/2356) Thanks [@SeanDoyleGit](https://github.com/SeanDoyleGit)! - OEmbed blocks now have a default type of link instead of undefined
+
+- [`bd4096ee`](https://github.com/keystonejs/keystone/commit/bd4096ee86f7790c76db23090b38f880e5aa7ecc) [#2402](https://github.com/keystonejs/keystone/pull/2402) Thanks [@LiamAttClarke](https://github.com/LiamAttClarke)! - Fixed invalid argument dereference in Virtual Field
+
+* [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+- [`c059b63c`](https://github.com/keystonejs/keystone/commit/c059b63c6ebdbb60ac4095d1efd791d598b2756c) [#2397](https://github.com/keystonejs/keystone/pull/2397) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted most field React components to functional ones.
+
+- Updated dependencies [[`635529c9`](https://github.com/keystonejs/keystone/commit/635529c9f227ae968332cd32e63875c4561af926), [`6929a7e3`](https://github.com/keystonejs/keystone/commit/6929a7e3339f36e712bcbafc71ddf7a133730b29), [`0c9d3125`](https://github.com/keystonejs/keystone/commit/0c9d3125d9b4bb37047a6c6ed61796e52fba8b17), [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`5c6ee24c`](https://github.com/keystonejs/keystone/commit/5c6ee24ceea951d7add79af55ef5a408edd8b763), [`6b1ea0ec`](https://github.com/keystonejs/keystone/commit/6b1ea0ec1b536b5c9098105f5e77c0cd5feaf6b0), [`7c552a14`](https://github.com/keystonejs/keystone/commit/7c552a14078843710b7f225a88d1cd2024514981), [`b30d1361`](https://github.com/keystonejs/keystone/commit/b30d13612c54c0a3f0ebc2fc9c777954d4c4727f), [`1d98dae8`](https://github.com/keystonejs/keystone/commit/1d98dae898a5e7c5b580bfcc1745eec5dd323adb), [`fd94849b`](https://github.com/keystonejs/keystone/commit/fd94849bccaf13426d2f7bcc2cd82fe81da7be7e), [`5e8c6df3`](https://github.com/keystonejs/keystone/commit/5e8c6df3e7c8bee4c76ca4d5be38cd6aff198bd8), [`92b8fc4f`](https://github.com/keystonejs/keystone/commit/92b8fc4f2fc83dd40a8be50fc7344d27c59a4085), [`1b3ee45e`](https://github.com/keystonejs/keystone/commit/1b3ee45e9ec6e52329b208c73e5a3597aea69799), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09), [`4313b645`](https://github.com/keystonejs/keystone/commit/4313b64554b1cc64e64245706b00c0510a5dd0b4)]:
+  - @keystonejs/adapter-knex@6.3.1
+  - @keystonejs/build-field-types@5.2.1
+  - @keystonejs/app-admin-ui@5.9.0
+  - @arch-ui/alert@0.0.13
+  - @arch-ui/button@0.0.14
+  - @arch-ui/controls@0.1.4
+  - @arch-ui/day-picker@0.0.19
+  - @arch-ui/drawer@0.0.17
+  - @arch-ui/fields@2.1.2
+  - @arch-ui/filters@0.0.16
+  - @arch-ui/input@0.1.5
+  - @arch-ui/layout@0.2.9
+  - @arch-ui/loading@0.0.13
+  - @arch-ui/lozenge@0.0.12
+  - @arch-ui/options@0.0.14
+  - @arch-ui/popout@0.0.15
+  - @arch-ui/tooltip@0.1.7
+  - @arch-ui/typography@0.0.13
+  - @keystonejs/field-content@5.4.1
+  - @keystonejs/test-utils@5.1.1
+  - @arch-ui/icons@0.0.9
+  - @arch-ui/select@0.1.4
+  - @arch-ui/theme@0.0.8
+  - @keystonejs/utils@5.2.1
+
 ## 6.3.0
 
 ### Minor Changes

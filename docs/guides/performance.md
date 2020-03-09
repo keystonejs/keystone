@@ -5,7 +5,7 @@ subSection: graphql
 order: 2
 [meta]-->
 
-# Performance
+# GraphQL Performance Monitoring
 
 ## Query Performance Monitoring with Apollo Engine
 
@@ -74,7 +74,8 @@ keystone.createList('Foo', {
 
 // ---- Schema dumping ----
 if (typeof process.env.DUMP_SCHEMA === 'string') {
-  keystone.dumpSchema(process.env.DUMP_SCHEMA);
+  const schemaName = 'public'; //this is the default keystonejs schema name
+  keystone.dumpSchema(process.env.DUMP_SCHEMA, schemaName);
   console.log(`Schema dumped to: ${path.resolve(process.env.DUMP_SCHEMA)}`);
   process.exit(0);
 }
