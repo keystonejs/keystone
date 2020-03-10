@@ -5,7 +5,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { createEditor, Editor, Transforms, Text } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 //import { withHistory } from 'slate-history';
-
+//console.log(Editor);
 //import { Editor } from 'slate-react';
 //import { Block } from 'slate';
 import { plugins as markPlugins } from './marks';
@@ -88,47 +88,48 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
 
   const onKeyDown = event => {
     if (!event.ctrlKey) {
-      return
+      return;
     }
+
+    event.preventDefault();
 
     switch (event.key) {
       case '`': {
-        event.preventDefault()
         const [match] = Editor.nodes(editor, {
           match: n => n.type === 'code',
-        })
+        });
         Transforms.setNodes(
           editor,
           { type: match ? null : 'code' },
           { match: n => Editor.isBlock(editor, n) }
-        )
+        );
         break
       }
 
       case 'b': {
-        event.preventDefault()
+        Editor.addMark(editor, { bold: true }, true);
         Transforms.setNodes(
           editor,
           { bold: true },
           { match: n => Text.isText(n), split: true }
-        )
+        );
         break
       }
 
       case 'u': {
-        event.preventDefault()
         Transforms.setNodes(
           editor,
           { underline: true },
           { match: n => Text.isText(n), split: true }
-        )
+        );
         break
       }
     }
   };
+
+  // TODO: pull from marks list
   const renderLeaf = useCallback(
-    ({ attributes, children, leaf: { bold, italic, underline, strike, ...rest } }) => {
-      console.log(rest);
+    ({ attributes, children, leaf: { bold, italic, underline, strike } }) => {
       const lineStyles = `
         ${underline ? 'underline' : ''}
         ${strike ? 'line-through' : ''}

@@ -1,4 +1,6 @@
-import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+
 import isHotkey from 'is-hotkey';
 
 function markPlugin(type, options) {
@@ -20,8 +22,9 @@ function markPlugin(type, options) {
   };
 }
 
-export let marks = {
+export const marks = {
   bold: {
+    hotkey: 'mod+b',
     test: isHotkey('mod+b'),
     label: 'Bold',
 
@@ -35,6 +38,7 @@ export let marks = {
     render: props => <strong {...props.attributes}>{props.children}</strong>,
   },
   italic: {
+    hotkey: 'mod+i',
     test: isHotkey('mod+i'),
     label: 'Italic',
     icon: props => {
@@ -47,6 +51,7 @@ export let marks = {
     render: props => <em {...props.attributes}>{props.children}</em>,
   },
   strikethrough: {
+    hotkey: 'mod+~',
     test: isHotkey('mod+~'),
     label: 'Strikethrough',
     icon: props => {
@@ -59,6 +64,7 @@ export let marks = {
     render: props => <s {...props.attributes}>{props.children}</s>,
   },
   underline: {
+    hotkey: 'mod+u',
     test: isHotkey('mod+u'),
     label: 'Underline',
     icon: props => {
@@ -72,8 +78,13 @@ export let marks = {
   },
 };
 
-export let markTypes = Object.keys(marks);
+export const markHotkeys = Object.entries(marks).reduce((result, [mark, { hotkey }]) => {
+  result[hotkey] = mark;
+  return result;
+}, {});
 
-export let plugins = Object.entries(marks).map(([type, options]) => {
+export const markTypes = Object.keys(marks);
+
+export const plugins = Object.entries(marks).map(([type, options]) => {
   return markPlugin(type, options);
 });
