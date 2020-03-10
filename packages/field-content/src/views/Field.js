@@ -24,9 +24,8 @@ class ErrorBoundary extends Component {
   }
 }
 
-let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
+let ContentField = ({ field, value, onChange, autoFocus, errors, item }) => {
   const htmlID = `ks-content-editor-${field.path}`;
-
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
@@ -57,6 +56,7 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
                 onChange={onChange}
                 autoFocus={autoFocus}
                 id={htmlID}
+                item={item}
                 css={{
                   ...inputStyles({ isMultiline: true }),
                   padding: '16px 32px',

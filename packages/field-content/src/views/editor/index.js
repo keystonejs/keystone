@@ -32,7 +32,7 @@ function getSchema(blocks) {
   return schema;
 }
 
-function Stories({ value: editorState, onChange, blocks, className, id }) {
+function Stories({ value: editorState, onChange, blocks, className, id, item }) {
   let schema = useMemo(() => {
     return getSchema(blocks);
   }, [blocks]);
@@ -41,7 +41,7 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
     const renderNode = props => {
       let block = blocks[props.node.type];
       if (block) {
-        return <block.Node {...props} blocks={blocks} />;
+        return <block.Node {...props} blocks={blocks} item={item} />;
       }
       return null;
     };
