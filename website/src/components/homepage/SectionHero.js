@@ -32,7 +32,7 @@ const SectionHero = () => (
           </Button>
           <Button
             variant="link"
-            href="https://github.com/keystonejs/keystone-5"
+            href="https://github.com/keystonejs/keystone"
             rel="noopener noreferrer"
             target="_blank"
             css={{
