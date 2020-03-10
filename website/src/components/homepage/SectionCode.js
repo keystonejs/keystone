@@ -110,7 +110,7 @@ const Card = props => (
       backgroundColor: colors.N100,
       borderRadius: 8,
       padding: '1rem',
-      overflow: 'scroll',
+      overflow: 'auto',
     }}
     {...props}
   />
