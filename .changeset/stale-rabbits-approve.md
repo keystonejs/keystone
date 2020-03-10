@@ -6,6 +6,6 @@
 
 Passed details of the current item to blocks in the content field.
 
-Correctly count block length in the content field.
+Fixed an issue with counting the block length in the content field.
 
 Fixed some incorrect aria attributes.
