@@ -1,7 +1,6 @@
 <!--[meta]
-section: guides
+section: tutorials
 title: Creating a New Project
-subSection: setup
 order: 1
 [meta]-->
 
@@ -135,4 +134,4 @@ You should see something like this:
 🔗 GraphQL API:          http://localhost:3000/admin/api
 ```
 
-Now it's time to check those routes in browser to ensure that everything works as expected. Then proceed to second step - [Adding Lists](/docs/guides/add-lists.md)
+Now it's time to check those routes in browser to ensure that everything works as expected. Then proceed to second step - [Adding Lists](/docs/tutorials/add-lists.md)

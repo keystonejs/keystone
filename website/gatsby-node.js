@@ -19,8 +19,8 @@ const PROJECT_ROOT = path.resolve('..');
 const GROUPS = [
   '',
   'quick-start',
-  'guides',
   'tutorials',
+  'guides',
   'discussions',
   'api',
   'list-plugins',
