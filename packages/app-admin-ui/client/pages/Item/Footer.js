@@ -15,6 +15,7 @@ const Toolbar = styled.div({
   paddingBottom: gridSize * 2,
   paddingTop: gridSize * 2,
   position: 'sticky',
+  zIndex: 99,
 });
 
 function useKeyListener(listener, deps) {
