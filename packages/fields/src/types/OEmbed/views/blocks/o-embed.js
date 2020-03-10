@@ -95,7 +95,7 @@ export function Sidebar({ editor }) {
     <svg
       width={16}
       height={16}
-      ariaHidden="true"
+      aria-hidden="true"
       focusable="false"
       role="img"
       xmlns="http://www.w3.org/2000/svg"

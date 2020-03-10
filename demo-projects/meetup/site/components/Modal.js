@@ -29,7 +29,7 @@ const ModalElement = props => {
   return (
     <>
       <Blanket onClick={onClose} />
-      <Dialog ariaLabel={title}>
+      <Dialog aria-label={title}>
         <Close onClick={onClose} />
         <Title>{title}</Title>
         {children}
