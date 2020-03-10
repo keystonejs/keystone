@@ -1,7 +1,6 @@
 import memoizeOne from 'memoize-one';
 import isPromise from 'p-is-promise';
 import { captureSuspensePromises } from '@keystonejs/utils';
-import { Value } from 'slate';
 import Controller from '@keystonejs/fields/Controller';
 
 import { serialize, deserialize } from '../slate-serializer';
@@ -35,7 +34,7 @@ const flattenBlocks = inputBlocks =>
 export default class ContentController extends Controller {
   constructor(config, ...args) {
     const defaultValue =
-      'defaultValue' in config ? config.defaultValue : Value.fromJSON(initialValue);
+      'defaultValue' in config ? config.defaultValue : initialValue;
     super({ ...config, defaultValue }, ...args);
 
     // Attach this as a memoized member function to avoid two pitfalls;
@@ -116,6 +115,12 @@ export default class ContentController extends Controller {
 
   serialize = data => {
     const { path } = this;
+    console.log('serialize', data[path]);
+    return {
+      disconnectAll: true,
+      create: { document: data[path] },
+    };
+
     if (!data[path] || !data[path].document) {
       // Forcibly return null if empty string
       return { document: null };
@@ -135,12 +140,13 @@ export default class ContentController extends Controller {
   };
 
   deserialize = data => {
+    console.log('deserialize', data);
     const { path } = this;
     if (!data[path] || !data[path].document) {
       // Forcibly return a default value if nothing set
-      return Value.fromJSON(initialValue);
+      return initialValue;
     }
-
+    return;
     const blocks = this.getBlocksSync();
 
     // TODO: Make the .document a JSON type in GraphQL so we don't have to parse

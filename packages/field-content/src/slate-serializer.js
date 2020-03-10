@@ -1,4 +1,4 @@
-import { Node, Value } from 'slate';
+//import { Node, Value } from 'slate';
 import assert from 'nanoassert';
 import { walkSlateNode } from './slate-walker';
 
@@ -189,8 +189,8 @@ export function deserialize({ document, ...serializations }, blocks) {
   assert(!!document, 'Must pass document to deserialize()');
   assert(!!blocks, 'Must pass blocks to deserialize()');
 
-  const value = Value.fromJSON({ document });
-
+ // const value = Value.fromJSON({ document });
+  const value = JSON.parse({document});
   return value.set(
     'document',
     walkSlateNode(value.document, {

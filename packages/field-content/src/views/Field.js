@@ -24,7 +24,7 @@ class ErrorBoundary extends Component {
   }
 }
 
-let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
+const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
   const htmlID = `ks-content-editor-${field.path}`;
 
   return (
@@ -40,7 +40,20 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
         }}
       >
         <ErrorBoundary>
-          {Object.values(field.getBlocks())
+        <Editor
+                key={htmlID}
+                blocks={field.getBlocks()}
+                value={value}
+                onChange={onChange}
+                autoFocus={autoFocus}
+                id={htmlID}
+                css={{
+                  ...inputStyles({ isMultiline: true }),
+                  padding: '16px 32px',
+                  minHeight: 200,
+                }}
+              />
+          {/*Object.values(field.getBlocks())
             .filter(({ Provider, options }) => Provider && options)
             .reduce(
               (children, { Provider, options }, index) => (
@@ -63,7 +76,7 @@ let ContentField = ({ field, value, onChange, autoFocus, errors }) => {
                   minHeight: 200,
                 }}
               />
-            )}
+              )*/}
         </ErrorBoundary>
       </FieldInput>
     </FieldContainer>

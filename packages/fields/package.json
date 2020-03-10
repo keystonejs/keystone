@@ -68,9 +68,9 @@
     "react-popper-tooltip": "^2.10.0",
     "react-select": "^3.0.8",
     "react-toast-notifications": "^2.3.0",
-    "slate": "^0.47.4",
+    "slate": "^0.57.1",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-react": "^0.22.4",
+    "slate-react": "^0.57.1",
     "unsplash-js": "^6.0.0"
   },
   "devDependencies": {

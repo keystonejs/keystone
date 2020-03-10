@@ -32,10 +32,9 @@
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-popper": "^1.3.6",
-    "slate": "^0.47.4",
+    "slate": "^0.57.1",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-plain-serializer": "^0.7.11",
-    "slate-react": "^0.22.4"
+    "slate-react": "^0.57.1"
   },
   "peerDependencies": {},
   "field-types": {

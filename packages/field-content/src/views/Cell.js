@@ -1,8 +1,12 @@
 /** @jsx jsx */
-import Plain from 'slate-plain-serializer';
-const Cell = props => {
-  if (!props.data) return null;
-  return Plain.serialize(props.data);
+import { Node } from 'slate'
+
+const serializeToPlaintext = nodes => {
+  return nodes.map(n => Node.string(n)).join('\n')
+}
+
+const Cell = ({ data }) => {
+  return data ? serializeToPlaintext(data) : null;
 };
 
 export default Cell;

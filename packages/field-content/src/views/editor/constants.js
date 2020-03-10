@@ -1,16 +1,6 @@
-export const initialValue = {
-  document: {
-    nodes: [
-      {
-        object: 'block',
-        type: 'paragraph',
-        nodes: [
-          {
-            object: 'text',
-            text: '',
-          },
-        ],
-      },
-    ],
+export const initialValue = [
+  {
+    type: 'paragraph',
+    children: [{ text: '' }],
   },
-};
+];
