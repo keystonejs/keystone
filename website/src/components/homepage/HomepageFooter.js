@@ -37,7 +37,7 @@ const HomepageFooter = () => (
           and{' '}
           <a
             css={{ color: colors.N80 }}
-            href="https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md#contributors"
+            href="https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md#contributors"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -49,7 +49,7 @@ const HomepageFooter = () => (
           Keystone v4 has moved to{' '}
           <a
             css={{ color: colors.N80 }}
-            href="https://github.com/keystonejs/keystone-5"
+            href="https://v4.keystonejs.com/"
             rel="noopener noreferrer"
             target="_blank"
           >
