@@ -7,7 +7,7 @@ import { findNode } from 'slate-react';
 import { Block } from 'slate';
 import { BlockMenuItem } from '../block-menu-item';
 
-export let type = 'image-container';
+export const type = 'image-container';
 
 const getFiles = () =>
   new Promise(resolve => {
@@ -155,7 +155,7 @@ export let getSchema = ({ blocks: { image, caption } }) => ({
   },
 });
 
-export let getPlugins = ({ blocks }) => [
+export const getPlugins = ({ blocks }) => [
   insertImages({
     extensions: imageExtensions,
     insertImage: insertImageBlockFromFile.bind(null, blocks),

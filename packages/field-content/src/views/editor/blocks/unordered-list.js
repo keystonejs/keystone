@@ -24,7 +24,7 @@ let handleListButtonClick = (editor, editorState, type) => {
   editor.focus();
 };
 
-export let type = 'unordered-list';
+export const type = 'unordered-list';
 
 export function ToolbarElement({ editor, editorState }) {
   return (
@@ -39,7 +39,7 @@ export function ToolbarElement({ editor, editorState }) {
   );
 }
 
-export let getPlugins = () => [
+export const getPlugins = () => [
   {
     onKeyDown(event, editor, next) {
       // make it so when you press enter in an empty list item,

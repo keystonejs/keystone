@@ -2,8 +2,9 @@ import * as React from 'react';
 import { hasBlock } from '../utils';
 import { type as defaultType } from './paragraph';
 import { ToolbarButton } from '../toolbar-components';
+import { Transforms } from 'slate';
 
-export let type = 'heading';
+export const type = 'heading';
 
 export function ToolbarElement({ editor, editorState }) {
   return (
@@ -24,11 +25,10 @@ export function ToolbarElement({ editor, editorState }) {
 }
 
 export function Node({ attributes, children }) {
-  console.log('HEADING FUNC');
-  return <h2 {...attributes} style={{fontSize: '5em'}}>{children}</h2>;
+  return <h2 {...attributes}>{children}</h2>;
 }
 
-export let getPlugins = () => [
+export const getPlugins = () => [
   {
     onKeyDown(event, editor, next) {
       // make it so when you press enter after typing a heading,
@@ -41,3 +41,19 @@ export let getPlugins = () => [
     },
   },
 ];
+
+const withHeaderEnterHandler = editor => {
+  const { insertBreak } = editor;
+
+  editor.insertBreak = () => {
+    // Handle default behavior (splitting the node) first...
+    insertBreak();
+
+    // ...then transform the selected node into a paragraph.
+    Transforms.setNodes(editor, { type: defaultType }, { match: n => n.type === type });
+  };
+
+  return editor;
+};
+
+export const getPluginsNew = () => [withHeaderEnterHandler];

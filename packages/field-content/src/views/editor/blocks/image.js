@@ -3,9 +3,9 @@ import { jsx } from '@emotion/core';
 import * as React from 'react';
 import Image from '../Image';
 
-export let type = 'image';
+export const type = 'image';
 
-export let ImageAlignmentContext = React.createContext({
+export const ImageAlignmentContext = React.createContext({
   alignment: '',
   onAlignmentChange() {},
 });
@@ -24,6 +24,6 @@ export function Node(props) {
   );
 }
 
-export let getSchema = () => ({
+export const getSchema = () => ({
   isVoid: true,
 });

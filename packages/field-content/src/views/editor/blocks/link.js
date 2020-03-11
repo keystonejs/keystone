@@ -7,7 +7,7 @@ import { Popper } from 'react-popper';
 import { createPortal } from 'react-dom';
 import { ToolbarButton } from '../toolbar-components';
 
-export let type = 'link';
+export const type = 'link';
 
 export function Node({ node, attributes, children, isSelected, editor }) {
   let { data } = node;

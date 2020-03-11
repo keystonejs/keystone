@@ -4,7 +4,7 @@ import { hasAncestorBlock } from '../utils';
 import { QuoteIcon } from '@arch-ui/icons';
 import { ToolbarButton } from '../toolbar-components';
 
-export let type = 'blockquote';
+export const type = 'blockquote';
 
 export function ToolbarElement({ editor, editorState }) {
   let hasBlockquote = hasAncestorBlock(editorState, type);

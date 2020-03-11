@@ -159,7 +159,7 @@ export let getSchema = ({ blocks }) => ({
   },
 });
 
-export let getPlugins = ({ blocks }) => [
+export const getPlugins = ({ blocks }) => [
   insertImages({
     extensions: imageExtensions,
     insertImage: insertImageBlockFromFile.bind(null, blocks),

@@ -35,49 +35,20 @@ function getSchema(blocks) {
   return schema;
 }*/
 
-function SlateEditor({ value: editorState, onChange, blocks, className, id }) {
-  console.log(editorState);
-  const blocksArray = useMemo(() => Object.values(blocks), [blocks]);
-  /*
-  let schema = useMemo(() => {
-    return getSchema(blocks);
-  }, [blocks]);
-*/
-  //console.log(blocks);
-  /*()
-  const plugins = useMemo(() => {
-    const renderNode = props => {
-      let block = blocks[props.node.type];
-      if (block) {
-        return <block.Node {...props} blocks={blocks} />;
-      }
-      return null;
-    };
-    return Object.values(blocks).reduce(
-      (combinedPlugins, block) => {
-        if (typeof block.getPlugins !== 'function') {
-          return combinedPlugins;
-        }
-        return [...combinedPlugins, ...block.getPlugins({ blocks })];
-      },
-      [
-        ...markPlugins,
-        {
-          renderBlock: renderNode,
-          renderInline: renderNode,
-        },
-      ]
-    );
-  }, [blocks]);
-  */
-  //console.log('plugins', plugins);
+function SlateEditor({ value: editorState, onChange, blocks, className, id, autoFocus }) {
+  // Compose plugins. See https://docs.slatejs.org/concepts/07-plugins.
+  const editor = useMemo(() => {
+    const blockPlugins = Object.values(blocks).reduce((combinedBlockPlugins, { getPluginsNew }) => {
+      return getPluginsNew
+        ? [...combinedBlockPlugins, ...getPluginsNew({ blocks })]
+        : combinedBlockPlugins;
+    }, []);
 
-  // Compose each plugin. See https://docs.slatejs.org/concepts/07-plugins.
-  const editor = useMemo(
-    () =>
-      [withReact, withHistory].reduce((composition, plugin) => plugin(composition), createEditor()),
-    []
-  );
+    return [withReact, withHistory, ...blockPlugins].reduce(
+      (composition, plugin) => plugin(composition),
+      createEditor()
+    );
+  }, []);
 
   const renderElement = useCallback(
     ({ element, ...props }) => {
@@ -126,11 +97,12 @@ function SlateEditor({ value: editorState, onChange, blocks, className, id }) {
     <div className={className} css={{ position: 'relative' }} id={id}>
       <Slate editor={editor} value={editorState} onChange={onChange}>
         <Editable
+          autoFocus={autoFocus}
           placeholder="Enter text"
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           onKeyDown={onKeyDown}
-          style={{ height: '100%', padding: '16px 32px' }}
+          style={{ minHeight: 'inherit', padding: '16px 32px' }}
         />
         {/*
         <AddBlock editorState={editorState} blocks={blocks} />

@@ -43,7 +43,7 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
             css={{
               ...inputStyles({ isMultiline: true }),
               padding: 0,
-              minHeight: 200,
+              minHeight: '200px',
             }}
           />
           {/*Object.values(field.getBlocks())
