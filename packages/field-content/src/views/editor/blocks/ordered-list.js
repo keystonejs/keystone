@@ -6,11 +6,11 @@ import { type as defaultType } from './paragraph';
 import { ListOrderedIcon } from '@arch-ui/icons';
 
 // duplicated logic for now, make some of this functionality happen in the schema instead soon
-let handleListButtonClick = (editor, editorState, type) => {
-  let isListItem = hasBlock(editorState, listItem.type);
-  let isOrderedList = hasAncestorBlock(editorState, type);
+const handleListButtonClick = (editor, editorState, type) => {
+  const isListItem = hasBlock(editorState, listItem.type);
+  const isOrderedList = hasAncestorBlock(editorState, type);
 
-  let otherListType = type === 'ordered-list' ? 'unordered-list' : 'ordered-list';
+  const otherListType = type === 'ordered-list' ? 'unordered-list' : 'ordered-list';
 
   if (isListItem && isOrderedList) {
     editor.setBlocks(defaultType);
@@ -24,7 +24,7 @@ let handleListButtonClick = (editor, editorState, type) => {
   editor.focus();
 };
 
-export let type = 'ordered-list';
+export const type = 'ordered-list';
 
 export function ToolbarElement({ editor, editorState }) {
   return (
@@ -43,7 +43,7 @@ export function Node({ attributes, children }) {
   return <ol {...attributes}>{children}</ol>;
 }
 
-export let getPlugins = () => [
+export const getPlugins = () => [
   {
     onKeyDown(event, editor, next) {
       // make it so when you press enter in an empty list item,

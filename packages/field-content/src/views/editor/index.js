@@ -4,16 +4,16 @@ import { useState, useMemo, useCallback } from 'react';
 
 import { createEditor, Editor, Transforms, Text } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
-//import { withHistory } from 'slate-history';
-//console.log(Editor);
-//import { Editor } from 'slate-react';
+import { withHistory } from 'slate-history';
+console.log(Editor);
 //import { Block } from 'slate';
-import { plugins as markPlugins } from './marks';
+import { markArray } from './marks';
 import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './add-block';
 import { useStateWithEqualityCheck } from './hooks';
 import Toolbar from './toolbar';
 
+/*
 function getSchema(blocks) {
   const schema = {
     document: {
@@ -35,7 +35,7 @@ function getSchema(blocks) {
     }
   });
   return schema;
-}
+}*/
 
 function Stories({ value: editorState, onChange, blocks, className, id }) {
   /*
@@ -43,7 +43,8 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
     return getSchema(blocks);
   }, [blocks]);
 */
-  console.log(blocks);
+  //console.log(blocks);
+  /*()
   const plugins = useMemo(() => {
     const renderNode = props => {
       let block = blocks[props.node.type];
@@ -68,93 +69,65 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
       ]
     );
   }, [blocks]);
-  console.log('plugins', plugins);
-  const editor = useMemo(() => withReact(createEditor()), []);
-  //let [editor, setEditor] = useStateWithEqualityCheck(null);
+  */
+  //console.log('plugins', plugins);
 
-  const [value, setValue] = useState(editorState);
-
-  const handleChange = value => {
-    setValue(value);
-
-    const content = JSON.stringify(value);
-    localStorage.setItem('content', content);
-
-    //console.log(`local parsed content`);
-    //console.log(JSON.parse(content));
-
-    onChange(content);
-  };
-
-  const onKeyDown = event => {
-    if (!event.ctrlKey) {
-      return;
-    }
-
-    event.preventDefault();
-
-    switch (event.key) {
-      case '`': {
-        const [match] = Editor.nodes(editor, {
-          match: n => n.type === 'code',
-        });
-        Transforms.setNodes(
-          editor,
-          { type: match ? null : 'code' },
-          { match: n => Editor.isBlock(editor, n) }
-        );
-        break
-      }
-
-      case 'b': {
-        Editor.addMark(editor, { bold: true }, true);
-        Transforms.setNodes(
-          editor,
-          { bold: true },
-          { match: n => Text.isText(n), split: true }
-        );
-        break
-      }
-
-      case 'u': {
-        Transforms.setNodes(
-          editor,
-          { underline: true },
-          { match: n => Text.isText(n), split: true }
-        );
-        break
-      }
-    }
-  };
-
-  // TODO: pull from marks list
-  const renderLeaf = useCallback(
-    ({ attributes, children, leaf: { bold, italic, underline, strike } }) => {
-      const lineStyles = `
-        ${underline ? 'underline' : ''}
-        ${strike ? 'line-through' : ''}
-      `;
-
-      return (
-        <span
-          {...attributes}
-          style={{
-            fontWeight: bold ? 'bold' : 'normal',
-            fontStyle: italic ? 'italic' : 'normal',
-            textDecorationLine: lineStyles,
-          }}
-        >
-          {children}
-        </span>
-      );
-    },
+  // Compose each plugin. See https://docs.slatejs.org/concepts/07-plugins.
+  const editor = useMemo(
+    () =>
+      [withReact, withHistory].reduce((composition, plugin) => plugin(composition), createEditor()),
     []
   );
 
+  const onKeyDown = useCallback(
+    event => {
+      markArray.forEach(([type, { test }]) => {
+        if (test(event)) {
+          event.preventDefault();
+
+          if (Editor.marks(editor)[type] === true) {
+            Editor.removeMark(editor, type);
+          } else {
+            Editor.addMark(editor, type, true);
+          }
+
+          /*
+        const [match] = Editor.nodes(editor, {
+          at: Range,
+          match: n => n[type] === true,
+        });
+
+        Transforms.setNodes(editor, { [type]: !!match }, { match: n => Text.isText(n), split: true });
+        */
+        }
+      });
+    },
+    [editor]
+  );
+
+  const renderLeaf = useCallback(({ attributes, children, leaf }) => {
+    return (
+      <span {...attributes}>
+        {markArray.reduce((res, [type, { render }]) => {
+          if (leaf[type] === true) {
+            res = render(res);
+          }
+
+          return res;
+        }, children)}
+      </span>
+    );
+  }, []);
+
   return (
     <div className={className} css={{ position: 'relative' }} id={id}>
-      <Slate editor={editor} value={value} onChange={handleChange}>
-        <Editable renderLeaf={renderLeaf} onKeyDown={onKeyDown} />
+      <Slate editor={editor} value={editorState} onChange={onChange}>
+        <Editable
+          placeholder="Enter text"
+          renderLeaf={renderLeaf}
+          onKeyDown={onKeyDown}
+          style={{ height: '100%', padding: '16px 32px' }}
+        />
       </Slate>
     </div>
   );

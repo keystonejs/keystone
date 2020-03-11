@@ -32,12 +32,7 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <FieldInput
         css={{ cursor: 'text', tabIndex: 0 }}
-        onClick={() => {
-          const elm = document.getElementById(htmlID).querySelector('[data-slate-editor]');
-          if (elm) {
-            elm.focus();
-          }
-        }}
+
       >
         <ErrorBoundary>
         <Editor
@@ -49,7 +44,7 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
                 id={htmlID}
                 css={{
                   ...inputStyles({ isMultiline: true }),
-                  padding: '16px 32px',
+                  padding: 0,
                   minHeight: 200,
                 }}
               />
