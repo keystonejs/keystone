@@ -36,6 +36,7 @@ class PassportAuthStrategy {
     assert(!!config.appSecret, 'Must provide `config.appSecret` option.');
     assert(!!config.loginPath, 'Must provide `config.loginPath` option.');
     assert(!!config.idField, 'Must provide `config.idField` option.');
+    assert(!!config.callbackHost, 'Must provide `config.callbackHost` option.');
     assert(
       typeof config.cookieSecret === 'undefined',
       'The `cookieSecret` config option for `PassportAuthStrategy` has been moved to the `Keystone` constructor: `new Keystone({ cookieSecret: "abc" })`.'
@@ -89,6 +90,7 @@ class PassportAuthStrategy {
     this._loginPath = config.loginPath;
     this._loginPathMiddleware = config.loginPathMiddleware || ((req, res, next) => next());
     this._callbackPath = config.callbackPath;
+    this._callbackHost = config.callbackHost;
     this._callbackPathMiddleware = config.callbackPathMiddleware || ((req, res, next) => next());
     this._passportScope = config.scope || [];
     this._resolveCreateData = config.resolveCreateData || (({ createData }) => createData);
@@ -390,7 +392,7 @@ class PassportAuthStrategy {
       {
         clientID: this._serviceAppId,
         clientSecret: this._serviceAppSecret,
-        callbackURL: this._callbackPath,
+        callbackURL: this._callbackHost + this._callbackPath,
         passReqToCallback: true,
         ...strategyConfig,
       },
