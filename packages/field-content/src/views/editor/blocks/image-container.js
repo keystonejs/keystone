@@ -76,27 +76,27 @@ function getImageStyle(alignment) {
   }
 }
 
-export function Node(props) {
-  const alignment = props.node.data.get('alignment');
+export function Node({ attributes, children, editor, blocks, node }) {
+  const alignment = node.data.get('alignment');
   return (
     <figure
       css={{ display: 'flex', flexDirection: 'column', ...getImageStyle(alignment) }}
-      {...props.attributes}
+      {...attributes}
     >
-      <props.blocks.image.ImageAlignmentContext.Provider
+      <blocks.image.ImageAlignmentContext.Provider
         value={useMemo(() => {
           return {
             alignment,
             onAlignmentChange(newAlignment) {
-              props.editor.setNodeByKey(props.node.key, {
-                data: props.node.data.set('alignment', newAlignment),
+              editor.setNodeByKey(node.key, {
+                data: node.data.set('alignment', newAlignment),
               });
             },
           };
-        }, [props.node.key, alignment, props.editor, props.node.data])}
+        }, [node.key, alignment, editor, node.data])}
       >
-        {props.children}
-      </props.blocks.image.ImageAlignmentContext.Provider>
+        {children}
+      </blocks.image.ImageAlignmentContext.Provider>
     </figure>
   );
 }

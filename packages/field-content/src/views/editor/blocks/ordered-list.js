@@ -4,6 +4,7 @@ import { hasAncestorBlock, hasBlock } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListOrderedIcon } from '@arch-ui/icons';
+import { Transforms, Element, Node as SlateNode } from 'slate';
 
 // duplicated logic for now, make some of this functionality happen in the schema instead soon
 const handleListButtonClick = (editor, editorState, type) => {
@@ -77,3 +78,27 @@ export const getSchema = () => ({
     }
   },
 });
+
+const withOrderedListPlugin = editor => {
+  const { normalizeNode } = editor;
+
+  editor.normalizeNode = entry => {
+    const [node, path] = entry;
+
+    if (Element.isElement(node) && node.type === type) {
+      for(const [child, childPath] of SlateNode.children(editor, path)) {
+        if (child.type !== listItem.type) {
+          // TODO: ensure works as expected
+          Transforms.unwrapNodes(editor, { at: childPath });
+          return;
+        }
+      }
+    }
+
+    normalizeNode(entry);
+  };
+
+  return editor;
+};
+
+export const getPluginsNew = () => [withOrderedListPlugin];

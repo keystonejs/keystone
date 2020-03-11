@@ -1,20 +1,26 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { useContext, useState, Fragment, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Popper } from 'react-popper';
+
+import { useSlate, useSelected } from 'slate-react';
+
 import { LinkIcon, CheckIcon, CircleSlashIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
-import { Popper } from 'react-popper';
-import { createPortal } from 'react-dom';
+
 import { ToolbarButton } from '../toolbar-components';
 
 export const type = 'link';
 
-export function Node({ node, attributes, children, isSelected, editor }) {
-  let { data } = node;
-  const href = data.get('href');
-  let [aElement, setAElement] = useState(null);
+export function Node({ element, attributes, children }) {
+  const editor = useSlate();
+  const isSelected = useSelected();
 
-  let [linkInputValue, setLinkInputValue] = useState(href);
+  const { href } = element;
+
+  const [aElement, setAElement] = useState(null);
+  const [linkInputValue, setLinkInputValue] = useState(href);
 
   // this is terrible
   // but probably necessary
@@ -24,8 +30,9 @@ export function Node({ node, attributes, children, isSelected, editor }) {
     setLinkInputValue(href);
   }, [href]);
 
+  // TODO: get editing working
   return (
-    <Fragment>
+    <>
       <a
         {...attributes}
         ref={setAElement}
@@ -76,7 +83,7 @@ export function Node({ node, attributes, children, isSelected, editor }) {
           </Popper>,
           document.body
         )}
-    </Fragment>
+    </>
   );
 }
 
@@ -90,10 +97,10 @@ function LinkInput(props) {
   );
 }
 
-let SetLinkRange = React.createContext(() => {});
+const SetLinkRange = React.createContext(() => {});
 
-let LinkMenu = props => {
-  let [value, setValue] = useState('');
+const LinkMenu = props => {
+  const [value, setValue] = useState('');
   return (
     <form
       onSubmit={e => {
@@ -123,7 +130,7 @@ let LinkMenu = props => {
 };
 
 export function Toolbar({ children, editor }) {
-  let [linkRange, setLinkRange] = useState(null);
+  const [linkRange, setLinkRange] = useState(null);
 
   return (
     <SetLinkRange.Provider value={setLinkRange}>
@@ -146,10 +153,12 @@ export function Toolbar({ children, editor }) {
     </SetLinkRange.Provider>
   );
 }
-export function ToolbarElement({ editor, editorState }) {
-  let hasLinks = editorState.inlines.some(inline => inline.type === type);
 
-  let setLinkRange = useContext(SetLinkRange);
+export function ToolbarElement({ editor, editorState }) {
+  const hasLinks = editorState.inlines.some(inline => inline.type === type);
+
+  const setLinkRange = useContext(SetLinkRange);
+
   return (
     <ToolbarButton
       isActive={hasLinks}
@@ -165,3 +174,15 @@ export function ToolbarElement({ editor, editorState }) {
     />
   );
 }
+
+const withLinkPlugin = editor => {
+  const { isInline } = editor;
+
+  editor.isInline = element => {
+    return element.type === type ? true : isInline(element);
+  }
+
+  return editor;
+}
+
+export const getPlugins = ({}) => [withLinkPlugin];

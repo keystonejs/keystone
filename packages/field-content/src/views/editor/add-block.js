@@ -1,8 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useRef, useCallback, useLayoutEffect, Fragment } from 'react';
+import { useState, useRef, useCallback, useLayoutEffect } from 'react';
 import { PlusIcon } from '@arch-ui/icons';
 import { type as defaultType } from './blocks/paragraph';
+
+import { Editor, Text, Range } from 'slate';
 import { useSlate } from 'slate-react';
 
 const getSelectedElement = () => {
@@ -13,27 +15,30 @@ const getSelectedElement = () => {
   }
 };
 
-let AddBlock = ({ editorState, blocks }) => {
+const AddBlock = ({ editorState, blocks }) => {
   const editor = useSlate();
+  const { selection } = editor;
 
-  let [isOpen, setIsOpen] = useState(false);
-  let focusBlock = editorState.focusBlock;
-  let iconRef = useRef(null);
-  let menuRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(true);
 
-  let layout = useCallback(() => {
-    let iconEle = iconRef.current;
-    let menuEle = menuRef.current;
+  const iconRef = useRef(null);
+  const menuRef = useRef(null);
+
+  const layout = useCallback(() => {
+    const iconEle = iconRef.current;
+    const menuEle = menuRef.current;
     const elm = getSelectedElement();
 
-    if (focusBlock === null || focusBlock.text !== '' || focusBlock.type !== defaultType) {
+    if (selection === null  /*|| selection.text !== '' || selection.type !== defaultType*/) {
       iconEle.style.top = `-9999px`;
       iconEle.style.left = `-9999px`;
       menuEle.style.top = `-9999px`;
       menuEle.style.left = `-9999px`;
+
       if (isOpen) {
         setIsOpen(false);
       }
+
       return;
     }
 
@@ -49,11 +54,12 @@ let AddBlock = ({ editorState, blocks }) => {
         setIsOpen(false);
       }
     }
-  }, [focusBlock, iconRef.current, menuRef.current]);
-  useLayoutEffect(layout);
+  }, [selection, iconRef.current, menuRef.current]);
+
+//  useLayoutEffect(layout);
 
   return (
-    <Fragment>
+    <>
       <div
         css={{
           position: 'absolute',
@@ -144,7 +150,7 @@ let AddBlock = ({ editorState, blocks }) => {
           </ul>
         )}
       </div>
-    </Fragment>
+    </>
   );
 };
 

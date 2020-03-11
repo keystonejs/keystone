@@ -28,21 +28,7 @@ export function Node({ attributes, children }) {
   return <h2 {...attributes}>{children}</h2>;
 }
 
-export const getPlugins = () => [
-  {
-    onKeyDown(event, editor, next) {
-      // make it so when you press enter after typing a heading,
-      // the block type will change to a paragraph
-      if (event.keyCode === 13 && editor.value.blocks.every(block => block.type === type)) {
-        editor.splitBlock().setBlocks(defaultType);
-        return;
-      }
-      next();
-    },
-  },
-];
-
-const withHeaderEnterHandler = editor => {
+const withHeaderPlugin = editor => {
   const { insertBreak } = editor;
 
   editor.insertBreak = () => {
@@ -56,4 +42,4 @@ const withHeaderEnterHandler = editor => {
   return editor;
 };
 
-export const getPluginsNew = () => [withHeaderEnterHandler];
+export const getPluginsNew = () => [withHeaderPlugin];

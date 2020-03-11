@@ -7,7 +7,7 @@ import { ToolbarButton } from '../toolbar-components';
 export const type = 'blockquote';
 
 export function ToolbarElement({ editor, editorState }) {
-  let hasBlockquote = hasAncestorBlock(editorState, type);
+  const hasBlockquote = hasAncestorBlock(editorState, type);
 
   return (
     <ToolbarButton

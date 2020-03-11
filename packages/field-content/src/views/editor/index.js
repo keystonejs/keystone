@@ -11,32 +11,9 @@ import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './add-block';
 import Toolbar from './toolbar';
 
-/*
-function getSchema(blocks) {
-  const schema = {
-    document: {
-      last: { type: defaultType },
-      normalize: (editor, { code, node }) => {
-        switch (code) {
-          case 'last_child_type_invalid': {
-            const paragraph = Block.create(defaultType);
-            return editor.insertNodeByKey(node.key, node.nodes.size, paragraph);
-          }
-        }
-      },
-    },
-    blocks: {},
-  };
-  Object.keys(blocks).forEach(type => {
-    if (typeof blocks[type].getSchema === 'function') {
-      schema.blocks[type] = blocks[type].getSchema({ blocks });
-    }
-  });
-  return schema;
-}*/
-
 function SlateEditor({ value: editorState, onChange, blocks, className, id, autoFocus }) {
-  // Compose plugins. See https://docs.slatejs.org/concepts/07-plugins.
+  //console.log(blocks);
+
   const editor = useMemo(() => {
     const blockPlugins = Object.values(blocks).reduce((combinedBlockPlugins, { getPluginsNew }) => {
       return getPluginsNew
@@ -44,15 +21,16 @@ function SlateEditor({ value: editorState, onChange, blocks, className, id, auto
         : combinedBlockPlugins;
     }, []);
 
+    // Compose plugins. See https://docs.slatejs.org/concepts/07-plugins.
     return [withReact, withHistory, ...blockPlugins].reduce(
       (composition, plugin) => plugin(composition),
       createEditor()
     );
-  }, []);
+  }, [blocks]);
 
   const renderElement = useCallback(
-    ({ element, ...props }) => {
-      const { Node: ElementNode } = blocks[element.type] || {};
+    props => {
+      const { [props.element.type]: { Node: ElementNode } = {} } = blocks;
       if (ElementNode) {
         return <ElementNode {...props} blocks={blocks} />;
       }

@@ -5,7 +5,7 @@ import { colors } from '@arch-ui/theme';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
 
-import Editor from './editor';
+import SlateEditor from './editor';
 
 class ErrorBoundary extends Component {
   state = {
@@ -33,7 +33,7 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <FieldInput css={{ cursor: 'text', tabIndex: 0 }}>
         <ErrorBoundary>
-          <Editor
+          <SlateEditor
             key={htmlID}
             blocks={field.getBlocks()}
             value={value}
