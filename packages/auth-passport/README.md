@@ -123,6 +123,7 @@ const googleStrategy = keystone.createAuthStrategy({
     appSecret: '<Your Google App Secret>',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
+    callbackHost: 'http://www.example.com',
 
     // Once a user is found/created and successfully matched to the
     // googleId, they are authenticated, and the token is returned here.
