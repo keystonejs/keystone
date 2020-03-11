@@ -22,7 +22,7 @@ const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 ### `editorConfig`
 
-__Default:__ `{}`
+**Default:** `{}`
 
 Accepts any [TinyMCE config options](https://www.tiny.cloud/docs/configure/). These will be passed to `tinymce.init` and can be used to override Keystone.js' default editor appearance and functionality.
 
