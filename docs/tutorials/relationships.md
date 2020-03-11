@@ -1,13 +1,12 @@
 <!--[meta]
-section: guides
+section: tutorials
 title: Creating Relationships Between Lists
-subSection: setup
 order: 4
 [meta]-->
 
 # Creating Relationships Between Lists
 
-This chapter assumes that that the reader has the code that was created in [Setup - Chapter 1](https://www.keystonejs.com/guides/new-project) and [Setup - Chapter 2](https://www.keystonejs.com/guides/add-lists).
+This chapter assumes that that the reader has the code that was created in [Setup - Chapter 1](https://www.keystonejs.com/tutorials/new-project) and [Setup - Chapter 2](https://www.keystonejs.com/tutorials/add-lists).
 
 ## Pick assignee from Users collection (to-single relationship)
 

@@ -99,6 +99,6 @@ KeystoneJS provides a web interface for this API at this URL:
 This todo app is a good introduction to KeystoneJS, but chances are you'll want to build something a bit more complex and secure than that!
 
 The [guides section](/docs/guides/index.md) is a great next step.
-It will walk you through concepts like [creating lists](/docs/guides/add-lists.md),
-setting up [content relationships](/docs/guides/relationships.md),
+It will walk you through concepts like [creating lists](/docs/tutorials/add-lists.md),
+setting up [content relationships](/docs/tutorials/relationships.md),
 managing [Access control](/docs/guides/access-control.md) and much more.
