@@ -2,9 +2,10 @@
 import { Component } from 'react';
 import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
-import Editor from './editor';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
+
+import Editor from './editor';
 
 class ErrorBoundary extends Component {
   state = {
@@ -30,24 +31,21 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldInput
-        css={{ cursor: 'text', tabIndex: 0 }}
-
-      >
+      <FieldInput css={{ cursor: 'text', tabIndex: 0 }}>
         <ErrorBoundary>
-        <Editor
-                key={htmlID}
-                blocks={field.getBlocks()}
-                value={value}
-                onChange={onChange}
-                autoFocus={autoFocus}
-                id={htmlID}
-                css={{
-                  ...inputStyles({ isMultiline: true }),
-                  padding: 0,
-                  minHeight: 200,
-                }}
-              />
+          <Editor
+            key={htmlID}
+            blocks={field.getBlocks()}
+            value={value}
+            onChange={onChange}
+            autoFocus={autoFocus}
+            id={htmlID}
+            css={{
+              ...inputStyles({ isMultiline: true }),
+              padding: 0,
+              minHeight: 200,
+            }}
+          />
           {/*Object.values(field.getBlocks())
             .filter(({ Provider, options }) => Provider && options)
             .reduce(

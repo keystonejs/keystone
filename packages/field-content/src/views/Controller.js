@@ -116,23 +116,20 @@ export default class ContentController extends Controller {
   serialize = data => {
     const { path } = this;
     console.log('serialize', data[path]);
-    return {
-      disconnectAll: true,
-      create: { document: data[path] },
-    };
 
-    if (!data[path] || !data[path].document) {
+    if (!data[path] /*|| !data[path].document*/) {
       // Forcibly return null if empty string
       return { document: null };
     }
 
     const blocks = this.getBlocksSync();
 
-    const serializedDocument = serialize(data[path], blocks);
+    //const serializedDocument = serialize(data[path], blocks);
+    const serializedDocument = {};
 
     // TODO: Make this a JSON type in GraphQL so we don't have to stringify it.
-    serializedDocument.document = JSON.stringify(serializedDocument.document);
-
+    serializedDocument.document = JSON.stringify(data[path]);
+    console.log(serializedDocument);
     return {
       disconnectAll: true,
       create: serializedDocument,

@@ -3,6 +3,7 @@ import { jsx } from '@emotion/core';
 import { useState, useRef, useCallback, useLayoutEffect, Fragment } from 'react';
 import { PlusIcon } from '@arch-ui/icons';
 import { type as defaultType } from './blocks/paragraph';
+import { useSlate } from 'slate-react';
 
 const getSelectedElement = () => {
   if (document.selection) return document.selection.createRange().parentElement();
@@ -12,7 +13,9 @@ const getSelectedElement = () => {
   }
 };
 
-let AddBlock = ({ editorState, editor, blocks }) => {
+let AddBlock = ({ editorState, blocks }) => {
+  const editor = useSlate();
+
   let [isOpen, setIsOpen] = useState(false);
   let focusBlock = editorState.focusBlock;
   let iconRef = useRef(null);

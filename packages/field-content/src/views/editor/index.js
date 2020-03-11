@@ -1,16 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useMemo, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 
 import { createEditor, Editor, Transforms, Text } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
-console.log(Editor);
-//import { Block } from 'slate';
+
 import { markArray } from './marks';
 import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './add-block';
-import { useStateWithEqualityCheck } from './hooks';
 import Toolbar from './toolbar';
 
 /*
@@ -37,7 +35,9 @@ function getSchema(blocks) {
   return schema;
 }*/
 
-function Stories({ value: editorState, onChange, blocks, className, id }) {
+function SlateEditor({ value: editorState, onChange, blocks, className, id }) {
+  console.log(editorState);
+  const blocksArray = useMemo(() => Object.values(blocks), [blocks]);
   /*
   let schema = useMemo(() => {
     return getSchema(blocks);
@@ -79,30 +79,16 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
     []
   );
 
-  const onKeyDown = useCallback(
-    event => {
-      markArray.forEach(([type, { test }]) => {
-        if (test(event)) {
-          event.preventDefault();
+  const renderElement = useCallback(
+    ({ element, ...props }) => {
+      const { Node: ElementNode } = blocks[element.type] || {};
+      if (ElementNode) {
+        return <ElementNode {...props} blocks={blocks} />;
+      }
 
-          if (Editor.marks(editor)[type] === true) {
-            Editor.removeMark(editor, type);
-          } else {
-            Editor.addMark(editor, type, true);
-          }
-
-          /*
-        const [match] = Editor.nodes(editor, {
-          at: Range,
-          match: n => n[type] === true,
-        });
-
-        Transforms.setNodes(editor, { [type]: !!match }, { match: n => Text.isText(n), split: true });
-        */
-        }
-      });
+      return null;
     },
-    [editor]
+    [blocks]
   );
 
   const renderLeaf = useCallback(({ attributes, children, leaf }) => {
@@ -119,35 +105,40 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
     );
   }, []);
 
+  const onKeyDown = useCallback(
+    event => {
+      markArray.forEach(([type, { test }]) => {
+        if (test(event)) {
+          event.preventDefault();
+
+          if (Editor.marks(editor)[type] === true) {
+            Editor.removeMark(editor, type);
+          } else {
+            Editor.addMark(editor, type, true);
+          }
+        }
+      });
+    },
+    [editor]
+  );
+
   return (
     <div className={className} css={{ position: 'relative' }} id={id}>
       <Slate editor={editor} value={editorState} onChange={onChange}>
         <Editable
           placeholder="Enter text"
+          renderElement={renderElement}
           renderLeaf={renderLeaf}
           onKeyDown={onKeyDown}
           style={{ height: '100%', padding: '16px 32px' }}
         />
+        {/*
+        <AddBlock editorState={editorState} blocks={blocks} />
+        <Toolbar {...{ editorState, blocks }} />
+        */}
       </Slate>
-    </div>
-  );
-
-  return (
-    <div className={className} css={{ position: 'relative' }} id={id}>
-      <Editor
-        schema={schema}
-        ref={setEditor}
-        plugins={plugins}
-        value={editorState}
-        tabIndex={0}
-        onChange={({ value }) => {
-          onChange(value);
-        }}
-      />
-      <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
-      <Toolbar {...{ editorState, editor, blocks }} />
     </div>
   );
 }
 
-export default Stories;
+export default SlateEditor;

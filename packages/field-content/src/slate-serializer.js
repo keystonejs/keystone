@@ -85,7 +85,7 @@ function shallowNodeToJson(node) {
 export function serialize(value, blocks) {
   const allMutations = {};
 
-  const serializedDocument = walkSlateNode(value.document, {
+  const serializedDocument = walkSlateNode(value, {
     visitBlock(node) {
       const block = blocks[node.type];
 

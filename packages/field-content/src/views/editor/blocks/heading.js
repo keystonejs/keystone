@@ -22,8 +22,10 @@ export function ToolbarElement({ editor, editorState }) {
     />
   );
 }
+
 export function Node({ attributes, children }) {
-  return <h2 {...attributes}>{children}</h2>;
+  console.log('HEADING FUNC');
+  return <h2 {...attributes} style={{fontSize: '5em'}}>{children}</h2>;
 }
 
 export let getPlugins = () => [

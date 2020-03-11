@@ -1,6 +1,10 @@
 export const initialValue = [
   {
     type: 'paragraph',
-    children: [{ text: '' }],
+    children: [{ text: 'TEST' }],
   },
+  {
+    type: 'heading',
+    children: [{ text: 'HEADER'}],
+  }
 ];

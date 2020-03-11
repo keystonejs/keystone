@@ -6,16 +6,16 @@ import Image from '../Image';
 export let type = 'image';
 
 export let ImageAlignmentContext = React.createContext({
-  aligment: '',
+  alignment: '',
   onAlignmentChange() {},
 });
 
 export function Node(props) {
   let { data } = props.node;
-  let { aligment, onAlignmentChange } = React.useContext(ImageAlignmentContext);
+  let { alignment, onAlignmentChange } = React.useContext(ImageAlignmentContext);
   return (
     <Image
-      alignment={aligment}
+      alignment={alignment}
       attributes={props.attributes}
       isFocused={props.isFocused}
       src={data.get('src')}

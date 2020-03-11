@@ -9,7 +9,7 @@ import { BlockMenuItem } from '../block-menu-item';
 
 export let type = 'image-container';
 
-let getFiles = () =>
+const getFiles = () =>
   new Promise(resolve => {
     let input = document.createElement('input');
     input.type = 'file';
@@ -75,8 +75,9 @@ function getImageStyle(alignment) {
     };
   }
 }
+
 export function Node(props) {
-  let alignment = props.node.data.get('alignment');
+  const alignment = props.node.data.get('alignment');
   return (
     <figure
       css={{ display: 'flex', flexDirection: 'column', ...getImageStyle(alignment) }}

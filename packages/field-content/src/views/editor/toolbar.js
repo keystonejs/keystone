@@ -10,12 +10,15 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
 import { getSelectionReference } from './utils';
 import applyRef from 'apply-ref';
+import { useSlate } from 'slate-react';
 
-let stopPropagation = e => {
+const stopPropagation = e => {
   e.stopPropagation();
 };
 
-function InnerToolbar({ blocks, editor, editorState }) {
+function InnerToolbar({ blocks, editorState }) {
+  const editor = useSlate();
+
   return (
     <div css={{ display: 'flex' }}>
       {Object.keys(blocks)
@@ -114,10 +117,10 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
   );
 });
 
-export default ({ editorState, blocks, editor }) => {
+export default ({ editorState, blocks }) => {
   // this element is created here so that when the popper rerenders
   // the inner toolbar won't have to update
-  let children = <InnerToolbar blocks={blocks} editor={editor} editorState={editorState} />;
+  const children = <InnerToolbar blocks={blocks} editorState={editorState} />;
   return (
     <Popper
       placement="top"
@@ -136,7 +139,6 @@ export default ({ editorState, blocks, editor }) => {
             editorState,
             style: { ...style, zIndex: 10 },
             blocks,
-            editor,
             ref,
             children,
           }}
