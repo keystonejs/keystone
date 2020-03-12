@@ -11,7 +11,7 @@ Now it's the time to dive deeper. Let's make out `Todo` list a bit more complex.
 
 ## Creating basic list in separate file
 
-To improve maintainability of your code it is convenient to split `List` schemas to separate files.
+To improve maintainability of your code it is convenient to split `List` schemas into separate files.
 Create a directory named 'lists', with a file `Todos.js` inside of it and put the following code inside.
 
 ```javascript
