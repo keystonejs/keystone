@@ -1,13 +1,12 @@
 <!--[meta]
-section: guides
+section: tutorials
 title: Adding Lists To Your Project
-subSection: setup
 order: 2
 [meta]-->
 
 # Adding Lists To Your Project
 
-We've already created one list during [previous tutorial](/docs/guides/new-project.md).
+We've already created one list during [previous tutorial](/docs/tutorials/new-project.md).
 Now it's the time to dive deeper. Let's make ToDos object a bit more complex.
 
 ## Creating basic list in separate file
@@ -105,7 +104,7 @@ keystone.createList('User', UsersSchema);
 ```
 
 Relaunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user.
-But how can we assign a task to specific user? Let's proceed with [Defining Relationships](/docs/guides/relationships.md)
+But how can we assign a task to specific user? Let's proceed with [Defining Relationships](/docs/tutorials/relationships.md)
 
 See also:
 [Schema - Lists & Fields](/docs/guides/schema.md)

@@ -1,7 +1,6 @@
 <!--[meta]
-section: guides
+section: tutorials
 title: Adding Initial List Data
-subSection: setup
 order: 3
 [meta]-->
 
