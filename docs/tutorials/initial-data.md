@@ -285,7 +285,7 @@ const keystone = new Keystone({
 _NOTE: When using the Array Relation syntax, If any of the queries do not match
 any items, an Error will be thrown._
 
-Clear the database, start the Keystone JS application and visit the Admin UI. Take a look at both users, they each now have two posts associated with them. `John Duck` has the posts that contain `React` in the title. `Barry` has the posts that matched any of the queries in the array.
+Clear the database, start Keystone and visit the Admin UI. Take a look at both users, they each now have two posts associated with them. `John Duck` has the posts that contain `React` in the title. `Barry` has the posts that matched any of the queries in the array.
 
 _Note_: When looking at the posts, there are _no_ associated users! To have both the user associated with the post as well is called `back reference`, this will be handled in a later chapter.
 
