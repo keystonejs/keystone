@@ -7,7 +7,7 @@ order: 2
 # Adding Lists To Your Project
 
 We've already created one list during the [previous tutorial](/docs/tutorials/new-project.md).
-Now it's the time to dive deeper. Let's make out `Todo` list a bit more complex.
+Now it's the time to dive deeper. Let's make our `Todo` list a bit more complex.
 
 ## Creating basic list in separate file
 
