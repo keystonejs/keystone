@@ -32,7 +32,7 @@ module.exports = {
 };
 ```
 
-Here we described a very basic schema for a generic `Todo`. Let's add it to our Keystone system.
+Here we described a very basic schema for a generic `Todo`. Let's add it to our Keystone application.
 Inside of `index.js` import the defined schema and replace the existing one with the required version.
 
 ```javascript
