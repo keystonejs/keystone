@@ -6,13 +6,13 @@ order: 2
 
 # Adding Lists To Your Project
 
-We've already created one list during [previous tutorial](/docs/tutorials/new-project.md).
-Now it's the time to dive deeper. Let's make ToDos object a bit more complex.
+We've already created one list during the [previous tutorial](/docs/tutorials/new-project.md).
+Now it's the time to dive deeper. Let's make our `Todo` list a bit more complex.
 
 ## Creating basic list in separate file
 
-To improve maintainability of your code it is convenient to split List schemas to separate files. Then we can import it in `index.js` for registration. Create a directory
-named 'lists', with a file `Todos.js` inside of it and put the following code inside.
+To improve maintainability of your code it is convenient to split `List` schemas into separate files.
+Create a directory named 'lists', with a file `Todos.js` and put the following code inside.
 
 ```javascript
 const { Text, Checkbox } = require('@keystonejs/fields');
@@ -31,7 +31,7 @@ module.exports = {
 };
 ```
 
-Here we described a very basic schema of generic ToDo. Let's register it.
+Here we described a very basic schema for a generic `Todo`. Let's add it to our Keystone application.
 Inside of `index.js` import the defined schema and replace the existing one with the required version.
 
 ```javascript
@@ -40,11 +40,11 @@ const TodosSchema = require('./lists/Todos.js');
 keystone.createList('Todo', TodosSchema);
 ```
 
-Make sure to relaunch keystone's instance and check, that everything still works fine.
+Make sure to relaunch Keystone and check that everything still works fine.
 
 ## Adding fields
 
-Tasks usually have a few more fields. Let's add an ability to set deadlines and assignee of a task:
+`Todo` tasks usually have a few more fields. Let's add an ability to set deadlines and the assignee of a task:
 
 ```javascript
 // import another field type - CalendarDay
@@ -75,7 +75,8 @@ Now it's time to explore docs on other field types and get a bit familiar with t
 
 ## Defining User list
 
-Take a look at the `assignee` field. Now we're just typing in a name. Why don't we make separate User list, so we can point assigned tasks to a specific User.
+Take a look at the `assignee` field. Now we're just typing in a name.
+Why don't we make a separate `User` list, so we can point assigned tasks to a specific `User`.
 Create another file `Users.js` in the `lists` directory. It should look like this:
 
 ```javascript
@@ -103,7 +104,9 @@ const UsersSchema = require('./lists/Users.js');
 keystone.createList('User', UsersSchema);
 ```
 
-Relaunch your app and check if new list appeared in admin panel. Note, now `type: Password` looks when you're creating new user.
+<!-- FIXME:TL We haven't shown then how to get an Admin UI yes!!!! -->
+
+Relaunch your app and check if new the list appeared in the Admin UI. 
 But how can we assign a task to specific user? Let's proceed with [Defining Relationships](/docs/tutorials/relationships.md)
 
 See also:
