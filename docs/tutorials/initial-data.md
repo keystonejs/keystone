@@ -10,7 +10,7 @@ This guide will show you how to create a User list and add initial data to it us
 
 _Note_: In a previous chapter the code was split up over separate files, while this is preferred in a real code base, in this part everything is put in one file for clarity reasons.
 
-This chapter will use a different User schema than previous chapters and instead of a Todo list, there will be a Post list. It is best to start from a fresh project and start from an empty database (delete data from previous chapters). Also, make sure to have all of the following packages installed:
+This chapter will use a different User schema than previous chapters and instead of a `Todo` list, there will be a `Post` list. It is best to start from a fresh project and start from an empty database (delete data from previous chapters). Also, make sure to have all of the following packages installed:
 
 ```
 yarn add @keystonejs/keystone
@@ -21,7 +21,7 @@ yarn add @keystonejs/app-admin-ui
 yarn add @keystonejs/auth-password
 ```
 
-First let's create a User list and add a `PasswordAuthStrategy`. The code in `index.js`:
+First let's create a `User` list and add a `PasswordAuthStrategy`. The code in `index.js`:
 
 ```javascript
 const { Keystone } = require('@keystonejs/keystone');
@@ -61,7 +61,7 @@ module.exports = {
 };
 ```
 
-_Hint_: A similar same setup can be achieved by running the KeystoneJS CLI `yarn create keystone-app` and selecting `Starter (Users + Authentication)`. This starter project has a User list, PasswordAuthStrategy and seeding of the database already configured. For now, we will proceed manually.
+_Hint_: A similar same setup can be achieved by running the Keystone CLI `yarn create keystone-app` and selecting `Starter (Users + Authentication)`. This starter project has a `User` list, `PasswordAuthStrategy` and seeding of the database already configured. For now, we will proceed manually.
 
 ## Usage
 
@@ -77,7 +77,7 @@ keystone.createItems({
 });
 ```
 
-_Note_: The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the email has `isUnique: true`, therefor it would not be possible for the above code to have the same email for each user that should be generated.
+_Note_: The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the `email` field has `isUnique: true`, therefor it would not be possible for the above code to have the same email for each user that should be generated.
 
 Example on how to `seed` the data upon database connection:
 
@@ -96,13 +96,13 @@ const keystone = new Keystone({
 });
 ```
 
-Start the application and visit the AdminUI, two users are available on startup.
+Start the application and visit the Admin UI, two users are available on startup.
 
-_Note_: In this example the same two users would be generated upon _every_ startup. Since email should be unique this will cause a duplicate error to show up. To avoid this, clear the database before starting KeystoneJS.
+_Note_: In this example the same two users would be generated upon _every_ startup. Since email should be unique this will cause a duplicate error to show up. To avoid this, clear the database before starting Keystone.
 
 ### Relationships
 
-It is possible to create relationships upon insertion by using the KeystoneJS query syntax.
+It is possible to create relationships upon insertion by using the Keystone query syntax.
 
 #### Single Relationships
 
@@ -162,13 +162,13 @@ const keystone = new Keystone({
 });
 ```
 
-Upon insertion, KeystoneJS will resolve the `{ where: { name: 'John Duck' } }` query
+Upon insertion, Keystone will resolve the `{ where: { name: 'John Duck' } }` query
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
 _Note_: An error is thrown if no items match the query.
 
-Clear the database, then start KeystoneJS and visit the AdminUI to see that two users are generated and one post is generated. The post has an `author` named `John Duck`. In the database `author` will be the ID of the user with name John Duck.
+Clear the database, then start Keystone and visit the Admin UI to see that two users are generated and one post is generated. The post has an `author` named `John Duck`. In the database `author` will be the ID of the user with name John Duck.
 
 #### Many Relationships
 
@@ -247,7 +247,7 @@ const keystone = new Keystone({
 });
 ```
 
-Clear the database, start the KeystoneJS application and visit the AdminUI. Take a look at the user `John Duck`, he has two posts associated with him (there were two posts with the word `React` in the `title`).
+Clear the database, start the Keystone application and visit the Admin UI. Take a look at the user `John Duck`, he has two posts associated with him (there were two posts with the word `React` in the `title`).
 
 **Array Relation syntax** example
 
@@ -285,13 +285,13 @@ const keystone = new Keystone({
 _NOTE: When using the Array Relation syntax, If any of the queries do not match
 any items, an Error will be thrown._
 
-Clear the database, start the KeystoneJS application and visit the AdminUI. Take a look at both users, they each now have two posts associated with them. `John Duck` has the posts that contain `React` in the title. `Barry` has the posts that matched any of the queries in the array.
+Clear the database, start the Keystone JS application and visit the Admin UI. Take a look at both users, they each now have two posts associated with them. `John Duck` has the posts that contain `React` in the title. `Barry` has the posts that matched any of the queries in the array.
 
 _Note_: When looking at the posts, there are _no_ associated users! To have both the user associated with the post as well is called `back reference`, this will be handled in a later chapter.
 
 ---
 
-The entire power of [KeystoneJS Query Syntax](https://www.keystonejs.com/guides/intro-to-graphql#filter-limit-and-sorting) is supported.
+The entire power of [Keystone Query Syntax](https://www.keystonejs.com/guides/intro-to-graphql#filter-limit-and-sorting) is supported.
 
 If you need the 3rd item that matches the query, you'd use a query like:
 
