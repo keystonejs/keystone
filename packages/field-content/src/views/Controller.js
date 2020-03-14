@@ -14,6 +14,9 @@ const convertNode = node => {
     type,
     ...rest,
     ...(nodes ? { children: nodes.map(convertNode) } : {}),
+    // TODO: decide if we want to keep a dedicated data key (see below) or merge them into the element.
+    // Right now the content field blocks assume the latter.
+    ...data
   };
   if ((!element.type || element.type === 'text') && typeof element.text !== 'undefined') {
     delete element.type;
@@ -26,7 +29,9 @@ const convertNode = node => {
       }
     }
   }
-  if (data) element.data = data;
+
+  //if (data) element.data = data;
+
   // if(element.type) element.type = element.type.replace("-", "_")
 
   // Atomic blocks must now have children

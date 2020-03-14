@@ -147,23 +147,16 @@ export class Content extends Relationship.implementation {
         },
         hooks: {
           async resolveInput({ resolvedData, ...args }) {
+            // FIXME: mutations!
+            return resolvedData;
+
             // This method will get called twice;
             // 1. The incoming graphql request data
             // 2. Registering the back link in the `from` field
             // We only want to handle the first case, so we bail early otherwise
-
-
             if (!resolvedData.document) {
-              console.log('resolve input no doc');
-              console.log(resolvedData);
               return resolvedData;
             }
-
-            console.log('resolve input');
-            console.log(resolvedData);
-
-            console.log(args);
-            return resolvedData;
 
             // TODO: Remove JSON.parse once using native JSON type
             const documentObj = JSON.parse(resolvedData.document);
