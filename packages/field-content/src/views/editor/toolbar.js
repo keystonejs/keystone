@@ -4,7 +4,7 @@ import { Fragment, useRef, useLayoutEffect, forwardRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
 
-import { Editor, Transforms } from 'slate';
+import { Editor } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
 
 import { markArray, markTypes } from './marks';

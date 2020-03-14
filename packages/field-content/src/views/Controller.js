@@ -6,6 +6,45 @@ import Controller from '@keystonejs/fields/Controller';
 import { serialize, deserialize } from '../slate-serializer';
 import { initialValue } from './editor/constants';
 
+// Conversion code borrowed from https://github.com/objectlegal/slate-snippets#convert-data-from-v047-to-v050
+const convertNode = node => {
+  const { object, type, data, nodes, ...rest } = node;
+  // We drop `object`, pull up data, convert `nodes` to children and copy the rest across
+  const element = {
+    type,
+    ...rest,
+    ...(nodes ? { children: nodes.map(convertNode) } : {}),
+  };
+  if ((!element.type || element.type === 'text') && typeof element.text !== 'undefined') {
+    delete element.type;
+    if (Array.isArray(element.marks)) {
+      for (const mark of element.marks) {
+        if (typeof mark === 'string') element[mark] = true;
+        else if (typeof mark === 'object' && mark.type) {
+          element[mark.type] = mark.hasOwnProperty('value') ? mark.value : true;
+        }
+      }
+    }
+  }
+  if (data) element.data = data;
+  // if(element.type) element.type = element.type.replace("-", "_")
+
+  // Atomic blocks must now have children
+  if (element.type && !element.children) {
+    element.children = [
+      {
+        text: '',
+      },
+    ];
+  }
+  return element;
+};
+
+const convertSlate047to050 = object => {
+  const { nodes } = object.document;
+  return nodes ? nodes.map(convertNode) : object.document;
+};
+
 const flattenBlocks = inputBlocks =>
   inputBlocks.reduce((outputBlocks, block) => {
     if (!block.type) {
@@ -33,8 +72,7 @@ const flattenBlocks = inputBlocks =>
 
 export default class ContentController extends Controller {
   constructor(config, ...args) {
-    const defaultValue =
-      'defaultValue' in config ? config.defaultValue : initialValue;
+    const defaultValue = 'defaultValue' in config ? config.defaultValue : initialValue;
     super({ ...config, defaultValue }, ...args);
 
     // Attach this as a memoized member function to avoid two pitfalls;
@@ -139,21 +177,22 @@ export default class ContentController extends Controller {
   deserialize = data => {
     console.log('deserialize', data);
     const { path } = this;
+    console.log('path', path);
     if (!data[path] || !data[path].document) {
       // Forcibly return a default value if nothing set
       return initialValue;
     }
-    return;
+
     const blocks = this.getBlocksSync();
 
-    // TODO: Make the .document a JSON type in GraphQL so we don't have to parse
-    // it
+    // TODO: Make the .document a JSON type in GraphQL so we don't have to parse it
     const parsedData = {
       ...data[path],
       document: JSON.parse(data[path].document),
     };
 
     // Filter out oEmbeds from parsedData.document that missing from parsedData.oEmbeds
+    /*
     parsedData.document.nodes = parsedData.document.nodes.filter(node => {
       if (node.type !== 'oEmbed') {
         return true;
@@ -165,6 +204,9 @@ export default class ContentController extends Controller {
 
       return parsedData.oEmbeds.find(embed => embed.id === node.data._joinIds[0]);
     });
+*/
+
+    return convertSlate047to050(parsedData);
 
     return deserialize(parsedData, blocks);
   };

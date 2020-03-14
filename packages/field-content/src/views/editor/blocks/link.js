@@ -4,12 +4,16 @@ import React, { useContext, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
 
+import { Transforms, Range } from 'slate';
 import { useSlate, useSelected } from 'slate-react';
 
 import { LinkIcon, CheckIcon, CircleSlashIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 
 import { ToolbarButton } from '../toolbar-components';
+import { isBlockActive } from '../utils';
+
+import isUrl from 'is-url';
 
 export const type = 'link';
 
@@ -85,7 +89,7 @@ export const Node = ({ element, attributes, children }) => {
         )}
     </>
   );
-}
+};
 
 function LinkInput(props) {
   return (
@@ -99,14 +103,14 @@ function LinkInput(props) {
 
 const SetLinkRange = React.createContext(() => {});
 
-const LinkMenu = props => {
+const LinkMenu = ({ onSubmit, onCancel }) => {
   const [value, setValue] = useState('');
   return (
     <form
       onSubmit={e => {
         e.stopPropagation();
         e.preventDefault();
-        props.onSubmit(value);
+        onSubmit(value);
       }}
       css={{ display: 'flex' }}
     >
@@ -118,13 +122,7 @@ const LinkMenu = props => {
         }}
       />
       <ToolbarButton label="Submit" icon={<CheckIcon />} type="submit" />
-      <ToolbarButton
-        label="Cancel"
-        icon={<CircleSlashIcon />}
-        onClick={() => {
-          props.onCancel();
-        }}
-      />
+      <ToolbarButton label="Cancel" icon={<CircleSlashIcon />} onClick={onCancel} />
     </form>
   );
 };
@@ -158,8 +156,7 @@ export function Toolbar({ children }) {
 export const ToolbarElement = () => {
   const editor = useSlate();
 
-  //const hasLinks = editorState.inlines.some(inline => inline.type === type);
-  const hasLinks = true;
+  const hasLinks = isBlockActive(editor, type);
   const setLinkRange = useContext(SetLinkRange);
 
   return (
@@ -169,21 +166,60 @@ export const ToolbarElement = () => {
       icon={<LinkIcon />}
       onClick={() => {
         if (hasLinks) {
-          editor.unwrapInline(type);
+          Transforms.unwrapNodes(editor, { match: n => n.type === type });
         } else {
           setLinkRange(editor.selection);
         }
       }}
     />
   );
-}
+};
+
+const wrapLink = (editor, url) => {
+  if (isBlockActive(editor, type)) {
+    unwrapLink(editor);
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const link = {
+    type,
+    url,
+    children: isCollapsed ? [{ text: url }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, link);
+  } else {
+    Transforms.wrapNodes(editor, link, { split: true });
+    Transforms.collapse(editor, { edge: 'end' });
+  }
+};
 
 export const getPluginsNew = () => [
   editor => {
-    const { isInline } = editor;
+    const { isInline, insertText, insertData } = editor;
 
     editor.isInline = element => {
       return element.type === type ? true : isInline(element);
+    };
+
+    editor.insertText = text => {
+      if (text && isUrl(text)) {
+        wrapLink(editor, text);
+      } else {
+        insertText(text);
+      }
+    };
+
+    editor.insertData = data => {
+      const text = data.getData('text/plain');
+
+      if (text && isUrl(text)) {
+        wrapLink(editor, text);
+      } else {
+        insertData(data);
+      }
     };
 
     return editor;

@@ -1,27 +1,28 @@
 import * as React from 'react';
 import { ToolbarButton } from '../toolbar-components';
-import { hasAncestorBlock, hasBlock } from '../utils';
+import { hasAncestorBlock, isBlockActive } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListUnorderedIcon } from '@arch-ui/icons';
+import { Transforms } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
 
-// duplicated logic for now, make some of this functionality happen in the schema instead soon
-const handleListButtonClick = (editor, editorState, type) => {
-  let isListItem = hasBlock(editor, listItem.type);
-  //let isOrderedList = hasAncestorBlock(editorState, type);
-  let isOrderedList = false;
+const LIST_TYPES = ['ordered-list', 'unordered-list'];
 
-  let otherListType = type === 'ordered-list' ? 'unordered-list' : 'ordered-list';
+const handleListButtonClick = (editor, type) => {
+  const isActive = isBlockActive(editor, type)
 
-  if (isListItem && isOrderedList) {
-    editor.setBlocks(defaultType);
-    editor.unwrapBlock(type);
-  } else if (isListItem) {
-    editor.unwrapBlock(otherListType);
-    editor.wrapBlock(type);
-  } else {
-    editor.setBlocks(listItem.type).wrapBlock(type);
+  Transforms.unwrapNodes(editor, {
+    match: n => LIST_TYPES.includes(n.type),
+    split: true,
+  })
+
+  Transforms.setNodes(editor, {
+    type: isActive ? 'paragraph' : 'list-item',
+  })
+
+  if (!isActive) {
+    Transforms.wrapNodes(editor, { type: type, children: [] })
   }
 
   ReactEditor.focus(editor);
@@ -37,9 +38,7 @@ export const ToolbarElement = () => {
       label="Unordered List"
       icon={<ListUnorderedIcon />}
       isActive={hasAncestorBlock(editor, type)}
-      onClick={() => {
-        handleListButtonClick(editor, null, type);
-      }}
+      onClick={() => handleListButtonClick(editor, type)}
     />
   );
 }

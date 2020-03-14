@@ -4,24 +4,25 @@ import { hasAncestorBlock, hasBlock, isBlockActive } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListOrderedIcon } from '@arch-ui/icons';
-import { Transforms, Element, Editor, Node as SlateNode, Text } from 'slate';
+import { Transforms, Element, Node as SlateNode } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
 
-// duplicated logic for now, make some of this functionality happen in the schema instead soon
-const handleListButtonClick = (editor, editorState, type) => {
-  const isListItem = hasBlock(editor, listItem.type);
-  const isOrderedList = hasAncestorBlock(editor, type);
+const LIST_TYPES = ['ordered-list', 'unordered-list'];
 
-  const otherListType = type === 'ordered-list' ? 'unordered-list' : 'ordered-list';
+const handleListButtonClick = (editor, type) => {
+  const isActive = isBlockActive(editor, type)
 
-  if (isListItem && isOrderedList) {
-    editor.setBlocks(defaultType);
-    editor.unwrapBlock(type);
-  } else if (isListItem) {
-    editor.unwrapBlock(otherListType);
-    editor.wrapBlock(type);
-  } else {
-    editor.setBlocks(listItem.type).wrapBlock(type);
+  Transforms.unwrapNodes(editor, {
+    match: n => LIST_TYPES.includes(n.type),
+    split: true,
+  })
+
+  Transforms.setNodes(editor, {
+    type: isActive ? 'paragraph' : 'list-item',
+  })
+
+  if (!isActive) {
+    Transforms.wrapNodes(editor, { type: type, children: [] })
   }
 
   ReactEditor.focus(editor);
@@ -37,9 +38,7 @@ export const ToolbarElement = () => {
       label="Ordered List"
       icon={<ListOrderedIcon />}
       isActive={isBlockActive(editor, type)}
-      onClick={() => {
-        handleListButtonClick(editor, null, type);
-      }}
+      onClick={() => handleListButtonClick(editor, type)}
     />
   );
 }
@@ -105,6 +104,11 @@ export const getPluginsNew = () => [
 
       if (Element.isElement(node) && node.type === type) {
         for (const [child, childPath] of SlateNode.children(editor, path)) {
+          if (child.type !== listItem.type) {
+            Transforms.unwrapNodes(editor, { at: childPath });
+            return;
+          }
+
           if (Element.isElement(child)) {
             return;
             if (child.type === 'MAGIC_VALUE') {
