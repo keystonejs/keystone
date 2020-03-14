@@ -108,16 +108,6 @@ export const Toolbar = /* ... */;
 export const Provider = /* ... */;
 
 // (optional)
-// slate.js schema object, injected into the slate.js schema as:
-// {
-//   document: { /* .. */ },
-//   blocks: {
-//     [type]: <here>,
-//   },
-// }
-export const schema = /* ... */;
-
-// (optional)
 // slate.js plugins array.
 export const plugins = /* ... */;
 

@@ -4,11 +4,13 @@ import { hasAncestorBlock, hasBlock } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListUnorderedIcon } from '@arch-ui/icons';
+import { useSlate, ReactEditor } from 'slate-react';
 
 // duplicated logic for now, make some of this functionality happen in the schema instead soon
-let handleListButtonClick = (editor, editorState, type) => {
-  let isListItem = hasBlock(editorState, listItem.type);
-  let isOrderedList = hasAncestorBlock(editorState, type);
+const handleListButtonClick = (editor, editorState, type) => {
+  let isListItem = hasBlock(editor, listItem.type);
+  //let isOrderedList = hasAncestorBlock(editorState, type);
+  let isOrderedList = false;
 
   let otherListType = type === 'ordered-list' ? 'unordered-list' : 'ordered-list';
 
@@ -21,19 +23,22 @@ let handleListButtonClick = (editor, editorState, type) => {
   } else {
     editor.setBlocks(listItem.type).wrapBlock(type);
   }
-  editor.focus();
+
+  ReactEditor.focus(editor);
 };
 
 export const type = 'unordered-list';
 
-export function ToolbarElement({ editor, editorState }) {
+export const ToolbarElement = () => {
+  const editor = useSlate();
+
   return (
     <ToolbarButton
       label="Unordered List"
       icon={<ListUnorderedIcon />}
-      isActive={hasAncestorBlock(editorState, type)}
+      isActive={hasAncestorBlock(editor, type)}
       onClick={() => {
-        handleListButtonClick(editor, editorState, type);
+        handleListButtonClick(editor, null, type);
       }}
     />
   );
@@ -57,7 +62,7 @@ export const getPlugins = () => [
   },
 ];
 
-export function Node({ attributes, children }) {
+export const Node = ({ attributes, children }) => {
   return <ul {...attributes}>{children}</ul>;
 }
 
@@ -77,3 +82,15 @@ export const getSchema = () => ({
     }
   },
 });
+
+export const getPluginsNew = () => [
+  editor => {
+    const { normalizeNode } = editor;
+
+    editor.normalizeNode = entry => {
+      normalizeNode(entry);
+    }
+
+    return editor;
+  }
+]

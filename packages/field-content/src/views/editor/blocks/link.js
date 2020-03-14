@@ -13,7 +13,7 @@ import { ToolbarButton } from '../toolbar-components';
 
 export const type = 'link';
 
-export function Node({ element, attributes, children }) {
+export const Node = ({ element, attributes, children }) => {
   const editor = useSlate();
   const isSelected = useSelected();
 
@@ -129,7 +129,8 @@ const LinkMenu = props => {
   );
 };
 
-export function Toolbar({ children, editor }) {
+export function Toolbar({ children }) {
+  const editor = useSlate();
   const [linkRange, setLinkRange] = useState(null);
 
   return (
@@ -154,9 +155,11 @@ export function Toolbar({ children, editor }) {
   );
 }
 
-export function ToolbarElement({ editor, editorState }) {
-  const hasLinks = editorState.inlines.some(inline => inline.type === type);
+export const ToolbarElement = () => {
+  const editor = useSlate();
 
+  //const hasLinks = editorState.inlines.some(inline => inline.type === type);
+  const hasLinks = true;
   const setLinkRange = useContext(SetLinkRange);
 
   return (
@@ -168,21 +171,21 @@ export function ToolbarElement({ editor, editorState }) {
         if (hasLinks) {
           editor.unwrapInline(type);
         } else {
-          setLinkRange(editorState.selection);
+          setLinkRange(editor.selection);
         }
       }}
     />
   );
 }
 
-const withLinkPlugin = editor => {
-  const { isInline } = editor;
+export const getPluginsNew = () => [
+  editor => {
+    const { isInline } = editor;
 
-  editor.isInline = element => {
-    return element.type === type ? true : isInline(element);
-  }
+    editor.isInline = element => {
+      return element.type === type ? true : isInline(element);
+    };
 
-  return editor;
-}
-
-export const getPlugins = ({}) => [withLinkPlugin];
+    return editor;
+  },
+];

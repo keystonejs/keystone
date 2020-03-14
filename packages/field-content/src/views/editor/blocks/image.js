@@ -1,29 +1,40 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
+import { createContext, useContext } from 'react';
+import { useFocused } from 'slate-react';
+
 import Image from '../Image';
 
 export const type = 'image';
 
-export const ImageAlignmentContext = React.createContext({
+export const ImageAlignmentContext = createContext({
   alignment: '',
-  onAlignmentChange() {},
+  onAlignmentChange: () => {},
 });
 
-export function Node(props) {
-  let { data } = props.node;
-  let { alignment, onAlignmentChange } = React.useContext(ImageAlignmentContext);
+export const Node = ({ element: { src }, attributes }) => {
+  const isFocused = useFocused();
+  const { alignment, onAlignmentChange } = useContext(ImageAlignmentContext);
+
   return (
     <Image
       alignment={alignment}
-      attributes={props.attributes}
-      isFocused={props.isFocused}
-      src={data.get('src')}
+      attributes={attributes}
+      isFocused={isFocused}
+      src={src}
       onAlignmentChange={onAlignmentChange}
     />
   );
 }
 
-export const getSchema = () => ({
-  isVoid: true,
-});
+export const getPluginsNew = () => [
+  editor => {
+    const { isVoid } = editor;
+
+    editor.isVoid = element => {
+      return element.type === type ? true : isVoid(element);
+    };
+
+    return editor;
+  },
+];

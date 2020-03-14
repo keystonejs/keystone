@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-let isBrowser = typeof window !== 'undefined';
+const isBrowser = typeof window !== 'undefined';
 
 function getSize() {
   if (isBrowser) {
@@ -16,7 +16,7 @@ function getSize() {
 }
 
 export default function useWindowSize() {
-  let [windowSize, setWindowSize] = useState(getSize());
+  const [windowSize, setWindowSize] = useState(getSize());
 
   useEffect(() => {
     function handleResize() {

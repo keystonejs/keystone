@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 
 export const type = 'paragraph';
 
-export function Node({ attributes, children }) {
+export const Node = ({ attributes, children }) => {
   return (
     <p
       {...attributes}

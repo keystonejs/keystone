@@ -4,7 +4,7 @@ import { useLayoutEffect, forwardRef } from 'react';
 import { Popper } from 'react-popper';
 import { useStateWithEqualityCheck } from './hooks';
 
-let PopperRender = forwardRef(
+const PopperRender = forwardRef(
   ({ scheduleUpdate, alignment, isFocused, style, onAlignmentChange }, ref) => {
     useLayoutEffect(scheduleUpdate, [alignment]);
     return (
@@ -39,14 +39,14 @@ let PopperRender = forwardRef(
   }
 );
 
-let popperModifiers = {
+const popperModifiers = {
   flip: { enabled: false },
   hide: { enabled: false },
   preventOverflow: { enabled: false },
 };
 
-let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...props }) => {
-  let [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
+const Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...props }) => {
+  const [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
 
   return (
     <div>

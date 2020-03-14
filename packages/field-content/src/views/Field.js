@@ -1,11 +1,19 @@
 /** @jsx jsx */
-import { Component } from 'react';
 import { jsx } from '@emotion/core';
+import { Component, useMemo, useCallback } from 'react';
+
 import { colors } from '@arch-ui/theme';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
 
-import SlateEditor from './editor';
+import { createEditor } from 'slate';
+import { Slate, Editable, withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
+
+import { markArray } from './editor/marks';
+import { toggleMark } from './editor/utils';
+import AddBlock from './editor/add-block';
+import Toolbar from './editor/toolbar';
 
 class ErrorBoundary extends Component {
   state = {
@@ -27,49 +35,87 @@ class ErrorBoundary extends Component {
 
 const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
   const htmlID = `ks-content-editor-${field.path}`;
+  const blocks = field.getBlocks();
+
+  const editor = useMemo(() => {
+    const blockPlugins = Object.values(blocks).reduce((combinedBlockPlugins, { getPluginsNew }) => {
+      return getPluginsNew
+        ? [...combinedBlockPlugins, ...getPluginsNew({ blocks })]
+        : combinedBlockPlugins;
+    }, []);
+
+    // Compose plugins. See https://docs.slatejs.org/concepts/07-plugins.
+    return [withReact, withHistory, ...blockPlugins].reduce(
+      (composition, plugin) => plugin(composition),
+      createEditor()
+    );
+  }, [blocks]);
+
+  const renderElement = useCallback(
+    props => {
+      const { [props.element.type]: { Node: ElementNode } = {} } = blocks;
+      if (ElementNode) {
+        return <ElementNode {...props} blocks={blocks} />;
+      }
+
+      return null;
+    },
+    [blocks]
+  );
+
+  const renderLeaf = useCallback(({ attributes, children, leaf }) => {
+    return (
+      <span {...attributes}>
+        {markArray.reduce((res, [type, { render }]) => {
+          if (leaf[type] === true) {
+            res = render(res);
+          }
+
+          return res;
+        }, children)}
+      </span>
+    );
+  }, []);
+
+  const onKeyDown = useCallback(
+    event => {
+      markArray.forEach(([type, { test }]) => {
+        if (test(event)) {
+          event.preventDefault();
+          toggleMark(editor, type);
+        }
+      });
+    },
+    [editor]
+  );
 
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <FieldInput css={{ cursor: 'text', tabIndex: 0 }}>
         <ErrorBoundary>
-          <SlateEditor
-            key={htmlID}
-            blocks={field.getBlocks()}
-            value={value}
-            onChange={onChange}
-            autoFocus={autoFocus}
+          <div
             id={htmlID}
             css={{
               ...inputStyles({ isMultiline: true }),
               padding: 0,
               minHeight: '200px',
+              position: 'relative',
             }}
-          />
-          {/*Object.values(field.getBlocks())
-            .filter(({ Provider, options }) => Provider && options)
-            .reduce(
-              (children, { Provider, options }, index) => (
-                // Using index within key is ok here as the blocks never change
-                // across renders
-                <Provider value={options} key={`${htmlID}-provider-${index}`}>
-                  {children}
-                </Provider>
-              ),
-              <Editor
-                key={htmlID}
-                blocks={field.getBlocks()}
-                value={value}
-                onChange={onChange}
+          >
+            <Slate editor={editor} value={value} onChange={onChange}>
+              <Editable
                 autoFocus={autoFocus}
-                id={htmlID}
-                css={{
-                  ...inputStyles({ isMultiline: true }),
-                  padding: '16px 32px',
-                  minHeight: 200,
-                }}
+                placeholder="Enter content"
+                renderElement={renderElement}
+                renderLeaf={renderLeaf}
+                onKeyDown={onKeyDown}
+                style={{ minHeight: 'inherit', padding: '16px 32px' }}
               />
-              )*/}
+              <Toolbar blocks={blocks} />
+              <AddBlock blocks={blocks} />
+            </Slate>
+          </div>
         </ErrorBoundary>
       </FieldInput>
     </FieldContainer>

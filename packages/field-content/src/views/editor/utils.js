@@ -1,8 +1,48 @@
-export let hasBlock = (editorState, type) => {
+import { Node, Editor } from 'slate';
+
+export const isMarkActive = (editor, type) => {
+  const marks = Editor.marks(editor);
+  return marks ? marks[type] === true : false;
+}
+
+export const toggleMark = (editor, type) => {
+  if (isMarkActive(editor, type)) {
+    editor.removeMark(type);
+  } else {
+    editor.addMark(type, true);
+  }
+}
+
+export const isBlockActive = (editor, type) => {
+  const [match] = Editor.nodes(editor, {
+    match: n => n.type === type,
+  })
+
+  return !!match
+}
+
+export const hasBlock = (editor, type) => {
+  const [match] = Editor.nodes(editor, {
+    match: n => n.type === type,
+  });
+
+  return !!match;
   return editorState.blocks.some(node => node.type === type);
 };
 
-export let hasAncestorBlock = (editorState, type) => {
+export const hasAncestorBlock = (editor, type) => {
+  return false;
+  const selection = editor.selection.anchor.path;
+
+  const [node] = Editor.parent(editor, selection)  // <- using specific node path, see above how to get paths
+
+  return node.type === type;
+  const [match] = Editor.nodes(editor, {
+    match: n => n.type === type,
+  });
+
+  return !!match;
+
   return editorState.blocks.some(block => {
     return editorState.document.getClosest(block.key, parent => parent.type === type);
   });

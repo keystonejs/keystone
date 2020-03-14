@@ -3,9 +3,9 @@ export { default as useWindowSize } from './useWindowSize';
 import { useState, useCallback } from 'react';
 
 export function useStateWithEqualityCheck(initialValue) {
-  let [value, _setValue] = useState(initialValue);
+  const [value, _setValue] = useState(initialValue);
 
-  let setValue = useCallback(
+  const setValue = useCallback(
     newValue => {
       if (newValue !== value) {
         _setValue(newValue);

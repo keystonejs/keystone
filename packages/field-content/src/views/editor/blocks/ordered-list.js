@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { ToolbarButton } from '../toolbar-components';
-import { hasAncestorBlock, hasBlock } from '../utils';
+import { hasAncestorBlock, hasBlock, isBlockActive } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListOrderedIcon } from '@arch-ui/icons';
-import { Transforms, Element, Node as SlateNode } from 'slate';
+import { Transforms, Element, Editor, Node as SlateNode, Text } from 'slate';
+import { useSlate, ReactEditor } from 'slate-react';
 
 // duplicated logic for now, make some of this functionality happen in the schema instead soon
 const handleListButtonClick = (editor, editorState, type) => {
-  const isListItem = hasBlock(editorState, listItem.type);
-  const isOrderedList = hasAncestorBlock(editorState, type);
+  const isListItem = hasBlock(editor, listItem.type);
+  const isOrderedList = hasAncestorBlock(editor, type);
 
   const otherListType = type === 'ordered-list' ? 'unordered-list' : 'ordered-list';
 
@@ -22,25 +23,28 @@ const handleListButtonClick = (editor, editorState, type) => {
   } else {
     editor.setBlocks(listItem.type).wrapBlock(type);
   }
-  editor.focus();
+
+  ReactEditor.focus(editor);
 };
 
 export const type = 'ordered-list';
 
-export function ToolbarElement({ editor, editorState }) {
+export const ToolbarElement = () => {
+  const editor = useSlate();
+
   return (
     <ToolbarButton
       label="Ordered List"
       icon={<ListOrderedIcon />}
-      isActive={hasAncestorBlock(editorState, type)}
+      isActive={isBlockActive(editor, type)}
       onClick={() => {
-        handleListButtonClick(editor, editorState, type);
+        handleListButtonClick(editor, null, type);
       }}
     />
   );
 }
 
-export function Node({ attributes, children }) {
+export const Node = ({ attributes, children }) => {
   return <ol {...attributes}>{children}</ol>;
 }
 
@@ -79,26 +83,47 @@ export const getSchema = () => ({
   },
 });
 
-const withOrderedListPlugin = editor => {
-  const { normalizeNode } = editor;
+export const getPluginsNew = () => [
+  editor => {
+    const { insertBreak, normalizeNode } = editor;
 
-  editor.normalizeNode = entry => {
-    const [node, path] = entry;
+    editor.insertBreak = () => {
+      // When you press enter in an empty list item, the block type will change to a paragraph.
+      Transforms.setNodes(
+        editor,
+        { type: defaultType },
+        {
+          match: n => n.type === listItem.type && SlateNode.child(n, 0).text === '',
+        }
+      );
 
-    if (Element.isElement(node) && node.type === type) {
-      for(const [child, childPath] of SlateNode.children(editor, path)) {
-        if (child.type !== listItem.type) {
-          // TODO: ensure works as expected
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
+      insertBreak();
+    };
+
+    editor.normalizeNode = entry => {
+      const [node, path] = entry;
+
+      if (Element.isElement(node) && node.type === type) {
+        for (const [child, childPath] of SlateNode.children(editor, path)) {
+          if (Element.isElement(child)) {
+            return;
+            if (child.type === 'MAGIC_VALUE') {
+              Transforms.setNodes(editor, { type: defaultType }, { at: childPath });
+              Transforms.moveNodes(editor, { at: childPath, to: path });
+              return;
+            }
+
+            if (child.type !== listItem.type) {
+              Transforms.removeNodes(editor, { at: childPath });
+              return;
+            }
+          }
         }
       }
-    }
 
-    normalizeNode(entry);
-  };
+      normalizeNode(entry);
+    };
 
-  return editor;
-};
-
-export const getPluginsNew = () => [withOrderedListPlugin];
+    return editor;
+  },
+];

@@ -1,21 +1,24 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useRef, useCallback, useLayoutEffect } from 'react';
+import { Fragment, useState, useRef, useCallback, useLayoutEffect } from 'react';
 import { PlusIcon } from '@arch-ui/icons';
 import { type as defaultType } from './blocks/paragraph';
 
-import { Editor, Text, Range } from 'slate';
+import { Editor } from 'slate';
 import { useSlate } from 'slate-react';
 
 const getSelectedElement = () => {
-  if (document.selection) return document.selection.createRange().parentElement();
-  else {
-    var selection = window.getSelection();
-    if (selection.rangeCount > 0) return selection.getRangeAt(0).startContainer.parentNode;
+  if (document.selection) {
+    return document.selection.createRange().parentElement();
+  }
+
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0) {
+    return selection.getRangeAt(0).startContainer.parentNode;
   }
 };
 
-const AddBlock = ({ editorState, blocks }) => {
+const AddBlock = ({ blocks }) => {
   const editor = useSlate();
   const { selection } = editor;
 
@@ -29,7 +32,10 @@ const AddBlock = ({ editorState, blocks }) => {
     const menuEle = menuRef.current;
     const elm = getSelectedElement();
 
-    if (selection === null  /*|| selection.text !== '' || selection.type !== defaultType*/) {
+    if (
+      selection === null ||
+      Editor.string(editor, selection) !== '' /*|| node.type !== defaultType*/
+    ) {
       iconEle.style.top = `-9999px`;
       iconEle.style.left = `-9999px`;
       menuEle.style.top = `-9999px`;
@@ -56,10 +62,10 @@ const AddBlock = ({ editorState, blocks }) => {
     }
   }, [selection, iconRef.current, menuRef.current]);
 
-//  useLayoutEffect(layout);
+  useLayoutEffect(layout);
 
   return (
-    <>
+    <Fragment>
       <div
         css={{
           position: 'absolute',
@@ -129,28 +135,28 @@ const AddBlock = ({ editorState, blocks }) => {
                 Insert Block
               </strong>
             </li>
-            {Object.keys(blocks).map(key => {
-              let { Sidebar } = blocks[key];
-              if (!blocks[key].withChrome || Sidebar === undefined) {
-                return null;
+            {Object.entries(blocks).map(([type, { withChrome, Sidebar }]) => {
+              if (withChrome && Sidebar) {
+                return (
+                  <li
+                    key={`sidebar-${type}`}
+                    css={{
+                      display: 'flex',
+                      justifyContent: 'left',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Sidebar key={type} blocks={blocks} />
+                  </li>
+                );
               }
-              return (
-                <li
-                  key={`sidebar-${key}`}
-                  css={{
-                    display: 'flex',
-                    justifyContent: 'left',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Sidebar key={key} editor={editor} blocks={blocks} />
-                </li>
-              );
+
+              return null;
             })}
           </ul>
         )}
       </div>
-    </>
+    </Fragment>
   );
 };
 

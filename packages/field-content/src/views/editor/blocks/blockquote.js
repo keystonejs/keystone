@@ -1,13 +1,16 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { hasAncestorBlock } from '../utils';
+import { isBlockActive } from '../utils';
 import { QuoteIcon } from '@arch-ui/icons';
 import { ToolbarButton } from '../toolbar-components';
+import { useSlate, ReactEditor } from 'slate-react';
+import { Transforms } from 'slate';
 
 export const type = 'blockquote';
 
-export function ToolbarElement({ editor, editorState }) {
-  const hasBlockquote = hasAncestorBlock(editorState, type);
+export const ToolbarElement = () => {
+  const editor = useSlate();
+  const hasBlockquote = isBlockActive(editor, type);
 
   return (
     <ToolbarButton
@@ -16,17 +19,18 @@ export function ToolbarElement({ editor, editorState }) {
       label="Blockquote"
       onClick={() => {
         if (hasBlockquote) {
-          editor.unwrapBlock(type);
+          Transforms.unwrapNodes(editor, { match: n => n.type === type, split: true });
         } else {
-          editor.wrapBlock(type);
+          Transforms.wrapNodes(editor, { type, children: [] }, { split: true });
         }
-        editor.focus();
+
+        ReactEditor.focus(editor);
       }}
     />
   );
 }
 
-export function Node({ attributes, children }) {
+export const Node = ({ attributes, children }) => {
   return (
     <blockquote
       {...attributes}

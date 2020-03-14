@@ -5,7 +5,7 @@ import { lighten, darken } from '@arch-ui/color-utils';
 import Tooltip from '@arch-ui/tooltip';
 import { A11yText } from '@arch-ui/typography';
 
-export let ToolbarButton = ({
+export const ToolbarButton = ({
   isActive,
   label,
   icon,
@@ -32,7 +32,7 @@ export let ToolbarButton = ({
             ':active': {
               color: isActive ? darken(colors.primary, 25) : lighten(colors.primary, 10),
             },
-            fontSize: 16,
+            fontSize: '16px',
             outline: 'none',
           }}
           ref={ref}

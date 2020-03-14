@@ -24,16 +24,6 @@ export const marks = {
     ),
     render: content => <em>{content}</em>,
   },
-  strikethrough: {
-    label: 'Strikethrough',
-    test: isHotkey('mod+~'),
-    icon: props => (
-      <s {...props} aria-hidden>
-        S
-      </s>
-    ),
-    render: content => <s>{content}</s>,
-  },
   underline: {
     label: 'Underline',
     test: isHotkey('mod+u'),
@@ -43,6 +33,16 @@ export const marks = {
       </u>
     ),
     render: content => <u>{content}</u>,
+  },
+  strikethrough: {
+    label: 'Strikethrough',
+    test: isHotkey('mod+~'),
+    icon: props => (
+      <s {...props} aria-hidden>
+        S
+      </s>
+    ),
+    render: content => <s>{content}</s>,
   },
 };
 

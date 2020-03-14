@@ -1,45 +1,50 @@
 import * as React from 'react';
-import { hasBlock } from '../utils';
+import { isBlockActive } from '../utils';
 import { type as defaultType } from './paragraph';
 import { ToolbarButton } from '../toolbar-components';
 import { Transforms } from 'slate';
+import { useSlate, ReactEditor } from 'slate-react';
 
 export const type = 'heading';
 
-export function ToolbarElement({ editor, editorState }) {
+export const ToolbarElement = () => {
+  const editor = useSlate();
+  const hasHeading = isBlockActive(editor, type);
+
   return (
     <ToolbarButton
       icon={<span aria-hidden>H</span>}
       label="Heading"
-      isActive={hasBlock(editorState, type)}
+      isActive={hasHeading}
       onClick={() => {
-        if (hasBlock(editorState, type)) {
-          editor.setBlocks({ type: defaultType });
+        if (hasHeading) {
+          Transforms.setNodes(editor, { type: defaultType });
         } else {
-          editor.setBlocks({ type: type });
+          Transforms.setNodes(editor, { type: type });
         }
-        editor.focus();
+
+        ReactEditor.focus(editor);
       }}
     />
   );
 }
 
-export function Node({ attributes, children }) {
+export const Node = ({ attributes, children }) => {
   return <h2 {...attributes}>{children}</h2>;
 }
 
-const withHeaderPlugin = editor => {
-  const { insertBreak } = editor;
+export const getPluginsNew = () => [
+  editor => {
+    const { insertBreak } = editor;
 
-  editor.insertBreak = () => {
-    // Handle default behavior (splitting the node) first...
-    insertBreak();
+    editor.insertBreak = () => {
+      // Handle default behavior (splitting the node) first...
+      insertBreak();
 
-    // ...then transform the selected node into a paragraph.
-    Transforms.setNodes(editor, { type: defaultType }, { match: n => n.type === type });
-  };
+      // ...then transform the selected node into a paragraph.
+      Transforms.setNodes(editor, { type: defaultType }, { match: n => n.type === type });
+    };
 
-  return editor;
-};
-
-export const getPluginsNew = () => [withHeaderPlugin];
+    return editor;
+  },
+];

@@ -3,15 +3,17 @@ import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
 import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
-import { findNode } from 'slate-react';
-import { Block } from 'slate';
+
+import { Transforms, Element, Node as SlateNode } from 'slate';
+import { useSlate } from 'slate-react';
+
 import { BlockMenuItem } from '../block-menu-item';
 
 export const type = 'image-container';
 
 const getFiles = () =>
   new Promise(resolve => {
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     input.type = 'file';
     input.onchange = () => resolve([...input.files]);
     input.click();
@@ -24,23 +26,21 @@ const insertImageBlockFromFile = (blocks, editor, file) => {
 };
 
 const insertImageBlock = (blocks, editor, file, src) => {
-  editor.insertBlock({
+  Transforms.insertNodes(editor, {
     type,
-    nodes: [
-      Block.create({
-        type: blocks.image.type,
-        data: { file, src },
-      }),
-    ],
+    children: [{ type: blocks.image.type, file, src }],
   });
 };
 
-export function Sidebar({ blocks, editor }) {
+export function Sidebar({ blocks }) {
+  const editor = useSlate();
+
   const icon = (
     <svg width={16} height={16} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
       <path d="M480 416v16c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V176c0-26.51 21.49-48 48-48h16v208c0 44.112 35.888 80 80 80h336zm96-80V80c0-26.51-21.49-48-48-48H144c-26.51 0-48 21.49-48 48v256c0 26.51 21.49 48 48 48h384c26.51 0 48-21.49 48-48zM256 128c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-96 144l55.515-55.515c4.686-4.686 12.284-4.686 16.971 0L272 256l135.515-135.515c4.686-4.686 12.284-4.686 16.971 0L512 208v112H160v-48z" />
     </svg>
   );
+
   return (
     <BlockMenuItem
       icon={icon}
@@ -76,8 +76,10 @@ function getImageStyle(alignment) {
   }
 }
 
-export function Node({ attributes, children, editor, blocks, node }) {
-  const alignment = node.data.get('alignment');
+export const Node = ({ element, attributes, children, blocks }) => {
+  const editor = useSlate();
+  const { alignment } = element;
+
   return (
     <figure
       css={{ display: 'flex', flexDirection: 'column', ...getImageStyle(alignment) }}
@@ -87,13 +89,11 @@ export function Node({ attributes, children, editor, blocks, node }) {
         value={useMemo(() => {
           return {
             alignment,
-            onAlignmentChange(newAlignment) {
-              editor.setNodeByKey(node.key, {
-                data: node.data.set('alignment', newAlignment),
-              });
+            onAlignmentChange: newAlignment => {
+              Transforms.setNodes(editor, { alignment: newAlignment });
             },
           };
-        }, [node.key, alignment, editor, node.data])}
+        }, [alignment, editor])}
       >
         {children}
       </blocks.image.ImageAlignmentContext.Provider>
@@ -175,5 +175,46 @@ export const getPlugins = ({ blocks }) => [
 
       next();
     },
+  },
+];
+
+export const getPluginsNew = ({ blocks: { image, caption } }) => [
+  editor => {
+    const { normalizeNode } = editor;
+
+    editor.normalizeNode = entry => {
+      const [node, path] = entry;
+
+      if (Element.isElement(node) && node.type === type) {
+        // Validate alignment
+        if (!['left', 'center', 'right'].includes(node.alignment)) {
+          Transforms.setNodes(editor, { alignment: 'center' }, { at: path });
+          return;
+        }
+
+        // Validate children
+        const imageChild = SlateNode.child(node, 0);
+        const captionChild = SlateNode.child(node, 1);
+
+        // The image has been deleted so we also want to delete the image-container.
+        if (!imageChild) {
+          Transforms.removeNodes(editor, { at: path });
+          return;
+        }
+
+        // The caption has been deleted.
+        // The user probably doesn't want to delete the image;
+        // They probably just wanted to remove everything in the caption
+        // so the caption gets removed, and we insert another caption
+        if (!captionChild) {
+          Transforms.insertNodes(editor, { type: caption.type }, { at: path });
+          return;
+        }
+      }
+
+      normalizeNode(entry);
+    };
+
+    return editor;
   },
 ];

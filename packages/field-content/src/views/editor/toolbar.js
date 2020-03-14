@@ -1,22 +1,23 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, useLayoutEffect, forwardRef, useMemo } from 'react';
+import { Fragment, useRef, useLayoutEffect, forwardRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
-import { marks, markTypes } from './marks';
+
+import { Editor, Transforms } from 'slate';
+import { useSlate, ReactEditor } from 'slate-react';
+
+import { markArray, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
+import { isMarkActive, getSelectionReference, toggleMark } from './utils';
+
 import { CircleSlashIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
-import { getSelectionReference } from './utils';
+
 import applyRef from 'apply-ref';
-import { useSlate } from 'slate-react';
 
-const stopPropagation = e => {
-  e.stopPropagation();
-};
-
-function InnerToolbar({ blocks, editorState }) {
+function InnerToolbar({ blocks }) {
   const editor = useSlate();
 
   return (
@@ -26,68 +27,64 @@ function InnerToolbar({ blocks, editorState }) {
         .filter(x => x)
         .reduce(
           (children, Toolbar) => {
-            return (
-              <Toolbar editor={editor} editorState={editorState}>
-                {children}
-              </Toolbar>
-            );
+            return <Toolbar>{children}</Toolbar>;
           },
-          <>
-            {Object.keys(marks).map(name => {
-              let Icon = marks[name].icon;
+          <Fragment>
+            {markArray.map(([name, { label, icon: Icon }]) => {
               return (
                 <ToolbarButton
-                  label={marks[name].label}
-                  icon={<Icon />}
-                  isActive={editorState.activeMarks.some(mark => mark.type === name)}
-                  onClick={() => {
-                    editor.toggleMark(name);
-                    editor.focus();
-                  }}
                   key={name}
+                  label={label}
+                  icon={<Icon />}
+                  isActive={isMarkActive(editor, name)}
+                  onClick={() => {
+                    toggleMark(editor, name);
+                    ReactEditor.focus(editor);
+                  }}
                 />
               );
             })}
+
             <ToolbarButton
               label="Remove Formatting"
               icon={<CircleSlashIcon />}
               onClick={() => {
-                markTypes.forEach(mark => {
-                  editor.removeMark(mark);
-                });
-                editor.focus();
+                markTypes.forEach(mark => editor.removeMark(mark));
+                ReactEditor.focus(editor);
               }}
             />
 
-            {Object.keys(blocks).map(type => {
-              let ToolbarElement = blocks[type].ToolbarElement;
-              if (!blocks[type].withChrome || ToolbarElement === undefined) {
-                return null;
+            {Object.entries(blocks).map(([type, { withChrome, ToolbarElement }]) => {
+              if (withChrome && ToolbarElement) {
+                return <ToolbarElement key={type} />;
               }
-              return <ToolbarElement key={type} editor={editor} editorState={editorState} />;
+
+              return null;
             })}
-          </>
+          </Fragment>
         )}
     </div>
   );
 }
 
-const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children }, ref) => {
-  let { fragment } = editorState;
-  let shouldShowToolbar = fragment.text !== '';
-  let containerRef = useRef(null);
+const PopperRender = forwardRef(({ scheduleUpdate, style, children }, ref) => {
+  const editor = useSlate();
+  const { selection } = editor;
 
-  let snapshot = useMeasure(containerRef);
+  const shouldShowToolbar = selection && Editor.string(editor, selection) !== '';
+  const containerRef = useRef(null);
+
+  const snapshot = useMeasure(containerRef);
 
   useLayoutEffect(() => {
     if (shouldShowToolbar) {
       scheduleUpdate();
     }
-  }, [scheduleUpdate, editorState, snapshot, shouldShowToolbar]);
+  }, [scheduleUpdate, snapshot, shouldShowToolbar]);
 
   return createPortal(
     <div
-      onMouseDown={stopPropagation}
+      onMouseDown={e => e.stopPropagation()}
       ref={node => {
         applyRef(ref, node);
         applyRef(containerRef, node);
@@ -104,8 +101,8 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
       <div
         css={{
           backgroundColor: colors.N90,
-          padding: 8,
-          borderRadius: 6,
+          padding: '8px',
+          borderRadius: '6px',
           margin: gridSize,
           display: shouldShowToolbar ? 'flex' : 'none',
         }}
@@ -117,10 +114,11 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
   );
 });
 
-export default ({ editorState, blocks }) => {
-  // this element is created here so that when the popper rerenders
+export default ({ blocks }) => {
+  // This element is created here so that when the popper rerenders
   // the inner toolbar won't have to update
-  const children = <InnerToolbar blocks={blocks} editorState={editorState} />;
+  const children = <InnerToolbar blocks={blocks} />;
+
   return (
     <Popper
       placement="top"
@@ -136,7 +134,6 @@ export default ({ editorState, blocks }) => {
         <PopperRender
           {...{
             scheduleUpdate,
-            editorState,
             style: { ...style, zIndex: 10 },
             blocks,
             ref,
