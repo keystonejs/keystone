@@ -28,7 +28,7 @@
     "falsey": "^1.0.0",
     "fast-memoize": "^2.4.0",
     "fs-extra": "^7.0.0",
-    "globby": "^9.1.0",
+    "globby": "^11.0.0",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.1",
     "graphql-type-json": "^0.3.1",

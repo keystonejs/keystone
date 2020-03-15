@@ -8,7 +8,7 @@ describe('Test isRequired flag for all field types', () => {
   const typesLoc = path.resolve('packages/fields/src/types');
   const testModules = fs
     .readdirSync(typesLoc)
-    .map(name => `${typesLoc}/${name}/filterTests.js`)
+    .map(name => `${typesLoc}/${name}/test-fixtures.js`)
     .filter(filename => fs.existsSync(filename));
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {

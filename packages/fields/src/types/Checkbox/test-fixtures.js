@@ -6,10 +6,10 @@ export const name = 'Checkbox';
 export { Checkbox as type };
 export const exampleValue = 'true';
 
-export const getTestFields = () => {
+export const getTestFields = config => {
   return {
     name: { type: Text },
-    enabled: { type: Checkbox },
+    enabled: { type: Checkbox, ...config },
   };
 };
 
@@ -23,8 +23,14 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, filter, targets) =>
-    matchFilter(keystone, filter, '{ name enabled }', targets, 'name');
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'name enabled',
+      expected,
+      sortKey: 'name',
+    });
 
   test(
     'No filter',
