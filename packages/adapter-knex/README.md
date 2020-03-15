@@ -32,7 +32,7 @@ All postgres tables are grouped within a schema and `public` is the default sche
 
 _**Default:**_ `false`
 
-Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application.
+Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application. This option is ignored in production, i.e. when the environment variable NODE_ENV === 'production'.
 
 ### `options.knexOptions`
 

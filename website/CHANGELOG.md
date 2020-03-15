@@ -1,5 +1,21 @@
 # @keystonejs/website
 
+## 5.1.2
+
+### Patch Changes
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+- [`9ada31d5`](https://github.com/keystonejs/keystone/commit/9ada31d559707f5a54ccdaf2df75c3dc958a9cca) [#2477](https://github.com/keystonejs/keystone/pull/2477) Thanks [@Vultraz](https://github.com/Vultraz)! - Made main doc section headers larger.
+
+- Updated dependencies [[`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20), [`9d11d7ce`](https://github.com/keystonejs/keystone/commit/9d11d7cea6f31eeceb7326d86460a3f0e25ad01d)]:
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/select@0.1.5
+  - @arch-ui/theme@0.0.9
+
 ## 5.1.1
 
 ### Patch Changes
