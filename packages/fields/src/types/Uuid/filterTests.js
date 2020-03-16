@@ -28,9 +28,14 @@ export const initItems = () => {
 // See https://github.com/keystonejs/keystone-5/issues/391
 
 export const filterTests = withKeystone => {
-  const match = (keystone, gqlArgs, targets) => {
-    return matchFilter(keystone, gqlArgs, '{ order otherId }', targets, 'order');
-  };
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'order otherId',
+      expected,
+      sortKey: 'order',
+    });
 
   test(
     `No 'where' argument`,

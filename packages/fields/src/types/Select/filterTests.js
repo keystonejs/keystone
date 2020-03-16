@@ -32,14 +32,14 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, filter, targets) =>
-    matchFilter(
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
       keystone,
-      filter,
-      '{ company name }',
-      targets,
-      'name' // Sort by name
-    );
+      queryArgs,
+      fieldSelection: 'name company',
+      expected,
+      sortKey: 'name',
+    });
 
   test(
     'No filter',
