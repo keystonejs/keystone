@@ -69,7 +69,6 @@
     "react-select": "^3.0.8",
     "react-toast-notifications": "^2.3.0",
     "slate": "^0.57.1",
-    "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.57.1",
     "unsplash-js": "^6.0.0"
   },

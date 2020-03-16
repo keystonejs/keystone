@@ -101,17 +101,6 @@ export const ToolbarElement = /* ... */;
 export const Toolbar = /* ... */;
 
 // (optional)
-// Wraps the entire Content Editor. The value is the options object passed to
-// the block from the field config.
-// TODO: Can we skip this and instead pass the options into each of the above
-// views directly?
-export const Provider = /* ... */;
-
-// (optional)
 // slate.js plugins array.
-export const plugins = /* ... */;
-
-// (optional)
-//
-export function processNodeForConnectQuery({ id, node }) { return { node, query } };
+export const getPlugin = /* ... */;
 ```

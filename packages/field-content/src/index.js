@@ -38,3 +38,5 @@ export const Content = {
     // not exposing paragraph since it's included by default
   },
 };
+
+export { useContentField } from './views/editor/context';

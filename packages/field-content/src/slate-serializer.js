@@ -1,4 +1,4 @@
-//import { Node, Value } from 'slate';
+import { Node } from 'slate';
 import assert from 'nanoassert';
 import { walkSlateNode } from './slate-walker';
 

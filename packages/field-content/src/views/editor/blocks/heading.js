@@ -20,7 +20,7 @@ export const ToolbarElement = () => {
         if (hasHeading) {
           Transforms.setNodes(editor, { type: defaultType });
         } else {
-          Transforms.setNodes(editor, { type: type });
+          Transforms.setNodes(editor, { type });
         }
 
         ReactEditor.focus(editor);
@@ -33,7 +33,7 @@ export const Node = ({ attributes, children }) => {
   return <h2 {...attributes}>{children}</h2>;
 }
 
-export const getPluginsNew = () => [
+export const getPlugin = () => [
   editor => {
     const { insertBreak } = editor;
 

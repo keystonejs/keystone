@@ -7,6 +7,7 @@ import { Popper } from 'react-popper';
 import { Editor } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
 
+import { useContentField } from './context';
 import { markArray, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
 import { isMarkActive, getSelectionReference, toggleMark } from './utils';
@@ -17,8 +18,9 @@ import { useMeasure } from '@arch-ui/hooks';
 
 import applyRef from 'apply-ref';
 
-function InnerToolbar({ blocks }) {
+const InnerToolbar = () => {
   const editor = useSlate();
+  const { blocks } = useContentField();
 
   return (
     <div css={{ display: 'flex' }}>
@@ -114,10 +116,10 @@ const PopperRender = forwardRef(({ scheduleUpdate, style, children }, ref) => {
   );
 });
 
-export default ({ blocks }) => {
+const Toolbar = () => {
   // This element is created here so that when the popper rerenders
   // the inner toolbar won't have to update
-  const children = <InnerToolbar blocks={blocks} />;
+  const children = <InnerToolbar />;
 
   return (
     <Popper
@@ -135,7 +137,6 @@ export default ({ blocks }) => {
           {...{
             scheduleUpdate,
             style: { ...style, zIndex: 10 },
-            blocks,
             ref,
             children,
           }}
@@ -144,3 +145,5 @@ export default ({ blocks }) => {
     </Popper>
   );
 };
+
+export default Toolbar;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ToolbarButton } from '../toolbar-components';
-import { hasAncestorBlock, isBlockActive } from '../utils';
+import { isBlockActive } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListUnorderedIcon } from '@arch-ui/icons';
@@ -37,29 +37,11 @@ export const ToolbarElement = () => {
     <ToolbarButton
       label="Unordered List"
       icon={<ListUnorderedIcon />}
-      isActive={hasAncestorBlock(editor, type)}
+      isActive={isBlockActive(editor, type)}
       onClick={() => handleListButtonClick(editor, type)}
     />
   );
 }
-
-export const getPlugins = () => [
-  {
-    onKeyDown(event, editor, next) {
-      // make it so when you press enter in an empty list item,
-      // the block type will change to a paragraph
-      if (
-        event.keyCode === 13 &&
-        hasAncestorBlock(editor.value, type) &&
-        editor.value.focusText.text === ''
-      ) {
-        editor.setBlocks(defaultType).unwrapBlock(type);
-        return;
-      }
-      next();
-    },
-  },
-];
 
 export const Node = ({ attributes, children }) => {
   return <ul {...attributes}>{children}</ul>;
@@ -82,7 +64,7 @@ export const getSchema = () => ({
   },
 });
 
-export const getPluginsNew = () => [
+export const getPlugin = () => [
   editor => {
     const { normalizeNode } = editor;
 

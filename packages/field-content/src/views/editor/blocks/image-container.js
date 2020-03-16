@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
-import insertImages from 'slate-drop-or-paste-images';
+
 import imageExtensions from 'image-extensions';
 
 import { Transforms, Element, Node as SlateNode } from 'slate';
 import { useSlate } from 'slate-react';
 
 import { BlockMenuItem } from '../block-menu-item';
+import { useContentField } from '../context';
 
 export const type = 'image-container';
 
@@ -28,11 +29,18 @@ const insertImageBlockFromFile = (blocks, editor, file) => {
 const insertImageBlock = (blocks, editor, file, src) => {
   Transforms.insertNodes(editor, {
     type,
-    children: [{ type: blocks.image.type, file, src }],
+    children: [
+      {
+        type: blocks.image.type,
+        file,
+        src,
+        children: [{ text: '' }],
+      },
+    ],
   });
 };
 
-export function Sidebar({ blocks }) {
+export const Sidebar = ({ blocks }) => {
   const editor = useSlate();
 
   const icon = (
@@ -99,7 +107,7 @@ export const Node = ({ element, attributes, children, blocks }) => {
       </blocks.image.ImageAlignmentContext.Provider>
     </figure>
   );
-}
+};
 
 export let getSchema = ({ blocks: { image, caption } }) => ({
   nodes: [
@@ -155,36 +163,29 @@ export let getSchema = ({ blocks: { image, caption } }) => ({
   },
 });
 
-export const getPlugins = ({ blocks }) => [
-  insertImages({
-    extensions: imageExtensions,
-    insertImage: insertImageBlockFromFile.bind(null, blocks),
-  }),
-  {
-    onDragStart(event, editor, next) {
-      const { value } = editor;
-      const { document } = value;
-      const node = findNode(event.target, editor);
-      if (node.type === blocks.image.type) {
-        const ancestors = document.getAncestors(node.key);
-        let imgContainer = ancestors.get(ancestors.size - 1);
-        if (imgContainer.type === type) {
-          editor.moveToRangeOfNode(imgContainer);
-        }
-      }
+const insertImage = (editor, url) => {
+  const text = { text: '' };
+  const image = { type: 'image', url, children: [text] };
+  Transforms.insertNodes(editor, image);
+};
 
-      next();
-    },
-  },
-];
+const isImageUrl = url => {
+  if (!url || !isUrl(url)) {
+    return false;
+  }
 
-export const getPluginsNew = ({ blocks: { image, caption } }) => [
+  const ext = new URL(url).pathname.split('.').pop();
+  return imageExtensions.includes(ext);
+};
+
+export const getPlugin = ({ blocks }) => [
   editor => {
-    const { normalizeNode } = editor;
+    const { normalizeNode, insertData } = editor;
 
     editor.normalizeNode = entry => {
       const [node, path] = entry;
 
+      /*
       if (Element.isElement(node) && node.type === type) {
         // Validate alignment
         if (!['left', 'center', 'right'].includes(node.alignment)) {
@@ -207,12 +208,38 @@ export const getPluginsNew = ({ blocks: { image, caption } }) => [
         // They probably just wanted to remove everything in the caption
         // so the caption gets removed, and we insert another caption
         if (!captionChild) {
-          Transforms.insertNodes(editor, { type: caption.type }, { at: path });
+          Transforms.insertNodes(editor, { type: blocks.caption.type }, { at: path });
           return;
         }
       }
-
+*/
       normalizeNode(entry);
+    };
+
+    editor.insertData = data => {
+      const text = data.getData('text/plain');
+      const { files } = data;
+
+      if (files && files.length > 0) {
+        for (const file of files) {
+          const reader = new FileReader();
+          const [mime] = file.type.split('/');
+
+          if (mime === 'image') {
+            reader.addEventListener('load', () => {
+              const url = reader.result;
+              //insertImage(editor, url)
+              insertImageBlock(blocks, editor, file, url);
+            });
+
+            reader.readAsDataURL(file);
+          }
+        }
+      } else if (isImageUrl(text)) {
+        insertImage(editor, text);
+      } else {
+        insertData(data);
+      }
     };
 
     return editor;

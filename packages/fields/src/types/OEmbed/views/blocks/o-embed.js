@@ -1,23 +1,27 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Suspense, Fragment, useState, createContext, useContext } from 'react';
+import { Transforms } from 'slate';
+import { useSlate } from 'slate-react';
+
+import { BlockMenuItem } from '@keystonejs/field-content/block-components';
+
 import { Button } from '@arch-ui/button';
 import PreviewPlaceholder from '../preview';
-import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import pluralize from 'pluralize';
 
-export let type = 'oEmbed';
+export const type = 'oEmbed';
 
 // TODO: Receive this value from the server somehow. 'pluralize' is a fairly
 // large lib.
 export const path = pluralize.plural(type);
 
-let Context = createContext(null);
+const Context = createContext(null);
 
-export let Provider = Context.Provider;
+export const Provider = Context.Provider;
 
 const Embed = ({ url, oembedData }) => {
-  let options = useContext(Context);
+  const options = useContext(Context);
 
   if (options.previewComponent) {
     // The adapter should implement this option
@@ -29,10 +33,10 @@ const Embed = ({ url, oembedData }) => {
   }
 };
 
-let Block = ({ url, oembedData, onChange, onRemove }) => {
-  let [currentValue, setCurrentValue] = useState(url);
+const Block = ({ url, oembedData, onChange, onRemove }) => {
+  const [currentValue, setCurrentValue] = useState(url);
 
-  let embed = null;
+  const embed = null;
 
   if (url) {
     embed = (
@@ -90,7 +94,9 @@ let Block = ({ url, oembedData, onChange, onRemove }) => {
   );
 };
 
-export function Sidebar({ editor }) {
+export const Sidebar = () => {
+  const editor = useSlate();
+
   const icon = (
     <svg
       width={16}
@@ -104,6 +110,7 @@ export function Sidebar({ editor }) {
       <path d="M320,32a32,32,0,0,0-64,0v96h64Zm48,128H16A16,16,0,0,0,0,176v32a16,16,0,0,0,16,16H32v32A160.07,160.07,0,0,0,160,412.8V512h64V412.8A160.07,160.07,0,0,0,352,256V224h16a16,16,0,0,0,16-16V176A16,16,0,0,0,368,160ZM128,32a32,32,0,0,0-64,0v96h64Z" />
     </svg>
   );
+
   return (
     <BlockMenuItem
       icon={icon}
@@ -113,32 +120,34 @@ export function Sidebar({ editor }) {
       }}
     />
   );
-}
-export function Node({ node, editor }) {
+};
+
+export const Node = ({ element: { url, oembedData } }) => {
+  const editor = useSlate();
+
   return (
     <Block
-      url={node.data.get('url')}
-      oembedData={node.data.get('oembedData')}
-      onRemove={() => {
-        editor.removeNodeByKey(node.key);
-      }}
-      onChange={url => {
-        editor.setNodeByKey(node.key, {
-          data: node.data.set('url', url),
-        });
-      }}
+      url={url}
+      oembedData={oembedData}
+      onRemove={() => Transforms.removeNodes(editor)}
+      onChange={url => Transforms.setNodes(editor, { url })}
     />
   );
-}
+};
 
-export let getSchema = () => ({
-  isVoid: true,
-});
+export const getPlugin = () => [
+  editor => {
+    const { isVoid } = editor;
 
-export function serialize({ node }) {
-  const url = node.data.get('url');
-  const joinIds = node.data.get('_joinIds');
+    editor.isVoid = element => {
+      return element.type === type ? true : isVoid(element);
+    };
 
+    return editor;
+  },
+];
+
+export const serialize = ({ node: { url, _joinIds: joinIds } }) => {
   const mutations =
     joinIds && joinIds.length
       ? {
@@ -158,9 +167,9 @@ export function serialize({ node }) {
       data: {},
     },
   };
-}
+};
 
-export function deserialize({ node, joins }) {
+export const deserialize = ({ node, joins }) => {
   if (!joins || !Array.isArray(joins) || joins.length === 0 || !joins[0].embed) {
     console.error('No embed data received when rehydrating oEmbed block');
     return;
@@ -171,4 +180,4 @@ export function deserialize({ node, joins }) {
     'data',
     node.data.set('url', joins[0].embed.originalUrl).set('oembedData', joins[0].embed)
   );
-}
+};

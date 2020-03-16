@@ -27,7 +27,7 @@ export const Node = ({ element: { src }, attributes }) => {
   );
 }
 
-export const getPluginsNew = () => [
+export const getPlugin = () => [
   editor => {
     const { isVoid } = editor;
 

@@ -127,7 +127,7 @@ const LinkMenu = ({ onSubmit, onCancel }) => {
   );
 };
 
-export function Toolbar({ children }) {
+export const Toolbar = ({ children }) => {
   const editor = useSlate();
   const [linkRange, setLinkRange] = useState(null);
 
@@ -184,7 +184,7 @@ const wrapLink = (editor, url) => {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link = {
     type,
-    url,
+    href: url,
     children: isCollapsed ? [{ text: url }] : [],
   };
 
@@ -196,7 +196,7 @@ const wrapLink = (editor, url) => {
   }
 };
 
-export const getPluginsNew = () => [
+export const getPlugin = () => [
   editor => {
     const { isInline, insertText, insertData } = editor;
 

@@ -34,7 +34,6 @@
     "react-dom": "^16.13.0",
     "react-popper": "^1.3.6",
     "slate": "^0.57.1",
-    "slate-drop-or-paste-images": "^0.9.1",
     "slate-history": "^0.57.1",
     "slate-react": "^0.57.1"
   },

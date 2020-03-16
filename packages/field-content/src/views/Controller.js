@@ -16,7 +16,7 @@ const convertNode = node => {
     ...(nodes ? { children: nodes.map(convertNode) } : {}),
     // TODO: decide if we want to keep a dedicated data key (see below) or merge them into the element.
     // Right now the content field blocks assume the latter.
-    ...data
+    ...data,
   };
   if ((!element.type || element.type === 'text') && typeof element.text !== 'undefined') {
     delete element.type;
@@ -45,9 +45,9 @@ const convertNode = node => {
   return element;
 };
 
-const convertSlate047to050 = object => {
-  const { nodes } = object.document;
-  return nodes ? nodes.map(convertNode) : object.document;
+const convertSlate047to050 = value => {
+  const { nodes } = value;
+  return nodes ? nodes.map(convertNode) : value;
 };
 
 const flattenBlocks = inputBlocks =>
@@ -180,9 +180,8 @@ export default class ContentController extends Controller {
   };
 
   deserialize = data => {
-    console.log('deserialize', data);
+    //console.log('deserialize', data);
     const { path } = this;
-    console.log('path', path);
     if (!data[path] || !data[path].document) {
       // Forcibly return a default value if nothing set
       return initialValue;
@@ -193,25 +192,23 @@ export default class ContentController extends Controller {
     // TODO: Make the .document a JSON type in GraphQL so we don't have to parse it
     const parsedData = {
       ...data[path],
-      document: JSON.parse(data[path].document),
+      document: convertSlate047to050(JSON.parse(data[path].document)),
     };
 
     // Filter out oEmbeds from parsedData.document that missing from parsedData.oEmbeds
-    /*
-    parsedData.document.nodes = parsedData.document.nodes.filter(node => {
-      if (node.type !== 'oEmbed') {
+    parsedData.document = parsedData.document.filter(({ type, _joinIds }) => {
+      if (type !== 'oEmbed') {
         return true;
       }
 
-      if (!node.data || !node.data._joinIds || !node.data._joinIds.length) {
+      if (!_joinIds || !_joinIds.length) {
         return false;
       }
 
-      return parsedData.oEmbeds.find(embed => embed.id === node.data._joinIds[0]);
+      return parsedData.oEmbeds.find(embed => embed.id === _joinIds[0]);
     });
-*/
 
-    return convertSlate047to050(parsedData);
+    return parsedData.document;
 
     return deserialize(parsedData, blocks);
   };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ToolbarButton } from '../toolbar-components';
-import { hasAncestorBlock, hasBlock, isBlockActive } from '../utils';
+import { isBlockActive } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListOrderedIcon } from '@arch-ui/icons';
@@ -47,24 +47,6 @@ export const Node = ({ attributes, children }) => {
   return <ol {...attributes}>{children}</ol>;
 }
 
-export const getPlugins = () => [
-  {
-    onKeyDown(event, editor, next) {
-      // make it so when you press enter in an empty list item,
-      // the block type will change to a paragraph
-      if (
-        event.keyCode === 13 &&
-        hasAncestorBlock(editor.value, type) &&
-        editor.value.focusText.text === ''
-      ) {
-        editor.setBlocks(defaultType).unwrapBlock(type);
-        return;
-      }
-      next();
-    },
-  },
-];
-
 export const getSchema = () => ({
   nodes: [
     {
@@ -82,7 +64,7 @@ export const getSchema = () => ({
   },
 });
 
-export const getPluginsNew = () => [
+export const getPlugin = () => [
   editor => {
     const { insertBreak, normalizeNode } = editor;
 
@@ -99,6 +81,9 @@ export const getPluginsNew = () => [
       insertBreak();
     };
 
+          // make it so when you press enter in an empty list item,
+      // the block type will change to a paragraph
+      // FIXME: ^^
     editor.normalizeNode = entry => {
       const [node, path] = entry;
 

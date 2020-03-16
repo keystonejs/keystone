@@ -10,6 +10,7 @@ import { createEditor } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
+import { ContentFieldProvider } from './editor/context';
 import { markArray } from './editor/marks';
 import { toggleMark } from './editor/utils';
 import AddBlock from './editor/add-block';
@@ -38,17 +39,16 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
   const blocks = field.getBlocks();
 
   const editor = useMemo(() => {
-    const blockPlugins = Object.values(blocks).reduce((combinedBlockPlugins, { getPluginsNew }) => {
-      return getPluginsNew
-        ? [...combinedBlockPlugins, ...getPluginsNew({ blocks })]
-        : combinedBlockPlugins;
-    }, []);
-
-    // Compose plugins. See https://docs.slatejs.org/concepts/07-plugins.
-    return [withReact, withHistory, ...blockPlugins].reduce(
-      (composition, plugin) => plugin(composition),
-      createEditor()
-    );
+    // Compose plugins. See https://docs.slatejs.org/concepts/07-plugins
+    return [
+      withReact,
+      withHistory,
+      ...Object.values(blocks).reduce(
+        (combinedBlockPlugins, { getPlugin }) =>
+          getPlugin ? [...combinedBlockPlugins, ...getPlugin({ blocks })] : combinedBlockPlugins,
+        []
+      ),
+    ].reduce((composition, plugin) => plugin(composition), createEditor());
   }, [blocks]);
 
   const renderElement = useCallback(
@@ -103,18 +103,20 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
               position: 'relative',
             }}
           >
-            <Slate editor={editor} value={value} onChange={onChange}>
-              <Editable
-                autoFocus={autoFocus}
-                placeholder="Enter content"
-                renderElement={renderElement}
-                renderLeaf={renderLeaf}
-                onKeyDown={onKeyDown}
-                style={{ minHeight: 'inherit', padding: '16px 32px' }}
-              />
-              <Toolbar blocks={blocks} />
-              <AddBlock blocks={blocks} />
-            </Slate>
+            <ContentFieldProvider value={{ blocks }}>
+              <Slate editor={editor} value={value} onChange={onChange}>
+                <Editable
+                  autoFocus={autoFocus}
+                  placeholder="Enter content"
+                  renderElement={renderElement}
+                  renderLeaf={renderLeaf}
+                  onKeyDown={onKeyDown}
+                  style={{ minHeight: 'inherit', padding: '16px 32px' }}
+                />
+                <Toolbar />
+                <AddBlock />
+              </Slate>
+            </ContentFieldProvider>
           </div>
         </ErrorBoundary>
       </FieldInput>

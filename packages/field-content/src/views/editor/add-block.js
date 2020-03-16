@@ -6,6 +6,7 @@ import { type as defaultType } from './blocks/paragraph';
 
 import { Editor } from 'slate';
 import { useSlate } from 'slate-react';
+import { useContentField } from './context';
 
 const getSelectedElement = () => {
   if (document.selection) {
@@ -18,9 +19,11 @@ const getSelectedElement = () => {
   }
 };
 
-const AddBlock = ({ blocks }) => {
+const AddBlock = () => {
   const editor = useSlate();
   const { selection } = editor;
+
+  const { blocks } = useContentField();
 
   const [isOpen, setIsOpen] = useState(true);
 
@@ -146,7 +149,7 @@ const AddBlock = ({ blocks }) => {
                       alignItems: 'center',
                     }}
                   >
-                    <Sidebar key={type} blocks={blocks} />
+                    <Sidebar key={type} />
                   </li>
                 );
               }

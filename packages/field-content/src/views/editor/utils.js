@@ -21,37 +21,10 @@ export const isBlockActive = (editor, type) => {
   return !!match
 }
 
-export const hasBlock = (editor, type) => {
-  const [match] = Editor.nodes(editor, {
-    match: n => n.type === type,
-  });
-
-  return !!match;
-  return editorState.blocks.some(node => node.type === type);
-};
-
-export const hasAncestorBlock = (editor, type) => {
-  return false;
-  const selection = editor.selection.anchor.path;
-
-  const [node] = Editor.parent(editor, selection)  // <- using specific node path, see above how to get paths
-
-  return node.type === type;
-  const [match] = Editor.nodes(editor, {
-    match: n => n.type === type,
-  });
-
-  return !!match;
-
-  return editorState.blocks.some(block => {
-    return editorState.document.getClosest(block.key, parent => parent.type === type);
-  });
-};
-
 // this has a bit of strange logic because
 // we want to always make sure that we're returning
 // the rect for the most recent selection
-export let getSelectionReference = () => {
+export const getSelectionReference = () => {
   // note that we store the last range
   // _not_ the rect, this means that
   // this will always return the correct rect
