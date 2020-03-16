@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { Fragment } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useMemo } from 'react'; // eslint-disable-line no-unused-vars
 import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
@@ -33,57 +33,12 @@ function titleCase(str, at = '-') {
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
 }) {
-  let navData = useNavData();
-
   const { body, fields } = mdx;
   const { siteMetadata } = site;
   const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
   const title = `${
     fields.pageTitle.charAt(0) === '@' ? fields.heading : fields.pageTitle
   }${suffix}`;
-
-  const renderPackages = () => {
-    return (
-      <>
-        {navData.map((d, i) => {
-          return (
-            <Fragment key={`navData-${i}`}>
-              <ul>
-                {d.pages
-                  .filter(d => d.context.isPackageIndex)
-                  .map(d => (
-                    <li key={d.path}>
-                      <a href={d.path}>{d.path.replace(/^\//, '@').replace(/\/$/, '')}</a>
-                    </li>
-                  ))}
-              </ul>
-              {d.subNavs.length
-                ? d.subNavs.map((d, i) => (
-                    <Fragment key={`subNavData-${i}`}>
-                      <h2>{d.navTitle.replace('-', ' ').toUpperCase()}</h2>
-                      <ul>
-                        {d.pages
-                          .filter(d => d.context.isPackageIndex)
-                          .map(d => (
-                            <li key={d.path}>
-                              {<a href={d.path}>{d.path.replace(/^\//, '@').replace(/\/$/, '')}</a>}
-                            </li>
-                          ))}
-                      </ul>
-                    </Fragment>
-                  ))
-                : null}
-            </Fragment>
-          );
-        })}
-      </>
-    );
-  };
-
-  // let flatNavData = navData.reduce((prev, next) => {
-  //   const subNavData = next.subNavs.reduce((prev, next) => [...prev].concat(next.pages), []);
-  //   return [...prev, ...next.pages, ...subNavData];
-  // }, []);
 
   return (
     <>
@@ -107,7 +62,7 @@ export default function Template({
                 <MDXProvider components={mdComponents}>
                   <MDXRenderer>{body}</MDXRenderer>
                 </MDXProvider>
-                {renderPackages()}
+                <PackagesList />
               </main>
             </Content>
           </Container>
@@ -116,6 +71,54 @@ export default function Template({
     </>
   );
 }
+
+const PackagesList = () => {
+  const navData = useNavData();
+
+  const sections = useMemo(() => {
+    return navData.reduce((accum, navGroup) => {
+      const pages = navGroup.pages
+        .filter(page => page.context.isPackageIndex)
+        .map(page => page.path);
+
+      if (pages.length) {
+        accum.push({
+          title: navGroup.navTitle,
+          items: pages,
+        });
+      }
+
+      navGroup.subNavs.forEach(subNav => {
+        const items = subNav.pages
+          .filter(page => page.path.startsWith('/keystonejs/'))
+          .filter(d => d.context.isPackageIndex)
+          .map(page => page.path);
+
+        if (items.length) {
+          accum.push({
+            title: subNav.navTitle,
+            items,
+          });
+        }
+      });
+
+      return accum;
+    }, []);
+  }, [navData]);
+
+  return sections.map((d, i) => (
+    <section key={i}>
+      <h2 css={{ textTransform: 'uppercase' }}>{d.title.replace('-', ' ')}</h2>
+      <ul>
+        {d.items.map(itemPath => (
+          <li key={itemPath}>
+            <a href={itemPath}>{itemPath.replace(/^\//, '@').replace(/\/$/, '')}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ));
+};
 
 // ==============================
 // Layout
