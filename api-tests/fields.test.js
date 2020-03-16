@@ -1,4 +1,4 @@
-const fs = require('fs');
+const globby = require('globby');
 const path = require('path');
 const cuid = require('cuid');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
@@ -8,11 +8,9 @@ const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 jest.setTimeout(60000);
 
 describe('Test CRUD for all fields', () => {
-  const typesLoc = path.resolve('packages/fields/src/types');
-  const testModules = fs
-    .readdirSync(typesLoc)
-    .map(name => `${typesLoc}/${name}/filterTests.js`)
-    .filter(filename => fs.existsSync(filename));
+  const testModules = globby.sync(`packages/fields/src/types/**/filterTests.js`, {
+    absolute: true,
+  });
   testModules.push(path.resolve('packages/fields/tests/idFilterTests.js'));
 
   multiAdapterRunners().map(({ runner, adapterName }) =>
