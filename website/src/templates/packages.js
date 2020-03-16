@@ -91,6 +91,7 @@ const PackagesList = () => {
       navGroup.subNavs.forEach(subNav => {
         const items = subNav.pages
           .filter(page => page.path.startsWith('/keystonejs/'))
+          .filter(d => d.context.isPackageIndex)
           .map(page => page.path);
 
         if (items.length) {
