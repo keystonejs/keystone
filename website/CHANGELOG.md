@@ -1,5 +1,18 @@
 # @keystonejs/website
 
+## 5.2.0
+
+### Minor Changes
+
+- [`de76d130`](https://github.com/keystonejs/keystone/commit/de76d1302678fa020798f71f419076bb0572cb53) [#2504](https://github.com/keystonejs/keystone/pull/2504) Thanks [@timleslie](https://github.com/timleslie)! - Moved tutorials into their own section.
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+  - @arch-ui/input@0.1.7
+  - @arch-ui/select@0.1.6
+
 ## 5.1.2
 
 ### Patch Changes

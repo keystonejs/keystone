@@ -1,5 +1,34 @@
 # @keystonejs/fields
 
+## 7.0.0
+
+### Major Changes
+
+- [`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260) [#2523](https://github.com/keystonejs/keystone/pull/2523) Thanks [@timleslie](https://github.com/timleslie)! - Replaced default bcrypt implementation from `bcrypt` to `bcryptjs`. You can use the new `useCompiledBcrypt` config option to the `Password` field to keep the use of the `bcrypt` package. `bcrypt` must be manually listed in your `package.json` if use set `{ useCompiledBcrypt: true }`, as it is no longer a dependency of Keystone.
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+  - @keystonejs/app-admin-ui@5.9.2
+  - @arch-ui/button@0.0.16
+  - @arch-ui/input@0.1.7
+  - @arch-ui/layout@0.2.11
+  - @arch-ui/options@0.0.16
+  - @arch-ui/alert@0.0.15
+  - @arch-ui/controls@0.1.6
+  - @arch-ui/day-picker@0.0.21
+  - @arch-ui/drawer@0.0.19
+  - @arch-ui/fields@2.1.4
+  - @arch-ui/filters@0.0.18
+  - @arch-ui/loading@0.0.15
+  - @arch-ui/lozenge@0.0.14
+  - @arch-ui/popout@0.0.17
+  - @arch-ui/select@0.1.6
+  - @arch-ui/tooltip@0.1.9
+  - @arch-ui/typography@0.0.15
+  - @keystonejs/field-content@5.4.3
+
 ## 6.3.2
 
 ### Patch Changes
