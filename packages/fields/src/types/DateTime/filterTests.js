@@ -24,8 +24,14 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, filter, targets, forceSortBy = 'name') =>
-    matchFilter(keystone, filter, '{ name, lastOnline }', targets, forceSortBy);
+  const match = (keystone, queryArgs, expected, forceSortBy = 'name') =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'name lastOnline',
+      expected,
+      sortKey: forceSortBy,
+    });
 
   test(
     'No filter',

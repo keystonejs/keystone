@@ -24,9 +24,14 @@ const getIDs = async keystone => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, filter, targets) => {
-    return matchFilter(keystone, filter, '{ id name }', targets, 'name');
-  };
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'id name',
+      expected,
+      sortKey: 'name',
+    });
 
   test(
     'No filter',

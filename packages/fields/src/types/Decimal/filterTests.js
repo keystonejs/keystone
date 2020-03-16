@@ -24,8 +24,14 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, filter, targets) =>
-    matchFilter(keystone, filter, '{ name, price }', targets, 'name');
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'name price',
+      expected,
+      sortKey: 'name',
+    });
 
   test(
     'No filter',
