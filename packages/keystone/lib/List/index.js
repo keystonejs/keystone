@@ -12,6 +12,7 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
+  upcase,
 } = require('@keystonejs/utils');
 const { parseListAccess } = require('@keystonejs/access-control');
 const { logger } = require('@keystonejs/logger');
@@ -24,8 +25,6 @@ const {
   ValidationFailureError,
   throwAccessDenied,
 } = require('./graphqlErrors');
-
-const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
 const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
 
