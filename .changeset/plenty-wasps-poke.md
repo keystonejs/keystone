@@ -4,4 +4,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Updated to latest vesrsion of globby for discovering test files to run.
+Updated to latest version of globby for discovering test files to run.
