@@ -1,11 +1,9 @@
-const { mergeWhereClause } = require('@keystonejs/utils');
+const { mergeWhereClause, upcase } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
 const { throwAccessDenied } = require('../List/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
-
-const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
 class ListAuthProvider {
   constructor({ authStrategy, list }) {

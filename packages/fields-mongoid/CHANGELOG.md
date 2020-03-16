@@ -1,5 +1,13 @@
 # @keystonejs/fields-mongoid
 
+## 5.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260)]:
+  - @keystonejs/fields@7.0.0
+  - @arch-ui/input@0.1.7
+
 ## 5.1.2
 
 ### Patch Changes

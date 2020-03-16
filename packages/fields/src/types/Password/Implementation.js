@@ -1,14 +1,15 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
-import bcrypt from 'bcrypt';
 import dumbPasswords from 'dumb-passwords';
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
 export class Password extends Implementation {
-  constructor(path, { rejectCommon, minLength, workFactor }) {
+  constructor(path, { rejectCommon, minLength, workFactor, useCompiledBcrypt }) {
     super(...arguments);
+
+    this.bcrypt = require(useCompiledBcrypt ? 'bcrypt' : 'bcryptjs');
 
     // Sanitise field specific config
     this.rejectCommon = !!rejectCommon;
@@ -50,18 +51,18 @@ export class Password extends Implementation {
   // The compare() and compareSync() functions are constant-time
   // The compare() and generateHash() functions will return a Promise if no call back is provided
   compare(candidate, hash, callback) {
-    return bcrypt.compare(candidate, hash, callback);
+    return this.bcrypt.compare(candidate, hash, callback);
   }
   compareSync(candidate, hash) {
-    return bcrypt.compareSync(candidate, hash);
+    return this.bcrypt.compareSync(candidate, hash);
   }
   generateHash(plaintext, callback) {
     this.validateNewPassword(plaintext);
-    return bcrypt.hash(plaintext, this.workFactor, callback);
+    return this.bcrypt.hash(plaintext, this.workFactor, callback);
   }
   generateHashSync(plaintext) {
     this.validateNewPassword(plaintext);
-    return bcrypt.hashSync(plaintext, this.workFactor);
+    return this.bcrypt.hashSync(plaintext, this.workFactor);
   }
 
   extendAdminMeta(meta) {
