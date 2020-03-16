@@ -27,6 +27,7 @@ const {
   endAuthedSession,
   commonSessionMiddleware,
 } = require('@keystonejs/session');
+const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
 
 const {
   unmergeRelationships,
@@ -35,12 +36,7 @@ const {
 } = require('./relationship-utils');
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
-const {
-  CustomProvider,
-  ListAuthProvider,
-  ListCRUDProvider,
-  VersionProvider,
-} = require('../providers');
+const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
 module.exports = class Keystone {
   constructor({
@@ -87,7 +83,11 @@ module.exports = class Keystone {
     this._providers = [
       this._listCRUDProvider,
       this._customProvider,
-      new VersionProvider({ appVersion, schemaNames }),
+      new AppVersionProvider({
+        version: appVersion.version,
+        access: appVersion.access,
+        schemaNames,
+      }),
     ];
 
     if (adapters) {
@@ -511,11 +511,7 @@ module.exports = class Keystone {
 
   async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
     return flattenDeep([
-      this.appVersion.addVersionToHttpHeaders &&
-        ((req, res, next) => {
-          res.set('X-Keystone-App-Version', this.appVersion.version);
-          next();
-        }),
+      this.appVersion.addVersionToHttpHeaders && appVersionMiddleware(this.appVersion.version),
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
