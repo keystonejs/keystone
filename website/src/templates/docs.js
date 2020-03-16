@@ -15,19 +15,9 @@ import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
 import { mediaMax } from '../utils/media';
 import { useNavData } from '../utils/hooks';
+import { titleCase } from '../utils/case';
 import { Container } from '../components';
 import { Sidebar } from '../components/Sidebar';
-
-function titleCase(str, at = '-') {
-  if (!str) return str;
-
-  const arr = str
-    .toLowerCase()
-    .split(at)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1));
-
-  return arr.join(' ');
-}
 
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
