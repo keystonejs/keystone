@@ -23,8 +23,14 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, filter, targets) =>
-    matchFilter(keystone, filter, '{ name enabled }', targets, 'name');
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'name enabled',
+      expected,
+      sortKey: 'name',
+    });
 
   test(
     'No filter',

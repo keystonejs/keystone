@@ -1,5 +1,11 @@
 # @arch-ui/theme
 
+## 0.0.10
+
+### Patch Changes
+
+- [`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9) [#2499](https://github.com/keystonejs/keystone/pull/2499) Thanks [@mikehazell](https://github.com/mikehazell)! - Fixed issue with Chrome for Mac producing strange characters when printing
+
 ## 0.0.9
 
 ### Patch Changes
