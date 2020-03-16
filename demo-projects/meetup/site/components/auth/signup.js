@@ -50,7 +50,7 @@ export default () => {
   return (
     <>
       {mutationError && <p css={{ color: colors.red }}>The email provided is already in use.</p>}
-      {errorState && <p css={{ color: colors.red }}>An unknown error has occured</p>}
+      {errorState && <p css={{ color: colors.red }}>An unknown error has occurred</p>}
 
       <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit(createUser)}>
         <Field>
