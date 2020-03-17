@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Suspense, Fragment, useState, createContext, useContext } from 'react';
+import { Suspense, Fragment, useState } from 'react';
 import { Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 
+import { useContentField } from '@keystonejs/field-content';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 
 import { Button } from '@arch-ui/button';
@@ -16,12 +17,8 @@ export const type = 'oEmbed';
 // large lib.
 export const path = pluralize.plural(type);
 
-const Context = createContext(null);
-
-export const Provider = Context.Provider;
-
 const Embed = ({ url, oembedData }) => {
-  const options = useContext(Context);
+  const { options } = useContentField(type);
 
   if (options.previewComponent) {
     // The adapter should implement this option

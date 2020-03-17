@@ -12,14 +12,14 @@ export const ImageAlignmentContext = createContext({
   onAlignmentChange: () => {},
 });
 
-export const Node = ({ element: { src }, attributes }) => {
+export const Node = ({ element: { src }, ...props }) => {
   const isFocused = useFocused();
   const { alignment, onAlignmentChange } = useContext(ImageAlignmentContext);
 
   return (
     <Image
+      {...props}
       alignment={alignment}
-      attributes={attributes}
       isFocused={isFocused}
       src={src}
       onAlignmentChange={onAlignmentChange}

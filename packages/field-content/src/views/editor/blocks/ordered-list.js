@@ -66,7 +66,7 @@ export const getSchema = () => ({
 
 export const getPlugin = () => editor => {
   const { insertBreak, normalizeNode } = editor;
-
+  console.log(editor);
   editor.insertBreak = () => {
     // When you press enter in an empty list item, the block type will change to a paragraph.
     Transforms.setNodes(

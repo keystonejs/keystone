@@ -3,8 +3,9 @@ import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
 
 import imageExtensions from 'image-extensions';
+import isUrl from 'is-url';
 
-import { Transforms, Element, Node as SlateNode } from 'slate';
+import { Transforms, Element } from 'slate';
 import { useSlate } from 'slate-react';
 
 import { BlockMenuItem } from '../block-menu-item';
@@ -36,6 +37,10 @@ const insertImageBlock = (blocks, editor, file, src) => {
         src,
         children: [{ text: '' }],
       },
+      {
+        type: blocks.caption.type,
+        children: [{ text: '' }],
+      },
     ],
   });
 };
@@ -62,111 +67,57 @@ export const Sidebar = ({ blocks }) => {
   );
 };
 
-function getImageStyle(alignment) {
-  if (alignment === 'left') {
-    return {
-      float: 'left',
-      marginRight: '10px',
-      width: '50%',
-    };
-  } else if (alignment === 'right') {
-    return {
-      float: 'right',
-      marginLeft: '10px',
-      width: '50%',
-    };
-  } else {
-    return {
-      display: 'block',
-      margin: '0px auto',
-      width: '100%',
-    };
+const getImageStyle = alignment => {
+  switch (alignment) {
+    case 'left':
+      return {
+        float: 'left',
+        marginRight: '10px',
+        width: '50%',
+      };
+    case 'right':
+      return {
+        float: 'right',
+        marginLeft: '10px',
+        width: '50%',
+      };
+    case 'center':
+      return {
+        display: 'block',
+        margin: '0px auto',
+        width: '100%',
+      };
   }
-}
+};
 
-export const Node = ({ element, attributes, children, blocks }) => {
+export const Node = ({ element: { alignment }, attributes, children }) => {
   const editor = useSlate();
-  const { alignment } = element;
+  const { ImageAlignmentContext } = useContentField('image');
 
   return (
     <figure
       css={{ display: 'flex', flexDirection: 'column', ...getImageStyle(alignment) }}
       {...attributes}
     >
-      <blocks.image.ImageAlignmentContext.Provider
-        value={useMemo(() => {
-          return {
+      <ImageAlignmentContext.Provider
+        value={useMemo(
+          () => ({
             alignment,
             onAlignmentChange: newAlignment => {
-              Transforms.setNodes(editor, { alignment: newAlignment });
+              Transforms.setNodes(
+                editor,
+                { alignment: newAlignment },
+                { match: n => n.type === type }
+              );
             },
-          };
-        }, [alignment, editor])}
+          }),
+          [alignment, editor]
+        )}
       >
         {children}
-      </blocks.image.ImageAlignmentContext.Provider>
+      </ImageAlignmentContext.Provider>
     </figure>
   );
-};
-
-export let getSchema = ({ blocks: { image, caption } }) => ({
-  nodes: [
-    {
-      match: [{ type: image.type }],
-      min: 1,
-      max: 1,
-    },
-    {
-      match: [{ type: caption.type }],
-      min: 1,
-      max: 1,
-    },
-  ],
-  normalize(editor, error) {
-    switch (error.code) {
-      case 'child_min_invalid': {
-        if (error.index === 0) {
-          // the image has been deleted so we also want to delete the image-container
-          editor.removeNodeByKey(error.node.key);
-        }
-        if (error.index === 1) {
-          // the caption has been deleted
-          // the user probably doesn't want to delete the image
-          // they probably just wanted to remove everything in the caption
-          // so the caption gets removed,  we insert another caption
-          editor.insertNodeByKey(error.node.key, 1, Block.create('caption'));
-        }
-        return;
-      }
-      case 'node_data_invalid': {
-        if (error.key === 'alignment') {
-          editor.setNodeByKey(error.node.key, {
-            data: error.node.data.set('alignment', 'center'),
-          });
-        }
-        return;
-      }
-    }
-    console.log(error);
-  },
-  data: {
-    alignment(value) {
-      switch (value) {
-        case 'center':
-        case 'left':
-        case 'right': {
-          return true;
-        }
-      }
-      return false;
-    },
-  },
-});
-
-const insertImage = (editor, url) => {
-  const text = { text: '' };
-  const image = { type: 'image', url, children: [text] };
-  Transforms.insertNodes(editor, image);
 };
 
 const isImageUrl = url => {
@@ -184,34 +135,37 @@ export const getPlugin = ({ blocks }) => editor => {
   editor.normalizeNode = entry => {
     const [node, path] = entry;
 
-    /*
-      if (Element.isElement(node) && node.type === type) {
-        // Validate alignment
-        if (!['left', 'center', 'right'].includes(node.alignment)) {
-          Transforms.setNodes(editor, { alignment: 'center' }, { at: path });
-          return;
-        }
-
-        // Validate children
-        const imageChild = SlateNode.child(node, 0);
-        const captionChild = SlateNode.child(node, 1);
-
-        // The image has been deleted so we also want to delete the image-container.
-        if (!imageChild) {
-          Transforms.removeNodes(editor, { at: path });
-          return;
-        }
-
-        // The caption has been deleted.
-        // The user probably doesn't want to delete the image;
-        // They probably just wanted to remove everything in the caption
-        // so the caption gets removed, and we insert another caption
-        if (!captionChild) {
-          Transforms.insertNodes(editor, { type: blocks.caption.type }, { at: path });
-          return;
-        }
+    if (Element.isElement(node) && node.type === type) {
+      // Validate alignment
+      if (!['left', 'center', 'right'].includes(node.alignment)) {
+        Transforms.setNodes(editor, { alignment: 'center' }, { at: path });
+        return;
       }
-*/
+
+      const [image, caption] = node.children;
+
+      // The image has been deleted so we also want to delete the image-container.
+      if (image.type !== blocks.image.type) {
+        Transforms.removeNodes(editor, { at: path });
+        return;
+      }
+
+      // The caption has been deleted.
+      // The user probably doesn't want to delete the image;
+      // They probably just wanted to remove everything in the caption,
+      // so the caption gets removed, and we insert another caption
+      if (caption.type !== blocks.caption.type) {
+        /*
+        Transforms.insertNodes(
+          editor,
+          { type: blocks.caption.type, children: [{ text: '' }] },
+          { at: [...path, 1] }
+        );
+        */
+        return;
+      }
+    }
+
     normalizeNode(entry);
   };
 
@@ -227,7 +181,6 @@ export const getPlugin = ({ blocks }) => editor => {
         if (mime === 'image') {
           reader.addEventListener('load', () => {
             const url = reader.result;
-            //insertImage(editor, url)
             insertImageBlock(blocks, editor, file, url);
           });
 
@@ -235,7 +188,7 @@ export const getPlugin = ({ blocks }) => editor => {
         }
       }
     } else if (isImageUrl(text)) {
-      insertImage(editor, text);
+      insertImageBlock(blocks, editor, null, text);
     } else {
       insertData(data);
     }

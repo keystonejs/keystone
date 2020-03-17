@@ -45,14 +45,13 @@ const popperModifiers = {
   preventOverflow: { enabled: false },
 };
 
-const Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...props }) => {
+const Image = ({ attributes, children, alignment, isFocused, src, onAlignmentChange, ...props }) => {
   const [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
 
   return (
-    <div>
+    <div {...attributes}>
       <img
         {...props}
-        {...attributes}
         src={src}
         ref={setReferenceElement}
         css={{
@@ -60,6 +59,7 @@ const Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...pr
           outline: isFocused ? 'auto' : null,
         }}
       />
+      {children}
       <Popper modifiers={popperModifiers} placement="top" referenceElement={referenceElement}>
         {({ style, ref, scheduleUpdate }) => (
           <PopperRender
