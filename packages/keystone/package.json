@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@keystonejs/access-control": "^5.2.0",
+    "@keystonejs/app-version": "^0.0.0",
     "@keystonejs/fields": "^7.0.0",
     "@keystonejs/logger": "^5.1.1",
     "@keystonejs/session": "^5.1.1",
