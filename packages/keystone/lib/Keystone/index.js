@@ -509,15 +509,8 @@ module.exports = class Keystone {
     return mergeRelationships(createdItems, createdRelationships);
   }
 
-  async prepare({
-    dev = false,
-    apps = [],
-    distDir,
-    pinoOptions,
-    cors = { origin: true, credentials: true },
-  } = {}) {
-    this._consolidateRelationships();
-    const middlewares = flattenDeep([
+  async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
+    return flattenDeep([
       this.appVersion.addVersionToHttpHeaders &&
         ((req, res, next) => {
           res.set('X-Keystone-App-Version', this.appVersion.version);
@@ -557,6 +550,17 @@ module.exports = class Keystone {
           )
       )),
     ]).filter(middleware => !!middleware);
+  }
+
+  async prepare({
+    dev = false,
+    apps = [],
+    distDir,
+    pinoOptions,
+    cors = { origin: true, credentials: true },
+  } = {}) {
+    this._consolidateRelationships();
+    const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
 
     // Now that the middlewares are done, it's safe to assume all the schemas
     // are registered, so we can setup our query helper
