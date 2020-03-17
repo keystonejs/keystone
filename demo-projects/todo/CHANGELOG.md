@@ -1,5 +1,14 @@
 # @keystonejs/demo-project-todo
 
+## 5.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260)]:
+  - @keystonejs/fields@7.0.0
+  - @keystonejs/app-admin-ui@5.9.2
+  - @keystonejs/keystone@6.0.1
+
 ## 5.1.2
 
 ### Patch Changes

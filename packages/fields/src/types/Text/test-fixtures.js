@@ -30,9 +30,14 @@ export const initItems = () => {
 // See https://github.com/keystonejs/keystone-5/issues/391
 
 export const filterTests = withKeystone => {
-  const match = (keystone, gqlArgs, targets) => {
-    return matchFilter(keystone, gqlArgs, '{ name order }', targets, 'order');
-  };
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'order name',
+      expected,
+      sortKey: 'order',
+    });
 
   test(
     `No 'where' argument`,

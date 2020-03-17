@@ -5,7 +5,7 @@ import { jsx, Global } from '@emotion/core';
 import { globalStyles, gridSize } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
 
-import Layout from '../templates/layout';
+import { Layout } from '../templates/layout';
 import { Container, Sidebar } from '../components';
 import { mq } from '../utils/media';
 
