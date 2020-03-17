@@ -106,60 +106,6 @@ export const Node = (props) => {
   );
 }
 
-export let getSchema = ({ blocks }) => ({
-  nodes: [
-    {
-      match: [{ type: blocks.image.type }],
-      min: 1,
-      max: 1,
-    },
-    {
-      match: [{ type: blocks.caption.type }],
-      min: 1,
-      max: 1,
-    },
-  ],
-  normalize(editor, error) {
-    switch (error.code) {
-      case 'child_min_invalid': {
-        if (error.index === 0) {
-          // the image has been deleted so we also want to delete the image-container
-          editor.removeNodeByKey(error.node.key);
-        }
-        if (error.index === 1) {
-          // the caption has been deleted
-          // the user probably doesn't want to delete the image
-          // they probably just wanted to remove everything in the caption
-          // so the caption gets removed,  we insert another caption
-          editor.insertNodeByKey(error.node.key, 1, Block.create('caption'));
-        }
-        return;
-      }
-      case 'node_data_invalid': {
-        if (error.key === 'alignment') {
-          editor.setNodeByKey(error.node.key, {
-            data: error.node.data.set('alignment', 'center'),
-          });
-        }
-        return;
-      }
-    }
-    console.log(error);
-  },
-  data: {
-    alignment(value) {
-      switch (value) {
-        case 'center':
-        case 'left':
-        case 'right': {
-          return true;
-        }
-      }
-      return false;
-    },
-  },
-});
-
 export function serialize({ node, blocks }) {
   // Find the 'image' child node
   const imageNode = node.findDescendant(

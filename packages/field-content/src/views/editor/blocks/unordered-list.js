@@ -47,23 +47,6 @@ export const Node = ({ attributes, children }) => {
   return <ul {...attributes}>{children}</ul>;
 };
 
-export const getSchema = () => ({
-  nodes: [
-    {
-      match: { type: listItem.type },
-      min: 0,
-    },
-  ],
-  normalize(editor, error) {
-    switch (error.code) {
-      case 'child_type_invalid': {
-        editor.unwrapBlockByKey(error.node.key, type);
-        return;
-      }
-    }
-  },
-});
-
 export const getPlugin = () => editor => {
   const { normalizeNode } = editor;
 

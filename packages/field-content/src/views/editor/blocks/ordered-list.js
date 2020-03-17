@@ -47,26 +47,9 @@ export const Node = ({ attributes, children }) => {
   return <ol {...attributes}>{children}</ol>;
 };
 
-export const getSchema = () => ({
-  nodes: [
-    {
-      match: { type: listItem.type },
-      min: 0,
-    },
-  ],
-  normalize(editor, error) {
-    switch (error.code) {
-      case 'child_type_invalid': {
-        editor.unwrapBlockByKey(error.node.key, type);
-        return;
-      }
-    }
-  },
-});
-
 export const getPlugin = () => editor => {
   const { insertBreak, normalizeNode } = editor;
-  console.log(editor);
+
   editor.insertBreak = () => {
     // When you press enter in an empty list item, the block type will change to a paragraph.
     Transforms.setNodes(

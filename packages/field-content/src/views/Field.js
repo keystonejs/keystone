@@ -55,7 +55,7 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
     props => {
       const { [props.element.type]: { Node: ElementNode } = {} } = blocks;
       if (ElementNode) {
-        return <ElementNode {...props} blocks={blocks} />;
+        return <ElementNode {...props} />;
       }
 
       return null;
