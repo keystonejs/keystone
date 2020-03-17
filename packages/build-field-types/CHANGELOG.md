@@ -1,5 +1,11 @@
 # @keystonejs/build-field-types
 
+## 5.2.3
+
+### Patch Changes
+
+- [`fb510d67`](https://github.com/keystonejs/keystone/commit/fb510d67ab124d8c1bda1884fa2a0d48262b5e4d) [#2527](https://github.com/keystonejs/keystone/pull/2527) Thanks [@jesstelford](https://github.com/jesstelford)! - Updated to latest version of globby for discovering test files to run.
+
 ## 5.2.2
 
 ### Patch Changes
