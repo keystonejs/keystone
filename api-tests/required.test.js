@@ -4,7 +4,7 @@ const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonej
 const { Text } = require('@keystonejs/fields');
 
 describe('Test isRequired flag for all field types', () => {
-  const testModules = globby.sync(`packages/fields/src/types/**/filterTests.js`, {
+  const testModules = globby.sync(`packages/fields/src/types/**/test-fixtures.js`, {
     absolute: true,
   });
   multiAdapterRunners().map(({ runner, adapterName }) =>
