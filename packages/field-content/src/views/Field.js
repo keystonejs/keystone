@@ -45,7 +45,7 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
       withHistory,
       ...Object.values(blocks).reduce(
         (combinedBlockPlugins, { getPlugin }) =>
-          getPlugin ? [...combinedBlockPlugins, ...getPlugin({ blocks })] : combinedBlockPlugins,
+          getPlugin ? [...combinedBlockPlugins, getPlugin({ blocks })] : combinedBlockPlugins,
         []
       ),
     ].reduce((composition, plugin) => plugin(composition), createEditor());

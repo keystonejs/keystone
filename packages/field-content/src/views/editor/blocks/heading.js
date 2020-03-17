@@ -27,24 +27,22 @@ export const ToolbarElement = () => {
       }}
     />
   );
-}
+};
 
 export const Node = ({ attributes, children }) => {
   return <h2 {...attributes}>{children}</h2>;
-}
+};
 
-export const getPlugin = () => [
-  editor => {
-    const { insertBreak } = editor;
+export const getPlugin = () => editor => {
+  const { insertBreak } = editor;
 
-    editor.insertBreak = () => {
-      // Handle default behavior (splitting the node) first...
-      insertBreak();
+  editor.insertBreak = () => {
+    // Handle default behavior (splitting the node) first...
+    insertBreak();
 
-      // ...then transform the selected node into a paragraph.
-      Transforms.setNodes(editor, { type: defaultType }, { match: n => n.type === type });
-    };
+    // ...then transform the selected node into a paragraph.
+    Transforms.setNodes(editor, { type: defaultType }, { match: n => n.type === type });
+  };
 
-    return editor;
-  },
-];
+  return editor;
+};

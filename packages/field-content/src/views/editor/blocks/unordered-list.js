@@ -10,19 +10,19 @@ import { useSlate, ReactEditor } from 'slate-react';
 const LIST_TYPES = ['ordered-list', 'unordered-list'];
 
 const handleListButtonClick = (editor, type) => {
-  const isActive = isBlockActive(editor, type)
+  const isActive = isBlockActive(editor, type);
 
   Transforms.unwrapNodes(editor, {
     match: n => LIST_TYPES.includes(n.type),
     split: true,
-  })
+  });
 
   Transforms.setNodes(editor, {
     type: isActive ? 'paragraph' : 'list-item',
-  })
+  });
 
   if (!isActive) {
-    Transforms.wrapNodes(editor, { type: type, children: [] })
+    Transforms.wrapNodes(editor, { type: type, children: [] });
   }
 
   ReactEditor.focus(editor);
@@ -41,11 +41,11 @@ export const ToolbarElement = () => {
       onClick={() => handleListButtonClick(editor, type)}
     />
   );
-}
+};
 
 export const Node = ({ attributes, children }) => {
   return <ul {...attributes}>{children}</ul>;
-}
+};
 
 export const getSchema = () => ({
   nodes: [
@@ -64,14 +64,12 @@ export const getSchema = () => ({
   },
 });
 
-export const getPlugin = () => [
-  editor => {
-    const { normalizeNode } = editor;
+export const getPlugin = () => editor => {
+  const { normalizeNode } = editor;
 
-    editor.normalizeNode = entry => {
-      normalizeNode(entry);
-    }
+  editor.normalizeNode = entry => {
+    normalizeNode(entry);
+  };
 
-    return editor;
-  }
-]
+  return editor;
+};

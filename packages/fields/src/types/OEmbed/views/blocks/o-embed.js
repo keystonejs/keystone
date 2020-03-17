@@ -135,17 +135,15 @@ export const Node = ({ element: { url, oembedData } }) => {
   );
 };
 
-export const getPlugin = () => [
-  editor => {
-    const { isVoid } = editor;
+export const getPlugin = () => editor => {
+  const { isVoid } = editor;
 
-    editor.isVoid = element => {
-      return element.type === type ? true : isVoid(element);
-    };
+  editor.isVoid = element => {
+    return element.type === type ? true : isVoid(element);
+  };
 
-    return editor;
-  },
-];
+  return editor;
+};
 
 export const serialize = ({ node: { url, _joinIds: joinIds } }) => {
   const mutations =

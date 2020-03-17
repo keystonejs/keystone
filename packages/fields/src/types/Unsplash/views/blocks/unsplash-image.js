@@ -343,7 +343,7 @@ export const Sidebar = () => {
       }}
     />
   );
-}
+};
 
 export function Node({ node, editor }) {
   return (
@@ -361,17 +361,15 @@ export function Node({ node, editor }) {
   );
 }
 
-export const getPlugin = () => [
-  editor => {
-    const { isVoid } = editor;
+export const getPlugin = () => editor => {
+  const { isVoid } = editor;
 
-    editor.isVoid = element => {
-      return element.type === type ? true : isVoid(element);
-    }
+  editor.isVoid = element => {
+    return element.type === type ? true : isVoid(element);
+  };
 
-    return editor;
-  }
-];
+  return editor;
+};
 
 export function serialize({ node }) {
   const unsplashData = node.data.get('unsplashData');

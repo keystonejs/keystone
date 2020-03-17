@@ -10,19 +10,19 @@ import { useSlate, ReactEditor } from 'slate-react';
 const LIST_TYPES = ['ordered-list', 'unordered-list'];
 
 const handleListButtonClick = (editor, type) => {
-  const isActive = isBlockActive(editor, type)
+  const isActive = isBlockActive(editor, type);
 
   Transforms.unwrapNodes(editor, {
     match: n => LIST_TYPES.includes(n.type),
     split: true,
-  })
+  });
 
   Transforms.setNodes(editor, {
     type: isActive ? 'paragraph' : 'list-item',
-  })
+  });
 
   if (!isActive) {
-    Transforms.wrapNodes(editor, { type: type, children: [] })
+    Transforms.wrapNodes(editor, { type: type, children: [] });
   }
 
   ReactEditor.focus(editor);
@@ -41,11 +41,11 @@ export const ToolbarElement = () => {
       onClick={() => handleListButtonClick(editor, type)}
     />
   );
-}
+};
 
 export const Node = ({ attributes, children }) => {
   return <ol {...attributes}>{children}</ol>;
-}
+};
 
 export const getSchema = () => ({
   nodes: [
@@ -64,55 +64,53 @@ export const getSchema = () => ({
   },
 });
 
-export const getPlugin = () => [
-  editor => {
-    const { insertBreak, normalizeNode } = editor;
+export const getPlugin = () => editor => {
+  const { insertBreak, normalizeNode } = editor;
 
-    editor.insertBreak = () => {
-      // When you press enter in an empty list item, the block type will change to a paragraph.
-      Transforms.setNodes(
-        editor,
-        { type: defaultType },
-        {
-          match: n => n.type === listItem.type && SlateNode.child(n, 0).text === '',
+  editor.insertBreak = () => {
+    // When you press enter in an empty list item, the block type will change to a paragraph.
+    Transforms.setNodes(
+      editor,
+      { type: defaultType },
+      {
+        match: n => n.type === listItem.type && SlateNode.child(n, 0).text === '',
+      }
+    );
+
+    insertBreak();
+  };
+
+  // make it so when you press enter in an empty list item,
+  // the block type will change to a paragraph
+  // FIXME: ^^
+  editor.normalizeNode = entry => {
+    const [node, path] = entry;
+
+    if (Element.isElement(node) && node.type === type) {
+      for (const [child, childPath] of SlateNode.children(editor, path)) {
+        if (child.type !== listItem.type) {
+          Transforms.unwrapNodes(editor, { at: childPath });
+          return;
         }
-      );
 
-      insertBreak();
-    };
-
-          // make it so when you press enter in an empty list item,
-      // the block type will change to a paragraph
-      // FIXME: ^^
-    editor.normalizeNode = entry => {
-      const [node, path] = entry;
-
-      if (Element.isElement(node) && node.type === type) {
-        for (const [child, childPath] of SlateNode.children(editor, path)) {
-          if (child.type !== listItem.type) {
-            Transforms.unwrapNodes(editor, { at: childPath });
+        if (Element.isElement(child)) {
+          return;
+          if (child.type === 'MAGIC_VALUE') {
+            Transforms.setNodes(editor, { type: defaultType }, { at: childPath });
+            Transforms.moveNodes(editor, { at: childPath, to: path });
             return;
           }
 
-          if (Element.isElement(child)) {
+          if (child.type !== listItem.type) {
+            Transforms.removeNodes(editor, { at: childPath });
             return;
-            if (child.type === 'MAGIC_VALUE') {
-              Transforms.setNodes(editor, { type: defaultType }, { at: childPath });
-              Transforms.moveNodes(editor, { at: childPath, to: path });
-              return;
-            }
-
-            if (child.type !== listItem.type) {
-              Transforms.removeNodes(editor, { at: childPath });
-              return;
-            }
           }
         }
       }
+    }
 
-      normalizeNode(entry);
-    };
+    normalizeNode(entry);
+  };
 
-    return editor;
-  },
-];
+  return editor;
+};

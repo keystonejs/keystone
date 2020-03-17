@@ -60,7 +60,7 @@ export const Sidebar = ({ blocks }) => {
       }}
     />
   );
-}
+};
 
 function getImageStyle(alignment) {
   if (alignment === 'left') {
@@ -178,14 +178,13 @@ const isImageUrl = url => {
   return imageExtensions.includes(ext);
 };
 
-export const getPlugin = ({ blocks }) => [
-  editor => {
-    const { normalizeNode, insertData } = editor;
+export const getPlugin = ({ blocks }) => editor => {
+  const { normalizeNode, insertData } = editor;
 
-    editor.normalizeNode = entry => {
-      const [node, path] = entry;
+  editor.normalizeNode = entry => {
+    const [node, path] = entry;
 
-      /*
+    /*
       if (Element.isElement(node) && node.type === type) {
         // Validate alignment
         if (!['left', 'center', 'right'].includes(node.alignment)) {
@@ -213,35 +212,34 @@ export const getPlugin = ({ blocks }) => [
         }
       }
 */
-      normalizeNode(entry);
-    };
+    normalizeNode(entry);
+  };
 
-    editor.insertData = data => {
-      const text = data.getData('text/plain');
-      const { files } = data;
+  editor.insertData = data => {
+    const text = data.getData('text/plain');
+    const { files } = data;
 
-      if (files && files.length > 0) {
-        for (const file of files) {
-          const reader = new FileReader();
-          const [mime] = file.type.split('/');
+    if (files && files.length > 0) {
+      for (const file of files) {
+        const reader = new FileReader();
+        const [mime] = file.type.split('/');
 
-          if (mime === 'image') {
-            reader.addEventListener('load', () => {
-              const url = reader.result;
-              //insertImage(editor, url)
-              insertImageBlock(blocks, editor, file, url);
-            });
+        if (mime === 'image') {
+          reader.addEventListener('load', () => {
+            const url = reader.result;
+            //insertImage(editor, url)
+            insertImageBlock(blocks, editor, file, url);
+          });
 
-            reader.readAsDataURL(file);
-          }
+          reader.readAsDataURL(file);
         }
-      } else if (isImageUrl(text)) {
-        insertImage(editor, text);
-      } else {
-        insertData(data);
       }
-    };
+    } else if (isImageUrl(text)) {
+      insertImage(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
 
-    return editor;
-  },
-];
+  return editor;
+};

@@ -151,7 +151,7 @@ export const Toolbar = ({ children }) => {
       )}
     </SetLinkRange.Provider>
   );
-}
+};
 
 export const ToolbarElement = () => {
   const editor = useSlate();
@@ -196,32 +196,30 @@ const wrapLink = (editor, url) => {
   }
 };
 
-export const getPlugin = () => [
-  editor => {
-    const { isInline, insertText, insertData } = editor;
+export const getPlugin = () => editor => {
+  const { isInline, insertText, insertData } = editor;
 
-    editor.isInline = element => {
-      return element.type === type ? true : isInline(element);
-    };
+  editor.isInline = element => {
+    return element.type === type ? true : isInline(element);
+  };
 
-    editor.insertText = text => {
-      if (text && isUrl(text)) {
-        wrapLink(editor, text);
-      } else {
-        insertText(text);
-      }
-    };
+  editor.insertText = text => {
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertText(text);
+    }
+  };
 
-    editor.insertData = data => {
-      const text = data.getData('text/plain');
+  editor.insertData = data => {
+    const text = data.getData('text/plain');
 
-      if (text && isUrl(text)) {
-        wrapLink(editor, text);
-      } else {
-        insertData(data);
-      }
-    };
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
 
-    return editor;
-  },
-];
+  return editor;
+};
