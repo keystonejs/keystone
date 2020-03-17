@@ -506,12 +506,9 @@ class PassportAuthStrategy {
   }
 
   async _authenticateItem(item, accessToken, isNewItem, req, res, next) {
-    const audiences = ['admin'];
-
     const token = await startAuthedSession(
       req,
       { item, list: this._getList() },
-      audiences,
       this._cookieSecret
     );
     this._onAuthenticated({ token, item, isNewItem }, req, res, next);

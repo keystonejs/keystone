@@ -109,18 +109,13 @@ class ListAuthProvider {
     const gqlName = this.gqlNames.authenticateMutationName;
     this.checkAccess(context, 'mutation', { gqlName });
 
-    // This is currently hard coded to enable authenticating with the admin UI.
-    // In the near future we will set up the admin-ui application and api to be
-    // non-public.
-    const audiences = ['admin'];
-
     // Verify incoming details
     const { item, success, message } = await this.authStrategy.validate(args);
     if (!success) {
       throw new Error(message);
     }
 
-    const token = await context.startAuthedSession({ item, list: this.list }, audiences);
+    const token = await context.startAuthedSession({ item, list: this.list });
     return { token, item };
   }
 

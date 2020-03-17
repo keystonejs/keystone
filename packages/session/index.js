@@ -1,13 +1,3 @@
-const {
-  commonSessionMiddleware,
-  restrictAudienceMiddleware,
-  startAuthedSession,
-  endAuthedSession,
-} = require('./lib/session');
+const { commonSessionMiddleware, startAuthedSession, endAuthedSession } = require('./lib/session');
 
-module.exports = {
-  commonSessionMiddleware,
-  restrictAudienceMiddleware,
-  startAuthedSession,
-  endAuthedSession,
-};
+module.exports = { commonSessionMiddleware, startAuthedSession, endAuthedSession };
