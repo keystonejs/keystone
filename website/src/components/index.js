@@ -7,3 +7,4 @@ export { Sidebar } from './Sidebar';
 export { SidebarNav } from './SidebarNav';
 export { Search } from './Search';
 export { SiteMeta } from './SiteMeta';
+export { AlgoliaSearch } from './AlgoliaSearch';

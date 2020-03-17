@@ -2,6 +2,10 @@ const getWorkspaces = require('get-workspaces').default;
 const fs = require('fs');
 const path = require('path');
 
+const queries = require('./src/utils/algolia');
+
+require('dotenv').config();
+
 async function getPackagePlugins() {
   const rootDir = path.resolve(__dirname, '..');
   const docSections = fs.readdirSync(`${rootDir}/docs/`).filter(dir => {
@@ -152,6 +156,15 @@ async function getGatsbyConfig() {
         options: {
           trackingId: 'UA-43970386-3',
           head: true,
+        },
+      },
+      {
+        resolve: `gatsby-plugin-algolia`,
+        options: {
+          appId: process.env.GATSBY_ALGOLIA_APP_ID,
+          apiKey: process.env.ALGOLIA_ADMIN_KEY,
+          queries,
+          chunkSize: 10000, // default: 1000
         },
       },
     ],
