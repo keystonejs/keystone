@@ -36,6 +36,7 @@
     "gatsby-plugin-mdx": "^1.0.64",
     "gatsby-plugin-react-helmet": "^3.1.2",
     "gatsby-plugin-sharp": "^2.4.5",
+    "gatsby-plugin-sitemap": "^2.2.30",
     "gatsby-remark-autolink-headers": "^2.1.21",
     "gatsby-remark-check-links": "^2.0.4",
     "gatsby-remark-copy-linked-files": "^2.1.3",
