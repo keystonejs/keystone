@@ -17,7 +17,7 @@ class BaseKeystoneAdapter {
     return this.listAdapters[key];
   }
 
-  async connect({ name }) {
+  async connect({ name, rels }) {
     // Connect to the database
     await this._connect({ name }, this.config);
 
@@ -26,7 +26,7 @@ class BaseKeystoneAdapter {
       // Validate the minimum database version requirements are met.
       await this.checkDatabaseVersion();
 
-      const taskResults = await this.postConnect();
+      const taskResults = await this.postConnect({ rels });
       const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
       if (errors.length) {

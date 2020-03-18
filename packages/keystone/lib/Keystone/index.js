@@ -374,6 +374,8 @@ module.exports = class Keystone {
         `${left.listKey}.${left.path} refers to a non-existant field, ${left.config.ref}`
       );
     }
+
+    return Object.values(rels);
   }
 
   /**
@@ -381,11 +383,14 @@ module.exports = class Keystone {
    */
   connect() {
     const { adapters, name } = this;
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name }))).then(() => {
-      if (this.eventHandlers.onConnect) {
-        return this.eventHandlers.onConnect(this);
+    const rels = this._consolidateRelationships();
+    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels }))).then(
+      () => {
+        if (this.eventHandlers.onConnect) {
+          return this.eventHandlers.onConnect(this);
+        }
       }
-    });
+    );
   }
 
   /**
@@ -555,7 +560,6 @@ module.exports = class Keystone {
     pinoOptions,
     cors = { origin: true, credentials: true },
   } = {}) {
-    this._consolidateRelationships();
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
 
     // Now that the middlewares are done, it's safe to assume all the schemas
