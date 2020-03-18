@@ -61,12 +61,10 @@ export default function Template({
           <Container>
             <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} />
             <Content>
-              <main>
-                <SkipNavContent />
-                <MDXProvider components={mdComponents}>
-                  <MDXRenderer>{body}</MDXRenderer>
-                </MDXProvider>
-              </main>
+              <SkipNavContent />
+              <MDXProvider components={mdComponents}>
+                <MDXRenderer>{body}</MDXRenderer>
+              </MDXProvider>
               <EditSection>
                 <p>
                   Have you found a mistake, something that is missing, or could be improved on this

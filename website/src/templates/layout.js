@@ -89,7 +89,8 @@ export const Layout = ({ children }) => {
 const layoutGutter = gridSize * 4;
 
 export const Content = props => (
-  <div
+  <main
+    className="docSearch-content"
     css={{
       minWidth: 0,
       lineHeight: '1.6',
