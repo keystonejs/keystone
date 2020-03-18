@@ -3,4 +3,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Remove unused 'existingItem' parameter from calls to .defaultValue() methods
+Removed unused 'existingItem' parameter from calls to .defaultValue() methods.
