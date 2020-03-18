@@ -13,7 +13,6 @@ export const SidebarNav = () => {
     <Location>
       {({ location: { pathname } }) => (
         <nav aria-label="Documentation Menu">
-          {console.log(pathname)}
           {navData.map((navGroup, i) => {
             return <NavGroup key={i} navGroup={navGroup} pathname={pathname} />;
           })}
