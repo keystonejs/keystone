@@ -252,8 +252,6 @@ class KnexListAdapter extends BaseListAdapter {
     this.rels = undefined;
   }
 
-  prepareFieldAdapter() {}
-
   _postConnect({ rels }) {
     this.rels = rels;
     this.fieldAdapters.forEach(fieldAdapter => {

@@ -76,7 +76,6 @@ class BaseListAdapter {
 
   newFieldAdapter(fieldAdapterClass, name, path, field, getListByKey, config) {
     const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
-    this.prepareFieldAdapter(adapter);
     adapter.setupHooks({
       addPreSaveHook: this.addPreSaveHook.bind(this),
       addPostReadHook: this.addPostReadHook.bind(this),
@@ -85,8 +84,6 @@ class BaseListAdapter {
     this.fieldAdaptersByPath[adapter.path] = adapter;
     return adapter;
   }
-
-  prepareFieldAdapter() {}
 
   addPreSaveHook(hook) {
     this.preSaveHooks.push(hook);
