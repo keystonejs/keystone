@@ -144,7 +144,6 @@ describe('defaultValue field config', () => {
               expect(defaultValue).toHaveBeenCalledTimes(1);
               expect(defaultValue).toHaveBeenCalledWith(
                 expect.objectContaining({
-                  existingItem: undefined,
                   context: expect.any(Object),
                   originalInput: expect.any(Object),
                   actions: expect.any(Object),
@@ -171,7 +170,6 @@ describe('defaultValue field config', () => {
               expect(defaultValue).toHaveBeenCalledTimes(1);
               expect(defaultValue).toHaveBeenCalledWith(
                 expect.objectContaining({
-                  existingItem: undefined,
                   context: expect.any(Object),
                   originalInput: {
                     salutation: 'Doctor',
