@@ -59,7 +59,7 @@ class Field {
    *
    * These are special cases, and should be used sparingly
    *
-   * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
+   * NOTE: When a naming conflict occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
   getGqlAuxTypes() {
@@ -95,7 +95,7 @@ class Field {
    * (no relationships or defaults resolved)
    * @param {Object} data.actions
    * @param {Function} data.actions.query Perform a graphQl query
-   * programatically
+   * programmatically
    */
   async resolveInput({ resolvedData }) {
     return resolvedData[this.path];
