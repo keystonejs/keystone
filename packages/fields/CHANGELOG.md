@@ -1,5 +1,88 @@
 # @keystonejs/fields
 
+## 7.0.1
+
+### Patch Changes
+
+- [`83bdf743`](https://github.com/keystonejs/keystone/commit/83bdf743748e39d1ea73eff2c8e3576cc713c624) [#2538](https://github.com/keystonejs/keystone/pull/2538) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated mongo dependencies to latest version.
+
+* [`d748156b`](https://github.com/keystonejs/keystone/commit/d748156ba5ebe33f4271fae0df781e0c63f2b7e6) [#2537](https://github.com/keystonejs/keystone/pull/2537) Thanks [@jesstelford](https://github.com/jesstelford)! - Introduce a framework for testing CRUD operations on fields. This surfaced a bug in the Decimal field where updating _other_ fields would result in a Decimal field being reset to null.
+
+- [`1d9c6762`](https://github.com/keystonejs/keystone/commit/1d9c6762d32409c71da6a68a083a81197c35aac3) [#2525](https://github.com/keystonejs/keystone/pull/2525) Thanks [@jesstelford](https://github.com/jesstelford)! - Refactored `matchFilter` to use named args (via an object) which makes understanding test code easier.
+
+- Updated dependencies [[`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b), [`83bdf743`](https://github.com/keystonejs/keystone/commit/83bdf743748e39d1ea73eff2c8e3576cc713c624), [`1d9c6762`](https://github.com/keystonejs/keystone/commit/1d9c6762d32409c71da6a68a083a81197c35aac3), [`fb510d67`](https://github.com/keystonejs/keystone/commit/fb510d67ab124d8c1bda1884fa2a0d48262b5e4d)]:
+  - @keystonejs/utils@5.3.0
+  - @keystonejs/adapter-mongoose@5.2.2
+  - @keystonejs/test-utils@6.0.0
+  - @keystonejs/build-field-types@5.2.3
+
+## 7.0.0
+
+### Major Changes
+
+- [`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260) [#2523](https://github.com/keystonejs/keystone/pull/2523) Thanks [@timleslie](https://github.com/timleslie)! - Replaced default bcrypt implementation from `bcrypt` to `bcryptjs`. You can use the new `useCompiledBcrypt` config option to the `Password` field to keep the use of the `bcrypt` package. `bcrypt` must be manually listed in your `package.json` if use set `{ useCompiledBcrypt: true }`, as it is no longer a dependency of Keystone.
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+  - @keystonejs/app-admin-ui@5.9.2
+  - @arch-ui/button@0.0.16
+  - @arch-ui/input@0.1.7
+  - @arch-ui/layout@0.2.11
+  - @arch-ui/options@0.0.16
+  - @arch-ui/alert@0.0.15
+  - @arch-ui/controls@0.1.6
+  - @arch-ui/day-picker@0.0.21
+  - @arch-ui/drawer@0.0.19
+  - @arch-ui/fields@2.1.4
+  - @arch-ui/filters@0.0.18
+  - @arch-ui/loading@0.0.15
+  - @arch-ui/lozenge@0.0.14
+  - @arch-ui/popout@0.0.17
+  - @arch-ui/select@0.1.6
+  - @arch-ui/tooltip@0.1.9
+  - @arch-ui/typography@0.0.15
+  - @keystonejs/field-content@5.4.3
+
+## 6.3.2
+
+### Patch Changes
+
+- [`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542) [#2489](https://github.com/keystonejs/keystone/pull/2489) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated to Unsplash 6.0.0.
+
+* [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+- Updated dependencies [[`ca4d2178`](https://github.com/keystonejs/keystone/commit/ca4d217878c6e3829ed0c7a7e7a1909095a2eb7d), [`5dea5561`](https://github.com/keystonejs/keystone/commit/5dea5561527a4e991d017d087f512101d53256b9), [`d7c7d827`](https://github.com/keystonejs/keystone/commit/d7c7d8271c5da8fec01df123c954d6a03aa41146), [`f0148ccb`](https://github.com/keystonejs/keystone/commit/f0148ccb03abb882195b9bd44c34b780170c89ef), [`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b), [`42497b8e`](https://github.com/keystonejs/keystone/commit/42497b8ebbaeaf0f4d7881dbb76c6abafde4cace), [`6790d053`](https://github.com/keystonejs/keystone/commit/6790d053effba118d0b3a51806a5c066cf022d45), [`6de20ce6`](https://github.com/keystonejs/keystone/commit/6de20ce6b4aad46d2a8cc5ca8d1ada179aca7c9b), [`70f2101a`](https://github.com/keystonejs/keystone/commit/70f2101ab8dd57615800f11df5b72b8fedb09298), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`df422e70`](https://github.com/keystonejs/keystone/commit/df422e70291ebf8660428c9a4a378611623985ae), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20), [`9d11d7ce`](https://github.com/keystonejs/keystone/commit/9d11d7cea6f31eeceb7326d86460a3f0e25ad01d)]:
+  - @keystonejs/field-content@5.4.2
+  - @keystonejs/app-admin-ui@5.9.1
+  - @keystonejs/build-field-types@5.2.2
+  - @keystonejs/access-control@5.2.0
+  - @arch-ui/alert@0.0.14
+  - @arch-ui/button@0.0.15
+  - @arch-ui/controls@0.1.5
+  - @arch-ui/day-picker@0.0.20
+  - @arch-ui/drawer@0.0.18
+  - @arch-ui/fields@2.1.3
+  - @arch-ui/filters@0.0.17
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/layout@0.2.10
+  - @arch-ui/loading@0.0.14
+  - @arch-ui/lozenge@0.0.13
+  - @arch-ui/options@0.0.15
+  - @arch-ui/popout@0.0.16
+  - @arch-ui/select@0.1.5
+  - @arch-ui/tooltip@0.1.8
+  - @arch-ui/typography@0.0.14
+  - @keystonejs/adapter-knex@6.3.2
+  - @keystonejs/adapter-mongoose@5.2.1
+  - @arch-ui/theme@0.0.9
+  - @keystonejs/test-utils@5.1.2
+  - @keystonejs/utils@5.2.2
+
 ## 6.3.1
 
 ### Patch Changes

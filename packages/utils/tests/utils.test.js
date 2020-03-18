@@ -17,10 +17,22 @@ const {
   flatMap,
   zipObj,
   captureSuspensePromises,
+  upcase,
   ...utils
 } = require('../src');
 
 describe('utils', () => {
+  test('upcase', () => {
+    expect(upcase('Foo')).toEqual('Foo');
+    expect(upcase('foo')).toEqual('Foo');
+    expect(upcase('FooBar')).toEqual('FooBar');
+    expect(upcase('fooBar')).toEqual('FooBar');
+    expect(upcase('Foo bar')).toEqual('Foo bar');
+    expect(upcase('foo bar')).toEqual('Foo bar');
+    expect(upcase('Foo Bar')).toEqual('Foo Bar');
+    expect(upcase('foo Bar')).toEqual('Foo Bar');
+  });
+
   test('getType', () => {
     expect(getType(undefined)).toEqual('Undefined');
     expect(getType(null)).toEqual('Null');

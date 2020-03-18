@@ -1,22 +1,22 @@
 {
   "name": "@arch-ui/day-picker",
   "description": "Day Picker UI as used in @keystonejs Admin UI.",
-  "version": "0.0.19",
+  "version": "0.0.21",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/day-picker.cjs.js",
   "peerDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.12.0"
+    "react": "^16.13.0"
   },
   "dependencies": {
-    "@arch-ui/icons": "^0.0.9",
-    "@arch-ui/input": "^0.1.5",
-    "@arch-ui/select": "^0.1.4",
-    "@arch-ui/theme": "^0.0.8",
-    "@arch-ui/typography": "^0.0.13",
+    "@arch-ui/icons": "^0.0.10",
+    "@arch-ui/input": "^0.1.7",
+    "@arch-ui/select": "^0.1.6",
+    "@arch-ui/theme": "^0.0.10",
+    "@arch-ui/typography": "^0.0.15",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
@@ -26,5 +26,6 @@
     "moment": "^2.24.0",
     "react-window": "^1.7.0"
   },
-  "module": "dist/day-picker.esm.js"
+  "module": "dist/day-picker.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/day-picker"
 }

@@ -1,5 +1,20 @@
 # @arch-ui/theme
 
+## 0.0.10
+
+### Patch Changes
+
+- [`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9) [#2499](https://github.com/keystonejs/keystone/pull/2499) Thanks [@mikehazell](https://github.com/mikehazell)! - Fixed issue with Chrome for Mac producing strange characters when printing
+
+## 0.0.9
+
+### Patch Changes
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+- Updated dependencies [[`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @arch-ui/color-utils@0.0.2
+
 ## 0.0.8
 
 ### Patch Changes

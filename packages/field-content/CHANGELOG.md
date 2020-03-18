@@ -1,5 +1,42 @@
 # @keystonejs/field-content
 
+## 5.4.3
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9), [`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260)]:
+  - @arch-ui/theme@0.0.10
+  - @keystonejs/fields@7.0.0
+  - @arch-ui/input@0.1.7
+  - @arch-ui/fields@2.1.4
+  - @arch-ui/tooltip@0.1.9
+  - @arch-ui/typography@0.0.15
+
+## 5.4.2
+
+### Patch Changes
+
+- [`ca4d2178`](https://github.com/keystonejs/keystone/commit/ca4d217878c6e3829ed0c7a7e7a1909095a2eb7d) [#2464](https://github.com/keystonejs/keystone/pull/2464) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Changed the min-height of the content field. Changed the UI so the blocks menu doesn't appear if there are not blocks configured.
+
+* [`70f2101a`](https://github.com/keystonejs/keystone/commit/70f2101ab8dd57615800f11df5b72b8fedb09298) [#2458](https://github.com/keystonejs/keystone/pull/2458) Thanks [@SeanDoyleGit](https://github.com/SeanDoyleGit)! - Changed the `deserialize` method of the content field to filter out missing oEmbeds
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b), [`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/build-field-types@5.2.2
+  - @keystonejs/fields@6.3.2
+  - @arch-ui/fields@2.1.3
+  - @arch-ui/hooks@0.0.9
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/tooltip@0.1.8
+  - @arch-ui/typography@0.0.14
+  - @arch-ui/color-utils@0.0.2
+  - @arch-ui/theme@0.0.9
+  - @keystonejs/utils@5.2.2
+
 ## 5.4.1
 
 ### Patch Changes

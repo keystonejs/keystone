@@ -9,7 +9,7 @@ slug: /quick-start/
 
 ## Your first KeystoneJS app in 5 minutes.
 
-This quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of Keystone 5!
+This quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of Keystone!
 
 ![Screenshot of KeystoneJS Todo App](./img/to-do-app-example.png)
 
@@ -17,14 +17,14 @@ This quick start guide will get you up and running in just a few minutes. Let's 
 
 ## Requirements
 
-Before we start, check that your computer or server meets the following requirements:
+Before we start, check that your computer meets the following requirements:
 
 - [Node.js](https://nodejs.org/) >= 10.x: Node.js is a server platform which runs JavaScript.
 
 And ONE of the following databases:
 
 - [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful NoSQL document storage database.
-- [Postgres](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
+- [PostgreSQL](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
 
 Finally, make sure [your database is configured and running](/docs/quick-start/adapters.md).
 
@@ -32,7 +32,7 @@ All set? Great, let's get started!
 
 ## Installation
 
-To create a new KeystoneJS application, run the following commands in your terminal:
+To create a new Keystone application, run the following commands in your terminal:
 
 ```sh
 npm init keystone-app my-app
@@ -48,9 +48,7 @@ You'll be prompted with a few questions:
 
 1. **What is your project name?** Pick any name for your project. You can change it later if you like.
 2. **Select a starter project.** Select the `Todo` application if you wish to follow this guide.
-3. **Select an adapter.** We'll go more into database adapters later. For now, simply choose `Mongoose` if you're running a MongoDB database and `Knex` if you're running a Postgres one.
-
-If you want to perform an unattended app generation (i.e. skipping the prompts), see the [CLI arguments](/packages/create-keystone-app/README.md) of the `create-keystone-app` utility script.
+3. **Select an adapter.** Choose `Mongoose` if you're running a MongoDB database and `Knex` if you're running a PostgreSQL one.
 
 Wait a few minutes for all the project dependencies to install. Once that's finished, run this:
 
@@ -61,7 +59,7 @@ npm run dev
 
 ## Congratulations! 🎉
 
-You are now running your very own KeystoneJS application! Here's what you get out of the box:
+You are now running your very own Keystone application! Here's what you get out of the box:
 
 ### A simple todo application
 
@@ -86,7 +84,7 @@ Your application also has an Admin UI, which lets you directly manipulate the da
 ### A GraphQL API
 
 Both your application and the Admin UI are powered by a GraphQL API.
-KeystoneJS provides a web interface for this API at this URL:
+Keystone provides a web interface for this API at this URL:
 
 <pre>
 	<code>
@@ -96,9 +94,11 @@ KeystoneJS provides a web interface for this API at this URL:
 
 ## What next?
 
-This todo app is a good introduction to KeystoneJS, but chances are you'll want to build something a bit more complex and secure than that!
+This todo app is a good introduction to Keystone, but chances are you'll want to build something a bit more complex and secure than that!
+
+<!-- FIXME:TL Next step should be tutorials, not guides. -->
 
 The [guides section](/docs/guides/index.md) is a great next step.
-It will walk you through concepts like [creating lists](/docs/guides/add-lists.md),
-setting up [content relationships](/docs/guides/relationships.md),
-managing [Access control](/docs/guides/access-control.md) and much more.
+It will walk you through concepts like [creating lists](/docs/tutorials/add-lists.md),
+setting up [content relationships](/docs/tutorials/relationships.md),
+managing [access control](/docs/guides/access-control.md) and much more.
