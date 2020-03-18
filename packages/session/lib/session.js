@@ -90,39 +90,17 @@ function populateAuthedItemMiddleware(keystone) {
     }
     req.user = item;
     req.authedListKey = list.key;
-    req.audiences = req.session.audiences;
 
     next();
   };
 }
 
-function restrictAudienceMiddleware({ isPublic, audiences }) {
-  return (req, res, next) => {
-    if (isPublic) {
-      // If the session restriction is marked public, we let everything through.
-      next();
-    } else if (
-      req.audiences &&
-      audiences &&
-      Array.isArray(audiences) &&
-      req.audiences.some(audience => audiences.includes(audience))
-    ) {
-      // Otherwise, if one of the session audiences matches one of the restriction audiences, we let them through.
-      next();
-    } else {
-      // If the don't make it through, we simply respond with a 403 Permission Denied
-      res.status(403).send();
-    }
-  };
-}
-
-function startAuthedSession(req, { item, list }, audiences, cookieSecret) {
+function startAuthedSession(req, { item, list }, cookieSecret) {
   return new Promise((resolve, reject) =>
     req.session.regenerate(err => {
       if (err) return reject(err);
       req.session.keystoneListKey = list.key;
       req.session.keystoneItemId = item.id;
-      req.session.audiences = audiences;
       resolve(cookieSignature.sign(req.session.id, cookieSecret));
     })
   );
@@ -137,9 +115,4 @@ function endAuthedSession(req) {
   );
 }
 
-module.exports = {
-  commonSessionMiddleware,
-  restrictAudienceMiddleware,
-  startAuthedSession,
-  endAuthedSession,
-};
+module.exports = { commonSessionMiddleware, startAuthedSession, endAuthedSession };

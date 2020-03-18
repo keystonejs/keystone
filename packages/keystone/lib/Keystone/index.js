@@ -78,7 +78,7 @@ module.exports = class Keystone {
     this._customProvider = new CustomProvider({
       schemaNames,
       defaultAccess: this.defaultAccess,
-      buildQueryHelper: this._buildQueryHelper,
+      buildQueryHelper: this._buildQueryHelper.bind(this),
     });
     this._providers = [
       this._listCRUDProvider,
@@ -222,8 +222,8 @@ module.exports = class Keystone {
 
     return {
       schemaName,
-      startAuthedSession: ({ item, list }, audiences) =>
-        startAuthedSession(req, { item, list }, audiences, this._cookieSecret),
+      startAuthedSession: ({ item, list }) =>
+        startAuthedSession(req, { item, list }, this._cookieSecret),
       endAuthedSession: endAuthedSession.bind(null, req),
       authedItem: req.user,
       authedListKey: req.authedListKey,
