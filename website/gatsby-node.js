@@ -131,6 +131,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     let heading;
     slugs.reset();
     let headingIds = [];
+    let searchableContent = [];
 
     visit(ast, node => {
       if (!description && node.type === 'paragraph') {
@@ -141,6 +142,10 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       }
       if (node.type === 'heading') {
         headingIds.push(slugs.slug(mdastToString(node)));
+      }
+
+      if (node.type === 'paragraph' || node.type === 'heading') {
+        searchableContent.push(mdastToString(node));
       }
     });
 
@@ -167,6 +172,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       description,
       heading,
       headingIds,
+      searchableContent: searchableContent.join(' ').replace(/\r?\n|\r/g, ''),
     };
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348

@@ -10,11 +10,13 @@ export const SidebarNav = () => {
   const navData = useNavData();
   return (
     <nav aria-label="Documentation Menu">
-      {navData.map(navGroup => {
+      {navData.map((navGroup, index) => {
         const sectionId = `docs-menu-${navGroup.navTitle}`;
         return (
           <div key={navGroup.navTitle}>
-            <GroupHeading id={sectionId}>{navGroup.navTitle.replace('-', ' ')}</GroupHeading>
+            <GroupHeading id={sectionId} index={index}>
+              {navGroup.navTitle.replace('-', ' ')}
+            </GroupHeading>
             <List aria-labelledby={sectionId}>
               {navGroup.pages.map(node => {
                 return (
@@ -53,13 +55,13 @@ export const SidebarNav = () => {
   );
 };
 
-const GroupHeading = props => (
+const GroupHeading = ({ index, ...props }) => (
   <h2
     css={{
       color: colors.N80,
       fontSize: '1.4rem',
       fontWeight: 700,
-      marginTop: '2.4em',
+      marginTop: index === 0 ? 0 : '2.4em',
       textTransform: 'uppercase',
     }}
     {...props}

@@ -96,7 +96,8 @@ export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
         }}
       />
 
-      <AlgoliaSearch />
+      <SidebarNav />
+      <Footer />
       <p css={{ color: colors.N40, fontSize: '0.9em' }}>
         Looking for{' '}
         <a css={{ color: colors.N80 }} href="http://v4.keystonejs.com">
@@ -104,8 +105,6 @@ export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
         </a>
         ?{' '}
       </p>
-      <SidebarNav />
-      <Footer />
     </aside>
   );
 };

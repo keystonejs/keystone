@@ -8,6 +8,7 @@ import { colors, gridSize } from '@arch-ui/theme';
 import logosvg from '../assets/logo.svg';
 import { Container, SocialIconsNav } from '../components';
 import { media, mediaOnly, mediaMax } from '../utils/media';
+import { AlgoliaSearch } from './AlgoliaSearch';
 
 export const HEADER_HEIGHT = 60;
 
@@ -25,8 +26,15 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
           justifyContent: 'space-between',
         }}
       >
-        <Logo />
-        <Nav toggleMenu={toggleMenu} />
+        <div css={{ flex: '0 0 20%' }}>
+          <Logo />
+        </div>
+        <div css={{ flex: 1, marginLeft: '1rem', marginRight: '1rem' }}>
+          <AlgoliaSearch />
+        </div>
+        <div css={{ flex: '0 0 20%' }}>
+          <Nav toggleMenu={toggleMenu} />
+        </div>
       </div>
     </Container>
   </header>
@@ -127,15 +135,15 @@ const List = props => (
 const Nav = ({ toggleMenu }) => (
   <nav>
     <List>
-      {NAV_LINKS.map(({ url, name }) => (
+      {/* {NAV_LINKS.map(({ url, name }) => (
         <NavItem key={name} to={url} lgOnly>
           {name}
         </NavItem>
-      ))}
+      ))} */}
       <li>
         <SocialIconsNav
           css={{
-            marginLeft: '2rem',
+            // marginLeft: '2rem',
             [mediaMax.sm]: {
               display: 'none',
             },
