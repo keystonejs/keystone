@@ -154,6 +154,7 @@ async function getGatsbyConfig() {
           head: true,
         },
       },
+      `gatsby-plugin-sitemap`,
     ],
   };
 }
