@@ -6,7 +6,7 @@ import { gridSize } from '@arch-ui/theme';
 import throttle from 'lodash.throttle';
 import { colors } from '@arch-ui/theme';
 
-import { Footer, SidebarNav, SocialIconsNav, AlgoliaSearch } from '../components';
+import { Footer, SidebarNav, SocialIconsNav } from '../components';
 import { media, mediaMax } from '../utils/media';
 
 const layoutGutter = gridSize * 4;
