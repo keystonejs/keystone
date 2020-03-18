@@ -84,7 +84,7 @@ keystone.createList('Post', {
   fields: {
     title: {
       type: Text,
-      defaultValue: ({ existingItem, context, originalInput, actions }) => {
+      defaultValue: ({ context, originalInput, actions }) => {
         /**/
       },
     },
