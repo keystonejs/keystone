@@ -12,6 +12,7 @@ const {
   arrayToObject,
   resolveAllKeys,
   identity,
+  asyncForEach,
 } = require('@keystonejs/utils');
 const slugify = require('@sindresorhus/slugify');
 
@@ -67,9 +68,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return result;
   }
 
-  async postConnect() {
+  async postConnect({ rels }) {
     Object.values(this.listAdapters).forEach(listAdapter => {
-      listAdapter._postConnect();
+      listAdapter._postConnect({ rels });
     });
 
     // Run this only if explicity configured and still never in production
@@ -95,12 +96,6 @@ class KnexAdapter extends BaseKeystoneAdapter {
       const error = new Error('Multiple errors in KnexAdapter.postConnect():');
       error.errors = errors;
       throw error;
-    }
-
-    async function asyncForEach(array, callback) {
-      for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-      }
     }
 
     const fkResult = [];
@@ -254,12 +249,16 @@ class KnexListAdapter extends BaseListAdapter {
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
     this.realKeys = [];
     this.tableName = this.key;
+    this.rels = undefined;
   }
 
-  prepareFieldAdapter() {}
-
-  _postConnect() {
+  _postConnect({ rels }) {
+    this.rels = rels;
     this.fieldAdapters.forEach(fieldAdapter => {
+      fieldAdapter.rel = rels.find(
+        ({ left, right }) =>
+          left.adapter === fieldAdapter || (right && right.adapter === fieldAdapter)
+      );
       if (fieldAdapter._hasRealKeys()) {
         this.realKeys.push(
           ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])

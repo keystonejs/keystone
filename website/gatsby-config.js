@@ -158,16 +158,7 @@ async function getGatsbyConfig() {
           head: true,
         },
       },
-      {
-        resolve: `gatsby-plugin-algolia`,
-        options: {
-          // TODO replace this with proper keys
-          appId: 'JXU86HLX02',
-          apiKey: '13ba67f9c6520a7b0eb123c3f23e301b',
-          queries,
-          chunkSize: 10000, // default: 1000
-        },
-      },
+      `gatsby-plugin-sitemap`,
     ],
   };
 }
