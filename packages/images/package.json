@@ -21,6 +21,7 @@
     "@keystonejs/fields": "^7.0.0",
     "@keystonejs/utils": "^5.2.2",
     "express": "^4.17.1",
+    "form-data": "^3.0.0",
     "fs-extra": "8.1.0",
     "multer": "^1.4.2",
     "p-is-promise": "^3.0.0",
@@ -29,7 +30,6 @@
     "sharp": "^0.25.1",
     "uuid": "^3.3.2"
   },
-  "peerDependencies": {},
   "main": "dist/images.cjs.js",
   "module": "dist/images.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/images"

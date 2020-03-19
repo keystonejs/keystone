@@ -10,15 +10,13 @@ Suports downloading images:
 
 ```
 GET /image/{imageid}
-GET /image-meta/{imageid}
-GET /image-meta/{imageid}
+GET /image/{imageid}/meta
 ```
 
-Supports image transforms:
+Supports image transforms via URL parameters:
 
 ```
-fit={width}x{height}
-fill={width}x{height}
+fit=cover|contain|fill|inside|outside
 width={width}
 height={height}
 ```
