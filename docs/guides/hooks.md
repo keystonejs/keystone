@@ -117,7 +117,7 @@ Within each hook set, the different [hook types](#hook-type) are invoked in a sp
 
 ## Gotchas
 
-The hook system is powerful but it's breadth and flexibility introduce some complexity.
+The hook system is powerful but its breadth and flexibility introduce some complexity.
 A few of the main stumbling blocks are:
 
 - The `create` and `update` operations share a single set of hooks.

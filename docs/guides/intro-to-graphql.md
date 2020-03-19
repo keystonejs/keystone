@@ -1,11 +1,11 @@
 <!--[meta]
 section: guides
-title: GraphQL
+title: GraphQL Introduction
 subSection: graphql
 order: 1
 [meta]-->
 
-# Introduction to the GraphQL API
+# GraphQL API Introduction
 
 _Before you begin:_ This guide assumes you have a running instance of KeystoneJS with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
 

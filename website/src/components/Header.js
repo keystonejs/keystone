@@ -173,6 +173,10 @@ const NAV_LINKS = [
     url: '/quick-start/',
   },
   {
+    name: 'Tutorials',
+    url: '/tutorials/',
+  },
+  {
     name: 'Guides',
     url: '/guides/',
   },

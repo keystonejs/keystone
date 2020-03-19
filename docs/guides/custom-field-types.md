@@ -18,6 +18,10 @@ Type/views/
   Cell.js               -- Main React component rendered by the List view
 ```
 
+## Example
+
+For an example of a custom field, please see the [Stars field](https://github.com/keystonejs/keystone/tree/master/test-projects/basic/custom-fields/Stars) in the basic test project.
+
 ## Controller
 
 This is the client-side class that implements helpers for the Admin UI React app

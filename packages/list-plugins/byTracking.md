@@ -3,7 +3,7 @@ section: list-plugins
 title: byTracking
 [meta]-->
 
-# byTracking
+# byTracking Plugin
 
 Adds `createdBy` and `updatedBy` fields to a list. These fields are read-only but they will be updated automatically when items are created or updated.
 

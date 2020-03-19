@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-schema-router",
   "description": "KeystoneJS GraphQL App.",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -12,5 +12,6 @@
   },
   "devDependencies": {
     "express": "^4.17.1"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-schema-router"
 }

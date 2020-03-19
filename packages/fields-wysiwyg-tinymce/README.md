@@ -18,6 +18,14 @@ Then import it, and use it like any other field:
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 ```
 
+## Config
+
+### `editorConfig`
+
+**Default:** `{}`
+
+Accepts any [TinyMCE config options](https://www.tiny.cloud/docs/configure/). These will be passed to `tinymce.init` and can be used to override Keystone.js' default editor appearance and functionality.
+
 ## Credit
 
 The `Editor` implementation was inspired by the [tinymce-react](https://github.com/tinymce/tinymce-react) Official TinyMCE React component, Copyright 2017-present Ephox, Inc.

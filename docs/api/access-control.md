@@ -366,7 +366,7 @@ only to modify it).
 - `fieldKey` is the key of the field being operated on.
 - `originalInput`is the data as passed in the mutation for `create` & `update` mutations (`undefined` for `read`).
 - `existingItem` is the existing item this field belongs to for `update` mutations & `read` queries (`undefined` for `create`).
-- `operation` is the CRUDA operation being peformed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).
+- `operation` is the CRUDA operation being performed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).
 - `gqlName` is the name of the query or mutation which triggered the access check
 - `itemId` is the `id` of the item being updated/deleted in singular `update` and `delete` operations.
 - `itemIds` are the `ids` of the items being updated/deleted in multiple `update` and `delete` operations.

@@ -1,5 +1,15 @@
 # @keystonejs/file-adapters
 
+## 6.0.0
+
+### Major Changes
+
+- [`787eabb3`](https://github.com/keystonejs/keystone/commit/787eabb387cd28f1578a5dfb68db95203ab8c782) [#2291](https://github.com/keystonejs/keystone/pull/2291) Thanks [@LiamAttClarke](https://github.com/LiamAttClarke)! - Returned promise from file-adapter delete methods, made delete params consistent between adapters.
+
+### Patch Changes
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
 ## 5.5.0
 
 ### Minor Changes

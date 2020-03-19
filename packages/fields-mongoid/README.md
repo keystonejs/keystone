@@ -50,15 +50,15 @@ We reuse the interface implementation from the native `Text` field.
 
 ### Input Fields
 
-| Field name | Type | Description                               |
-| :--------- | :--- | :---------------------------------------- |
-| `${path}`  | `ID` | The ID in it's 24 char hex representation |
+| Field name | Type | Description                              |
+| :--------- | :--- | :--------------------------------------- |
+| `${path}`  | `ID` | The ID in its 24 char hex representation |
 
 ### Output Fields
 
-| Field name | Type | Description                               |
-| :--------- | :--- | :---------------------------------------- |
-| `${path}`  | `ID` | The ID in it's 24 char hex representation |
+| Field name | Type | Description                              |
+| :--------- | :--- | :--------------------------------------- |
+| `${path}`  | `ID` | The ID in its 24 char hex representation |
 
 ### Filters
 

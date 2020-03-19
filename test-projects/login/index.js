@@ -24,13 +24,6 @@ const keystone = new Keystone({
   },
 });
 
-// eslint-disable-next-line no-unused-vars
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  // config: { protectIdentities: true },
-});
-
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -71,6 +64,12 @@ keystone.createList('ListWithPlugin', {
     createdBy(),
     updatedBy(),
   ],
+});
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+  // config: { protectIdentities: true },
 });
 
 module.exports = {

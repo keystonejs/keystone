@@ -36,6 +36,7 @@ import {
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
+import { useAdminMeta } from '../../providers/AdminMeta';
 
 let Render = ({ children }) => children();
 
@@ -265,15 +266,22 @@ const ItemDetails = ({
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
-                    setItem(oldItem => ({
-                      ...oldItem,
-                      [field.path]: value,
-                    }));
+                    setItem(oldItem => {
+                      // Don't flag things as changed if they're not actually changed
+                      if (oldItem[field.path] === value) {
+                        return oldItem;
+                      }
 
-                    setValidationErrors({});
-                    setValidationWarnings({});
+                      setValidationErrors({});
+                      setValidationWarnings({});
 
-                    itemHasChanged.current = true;
+                      itemHasChanged.current = true;
+
+                      return {
+                        ...oldItem,
+                        [field.path]: value,
+                      };
+                    });
                   },
                   [field]
                 );
@@ -351,9 +359,11 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
-  const itemQuery = list.getItemQuery(itemId);
+const ItemPage = ({ list, itemId }) => {
+  const { adminPath, getListByKey } = useAdminMeta();
   const { addToast } = useToasts();
+
+  const itemQuery = list.getItemQuery(itemId);
 
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache
