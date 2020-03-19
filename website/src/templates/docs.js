@@ -60,7 +60,7 @@ export default function Template({
         {({ sidebarOffset, sidebarIsVisible }) => (
           <Container>
             <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} />
-            <Content>
+            <Content className="docSearch-content">
               <SkipNavContent />
               <MDXProvider components={mdComponents}>
                 <MDXRenderer>{body}</MDXRenderer>
