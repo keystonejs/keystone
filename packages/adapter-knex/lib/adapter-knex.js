@@ -12,6 +12,7 @@ const {
   arrayToObject,
   resolveAllKeys,
   identity,
+  asyncForEach,
 } = require('@keystonejs/utils');
 const slugify = require('@sindresorhus/slugify');
 
@@ -95,12 +96,6 @@ class KnexAdapter extends BaseKeystoneAdapter {
       const error = new Error('Multiple errors in KnexAdapter.postConnect():');
       error.errors = errors;
       throw error;
-    }
-
-    async function asyncForEach(array, callback) {
-      for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-      }
     }
 
     const fkResult = [];
