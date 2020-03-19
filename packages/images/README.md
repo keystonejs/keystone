@@ -1,5 +1,9 @@
 # Image Service
 
+Keystone includes an image service and corresponding field type. At the moment,
+this is only suitable for development and should not be used in a production
+environment.
+
 Supports uploading images:
 
 ```

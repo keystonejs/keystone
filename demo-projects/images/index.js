@@ -4,12 +4,13 @@ const { Text } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
-const { ImageService } = require('@keystonejs/images');
+const { ImageService, Image } = require('@keystonejs/images');
 
 const imageService = new ImageService({
   mode: 'local',
   path: './images',
   port: 4008,
+  host: 'localhost',
   transforms: {
     thumbnail: {
       fit: { width: 100, height: 100 },
@@ -26,7 +27,7 @@ const keystone = new Keystone({
 keystone.createList('Photo', {
   fields: {
     name: { type: Text, isRequired: true },
-    // image: { type: Image, service: imageService },
+    image: { type: Image, service: imageService },
   },
 });
 

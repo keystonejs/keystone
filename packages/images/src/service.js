@@ -4,6 +4,7 @@ import nodePath from 'path';
 import multer from 'multer';
 import sharp from 'sharp';
 import crypto from 'crypto';
+import uuid from 'uuid/v4';
 
 // http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.jpeg
 // http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.png
@@ -65,8 +66,9 @@ const processResizeOptions = ({ width, height, fit = 'cover' }) => {
 };
 
 export class ImageService {
-  constructor({ port = 4001, host = 'localhost', path = './images' }) {
+  constructor({ port = 4001, protocol = 'http', host = 'localhost', path = './images' }) {
     this.path = nodePath.resolve(path);
+    this.protocol = protocol;
     this.port = port;
     this.host = host;
     this.database = new DataStore({ path: this.path });
@@ -80,24 +82,9 @@ export class ImageService {
     this.app = express();
 
     this.app.post('/upload', upload.single('image'), async (req, res) => {
-      const { filename, originalname, path, size } = req;
+      const { originalname, path } = req.file;
 
-      const image = sharp(path);
-      const meta = await image.metadata();
-      const id = `${filename}`;
-      await fs.rename(path, path + '.' + meta.format);
-
-      this.database.storeImage(id, {
-        size,
-        originalname,
-        ...meta,
-      });
-
-      res.status(201).json({
-        success: true,
-        id,
-        meta,
-      });
+      res.status(201).json(this.storeImageInDatabase({ path, originalname }));
     });
 
     this.app.get('/image/:filename', async (req, res) => {
@@ -167,5 +154,46 @@ export class ImageService {
     this.app.listen(port, () => {
       console.log(`🌠 KeystoneJS Image Service ready on port ${port}`);
     });
+  }
+  getSrc(id, { format, resize = {} }) {
+    let url = `${this.protocol}://${this.host}:${this.port}/${id}.${format}`;
+
+    let searchParams = new URLSearchParams();
+    for (let key in resize) {
+      searchParams.set(key, resize[key]);
+    }
+
+    let stringifiedSearchParams = searchParams.toString();
+    if (stringifiedSearchParams) {
+      url += `?${stringifiedSearchParams}`;
+    }
+    return url;
+  }
+  async uploadImage({ stream, originalname }) {
+    const id = uuid();
+    const path = nodePath.join(this.sourcePath, id);
+    const writeStream = fs.createWriteStream(path);
+    stream.pipe(writeStream);
+    await new Promise(resolve => stream.on('end', resolve));
+    return this.storeImageInDatabase({ path, originalname });
+  }
+  async storeImageInDatabase({ path, originalname }) {
+    const filename = nodePath.basename(path);
+    const image = sharp(path);
+    const meta = await image.metadata();
+    const id = filename;
+    const { size } = await fs.stat(path);
+    await fs.rename(path, path + '.' + meta.format);
+    this.database.storeImage(id, {
+      size,
+      originalname,
+      ...meta,
+    });
+
+    return {
+      success: true,
+      id,
+      meta,
+    };
   }
 }
