@@ -37,7 +37,7 @@ class DataStore {
   }
 }
 
-const processTransformOptions = ({ width, height, fit = 'cover' }) => {
+const processResizeOptions = ({ width, height, fit = 'cover' }) => {
   if (!width && !height) {
     return null;
   }
@@ -65,9 +65,10 @@ const processTransformOptions = ({ width, height, fit = 'cover' }) => {
 };
 
 export class ImageService {
-  constructor({ port = 4001, path = './images' }) {
+  constructor({ port = 4001, host = 'localhost', path = './images' }) {
     this.path = nodePath.resolve(path);
     this.port = port;
+    this.host = host;
     this.database = new DataStore({ path: this.path });
     this.sourcePath = nodePath.join(this.path, 'source');
     this.transformsPath = nodePath.join(this.path, 'transforms');
@@ -80,9 +81,10 @@ export class ImageService {
 
     this.app.post('/upload', upload.single('image'), async (req, res) => {
       const { filename, originalname, path, size } = req;
+
       const image = sharp(path);
       const meta = await image.metadata();
-      const id = `${filename}.${meta.format}`;
+      const id = `${filename}`;
       await fs.rename(path, path + '.' + meta.format);
 
       this.database.storeImage(id, {
@@ -98,40 +100,50 @@ export class ImageService {
       });
     });
 
-    this.app.get('/image/:id', async (req, res) => {
-      const { id } = req.params;
-      const filePath = nodePath.join(this.sourcePath, id);
+    this.app.get('/image/:filename', async (req, res) => {
+      const { filename } = req.params;
+      const [id, format] = filename.split('.');
 
-      const transformOptions = processTransformOptions(req.query);
+      if (!id || !format) {
+        return res.status(404).send('Not Found (Invalid Filename)');
+      }
 
       const data = this.database.getImage(id);
 
       if (!data) {
-        return res.status(404).send('Not Found');
+        return res.status(404).send('Not Found (No Matching Image)');
       }
 
-      if (!transformOptions) {
-        return res.sendFile(filePath);
+      const originalPath = nodePath.join(this.sourcePath, `${id}.${data.format}`);
+      const resizeOptions = processResizeOptions(req.query);
+
+      if (!resizeOptions && format === data.format) {
+        return res.sendFile(originalPath);
       }
 
-      if (transformOptions.error) {
-        return res.status(400).send(transformOptions.error);
+      let suffix = '';
+
+      if (resizeOptions) {
+        if (resizeOptions.error) {
+          return res.status(400).send(resizeOptions.error);
+        }
+
+        const md5sum = crypto.createHash('md5');
+        md5sum.update(JSON.stringify(resizeOptions));
+        const hash = md5sum.digest('hex');
+
+        suffix = `-${hash}`;
       }
 
-      const md5sum = crypto.createHash('md5');
-      md5sum.update(JSON.stringify(transformOptions));
-      const hash = md5sum.digest('hex');
-
-      let transformedFilename = nodePath.join(
-        this.transformsPath,
-        `${nodePath.parse(id).name}-${hash}.${data.format}`
-      );
+      let transformedFilename = nodePath.join(this.transformsPath, `${id}${suffix}.${format}`);
 
       if (!(await fs.exists(transformedFilename))) {
         try {
-          await sharp(filePath)
-            .resize(transformOptions)
-            .toFile(transformedFilename);
+          const sharpImage = sharp(originalPath);
+          if (resizeOptions) {
+            await sharpImage.resize(resizeOptions);
+          }
+          await sharpImage.toFile(transformedFilename);
         } catch (err) {
           console.error(err);
           return res.status(500).send({ error: 'Internal server error' });

@@ -6,7 +6,7 @@
 //   KnexCloudinaryImageInterface,
 // } from './Implementation';
 
-export { ImageService } from './server';
+export { ImageService } from './service';
 
 // export default {
 //   type: 'CloudinaryImage',
