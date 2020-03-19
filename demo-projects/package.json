@@ -3,7 +3,8 @@
     "start": "yarn todo dev",
     "blog": "yarn --cwd blog",
     "meetup": "yarn --cwd meetup",
-    "todo": "yarn --cwd todo"
+    "todo": "yarn --cwd todo",
+    "images": "yarn --cwd images"
   },
   "repository": "https://github.com/keystonejs/keystone.git",
   "homepage": "https://github.com/keystonejs/keystone",
