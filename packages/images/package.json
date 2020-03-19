@@ -1,0 +1,36 @@
+{
+  "name": "@keystonejs/images",
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@arch-ui/color-utils": "^0.0.2",
+    "@arch-ui/fields": "^2.1.4",
+    "@arch-ui/hooks": "^0.0.9",
+    "@arch-ui/icons": "^0.0.10",
+    "@arch-ui/input": "^0.1.7",
+    "@arch-ui/theme": "^0.0.10",
+    "@arch-ui/tooltip": "^0.1.9",
+    "@arch-ui/typography": "^0.0.15",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.27",
+    "@keystonejs/build-field-types": "^5.2.2",
+    "@keystonejs/fields": "^7.0.0",
+    "@keystonejs/utils": "^5.2.2",
+    "express": "^4.17.1",
+    "fs-extra": "8.1.0",
+    "multer": "^1.4.2",
+    "p-is-promise": "^3.0.0",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "sharp": "^0.25.1",
+    "uuid": "^3.3.2"
+  },
+  "peerDependencies": {},
+  "main": "dist/images.cjs.js",
+  "module": "dist/images.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/images"
+}

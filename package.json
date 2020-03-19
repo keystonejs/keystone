@@ -176,7 +176,8 @@
       "packages/fields-markdown",
       "packages/fields-mongoid",
       "packages/fields-wysiwyg-tinymce",
-      "packages/oembed-adapters"
+      "packages/oembed-adapters",
+      "packages/images"
     ]
   },
   "jest": {
