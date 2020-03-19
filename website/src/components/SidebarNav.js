@@ -26,13 +26,15 @@ const NavGroup = ({ navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {
-    const pathsForGroup = [
-      ...navGroup.pages.map(p => p.path),
-      ...(navGroup.subNavs.length
-        ? navGroup.subNavs.map(navGroup => navGroup.pages.map(page => page.path))
-        : []),
-    ].flat();
-    return pathsForGroup.some(i => i === pathname);
+    let paths = [];
+
+    navGroup.pages.forEach(i => paths.push(i.path));
+
+    if (navGroup.subNavs.length) {
+      navGroup.subNavs.forEach(group => group.pages.forEach(i => paths.push(i.path)));
+    }
+
+    return paths.some(i => i === pathname);
   }, [pathname]);
 
   return (
