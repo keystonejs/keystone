@@ -59,8 +59,14 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       ...mongooseConfig,
     });
   }
-
   async postConnect({ rels }) {
+    // Setup all schemas
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter.fieldAdapters.forEach(fieldAdapter => {
+        fieldAdapter.addToMongooseSchema(listAdapter.schema, listAdapter.mongoose);
+      });
+    });
+
     return await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect({ rels }))
     );
@@ -132,10 +138,6 @@ class MongooseListAdapter extends BaseListAdapter {
     this.model = null;
 
     this.rels = undefined;
-  }
-
-  prepareFieldAdapter(fieldAdapter) {
-    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
   }
 
   /**
