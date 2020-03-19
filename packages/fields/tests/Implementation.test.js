@@ -184,16 +184,15 @@ describe('getDefaultValue()', () => {
 
   test('executes a function', () => {
     const defaultValue = jest.fn(() => 'foobar');
-    const existingItem = {};
     const context = {};
     const originalInput = {};
     const actions = {};
 
     const impl = new Field('path', { defaultValue }, args);
 
-    const value = impl.getDefaultValue({ existingItem, context, originalInput, actions });
+    const value = impl.getDefaultValue({ context, originalInput, actions });
     expect(value).toEqual('foobar');
     expect(defaultValue).toHaveBeenCalledTimes(1);
-    expect(defaultValue).toHaveBeenCalledWith({ existingItem, context, originalInput, actions });
+    expect(defaultValue).toHaveBeenCalledWith({ context, originalInput, actions });
   });
 });

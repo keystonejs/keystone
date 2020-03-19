@@ -189,10 +189,10 @@ class Field {
   extendAdminViews(views) {
     return views;
   }
-  getDefaultValue({ existingItem, context, originalInput, actions }) {
+  getDefaultValue({ context, originalInput, actions }) {
     if (typeof this.defaultValue !== 'undefined') {
       if (typeof this.defaultValue === 'function') {
-        return this.defaultValue({ existingItem, context, originalInput, actions });
+        return this.defaultValue({ context, originalInput, actions });
       } else {
         return this.defaultValue;
       }
