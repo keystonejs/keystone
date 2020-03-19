@@ -27,6 +27,7 @@ const {
   endAuthedSession,
   commonSessionMiddleware,
 } = require('@keystonejs/session');
+const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
 
 const {
   unmergeRelationships,
@@ -35,12 +36,7 @@ const {
 } = require('./relationship-utils');
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
-const {
-  CustomProvider,
-  ListAuthProvider,
-  ListCRUDProvider,
-  VersionProvider,
-} = require('../providers');
+const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
 module.exports = class Keystone {
   constructor({
@@ -82,12 +78,16 @@ module.exports = class Keystone {
     this._customProvider = new CustomProvider({
       schemaNames,
       defaultAccess: this.defaultAccess,
-      buildQueryHelper: this._buildQueryHelper,
+      buildQueryHelper: this._buildQueryHelper.bind(this),
     });
     this._providers = [
       this._listCRUDProvider,
       this._customProvider,
-      new VersionProvider({ appVersion, schemaNames }),
+      new AppVersionProvider({
+        version: appVersion.version,
+        access: appVersion.access,
+        schemaNames,
+      }),
     ];
 
     if (adapters) {
@@ -222,8 +222,8 @@ module.exports = class Keystone {
 
     return {
       schemaName,
-      startAuthedSession: ({ item, list }, audiences) =>
-        startAuthedSession(req, { item, list }, audiences, this._cookieSecret),
+      startAuthedSession: ({ item, list }) =>
+        startAuthedSession(req, { item, list }, this._cookieSecret),
       endAuthedSession: endAuthedSession.bind(null, req),
       authedItem: req.user,
       authedListKey: req.authedListKey,
@@ -509,20 +509,9 @@ module.exports = class Keystone {
     return mergeRelationships(createdItems, createdRelationships);
   }
 
-  async prepare({
-    dev = false,
-    apps = [],
-    distDir,
-    pinoOptions,
-    cors = { origin: true, credentials: true },
-  } = {}) {
-    this._consolidateRelationships();
-    const middlewares = flattenDeep([
-      this.appVersion.addVersionToHttpHeaders &&
-        ((req, res, next) => {
-          res.set('X-Keystone-App-Version', this.appVersion.version);
-          next();
-        }),
+  async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
+    return flattenDeep([
+      this.appVersion.addVersionToHttpHeaders && appVersionMiddleware(this.appVersion.version),
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
@@ -557,6 +546,17 @@ module.exports = class Keystone {
           )
       )),
     ]).filter(middleware => !!middleware);
+  }
+
+  async prepare({
+    dev = false,
+    apps = [],
+    distDir,
+    pinoOptions,
+    cors = { origin: true, credentials: true },
+  } = {}) {
+    this._consolidateRelationships();
+    const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
 
     // Now that the middlewares are done, it's safe to assume all the schemas
     // are registered, so we can setup our query helper

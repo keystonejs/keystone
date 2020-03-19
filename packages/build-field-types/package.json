@@ -1,6 +1,6 @@
 {
   "name": "@keystonejs/build-field-types",
-  "version": "5.2.2",
+  "version": "5.2.3",
   "description": "A build tool for KeystoneJS 5 Field Types",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/build-field-types",
@@ -37,7 +37,7 @@
     "chalk": "^2.4.2",
     "dataloader": "^1.4.0",
     "fs-extra": "^7.0.0",
-    "globby": "^9.1.0",
+    "globby": "^11.0.0",
     "inquirer": "^6.2.0",
     "jest-worker": "^25.1.0",
     "lodash.isempty": "^4.4.0",

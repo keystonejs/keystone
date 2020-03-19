@@ -31,12 +31,13 @@ keystone.createList('User', {
 
 ### Config
 
-| Option         | Type      | Default | Description                                                           |
-| -------------- | --------- | ------- | --------------------------------------------------------------------- |
-| `minLength`    | `Integer` | `8`     | The minimum number of characters this field will accept               |
-| `rejectCommon` | `Boolean` | `false` | Checks the password against a list of commonly used passwords         |
-| `workFactor`   | `Integer` | `10`    | Controls the processing time required to generate and validate hashes |
-| `isRequired`   | `Boolean` | `false` | Does this field require a value?                                      |
+| Option              | Type      | Default | Description                                                           |
+| ------------------- | --------- | ------- | --------------------------------------------------------------------- |
+| `minLength`         | `Integer` | `8`     | The minimum number of characters this field will accept               |
+| `rejectCommon`      | `Boolean` | `false` | Checks the password against a list of commonly used passwords         |
+| `workFactor`        | `Integer` | `10`    | Controls the processing time required to generate and validate hashes |
+| `isRequired`        | `Boolean` | `false` | Does this field require a value?                                      |
+| `useCompiledBcrypt` | `Boolean` | `false` | Use the compiled `bcrypt` package rather than `bcryptjs`              |
 
 #### `minLength`
 
@@ -76,6 +77,17 @@ The default value of 10 will allow the generation of a several hashes per second
 Note the `workFactor` supplied is applied by the bcrypt algorithm as an exponent of 2.
 As such, a work factor of 11 will cause passwords to take _twice_ as long to hash and validate as a work factor of 10.
 A work factor of 12 will cause passwords to take _four times_ as long as 10. Etc.
+
+#### `useCompiledBcrypt`
+
+By default the [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) package is used for computing and comparing hashes.
+This package provides a javascript implementation of the `bcrypt` algorithm.
+A compiled version of this algorithm is provided by the [`bcrypt`](https://www.npmjs.com/package/bcrypt) package.
+Setting `{ userCompiledBcrypt: true }` will tell Keystone to use the compiled package.
+If you use this flag you must include `bcrypt` in your package dependencies.
+
+The compiled package provides a ~20% performance improvement, and avoids the thread blocking of the JavaScript implementation.
+This comes with the trade off that the compiled package can be challenging to work with when working in some environments (e.g. Windows) or when trying to deploy code built in one environment onto a different environment (e.g. build on OSX to deploy in a Linux based lambda process).
 
 ### Auth Strategies
 

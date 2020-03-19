@@ -1,5 +1,12 @@
 # @arch-ui/lozenge
 
+## 0.0.14
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+
 ## 0.0.13
 
 ### Patch Changes

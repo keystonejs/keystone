@@ -1,5 +1,30 @@
 # @keystonejs/demo-project-meetup
 
+## 5.1.4
+
+### Patch Changes
+
+- [`29ad8a17`](https://github.com/keystonejs/keystone/commit/29ad8a175cc4324fe722eefd22c09f7fb6c5be5e) [#2531](https://github.com/keystonejs/keystone/pull/2531) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a minor typo.
+
+- Updated dependencies [[`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b), [`29ad8a17`](https://github.com/keystonejs/keystone/commit/29ad8a175cc4324fe722eefd22c09f7fb6c5be5e), [`83bdf743`](https://github.com/keystonejs/keystone/commit/83bdf743748e39d1ea73eff2c8e3576cc713c624), [`d748156b`](https://github.com/keystonejs/keystone/commit/d748156ba5ebe33f4271fae0df781e0c63f2b7e6), [`d30b7498`](https://github.com/keystonejs/keystone/commit/d30b74984b21ae9fc2a3b39850f674639fbac074), [`1d9c6762`](https://github.com/keystonejs/keystone/commit/1d9c6762d32409c71da6a68a083a81197c35aac3), [`8f22ab5e`](https://github.com/keystonejs/keystone/commit/8f22ab5eefc034f9fef4fd0f9ec2c2583fc5514f), [`599c0929`](https://github.com/keystonejs/keystone/commit/599c0929b213ebd4beb79e3ccaa685b92348ca81), [`fb510d67`](https://github.com/keystonejs/keystone/commit/fb510d67ab124d8c1bda1884fa2a0d48262b5e4d)]:
+  - @keystonejs/keystone@6.0.2
+  - @keystonejs/app-graphql@5.1.3
+  - @keystonejs/adapter-mongoose@5.2.2
+  - @keystonejs/fields@7.0.1
+
+## 5.1.3
+
+### Patch Changes
+
+- [`916e862a`](https://github.com/keystonejs/keystone/commit/916e862a19a4f1c858abd0e76195103228d33678) [#2324](https://github.com/keystonejs/keystone/pull/2324) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Meetup demo to use Apollo hooks.
+
+- Updated dependencies [[`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260)]:
+  - @keystonejs/fields@7.0.0
+  - @keystonejs/app-admin-ui@5.9.2
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.1
+  - @keystonejs/auth-password@5.1.2
+  - @keystonejs/keystone@6.0.1
+
 ## 5.1.2
 
 ### Patch Changes

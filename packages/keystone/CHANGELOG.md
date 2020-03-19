@@ -1,5 +1,31 @@
 # @keystonejs/keystone
 
+## 6.0.2
+
+### Patch Changes
+
+- [`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b) [#2524](https://github.com/keystonejs/keystone/pull/2524) Thanks [@jesstelford](https://github.com/jesstelford)! - Created `upcase` util to make the first letter for word uppercase.
+
+* [`d30b7498`](https://github.com/keystonejs/keystone/commit/d30b74984b21ae9fc2a3b39850f674639fbac074) [#2535](https://github.com/keystonejs/keystone/pull/2535) Thanks [@timleslie](https://github.com/timleslie)! - The new package `@keystonejs/app-version` consolidates the express middleware and graphQL provider support for returning the `appVersion`.
+
+- [`8f22ab5e`](https://github.com/keystonejs/keystone/commit/8f22ab5eefc034f9fef4fd0f9ec2c2583fc5514f) [#2536](https://github.com/keystonejs/keystone/pull/2536) Thanks [@timleslie](https://github.com/timleslie)! - Refactored internals with no functional changes.
+
+* [`599c0929`](https://github.com/keystonejs/keystone/commit/599c0929b213ebd4beb79e3ccaa685b92348ca81) [#2542](https://github.com/keystonejs/keystone/pull/2542) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed error when using custom GraphQL schema caused by a regression in CustomProvider.
+
+- [`fb510d67`](https://github.com/keystonejs/keystone/commit/fb510d67ab124d8c1bda1884fa2a0d48262b5e4d) [#2527](https://github.com/keystonejs/keystone/pull/2527) Thanks [@jesstelford](https://github.com/jesstelford)! - Updated to latest version of globby for discovering test files to run.
+
+- Updated dependencies [[`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b), [`83bdf743`](https://github.com/keystonejs/keystone/commit/83bdf743748e39d1ea73eff2c8e3576cc713c624), [`d748156b`](https://github.com/keystonejs/keystone/commit/d748156ba5ebe33f4271fae0df781e0c63f2b7e6), [`d30b7498`](https://github.com/keystonejs/keystone/commit/d30b74984b21ae9fc2a3b39850f674639fbac074), [`1d9c6762`](https://github.com/keystonejs/keystone/commit/1d9c6762d32409c71da6a68a083a81197c35aac3)]:
+  - @keystonejs/utils@5.3.0
+  - @keystonejs/fields@7.0.1
+  - @keystonejs/app-version@1.0.0
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260)]:
+  - @keystonejs/fields@7.0.0
+
 ## 6.0.0
 
 ### Major Changes

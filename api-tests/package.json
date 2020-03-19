@@ -2,7 +2,7 @@
   "name": "@keystonejs/api-tests",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "5.1.1",
+  "version": "5.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -21,6 +21,7 @@
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.6",
+    "globby": "^11.0.0",
     "supertest-light": "^1.0.2",
     "testcheck": "^1.0.0-rc.2"
   },

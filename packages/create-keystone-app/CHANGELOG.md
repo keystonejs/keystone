@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 1.7.0
+
+### Minor Changes
+
+- [`6242e221`](https://github.com/keystonejs/keystone/commit/6242e221c43ddef8c40aa1352ea328fa4e9ac39f) [#2532](https://github.com/keystonejs/keystone/pull/2532) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved starter access control example so users can't make themselves admins using it.
+
 ## 1.6.2
 
 ### Patch Changes

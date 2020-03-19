@@ -1,5 +1,14 @@
 # @keystonejs/app-graphql
 
+## 5.1.3
+
+### Patch Changes
+
+- [`29ad8a17`](https://github.com/keystonejs/keystone/commit/29ad8a175cc4324fe722eefd22c09f7fb6c5be5e) [#2531](https://github.com/keystonejs/keystone/pull/2531) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a minor typo.
+
+- Updated dependencies [[`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b)]:
+  - @keystonejs/utils@5.3.0
+
 ## 5.1.2
 
 ### Patch Changes
