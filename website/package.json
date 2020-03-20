@@ -33,7 +33,6 @@
     "facepaint": "^1.2.1",
     "gatsby": "^2.13.25",
     "gatsby-plugin-google-analytics": "^2.1.4",
-    "gatsby-plugin-lunr": "^1.4.0",
     "gatsby-plugin-manifest": "^2.2.41",
     "gatsby-plugin-mdx": "^1.0.64",
     "gatsby-plugin-react-helmet": "^3.1.2",

@@ -6,9 +6,8 @@ import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 
 import logosvg from '../assets/logo.svg';
-import { Container, SocialIconsNav } from '../components';
+import { Container, SocialIconsNav, Search } from '../components';
 import { media, mediaOnly, mediaMax } from '../utils/media';
-import { AlgoliaSearch } from './AlgoliaSearch';
 
 export const HEADER_HEIGHT = 60;
 
@@ -31,7 +30,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
         }}
       >
         <Logo />
-        <AlgoliaSearch />
+        <Search />
         <Nav toggleMenu={toggleMenu} />
       </div>
     </Container>
