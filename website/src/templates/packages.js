@@ -44,13 +44,11 @@ export default function Template({
           <Container>
             <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} />
             <Content>
-              <main>
-                <SkipNavContent />
-                <MDXProvider components={mdComponents}>
-                  <MDXRenderer>{body}</MDXRenderer>
-                </MDXProvider>
-                <PackagesList />
-              </main>
+              <SkipNavContent />
+              <MDXProvider components={mdComponents}>
+                <MDXRenderer>{body}</MDXRenderer>
+              </MDXProvider>
+              <PackagesList />
             </Content>
           </Container>
         )}

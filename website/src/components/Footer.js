@@ -17,6 +17,7 @@ export const Footer = () => (
       paddingBottom: '1.25em',
       paddingTop: '1.25em',
       textAlign: 'center',
+      marginBottom: '2rem',
     }}
   >
     Made with ❤️ by{' '}
