@@ -18,7 +18,7 @@
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js{,on}\" \"**/*.md\" && remark . --output",
     "fresh": "yarn clean && yarn",
-    "clean": "manypkg exec rimraf node_modules website/.cache && rimraf node_modules",
+    "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/website/.cache\" \"**/dist\"",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint:markdown": "remark . --frail --quiet",
