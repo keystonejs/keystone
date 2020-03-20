@@ -156,7 +156,7 @@ export class ImageService {
     });
   }
   getSrc(id, { format, resize = {} }) {
-    let url = `${this.protocol}://${this.host}:${this.port}/${id}.${format}`;
+    let url = `${this.protocol}://${this.host}:${this.port}/image/${id}.${format}`;
 
     let searchParams = new URLSearchParams();
     for (let key in resize) {

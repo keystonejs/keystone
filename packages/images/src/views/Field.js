@@ -175,8 +175,12 @@ export default class FileField extends Component {
     const { dataURI, oldImagePath } = this.state;
     const { file } = this.getFile();
 
+    // TODO: move the resize options into the graphql query in the controller
+    if (file && file.src) {
+      return `${file.src}?width=120`;
+    }
     // avoid jank during FileReader processing keeping the old image in place
-    return (file && file.publicUrlTransformed) || dataURI || oldImagePath;
+    return dataURI || oldImagePath;
   };
   getInputRef = ref => {
     this.inputRef = ref;
@@ -247,7 +251,10 @@ export default class FileField extends Component {
                   <ErrorInfo>{errorMessage}</ErrorInfo>
                 ) : file ? (
                   <FlexGroup isInline growIndexes={[0]}>
-                    <MetaInfo>{file.filename || file.name}</MetaInfo>
+                    {/*
+                      // TODO: Pass back filename from the service, and query it for rendering here
+                      <MetaInfo>{file.filename || file.name}</MetaInfo>
+                    */}
                     {showStatusMessage ? (
                       <ChangeInfo status={changeStatus}>
                         {statusMessage({ status: changeStatus })}
