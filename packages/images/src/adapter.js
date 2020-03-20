@@ -1,16 +1,14 @@
 const cloudinary = require('cloudinary');
+const util = require('util');
 
-function uploadStream(stream, options) {
-  return new Promise((resolve, reject) => {
-    const cloudinaryStream = cloudinary.v2.uploader.upload_stream(options, (error, result) => {
-      if (error) {
-        return reject(error);
-      }
-      resolve(result);
-    });
+const uploader = {
+  delete: util.promisify(cloudinary.v2.uploader.destroy),
+  uploadStream: util.promisify(cloudinary.v2.uploader.upload_stream),
+};
 
-    stream.pipe(cloudinaryStream);
-  });
+async function uploadStream(stream, options) {
+  const cloudinaryStream = await uploader.uploadStream(options);
+  stream.pipe(cloudinaryStream);
 }
 
 module.exports = class CloudinaryAdapter {
@@ -27,21 +25,23 @@ module.exports = class CloudinaryAdapter {
   /**
    * Params: { stream, filename, mimetype, encoding, id }
    */
-  save({ stream, filename, id }) {
+  async save({ stream, filename, id }) {
     // Push to cloudinary
-    return uploadStream(stream, {
+    const result = await uploadStream(stream, {
       public_id: id,
       folder: this.folder,
       // Auth
       api_key: this.apiKey,
       api_secret: this.apiSecret,
       cloud_name: this.cloudName,
-    }).then(result => ({
+    });
+
+    return {
       // Return the relevant data for the File api
       id,
       filename,
       _meta: result,
-    }));
+    };
   }
 
   /**
@@ -50,20 +50,12 @@ module.exports = class CloudinaryAdapter {
    * @param options Delete options passed to cloudinary.
    *                For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
    */
-  delete(file, options = {}) {
-    return new Promise((resolve, reject) => {
-      if (file) {
-        cloudinary.v2.uploader.destroy(file.id, options, (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        });
-      } else {
-        reject(new Error("Missing required argument 'file'."));
-      }
-    });
+  async delete(file, options = {}) {
+    if (!file) {
+      throw new Error('Missing required argument \'file\'.');
+    }
+
+    return uploader.destroy(file.id, options);
   }
 
   publicUrl({ _meta: { secure_url } = {} } = {}) {
@@ -76,10 +68,12 @@ module.exports = class CloudinaryAdapter {
     }
 
     const { prettyName, ...transformation } = options;
+
     // No formatting options provided, return the publicUrl field
-    if (!Object.keys(transformation).length) {
+    if (Object.keys(transformation).length === 0) {
       return this.publicUrl({ _meta });
     }
+
     const { public_id, format } = _meta;
 
     // Docs: https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472 (LOL)
