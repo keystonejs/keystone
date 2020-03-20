@@ -81,7 +81,7 @@ export class ImageService {
 
     this.app.get('/image/:filename', async (req, res) => {
       const { filename } = req.params;
-      const [id, format] = filename.split('.');
+      const { name: id, ext: format } = nodePath.parse(filename);
 
       if (!id || !format) {
         return res.status(404).send('Not Found (Invalid Filename)');
@@ -93,10 +93,10 @@ export class ImageService {
         return res.status(404).send('Not Found (No Matching Image)');
       }
 
-      const originalPath = nodePath.join(this.sourcePath, `${id}.${data.format}`);
+      const originalPath = nodePath.join(this.sourcePath, `${id}${data.format}`);
       const resizeOptions = processResizeOptions(req.query);
 
-      if (!resizeOptions && format === data.format) {
+      if (!resizeOptions && format === `.${data.format}`) {
         return res.sendFile(originalPath);
       }
 
@@ -114,7 +114,7 @@ export class ImageService {
         suffix = `-${hash}`;
       }
 
-      let transformedFilename = nodePath.join(this.transformsPath, `${id}${suffix}.${format}`);
+      let transformedFilename = nodePath.join(this.transformsPath, `${id}${suffix}${format}`);
 
       // If a cached copy of the transformed file exists, don't re-create it
       if (await fs.exists(transformedFilename)) {
