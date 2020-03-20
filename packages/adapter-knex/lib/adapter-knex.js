@@ -255,10 +255,21 @@ class KnexListAdapter extends BaseListAdapter {
   _postConnect({ rels }) {
     this.rels = rels;
     this.fieldAdapters.forEach(fieldAdapter => {
-      fieldAdapter.rel = rels.find(
-        ({ left, right }) =>
-          left.adapter === fieldAdapter || (right && right.adapter === fieldAdapter)
-      );
+      if (fieldAdapter.isRelationship) {
+        const { path, listAdapter, config, refListId } = fieldAdapter;
+        fieldAdapter.rel = {
+          ...rels.find(
+            ({ left, right }) =>
+              left.adapter === fieldAdapter || (right && right.adapter === fieldAdapter)
+          ),
+          cardinality: config.many ? 'N:N' : '1:N',
+          columnName: path,
+          tableName: config.many ? this._manyTable(path) : this.tableName,
+          columnNames: {
+            [`${listAdapter.key}.${path}`]: { near: `${this.key}_id`, far: refListId },
+          },
+        };
+      }
       if (fieldAdapter._hasRealKeys()) {
         this.realKeys.push(
           ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
@@ -302,6 +313,13 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
+  _getNearFar(fieldAdapter) {
+    const { rel, path, listAdapter } = fieldAdapter;
+    const { columnNames } = rel;
+    const columnKey = `${listAdapter.key}.${path}`;
+    return columnNames[columnKey];
+  }
+
   async _createSingle(realData) {
     const item = (
       await this._query()
@@ -320,24 +338,18 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _createOrUpdateField({ value, adapter, itemId }) {
-    const rel = {
-      cardinality: 'N:N',
-      tableName: this._manyTable(adapter.path),
-      columnNames: { [this.key]: { near: `${this.key}_id`, far: adapter.refListId } },
-    };
-    const { cardinality, tableName, columnNames } = rel;
+    const { cardinality, tableName } = adapter.rel;
     if (cardinality === '1:1') {
       // Implement me
     } else {
       const values = value; // Rename this because we have a many situation
       if (values && values.length) {
         if (cardinality === 'N:N') {
-          const itemCol = columnNames[this.key].near;
-          const otherCol = columnNames[this.key].far;
+          const { near, far } = this._getNearFar(adapter);
           return this._query()
-            .insert(values.map(id => ({ [itemCol]: itemId, [otherCol]: id })))
+            .insert(values.map(id => ({ [near]: itemId, [far]: id })))
             .into(tableName)
-            .returning(otherCol);
+            .returning(far);
         } else {
           // Implement me
         }
@@ -374,22 +386,22 @@ class KnexListAdapter extends BaseListAdapter {
     const item = (await query.returning(['id', ...this.realKeys]))[0];
 
     // For every many-field, update the many-table
-    await this._processNonRealFields(data, async ({ path, value: newValues, adapter }) => {
-      const { refListId } = adapter;
-      const rel = {
-        cardinality: 'N:N',
-        tableName: this._manyTable(path),
-        columnNames: { [this.key]: { near: `${this.key}_id`, far: refListId } },
-      };
-      const { cardinality, tableName, columnNames } = rel;
+    await this._processNonRealFields(data, async ({ value: newValues, adapter }) => {
+      const { cardinality, tableName } = adapter.rel;
       let value;
       // Future task: Is there some way to combine the following three
       // operations into a single query?
 
       if (cardinality !== '1:1') {
         // Work out what we've currently got
-        const selectCol = columnNames[this.key].far;
-        const matchCol = columnNames[this.key].near;
+        let matchCol, selectCol;
+        if (cardinality === 'N:N') {
+          const { near, far } = this._getNearFar(adapter);
+          matchCol = near;
+          selectCol = far;
+        } else {
+          // Implement me
+        }
         const currentRefIds = (
           await this._query()
             .select(selectCol)
@@ -427,18 +439,13 @@ class KnexListAdapter extends BaseListAdapter {
         Promise.all(
           adapter.fieldAdapters
             .filter(a => a.isRelationship && a.refListKey === this.key)
-            .map(a => {
-              const rel = {
-                cardinality: a.config.many ? 'N:N' : '1:N',
-                columnName: a.path,
-                tableName: a.config.many ? adapter._manyTable(a.path) : adapter.tableName,
-                columnNames: { [this.key]: { near: a.refListId } },
-              };
-              const { cardinality, columnName, tableName, columnNames } = rel;
+            .map(fieldAdapter => {
+              const { cardinality, columnName, tableName } = fieldAdapter.rel;
               if (cardinality === 'N:N') {
+                const { far } = adapter._getNearFar(fieldAdapter);
                 return this._query()
                   .table(tableName)
-                  .where(columnNames[this.key].near, id)
+                  .where(far, id)
                   .del();
               } else {
                 return this._setNullByValue({ tableName, columnName, value: id });
@@ -501,28 +508,19 @@ class QueryBuilder {
 
     this._addJoins(this._query, listAdapter, where, baseTableAlias);
     if (Object.keys(from).length) {
-      const rel = {
-        cardinality: 'N:N',
-        tableName: from.fromList.adapter._manyTable(from.fromField),
-        columnNames: {
-          [listAdapter.key]: {
-            near: `${listAdapter.key}_id`,
-            far: `${from.fromList.adapter.key}_id`,
-          },
-        },
-      };
-      const { cardinality, tableName, columnNames } = rel;
+      const a = from.fromList.adapter.fieldAdaptersByPath[from.fromField];
+      const { cardinality, tableName } = a.rel;
       const otherTableAlias = this._getNextBaseTableAlias();
 
       if (cardinality === 'N:N') {
-        const { near, far } = columnNames[listAdapter.key];
+        const { near, far } = from.fromList.adapter._getNearFar(a);
         this._query.leftOuterJoin(
           `${tableName} as ${otherTableAlias}`,
-          `${otherTableAlias}.${near}`,
+          `${otherTableAlias}.${far}`,
           `${baseTableAlias}.id`
         );
         this._query.whereRaw('true');
-        this._query.andWhere(`${otherTableAlias}.${far}`, `=`, from.fromId);
+        this._query.andWhere(`${otherTableAlias}.${near}`, `=`, from.fromId);
       } else {
         // Implement me
       }
@@ -645,7 +643,7 @@ class QueryBuilder {
         });
       } else {
         // We have a relationship field
-        const fieldAdapter = listAdapter.fieldAdaptersByPath[path];
+        let fieldAdapter = listAdapter.fieldAdaptersByPath[path];
         if (fieldAdapter) {
           // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
           const otherListAdapter = listAdapter.getListAdapterByKey(fieldAdapter.refListKey);
@@ -653,33 +651,26 @@ class QueryBuilder {
         } else {
           // Many relationship
           const [p, constraintType] = path.split('_');
-          const rel = {
-            cardinality: 'N:N',
-            tableName: listAdapter._manyTable(p),
-            columnNames: {
-              [listAdapter.key]: {
-                near: `${listAdapter.key}_id`,
-                far: `${listAdapter.fieldAdaptersByPath[p].refListKey}_id`,
-              },
-            },
-          };
-          const { cardinality, tableName, columnNames } = rel;
+          fieldAdapter = listAdapter.fieldAdaptersByPath[p];
+          const { rel } = fieldAdapter;
+          const { cardinality, tableName } = rel;
           const subBaseTableAlias = this._getNextBaseTableAlias();
-          const otherList = listAdapter.fieldAdaptersByPath[p].refListKey;
+          const otherList = fieldAdapter.refListKey;
           const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
           const subQuery = listAdapter._query();
           let otherTableAlias;
           if (cardinality === '1:N' || cardinality === 'N:1') {
             // Implement me
           } else {
+            const { near, far } = listAdapter._getNearFar(fieldAdapter);
             otherTableAlias = `${subBaseTableAlias}__${p}`;
             subQuery
-              .select(`${subBaseTableAlias}.${columnNames[listAdapter.key].near}`)
+              .select(`${subBaseTableAlias}.${near}`)
               .from(`${tableName} as ${subBaseTableAlias}`);
             subQuery.innerJoin(
               `${otherListAdapter.tableName} as ${otherTableAlias}`,
               `${otherTableAlias}.id`,
-              `${subBaseTableAlias}.${columnNames[listAdapter.key].far}`
+              `${subBaseTableAlias}.${far}`
             );
           }
           this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias);
