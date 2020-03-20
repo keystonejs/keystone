@@ -107,7 +107,7 @@ exports.createPages = ({ actions, graphql }) => {
 };
 
 const getEditUrl = absPath =>
-  `https://github.com/keystonejs/keystone-5/edit/master/${path.relative(PROJECT_ROOT, absPath)}`;
+  `https://github.com/keystonejs/keystone/edit/master/${path.relative(PROJECT_ROOT, absPath)}`;
 
 exports.onCreateNode = async ({ node, actions, getNode }) => {
   const { createNodeField } = actions;

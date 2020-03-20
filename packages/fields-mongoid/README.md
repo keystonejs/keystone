@@ -91,7 +91,7 @@ Values stored are forced to lowercase on read and write to avoid issues with cas
 See the [casing section](#casing) for details.
 
 The field adapter supplied for Knex supports
-[the `isNotNullable` and `defaultTo` options](https://github.com/keystonejs/keystone-5/pull/1383#issuecomment-509889242).
+[the `isNotNullable` and `defaultTo` options](https://github.com/keystonejs/keystone/pull/1383#issuecomment-509889242).
 
 ## Casing
 
@@ -104,5 +104,5 @@ in these contexts, the string `'AF3D'` _does not equal_ the string `'af3d'`.
 For the `MongoId` type, we mitigate this problem by forcing values to lowercase when using the Knex adapter.
 
 Similar issues are faced by the
-[core `Uuid` field type](https://github.com/keystonejs/keystone-5/tree/master/packages/fields/src/types/Uuid#casing).
+[core `Uuid` field type](https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types/Uuid#casing).
 It is also often represented using hexadecimal within a string.

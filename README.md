@@ -157,7 +157,7 @@ Keystone 5 is set up as a monorepo, using [Yarn Workspaces](https://yarnpkg.com/
 First, clone the Keystone 5 repository
 
 ```
-git clone https://github.com/keystonejs/keystone-5.git
+git clone https://github.com/keystonejs/keystone.git
 ```
 
 Also make sure you have a local MongoDB server running
@@ -178,7 +178,7 @@ the available demo projects.
 While running `yarn` on Windows, the process may fail with an error such as this:
 
 ```sh
-Error: EPERM: operation not permitted, symlink 'C:\Users\user\Documents\keystone-5\packages\arch\packages\alert\src\index.js' -> 'C:\Users\user\Documents\keystone-5\packages\arch\packages\alert\dist\alert.cjs.js.flow'
+Error: EPERM: operation not permitted, symlink 'C:\Users\user\Documents\keystone\packages\arch\packages\alert\src\index.js' -> 'C:\Users\user\Documents\keystone\packages\arch\packages\alert\dist\alert.cjs.js.flow'
 ```
 
 This is due to permission restrictions regarding the creation of [symbolic links](https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/). To solve this, you should enable Windows' [Developer Mode](https://docs.microsoft.com/en-us/windows/uwp/get-started/enable-your-device-for-development?redirectedfrom=MSDN) and run `yarn` again.
@@ -186,7 +186,7 @@ This is due to permission restrictions regarding the creation of [symbolic links
 ### Testing
 
 Keystone uses [Jest](https://facebook.github.io/jest) for unit tests and [Cypress](https://www.cypress.io) for end-to-end tests.
-All tests can be run locally and on [CircleCI](https://circleci.com/gh/keystonejs/keystone-5).
+All tests can be run locally and on [CircleCI](https://circleci.com/gh/keystonejs/keystone).
 
 ### Unit Tests
 
