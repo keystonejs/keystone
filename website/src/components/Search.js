@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { useEffect, useRef } from 'react';
-import { navigate } from '@reach/router';
+import { navigate } from 'gatsby';
 import { Input } from '@arch-ui/input';
 
 import { addCallback } from '../utils/async-load-search';
@@ -36,15 +36,8 @@ export const Search = () => {
             input.setVal('');
             input.close();
             inputRef.current.blur();
-            const url = suggestion.url.replace('https://keystonejs.com', '');
+            const url = suggestion.url.replace(/https*:\/\/[www.]*keystonejs\.com/, '');
             navigate(url);
-            const hash = window.decodeURI(getHash(url));
-            if (hash !== '#' && hash !== '') {
-              const element = document.querySelector(`.docSearch-content ${hash} a`);
-              if (element) {
-                element.click();
-              }
-            }
           },
         });
       } else {
