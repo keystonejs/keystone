@@ -1,0 +1,7 @@
+{
+  "main": "dist/images.cjs.js",
+  "module": "dist/images.esm.js",
+  "field-types": {
+    "source": "../src/KeystoneImage"
+  }
+}
