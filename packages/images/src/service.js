@@ -116,21 +116,20 @@ export class ImageService {
 
       let transformedFilename = nodePath.join(this.transformsPath, `${id}${suffix}${format}`);
 
-      // If a cached copy of the transformed file exists, don't re-create it
-      if (await fs.exists(transformedFilename)) {
-        return res.sendFile(transformedFilename);
+      if (!(await fs.exists(transformedFilename))) {
+        try {
+          const sharpImage = sharp(originalPath);
+          if (resizeOptions) {
+            await sharpImage.resize(resizeOptions);
+          }
+          await sharpImage.toFile(transformedFilename);
+        } catch (err) {
+          console.error(err);
+          return res.status(500).send({ error: 'Internal server error' });
+        }
       }
 
-      try {
-        const sharpImage = sharp(originalPath);
-        if (resizeOptions) {
-          await sharpImage.resize(resizeOptions);
-        }
-        await sharpImage.toFile(transformedFilename);
-      } catch (err) {
-        console.error(err);
-        return res.status(500).send({ error: 'Internal server error' });
-      }
+      return res.sendFile(transformedFilename);
     });
 
     this.app.get('/image/:id/meta', async (req, res) => {
@@ -149,18 +148,18 @@ export class ImageService {
     });
   }
   getSrc(id, { format, resize = {} }) {
-    let url = `${this.protocol}://${this.host}:${this.port}/image/${id}.${format}`;
-
+    const url = `${this.protocol}://${this.host}:${this.port}/image/${id}.${format}`;
     const searchParams = new URLSearchParams();
-    for (let key in resize) {
-      searchParams.set(key, resize[key]);
+
+    for (const [param, value] of Object.entries(resize)) {
+      searchParams.set(param, value);
     }
 
-    const stringifiedSearchParams = searchParams.toString();
-    if (stringifiedSearchParams) {
-      url += `?${stringifiedSearchParams}`;
-    }
-    return url;
+    const queryString = searchParams.toString();
+
+    return queryString
+      ? `${url}?${queryString}`
+      : url;
   }
   async uploadImage({ stream, originalname }) {
     const id = uuid();
