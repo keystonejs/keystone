@@ -116,20 +116,21 @@ export class ImageService {
 
       let transformedFilename = nodePath.join(this.transformsPath, `${id}${suffix}.${format}`);
 
-      if (!(await fs.exists(transformedFilename))) {
-        try {
-          const sharpImage = sharp(originalPath);
-          if (resizeOptions) {
-            await sharpImage.resize(resizeOptions);
-          }
-          await sharpImage.toFile(transformedFilename);
-        } catch (err) {
-          console.error(err);
-          return res.status(500).send({ error: 'Internal server error' });
-        }
+      // If a cached copy of the transformed file exists, don't re-create it
+      if (await fs.exists(transformedFilename)) {
+        return res.sendFile(transformedFilename);
       }
 
-      res.sendFile(transformedFilename);
+      try {
+        const sharpImage = sharp(originalPath);
+        if (resizeOptions) {
+          await sharpImage.resize(resizeOptions);
+        }
+        await sharpImage.toFile(transformedFilename);
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send({ error: 'Internal server error' });
+      }
     });
 
     this.app.get('/image/:id/meta', async (req, res) => {
