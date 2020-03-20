@@ -136,7 +136,6 @@ const Nav = ({ toggleMenu }) => (
       <li>
         <SocialIconsNav
           css={{
-            // marginLeft: '2rem',
             [mediaMax.sm]: {
               display: 'none',
             },
