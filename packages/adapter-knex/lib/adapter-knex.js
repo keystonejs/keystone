@@ -256,7 +256,7 @@ class KnexListAdapter extends BaseListAdapter {
     this.rels = rels;
     this.fieldAdapters.forEach(fieldAdapter => {
       if (fieldAdapter.isRelationship) {
-        const { path, listAdapter, config, refListId } = fieldAdapter;
+        const { path, config, refListId } = fieldAdapter;
         fieldAdapter.rel = {
           ...rels.find(
             ({ left, right }) =>
@@ -265,9 +265,7 @@ class KnexListAdapter extends BaseListAdapter {
           cardinality: config.many ? 'N:N' : '1:N',
           columnName: path,
           tableName: config.many ? this._manyTable(path) : this.tableName,
-          columnNames: {
-            [`${listAdapter.key}.${path}`]: { near: `${this.key}_id`, far: refListId },
-          },
+          columnNames: { [`${this.key}.${path}`]: { near: `${this.key}_id`, far: refListId } },
         };
       }
       if (fieldAdapter._hasRealKeys()) {
