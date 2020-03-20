@@ -2,10 +2,6 @@ const getWorkspaces = require('get-workspaces').default;
 const fs = require('fs');
 const path = require('path');
 
-const queries = require('./src/utils/algolia').queries;
-
-require('dotenv').config();
-
 async function getPackagePlugins() {
   const rootDir = path.resolve(__dirname, '..');
   const docSections = fs.readdirSync(`${rootDir}/docs/`).filter(dir => {

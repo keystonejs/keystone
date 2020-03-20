@@ -19,22 +19,20 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
         css={{
           alignItems: 'center',
           boxShadow: `0 1px 0 ${colors.N10}`,
-          display: 'flex',
-          fontSize: '0.9rem',
+          display: 'grid',
+          gridTemplateColumns: '150px 1fr auto',
+          gridGap: '1rem',
           fontWeight: 500,
           height: HEADER_HEIGHT,
-          justifyContent: 'space-between',
+
+          [media.sm]: {
+            gridTemplateColumns: '220px 1fr 220px',
+          },
         }}
       >
-        <div css={{ flex: '0 0 20%' }}>
-          <Logo />
-        </div>
-        <div css={{ flex: 1, marginLeft: '1rem', marginRight: '1rem' }}>
-          <AlgoliaSearch />
-        </div>
-        <div css={{ flex: '0 0 20%' }}>
-          <Nav toggleMenu={toggleMenu} />
-        </div>
+        <Logo />
+        <AlgoliaSearch />
+        <Nav toggleMenu={toggleMenu} />
       </div>
     </Container>
   </header>
@@ -52,6 +50,7 @@ const Logo = () => (
         alignItems: 'center',
         color: 'inherit',
         display: 'inline-flex',
+        fontSize: '0.9rem',
 
         ':hover': {
           textDecoration: 'none',
@@ -135,11 +134,6 @@ const List = props => (
 const Nav = ({ toggleMenu }) => (
   <nav>
     <List>
-      {/* {NAV_LINKS.map(({ url, name }) => (
-        <NavItem key={name} to={url} lgOnly>
-          {name}
-        </NavItem>
-      ))} */}
       <li>
         <SocialIconsNav
           css={{
@@ -170,30 +164,3 @@ const Nav = ({ toggleMenu }) => (
     </List>
   </nav>
 );
-
-// ==============================
-// Data
-// ==============================
-
-// const NAV_LINKS = [
-//   {
-//     name: 'Quick Start',
-//     url: '/quick-start/',
-//   },
-//   {
-//     name: 'Tutorials',
-//     url: '/tutorials/',
-//   },
-//   {
-//     name: 'Guides',
-//     url: '/guides/',
-//   },
-//   {
-//     name: 'API',
-//     url: '/api/',
-//   },
-//   {
-//     name: 'Packages',
-//     url: '/packages/',
-//   },
-// ];
