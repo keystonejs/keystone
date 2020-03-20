@@ -10,17 +10,6 @@ import { algoliaStyles } from '../utils/algolia-styles';
 
 const searchId = 'algolia-doc-search';
 
-let a;
-
-if (typeof window !== 'undefined') {
-  a = document.createElement('a');
-}
-
-function getHash(url) {
-  a.href = url;
-  return a.hash;
-}
-
 export const Search = () => {
   const inputRef = useRef();
 
