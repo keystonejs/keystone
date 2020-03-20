@@ -1,20 +1,18 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useState, useCallback, createContext, useContext } from 'react';
+import { Fragment, useState, useCallback } from 'react';
 import pluralize from 'pluralize';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import { Input } from '@arch-ui/input';
 import { useSlate } from 'slate-react';
+import { useContentField } from '@keystonejs/field-content';
+import { Transforms } from 'slate';
 
-export let type = 'unsplashImage';
+export const type = 'unsplashImage';
 
 // TODO: Receive this value from the server somehow. 'pluralize' is a fairly
 // large lib.
 export const path = pluralize.plural(type);
-
-let Context = createContext(null);
-
-export let Provider = Context.Provider;
 
 const RESULTS_PER_PAGE = 5;
 const RESULTS_WIDTH = '400';
@@ -35,7 +33,7 @@ function attributeUrl(url, { source, medium }) {
 }
 
 const UnsplashImage = ({ width, height, unsplashId, publicUrl, alt, user, onClick }) => {
-  const options = useContext(Context);
+  const { options } = useContentField(type);
 
   const imgUrl = attributeUrl(publicUrl, options.attribution);
   const userUrl = attributeUrl(user.url, options.attribution);
@@ -112,7 +110,8 @@ const UnsplashImage = ({ width, height, unsplashId, publicUrl, alt, user, onClic
 };
 
 const Search = ({ onSelect }) => {
-  const options = useContext(Context);
+  const { options } = useContentField(type);
+
   const [searchPage, setSearchPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState();
@@ -279,8 +278,8 @@ const Search = ({ onSelect }) => {
   );
 };
 
-let Block = ({ unsplashData, onSelect }) => {
-  let options = useContext(Context);
+const Block = ({ unsplashData, onSelect }) => {
+  const { options } = useContentField(type);
 
   let unsplash = null;
 
@@ -334,6 +333,7 @@ export const Sidebar = () => {
       <path d="M480 416v16c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V176c0-26.51 21.49-48 48-48h16v208c0 44.112 35.888 80 80 80h336zm96-80V80c0-26.51-21.49-48-48-48H144c-26.51 0-48 21.49-48 48v256c0 26.51 21.49 48 48 48h384c26.51 0 48-21.49 48-48zM256 128c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-96 144l55.515-55.515c4.686-4.686 12.284-4.686 16.971 0L272 256l135.515-135.515c4.686-4.686 12.284-4.686 16.971 0L512 208v112H160v-48z" />
     </svg>
   );
+
   return (
     <BlockMenuItem
       icon={icon}
@@ -345,21 +345,17 @@ export const Sidebar = () => {
   );
 };
 
-export function Node({ node, editor }) {
+export const Node = ({ element: { unsplashData } }) => {
+  const editor = useSlate();
+
   return (
     <Block
-      unsplashData={node.data.get('unsplashData')}
-      onRemove={() => {
-        editor.removeNodeByKey(node.key);
-      }}
-      onSelect={unsplashData => {
-        editor.setNodeByKey(node.key, {
-          data: node.data.set('unsplashData', unsplashData),
-        });
-      }}
+      unsplashData={unsplashData}
+      onRemove={() => Transforms.removeNodes(editor)}
+      onSelect={unsplashData => Transforms.setNodes(editor, { unsplashData })}
     />
   );
-}
+};
 
 export const getPlugin = () => editor => {
   const { isVoid } = editor;

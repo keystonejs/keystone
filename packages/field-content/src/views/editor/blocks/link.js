@@ -17,11 +17,9 @@ import isUrl from 'is-url';
 
 export const type = 'link';
 
-export const Node = ({ element, attributes, children }) => {
+export const Node = ({ element: { href }, attributes, children }) => {
   const editor = useSlate();
   const isSelected = useSelected();
-
-  const { href } = element;
 
   const [aElement, setAElement] = useState(null);
   const [linkInputValue, setLinkInputValue] = useState(href);

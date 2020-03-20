@@ -3,6 +3,7 @@ import { jsx } from '@emotion/core';
 import { useLayoutEffect, forwardRef } from 'react';
 import { Popper } from 'react-popper';
 import { useStateWithEqualityCheck } from './hooks';
+import { colors } from '@arch-ui/theme';
 
 const PopperRender = forwardRef(
   ({ scheduleUpdate, alignment, isFocused, style, onAlignmentChange }, ref) => {
@@ -12,28 +13,27 @@ const PopperRender = forwardRef(
         ref={ref}
         css={{
           display: isFocused ? 'block' : 'none',
-          backgroundColor: 'black',
-          padding: 8,
+          padding: '0.2em',
+          borderRadius: '0.4em',
+          backgroundColor: colors.N90,
         }}
         style={style}
       >
-        {['left', 'center', 'right'].map(align => {
-          return (
-            <button
-              type="button"
-              key={align}
-              onMouseDown={event => {
-                // so that the image block doesn't get deselected
-                event.preventDefault();
-              }}
-              onClick={() => {
-                onAlignmentChange(align);
-              }}
-            >
-              {align}
-            </button>
-          );
-        })}
+        {['left', 'center', 'right'].map(align => (
+          <button
+            type="button"
+            key={align}
+            // so that the image block doesn't get deselected
+            onMouseDown={event => event.preventDefault()}
+            onClick={() => onAlignmentChange(align)}
+            css={{
+              padding: '0.2em 0.4em',
+              margin: '0.2em',
+            }}
+          >
+            {align}
+          </button>
+        ))}
       </div>
     );
   }
@@ -45,7 +45,15 @@ const popperModifiers = {
   preventOverflow: { enabled: false },
 };
 
-const Image = ({ attributes, children, alignment, isFocused, src, onAlignmentChange, ...props }) => {
+const Image = ({
+  attributes,
+  children,
+  alignment,
+  isFocused,
+  src,
+  onAlignmentChange,
+  ...props
+}) => {
   const [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
 
   return (
@@ -56,7 +64,7 @@ const Image = ({ attributes, children, alignment, isFocused, src, onAlignmentCha
         ref={setReferenceElement}
         css={{
           width: '100%',
-          outline: isFocused ? 'auto' : null,
+          outline: isFocused ? 'dashed' : null,
         }}
       />
       {children}
