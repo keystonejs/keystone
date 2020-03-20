@@ -14,7 +14,7 @@ export const SidebarNav = () => {
       {({ location: { pathname } }) => (
         <nav aria-label="Documentation Menu">
           {navData.map((navGroup, i) => {
-            return <NavGroup key={i} navGroup={navGroup} pathname={pathname} />;
+            return <NavGroup key={i} index={i} navGroup={navGroup} pathname={pathname} />;
           })}
         </nav>
       )}
@@ -22,7 +22,7 @@ export const SidebarNav = () => {
   );
 };
 
-const NavGroup = ({ navGroup, pathname }) => {
+const NavGroup = ({ index, navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {
@@ -39,7 +39,11 @@ const NavGroup = ({ navGroup, pathname }) => {
 
   return (
     <div key={navGroup.navTitle}>
-      <GroupHeading id={sectionId} className={isPageInGroupActive ? 'docSearch-lvl0' : null}>
+      <GroupHeading
+        id={sectionId}
+        index={index}
+        className={isPageInGroupActive ? 'docSearch-lvl0' : null}
+      >
         {navGroup.navTitle.replace('-', ' ')}
       </GroupHeading>
       <List aria-labelledby={sectionId}>
@@ -77,13 +81,13 @@ const NavGroup = ({ navGroup, pathname }) => {
   );
 };
 
-const GroupHeading = props => (
+const GroupHeading = ({ index, ...props }) => (
   <h2
     css={{
       color: colors.N80,
       fontSize: '1.4rem',
       fontWeight: 700,
-      marginTop: '2.4em',
+      marginTop: index === 0 ? '4px' : '2.4em',
       textTransform: 'uppercase',
     }}
     {...props}

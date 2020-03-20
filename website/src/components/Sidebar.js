@@ -6,7 +6,7 @@ import { gridSize } from '@arch-ui/theme';
 import throttle from 'lodash.throttle';
 import { colors } from '@arch-ui/theme';
 
-import { Footer, SidebarNav, Search, SocialIconsNav } from '../components';
+import { Footer, SidebarNav, SocialIconsNav } from '../components';
 import { media, mediaMax } from '../utils/media';
 
 const layoutGutter = gridSize * 4;
@@ -96,16 +96,19 @@ export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
         }}
       />
 
-      <Search />
-      <p css={{ color: colors.N40, fontSize: '0.9em' }}>
-        Looking for{' '}
-        <a css={{ color: colors.N80 }} href="http://v4.keystonejs.com">
-          v4 docs
-        </a>
-        ?{' '}
-      </p>
       <SidebarNav />
       <Footer />
+      <ClassicDocs />
     </aside>
   );
 };
+
+const ClassicDocs = () => (
+  <p css={{ color: colors.N40, fontSize: '0.9em', margin: 0 }}>
+    Looking for{' '}
+    <a css={{ color: colors.N80 }} href="http://v4.keystonejs.com">
+      v4 docs
+    </a>
+    ?
+  </p>
+);
