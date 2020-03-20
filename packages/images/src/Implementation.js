@@ -2,6 +2,25 @@ import { Implementation } from '@keystonejs/fields';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
+/*
+  TODO: support image transformation in the GraphQL Service.
+
+  Would use a syntax like this to allow various transformation options the
+  Image Service supports, e.g
+  {
+    things {
+      image(resize: { fit: contain, width: 200, height: 200 }, format: jpeg) {
+        src
+        width
+        height
+      }
+    }
+  }
+
+  If resize options are provided, the width and height of the image would be
+  scaled based on the original size and the fit method specified
+*/
+
 export class Image extends Implementation {
   constructor(path, { service }) {
     super(...arguments);
@@ -20,8 +39,6 @@ export class Image extends Implementation {
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),
       ...this.inInputFields('String'),
-      `resize: ImageResizeOptions`,
-      `format: ImageFormat`,
     ];
   }
   getFileUploadType() {
@@ -29,6 +46,7 @@ export class Image extends Implementation {
   }
   getGqlAuxTypes() {
     return [
+      /* See TODO at top of file
       `enum ImageFill {
         cover
         contain
@@ -48,6 +66,7 @@ export class Image extends Implementation {
         height: String
         fill: ImageFill
       }`,
+      */
       `
       type ${this.graphQLOutputType} {
         src: String
@@ -60,7 +79,7 @@ export class Image extends Implementation {
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
-      [this.path]: (item, args) => {
+      [this.path]: (item /*, args */) => {
         const itemValues = item[this.path];
         if (!itemValues) {
           return null;
@@ -69,10 +88,10 @@ export class Image extends Implementation {
         let meta = this.service.database.getImage(itemValues.id);
 
         return {
-          src: this.service.getSrc(itemValues.id, { format: meta.format, ...args }),
-          // TODO: calculate these correctly
-          height: 0,
-          width: 0,
+          // See TODO at top of file for why we'd pass args here
+          src: this.service.getSrc(itemValues.id, { format: meta.format /*, ...args */ }),
+          height: meta.height,
+          width: meta.width,
         };
       },
     };

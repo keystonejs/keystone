@@ -17,6 +17,8 @@
     "@arch-ui/typography": "^0.0.15",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27",
+    "@keystonejs/adapter-mongoose": "^5.2.2",
+    "@keystonejs/adapter-knex": "^6.3.2",
     "@keystonejs/build-field-types": "^5.2.2",
     "@keystonejs/fields": "^7.0.0",
     "@keystonejs/utils": "^5.2.2",

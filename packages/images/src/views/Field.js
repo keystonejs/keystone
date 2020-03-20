@@ -252,7 +252,9 @@ export default class FileField extends Component {
                 ) : file ? (
                   <FlexGroup isInline growIndexes={[0]}>
                     {/* TODO: Pass back filename from the service, and query it for rendering here */}
-                    <MetaInfo>{file.src.substr(file.src.lastIndexOf('/') + 1)}</MetaInfo>
+                    {file.type === 'server' && (
+                      <MetaInfo>{file.src.substr(file.src.lastIndexOf('/') + 1)}</MetaInfo>
+                    )}
                     {showStatusMessage ? (
                       <ChangeInfo status={changeStatus}>
                         {statusMessage({ status: changeStatus })}

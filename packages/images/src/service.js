@@ -6,14 +6,6 @@ import sharp from 'sharp';
 import crypto from 'crypto';
 import uuid from 'uuid/v4';
 
-// http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.jpeg
-// http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.png
-// http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.jpeg?width=200&height=100&fit=cover
-// http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.jpeg?width=200&height=100&fit=contain
-// http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.jpeg?width=200&height=100&fit=cover
-// http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.jpeg?width=200&fit=cover
-// http://localhost:4008/image/5d5a561875a3821da888fe2570d910ea.jpeg?height=200&fit=cover
-
 const VALID_FIT_TYPES = ['cover', 'contain', 'fill', 'inside', 'outside'];
 
 class DataStore {
@@ -158,12 +150,12 @@ export class ImageService {
   getSrc(id, { format, resize = {} }) {
     let url = `${this.protocol}://${this.host}:${this.port}/image/${id}.${format}`;
 
-    let searchParams = new URLSearchParams();
+    const searchParams = new URLSearchParams();
     for (let key in resize) {
       searchParams.set(key, resize[key]);
     }
 
-    let stringifiedSearchParams = searchParams.toString();
+    const stringifiedSearchParams = searchParams.toString();
     if (stringifiedSearchParams) {
       url += `?${stringifiedSearchParams}`;
     }
