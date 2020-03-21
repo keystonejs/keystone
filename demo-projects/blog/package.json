@@ -33,6 +33,7 @@
     "@keystonejs/keystone": "^6.0.1",
     "@keystonejs/oembed-adapters": "^5.1.2",
     "apollo-boost": "^0.4.7",
+    "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-upload-client": "^12.1.0",
     "cross-env": "^7.0.0",
