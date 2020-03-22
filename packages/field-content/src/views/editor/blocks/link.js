@@ -63,9 +63,7 @@ export const Node = ({ element: { href }, attributes, children }) => {
                       value={linkInputValue}
                       onChange={event => {
                         setLinkInputValue(event.target.value);
-                        editor.setNodeByKey(node.key, {
-                          data: data.set('href', event.target.value),
-                        });
+                        Transforms.setNodes(editor, { href: event.target.value});
                       }}
                     />
                     <ToolbarButton

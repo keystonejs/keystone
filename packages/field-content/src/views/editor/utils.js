@@ -1,4 +1,4 @@
-import { Node, Editor } from 'slate';
+import { Editor } from 'slate';
 
 export const isMarkActive = (editor, type) => {
   const marks = Editor.marks(editor);
