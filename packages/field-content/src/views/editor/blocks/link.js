@@ -63,7 +63,7 @@ export const Node = ({ element: { href }, attributes, children }) => {
                       value={linkInputValue}
                       onChange={event => {
                         setLinkInputValue(event.target.value);
-                        Transforms.setNodes(editor, { href: event.target.value});
+                        Transforms.setNodes(editor, { href: event.target.value });
                       }}
                     />
                     <ToolbarButton
@@ -173,7 +173,7 @@ export const ToolbarElement = () => {
 
 const wrapLink = (editor, url) => {
   if (isBlockActive(editor, type)) {
-    Transforms.unwrapNodes(editor, { match: n => n.type === type })
+    Transforms.unwrapNodes(editor, { match: n => n.type === type });
   }
 
   const { selection } = editor;

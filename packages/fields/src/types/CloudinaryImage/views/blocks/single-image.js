@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
-import imageExtensions from 'image-extensions';
+//import imageExtensions from 'image-extensions';
 import { useSlate } from 'slate-react';
-import { Data, Block } from 'slate';
+import { Data, Transforms } from 'slate';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import pluralize from 'pluralize';
-import { useContentField } from '@keystonejs/field-content/src';
+import { useContentField } from '@keystonejs/field-content';
 
 export const type = 'cloudinaryImage';
 
@@ -14,9 +14,9 @@ export const type = 'cloudinaryImage';
 // large lib.
 export const path = pluralize.plural(type);
 
-let getFiles = () =>
+const getFiles = () =>
   new Promise(resolve => {
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     input.type = 'file';
     input.onchange = () => resolve([...input.files]);
     input.click();
@@ -29,13 +29,19 @@ const insertImageBlockFromFile = (blocks, editor, file) => {
 };
 
 const insertImageBlock = (blocks, editor, file, src) => {
-  editor.insertBlock({
+  Transforms.insertNodes(editor, {
     type,
-    nodes: [
-      Block.create({
+    children: [
+      {
         type: blocks.image.type,
-        data: { file, src },
-      }),
+        file,
+        src,
+        children: [{ text: '' }],
+      },
+      {
+        type: blocks.caption.type,
+        children: [{ text: '' }],
+      },
     ],
   });
 };
@@ -86,32 +92,80 @@ const getImageStyle = alignment => {
   }
 };
 
-export const Node = props => {
-  let alignment = props.node.data.get('alignment');
+export const Node = ({ element: { alignment }, attributes, children }) => {
+  const editor = useSlate();
+  const { ImageAlignmentContext } = useContentField('image');
+
   return (
     <figure
       css={{ display: 'flex', flexDirection: 'column', ...getImageStyle(alignment) }}
-      {...props.attributes}
+      {...attributes}
     >
-      <props.blocks.image.ImageAlignmentContext.Provider
-        value={useMemo(() => {
-          return {
+      <ImageAlignmentContext.Provider
+        value={useMemo(
+          () => ({
             alignment,
-            onAlignmentChange(newAlignment) {
-              props.editor.setNodeByKey(props.node.key, {
-                data: props.node.data.set('alignment', newAlignment),
-              });
+            onAlignmentChange: newAlignment => {
+              Transforms.setNodes(
+                editor,
+                { alignment: newAlignment },
+                { match: n => n.type === type }
+              );
             },
-          };
-        }, [props.node.key, alignment, props.editor, props.node.data])}
+          }),
+          [alignment, editor]
+        )}
       >
-        {props.children}
-      </props.blocks.image.ImageAlignmentContext.Provider>
+        {children}
+      </ImageAlignmentContext.Provider>
     </figure>
   );
 };
 
-export const serialize = ({ node, blocks }) => {
+export const getPlugin = ({ blocks }) => editor => {
+  const { normalizeNode } = editor;
+
+  editor.normalizeNode = entry => {
+    const [node, path] = entry;
+
+    if (Element.isElement(node) && node.type === type) {
+      // Validate alignment
+      if (!['left', 'center', 'right'].includes(node.alignment)) {
+        Transforms.setNodes(editor, { alignment: 'center' }, { at: path });
+        return;
+      }
+
+      const [image, caption] = node.children;
+
+      // The image has been deleted so we also want to delete the image-container.
+      if (image.type !== blocks.image.type) {
+        Transforms.removeNodes(editor, { at: path });
+        return;
+      }
+
+      // The caption has been deleted.
+      // The user probably doesn't want to delete the image;
+      // They probably just wanted to remove everything in the caption,
+      // so the caption gets removed, and we insert another caption
+      if (caption.type !== blocks.caption.type) {
+        /*
+        Transforms.insertNodes(
+          editor,
+          { type: blocks.caption.type, children: [{ text: '' }] },
+          { at: [...path, 1] }
+        );
+        */
+        return;
+      }
+    }
+
+    normalizeNode(entry);
+  };
+
+  return editor;
+};
+
+export const serialize = ({ node: { alignment, _joinIds: joinIds }, blocks }) => {
   // Find the 'image' child node
   const imageNode = node.findDescendant(
     child => child.object === 'block' && child.type === blocks.image.type
@@ -122,18 +176,19 @@ export const serialize = ({ node, blocks }) => {
     return;
   }
 
-  const joinIds = node.data.get('_joinIds');
-  const alignment = node.data.get('alignment');
-  const file = imageNode.data.get('file');
+  const { file } = imageNode;
 
   // zero out the data field to ensure we don't accidentally store the `file` as
   // a JSON blob
+  // FIXME
   const newNode = node.setNode(node.getPath(imageNode.key), { data: Data.create() });
 
   const mutations =
     joinIds && joinIds.length
       ? {
-          connect: { id: joinIds[0] },
+          connect: {
+            id: joinIds[0],
+          },
         }
       : {
           create: {
@@ -144,10 +199,9 @@ export const serialize = ({ node, blocks }) => {
   return {
     mutations,
     node: {
+      // FIXME
       ...newNode.toJSON(),
-      data: {
-        align: alignment,
-      },
+      align: alignment,
     },
   };
 };
@@ -168,13 +222,11 @@ export const deserialize = ({ node, joins, blocks }) => {
     return;
   }
 
-  return (
-    node
-      // Inject the alignment back into the containing block
-      .set('data', node.data.set('alignment', joins[0].align))
-      // And the src attribute into the inner image
-      .setNode(node.getPath(imageNode.key), {
-        data: imageNode.data.set('src', joins[0].image.publicUrl),
-      })
-  );
+  // FIXME
+  Transforms.setNodes(editor, { src: joins[0].image.publicUrl }, { at: imageNode });
+
+  return {
+    ...node,
+    alignment: joins[0].align,
+  };
 };
