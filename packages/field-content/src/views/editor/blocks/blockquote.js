@@ -28,7 +28,7 @@ export const ToolbarElement = () => {
       }}
     />
   );
-}
+};
 
 export const Node = ({ attributes, children }) => {
   return (
@@ -46,4 +46,4 @@ export const Node = ({ attributes, children }) => {
       {children}
     </blockquote>
   );
-}
+};

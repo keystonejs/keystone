@@ -107,7 +107,7 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
               <Slate editor={editor} value={value} onChange={onChange}>
                 <Editable
                   autoFocus={autoFocus}
-                  placeholder="Enter content"
+                  //placeholder="Enter content"
                   renderElement={renderElement}
                   renderLeaf={renderLeaf}
                   onKeyDown={onKeyDown}

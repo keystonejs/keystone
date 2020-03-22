@@ -158,21 +158,19 @@ export default class ContentController extends Controller {
 
   serialize = data => {
     const { path } = this;
-    console.log('serialize', data[path]);
 
-    if (!data[path] /*|| !data[path].document*/) {
-      // Forcibly return null if empty string
+    // Forcibly return null if empty string (not sure how one would get an empty string, though)
+    if (!data[path]) {
       return { document: null };
     }
 
     const blocks = this.getBlocksSync();
 
-    //const serializedDocument = serialize(data[path], blocks);
-    const serializedDocument = {};
+    const serializedDocument = serialize(data[path], blocks);
 
     // TODO: Make this a JSON type in GraphQL so we don't have to stringify it.
     serializedDocument.document = JSON.stringify(data[path]);
-    console.log(serializedDocument);
+
     return {
       disconnectAll: true,
       create: serializedDocument,
@@ -180,10 +178,10 @@ export default class ContentController extends Controller {
   };
 
   deserialize = data => {
-    //console.log('deserialize', data);
     const { path } = this;
+
+    // Forcibly return a default value if nothing set
     if (!data[path] || !data[path].document) {
-      // Forcibly return a default value if nothing set
       return initialValue;
     }
 
@@ -207,8 +205,6 @@ export default class ContentController extends Controller {
 
       return parsedData.oEmbeds.find(embed => embed.id === _joinIds[0]);
     });
-
-    return parsedData.document;
 
     return deserialize(parsedData, blocks);
   };

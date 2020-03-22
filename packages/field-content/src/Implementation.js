@@ -2,7 +2,6 @@ import getByPath from 'lodash.get';
 import { Relationship, Text } from '@keystonejs/fields';
 import { flatMap, unique, objMerge } from '@keystonejs/utils';
 import { paragraph } from './blocks';
-import { walkSlateNode } from './slate-walker';
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
@@ -10,6 +9,7 @@ const DEFAULT_BLOCKS = [[paragraph, {}]];
 
 /**
  * @param data Object For example:
+ * @example
  * {
  *   document: [
  *     { object: 'block', type: 'cloudinaryImage', data: { _mutationPath: 'cloudinaryImages.create[0]' },
@@ -29,8 +29,8 @@ const DEFAULT_BLOCKS = [[paragraph, {}]];
  *   },
  * }
  */
-async function processSerialised(document, blocks, graphQlArgs) {
-  // Each block retreives its mutations
+async function processSerialized(document, blocks, graphQlArgs) {
+  // Each block retrieves its mutations
   const resolvedMutations = blocks.reduce(
     (mutations, block) => ({
       ...mutations,
@@ -39,48 +39,33 @@ async function processSerialised(document, blocks, graphQlArgs) {
     {}
   );
 
-  const result = {
-    document: walkSlateNode(document, {
-      visitBlock(node) {
-        if (!node.data || !node.data._mutationPaths) {
-          // A regular slate.js node - pass it through
-          return node;
-        }
+  // We don't need walkSlateTree since we don't want to recurse into child nodes.
+  return document.map(({ _mutationPaths, ...node }) => {
+    // A regular Slate.js node - pass it through
+    if (!_mutationPaths) {
+      return node;
+    }
 
-        const block = blocks.find(({ type }) => type === node.type);
+    const block = blocks.find(({ type }) => type === node.type);
 
-        if (!block) {
-          throw new Error(`Received mutation for ${node.type}, but no block types can handle it.`);
-        }
+    if (!block) {
+      throw new Error(`Received mutation for ${node.type}, but no block types can handle it.`);
+    }
 
-        const _joinIds = node.data._mutationPaths.map(mutationPath => {
-          const joinId = getByPath(resolvedMutations, mutationPath);
-          if (!joinId) {
-            throw new Error(`Slate document refers to unknown mutation '${mutationPath}'.`);
-          }
-          return joinId;
-        });
+    const _joinIds = _mutationPaths.map(mutationPath => {
+      const joinId = getByPath(resolvedMutations, mutationPath);
+      if (!joinId) {
+        throw new Error(`Slate document refers to unknown mutation '${mutationPath}'.`);
+      }
 
-        // NOTE: We don't recurse on the children; we only process the outer
-        // most block, any child blocks are left as-is.
-        return {
-          ...node,
-          data: { _joinIds },
-        };
-      },
+      return joinId;
+    });
 
-      defaultVisitor(node, visitNode) {
-        if (node.nodes) {
-          // Recurse into the child nodes array
-          node.nodes = node.nodes.map(childNode => visitNode(childNode));
-        }
-
-        return node;
-      },
-    }),
-  };
-
-  return result;
+    return {
+      ...node,
+      _joinIds,
+    };
+  });
 }
 
 export class Content extends Relationship.implementation {
@@ -147,9 +132,6 @@ export class Content extends Relationship.implementation {
         },
         hooks: {
           async resolveInput({ resolvedData, ...args }) {
-            // FIXME: mutations!
-            return resolvedData;
-
             // This method will get called twice;
             // 1. The incoming graphql request data
             // 2. Registering the back link in the `from` field
@@ -160,7 +142,8 @@ export class Content extends Relationship.implementation {
 
             // TODO: Remove JSON.parse once using native JSON type
             const documentObj = JSON.parse(resolvedData.document);
-            const { document } = await processSerialised(documentObj, blockInstances, args);
+            const document = await processSerialized(documentObj, blockInstances, args);
+
             return {
               ...resolvedData,
               // TODO: FIXME: Use a JSON type

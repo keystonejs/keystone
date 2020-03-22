@@ -45,8 +45,9 @@ const insertImageBlock = (blocks, editor, file, src) => {
   });
 };
 
-export const Sidebar = ({ blocks }) => {
+export const Sidebar = () => {
   const editor = useSlate();
+  const { blocks } = useContentField();
 
   const icon = (
     <svg width={16} height={16} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">

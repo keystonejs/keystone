@@ -6,6 +6,7 @@ import { findNode, useSlate } from 'slate-react';
 import { Data, Block } from 'slate';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import pluralize from 'pluralize';
+import { useContentField } from '@keystonejs/field-content/src';
 
 export const type = 'cloudinaryImage';
 
@@ -39,14 +40,16 @@ const insertImageBlock = (blocks, editor, file, src) => {
   });
 };
 
-export const Sidebar = ({ blocks }) => {
+export const Sidebar = () => {
   const editor = useSlate();
+  const { blocks } = useContentField();
 
   const icon = (
     <svg width={16} height={16} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
       <path d="M480 416v16c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V176c0-26.51 21.49-48 48-48h16v208c0 44.112 35.888 80 80 80h336zm96-80V80c0-26.51-21.49-48-48-48H144c-26.51 0-48 21.49-48 48v256c0 26.51 21.49 48 48 48h384c26.51 0 48-21.49 48-48zM256 128c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-96 144l55.515-55.515c4.686-4.686 12.284-4.686 16.971 0L272 256l135.515-135.515c4.686-4.686 12.284-4.686 16.971 0L512 208v112H160v-48z" />
     </svg>
   );
+
   return (
     <BlockMenuItem
       icon={icon}
@@ -60,27 +63,29 @@ export const Sidebar = ({ blocks }) => {
   );
 }
 
-function getImageStyle(alignment) {
-  if (alignment === 'left') {
-    return {
-      float: 'left',
-      marginRight: '10px',
-      width: '50%',
-    };
-  } else if (alignment === 'right') {
-    return {
-      float: 'right',
-      marginLeft: '10px',
-      width: '50%',
-    };
-  } else {
-    return {
-      display: 'block',
-      margin: '0px auto',
-      width: '100%',
-    };
+const getImageStyle = alignment => {
+  switch (alignment) {
+    case 'left':
+      return {
+        float: 'left',
+        marginRight: '10px',
+        width: '50%',
+      };
+    case 'right':
+      return {
+        float: 'right',
+        marginLeft: '10px',
+        width: '50%',
+      };
+    case 'center':
+      return {
+        display: 'block',
+        margin: '0px auto',
+        width: '100%',
+      };
   }
-}
+};
+
 export const Node = (props) => {
   let alignment = props.node.data.get('alignment');
   return (
@@ -106,7 +111,7 @@ export const Node = (props) => {
   );
 }
 
-export function serialize({ node, blocks }) {
+export const serialize = ({ node, blocks }) => {
   // Find the 'image' child node
   const imageNode = node.findDescendant(
     child => child.object === 'block' && child.type === blocks.image.type
@@ -147,7 +152,7 @@ export function serialize({ node, blocks }) {
   };
 }
 
-export function deserialize({ node, joins, blocks }) {
+export const deserialize = ({ node, joins, blocks }) => {
   if (!joins || !joins.length) {
     console.error('No image data received when rehydrating cloudinaryImage block');
     return;

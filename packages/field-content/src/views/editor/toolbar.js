@@ -67,7 +67,7 @@ const InnerToolbar = () => {
         )}
     </div>
   );
-}
+};
 
 const PopperRender = forwardRef(({ scheduleUpdate, style, children }, ref) => {
   const editor = useSlate();

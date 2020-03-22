@@ -9,4 +9,4 @@ export const Node = ({ attributes, children }) => {
       {children}
     </figcaption>
   );
-}
+};

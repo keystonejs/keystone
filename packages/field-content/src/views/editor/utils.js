@@ -3,7 +3,7 @@ import { Node, Editor } from 'slate';
 export const isMarkActive = (editor, type) => {
   const marks = Editor.marks(editor);
   return marks ? marks[type] === true : false;
-}
+};
 
 export const toggleMark = (editor, type) => {
   if (isMarkActive(editor, type)) {
@@ -11,15 +11,15 @@ export const toggleMark = (editor, type) => {
   } else {
     editor.addMark(type, true);
   }
-}
+};
 
 export const isBlockActive = (editor, type) => {
   const [match] = Editor.nodes(editor, {
     match: n => n.type === type,
-  })
+  });
 
-  return !!match
-}
+  return !!match;
+};
 
 // this has a bit of strange logic because
 // we want to always make sure that we're returning

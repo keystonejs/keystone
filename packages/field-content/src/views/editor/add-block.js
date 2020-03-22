@@ -33,11 +33,7 @@ const AddBlock = () => {
   const layout = useCallback(() => {
     const iconEle = iconRef.current;
     const menuEle = menuRef.current;
-    const elm = getSelectedElement();
-
-    if (
-      selection === null ||
-      Editor.string(editor, selection) !== '' /*|| node.type !== defaultType*/
+    const elm = getSelectedElement(); /*
     ) {
       iconEle.style.top = `-9999px`;
       iconEle.style.left = `-9999px`;
@@ -49,9 +45,15 @@ const AddBlock = () => {
       }
 
       return;
-    }
+    }*/
 
-    if (!blocks || !blocks.length) return;
+    /*if (
+      selection === null ||
+      Editor.string(editor, selection) !== '' /*|| node.type !== defaultType*/ if (
+      !blocks ||
+      !blocks.length
+    )
+      return;
 
     if (elm && editor && editor.el.contains(elm)) {
       iconEle.style.top = `${elm.offsetTop + elm.offsetHeight / 2}px`;
@@ -70,6 +72,7 @@ const AddBlock = () => {
   return (
     <Fragment>
       <div
+        ref={iconRef}
         css={{
           position: 'absolute',
           zIndex: 10,
@@ -77,39 +80,39 @@ const AddBlock = () => {
           top: -99999,
           left: -9999,
         }}
-        ref={iconRef}
       >
         <button
+          title="Add block"
           type="button"
+          onClick={() => setIsOpen(o => !o)}
           css={{
             border: 'none',
             background: '#efefef',
             color: '#aaa',
-            width: 24,
-            height: 24,
+            width: '24px',
+            height: '24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginLeft: 4,
+            marginLeft: '4px',
             ':hover': {
               color: '#888',
             },
           }}
-          onClick={() => {
-            setIsOpen(x => !x);
-          }}
-          title="Add block"
         >
           <PlusIcon
+            title={isOpen ? 'Close' : 'Open'}
             css={{
               transition: '50ms transform',
               transform: isOpen ? 'rotateZ(45deg)' : 'rotateZ(0deg)',
             }}
-            title={isOpen ? 'Close' : 'Open'}
           />
         </button>
       </div>
-      <div ref={menuRef} css={{ position: 'absolute', zIndex: 10, top: -99999, left: -9999 }}>
+      <div
+        ref={menuRef}
+        css={{ position: 'absolute', zIndex: 10, top: -99999, left: -9999, margin: '4px' }}
+      >
         {isOpen && (
           <ul
             css={{

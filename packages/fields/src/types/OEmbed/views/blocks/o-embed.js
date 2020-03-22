@@ -33,7 +33,7 @@ const Embed = ({ url, oembedData }) => {
 const Block = ({ url, oembedData, onChange, onRemove }) => {
   const [currentValue, setCurrentValue] = useState(url);
 
-  const embed = null;
+  let embed = null;
 
   if (url) {
     embed = (
@@ -65,9 +65,7 @@ const Block = ({ url, oembedData, onChange, onRemove }) => {
               paddingBottom: 8,
               fontSize: 18,
             }}
-            onClick={e => {
-              e.stopPropagation();
-            }}
+            onClick={e => e.stopPropagation()}
             value={currentValue}
             onChange={e => {
               setCurrentValue(e.target.value);
@@ -142,11 +140,13 @@ export const getPlugin = () => editor => {
   return editor;
 };
 
-export const serialize = ({ node: { url, _joinIds: joinIds } }) => {
+export const serialize = ({ node: { url, _joinIds: joinIds, ...rest } }) => {
   const mutations =
     joinIds && joinIds.length
       ? {
-          connect: { id: joinIds[0] },
+          connect: {
+            id: joinIds[0],
+          },
         }
       : {
           create: {
@@ -157,22 +157,22 @@ export const serialize = ({ node: { url, _joinIds: joinIds } }) => {
   return {
     mutations,
     node: {
-      ...node.toJSON(),
-      // Zero out the data so we don't unnecesarily duplicate the url
-      data: {},
+      // Don't include the data so we don't unnecessarily duplicate it.
+      ...rest,
     },
   };
 };
 
-export const deserialize = ({ node, joins }) => {
-  if (!joins || !Array.isArray(joins) || joins.length === 0 || !joins[0].embed) {
+export const deserialize = ({ node, joins: [{ embed }] = [] }) => {
+  if (!embed) {
     console.error('No embed data received when rehydrating oEmbed block');
     return;
   }
 
   // Inject the original url back into the block
-  return node.set(
-    'data',
-    node.data.set('url', joins[0].embed.originalUrl).set('oembedData', joins[0].embed)
-  );
+  return {
+    ...node,
+    url: embed.originalUrl,
+    oembedData: embed,
+  };
 };

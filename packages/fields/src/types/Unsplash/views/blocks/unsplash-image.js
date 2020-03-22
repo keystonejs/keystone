@@ -367,14 +367,13 @@ export const getPlugin = () => editor => {
   return editor;
 };
 
-export function serialize({ node }) {
-  const unsplashData = node.data.get('unsplashData');
-  const joinIds = node.data.get('_joinIds');
-
+export const serialize = ({ node: { unsplashData, _joinIds: joinIds, ...rest } }) => {
   const mutations =
     joinIds && joinIds.length
       ? {
-          connect: { id: joinIds[0] },
+          connect: {
+            id: joinIds[0],
+          },
         }
       : {
           create: {
@@ -385,19 +384,21 @@ export function serialize({ node }) {
   return {
     mutations,
     node: {
-      ...node.toJSON(),
-      // Zero out the data so we don't unnecesarily duplicate the url
-      data: {},
+      // Don't include the data so we don't unnecessarily duplicate it.
+      ...rest,
     },
   };
-}
+};
 
-export function deserialize({ node, joins }) {
-  if (!joins || !joins.length) {
+export const deserialize = ({ node, joins: [{ image }] = [] }) => {
+  if (!image) {
     console.error('No unsplash data received when rehydrating unsplashImage block');
     return;
   }
 
   // Inject the original url back into the block
-  return node.set('data', node.data.set('unsplashData', joins[0].image));
-}
+  return {
+    ...node,
+    unsplashData: image,
+  };
+};

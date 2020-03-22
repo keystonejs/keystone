@@ -4,7 +4,7 @@ import { isBlockActive } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListUnorderedIcon } from '@arch-ui/icons';
-import { Transforms } from 'slate';
+import { Transforms, Element, Editor, Node as SlateNode } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
 
 const LIST_TYPES = ['ordered-list', 'unordered-list'];
