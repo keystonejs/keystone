@@ -175,7 +175,7 @@ export const ToolbarElement = () => {
 
 const wrapLink = (editor, url) => {
   if (isBlockActive(editor, type)) {
-    unwrapLink(editor);
+    Transforms.unwrapNodes(editor, { match: n => n.type === type })
   }
 
   const { selection } = editor;

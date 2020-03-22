@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
 import imageExtensions from 'image-extensions';
-import { findNode, useSlate } from 'slate-react';
+import { useSlate } from 'slate-react';
 import { Data, Block } from 'slate';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import pluralize from 'pluralize';
@@ -61,7 +61,7 @@ export const Sidebar = () => {
       }}
     />
   );
-}
+};
 
 const getImageStyle = alignment => {
   switch (alignment) {
@@ -86,7 +86,7 @@ const getImageStyle = alignment => {
   }
 };
 
-export const Node = (props) => {
+export const Node = props => {
   let alignment = props.node.data.get('alignment');
   return (
     <figure
@@ -109,7 +109,7 @@ export const Node = (props) => {
       </props.blocks.image.ImageAlignmentContext.Provider>
     </figure>
   );
-}
+};
 
 export const serialize = ({ node, blocks }) => {
   // Find the 'image' child node
@@ -150,7 +150,7 @@ export const serialize = ({ node, blocks }) => {
       },
     },
   };
-}
+};
 
 export const deserialize = ({ node, joins, blocks }) => {
   if (!joins || !joins.length) {
@@ -177,4 +177,4 @@ export const deserialize = ({ node, joins, blocks }) => {
         data: imageNode.data.set('src', joins[0].image.publicUrl),
       })
   );
-}
+};

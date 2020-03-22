@@ -4,7 +4,7 @@ import { Fragment, useState, useRef, useCallback, useLayoutEffect } from 'react'
 import { PlusIcon } from '@arch-ui/icons';
 import { type as defaultType } from './blocks/paragraph';
 
-import { Editor } from 'slate';
+import { Editor, Node } from 'slate';
 import { useSlate } from 'slate-react';
 import { useContentField } from './context';
 
@@ -21,7 +21,8 @@ const getSelectedElement = () => {
 
 const AddBlock = () => {
   const editor = useSlate();
-  const { selection } = editor;
+
+  const [focusNode] = Editor.nodes(editor, { match: n => Editor.isBlock(editor, n) });
 
   const { blocks } = useContentField();
 
@@ -33,8 +34,10 @@ const AddBlock = () => {
   const layout = useCallback(() => {
     const iconEle = iconRef.current;
     const menuEle = menuRef.current;
-    const elm = getSelectedElement(); /*
-    ) {
+
+    const elm = getSelectedElement();
+
+    if (!focusNode || Node.string(focusNode[0]) !== '' || focusNode[0].type !== defaultType) {
       iconEle.style.top = `-9999px`;
       iconEle.style.left = `-9999px`;
       menuEle.style.top = `-9999px`;
@@ -45,17 +48,11 @@ const AddBlock = () => {
       }
 
       return;
-    }*/
+    }
 
-    /*if (
-      selection === null ||
-      Editor.string(editor, selection) !== '' /*|| node.type !== defaultType*/ if (
-      !blocks ||
-      !blocks.length
-    )
-      return;
+    if (!blocks) return;
 
-    if (elm && editor && editor.el.contains(elm)) {
+    if (elm && editor /*&& editor.el.contains(elm)*/) {
       iconEle.style.top = `${elm.offsetTop + elm.offsetHeight / 2}px`;
       iconEle.style.left = 0;
       menuEle.style.top = `${elm.offsetTop - elm.offsetHeight / 2}px`;
@@ -65,7 +62,7 @@ const AddBlock = () => {
         setIsOpen(false);
       }
     }
-  }, [selection, iconRef.current, menuRef.current]);
+  }, [focusNode, iconRef.current, menuRef.current]);
 
   useLayoutEffect(layout);
 

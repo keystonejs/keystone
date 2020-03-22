@@ -79,8 +79,8 @@ const ContentField = ({ field, value, onChange, autoFocus, errors }) => {
 
   const onKeyDown = useCallback(
     event => {
-      markArray.forEach(([type, { test }]) => {
-        if (test(event)) {
+      markArray.forEach(([type, { test: doesHotkeyMatch }]) => {
+        if (doesHotkeyMatch(event)) {
           event.preventDefault();
           toggleMark(editor, type);
         }
