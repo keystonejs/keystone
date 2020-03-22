@@ -32,11 +32,29 @@ keystone.createList('Post', {
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
         Content.blocks.heading,
-        CloudinaryImage.blocks.image,
       ],
     },
   },
 });
+```
+
+## Options
+In addition to the standard set of _Blocks_ exposed by the `Content` field type
+(see above), some other field types also provide _Blocks_ that can be used 
+in a `Content` field.
+
+Custom _Blocks_ may require options that can customize how they work. To pass
+options to a _Block_, make it the first element of an array followed by an options
+object that will be passed as an argument to the _Block_ constructor.
+
+Here's an example using a [CloudinaryImage](../fields/src/types/CloudinaryImage/README.md)
+block.
+
+```
+blocks: [
+  [CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]
+],
+
 ```
 
 ## API
