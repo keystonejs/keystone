@@ -169,7 +169,7 @@ export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
   }
 
   addToTableSchema(table) {
-    const column = table.jsonb(this.path);
+    const column = table.json(this.path);
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
