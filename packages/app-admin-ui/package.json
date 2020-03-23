@@ -36,7 +36,7 @@
     "@arch-ui/theme": "^0.0.10",
     "@arch-ui/tooltip": "^0.1.9",
     "@arch-ui/typography": "^0.0.15",
-    "@babel/core": "^7.8.4",
+    "@babel/core": "^7.9.0",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
