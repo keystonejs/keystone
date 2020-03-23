@@ -53,9 +53,6 @@ const HomepageListProvider = () => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
-  const query = gqlCountQueries(lists);
-  const { data, error } = useQuery(query, { fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
-
   if (lists.length === 0) {
     return (
       <Fragment>
@@ -71,6 +68,9 @@ const HomepageListProvider = () => {
       </Fragment>
     );
   }
+
+  const query = gqlCountQueries(lists);
+  const { data, error } = useQuery(query, { fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
   let allowedLists = lists;
 
