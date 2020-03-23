@@ -2,4 +2,4 @@
 '@keystonejs/keystone': minor
 ---
 
-Added a script cli `keystone create-tables` that will initialise an empty knex database.
+Added a cli script `keystone create-tables` that will initialise an empty database with the Knex Adapter.
