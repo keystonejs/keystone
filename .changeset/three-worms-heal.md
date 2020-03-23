@@ -15,4 +15,4 @@
 '@keystonejs/website': patch
 ---
 
-Formatting changes after upgrading to pretter 2.0
+Formatting changes after upgrading to prettier 2.0
