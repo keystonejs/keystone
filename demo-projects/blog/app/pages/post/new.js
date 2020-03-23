@@ -9,6 +9,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 
 import Layout from '../../templates/layout';
+import { withApollo } from '../../lib/apollo';
 
 const FormGroup = styled.div({
   display: 'flex',
@@ -52,7 +53,7 @@ const ADD_POST = gql`
   }
 `;
 
-export default () => {
+export default withApollo(() => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [image, setImage] = useState('');
@@ -201,4 +202,4 @@ export default () => {
       </div>
     </Layout>
   );
-};
+});
