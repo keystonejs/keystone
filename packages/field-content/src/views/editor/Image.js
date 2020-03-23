@@ -2,7 +2,6 @@
 import { jsx } from '@emotion/core';
 import { useLayoutEffect, forwardRef } from 'react';
 import { Popper } from 'react-popper';
-import { useStateWithEqualityCheck } from './hooks';
 import { colors } from '@arch-ui/theme';
 
 const PopperRender = forwardRef(
@@ -54,7 +53,7 @@ const Image = ({
   onAlignmentChange,
   ...props
 }) => {
-  const [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
+  const [referenceElement, setReferenceElement] = useState(null);
 
   return (
     <div {...attributes}>
