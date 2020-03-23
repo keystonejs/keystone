@@ -22,7 +22,7 @@ keystone.createList('Post', {
   fields: {
     title: { type: Text },
     content: { type: Text },
-    author: { type: Relationship, ref: 'User' },
+    author: { type: Relationship, ref: 'User', many: false },
   },
 });
 ```
@@ -243,4 +243,6 @@ keystone.createList('Post', {
 });
 ```
 
-## Data modelling
+## Data storage
+
+The following information is for those who want to look under the hood of Keystone and understand how relationships are implemented at the database adapter layer.
