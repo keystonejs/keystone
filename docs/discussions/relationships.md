@@ -6,8 +6,8 @@ title: Relationships
 # Relationships
 
 KeystoneJS allows you to model your data as a collection of related `Lists`.
-For example, a blogging application might have lists called `Posts` and `Users`, where each post has a single author.
-This would be represented in Keystone by a relationship between the `Posts` and `Users` lists.
+For example, a blogging application might have lists called `Post` and `User`, where each post has a single author.
+This would be represented in Keystone by a relationship between the `Post` and `User` lists.
 
 ## Defining a Relationship
 
@@ -39,8 +39,7 @@ The default configuration is `many: false`, which indicates that each post is re
 
 ### One sided vs Two sided
 
-In our example we know the authors of each post.
-We can access this information from our GraphQL API by querying for the `authors` field of a post.
+In our example `Posts` know about authors. We can access this information from our GraphQL API by querying for the `authors` field of a post.
 
 ```graphQL
 Query {
@@ -54,8 +53,8 @@ Query {
 }
 ```
 
-This implies that there is enough information available to find all posts written by a particular user.
-If we would like to have access to this information from the `Users` list we can update our list definitions as such:
+If we can find all `authors` of a post, this implies there is enough information to find all `Posts` written by a particular `User`.
+To can access this information from the `Users` list as well, we update our list definitions as such:
 
 ```javascript
 keystone.createList('User', {
@@ -64,6 +63,7 @@ keystone.createList('User', {
     posts: { type: Relationship, ref: 'Post.authors', many: true },
   },
 });
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
@@ -73,7 +73,7 @@ keystone.createList('Post', {
 });
 ```
 
-We have have added a new `posts` field to the `User` list, and we have changed the `ref` config of the `authors` field.
+We have now added a `posts` field to the `User` list, and changed the `ref` config of the `authors` field.
 We now have two `Relationship` fields, but importantly, we still **only have one relationship**.
 The two fields simply represent different sides of the one relationship.
 
@@ -127,7 +127,7 @@ keystone.createList('User', {
 });
 ```
 
-The only relationship configuration not currently supported is having a field reference _itself_, e.g. `friends: { type: Relationship, ref: 'User.friends', many: true }`.
+One relationship configuration not currently supported is having a field reference _itself_, e.g. `friends: { type: Relationship, ref: 'User.friends', many: true }`.
 
 ## Cardinality
 
@@ -151,6 +151,7 @@ keystone.createList('User', {
     name: { type: Text },
   },
 });
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
@@ -170,6 +171,7 @@ keystone.createList('User', {
     name: { type: Text },
   },
 });
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
@@ -192,6 +194,7 @@ keystone.createList('User', {
     post: { type: Relationship, ref: 'Post.author', many: false },
   },
 });
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
@@ -212,6 +215,7 @@ keystone.createList('User', {
     posts: { type: Relationship, ref: 'Post.author', many: true },
   },
 });
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
@@ -232,6 +236,7 @@ keystone.createList('User', {
     posts: { type: Relationship, ref: 'Post.authors', many: true },
   },
 });
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
