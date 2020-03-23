@@ -6,7 +6,7 @@ import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 
 import logosvg from '../assets/logo.svg';
-import { Container, SocialIconsNav } from '../components';
+import { Container, SocialIconsNav, Search } from '../components';
 import { media, mediaOnly, mediaMax } from '../utils/media';
 
 export const HEADER_HEIGHT = 60;
@@ -18,14 +18,19 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
         css={{
           alignItems: 'center',
           boxShadow: `0 1px 0 ${colors.N10}`,
-          display: 'flex',
-          fontSize: '0.9rem',
+          display: 'grid',
+          gridTemplateColumns: '150px 1fr auto',
+          gridGap: '1rem',
           fontWeight: 500,
           height: HEADER_HEIGHT,
-          justifyContent: 'space-between',
+
+          [media.sm]: {
+            gridTemplateColumns: '220px 1fr 220px',
+          },
         }}
       >
         <Logo />
+        <Search />
         <Nav toggleMenu={toggleMenu} />
       </div>
     </Container>
@@ -44,6 +49,7 @@ const Logo = () => (
         alignItems: 'center',
         color: 'inherit',
         display: 'inline-flex',
+        fontSize: '0.9rem',
 
         ':hover': {
           textDecoration: 'none',
@@ -127,15 +133,9 @@ const List = props => (
 const Nav = ({ toggleMenu }) => (
   <nav>
     <List>
-      {NAV_LINKS.map(({ url, name }) => (
-        <NavItem key={name} to={url} lgOnly>
-          {name}
-        </NavItem>
-      ))}
       <li>
         <SocialIconsNav
           css={{
-            marginLeft: '2rem',
             [mediaMax.sm]: {
               display: 'none',
             },
@@ -162,30 +162,3 @@ const Nav = ({ toggleMenu }) => (
     </List>
   </nav>
 );
-
-// ==============================
-// Data
-// ==============================
-
-const NAV_LINKS = [
-  {
-    name: 'Quick Start',
-    url: '/quick-start/',
-  },
-  {
-    name: 'Tutorials',
-    url: '/tutorials/',
-  },
-  {
-    name: 'Guides',
-    url: '/guides/',
-  },
-  {
-    name: 'API',
-    url: '/api/',
-  },
-  {
-    name: 'Packages',
-    url: '/packages/',
-  },
-];

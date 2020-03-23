@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 5.3.0
+
+### Minor Changes
+
+- [`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b) [#2524](https://github.com/keystonejs/keystone/pull/2524) Thanks [@jesstelford](https://github.com/jesstelford)! - Created `upcase` util to make the first letter for word uppercase.
+
 ## 5.2.2
 
 ### Patch Changes

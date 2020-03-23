@@ -1,20 +1,20 @@
 const { parseCustomAccess } = require('@keystonejs/access-control');
 
-class VersionProvider {
-  constructor({ appVersion, schemaNames }) {
-    appVersion.access = parseCustomAccess({
-      access: appVersion.access,
+class AppVersionProvider {
+  constructor({ version, access, schemaNames }) {
+    this._access = parseCustomAccess({
+      access: access,
       schemaNames,
       defaultAccess: true,
     });
-    this._appVersion = appVersion;
+    this._version = version;
   }
 
   getTypes({}) {
     return [];
   }
   getQueries({ schemaName }) {
-    return this._appVersion.access[schemaName]
+    return this._access[schemaName]
       ? [
           `"""The version of the Keystone application serving this API."""
           appVersion: String`,
@@ -29,13 +29,16 @@ class VersionProvider {
     return {};
   }
   getQueryResolvers({ schemaName }) {
-    return this._appVersion.access[schemaName]
-      ? { appVersion: () => this._appVersion.version }
-      : {};
+    return this._access[schemaName] ? { appVersion: () => this._version } : {};
   }
   getMutationResolvers({}) {
     return {};
   }
 }
 
-module.exports = { VersionProvider };
+const appVersionMiddleware = version => (req, res, next) => {
+  res.set('X-Keystone-App-Version', version);
+  next();
+};
+
+module.exports = { AppVersionProvider, appVersionMiddleware };

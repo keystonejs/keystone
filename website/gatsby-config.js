@@ -104,56 +104,13 @@ async function getGatsbyConfig() {
         },
       },
       {
-        resolve: 'gatsby-plugin-lunr',
-        options: {
-          languages: [
-            {
-              name: 'en',
-              filterNodes: node => {
-                const { context } = node;
-                const { fields } = node;
-                // I'm not sure why... but we get different types of nodes here
-                if (context || fields) {
-                  // Only only return false if draft is set to true,
-                  // undefined should default to not draft
-                  const draft = (context && context.draft) || (fields && fields.draft) || false;
-                  return Boolean(!draft);
-                }
-                return true;
-              },
-            },
-          ],
-          // Fields to index. If store === true value will be stored in index file.
-          // Attributes for custom indexing logic. See https://lunrjs.com/docs/lunr.Builder.html for details
-          fields: [
-            { name: 'content' },
-            { name: 'navGroup', store: true },
-            { name: 'navSubGroup', store: true },
-            { name: 'slug', store: true },
-            { name: 'title', store: true, attributes: { boost: 20 } },
-          ],
-          // How to resolve each field's value for a supported node type
-          resolvers: {
-            // For any node of type mdx, list how to resolve the fields' values
-            Mdx: {
-              content: node => node.rawBody,
-              navGroup: node => node.fields.navGroup,
-              navSubGroup: node => node.fields.navSubGroup,
-              slug: node => node.fields.slug,
-              title: node => node.fields.pageTitle,
-            },
-          },
-          //custom index file name, default is search_index.json
-          filename: 'search_index.json',
-        },
-      },
-      {
         resolve: `gatsby-plugin-google-analytics`,
         options: {
           trackingId: 'UA-43970386-3',
           head: true,
         },
       },
+      `gatsby-plugin-sitemap`,
     ],
   };
 }
