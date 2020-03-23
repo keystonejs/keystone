@@ -137,20 +137,110 @@ The _cardinality_ of a relationship is the number items which can exist on eithe
 In general, each side can have either `one` or `many` related items.
 Since each relationship has two sides this means we can have `one to one`, `one to many` and `many to many` relationships.
 
+The cardinality of your relationship is controlled by the use of the `many` config option.
+In two-sided relationships the `many` option on both sides must be considered.
+The follow examples will demonstrate how to set up each type of cardinality in the context of our blog.
+
 ### One Sided
 
 #### One to many
 
+Each post has a single author, and each user can have multiple posts, however we cannot directly access a users' posts.
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+  },
+});
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User', many: false },
+  },
+});
+```
+
 #### Many to many
+
+Each post has multiple authors, and each user can have multiple posts, however we cannot directly access a users' posts.
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+  },
+});
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    authors: { type: Relationship, ref: 'User', many: true },
+  },
+});
+```
 
 ### Two Sided
 
 #### One to one
 
+Each post has a single author, and each user is only allowed to write one post.
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    post: { type: Relationship, ref: 'Post.author', many: false },
+  },
+});
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User.post', many: false },
+  },
+});
+```
+
 #### One to many
+
+Each post has a single author, and each user can have multiple posts.
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    posts: { type: Relationship, ref: 'Post.author', many: true },
+  },
+});
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User.posts', many: false },
+  },
+});
+```
 
 #### Many to many
 
-### Self referential
+Each post can have multiple authors, and each user can have multiple posts.
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    posts: { type: Relationship, ref: 'Post.authors', many: true },
+  },
+});
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    authors: { type: Relationship, ref: 'User.posts', many: true },
+  },
+});
+```
 
 ## Data modelling
