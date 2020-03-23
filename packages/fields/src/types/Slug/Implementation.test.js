@@ -4,11 +4,7 @@ import cuid from 'cuid';
 import Text from '../Text';
 import Slug from './';
 
-const reverse = str =>
-  str
-    .split('')
-    .reverse()
-    .join('');
+const reverse = str => str.split('').reverse().join('');
 
 const generateListName = () =>
   // Ensure we prefix with something easy to delete, but also must always start

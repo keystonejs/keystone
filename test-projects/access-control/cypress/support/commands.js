@@ -52,7 +52,7 @@ Cypress.Commands.add('upload_file', (selector, fileUrl, type) =>
 );
 
 function graphqlOperation(type) {
-  return function(uri, operationString) {
+  return function (uri, operationString) {
     // Convert the string to an ast
     const operation = gql(operationString);
 
@@ -100,13 +100,9 @@ Cypress.Commands.add('graphql_mutate', graphqlOperation('mutate'));
 Cypress.Commands.add('loginToKeystone', (identity, secret) => {
   cy.visit('/admin');
 
-  cy.get('input[name="identity"]')
-    .clear({ force: true })
-    .type(identity, { force: true });
+  cy.get('input[name="identity"]').clear({ force: true }).type(identity, { force: true });
 
-  cy.get('[name="secret"]')
-    .clear({ force: true })
-    .type(secret, { force: true });
+  cy.get('[name="secret"]').clear({ force: true }).type(secret, { force: true });
 
   cy.get('button[type="submit"]').click({ force: true });
 

@@ -6,7 +6,7 @@ let resolve = require('resolve');
 let { name } = require('../../package.json');
 
 module.exports = createPlugin({
-  [name]: function({ babel, references, state }) {
+  [name]: function ({ babel, references, state }) {
     const { types: t } = babel;
     if (references.importView) {
       references.importView.forEach(reference => {

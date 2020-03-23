@@ -213,7 +213,7 @@ class AdminUIApp {
 
     if (dev) {
       // eslint-disable-next-line no-unused-vars
-      app.use(function(err, req, res, next) {
+      app.use(function (err, req, res, next) {
         console.error(err.stack);
         res.status(500).send('Error');
       });

@@ -60,9 +60,7 @@ async function watchPackage(pkg, aliases) {
                 ? relativePath(event.input)
                 : Array.isArray(event.input)
                 ? event.input.map(relativePath).join(', ')
-                : Object.values(event.input)
-                    .map(relativePath)
-                    .join(', ')
+                : Object.values(event.input).map(relativePath).join(', ')
             )} → ${chalk.bold(event.output.map(relativePath).join(', '))}...`
           ),
           pkg

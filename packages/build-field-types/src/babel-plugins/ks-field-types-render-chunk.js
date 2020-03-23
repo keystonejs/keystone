@@ -1,7 +1,7 @@
 const { addNamed } = require('@babel/helper-module-imports');
 const nodePath = require('path');
 
-module.exports = function(babel) {
+module.exports = function (babel) {
   const { types: t } = babel;
   return {
     visitor: {

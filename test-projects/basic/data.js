@@ -82,11 +82,7 @@ module.exports = {
         { where: { name: 'Node' } },
       ],
     },
-  ].concat(
-    Array(120)
-      .fill(true)
-      .map(createPost)
-  ),
+  ].concat(Array(120).fill(true).map(createPost)),
   PostCategory: [
     {
       name: 'GraphQL',

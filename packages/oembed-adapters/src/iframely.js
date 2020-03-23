@@ -16,10 +16,7 @@ export class IframelyOEmbedAdapter {
     if (IS_MD5.test(apiKey)) {
       this.apiKey = apiKey;
     } else {
-      this.apiKey = crypto
-        .createHash('md5')
-        .update(apiKey)
-        .digest('hex');
+      this.apiKey = crypto.createHash('md5').update(apiKey).digest('hex');
     }
   }
 

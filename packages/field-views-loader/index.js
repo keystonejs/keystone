@@ -36,7 +36,7 @@ function findPageComponents(pages, pageComponents = {}) {
   return pageComponents;
 }
 
-module.exports = function() {
+module.exports = function () {
   const options = loaderUtils.getOptions(this);
   const adminMeta = options.adminMeta;
 

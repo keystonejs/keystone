@@ -51,10 +51,7 @@ test('source maps work', async () => {
   expect(stdout.toString()).toBe('');
   expect(
     // this is easier than using a stack trace parser
-    stderr
-      .toString()
-      .trim()
-      .split('\n')[0]
+    stderr.toString().trim().split('\n')[0]
   ).toEqual(
     // the important thing we're checking is that it's mapping to line 5
     expect.stringMatching(/uses-babel-and-throws-error\/src\/index\.js:5$/)

@@ -41,7 +41,7 @@ const Post = ({ post }) => {
   );
 };
 
-export default function() {
+export default function () {
   const { data, loading, error } = useQuery(gql`
     query {
       allPosts {

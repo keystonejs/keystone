@@ -104,10 +104,7 @@ async function getMongoMemoryServerConfig() {
   // Passing `true` here generates a new, random DB name for us
   const mongoUri = await mongoServer.getConnectionString(true);
   // In theory the dbName can contain query params so lets parse it then extract the db name
-  const dbName = url
-    .parse(mongoUri)
-    .pathname.split('/')
-    .pop();
+  const dbName = url.parse(mongoUri).pathname.split('/').pop();
 
   return { mongoUri, dbName };
 }
@@ -151,8 +148,8 @@ function getDelete(keystone) {
 }
 
 function _keystoneRunner(adapterName, tearDownFunction) {
-  return function(setupKeystoneFn, testFn) {
-    return async function() {
+  return function (setupKeystoneFn, testFn) {
+    return async function () {
       if (!testFn) {
         // If a testFn is not defined then we just need
         // to excute setup and tear down in isolation.

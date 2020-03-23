@@ -4,7 +4,7 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
-module.exports = function({ adminMeta, entry, outputPath }) {
+module.exports = function ({ adminMeta, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
