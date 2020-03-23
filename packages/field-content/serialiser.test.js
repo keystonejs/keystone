@@ -1,4 +1,4 @@
-import { Value, Node } from 'slate';
+import { Node } from 'slate';
 import { deserialize } from './src/slate-serializer';
 
 describe('Deserializing JSON -> a Slate.js Value', () => {

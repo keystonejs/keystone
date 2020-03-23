@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useLayoutEffect, forwardRef } from 'react';
+import { useState, useLayoutEffect, forwardRef } from 'react';
 import { Popper } from 'react-popper';
 import { colors } from '@arch-ui/theme';
 
@@ -56,8 +56,9 @@ const Image = ({
   const [referenceElement, setReferenceElement] = useState(null);
 
   return (
-    <div {...attributes}>
+    <div>
       <img
+        {...attributes}
         {...props}
         src={src}
         ref={setReferenceElement}
@@ -66,7 +67,6 @@ const Image = ({
           outline: isFocused ? 'dashed' : null,
         }}
       />
-      {children}
       <Popper modifiers={popperModifiers} placement="top" referenceElement={referenceElement}>
         {({ style, ref, scheduleUpdate }) => (
           <PopperRender
