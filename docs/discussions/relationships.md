@@ -9,8 +9,6 @@ KeystoneJS allows you to model your data as a collection of related `Lists`.
 For example, a blogging application might have lists called `Posts` and `Users`, where each post has a single author.
 This would be represented in Keystone by a relationship between the `Posts` and `Users` lists.
 
-To make the most of relationships in Keystone it is important to understand some key concepts.
-
 ## Defining a Relationship
 
 Relationships are implemented as [field types] and defined along with other fields in `createLists`.
@@ -75,7 +73,7 @@ keystone.createList('Post', {
 });
 ```
 
-We have have added a new `posts` field to the `User` list, and we have change the `ref` config of the `authors` field.
+We have have added a new `posts` field to the `User` list, and we have changed the `ref` config of the `authors` field.
 We now have two `Relationship` fields, but importantly, we still **only have one relationship**.
 The two fields simply represent different sides of the one relationship.
 
@@ -98,8 +96,8 @@ Query {
 There are some important things to remember when defining a two-sided relationship:
 
 - Even though there are two fields, there is only one relationship between the lists.
-- The `ref` config must be formatted as `<listName>.<fieldName>` and both sides must match.
-- Both fields are sharing the same data. If you change the author of a post, that post will no longer show up in the original authors `posts`.
+- The `ref` config must be formatted as `<listName>.<fieldName>` and both sides must refer to each other.
+- Both fields are sharing the same data. If you change the author of a post, that post will no longer show up in the original author's `posts`.
 
 ## Self referential lists
 
@@ -243,6 +241,7 @@ keystone.createList('Post', {
 });
 ```
 
+<!--
 ## Data storage
 
-The following information is for those who want to look under the hood of Keystone and understand how relationships are implemented at the database adapter layer.
+The following information is for those who want to look under the hood of Keystone and understand how relationships are implemented at the database adapter layer. -->
