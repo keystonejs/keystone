@@ -87,13 +87,13 @@ export default {
     {
       types: ['deleted'],
       style: {
-        textDecorationLine: 'line-through',
+        backgroundColor: '#fdb8c0',
       },
     },
     {
       types: ['inserted'],
       style: {
-        textDecorationLine: 'underline',
+        backgroundColor: '#acf2bd',
       },
     },
     {

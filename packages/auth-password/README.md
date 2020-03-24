@@ -36,6 +36,7 @@ const authStrategy = keystone.createAuthStrategy({
   },
 });
 ```
+
 **Note:** The auth strategy must be created after the User list.
 
 Later, the admin UI authentication handler will do something like this:
