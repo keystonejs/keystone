@@ -85,10 +85,10 @@ const GroupHeading = ({ index, ...props }) => (
   <h2
     css={{
       color: colors.N80,
-      fontSize: '1.4rem',
+      fontSize: '1rem',
       fontWeight: 700,
       marginTop: index === 0 ? '4px' : '2.4em',
-      textTransform: 'uppercase',
+      textTransform: 'capitalize',
     }}
     {...props}
   />
@@ -98,7 +98,7 @@ const GroupSubHeading = props => (
   <h3
     css={{
       color: colors.N60,
-      fontSize: '0.9rem',
+      fontSize: '0.85rem',
       fontWeight: 700,
       padding: `${gridSize * 0.75}px 0`,
       margin: '0',

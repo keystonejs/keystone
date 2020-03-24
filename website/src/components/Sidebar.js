@@ -1,23 +1,39 @@
 /** @jsx jsx */
 
-import React, { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
-import { jsx } from '@emotion/core';
-import { gridSize } from '@arch-ui/theme';
+import { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
+import { jsx, keyframes } from '@emotion/core';
 import throttle from 'lodash.throttle';
 import { colors } from '@arch-ui/theme';
 
 import { Footer, SidebarNav, SocialIconsNav } from '../components';
 import { media, mediaMax } from '../utils/media';
+import { useClickOutside } from '../utils/useClickOutside';
+import { gridSize } from '@arch-ui/theme/src';
 
-const layoutGutter = gridSize * 4;
 let oldSidebarOffset = 0;
 let oldWindowOffset = 0;
 
 export const SIDEBAR_WIDTH = 280;
 
-export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
+let slideInAnim = keyframes({
+  from: {
+    opacity: 0,
+    transform: `translateX(-${SIDEBAR_WIDTH}px`,
+  },
+  to: {
+    opacity: 1,
+    transform: 0,
+  },
+});
+
+export const Sidebar = ({ offsetTop, isVisible, toggleSidebar }) => {
   const asideRef = useRef();
   const [isStuck, setSticky] = useState(false);
+  useClickOutside({
+    handler: toggleSidebar,
+    refs: [asideRef],
+    listenWhen: isVisible,
+  });
 
   const handleWindowScroll = () => {
     oldWindowOffset = window.pageYOffset;
@@ -53,36 +69,38 @@ export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
     asideRef.current.scrollTop = scrollTop;
   }, [asideRef.current]);
 
-  const stickyStyles = {
-    height: isStuck ? '100%' : `calc(100% - ${offsetTop}px)`,
-    position: isStuck ? 'fixed' : 'absolute',
-    width: SIDEBAR_WIDTH,
-    top: isStuck ? 0 : offsetTop,
-  };
-
-  // NOTE: the 5px gutter is to stop inner elements outline/box-shadow etc.
-  // being cropped because the aside has overflow-x hidden (due to y=auto).
-  const avoidCropGutter = 5;
-
   return (
     <aside
       key="sidebar"
       ref={asideRef}
       css={{
+        // boxSizing: 'border-box',
+        // overflowY: 'auto',
+        // paddingBottom: '3rem',
+        // paddingTop: layoutGutter,
+        // marginLeft: -avoidCropGutter,
+        // paddingLeft: avoidCropGutter,
+        // EXPERIMENT
         boxSizing: 'border-box',
+        flexShrink: 0,
+        width: SIDEBAR_WIDTH,
+        height: 'calc(100vh - 60px)',
+        padding: `${gridSize * 4}px ${gridSize * 3}px`,
+        // borderRight: `1px solid ${colors.N10}`,
         overflowY: 'auto',
-        paddingBottom: '3rem',
-        paddingTop: layoutGutter,
-        marginLeft: -avoidCropGutter,
-        paddingLeft: avoidCropGutter,
+        position: 'sticky',
+        top: 60,
 
-        [mediaMax.sm]: {
-          display: isVisible ? 'block' : 'none',
-        },
-        [media.sm]: {
-          display: mobileOnly ? 'none' : 'block',
-          paddingRight: layoutGutter,
-          ...stickyStyles,
+        [mediaMax.md]: {
+          background: 'white',
+          boxShadow: isVisible ? 'rgba(0, 0, 0, 0.25) 0px 0px 48px' : 'none',
+          height: '100vh',
+          opacity: isVisible ? 1 : 0,
+          position: 'fixed',
+          top: 0,
+          transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
+          transition: 'all 150ms',
+          zIndex: 2,
         },
       }}
     >

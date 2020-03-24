@@ -9,11 +9,12 @@ import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/core';
 import { SkipNavContent } from '@reach/skip-nav';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import slugify from '@sindresorhus/slugify';
 
 import { Layout, Content } from '../templates/layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
-import { mediaMax } from '../utils/media';
+import { media, mediaMax } from '../utils/media';
 import { useNavData } from '../utils/hooks';
 import { titleCase } from '../utils/case';
 import { Container } from '../components';
@@ -37,7 +38,8 @@ export default function Template({
     next = flatNavData[currentPageIndex + 1];
   }
 
-  const { body, fields } = mdx;
+  const { body, fields, headings } = mdx;
+
   const { siteMetadata } = site;
   const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
   const title = `${
@@ -57,50 +59,99 @@ export default function Template({
         <meta name="twitter:description" content={fields.description} />
       </Helmet>
       <Layout>
-        {({ sidebarOffset, sidebarIsVisible }) => (
-          <Container>
-            <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} />
-            <Content className="docSearch-content">
-              <SkipNavContent />
-              <MDXProvider components={mdComponents}>
-                <MDXRenderer>{body}</MDXRenderer>
-              </MDXProvider>
-              <EditSection>
-                <p>
-                  Have you found a mistake, something that is missing, or could be improved on this
-                  page? Please edit the Markdown file on GitHub and submit a PR with your changes.
-                </p>
-                <EditButton href={fields.editUrl} target="_blank" title="Edit this page on GitHub">
-                  <svg
-                    fill="currentColor"
-                    height="1.25em"
-                    width="1.25em"
-                    viewBox="0 0 40 40"
-                    css={{ marginLeft: -(gridSize / 2), marginRight: '0.5em' }}
+        {({ sidebarOffset, sidebarIsVisible, toggleSidebar }) => (
+          <Container css={{ display: 'flex' }}>
+            <Sidebar
+              isVisible={sidebarIsVisible}
+              offsetTop={sidebarOffset}
+              toggleSidebar={toggleSidebar}
+            />
+            <Content className="docSearch-content" css={{ display: 'flex' }}>
+              <div css={{ flex: 1, minWidth: 0 }}>
+                <SkipNavContent />
+                <MDXProvider components={mdComponents}>
+                  <MDXRenderer>{body}</MDXRenderer>
+                </MDXProvider>
+                <EditSection>
+                  <p>
+                    Have you found a mistake, something that is missing, or could be improved on
+                    this page? Please edit the Markdown file on GitHub and submit a PR with your
+                    changes.
+                  </p>
+                  <EditButton
+                    href={fields.editUrl}
+                    target="_blank"
+                    title="Edit this page on GitHub"
                   >
-                    <path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z" />
-                  </svg>
-                  Edit Page
-                </EditButton>
-              </EditSection>
-              <Pagination aria-label="Pagination">
-                {prev ? (
-                  <PaginationButton to={prev.path}>
-                    <small>&larr; Prev</small>
-                    <span>{prev.context.pageTitle}</span>
-                  </PaginationButton>
-                ) : (
-                  <PaginationPlaceholder />
-                )}
-                {next ? (
-                  <PaginationButton align="right" to={next.path}>
-                    <small>Next &rarr;</small>
-                    <span>{next.context.pageTitle}</span>
-                  </PaginationButton>
-                ) : (
-                  <PaginationPlaceholder />
-                )}
-              </Pagination>
+                    <svg
+                      fill="currentColor"
+                      height="1.25em"
+                      width="1.25em"
+                      viewBox="0 0 40 40"
+                      css={{ marginLeft: -(gridSize / 2), marginRight: '0.5em' }}
+                    >
+                      <path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z" />
+                    </svg>
+                    Edit Page
+                  </EditButton>
+                </EditSection>
+                <Pagination aria-label="Pagination">
+                  {prev ? (
+                    <PaginationButton to={prev.path}>
+                      <small>&larr; Prev</small>
+                      <span>{prev.context.pageTitle}</span>
+                    </PaginationButton>
+                  ) : (
+                    <PaginationPlaceholder />
+                  )}
+                  {next ? (
+                    <PaginationButton align="right" to={next.path}>
+                      <small>Next &rarr;</small>
+                      <span>{next.context.pageTitle}</span>
+                    </PaginationButton>
+                  ) : (
+                    <PaginationPlaceholder />
+                  )}
+                </Pagination>
+              </div>
+              <div
+                css={{
+                  display: 'none',
+                  flexShrink: 0,
+                  maxHeight: 'calc(100vh - 124px)',
+                  paddingLeft: gridSize * 4,
+                  paddingRight: gridSize * 3,
+                  position: 'sticky',
+                  top: 92,
+                  width: 240,
+
+                  [media.sm]: { display: 'block' },
+                }}
+              >
+                <h4 css={{ marginTop: 0 }}>On this page</h4>
+                <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                  {headings.map(h => (
+                    <li
+                      key={h.value}
+                      css={{
+                        maxWidth: '100%',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <a
+                        css={{
+                          color: colors.N60,
+                        }}
+                        href={`#${slugify(h.value, { decamelize: false })}`}
+                      >
+                        {h.value}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </Content>
           </Container>
         )}
@@ -232,6 +283,9 @@ export const pageQuery = graphql`
   query($mdPageId: String!) {
     mdx(id: { eq: $mdPageId }) {
       body
+      headings(depth: h2) {
+        value
+      }
       fields {
         heading
         description

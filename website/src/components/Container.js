@@ -6,17 +6,17 @@ import { mq } from '../utils/media';
 import { gridSize } from '@arch-ui/theme';
 
 export const CONTAINER_GUTTERS = [gridSize * 2, gridSize * 3, gridSize * 4];
-export const CONTAINER_WIDTH = 1140;
+export const DEFAULT_WIDTH = 1440;
 
-export const Container = props => (
+export const Container = ({ width = DEFAULT_WIDTH, ...props }) => (
   <div
     css={mq({
       boxSizing: 'border-box',
       marginLeft: 'auto',
       marginRight: 'auto',
-      maxWidth: CONTAINER_WIDTH,
-      paddingLeft: CONTAINER_GUTTERS,
-      paddingRight: CONTAINER_GUTTERS,
+      maxWidth: width,
+      // paddingLeft: CONTAINER_GUTTERS,
+      // paddingRight: CONTAINER_GUTTERS,
     })}
     {...props}
   />

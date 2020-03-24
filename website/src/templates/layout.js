@@ -7,7 +7,6 @@ import { SkipNavLink } from '@reach/skip-nav';
 
 import { Header, SiteMeta } from '../components';
 import { CONTAINER_GUTTERS } from '../components/Container';
-import { SIDEBAR_WIDTH } from '../components/Sidebar';
 import { media, mediaMax } from '../utils/media';
 import { useDimensions } from '../utils/hooks';
 
@@ -76,8 +75,13 @@ export const Layout = ({ children }) => {
       />
       <SkipNavLink />
       <SiteMeta pathname="/" />
+      {/* <div ref={headerRef} /> */}
       <Header key="global-header" ref={headerRef} toggleMenu={toggleMenu(!isVisible)} />
-      {children({ sidebarOffset: headerDimensions.height, sidebarIsVisible: isVisible })}
+      {children({
+        sidebarOffset: headerDimensions.height,
+        sidebarIsVisible: isVisible,
+        toggleSidebar: toggleMenu(!isVisible),
+      })}
     </>
   );
 };
@@ -96,8 +100,10 @@ export const Content = props => (
       paddingBottom: '3rem',
       paddingTop: layoutGutter,
 
+      [mediaMax.sm]: {
+        padding: gridSize * 2,
+      },
       [media.sm]: {
-        marginLeft: SIDEBAR_WIDTH,
         paddingLeft: layoutGutter,
       },
 
@@ -149,7 +155,7 @@ export const Content = props => (
       },
       pre: {
         backgroundColor: 'rgba(9, 30, 66, 0.03)',
-        boxShadow: '-4px 0 0 rgba(9, 30, 66, 0.09)',
+        borderRadius: 4,
         boxSizing: 'border-box',
         fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
         lineHeight: '1.2',
