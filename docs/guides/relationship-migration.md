@@ -353,7 +353,7 @@ create index post_author_index
 	on "Post" (author);
 ```
 
-#### Schema Diff
+### Schema Diff
 
 ```diff
 @@ -18,18 +18,3 @@
@@ -525,6 +525,54 @@ create index user_posts_post_authors_user_left_id_index
 	on "User_posts_Post_authors" ("User_left_id");
 create index user_posts_post_authors_post_right_id_index
 	on "User_posts_Post_authors" ("Post_right_id");
+```
+
+### Schema diff
+
+```diff
+@@ -13,33 +13,18 @@
+ 	title text,
+ 	content text
+ );
+-create table "User_posts"
++create table "User_posts_Post_authors"
+ (
+-	"User_id" integer not null
+-		constraint user_posts_user_id_foreign
++	"User_left_id" integer not null
++		constraint user_posts_post_authors_user_left_id_foreign
+ 			references "User"
+ 				on delete cascade,
+-	"Post_id" integer not null
+-		constraint user_posts_post_id_foreign
++	"Post_right_id" integer not null
++		constraint user_posts_post_authors_post_right_id_foreign
+ 			references "Post"
+ 				on delete cascade
+ );
+-create index user_posts_user_id_index
+-	on "User_posts" ("User_id");
+-create index user_posts_post_id_index
+-	on "User_posts" ("Post_id");
+-create table "Post_authors"
+-(
+-	"Post_id" integer not null
+-		constraint post_authors_post_id_foreign
+-			references "Post"
+-				on delete cascade,
+-	"User_id" integer not null
+-		constraint post_authors_user_id_foreign
+-			references "User"
+-				on delete cascade
+-);
+-create index post_authors_post_id_index
+-	on "Post_authors" ("Post_id");
+-create index post_authors_user_id_index
+-	on "Post_authors" ("User_id");
++create index user_posts_post_authors_user_left_id_index
++	on "User_posts_Post_authors" ("User_left_id");
++create index user_posts_post_authors_post_right_id_index
++	on "User_posts_Post_authors" ("Post_right_id");
 ```
 
 ### Table data

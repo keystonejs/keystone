@@ -1,0 +1,26 @@
+create table "User"
+(
+	id serial not null
+		constraint "User_pkey"
+			primary key,
+	name text,
+	post integer
+);
+create index user_post_index
+	on "User" (post);
+create table "Post"
+(
+	id serial not null
+		constraint "Post_pkey"
+			primary key,
+	title text,
+	content text,
+	author integer
+		constraint post_author_foreign
+			references "User"
+);
+alter table "User"
+	add constraint user_post_foreign
+		foreign key (post) references "Post";
+create index post_author_index
+	on "Post" (author);

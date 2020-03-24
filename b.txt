@@ -1,0 +1,20 @@
+create table "Post"
+(
+	id serial not null
+		constraint "Post_pkey"
+			primary key,
+	title text,
+	content text
+);
+create table "User"
+(
+	id serial not null
+		constraint "User_pkey"
+			primary key,
+	name text,
+	post integer
+		constraint user_post_foreign
+			references "Post"
+);
+create index user_post_index
+	on "User" (post);
