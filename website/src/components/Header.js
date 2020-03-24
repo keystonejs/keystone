@@ -114,7 +114,7 @@ export const Logo = () => (
       color: 'inherit',
       display: 'inline-flex',
       fontSize: '0.9rem',
-      padding: [gridSize * 2, null, null, gridSize * 3],
+      padding: [gridSize * 2, null, gridSize * 3],
 
       [mediaMax.md]: {
         paddingLeft: 0,
