@@ -26,6 +26,14 @@ class KnexAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
+  get isClientPostgres() {
+    return ['postgres', 'postgresql', 'pg'].includes(this.client);
+  }
+
+  get isClientMySQL() {
+    return this.client === 'mysql';
+  }
+
   async _connect({ name }) {
     const { knexOptions = {} } = this.config;
     const { connection } = knexOptions;
@@ -113,7 +121,10 @@ class KnexAdapter extends BaseKeystoneAdapter {
               table
                 .foreign(adapter.path)
                 .references('id')
-                .inTable(`${this.schemaName}.${adapter.getRefListAdapter().tableName}`)
+                .inTable(this.isClientPostgres
+                  ? `${this.schemaName}.${adapter.getRefListAdapter().tableName}`
+                  : adapter.getRefListAdapter().tableName
+                )
             );
         });
 
@@ -172,7 +183,10 @@ class KnexAdapter extends BaseKeystoneAdapter {
       table
         .foreign(leftFkPath)
         .references(leftPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
+        .inTable(this.isClientPostgres
+          ? `${dbAdapter.schemaName}.${leftListAdapter.tableName}`
+          : leftListAdapter.tableName
+        )
         .onDelete('CASCADE');
 
       rightPkFa.addToForeignTableSchema(table, {
@@ -184,17 +198,24 @@ class KnexAdapter extends BaseKeystoneAdapter {
       table
         .foreign(rightFkPath)
         .references(rightPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
+        .inTable(this.isClientPostgres
+          ? `${dbAdapter.schemaName}.${rightListAdapter.tableName}`
+          : rightListAdapter.tableName
+        )
         .onDelete('CASCADE');
     });
   }
 
   schema() {
-    return this.knex.schema.withSchema(this.schemaName);
+    return this.isClientPostgres
+      ? this.knex.schema.withSchema(this.schemaName)
+      : this.knex.schema;
   }
 
   getQueryBuilder() {
-    return this.knex.withSchema(this.schemaName);
+    return this.isClientPostgres
+      ? this.knex.withSchema(this.schemaName)
+      : this.knex;
   }
 
   disconnect() {
@@ -203,10 +224,20 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
   // This will completely drop the backing database. Use wisely.
   dropDatabase() {
-    const tables = Object.values(this.listAdapters)
-      .map(listAdapter => `"${this.schemaName}"."${listAdapter.tableName}"`)
-      .join(',');
-    return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
+    if (this.isClientPostgres) {
+      const tables = Object.values(this.listAdapters)
+        .map(listAdapter => `"${this.schemaName}"."${listAdapter.tableName}"`)
+        .join(',');
+      return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
+    } else if (this.isClientMySQL) {
+      const tableNames = Object.values(this.listAdapters).map((listAdapter) => listAdapter.tableName);
+      return this.knex.transaction(async (transaction) => {
+          await transaction.raw('SET FOREIGN_KEY_CHECKS = 0');
+          await transaction.raw(`DROP TABLE IF EXISTS ${tableNames.join(',')}`);
+          return transaction.raw('SET FOREIGN_KEY_CHECKS = 1');
+      });
+    }
+    return Promise.reject(new Error(`KnexAdapter.dropDatabase does not support the '${this.client}' client.`));
   }
 
   getDefaultPrimaryKeyConfig() {
@@ -217,11 +248,10 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
   async checkDatabaseVersion() {
     // Knex accepts both 'postgresql' and 'pg' as aliases for 'postgres'.
-    if (!['postgres', 'postgresql', 'pg'].includes(this.client)) {
+    if (!this.isClientPostgres) {
       console.log(
         `Knex adapter is not using a PostgreSQL client (${this.client}). Skipping database version check.`
       );
-
       return;
     }
 
@@ -231,6 +261,11 @@ class KnexAdapter extends BaseKeystoneAdapter {
       const result = await this.knex.raw('SHOW server_version;');
       // the version is inside the first row "server_version"
       version = result.rows[0].server_version;
+      /*
+        // Equivelant query for mysql if we decide to include a check.
+        const result = await this.knex.raw('SELECT VERSION()');
+        version = result[0][0]['VERSION()'];
+      */
     } catch (error) {
       throw new Error(`Error reading version from PostgreSQL: ${error}`);
     }
@@ -538,8 +573,11 @@ class QueryBuilder {
     const searchField = listAdapter.fieldAdaptersByPath['name'];
     if (search !== undefined && searchField) {
       if (searchField.fieldName === 'Text') {
-        const f = escapeRegExp;
-        this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
+        if (listAdapter.parentAdapter.isClientPostgres) {
+          this._query.andWhere(`${baseTableAlias}.name`, '~*', escapeRegExp(search));
+        } else {
+          this._query.andWhere(`${baseTableAlias}.name`, 'LIKE', `%${search}%`);
+        }
       } else {
         this._query.whereRaw('false'); // Return no results
       }
@@ -784,74 +822,117 @@ class KnexFieldAdapter extends BaseFieldAdapter {
   //   `f`: (non-string methods only) A value transformation function which converts from a string type
   //        provided by graphQL into a native adapter type.
   equalityConditions(dbPath, f = identity) {
-    return {
-      [this.path]: value => b => b.where(dbPath, f(value)),
-      [`${this.path}_not`]: value => b =>
-        value === null
-          ? b.whereNotNull(dbPath)
-          : b.where(dbPath, '!=', f(value)).orWhereNull(dbPath),
-    };
+    if (this.listAdapter.parentAdapter.isClientPostgres) {
+      return {
+        [this.path]: (value) => (b) => b.where(dbPath, f(value)),
+        [`${this.path}_not`]: (value) => (b) =>
+          value === null ? b.whereNotNull(dbPath) : b.where(dbPath, '!=', f(value)).orWhereNull(dbPath)
+      };
+    } else if (this.listAdapter.parentAdapter.isClientMySQL) {
+      // MySQL is case-insensitive by default.
+      // Related issue: https://stackoverflow.com/questions/7857669/mysql-case-sensitive-query
+      return {
+        [this.path]: (value) => (b) => b.where(dbPath, '=', 'BINARY', f(value)),
+        [`${this.path}_not`]: (value) => (b) =>
+          value === null ? b.whereNotNull(dbPath) : b.where(dbPath, '!=', 'BINARY', f(value)).orWhereNull(dbPath)
+      };
+    }
+    return {};
   }
 
   equalityConditionsInsensitive(dbPath) {
-    const f = escapeRegExp;
-    return {
-      [`${this.path}_i`]: value => b => b.where(dbPath, '~*', `^${f(value)}$`),
-      [`${this.path}_not_i`]: value => b =>
-        b.where(dbPath, '!~*', `^${f(value)}$`).orWhereNull(dbPath),
-    };
+    if (this.listAdapter.parentAdapter.isClientPostgres) {
+      const f = escapeRegExp;
+      return {
+        [`${this.path}_i`]: (value) => (b) => b.where(dbPath, '~*', `^${f(value)}$`),
+        [`${this.path}_not_i`]: (value) => (b) => b.where(dbPath, '!~*', `^${f(value)}$`).orWhereNull(dbPath)
+      };
+    } else if (this.listAdapter.parentAdapter.isClientMySQL) {
+      // MySQL is case insensitive by default
+      // Related issue: https://stackoverflow.com/questions/7857669/mysql-case-sensitive-query
+      return {
+        [`${this.path}_i`]: (value) => (b) => b.where(dbPath, '=', value),
+        [`${this.path}_not_i`]: (value) => (b) => b.where(dbPath, '!=', value).orWhereNull(dbPath)
+      };
+    }
+    return {};
   }
 
   inConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_in`]: value => b =>
+      [`${this.path}_in`]: (value) => (b) =>
         value.includes(null)
-          ? b.whereIn(dbPath, value.filter(x => x !== null).map(f)).orWhereNull(dbPath)
+          ? b.whereIn(dbPath, value.filter((x) => x !== null).map(f)).orWhereNull(dbPath)
           : b.whereIn(dbPath, value.map(f)),
-      [`${this.path}_not_in`]: value => b =>
+      [`${this.path}_not_in`]: (value) => (b) =>
         value.includes(null)
-          ? b.whereNotIn(dbPath, value.filter(x => x !== null).map(f)).whereNotNull(dbPath)
-          : b.whereNotIn(dbPath, value.map(f)).orWhereNull(dbPath),
+          ? b.whereNotIn(dbPath, value.filter((x) => x !== null).map(f)).whereNotNull(dbPath)
+          : b.whereNotIn(dbPath, value.map(f)).orWhereNull(dbPath)
     };
   }
 
   orderingConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_lt`]: value => b => b.where(dbPath, '<', f(value)),
-      [`${this.path}_lte`]: value => b => b.where(dbPath, '<=', f(value)),
-      [`${this.path}_gt`]: value => b => b.where(dbPath, '>', f(value)),
-      [`${this.path}_gte`]: value => b => b.where(dbPath, '>=', f(value)),
+      [`${this.path}_lt`]: (value) => (b) => b.where(dbPath, '<', f(value)),
+      [`${this.path}_lte`]: (value) => (b) => b.where(dbPath, '<=', f(value)),
+      [`${this.path}_gt`]: (value) => (b) => b.where(dbPath, '>', f(value)),
+      [`${this.path}_gte`]: (value) => (b) => b.where(dbPath, '>=', f(value))
     };
   }
 
   stringConditions(dbPath) {
-    const f = escapeRegExp;
-    return {
-      [`${this.path}_contains`]: value => b => b.where(dbPath, '~', f(value)),
-      [`${this.path}_not_contains`]: value => b =>
-        b.where(dbPath, '!~', f(value)).orWhereNull(dbPath),
-      [`${this.path}_starts_with`]: value => b => b.where(dbPath, '~', `^${f(value)}`),
-      [`${this.path}_not_starts_with`]: value => b =>
-        b.where(dbPath, '!~', `^${f(value)}`).orWhereNull(dbPath),
-      [`${this.path}_ends_with`]: value => b => b.where(dbPath, '~', `${f(value)}$`),
-      [`${this.path}_not_ends_with`]: value => b =>
-        b.where(dbPath, '!~', `${f(value)}$`).orWhereNull(dbPath),
-    };
+    if (this.listAdapter.parentAdapter.isClientPostgres) {
+      const f = escapeRegExp;
+      return {
+        [`${this.path}_contains`]: (value) => (b) => b.where(dbPath, '~', f(value)),
+        [`${this.path}_not_contains`]: (value) => (b) => b.where(dbPath, '!~', f(value)).orWhereNull(dbPath),
+        [`${this.path}_starts_with`]: (value) => (b) => b.where(dbPath, '~', `^${f(value)}`),
+        [`${this.path}_not_starts_with`]: (value) => (b) =>
+          b.where(dbPath, '!~', `^${f(value)}`).orWhereNull(dbPath),
+        [`${this.path}_ends_with`]: (value) => (b) => b.where(dbPath, '~', `${f(value)}$`),
+        [`${this.path}_not_ends_with`]: (value) => (b) => b.where(dbPath, '!~', `${f(value)}$`).orWhereNull(dbPath)
+      };
+    } else if (this.listAdapter.parentAdapter.isClientMySQL) {
+      return {
+        [`${this.path}_contains`]: (value) => (b) => b.where(dbPath, 'LIKE', 'BINARY', `%${value}%`),
+        [`${this.path}_not_contains`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', 'BINARY', `%${value}%`).orWhereNull(dbPath),
+        [`${this.path}_starts_with`]: (value) => (b) => b.where(dbPath, 'LIKE', 'BINARY', `${value}%`),
+        [`${this.path}_not_starts_with`]: (value) => (b) =>
+          b.where(dbPath, 'NOT', 'LIKE', 'BINARY', `${value}%`).orWhereNull(dbPath),
+        [`${this.path}_ends_with`]: (value) => (b) => b.where(dbPath, 'LIKE', 'BINARY', `%${value}`),
+        [`${this.path}_not_ends_with`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', 'BINARY', `%${value}`).orWhereNull(dbPath)
+      };
+    }
+    return {};
   }
 
   stringConditionsInsensitive(dbPath) {
-    const f = escapeRegExp;
-    return {
-      [`${this.path}_contains_i`]: value => b => b.where(dbPath, '~*', f(value)),
-      [`${this.path}_not_contains_i`]: value => b =>
-        b.where(dbPath, '!~*', f(value)).orWhereNull(dbPath),
-      [`${this.path}_starts_with_i`]: value => b => b.where(dbPath, '~*', `^${f(value)}`),
-      [`${this.path}_not_starts_with_i`]: value => b =>
-        b.where(dbPath, '!~*', `^${f(value)}`).orWhereNull(dbPath),
-      [`${this.path}_ends_with_i`]: value => b => b.where(dbPath, '~*', `${f(value)}$`),
-      [`${this.path}_not_ends_with_i`]: value => b =>
-        b.where(dbPath, '!~*', `${f(value)}$`).orWhereNull(dbPath),
-    };
+    if (this.listAdapter.parentAdapter.isClientPostgres) {
+      const f = escapeRegExp;
+      return {
+        [`${this.path}_contains_i`]: (value) => (b) => b.where(dbPath, '~*', f(value)),
+        [`${this.path}_not_contains_i`]: (value) => (b) => b.where(dbPath, '!~*', f(value)).orWhereNull(dbPath),
+        [`${this.path}_starts_with_i`]: (value) => (b) => b.where(dbPath, '~*', `^${f(value)}`),
+        [`${this.path}_not_starts_with_i`]: (value) => (b) =>
+          b.where(dbPath, '!~*', `^${f(value)}`).orWhereNull(dbPath),
+        [`${this.path}_ends_with_i`]: (value) => (b) => b.where(dbPath, '~*', `${f(value)}$`),
+        [`${this.path}_not_ends_with_i`]: (value) => (b) =>
+          b.where(dbPath, '!~*', `${f(value)}$`).orWhereNull(dbPath)
+      };
+    } else if (this.listAdapter.parentAdapter.isClientMySQL) {
+      // MySQL is case insensitive by default
+      // Related issue: https://stackoverflow.com/questions/7857669/mysql-case-sensitive-query
+      return {
+        [`${this.path}_contains`]: (value) => (b) => b.where(dbPath, 'LIKE', `%${value}%`),
+        [`${this.path}_not_contains`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', `%${value}%`).orWhereNull(dbPath),
+        [`${this.path}_starts_with`]: (value) => (b) => b.where(dbPath, 'LIKE', `${value}%`),
+        [`${this.path}_not_starts_with`]: (value) => (b) =>
+            b.where(dbPath, 'NOT', 'LIKE', `${value}%`).orWhereNull(dbPath),
+        [`${this.path}_ends_with`]: (value) => (b) => b.where(dbPath, 'LIKE', `%${value}`),
+        [`${this.path}_not_ends_with`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', `%${value}`).orWhereNull(dbPath)
+      };
+    }
+    return {};
   }
 }
 
