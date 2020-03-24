@@ -23,6 +23,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     this.minVer = '9.6.5';
     this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
+    this.rels = undefined;
   }
 
   async _connect({ name }) {
@@ -68,6 +69,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   async postConnect({ rels }) {
+    this.rels = rels;
     Object.values(this.listAdapters).forEach(listAdapter => {
       listAdapter._postConnect({ rels });
     });
@@ -76,11 +78,11 @@ class KnexAdapter extends BaseKeystoneAdapter {
       return [];
     }
 
-    await this.dropDatabase({ rels });
-    return this._createTables({ rels });
+    await this.dropDatabase();
+    return this._createTables();
   }
 
-  async _createTables({ rels }) {
+  async _createTables() {
     const createResult = await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.createTable())
     );
@@ -94,7 +96,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     }
 
     const fkResult = [];
-    for (const { left, right, cardinality, tableName } of rels) {
+    for (const { left, right, cardinality, tableName } of this.rels) {
       try {
         if (cardinality === 'N:N') {
           await this._createAdjacencyTable({ left, tableName });
@@ -198,7 +200,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
   }
 
   // This will drop all the tables in the backing database. Use wisely.
-  dropDatabase({ rels }) {
+  dropDatabase() {
     if (process.env.NODE_ENV !== 'test') {
       console.log('Knex adapter: Dropping database');
     }
@@ -206,7 +208,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
       ...Object.values(this.listAdapters).map(
         listAdapter => `"${this.schemaName}"."${listAdapter.tableName}"`
       ),
-      ...rels.filter(({ cardinality }) => cardinality === 'N:N').map(({ tableName }) => tableName),
+      ...this.rels
+        .filter(({ cardinality }) => cardinality === 'N:N')
+        .map(({ tableName }) => tableName),
     ].join(',');
     return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
   }
