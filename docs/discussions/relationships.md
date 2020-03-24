@@ -3,7 +3,7 @@ section: discussions
 title: Relationships
 [meta]-->
 
-# Relationships
+# Relationshipsssssssss
 
 KeystoneJS allows you to model your data as a collection of related `Lists`.
 For example, a blogging application might have lists called `Posts` and `Users`, where each post has a single author.
