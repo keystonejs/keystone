@@ -3,17 +3,17 @@ const chalk = require('chalk');
 const { DEFAULT_ENTRY } = require('../../constants');
 const { getEntryFileFullPath } = require('../utils');
 const { asyncForEach } = require('@keystonejs/utils');
+
 const createTables = async (args, entryFile, spinner) => {
   // Allow the spinner time to flush its output to the console.
   await new Promise(resolve => setTimeout(resolve, 100));
   const { keystone } = require(path.resolve(entryFile));
   await keystone.connect(); // Need to do _createTables post connect so awaiting connect
-  keystone._consolidateRelationships();
   let errors = false;
   await asyncForEach(Object.values(keystone.adapters), async adapter => {
     if (!adapter._createTables) {
       spinner.info(chalk.yellow.bold(`create-tables is only required for KnexAdapter`));
-      return null;
+      return;
     }
     try {
       console.log('Creating tables...');
@@ -22,7 +22,7 @@ const createTables = async (args, entryFile, spinner) => {
       if (e.message.includes('already exists')) {
         spinner.fail(chalk.red.bold(`Table already exists`));
         console.warn('Create tables should be used on an empty database');
-        console.error(e.message);
+        console.warn(e.message);
       } else {
         console.error(e);
       }
@@ -31,8 +31,9 @@ const createTables = async (args, entryFile, spinner) => {
   });
   if (!errors) {
     spinner.succeed(chalk.green.bold(`Tables created`));
+    process.exit(0);
   }
-  process.exit(0); // Stop Keystone
+  process.exit(1);
 };
 
 module.exports = {
