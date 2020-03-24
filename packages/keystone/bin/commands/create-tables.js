@@ -21,10 +21,10 @@ const createTables = async (args, entryFile, spinner) => {
     } catch (e) {
       if (e.message.includes('already exists')) {
         spinner.fail(chalk.red.bold(`Table already exists`));
-        console.log('Create tables should be used on an empty database');
-        console.log(e.message);
+        console.warn('Create tables should be used on an empty database');
+        console.error(e.message);
       } else {
-        console.log(e);
+        console.error(e);
       }
       errors = true;
     }
