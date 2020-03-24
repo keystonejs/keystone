@@ -275,15 +275,18 @@ module.exports = class Keystone {
     if (!this.auth[listKey]) {
       this.auth[listKey] = {};
     }
+
     const strategy = new StrategyType(this, listKey, config);
     strategy.authType = authType;
     this.auth[listKey][authType] = strategy;
-    if (!this.lists[listKey]) {
-      throw new Error(`List "${listKey}" does not exist.`);
-    }
-    this._providers.push(
-      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy })
-    );
+
+    this._providers.push(() => {
+      if (!this.lists[listKey]) {
+        throw new Error(`List "${listKey}" does not exist.`);
+      }
+      return new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy });
+    });
+
     return strategy;
   }
 
@@ -420,15 +423,15 @@ module.exports = class Keystone {
   }
 
   getTypeDefs({ schemaName }) {
-    const queries = unique(flatten(this._providers.map(p => p.getQueries({ schemaName }))));
-    const mutations = unique(flatten(this._providers.map(p => p.getMutations({ schemaName }))));
+    const queries = unique(flatten(this._getProviders().map(p => p.getQueries({ schemaName }))));
+    const mutations = unique(flatten(this._getProviders().map(p => p.getMutations({ schemaName }))));
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGqlAuxTypes()` method, it will be
     // duplicated.
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this._providers.map(p => p.getTypes({ schemaName })))),
+      ...unique(flatten(this._getProviders().map(p => p.getTypes({ schemaName })))),
       queries.length > 0 && `type Query { ${queries.join('\n')} }`,
       mutations.length > 0 && `type Mutation { ${mutations.join('\n')} }`,
     ]
@@ -447,9 +450,9 @@ module.exports = class Keystone {
       {
         // Order of spreading is important here - we don't want user-defined types
         // to accidentally override important things like `Query`.
-        ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
-        Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
-        Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
+        ...objMerge(this._getProviders().map(p => p.getTypeResolvers({ schemaName }))),
+        Query: objMerge(this._getProviders().map(p => p.getQueryResolvers({ schemaName }))),
+        Mutation: objMerge(this._getProviders().map(p => p.getMutationResolvers({ schemaName }))),
       },
       o => Object.entries(o).length > 0
     );
@@ -532,6 +535,26 @@ module.exports = class Keystone {
           )
       )),
     ]).filter(middleware => !!middleware);
+  }
+
+  _getProviders() {
+    // lazily instantiate providers on request
+    if (!this._instantiatedProviders) {
+      const mapper = provider => {
+        if (typeof provider === 'function') {
+          return provider();
+        }
+        return provider;
+      };
+      this._instantiatedProviders = this._providers.map(mapper);
+
+      // Now that we've instantiated all providers, any new ones getting pushed
+      // must be immediately instantiated
+      this._providers.push = (...items) => {
+        this._instantiatedProviders.push(...items.map(mapper));
+      };
+    }
+    return this._instantiatedProviders;
   }
 
   async prepare({
