@@ -60,7 +60,7 @@ exports.User = {
   labelResolver: item => `${item.name} <${item.email}>`,
 };
 
-const isAccessAllowed = ({ authentication: { item: user } }) => !!user && !!user.isAdmin;
+const isAdmin = ({ authentication: { item: user } }) => !!user && !!user.isAdmin;
 
 exports.Post = {
   fields: {
@@ -69,9 +69,10 @@ exports.Post = {
     author: {
       type: AuthedRelationship,
       ref: 'User',
+      isRequired: true,
       access: {
-        create: isAccessAllowed,
-        update: isAccessAllowed,
+        create: isAdmin,
+        update: isAdmin,
       },
     },
     categories: {
@@ -131,8 +132,13 @@ exports.Comment = {
       ref: 'Post',
     },
     author: {
-      type: Relationship,
+      type: AuthedRelationship,
       ref: 'User',
+      isRequired: true,
+      access: {
+        create: isAdmin,
+        update: isAdmin,
+      },
     },
     posted: { type: DateTime },
   },
