@@ -8,7 +8,6 @@ const createTables = async (args, entryFile, spinner) => {
   await new Promise(resolve => setTimeout(resolve, 100));
   const { keystone } = require(path.resolve(entryFile));
   await keystone.connect(); // Need to do _createTables post connect so awaiting connect
-  keystone._consolidateRelationships();
   let errors = false;
   await asyncForEach(Object.values(keystone.adapters), async adapter => {
     if (!adapter._createTables) {
