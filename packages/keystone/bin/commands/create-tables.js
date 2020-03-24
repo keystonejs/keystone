@@ -24,7 +24,7 @@ const createTables = async (args, entryFile, spinner) => {
         console.warn('Create tables should be used on an empty database');
         console.warn(e.message);
       } else {
-        console.log(e);
+        console.error(e);
       }
       errors = true;
     }
