@@ -29,10 +29,10 @@ const createTables = async (args, entryFile, spinner) => {
       errors = true;
     }
   });
-  if (!errors) {
     spinner.succeed(chalk.green.bold(`Tables created`));
+    process.exit(0);
   }
-  process.exit(0); // Stop Keystone
+  process.exit(1);
 };
 
 module.exports = {
