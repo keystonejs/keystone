@@ -184,7 +184,7 @@ create index post_authors_many_user_right_id_index
 
 ### Schema diff
 
-````diff
+```diff
 @@ -1,4 +1,3 @@
 @@ -13,19 +13,18 @@
  	title text,
@@ -210,12 +210,12 @@ create index post_authors_many_user_right_id_index
 -	on "Post_authors" ("Post_id");
 -create index post_authors_user_id_index
 -	on "Post_authors" ("User_id");
--```
+-
 +create index post_authors_many_post_left_id_index
 +	on "Post_authors_many" ("Post_left_id");
 +create index post_authors_many_user_right_id_index
 +	on "Post_authors_many" ("User_right_id");
-````
+```
 
 ### Table data
 
