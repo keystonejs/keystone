@@ -68,9 +68,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return result;
   }
 
-  async postConnect() {
+  async postConnect({ rels }) {
     Object.values(this.listAdapters).forEach(listAdapter => {
-      listAdapter._postConnect();
+      listAdapter._postConnect({ rels });
     });
 
     // Run this only if explicity configured and still never in production
@@ -249,12 +249,16 @@ class KnexListAdapter extends BaseListAdapter {
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
     this.realKeys = [];
     this.tableName = this.key;
+    this.rels = undefined;
   }
 
-  prepareFieldAdapter() {}
-
-  _postConnect() {
+  _postConnect({ rels }) {
+    this.rels = rels;
     this.fieldAdapters.forEach(fieldAdapter => {
+      fieldAdapter.rel = rels.find(
+        ({ left, right }) =>
+          left.adapter === fieldAdapter || (right && right.adapter === fieldAdapter)
+      );
       if (fieldAdapter._hasRealKeys()) {
         this.realKeys.push(
           ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
@@ -282,6 +286,8 @@ class KnexListAdapter extends BaseListAdapter {
     });
   }
 
+  ////////// Mutations //////////
+
   async _processNonRealFields(data, processFunction) {
     return resolveAllKeys(
       arrayToObject(
@@ -296,7 +302,22 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
-  ////////// Mutations //////////
+  async _createSingle(realData) {
+    const item = (
+      await this._query()
+        .insert(realData)
+        .into(this.tableName)
+        .returning('*')
+    )[0];
+    return { item, itemId: item.id };
+  }
+
+  async _setNullByValue({ tableName, columnName, value }) {
+    return this._query()
+      .table(tableName)
+      .where(columnName, value)
+      .update({ [columnName]: null });
+  }
 
   async _createOrUpdateField({ value, adapter, itemId }) {
     const rel = {
@@ -330,16 +351,11 @@ class KnexListAdapter extends BaseListAdapter {
     const realData = pick(data, this.realKeys);
 
     // Insert the real data into the table
-    const item = (
-      await this._query()
-        .insert(realData)
-        .into(this.tableName)
-        .returning('*')
-    )[0];
+    const { item, itemId } = await this._createSingle(realData);
 
     // For every many-field, update the many-table
     const manyItem = await this._processNonRealFields(data, async ({ value, adapter }) =>
-      this._createOrUpdateField({ value, adapter, itemId: item.id })
+      this._createOrUpdateField({ value, adapter, itemId })
     );
 
     return { ...item, ...manyItem };
@@ -347,6 +363,7 @@ class KnexListAdapter extends BaseListAdapter {
 
   async _update(id, data) {
     const realData = pick(data, this.realKeys);
+
     // Update the real data
     const query = this._query()
       .table(this.tableName)
@@ -424,15 +441,13 @@ class KnexListAdapter extends BaseListAdapter {
                   .where(columnNames[this.key].near, id)
                   .del();
               } else {
-                return this._query()
-                  .table(tableName)
-                  .where(columnName, id)
-                  .update({ [columnName]: null });
+                return this._setNullByValue({ tableName, columnName, value: id });
               }
             })
         )
       )
     );
+
     // Delete the actual item
     return this._query()
       .table(this.tableName)

@@ -78,13 +78,11 @@ export default function Template({
           <Container>
             <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} />
             <Content>
-              <main>
-                <SkipNavContent />
-                <MDXProvider components={mdComponents}>
-                  <MDXRenderer>{body}</MDXRenderer>
-                </MDXProvider>
-                {renderNavSection(fields.navGroup)}
-              </main>
+              <SkipNavContent />
+              <MDXProvider components={mdComponents}>
+                <MDXRenderer>{body}</MDXRenderer>
+              </MDXProvider>
+              {renderNavSection(fields.navGroup)}
             </Content>
           </Container>
         )}
