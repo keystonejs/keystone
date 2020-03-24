@@ -1,5 +1,64 @@
 # @keystonejs/fields
 
+## 7.0.2
+
+### Patch Changes
+
+- [`68be8f45`](https://github.com/keystonejs/keystone/commit/68be8f452909100fbddec431d6fe60c20a06a700) [#2549](https://github.com/keystonejs/keystone/pull/2549) Thanks [@jesstelford](https://github.com/jesstelford)! - Removed unused 'existingItem' parameter from calls to .defaultValue() methods.
+
+- Updated dependencies [[`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a), [`abac6ad8`](https://github.com/keystonejs/keystone/commit/abac6ad83ad71f40047473c81d50b6af80ad41b2), [`7c9d36a2`](https://github.com/keystonejs/keystone/commit/7c9d36a2d5002258964cbd9414766ee244945005), [`ca28681c`](https://github.com/keystonejs/keystone/commit/ca28681ca23c74bc57041fa36c20b93a4520e762), [`cec7ba5e`](https://github.com/keystonejs/keystone/commit/cec7ba5e2061280eff2a1d989054ecb02760e36d), [`663ae7b4`](https://github.com/keystonejs/keystone/commit/663ae7b453f450f077795fbbc6c9f138e6b27f52)]:
+  - @keystonejs/app-admin-ui@5.9.3
+  - @keystonejs/adapter-knex@7.0.0
+  - @keystonejs/build-field-types@5.2.4
+  - @keystonejs/adapter-mongoose@6.0.0
+  - @keystonejs/utils@5.4.0
+  - @keystonejs/test-utils@6.0.1
+
+## 7.0.1
+
+### Patch Changes
+
+- [`83bdf743`](https://github.com/keystonejs/keystone/commit/83bdf743748e39d1ea73eff2c8e3576cc713c624) [#2538](https://github.com/keystonejs/keystone/pull/2538) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated mongo dependencies to latest version.
+
+* [`d748156b`](https://github.com/keystonejs/keystone/commit/d748156ba5ebe33f4271fae0df781e0c63f2b7e6) [#2537](https://github.com/keystonejs/keystone/pull/2537) Thanks [@jesstelford](https://github.com/jesstelford)! - Introduce a framework for testing CRUD operations on fields. This surfaced a bug in the Decimal field where updating _other_ fields would result in a Decimal field being reset to null.
+
+- [`1d9c6762`](https://github.com/keystonejs/keystone/commit/1d9c6762d32409c71da6a68a083a81197c35aac3) [#2525](https://github.com/keystonejs/keystone/pull/2525) Thanks [@jesstelford](https://github.com/jesstelford)! - Refactored `matchFilter` to use named args (via an object) which makes understanding test code easier.
+
+- Updated dependencies [[`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b), [`83bdf743`](https://github.com/keystonejs/keystone/commit/83bdf743748e39d1ea73eff2c8e3576cc713c624), [`1d9c6762`](https://github.com/keystonejs/keystone/commit/1d9c6762d32409c71da6a68a083a81197c35aac3), [`fb510d67`](https://github.com/keystonejs/keystone/commit/fb510d67ab124d8c1bda1884fa2a0d48262b5e4d)]:
+  - @keystonejs/utils@5.3.0
+  - @keystonejs/adapter-mongoose@5.2.2
+  - @keystonejs/test-utils@6.0.0
+  - @keystonejs/build-field-types@5.2.3
+
+## 7.0.0
+
+### Major Changes
+
+- [`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260) [#2523](https://github.com/keystonejs/keystone/pull/2523) Thanks [@timleslie](https://github.com/timleslie)! - Replaced default bcrypt implementation from `bcrypt` to `bcryptjs`. You can use the new `useCompiledBcrypt` config option to the `Password` field to keep the use of the `bcrypt` package. `bcrypt` must be manually listed in your `package.json` if use set `{ useCompiledBcrypt: true }`, as it is no longer a dependency of Keystone.
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+  - @keystonejs/app-admin-ui@5.9.2
+  - @arch-ui/button@0.0.16
+  - @arch-ui/input@0.1.7
+  - @arch-ui/layout@0.2.11
+  - @arch-ui/options@0.0.16
+  - @arch-ui/alert@0.0.15
+  - @arch-ui/controls@0.1.6
+  - @arch-ui/day-picker@0.0.21
+  - @arch-ui/drawer@0.0.19
+  - @arch-ui/fields@2.1.4
+  - @arch-ui/filters@0.0.18
+  - @arch-ui/loading@0.0.15
+  - @arch-ui/lozenge@0.0.14
+  - @arch-ui/popout@0.0.17
+  - @arch-ui/select@0.1.6
+  - @arch-ui/tooltip@0.1.9
+  - @arch-ui/typography@0.0.15
+  - @keystonejs/field-content@5.4.3
+
 ## 6.3.2
 
 ### Patch Changes

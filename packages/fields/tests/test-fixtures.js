@@ -2,6 +2,8 @@ import { matchFilter } from '@keystonejs/test-utils';
 import Text from '../src/types/Text';
 
 export const name = 'ID';
+export { Text as type };
+export const exampleValue = '"foo"';
 
 export const getTestFields = () => {
   return {
@@ -24,9 +26,14 @@ const getIDs = async keystone => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, filter, targets) => {
-    return matchFilter(keystone, filter, '{ id name }', targets, 'name');
-  };
+  const match = (keystone, queryArgs, expected) =>
+    matchFilter({
+      keystone,
+      queryArgs,
+      fieldSelection: 'id name',
+      expected,
+      sortKey: 'name',
+    });
 
   test(
     'No filter',

@@ -12,6 +12,7 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
+  upcase,
 } = require('@keystonejs/utils');
 const { parseListAccess } = require('@keystonejs/access-control');
 const { logger } = require('@keystonejs/logger');
@@ -24,8 +25,6 @@ const {
   ValidationFailureError,
   throwAccessDenied,
 } = require('./graphqlErrors');
-
-const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
 const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
 
@@ -1067,9 +1066,8 @@ module.exports = class List {
     );
   }
 
-  async _resolveDefaults({ existingItem, context, originalInput }) {
+  async _resolveDefaults({ context, originalInput }) {
     const args = {
-      existingItem,
       context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
@@ -1333,7 +1331,7 @@ module.exports = class List {
   async _createSingle(originalInput, existingItem, context, mutationState) {
     const operation = 'create';
     return await this._nestedMutation(mutationState, context, async mutationState => {
-      const defaultedItem = await this._resolveDefaults({ existingItem, context, originalInput });
+      const defaultedItem = await this._resolveDefaults({ context, originalInput });
 
       // Enable resolveRelationship to perform some action after the item is created by
       // giving them a promise which will eventually resolve with the value of the
