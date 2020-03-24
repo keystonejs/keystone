@@ -13,7 +13,7 @@ const createTables = async (args, entryFile, spinner) => {
   await asyncForEach(Object.values(keystone.adapters), async adapter => {
     if (!adapter._createTables) {
       spinner.info(chalk.yellow.bold(`create-tables is only required for KnexAdapter`));
-      return null;
+      return;
     }
     try {
       console.log('Creating tables...');
