@@ -237,7 +237,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
           return transaction.raw('SET FOREIGN_KEY_CHECKS = 1');
       });
     }
-    return Promise.reject(new Error(`KnexAdapter.dropDatabase does not support the '${this.client}' client.`));
+    throw new Error(`KnexAdapter.dropDatabase does not support the '${this.client}' client.`);
   }
 
   getDefaultPrimaryKeyConfig() {
