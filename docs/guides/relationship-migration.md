@@ -11,9 +11,9 @@ This document will help you understand the changes to the database schema, which
 
 We recommend familiarising yourself with the [relationships](/docs/discussions/relationships.md) documentation to make sure you understand the terminology used in this document.
 
-# One to Many (one-sided)
+## One to Many (one-sided)
 
-## List config
+### List config
 
 ```javascript
 keystone.createList('User', { fields: { name: { type: Text } } });
@@ -27,54 +27,13 @@ keystone.createList('Post', {
 });
 ```
 
-## Before
+### Migration Strategy
 
-### Table schema
+No changes are required for these relationships.
 
-```sql
-create table "Post"
-(
-	id serial not null
-		constraint "Post_pkey"
-			primary key,
-	title text,
-	content text,
-	author integer
-		constraint post_author_foreign
-			references "User"
-);
-create index post_author_index
-	on "Post" (author);
-create table "User"
-(
-	id serial not null
-		constraint "User_pkey"
-			primary key,
-	name text
-);
-```
+## Many to Many (one-sided)
 
-### Table Data
-
-#### Post
-
-| id  | title  | content                       | author |
-| :-- | :----- | :---------------------------- | :----- |
-| 1   | A Post | Lorem ipsum dolor sit amet... | 1      |
-
-#### User
-
-| id  | name |
-| :-- | :--- |
-| 1   | John |
-
-## After
-
-No changes.
-
-# Many to Many (one-sided)
-
-## List config
+### List config
 
 ```javascript
 keystone.createList('User', { fields: { name: { type: Text } } });
@@ -88,9 +47,7 @@ keystone.createList('Post', {
 });
 ```
 
-## Before:
-
-### Table schema
+### Table schema - Before:
 
 ```sql
 create table "User"
@@ -125,29 +82,27 @@ create index post_authors_user_id_index
 	on "Post_authors" ("User_id");
 ```
 
-### Table data
+<!-- #### Table data
 
-#### User
+##### User
 
 | id  | name |
 | :-- | :--- |
 | 1   | John |
 
-#### Post
+##### Post
 
 | id  | title  | content                       |
 | :-- | :----- | :---------------------------- |
 | 1   | A Post | Lorem ipsum dolor sit amet... |
 
-#### Post_authors
+##### Post_authors
 
 | Post_id | User_id |
 | :------ | :------ |
-| 1       | 1       |
+| 1       | 1       | -->
 
-## After:
-
-### Table schema
+### Table schema - After
 
 ```sql
 create table "User"
@@ -217,35 +172,39 @@ create index post_authors_many_user_right_id_index
 +	on "Post_authors_many" ("User_right_id");
 ```
 
-### Table data
+<!-- #### Table data
 
-#### User
+##### User
 
 | id  | name |
 | :-- | :--- |
 | 1   | John |
 
-#### Post
+##### Post
 
 | id  | title  | content                       |
 | :-- | :----- | :---------------------------- |
 | 1   | A Post | Lorem ipsum dolor sit amet... |
 
-#### Post_authors
+##### Post_authors
 
 | Post_id | User_id |
 | :------ | :------ |
 | 1       | 1       |
 
-#### Post_authors_many
+##### Post_authors_many
 
 | Post_left_id | User_right_id |
 | :----------- | :------------ |
-| 1            | 1             |
+| 1            | 1             | -->
 
-# One to Many (two-sided)
+### Migration Strategy
 
-## List config
+FIXME
+
+## One to Many (two-sided)
+
+### List config
 
 ```javascript
 keystone.createList('User', {
@@ -264,9 +223,7 @@ keystone.createList('Post', {
 });
 ```
 
-## Before:
-
-### Table schema
+### Table schema - Before
 
 ```sql
 create table "User"
@@ -306,7 +263,7 @@ create index user_posts_post_id_index
 	on "User_posts" ("Post_id");
 ```
 
-### Table data
+<!-- ### Table data
 
 #### User
 
@@ -324,11 +281,9 @@ create index user_posts_post_id_index
 
 | User_id | Post_id |
 | :------ | :------ |
-| 1       | 1       |
+| 1       | 1       | -->
 
-## After:
-
-### Table schema
+### Table schema - After
 
 ```sql
 create table "User"
@@ -377,7 +332,11 @@ create index post_author_index
 -	on "User_posts" ("Post_id");
 ```
 
-### Table data
+### Migration Strategy
+
+FIXME
+
+<!-- ### Table data
 
 #### Post
 
@@ -389,11 +348,11 @@ create index post_author_index
 
 | id  | name |
 | :-- | :--- |
-| 1   | John |
+| 1   | John | -->
 
-# Many to Many (two-sided)
+## Many to Many (two-sided)
 
-## List config
+### List config
 
 ```javascript
 keystone.createList('User', {
@@ -412,9 +371,7 @@ keystone.createList('Post', {
 });
 ```
 
-## Before:
-
-### Table schema
+### Table schema - Before
 
 ```sql
 create table "User"
@@ -464,7 +421,7 @@ create index post_authors_user_id_index
 	on "Post_authors" ("User_id");
 ```
 
-### Table data
+<!-- ### Table data
 
 #### Post
 
@@ -488,11 +445,9 @@ create index post_authors_user_id_index
 
 | User_id | Post_id |
 | :------ | :------ |
-| 1       | 1       |
+| 1       | 1       | -->
 
-## After:
-
-### Table schema
+### Table schema - After
 
 ```sql
 create table "User"
@@ -575,7 +530,11 @@ create index user_posts_post_authors_post_right_id_index
 +	on "User_posts_Post_authors" ("Post_right_id");
 ```
 
-### Table data
+### Migration Strategy
+
+FIXME
+
+<!-- ### Table data
 
 #### Post
 
@@ -593,11 +552,11 @@ create index user_posts_post_authors_post_right_id_index
 
 | User_left_id | Post_right_id |
 | :----------- | :------------ |
-| 1            | 1             |
+| 1            | 1             | -->
 
-# One to One (two-sided)
+## One to One (two-sided)
 
-## List config
+### List config
 
 ```javascript
 keystone.createList('User', {
@@ -616,9 +575,7 @@ keystone.createList('Post', {
 });
 ```
 
-## Before:
-
-### Table schema
+### Table schema - Before
 
 ```sql
 create table "User"
@@ -649,7 +606,7 @@ create index post_author_index
 	on "Post" (author);
 ```
 
-### Table data
+<!-- ### Table data
 
 #### Post
 
@@ -661,11 +618,9 @@ create index post_author_index
 
 | id  | name | post |
 | :-- | :--- | :--- |
-| 1   | John | 1    |
+| 1   | John | 1    | -->
 
-## After:
-
-### Table schema
+### Table schema - After
 
 ```sql
 create table "Post"
@@ -690,7 +645,15 @@ create index user_post_index
 	on "User" (post);
 ```
 
-### Table data
+### Schema diff
+
+FIXME
+
+## Migration Strategy
+
+FIXME
+
+<!-- ### Table data
 
 #### Post
 
@@ -702,4 +665,4 @@ create index user_post_index
 
 | id  | name | post |
 | :-- | :--- | :--- |
-| 1   | John | 1    |
+| 1   | John | 1    | -->
