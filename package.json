@@ -171,6 +171,7 @@
     "packages": [
       "packages/field-content",
       "packages/fields",
+      "packages/fields-authed-relationship",
       "packages/fields-auto-increment",
       "packages/fields-datetime-utc",
       "packages/fields-markdown",
