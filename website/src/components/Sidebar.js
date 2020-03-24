@@ -1,12 +1,12 @@
 /** @jsx jsx */
 
 import { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
-import { jsx, keyframes } from '@emotion/core';
+import { jsx } from '@emotion/core';
 import throttle from 'lodash.throttle';
 import { colors } from '@arch-ui/theme';
 
 import { Footer, SidebarNav, SocialIconsNav } from '../components';
-import { media, mediaMax } from '../utils/media';
+import { mediaMax } from '../utils/media';
 import { useClickOutside } from '../utils/useClickOutside';
 import { gridSize } from '@arch-ui/theme/src';
 
@@ -14,17 +14,6 @@ let oldSidebarOffset = 0;
 let oldWindowOffset = 0;
 
 export const SIDEBAR_WIDTH = 280;
-
-let slideInAnim = keyframes({
-  from: {
-    opacity: 0,
-    transform: `translateX(-${SIDEBAR_WIDTH}px`,
-  },
-  to: {
-    opacity: 1,
-    transform: 0,
-  },
-});
 
 export const Sidebar = ({ offsetTop, isVisible, toggleSidebar }) => {
   const asideRef = useRef();
