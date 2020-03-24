@@ -6,7 +6,7 @@ import throttle from 'lodash.throttle';
 import { colors } from '@arch-ui/theme';
 
 import { Footer, SidebarNav, SocialIconsNav } from '../components';
-import { mediaMax } from '../utils/media';
+import { media, mediaMax } from '../utils/media';
 import { useClickOutside } from '../utils/useClickOutside';
 import { gridSize } from '@arch-ui/theme/src';
 
@@ -15,37 +15,24 @@ let oldWindowOffset = 0;
 
 export const SIDEBAR_WIDTH = 280;
 
-export const Sidebar = ({ offsetTop, isVisible, toggleSidebar }) => {
+export const Sidebar = ({ offsetTop, isVisible, toggleSidebar, mobileOnly }) => {
   const asideRef = useRef();
-  const [isStuck, setSticky] = useState(false);
+  const maintainSidebarScroll = throttle(() => {
+    oldSidebarOffset = asideRef.current.scrollTop;
+  });
+
   useClickOutside({
     handler: toggleSidebar,
     refs: [asideRef],
     listenWhen: isVisible,
   });
 
-  const handleWindowScroll = () => {
-    oldWindowOffset = window.pageYOffset;
-    if (window.pageYOffset > offsetTop && !isStuck) {
-      setSticky(true);
-    }
-    if (window.pageYOffset <= offsetTop && isStuck) {
-      setSticky(false);
-    }
-  };
-
-  const maintainSidebarScroll = throttle(() => {
-    oldSidebarOffset = asideRef.current.scrollTop;
-  });
-
   useEffect(() => {
     const asideEl = asideRef.current; // maintain ref for cleanup
-    window.addEventListener('scroll', handleWindowScroll);
     asideEl.addEventListener('scroll', maintainSidebarScroll);
 
     // cleanup
     return () => {
-      window.removeEventListener('scroll', handleWindowScroll);
       asideEl.removeEventListener('scroll', maintainSidebarScroll);
     };
   });
@@ -63,19 +50,11 @@ export const Sidebar = ({ offsetTop, isVisible, toggleSidebar }) => {
       key="sidebar"
       ref={asideRef}
       css={{
-        // boxSizing: 'border-box',
-        // overflowY: 'auto',
-        // paddingBottom: '3rem',
-        // paddingTop: layoutGutter,
-        // marginLeft: -avoidCropGutter,
-        // paddingLeft: avoidCropGutter,
-        // EXPERIMENT
         boxSizing: 'border-box',
         flexShrink: 0,
         width: SIDEBAR_WIDTH,
         height: 'calc(100vh - 60px)',
         padding: `${gridSize * 4}px ${gridSize * 3}px`,
-        // borderRight: `1px solid ${colors.N10}`,
         overflowY: 'auto',
         position: 'sticky',
         top: 60,
@@ -90,6 +69,9 @@ export const Sidebar = ({ offsetTop, isVisible, toggleSidebar }) => {
           transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
           transition: 'all 150ms',
           zIndex: 2,
+        },
+        [media.md]: {
+          display: mobileOnly ? 'none' : 'block',
         },
       }}
     >

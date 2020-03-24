@@ -24,7 +24,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
     }}
     {...props}
   >
-    <Container>
+    <Container hasGutters={false}>
       <div
         css={{
           alignItems: 'center',

@@ -6,7 +6,7 @@ import { globalStyles } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
 
 import { Layout } from '../templates/layout';
-import { Container, Sidebar } from '../components';
+import { Sidebar } from '../components';
 
 import { SectionHero } from '../components/homepage/SectionHero';
 import { SectionCode } from '../components/homepage/SectionCode';
@@ -17,12 +17,15 @@ import { HomepageFooter } from '../components/homepage/HomepageFooter';
 const Homepage = () => (
   <>
     <Layout>
-      {({ sidebarIsVisible, sidebarOffset }) => (
+      {({ sidebarIsVisible, sidebarOffset, toggleSidebar }) => (
         <>
           <Global styles={globalStyles} />
-          <Container>
-            <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
-          </Container>
+          <Sidebar
+            isVisible={sidebarIsVisible}
+            offsetTop={sidebarOffset}
+            toggleSidebar={toggleSidebar}
+            mobileOnly
+          />
           <SkipNavContent />
           <SectionHero />
           <SectionCode />

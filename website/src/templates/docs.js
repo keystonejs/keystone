@@ -60,7 +60,7 @@ export default function Template({
       </Helmet>
       <Layout>
         {({ sidebarOffset, sidebarIsVisible, toggleSidebar }) => (
-          <Container css={{ display: 'flex' }}>
+          <Container hasGutters={false} css={{ display: 'flex' }}>
             <Sidebar
               isVisible={sidebarIsVisible}
               offsetTop={sidebarOffset}
