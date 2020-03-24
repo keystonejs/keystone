@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { useLazyQuery } from '@apollo/react-hooks';
+
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
 
@@ -53,21 +53,11 @@ const HomepageListProvider = () => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
-  const query =
-    lists.length !== 0
-      ? gqlCountQueries(lists)
-      : gql`
-          {
-            _ksListsMeta {
-              name
-            }
-          }
-        `;
+  const query = lists.length !== 0 && gqlCountQueries(lists);
 
-  const { data, error } = useQuery(query, {
+  const [getLists, { data, error, called }] = useLazyQuery(query, {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
-    skip: lists.length === 0,
   });
 
   if (lists.length === 0) {
@@ -84,6 +74,10 @@ const HomepageListProvider = () => {
         </PageError>
       </Fragment>
     );
+  }
+
+  if (!called) {
+    getLists();
   }
 
   let allowedLists = lists;
