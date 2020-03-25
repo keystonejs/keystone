@@ -109,7 +109,7 @@ In `index.js` add the following above `module.exports` and below `const keystone
 keystone.createList('Todo', {
   fields: {
     name: { type: Text },
-  }
+  },
 });
 ```
 

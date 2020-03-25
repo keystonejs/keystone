@@ -39,8 +39,8 @@ If we had a front-end application that updated the view count every time someone
 Using CRUD we'd first have to fetch the current view count:
 
 ```graphql
-query Page($id: ID!){
-  Page(where:{id: $id}) {
+query Page($id: ID!) {
+  Page(where: { id: $id }) {
     views
   }
 }
