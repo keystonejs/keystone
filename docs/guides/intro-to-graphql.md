@@ -1,6 +1,6 @@
 <!--[meta]
 section: guides
-title: GraphQL Introduction
+title: Introduction
 subSection: graphql
 order: 1
 [meta]-->
@@ -32,7 +32,7 @@ KeystoneJS would generate the following queries:
 
 ### allUsers
 
-Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, Limit and Sorting](#filter-limit-and-sorting).
+Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, limit and sorting](#filter-limit-and-sorting).
 
 #### Usage
 
@@ -161,7 +161,7 @@ mutation {
 }
 ```
 
-## Executing Queries and Mutations
+## Execution
 
 Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/).
 The default path for KeystoneJS' GraphQl Playground is `http://localhost:3000/admin/graphql`.
@@ -220,17 +220,15 @@ fetch('/admin/api', {
 
 A good next step is to write an `executeQuery` function that accepts a query and variables and returns the results from the API. Take a look at the `todo` sample application in the `cli` for examples of this.
 
-**Note:** If you have configured [Access Control](/docs/api/access-control.md) it can effect the result of some queries.
+> **Note:** If you have configured [Access Control](/docs/api/access-control.md) it can effect the result of some queries.
 
-## Executing Queries and Mutations on the Server
+## Execution on the server
 
 In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/packages/keystone/README.md#executequeryquerystring-config).
 
-**Note:** No access control checks are run when executing queries on the server.
-Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`.
-See: [Keystone executeQuery()](/packages/keystone/README.md#executequeryquerystring-config)
+> **Note:** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/packages/keystone/README.md#executequeryquerystring-config)
 
-## Filter, Limit and Sorting
+## Filter, limit and sorting
 
 When executing queries and mutations there are a number of ways you can filter, limit and sort items. These include:
 
@@ -240,7 +238,7 @@ When executing queries and mutations there are a number of ways you can filter, 
 - `first`
 - `orderby`
 
-#### `where`
+### `where`
 
 Limit results to items matching the where clause. Where clauses are used to query fields in a keystone list before retrieving data.
 
@@ -254,16 +252,16 @@ query {
 }
 ```
 
-**Note**: The documentation in the GraphQL Playground provides a complete reference of filters for any field type in your application.
+> **Note**: The documentation in the GraphQL Playground provides a complete reference of filters for any field type in your application.
 
-##### Relationship `where` filters
+#### Relationship `where` filters
 
 - `{relatedList}_every`: whereInput
 - `{relatedList}_some`: whereInput
 - `{relatedList}_none`: whereInput
 - `{relatedList}_is_null`: Boolean
 
-##### String `where` filters
+#### String `where` filters
 
 - `{Field}:` String
 - `{Field}_not`: String
@@ -284,14 +282,14 @@ query {
 - `{Field}_in`: [String]
 - `{Field}_not_in`: [String]
 
-##### ID `where` filters
+#### ID `where` filters
 
 - `{Field}`: ID
 - `{Field}_not`: ID
 - `{Field}_in`: [ID!]
 - `{Field}_not_in`: [ID!]
 
-##### Integer `where` filters
+#### Integer `where` filters
 
 - `{Field}: Int`
 - `{Field}_not`: Int
@@ -302,14 +300,12 @@ query {
 - `{Field}_in`: [Int]
 - `{Field}_not_in`: [Int]
 
-#### Operators
+### Operators
 
 You can combine multiple where clauses with `AND` or `OR` operators.
 
 - `AND`: [whereInput]
 - `OR`: [whereInput]
-
-##### Usage
 
 ```graphql
 query {
@@ -324,7 +320,7 @@ query {
 }
 ```
 
-#### `search`
+### `search`
 
 Will search the list to limit results.
 
@@ -336,7 +332,7 @@ query {
 }
 ```
 
-#### `orderBy`
+### `orderBy`
 
 Order results. The orderBy string should match the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
 
@@ -348,7 +344,7 @@ query {
 }
 ```
 
-#### `first`
+### `first`
 
 Limits the number of items returned from the query. Limits will be applied after `skip`, `orderBy`, `where` and `search` values are applied.
 
@@ -362,7 +358,7 @@ query {
 }
 ```
 
-#### `skip`
+### `skip`
 
 Skip the number of results specified. Is applied before `first` parameter, but after `orderBy`, `where` and `search` values.
 
@@ -376,7 +372,7 @@ query {
 }
 ```
 
-### Combining query arguments for pagination
+## Combining query arguments for pagination
 
 When `first` and `skip` are used together with the `count` from `_allUsersMeta`, this is sufficient to implement pagination on the list.
 
@@ -397,11 +393,9 @@ When `first` and `skip` are used together, skip works as an offset for the `firs
 
 Both `skip` and `first` respect the values of the `where`, `search` and `orderBy` arguments.
 
-## Custom Queries and Mutations
+## Custom queries and mutations
 
 You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
-
-### Usage
 
 ```javascript
 keystone.extendGraphQLSchema({

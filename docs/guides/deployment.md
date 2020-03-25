@@ -1,16 +1,16 @@
 <!--[meta]
 section: guides
-title: Deployment Recommendations
+title: Deployment recommendations
 subSection: deployment
 [meta]-->
 
-# Deployment Recommendations
+# Deployment recommendations
 
 ## General
 
 Keystone files need to be built with `keystone build` before running in production mode.
 
-## Using Docker
+## Docker
 
 Keystone can be easily built as a Docker container image, suitable for deploying on Kubernetes or other environments.
 

@@ -1,21 +1,21 @@
 <!--[meta]
 section: guides
-title: Custom Field Types
+title: Custom field types
 subSection: advanced
 [meta]-->
 
-# Custom Field Types
+# Custom field types
 
-What makes up a Field Type:
+What makes up a field type?
 
-```
-Type/index.js           -- The field definition, points to other files and defines the type
-Type/Controller.js      -- Client-side controller for the field type
-Type/Implementation.js  -- Back-end implementation of the field type
-Type/README.md          -- Type specific documentation and usage examples
+```bash
+Type/index.js           # The field definition, points to other files and defines the type
+Type/Controller.js      # Client-side controller for the field type
+Type/Implementation.js  # Back-end implementation of the field type
+Type/README.md          # Type specific documentation and usage examples
 Type/views/
-  Field.js              -- Main React component rendered by the Item Details view
-  Cell.js               -- Main React component rendered by the List view
+├── Field.js            # Main React component rendered by the Item Details view
+└── Cell.js             # Main React component rendered by the List view
 ```
 
 ## Example

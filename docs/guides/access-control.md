@@ -1,14 +1,14 @@
 <!--[meta]
 section: guides
-title: Access Control
+title: Access control
 subSection: advanced
 [meta]-->
 
-# Access Control
+# Access control
 
-> Controls who can do what with your GraphQL API.
+Access control enforces who can do what with your GraphQL API.
 
-## Intro
+## Introduction
 
 What a user _can_ and _cannot_ do in KeystoneJS depends on two things: _authentication_ and _access control_.
 
@@ -17,12 +17,12 @@ This guide focuses on the GraphQL API _access control_, which refers to the spec
 _Authentication_, on the other hand, refers to a user identifying themselves in the Admin UI.
 You can learn about it in the [Authentication guide](/docs/guides/authentication.md).
 
-## GraphQL Access Control
+## GraphQL access control
 
 Access control is about limiting CRUD (Create, Read, Update, Delete) actions that can be performed based on the current user (authenticated or anonymous).
 
 In KeystoneJS, both [Lists](/docs/api/create-list.md) and [Fields](/packages/fields/README.md) take an `access` option,
-which lets you define rules of access control with fine precision - see [Access Control API](/docs/api/access-control.md) docs for more details.
+which lets you define rules of access control with fine precision - see [Access control API](/docs/api/access-control.md) docs for more details.
 
 ### Example
 
@@ -38,8 +38,6 @@ Let's assume we want set the following access controls for a `User` list:
    anyone's password.
 
 Here's how we would set that up:
-
-_NOTE: The code below depends on having a correct [authentication setup](/docs/guides/authentication.md)._
 
 ```javascript
 const { Text, Select, Checkbox, Password } = require('@keystonejs/fields');
@@ -95,6 +93,8 @@ keystone.createList('User', {
 });
 ```
 
+> **Note:** The code above depends on having a correct [authentication setup](/docs/guides/authentication.md)
+
 When logged in to the Admin UI as "Jess", will result in a list view like:
 
 | name    | email                 | password | state  |
@@ -107,4 +107,4 @@ Note that Jess can only read _his own_ email, and cannot read any passwords.
 
 ---
 
-Read more in the [Access Control API docs](/docs/api/access-control.md).
+Read more in the [access control API docs](/docs/api/access-control.md).

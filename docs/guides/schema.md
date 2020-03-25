@@ -1,25 +1,23 @@
 <!--[meta]
 section: guides
-title: Data modeling - Lists & Fields
+title: Data modelling
 [meta]-->
 
-# Data modeling - Lists & Fields
+# Data modelling
 
 A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
 
 - a set of **Lists**
 - containing one or more **Fields**
 - which each have a **Type**
-  <!-- TODO: Link to glossary -->
+
+<!-- TODO: Link to glossary -->
 
 <!-- TODO: Make this a component that can be imported somehow -->
 
-<div style={{
-  backgroundColor: '#f3f5f7',
-  padding: '1rem 2rem',
-  border: '3px solid #e7e9ed',
-}}>
-  <center><strong>Minimal Schema Example</strong></center>
+### Minimal schema example
+
+Create a **List** called `Todo`, containing a single **Field** `task`, with a **Type** of `Text`
 
 ```javascript
 keystone.createList('Todo', {
@@ -28,13 +26,6 @@ keystone.createList('Todo', {
   },
 });
 ```
-
-  <center>
-    <em>
-      Create a <strong>List</strong> called <code>Todo</code>, containing a single <strong>Field</strong> <code>task</code>, with a <strong>Type</strong> of <code>Text</code>
-    </em>
-  </center>
-</div>
 
 ## Lists
 
@@ -92,7 +83,7 @@ type User {
 _(NOTE: Only a subset of all the generated types/mutations/queries are shown
 here. To see a more complete example [follow the Quick Start](/docs/quick-start/README.md).)_
 
-### Customizing Lists & Fields
+### Customising Lists & Fields
 
 Both lists and fields can accept further options:
 
@@ -148,14 +139,9 @@ can query for all todos owned by a particular user, update the user, etc.
 
 Let's imagine we have a single item in our `Todo` list:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
-
 | `id` | `task`         | `createdBy` |
 | ---- | -------------- | ----------- |
 | 1    | Use KeystoneJS | Tici        |
-
-</div>
 
 We could query this data like so:
 
@@ -177,15 +163,12 @@ query {
 
 Everything looks great so far. Now, let's add another task:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`         | `createdBy` |
 | ---- | -------------- | ----------- |
 | 1    | Use KeystoneJS | Tici        |
 | 2    | Setup linter   | Tici        |
-
-</div>
 
 ```graphql
 query {
@@ -218,15 +201,12 @@ keystone.createList('Todo', {
 });
 ```
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`         | `createdBy` | `email`          |
 | ---- | -------------- | ----------- | ---------------- |
 | 1    | Use KeystoneJS | Tici        | tici@example.com |
 | 2    | Setup Linter   | Tici        | tici@example.com |
-
-</div>
 
 ```graphql
 query {
@@ -253,7 +233,6 @@ what about 300? 10,000? It can be quite a big operation to make these changes.
 
 We can avoid the duplicate data by moving it out into its own `User` list:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`         | `createdBy` |
@@ -261,15 +240,11 @@ We can avoid the duplicate data by moving it out into its own `User` list:
 | 1    | Use KeystoneJS | 1           |
 | 2    | Setup Linter   | 1           |
 
-</div>
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          |
 | ---- | ------ | ---------------- |
 | 1    | Tici   | tici@example.com |
-
-</div>
 
 The `createdBy` field is no longer a name, but instead refers to the `id` of an
 item in the `User` list (commonly referred to as _[data
@@ -421,7 +396,6 @@ query {
 
 The data stored in the database for the `createdBy` field will be a single ID:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`         | `createdBy` |
@@ -429,16 +403,11 @@ The data stored in the database for the `createdBy` field will be a single ID:
 | 1    | Use KeystoneJS | 1           |
 | 2    | Setup Linter   | 1           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          |
 | ---- | ------ | ---------------- |
 | 1    | Tici   | tici@example.com |
-
-</div>
 
 #### To-many Relationships
 
@@ -488,7 +457,6 @@ query {
 The data stored in the database for the `todoList` field will be an array of
 IDs:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`         |
@@ -499,17 +467,12 @@ IDs:
 | 4    | Write docs     |
 | 5    | Buy milk       |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1, 2]     |
 | 2    | Jess   | jess@example.com | [3, 4, 5]  |
-
-</div>
 
 #### Two-way Relationships
 
@@ -579,7 +542,6 @@ query {
 
 The database would look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`         | `createdBy` |
@@ -590,17 +552,12 @@ The database would look like:
 | 4    | Write docs     | 2           |
 | 5    | Buy milk       | 2           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1, 2]     |
 | 2    | Jess   | jess@example.com | [3, 4, 5]  |
-
-</div>
 
 Note the two relationship fields in this example _know nothing about each other_.
 They are not specially linked. This means if you update data in one place, you
@@ -648,23 +605,17 @@ _See [the Relationship API docs for more on `connect`](/packages/fields/src/type
 
 If this was the first `Todo` item created, the database would now look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | \[]        |
-
-</div>
 
 Notice the `Todo` item's `createdBy` field is set, but the `User` item's
 `todoList` does _not_ contain the ID of the newly created `Todo`!
@@ -740,23 +691,17 @@ mutation {
 
 Our database would look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1]        |
-
-</div>
 
 ```graphql
 query {

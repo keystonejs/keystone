@@ -1,36 +1,10 @@
 <!--[meta]
 section: guides
-title: Mutation Lifecycle
+title: Mutation lifecycle
 subSection: graphql
 [meta]-->
 
-# Mutation Lifecycle
-
-## Table of Contents
-
-- [Introduction](#introduction)
-
-- [Mutation Phases](#mutation-phases)
-
-  - [Access Control Phase](#access-control-phase)
-
-    - [1. Check List Access (create/update/delete)](#1-check-list-access-createupdatedelete)
-    - [2. Get Item(s) (update/delete)](#2-get-items-updatedelete)
-    - [3. Check Field Access (create/update)](#3-check-field-access-createupdate)
-
-  - [Operational Phase](#operational-phase)
-
-    - [1. Resolve Defaults (create)](#1-resolve-defaults-create)
-    - [2a. Resolve Relationship (create/update)](#2a-resolve-relationship-createupdate)
-    - [2b. Register Backlinks (delete)](#2b-register-backlinks-delete)
-    - [3. Resolve Input (create/update)](#3-resolve-input-createupdate)
-    - [4. Validate Data (create/update/delete)](#4-validate-data-createupdatedelete)
-    - [5. Before Operation (create/update/delete)](#5-before-operation-createupdatedelete)
-    - [6. Database Operation (create/update/delete)](#6-database-operation-createupdatedelete)
-    - [7. Resolve Backlinks (create/update/delete)](#7-resolve-backlinks-createupdatedelete)
-    - [8. After Operation (create/update/delete)](#8-after-operation-createupdatedelete)
-
-- [Summary](#summary)
+# Mutation lifecycle
 
 ## Introduction
 
@@ -66,7 +40,7 @@ KeystoneJS provides [access control](/docs/guides/access-control.md) mechanisms 
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.
 
-## Mutation Phases
+## Mutation phases
 
 Each mutation goes through two key phases: the _Access Control Phase_ and the _Operational Phase_.
 During the Access Control Phase the developer defined access controls are evaluated, and the target items are retrieved from the database (`update` and `delete` only).
@@ -87,7 +61,7 @@ Each of these `single` mutations is executed within its own transaction.
 
 As such, a `many` mutation maybe have partial success during this phase, as some of the the single mutations may succeed while others fail.
 
-### Access Control Phase
+### Access control phase
 
 During the Access Control Phase the target items are retrieved from the database, and access control is checked to ensure that the user has permission to perform the operation.
 

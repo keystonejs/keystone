@@ -1,12 +1,12 @@
 <!--[meta]
 section: guides
-title: Custom Server
+title: Custom server
 subSection: advanced
 [meta]-->
 
-# Custom Server
+# Custom server
 
-By default, the KeystoneJS CLI starts an `express`-powered server for you when
+By default, the Keystone CLI starts an `express`-powered server for you when
 running the `keystone dev` or `keystone start` commands.
 
 In some circumstances, you may want to have more control over the server which
@@ -15,26 +15,23 @@ handles the GraphQL API and Admin UI. Things such as:
 - Add additional routes
 - Setup additional server middleware (`compress`/`brotli`/etc)
 - Notify a 3rd party service when the API is ready
-- ...
 
-A **Custom Server** can replace the default and act as the entry point to your
-application which consumes your [schema definition](/docs/guides/schema.md). A Custom
-Server must handle initialising a http server which correctly executes any given KeystoneJS Apps.
+A **custom server** can replace the default and act as the entry point to your
+application which consumes your [schema definition](/docs/guides/schema.md). A custom
+server must handle initialising a http server which correctly executes any given Keystone apps.
 
-_Note_: Before reaching for a custom server, consider using a KeystoneJS
-App which can enhance the functionality of the default server. Apps
-available in KeystoneJS include:
+> **Note:** Before reaching for a custom server, consider using a Keystone app which can enhance the functionality of the default server.
+
+Apps available in Keystone include:
 
 - [Static App](/packages/app-static/README.md) for serving static files.
 - [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
 - [Nuxt.js App](/packages/app-nuxt/README.md) for serving a Nuxt.js App on the same server as the API
 
-Following are some possible ways of setting up a custom server, roughly in order of complexity.
-
-## You might not need a custom server if...
+## You may not need a custom server
 
 If all you want to do is some basic configuration of the default Express instance, you don't need a
-custom server. The KeystoneJS CLI accepts an additional `configureExpress` export in your `index.js` file:
+custom server. The Keystone CLI accepts an additional `configureExpress` export in your `index.js` file:
 
 ```javascript
 module.exports = {
@@ -55,9 +52,9 @@ module.exports = {
 };
 ```
 
-## Minimal Custom Server
+## Minimal custom server
 
-`package.json`
+### `package.json`
 
 ```json
 {
@@ -67,7 +64,7 @@ module.exports = {
 }
 ```
 
-`index.js`
+### `index.js`
 
 ```javascript
 const { Keystone } = require('@keystonejs/keystone');
@@ -81,7 +78,7 @@ module.exports = {
 };
 ```
 
-`server.js`
+### `server.js`
 
 ```javascript
 const express = require('express');
@@ -96,13 +93,13 @@ keystone
   });
 ```
 
-## All-in-one Custom Server
+## All-in-one custom server
 
 When using a custom server, there is nothing special about the `index.js` file.
 In this example there is no `index.js` file, instead the `keystone` instance and
 `apps` are declared directly in `server.js`.
 
-`package.json`
+### `package.json`
 
 ```json
 {
@@ -112,7 +109,7 @@ In this example there is no `index.js` file, instead the `keystone` instance and
 }
 ```
 
-`server.js`
+### `server.js`
 
 ```javascript
 const express = require('express');
@@ -135,13 +132,13 @@ keystone
   });
 ```
 
-## Custom Server with manual middleware preparation
+## Custom server w/middleware
 
 For really fine-grained control, a custom server can skip calling
 `keystone.prepare()` in favour of calling an app's `.prepareMiddleware()`
 function directly.
 
-`package.json`
+### `package.json`
 
 ```json
 {
@@ -151,7 +148,7 @@ function directly.
 }
 ```
 
-`server.js`
+### `server.js`
 
 ```javascript
 const express = require('express');
@@ -176,17 +173,17 @@ Promise.all(preparations).then(async middlewares => {
 });
 ```
 
-## Custom Server as a Lambda
+## Custom server as a Lambda
 
-KeystoneJS is powered by Node, so can run in "Serverless" environments such as
+Keystone is powered by Node, so can run in "Serverless" environments such as
 [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) which
 support Node >= 10.x.
 
 With a little finesse (and the [`serverless-http`
 library](https://github.com/dougmoscrop/serverless-http)), we can run our
-KeystoneJS instance in AWS Lambda:
+Keystone instance in AWS Lambda:
 
-`lambda.js`
+### `lambda.js`
 
 ```javascript
 const express = require('express');
