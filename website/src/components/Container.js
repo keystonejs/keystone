@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx } from '@emotion/core';
 import { mq } from '../utils/media';
 import { gridSize } from '@arch-ui/theme';

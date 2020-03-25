@@ -1,25 +1,39 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
+import { Fragment, useState } from 'react';
 import { jsx, Global } from '@emotion/core';
-import { colors, globalStyles, borderRadius, gridSize } from '@arch-ui/theme';
+import { colors, borderRadius, gridSize } from '@arch-ui/theme';
 import { SkipNavLink } from '@reach/skip-nav';
 
 import { Header, SiteMeta } from '../components';
 import { CONTAINER_GUTTERS } from '../components/Container';
 import { media, mediaMax } from '../utils/media';
-import { useDimensions } from '../utils/hooks';
 
 export const Layout = ({ children }) => {
   const [isVisible, setVisible] = useState(false);
   const toggleMenu = bool => () => setVisible(bool);
-  const [headerRef, headerDimensions] = useDimensions();
 
   return (
-    <>
+    <Fragment>
       <Global
         styles={{
-          ...globalStyles,
+          body: {
+            backgroundColor: colors.page,
+            color: colors.N80,
+            fontFamily:
+              '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+            letterSpacing: '-0.005em',
+            margin: 0,
+            textDecorationSkip: 'ink',
+            textRendering: 'optimizeLegibility',
+            msOverflowStyle: '-ms-autohiding-scrollbar',
+            MozFontFeatureSettings: "'liga' on",
+            MozOsxFontSmoothing: 'grayscale',
+            WebkitFontSmoothing: 'antialiased',
+          },
+          a: {
+            textDecoration: 'none',
+          },
 
           // Accessibility
           // ------------------------------
@@ -75,14 +89,12 @@ export const Layout = ({ children }) => {
       />
       <SkipNavLink />
       <SiteMeta pathname="/" />
-      {/* <div ref={headerRef} /> */}
-      <Header key="global-header" ref={headerRef} toggleMenu={toggleMenu(!isVisible)} />
+      <Header key="global-header" toggleMenu={toggleMenu(!isVisible)} />
       {children({
-        sidebarOffset: headerDimensions.height,
         sidebarIsVisible: isVisible,
         toggleSidebar: toggleMenu(!isVisible),
       })}
-    </>
+    </Fragment>
   );
 };
 
@@ -129,20 +141,23 @@ export const Content = props => (
 
       // Misc. Typography
       // ------------------------------
-      ul: {
-        lineHeight: 1.8,
+      'li, p': {
+        lineHeight: 1.6,
       },
       'ul > li > ul, ol > li > ol, ul > li > ol, ol > li > ul': {
         paddingLeft: '1.33rem',
       },
       blockquote: {
-        fontSize: '1.25rem',
-        fontStyle: 'italic',
-        color: colors.N60,
-        margin: `3rem 0`,
-        padding: 0,
-        paddingLeft: '3rem',
+        borderLeft: `2px solid ${colors.B.base}`,
+        margin: `1.66rem 0`,
+        padding: '1rem',
         position: 'relative',
+      },
+      'blockquote > p:first-of-type': {
+        marginTop: 0,
+      },
+      'blockquote > p:last-of-type': {
+        marginBottom: 0,
       },
 
       // Code
@@ -154,11 +169,12 @@ export const Content = props => (
         fontWeight: 'normal',
       },
       pre: {
-        backgroundColor: 'rgba(9, 30, 66, 0.03)',
+        backgroundColor: colors.N05,
+        border: `1px solid ${colors.N10}`,
         borderRadius: 4,
         boxSizing: 'border-box',
         fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
-        lineHeight: '1.2',
+        lineHeight: '1.4',
         padding: gridSize * 2,
         overflowX: 'auto',
         tabSize: 2,

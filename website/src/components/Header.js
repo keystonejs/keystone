@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { forwardRef } from 'react'; // eslint-disable-line no-unused-vars
+import { forwardRef } from 'react'; // eslint-disable-line no-unused-vars
 import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';

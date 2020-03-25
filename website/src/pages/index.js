@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
 import { globalStyles } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
@@ -17,15 +16,10 @@ import { HomepageFooter } from '../components/homepage/HomepageFooter';
 const Homepage = () => (
   <>
     <Layout>
-      {({ sidebarIsVisible, sidebarOffset, toggleSidebar }) => (
+      {({ sidebarIsVisible, toggleSidebar }) => (
         <>
           <Global styles={globalStyles} />
-          <Sidebar
-            isVisible={sidebarIsVisible}
-            offsetTop={sidebarOffset}
-            toggleSidebar={toggleSidebar}
-            mobileOnly
-          />
+          <Sidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} mobileOnly />
           <SkipNavContent />
           <SectionHero />
           <SectionCode />
