@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import { Fragment } from 'react';
 import { jsx, Global } from '@emotion/core';
 import { globalStyles } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
@@ -14,10 +15,10 @@ import { SectionTechnology } from '../components/homepage/SectionTechnology';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
 
 const Homepage = () => (
-  <>
+  <Fragment>
     <Layout>
       {({ sidebarIsVisible, toggleSidebar }) => (
-        <>
+        <Fragment>
           <Global styles={globalStyles} />
           <Sidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} mobileOnly />
           <SkipNavContent />
@@ -26,10 +27,10 @@ const Homepage = () => (
           <SectionFeatures />
           <SectionTechnology />
           <HomepageFooter />
-        </>
+        </Fragment>
       )}
     </Layout>
-  </>
+  </Fragment>
 );
 
 export default Homepage;

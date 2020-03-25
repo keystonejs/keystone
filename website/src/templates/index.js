@@ -62,7 +62,7 @@ export default function Template({
   };
 
   return (
-    <>
+    <Fragment>
       <SiteMeta pathname={fields.slug} />
       <Helmet>
         <title>{title}</title>
@@ -87,7 +87,7 @@ export default function Template({
           </Container>
         )}
       </Layout>
-    </>
+    </Fragment>
   );
 }
 
