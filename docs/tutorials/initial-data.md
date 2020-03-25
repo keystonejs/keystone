@@ -68,7 +68,7 @@ _Hint_: A similar same setup can be achieved by running the Keystone CLI `yarn c
 `createItems` requires an object where keys are list keys, and values are arrays of items to insert.
 For example:
 
-```
+```javascript
 keystone.createItems({
   User: [
     { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' },

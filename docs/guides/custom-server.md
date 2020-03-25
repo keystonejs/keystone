@@ -72,7 +72,9 @@ module.exports = {
 ```javascript
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
+
 const keystone = new Keystone(/* ... */);
+
 module.exports = {
   keystone,
   apps: [new GraphQLApp()],
@@ -84,6 +86,7 @@ module.exports = {
 ```javascript
 const express = require('express');
 const { keystone, apps } = require('./index.js');
+
 keystone
   .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
@@ -115,10 +118,14 @@ In this example there is no `index.js` file, instead the `keystone` instance and
 const express = require('express');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
+
 const keystone = new Keystone();
 keystone.createList(/* ... */);
+
 // ...
+
 const apps = [new GraphQLApp()];
+
 keystone
   .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
@@ -151,9 +158,12 @@ const express = require('express');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+
 const keystone = new Keystone();
 keystone.createList(/* ... */);
+
 // ...
+
 const dev = process.env.NODE_ENV !== 'production';
 const preparations = [new GraphQLApp(), new AdminUIApp()].map(app =>
   app.prepareMiddleware({ keystone, dev })
@@ -183,6 +193,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
+
 const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...

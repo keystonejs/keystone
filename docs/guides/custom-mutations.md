@@ -38,7 +38,7 @@ If we had a front-end application that updated the view count every time someone
 
 Using CRUD we'd first have to fetch the current view count:
 
-```
+```graphql
 query Page($id: ID!){
   Page(where:{id: $id}) {
     views
@@ -48,7 +48,7 @@ query Page($id: ID!){
 
 Once we have the view count we could increment this value with JavaScript and send an `updatePage` mutation to save the new value:
 
-```
+```graphql
 mutation updatePageViews($id: ID!, $views: Int!) {
   updatePage(id: $id, data: { views: $views }) {
     views
@@ -123,7 +123,7 @@ Note: The value of `views` may be `undefined` initially, so before we increment 
 
 Our custom mutation is now available to the client that can use it to increment page views like this:
 
-```
+```graphql
 mutation incrementPageViews($id: ID!) {
   mutation {
     incrementPageViews(id: $id) {

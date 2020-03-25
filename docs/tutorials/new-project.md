@@ -105,7 +105,7 @@ const { Text } = require('@keystonejs/fields');
 
 In `index.js` add the following above `module.exports` and below `const keystone = new Keystone({ ... });`:
 
-```
+```javascript
 keystone.createList('Todo', {
   fields: {
     name: { type: Text },
@@ -123,7 +123,7 @@ Add the following to `package.json`:
 
 ```json
 "scripts": {
-	"start:dev": "keystone"
+  "start:dev": "keystone"
 }
 ```
 

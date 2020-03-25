@@ -23,8 +23,8 @@ Old code:
 
 ```javascript
 assignee: {
-    type: Text,
-    isRequired: true,
+  type: Text,
+  isRequired: true,
 },
 ```
 
@@ -32,9 +32,9 @@ New code:
 
 ```javascript
 assignee: {
-    type: Relationship,
-    ref: 'User',
-    isRequired: true,
+  type: Relationship,
+  ref: 'User',
+  isRequired: true,
 },
 ```
 
@@ -66,8 +66,8 @@ In `Users.js` adjust the `task` field to the following:
 
 ```javascript
 task: {
-    type: Relationship,
-    ref: 'Todo.assignee',
+  type: Relationship,
+  ref: 'Todo.assignee',
 }
 ```
 
@@ -75,8 +75,8 @@ And in `Todos.js` update the `assignee` field:
 
 ```javascript
 assignee: {
-    type: Relationship,
-    ref: 'User.task',
+  type: Relationship,
+  ref: 'User.task',
 }
 ```
 
@@ -84,18 +84,18 @@ Start the Admin UI and create a Todo and assign a user. Check the user's `task` 
 
 ```javascript
 task: {
-    type: Relationship,
-    ref: 'Todo.assignee',
+  type: Relationship,
+  ref: 'Todo.assignee',
 }
 ```
 
 To test it out, remove the `isRequired: true` property from the `assignee` field in the `Todos` file:
 
-```javascript
+```diff
 assignee: {
-    type: Relationship,
-    ref: 'User.task',
-    // isRequired: true,
+  type: Relationship,
+  ref: 'User.task',
+- isRequired: true,
 },
 ```
 
@@ -108,9 +108,9 @@ Take a look at following code in `Users.js`:
 
 ```javascript
 tasks: {
-    type: Relationship,
-    ref: 'Todo.assignee',
-    many: true,
+  type: Relationship,
+  ref: 'Todo.assignee',
+  many: true,
 }
 ```
 
