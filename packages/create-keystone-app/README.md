@@ -6,7 +6,7 @@ title: Create Keystone App
 
 # Create Keystone App
 
-A CLI for Keystone 5 to help generate starter apps.
+A CLI for KeystoneJS to help generate starter apps.
 
 ## Usage
 

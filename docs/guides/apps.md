@@ -77,7 +77,7 @@ Other interesting KeystoneJS compatible Apps are:
 
 If you need to provide your own custom middleware for your system you can create a custom **App** and include it in your exported `apps`.
 
-```
+```javascript
 class CustomApp {
   prepareMiddleware({ keystone, dev, distDir }) {
     const middleware = express();

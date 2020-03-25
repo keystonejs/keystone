@@ -36,7 +36,7 @@ Retrieves all items from the `User` list. The `allUsers` query also allows you t
 
 #### Usage
 
-```gql
+```graphql
 query {
   allUsers {
     id
@@ -50,7 +50,7 @@ Retrieves meta information about items in the `User` list such as a `count` of a
 
 #### Usage
 
-```gql
+```graphql
 query {
   _allUsersMeta {
     count
@@ -64,7 +64,7 @@ Retrieves a single item from the `User` list. The single entity query accepts a 
 
 #### Usage
 
-```gql
+```graphql
 query {
   User(where: { id: $id }) {
     name
@@ -93,7 +93,7 @@ Add a single `User` to the `User` list. Requires a `data` parameter that is an o
 
 #### Usage
 
-```gql
+```graphql
 mutation {
   createUser(data: { name: "Mike" }) {
     id
@@ -107,7 +107,7 @@ Creates multiple `Users`. Parameters are the same as `createUser` except the dat
 
 #### Usage
 
-```gql
+```graphql
 mutation {
   createUsers(data: [{ name: "Mike" }]) {
     id
@@ -121,7 +121,7 @@ Update a `User` by ID. Accepts an `id` parameter that should match the id of a `
 
 #### Usage
 
-```gql
+```graphql
 mutation {
   updateUser(id: ID, data: { name: "Simon" }) {
     id
@@ -133,7 +133,7 @@ mutation {
 
 Update multiple `Users` by ID. Accepts a single data parameter that contains an array of objects. The object parameters are the same as `createUser` and should contain an `id` and nested `data` parameter with the field data.
 
-```gql
+```graphql
 mutation {
   updateUsers(data: [{ id: ID, data: { name: "Simon" } }]) {
     id
@@ -145,7 +145,7 @@ mutation {
 
 Delete a single Entity by ID. Accepts a single parameter where the `id` matches a `User` id.
 
-```gql
+```graphql
 mutation {
   deleteUser(id: ID)
 }
@@ -155,7 +155,7 @@ mutation {
 
 Delete multiple entities by ID. Similar to `deleteUser` where the `id` parameter is an array of ids.
 
-```gql
+```graphql
 mutation {
   deleteUsers(id: [ID])
 }
@@ -246,7 +246,7 @@ Limit results to items matching the where clause. Where clauses are used to quer
 
 The options available in a where clause depend on the field types.
 
-```gql
+```graphql
 query {
   allUsers (where: { name_starts_with_i: 'A'} ) {
     id
@@ -311,7 +311,7 @@ You can combine multiple where clauses with `AND` or `OR` operators.
 
 ##### Usage
 
-```gql
+```graphql
 query {
   allUsers (where: {
     OR: [
@@ -328,7 +328,7 @@ query {
 
 Will search the list to limit results.
 
-```gql
+```graphql
 query {
   allUsers(search: "Mike") {
     id
@@ -340,7 +340,7 @@ query {
 
 Order results. The orderBy string should match the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
 
-```gql
+```graphql
 query {
   allUsers(orderBy: "name_DESC") {
     id
@@ -354,7 +354,7 @@ Limits the number of items returned from the query. Limits will be applied after
 
 If less results are available, the number of available results will be returned.
 
-```gql
+```graphql
 query {
   allUsers(first: 10) {
     id
@@ -368,7 +368,7 @@ Skip the number of results specified. Is applied before `first` parameter, but a
 
 If the value of `skip` is greater than the number of available results, zero results will be returned.
 
-```gql
+```graphql
 query {
   allUsers(skip: 10) {
     id
@@ -382,7 +382,7 @@ When `first` and `skip` are used together with the `count` from `_allUsersMeta`,
 
 It is important to provide the same `where` and `search` arguments to both the `allUser` and `_allUserMeta` queries. For example:
 
-```gql
+```graphql
 query {
   allUsers (search:'a', skip: 10, first: 10) {
     id

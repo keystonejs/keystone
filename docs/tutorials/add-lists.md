@@ -52,21 +52,21 @@ const { Text, CalendarDay } = require('@keystonejs/fields');
 
 // define new field
 module.exports = {
-    // ...
-    {
-        deadline: {
-            type: CalendarDay,
-            format: 'Do MMMM YYYY',
-            yearRangeFrom: '2019',
-            yearRangeTo: '2029',
-            isRequired: false,
-            defaultValue: new Date().toISOString('YYYY-MM-DD').substring(0, 10),
-        },
-        assignee: {
-            type: Text,
-            isRequired: true,
-        },
+  // ...
+  {
+    deadline: {
+      type: CalendarDay,
+      format: 'Do MMMM YYYY',
+      yearRangeFrom: '2019',
+      yearRangeTo: '2029',
+      isRequired: false,
+      defaultValue: new Date().toISOString('YYYY-MM-DD').substring(0, 10),
     },
+    assignee: {
+      type: Text,
+      isRequired: true,
+    },
+  },
 }
 ```
 
