@@ -1,19 +1,13 @@
 <!--[meta]
 section: quick-start
-title: Getting Started
+title: Getting started
 order: 1
 slug: /quick-start/
 [meta]-->
 
-# Getting Started
-
-## Your first KeystoneJS app in 5 minutes.
+# Getting started
 
 This quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of Keystone!
-
-![Screenshot of KeystoneJS Todo App](./img/to-do-app-example.png)
-
-<br/>
 
 ## Requirements
 
@@ -34,13 +28,9 @@ All set? Great, let's get started!
 
 To create a new Keystone application, run the following commands in your terminal:
 
-```sh
+```bash
 npm init keystone-app my-app
-```
-
-or with yarn:
-
-```sh
+# or
 yarn create keystone-app my-app
 ```
 
@@ -52,12 +42,12 @@ You'll be prompted with a few questions:
 
 Wait a few minutes for all the project dependencies to install. Once that's finished, run this:
 
-```sh
+```bash
 cd my-app
 npm run dev
 ```
 
-## Congratulations!
+## Summary
 
 You are now running your very own Keystone application! Here's what you get out of the box:
 
@@ -92,7 +82,7 @@ Keystone provides a web interface for this API at this URL:
 	</code>
 </pre>
 
-## What next?
+## Next steps
 
 This todo app is a good introduction to Keystone, but chances are you'll want to build something a bit more complex and secure than that!
 
