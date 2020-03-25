@@ -1,77 +1,36 @@
 <!--[meta]
 section: api
-title: Access Control
+title: Access control
 order: 5
 [meta]-->
 
-# Access Control
+# Access control
 
 Control who can do what with your GraphQL API.
 
-_Note_: This is the API documentation for Access Control. For getting started,
-see the [Access Control Guide](/docs/guides/access-control.md) or the
-[Authentication Guide](/docs/guides/authentication.md).
+> **Note:** This is the API documentation for access control. For getting started, see the [Access control guide](/docs/guides/access-control.md) or the [Authentication Guide](/docs/guides/authentication.md).
 
-## Table of Contents
-
-- [GraphQL Access Control](#graphql-access-control)
-
-  - [Defaults](#defaults)
-
-  - [List level access control](#list-level-access-control)
-
-    - [Access API](#access-api)
-
-      - [Booleans](#booleans)
-
-        - [Shorthand static Boolean](#shorthand-static-boolean)
-        - [Granular static Booleans](#granular-static-booleans)
-        - [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
-        - [Granular functions returning Boolean](#granular-functions-returning-boolean)
-
-      - [GraphQLWhere](#graphqlwhere)
-
-        - [Granular static GraphQLWheres](#granular-static-graphqlwheres)
-        - [Granular functions returning GraphQLWhere](#granular-functions-returning-graphqlwhere)
-
-  - [Field level access control](#field-level-access-control)
-
-    - [access API](#access-api-1)
-
-      - [Shorthand static Boolean](#shorthand-static-boolean-1)
-      - [Granular static Booleans](#granular-static-booleans-1)
-      - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
-      - [Granular functions returning Boolean](#granular-functions-returning-boolean-1)
-
-## GraphQL Access Control
-
-There are two ways of specifying Access Control:
+There are two ways of specifying access control:
 
 1. List level
 2. Field level
 
-### Defaults
-
 To set defaults for all lists & fields, use the `defaultAccess` config when
 creating a `Keystone` instance:
 
-```js
+```javascript
 const keystone = new Keystone('My App', {
-  // Initial values shown here:
   defaultAccess: {
     list: true,
     field: true,
   },
-  // ...
 });
 ```
 
-### List level access control
+## List level access control
 
 List level access control can have varying degrees of specificity depending on
 how much control you need.
-
-#### Access API
 
 A key on the list config, `access` can be specified either as a single control,
 covering all CRUD operations, or as an object keyed by CRUD operation names.
@@ -82,10 +41,8 @@ There are 3 ways to define the values of `access`, in order of flexibility:
 2. Imperative
 3. Declarative
 
-Described as a Flow type, it looks like this:
-
-```js
-type GraphQLWhere = {}; // fake/placeholder
+```graphql
+type GraphQLWhere = {} # placeholder
 
 type AccessInput = {
   authentication: {
@@ -98,11 +55,11 @@ type AccessInput = {
   gqlName?: string,
   itemId?: string,
   itemIds?: [string],
-};
+}
 
-type StaticAccess = boolean;
-type ImperativeAccess = AccessInput => boolean;
-type DeclarativeAccess = GraphQLWhere | (AccessInput => GraphQLWhere);
+type StaticAccess = boolean
+type ImperativeAccess = AccessInput => boolean
+type DeclarativeAccess = GraphQLWhere | (AccessInput => GraphQLWhere)
 
 type ListConfig = {
   access:
@@ -114,8 +71,7 @@ type ListConfig = {
         update?: StaticAccess | ImperativeAccess | DeclarativeAccess,
         delete?: StaticAccess | ImperativeAccess | DeclarativeAccess,
       },
-  // ...
-};
+}
 ```
 
 `GraphQLWhere` matches the `where` clause on the GraphQl type.
@@ -153,11 +109,11 @@ make sense to do so and will throw an error if attempted.
 
 Let's break it down into concrete examples:
 
-##### Booleans
+### Booleans
 
-###### Shorthand static Boolean
+#### Shorthand static Boolean
 
-```js
+```javascript
 keystone.createList('User', {
   access: true,
 
@@ -171,9 +127,9 @@ keystone.createList('User', {
 
 _NOTE:_ When set to `false`, the list queries/mutations/types will not be included in the GraphQL schema.
 
-###### Granular static Booleans
+#### Granular static Booleans
 
-```js
+```javascript
 keystone.createList('User', {
   access: {
     create: true,
@@ -196,9 +152,9 @@ operation will not be included in the GraphQL schema. For example, setting
 schema, `update: false` will cause the `updateXXXX` mutation to be excluded, and
 so on.
 
-###### Shorthand Imperative Boolean
+#### Shorthand Imperative Boolean
 
-```js
+```javascript
 keystone.createList('User', {
   access: ({ authentication: { item, listKey } }) => {
     return true;
@@ -215,9 +171,9 @@ keystone.createList('User', {
 _NOTE:_ Even when returning `false`, the queries/mutations/types _will_ be
 included in the GraphQL Schema.
 
-###### Granular functions returning Boolean
+#### Granular functions returning Boolean
 
-```js
+```javascript
 keystone.createList('User', {
   access: {
     create: ({ authentication: { item, listKey } }) => true,
@@ -239,7 +195,7 @@ _NOTE:_ Even when returning `false`,
 the queries/mutations/types for that operation _will_ be included in the GraphQL Schema.
 For example, `create: () => false` will still include the `createXXXX` mutation in the GraphQL Schema, and so on.
 
-##### GraphQLWhere
+### GraphQLWhere
 
 In the examples below, the `name_contains: 'k'` syntax matches the `UserWhereInput` GraphQL type for the list.
 
@@ -252,9 +208,9 @@ _NOTES:_
 3. For `create` operations, an `AccessDeniedError` is returned if the operation
    is set to / returns `false`
 
-###### Granular static `GraphQLWhere`s
+#### Granular static `GraphQLWhere`s
 
-```js
+```javascript
 keystone.createList('User', {
   access: {
     create: true,
@@ -273,9 +229,9 @@ keystone.createList('User', {
 > Use when you need some more fine grained control over what items a user can
 > perform actions on.
 
-###### Granular functions returning `GraphQLWhere`
+#### Granular functions returning `GraphQLWhere`
 
-```js
+```javascript
 keystone.createList('User', {
   access: {
     create: ({ authentication: { item, listKey } }) => true,
@@ -304,9 +260,7 @@ keystone.createList('User', {
 > Use when you need some more fine grained control over which items _and_
 > actions anonymous/authenticated users can perform.
 
-### Field level access control
-
-#### access API
+## Field level access control
 
 A key on the field config, `access` can be specified either as a single control,
 covering all CRU operations, or as an object keyed by CRU operation names.
@@ -316,9 +270,7 @@ There are 2 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 
-Described as a Flow type, it looks like this:
-
-```js
+```graphql
 type AccessInput = {
   authentication: {
     item?: {},
@@ -332,10 +284,10 @@ type AccessInput = {
   gqlName?: string,
   itemId?: string,
   itemIds?: [string],
-};
+}
 
-type StaticAccess = boolean;
-type ImperativeAccess = AccessInput => boolean;
+type StaticAccess = boolean
+type ImperativeAccess = AccessInput => boolean
 
 type FieldConfig = {
   access:
@@ -346,8 +298,7 @@ type FieldConfig = {
         read?: StaticAccess | ImperativeAccess,
         update?: StaticAccess | ImperativeAccess,
       },
-  // ...
-};
+}
 ```
 
 _NOTE:_ Unlike List level access, it is not possible to specify a Declarative
@@ -387,9 +338,9 @@ and `null` for the field.
 
 Let's break it down into concrete examples:
 
-##### Shorthand static Boolean
+### Shorthand static Boolean
 
-```js
+```javascript
 keystone.createList('User', {
   fields: {
     name: {
@@ -405,9 +356,9 @@ keystone.createList('User', {
 _NOTE:_ When set to `false`, the list queries/mutations/types will not include
 this field in the GraphQL schema.
 
-##### Granular static Booleans
+### Granular static Booleans
 
-```js
+```javascript
 keystone.createList('User', {
   fields: {
     name: {
@@ -430,9 +381,9 @@ queries/mutations/types exclusively used by that operation.
 Eg, setting `update: false` in the example above will remove the `name` field from the
 `UserUpdateInput` type but may still include the field in `UserCreateInput` for example.
 
-##### Shorthand Imperative Boolean
+### Shorthand Imperative Boolean
 
-```js
+```javascript
 keystone.createList('User', {
   fields: {
     name: {
@@ -450,9 +401,9 @@ keystone.createList('User', {
 _NOTE:_ Even when returning `false`, the queries/mutations/types _will_
 include the field in the GraphQL Schema.
 
-##### Granular functions returning Boolean
+### Granular functions returning Boolean
 
-```js
+```javascript
 keystone.createList('User', {
   access: {
     create: ({ authentication: { item, listKey }, existingItem }) => true,

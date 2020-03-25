@@ -5,7 +5,7 @@ title: Data modelling
 
 # Data modelling
 
-A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
+A schema definition (_often abbreviated to "schema"_) is defined by:
 
 - a set of **Lists**
 - containing one or more **Fields**
@@ -15,17 +15,16 @@ A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
 
 <!-- TODO: Make this a component that can be imported somehow -->
 
-### Minimal schema example
-
-Create a **List** called `Todo`, containing a single **Field** `task`, with a **Type** of `Text`
-
 ```javascript
+// A minimal schema example
 keystone.createList('Todo', {
   fields: {
     task: { type: Text },
   },
 });
 ```
+
+> Create a **List** called `Todo`, containing a single **Field** `task`, with a **Type** of `Text`
 
 ## Lists
 
@@ -83,7 +82,7 @@ type User {
 _(NOTE: Only a subset of all the generated types/mutations/queries are shown
 here. To see a more complete example [follow the Quick Start](/docs/quick-start/README.md).)_
 
-### Customising Lists & Fields
+### Customising lists and fields
 
 Both lists and fields can accept further options:
 
@@ -110,7 +109,7 @@ _For more List options, see the [`createList()` API docs](/docs/api/create-list.
 _[There are many different field types available](/packages/fields/README.md),
 each specifying their own options._
 
-### Related Lists
+### Related lists
 
 One of KeystoneJS' most powerful features is defining **Relationships** between
 Lists.
@@ -119,7 +118,7 @@ Relationships are a special field type in KeystoneJS used to generate rich
 GraphQL operations and an intuitive Admin UI, especially useful for complex
 data modeling requirements.
 
-#### Why Relationships?
+#### Why relationships?
 
 _Already know Relationships? [Skip to **Defining Relationships** below](#defining-relationships)._
 

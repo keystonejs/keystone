@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
-title: Creating Lists
+title: Creating lists
 order: 2
 [meta]-->
 
-# Creating Lists
+# Creating lists
 
 ## Usage
 
@@ -14,7 +14,7 @@ keystone.createList('Post', {
 });
 ```
 
-### Config
+## Config
 
 | Option          | Type                                | Default                       | Description                                                            |
 | --------------- | ----------------------------------- | ----------------------------- | ---------------------------------------------------------------------- |
@@ -35,6 +35,8 @@ keystone.createList('Post', {
 | `queryLimits`   | `Object`                            | `{}`                          | Configures list-level query limits.                                    |
 | `cacheHint`     | `Object`                            | `{}`                          | Configures a default caching hint for list.                            |
 | `adminConfig`   | `Object`                            | `{}`                          | Options for the AdminUI.                                               |
+
+## Definitions
 
 ### `fields`
 

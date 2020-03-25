@@ -4,9 +4,9 @@ subSection: apps
 title: Admin UI
 [meta]-->
 
-# Admin UI App
+# Admin UI app
 
-A KeystoneJS App which provides an Admin UI for content management.
+A KeystoneJS app which provides an Admin UI for content management.
 
 ## Usage
 
@@ -15,17 +15,15 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
-const authStrategy = keystone.createAuthStrategy({ ... });
-
-...
+const authStrategy = keystone.createAuthStrategy({...});
 
 module.exports = {
   keystone: new Keystone(),
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
-        adminPath: '/admin',
-        authStrategy,
+      adminPath: '/admin',
+      authStrategy,
     }),
   ],
 };

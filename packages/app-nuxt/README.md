@@ -1,31 +1,24 @@
 <!--[meta]
 section: api
 subSection: apps
-title: Nuxt.js App
+title: Nuxt.js app
 [meta]-->
 
-# Nuxt.js App
+# Nuxt.js app
 
 ## Usage
 
 ```javascript
 const { NuxtApp } = require('@keystonejs/app-nuxt');
 
-...
-
 const config = {
-  srcDir: "src",
-  buildDir: "dist",
-  // ...
-}
+  srcDir: 'src',
+  buildDir: 'dist',
+};
 
 module.exports = {
   keystone,
-  apps: [
-    new GraphQLApp(),
-    new AdminUIApp(),
-    new NuxtApp(config),
-  ]
+  apps: [new GraphQLApp(), new AdminUIApp(), new NuxtApp(config)],
 };
 ```
 
