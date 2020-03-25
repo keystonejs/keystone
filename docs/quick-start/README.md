@@ -57,7 +57,7 @@ cd my-app
 npm run dev
 ```
 
-## Congratulations! 🎉
+## Congratulations!
 
 You are now running your very own Keystone application! Here's what you get out of the box:
 
