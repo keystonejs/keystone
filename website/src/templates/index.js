@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { Fragment } from 'react'; // eslint-disable-line no-unused-vars
+import { Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
@@ -62,7 +62,7 @@ export default function Template({
   };
 
   return (
-    <>
+    <Fragment>
       <SiteMeta pathname={fields.slug} />
       <Helmet>
         <title>{title}</title>
@@ -74,9 +74,9 @@ export default function Template({
         <meta name="twitter:description" content={fields.description} />
       </Helmet>
       <Layout>
-        {({ sidebarOffset, sidebarIsVisible }) => (
+        {({ sidebarIsVisible }) => (
           <Container>
-            <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} />
+            <Sidebar isVisible={sidebarIsVisible} />
             <Content>
               <SkipNavContent />
               <MDXProvider components={mdComponents}>
@@ -87,7 +87,7 @@ export default function Template({
           </Container>
         )}
       </Layout>
-    </>
+    </Fragment>
   );
 }
 

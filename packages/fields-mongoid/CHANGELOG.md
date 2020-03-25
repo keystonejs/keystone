@@ -1,5 +1,15 @@
 # @keystonejs/fields-mongoid
 
+## 5.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`abac6ad8`](https://github.com/keystonejs/keystone/commit/abac6ad83ad71f40047473c81d50b6af80ad41b2), [`7c9d36a2`](https://github.com/keystonejs/keystone/commit/7c9d36a2d5002258964cbd9414766ee244945005), [`ca28681c`](https://github.com/keystonejs/keystone/commit/ca28681ca23c74bc57041fa36c20b93a4520e762), [`68be8f45`](https://github.com/keystonejs/keystone/commit/68be8f452909100fbddec431d6fe60c20a06a700), [`cec7ba5e`](https://github.com/keystonejs/keystone/commit/cec7ba5e2061280eff2a1d989054ecb02760e36d), [`663ae7b4`](https://github.com/keystonejs/keystone/commit/663ae7b453f450f077795fbbc6c9f138e6b27f52)]:
+  - @keystonejs/adapter-knex@7.0.0
+  - @keystonejs/build-field-types@5.2.4
+  - @keystonejs/adapter-mongoose@6.0.0
+  - @keystonejs/fields@7.0.2
+
 ## 5.1.3
 
 ### Patch Changes
