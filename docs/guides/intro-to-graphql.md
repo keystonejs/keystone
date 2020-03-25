@@ -372,7 +372,7 @@ query {
 }
 ```
 
-## Combining query arguments for pagination
+## Combining query arguments
 
 When `first` and `skip` are used together with the `count` from `_allUsersMeta`, this is sufficient to implement pagination on the list.
 

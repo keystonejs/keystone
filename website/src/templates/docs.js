@@ -128,7 +128,10 @@ export default function Template({
                       <a
                         css={{
                           color: colors.N80,
+                          display: 'block',
                           fontSize: '0.9rem',
+                          paddingBottom: '0.25em',
+                          paddingTop: '0.25em',
 
                           ':hover': {
                             color: colors.N100,
