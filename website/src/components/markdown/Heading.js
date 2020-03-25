@@ -86,6 +86,7 @@ export const H2 = props => (
       fontSize: '1.8rem',
       fontWeight: 500,
       letterSpacing: '-0.025em',
+      marginTop: 0,
 
       // offset header height for hash links
       '::before': {
@@ -104,6 +105,15 @@ export const H3 = props => (
       fontSize: '1.4rem',
       fontWeight: 500,
       letterSpacing: '-0.025em',
+      marginTop: 0,
+
+      // offset header height for hash links
+      '::before': {
+        content: '" "',
+        height: 'calc(32px + 60px)',
+        display: 'block',
+        marginTop: -60,
+      },
     })}
     {...props}
     as="h3"

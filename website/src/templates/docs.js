@@ -15,9 +15,16 @@ import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
 import { Container } from '../components';
 import { Sidebar } from '../components/Sidebar';
-import { media } from '../utils/media';
+import { media, mq } from '../utils/media';
 import { useNavData } from '../utils/hooks';
 import { titleCase } from '../utils/case';
+
+// NOTE: try to align with "github-slugger" from `gatsby-node.js`
+// TODO: headings, with ids, should come from graphQL
+const SLUG_OPTIONS = {
+  decamelize: false,
+  customReplacements: [['(', '']],
+};
 
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
@@ -65,7 +72,14 @@ export default function Template({
               className="docSearch-content"
               css={{ alignItems: 'flex-start', display: 'flex', flex: 1 }}
             >
-              <div css={{ flex: 1, minWidth: 0 }}>
+              <div
+                css={{
+                  flex: 1,
+                  minWidth: 0,
+                  paddingTop: gridSize * 4,
+                  paddingBottom: gridSize * 4,
+                }}
+              >
                 <SkipNavContent />
                 <MDXProvider components={mdComponents}>
                   <MDXRenderer>{body}</MDXRenderer>
@@ -92,13 +106,18 @@ export default function Template({
               {/* Table of Contents */}
               <div
                 css={{
+                  boxSizing: 'border-box',
                   display: 'none',
                   flexShrink: 0,
-                  paddingLeft: gridSize * 4,
+                  height: 'calc(100vh - 60px)',
+                  overflowY: 'auto',
+                  paddingLeft: gridSize * 6,
                   paddingRight: gridSize * 3,
+                  paddingTop: 32,
                   position: 'sticky',
-                  top: 92,
-                  width: 240,
+                  top: 60,
+                  WebkitOverflowScrolling: 'touch',
+                  width: 280,
 
                   [media.sm]: { display: 'block' },
                 }}
@@ -115,34 +134,37 @@ export default function Template({
                   On this page
                 </h4>
                 <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                  {headings.map(h => (
-                    <li
-                      key={h.value}
-                      css={{
-                        maxWidth: '100%',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <a
+                  {headings
+                    .filter(h => h.depth > 1 && h.depth < 4)
+                    .map((h, i) => (
+                      <li
+                        key={h.value + i}
                         css={{
-                          color: colors.N80,
-                          display: 'block',
-                          fontSize: '0.9rem',
-                          paddingBottom: '0.25em',
-                          paddingTop: '0.25em',
-
-                          ':hover': {
-                            color: colors.N100,
-                          },
+                          maxWidth: '100%',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
                         }}
-                        href={`#${slugify(h.value, { decamelize: false })}`}
                       >
-                        {h.value}
-                      </a>
-                    </li>
-                  ))}
+                        <a
+                          css={{
+                            color: h.depth === 3 ? colors.N60 : colors.N80,
+                            display: 'block',
+                            fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
+                            paddingLeft: h.depth === 3 ? '0.5rem' : null,
+                            paddingBottom: '0.25em',
+                            paddingTop: '0.25em',
+
+                            ':hover': {
+                              color: colors.B.base,
+                            },
+                          }}
+                          href={`#${slugify(h.value, SLUG_OPTIONS)}`}
+                        >
+                          {h.value}
+                        </a>
+                      </li>
+                    ))}
                 </ul>
                 <EditSection>
                   {/* <p>
@@ -214,8 +236,9 @@ const EditSection = props => (
   <section
     css={{
       borderTop: `1px solid ${colors.N10}`,
-      marginTop: '1.66rem',
-      paddingTop: '1.66rem',
+      marginTop: gridSize * 4,
+      paddingBottom: gridSize * 4,
+      paddingTop: gridSize * 4,
     }}
     {...props}
   />
@@ -251,11 +274,12 @@ const PaginationPlaceholder = props => <div css={{ flex: 1 }} {...props} />;
 const PaginationButton = ({ align = 'left', ...props }) => (
   <Button
     as={Link}
-    css={{
+    css={mq({
       flex: 1,
       lineHeight: 1.4,
       marginLeft: gutter,
       marginRight: gutter,
+      maxWidth: `calc(50% - ${gutter}px)`,
       textAlign: align,
 
       small: {
@@ -266,11 +290,15 @@ const PaginationButton = ({ align = 'left', ...props }) => (
       },
       span: {
         display: 'block',
-        fontSize: '1.25rem',
+        fontSize: ['0.95rem', null, '1.25rem'],
+        letterSpacing: '-0.025em',
         marginBottom: gutter,
+        minWidth: 0, // fix flex bug with overflow
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
       },
-    }}
+    })}
     {...props}
   />
 );
@@ -284,7 +312,8 @@ export const pageQuery = graphql`
   query($mdPageId: String!) {
     mdx(id: { eq: $mdPageId }) {
       body
-      headings(depth: h2) {
+      headings {
+        depth
         value
       }
       fields {
