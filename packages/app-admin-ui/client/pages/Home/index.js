@@ -53,8 +53,7 @@ const HomepageListProvider = () => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
-  const query = lists.length !== 0 && gqlCountQueries(lists);
-
+  const query = lists.length !== 0 ? gqlCountQueries(lists) : null;
   const [getLists, { data, error, called }] = useLazyQuery(query, {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
