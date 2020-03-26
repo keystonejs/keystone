@@ -223,3 +223,10 @@ export const versionGreaterOrEqualTo = (comp, base) => {
 };
 
 export const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+
+// Iteratively execute a callback against each item in an array
+export const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+};

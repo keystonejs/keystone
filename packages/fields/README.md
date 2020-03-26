@@ -6,7 +6,7 @@ order: 3
 
 # Fields
 
-KeystoneJS contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
+Keystone contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
 
 - [CalendarDay](https://keystonejs.com/keystonejs/fields/src/types/calendar-day)
 - [Checkbox](https://keystonejs.com/keystonejs/fields/src/types/checkbox)
@@ -31,7 +31,7 @@ KeystoneJS contains a set of primitive fields types that can be imported from `@
 
 In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
 
-Need more? See our guide on [Custom field types](https://keystonejs.com/guides/custom-field-types/).
+> **Hint:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/)
 
 ## Usage
 
@@ -53,7 +53,7 @@ Fields share some standard configuration options.
 | -------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
 | `type`         | `FieldType`                         | (required)  |                                                                                         |
 | `schemaDoc`    | `String`                            | `false`     | A description for the field used in the AdminUI.                                        |
-| `defaultValue` | `Boolean` \| `Function`             | `undefined` | A default value of the field.                                                           |
+| `defaultValue` | `Boolean`                           | `undefined` | A default value of the field.                                                           |
 | `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
 | `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
@@ -77,14 +77,12 @@ A description of the field used in the AdminUI.
 
 Sets the value when no data is provided.
 
-#### Usage
-
 ```javascript
 keystone.createList('Post', {
   fields: {
     title: {
       type: Text,
-      defaultValue: ({ existingItem, context, originalInput, actions }) => {
+      defaultValue: ({ context, originalInput, actions }) => {
         /**/
       },
     },

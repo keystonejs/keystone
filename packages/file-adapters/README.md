@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: field-adapters
-title: File Adapters
+title: File adapters
 [meta]-->
 
-# File Adapters
+# File adapters
 
 The `File` field type can support files hosted in a range of different contexts, e.g. in the local filesystem, or on a cloud based file server.
 
@@ -17,9 +17,7 @@ Different contexts are supported by different file adapters. This package contai
 ```javascript
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
 
-const fileAdapter = new LocalFileAdapter({
-  /*...config */
-});
+const fileAdapter = new LocalFileAdapter({...});
 ```
 
 ### Config
@@ -30,11 +28,11 @@ const fileAdapter = new LocalFileAdapter({
 | `path`        | `String`   | Value of `src` | The path from which requests for files will be served from the server.                                                      |
 | `getFilename` | `Function` | `null`         | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk. |
 
-_Note:_ `src` and `path` may be the same.
+> **Note:** `src` and `path` may be the same.
 
 ### Methods
 
-### `delete`
+#### `delete`
 
 Takes a `file` object (such as the one returned in file field hooks) and deletes that file from disk.
 
@@ -77,9 +75,7 @@ keystone.createList('UploadTest', {
 ```javascript
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 
-const fileAdapter = new CloudinaryAdapter({
-  /*...config */
-});
+const fileAdapter = new CloudinaryAdapter({...});
 ```
 
 ### Config
@@ -93,11 +89,13 @@ const fileAdapter = new CloudinaryAdapter({
 
 ### Methods
 
-### `delete`
+#### `delete`
 
 Deletes the provided file from cloudinary. Takes a `file` object (such as the one returned in file field hooks) and an optional `options` argument passed to the Cloudinary destroy method. For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
 
 ## `S3FileAdapter`
+
+### Usage
 
 ```javascript
 const { S3Adapter } = require('@keystonejs/file-adapters');
@@ -124,6 +122,8 @@ const fileAdapter = new S3Adapter({
 });
 ```
 
+### Config
+
 | Option            | Type              | Default     | Description                                                                                                                                                                                                                              |
 | ----------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `accessKeyId`     | `String`          | Required    | AWS access key ID                                                                                                                                                                                                                        |
@@ -138,7 +138,7 @@ const fileAdapter = new S3Adapter({
 
 ### Methods
 
-### `delete`
+#### `delete`
 
 Deletes the provided file in the S3 bucket. Takes a `file` object (such as the one returned in file field hooks) and an optional `options` argument for overriding S3.deleteObject options. Options `Bucket` and `Key` are set by default. For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
 

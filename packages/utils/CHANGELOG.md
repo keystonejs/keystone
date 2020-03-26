@@ -1,5 +1,17 @@
 # @keystonejs/utils
 
+## 5.4.0
+
+### Minor Changes
+
+- [`663ae7b4`](https://github.com/keystonejs/keystone/commit/663ae7b453f450f077795fbbc6c9f138e6b27f52) [#2552](https://github.com/keystonejs/keystone/pull/2552) Thanks [@timleslie](https://github.com/timleslie)! - Added `asyncForEach` to `utils` package for iteratively executing an async function over an array.
+
+## 5.3.0
+
+### Minor Changes
+
+- [`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b) [#2524](https://github.com/keystonejs/keystone/pull/2524) Thanks [@jesstelford](https://github.com/jesstelford)! - Created `upcase` util to make the first letter for word uppercase.
+
 ## 5.2.2
 
 ### Patch Changes

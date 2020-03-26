@@ -1,5 +1,13 @@
 # @keystonejs/session
 
+## 6.0.0
+
+### Major Changes
+
+- [`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a) [#2540](https://github.com/keystonejs/keystone/pull/2540) Thanks [@timleslie](https://github.com/timleslie)! - Removed the undocumented `restrictAudienceMiddleware` function.
+
+* [`61a70503`](https://github.com/keystonejs/keystone/commit/61a70503f6c184a8f0f5440466399f12e6d7fa41) [#2529](https://github.com/keystonejs/keystone/pull/2529) Thanks [@timleslie](https://github.com/timleslie)! - `@keystonejs/session` now provides a `SessionManager` class which replaces the former function based API. The method `keystone.getCookieSecret()` has been removed.
+
 ## 5.1.1
 
 ### Patch Changes

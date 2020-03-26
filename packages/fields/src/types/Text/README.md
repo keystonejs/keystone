@@ -12,12 +12,11 @@ title: Text
 keystone.createList('Product', {
   fields: {
     description: { type: Text },
-    // ...
   },
 });
 ```
 
-### Config
+## Config
 
 | Option        | Type      | Default | Description                                                     |
 | ------------- | --------- | ------- | --------------------------------------------------------------- |
