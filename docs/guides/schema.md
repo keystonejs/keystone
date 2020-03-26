@@ -47,7 +47,7 @@ keystone.createList('User', {
 
 And each list can have as many fields as you need.
 
-KeystoneJS will process each List, converting it into a series of GraphQL CRUD
+Keystone will process each List, converting it into a series of GraphQL CRUD
 (<strong>C</strong>reate, <strong>R</strong>ead, <strong>U</strong>pdate, <strong>D</strong>elete) operations. For example, the above lists will generate;
 
 ```graphql
@@ -111,10 +111,10 @@ each specifying their own options._
 
 ### Related lists
 
-One of KeystoneJS' most powerful features is defining **Relationships** between
+One of Keystone' most powerful features is defining **Relationships** between
 Lists.
 
-Relationships are a special field type in KeystoneJS used to generate rich
+Relationships are a special field type in Keystone used to generate rich
 GraphQL operations and an intuitive Admin UI, especially useful for complex
 data modeling requirements.
 
@@ -138,9 +138,9 @@ can query for all todos owned by a particular user, update the user, etc.
 
 Let's imagine we have a single item in our `Todo` list:
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | Tici        |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | Tici        |
 
 We could query this data like so:
 
@@ -155,7 +155,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 'Tici' }
+#     { task: 'Use Keystone', createdBy: 'Tici' }
 #   ]
 # }
 ```
@@ -164,10 +164,10 @@ Everything looks great so far. Now, let's add another task:
 
 <code><strong>Todo</strong></code>
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | Tici        |
-| 2    | Setup linter   | Tici        |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | Tici        |
+| 2    | Setup linter | Tici        |
 
 ```graphql
 query {
@@ -180,7 +180,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 'Tici' }
+#     { task: 'Use Keystone', createdBy: 'Tici' }
 #     { task: 'Setup linter', createdBy: 'Tici' }
 #   ]
 # }
@@ -202,10 +202,10 @@ keystone.createList('Todo', {
 
 <code><strong>Todo</strong></code>
 
-| `id` | `task`         | `createdBy` | `email`          |
-| ---- | -------------- | ----------- | ---------------- |
-| 1    | Use KeystoneJS | Tici        | tici@example.com |
-| 2    | Setup Linter   | Tici        | tici@example.com |
+| `id` | `task`       | `createdBy` | `email`          |
+| ---- | ------------ | ----------- | ---------------- |
+| 1    | Use Keystone | Tici        | tici@example.com |
+| 2    | Setup Linter | Tici        | tici@example.com |
 
 ```graphql
 query {
@@ -219,7 +219,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 'Tici', email: 'tici@example.com' }
+#     { task: 'Use Keystone', createdBy: 'Tici', email: 'tici@example.com' }
 #     { task: 'Setup linter', createdBy: 'Tici', email: 'tici@example.com' }
 #   ]
 # }
@@ -234,10 +234,10 @@ We can avoid the duplicate data by moving it out into its own `User` list:
 
 <code><strong>Todo</strong></code>
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter   | 1           |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | 1           |
+| 2    | Setup Linter | 1           |
 
 <code><strong>User</strong></code>
 
@@ -264,7 +264,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 1 }
+#     { task: 'Use Keystone', createdBy: 1 }
 #     { task: 'Setup linter', createdBy: 1 }
 #   ]
 # }
@@ -335,7 +335,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: { name: 'Tici', email: 'tici@example.com' } }
+#     { task: 'Use Keystone', createdBy: { name: 'Tici', email: 'tici@example.com' } }
 #     { task: 'Setup linter', createdBy: { name: 'Tici', email: 'tici@example.com' } }
 #   ]
 # }
@@ -397,10 +397,10 @@ The data stored in the database for the `createdBy` field will be a single ID:
 
 <code><strong>Todo</strong></code>
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter   | 1           |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | 1           |
+| 2    | Setup Linter | 1           |
 
 <code><strong>User</strong></code>
 
@@ -446,7 +446,7 @@ query {
 # {
 #   User: {
 #     todoList: [
-#       { task: 'Use KeystoneJS' },
+#       { task: 'Use Keystone' },
 #       { task: 'Setup linter' },
 #     ]
 #   ]
@@ -458,13 +458,13 @@ IDs:
 
 <code><strong>Todo</strong></code>
 
-| `id` | `task`         |
-| ---- | -------------- |
-| 1    | Use KeystoneJS |
-| 2    | Setup Linter   |
-| 3    | Be Awesome     |
-| 4    | Write docs     |
-| 5    | Buy milk       |
+| `id` | `task`       |
+| ---- | ------------ |
+| 1    | Use Keystone |
+| 2    | Setup Linter |
+| 3    | Be Awesome   |
+| 4    | Write docs   |
+| 5    | Buy milk     |
 
 <code><strong>User</strong></code>
 
@@ -529,7 +529,7 @@ query {
 # {
 #   User: {
 #     todoList: [
-#       { task: 'Use KeystoneJS' },
+#       { task: 'Use Keystone' },
 #       { task: 'Setup linter' },
 #     ]
 #   ],
@@ -543,13 +543,13 @@ The database would look like:
 
 <code><strong>Todo</strong></code>
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter   | 1           |
-| 3    | Be Awesome     | 2           |
-| 4    | Write docs     | 2           |
-| 5    | Buy milk       | 2           |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | 1           |
+| 2    | Setup Linter | 1           |
+| 3    | Be Awesome   | 2           |
+| 4    | Write docs   | 2           |
+| 5    | Buy milk     | 2           |
 
 <code><strong>User</strong></code>
 

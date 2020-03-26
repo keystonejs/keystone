@@ -6,7 +6,7 @@ order: 1
 
 # Creating a new project
 
-In this guide we will learn how to manually create and run a new KeystoneJS project.
+In this guide we will learn how to manually create and run a new Keystone project.
 
 ## Database preparation
 

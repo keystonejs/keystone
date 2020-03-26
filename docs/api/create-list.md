@@ -225,13 +225,13 @@ query {
 
 ### `singular`
 
-KeystoneJS list names should be singular and KeystoneJS will attempt to determine a plural.
+Keystone list names should be singular and Keystone will attempt to determine a plural.
 
-Where KeystoneJS can't determine a plural you may be forced to use a different list name.
+Where Keystone can't determine a plural you may be forced to use a different list name.
 
 The `singular` option allows you to change the display label for singular items.
 
-E.g. KeystoneJS can't determine a plural for 'Sheep'. Let's change the `singular` option:
+E.g. Keystone can't determine a plural for 'Sheep'. Let's change the `singular` option:
 
 ```javascript
 keystone.createList('WoolyBoi', {
@@ -247,9 +247,9 @@ _Note_: This will override labels in the AdminUI but will not change graphQL que
 
 ### `plural`
 
-KeystoneJS will attempt to determine a plural for list items. Sometimes KeystoneJS will not be able to determine the plural forcing you to change the list name. Or sometimes KeystoneJS may get it wrong, especially for non-English words.
+Keystone will attempt to determine a plural for list items. Sometimes Keystone will not be able to determine the plural forcing you to change the list name. Or sometimes Keystone may get it wrong, especially for non-English words.
 
-E.g. KeystoneJS thinks the correct plural for Octopus is "Octopi". Everyone knows the scientifically accurate plural is "Octopodes":
+E.g. Keystone thinks the correct plural for Octopus is "Octopi". Everyone knows the scientifically accurate plural is "Octopodes":
 
 ```javascript
 keystone.createList('Octopus', {
@@ -266,7 +266,7 @@ Changes the path in the Admin UI. Updating `plural` and `singular` values will n
 
 ### `adapterConfig`
 
-Override the adapter config options for a specific list. Normally `adapterConfig` is provided when initialising KeystoneJS:
+Override the adapter config options for a specific list. Normally `adapterConfig` is provided when initialising Keystone:
 
 ```javascript
 const keystone = new Keystone({

@@ -36,7 +36,7 @@ methods, and other helper utilities.
 ## Implementation
 
 This is the back-end class that implements the field type and its schema in
-KeystoneJS. It implements the GraphQL schema types, custom argument definitions
+Keystone. It implements the GraphQL schema types, custom argument definitions
 and resolvers, as well as Field Config and Admin Meta management.
 
 Back-end logic for value validation, processing and hooks should be implemented

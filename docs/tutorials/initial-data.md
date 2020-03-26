@@ -251,7 +251,7 @@ const keystone = new Keystone({
         { title: 'Hello Everyone' },
         { title: 'Talking about React' },
         { title: 'React is the Best' },
-        { title: 'KeystoneJS Rocks' },
+        { title: 'Keystone Rocks' },
       ],
     });
   },
@@ -286,7 +286,7 @@ const keystone = new Keystone({
         { title: 'Hello Everyone' },
         { title: 'Talking about React' },
         { title: 'React is the Best' },
-        { title: 'KeystoneJS Rocks' },
+        { title: 'Keystone Rocks' },
       ],
     });
   },

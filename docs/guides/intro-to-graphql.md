@@ -7,11 +7,11 @@ order: 1
 
 # GraphQL API Introduction
 
-_Before you begin:_ This guide assumes you have a running instance of KeystoneJS with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
+_Before you begin:_ This guide assumes you have a running instance of Keystone with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
 
-Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any KeystoneJS list.
+Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any Keystone list.
 
-For each list, KeystoneJS generates four top level queries. Given the following example:
+For each list, Keystone generates four top level queries. Given the following example:
 
 ```javascript
 keystone.createList('User', {
@@ -23,7 +23,7 @@ keystone.createList('User', {
 
 ## Queries
 
-KeystoneJS would generate the following queries:
+Keystone would generate the following queries:
 
 - `allUsers`
 - `_allUsersMeta`
@@ -78,7 +78,7 @@ Retrieves meta information about the `User` list itself (i.e. not about items in
 
 ## Mutations
 
-For each list KeystoneJS generates six top level mutations:
+For each list Keystone generates six top level mutations:
 
 - `createUser`
 - `createUsers`
@@ -164,10 +164,10 @@ mutation {
 ## Execution
 
 Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/).
-The default path for KeystoneJS' GraphQl Playground is `http://localhost:3000/admin/graphql`.
-Here you can execute queries and mutations against the KeystoneJS API without writing any JavaScript.
+The default path for Keystone' GraphQl Playground is `http://localhost:3000/admin/graphql`.
+Here you can execute queries and mutations against the Keystone API without writing any JavaScript.
 
-Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to KeystoneJS' API. The default API endpoint is: `http://localhost:3000/admin/api`.
+Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to Keystone' API. The default API endpoint is: `http://localhost:3000/admin/api`.
 
 In our examples we're going to use the browser's [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make a `POST` request.
 

@@ -6,7 +6,7 @@ subSection: advanced
 
 # Custom mutations
 
-Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
+Out of the box Keystone provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
 
 ## Introduction
 

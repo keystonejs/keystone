@@ -84,8 +84,8 @@ const server = new WebServer(keystone, {
 });
 ```
 
-Next, start the KeystoneJS server but include a `DUMP_SCHEMA` environment variable.
-This will output the KeystoneJS schema to the given path
+Next, start the Keystone server but include a `DUMP_SCHEMA` environment variable.
+This will output the Keystone schema to the given path
 (ready for us to upload to Apollo Engine!):
 
 ```bash
@@ -132,7 +132,7 @@ node -r dotenv/config index.js
 
 _(Note: you do not need the `DUMP_SCHEMA` environment variable when starting the
 server - it is only used for exporting an updated schema and should not be set
-when trying to start the KeystoneJS GraphQL API)_
+when trying to start the Keystone GraphQL API)_
 
 Apollo Server will read the `ENGINE_API_KEY` env var and start sending GraphQL
 stats to Apollo Engine.
