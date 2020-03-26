@@ -12,12 +12,11 @@ title: Color
 keystone.createList('Product', {
   fields: {
     heroColor: { type: Color },
-    // ...
   },
 });
 ```
 
-### Config
+## Config
 
 | Option       | Type      | Default | Description                                                     |
 | ------------ | --------- | ------- | --------------------------------------------------------------- |

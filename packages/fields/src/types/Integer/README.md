@@ -23,5 +23,3 @@ keystone.createList('Review', {
 | ------------ | --------- | ------- | --------------------------------------------------------------- |
 | `isRequired` | `Boolean` | `false` | Does this field require a value?                                |
 | `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
-
----

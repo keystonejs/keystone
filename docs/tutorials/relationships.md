@@ -1,14 +1,18 @@
 <!--[meta]
 section: tutorials
-title: Creating Relationships Between Lists
+title: Creating relationships
 order: 4
 [meta]-->
 
-# Creating Relationships Between Lists
+# Creating relationships
 
-This chapter assumes that that the reader has the code that was created in [Setup - Chapter 1](https://www.keystonejs.com/tutorials/new-project) and [Setup - Chapter 2](https://www.keystonejs.com/tutorials/add-lists).
+This chapter assumes that that the reader has the code that was created in the
+previous tutorials:
 
-## Pick assignee from Users collection (to-single relationship)
+1. [Creating a new project](/docs/tutorials/new-project.md)
+2. [Adding lists](/docs/tutorials/add-lists.md)
+
+## To-single relationship
 
 Let's link the Todo list and the User list together by setting up
 a `relationship`. Tweak the `assignee` field in `Todos.js` to match the following code:
@@ -19,48 +23,43 @@ Import the `Relationship` field:
 const { Text, CalendarDay, Checkbox, Relationship } = require('@keystonejs/fields');
 ```
 
-Old code:
+Update the field type from `Text` to `Relationship` and provide a `ref` that
+points to which list the field is related to.
 
-```javascript
+```diff
 assignee: {
-  type: Text,
+-  type: Text,
++  type: Relationship,
++  ref: 'User',
   isRequired: true,
-},
+}
 ```
 
-New code:
+The `ref` option defines the `List` to which we will relate. The name assigned
+to the option is the same name that is passed to `createList`. In the Admin UI
+you can now pick one of the created users to make them responsible for
+completing the task.
+
+## Two-way to-single relationship
+
+It is now possible to assign a task to a user, but it is not possible to assign
+the user to a task! In `Users.js` add the following field:
 
 ```javascript
-assignee: {
+task: {
   type: Relationship,
-  ref: 'User',
-  isRequired: true,
+  ref: 'Todo',
 },
 ```
 
-The `ref` option defines the `List` to which we will relate. The name assigned to the option is the same name that is passed to `createList`. In the Admin UI you can now pick one of the created users to make them responsible for completing the task.
+Now we can set a task for the User from the admin panel. But something is wrong!
+When we pick a task for the user and then check this task, the assignee is
+incorrect. This can be solved by using a `Back Reference`.
 
-## Pick task from Todos collection (two-way to-single relationship)
+## Back references
 
-It is now possible to assign a task to a user, but it is not possible to assign the user to a task! Let's fix this.
-In `Users.js` add the following:
-
-```javascript
-module.exports = {
-  // ...
-  task: {
-    type: Relationship,
-    ref: 'Todo',
-  },
-};
-```
-
-Now we can set a task for the User from the admin panel. But something is wrong! When we pick a task for the user and then check this task, the assignee is incorrect. This can be solved by using a `Back Reference`.
-
-## Enabling Back Reference between Users and Todos
-
-`Back References` are Keystone's mechanism that can overwrite fields of the referenced entity.
-It is better seen in action, so let's write some code first.
+`Back references` are Keystone's mechanism that can overwrite fields of the
+referenced entity. It is better seen in action, so let's write some code first.
 
 In `Users.js` adjust the `task` field to the following:
 
@@ -80,7 +79,10 @@ assignee: {
 }
 ```
 
-Start the Admin UI and create a Todo and assign a user. Check the user's `task` field and notice that it is already set! When a user is created and a Todo is assigned, the `assignee` field won't be filled in. Add the following code to make it work both ways:
+Start the Admin UI and create a Todo and assign a user. Check the user's `task`
+field and notice that it is already set! When a user is created and a Todo is
+assigned, the `assignee` field won't be filled in. Add the following code to
+make it work both ways:
 
 ```javascript
 task: {
@@ -89,7 +91,8 @@ task: {
 }
 ```
 
-To test it out, remove the `isRequired: true` property from the `assignee` field in the `Todos` file:
+To test it out, remove the `isRequired: true` property from the `assignee` field
+in the `Todos` file:
 
 ```diff
 assignee: {
@@ -99,12 +102,14 @@ assignee: {
 },
 ```
 
-Create a Todo without assigning it to a user. Then go to a user, assign a Todo to the `task` field. Go back to the todo and notice that the `assignee` field has been filled in.
+Create a Todo without assigning it to a user. Then go to a user, assign a Todo
+to the `task` field. Go back to the todo and notice that the `assignee` field
+has been filled in.
 
-## Assigning multiple tasks to a user (to-many relationship)
+## To-many relationship
 
-What if a user needs to be able to do multiple tasks? Keystone provides a way to do this easily.
-Take a look at following code in `Users.js`:
+What if a user needs to be able to do multiple tasks? Keystone provides a way to
+do this easily. Take a look at following code in `Users.js`:
 
 ```javascript
 tasks: {
@@ -114,7 +119,15 @@ tasks: {
 }
 ```
 
-The `many: true` option indicates that `User` can store multiple references to tasks. Note that we've changed `task` to `tasks`. Copy this code to your application and don't forget to change the `assignee` field in `Todos.js` to match the new field name `User.tasks`. Now in the Admin UI you can pick multiple tasks for a user.
+The `many: true` option indicates that `User` can store multiple references to
+tasks.
+
+> **Note:** we've updated the name of the field from `task` to `tasks` to
+> indicate the nature of the relationship.
+
+Copy this code to your application and don't forget to change the `assignee`
+field in `Todos.js` to match the new field name `User.tasks`. Now in the Admin
+UI you can pick multiple tasks for a user.
 
 See also:
 

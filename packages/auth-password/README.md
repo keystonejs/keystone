@@ -1,16 +1,17 @@
 <!--[meta]
 section: api
 subSection: authentication-strategies
-title: Password Auth Strategy
+title: Password auth strategy
 order: 1
 [meta]-->
 
-# Password Auth Strategy
+# Password auth strategy
 
-Authenticates party (often a user) based on their presentation of a credential pair.
-The credential pair consists of an identifier and a secret (often an email address and password).
+Authenticates a party (often a user) based on their presentation of a credential
+pair. The credential pair consists of an identifier and a secret (often an email
+address and password).
 
-### Usage
+## Usage
 
 Assuming a list of users such as:
 
@@ -19,7 +20,6 @@ keystone.createList('User', {
   fields: {
     username: { type: Text },
     password: { type: Password },
-    // Other fields ..
   },
 });
 ```
@@ -37,7 +37,7 @@ const authStrategy = keystone.createAuthStrategy({
 });
 ```
 
-**Note:** The auth strategy must be created after the User list.
+> **Note:** The auth strategy must be created after the User list.
 
 Later, the admin UI authentication handler will do something like this:
 
@@ -53,7 +53,6 @@ app.post('/admin/signin', async (req, res) => {
 
   if (result.success) {
     // Create session and redirect
-    // ..
   }
 
   // Return the failure
@@ -61,7 +60,7 @@ app.post('/admin/signin', async (req, res) => {
 });
 ```
 
-### Config
+## Config
 
 | Option              | Type      | Default    | Description                                                               |
 | ------------------- | --------- | ---------- | ------------------------------------------------------------------------- |
@@ -69,13 +68,13 @@ app.post('/admin/signin', async (req, res) => {
 | `secret`            | `String`  | `password` | The field `path` for secret values known only to the authenticating party |
 | `protectIdentities` | `Boolean` | `false`    | Protect identities at the expense of usability                            |
 
-#### `identity`
+### `identity`
 
 The field `path` for values that _uniquely_ identifies items.
 For human actors this is usually a field that contains usernames or email addresses.
 For automated access, the `id` may be appropriate.
 
-#### `secret`
+### `secret`
 
 The field `path` for secret values known only to the authenticating party.
 The type used by this field must expose a comparison function with the signature
@@ -86,7 +85,7 @@ The type used by this field must expose a comparison function with the signature
 
 The build in `Password` field type fulfils this requirements.
 
-#### `protectIdentities`
+### `protectIdentities`
 
 Generally, KeystoneJS strives to provide users with detailed error messages.
 In the context of authentication this is often not desirable.
@@ -115,7 +114,7 @@ This aligns with the Open Web Application Security Project (OWASP)
 [authentication guidelines](https://www.owasp.org/index.php/Authentication_Cheat_Sheet#Authentication_Responses)
 which state:
 
-> An application should respond with a generic error message regardless of whether the user ID or password was incorrect.
+> **Note:** An application should respond with a generic error message regardless of whether the user ID or password was incorrect.
 > It should also give no indication to the status of an existing account.
 
 Efforts are also taken to protect against timing attacks.

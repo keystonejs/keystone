@@ -220,7 +220,7 @@ const ListItem = props => (
         whiteSpace: 'nowrap',
 
         ':hover, :focus': {
-          color: colors.N80,
+          color: colors.B.base,
           textDecoration: 'none',
         },
         ':active': {

@@ -1,12 +1,14 @@
 <!--[meta]
 section: guides
-title: Custom Mutations
+title: Custom mutations
 subSection: advanced
 [meta]-->
 
-# Custom Mutations
+# Custom mutations
 
-Out of the box KeystoneJS provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
+Out of the box Keystone provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
+
+## Introduction
 
 The automatically generated GraphQL API should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
 
@@ -14,7 +16,7 @@ Adding to Keystone's generated schema can be done using the [`keystone.extendGra
 
 See the [GraphQL Philosophy](/docs/guides/graphql-philosophy.md) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
 
-## Creating a Custom Mutation
+## Creating a custom mutation
 
 A common example where a custom mutation might be beneficial is if you want to increment a value.
 
@@ -119,7 +121,7 @@ const incrementPageViews = async (_, { id }) => {
 };
 ```
 
-Note: The value of `views` may be `undefined` initially, so before we increment it we make sure to convert any `falsey` values to `0`.
+> **Note:** The value of `views` may be `undefined` initially, so before we increment it we make sure to convert any `falsey` values to `0`.
 
 Our custom mutation is now available to the client that can use it to increment page views like this:
 
@@ -134,4 +136,8 @@ mutation incrementPageViews($id: ID!) {
 
 Custom mutations can be used for actions like increment that require a single operation that should not rely on data from the client but can also be used for operations that have side effects not related to updating lists.
 
-Note: We used a custom mutation to increase the reliability of operations like increment because client requests can be received out of order. Whilst a custom mutation is a huge improvement, it is not a completely transactional in every situation. The `incrementPageViews` function is asynchronous. This means it awaits database operations like `findById` and `update`. Depending on your server environment database operations, just like like http requests, can be returned in a different order than executed in JavaScript. In this example we've reduced the window this can occur in from seconds to milliseconds. It's not likely a problem for simple page views but you may want to consider implementing database transactions where accuracy is absolutely critical.
+> **Note:** We used a custom mutation to increase the reliability of operations like increment because client requests can be received out of order.
+
+Whilst a custom mutation is a huge improvement, it is not completely transactional in every situation. The `incrementPageViews` function is asynchronous. This means it awaits database operations like `findById` and `update`. Depending on your server environment database operations, just like http requests, can be returned in a different order than executed in JavaScript.
+
+In this example we've reduced the window this can occur in from seconds to milliseconds. It's not likely a problem for simple page views but you may want to consider implementing database transactions where accuracy is absolutely critical.

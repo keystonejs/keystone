@@ -33,7 +33,7 @@ There may be complementary services, plugins or packages that tie in with the ab
 
 We also want to ensure Keystone works well with static sites and serverless architecture. This goal will help keep Keystone light-weight, nimble, customisable and not tied to a specific architecture, in-line with our core goals.
 
-## Our Current Focus
+## Our current focus
 
 A lot of work has been done on Keystone's core architecture. In this area Keystone 5 is significantly more mature than Keystone 4 was. We'd like to add database transactions, slightly refactor some of the internal workings of relationship fields and make the experience of database migrations easier. Aside from this we imagine the core architecture will remain largely the same.
 
@@ -62,9 +62,9 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 - Allow upsert mutations ([#182](https://github.com/keystonejs/keystone-5/issues/182))
 - Auth Strategy and Authentication improvement ([#878](https://github.com/keystonejs/keystone-5/issues/878))
 
-### Developer Experience & Maintenance
+### DX and maintenance
 
-- Creating custom field types ([#1054](https://github.com/keystonejs/keystone-5/issues/1054), [#1218](https://github.com/keystonejs/keystone-5/issues/1218))
+- Creating custom field types ([#1054](https://github.com/keystonejs/keystone-5/issues/1054))
 - Creating new adapters
 - Error messages ([#1659](https://github.com/keystonejs/keystone-5/issues/1659))
 - Improve the speed of our CI ([#1672](https://github.com/keystonejs/keystone-5/issues/1672))
@@ -74,8 +74,6 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 - Plugin Architecture ([#1489](https://github.com/keystonejs/keystone-5/issues/1489))
 - Relationship field types ([#1322](https://github.com/keystonejs/keystone-5/issues/1322))
 
-### High Priority Bugs
+### High priority bugs
 
-- Removing items form to many relationships ([#1548](https://github.com/keystonejs/keystone-5/issues/1548))
-- Create form submits unedited values ([#1398](https://github.com/keystonejs/keystone-5/issues/1398))
 - Create many mutation not connecting relationships ([#1318](https://github.com/keystonejs/keystone-5/issues/1318))

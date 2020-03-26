@@ -1,13 +1,13 @@
 <!--[meta]
 section: guides
-title: GraphQL Performance Monitoring
+title: Performance monitoring
 subSection: graphql
 order: 2
 [meta]-->
 
-# GraphQL Performance Monitoring
+# GraphQL performance monitoring
 
-## Query Performance Monitoring with Apollo Engine
+## Apollo Engine
 
 The GraphQL stack in keystone-alpha is powered by [Apollo Server](https://www.apollographql.com/docs/apollo-server/),
 which comes with performance monitoring built in via the [Apollo Engine](https://engine.apollographql.com).
@@ -23,9 +23,9 @@ including:
 
 [Apollo Engine Query Trace Example](./apollo-engine-trace.png)
 
-### Setting up Apollo Engine
+### Setup
 
-#### Apollo Engine Account
+#### Account
 
 Sign up for an [Apollo Engine](https://engine.apollographql.com) account.
 
@@ -42,11 +42,9 @@ we'll need to upload the schema a slightly different way to account for any
 
 Create the `.env` file as suggested:
 
-```.env
+```bash
 ENGINE_API_KEY=service:tests:C-ddserkuj5-BU-2345jf
 ```
-
-_(👆 that's not a real key!)_
 
 Create a file `apollo.config.js`:
 
@@ -58,7 +56,7 @@ module.exports = {
 };
 ```
 
-#### Push Schema To Apollo Engine
+#### Push schema to Apollo Engine
 
 We will use the `keystone.dumpSchema()` command to create a schema we can upload
 to Apollo Engine.
@@ -86,15 +84,15 @@ const server = new WebServer(keystone, {
 });
 ```
 
-Next, start the KeystoneJS server but include a `DUMP_SCHEMA` environment variable.
-This will output the KeystoneJS schema to the given path
+Next, start the Keystone server but include a `DUMP_SCHEMA` environment variable.
+This will output the Keystone schema to the given path
 (ready for us to upload to Apollo Engine!):
 
-```shell
+```bash
 DUMP_SCHEMA=./schema.graphql node index.js
 ```
 
-_Note `./schema.graphql` is the same path we set in `apollo.config.js`_
+> **Note:** `./schema.graphql` is the same path we set in `apollo.config.js`
 
 `schema.graphql` should look something like:
 
@@ -111,7 +109,7 @@ input GroupRelateToOneInput {
 
 Now we can push our generated schema to Apollo Engine with the command:
 
-```shell
+```bash
 npx apollo service:push
 ```
 
@@ -128,13 +126,13 @@ Wait for Apollo Engine to show the newly uploaded service:
 Ensure your application is reading `.env` environment variables on boot.
 We recommend the [`dotenv`](https://www.npmjs.com/package/dotenv) library for this:
 
-```shell
+```bash
 node -r dotenv/config index.js
 ```
 
 _(Note: you do not need the `DUMP_SCHEMA` environment variable when starting the
 server - it is only used for exporting an updated schema and should not be set
-when trying to start the KeystoneJS GraphQL API)_
+when trying to start the Keystone GraphQL API)_
 
 Apollo Server will read the `ENGINE_API_KEY` env var and start sending GraphQL
 stats to Apollo Engine.
@@ -160,4 +158,4 @@ const server = new WebServer(keystone, {
 });
 ```
 
-See [the Apollo Server docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#EngineReportingOptions) for more options.
+See the [Apollo Server docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#EngineReportingOptions) for more options.

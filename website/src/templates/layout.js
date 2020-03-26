@@ -102,21 +102,17 @@ export const Layout = ({ children }) => {
 // Layout
 // ==============================
 
-const layoutGutter = gridSize * 4;
-
 export const Content = props => (
   <main
     css={{
       minWidth: 0,
       lineHeight: '1.6',
-      paddingBottom: '3rem',
-      paddingTop: layoutGutter,
 
       [mediaMax.sm]: {
         padding: gridSize * 2,
       },
       [media.sm]: {
-        paddingLeft: layoutGutter,
+        paddingLeft: gridSize * 6,
       },
 
       // TODO: doesn't play nice with "gatsby-resp-image-wrapper"
@@ -186,6 +182,9 @@ export const Content = props => (
         },
 
         [mediaMax.sm]: {
+          borderRadius: 0,
+          borderLeft: 0,
+          borderRight: 0,
           marginLeft: -CONTAINER_GUTTERS[0],
           marginRight: -CONTAINER_GUTTERS[0],
         },

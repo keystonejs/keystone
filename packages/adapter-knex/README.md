@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: database-adapters
-title: Knex Adapter
+title: Knex adapter
 [meta]-->
 
-# Knex Database Adapter
+# Knex database adapter
 
 The [Knex](https://knexjs.org/#changelog) adapter is a general purpose adapter which can be used to connect to a range of different database backends.
 At present, the only fully tested backend is `Postgres`, however Knex gives the potential for `MSSQL`, `MySQL`, `MariaDB`, `SQLite3`, `Oracle`, and `Amazon Redshift` to be supported.
@@ -16,25 +16,25 @@ const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
-  adapter: new KnexAdapter(),
+  adapter: new KnexAdapter({...}),
 });
 ```
 
-## API `new KnexAdapter(options)`
+## Config
 
-### `options.schemaName`
+### `schemaName`
 
 _**Default:**_ `'public'`
 
 All postgres tables are grouped within a schema and `public` is the default schema.
 
-### `options.dropDatabase`
+### `dropDatabase`
 
 _**Default:**_ `false`
 
 Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application. This option is ignored in production, i.e. when the environment variable NODE_ENV === 'production'.
 
-### `options.knexOptions`
+### `knexOptions`
 
 These options are passed directly through to Knex.
 
@@ -61,7 +61,7 @@ or `'postgres://localhost/<DATABASE_NAME>'`where `DATABASE_NAME` is be derived f
 
 To log all Knex queries, run the server with the environment variable `DEBUG=knex:query`.
 
-## Setting Up a Database
+## Setup
 
 Before running Keystone with the Knex adapter you should configure a database. By default Knex will look for a Postgres database on the default port, matching the project name, as the current user.
 

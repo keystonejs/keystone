@@ -1,14 +1,14 @@
 <!--[meta]
 section: api
 subSection: apps
-title: GraphQL API
+title: GraphQL app
 [meta]-->
 
-# GraphQL App
+# GraphQL app
 
-A KeystoneJS App that creates a GraphQL API and GraphiQL playground.
+A KeystoneJS app that creates a GraphQL API and [GraphiQL](https://github.com/graphql/graphiql/blob/master/packages/graphiql/README.md) playground.
 
-The GraphiQL playground is disabled in production mode.
+> **Note:** The GraphiQL playground is disabled in production mode.
 
 For information about writing queries and mutations for KeystoneJS see the [Introduction to KeystoneJS' GraphQL API](https://keystonejs.com/guides/intro-to-graphql).
 
