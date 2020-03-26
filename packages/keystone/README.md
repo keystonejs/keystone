@@ -133,7 +133,6 @@ Please note: We use these internally but provide no support or assurance if used
 | `getTypeDefs`         | Remove from user documentation?                                              |
 | `getResolvers`        | Remove from user documentation?                                              |
 | `registerSchema`      | Remove from user documentation?                                              |
-| `getAccessContext`    | Remove from user documentation?                                              |
 | `createItem`          | Remove from user documentation?                                              |
 | `getAdminMeta`        | Remove from user documentation?                                              |
 
