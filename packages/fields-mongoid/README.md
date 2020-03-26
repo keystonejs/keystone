@@ -76,15 +76,15 @@ See the the [Casing section](#casing).
 
 ## Storage
 
-### Mongoose adaptor
+### Mongoose adapter
 
-The Mongoose adaptor uses the [native Mongo `ObjectId` schema type](https://mongoosejs.com/docs/schematypes.html#objectids).
+The Mongoose adapter uses the [native Mongo `ObjectId` schema type](https://mongoosejs.com/docs/schematypes.html#objectids).
 Internally, the 12-byte value are stored in a binary format.
 Mongoose automatically and transparently converts to and from the 24 char hexadecimal representation when reading and writing.
 
-### Knex Adaptor
+### Knex Adapter
 
-The Knex adaptor adds 24 character [string field](https://knexjs.org/#Schema-string) to the schema.
+The Knex adapter adds 24 character [string field](https://knexjs.org/#Schema-string) to the schema.
 This resolves down to `varchar(24)`, `character varying(24)` or similar, depending on the underlying DB platform.
 
 Values stored are forced to lowercase on read and write to avoid issues with case-sensitive string comparisons.

@@ -52,14 +52,14 @@ The `Checkbox` field type doesn't support indexes or unique enforcement.
 
 ## Storage
 
-### Mongoose adaptor
+### Mongoose adapter
 
 In Mongoose the field is added using the `Boolean` schema type.
 
 The `isRequired` config option is enforces by KeystoneJS only.
 
-### Knex adaptor
+### Knex adapter
 
-The Knex adaptor uses the [Knex `boolean` type](https://knexjs.org/#Schema-boolean):
+The Knex adapter uses the [Knex `boolean` type](https://knexjs.org/#Schema-boolean):
 
 The `isRequired` config option is enforces by KeystoneJS and, if equal to `true`, the column is set as not nullable.

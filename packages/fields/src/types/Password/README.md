@@ -125,11 +125,11 @@ As such `Password` fields do _not_ add a `String` output field.
 
 The value stored is a bcrypt hash of the string provided.
 
-### Mongoose adaptor
+### Mongoose adapter
 
 The hash is stored at `${path}` as a `String`.
 
-### Knex adaptor
+### Knex adapter
 
 The hash is stored at `${path}` using the
 [Knex `string` type](https://knexjs.org/#Schema-string) with a max length of 60.
