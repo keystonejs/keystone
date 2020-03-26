@@ -121,7 +121,7 @@ Only static hints are supported for fields.
 
 ## Native type aliases
 
-Keystone allows the use of a new native types in place of field types.
+Keystone allows the use of a few native types in place of field types.
 
 | Native type | Field type equivalent |
 | ----------- | --------------------- |
