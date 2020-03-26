@@ -92,7 +92,7 @@ This will output the Keystone schema to the given path
 DUMP_SCHEMA=./schema.graphql node index.js
 ```
 
-_Note `./schema.graphql` is the same path we set in `apollo.config.js`_
+> **Note:** `./schema.graphql` is the same path we set in `apollo.config.js`
 
 `schema.graphql` should look something like:
 

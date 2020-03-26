@@ -79,8 +79,8 @@ type User {
 }
 ```
 
-_(NOTE: Only a subset of all the generated types/mutations/queries are shown
-here. To see a more complete example [follow the Quick Start](/docs/quick-start/README.md).)_
+> **Note:** Only a subset of all the generated types/mutations/queries are shown
+> here. To see a more complete example [follow the Quick Start](/docs/quick-start/README.md)
 
 ### Customising lists and fields
 

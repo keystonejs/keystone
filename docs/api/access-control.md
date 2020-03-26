@@ -104,8 +104,8 @@ Definition of `access` operations:
 When access is denied, the GraphQL response will contain an error with
 `type: 'AccessDeniedError'`, and `null` for the data.
 
-_Note_: The `create` operation cannot be given `DeclarativeAccess` - it does not
-make sense to do so and will throw an error if attempted.
+> **Note:** The `create` operation cannot be given `DeclarativeAccess` - it does not
+> make sense to do so and will throw an error if attempted.
 
 Let's break it down into concrete examples:
 

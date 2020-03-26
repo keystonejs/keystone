@@ -43,7 +43,7 @@ module.exports = {
 | `list`   | `String`       | (required) | The list that contains an authenticated item, for example a user. |
 | `config` | `Object`       | `{}`       | Strategy-specific config options.                                 |
 
-_Note_: Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
+> **Note:** Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
 
 ### `type`
 

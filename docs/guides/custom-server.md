@@ -70,7 +70,7 @@ module.exports = {
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 
-const keystone = new Keystone(/* ... */);
+const keystone = new Keystone({...});
 
 module.exports = {
   keystone,
