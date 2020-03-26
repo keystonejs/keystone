@@ -96,3 +96,9 @@ Add the `authStrategy` config back to the `new AdminUIApp()` call
 Restart your Keystone App once more, and try to visit <http://localhost:3000/admin/users>; you will be presented with the login screen.
 
 Finally; login with the newly created `User`'s credentials.
+
+### Controlling access to the Admin UI
+
+By default, any _authenticated_ user will be able to access the Admin UI. To restrict access, use the `isAccessAllowed` config option.
+
+See the [Admin UI app](https://www.keystonejs.com/keystonejs/app-admin-ui/) docs for more details.
