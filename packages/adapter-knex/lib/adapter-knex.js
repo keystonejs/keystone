@@ -342,7 +342,7 @@ class KnexListAdapter extends BaseListAdapter {
       await this._query()
         .insert(realData)
         .into(this.tableName)
-        .returning('*')
+        // .returning('*')
     )[0];
     return { item, itemId: item.id };
   }
@@ -923,13 +923,13 @@ class KnexFieldAdapter extends BaseFieldAdapter {
       // MySQL is case insensitive by default
       // Related issue: https://stackoverflow.com/questions/7857669/mysql-case-sensitive-query
       return {
-        [`${this.path}_contains`]: (value) => (b) => b.where(dbPath, 'LIKE', `%${value}%`),
-        [`${this.path}_not_contains`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', `%${value}%`).orWhereNull(dbPath),
-        [`${this.path}_starts_with`]: (value) => (b) => b.where(dbPath, 'LIKE', `${value}%`),
-        [`${this.path}_not_starts_with`]: (value) => (b) =>
+        [`${this.path}_contains_i`]: (value) => (b) => b.where(dbPath, 'LIKE', `%${value}%`),
+        [`${this.path}_not_contains_i`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', `%${value}%`).orWhereNull(dbPath),
+        [`${this.path}_starts_with_i`]: (value) => (b) => b.where(dbPath, 'LIKE', `${value}%`),
+        [`${this.path}_not_starts_with_i`]: (value) => (b) =>
             b.where(dbPath, 'NOT', 'LIKE', `${value}%`).orWhereNull(dbPath),
-        [`${this.path}_ends_with`]: (value) => (b) => b.where(dbPath, 'LIKE', `%${value}`),
-        [`${this.path}_not_ends_with`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', `%${value}`).orWhereNull(dbPath)
+        [`${this.path}_ends_with_i`]: (value) => (b) => b.where(dbPath, 'LIKE', `%${value}`),
+        [`${this.path}_not_ends_with_i`]: (value) => (b) => b.where(dbPath, 'NOT', 'LIKE', `%${value}`).orWhereNull(dbPath)
       };
     }
     return {};
