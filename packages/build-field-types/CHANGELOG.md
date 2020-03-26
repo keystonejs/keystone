@@ -1,5 +1,11 @@
 # @keystonejs/build-field-types
 
+## 5.2.4
+
+### Patch Changes
+
+- [`7c9d36a2`](https://github.com/keystonejs/keystone/commit/7c9d36a2d5002258964cbd9414766ee244945005) [#2570](https://github.com/keystonejs/keystone/pull/2570) Thanks [@jesstelford](https://github.com/jesstelford)! - Updated `@babel/core` to latest version: v7.9.0
+
 ## 5.2.3
 
 ### Patch Changes

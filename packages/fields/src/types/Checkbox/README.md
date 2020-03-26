@@ -15,7 +15,6 @@ keystone.createList('Products', {
   fields: {
     name: { type: Text },
     isEnabled: { type: Checkbox, isRequired: true },
-    // ...
   },
 });
 ```
@@ -32,13 +31,13 @@ The `Checkbox` field type doesn't support indexes or unique enforcement.
 
 `Uuid` fields use the `Boolean` type in GraphQL.
 
-### Input Fields
+### Input fields
 
 | Field name | Type      | Description            |
 | :--------- | :-------- | :--------------------- |
 | `${path}`  | `Boolean` | The value to be stored |
 
-### Output Fields
+### Output fields
 
 | Field name | Type      | Description      |
 | :--------- | :-------- | :--------------- |
@@ -53,13 +52,13 @@ The `Checkbox` field type doesn't support indexes or unique enforcement.
 
 ## Storage
 
-### Mongoose Adaptor
+### Mongoose adaptor
 
 In Mongoose the field is added using the `Boolean` schema type.
 
 The `isRequired` config option is enforces by KeystoneJS only.
 
-### Knex Adaptor
+### Knex adaptor
 
 The Knex adaptor uses the [Knex `boolean` type](https://knexjs.org/#Schema-boolean):
 

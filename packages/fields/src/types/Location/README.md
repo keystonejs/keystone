@@ -14,7 +14,7 @@ The Location Field Type enables storing data from the Google Maps API.
 const { Location } = require('@keystonejs/fields');
 const { Keystone } = require('@keystonejs/keystone');
 
-const keystone = new Keystone(/* ... */);
+const keystone = new Keystone({...});
 
 keystone.createList('Event', {
   fields: {
@@ -28,8 +28,6 @@ keystone.createList('Event', {
 
 ## GraphQL
 
-**Query**
-
 ```graphql
 query {
   allEvents {
@@ -42,24 +40,26 @@ query {
     }
   }
 }
+```
 
-# Result:
+Will yield:
 
-# {
-#   "data": {
-#     "allEvents": [
-#       {
-#         "venue": {
-#           "id": "1",
-#           googlePlaceID: "ChIJOza7MD-uEmsRrf4t12uji6Y",
-#           "formattedAddress": "10/191 Clarence St, Sydney NSW 2000, Australia",
-#           "lat": -33.869374,
-#           "lng": 151.205097
-#         }
-#       }
-#     ]
-#   }
-# }
+```javascript
+{
+  "data": {
+    "allEvents": [
+      {
+        "venue": {
+          "id": "1",
+          "googlePlaceID": "ChIJOza7MD-uEmsRrf4t12uji6Y",
+          "formattedAddress": "10/191 Clarence St, Sydney NSW 2000, Australia",
+          "lat": -33.869374,
+          "lng": 151.205097
+        }
+      }
+    ]
+  }
+}
 ```
 
 ### Mutations
@@ -78,17 +78,20 @@ mutation {
     }
   }
 }
+```
 
-# Result:
-# {
-#   "createEvent": {
-#     "venue": {
-#       "id": "1",
-#       googlePlaceID: "ChIJOza7MD-uEmsRrf4t12uji6Y",
-#       "formattedAddress": "10/191 Clarence St, Sydney NSW 2000, Australia",
-#       "lat": -33.869374,
-#       "lng": 151.205097
-#     }
-#   }
-# }
+Results in:
+
+```javascript
+{
+  "createEvent": {
+    "venue": {
+      "id": "1",
+      "googlePlaceID": "ChIJOza7MD-uEmsRrf4t12uji6Y",
+      "formattedAddress": "10/191 Clarence St, Sydney NSW 2000, Australia",
+      "lat": -33.869374,
+      "lng": 151.205097
+    }
+  }
+}
 ```

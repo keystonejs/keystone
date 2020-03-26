@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 5.4.0
+
+### Minor Changes
+
+- [`663ae7b4`](https://github.com/keystonejs/keystone/commit/663ae7b453f450f077795fbbc6c9f138e6b27f52) [#2552](https://github.com/keystonejs/keystone/pull/2552) Thanks [@timleslie](https://github.com/timleslie)! - Added `asyncForEach` to `utils` package for iteratively executing an async function over an array.
+
 ## 5.3.0
 
 ### Minor Changes
