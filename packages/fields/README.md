@@ -38,6 +38,8 @@ In addition to these are some other complex types that have their own package su
 Fields definitions are provided when creating a list. Field definitions should be an object where the key is the field name and the value is an object containing the fields config:
 
 ```javascript
+const { Text } = require('@keystonejs/fields');
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },

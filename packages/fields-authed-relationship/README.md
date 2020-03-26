@@ -40,6 +40,9 @@ keystone.createList('Post', {
 This example allows "admins" to overwrite the value
 
 ```js
+const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
+const { Checkbox } = require('@keystonejs/fields');
+
 keystone.createList('User', {
   fields: {
     name: { type: String },
