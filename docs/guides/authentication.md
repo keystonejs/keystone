@@ -115,7 +115,7 @@ Authenticate and return the ID of the newly authenticated user:
 
 ```graphql
 mutation signin($identity: String, $secret: String) {
-  authenticate: authenticateUserWithPassword(${identityField}: $identity, ${secretField}: $secret) {
+  authenticate: authenticateUserWithPassword(email: $identity, password: $secret) {
     item {
       id
     }
