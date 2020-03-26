@@ -110,6 +110,7 @@ const keystone = new Keystone({
 | Method                | Description                                                                  |
 | --------------------- | ---------------------------------------------------------------------------- |
 | `connect`             | Manually connect to Adapters.                                                |
+| `createAuthStrategy`  | Creates a new authentication middleware instance.                            |
 | `createItems`         | Add items to a `Keystone` list.                                              |
 | `createList`          | Add a list to the `Keystone` schema.                                         |
 | `disconnect`          | Disconnect from all adapters.                                                |
