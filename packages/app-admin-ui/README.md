@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 subSection: apps
-title: Admin UI
+title: Admin UI app
 [meta]-->
 
 # Admin UI app

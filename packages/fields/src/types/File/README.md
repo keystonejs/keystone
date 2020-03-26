@@ -37,4 +37,4 @@ keystone.createList('Applicant', {
 | `route`      | `String`  | `null`   |                                                                                                      |
 | `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                                     |
 
-_Note:_ `adapter` currently may be one of `LocalFileAdapter` or `CloudinaryFileAdapter`.
+> **Note:** `adapter` currently may be one of `LocalFileAdapter` or `CloudinaryFileAdapter`.

@@ -16,7 +16,7 @@ keystone.createList('Orders', {
 });
 ```
 
-### Config
+## Config
 
 | Option       | Type      | Default | Description                                                             |
 | ------------ | --------- | ------- | ----------------------------------------------------------------------- |
