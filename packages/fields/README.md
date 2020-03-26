@@ -118,3 +118,41 @@ _Note_: Field level access control does not accept graphQL where clauses.
 [HTTP cache hint](https://keystonejs.com/api/create-list#cacheHint) for field.
 
 Only static hints are supported for fields.
+
+## Native type aliases
+
+Keystone allows the use of a new native types in place of field types.
+
+| Native type | Field type equivalent |
+| ----------- | --------------------- |
+| `Boolean`   | `Checkbox`            |
+| `Number`    | `Float`               |
+| `String`    | `Text`                |
+
+### Usage
+
+This...
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: {
+      type: String,
+    }
+  }
+}
+```
+
+... is functionally equivalent to this:
+
+```javascript
+const { Text } = require('@keystonejs/fields');
+
+keystone.createList('Post', {
+  fields: {
+    title: {
+      type: Text,
+    }
+  }
+}
+```
