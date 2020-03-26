@@ -338,12 +338,30 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _createSingle(realData) {
-    const item = (
-      await this._query()
-        .insert(realData)
-        .into(this.tableName)
-        .returning('*')
-    )[0];
+    let item = null;
+    if (this.parentAdapter.isClientPostgres) {
+      item = (
+        await this._query()
+          .insert(realData)
+          .into(this.tableName)
+          .returning('*')
+      )[0];
+    } else if (this.parentAdapter.isClientMySQL) {
+      // MySQL does not support RETURNING statements
+      const itemId = (item = (
+        await this._query()
+          .insert(realData)
+          .into(this.tableName)
+      )[0]);
+      item = (
+        await this._query()
+          .select('*')
+          .from(this.tableName)
+          .where({ id: itemId })
+      )[0];
+    } else {
+      throw new Error(`Failed to create item. Unsupported database client '${this.client}'.`);
+    }
     return { item, itemId: item.id };
   }
 
