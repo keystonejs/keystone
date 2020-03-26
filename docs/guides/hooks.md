@@ -10,7 +10,7 @@ Hooks give developers a way to add custom logic to the framework of lists, field
 This document provides an overview of the concepts, patterns and function of the Keystone hook system.
 The [Hooks API docs](/docs/api/hooks.md) describe the specific arguments and usage information.
 
-## Conceptual Organisation
+## Conceptual organisation
 
 There are several categorisations that can be applied to hooks and are useful for understanding what is run and when.
 
