@@ -19,7 +19,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
 
 module.exports = {
-  new Keystone(),
+  keystone: new Keystone(),
   apps: [
     new GraphQLApp(),
     new AdminUIApp(),
