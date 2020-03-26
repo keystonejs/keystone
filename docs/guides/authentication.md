@@ -97,6 +97,42 @@ Restart your Keystone App once more, and try to visit <http://localhost:3000/adm
 
 Finally; login with the newly created `User`'s credentials.
 
+### Programmatic authentication
+
+Each list associated with an auth strategy creates corresponding queries and mutations you can use for programmatic authentication. For a `List` called `User` using the `Password` auth strategy, the following operations are made available:
+
+| Name                           | Type     | Description                                    |
+| ------------------------------ | -------- | ---------------------------------------------- |
+| `authenticatedUser`            | Query    | Returns the currently authenticated list item. |
+| `authenticateUserWithPassword` | Mutation | Authenticates a user.                          |
+| `unauthenticateUser`           | Mutation | Unauthenticates the authenticated user.        |
+
+_NOTE:_ these operations may be named differently if the `List.itemQueryName` config option is set.
+
+#### Usage
+
+Authenticate and return the ID of the newly authenticated user:
+
+```graphql
+mutation signin($identity: String, $secret: String) {
+  authenticate: authenticateUserWithPassword(${identityField}: $identity, ${secretField}: $secret) {
+    item {
+      id
+    }
+  }
+}
+```
+
+Unauthenticate the currently authenticated user:
+
+```graphql
+mutation {
+  unauthenticate: unauthenticateUser {
+    success
+  }
+}
+```
+
 ### Controlling access to the Admin UI
 
 By default, any _authenticated_ user will be able to access the Admin UI. To restrict access, use the `isAccessAllowed` config option.
