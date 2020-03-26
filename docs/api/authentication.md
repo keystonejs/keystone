@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 title: Authentication
-order: 4
+order: 5
 [meta]-->
 
 # Authentication
