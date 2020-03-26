@@ -1,37 +1,102 @@
 /** @jsx jsx */
 
-import React, { forwardRef } from 'react'; // eslint-disable-line no-unused-vars
+import { forwardRef } from 'react'; // eslint-disable-line no-unused-vars
 import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 
 import logosvg from '../assets/logo.svg';
 import { Container, SocialIconsNav, Search } from '../components';
-import { media, mediaOnly, mediaMax } from '../utils/media';
+import { SIDEBAR_WIDTH } from '../components/Sidebar';
+import { media, mediaMax, mq } from '../utils/media';
 
 export const HEADER_HEIGHT = 60;
 
 export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
-  <header ref={ref} {...props}>
-    <Container>
+  <header
+    ref={ref}
+    css={{
+      backgroundColor: colors.page,
+      boxShadow: `0 1px 0 ${colors.N10}`,
+      position: 'sticky',
+      top: 0,
+      zIndex: 1,
+    }}
+    {...props}
+  >
+    <Container hasGutters={false}>
       <div
         css={{
           alignItems: 'center',
-          boxShadow: `0 1px 0 ${colors.N10}`,
-          display: 'grid',
-          gridTemplateColumns: '150px 1fr auto',
-          gridGap: '1rem',
+          display: 'flex',
           fontWeight: 500,
           height: HEADER_HEIGHT,
-
-          [media.sm]: {
-            gridTemplateColumns: '220px 1fr 220px',
-          },
         }}
       >
+        {toggleMenu && (
+          <button
+            onClick={toggleMenu}
+            css={{
+              background: 0,
+              border: 0,
+              cursor: 'pointer',
+              padding: gridSize * 2,
+
+              [media.md]: { display: 'none' },
+            }}
+          >
+            <svg viewBox="0 0 24 24" focusable="false" width="24" height="24" role="presentation">
+              <g
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+              >
+                <path d="M2.25 18.003h19.5M2.25 12.003h19.5M2.25 6.003h19.5" />
+              </g>
+            </svg>
+          </button>
+        )}
         <Logo />
-        <Search />
-        <Nav toggleMenu={toggleMenu} />
+        <div
+          css={{
+            display: 'flex',
+            flex: 1,
+
+            [media.md]: {
+              paddingLeft: gridSize * 6,
+            },
+          }}
+        >
+          <div
+            css={{
+              flex: 1,
+
+              [mediaMax.md]: {
+                paddingRight: gridSize * 2,
+              },
+            }}
+          >
+            <Search />
+          </div>
+          <div
+            css={{
+              boxSizing: 'border-box',
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: gridSize * 6,
+              paddingRight: gridSize * 3,
+              width: 280,
+
+              [mediaMax.sm]: {
+                display: 'none',
+              },
+            }}
+          >
+            <SocialIconsNav />
+          </div>
+        </div>
       </div>
     </Container>
   </header>
@@ -41,124 +106,51 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
 // Styled Components
 // ==============================
 
-const Logo = () => (
-  <div css={{ alignItems: 'center', display: 'inline-flex' }}>
-    <Link
-      to="/"
-      css={{
-        alignItems: 'center',
-        color: 'inherit',
-        display: 'inline-flex',
-        fontSize: '0.9rem',
+export const Logo = () => (
+  <Link
+    to="/"
+    css={mq({
+      alignItems: 'center',
+      boxSizing: 'border-box',
+      color: 'inherit',
+      display: 'inline-flex',
+      fontSize: '0.9rem',
+      padding: [gridSize * 2, null, gridSize * 3],
 
-        ':hover': {
-          textDecoration: 'none',
-          span: {
-            textDecoration: 'underline',
-          },
+      [mediaMax.md]: {
+        paddingLeft: 0,
+      },
+      [media.md]: {
+        width: SIDEBAR_WIDTH,
+      },
+
+      ':hover': {
+        textDecoration: 'none',
+        span: {
+          textDecoration: 'underline',
+        },
+      },
+    })}
+  >
+    <img
+      alt="KeystoneJS Logo"
+      src={logosvg}
+      css={mq({
+        display: 'block',
+        width: [32, null, null, 40],
+      })}
+    />
+    <span
+      css={{
+        display: 'none',
+        marginLeft: '0.66rem',
+
+        [media.md]: {
+          display: 'block',
         },
       }}
     >
-      <img alt="KeystoneJS Logo" src={logosvg} css={{ display: 'block', width: 40 }} />
-      <span
-        css={{
-          marginLeft: '0.66rem',
-
-          [mediaOnly.sm]: {
-            display: 'none',
-          },
-        }}
-      >
-        KeystoneJS
-      </span>
-      <span
-        css={{
-          display: 'inline-block',
-          color: colors.N40,
-          fontStyle: 'italic',
-          marginLeft: '0.5em',
-        }}
-      >
-        v5
-      </span>
-    </Link>
-  </div>
-);
-const NavItem = ({ as, lgOnly, ...props }) => {
-  const Tag = props.to ? Link : as;
-  return (
-    <li>
-      <Tag
-        css={{
-          alignItems: 'center',
-          background: 0,
-          border: 0,
-          color: colors.N60,
-          cursor: 'pointer',
-          display: 'flex',
-          outline: 0,
-          padding: `${gridSize / 2}px ${gridSize}px`,
-          textDecoration: 'none',
-
-          [mediaMax.xs]: {
-            display: lgOnly ? 'none' : 'block',
-          },
-
-          ':hover, :focus': {
-            color: colors.N80,
-            textDecoration: 'none',
-          },
-        }}
-        {...props}
-      />
-    </li>
-  );
-};
-NavItem.defaultProps = {
-  as: 'a',
-};
-const List = props => (
-  <ul
-    css={{
-      alignItems: 'center',
-      display: 'flex',
-      justifyContent: 'center',
-      listStyle: 'none',
-      margin: 0,
-      padding: 0,
-    }}
-    {...props}
-  />
-);
-const Nav = ({ toggleMenu }) => (
-  <nav>
-    <List>
-      <li>
-        <SocialIconsNav
-          css={{
-            [mediaMax.sm]: {
-              display: 'none',
-            },
-          }}
-        />
-      </li>
-      {toggleMenu && (
-        <NavItem
-          as="button"
-          onClick={toggleMenu}
-          css={{
-            [media.sm]: { display: 'none' },
-          }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
-            <path
-              d="M5 15h14v2H5zm0-8h14v2H5zm0 4h14v2H5z"
-              fill="currentColor"
-              fillRule="evenodd"
-            />
-          </svg>
-        </NavItem>
-      )}
-    </List>
-  </nav>
+      KeystoneJS
+    </span>
+  </Link>
 );

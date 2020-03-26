@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
-title: Keystone Class
+title: Keystone class
 order: 1
 [meta]-->
 
-# Keystone Class
+# Keystone class
 
 ## Usage
 

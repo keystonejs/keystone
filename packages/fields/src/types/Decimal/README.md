@@ -17,9 +17,9 @@ See the [Storage section](#storage) for specifics.
 ```js
 keystone.createList('Payment', {
   fields: {
-    timestamp: { type: DateTime, isRequired: true },
+    timestamp: { type: DateTime },
     description: { type: Text },
-    amount: { type: Decimal, isRequired: true },
+    amount: { type: Decimal },
   },
 });
 ```
@@ -36,13 +36,13 @@ keystone.createList('Payment', {
 
 Since `Decimal` values can't be represented in JavaScript (or JSON) they are transmitted using the `String` type.
 
-### Input Fields
+### Input fields
 
 | Field name | Type     | Description            |
 | ---------- | -------- | ---------------------- |
 | `${path}`  | `String` | The value to be stored |
 
-### Output Fields
+### Output fields
 
 | Field name | Type     | Description      |
 | ---------- | -------- | ---------------- |
@@ -69,7 +69,7 @@ Eg. `04.53000 === 4.53`.
 
 Although their intent is the same, the core DB adapters use different underlying implementations of this type.
 
-### Mongoose Adaptor
+### Mongoose adaptor
 
 Values are stored using the [Mongoose `Decimal128` SchemaType](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-Decimal128)
 which in turn uses the underlying [Decimal128 BSON type](https://metacpan.org/pod/BSON::Decimal128).
@@ -81,7 +81,7 @@ The `Decimal128` standard is..
 
 \-- [decimal128 floating-point format on Wikipedia](https://en.wikipedia.org/wiki/Decimal128_floating-point_format)
 
-### Knex Adaptor
+### Knex adaptor
 
 The Knex adapter uses the [decimal schema type](https://knexjs.org/#Schema-decimal)
 which maps directly to underlying `Decimal` or `Numeric` types in most DB platforms.
@@ -96,7 +96,7 @@ As such, the Knex field adapter supports two additional config options:
 
 If specified `scale` must be greater than `precision`.
 
-#### Non-Fixed Precision
+#### Non-fixed precision
 
 Some DB platforms (Oracle, SQLite and Postgres) support `Decimal` types without a fixed precision.
 This can be configured by passing both the `precision` and `scale` as `null`, eg:

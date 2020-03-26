@@ -9,6 +9,9 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 
 import Layout from '../../templates/layout';
+import { Banner } from '../../components/banner';
+
+import { withApollo } from '../../lib/apollo';
 
 const FormGroup = styled.div({
   display: 'flex',
@@ -30,52 +33,37 @@ const Input = styled.input({
 });
 
 const ADD_POST = gql`
-  mutation AddPost(
-    $title: String!
-    $body: String!
-    $authorId: ID!
-    $posted: DateTime!
-    $image: Upload!
-  ) {
-    createPost(
-      data: {
-        title: $title
-        body: $body
-        author: { connect: { id: $authorId } }
-        posted: $posted
-        image: $image
-      }
-    ) {
+  mutation AddPost($title: String!, $body: String!, $posted: DateTime!, $image: Upload!) {
+    createPost(data: { title: $title, body: $body, posted: $posted, image: $image }) {
       id
       slug
     }
   }
 `;
 
-export default () => {
+export default withApollo(() => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [image, setImage] = useState('');
-  const [authorId, setAuthorId] = useState('');
-  const [showBanner, setShowBanner] = useState(false);
   const [slug, setSlug] = useState('');
 
-  const { data, loading, error } = useQuery(gql`
+  const { data, loading: userLoading, error: userError } = useQuery(gql`
     query {
-      allUsers(where: { isAdmin: true }) {
-        name
-        email
+      authenticatedUser {
         id
       }
     }
   `);
 
-  const [createPost] = useMutation(ADD_POST, {
+  const [createPost, { error: saveError, loading: savingPost }] = useMutation(ADD_POST, {
     update: (cache, { data: { createPost } }) => {
       setSlug(createPost.slug);
-      setShowBanner(true);
     },
   });
+
+  const loggedIn = !userLoading && !!data.authenticatedUser;
+  const formDisabled = !loggedIn || savingPost;
+  const error = userError || saveError;
 
   return (
     <Layout>
@@ -85,120 +73,100 @@ export default () => {
         </Link>
         <h1>New Post</h1>
 
-        {showBanner && (
-          <div
-            css={{
-              background: slug ? '#90ee9061' : '#ee909061',
-              border: `1px solid ${slug ? 'green' : 'red'}`,
-              color: slug ? 'green' : 'red',
-              padding: 12,
-              marginBottom: 32,
-              borderRadius: 6,
-            }}
-          >
-            {slug ? (
-              <span>
-                <strong>Success!</strong> Post has been created.{' '}
-                <Link href={`/post/[slug]?slug=${slug}`} as={`/post/${slug}`} passHref>
-                  <a css={{ color: 'green' }}>Check it out</a>
-                </Link>
-              </span>
-            ) : (
-              <span>
-                <strong>Whoops!</strong> Something has gone wrong
-              </span>
-            )}
-          </div>
+        {slug && (
+          <Banner style="success">
+            <strong>Success!</strong> Post has been created.{' '}
+            <Link href={`/post/[slug]?slug=${slug}`} as={`/post/${slug}`} passHref>
+              <a css={{ color: 'green' }}>Check it out</a>
+            </Link>
+          </Banner>
         )}
 
-        {loading ? (
+        {userLoading ? (
           <p>loading...</p>
-        ) : error ? (
-          <p>Error!</p>
         ) : (
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              createPost({
-                variables: {
-                  title,
-                  body,
-                  image,
-                  authorId: authorId || data.allUsers[0].id,
-                  posted: new Date(),
-                },
-              });
+          <>
+            {error && (
+              <Banner style={'error'}>
+                <strong>Whoops!</strong> Something has gone wrong
+                <br />
+                {error.message || userError.toString()}
+              </Banner>
+            )}
+            {!loggedIn && (
+              <Banner style={'error'}>
+                <a href="/signin" as="/signin">
+                  Sign In
+                </a>{' '}
+                to create a post.
+              </Banner>
+            )}
+            <form
+              disabled={formDisabled}
+              onSubmit={e => {
+                e.preventDefault();
+                createPost({
+                  variables: {
+                    title,
+                    body,
+                    image,
+                    posted: new Date(),
+                  },
+                });
 
-              setTitle('');
-              setBody('');
-            }}
-          >
-            <FormGroup>
-              <Label htmlFor="title">Title:</Label>
-              <Input
-                type="text"
-                name="title"
-                value={title}
-                onChange={event => {
-                  setTitle(event.target.value);
-                }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="body">Body:</Label>
-              <textarea
-                css={{
-                  width: '100%',
-                  padding: 8,
-                  fontSize: '1em',
-                  borderRadius: 4,
-                  border: '1px solid hsl(200,20%,70%)',
-                  height: 200,
-                  resize: 'none',
-                }}
-                name="body"
-                value={body}
-                onChange={event => {
-                  setBody(event.target.value);
-                }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="image">Image URL:</Label>
-              <Input
-                type="file"
-                name="image"
-                // value={image}
-                onChange={event => {
-                  setImage(event.target.files[0]);
-                }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="admin">Post as:</Label>
-              <select
-                name="admin"
-                css={{
-                  width: '100%',
-                  height: 32,
-                  fontSize: '1em',
-                  borderRadius: 4,
-                  border: '1px solid hsl(200,20%,70%)',
-                }}
-                value={authorId}
-                onChange={event => {
-                  setAuthorId(event.target.value);
-                }}
-              >
-                {data.allUsers.map(user => (
-                  <option value={user.id} key={user.id}>{`${user.name} <${user.email}>`}</option>
-                ))}
-              </select>
-            </FormGroup>
-            <input type="submit" value="submit" />
-          </form>
+                setTitle('');
+                setBody('');
+              }}
+            >
+              <FormGroup>
+                <Label htmlFor="title">Title:</Label>
+                <Input
+                  disabled={formDisabled}
+                  type="text"
+                  name="title"
+                  value={title}
+                  onChange={event => {
+                    setTitle(event.target.value);
+                  }}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="body">Body:</Label>
+                <textarea
+                  disabled={formDisabled}
+                  css={{
+                    width: '100%',
+                    padding: 8,
+                    fontSize: '1em',
+                    borderRadius: 4,
+                    border: '1px solid hsl(200,20%,70%)',
+                    height: 200,
+                    resize: 'none',
+                  }}
+                  name="body"
+                  value={body}
+                  onChange={event => {
+                    setBody(event.target.value);
+                  }}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="image">Image URL:</Label>
+                <Input
+                  disabled={formDisabled}
+                  type="file"
+                  name="image"
+                  // value={image}
+                  onChange={event => {
+                    setImage(event.target.files[0]);
+                  }}
+                />
+              </FormGroup>
+              <input type="submit" value="submit" disabled={formDisabled} />
+            </form>
+          </>
         )}
       </div>
     </Layout>
   );
-};
+});
