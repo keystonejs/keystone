@@ -15,6 +15,8 @@ The encoding used for storage differs by DB adapter, see the [Storage section](#
 ## Usage
 
 ```js
+const { Uuid, Text } = require('@keystonejs/fields');
+
 keystone.createList('Products', {
   fields: {
     name: { type: Text },

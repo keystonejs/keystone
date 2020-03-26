@@ -16,6 +16,8 @@ Great for setting fields like `Post.author` or `Product.owner`, etc.
 ### Basic
 
 ```js
+const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
+
 keystone.createList('User', {
   fields: {
     name: { type: String },

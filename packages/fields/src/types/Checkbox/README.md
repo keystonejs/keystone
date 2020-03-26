@@ -11,6 +11,8 @@ The `Checkbox` field type stores a single Boolean value.
 ## Usage
 
 ```js
+const { Checkbox, Text } = require('@keystonejs/fields');
+
 keystone.createList('Products', {
   fields: {
     name: { type: Text },

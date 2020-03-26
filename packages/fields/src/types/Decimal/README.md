@@ -15,6 +15,8 @@ See the [Storage section](#storage) for specifics.
 ## Usage
 
 ```js
+const { DateTime, Decimal, Text } = require('@keystonejs/fields');
+
 keystone.createList('Payment', {
   fields: {
     timestamp: { type: DateTime },

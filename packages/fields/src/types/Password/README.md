@@ -20,6 +20,8 @@ to be verified without knowledge of the original value.
 ## Usage
 
 ```js
+const { Password, Text } = require('@keystonejs/fields');
+
 keystone.createList('User', {
   fields: {
     email: { type: Text },

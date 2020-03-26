@@ -52,7 +52,7 @@ Specifically:
 
 ```js
 const { Keystone } = require('@keystonejs/keystone');
-const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
+const { AutoIncrement, Text } = require('@keystonejs/fields-auto-increment');
 
 const keystone = new Keystone({...});
 
