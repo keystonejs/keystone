@@ -155,6 +155,8 @@ See: [Custom Server](https://keystonejs.com/guides/custom-server).
 
 Creates a new authentication middleware instance.
 
+See: [Authentication](https://www.keystonejs.com/guides/authentication).
+
 #### Usage
 
 ```js
@@ -165,7 +167,7 @@ const authStrategy = keystone.createAuthStrategy({
 
 #### Config
 
-See the [Authentication](https://www.keystonejs.com/api/authentication) docs for full details.
+See the [Authentication API docs](https://www.keystonejs.com/api/authentication) for config options.
 
 ### `createItems(items)`
 
