@@ -43,3 +43,13 @@ If none of these are found a connection string is derived with a `DATABASE_NAME`
 Additional Mongoose config options are passed directly through to `mongoose.connect()`.
 
 See the [Mongoose docs](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect) for a detailed list of options.
+
+These options are set by default, but can be overridden:
+
+```javascript
+{
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+}
+```
