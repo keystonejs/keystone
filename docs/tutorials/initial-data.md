@@ -72,7 +72,7 @@ For example:
 keystone.createItems({
   User: [
     { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' },
-    { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' }
+    { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' },
   ],
 });
 ```

@@ -90,10 +90,6 @@ class CustomApp {
 
 module.exports = {
   keystone,
-  apps: [
-    new GraphQLApp(),
-    new AdminUIApp(),
-    new CustomApp(),
-  ]
-}
+  apps: [new GraphQLApp(), new AdminUIApp(), new CustomApp()],
+};
 ```

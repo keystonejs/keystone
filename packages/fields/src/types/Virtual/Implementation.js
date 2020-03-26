@@ -47,6 +47,10 @@ const CommonTextInterface = superclass =>
   };
 
 export class MongoVirtualInterface extends CommonTextInterface(MongooseFieldAdapter) {
+  constructor() {
+    super(...arguments);
+    this.realKeys = [];
+  }
   addToMongooseSchema() {}
 }
 
