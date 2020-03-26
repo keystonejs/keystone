@@ -27,13 +27,20 @@ const keystone = new Keystone('My App', {
 });
 ```
 
+## The `auth` operation
+
+In addition to the standard Create/Read/Update/Delete (CRUD) operations, Keystone includes an Authenticate (`auth`) operation.
+Access to this operation may be configured at list level (not field level) and controls whether authentication queries and mutations are accessible on that list.
+
+If you have a `List` which is being used as the target of an Authentication Strategy, you should set `access: { auth: true }` on that list.
+
 ## List level access control
 
 List level access control can have varying degrees of specificity depending on
 how much control you need.
 
 A key on the list config, `access` can be specified either as a single control,
-covering all CRUD operations, or as an object keyed by CRUD operation names.
+covering all CRUDA operations, or as an object keyed by CRUDA operation names.
 
 There are 3 ways to define the values of `access`, in order of flexibility:
 
@@ -70,6 +77,7 @@ type ListConfig = {
         read?: StaticAccess | ImperativeAccess | DeclarativeAccess,
         update?: StaticAccess | ImperativeAccess | DeclarativeAccess,
         delete?: StaticAccess | ImperativeAccess | DeclarativeAccess,
+        auth?: StaticAccess,
       },
 }
 ```
@@ -104,12 +112,15 @@ Definition of `access` operations:
 | `read`    | Ability to view / fetch data on any items in the list. |
 | `update`  | Ability to alter data on any items in the list.        |
 | `delete`  | Ability to remove an item from the list.               |
+| `auth`    | Ability to use this list for authentication.           |
 
 When access is denied, the GraphQL response will contain an error with
 `type: 'AccessDeniedError'`, and `null` for the data.
 
 > **Note:** The `create` operation cannot be given `DeclarativeAccess` - it does not
 > make sense to do so and will throw an error if attempted.
+>
+> Additionally, the `auth` operation control must be of type `StaticAccess`.
 
 Let's break it down into concrete examples:
 
@@ -140,6 +151,7 @@ keystone.createList('User', {
     read: true,
     update: true,
     delete: true,
+    auth: true,
   },
 
   fields: {
@@ -308,11 +320,9 @@ type FieldConfig = {
 _NOTE:_ Unlike List level access, it is not possible to specify a Declarative
 _where_ clause for Field level access.
 
-_NOTE:_ Fields do not have a `delete` access controls - this control exists on
+_NOTE:_ Fields do not have `delete` or `auth` access controls - these controls exists on
 the list level only (it's not possible to _'delete'_ an existing field value -
-only to modify it).
-
-`AccessInput` has the following properties:
+only to modify it, and authentication is list-wide).
 
 | Property                 | Description                                                                                                 |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
@@ -323,7 +333,7 @@ only to modify it).
 | `fieldKey`               | The key of the field being operated on.                                                                     |
 | `originalInput`          | The data as passed in the mutation for `create` & `update` mutations (`undefined` for `read`).              |
 | `existingItem`           | The existing item this field belongs to for `update` mutations & `read` queries (`undefined` for `create`). |
-| `operation`              | The CRUDA operation being performed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).               |
+| `operation`              | The CRU operation being performed (`'create'`, `'read'`, `'update'`).                                       |
 | `gqlName`                | The name of the query or mutation which triggered the access check.                                         |
 | `itemId`                 | The `id` of the item being updated/deleted in singular `update` and `delete` operations.                    |
 | `itemIds`                | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations.                  |
