@@ -19,7 +19,7 @@ A note on terminology:
 
 Username / Password authentication can be enabled on the Admin UI.
 
-> **Note:** Admin Authentication will only restrict access to the Admin _UI_. To also restrict access to the _API_, you must setup [Access control](/docs/guides/access-control.md) config.
+> ❗ **Note:** Admin Authentication will only restrict access to the Admin _UI_. It _will not_ restrict API access. To also restrict access to the API, you must set up [Access controls](/docs/guides/access-control.md).
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`. Here, we will setup a
@@ -96,10 +96,3 @@ Add the `authStrategy` config back to the `new AdminUIApp()` call
 Restart your Keystone App once more, and try to visit <http://localhost:3000/admin/users>; you will be presented with the login screen.
 
 Finally; login with the newly created `User`'s credentials.
-
-## API access control
-
-Adding Authentication as above will only enable login to the Admin UI, it _will
-not_ restrict API access.
-
-> **Note:** To restrict API access, you must setup [Access control](/docs/guides/access-control.md)
