@@ -175,7 +175,7 @@ Promise.all(preparations).then(async middlewares => {
 
 ## Custom server as a Lambda
 
-Keystone is powered by Node, so can run in "Serverless" environments such as
+Keystone is powered by Node, so it can run in "Serverless" environments such as
 [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) which
 support Node >= 10.x.
 
