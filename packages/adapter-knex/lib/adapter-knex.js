@@ -342,7 +342,7 @@ class KnexListAdapter extends BaseListAdapter {
       await this._query()
         .insert(realData)
         .into(this.tableName)
-        // .returning('*')
+        .returning('*')
     )[0];
     return { item, itemId: item.id };
   }
@@ -613,7 +613,7 @@ class QueryBuilder {
   }
 
   _getQueryConditionByPath(listAdapter, path, tableAlias) {
-    const dbPath = path.split('_', 1);
+    const dbPath = path.split('_', 1)[0];
     const fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
     // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
     return (
@@ -626,7 +626,7 @@ class QueryBuilder {
   // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
   _addJoins(query, listAdapter, where, tableAlias) {
     const joinPaths = Object.keys(where).filter(
-      path => !this._getQueryConditionByPath(listAdapter, path)
+      path => !this._getQueryConditionByPath(listAdapter, path, tableAlias)
     );
     for (let path of joinPaths) {
       if (path === 'AND' || path === 'OR') {
