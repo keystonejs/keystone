@@ -121,7 +121,7 @@ Only static hints are supported for fields.
 
 ## Native type aliases
 
-Keystone allows the use of a few native type aliases. They are converted to their field type equivalents at runtime.
+Keystone allows the use of a few native JavaScript types for fields. They are converted to their Keystone field equivalents at runtime.
 
 | Native type | Field type equivalent |
 | ----------- | --------------------- |
