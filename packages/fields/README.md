@@ -121,7 +121,7 @@ Only static hints are supported for fields.
 
 ## Native type aliases
 
-Keystone allows the use of a few native types in place of field types.
+Keystone allows the use of a few native type aliases. They are converted to their field type equivalents at runtime.
 
 | Native type | Field type equivalent |
 | ----------- | --------------------- |
@@ -131,27 +131,11 @@ Keystone allows the use of a few native types in place of field types.
 
 ### Usage
 
-This...
-
 ```javascript
 keystone.createList('Post', {
   fields: {
     title: {
       type: String,
-    }
-  }
-}
-```
-
-... is functionally equivalent to this:
-
-```javascript
-const { Text } = require('@keystonejs/fields');
-
-keystone.createList('Post', {
-  fields: {
-    title: {
-      type: Text,
     }
   }
 }
