@@ -48,38 +48,39 @@ There are 3 ways to define the values of `access`, in order of flexibility:
 2. Imperative
 3. Declarative
 
-```graphql
-type GraphQLWhere = {} # placeholder
-
-type AccessInput = {
-  authentication: {
-    item?: {},
-    listKey?: string,
-  },
-  listKey?: string,
-  operation?: string,
-  originalInput?: {},
-  gqlName?: string,
-  itemId?: string,
-  itemIds?: [string],
+```typescript
+interface GraphQLWhere {
+  [key: string]: any;
 }
 
-type StaticAccess = boolean
-type ImperativeAccess = AccessInput => boolean
-type DeclarativeAccess = GraphQLWhere | (AccessInput => GraphQLWhere)
+interface AccessInput {
+  authentication: {
+    item?: {};
+    listKey?: string;
+  };
+  listKey?: string;
+  operation?: string;
+  originalInput?: {};
+  gqlName?: string;
+  itemId?: string;
+  itemIds?: [string];
+}
+
+type StaticAccess = boolean;
+type ImperativeAccess = (arg: AccessInput) => boolean;
+type DeclarativeAccess = GraphQLWhere | ((arg: AccessInput) => GraphQLWhere);
+
+interface GranularAccess {
+  create?: StaticAccess | ImperativeAccess;
+  read?: StaticAccess | ImperativeAccess | DeclarativeAccess;
+  update?: StaticAccess | ImperativeAccess | DeclarativeAccess;
+  delete?: StaticAccess | ImperativeAccess | DeclarativeAccess;
+  auth?: StaticAccess;
+}
 
 type ListConfig = {
-  access:
-    | StaticAccess
-    | ImperativeAccess
-    | {
-        create?: StaticAccess | ImperativeAccess,
-        read?: StaticAccess | ImperativeAccess | DeclarativeAccess,
-        update?: StaticAccess | ImperativeAccess | DeclarativeAccess,
-        delete?: StaticAccess | ImperativeAccess | DeclarativeAccess,
-        auth?: StaticAccess,
-      },
-}
+  access: StaticAccess | ImperativeAccess | GranularAccess;
+};
 ```
 
 `GraphQLWhere` matches the `where` clause on the GraphQl type.
@@ -286,35 +287,34 @@ There are 2 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 
-```graphql
-type AccessInput = {
+```typescript
+interface AccessInput {
   authentication: {
-    item?: {},
-    listKey?: string,
-  },
-  listKey?: string,
-  fieldKey?: string,
-  originalInput?: {},
-  existingItem?: {},
-  operation?: string,
-  gqlName?: string,
-  itemId?: string,
-  itemIds?: [string],
+    item?: {};
+    listKey?: string;
+  };
+  listKey?: string;
+  fieldKey?: string;
+  originalInput?: {};
+  existingItem?: {};
+  operation?: string;
+  gqlName?: string;
+  itemId?: string;
+  itemIds?: [string];
 }
 
-type StaticAccess = boolean
-type ImperativeAccess = AccessInput => boolean
+type StaticAccess = boolean;
+type ImperativeAccess = (arg: AccessInput) => boolean;
+
+interface GranularAccess {
+  create?: StaticAccess | ImperativeAccess;
+  read?: StaticAccess | ImperativeAccess;
+  update?: StaticAccess | ImperativeAccess;
+}
 
 type FieldConfig = {
-  access:
-    | StaticAccess
-    | ImperativeAccess
-    | {
-        create?: StaticAccess | ImperativeAccess,
-        read?: StaticAccess | ImperativeAccess,
-        update?: StaticAccess | ImperativeAccess,
-      },
-}
+  access: StaticAccess | ImperativeAccess | GranularAccess;
+};
 ```
 
 _NOTE:_ Unlike List level access, it is not possible to specify a Declarative
