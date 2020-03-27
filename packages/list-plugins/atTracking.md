@@ -5,7 +5,8 @@ title: atTracking
 
 # atTracking Plugin
 
-Adds `createdAt` and `updatedAt` fields to a list. These fields are read-only but they will be updated automatically when items are created or updated.
+Add `createdAt` and `updatedAt` fields to a list. These fields are read-only
+but they will be updated automatically when items are created or updated.
 
 ## Usage
 
@@ -29,7 +30,7 @@ keystone.createList('ListWithPlugin', {
 | Option           | Type     | Default             | Description                               |
 | ---------------- | -------- | ------------------- | ----------------------------------------- |
 | `createdAtField` | `String` | `createdAt`         | Name of the `createdAt` field.            |
-| `updatedAtField` | `String` | `updatedAt`         | Name of the `createdAt` field.            |
+| `updatedAtField` | `String` | `updatedAt`         | Name of the `updatedAt` field.            |
 | `format`         | `String` | `MM/DD/YYYY h:mm A` | Format of the generated `DateTime` field. |
 | `access`         | `Object` | See: access         | Change default access controls.           |
 
@@ -45,12 +46,12 @@ By default access control on at tracking fields is read only:
 }
 ```
 
-## Disabling created or updated
+## Granular control
 
-You can import _either_ `createdAt` or `updatedAt` to apply a single tracking field:
+If you prefer, you can import _either_ `createdAt` or `updatedAt` to apply a single tracking field:
 
 ```javascript
 const { createdAt, updatedAt } = require('@keystonejs/list-plugins');
 ```
 
-_Note_: The API is the same.
+> **Note:** The API is the same for each export as `atTracking`.

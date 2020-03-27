@@ -80,7 +80,7 @@ async function getGatsbyConfig() {
         options: {
           extensions: ['.mdx', '.md'],
           defaultLayouts: {
-            default: require.resolve('./src/components/mdx-renderer.js'),
+            default: require.resolve('./src/components/markdown/mdx-renderer.js'),
           },
           gatsbyRemarkPlugins: [
             {

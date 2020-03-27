@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 
 import Layout from '../templates/layout';
 import Header from '../components/header';
+import { withApollo } from '../lib/apollo';
 
 /** @jsx jsx */
 
@@ -41,7 +42,7 @@ const Post = ({ post }) => {
   );
 };
 
-export default function() {
+export default withApollo(() => {
   const { data, loading, error } = useQuery(gql`
     query {
       allPosts {
@@ -89,4 +90,4 @@ export default function() {
       </section>
     </Layout>
   );
-}
+});

@@ -1,18 +1,18 @@
 <!--[meta]
 section: api
 subSection: utilities
-title: Create Keystone App
+title: Create Keystone app
 [meta]-->
 
-# Create Keystone App
+# Create Keystone app
 
-A CLI for Keystone 5 to help generate starter apps.
+A CLI for Keystone to help generate starter apps.
 
 ## Usage
 
 ### Interactive
 
-```sh
+```shell
 yarn create keystone-app my-app
 ```
 
@@ -24,7 +24,7 @@ A non-interactive Keystone app creation could be useful in unattended app genera
 One such example is creating a Docker image with a generated Keystone app built in.
 See the list of possible arguments in the **Arguments** section below.
 
-```sh
+```shell
 npm init keystone-app --name "My App" --template "starter" --adapter "Mongoose" my-app
 ```
 
@@ -43,9 +43,9 @@ because the CLI arguments were not passed to the `create-keystone-app` script.
 | `--adapter`  | `String`  | One of the adapters listed in the app template. Usually one of: `Mongoose`, `Knex`.                                             |
 | `--dry-run`  | `Boolean` | Will go through the app generation process validating the user inputs or CLI arguments but in the end no app will be generated. |
 
-## Run the App
+## Run the app
 
-```sh
+```shell
 cd my-app
 yarn dev
 ```

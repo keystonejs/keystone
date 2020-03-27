@@ -76,7 +76,6 @@ export const Table = props => {
           css={{
             borderCollapse: 'collapse',
             borderSpacing: 0,
-            fontSize: '0.9rem',
             whiteSpace: 'nowrap',
             width: '100%',
 
