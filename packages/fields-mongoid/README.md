@@ -48,13 +48,13 @@ We reuse the interface implementation from the native `Text` field.
 
 `MongoId` fields use the `ID` type in GraphQL.
 
-### Input Fields
+### Input fields
 
 | Field name | Type | Description                              |
 | :--------- | :--- | :--------------------------------------- |
 | `${path}`  | `ID` | The ID in its 24 char hex representation |
 
-### Output Fields
+### Output fields
 
 | Field name | Type | Description                              |
 | :--------- | :--- | :--------------------------------------- |
@@ -76,9 +76,9 @@ See the the [Casing section](#casing).
 
 ## Storage
 
-### Mongoose Adaptor
+### Mongoose adaptor
 
-The Mongoose Adaptor uses the [native Mongo `ObjectId` schema type](https://mongoosejs.com/docs/schematypes.html#objectids).
+The Mongoose adaptor uses the [native Mongo `ObjectId` schema type](https://mongoosejs.com/docs/schematypes.html#objectids).
 Internally, the 12-byte value are stored in a binary format.
 Mongoose automatically and transparently converts to and from the 24 char hexadecimal representation when reading and writing.
 

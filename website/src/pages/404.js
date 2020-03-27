@@ -11,11 +11,11 @@ import { mq } from '../utils/media';
 
 export default () => (
   <Layout>
-    {({ sidebarIsVisible, sidebarOffset }) => (
+    {({ sidebarIsVisible }) => (
       <>
         <Global styles={globalStyles} />
         <Container>
-          <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
+          <Sidebar isVisible={sidebarIsVisible} mobileOnly />
         </Container>
         <NotFound />
       </>

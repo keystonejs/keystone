@@ -12,6 +12,7 @@ const {
   OEmbed,
 } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
+const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
 const getYear = require('date-fns/get_year');
 
@@ -59,13 +60,20 @@ exports.User = {
   labelResolver: item => `${item.name} <${item.email}>`,
 };
 
+const isAdmin = ({ authentication: { item: user } }) => !!user && !!user.isAdmin;
+
 exports.Post = {
   fields: {
     title: { type: Text },
     slug: { type: Slug, from: 'title' },
     author: {
-      type: Relationship,
+      type: AuthedRelationship,
       ref: 'User',
+      isRequired: true,
+      access: {
+        create: isAdmin,
+        update: isAdmin,
+      },
     },
     categories: {
       type: Relationship,
@@ -124,8 +132,13 @@ exports.Comment = {
       ref: 'Post',
     },
     author: {
-      type: Relationship,
+      type: AuthedRelationship,
       ref: 'User',
+      isRequired: true,
+      access: {
+        create: isAdmin,
+        update: isAdmin,
+      },
     },
     posted: { type: DateTime },
   },

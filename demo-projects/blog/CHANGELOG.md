@@ -1,5 +1,25 @@
 # keystone_demo_blog
 
+## 5.3.0
+
+### Minor Changes
+
+- [`3fb6e901`](https://github.com/keystonejs/keystone/commit/3fb6e901602ff2de7f2ca7b457ad157416d71d3f) [#2564](https://github.com/keystonejs/keystone/pull/2564) Thanks [@jesstelford](https://github.com/jesstelford)! - - Add a Sign In screen to the Blog demo for submitting posts & comments.
+  - Show usage of `AuthedRelationship` field in the Blog demo. With this field, the client no longer needs to send along the user id of the author; instead, it is set automatically based on the currently authenticated user.
+
+### Patch Changes
+
+- [`cafad49d`](https://github.com/keystonejs/keystone/commit/cafad49dca06bc19d7ab38266a926e30252b8715) [#2563](https://github.com/keystonejs/keystone/pull/2563) Thanks [@jesstelford](https://github.com/jesstelford)! - Updated usage of Apollo based on [latest Next.js examples](https://github.com/zeit/next.js/tree/2789e7e0c25c72fbf6be3ef070e530186af14430/examples/with-apollo).
+
+- Updated dependencies [[`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a), [`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a), [`254e195b`](https://github.com/keystonejs/keystone/commit/254e195b9b0dfd70a6ff86c22ee60d178c4338aa), [`7c9d36a2`](https://github.com/keystonejs/keystone/commit/7c9d36a2d5002258964cbd9414766ee244945005), [`ca28681c`](https://github.com/keystonejs/keystone/commit/ca28681ca23c74bc57041fa36c20b93a4520e762), [`68be8f45`](https://github.com/keystonejs/keystone/commit/68be8f452909100fbddec431d6fe60c20a06a700), [`61a70503`](https://github.com/keystonejs/keystone/commit/61a70503f6c184a8f0f5440466399f12e6d7fa41), [`cec7ba5e`](https://github.com/keystonejs/keystone/commit/cec7ba5e2061280eff2a1d989054ecb02760e36d)]:
+  - @keystonejs/app-admin-ui@5.9.3
+  - @keystonejs/keystone@7.0.0
+  - @keystonejs/app-graphql@5.1.4
+  - @keystonejs/fields-authed-relationship@1.0.0
+  - @keystonejs/adapter-mongoose@6.0.0
+  - @keystonejs/fields@7.0.2
+  - @keystonejs/auth-password@5.1.3
+
 ## 5.2.3
 
 ### Patch Changes
