@@ -27,7 +27,7 @@ export const initItems = () => {
 };
 
 // JM: These tests are Mongo/Mongoose specific due to null handling (filtering and ordering)
-// See https://github.com/keystonejs/keystone-5/issues/391
+// See https://github.com/keystonejs/keystone/issues/391
 
 export const filterTests = withKeystone => {
   const match = (keystone, queryArgs, expected) =>

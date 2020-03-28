@@ -30,7 +30,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -42,7 +42,7 @@
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
@@ -50,35 +50,35 @@
 
 ### Major Changes
 
-- [2164a779](https://github.com/keystonejs/keystone-5/commit/2164a779):
+- [2164a779](https://github.com/keystonejs/keystone/commit/2164a779):
 
   - Replace jade with pug because Jade was renamed to Pug, and `jade` package is outdated
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 2.0.0
 
-- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone/commit/b69fb9b7):
 
   - Update dev devependencies
 
-- [major][f97e4ecf](https://github.com/keystonejs/keystone-5/commit/f97e4ecf):
+- [major][f97e4ecf](https://github.com/keystonejs/keystone/commit/f97e4ecf):
 
   - Export { emailSender } as the API, rather than a default export
 
 ## 1.0.2
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 
 ## 1.0.1
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 
