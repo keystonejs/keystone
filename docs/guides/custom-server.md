@@ -31,18 +31,11 @@ Apps available in Keystone include:
 ## You may not need a custom server
 
 If all you want to do is some basic configuration of the default Express instance, you don't need a
-custom server. The Keystone CLI accepts an additional `configureExpress` export in your `index.js` file:
-
-```javascript
-module.exports = {
-  configureExpress: app => {
-    /* ... */
-  },
-};
-```
-
+custom server. The Keystone CLI accepts an additional `configureExpress` export in your `index.js` file.
 This function takes a single `app` parameter. The running Express instance will be passed to this function
-before any middlewares are set up, so you can perform any Express configuration you need here. For example:
+before any middlewares are set up, so you can perform any Express configuration you need here.
+
+For example:
 
 ```javascript
 module.exports = {
