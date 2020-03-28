@@ -138,3 +138,9 @@ mutation {
 By default, any _authenticated_ user will be able to access the Admin UI. To restrict access, use the `isAccessAllowed` config option.
 
 See the [Admin UI app](https://www.keystonejs.com/keystonejs/app-admin-ui/) docs for more details.
+
+## API access control
+
+Adding Authentication as sown above will only enable login to the Admin UI. It _will not_ restrict API access.
+
+> **Note:** To restrict API access, you must set up [Access controls](/docs/guides/access-control.md)
