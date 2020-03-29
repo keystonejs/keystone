@@ -65,7 +65,11 @@ class SessionManager {
       resave: false,
       saveUninitialized: false,
       name: COOKIE_NAME,
-      cookie: { secure: this._secureCookies, maxAge: this._cookieMaxAge, sameSite: this._cookieSameSite },
+      cookie: {
+        secure: this._secureCookies,
+        maxAge: this._cookieMaxAge,
+        sameSite: this._cookieSameSite,
+      },
       store: this._sessionStore,
     });
 
