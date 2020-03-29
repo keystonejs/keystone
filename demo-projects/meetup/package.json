@@ -31,7 +31,7 @@
     "@keystonejs/session": "^6.0.0",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
-    "apollo-link-http": "^1.5.16",
+    "apollo-upload-client": "^12.1.0",
     "body-parser": "^1.18.2",
     "cross-env": "^7.0.0",
     "date-fns": "^1.30.1",
