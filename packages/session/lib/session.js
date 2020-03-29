@@ -7,11 +7,13 @@ class SessionManager {
     cookieSecret = 'qwerty',
     secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
     cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
+    cookieSameSite = false,
     sessionStore,
   }) {
     this._cookieSecret = cookieSecret;
     this._secureCookies = secureCookies;
     this._cookieMaxAge = cookieMaxAge;
+    this._cookieSameSite = cookieSameSite;
     this._sessionStore = sessionStore;
   }
 
@@ -63,7 +65,7 @@ class SessionManager {
       resave: false,
       saveUninitialized: false,
       name: COOKIE_NAME,
-      cookie: { secure: this._secureCookies, maxAge: this._cookieMaxAge },
+      cookie: { secure: this._secureCookies, maxAge: this._cookieMaxAge, sameSite: this._cookieSameSite },
       store: this._sessionStore,
     });
 
