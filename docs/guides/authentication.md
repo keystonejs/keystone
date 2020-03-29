@@ -19,7 +19,7 @@ A note on terminology:
 
 Username / Password authentication can be enabled on the Admin UI.
 
-> ❗ **Note:** Admin Authentication will only restrict access to the Admin _UI_. It _will not_ restrict API access. To also restrict access to the API, you must set up [Access controls](/docs/guides/access-control.md).
+> **Important:** Admin Authentication will only restrict access to the Admin _UI_. It _will not_ restrict API access. To also restrict access to the API, you must set up [Access controls](/docs/guides/access-control.md).
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`. Here, we will setup a
