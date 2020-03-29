@@ -6,6 +6,8 @@ title: Static file app
 
 # Static file app
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-static)
+
 A KeystoneJS app to serve static files such as images, CSS and JavaScript with support for client side routing.
 
 ## Usage

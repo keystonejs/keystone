@@ -20,6 +20,7 @@
 - [What's new](#whats-new)
 - [Getting Started](#getting-started)
 - [Documentation](#documentation)
+- [Changelog](#changelog)
 - [Contributing](#contributing)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
@@ -51,6 +52,10 @@ The [API documentation](https://keystonejs.com/api/) contains a reference for al
 
 For walk-throughs and discussions, see the [Guides
 documentation](https://www.keystonejs.com/guides/).
+
+## Changelog
+
+You can find changelogs either by browsing our repository, or by using our [interactive changelog explorer](https://changelogs.xyz/@keystonejs/keystone).
 
 ## Contributing
 

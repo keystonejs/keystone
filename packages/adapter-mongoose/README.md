@@ -6,6 +6,8 @@ title: Mongoose adapter
 
 # Mongoose database adapter
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-mongoose)
+
 ## Usage
 
 ```javascript
