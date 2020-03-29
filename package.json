@@ -202,5 +202,8 @@
       "!packages/fields/types.js",
       "!packages/mongo-join-builder/examples/**"
     ]
+  },
+  "resolutions": {
+    "graphql-upload": "^10.0.0"
   }
 }
