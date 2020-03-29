@@ -1,6 +1,9 @@
 import fetch from 'isomorphic-unfetch';
 import getConfig from 'next/config';
-import { ApolloClient, InMemoryCache, HttpLink } from 'apollo-boost';
+
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
 
 const {
   publicRuntimeConfig: { serverUrl },
