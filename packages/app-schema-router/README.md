@@ -25,7 +25,7 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
 module.exports = {
-  new Keystone(),
+  keystone: new Keystone(),
   apps: [
     new GraphQLAppPlayground({ apiPath })
     new SchemaRouterApp({
