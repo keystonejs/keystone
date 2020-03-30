@@ -1,15 +1,21 @@
 <!--[meta]
 section: api
 subSection: utilities
-title: Keystone Email
+title: Keystone email
 [meta]-->
 
-# Keystone Email
+# Keystone email
 
 Send emails via various transports, rendered with Express-compatible
-renderers.
+renderers. Powered by [`keystone-email`](https://github.com/keystonejs/keystone-email).
 
-Powered by [`keystone-email`](https://github.com/keystonejs/keystone-email).
+## Installation
+
+```bash
+yarn add @keystonejs/email
+# or
+npm install @keystonejs/email
+```
 
 ## Transports
 
@@ -63,7 +69,7 @@ module.exports = class extends React.Component {
 };
 ```
 
-> NOTE: The `jsx` renderer has a peer dependency on `react` and `react-dom`
+> **Note:** The `jsx` renderer has a peer dependency on `react` and `react-dom`
 
 ### mjml
 
@@ -114,7 +120,7 @@ module.exports = class extends React.Component {
 };
 ```
 
-> NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
+> **Note:** The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
 
 ### Pug (previously Jade)
 

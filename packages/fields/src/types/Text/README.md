@@ -9,15 +9,16 @@ title: Text
 ## Usage
 
 ```js
+const { Text } = require('@keystonejs/fields');
+
 keystone.createList('Product', {
   fields: {
     description: { type: Text },
-    // ...
   },
 });
 ```
 
-### Config
+## Config
 
 | Option        | Type      | Default | Description                                                     |
 | ------------- | --------- | ------- | --------------------------------------------------------------- |

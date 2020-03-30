@@ -10,7 +10,7 @@ Reference documentation for Keystone APIs.
 - [Access Control](/docs/api/access-control.md) --
   Control who can do what with your GraphQL API
 - [Authentication](/docs/api/authentication.md) --
-  Authentication strategies allow users to identify themselves to KeystoneJS
+  Authentication strategies allow users to identify themselves to Keystone
 - [`Creating Lists`](/docs/api/create-list.md) --
   Where and how list schemas are defined
 - [Hooks API](/docs/api/hooks.md) --

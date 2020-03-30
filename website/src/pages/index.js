@@ -1,12 +1,12 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
+import { Fragment } from 'react';
 import { jsx, Global } from '@emotion/core';
 import { globalStyles } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
 
 import { Layout } from '../templates/layout';
-import { Container, Sidebar } from '../components';
+import { Sidebar } from '../components';
 
 import { SectionHero } from '../components/homepage/SectionHero';
 import { SectionCode } from '../components/homepage/SectionCode';
@@ -15,24 +15,22 @@ import { SectionTechnology } from '../components/homepage/SectionTechnology';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
 
 const Homepage = () => (
-  <>
+  <Fragment>
     <Layout>
-      {({ sidebarIsVisible, sidebarOffset }) => (
-        <>
+      {({ sidebarIsVisible, toggleSidebar }) => (
+        <Fragment>
           <Global styles={globalStyles} />
-          <Container>
-            <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
-          </Container>
+          <Sidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} mobileOnly />
           <SkipNavContent />
           <SectionHero />
           <SectionCode />
           <SectionFeatures />
           <SectionTechnology />
           <HomepageFooter />
-        </>
+        </Fragment>
       )}
     </Layout>
-  </>
+  </Fragment>
 );
 
 export default Homepage;
