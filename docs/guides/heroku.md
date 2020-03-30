@@ -114,7 +114,7 @@ The Heroku app start log can be reached by pressing [More] and View logs.
 
 #### Use secure cookies
 
-To use secore coocies we need to add below to index.js.
+To use secure cookies we need to add below to index.js.
 
 ```js
 const keystone = new Keystone({
