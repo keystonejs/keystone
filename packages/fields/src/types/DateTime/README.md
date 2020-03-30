@@ -69,7 +69,7 @@ The `DateTime` field type adds a custom scalar `DateTime` and uses it for input 
 
 ## Storage
 
-### Mongoose adaptor
+### Mongoose adapter
 
 On the Mongoose adapter the `DateTime` value is stored across three fields:
 
@@ -81,7 +81,7 @@ On the Mongoose adapter the `DateTime` value is stored across three fields:
 
 The `isRequired` config option is enforces by KeystoneJS only.
 
-### Knex adaptor
+### Knex adapter
 
 On the Knex adapter the `DateTime` value is stored across two fields:
 

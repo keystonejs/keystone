@@ -9,6 +9,8 @@ title: Relationship
 ## Usage
 
 ```javascript
+const { Relationship, Text } = require('@keystonejs/fields');
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },

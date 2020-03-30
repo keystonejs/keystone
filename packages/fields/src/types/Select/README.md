@@ -9,6 +9,8 @@ title: Select
 ## Usage
 
 ```js
+const { Select } = require('@keystonejs/fields');
+
 keystone.createList('Orders', {
   fields: {
     status: { type: Select, options: 'pending, processed' },

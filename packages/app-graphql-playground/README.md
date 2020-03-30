@@ -19,8 +19,9 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
 // Ensure that the GraphQLApp and GraphQLAppPlayground are referring to the same endpoint
 const apiPath = '/admin/api';
+
 module.exports = {
-  new Keystone(),
+  keystone: new Keystone(),
   apps: [
     // This should come before the GraphQLApp, as it sets up the dev query middleware
     new GraphQLAppPlayground({ apiPath })
