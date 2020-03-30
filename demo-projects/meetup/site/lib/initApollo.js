@@ -19,8 +19,7 @@ function create(initialState, req) {
     link: createUploadLink({
       uri: `${serverUrl}/admin/api`, // Server URL (must be absolute)
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
-      // Use fetch() polyfill on the server
-      fetch: !process.browser && fetch,
+      fetch,
       headers: req && req.headers,
     }),
     cache: new InMemoryCache().restore(initialState || {}),

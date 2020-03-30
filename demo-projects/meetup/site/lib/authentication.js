@@ -19,6 +19,8 @@ export const useAuth = () => useContext(AuthContext);
 
 const userFragment = `
   id
+  name
+  isAdmin
 `;
 
 const USER_QUERY = gql`
