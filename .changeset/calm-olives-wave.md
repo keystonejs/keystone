@@ -2,4 +2,4 @@
 '@keystonejs/website': patch
 ---
 
-Made tables' last column wrap. Those are typically used for long descriptions.
+Updated API documentation. 
