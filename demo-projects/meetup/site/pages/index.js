@@ -194,11 +194,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
 };
 
 const Sponsors = () => {
-  const {
-    data: { allSponsors } = {},
-    loading,
-    error,
-  } = useQuery(GET_SPONSORS);
+  const { data: { allSponsors } = {}, loading, error } = useQuery(GET_SPONSORS);
 
   return (
     <Container css={{ textAlign: 'center' }}>
