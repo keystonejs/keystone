@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 title: Authentication
-order: 4
+order: 5
 [meta]-->
 
 # Authentication
@@ -52,3 +52,5 @@ A valid authentication strategy.
 ### `list`
 
 Authentication strategies need to authenticate an item in a Keystone list (typically a User). The authenticated item will be provided to access control functions.
+
+This list should have the `{ auth: true }` access control set. See the [Access control API](https://www.keystonejs.com/api/access-control) docs for more details.

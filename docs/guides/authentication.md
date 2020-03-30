@@ -19,7 +19,7 @@ A note on terminology:
 
 Username / Password authentication can be enabled on the Admin UI.
 
-> **Note:** Admin Authentication will only restrict access to the Admin _UI_. To also restrict access to the _API_, you must setup [Access control](/docs/guides/access-control.md) config.
+> **Important:** Admin Authentication will only restrict access to the Admin _UI_. It _will not_ restrict API access. To also restrict access to the API, you must set up [Access controls](/docs/guides/access-control.md).
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`. Here, we will setup a
@@ -97,9 +97,50 @@ Restart your Keystone App once more, and try to visit <http://localhost:3000/adm
 
 Finally; login with the newly created `User`'s credentials.
 
+### Programmatic authentication
+
+Each list associated with an auth strategy creates corresponding queries and mutations you can use for programmatic authentication. For a `List` called `User` using the `Password` auth strategy, the following operations are made available:
+
+| Name                           | Type     | Description                                    |
+| ------------------------------ | -------- | ---------------------------------------------- |
+| `authenticatedUser`            | Query    | Returns the currently authenticated list item. |
+| `authenticateUserWithPassword` | Mutation | Authenticates a user.                          |
+| `unauthenticateUser`           | Mutation | Unauthenticates the authenticated user.        |
+
+_NOTE:_ these operations may be named differently if the `List.itemQueryName` config option is set.
+
+#### Usage
+
+Authenticate and return the ID of the newly authenticated user:
+
+```graphql
+mutation signin($identity: String, $secret: String) {
+  authenticate: authenticateUserWithPassword(email: $identity, password: $secret) {
+    item {
+      id
+    }
+  }
+}
+```
+
+Unauthenticate the currently authenticated user:
+
+```graphql
+mutation {
+  unauthenticate: unauthenticateUser {
+    success
+  }
+}
+```
+
+### Controlling access to the Admin UI
+
+By default, any _authenticated_ user will be able to access the Admin UI. To restrict access, use the `isAccessAllowed` config option.
+
+See the [Admin UI app](https://www.keystonejs.com/keystonejs/app-admin-ui/) docs for more details.
+
 ## API access control
 
-Adding Authentication as above will only enable login to the Admin UI, it _will
-not_ restrict API access.
+Adding Authentication as sown above will only enable login to the Admin UI. It _will not_ restrict API access.
 
-> **Note:** To restrict API access, you must setup [Access control](/docs/guides/access-control.md)
+> **Note:** To restrict API access, you must set up [Access controls](/docs/guides/access-control.md)
