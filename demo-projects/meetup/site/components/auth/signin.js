@@ -21,7 +21,7 @@ export default ({ onSuccess, onClickForgot }) => {
 
     setIsLoading(true);
     try {
-      await signin({ email, password });
+      await signin({ variables: { email, password } });
       setIsLoading(false);
       setErrorState(false);
       if (onSuccess && typeof onSuccess === 'function') {
