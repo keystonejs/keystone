@@ -9,6 +9,8 @@ title: Color
 ## Usage
 
 ```js
+const { Color } = require('@keystonejs/fields');
+
 keystone.createList('Product', {
   fields: {
     heroColor: { type: Color },

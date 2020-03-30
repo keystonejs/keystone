@@ -19,7 +19,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
 
 module.exports = {
-  new Keystone(),
+  keystone: new Keystone(),
   apps: [
     new GraphQLApp(),
     new AdminUIApp(),
@@ -34,14 +34,8 @@ module.exports = {
 
 ## Config
 
-### `path`
-
-The path to serve files from. This is required and must be a string.
-
-### `src`
-
-The path to the folder containing static files. This is required and must be a string.
-
-### `fallback` (optional)
-
-The path to the file to serve if none is found. This path is resolved relative to the `src` path.
+| Option     | Type     | Required | Description                                                                                       |
+| ---------- | -------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `path`     | `string` | `true`   | The path to serve files from.                                                                     |
+| `src`      | `string` | `true`   | The path to the folder containing static files.                                                   |
+| `fallback` | `string` | `false`  | The path to the file to serve if none is found. This path is resolved relative to the `src` path. |
