@@ -8,7 +8,6 @@
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
-    "rune": "manypkg run",
     "dev": "yarn demo todo dev",
     "demo": "manypkg run demo-projects",
     "website": "manypkg run website",
