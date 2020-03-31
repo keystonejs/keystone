@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { useContext, createContext } from 'react';
+import { useContext, createContext, forwardRef } from 'react';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
@@ -18,13 +18,14 @@ const useTheme = () => useContext(ThemeContext);
 const { publicRuntimeConfig } = getConfig();
 const { meetup } = publicRuntimeConfig;
 
-const NavAnchor = props => {
+const NavAnchor = forwardRef((props, ref) => {
   const { foreground } = useTheme();
   const paddingHorizontal = [gridSize, gridSize, gridSize * 3];
   const paddingVertical = gridSize;
 
   return (
     <a
+      ref={ref}
       css={mq({
         color: foreground,
         display: 'inline-block',
@@ -42,7 +43,8 @@ const NavAnchor = props => {
       {...props}
     />
   );
-};
+});
+
 const NavLink = ({ href, as, ...props }) => (
   <Link href={href} as={as} passHref>
     <NavAnchor {...props} />
