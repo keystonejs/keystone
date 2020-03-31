@@ -109,6 +109,33 @@ Each list associated with an auth strategy creates corresponding queries and mut
 
 _NOTE:_ these operations may be named differently if the `List.itemQueryName` config option is set.
 
+#### GraphQL
+
+The above configuration would also add the following types to the GraphQL schema:
+
+```graphql
+type authenticateUserOutput {
+  """
+   Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'.
+  """
+  token: String
+  """
+   Retrieve information on the newly authenticated User here.
+  """
+  item: User
+}
+
+type unauthenticateUserOutput {
+  """
+  \`true\` when unauthentication succeeds.
+  NOTE: unauthentication always succeeds when the request has an invalid or missing authentication token.
+  """
+  success: Boolean
+}
+```
+
+> **Remember:** The exact schema will depend on your chosen list and authentication strategy.
+
 #### Usage
 
 Authenticate and return the ID of the newly authenticated user:
