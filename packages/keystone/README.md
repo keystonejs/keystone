@@ -18,21 +18,21 @@ const keystone = new Keystone({
 
 ## Config
 
-| Option           | Type       | Default                          | Description                                                                                                                                |
-| ---------------- | ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `adapter`        | `Object`   | Required                         | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details. |
-| `adapters`       | `Object`   | `{}`                             | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                               |
-| `appVersion`     | `Object`   | See: [`appVersion`](#appversion) | Configure the application version and where it is made available                                                                           |
-| `cookieMaxAge`   | `Int`      | 30 days                          | The maximum time, in milliseconds, session ID cookies remain valid.                                                                        |
-| `cookieSecret`   | `String`   | `qwerty`                         | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                          |
-| `defaultAccess`  | `Object`   | `{}`                             | Default list and field access. See the [Access Control](https://www.keystonejs.com/api/access-control#defaults) page for more details.     |
-| `defaultAdapter` | `String`   | `null`                           | The name of the database adapter to use by default if multiple are provided.                                                               |
-| `name`           | `String`   | `null`                           | The name of the project. Appears in the Admin UI.                                                                                          |
-| `onConnect`      | `Function` | `null`                           | Callback that executes once `keystone.connect()` complete. Takes no arguments.                                                             |
-| `queryLimits`    | `Object`   | `{}`                             | Configures global query limits                                                                                                             |
-| `secureCookies`  | `Boolean`  | Variable                         | Defaults to true in production mode, false otherwise. See below for important details.                                                     |
-| `sessionStore`   | `Object`   | `null`                           | A compatible Express session middleware.                                                                                                   |
-| `schemaNames`    | `Array`    | `['public']`                     |                                                                                                                                            |
+| Option           | Type       | Default                         | Description                                                                                                                                          |
+| ---------------- | ---------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `adapter`        | `Object`   | Required                        | The database storage adapter. See the [Adapter framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) docs for more details.           |
+| `adapters`       | `Object`   | `undefined`                     | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                                         |
+| `appVersion`     | `Object`   | See [`appVersion`](#appversion) | Configure the application version and where it is made available.                                                                                    |
+| `cookieMaxAge`   | `Int`      | 30 days                         | The maximum time, in milliseconds, session ID cookies remain valid.                                                                                  |
+| `cookieSecret`   | `String`   | `qwerty`                        | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                                    |
+| `defaultAccess`  | `Object`   | `undefined`                     | Default list, field, and custom operation access. See the [Access control API](https://www.keystonejs.com/api/access-control) docs for more details. |
+| `defaultAdapter` | `String`   | `undefined`                     | The name of the database adapter to use by default if multiple are provided.                                                                         |
+| `name`           | `String`   | `undefined`                     | The name of the project. Appears in the Admin UI.                                                                                                    |
+| `onConnect`      | `Function` | `undefined`                     | Callback that executes once `keystone.connect()` complete. Takes no arguments.                                                                       |
+| `queryLimits`    | `Object`   | `{}`                            | Configures global query limits                                                                                                                       |
+| `secureCookies`  | `Boolean`  | Variable                        | Defaults to true in production mode, false otherwise. See [`secureCookies`](#secureCookies) for important details.                                   |
+| `sessionStore`   | `Object`   | `undefined`                     | A compatible Express session middleware.                                                                                                             |
+| `schemaNames`    | `Array`    | `['public']`                    |                                                                                                                                                      |
 
 ### `appVersion`
 
@@ -260,7 +260,7 @@ keystone.executeQuery(queryString, config);
 
 #### queryString
 
-A graphQL query string. For example:
+A GraphQL query string. For example:
 
 ```graphql
 query {
@@ -314,13 +314,13 @@ keystone.extendGraphQLSchema({
 
 #### Config
 
-| Option    | Type    | Description                                                                                  |
-| --------- | ------- | -------------------------------------------------------------------------------------------- |
-| types     | `array` | A list of objects of the form { type, access } where the type string defines a graphQL type. |
-| queries   | `array` | A list of objects of the form { schema, resolver, access }.                                  |
-| mutations | `array` | A list of objects of the form { schema, resolver, access }.                                  |
+| Option    | Type    | Description                                                                                    |
+| --------- | ------- | ---------------------------------------------------------------------------------------------- |
+| types     | `array` | A list of objects of the form `{ type, access }` where the type string defines a GraphQL type. |
+| queries   | `array` | A list of objects of the form `{ schema, resolver, access }`.                                  |
+| mutations | `array` | A list of objects of the form `{ schema, resolver, access }`.                                  |
 
-The `schema` for both queries and mutations should be a string defining the graphQL schema element for the query/mutation, e.g.
+The `schema` for both queries and mutations should be a string defining the GraphQL schema element for the query/mutation, e.g.
 
 ```javascript
 {
