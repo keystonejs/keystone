@@ -137,15 +137,7 @@ export default function Template({
                   {headings
                     .filter(h => h.depth > 1 && h.depth < 4)
                     .map((h, i) => (
-                      <li
-                        key={h.value + i}
-                        css={{
-                          maxWidth: '100%',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
+                      <li key={h.value + i}>
                         <a
                           css={{
                             color: h.depth === 3 ? colors.N60 : colors.N80,
