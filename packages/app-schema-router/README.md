@@ -7,6 +7,8 @@ draft: true
 
 # GraphQL Schema Router
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-schema-router)
+
 A KeystoneJS App that route requests to different GraphQL schemas.
 
 The `SchemaRouterApp` allows you to define a `routerFn` which takes `(req, res)` and returns

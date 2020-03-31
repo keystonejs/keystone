@@ -7,6 +7,8 @@ draft: true
 
 # GraphQL Playground App
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-graphql-playground)
+
 A KeystoneJS App that creates an Apollo GraphQL playground.
 
 ## Usage

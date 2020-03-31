@@ -6,6 +6,8 @@ title: App version plugin
 
 # App version plugin
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-version)
+
 This package provides support for including a version string both as an HTTP response header and as a graphQL query.
 
 The function `appVersionMiddleware(version)` will return a piece of middleware which will set the `X-Keystone-App-Version` response header to `version` on all HTTP requests.

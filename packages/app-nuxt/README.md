@@ -6,6 +6,8 @@ title: Nuxt.js app
 
 # Nuxt.js app
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-nuxt)
+
 ## Usage
 
 ```javascript
