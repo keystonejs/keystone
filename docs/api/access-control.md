@@ -447,7 +447,7 @@ Eg, setting `update: () => false` in the example above will still include the
 
 ## Custom schema access control
 
-[Custom GraphQL schema](https://www.keystonejs.com/keystonejs/keystone/#extendgraphqlschemaconfig)) can also be access controlled.
+[Custom GraphQL schema](https://www.keystonejs.com/keystonejs/keystone/#extendgraphqlschemaconfig) can also be access-controlled.
 Each custom type, query, and mutation accepts an `access` key.
 
 There are two ways to define the value of `access`:
