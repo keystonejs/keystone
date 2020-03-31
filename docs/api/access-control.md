@@ -14,9 +14,9 @@ There are three domains of access control:
 
 1. List level
 2. Field level
-3. Custom operations
+3. Custom schema
 
-To set defaults for all lists, fields, and custom operations, use the `defaultAccess` config when
+To set defaults for all lists, fields, and custom schema, use the `defaultAccess` config when
 creating a `Keystone` instance. Each defaults to `true` if omitted.
 
 ```javascript
@@ -445,7 +445,7 @@ queries/mutations/types exclusively used by that operation.
 Eg, setting `update: () => false` in the example above will still include the
 `name` field in the `UserUpdateInput` type.
 
-## Custom operation access controls
+## Custom schema access control
 
 [Custom GraphQL schema](https://www.keystonejs.com/keystonejs/keystone/#extendgraphqlschemaconfig)) can also be access controlled.
 Each custom type, query, and mutation accepts an `access` key.
