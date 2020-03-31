@@ -7,6 +7,8 @@ order: 1
 
 # Password auth strategy
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/auth-password)
+
 Authenticates a party (often a user) based on their presentation of a credential
 pair. The credential pair consists of an identifier and a secret (often an email
 address and password).

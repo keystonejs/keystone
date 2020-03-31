@@ -6,6 +6,8 @@ title: Apollo helpers
 
 # Apollo helpers
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/apollo-helpers)
+
 A set of functions and components to ease using
 [Apollo](https://www.apollographql.com/docs/react/) with Keystone.
 

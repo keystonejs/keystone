@@ -6,6 +6,8 @@ title: Mongoose adapter
 
 # Mongoose database adapter
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-mongoose)
+
 ## Usage
 
 ```javascript
@@ -41,5 +43,15 @@ If none of these are found a connection string is derived with a `DATABASE_NAME`
 ### Mongoose options (optional)
 
 Additional Mongoose config options are passed directly through to `mongoose.connect()`.
+
+_**Default:**_
+
+```javascript
+{
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+}
+```
 
 See the [Mongoose docs](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect) for a detailed list of options.

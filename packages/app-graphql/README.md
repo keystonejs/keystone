@@ -6,6 +6,8 @@ title: GraphQL app
 
 # GraphQL app
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-graphql)
+
 A KeystoneJS app that creates a GraphQL API and [GraphiQL](https://github.com/graphql/graphiql/blob/master/packages/graphiql/README.md) playground.
 
 > **Note:** The GraphiQL playground is disabled in production mode.

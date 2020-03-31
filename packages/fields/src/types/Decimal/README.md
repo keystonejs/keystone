@@ -15,6 +15,8 @@ See the [Storage section](#storage) for specifics.
 ## Usage
 
 ```js
+const { DateTime, Decimal, Text } = require('@keystonejs/fields');
+
 keystone.createList('Payment', {
   fields: {
     timestamp: { type: DateTime },
@@ -30,7 +32,7 @@ keystone.createList('Payment', {
 | ------------- | --------- | ------- | ------------------------------------------------------------------- |
 | `isRequired`  | `Boolean` | `false` | Does this field require a value?                                    |
 | `isUnique`    | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored     |
-| `knexOptions` | `Object`  | `{}`    | Optional; see the [Knex Adaptor](#knex-adaptor) section for details |
+| `knexOptions` | `Object`  | `{}`    | Optional; see the [Knex Adapter](#knex-adapter) section for details |
 
 ## GraphQL
 
@@ -69,7 +71,7 @@ Eg. `04.53000 === 4.53`.
 
 Although their intent is the same, the core DB adapters use different underlying implementations of this type.
 
-### Mongoose adaptor
+### Mongoose adapter
 
 Values are stored using the [Mongoose `Decimal128` SchemaType](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-Decimal128)
 which in turn uses the underlying [Decimal128 BSON type](https://metacpan.org/pod/BSON::Decimal128).
@@ -81,7 +83,7 @@ The `Decimal128` standard is..
 
 \-- [decimal128 floating-point format on Wikipedia](https://en.wikipedia.org/wiki/Decimal128_floating-point_format)
 
-### Knex adaptor
+### Knex adapter
 
 The Knex adapter uses the [decimal schema type](https://knexjs.org/#Schema-decimal)
 which maps directly to underlying `Decimal` or `Numeric` types in most DB platforms.
