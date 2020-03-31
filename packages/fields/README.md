@@ -38,6 +38,8 @@ In addition to these are some other complex types that have their own package su
 Fields definitions are provided when creating a list. Field definitions should be an object where the key is the field name and the value is an object containing the fields config:
 
 ```javascript
+const { Text } = require('@keystonejs/fields');
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
@@ -116,3 +118,25 @@ _Note_: Field level access control does not accept graphQL where clauses.
 [HTTP cache hint](https://keystonejs.com/api/create-list#cacheHint) for field.
 
 Only static hints are supported for fields.
+
+## Native type aliases
+
+Keystone allows the use of a few native JavaScript types for fields. They are converted to their Keystone field equivalents at runtime.
+
+| Native type | Field type equivalent |
+| ----------- | --------------------- |
+| `Boolean`   | `Checkbox`            |
+| `Number`    | `Float`               |
+| `String`    | `Text`                |
+
+### Usage
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: {
+      type: String,
+    }
+  }
+}
+```

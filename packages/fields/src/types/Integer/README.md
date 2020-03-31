@@ -9,6 +9,8 @@ title: Integer
 ## Usage
 
 ```js
+const { Integer, Text } = require('@keystonejs/fields');
+
 keystone.createList('Review', {
   fields: {
     comments: { type: Text },
