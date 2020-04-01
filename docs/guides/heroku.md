@@ -13,7 +13,6 @@ This quick start guide shows how to deploy your first KeystoneJS app to Heroku a
 Before we start, make sure you have:
 
 - [Git](https://git-scm.com/downloads) installed with `git --version`.
-- [Docker](https://docs.docker.com/install/) installed with `docker -v`.
 
 And that you have created your first KeystoneJS app:
 
@@ -23,9 +22,9 @@ At the moment it is only possible to deploy the TODO starter project without any
 
 ## MongoDB Atlas
 
-MongoDB Atlas has a free tire that we can use as our database service. You need to create an account, but you can use the free tire.
+MongoDB Atlas has a free tier that we can use as our database service. You need to create an account, but you can use the free tier.
 
-- Create [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/signup) account and add a free tire Cluster.
+- Create [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/signup) account and add a free tier Cluster.
 
 ### Allow Heroku to access our database
 
