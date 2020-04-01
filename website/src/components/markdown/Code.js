@@ -213,8 +213,8 @@ function languageLabel(lang) {
 }
 
 function resolveBool(str) {
-  if (['true', 'yes', '1'].includes(str)) return true;
-  if (['false', 'no', '0'].includes(str)) return false;
+  if (str === 'true') return true;
+  if (str === 'false') return false;
 
   return undefined;
 }
