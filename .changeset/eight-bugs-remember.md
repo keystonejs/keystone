@@ -2,4 +2,4 @@
 '@keystonejs/fields': patch
 ---
 
-Fix build error with OEmbed field
+Fixed a build error with OEmbed field.
