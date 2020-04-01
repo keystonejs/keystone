@@ -23,14 +23,12 @@ const keystone = new Keystone({
 | `adapter`        | `Object`   | Required                         | The database storage adapter. See the [Adapter Framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) page for more details. |
 | `adapters`       | `Object`   | `{}`                             | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                               |
 | `appVersion`     | `Object`   | See: [`appVersion`](#appversion) | Configure the application version and where it is made available                                                                           |
-| `cookieMaxAge`   | `Int`      | 30 days                          | The maximum time, in milliseconds, session ID cookies remain valid.                                                                        |
-| `cookieSecret`   | `String`   | `qwerty`                         | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                          |
+| `cookie`         | `Object`   | See: [`cookie`](#cookie)         | Cookie object used to configure the [express-session middleware](https://github.com/expressjs/session#cookie).                             |
 | `defaultAccess`  | `Object`   | `{}`                             | Default list and field access. See the [Access Control](https://www.keystonejs.com/api/access-control#defaults) page for more details.     |
 | `defaultAdapter` | `String`   | `null`                           | The name of the database adapter to use by default if multiple are provided.                                                               |
 | `name`           | `String`   | `null`                           | The name of the project. Appears in the Admin UI.                                                                                          |
 | `onConnect`      | `Function` | `null`                           | Callback that executes once `keystone.connect()` complete. Takes no arguments.                                                             |
 | `queryLimits`    | `Object`   | `{}`                             | Configures global query limits                                                                                                             |
-| `secureCookies`  | `Boolean`  | Variable                         | Defaults to true in production mode, false otherwise. See below for important details.                                                     |
 | `sessionStore`   | `Object`   | `null`                           | A compatible Express session middleware.                                                                                                   |
 | `schemaNames`    | `Array`    | `['public']`                     |                                                                                                                                            |
 
@@ -83,11 +81,30 @@ const keystone = new Keystone({
 
 Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
 
-### `secureCookies`
+### `cookie`
 
-A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+_**Default:**_ see Usage.
+
+A description of the cookie properties is included in the [express-session documentation](https://github.com/expressjs/session#cookie).
+
+#### `secure`
+
+A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secure` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secure` to false. This does not affect development builds since this value is already false.
 
 You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
+
+#### Usage
+
+```javascript
+const keystone = new Keystone({
+  /* ...config */
+  cookie: {
+    secure = process.env.NODE_ENV === 'production', // Default to true in production
+    maxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
+    sameSite = false,
+  },
+});
+```
 
 ### `sessionStore`
 

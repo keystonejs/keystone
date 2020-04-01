@@ -45,9 +45,11 @@ module.exports = class Keystone {
     cookieSecret = 'qwerty',
     sessionStore,
     queryLimits = {},
-    secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
-    cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
-    cookieSameSite = false,
+    cookie = {
+      secure: process.env.NODE_ENV === 'production', // Default to true in production
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+      sameSite: false,
+    },
     schemaNames = ['public'],
     appVersion = {
       version: '1.0.0',
@@ -64,9 +66,7 @@ module.exports = class Keystone {
     this._schemas = {};
     this._sessionManager = new SessionManager({
       cookieSecret,
-      secureCookies,
-      cookieMaxAge,
-      cookieSameSite,
+      cookie,
       sessionStore,
     });
     this.eventHandlers = { onConnect };
