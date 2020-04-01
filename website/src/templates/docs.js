@@ -19,6 +19,7 @@ import { media, mq } from '../utils/media';
 import { useNavData } from '../utils/hooks';
 import { titleCase } from '../utils/case';
 
+// TODO: headings, with ids, should come from graphQL
 const slugger = new Slugger();
 
 export default function Template({
