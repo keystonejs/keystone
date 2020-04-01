@@ -1,5 +1,5 @@
 ---
-'@arch-ui/docs': minor
+'@keystonejs/website': patch
 ---
 
-Deploying Keystone to Heroku
+Added a guide on deploying Keystone to Heroku.
