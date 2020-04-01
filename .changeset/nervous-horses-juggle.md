@@ -2,4 +2,4 @@
 '@keystonejs/website': minor
 ---
 
-Added heading navigation to the docs pages
+Added heading navigation to docs pages.
