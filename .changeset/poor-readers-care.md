@@ -2,4 +2,4 @@
 '@keystonejs/website': minor
 ---
 
-Introduce meta data to code blocks
+Introduced meta data to code blocks.
