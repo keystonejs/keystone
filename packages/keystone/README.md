@@ -328,7 +328,9 @@ The `schema` for both queries and mutations should be a string defining the grap
 }
 ```
 
-The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info)`. See the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature) for more details.
+The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info, extra)`.
+
+For more information about the first 4 arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains 2 properties: `query` and `access`. `query` is an executable function for running a query, while `access` provides access control information about the current user.
 
 The `access` argument for `types`, `queries`, and `mutations` are all boolean values which are used at schema generation time to include or exclude the item from the schema.
 
