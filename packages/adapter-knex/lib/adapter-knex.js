@@ -1,10 +1,8 @@
-const { versionGreaterOrEqualTo } = require('@keystonejs/utils');
-
 const knex = require('knex');
 const pSettle = require('p-settle');
+const slugify = require('@sindresorhus/slugify');
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
 const logger = require('@keystonejs/logger').logger('knex');
-
 const {
   escapeRegExp,
   pick,
@@ -13,8 +11,8 @@ const {
   resolveAllKeys,
   identity,
   asyncForEach,
+  versionGreaterOrEqualTo
 } = require('@keystonejs/utils');
-const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
   constructor({ knexOptions = {}, schemaName = 'public' } = {}) {
