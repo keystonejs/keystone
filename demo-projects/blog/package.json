@@ -33,7 +33,6 @@
     "@keystonejs/file-adapters": "^6.0.0",
     "@keystonejs/keystone": "^7.0.0",
     "@keystonejs/oembed-adapters": "^5.1.2",
-    "apollo-boost": "^0.4.7",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-upload-client": "^12.1.0",
@@ -43,7 +42,7 @@
     "express": "^4.17.1",
     "graphql-tag": "^2.10.1",
     "isomorphic-unfetch": "^3.0.0",
-    "next": "^9.2.0",
+    "next": "^9.3.2",
     "node-fetch": "^2.3.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0"

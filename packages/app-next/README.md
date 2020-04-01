@@ -6,6 +6,8 @@ title: Next.js app
 
 # Next.js app
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-next)
+
 A KeystoneJS app for serving a [Next.js](https://nextjs.org/) application.
 
 ## Usage
