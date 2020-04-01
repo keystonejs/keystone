@@ -1,14 +1,14 @@
 /** @jsx jsx */
 
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
+import Slugger from 'github-slugger';
 import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/core';
 import { SkipNavContent } from '@reach/skip-nav';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
-import slugify from '@sindresorhus/slugify';
 
 import { Layout, Content } from '../templates/layout';
 import mdComponents from '../components/markdown';
@@ -19,12 +19,7 @@ import { media, mq } from '../utils/media';
 import { useNavData } from '../utils/hooks';
 import { titleCase } from '../utils/case';
 
-// NOTE: try to align with "github-slugger" from `gatsby-node.js`
-// TODO: headings, with ids, should come from graphQL
-const SLUG_OPTIONS = {
-  decamelize: false,
-  customReplacements: [['(', '']],
-};
+const slugger = new Slugger();
 
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
@@ -51,6 +46,11 @@ export default function Template({
   const title = `${
     fields.pageTitle.charAt(0) === '@' ? fields.heading : fields.pageTitle
   }${suffix}`;
+
+  let sluggedHeadings = useMemo(() => {
+    slugger.reset();
+    return headings.map(h => ({ ...h, id: slugger.slug(h.value) }));
+  }, [headings]);
 
   return (
     <Fragment>
@@ -134,16 +134,15 @@ export default function Template({
                   On this page
                 </h4>
                 <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                  {headings
+                  {sluggedHeadings
                     .filter(h => h.depth > 1 && h.depth < 4)
                     .map((h, i) => (
                       <li
                         key={h.value + i}
                         css={{
-                          maxWidth: '100%',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
+                          // increase specificity to element - avoid `!important` declaration
+                          // override CSS targeting LI elements from `<Content/>`
+                          'li&': { lineHeight: 1.4 },
                         }}
                       >
                         <a
@@ -152,14 +151,16 @@ export default function Template({
                             display: 'block',
                             fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                             paddingLeft: h.depth === 3 ? '0.5rem' : null,
-                            paddingBottom: '0.25em',
-                            paddingTop: '0.25em',
+
+                            // prefer padding an anchor, rather than margin on list-item, to increase hit area
+                            paddingBottom: '0.4em',
+                            paddingTop: '0.4em',
 
                             ':hover': {
                               color: colors.B.base,
                             },
                           }}
-                          href={`#${slugify(h.value, SLUG_OPTIONS)}`}
+                          href={`#${h.id}`}
                         >
                           {h.value}
                         </a>
