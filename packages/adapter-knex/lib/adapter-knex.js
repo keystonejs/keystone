@@ -2,7 +2,6 @@ const knex = require('knex');
 const pSettle = require('p-settle');
 const slugify = require('@sindresorhus/slugify');
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
-const logger = require('@keystonejs/logger').logger('knex');
 const {
   escapeRegExp,
   pick,
@@ -13,6 +12,7 @@ const {
   asyncForEach,
   versionGreaterOrEqualTo
 } = require('@keystonejs/utils');
+const logger = require('@keystonejs/logger').logger('knex');
 
 class KnexAdapter extends BaseKeystoneAdapter {
   constructor({ knexOptions = {}, schemaName = 'public' } = {}) {
@@ -385,10 +385,18 @@ class KnexListAdapter extends BaseListAdapter {
         if (cardinality === 'N:N') {
           const itemCol = columnNames[this.key].near;
           const otherCol = columnNames[this.key].far;
-          return this._query()
-            .insert(values.map(id => ({ [itemCol]: itemId, [otherCol]: id })))
-            .into(tableName)
-            .returning(otherCol);
+          // MySQL does not support RETURNING statements
+          if (this.parentAdapter.isClientPostgres) {
+            return this._query()
+              .insert(values.map((id) => ({ [itemCol]: itemId, [otherCol]: id })))
+              .into(tableName)
+              .returning(otherCol);
+          } else if (this.parentAdapter.isClientMySQL) {
+            await this._query()
+              .insert(values.map((id) => ({ [itemCol]: itemId, [otherCol]: id })))
+              .into(tableName);
+            return values.map((id) => ({ [otherCol]: id }));
+          }
         } else {
           // Implement me
         }
@@ -422,7 +430,7 @@ class KnexListAdapter extends BaseListAdapter {
     if (Object.keys(realData).length) {
       query.update(realData);
     }
-    const item = (await query.returning(['id', ...this.realKeys]))[0];
+    await query;
 
     // For every many-field, update the many-table
     await this._processNonRealFields(data, async ({ path, value: newValues, adapter }) => {
@@ -445,8 +453,7 @@ class KnexListAdapter extends BaseListAdapter {
           await this._query()
             .select(selectCol)
             .from(tableName)
-            .where(matchCol, item.id)
-            .returning(selectCol)
+            .where(matchCol, id)
         ).map(x => x[selectCol].toString());
 
         // Delete what needs to be deleted
@@ -455,7 +462,7 @@ class KnexListAdapter extends BaseListAdapter {
           if (cardinality === 'N:N') {
             await this._query()
               .table(tableName)
-              .where(matchCol, item.id) // near side
+              .where(matchCol, id) // near side
               .whereIn(selectCol, needsDelete) // far side
               .del();
           } else {
@@ -466,9 +473,9 @@ class KnexListAdapter extends BaseListAdapter {
       } else {
         // Implement me
       }
-      await this._createOrUpdateField({ value, adapter, itemId: item.id });
+      await this._createOrUpdateField({ value, adapter, itemId: id });
     });
-    return (await this._itemsQuery({ where: { id: item.id }, first: 1 }))[0] || null;
+    return (await this._itemsQuery({ where: { id }, first: 1 }))[0] || null;
   }
 
   async _delete(id) {
