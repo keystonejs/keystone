@@ -3,11 +3,7 @@ const expressSession = require('express-session');
 const cookie = require('cookie');
 
 class SessionManager {
-  constructor({
-    cookieSecret = 'qwerty',
-    cookie,
-    sessionStore,
-  }) {
+  constructor({ cookieSecret = 'qwerty', cookie, sessionStore }) {
     this._cookieSecret = cookieSecret;
     this._cookie = cookie;
     this._sessionStore = sessionStore;
