@@ -411,6 +411,11 @@ keystone.createList('User', {
 });
 ```
 
+> **Note:** Even when returning `false`, this field _will_ be included in GraphQL
+> queries/mutations/types exclusively used by that operation.
+> Eg, setting `update: () => false` in the example above will still include the
+> `name` field in the `UserUpdateInput` type.
+
 ## Custom schema access control
 
 [Custom GraphQL schema](https://www.keystonejs.com/keystonejs/keystone/#extendgraphqlschemaconfig) can also be access-controlled.
@@ -478,8 +483,3 @@ keystone.extendGraphQLSchema({
 > Enables turning access on/off based on the currently authenticated user.
 
 _NOTE:_ Even when returning `false`, the queries/mutations/types _will_ be included in the GraphQL Schema.
-=======
-> **Note:** Even when returning `false`, this field _will_ be included in GraphQL
-> queries/mutations/types exclusively used by that operation.
-> Eg, setting `update: () => false` in the example above will still include the
-> `name` field in the `UserUpdateInput` type.
