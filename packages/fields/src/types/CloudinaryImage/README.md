@@ -26,10 +26,10 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 Then when creating your list, use the field as so:
 
 ```js
+const { CloudinaryImage } = require('@keystonejs/fields');
+
 keystone.createList('Item', {
-  // ...
   fields: {
-    // ...
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 });
