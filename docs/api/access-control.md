@@ -399,7 +399,7 @@ queries/mutations/types exclusively used by that operation.
 Eg, setting `update: false` in the example above will remove the `name` field from the
 `UserUpdateInput` type but may still include the field in `UserCreateInput` for example.
 
-### Shorthand Imperative Boolean
+### Shorthand functional Boolean
 
 ```javascript
 keystone.createList('User', {
@@ -419,7 +419,7 @@ keystone.createList('User', {
 _NOTE:_ Even when returning `false`, the queries/mutations/types _will_
 include the field in the GraphQL Schema.
 
-### Granular functions returning Boolean
+### Granular functional Booleans
 
 ```javascript
 keystone.createList('User', {
