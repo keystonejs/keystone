@@ -2,4 +2,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Updated documenation for the last argument in custom resolver functions
+Updated documentation for the last argument in custom resolver functions.
