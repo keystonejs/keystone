@@ -1,5 +1,5 @@
 ---
-'@keystonejs/app-admin-ui': minor
+'@keystonejs/app-admin-ui': patch
 ---
 
-Uncaught GraphQLError when no list is defined
+Fixed an uncaught GraphQLError in the AdminUI where no list was defined.
