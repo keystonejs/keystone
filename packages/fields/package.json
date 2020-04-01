@@ -41,7 +41,7 @@
     "@keystonejs/field-content": "^5.4.3",
     "@keystonejs/test-utils": "^6.0.1",
     "@keystonejs/utils": "^5.4.0",
-    "@sindresorhus/slugify": "^0.6.0",
+    "@sindresorhus/slugify": "^0.11.0",
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",
     "cuid": "^2.1.6",
