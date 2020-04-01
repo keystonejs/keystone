@@ -1,7 +1,7 @@
 <!--[meta]
 section: api
 title: Access control
-order: 5
+order: 4
 [meta]-->
 
 # Access control
@@ -27,13 +27,20 @@ const keystone = new Keystone('My App', {
 });
 ```
 
+## The `auth` operation
+
+In addition to the standard Create/Read/Update/Delete (CRUD) operations, Keystone includes an Authenticate (`auth`) operation.
+Access to this operation may be configured at list level (not field level) and controls whether authentication queries and mutations are accessible on that list.
+
+If you have a `List` which is being used as the target of an Authentication Strategy, you should set `access: { auth: true }` on that list.
+
 ## List level access control
 
 List level access control can have varying degrees of specificity depending on
 how much control you need.
 
 A key on the list config, `access` can be specified either as a single control,
-covering all CRUD operations, or as an object keyed by CRUD operation names.
+covering all CRUDA operations, or as an object keyed by CRUDA operation names.
 
 There are 3 ways to define the values of `access`, in order of flexibility:
 
@@ -41,53 +48,57 @@ There are 3 ways to define the values of `access`, in order of flexibility:
 2. Imperative
 3. Declarative
 
-```graphql
-type GraphQLWhere = {} # placeholder
-
-type AccessInput = {
-  authentication: {
-    item?: {},
-    listKey?: string,
-  },
-  listKey?: string,
-  operation?: string,
-  originalInput?: {},
-  gqlName?: string,
-  itemId?: string,
-  itemIds?: [string],
+```typescript
+interface GraphQLWhere {
+  [key: string]: any;
 }
 
-type StaticAccess = boolean
-type ImperativeAccess = AccessInput => boolean
-type DeclarativeAccess = GraphQLWhere | (AccessInput => GraphQLWhere)
+interface AccessInput {
+  authentication: {
+    item?: {};
+    listKey?: string;
+  };
+  listKey?: string;
+  operation?: string;
+  originalInput?: {};
+  gqlName?: string;
+  itemId?: string;
+  itemIds?: [string];
+}
+
+type StaticAccess = boolean;
+type ImperativeAccess = (arg: AccessInput) => boolean;
+type DeclarativeAccess = GraphQLWhere | ((arg: AccessInput) => GraphQLWhere);
+
+interface GranularAccess {
+  create?: StaticAccess | ImperativeAccess;
+  read?: StaticAccess | ImperativeAccess | DeclarativeAccess;
+  update?: StaticAccess | ImperativeAccess | DeclarativeAccess;
+  delete?: StaticAccess | ImperativeAccess | DeclarativeAccess;
+  auth?: StaticAccess;
+}
 
 type ListConfig = {
-  access:
-    | StaticAccess
-    | ImperativeAccess
-    | {
-        create?: StaticAccess | ImperativeAccess,
-        read?: StaticAccess | ImperativeAccess | DeclarativeAccess,
-        update?: StaticAccess | ImperativeAccess | DeclarativeAccess,
-        delete?: StaticAccess | ImperativeAccess | DeclarativeAccess,
-      },
-}
+  access: StaticAccess | ImperativeAccess | GranularAccess;
+};
 ```
 
 `GraphQLWhere` matches the `where` clause on the GraphQl type.
 ie; for a list `User`, it would match the input type `UserWhereInput`.
 
-`AccessInput` function parameter
+`AccessInput` has the following properties:
 
-- `authentication` describes the currently authenticated user.
-  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
-  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
-- `listKey` is the key of the list being operated on.
-- `operation` is the CRUDA operation being peformed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).
-- `originalInput` for `create` & `update` mutations, this is the data as passed in the mutation.
-- `gqlName` is the name of the query or mutation which triggered the access check
-- `itemId` is the `id` of the item being updated/deleted in singular `update` and `delete` operations.
-- `itemIds` are the `ids` of the items being updated/deleted in multiple `update` and `delete` operations.
+| Property                 | Description                                                                                   |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| `authentication`         | The currently authenticated user.                                                             |
+| `authentication.item`    | The details of the current user. Will be `undefined` for anonymous users.                     |
+| `authentication.listKey` | The list key of the currently authenticated user. Will be `undefined` for anonymous users.    |
+| `listKey`                | The key of the list being operated on.                                                        |
+| `operation`              | The CRUDA operation being performed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`). |
+| `originalInput`          | For `create` & `update` mutations, this is the data as passed in the mutation.                |
+| `gqlName`                | The name of the query or mutation which triggered the access check.                           |
+| `itemId`                 | The `id` of the item being updated/deleted in singular `update` and `delete` operations.      |
+| `itemIds`                | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations.    |
 
 When resolving `StaticAccess`;
 
@@ -96,16 +107,21 @@ When resolving `StaticAccess`;
 
 Definition of `access` operations:
 
-- `create`: Ability to create new items in the list
-- `read`: Ability to view / fetch data on any items in the list
-- `update`: Ability to alter data on any items in the list
-- `delete`: Ability to remove an item from the list
+| Operation | Description                                            |
+| --------- | ------------------------------------------------------ |
+| `create`  | Ability to create new items in the list.               |
+| `read`    | Ability to view / fetch data on any items in the list. |
+| `update`  | Ability to alter data on any items in the list.        |
+| `delete`  | Ability to remove an item from the list.               |
+| `auth`    | Ability to use this list for authentication.           |
 
 When access is denied, the GraphQL response will contain an error with
 `type: 'AccessDeniedError'`, and `null` for the data.
 
 > **Note:** The `create` operation cannot be given `DeclarativeAccess` - it does not
 > make sense to do so and will throw an error if attempted.
+>
+> Additionally, the `auth` operation control must be of type `StaticAccess`.
 
 Let's break it down into concrete examples:
 
@@ -136,6 +152,7 @@ keystone.createList('User', {
     read: true,
     update: true,
     delete: true,
+    auth: true,
   },
 
   fields: {
@@ -270,57 +287,56 @@ There are 2 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 
-```graphql
-type AccessInput = {
+```typescript
+interface AccessInput {
   authentication: {
-    item?: {},
-    listKey?: string,
-  },
-  listKey?: string,
-  fieldKey?: string,
-  originalInput?: {},
-  existingItem?: {},
-  operation?: string,
-  gqlName?: string,
-  itemId?: string,
-  itemIds?: [string],
+    item?: {};
+    listKey?: string;
+  };
+  listKey?: string;
+  fieldKey?: string;
+  originalInput?: {};
+  existingItem?: {};
+  operation?: string;
+  gqlName?: string;
+  itemId?: string;
+  itemIds?: [string];
 }
 
-type StaticAccess = boolean
-type ImperativeAccess = AccessInput => boolean
+type StaticAccess = boolean;
+type ImperativeAccess = (arg: AccessInput) => boolean;
+
+interface GranularAccess {
+  create?: StaticAccess | ImperativeAccess;
+  read?: StaticAccess | ImperativeAccess;
+  update?: StaticAccess | ImperativeAccess;
+}
 
 type FieldConfig = {
-  access:
-    | StaticAccess
-    | ImperativeAccess
-    | {
-        create?: StaticAccess | ImperativeAccess,
-        read?: StaticAccess | ImperativeAccess,
-        update?: StaticAccess | ImperativeAccess,
-      },
-}
+  access: StaticAccess | ImperativeAccess | GranularAccess;
+};
 ```
 
 _NOTE:_ Unlike List level access, it is not possible to specify a Declarative
 _where_ clause for Field level access.
 
-_NOTE:_ Fields do not have a `delete` access controls - this control exists on
+_NOTE:_ Fields do not have `delete` or `auth` access controls - these controls exists on
 the list level only (it's not possible to _'delete'_ an existing field value -
-only to modify it).
+only to modify it, and authentication is list-wide).
 
-`AccessInput` function parameter
-
-- `authentication` describes the currently authenticated user.
-  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
-  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
-- `listKey` is the key of the list being operated on.
-- `fieldKey` is the key of the field being operated on.
-- `originalInput`is the data as passed in the mutation for `create` & `update` mutations (`undefined` for `read`).
-- `existingItem` is the existing item this field belongs to for `update` mutations & `read` queries (`undefined` for `create`).
-- `operation` is the CRUDA operation being performed (`'create'`, `'read'`, `'update'`, `'delete'`, `'auth'`).
-- `gqlName` is the name of the query or mutation which triggered the access check
-- `itemId` is the `id` of the item being updated/deleted in singular `update` and `delete` operations.
-- `itemIds` are the `ids` of the items being updated/deleted in multiple `update` and `delete` operations.
+| Property                 | Description                                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `authentication`         | The currently authenticated user.                                                                           |
+| `authentication.item`    | The details of the current user. Will be `undefined` for anonymous users.                                   |
+| `authentication.listKey` | The list key of the currently authenticated user. Will be `undefined` for anonymous users.                  |
+| `listKey`                | The key of the list being operated on.                                                                      |
+| `fieldKey`               | The key of the field being operated on.                                                                     |
+| `originalInput`          | The data as passed in the mutation for `create` & `update` mutations (`undefined` for `read`).              |
+| `existingItem`           | The existing item this field belongs to for `update` mutations & `read` queries (`undefined` for `create`). |
+| `operation`              | The CRU operation being performed (`'create'`, `'read'`, `'update'`).                                       |
+| `gqlName`                | The name of the query or mutation which triggered the access check.                                         |
+| `itemId`                 | The `id` of the item being updated/deleted in singular `update` and `delete` operations.                    |
+| `itemIds`                | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations.                  |
 
 When defining `StaticAccess`;
 
@@ -329,9 +345,11 @@ When defining `StaticAccess`;
 
 Definition of `access` operations:
 
-- `create`: Ability to set the value of the field when creating a new item
-- `read`: Ability to view / fetch the value of this field on an item
-- `update`: Ability to alter the value of this field on an item
+| Operation | Description                                                     |
+| --------- | --------------------------------------------------------------- |
+| `create`  | Ability to set the value of the field when creating a new item. |
+| `read`    | Ability to view / fetch the value of this field on an item.     |
+| `update`  | Ability to alter the value of this field on an item.            |
 
 When access is denied, the GraphQL response will contain an error with `type: 'AccessDeniedError'`,
 and `null` for the field.

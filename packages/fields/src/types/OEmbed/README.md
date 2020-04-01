@@ -17,7 +17,7 @@ to parse the resource directly.
 
 ```js
 const { Keystone } = require('@keystonejs/keystone');
-const { OEmbed } = require('@keystonejs/fields');
+const { OEmbed, Text } = require('@keystonejs/fields');
 const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 
 const keystone = new Keystone({...});
