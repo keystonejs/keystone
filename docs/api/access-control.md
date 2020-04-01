@@ -482,4 +482,4 @@ keystone.extendGraphQLSchema({
 
 > Enables turning access on/off based on the currently authenticated user.
 
-_NOTE:_ Even when returning `false`, the queries/mutations/types _will_ be included in the GraphQL Schema.
+_NOTE:_ Even when returning `false`, the custom queries/mutations/types _will_ be included in the GraphQL Schema.
