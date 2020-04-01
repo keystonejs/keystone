@@ -31,17 +31,21 @@ const rootTags = [
   <meta name="twitter:image" content={logoPath} />,
 ];
 
+const addKeys = tags => {
+  return tags.map(({ type: Tag, key, props }, idx) => <Tag key={key || idx} {...props} />);
+};
+
 function getUniqueTags(children) {
   // NOTE: the concatenation order is important for the unique filter;
   // we want to give `children` precedence over root tags.
   const tags = Children.toArray(children.concat(rootTags));
   const uniqueTags = uniqBy(tags, t => t.props.name || t.props.property);
-  return uniqueTags.map((tag, idx) => <tag.type key={tag.key || idx} {...tag.props} />);
+  return addKeys(uniqueTags);
 }
 
 export default function PageMeta({ children, description, title, titleExclusive }) {
   const titleContent = titleExclusive ? titleExclusive : title ? `${title} | ${meetup.name}` : null;
-  const uniqueTags = children ? getUniqueTags(children) : rootTags;
+  const uniqueTags = children ? getUniqueTags(children) : addKeys(rootTags);
 
   return (
     <Head>

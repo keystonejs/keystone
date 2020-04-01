@@ -6,6 +6,8 @@ title: Passport auth strategy
 
 # Passport auth strategy
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/auth-passport)
+
 Enable Keystone authentication via services such as Google, Twitter, Facebook,
 GitHub, and any [others supported by passport.js](http://www.passportjs.org).
 

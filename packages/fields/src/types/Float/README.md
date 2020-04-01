@@ -9,6 +9,8 @@ title: Float
 ## Usage
 
 ```js
+const { Float, DateTime } = require('@keystonejs/fields');
+
 keystone.createList('SensorReading', {
   fields: {
     loggedAt: { type: DateTime },
