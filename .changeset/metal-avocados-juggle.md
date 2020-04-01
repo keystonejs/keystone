@@ -25,4 +25,4 @@
 '@keystonejs/website': patch
 ---
 
-Consistent voice throughout documentation
+Applied a more consistent voice throughout documentation.
