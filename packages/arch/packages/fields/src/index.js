@@ -24,6 +24,7 @@ export const FieldLabel = props => {
         flexDirection: 'row',
         justifyContent: 'space-between',
       }}
+      className={props.className}
       htmlFor={props.htmlFor}
     >
       {props.field.label}{' '}

@@ -16,14 +16,19 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
 
   return (
     <FieldContainer>
-      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
-      <FieldInput css={{ height: 35 }}>
+      <FieldInput css={{ height: 35, alignItems: 'center' }}>
         <CheckboxPrimitive
           autoFocus={autoFocus}
           checked={checked}
           onChange={handleChange}
           id={htmlID}
+        />
+        <FieldLabel
+          htmlFor={htmlID}
+          field={field}
+          errors={errors}
+          css={{ padding: '4px', fontSize: '1rem' }}
         />
       </FieldInput>
     </FieldContainer>
