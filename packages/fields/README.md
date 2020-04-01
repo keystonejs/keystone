@@ -6,13 +6,20 @@ order: 3
 
 # Fields
 
-Keystone contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
+Each Keystone list contains one or more specialized **fields** which handle the client and server-side management of different types of data. See the [data modelling guide](https://keystonejs.com/guides/schema) for more information on lists and fields.
+
+## Packages
+
+Most primitive field types can be imported from the `@keystonejs/fields` package. More complex field types can be imported from their individual packages, listed below:
+
+> **Hint:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/).
+
+### `@keystonejs/fields`
 
 - [CalendarDay](https://keystonejs.com/keystonejs/fields/src/types/calendar-day)
 - [Checkbox](https://keystonejs.com/keystonejs/fields/src/types/checkbox)
 - [CloudinaryImage](https://keystonejs.com/keystonejs/fields/src/types/cloudinary-image)
 - [Color](https://keystonejs.com/keystonejs/fields/src/types/color)
-- [Content](https://keystonejs.com/keystonejs/field-content)
 - [DateTime](https://keystonejs.com/keystonejs/fields/src/types/date-time)
 - [Decimal](https://keystonejs.com/keystonejs/fields/src/types/decimal)
 - [File](https://keystonejs.com/keystonejs/fields/src/types/file)
@@ -28,10 +35,35 @@ Keystone contains a set of primitive fields types that can be imported from `@ke
 - [Unsplash](https://keystonejs.com/keystonejs/fields/src/types/unsplash)
 - [Url](https://keystonejs.com/keystonejs/fields/src/types/url)
 - [Uuid](https://keystonejs.com/keystonejs/fields/src/types/uuid)
+- [Virtual](https://keystonejs.com/keystonejs/fields/src/types/virtual)
 
-In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
+### `@keystonejs/fields-authed-relationship`
 
-> **Hint:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/)
+- [AuthedRelationship](https://keystonejs.com/keystonejs/fields-authed-relationship)
+
+### `@keystonejs/fields-auto-increment`
+
+- [AutoIncrement](https://keystonejs.com/keystonejs/fields-auto-increment)
+
+### `@keystonejs/fields-datetime-utc`
+
+- [DateTimeUtc](https://keystonejs.com/keystonejs/fields-datetime-utc)
+
+### `@keystonejs/fields-markdown`
+
+- [Markdown](https://keystonejs.com/keystonejs/fields-markdown)
+
+### `@keystonejs/fields-mongoid`
+
+- [MongoId](https://keystonejs.com/keystonejs/fields-mongoid)
+
+### `@keystonejs/fields-wysiwyg-tinymce`
+
+- [Wysiwyg](https://keystonejs.com/keystonejs/fields-wysiwyg-tinymce)
+
+### `@keystonejs/field-content`
+
+- [Content](https://keystonejs.com/keystonejs/field-content)
 
 ## Usage
 
