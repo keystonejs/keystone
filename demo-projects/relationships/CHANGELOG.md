@@ -1,1 +1,1 @@
-# @keystonejs/demo-project-todo
+# @keystonejs/demo-project-relationships
