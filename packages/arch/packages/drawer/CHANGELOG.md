@@ -1,5 +1,28 @@
 # @arch-ui/drawer
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+  - @arch-ui/modal-utils@1.0.9
+  - @arch-ui/typography@0.0.15
+
+## 0.0.18
+
+### Patch Changes
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @arch-ui/modal-utils@1.0.8
+  - @arch-ui/typography@0.0.14
+  - @arch-ui/color-utils@0.0.2
+  - @arch-ui/theme@0.0.9
+
 ## 0.0.17
 
 ### Patch Changes
@@ -69,73 +92,73 @@
 
 ### Patch Changes
 
-- [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06): Correctly remove Drawer overlay when drawer is closed
+- [fc437e06](https://github.com/keystonejs/keystone/commit/fc437e06): Correctly remove Drawer overlay when drawer is closed
 
 ## 0.0.9
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
 
 ## 0.0.8
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
 ## 0.0.7
 
-- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
   - @arch-ui/typography@0.0.6
 
 ## 0.0.6
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
-- [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+- [5f1a5cf3](https://github.com/keystonejs/keystone/commit/5f1a5cf3):
 
   - Update usage of transition API
 
-* Updated dependencies [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
-* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+* Updated dependencies [a03fd601](https://github.com/keystonejs/keystone/commit/a03fd601):
+* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone/commit/5f1a5cf3):
   - @arch-ui/modal-utils@1.0.0
 
 ## 0.0.5
 
-- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- [patch][e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
 
   - admin revamp
 
 ## 0.0.4
 
-- [patch][545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+- [patch][545c9464](https://github.com/keystonejs/keystone/commit/545c9464):
 
   - Fix layout when there are nested modals which slide in from different sides
 
-- Updated dependencies [302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+- Updated dependencies [302930a4](https://github.com/keystonejs/keystone/commit/302930a4):
   - @arch-ui/modal-utils@0.0.4
 
 ## 0.0.3
 
-- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+- [patch][11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
 
   - Update minor-level dependencies
 
-- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+- [patch][619b17c2](https://github.com/keystonejs/keystone/commit/619b17c2):
 
   - Reformat code using latest version of Prettier (1.16.4)
 
-- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+- [patch][d9a1be91](https://github.com/keystonejs/keystone/commit/d9a1be91):
 
   - Update dependencies
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 

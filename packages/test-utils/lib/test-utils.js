@@ -207,12 +207,15 @@ const sorted = (arr, keyFn) => {
   return arr;
 };
 
-const matchFilter = (keystone, gqlArgs, fields, target, sortkey) => {
-  gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
-  const snippet = `allTests ${gqlArgs} ${fields}`;
-  return graphqlRequest({ keystone, query: `query { ${snippet} }` }).then(({ data }) => {
-    const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
-    expect(value).toEqual(target);
+const matchFilter = ({ keystone, queryArgs, fieldSelection, expected, sortKey }) => {
+  return graphqlRequest({
+    keystone,
+    query: `query {
+      allTests${queryArgs ? `(${queryArgs})` : ''} { ${fieldSelection} }
+    }`,
+  }).then(({ data }) => {
+    const value = sortKey ? sorted(data.allTests || [], i => i[sortKey]) : data.allTests;
+    expect(value).toEqual(expected);
   });
 };
 

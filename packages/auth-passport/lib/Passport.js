@@ -1,7 +1,6 @@
 const express = require('express');
 const passport = require('passport');
 const assert = require('nanoassert');
-const { startAuthedSession } = require('@keystonejs/session');
 
 const FIELD_SERVICE_NAME = 'service';
 const FIELD_USER_ID = 'serviceUserId';
@@ -81,7 +80,7 @@ class PassportAuthStrategy {
     this._keystone = keystone;
     this._listKey = listKey;
     this._ServiceStrategy = ServiceStrategy;
-    this._cookieSecret = keystone.getCookieSecret();
+    this._sessionManager = keystone._sessionManager;
 
     // Pull all the required data off the `config` object
     this._serviceAppId = config.appId;
@@ -506,14 +505,10 @@ class PassportAuthStrategy {
   }
 
   async _authenticateItem(item, accessToken, isNewItem, req, res, next) {
-    const audiences = ['admin'];
-
-    const token = await startAuthedSession(
-      req,
-      { item, list: this._getList() },
-      audiences,
-      this._cookieSecret
-    );
+    const token = await this._sessionManager.startAuthedSession(req, {
+      item,
+      list: this._getList(),
+    });
     this._onAuthenticated({ token, item, isNewItem }, req, res, next);
   }
 }

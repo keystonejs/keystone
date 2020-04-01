@@ -1,16 +1,16 @@
 <!--[meta]
 section: guides
-title: Deployment Recommendations
+title: Deployment recommendations
 subSection: deployment
 [meta]-->
 
-# Deployment Recommendations
+# Deployment recommendations
 
 ## General
 
 Keystone files need to be built with `keystone build` before running in production mode.
 
-## Using Docker
+## Docker
 
 Keystone can be easily built as a Docker container image, suitable for deploying on Kubernetes or other environments.
 
@@ -33,7 +33,7 @@ If you're already familiar with Heroku or Pivotal Cloudfoundry, you might find [
 
 The following is an example of production-ready Dockerfile for a Keystone app built with `yarn build` and started with `yarn start`:
 
-```
+```shell
 # https://docs.docker.com/samples/library/node/
 ARG NODE_VERSION=12.10.0
 # https://github.com/Yelp/dumb-init/releases

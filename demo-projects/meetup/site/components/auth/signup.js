@@ -28,7 +28,7 @@ export default () => {
   const handleSignin = async () => {
     setIsLoading(true);
     try {
-      await signin({ email, password });
+      await signin({ variables: { email, password } });
       setIsLoading(false);
       setErrorState(false);
     } catch (error) {
@@ -50,7 +50,7 @@ export default () => {
   return (
     <>
       {mutationError && <p css={{ color: colors.red }}>The email provided is already in use.</p>}
-      {errorState && <p css={{ color: colors.red }}>An unknown error has occured</p>}
+      {errorState && <p css={{ color: colors.red }}>An unknown error has occurred</p>}
 
       <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit(createUser)}>
         <Field>

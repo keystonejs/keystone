@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/popout",
   "description": "Popout Component used in @keystonejs Admin UI.",
-  "version": "0.0.15",
+  "version": "0.0.17",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/popout.cjs.js",
@@ -14,9 +14,9 @@
     "react-dom": "^16.13.0"
   },
   "dependencies": {
-    "@arch-ui/color-utils": "^0.0.1",
-    "@arch-ui/modal-utils": "^1.0.7",
-    "@arch-ui/theme": "^0.0.8",
+    "@arch-ui/color-utils": "^0.0.2",
+    "@arch-ui/modal-utils": "^1.0.9",
+    "@arch-ui/theme": "^0.0.10",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
