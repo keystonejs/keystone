@@ -152,9 +152,9 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    new AdminUIApp(
+    new AdminUIApp({
       authStrategy: googleStrategy,
-    ),
+    }),
   ],
 };
 ```
