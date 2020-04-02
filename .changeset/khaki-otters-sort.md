@@ -3,4 +3,4 @@
 '@keystonejs/fields': patch
 ---
 
-Improve layout of checkbox fields
+Improved layout of checkbox fields.

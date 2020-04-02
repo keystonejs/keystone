@@ -2,4 +2,4 @@
 '@keystonejs/website': patch
 ---
 
-Made the header and sidebar sticky
+Made the header and sidebar sticky.

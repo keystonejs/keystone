@@ -36,8 +36,6 @@ const keystone = new Keystone({
 
 ### `appVersion`
 
-_**Default:**_ see Usage.
-
 Configure the application version, which can be surfaced via HTTP headers or GraphQL
 
 The `version` can be any string value you choose to use for your system.
@@ -45,11 +43,8 @@ If `addVersionToHttpHeaders` is `true` then all requests will have the header `X
 The version can also be queried from the GraphQL API as `{ appVersion }`.
 You can control whether this is exposed in your schema using `access`, which can be either a boolean, or an object with `schemaName` keys and boolean values.
 
-#### Usage
-
 ```javascript
 const keystone = new Keystone({
-  /* ...config */
   appVersion: {
     version: '1.0.0',
     addVersionToHttpHeaders: true,
@@ -68,11 +63,8 @@ Configures global query limits.
 
 These should be used together with [list query limits](https://keystonejs.com/api/create-list#query-limits).
 
-#### Usage
-
 ```javascript
 const keystone = new Keystone({
-  /* ...config */
   queryLimits: {
     maxTotalResults: 1000,
   },
@@ -85,7 +77,7 @@ Note that `maxTotalResults` applies to the total results of all relationship que
 
 ### `secureCookies`
 
-A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a Keystone project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
 
 You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
 
@@ -95,14 +87,11 @@ Sets the Express server's [session middleware](https://github.com/expressjs/sess
 
 This example uses the [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) middleware, but you can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores).
 
-#### Usage
-
 ```javascript
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')(expressSession);
 
 const keystone = new Keystone({
-  /* ...config */
   sessionStore: new MongoStore({ url: 'mongodb://localhost/my-app' }),
 });
 ```
@@ -140,41 +129,28 @@ Please note: We use these internally but provide no support or assurance if used
 
 ### `connect()`
 
-Manually connect KeystoneJS to the adapters.
+Manually connect Keystone to the adapters. See [Custom Server](https://keystonejs.com/guides/custom-server).
 
-#### Usage
-
-```javascript
+```javascript allowCopy=false showLanguage=false
 keystone.connect();
 ```
 
-_Note_: `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
-
-See: [Custom Server](https://keystonejs.com/guides/custom-server).
+> **Note:** `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
 
 ### `createAuthStrategy(config)`
 
-Creates a new authentication middleware instance.
+Creates a new authentication middleware instance. See:
 
-See: [Authentication](https://www.keystonejs.com/guides/authentication).
+- [Authentication guide](https://www.keystonejs.com/guides/authentication)
+- [Authentication API docs](https://www.keystonejs.com/api/authentication)
 
-#### Usage
-
-```js
-const authStrategy = keystone.createAuthStrategy({
-  /*...config */
-});
+```javascript allowCopy=false showLanguage=false
+const authStrategy = keystone.createAuthStrategy({...});
 ```
-
-#### Config
-
-See the [Authentication API docs](https://www.keystonejs.com/api/authentication) for config options.
 
 ### `createItems(items)`
 
 Allows bulk creation of items. This method's primary use is intended for migration scripts, or initial seeding of databases.
-
-#### Usage
 
 ```javascript
 keystone.createItems({
@@ -206,11 +182,11 @@ keystone.createList('Post', {
 
 _Note_: The format of the data must match the lists and fields setup with `keystone.createList()`
 
-It is possible to create relationships at insertion using the KeystoneJS query syntax.
+It is possible to create relationships at insertion using the Keystone query syntax.
 
 E.g. `author: { where: { name: 'Ticiana' } }`
 
-Upon insertion, KeystoneJS will resolve the `{ where: { name: 'Ticiana' } }` query
+Upon insertion, Keystone will resolve the `{ where: { name: 'Ticiana' } }` query
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
@@ -218,22 +194,21 @@ Note an error is thrown if no items match the query.
 
 ### `createList(listKey, config)`
 
-#### Usage
+Registers a new list with Keystone and returns a `Keystone` list object. See:
 
-```javascript
-keystone.createList('Posts', {
-  /*...config */
-});
+- [Adding lists tutorial](/docs/tutorials/add-lists.md)
+- [Data modelling guide](/docs/guides/schema.md)
+
+```javascript allowCopy=false showLanguage=false
+keystone.createList('Posts', {...});
 ```
 
 #### Config
 
-Registers a new list with KeystoneJS and returns a `Keystone` list object.
-
-| Option    | Type     | Default | Description                                                                                              |
-| --------- | -------- | ------- | -------------------------------------------------------------------------------------------------------- |
-| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                                  |
-| `config`  | `Object` | `{}`    | The list config. See the [createList API](https://keystonejs.com/api/create-list) page for more details. |
+| Option    | Type     | Default | Description                                                                                 |
+| --------- | -------- | ------- | ------------------------------------------------------------------------------------------- |
+| `listKey` | `String` | `null`  | The name of the list. This should be singular, E.g. 'User' not 'Users'.                     |
+| `config`  | `Object` | `{}`    | The list config. See the [create list API docs](/docs/api/create-list.md) for more details. |
 
 ### `disconnect()`
 
@@ -252,10 +227,8 @@ Use this method to execute queries or mutations directly against a `Keystone` in
 
 Returns a Promise representing the result of the given query or mutation.
 
-#### Usage
-
-```javascript
-keystone.executeQuery(queryString, config);
+```javascript allowCopy=false showLanguage=false
+keystone.executeQuery('query-string', {...});
 ```
 
 #### queryString
@@ -292,8 +265,6 @@ mutation newTodo($name: String) {
 
 Extends keystones generated schema with custom types, queries, and mutations.
 
-#### Usage
-
 ```javascript
 keystone.extendGraphQLSchema({
   types: [{ type: 'type FooBar { foo: Int, bar: Float }' }],
@@ -328,7 +299,9 @@ The `schema` for both queries and mutations should be a string defining the Grap
 }
 ```
 
-The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info)`. See the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature) for more details.
+The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info, extra)`.
+
+For more information about the first 4 arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains 2 properties: `query` and `access`. `query` is an executable function for running a query, while `access` provides access control information about the current user.
 
 The `access` argument for `types`, `queries`, and `mutations` are all either, boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
 See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
@@ -352,6 +325,6 @@ const { middlewares } = await keystone.prepare({
 | ------------- | --------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `apps`        | `Array`   | `[]`                                  | An array of 'Apps' which are express middleware.                                                                    |
 | `cors`        | `Object`  | `{ origin: true, credentials: true }` | CORS options passed to the [`cors` npm module](https://www.npmjs.com/package/cors)                                  |
-| `dev`         | `Boolean` | `false`                               | Sets the dev flag in KeystoneJS' express middleware.                                                                |
+| `dev`         | `Boolean` | `false`                               | Sets the dev flag in Keystone' express middleware.                                                                  |
 | `distDir`     | `String`  | `dist`                                | The build directory for keystone.                                                                                   |
 | `pinoOptions` | `Object`  | `undefined`                           | Logging options passed to the [`express-pino-logger` npm module](https://www.npmjs.com/package/express-pino-logger) |

@@ -8,7 +8,7 @@ title: Keystone apps
 A Keystone instance can be summarised as a function of your schema which
 creates a GraphQL API for querying, and an AdminUI for managing your data:
 
-```javascript
+```javascript allowCopy=false showLanguage=false
 schema => ({ GraphQL, AdminUI });
 ```
 
@@ -23,9 +23,7 @@ A Keystone **App** has two primary purposes
 
 At a minimum a Keystone application requires one app, the [GraphQL API](/packages/app-graphql/README.md):
 
-`index.js`
-
-```javascript
+```javascript title=index.js
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { Keystone } = require('@keystonejs/keystone');
 
@@ -40,12 +38,10 @@ module.exports = {
 Most of the time the `GraphQLApp` will be paired with an `AdminUIApp` which
 provides the functionality of the Keystone Admin UI:
 
-`index.js`
-
-```diff
+```diff title=index.js allowCopy=false showLanguage=false
  const { GraphQLApp } = require('@keystonejs/app-graphql');
-+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
  const { Keystone } = require('@keystonejs/keystone');
++const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
  const keystone = new Keystone();
 
@@ -75,7 +71,8 @@ Other interesting Keystone compatible Apps are:
 
 If you need to provide your own custom middleware for your system you can create a custom app and include it in your exported `apps`.
 
-```javascript
+<!-- prettier-ignore-start -->
+```javascript title=index.js
 class CustomApp {
   prepareMiddleware({ keystone, dev, distDir }) {
     const middleware = express();
@@ -85,6 +82,11 @@ class CustomApp {
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp(), new CustomApp()],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp(),
+    new CustomApp(),
+  ],
 };
 ```
+<!-- prettier-ignore-end -->

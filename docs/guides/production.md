@@ -20,7 +20,7 @@ Make sure the production deployment sets a long, unguessable value for [Keystone
 
 A randomly generated value is suitable (but keep it secret):
 
-```
+```shell
 openssl rand -hex 32
 ```
 
@@ -47,13 +47,13 @@ Add [query limits](/docs/api/create-list.md#querylimits) and [validation](/docs/
 
 ## Using reverse proxies
 
-It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](<https://en.wikipedia.org/wiki/Slowloris_(computer_security)>).
+It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)).
 
 ## Environment variables
 
 Don't forget to set the `NODE_ENV` environment variable to `production` when running. Many `npm` libraries check this to enable production mode.
 
-```
+```shell
 NODE_ENV=production keystone start
 ```
 

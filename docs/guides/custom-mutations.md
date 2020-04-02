@@ -25,15 +25,15 @@ You can implement an incrementing value with [Hooks](/docs/guides/hooks.md) but 
 
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
-```js
+```js title=/lists/Page.js
 const { Text, Integer } = require('@keystonejs/fields');
 
-const Page = {
+const Page = keystone.createList('Page', {
   fields: {
     title: { type: Text },
     views: { type: Integer },
   },
-};
+});
 ```
 
 If we had a front-end application that updated the view count every time someone visits the page it would require multiple CRUD operations.
@@ -89,20 +89,20 @@ keystone.extendGraphQLSchema({
 
 In this mutation we want to access an existing item in the list. We don't care about access control, in-fact we will make the field read-only so that it cannot be updated with normal mutations or in the Admin UI. Our new Page definition is:
 
-```js
-const Page = {
-  fields: {
-    title: { type: Text },
-    views: {
-      type: Integer,
-      access: {
-        create: false,
-        read: true,
-        update: false,
-      },
-    },
-  },
-};
+```diff title=/lists/Page.js allowCopy=false showLanguage=false
+ const Page = keystone.createList('Page', {
+   fields: {
+     title: { type: Text },
+     views: {
+       type: Integer,
++      access: {
++        create: false,
++        read: true,
++        update: false,
++      },
+     },
+   },
+ };
 ```
 
 The last step is to define the resolver function `incrementPageViews`.
