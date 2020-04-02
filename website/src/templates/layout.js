@@ -9,8 +9,8 @@ import { Header, SiteMeta } from '../components';
 import { media, mediaMax } from '../utils/media';
 
 export const Layout = ({ children }) => {
-  const [isVisible, setVisible] = useState(false);
-  const toggleMenu = bool => () => setVisible(bool);
+  const [sidebarIsVisible, setSidebarVisible] = useState(false);
+  const toggleSidebar = () => setSidebarVisible(bool => !bool);
 
   return (
     <Fragment>
@@ -88,11 +88,8 @@ export const Layout = ({ children }) => {
       />
       <SkipNavLink />
       <SiteMeta pathname="/" />
-      <Header key="global-header" toggleMenu={toggleMenu(!isVisible)} />
-      {children({
-        sidebarIsVisible: isVisible,
-        toggleSidebar: toggleMenu(!isVisible),
-      })}
+      <Header key="global-header" toggleMenu={toggleSidebar} />
+      {children({ sidebarIsVisible, toggleSidebar })}
     </Fragment>
   );
 };

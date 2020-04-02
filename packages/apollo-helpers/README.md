@@ -13,7 +13,7 @@ A set of functions and components to ease using
 
 ## Installation
 
-```bash
+```shell
 yarn add @keystonejs/apollo-helpers
 ```
 
@@ -163,9 +163,9 @@ type Mutation {
 
 When we perform the following query using Apollo's `<Query>` component:
 
-```javascript
+```jsx
 <Query
-  query=`
+  query={`
     query {
       allEvents {
         id
@@ -176,13 +176,13 @@ When we perform the following query using Apollo's `<Query>` component:
         }
       }
     }
-  `
+  `}
 />
 ```
 
 Apollo will cache the result of `allEvents`/`allGroups`, plus the individual events, which looks roughly like:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123"],
   "allGroups": ["xyz789"],
@@ -193,21 +193,21 @@ Apollo will cache the result of `allEvents`/`allGroups`, plus the individual eve
 
 Now, when we do a mutation using Apollo's `<Mutation>` component:
 
-```javascript
+```jsx
 <Mutation
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
 We've created a new `Event` with data `{ id: "def456" }`, which Apollo will also cache:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123"],
   "allGroups": ["xyz789"],
@@ -233,13 +233,13 @@ What does that mean? Let's continue using the above example but with this module
 ```javascript
 <Mutation
   invalidateTypes="Event"
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
@@ -247,7 +247,7 @@ What does that mean? Let's continue using the above example but with this module
 
 Will immediately result in the following cache:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allGroups": ["xyz789"],
   "Event:abc123": { "id": "abc123" },
@@ -260,7 +260,7 @@ Will immediately result in the following cache:
 
 Which, when using this module's `<Query>` component, will re-load the now removed data from the server, resulting in a final cache of:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456"],
   "allGroups": ["xyz789"],
@@ -278,7 +278,7 @@ Let's continue the example above with another query:
 
 ```javascript
 <Query
-  query=`
+  query={`
     query {
       allEvents {
         id
@@ -287,13 +287,13 @@ Let's continue the example above with another query:
         count
       }
     }
-  `
+  `}
 />
 ```
 
 Would result in the cache:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456"],
   "_allEventsMeta": { "count": 2 },
@@ -308,19 +308,19 @@ Then we add another Event (using an Apollo `<Mutation>`):
 
 ```javascript
 <Mutation
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
 Now the cache is:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456"],
   "_allEventsMeta": { "count": 2 },
@@ -336,7 +336,7 @@ Not only are `allEvents` & `Group:xyz789` out of date, but so is `_allEventsMeta
 
 If we were to use this module's `<Mutation>` component, _but decoupled from Keystone_, the cache at this point would be:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "_allEventsMeta": { "count": 2 },
   "allGroups": ["xyz789"],
@@ -360,19 +360,19 @@ So, using this module's `<Mutation>` component:
 ```javascript
 <Mutation
   invalidateTypes="Event"
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
 Will result in an immediate cache of:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allGroups": ["xyz789"],
   "Event:abc123": { "id": "abc123" },
@@ -386,7 +386,7 @@ Will result in an immediate cache of:
 
 Which, when using this module's `<Query>` component, will re-load the now removed data from the server, resulting in a final cache of:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456", "hij098"],
   "_allEventsMeta": { "count": 3 },
