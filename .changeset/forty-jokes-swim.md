@@ -6,4 +6,4 @@
 '@keystonejs/cypress-project-basic': patch
 ---
 
-Updating links to Keystone github project
+Updated links to Keystone github project.
