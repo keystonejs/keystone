@@ -1,10 +1,10 @@
 <!--[meta]
 section: guides
-title: Custom mutations
+title: Custom schema
 subSection: advanced
 [meta]-->
 
-# Custom mutations
+# Custom schema
 
 Out of the box Keystone provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
 
