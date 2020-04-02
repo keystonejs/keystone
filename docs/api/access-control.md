@@ -449,7 +449,7 @@ keystone.extendGraphQLSchema({
   queries: [
     {
       schema: 'getUserByName(name: String!): Boolean',
-      resolver: async (item, context, info, info) => {},
+      resolver: async (item, context, info, info) => {...},
       access: true,
     },
   ],
@@ -467,7 +467,7 @@ keystone.extendGraphQLSchema({
   queries: [
     {
       schema: 'getUserByName(name: String!): Boolean',
-      resolver: async (item, context, info, info) => {},
+      resolver: async (item, context, info, info) => {...},
       access: ({ authentication: { item, listKey } }) => {
         return true;
       },
