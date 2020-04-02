@@ -39,21 +39,19 @@ Hooks for the `create`, `update` and `delete` operations are available.
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    ...
   },
   hooks: {
     // Hooks for create and update operations
-    resolveInput: async (...) => { ... },
-    validateInput: async (...) => { ... },
-    beforeChange: async (...) => { ... },
-    afterChange: async (...) => { ... },
+    resolveInput: async (...) => {...},
+    validateInput: async (...) => {...},
+    beforeChange: async (...) => {...},
+    afterChange: async (...) => {...},
 
     // Hooks for delete operations
-    validateDelete: async (...) => { ... },
-    beforeDelete: async (...) => { ... },
-    afterDelete: async (...) => { ... },
+    validateDelete: async (...) => {...},
+    beforeDelete: async (...) => {...},
+    afterDelete: async (...) => {...},
   },
-  ...
 });
 ```
 
@@ -71,21 +69,18 @@ keystone.createList('User', {
       type: Text,
       hooks: {
         // Hooks for create and update operations
-        resolveInput: async (...) => { ... },
-        validateInput: async (...) => { ... },
-        beforeChange: async (...) => { ... },
-        afterChange: async (...) => { ... },
+        resolveInput: async (...) => {...}
+        validateInput: async (...) => {...}
+        beforeChange: async (...) => {...}
+        afterChange: async (...) => {...}
 
         // Hooks for delete operations
-        validateDelete: async (...) => { ... },
-        beforeDelete: async (...) => { ... },
-        afterDelete: async (...) => { ... },
+        validateDelete: async (...) => {...}
+        beforeDelete: async (...) => {...}
+        afterDelete: async (...) => {...}
       },
-      ...
     },
-    ...
   },
-  ...
 });
 ```
 
@@ -102,15 +97,15 @@ Hooks for the `create`, `update` and `delete` operations are available.
 ```js
 class CustomFieldType extends Field {
   // Hooks for create and update operations
-  async resolveInput(...) { ... }
-  async validateInput(...) { ... }
-  async beforeChange(...) { ... }
-  async afterChange(...) { ... }
+  async resolveInput(...) {...},
+  async validateInput(...) {...},
+  async beforeChange(...) {...},
+  async afterChange(...) {...},
 
   // Hooks for delete operations
-  async beforeDelete(...) { ... }
-  async validateDelete(...) { ... }
-  async afterDelete(...) { ... }
+  async beforeDelete(...) {...},
+  async validateDelete(...) {...},
+  async afterDelete(...) {...},
 }
 ```
 
@@ -151,8 +146,7 @@ const resolveInput = ({
   context,
   actions,
 }) => {
-  // Input resolution logic
-  // Object returned is used in place of resolvedData
+  // Input resolution logic. Object returned is used in place of `resolvedData`.
   return resolvedData;
 };
 ```
@@ -416,7 +410,6 @@ It returns a `Promise<Object>` containing the standard GraphQL `errors` and `dat
 
 ```js
 const myHook = ({
-  // ...
   actions: { query },
 }) => {
   const queryString = `
