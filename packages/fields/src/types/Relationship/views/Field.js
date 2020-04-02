@@ -62,6 +62,8 @@ function LinkToRelatedItems({ field, value }) {
   let isDisabled = false;
   let label;
   let link = `${adminPath}/${refList.path}`;
+  value = value || [];
+
   if (many) {
     label = 'View List of Related Items';
 
