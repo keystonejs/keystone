@@ -49,7 +49,7 @@ export const Hero = ({
 
 Hero.propTypes = {
   align: PropTypes.oneOf(['left', 'center', 'right']),
-  backgroundColor: PropTypes.string.isRequired,
+  backgroundColor: PropTypes.string,
   children: PropTypes.node,
   subTitle: PropTypes.string,
   superTitle: PropTypes.string,
