@@ -30,7 +30,7 @@ Keystone would generate the following queries:
 - `User`
 - `_UsersMeta`
 
-### allUsers
+### `allUsers`
 
 Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, limit and sorting](#filter-limit-and-sorting).
 
@@ -42,7 +42,7 @@ query {
 }
 ```
 
-### \_allUsersMeta
+### `_allUsersMeta`
 
 Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [filter, limit and sorting](#filter-limit-and-sorting) parameters as the `allUsers` query.
 
@@ -54,7 +54,7 @@ query {
 }
 ```
 
-### User
+### `User`
 
 Retrieves a single item from the `User` list. The single entity query accepts a where parameter which must provide an id.
 
@@ -66,7 +66,7 @@ query {
 }
 ```
 
-### \_UsersMeta
+### `_UsersMeta`
 
 Retrieves meta information about the `User` list itself (i.e. not about items in the list) such as access control information. This query accepts no parameters.
 
@@ -81,7 +81,7 @@ For each list Keystone generates six top level mutations:
 - `deleteUser`
 - `deleteUsers`
 
-### createUser
+### `createUser`
 
 Add a single `User` to the `User` list. Requires a `data` parameter that is an object where keys match the field names in the list definition and the values are the data to create.
 
@@ -93,7 +93,7 @@ mutation {
 }
 ```
 
-### createUsers
+### `createUsers`
 
 Creates multiple `Users`. Parameters are the same as `createUser` except the data parameter should be an array of objects.
 
@@ -105,7 +105,7 @@ mutation {
 }
 ```
 
-### updateUser
+### `updateUser`
 
 Update a `User` by ID. Accepts an `id` parameter that should match the id of a `User` item. The object should contain keys matching the field definition of the list. `updateUser` performs a _partial update_, meaning only keys that you wish to update need to be provided.
 
@@ -117,7 +117,7 @@ mutation {
 }
 ```
 
-### updateUsers
+### `updateUsers`
 
 Update multiple `Users` by ID. Accepts a single data parameter that contains an array of objects. The object parameters are the same as `createUser` and should contain an `id` and nested `data` parameter with the field data.
 
@@ -129,7 +129,7 @@ mutation {
 }
 ```
 
-### deleteUser
+### `deleteUser`
 
 Delete a single Entity by ID. Accepts a single parameter where the `id` matches a `User` id.
 
@@ -139,7 +139,7 @@ mutation {
 }
 ```
 
-### deleteUsers
+### `deleteUsers`
 
 Delete multiple entities by ID. Similar to `deleteUser` where the `id` parameter is an array of ids.
 
