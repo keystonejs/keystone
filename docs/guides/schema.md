@@ -16,7 +16,6 @@ A schema definition (_often abbreviated to "schema"_) is defined by:
 <!-- TODO: Make this a component that can be imported somehow -->
 
 ```javascript
-// A minimal schema example
 keystone.createList('Todo', {
   fields: {
     task: { type: Text },
@@ -52,19 +51,19 @@ Keystone will process each List, converting it into a series of GraphQL CRUD
 
 ```graphql
 type Mutation {
-  createTodo(..): Todo
-  updateTodo(..): Todo
-  deleteTodo(..): Todo
-  createUser(..): User
-  updateUser(..): User
-  deleteUser(..): User
+  createTodo(...): Todo
+  updateTodo(...): Todo
+  deleteTodo(...): Todo
+  createUser(...): User
+  updateUser(...): User
+  deleteUser(...): User
 }
 
 type Query {
-  allTodos(..): [Todo]
-  Todo(..): Todo
-  allUsers(..): [User]
-  User(..): User
+  allTodos(...): [Todo]
+  Todo(...): Todo
+  allUsers(...): [User]
+  User(...): User
 }
 
 type Todo {
@@ -162,7 +161,7 @@ query {
 
 Everything looks great so far. Now, let's add another task:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
@@ -200,7 +199,7 @@ keystone.createList('Todo', {
 });
 ```
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`       | `createdBy` | `email`          |
 | ---- | ------------ | ----------- | ---------------- |
@@ -232,14 +231,14 @@ what about 300? 10,000? It can be quite a big operation to make these changes.
 
 We can avoid the duplicate data by moving it out into its own `User` list:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
 | 1    | Use Keystone | 1           |
 | 2    | Setup Linter | 1           |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          |
 | ---- | ------ | ---------------- |
@@ -395,14 +394,14 @@ query {
 
 The data stored in the database for the `createdBy` field will be a single ID:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
 | 1    | Use Keystone | 1           |
 | 2    | Setup Linter | 1           |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          |
 | ---- | ------ | ---------------- |
@@ -456,7 +455,7 @@ query {
 The data stored in the database for the `todoList` field will be an array of
 IDs:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`       |
 | ---- | ------------ |
@@ -466,7 +465,7 @@ IDs:
 | 4    | Write docs   |
 | 5    | Buy milk     |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
@@ -541,7 +540,7 @@ query {
 
 The database would look like:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`       | `createdBy` |
 | ---- | ------------ | ----------- |
@@ -551,7 +550,7 @@ The database would look like:
 | 4    | Write docs   | 2           |
 | 5    | Buy milk     | 2           |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
@@ -604,13 +603,13 @@ _See [the Relationship API docs for more on `connect`](/packages/fields/src/type
 
 If this was the first `Todo` item created, the database would now look like:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
@@ -690,13 +689,13 @@ mutation {
 
 Our database would look like:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
@@ -769,13 +768,13 @@ mutation {
 
 The data would finally look like:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |

@@ -34,8 +34,6 @@ Keystone would generate the following queries:
 
 Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, limit and sorting](#filter-limit-and-sorting).
 
-#### Usage
-
 ```graphql
 query {
   allUsers {
@@ -48,8 +46,6 @@ query {
 
 Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [filter, limit and sorting](#filter-limit-and-sorting) parameters as the `allUsers` query.
 
-#### Usage
-
 ```graphql
 query {
   _allUsersMeta {
@@ -61,8 +57,6 @@ query {
 ### User
 
 Retrieves a single item from the `User` list. The single entity query accepts a where parameter which must provide an id.
-
-#### Usage
 
 ```graphql
 query {
@@ -91,8 +85,6 @@ For each list Keystone generates six top level mutations:
 
 Add a single `User` to the `User` list. Requires a `data` parameter that is an object where keys match the field names in the list definition and the values are the data to create.
 
-#### Usage
-
 ```graphql
 mutation {
   createUser(data: { name: "Mike" }) {
@@ -105,8 +97,6 @@ mutation {
 
 Creates multiple `Users`. Parameters are the same as `createUser` except the data parameter should be an array of objects.
 
-#### Usage
-
 ```graphql
 mutation {
   createUsers(data: [{ name: "Mike" }]) {
@@ -118,8 +108,6 @@ mutation {
 ### updateUser
 
 Update a `User` by ID. Accepts an `id` parameter that should match the id of a `User` item. The object should contain keys matching the field definition of the list. `updateUser` performs a _partial update_, meaning only keys that you wish to update need to be provided.
-
-#### Usage
 
 ```graphql
 mutation {

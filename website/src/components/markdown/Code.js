@@ -85,7 +85,9 @@ export const CodeBlock = ({
         <Header>
           {title ? <Title>{title}</Title> : <span />}
           <div css={{ alignItems: 'center', display: 'flex' }}>
-            {language && showLanguage && <Language>{languageLabel(language)}</Language>}
+            {language && showLanguage && (
+              <Language allowCopy={allowCopy}>{languageLabel(language)}</Language>
+            )}
             {allowCopy && (
               <CopyButton onClick={handleCopy}>{clipboard.copied ? 'Copied!' : 'Copy'}</CopyButton>
             )}
@@ -123,7 +125,7 @@ const Title = props => (
     css={{
       ...commonCodeStyles,
       color: colors.N60,
-      paddingLeft: gridSize,
+      padding: `2px 0 2px ${gridSize}px`,
     }}
     {...props}
   />
@@ -133,6 +135,11 @@ const Language = props => (
     css={{
       color: colors.N80,
       fontSize: '0.85rem',
+      padding: `2px 0`,
+
+      ':only-child': {
+        paddingRight: gridSize,
+      },
     }}
     {...props}
   />

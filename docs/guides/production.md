@@ -20,7 +20,7 @@ Make sure the production deployment sets a long, unguessable value for [Keystone
 
 A randomly generated value is suitable (but keep it secret):
 
-```
+```shell
 openssl rand -hex 32
 ```
 
@@ -53,7 +53,7 @@ It's recommended to run production Javascript servers behind a reverse proxy suc
 
 Don't forget to set the `NODE_ENV` environment variable to `production` when running. Many `npm` libraries check this to enable production mode.
 
-```
+```shell
 NODE_ENV=production keystone start
 ```
 
