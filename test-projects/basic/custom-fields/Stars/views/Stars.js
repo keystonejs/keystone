@@ -7,7 +7,7 @@ const calcWidth = n => n * STAR_WIDTH + (n - 1) * GUTTER;
 import StarEmpty from './star-empty.svg';
 import StarFull from './star-full.svg';
 
-const Stars = ({ count, value, onChange }) => {
+const Stars = ({ count = 5, value, onChange = () => {} }) => {
   return (
     <div
       style={{
@@ -35,11 +35,6 @@ const Stars = ({ count, value, onChange }) => {
         })}
     </div>
   );
-};
-
-Stars.defaultProps = {
-  onChange: () => {},
-  count: 5,
 };
 
 export default Stars;

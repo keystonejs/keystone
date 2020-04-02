@@ -9,8 +9,8 @@ import { colors, fontSizes } from '../theme';
 import { getForegroundColor } from '../helpers';
 
 export const Hero = ({
-  align,
-  backgroundColor,
+  align = 'center',
+  backgroundColor = colors.greyDark,
   children,
   subTitle,
   superTitle,
@@ -54,10 +54,6 @@ Hero.propTypes = {
   subTitle: PropTypes.string,
   superTitle: PropTypes.string,
   title: PropTypes.string.isRequired,
-};
-Hero.defaultProps = {
-  align: 'center',
-  backgroundColor: colors.greyDark,
 };
 
 // styled components

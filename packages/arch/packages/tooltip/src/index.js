@@ -71,11 +71,11 @@ const Tooltip = ({
   content,
   onHide,
   onShow,
-  placement,
+  placement = 'bottom',
   className,
   hideOnMouseDown,
   hideOnKeyDown,
-  delay,
+  delay = 300,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef();
@@ -167,11 +167,6 @@ const Tooltip = ({
       </TransitionProvider>
     </Fragment>
   );
-};
-
-Tooltip.defaultProps = {
-  delay: 300,
-  placement: 'bottom',
 };
 
 export default Tooltip;

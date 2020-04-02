@@ -27,7 +27,7 @@ const subtleTextColor = {
   danger: colors.R.D20,
 };
 
-export const Alert = styled.div(({ appearance, variant }) => ({
+export const Alert = styled.div(({ appearance = 'info', variant = 'subtle' }) => ({
   backgroundColor:
     variant === 'bold' ? boldBackgroundColor[appearance] : subtleBackgroundColor[appearance],
 
@@ -44,8 +44,3 @@ export const Alert = styled.div(({ appearance, variant }) => ({
     textDecoration: 'underline',
   },
 }));
-
-Alert.defaultProps = {
-  appearance: 'info',
-  variant: 'subtle',
-};
