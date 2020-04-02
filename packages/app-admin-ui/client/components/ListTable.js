@@ -22,17 +22,17 @@ import { NoResults } from './NoResults';
 const Render = ({ children }) => children();
 
 // Styled Components
-const Table = styled('table')({
+export const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
   width: '100%',
 });
-const TableRow = styled('tr')(({ isActive }) => ({
+export const TableRow = styled('tr')(({ isActive }) => ({
   '> td': {
     backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
   },
 }));
-const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
+export const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
   backgroundColor: 'white',
   boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
   boxSizing: 'border-box',
@@ -53,7 +53,7 @@ const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
     color: isSortable && !isSelected ? colors.N60 : null,
   },
 }));
-const BodyCell = styled('td')(({ isSelected }) => ({
+export const BodyCell = styled('td')(({ isSelected }) => ({
   backgroundColor: isSelected ? colors.B.L95 : null,
   boxShadow: isSelected
     ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`

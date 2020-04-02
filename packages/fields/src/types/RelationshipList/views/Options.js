@@ -4,7 +4,7 @@
 import Tooltip from '@arch-ui/tooltip';
 import { CheckIcon, XIcon, TrashcanIcon } from '@arch-ui/icons';
 import { headerCase } from 'change-case';
-import { jsx } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 // eslint-disable-next-line no-unused-vars
@@ -12,6 +12,15 @@ import React, { Fragment, useState } from 'react';
 import { IconButton } from '@arch-ui/button';
 import { LinkExternalIcon } from '@arch-ui/icons';
 import { buildQueryFragment, fieldsToMap } from '../graphql-helpers';
+import {
+  Table,
+  TableRow,
+  HeaderCell,
+  BodyCell,
+} from '../../../../../app-admin-ui/client/components/ListTable';
+import { colors } from '@arch-ui/theme/src';
+
+console.log(colors);
 
 // Styles
 const booleanStyle = {
@@ -31,6 +40,17 @@ const scrollableStyle = {
   marginRight: '16px',
 };
 
+const tableStyle = {
+  tableLayout: 'fixed',
+};
+
+const lastTwoColumns = css`
+  > *:last-of-type,
+  > *:nth-last-of-type(2) {
+    width: 48px;
+  }
+`;
+
 // Components
 const Unavailable = () => <span className="relationship-list__unavailable">Not available</span>;
 
@@ -43,7 +63,7 @@ const OptionElement = ({ data, config = {} }) => {
   const isBoolean = type === 'boolean';
 
   return (
-    <td
+    <BodyCell
       key={data}
       title={typeof data === 'string' ? data : undefined}
       style={{
@@ -70,7 +90,7 @@ const OptionElement = ({ data, config = {} }) => {
       )}
 
       {!isLink && !isBoolean && (data || <Unavailable />)}
-    </td>
+    </BodyCell>
   );
 };
 
@@ -100,7 +120,15 @@ const OptionRow = ({ id, removeItem, config }) => {
   });
 
   return (
-    <tr>
+    <TableRow
+      css={css`
+        &:nth-of-type(odd) {
+          background: ${colors.N10};
+        }
+
+        ${lastTwoColumns}
+      `}
+    >
       {orderedData.map((d, index) => {
         const fieldConfig = innerFields[index];
 
@@ -109,7 +137,7 @@ const OptionRow = ({ id, removeItem, config }) => {
         );
       })}
 
-      <td>
+      <BodyCell>
         <Tooltip placement="top" content="See item">
           {tooltipRef => (
             <IconButton
@@ -122,9 +150,9 @@ const OptionRow = ({ id, removeItem, config }) => {
             />
           )}
         </Tooltip>
-      </td>
+      </BodyCell>
 
-      <td>
+      <BodyCell>
         <Tooltip placement="top" content="Unlink item from relation">
           {tooltipRef => (
             <IconButton
@@ -137,8 +165,8 @@ const OptionRow = ({ id, removeItem, config }) => {
             />
           )}
         </Tooltip>
-      </td>
-    </tr>
+      </BodyCell>
+    </TableRow>
   );
 };
 
@@ -147,7 +175,7 @@ const OptionTitle = ({ field }) => {
     typeof field === 'object' ? field : {};
 
   return (
-    <th style={{ ...(type === 'boolean' ? booleanStyle : {}), ...style }}>
+    <HeaderCell style={{ ...(type === 'boolean' ? booleanStyle : {}), ...style }}>
       {title ? (
         <Tooltip placement="top" content={title}>
           {tooltipRef => <span ref={tooltipRef}>{label}</span>}
@@ -155,7 +183,7 @@ const OptionTitle = ({ field }) => {
       ) : (
         label
       )}
-    </th>
+    </HeaderCell>
   );
 };
 
@@ -182,19 +210,19 @@ const OptionsList = ({ options, config, innerSelectChange }) => {
   return options && options.length ? (
     <Fragment>
       <div style={{ ...(options.length > maxVisible ? scrollableStyle : {}) }}>
-        <table className="relationship-list">
+        <Table style={tableStyle}>
           <thead>
-            <tr>
+            <TableRow css={lastTwoColumns}>
               {config.innerFields.map(f => (
                 <OptionTitle field={f} key={typeof f === 'string' ? f : f.name} />
               ))}
 
               {/* Empty header for link and remove button */}
-              <th />
-              <th />
-            </tr>
+              <HeaderCell />
+              <HeaderCell />
+            </TableRow>
           </thead>
-        </table>
+        </Table>
       </div>
       <div
         className="scrollable-list"
@@ -206,13 +234,13 @@ const OptionsList = ({ options, config, innerSelectChange }) => {
           }
         }}
       >
-        <table className="relationship-list">
+        <Table style={tableStyle}>
           <tbody>
             {options.map(({ id }) => (
               <OptionRow id={id} key={id} removeItem={onRemoveClick} config={config} />
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
     </Fragment>
   ) : (
