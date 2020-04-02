@@ -8,7 +8,7 @@ title: Passport auth strategy
 
 [![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/auth-passport)
 
-> This feature is currently in progress. Only password authentication is supported at this time. Please see [this issue](https://github.com/keystonejs/keystone/issues/2581) for more details.
+> This feature is currently in progress. While passport works for the `GraphQLApp`, only password authentication is supported for the `AdminUIApp`. Please see [this issue](https://github.com/keystonejs/keystone/issues/2581) for more details.
 
 Enable Keystone authentication via services such as Google, Twitter, Facebook,
 GitHub, and any [others supported by passport.js](http://www.passportjs.org).
