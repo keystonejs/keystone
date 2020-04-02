@@ -109,9 +109,6 @@ export const KeystoneAdminUI = () => {
             <Global styles={globalStyles} />
             <BrowserRouter>
               <Switch>
-                <Route exact path={signinPath}>
-                  <Redirect to={adminPath} />
-                </Route>
                 <Route exact path={signoutPath} render={() => <SignoutPage />} />
                 <Route>
                   <ScrollToTop>

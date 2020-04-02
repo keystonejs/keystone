@@ -146,6 +146,16 @@ class AdminUIApp {
     const { adminPath } = this;
     const app = express.Router();
 
+    app.use(this.routes.signinPath, (req, res, next) => {
+      if (this.isAccessAllowed(req)) {
+        return res.redirect(this.adminPath)
+      }
+      if (req.user) {
+        return res.redirect('/')
+      }
+      next()
+    });
+
     app.use(adminPath, (req, res, next) => {
       // Depending on what was requested, we might redirect the user based on
       // their access
