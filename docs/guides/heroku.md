@@ -10,13 +10,9 @@ This quick start guide shows how to deploy your first KeystoneJS app to Heroku a
 
 ## Requirements
 
-Before we start, make sure you have:
+Before we start, make sure you have [Git](https://git-scm.com/downloads) installed with `git --version`, and that you have created your first KeystoneJS app.
 
-- [Git](https://git-scm.com/downloads) installed with `git --version`.
-
-And that you have created your first KeystoneJS app:
-
-- If not, see the guide [Your first KeystoneJS app in 5 minutes](https://www.keystonejs.com/quick-start/).
+If not, see the guide [Your first KeystoneJS app in 5 minutes](https://www.keystonejs.com/quick-start/).
 
 At the moment it is only possible to deploy the TODO starter project without any modifications. Deploying [the STARTER starter project](#deploy-the-starter-starter-project) or [the BLANK starter project](#deploy-the-blank-starter-project) requires a few tweaks.
 
