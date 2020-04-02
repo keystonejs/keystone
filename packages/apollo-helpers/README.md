@@ -22,6 +22,7 @@ yarn add @keystonejs/apollo-helpers
 ### Minimal example
 
 <!-- prettier-ignore-start -->
+
 ```javascript
 import gql from 'graphql-tag';
 import React from 'react';
@@ -51,6 +52,7 @@ const App = () => (
 
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
+
 <!-- prettier-ignore-end -->
 
 ### Complete example
