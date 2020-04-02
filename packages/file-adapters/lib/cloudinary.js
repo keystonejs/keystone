@@ -14,14 +14,14 @@ function uploadStream(stream, options) {
 }
 
 module.exports = class CloudinaryAdapter {
-  constructor(options) {
-    if (!options.cloudName || !options.apiKey || !options.apiSecret) {
+  constructor({ cloudName, apiKey, apiSecret, folder }) {
+    if (!cloudName || !apiKey || !apiSecret) {
       throw new Error('CloudinaryAdapter requires cloudName, apiKey, and apiSecret');
     }
-    this.cloudName = options.cloudName;
-    this.apiKey = options.apiKey;
-    this.apiSecret = options.apiSecret;
-    this.folder = options.folder || undefined;
+    this.cloudName = cloudName;
+    this.apiKey = apiKey;
+    this.apiSecret = apiSecret;
+    this.folder = folder || undefined;
   }
 
   /**
@@ -42,6 +42,28 @@ module.exports = class CloudinaryAdapter {
       filename,
       _meta: result,
     }));
+  }
+
+  /**
+   * Deletes the given file from cloudinary
+   * @param file File field data
+   * @param options Delete options passed to cloudinary.
+   *                For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
+   */
+  delete(file, options = {}) {
+    return new Promise((resolve, reject) => {
+      if (file) {
+        cloudinary.v2.uploader.destroy(file.id, options, (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
+      } else {
+        reject(new Error("Missing required argument 'file'."));
+      }
+    });
   }
 
   publicUrl({ _meta: { secure_url } = {} } = {}) {

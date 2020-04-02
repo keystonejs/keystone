@@ -1,16 +1,20 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
 import { colors } from '@arch-ui/theme';
+import { PageTitle } from '@arch-ui/typography';
 
-import SessionProvider from '../providers/Session';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
-import logo from '../assets/logo.png';
+import { upcase } from '@keystonejs/utils';
 
-const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+import KeystoneLogo from '../components/KeystoneLogo';
+
+import { useAdminMeta } from '../providers/AdminMeta';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -64,72 +68,101 @@ const Spacer = styled.div({
   height: 120,
 });
 
-class SigninPage extends Component {
-  reloading = false;
-  state = {
-    identity: '',
-    secret: '',
-  };
-  onSubmit = e => {
-    e.preventDefault();
-    const { isLoading, signIn } = this.props;
-    const { identity, secret } = this.state;
-    if (isLoading) return;
-    signIn({ identity, secret });
-  };
-  render() {
-    const { error, isLoading, isSignedIn, authStrategy } = this.props;
-    if (isSignedIn && !this.reloading) {
-      // Avoid reloading on subsequent renders
-      this.reloading = true;
-      window.location.reload(true);
-    }
-    const { identity, secret } = this.state;
-    return (
-      <Container>
-        <Alerts>
-          {error ? (
-            <Alert appearance="danger">Your username and password were incorrect</Alert>
-          ) : null}
-        </Alerts>
-        <Form method="post" onSubmit={this.onSubmit}>
-          <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
-          <Divider />
-          <div>
-            <Fields>
-              <FieldLabel>{upcase(authStrategy.identityField)}</FieldLabel>
-              <Input
-                name="identity"
-                autoFocus
-                value={identity}
-                onChange={e => this.setState({ identity: e.target.value })}
-              />
-              <FieldLabel>{upcase(authStrategy.secretField)}</FieldLabel>
-              <Input
-                type="password"
-                name="secret"
-                value={secret}
-                onChange={e => this.setState({ secret: e.target.value })}
-              />
-            </Fields>
-            <LoadingButton
-              appearance="primary"
-              type="submit"
-              isLoading={isLoading}
-              indicatorVariant="dots"
-            >
-              Sign In
-            </LoadingButton>
-          </div>
-        </Form>
-        <Spacer />
-      </Container>
-    );
-  }
-}
+const SignInPage = () => {
+  const {
+    name: siteName,
+    authStrategy: { listKey, identityField, secretField },
+  } = useAdminMeta();
 
-export default ({ signinPath, signoutPath, authStrategy }) => (
-  <SessionProvider signinPath={signinPath} signoutPath={signoutPath}>
-    {props => <SigninPage {...props} authStrategy={authStrategy} />}
-  </SessionProvider>
-);
+  const [identity, setIdentity] = useState('');
+  const [secret, setSecret] = useState('');
+  const [reloading, setReloading] = useState(false);
+
+  const AUTH_MUTATION = gql`
+    mutation signin($identity: String, $secret: String) {
+      authenticate: authenticate${listKey}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
+        item {
+          id
+        }
+      }
+    }
+  `;
+
+  const [signIn, { error, loading, client }] = useMutation(AUTH_MUTATION, {
+    variables: { identity, secret },
+    onCompleted: ({ error }) => {
+      if (error) {
+        throw error;
+      }
+
+      // Ensure there's no old unauthenticated data hanging around
+      client.resetStore();
+
+      // Flag so the "Submit" button doesn't temporarily flash as available while reloading the page.
+      setReloading(true);
+
+      // Let the server-side redirects kick in to send the user to the right place
+      window.location.reload(true);
+    },
+    onError: console.error,
+  });
+
+  const onSubmit = e => {
+    e.preventDefault();
+
+    if (!loading) {
+      signIn();
+    }
+  };
+
+  return (
+    <Container>
+      <Alerts>
+        {error ? (
+          <Alert appearance="danger">Your username and password were incorrect</Alert>
+        ) : null}
+      </Alerts>
+      <PageTitle>{siteName}</PageTitle>
+      <Form method="post" onSubmit={onSubmit}>
+        <KeystoneLogo />
+        <Divider />
+        <div>
+          <Fields>
+            <FieldLabel>{upcase(identityField)}</FieldLabel>
+            <Input
+              name="identity"
+              autoComplete="username"
+              autoFocus
+              value={identity}
+              onChange={e => setIdentity(e.target.value)}
+            />
+            <FieldLabel>{upcase(secretField)}</FieldLabel>
+            <Input
+              type="password"
+              name="secret"
+              autoComplete="current-password"
+              value={secret}
+              onChange={e => setSecret(e.target.value)}
+            />
+          </Fields>
+          <LoadingButton
+            appearance="primary"
+            type="submit"
+            isLoading={loading || reloading}
+            indicatorVariant="dots"
+            style={{
+              width: '280px',
+              height: '2.6em',
+              margin: '1em 0',
+            }}
+          >
+            Sign In
+          </LoadingButton>
+        </div>
+      </Form>
+      <Spacer />
+    </Container>
+  );
+};
+
+export default SignInPage;

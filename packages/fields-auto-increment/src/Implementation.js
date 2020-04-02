@@ -1,5 +1,5 @@
-import { Implementation } from '@keystone-alpha/fields';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { Implementation } from '@keystonejs/fields';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class AutoIncrementImplementation extends Implementation {
   constructor(path, config = {}, context = {}) {
@@ -20,13 +20,13 @@ export class AutoIncrementImplementation extends Implementation {
       : gqlTypeDefault;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields(this.gqlType),
       ...this.orderingInputFields(this.gqlType),

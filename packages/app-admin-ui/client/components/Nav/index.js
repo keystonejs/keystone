@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import React, { Component, memo } from 'react'; // eslint-disable-line no-unused-vars
-import { withRouter, Route, Link } from 'react-router-dom';
+import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
+import { Link, useRouteMatch } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
 import styled from '@emotion/styled';
@@ -19,6 +19,7 @@ import {
 import { Title } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
+import { PersonIcon } from '@arch-ui/icons';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
@@ -36,7 +37,7 @@ const Col = styled.div({
   alignItems: 'flex-start',
   display: 'flex',
   flex: 1,
-  flexFlow: 'column nowrap',
+  flexDirection: 'column',
   justifyContent: 'flex-start',
   overflow: 'hidden',
   width: '100%',
@@ -142,7 +143,15 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, onRenderIndexPage) {
+function renderChildren(
+  node,
+  authListKey,
+  mouseIsOverNav,
+  getListByKey,
+  adminPath,
+  depth,
+  onRenderIndexPage
+) {
   if (node.children) {
     const groupKey = uid(node.children);
     depth += 1;
@@ -151,7 +160,15 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, on
       <React.Fragment key={groupKey}>
         {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
         {node.children.map(child =>
-          renderChildren(child, mouseIsOverNav, getListByKey, adminPath, depth, onRenderIndexPage)
+          renderChildren(
+            child,
+            authListKey,
+            mouseIsOverNav,
+            getListByKey,
+            adminPath,
+            depth,
+            onRenderIndexPage
+          )
         )}
       </React.Fragment>
     );
@@ -184,7 +201,7 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, on
     throw new Error(`Unable to resolve list for key ${key}`);
   }
 
-  const label = node.label || list.label;
+  const label = node.label || list.plural;
   const maybeSearchParam = list.getPersistedSearch() || '';
   const path = getPath(location.pathname);
   const href = `${adminPath}/${list.path}`;
@@ -201,53 +218,86 @@ function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth, on
       mouseIsOverNav={mouseIsOverNav}
     >
       {label}
+      {key === authListKey ? (
+        <PersonIcon title={label} color={colors.N20} css={{ paddingLeft: 8, paddingTop: 4 }} />
+      ) : null}
     </PrimaryNavItem>
   );
 }
 
-function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOverNav }) {
+function PrimaryNavItems({
+  adminPath,
+  authListKey,
+  getListByKey,
+  pages,
+  listKeys,
+  mouseIsOverNav,
+}) {
+  const isAtDashboard = useRouteMatch({ path: adminPath, exact: true });
+
   let hasRenderedIndexPage = false;
-  let onRenderIndexPage = () => {
+  const onRenderIndexPage = () => {
     hasRenderedIndexPage = true;
   };
-  let pageNavItems =
+
+  const pageNavItems =
     pages && pages.length
-      ? pages.map(node =>
-          renderChildren(node, mouseIsOverNav, getListByKey, adminPath, 0, onRenderIndexPage)
-        )
+      ? pages
+          .filter(node => node.addToNav !== false)
+          .map(node =>
+            renderChildren(
+              node,
+              authListKey,
+              mouseIsOverNav,
+              getListByKey,
+              adminPath,
+              0,
+              onRenderIndexPage
+            )
+          )
       : listKeys.map(key =>
-          renderChildren(key, mouseIsOverNav, getListByKey, adminPath, 0, onRenderIndexPage)
+          renderChildren(
+            key,
+            authListKey,
+            mouseIsOverNav,
+            getListByKey,
+            adminPath,
+            0,
+            onRenderIndexPage
+          )
         );
   return (
     <Relative>
-      <Route>
-        {({ location }) => (
-          <ScrollQuery isPassive={false}>
-            {(ref, snapshot) => (
-              <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                {hasRenderedIndexPage === false && (
-                  <PrimaryNavItem
-                    to={adminPath}
-                    isSelected={location.pathname === adminPath}
-                    mouseIsOverNav={mouseIsOverNav}
-                  >
-                    Dashboard
-                  </PrimaryNavItem>
-                )}
-
-                {pageNavItems}
-              </PrimaryNavScrollArea>
+      <ScrollQuery isPassive={false}>
+        {(ref, snapshot) => (
+          <PrimaryNavScrollArea ref={ref} {...snapshot}>
+            {hasRenderedIndexPage === false && (
+              <PrimaryNavItem
+                to={adminPath}
+                isSelected={isAtDashboard}
+                mouseIsOverNav={mouseIsOverNav}
+              >
+                Dashboard
+              </PrimaryNavItem>
             )}
-          </ScrollQuery>
+
+            {pageNavItems}
+          </PrimaryNavScrollArea>
         )}
-      </Route>
+      </ScrollQuery>
     </Relative>
   );
 }
 
 let PrimaryNavContent = ({ mouseIsOverNav }) => {
-  let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
-
+  let {
+    adminPath,
+    getListByKey,
+    listKeys,
+    name,
+    pages,
+    authStrategy: { listKey: authListKey } = {},
+  } = useAdminMeta();
   return (
     <Inner>
       <Title
@@ -267,6 +317,7 @@ let PrimaryNavContent = ({ mouseIsOverNav }) => {
       </Title>
       <PrimaryNavItems
         adminPath={adminPath}
+        authListKey={authListKey}
         getListByKey={getListByKey}
         listKeys={listKeys.sort()}
         pages={pages}
@@ -277,96 +328,93 @@ let PrimaryNavContent = ({ mouseIsOverNav }) => {
   );
 };
 
-class Nav extends Component {
-  state = { mouseIsOverNav: false };
+const Nav = ({ children }) => {
+  const [mouseIsOverNav, setMouseIsOverNav] = useState(false);
 
-  handleMouseEnter = () => {
-    this.setState({ mouseIsOverNav: true });
+  const handleMouseEnter = () => {
+    setMouseIsOverNav(true);
   };
-  handleMouseLeave = () => {
-    this.setState({ mouseIsOverNav: false });
+
+  const handleMouseLeave = () => {
+    setMouseIsOverNav(false);
   };
-  render() {
-    const { children } = this.props;
-    const { mouseIsOverNav } = this.state;
 
-    return (
-      <ResizeHandler isActive={mouseIsOverNav}>
-        {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
-          const navWidth = isCollapsed ? 0 : width;
-          const makeResizeStyles = key => {
-            const pointers = isDragging ? { pointerEvents: 'none' } : null;
-            const transitions = isDragging
-              ? null
-              : {
-                  transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-                };
-            return { [key]: navWidth, ...pointers, ...transitions };
-          };
+  return (
+    <ResizeHandler isActive={mouseIsOverNav}>
+      {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
+        const navWidth = isCollapsed ? 0 : width;
+        const makeResizeStyles = key => {
+          const pointers = isDragging ? { pointerEvents: 'none' } : null;
+          const transitions = isDragging
+            ? null
+            : {
+                transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+              };
+          return { [key]: navWidth, ...pointers, ...transitions };
+        };
 
-          return (
-            <PageWrapper>
-              <PropToggle
-                isActive={isDragging}
-                styles={{
-                  cursor: 'col-resize',
-                  '-moz-user-select': 'none',
-                  '-ms-user-select': 'none',
-                  '-webkit-user-select': 'none',
-                  'user-select': 'none',
-                }}
-              />
-              <PrimaryNav
-                onMouseEnter={this.handleMouseEnter}
-                onMouseLeave={this.handleMouseLeave}
-                style={makeResizeStyles('width')}
+        return (
+          <PageWrapper>
+            <PropToggle
+              isActive={isDragging}
+              styles={{
+                cursor: 'col-resize',
+                '-moz-user-select': 'none',
+                '-ms-user-select': 'none',
+                '-webkit-user-select': 'none',
+                'user-select': 'none',
+              }}
+            />
+            <PrimaryNav
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              style={makeResizeStyles('width')}
+            >
+              <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
+              {isCollapsed ? null : (
+                <GrabHandle
+                  onDoubleClick={clickProps.onClick}
+                  isActive={mouseIsOverNav || isDragging}
+                  {...resizeProps}
+                />
+              )}
+              <Tooltip
+                content={
+                  <TooltipContent kbd={KEYBOARD_SHORTCUT}>
+                    {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
+                  </TooltipContent>
+                }
+                placement="right"
+                hideOnMouseDown
+                hideOnKeyDown
+                delay={600}
               >
-                <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
-                {isCollapsed ? null : (
-                  <GrabHandle
-                    onDoubleClick={clickProps.onClick}
-                    isActive={mouseIsOverNav || isDragging}
-                    {...resizeProps}
-                  />
-                )}
-                <Tooltip
-                  content={
-                    <TooltipContent kbd={KEYBOARD_SHORTCUT}>
-                      {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
-                    </TooltipContent>
-                  }
-                  placement="right"
-                  hideOnMouseDown
-                  hideOnKeyDown
-                  delay={600}
-                >
-                  {ref => (
-                    <CollapseExpand
-                      isCollapsed={isCollapsed}
-                      mouseIsOverNav={mouseIsOverNav}
-                      {...clickProps}
-                      ref={ref}
+                {ref => (
+                  <CollapseExpand
+                    isCollapsed={isCollapsed}
+                    mouseIsOverNav={mouseIsOverNav}
+                    {...clickProps}
+                    ref={ref}
+                  >
+                    <svg
+                      fill="currentColor"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <svg
-                        fill="currentColor"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
-                      </svg>
-                    </CollapseExpand>
-                  )}
-                </Tooltip>
-              </PrimaryNav>
-              <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
-            </PageWrapper>
-          );
-        }}
-      </ResizeHandler>
-    );
-  }
-}
+                      <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
+                    </svg>
+                  </CollapseExpand>
+                )}
+              </Tooltip>
+            </PrimaryNav>
+            <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
+          </PageWrapper>
+        );
+      }}
+    </ResizeHandler>
+  );
+};
 
-export default withRouter(Nav);
+export default Nav;

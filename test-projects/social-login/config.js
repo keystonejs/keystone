@@ -1,7 +1,6 @@
 const path = require('path');
 
 exports.port = process.env.PORT || 3000;
-exports.hostURL = process.env.HOST_URL || `http://localhost:${exports.port}`;
 
 exports.facebook = process.env.FACEBOOK_APP_ID &&
   process.env.FACEBOOK_APP_SECRET && {

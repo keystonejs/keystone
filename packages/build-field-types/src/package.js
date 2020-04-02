@@ -1,4 +1,3 @@
-// @flow
 // based on https://github.com/jamiebuilds/std-pkg but reading fewer things, adding setters and reading the file
 import is from 'sarcastic';
 import globby from 'globby';
@@ -15,12 +14,10 @@ import {Project} from './project'
 */
 
 export class Package extends Item {
-  project: Project;
-  entrypoints: Array<Entrypoint>;
-  get configEntrypoints(): Array<string> {
+  get configEntrypoints() {
     return is(this._config.entrypoints, is.default(is.arrayOf(is.string), ['.']));
   }
-  static async create(directory: string): Promise<Package> {
+  static async create(directory) {
     let filePath = nodePath.join(directory, 'package.json');
 
     let contents = await fs.readFile(filePath, 'utf-8');
@@ -79,7 +76,7 @@ export class Package extends Item {
     return pkg;
   }
 
-  setFieldOnEntrypoints(field: 'main' | 'module') {
+  setFieldOnEntrypoints(field) {
     this.entrypoints.forEach(entrypoint => {
       switch (field) {
         case 'main': {
@@ -94,17 +91,17 @@ export class Package extends Item {
     });
   }
 
-  get name(): string {
+  get name() {
     return is(this.json.name, is.string);
   }
-  set name(name: string) {
+  set name(name) {
     this.json.name = name;
   }
 
-  get dependencies(): null | { [key: string]: string } {
+  get dependencies() {
     return is(this.json.dependencies, is.maybe(is.objectOf(is.string)));
   }
-  get peerDependencies(): null | { [key: string]: string } {
+  get peerDependencies() {
     return is(this.json.peerDependencies, is.maybe(is.objectOf(is.string)));
   }
 }

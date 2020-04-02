@@ -1,19 +1,8 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import type { CellProps } from '../../../types';
 
-type Props = CellProps<{
-  id: string,
-  path: string,
-  filename: string,
-  mimetype: string,
-  encoding: string,
-  publicUrlTransformed: string,
-}>;
-
-export default ({ data }: Props) => {
+export default ({ data }) => {
   if (!data) return null;
 
   return (

@@ -1,42 +1,16 @@
-// @flow
-
-import React, { PureComponent, Fragment, type ComponentType, type Element, type Node } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
-import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
+import FocusTrap from 'focus-trap-react';
 
-import {
-  fade,
-  slideUp,
-  withTransitionState,
-  Blanket,
-  generateUEID,
-  type TransitionState,
-} from '@arch-ui/modal-utils';
+import { fade, slideUp, withTransitionState, Blanket, generateUEID } from '@arch-ui/modal-utils';
 import { A11yText } from '@arch-ui/typography';
 
 import { Body, Dialog, Footer, Header, Positioner, Title } from './primitives';
 
-// Dialog
-// ------------------------------
-
-type Props = {
-  attachTo: HTMLElement,
-  children: Node,
-  closeOnBlanketClick: boolean,
-  component: ComponentType<*> | string,
-  footer?: Element<*>,
-  heading?: string,
-  initialFocus?: FocusTarget,
-  onClose: (*) => void,
-  onKeyDown: (*) => void,
-  transitionState: TransitionState,
-  width?: number,
-};
-
-class ModalDialog extends PureComponent<Props> {
+class ModalDialog extends PureComponent {
   static defaultProps = {
-    attachTo: ((document.body: any): HTMLElement),
+    attachTo: typeof document !== 'undefined' ? document.body : null,
     closeOnBlanketClick: false,
     component: 'div',
     width: 640,
@@ -47,7 +21,7 @@ class ModalDialog extends PureComponent<Props> {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
-  onKeyDown = (e: any) => {
+  onKeyDown = e => {
     if (this.props.onKeyDown) this.props.onKeyDown(e);
   };
   render() {
@@ -65,6 +39,10 @@ class ModalDialog extends PureComponent<Props> {
     } = this.props;
     const dialogTitleId = generateUEID();
 
+    if (!attachTo) {
+      return null;
+    }
+
     return createPortal(
       <Fragment>
         <Blanket
@@ -74,7 +52,7 @@ class ModalDialog extends PureComponent<Props> {
         />
         <Positioner style={slideUp(transitionState)} width={width}>
           <FocusTrap
-            options={{
+            focusTrapOptions={{
               initialFocus,
               clickOutsideDeactivates: closeOnBlanketClick,
             }}

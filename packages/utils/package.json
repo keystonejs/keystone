@@ -1,19 +1,21 @@
 {
-  "name": "@keystone-alpha/utils",
-  "description": "Common utility functions used throughout @keystone-alpha packages.",
-  "version": "3.0.2",
+  "name": "@keystonejs/utils",
+  "description": "Common utility functions used throughout @keystonejs packages.",
+  "version": "5.4.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/utils",
   "main": "dist/utils.cjs.js",
   "module": "dist/utils.esm.js",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.8.4",
     "p-is-promise": "^3.0.0",
     "p-lazy": "^3.0.0",
     "p-reflect": "^2.1.0",
-    "tiny-invariant": "^1.0.4"
+    "semver": "^5.7.1"
   }
 }

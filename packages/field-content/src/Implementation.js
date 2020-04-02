@@ -1,6 +1,6 @@
 import getByPath from 'lodash.get';
-import { Relationship, Text } from '@keystone-alpha/fields';
-import { flatMap, unique, objMerge } from '@keystone-alpha/utils';
+import { Relationship, Text } from '@keystonejs/fields';
+import { flatMap, unique, objMerge } from '@keystonejs/utils';
 import { paragraph } from './blocks';
 import { walkSlateNode } from './slate-walker';
 
@@ -107,9 +107,7 @@ export class Content extends Relationship.implementation {
         new block(blockConfig, {
           fromList: listConfig.listKey,
           joinList: type,
-          createAuxList: listConfig.createAuxList,
-          getListByKey: listConfig.getListByKey,
-          listConfig,
+          ...listConfig,
         })
     );
 
@@ -184,7 +182,7 @@ export class Content extends Relationship.implementation {
    * 1. The block implementation (eg; ./views/editor/blocks/embed.js)
    * 2. The config (eg; { apiKey: process.env.EMBEDLY_API_KEY })
    * Because of the way we bundle the admin UI, we have to split apart these
-   * two halves and send them seperately (see `@keystone-alpha/field-views-loader`):
+   * two halves and send them seperately (see `@keystonejs/field-views-loader`):
    * 1. Sent as a "view" (see `extendAdminViews` below), which will be required
    *    (so it's included in the bundle).
    * 2. Sent as a serialized JSON object (see `extendAdminMeta` below), which
@@ -222,12 +220,12 @@ export class Content extends Relationship.implementation {
     };
   }
 
-  getGqlAuxTypes(...args) {
-    return [...super.getGqlAuxTypes(...args), ...this.auxList.getGqlTypes(...args)];
+  getGqlAuxTypes({ schemaName }) {
+    return [...super.getGqlAuxTypes({ schemaName }), ...this.auxList.getGqlTypes({ schemaName })];
   }
 
-  get gqlAuxFieldResolvers() {
-    return this.auxList.gqlFieldResolvers;
+  gqlAuxFieldResolvers({ schemaName }) {
+    return this.auxList.gqlFieldResolvers({ schemaName });
   }
 }
 

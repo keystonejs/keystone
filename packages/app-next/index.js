@@ -3,7 +3,10 @@ const next = require('next');
 const nextBuild = require('next/dist/build').default;
 
 class NextApp {
-  constructor({ dir }) {
+  constructor({ dir } = {}) {
+    if (!dir || typeof dir !== 'string') {
+      throw new Error('NextApp requires a "dir" option, which must be a string.');
+    }
     this._dir = path.resolve(dir);
   }
 

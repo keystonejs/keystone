@@ -1,63 +1,74 @@
 const cuid = require('cuid');
-const { getType, flatten, objMerge } = require('@keystone-alpha/utils');
+const { getType, flatten } = require('@keystonejs/utils');
+
+const { simpleTokenizer, relationshipTokenizer, modifierTokenizer } = require('./tokenizers');
 
 // If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
 const joinTerms = (matchTerms, joinOp) =>
   matchTerms.length > 1 ? { [joinOp]: matchTerms } : matchTerms[0];
 
 const flattenQueries = (parsedQueries, joinOp) => ({
-  matchTerm: joinTerms(parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm), joinOp),
-  postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline)).filter(pipe => pipe),
-  relationships: objMerge(parsedQueries.map(q => q.relationships)),
+  matchTerm: joinTerms(
+    parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm),
+    joinOp
+  ),
+  postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline || [])).filter(pipe => pipe),
+  relationships: flatten(parsedQueries.map(q => q.relationships || [])),
 });
 
-function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
+function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) {
   if (getType(query) !== 'Object') {
     throw new Error(
       `Expected an Object for query, got ${getType(query)} at path ${pathSoFar.join('.')}`
     );
   }
-
+  const excludeFields = listAdapter.fieldAdapters
+    .filter(({ isRelationship, field }) => isRelationship && field.config.many)
+    .map(({ dbPath }) => dbPath);
   const parsedQueries = Object.entries(query).map(([key, value]) => {
     const path = [...pathSoFar, key];
     if (['AND', 'OR'].includes(key)) {
-      // An AND/OR query component
       return flattenQueries(
-        value.map((_query, index) => parser({ tokenizer, getUID }, _query, [...path, index])),
+        value.map((_query, index) =>
+          queryParser({ listAdapter, getUID }, _query, [...path, index])
+        ),
         { AND: '$and', OR: '$or' }[key]
       );
+    } else if (['$search', '$orderBy', '$skip', '$first', '$count'].includes(key)) {
+      return { postJoinPipeline: [modifierTokenizer(listAdapter, query, key, path)] };
+    } else if (key === 'id') {
+      if (getType(value) === 'Object') {
+        return { matchTerm: { _id: value } };
+      } else {
+        return { matchTerm: simpleTokenizer(listAdapter, query, key, path) };
+      }
     } else if (getType(value) === 'Object') {
       // A relationship query component
-      const uid = getUID(key);
-      const queryAst = tokenizer.relationship(query, key, path, uid);
-      if (getType(queryAst) !== 'Object') {
-        throw new Error(
-          `Must return an Object from 'tokenizer.relationship' function, given ${path.join('.')}`
-        );
-      }
+      const { matchTerm, relationshipInfo } = relationshipTokenizer(
+        listAdapter,
+        key,
+        path,
+        getUID(key)
+      );
       return {
-        // queryAst.matchTerm is our filtering expression. This determines if the
+        // matchTerm is our filtering expression. This determines if the
         // parent item is included in the final list
-        matchTerm: queryAst.matchTerm,
-        postJoinPipeline: [],
-        relationships: { [uid]: { ...queryAst, ...parser({ tokenizer, getUID }, value, path) } },
+        matchTerm,
+        relationships: [{ relationshipInfo, ...queryParser({ listAdapter, getUID }, value, path) }],
       };
     } else {
       // A simple field query component
-      const queryAst = tokenizer.simple(query, key, path);
-      if (getType(queryAst) !== 'Object') {
-        throw new Error(
-          `Must return an Object from 'tokenizer.simple' function, given ${path.join('.')}`
-        );
-      }
-      return {
-        matchTerm: queryAst.matchTerm,
-        postJoinPipeline: queryAst.postJoinPipeline || [],
-        relationships: {},
-      };
+      return { matchTerm: simpleTokenizer(listAdapter, query, key, path) };
     }
   });
-  return flattenQueries(parsedQueries, '$and');
+  const flatQueries = flattenQueries(parsedQueries, '$and');
+  const includeFields = flatQueries.relationships.map(({ field }) => field);
+  if (include) includeFields.push(include);
+
+  return {
+    ...flatQueries,
+    excludeFields: excludeFields.filter(field => !includeFields.includes(field)),
+  };
 }
 
-module.exports = { queryParser: parser };
+module.exports = { queryParser };

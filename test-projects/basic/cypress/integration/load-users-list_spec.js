@@ -14,9 +14,15 @@ describe('Loading User item', function() {
           }
         `
       )
-      .then(({ data: { allUsers: [user] } }) => {
-        cy.visit(`/admin/users/${user.id}`);
-        cy.get('body').should('contain', user.name);
-      });
+      .then(
+        ({
+          data: {
+            allUsers: [user],
+          },
+        }) => {
+          cy.visit(`/admin/users/${user.id}`);
+          cy.get('body').should('contain', user.name);
+        }
+      );
   });
 });

@@ -1,8 +1,9 @@
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-const { Text, Password, Select } = require('@keystone-alpha/fields');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { objMerge } = require('@keystone-alpha/utils');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { Text, Password, Select } = require('@keystonejs/fields');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { objMerge } = require('@keystonejs/utils');
 const {
   getStaticListName,
   getImperativeListName,
@@ -14,17 +15,11 @@ const {
 
 const { projectName } = require('./config');
 
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: projectName,
   adapter: new MongooseAdapter(),
-});
-
-// eslint-disable-next-line no-unused-vars
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
 });
 
 keystone.createList('User', {
@@ -49,6 +44,11 @@ keystone.createList('User', {
     noRead: { type: Text, access: { read: () => false } },
     yesRead: { type: Text, access: { read: () => true } },
   },
+});
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
 });
 
 function createListWithStaticAccess(access) {
@@ -91,6 +91,7 @@ function createListWithImperativeAccess(access) {
       read: () => access.read,
       update: () => access.update,
       delete: () => access.delete,
+      auth: () => access.auth,
     },
   });
 }
@@ -131,6 +132,7 @@ function createListWithDeclarativeAccess(access) {
         }
         return false;
       },
+      auth: true,
     },
   });
 }

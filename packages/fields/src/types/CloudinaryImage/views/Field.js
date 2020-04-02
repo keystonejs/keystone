@@ -4,16 +4,13 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { AlertIcon } from '@arch-ui/icons';
 import { HiddenInput } from '@arch-ui/input';
 import { Lozenge } from '@arch-ui/lozenge';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
-
-// NOTE: we need flow 😢
-// Status enum: 'empty' | 'stored' | 'removed' | 'updated'
 
 function uploadButtonLabelFn({ status }) {
   return status === 'empty' ? 'Upload Image' : 'Change Image';
@@ -236,6 +233,7 @@ export default class FileField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
         <FieldInput>
           {!isEmpty && imagePath ? (
             <Wrapper>

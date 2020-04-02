@@ -1,11 +1,6 @@
 const path = require('path');
 const { executeDefaultServer, getEntryFileFullPath } = require('../utils');
-const {
-  DEFAULT_DIST_DIR,
-  DEFAULT_PORT,
-  DEFAULT_ENTRY,
-  DEFAULT_CONNECT_TO,
-} = require('../../constants');
+const { DEFAULT_DIST_DIR, DEFAULT_PORT, DEFAULT_ENTRY } = require('../../constants');
 
 module.exports = {
   // prettier-ignore
@@ -15,7 +10,6 @@ module.exports = {
     '--entry':      String,
     '--out':        String,
     '-o':           '--out',
-    '--connect-to': String,
   },
   help: ({ exeName }) => `
     Usage
@@ -24,7 +18,6 @@ module.exports = {
     Options
       --port, -p    Port to start on [${DEFAULT_PORT}]
       --entry       Entry file exporting keystone instance [${DEFAULT_ENTRY}]
-      --connect-to  URI of database connection [${DEFAULT_CONNECT_TO}]
   `,
   exec: async (args, { exeName, _cwd = process.cwd() } = {}, spinner) => {
     process.env.NODE_ENV = 'production';

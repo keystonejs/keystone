@@ -1,9 +1,8 @@
 const pWaterfall = require('p-waterfall');
 
 class BaseKeystoneAdapter {
-  constructor(config) {
+  constructor(config = {}) {
     this.config = { ...config };
-    this.name = this.config.name;
     this.listAdapters = {};
   }
 
@@ -18,13 +17,16 @@ class BaseKeystoneAdapter {
     return this.listAdapters[key];
   }
 
-  async connect(to, config = {}) {
+  async connect({ name, rels }) {
     // Connect to the database
-    await this._connect(to, config);
+    await this._connect({ name }, this.config);
 
     // Set up all list adapters
     try {
-      const taskResults = await this.postConnect();
+      // Validate the minimum database version requirements are met.
+      await this.checkDatabaseVersion();
+
+      const taskResults = await this.postConnect({ rels });
       const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
 
       if (errors.length) {
@@ -48,9 +50,9 @@ class BaseKeystoneAdapter {
     }
   }
 
-  async postConnect() {
-    return [];
-  }
+  async postConnect() {}
+
+  async checkDatabaseVersion() {}
 }
 
 class BaseListAdapter {
@@ -74,7 +76,6 @@ class BaseListAdapter {
 
   newFieldAdapter(fieldAdapterClass, name, path, field, getListByKey, config) {
     const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
-    this.prepareFieldAdapter(adapter);
     adapter.setupHooks({
       addPreSaveHook: this.addPreSaveHook.bind(this),
       addPostReadHook: this.addPostReadHook.bind(this),
@@ -83,8 +84,6 @@ class BaseListAdapter {
     this.fieldAdaptersByPath[adapter.path] = adapter;
     return adapter;
   }
-
-  prepareFieldAdapter() {}
 
   addPreSaveHook(hook) {
     this.preSaveHooks.push(hook);
@@ -111,7 +110,7 @@ class BaseListAdapter {
   }
 
   async delete(id) {
-    return this.onPostRead(this._delete(id));
+    return this._delete(id);
   }
 
   async update(id, data) {
@@ -119,23 +118,25 @@ class BaseListAdapter {
   }
 
   async findAll() {
-    return Promise.all((await this._findAll()).map(item => this.onPostRead(item)));
+    return Promise.all((await this._itemsQuery({})).map(item => this.onPostRead(item)));
   }
 
   async findById(id) {
-    return this.onPostRead(this._findById(id));
+    return this.onPostRead((await this._itemsQuery({ where: { id }, first: 1 }))[0] || null);
   }
 
   async find(condition) {
-    return Promise.all((await this._find(condition)).map(item => this.onPostRead(item)));
+    return Promise.all(
+      (await this._itemsQuery({ where: condition })).map(item => this.onPostRead(item))
+    );
   }
 
   async findOne(condition) {
-    return this.onPostRead(this._findOne(condition));
+    return this.onPostRead((await this._itemsQuery({ where: condition, first: 1 }))[0]);
   }
 
-  async itemsQuery(args, { meta = false } = {}) {
-    const results = await this._itemsQuery(args, { meta });
+  async itemsQuery(args, { meta = false, from = {} } = {}) {
+    const results = await this._itemsQuery(args, { meta, from });
     return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
   }
 

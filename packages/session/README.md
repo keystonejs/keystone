@@ -1,12 +1,11 @@
 <!--[meta]
-section: packages
+section: api
+subSection: utilities
 title: Session
 [meta]-->
 
 # Session
 
-This package contains functions to assist with setting up session management in your Keystone system.
+<!-- TODO -->
 
-```DOCS_TODO
-TODO
-```
+This package contains functions to assist with setting up session management in your KeystoneJS system.

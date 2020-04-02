@@ -19,6 +19,10 @@ const Layout = ({ children }) => (
           textTransform: 'uppercase',
           color: 'hsl(200, 20%, 50%)',
         },
+        '[disabled]': {
+          cursor: 'not-allowed',
+          opacity: 0.6,
+        },
       }}
     />
     <Head>

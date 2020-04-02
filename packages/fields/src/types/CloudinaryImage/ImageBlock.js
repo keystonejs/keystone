@@ -1,8 +1,8 @@
 import pluralize from 'pluralize';
-import { importView } from '@keystone-alpha/build-field-types';
+import { importView } from '@keystonejs/build-field-types';
 
-import { Block } from '@keystone-alpha/field-content/Block';
-import { imageContainer, caption } from '@keystone-alpha/field-content/blocks';
+import { Block } from '@keystonejs/field-content/Block';
+import { imageContainer, caption } from '@keystonejs/field-content/blocks';
 import CloudinaryImage from './';
 import SelectType from '../Select';
 import RelationshipType from '../Relationship';
@@ -83,7 +83,7 @@ export class ImageBlock extends Block {
     return {
       [this.path]: {
         type: RelationshipWrapper,
-        ref: this.auxList.key,
+        ref: `${this.auxList.key}.from`,
         many: true,
         schemaDoc: 'Images which have been added to the Content field',
       },
@@ -92,7 +92,10 @@ export class ImageBlock extends Block {
 
   getMutationOperationResults({ context }) {
     return {
-      [this.path]: context._blockMeta[this.joinList][this.path],
+      [this.path]:
+        context._blockMeta &&
+        context._blockMeta[this.joinList] &&
+        context._blockMeta[this.joinList][this.path],
     };
   }
 

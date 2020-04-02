@@ -1,6 +1,10 @@
 import FieldController from '../../../Controller';
 
 export default class RelationshipController extends FieldController {
+  constructor(config, ...args) {
+    const defaultValue = 'defaultValue' in config ? config.defaultValue : config.many ? [] : null;
+    super({ ...config, defaultValue }, ...args);
+  }
   getRefList() {
     const { getListByKey } = this.adminMeta;
     const { ref } = this.config;
@@ -50,10 +54,6 @@ export default class RelationshipController extends FieldController {
     }
 
     return { connect: { id: value.id } };
-  };
-  getDefaultValue = () => {
-    const { defaultValue, many } = this.config;
-    return many ? defaultValue || [] : defaultValue || null;
   };
 
   getFilterTypes = () => {

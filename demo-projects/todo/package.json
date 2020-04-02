@@ -1,12 +1,12 @@
 {
-  "name": "@keystone-alpha/demo-project-todo",
+  "name": "@keystonejs/demo-project-todo",
   "description": "An example KeystoneJS project showcasing a simple Todo List.",
   "private": true,
-  "version": "1.1.6",
+  "version": "5.1.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
@@ -14,14 +14,15 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-json": "^0.0.0",
-    "@keystone-alpha/adapter-memory": "^0.0.0",
-    "@keystone-alpha/adapter-mongoose": "^3.0.0",
-    "@keystone-alpha/app-admin-ui": "^5.1.0",
-    "@keystone-alpha/app-graphql": "^6.3.1",
-    "@keystone-alpha/fields": "^10.0.0",
-    "@keystone-alpha/keystone": "^9.0.0",
-    "@keystone-alpha/app-static": "^1.0.3",
-    "cross-env": "^5.2.0"
-  }
+    "@keystonejs/adapter-json": "^0.0.0",
+    "@keystonejs/adapter-memory": "^0.0.0",
+    "@keystonejs/adapter-mongoose": "^6.0.0",
+    "@keystonejs/app-admin-ui": "^5.9.3",
+    "@keystonejs/app-graphql": "^5.1.4",
+    "@keystonejs/app-static": "^5.1.1",
+    "@keystonejs/fields": "^7.0.2",
+    "@keystonejs/keystone": "^7.0.0",
+    "cross-env": "^7.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/todo"
 }

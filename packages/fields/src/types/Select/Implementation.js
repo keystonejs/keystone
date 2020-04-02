@@ -1,7 +1,7 @@
 import inflection from 'inflection';
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 function initOptions(options) {
   let optionsArray = options;
@@ -16,11 +16,12 @@ export class Select extends Implementation {
   constructor(path, { options }) {
     super(...arguments);
     this.options = initOptions(options);
+    this.isOrderable = true;
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
@@ -43,7 +44,7 @@ export class Select extends Implementation {
   extendAdminMeta(meta) {
     return { ...meta, options: this.options };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields(this.getTypeName()),
       ...this.inInputFields(this.getTypeName()),
@@ -81,7 +82,10 @@ export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter)
   }
 
   addToTableSchema(table) {
-    const column = table.enu(this.path, this.field.options.map(({ value }) => value));
+    const column = table.enu(
+      this.path,
+      this.field.options.map(({ value }) => value)
+    );
     if (this.isUnique) column.unique();
     else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();

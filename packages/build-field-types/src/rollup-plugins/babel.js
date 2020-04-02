@@ -1,13 +1,13 @@
-// @flow
-import { createFilter } from 'rollup-pluginutils';
+import { createFilter } from '@rollup/pluginutils';
 import { getWorker } from '../worker-client';
 
 const regExpCharactersRegExp = /[\\^$.*+?()[\]{}|]/g;
-const escapeRegExpCharacters = (str: string) => str.replace(regExpCharactersRegExp, '\\$&');
+const escapeRegExpCharacters = str => str.replace(regExpCharactersRegExp, '\\$&');
 
-const unpackOptions = (options: any = {}) => ({
+const unpackOptions = (options = {}) => ({
   plugins: [],
   ...options,
+
   caller: {
     name: 'rollup-plugin-babel',
     supportsStaticESM: true,
@@ -16,7 +16,7 @@ const unpackOptions = (options: any = {}) => ({
   },
 });
 
-let rollupPluginBabel = (pluginOptions: *) => {
+let rollupPluginBabel = pluginOptions => {
   const { exclude, extensions, include, ...babelOptions } = unpackOptions(pluginOptions);
 
   const extensionRegExp = new RegExp(`(${extensions.map(escapeRegExpCharacters).join('|')})$`);
@@ -25,7 +25,7 @@ let rollupPluginBabel = (pluginOptions: *) => {
 
   return {
     name: 'babel',
-    transform(code: string, filename: string) {
+    transform(code, filename) {
       if (!filter(filename)) return Promise.resolve(null);
       let options = JSON.stringify({ ...babelOptions, filename });
 

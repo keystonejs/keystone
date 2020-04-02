@@ -6,5 +6,7 @@
 		"login": "yarn --cwd login",
 		"social-login": "yarn --cwd social-login"
 	},
+  "repository": "https://github.com/keystonejs/keystone.git",
+  "homepage": "https://github.com/keystonejs/keystone",
 	"license": "MIT"
 }

@@ -1,12 +1,7 @@
-// @flow
-
-import React, { Component, type Node } from 'react';
+import React from 'react';
 import RelationshipSelect from './RelationshipSelect';
-import type { FilterProps } from '../../../types';
 
-type Props = FilterProps<null | string>;
-
-const EventCatcher = ({ children }: { children: Node }) => (
+const EventCatcher = ({ children }) => (
   <div
     onClick={e => {
       e.preventDefault();
@@ -17,9 +12,8 @@ const EventCatcher = ({ children }: { children: Node }) => (
   </div>
 );
 
-export default class RelationshipFilterView extends Component<Props> {
-  handleChange = (option: null | { value: { id: string } }) => {
-    const { onChange } = this.props;
+const RelationshipFilterView = ({ onChange, filter, field, value }) => {
+  const handleChange = option => {
     if (option === null) {
       onChange(null);
     } else {
@@ -30,22 +24,21 @@ export default class RelationshipFilterView extends Component<Props> {
     }
   };
 
-  render() {
-    const { filter, field, value } = this.props;
-    if (!filter) return null;
+  if (!filter) return null;
 
-    const htmlID = `ks-input-${field.path}`;
-    return (
-      <EventCatcher>
-        <RelationshipSelect
-          field={field}
-          renderContext={null}
-          htmlID={htmlID}
-          onChange={this.handleChange}
-          value={value}
-          isMulti={false}
-        />
-      </EventCatcher>
-    );
-  }
-}
+  const htmlID = `ks-input-${field.path}`;
+  return (
+    <EventCatcher>
+      <RelationshipSelect
+        field={field}
+        renderContext={null}
+        htmlID={htmlID}
+        onChange={handleChange}
+        value={value}
+        isMulti={false}
+      />
+    </EventCatcher>
+  );
+};
+
+export default RelationshipFilterView;

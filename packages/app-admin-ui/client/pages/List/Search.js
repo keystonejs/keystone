@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { useRef, forwardRef, useState } from 'react';
+import { useRef, forwardRef, useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 
 import { SearchIcon, XIcon } from '@arch-ui/icons';
@@ -18,20 +18,20 @@ export default function Search({ isLoading, list }) {
   const { searchValue, onChange, onClear, onSubmit } = useListSearch(list.key);
   const [value, setValue] = useState(searchValue);
   const inputRef = useRef();
-  const debouncedOnChange = debounce(onChange, 200);
 
   const hasValue = searchValue && searchValue.length;
   const Icon = hasValue ? XIcon : SearchIcon;
   const isFetching = hasValue && isLoading;
 
-  const handleChange = event => {
-    setValue(event.target.value);
-    debouncedOnChange(event.target.value);
+  const onChangeDebounced = useCallback(debounce(onChange, 400), []);
+
+  const handleChange = ({ target: { value } }) => {
+    setValue(value);
+    onChangeDebounced(value);
   };
+
   const handleClear = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    if (inputRef.current) inputRef.current.focus();
     setValue('');
     onClear();
   };
@@ -60,6 +60,7 @@ export default function Search({ isLoading, list }) {
         value={value}
         type="text"
         ref={inputRef}
+        disabled={isFetching}
       />
       <div
         css={{
@@ -74,17 +75,13 @@ export default function Search({ isLoading, list }) {
           right: 0,
           top: 0,
           width: 40,
-
           ':hover': {
             color: hasValue ? colors.text : colors.N30,
           },
         }}
+        onClick={hasValue && !isFetching ? handleClear : null}
       >
-        {isFetching ? (
-          <LoadingSpinner size={16} />
-        ) : (
-          <Icon onClick={hasValue ? handleClear : null} />
-        )}
+        {isFetching ? <LoadingSpinner size={16} /> : <Icon />}
       </div>
     </form>
   );

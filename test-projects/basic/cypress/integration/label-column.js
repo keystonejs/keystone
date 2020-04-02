@@ -9,6 +9,6 @@ it('should have a label column by default', () => {
         // add one since :nth-child begins at one whereas array indexes start at 0
         index + 1
       })`
-    ).contains('Ben Conolly <ben@keystone-alpha.com>');
+    ).contains('Ben Conolly <ben@keystone.com>');
   });
 });

@@ -5,7 +5,7 @@ import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { plugins as markPlugins } from './marks';
 import { type as defaultType } from './blocks/paragraph';
-import AddBlock from './AddBlock';
+import AddBlock from './add-block';
 import { useStateWithEqualityCheck } from './hooks';
 import Toolbar from './toolbar';
 
@@ -32,7 +32,7 @@ function getSchema(blocks) {
   return schema;
 }
 
-function Stories({ value: editorState, onChange, blocks, className }) {
+function Stories({ value: editorState, onChange, blocks, className, id }) {
   let schema = useMemo(() => {
     return getSchema(blocks);
   }, [blocks]);
@@ -63,13 +63,15 @@ function Stories({ value: editorState, onChange, blocks, className }) {
   }, [blocks]);
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
+
   return (
-    <div className={className}>
+    <div className={className} css={{ position: 'relative' }} id={id}>
       <Editor
         schema={schema}
         ref={setEditor}
         plugins={plugins}
         value={editorState}
+        tabIndex={0}
         onChange={({ value }) => {
           onChange(value);
         }}

@@ -57,7 +57,10 @@ module.exports = Object.assign(
           Object.assign({ foo: 'Hello', zip: 'yo' }, generatedFieldData),
           Object.assign({ foo: 'Hi', zip: 'yo' }, generatedFieldData),
         ],
-        [getDeclarativeListName(access)]: [{ foo: 'Hello', zip: 'yo' }, { foo: 'Hi', zip: 'yo' }],
+        [getDeclarativeListName(access)]: [
+          { foo: 'Hello', zip: 'yo' },
+          { foo: 'Hi', zip: 'yo' },
+        ],
       }),
     {}
   )

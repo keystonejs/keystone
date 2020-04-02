@@ -1,6 +1,6 @@
-const { Text, Relationship } = require('@keystone-alpha/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -17,38 +17,6 @@ function setupKeystone(adapterName) {
         fields: {
           title: { type: Text },
           group: { type: Relationship, ref: 'Group' },
-        },
-      });
-
-      keystone.createList('GroupNoRead', {
-        fields: {
-          name: { type: Text },
-        },
-        access: {
-          read: () => false,
-        },
-      });
-
-      keystone.createList('EventToGroupNoRead', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoRead' },
-        },
-      });
-
-      keystone.createList('GroupNoCreate', {
-        fields: {
-          name: { type: Text },
-        },
-        access: {
-          create: () => false,
-        },
-      });
-
-      keystone.createList('EventToGroupNoCreate', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoCreate' },
         },
       });
     },

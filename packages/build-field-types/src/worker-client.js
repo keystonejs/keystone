@@ -1,4 +1,3 @@
-// @flow
 import Worker from 'jest-worker';
 
 let worker;

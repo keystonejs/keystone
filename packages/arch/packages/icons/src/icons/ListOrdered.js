@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { style } from '../style';
 
@@ -9,7 +8,7 @@ const svgContent = (
   />
 );
 
-const ListOrderedIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
+const ListOrderedIcon = React.memo(({ title, ...props }) => {
   return (
     <svg aria-hidden height={16} width={12} viewBox="0 0 12 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}

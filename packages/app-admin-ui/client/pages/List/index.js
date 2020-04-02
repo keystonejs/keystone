@@ -1,8 +1,9 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { Query } from 'react-apollo';
+import { Fragment, useEffect, useRef, Suspense } from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import { useList } from '../../providers/List';
 
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
@@ -13,6 +14,7 @@ import { Button } from '@arch-ui/button';
 import { KebabHorizontalIcon } from '@arch-ui/icons';
 import Tooltip from '@arch-ui/tooltip';
 import { applyRefs } from 'apply-ref';
+import { LoadingIndicator } from '@arch-ui/loading';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -27,41 +29,25 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+import { captureSuspensePromises } from '@keystonejs/utils';
+
+import { useAdminMeta } from '../../providers/AdminMeta';
 
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
 
-type Props = {
-  adminMeta: Object,
-  list: Object,
-  routeProps: Object,
-};
-type LayoutProps = Props & {
-  items: Array<Object>,
-  itemCount: number,
-  queryErrors: Array<Object>,
-};
-
-function ListLayout(props: LayoutProps) {
-  const { adminMeta, items, itemCount, queryErrors, list, routeProps, query } = props;
-  const [showCreateModal, toggleCreateModal] = useState(false);
+export function ListLayout(props) {
+  const { items, itemCount, queryErrors, routeProps, query } = props;
   const measureElementRef = useRef();
-
+  const { list, openCreateItemModal } = useList();
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
 
-  const { adminPath } = adminMeta;
+  const { adminPath } = useAdminMeta();
   const { history, location } = routeProps;
   const { currentPage, fields, pageSize, search } = urlState;
-
-  const closeCreateModal = () => {
-    toggleCreateModal(false);
-  };
-  const openCreateModal = () => {
-    toggleCreateModal(true);
-  };
 
   const [selectedItems, onSelectChange] = useListSelect(items);
 
@@ -96,9 +82,10 @@ function ListLayout(props: LayoutProps) {
     query.refetch();
   };
   const onCreate = ({ data }) => {
-    let id = data[list.gqlNames.createMutationName].id;
-    history.push(`${adminPath}/${list.path}/${id}`);
-    query.refetch();
+    const id = data[list.gqlNames.createMutationName].id;
+    query.refetch().then(() => {
+      history.push(`${adminPath}/${list.path}/${id}`);
+    });
   };
 
   // Success
@@ -107,6 +94,7 @@ function ListLayout(props: LayoutProps) {
   const cypressCreateId = 'list-page-create-button';
   const cypressFiltersId = 'ks-list-active-filters';
 
+  const Render = ({ children }) => children();
   return (
     <main>
       <div ref={measureElementRef} />
@@ -119,7 +107,7 @@ function ListLayout(props: LayoutProps) {
               <IconButton
                 appearance="primary"
                 icon={PlusIcon}
-                onClick={openCreateModal}
+                onClick={openCreateItemModal}
                 id={cypressCreateId}
               >
                 Create
@@ -130,7 +118,18 @@ function ListLayout(props: LayoutProps) {
             css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
             id={cypressFiltersId}
           >
-            <Search list={list} isLoading={query.loading} />
+            <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
+              <Render>
+                {() => {
+                  captureSuspensePromises(
+                    fields
+                      .filter(field => field.path !== '_label_')
+                      .map(field => () => field.initCellView())
+                  );
+                  return <Search list={list} isLoading={query.loading} />;
+                }}
+              </Render>
+            </Suspense>
             <ActiveFilters list={list} />
           </div>
 
@@ -165,8 +164,14 @@ function ListLayout(props: LayoutProps) {
                     })}
                     ,
                   </span>
-                  <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
-                  <SortPopout listKey={list.key} />
+                  {sortBy ? (
+                    <Fragment>
+                      <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
+                      <SortPopout listKey={list.key} />
+                    </Fragment>
+                  ) : (
+                    ''
+                  )}
                   <span css={{ paddingLeft: '0.5ex' }}>with</span>
                   <ColumnPopout
                     listKey={list.key}
@@ -185,7 +190,18 @@ function ListLayout(props: LayoutProps) {
                   />
                 </div>
                 <FlexGroup align="center" css={{ marginLeft: '1em' }}>
-                  <Pagination listKey={list.key} isLoading={query.loading} />
+                  <Suspense fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}>
+                    <Render>
+                      {() => {
+                        captureSuspensePromises(
+                          fields
+                            .filter(field => field.path !== '_label_')
+                            .map(field => () => field.initCellView())
+                        );
+                        return <Pagination listKey={list.key} isLoading={query.loading} />;
+                      }}
+                    </Render>
+                  </Suspense>
                 </FlexGroup>
               </FlexGroup>
             ) : null}
@@ -193,15 +209,11 @@ function ListLayout(props: LayoutProps) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal
-        isOpen={showCreateModal}
-        list={list}
-        onClose={closeCreateModal}
-        onCreate={onCreate}
-      />
+      <CreateItemModal onCreate={onCreate} />
 
       <Container isFullWidth>
         <ListTable
+          {...props}
           adminPath={adminPath}
           columnControl={
             <ColumnPopout
@@ -245,7 +257,7 @@ function ListLayout(props: LayoutProps) {
   );
 }
 
-function List(props: Props) {
+export function List(props) {
   const { list, query, routeProps } = props;
 
   // get item data
@@ -315,7 +327,7 @@ function List(props: Props) {
   // ------------------------------
   return (
     <Fragment>
-      <DocTitle>{list.plural}</DocTitle>
+      <DocTitle title={list.plural} />
       <ListLayout
         {...props}
         items={items}
@@ -327,20 +339,17 @@ function List(props: Props) {
   );
 }
 
-export default function ListData(props: Props) {
+export default function ListData(props) {
   const { list } = props;
   const { urlState } = useListUrlState(list.key);
 
   const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
-  const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
+  const orderBy = sortBy ? `${sortBy.field.path}_${sortBy.direction}` : null;
   const first = pageSize;
   const skip = (currentPage - 1) * pageSize;
 
   const query = list.getQuery({ fields, filters, search, orderBy, skip, first });
+  const res = useQuery(query, { fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
-  return (
-    <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
-      {res => <List query={res} {...props} />}
-    </Query>
-  );
+  return <List query={res} {...props} />;
 }

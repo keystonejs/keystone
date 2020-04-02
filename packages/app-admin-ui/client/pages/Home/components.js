@@ -1,8 +1,13 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { Fragment } from 'react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
+import { useList } from '../../providers/List';
+import { useAdminMeta } from '../../providers/AdminMeta';
+
+import CreateItemModal from '../../components/CreateItemModal';
 
 import { PlusIcon } from '@arch-ui/icons';
 import { Card } from '@arch-ui/card';
@@ -19,7 +24,6 @@ const BOX_GUTTER = `${gridSize * 2}px`;
 const BoxElement = styled(Card)`
   color: ${colors.N40};
   display: block;
-  line-height: 1.1;
   padding: ${BOX_GUTTER};
   position: relative;
 
@@ -30,39 +34,45 @@ const BoxElement = styled(Card)`
   }
 `;
 
-export const BoxComponent = ({
-  focusOrigin,
-  isActive,
-  isHover,
-  isFocus,
-  list,
-  meta,
-  onCreateClick,
-  ...props
-}) => {
+const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props }) => {
+  const { list, openCreateItemModal } = useList();
+  const history = useHistory();
+  const { adminPath } = useAdminMeta();
+
+  const onCreate = ({ data }) => {
+    const id = data[list.gqlNames.createMutationName].id;
+    history.push(`${adminPath}/${list.path}/${id}`);
+  };
+
   const { label, singular } = list;
 
   return (
-    <BoxElement as={Link} isInteractive title={`Go to ${label}`} {...props}>
-      <A11yText>Go to {label}</A11yText>
-      <Name
-        isHover={isHover || isFocus}
-        // this is aria-hidden since the label above shows the label already
-        // so if this wasn't aria-hidden screen readers would read the label twice
-        aria-hidden
-      >
-        {label}
-      </Name>
-      <Count meta={meta} />
-      <CreateButton
-        title={`Create ${singular}`}
-        isHover={isHover || isFocus}
-        onClick={onCreateClick}
-      >
-        <PlusIcon />
-        <A11yText>Create {singular}</A11yText>
-      </CreateButton>
-    </BoxElement>
+    <Fragment>
+      <BoxElement as={Link} isInteractive title={`Go to ${label}`} {...props}>
+        <A11yText>Go to {label}</A11yText>
+        <Name
+          isHover={isHover || isFocus}
+          // this is aria-hidden since the label above shows the label already
+          // so if this wasn't aria-hidden screen readers would read the label twice
+          aria-hidden
+        >
+          {label}
+        </Name>
+        <Count meta={meta} />
+        <CreateButton
+          title={`Create ${singular}`}
+          isHover={isHover || isFocus}
+          onClick={e => {
+            e.preventDefault();
+            openCreateItemModal();
+          }}
+        >
+          <PlusIcon />
+          <A11yText>Create {singular}</A11yText>
+        </CreateButton>
+      </BoxElement>
+      <CreateItemModal onCreate={onCreate} />
+    </Fragment>
   );
 };
 
@@ -73,13 +83,15 @@ export const Name = styled.span(
   border-bottom: 1px solid ${isHover ? colors.B.A50 : 'transparent'};
   color: ${colors.primary};
   display: inline-block;
-  font-size: 1.1em;
+  box-sizing: border-box;
+  font-size: 1.1rem;
   font-weight: 500;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   transition: border-color 80ms linear;
   white-space: nowrap;
+  margin-right: 2em;
 `
 );
 export const Count = ({ meta }) => {
@@ -91,11 +103,7 @@ export const Count = ({ meta }) => {
       <LoadingIndicator />
     </div>
   ) : (
-    <div css={{ fontSize: '0.85em' }}>
-      {count}
-      {/* append the text instead of two children so that they're a single text node for screen readers */}
-      {' Item' + (count !== 1 ? 's' : '')}
-    </div>
+    <div css={{ fontSize: '0.85em' }}>{`${count} Item${count !== 1 ? 's' : ''}`}</div>
   );
 };
 export const CreateButton = styled.button(

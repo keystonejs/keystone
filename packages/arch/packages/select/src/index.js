@@ -1,8 +1,9 @@
-// @flow
-
 import * as React from 'react';
 import { useMemo } from 'react';
-import ReactSelect from 'react-select';
+import BaseSelect from 'react-select';
+import AsyncCreatableSelect from 'react-select/async-creatable';
+import AsyncSelect from 'react-select/async';
+import CreatableSelect from 'react-select/creatable';
 import { colors } from '@arch-ui/theme';
 
 // ==============================
@@ -46,7 +47,11 @@ const selectStyles = {
   },
   clearIndicator: indicatorStyles,
   dropdownIndicator: indicatorStyles,
-  menu: provided => ({ ...provided, fontSize: '0.9em' }),
+  menu: provided => ({
+    ...provided,
+    fontSize: '0.9em',
+    zIndex: 10,
+  }),
   option: (provided, { isDisabled, isFocused, isSelected }) => {
     let bg = 'inherit';
     if (isFocused) bg = colors.B.L90;
@@ -74,14 +79,42 @@ const selectStyles = {
       ':active': cssPseudoActive,
     };
   },
-  menuPortal: provided => ({ ...provided, zIndex: 3 }),
+  menuPortal: provided => ({
+    ...provided,
+    zIndex: 3,
+  }),
 };
-const Select = ({ innerRef, styles, ...props }: { innerRef?: React.Ref<*>, styles?: Object }) => (
-  <ReactSelect
-    ref={innerRef}
-    styles={useMemo(() => ({ ...selectStyles, ...styles }), [styles])}
-    {...props}
-  />
-);
+
+const getSelectVariant = ({ isAsync, isCreatable }) => {
+  if (isAsync && isCreatable) {
+    return AsyncCreatableSelect;
+  }
+  if (isAsync) {
+    return AsyncSelect;
+  }
+  if (isCreatable) {
+    return CreatableSelect;
+  }
+
+  return BaseSelect;
+};
+
+const Select = ({ isAsync, isCreatable, innerRef, styles, ...props }) => {
+  const ReactSelect = getSelectVariant({ isAsync, isCreatable });
+
+  return (
+    <ReactSelect
+      ref={innerRef}
+      styles={useMemo(
+        () => ({
+          ...selectStyles,
+          ...styles,
+        }),
+        [styles]
+      )}
+      {...props}
+    />
+  );
+};
 
 export default Select;

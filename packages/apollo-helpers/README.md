@@ -1,9 +1,12 @@
 <!--[meta]
-section: packages
-title: Apollo Helpers
+section: api
+subSection: utilities
+title: Apollo helpers
 [meta]-->
 
-# Apollo Helpers
+# Apollo helpers
+
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/apollo-helpers)
 
 A set of functions and components to ease using
 [Apollo](https://www.apollographql.com/docs/react/) with Keystone.
@@ -11,13 +14,14 @@ A set of functions and components to ease using
 ## Installation
 
 ```bash
-yarn add @keystone-alpha/apollo-helpers
+yarn add @keystonejs/apollo-helpers
 ```
 
 ## Usage
 
 ### Minimal example
 
+<!-- prettier-ignore-start -->
 ```javascript
 import gql from 'graphql-tag';
 import React from 'react';
@@ -26,13 +30,10 @@ import { HttpLink } from 'apollo-link-http';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
-import {
-  Query,
-  KeystoneProvider,
-} from '@keystone-alpha/apollo-helpers';
+import { Query, KeystoneProvider } from '@keystonejs/apollo-helpers';
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: /* ... */ }),
+  link: new HttpLink({ uri: '...' }),
   cache: new InMemoryCache(),
 });
 
@@ -50,6 +51,7 @@ const App = () => (
 
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
+<!-- prettier-ignore-end -->
 
 ### Complete example
 
@@ -69,7 +71,7 @@ import {
   KeystoneProvider,
   injectIsOptimisticFlag,
   flattenApollo,
-} from '@keystone-alpha/apollo-helpers';
+} from '@keystonejs/apollo-helpers';
 
 const cache = new InMemoryCache();
 
@@ -268,7 +270,7 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 
 Now everything's up to date and we didn't have to use `writeQuery` or couple any of our components.
 
-### But why is this coupled to Keystone?
+### Why is this coupled to Keystone?
 
 Let's continue the example above with another query:
 

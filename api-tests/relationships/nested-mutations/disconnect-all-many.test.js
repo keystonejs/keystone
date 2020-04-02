@@ -1,7 +1,12 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystone-alpha/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 const cuid = require('cuid');
-const { setupServer, graphqlRequest, multiAdapterRunners } = require('@keystone-alpha/test-utils');
+const {
+  setupServer,
+  graphqlRequest,
+  multiAdapterRunners,
+  networkedGraphqlRequest,
+} = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -144,7 +149,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when specifying disconnectAll',
-          runner(setupKeystone, async ({ keystone, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, app, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -157,27 +162,38 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await networkedGraphqlRequest({
+              app,
               query: `
-            mutation {
-              updateUserToNotesNoRead(
-                id: "${createUser.id}"
-                data: {
-                  username: "A thing",
-                  notes: { disconnectAll: true }
+                mutation {
+                  updateUserToNotesNoRead(
+                    id: "${createUser.id}"
+                    data: {
+                      username: "A thing",
+                      notes: { disconnectAll: true }
+                    }
+                  ) {
+                    id
+                  }
                 }
-              ) {
-                id
-              }
-            }
-        `,
+              `,
             });
 
             expect(errors).toBe(undefined);
-            const userData = await findById('UserToNotesNoRead', createUser.id);
 
-            expect(userData.notes).toHaveLength(0);
+            const result = await graphqlRequest({
+              keystone,
+              query: `
+                query getUserNodes($userId: ID!){
+                  UserToNotesNoRead(where: { id: $userId }) {
+                    id
+                    notes { id }
+                  }
+                }
+            `,
+              variables: { userId: createUser.id },
+            });
+            expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);
           })
         );
 

@@ -1,10 +1,11 @@
 //imports for Keystone app core
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { NextApp } = require('@keystone-alpha/app-next');
-const { StaticApp } = require('@keystone-alpha/app-static');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { NextApp } = require('@keystonejs/app-next');
+const { StaticApp } = require('@keystonejs/app-static');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
@@ -23,43 +24,21 @@ const keystone = new Keystone({
   },
 });
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 keystone.createList('User', User);
 keystone.createList('Post', Post);
 keystone.createList('PostCategory', PostCategory);
 keystone.createList('Comment', Comment);
 
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+});
+
 const adminApp = new AdminUIApp({
   adminPath: '/admin',
+  hooks: require.resolve('./admin/'),
   authStrategy,
-  pages: [
-    {
-      label: 'A new dashboard',
-      path: '',
-      component: require.resolve('./admin/pages/dashboard'),
-    },
-    {
-      label: 'About this project',
-      path: 'about',
-      component: require.resolve('./admin/pages/about'),
-    },
-    {
-      label: 'Blog',
-      children: [
-        { listKey: 'Post' },
-        { label: 'Categories', listKey: 'PostCategory' },
-        { listKey: 'Comment' },
-      ],
-    },
-    {
-      label: 'People',
-      children: ['User'],
-    },
-  ],
+  isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
 });
 
 module.exports = {

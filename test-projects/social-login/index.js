@@ -1,4 +1,5 @@
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const {
   File,
   Text,
@@ -7,34 +8,29 @@ const {
   Select,
   Password,
   CloudinaryImage,
-} = require('@keystone-alpha/fields');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { StaticApp } = require('@keystone-alpha/app-static');
+} = require('@keystonejs/fields');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { StaticApp } = require('@keystonejs/app-static');
 
 const { staticRoute, staticPath, cloudinary, cookieSecret } = require('./config');
 
 const { DISABLE_AUTH } = process.env;
-const LOCAL_FILE_PATH = `${staticPath}/avatars`;
+const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test for Social Login',
   adapter: new MongooseAdapter(),
-});
-
-// eslint-disable-next-line no-unused-vars
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
+  cookieSecret,
 });
 
 const fileAdapter = new LocalFileAdapter({
-  directory: LOCAL_FILE_PATH,
-  route: LOCAL_FILE_ROUTE,
+  src: LOCAL_FILE_SRC,
+  path: LOCAL_FILE_ROUTE,
 });
 
 let cloudinaryAdapter;
@@ -73,18 +69,33 @@ keystone.createList('User', {
       },
     },
     // TODO: Create a Facebook field type to encapsulate these
-    facebookId: { type: Text },
+    facebookId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
     // TODO: Create a GitHub field type to encapsulate these
-    githubId: { type: Text },
+    githubId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     // TODO: Create a Twitter field type to encapsulate these
-    twitterId: { type: Text },
+    twitterId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     // TODO: Create a Google field type to encapsulate these
-    googleId: { type: Text },
+    googleId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     // TODO: Create a WordPress field type to encapsulate these
-    wordpressId: { type: Text },
+    wordpressId: {
+      type: Text,
+      access: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+    },
 
     isAdmin: { type: Checkbox },
     company: {
@@ -109,7 +120,10 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
     },
     author: {
       type: Relationship,
@@ -130,6 +144,7 @@ keystone.createList('Post', {
       authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
     delete: ({ item, authentication }) =>
       authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+    auth: true,
   },
 });
 
@@ -143,13 +158,19 @@ keystone.createList('PostCategory', {
     read: true,
     update: false,
     delete: false,
+    auth: true,
   },
+});
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
 });
 
 module.exports = {
   keystone,
   apps: [
-    new GraphQLApp({ cookieSecret }),
+    new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
     new AdminUIApp({ authStrategy: DISABLE_AUTH ? undefined : authStrategy }),
   ],

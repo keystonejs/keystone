@@ -1,34 +1,5 @@
-// @flow
-
 import querystring from 'querystring';
-import * as React from 'react';
-
-import List from '../../classes/List';
-// $FlowFixMe flow doesn't recognise the `*/Controller` entry point
-import type { FieldControllerType } from '@keystone-alpha/fields/Controller';
 import { pseudoLabelField } from './FieldSelect';
-import type { AdminMeta } from '../../providers/AdminMeta';
-
-export type SortByType = {
-  field: { label: string, path: string },
-  direction: 'ASC' | 'DESC',
-};
-
-export type FilterType = {
-  field: FieldControllerType,
-  label: string,
-  type: string,
-  value: string,
-};
-
-export type SearchType = {
-  currentPage: number,
-  pageSize: number,
-  search: string,
-  fields: Array<FieldControllerType>,
-  sortBy: SortByType,
-  filters: Array<FilterType>,
-};
 
 // ==============================
 // Query string encode/decode
@@ -36,12 +7,14 @@ export type SearchType = {
 
 const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sortBy', 'filters'];
 
-const getSearchDefaults = (props: Props): SearchType => {
+const getSearchDefaults = props => {
   const { defaultColumns, defaultSort, defaultPageSize } = props.list.adminConfig;
 
   // Dynamic defaults
   const fields = parseFields(defaultColumns, props.list);
-  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
+  const sortBy =
+    parseSortBy(defaultSort, props.list) ||
+    (fields[0] ? { field: fields[0], direction: 'ASC' } : null);
   fields.unshift(pseudoLabelField);
   return {
     currentPage: 1,
@@ -64,7 +37,9 @@ const encodeFields = fields => {
   return fields.map(f => f.path).join(',');
 };
 
-const parseSortBy = (sortBy: string, list: List): SortByType | null => {
+const parseSortBy = (sortBy, list) => {
+  if (!sortBy) return null;
+
   let key = sortBy;
   let direction = 'ASC';
 
@@ -73,7 +48,7 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
     direction = 'DESC';
   }
 
-  const field = list.fields.find(f => f.path === key);
+  const field = list.fields.filter(field => field.config.isOrderable).find(f => f.path === key);
   if (!field) {
     return null;
   }
@@ -83,7 +58,8 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
   };
 };
 
-const encodeSortBy = (sortBy: SortByType): string => {
+const encodeSortBy = sortBy => {
+  if (!sortBy) return '';
   const {
     direction,
     field: { path },
@@ -91,7 +67,7 @@ const encodeSortBy = (sortBy: SortByType): string => {
   return direction === 'ASC' ? path : `-${path}`;
 };
 
-const parseFilter = (filter: [string, string], list): FilterType | null => {
+const parseFilter = (filter, list) => {
   const [key, value] = filter;
   let type;
   let label;
@@ -129,21 +105,12 @@ const parseFilter = (filter: [string, string], list): FilterType | null => {
   };
 };
 
-const encodeFilter = (filter: FilterType): [string, string] => {
+const encodeFilter = filter => {
   const { field, type, value } = filter;
   return [`${field.path}_${type}`, JSON.stringify(value)];
 };
 
-type Props = {
-  adminMeta: AdminMeta,
-  children: (*) => React.Node,
-  history: Object,
-  list: Object,
-  location: Object,
-  match: Object,
-};
-
-export const decodeSearch = (search: string, props: Props): SearchType => {
+export const decodeSearch = (search, props) => {
   const query = querystring.parse(search.replace('?', ''));
   const searchDefaults = getSearchDefaults(props);
   const params = Object.keys(query).reduce((acc, key) => {
@@ -197,7 +164,7 @@ export const decodeSearch = (search: string, props: Props): SearchType => {
   };
 };
 
-export const encodeSearch = (data: SearchType, props: Props): string => {
+export const encodeSearch = (data, props) => {
   const searchDefaults = getSearchDefaults(props);
   const params = Object.keys(data).reduce((acc, key) => {
     // strip anthing which matches the default (matching primitive types)

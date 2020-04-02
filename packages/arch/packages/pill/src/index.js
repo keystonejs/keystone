@@ -1,9 +1,7 @@
-// @flow
-
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
-import { forwardRef, type Node } from 'react';
+import { forwardRef } from 'react';
 
 import { XIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
@@ -47,81 +45,61 @@ const subtleTextColor = {
   warning: colors.warning,
 };
 
-type Variant = 'bold' | 'subtle';
-type Appearance = 'default' | 'primary' | 'danger' | 'create' | 'warning';
-
-type ButtonProps = {
-  /* Affects the visual style of the lozenge */
-  appearance?: Appearance,
-  /* The value displayed within the lozenge. */
-  variant?: Variant,
-};
-type Props = ButtonProps & {
-  children: Node,
-  onClick: MouseEvent => void,
-  onRemove: MouseEvent => void,
-};
-
 const PillWrapper = styled.div({ display: 'inline-flex' });
-const PillButton = styled.button(
-  ({ appearance, variant }: { appearance: Appearance, variant: Variant }) => {
-    const fontSizeNumeric = 0.85;
-    const fontSize = `${fontSizeNumeric}rem`;
-    const borderRadius = `${fontSizeNumeric * 2}rem`;
+const PillButton = styled.button(({ appearance, variant }) => {
+  const fontSizeNumeric = 0.85;
+  const fontSize = `${fontSizeNumeric}rem`;
+  const borderRadius = `${fontSizeNumeric * 2}rem`;
 
-    return {
-      ...uniformHeight,
+  return {
+    ...uniformHeight,
+    backgroundColor:
+      variant === 'bold'
+        ? boldBackgroundColor[appearance].default
+        : subtleBackgroundColor[appearance].default,
+    color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
+    alignItems: 'center',
+    border: 0,
+    cursor: 'pointer',
+    display: 'flex',
+    fontSize: fontSize,
+    justifyContent: 'center',
+    maxWidth: '100%',
+    minWidth: 1,
+    outline: 0,
+
+    ':hover,:focus': {
       backgroundColor:
         variant === 'bold'
-          ? boldBackgroundColor[appearance].default
-          : subtleBackgroundColor[appearance].default,
-      color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
-      alignItems: 'center',
-      border: 0,
-      cursor: 'pointer',
-      display: 'flex',
-      fontSize: fontSize,
-      justifyContent: 'center',
-      maxWidth: '100%',
-      minWidth: 1,
-      outline: 0,
+          ? boldBackgroundColor[appearance].hover
+          : subtleBackgroundColor[appearance].hover,
+    },
+    ':active': {
+      backgroundColor:
+        variant === 'bold'
+          ? boldBackgroundColor[appearance].active
+          : subtleBackgroundColor[appearance].active,
+    },
 
-      ':hover,:focus': {
-        backgroundColor:
-          variant === 'bold'
-            ? boldBackgroundColor[appearance].hover
-            : subtleBackgroundColor[appearance].hover,
-      },
-      ':active': {
-        backgroundColor:
-          variant === 'bold'
-            ? boldBackgroundColor[appearance].active
-            : subtleBackgroundColor[appearance].active,
-      },
+    ':first-of-type': {
+      paddingLeft: '0.9em',
+      paddingRight: '0.75em',
+      borderTopLeftRadius: borderRadius,
+      borderBottomLeftRadius: borderRadius,
+      marginRight: 1,
+    },
+    ':last-of-type': {
+      paddingLeft: '0.75em',
+      paddingRight: '0.9em',
+      borderTopRightRadius: borderRadius,
+      borderBottomRightRadius: borderRadius,
+      marginLeft: 1,
+    },
+  };
+});
 
-      ':first-of-type': {
-        paddingLeft: '0.9em',
-        paddingRight: '0.75em',
-        borderTopLeftRadius: borderRadius,
-        borderBottomLeftRadius: borderRadius,
-        marginRight: 1,
-      },
-      ':last-of-type': {
-        paddingLeft: '0.75em',
-        paddingRight: '0.9em',
-        borderTopRightRadius: borderRadius,
-        borderBottomRightRadius: borderRadius,
-        marginLeft: 1,
-      },
-    };
-  }
-);
-
-export const Pill = forwardRef<Props, HTMLDivElement>(
-  (
-    { appearance = 'default', children, onClick, onRemove, variant = 'subtle', ...props }: Props,
-    ref
-  ) => {
+export const Pill = forwardRef(
+  ({ appearance = 'default', children, onClick, onRemove, variant = 'subtle', ...props }, ref) => {
     return (
       <PillWrapper {...props} ref={ref}>
         <PillButton appearance={appearance} variant={variant} onClick={onClick}>

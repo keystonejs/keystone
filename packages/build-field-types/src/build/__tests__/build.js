@@ -1,4 +1,3 @@
-// @flow
 import build from '../';
 import fixturez from 'fixturez';
 import path from 'path';
@@ -8,8 +7,6 @@ import { FatalError } from '../../errors';
 const f = fixturez(__dirname);
 
 jest.mock('../../prompt');
-
-jest.mock('install-packages');
 
 let unsafeRequire = require;
 

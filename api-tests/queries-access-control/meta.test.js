@@ -1,5 +1,5 @@
-const { Text, Relationship } = require('@keystone-alpha/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const { Text, Relationship } = require('@keystonejs/fields');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 const cuid = require('cuid');
 
 function setupKeystone(adapterName) {
@@ -10,7 +10,12 @@ function setupKeystone(adapterName) {
       keystone.createList('User', {
         fields: {
           company: { type: Relationship, ref: 'Company' },
-          workHistory: { type: Relationship, ref: 'Company', many: true, access: { read: false } },
+          workHistory: {
+            type: Relationship,
+            ref: 'Company',
+            many: true,
+            access: { read: false },
+          },
           posts: { type: Relationship, ref: 'Post', many: true },
         },
       });
@@ -50,6 +55,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read
                 update
                 delete
+                auth
               }
             }
           }
@@ -63,6 +69,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             read: true,
             update: true,
             delete: true,
+            auth: true,
           });
         })
       );
@@ -120,6 +127,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read
                 update
                 delete
+                auth
               }
             }
           }
@@ -136,6 +144,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read: true,
                 update: true,
                 delete: true,
+                auth: true,
               },
             },
             {
@@ -145,6 +154,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read: true,
                 update: true,
                 delete: true,
+                auth: true,
               },
             },
           ]);

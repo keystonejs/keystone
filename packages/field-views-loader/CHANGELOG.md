@@ -1,10 +1,46 @@
+# @keystonejs/field-views-loader
+
+## 5.2.1
+
+### Patch Changes
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+## 5.2.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+## 5.1.0
+
+### Minor Changes
+
+- [`7c46673b`](https://github.com/keystonejs/keystone/commit/7c46673b927b08f3f7628ae2557156262f2e1049) [#2002](https://github.com/keystonejs/keystone/pull/2002) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added loading of hooks to `allViews`.
+
+## 5.0.0
+
+### Major Changes
+
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+
+  - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
+  - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
+  - To upgrade your project you must update any `@keystone-alpha/*` dependencies in `package.json` to point to `"@keystonejs/*": "^5.0.0"` and update any `require`/`import` statements in your code.
+
 # @keystone-alpha/field-views-loader
+
+## 2.2.1
+
+### Patch Changes
+
+- [`68134f7a`](https://github.com/keystonejs/keystone/commit/68134f7ac6d56122640c42304ab8796c1aa2f17c) [#1760](https://github.com/keystonejs/keystone/pull/1760) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Don't serialize undefined values on objects
 
 ## 2.2.0
 
 ### Minor Changes
 
-- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
 
   `readViews()` can be passed a string for importing a known path.
 
@@ -12,7 +48,7 @@
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
@@ -20,7 +56,7 @@
 
 ### Patch Changes
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Fix Admin UI building on Windows
 
@@ -28,29 +64,29 @@
 
 ### Minor Changes
 
-- [22ec53a8](https://github.com/keystonejs/keystone-5/commit/22ec53a8):
+- [22ec53a8](https://github.com/keystonejs/keystone/commit/22ec53a8):
 
   - Adding support for custom pages in Admin UI
 
 ### Patch Changes
 
-- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+- [c9102446](https://github.com/keystonejs/keystone/commit/c9102446):
 
   - Add a mechanism for loading multiple Suspense-aware components in parallel
 
 ## 2.0.0
 
-- [major][4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):
+- [major][4131e232](https://github.com/keystonejs/keystone/commit/4131e232):
 
   - Dynamically load Admin UI views with React Suspense
 
 ## 1.0.1
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 
-- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+- [patch][9534f98f](https://github.com/keystonejs/keystone/commit/9534f98f):
 
   - Add README.md to package
 

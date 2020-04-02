@@ -1,10 +1,5 @@
 const { Implementation: Field } = require('../');
 
-const config = {
-  label: 'config label',
-  defaultValue: 'default',
-};
-
 const args = {
   getListByKey: {},
   listKey: {},
@@ -12,6 +7,7 @@ const args = {
     newFieldAdapter: jest.fn(),
   },
   defaultAccess: true,
+  schemaNames: ['public'],
 };
 
 describe('new Implementation()', () => {
@@ -26,6 +22,7 @@ describe('new Implementation()', () => {
           newFieldAdapter: jest.fn(),
         },
         defaultAccess: true,
+        schemaNames: ['public'],
       }
     );
     expect(impl).not.toBeNull();
@@ -36,13 +33,13 @@ describe('new Implementation()', () => {
   });
 
   test('new Implementation - label from config', () => {
-    const impl = new Field('path', config, args);
+    const impl = new Field('path', { label: 'config label' }, args);
     expect(impl.label).toEqual('config label');
   });
 });
 
 test('addToMongooseSchema()', () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
   expect(() => {
     impl.adapter.addToMongooseSchema();
@@ -50,50 +47,50 @@ test('addToMongooseSchema()', () => {
 });
 
 test('getGqlAuxTypes()', () => {
-  const impl = new Field('path', config, args);
-
-  expect(impl.getGqlAuxTypes()).toEqual([]);
+  const impl = new Field('path', {}, args);
+  const schemaName = 'public';
+  expect(impl.getGqlAuxTypes({ schemaName })).toEqual([]);
 });
 
 test('gqlAuxFieldResolvers', () => {
-  const impl = new Field('path', config, args);
-
-  expect(impl.gqlAuxFieldResolvers).toEqual({});
+  const impl = new Field('path', {}, args);
+  const schemaName = 'public';
+  expect(impl.gqlAuxFieldResolvers({ schemaName })).toEqual({});
 });
 
 test('getGqlAuxQueries()', () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
   expect(impl.getGqlAuxQueries()).toEqual([]);
 });
 
 test('gqlAuxQueryResolvers', () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
-  expect(impl.gqlAuxQueryResolvers).toEqual({});
+  expect(impl.gqlAuxQueryResolvers()).toEqual({});
 });
 
 test('getGqlAuxMutations()', () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
   expect(impl.getGqlAuxMutations()).toEqual([]);
 });
 
 test('gqlAuxMutationResolvers', () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
-  expect(impl.gqlAuxMutationResolvers).toEqual({});
+  expect(impl.gqlAuxMutationResolvers()).toEqual({});
 });
 
 test('afterChange()', async () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
   const value = await impl.afterChange();
   expect(value).toBe(undefined);
 });
 
 test('resolveInput()', async () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
   const resolvedData = { path: 1 };
   const value = await impl.resolveInput({ resolvedData });
@@ -101,41 +98,101 @@ test('resolveInput()', async () => {
 });
 
 test('gqlQueryInputFields', () => {
-  const impl = new Field('path', config, args);
-
-  expect(impl.gqlQueryInputFields).toEqual([]);
+  const impl = new Field('path', {}, args);
+  const schemaName = 'public';
+  expect(impl.gqlQueryInputFields({ schemaName })).toEqual([]);
 });
 
 test('gqlUpdateInputFields', () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
   expect(impl.gqlUpdateInputFields).toEqual([]);
 });
 
 test('gqlOutputFieldResolvers', () => {
-  const impl = new Field('path', config, args);
-
-  expect(impl.gqlOutputFieldResolvers).toEqual({});
+  const impl = new Field('path', {}, args);
+  const schemaName = 'public';
+  expect(impl.gqlOutputFieldResolvers({ schemaName })).toEqual({});
 });
 
-test('getAdminMeta()', () => {
-  const impl = new Field('path', config, args);
+describe('getAdminMeta()', () => {
+  test('meta is as expect', () => {
+    const impl = new Field('path', { label: 'config label', defaultValue: 'default' }, args);
+    const schemaName = 'public';
 
-  const value = impl.getAdminMeta();
-  expect(value).toEqual({
-    label: 'config label',
-    path: 'path',
-    type: 'Field',
-    defaultValue: 'default',
-    isPrimaryKey: false,
-    isRequired: false,
+    const value = impl.getAdminMeta({ schemaName });
+    expect(value).toEqual({
+      access: {
+        create: true,
+        read: true,
+        update: true,
+      },
+      label: 'config label',
+      path: 'path',
+      type: 'Field',
+      defaultValue: 'default',
+      isOrderable: false,
+      isPrimaryKey: false,
+      isRequired: false,
+    });
+  });
+
+  test('when defaultValue is a function, forced to `undefined`', () => {
+    const impl = new Field('path', { label: 'config label', defaultValue: () => 'default' }, args);
+    const schemaName = 'public';
+
+    const value = impl.getAdminMeta({ schemaName });
+    expect(value).toEqual({
+      access: {
+        create: true,
+        read: true,
+        update: true,
+      },
+      label: 'config label',
+      path: 'path',
+      type: 'Field',
+      defaultValue: undefined,
+      isOrderable: false,
+      isPrimaryKey: false,
+      isRequired: false,
+    });
   });
 });
 
 test('extendAdminMeta()', () => {
-  const impl = new Field('path', config, args);
+  const impl = new Field('path', {}, args);
 
   const meta = { a: 1 };
   const value = impl.extendAdminMeta(meta);
   expect(value).toEqual(meta);
+});
+
+describe('getDefaultValue()', () => {
+  test('undefined by default', () => {
+    const impl = new Field('path', {}, args);
+
+    const value = impl.getDefaultValue({});
+    expect(value).toEqual(undefined);
+  });
+
+  test('static value is returned', () => {
+    const impl = new Field('path', { defaultValue: 'foobar' }, args);
+
+    const value = impl.getDefaultValue({});
+    expect(value).toEqual('foobar');
+  });
+
+  test('executes a function', () => {
+    const defaultValue = jest.fn(() => 'foobar');
+    const context = {};
+    const originalInput = {};
+    const actions = {};
+
+    const impl = new Field('path', { defaultValue }, args);
+
+    const value = impl.getDefaultValue({ context, originalInput, actions });
+    expect(value).toEqual('foobar');
+    expect(defaultValue).toHaveBeenCalledTimes(1);
+    expect(defaultValue).toHaveBeenCalledWith({ context, originalInput, actions });
+  });
 });

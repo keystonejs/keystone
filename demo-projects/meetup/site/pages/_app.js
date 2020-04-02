@@ -1,13 +1,12 @@
 import React from 'react';
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import Head from 'next/head';
 import gql from 'graphql-tag';
-import { ApolloProvider } from 'react-apollo';
-import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { ToastProvider } from 'react-toast-notifications';
 
 import withApollo from '../lib/withApollo';
-import { AuthProvider } from '../lib/authetication';
+import { AuthProvider } from '../lib/authentication';
 import StylesBase from '../primitives/StylesBase';
 import GoogleAnalytics from '../components/GoogleAnalytics';
 
@@ -39,23 +38,19 @@ class MyApp extends App {
     const { Component, pageProps, apolloClient, user } = this.props;
     return (
       <ToastProvider>
-        <Container>
-          <ApolloProvider client={apolloClient}>
-            <AuthProvider initialUserValue={user}>
-              <ApolloHooksProvider client={apolloClient}>
-                <Head>
-                  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-                  <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
-                  />
-                </Head>
-                <StylesBase />
-                <Component {...pageProps} />
-              </ApolloHooksProvider>
-            </AuthProvider>
-          </ApolloProvider>
-        </Container>
+        <ApolloProvider client={apolloClient}>
+          <AuthProvider initialUserValue={user}>
+            <Head>
+              <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+              />
+            </Head>
+            <StylesBase />
+            <Component {...pageProps} />
+          </AuthProvider>
+        </ApolloProvider>
         <GoogleAnalytics />
       </ToastProvider>
     );

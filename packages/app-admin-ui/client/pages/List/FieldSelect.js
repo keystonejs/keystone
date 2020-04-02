@@ -3,7 +3,7 @@
 import { Component } from 'react';
 import { jsx } from '@emotion/core';
 import { Options } from '@arch-ui/options';
-import { arrayToObject } from '@keystone-alpha/utils';
+import { arrayToObject } from '@keystonejs/utils';
 
 function isOptionSelected(opt, selected) {
   return Boolean(selected.filter(x => x.path === opt.path).length);
@@ -11,6 +11,8 @@ function isOptionSelected(opt, selected) {
 function getOptionValue(opt) {
   return opt.path;
 }
+
+export const pseudoLabelField = { label: 'Label', path: '_label_' };
 
 /**
  * Why does this exist?
@@ -24,17 +26,7 @@ function getOptionValue(opt) {
  * and returning it during `onChange`.
  */
 
-type FieldType = Object;
-export type FieldSelectProps = {
-  fields: Array<FieldType>,
-  onChange: FieldType => void,
-  value: FieldType | Array<FieldType>,
-  includeLabelField: boolean,
-};
-
-export const pseudoLabelField = { label: 'Label', path: '_label_' };
-
-export default class FieldSelect extends Component<FieldSelectProps> {
+export default class FieldSelect extends Component {
   constructor(props) {
     super(props);
     const { fields, includeLabelField } = props;

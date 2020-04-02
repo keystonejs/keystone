@@ -1,5 +1,11 @@
-import { Text, MongoTextInterface, KnexTextInterface, JSONTextInterface, MemoryTextInterface } from './Implementation';
-import { importView } from '@keystone-alpha/build-field-types';
+import {
+  Text,
+  MongoTextInterface,
+  KnexTextInterface,
+  JSONTextInterface,
+  MemoryTextInterface,
+} from './Implementation';
+import { importView } from '@keystonejs/build-field-types';
 
 export default {
   type: 'Text',

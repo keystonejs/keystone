@@ -49,7 +49,7 @@ export async function resolveBacklinks(context, mutationState) {
         const { local, foreign } = queuedWork;
         const { path, many } = local.field;
         const clause = { [path]: { [operation]: many ? [foreign] : foreign } };
-        await local.list.updateMutation(local.id, clause, context, mutationState);
+        await local.list.updateMutation(local.id.toString(), clause, context, mutationState);
       }
     })
   );

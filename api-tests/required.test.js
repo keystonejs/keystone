@@ -1,21 +1,12 @@
-const fs = require('fs');
-const path = require('path');
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer } = require('@keystone-alpha/test-utils');
-const { Text } = require('@keystone-alpha/fields');
-
-const SCHEMA_NAME = 'testing';
-
-function graphqlRequest({ keystone, query }) {
-  return keystone._graphQLQuery[SCHEMA_NAME](query, keystone.getAccessContext(SCHEMA_NAME, {}));
-}
+const globby = require('globby');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { Text } = require('@keystonejs/fields');
 
 describe('Test isRequired flag for all field types', () => {
-  const typesLoc = path.resolve('packages/fields/src/types');
-  const testModules = fs
-    .readdirSync(typesLoc)
-    .map(name => `${typesLoc}/${name}/filterTests.js`)
-    .filter(filename => fs.existsSync(filename));
+  const testModules = globby.sync(`packages/fields/src/types/**/test-fixtures.js`, {
+    absolute: true,
+  });
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {
       testModules.map(require).forEach(mod => {
@@ -26,7 +17,7 @@ describe('Test isRequired flag for all field types', () => {
             runner(
               () =>
                 setupServer({
-                  name: `Field tests for ${type.type} ${cuid}`,
+                  name: `Field tests for ${type.type} ${cuid()}`,
                   adapterName,
                   createLists: keystone => {
                     if (type.type === 'Select') {

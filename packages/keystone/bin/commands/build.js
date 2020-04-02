@@ -40,14 +40,7 @@ module.exports = {
 
     if (apps) {
       await Promise.all(
-        apps.map(app => {
-          return app.build({
-            apiPath: '/admin/api',
-            distDir: resolvedDistDir,
-            graphiqlPath: '/admin/graphiql',
-            keystone,
-          });
-        })
+        apps.filter(app => app.build).map(app => app.build({ distDir: resolvedDistDir, keystone }))
       );
 
       spinner.succeed(
@@ -62,5 +55,11 @@ module.exports = {
         )}`
       );
     }
+
+    // It's possible the developer's entry file has an accidentally long-lived
+    // process (for example, using 'connect-mongodb-session').
+    // To avoid that long-lived process from making the build command hang, we
+    // signal that we wish the process to end here.
+    return { endProcessWithSuccess: true };
   },
 };

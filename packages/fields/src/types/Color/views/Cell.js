@@ -1,19 +1,15 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import * as React from 'react';
-import type { CellProps } from '../../../types';
+import { Fragment } from 'react';
 
-type Props = CellProps<string>;
-
-const Cell = (props: Props) => {
+const Cell = props => {
   if (!props.data) {
     return null;
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <div
         style={{
           // using inline styles instead of emotion for setting the color
@@ -36,7 +32,7 @@ const Cell = (props: Props) => {
       >
         {props.data}
       </span>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

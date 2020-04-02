@@ -1,8 +1,8 @@
 import memoizeOne from 'memoize-one';
 import isPromise from 'p-is-promise';
-import { captureSuspensePromises } from '@keystone-alpha/utils';
+import { captureSuspensePromises } from '@keystonejs/utils';
 import { Value } from 'slate';
-import Controller from '@keystone-alpha/fields/Controller';
+import Controller from '@keystonejs/fields/Controller';
 
 import { serialize, deserialize } from '../slate-serializer';
 import { initialValue } from './editor/constants';
@@ -33,8 +33,10 @@ const flattenBlocks = inputBlocks =>
   }, {});
 
 export default class ContentController extends Controller {
-  constructor(...args) {
-    super(...args);
+  constructor(config, ...args) {
+    const defaultValue =
+      'defaultValue' in config ? config.defaultValue : Value.fromJSON(initialValue);
+    super({ ...config, defaultValue }, ...args);
 
     // Attach this as a memoized member function to avoid two pitfalls;
     // 1. Don't load all the block views up front. Instead, lazily load them
@@ -56,7 +58,7 @@ export default class ContentController extends Controller {
         },
         // This block exists because it was passed into the Content field
         // directly.
-        // Depdencies are not allowed to show UI chrome (toolbar/sidebar) unless
+        // Dependencies are not allowed to show UI chrome (toolbar/sidebar) unless
         // they're also directly passed to the Content Field.
         withChrome: this.config.blockTypes.includes(block.type),
       }));
@@ -107,7 +109,7 @@ export default class ContentController extends Controller {
         );
       }
 
-      // An actual error occured
+      // An actual error occurred
       throw loadingPromiseOrError;
     }
   };
@@ -141,17 +143,28 @@ export default class ContentController extends Controller {
 
     const blocks = this.getBlocksSync();
 
-    // TODO: Make the .document a JSON type in GraphQL so we dont have to parse
+    // TODO: Make the .document a JSON type in GraphQL so we don't have to parse
     // it
     const parsedData = {
       ...data[path],
       document: JSON.parse(data[path].document),
     };
 
+    // Filter out oEmbeds from parsedData.document that missing from parsedData.oEmbeds
+    parsedData.document.nodes = parsedData.document.nodes.filter(node => {
+      if (node.type !== 'oEmbed') {
+        return true;
+      }
+
+      if (!node.data || !node.data._joinIds || !node.data._joinIds.length) {
+        return false;
+      }
+
+      return parsedData.oEmbeds.find(embed => embed.id === node.data._joinIds[0]);
+    });
+
     return deserialize(parsedData, blocks);
   };
-
-  getDefaultValue = () => Value.fromJSON(initialValue);
 
   getQueryFragment = () => `
     ${this.path} {
@@ -174,6 +187,32 @@ export default class ContentController extends Controller {
           return;
         }
         this.adminMeta.readViews([Field]);
+      },
+      () => this.getBlocks(),
+    ]);
+  };
+
+  initCellView = () => {
+    captureSuspensePromises([
+      () => {
+        const { Cell } = this.views;
+        if (!Cell) {
+          return;
+        }
+        this.adminMeta.readViews([Cell]);
+      },
+      () => this.getBlocks(),
+    ]);
+  };
+
+  initFilterView = () => {
+    captureSuspensePromises([
+      () => {
+        const { Filter } = this.views;
+        if (!Filter) {
+          return;
+        }
+        this.adminMeta.readViews([Filter]);
       },
       () => this.getBlocks(),
     ]);

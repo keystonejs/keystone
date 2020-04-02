@@ -1,22 +1,23 @@
 import mongoose from 'mongoose';
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class Decimal extends Implementation {
   constructor(path, { symbol }) {
     super(...arguments);
     this.symbol = symbol;
+    this.isOrderable = true;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.orderingInputFields('String'),
@@ -51,13 +52,26 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
   }
 
   setupHooks({ addPreSaveHook, addPostReadHook }) {
-    // Updates the relevant value in the item provided (by referrence)
+    // Updates the relevant value in the item provided (by reference)
     addPreSaveHook(item => {
-      if (item[this.path] && typeof item[this.path] === 'string') {
-        item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
-      } else if (!item[this.path]) {
+      // Only run the hook if the item actually contains the field
+      // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+      // returned isn't a POJO
+      if (!(this.path in item)) {
+        return item;
+      }
+
+      if (item[this.path]) {
+        if (typeof item[this.path] === 'string') {
+          item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
+        } else {
+          // Should have been caught by the validator??
+          throw `Invalid Decimal value given for '${this.path}'`;
+        }
+      } else {
         item[this.path] = null;
       }
+
       // else: Must either be undefined or a Decimal128 object, so leave it alone.
       return item;
     });

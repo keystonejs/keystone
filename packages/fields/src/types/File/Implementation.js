@@ -1,6 +1,6 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import mongoose from 'mongoose';
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -18,9 +18,13 @@ export class File extends Implementation {
     this.directory = directory;
     this.route = route;
     this.fileAdapter = adapter;
+
+    if (!this.fileAdapter) {
+      throw new Error(`No file adapter provided for File field.`);
+    }
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
@@ -30,7 +34,7 @@ export class File extends Implementation {
       route: this.route,
     };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),
@@ -47,6 +51,7 @@ export class File extends Implementation {
         id: ID
         path: String
         filename: String
+        originalFilename: String
         mimetype: String
         encoding: String
         publicUrl: String
@@ -55,7 +60,7 @@ export class File extends Implementation {
     ];
   }
   // Called on `User.avatar` for example
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];
@@ -78,13 +83,24 @@ export class File extends Implementation {
   async resolveInput({ resolvedData, existingItem }) {
     const previousData = existingItem && existingItem[this.path];
     const uploadData = resolvedData[this.path];
-    // TODO: FIXME: Handle when uploadData is null. Can happen when:
-    // Deleting the file
-    if (!uploadData) {
+
+    // NOTE: The following two conditions could easily be combined into a
+    // single `if (!uploadData) return uploadData`, but that would lose the
+    // nuance of returning `undefined` vs `null`.
+    // Premature Optimisers; be ware!
+    if (typeof uploadData === 'undefined') {
+      // Nothing was passed in, so we can bail early.
+      return undefined;
+    }
+
+    if (uploadData === null) {
+      // `null` was specifically uploaded, and we should set the field value to
+      // null. To do that we... return `null`
       return null;
     }
 
-    const { stream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
+    const stream = createReadStream();
 
     if (!stream && previousData) {
       // TODO: FIXME: Handle when stream is null. Can happen when:
@@ -103,7 +119,7 @@ export class File extends Implementation {
       id: newId,
     });
 
-    return { id, filename, mimetype, encoding, _meta };
+    return { id, filename, originalFilename, mimetype, encoding, _meta };
   }
 
   get gqlUpdateInputFields() {

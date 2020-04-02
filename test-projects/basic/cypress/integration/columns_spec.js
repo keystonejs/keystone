@@ -20,7 +20,7 @@ describe('Columns', () => {
   ].forEach(({ url, enable, disable }) => {
     it(`Testing all columns in ${url}`, () => {
       cy.visit(url);
-      cy.get('#ks-column-button').click();
+      cy.get('#ks-column-button').click({ force: true });
 
       enable.forEach(name => {
         cy.get('#ks-column-select')

@@ -1,26 +1,27 @@
 {
   "name": "@arch-ui/dropdown",
-  "description": "Dropdown UI as used in @keystone-alpha Admin UI.",
-  "version": "0.0.8",
+  "description": "Dropdown UI as used in @keystonejs Admin UI.",
+  "version": "0.0.16",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/dropdown.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "dependencies": {
-    "@arch-ui/modal-utils": "^1.0.2",
-    "@arch-ui/theme": "^0.0.5",
-    "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14",
-    "react-focus-marshal": "^1.0.1",
-    "react-router-dom": "5.0.0"
+    "@arch-ui/modal-utils": "^1.0.9",
+    "@arch-ui/theme": "^0.0.10",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.27",
+    "@emotion/styled": "^10.0.27",
+    "focus-trap-react": "^6.0.0",
+    "react-router-dom": "5.1.2"
   },
-  "module": "dist/dropdown.esm.js"
+  "module": "dist/dropdown.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/dropdown"
 }

@@ -1,19 +1,22 @@
 {
-  "name": "@keystone-alpha/test-utils",
-  "description": "Common utilities used while testing @keystone-alpha/* packages.",
-  "version": "2.2.0",
+  "name": "@keystonejs/test-utils",
+  "description": "Common utilities used while testing @keystonejs/* packages.",
+  "version": "6.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-knex": "^3.0.0",
-    "@keystone-alpha/adapter-memory": "^0.0.0",
-    "@keystone-alpha/adapter-mongoose": "^3.0.0",
-    "@keystone-alpha/app-graphql": "^6.3.1",
-    "@keystone-alpha/keystone": "^9.1.0",
-    "mongodb-memory-server": "^5.1.5",
-    "p-finally": "^2.0.1"
-  }
+    "@keystonejs/adapter-memory": "^0.0.0",
+    "@keystonejs/adapter-knex": "^7.0.0",
+    "@keystonejs/adapter-mongoose": "^6.0.0",
+    "@keystonejs/app-graphql": "^5.1.4",
+    "@keystonejs/keystone": "^7.0.0",
+    "express": "^4.17.1",
+    "mongodb-memory-server": "^6.3.3",
+    "p-finally": "^2.0.1",
+    "supertest-light": "^1.0.2"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/test-utils"
 }

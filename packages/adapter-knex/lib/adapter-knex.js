@@ -1,56 +1,91 @@
+const { versionGreaterOrEqualTo } = require('@keystonejs/utils');
+
 const knex = require('knex');
 const pSettle = require('p-settle');
-const {
-  BaseKeystoneAdapter,
-  BaseListAdapter,
-  BaseFieldAdapter,
-} = require('@keystone-alpha/keystone');
+const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
+const logger = require('@keystonejs/logger').logger('knex');
 
 const {
-  objMerge,
-  flatten,
   escapeRegExp,
   pick,
   omit,
   arrayToObject,
   resolveAllKeys,
   identity,
-} = require('@keystone-alpha/utils');
+  asyncForEach,
+} = require('@keystonejs/utils');
+const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
-  constructor() {
+  constructor({ knexOptions = {}, schemaName = 'public' } = {}) {
     super(...arguments);
-    this.client = 'postgres';
-    this.name = this.name || 'knex';
+    this.client = knexOptions.client || 'postgres';
+    this.name = 'knex';
+    this.minVer = '9.6.5';
+    this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
-    const {
-      connection = to ||
-        process.env.KNEX_URI ||
-        'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev',
-      schemaName = 'keystone',
-      ...rest
-    } = config;
+  async _connect({ name }) {
+    const { knexOptions = {} } = this.config;
+    const { connection } = knexOptions;
+    let knexConnection =
+      connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
+
+    if (!knexConnection) {
+      const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
+      knexConnection = `postgres://localhost/${defaultDbName}`;
+      logger.warn(`No Knex connection URI specified. Defaulting to '${knexConnection}'`);
+    }
+
     this.knex = knex({
-      ...rest,
       client: this.client,
-      connection,
+      connection: knexConnection,
+      ...knexOptions,
     });
-    this.schemaName = schemaName;
+
+    // Knex will not error until a connection is made
+    // To check the connection we run a test query
+    const result = await this.knex.raw('select 1+1 as result').catch(result => ({
+      error: result.error || result,
+    }));
+    if (result.error) {
+      const connectionError = result.error;
+      let dbName;
+      if (typeof knexConnection === 'string') {
+        dbName = knexConnection.split('/').pop();
+      } else {
+        dbName = knexConnection.database;
+      }
+      console.error(`Could not connect to database: '${dbName}'`);
+      console.warn(
+        `If this is the first time you've run Keystone, you can create your database with the following command:`
+      );
+      console.warn(`createdb ${dbName}`);
+      throw connectionError;
+    }
+
+    return result;
   }
 
-  async postConnect() {
-    const isSetup = await this.schema().hasTable(Object.keys(this.listAdapters)[0]);
+  async postConnect({ rels }) {
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._postConnect({ rels });
+    });
 
-    if (this.config.dropDatabase || !isSetup) {
-      console.log('Knex adapter: Dropping database');
+    // Run this only if explicity configured and still never in production
+    if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
+      if (process.env.NODE_ENV !== 'test') {
+        console.log('Knex adapter: Dropping database');
+      }
       await this.dropDatabase();
     } else {
       return [];
     }
+    return this._createTables();
+  }
 
+  async _createTables() {
     const createResult = await pSettle(
       Object.values(this.listAdapters).map(listAdapter => listAdapter.createTable())
     );
@@ -63,16 +98,37 @@ class KnexAdapter extends BaseKeystoneAdapter {
       throw error;
     }
 
-    async function asyncForEach(array, callback) {
-      for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-      }
-    }
-
     const fkResult = [];
     await asyncForEach(Object.values(this.listAdapters), async listAdapter => {
       try {
-        await listAdapter.createForeignKeys();
+        const relationshipAdapters = listAdapter.fieldAdapters.filter(
+          adapter => adapter.isRelationship
+        );
+
+        // Add foreign key constraints on this table
+        await this.schema().table(listAdapter.tableName, table => {
+          relationshipAdapters
+            .filter(adapter => !adapter.config.many)
+            .forEach(adapter =>
+              table
+                .foreign(adapter.path)
+                .references('id')
+                .inTable(`${this.schemaName}.${adapter.getRefListAdapter().tableName}`)
+            );
+        });
+
+        // Create adjacency tables for the 'many' relationships
+        await Promise.all(
+          relationshipAdapters
+            .filter(adapter => adapter.config.many)
+            .map(adapter =>
+              this._createAdjacencyTable({
+                tableName: listAdapter._manyTable(adapter.path),
+                relationshipFa: adapter,
+                leftListAdapter: listAdapter,
+              })
+            )
+        );
       } catch (err) {
         fkResult.push({ isRejected: true, reason: err });
       }
@@ -80,91 +136,13 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return fkResult;
   }
 
-  schema() {
-    return this.knex.schema.withSchema(this.schemaName);
-  }
-
-  getQueryBuilder() {
-    return this.knex.withSchema(this.schemaName);
-  }
-
-  disconnect() {
-    this.knex.destroy();
-  }
-
-  // This will completely drop the backing database. Use wisely.
-  dropDatabase() {
-    const tables = Object.values(this.listAdapters)
-      .map(listAdapter => `"${this.schemaName}"."${listAdapter.key}"`)
-      .join(',');
-    return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
-  }
-
-  getDefaultPrimaryKeyConfig() {
-    // Required here due to circular refs
-    const { AutoIncrement } = require('@keystone-alpha/fields-auto-increment');
-    return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
-  }
-}
-
-class KnexListAdapter extends BaseListAdapter {
-  constructor(key, parentAdapter) {
-    super(...arguments);
-    this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
-    this.realKeys = [];
-  }
-
-  prepareFieldAdapter(fieldAdapter) {
-    if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
-      this.realKeys.push(...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path]));
-    }
-  }
-
-  _schema() {
-    return this.parentAdapter.schema();
-  }
-
-  _query() {
-    return this.parentAdapter.getQueryBuilder();
-  }
-
-  _manyTable(relationshipFieldPath) {
-    return `${this.key}_${relationshipFieldPath}`;
-  }
-
-  async createTable() {
-    // Let the field adapter add what it needs to the table schema
-    await this._schema().createTable(this.key, table => {
-      this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
-    });
-  }
-
-  async createForeignKeys() {
-    const relationshipAdapters = this.fieldAdapters.filter(adapter => adapter.isRelationship);
-
-    // Add foreign key constraints on this table
-    await this._schema().table(this.key, table => {
-      relationshipAdapters
-        .filter(adapter => !adapter.config.many)
-        .forEach(adapter => adapter.createForeignKey(table, this.parentAdapter.schemaName));
-    });
-
-    // Create adjacency tables for the 'many' relationships
-    await Promise.all(
-      relationshipAdapters
-        .filter(adapter => adapter.config.many)
-        .map(adapter => this.createAdjacencyTable(adapter))
-    );
-  }
-
-  // Create an adjacency table for the (many to many) relationship field adapter provided
-  // JM: This should probably all belong in the Relationship Knex field adapter
-  async createAdjacencyTable(relationshipFa) {
-    const dbAdapter = this.parentAdapter;
-    const tableName = this._manyTable(relationshipFa.path);
-
+  async _createAdjacencyTable({ tableName, relationshipFa, leftListAdapter }) {
+    // Create an adjacency table for the (many to many) relationship field adapter provided
+    const dbAdapter = this;
     try {
-      console.log(`Dropping table ${tableName}`);
+      if (process.env.NODE_ENV !== 'test') {
+        console.log(`Dropping table ${tableName}`);
+      }
       await dbAdapter.schema().dropTableIfExists(tableName);
     } catch (err) {
       console.log('Failed to drop');
@@ -173,7 +151,6 @@ class KnexListAdapter extends BaseListAdapter {
     }
 
     // To be clear..
-    const leftListAdapter = this;
     const leftPkFa = leftListAdapter.getPrimaryKeyAdapter();
     const leftFkPath = `${leftListAdapter.key}_${leftPkFa.path}`;
 
@@ -195,7 +172,7 @@ class KnexListAdapter extends BaseListAdapter {
       table
         .foreign(leftFkPath)
         .references(leftPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.key}`)
+        .inTable(`${dbAdapter.schemaName}.${leftListAdapter.tableName}`)
         .onDelete('CASCADE');
 
       rightPkFa.addToForeignTableSchema(table, {
@@ -207,44 +184,240 @@ class KnexListAdapter extends BaseListAdapter {
       table
         .foreign(rightFkPath)
         .references(rightPkFa.path) // 'id'
-        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.key}`)
+        .inTable(`${dbAdapter.schemaName}.${rightListAdapter.tableName}`)
         .onDelete('CASCADE');
     });
   }
 
+  schema() {
+    return this.knex.schema.withSchema(this.schemaName);
+  }
+
+  getQueryBuilder() {
+    return this.knex.withSchema(this.schemaName);
+  }
+
+  disconnect() {
+    this.knex.destroy();
+  }
+
+  // This will completely drop the backing database. Use wisely.
+  dropDatabase() {
+    const tables = Object.values(this.listAdapters)
+      .map(listAdapter => `"${this.schemaName}"."${listAdapter.tableName}"`)
+      .join(',');
+    return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
+  }
+
+  getDefaultPrimaryKeyConfig() {
+    // Required here due to circular refs
+    const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
+    return AutoIncrement.primaryKeyDefaults[this.name].getConfig(this.client);
+  }
+
+  async checkDatabaseVersion() {
+    // Knex accepts both 'postgresql' and 'pg' as aliases for 'postgres'.
+    if (!['postgres', 'postgresql', 'pg'].includes(this.client)) {
+      console.log(
+        `Knex adapter is not using a PostgreSQL client (${this.client}). Skipping database version check.`
+      );
+
+      return;
+    }
+
+    let version;
+    try {
+      // Using `raw` due to knex not having the SHOW command
+      const result = await this.knex.raw('SHOW server_version;');
+      // the version is inside the first row "server_version"
+      version = result.rows[0].server_version;
+    } catch (error) {
+      throw new Error(`Error reading version from PostgreSQL: ${error}`);
+    }
+
+    if (!versionGreaterOrEqualTo(version, this.minVer)) {
+      throw new Error(
+        `PostgreSQL version ${version} is incompatible. Version ${this.minVer} or later is required.`
+      );
+    }
+  }
+}
+
+class KnexListAdapter extends BaseListAdapter {
+  constructor(key, parentAdapter) {
+    super(...arguments);
+    this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
+    this.realKeys = [];
+    this.tableName = this.key;
+    this.rels = undefined;
+  }
+
+  _postConnect({ rels }) {
+    this.rels = rels;
+    this.fieldAdapters.forEach(fieldAdapter => {
+      fieldAdapter.rel = rels.find(
+        ({ left, right }) =>
+          left.adapter === fieldAdapter || (right && right.adapter === fieldAdapter)
+      );
+      if (fieldAdapter._hasRealKeys()) {
+        this.realKeys.push(
+          ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
+        );
+      }
+    });
+  }
+
+  _schema() {
+    return this.parentAdapter.schema();
+  }
+
+  _query() {
+    return this.parentAdapter.getQueryBuilder();
+  }
+
+  _manyTable(relationshipFieldPath) {
+    return `${this.key}_${relationshipFieldPath}`;
+  }
+
+  async createTable() {
+    // Let the field adapter add what it needs to the table schema
+    await this._schema().createTable(this.tableName, table => {
+      this.fieldAdapters.forEach(adapter => adapter.addToTableSchema(table));
+    });
+  }
+
+  ////////// Mutations //////////
+
+  async _processNonRealFields(data, processFunction) {
+    return resolveAllKeys(
+      arrayToObject(
+        Object.entries(omit(data, this.realKeys)).map(([path, value]) => ({
+          path,
+          value,
+          adapter: this.fieldAdaptersByPath[path],
+        })),
+        'path',
+        processFunction
+      )
+    );
+  }
+
+  async _createSingle(realData) {
+    const item = (
+      await this._query()
+        .insert(realData)
+        .into(this.tableName)
+        .returning('*')
+    )[0];
+    return { item, itemId: item.id };
+  }
+
+  async _setNullByValue({ tableName, columnName, value }) {
+    return this._query()
+      .table(tableName)
+      .where(columnName, value)
+      .update({ [columnName]: null });
+  }
+
+  async _createOrUpdateField({ value, adapter, itemId }) {
+    const rel = {
+      cardinality: 'N:N',
+      tableName: this._manyTable(adapter.path),
+      columnNames: { [this.key]: { near: `${this.key}_id`, far: adapter.refListId } },
+    };
+    const { cardinality, tableName, columnNames } = rel;
+    if (cardinality === '1:1') {
+      // Implement me
+    } else {
+      const values = value; // Rename this because we have a many situation
+      if (values && values.length) {
+        if (cardinality === 'N:N') {
+          const itemCol = columnNames[this.key].near;
+          const otherCol = columnNames[this.key].far;
+          return this._query()
+            .insert(values.map(id => ({ [itemCol]: itemId, [otherCol]: id })))
+            .into(tableName)
+            .returning(otherCol);
+        } else {
+          // Implement me
+        }
+      } else {
+        return [];
+      }
+    }
+  }
+
   async _create(data) {
-    // Insert the real data into the table
     const realData = pick(data, this.realKeys);
-    const item = (await this._query()
-      .insert(realData)
-      .into(this.key)
-      .returning('*'))[0];
+
+    // Insert the real data into the table
+    const { item, itemId } = await this._createSingle(realData);
 
     // For every many-field, update the many-table
-    const manyItem = await resolveAllKeys(
-      arrayToObject(
-        this.fieldAdapters.filter(
-          fieldAdapter =>
-            fieldAdapter.isRelationship &&
-            fieldAdapter.config.many &&
-            data[fieldAdapter.path] &&
-            data[fieldAdapter.path].length
-        ),
-        'path',
-        async a =>
-          this._query()
-            .insert(
-              data[a.path].map(id => ({
-                [`${this.key}_id`]: item.id,
-                [a.refListId]: id,
-              }))
-            )
-            .into(this._manyTable(a.path))
-            .returning(a.refListId)
-      )
+    const manyItem = await this._processNonRealFields(data, async ({ value, adapter }) =>
+      this._createOrUpdateField({ value, adapter, itemId })
     );
 
     return { ...item, ...manyItem };
+  }
+
+  async _update(id, data) {
+    const realData = pick(data, this.realKeys);
+
+    // Update the real data
+    const query = this._query()
+      .table(this.tableName)
+      .where({ id });
+    if (Object.keys(realData).length) {
+      query.update(realData);
+    }
+    const item = (await query.returning(['id', ...this.realKeys]))[0];
+
+    // For every many-field, update the many-table
+    await this._processNonRealFields(data, async ({ path, value: newValues, adapter }) => {
+      const { refListId } = adapter;
+      const rel = {
+        cardinality: 'N:N',
+        tableName: this._manyTable(path),
+        columnNames: { [this.key]: { near: `${this.key}_id`, far: refListId } },
+      };
+      const { cardinality, tableName, columnNames } = rel;
+      let value;
+      // Future task: Is there some way to combine the following three
+      // operations into a single query?
+
+      if (cardinality !== '1:1') {
+        // Work out what we've currently got
+        const selectCol = columnNames[this.key].far;
+        const matchCol = columnNames[this.key].near;
+        const currentRefIds = (
+          await this._query()
+            .select(selectCol)
+            .from(tableName)
+            .where(matchCol, item.id)
+            .returning(selectCol)
+        ).map(x => x[selectCol].toString());
+
+        // Delete what needs to be deleted
+        const needsDelete = currentRefIds.filter(x => !newValues.includes(x));
+        if (needsDelete.length) {
+          if (cardinality === 'N:N') {
+            await this._query()
+              .table(tableName)
+              .where(matchCol, item.id) // near side
+              .whereIn(selectCol, needsDelete) // far side
+              .del();
+          } else {
+            // Implement me
+          }
+        }
+        value = newValues.filter(id => !currentRefIds.includes(id));
+      } else {
+        // Implement me
+      }
+      await this._createOrUpdateField({ value, adapter, itemId: item.id });
+    });
+    return (await this._itemsQuery({ where: { id: item.id }, first: 1 }))[0] || null;
   }
 
   async _delete(id) {
@@ -254,327 +427,42 @@ class KnexListAdapter extends BaseListAdapter {
         Promise.all(
           adapter.fieldAdapters
             .filter(a => a.isRelationship && a.refListKey === this.key)
-            .map(a =>
-              a.config.many
-                ? adapter
-                    ._query()
-                    .table(adapter._manyTable(a.path))
-                    .where(a.refListId, id)
-                    .del()
-                : adapter
-                    ._query()
-                    .table(adapter.key)
-                    .where(a.path, id)
-                    .update({ [a.path]: null })
-            )
+            .map(a => {
+              const rel = {
+                cardinality: a.config.many ? 'N:N' : '1:N',
+                columnName: a.path,
+                tableName: a.config.many ? adapter._manyTable(a.path) : adapter.tableName,
+                columnNames: { [this.key]: { near: a.refListId } },
+              };
+              const { cardinality, columnName, tableName, columnNames } = rel;
+              if (cardinality === 'N:N') {
+                return this._query()
+                  .table(tableName)
+                  .where(columnNames[this.key].near, id)
+                  .del();
+              } else {
+                return this._setNullByValue({ tableName, columnName, value: id });
+              }
+            })
         )
       )
     );
+
     // Delete the actual item
     return this._query()
-      .table(this.key)
+      .table(this.tableName)
       .where({ id })
       .del();
   }
 
-  async _populateMany(result) {
-    // Takes an existing result and merges in all the many-relationship fields
-    // by performing a query on their join-tables.
-    return {
-      ...result,
-      ...(await resolveAllKeys(
-        arrayToObject(
-          this.fieldAdapters.filter(a => a.isRelationship && a.config.many),
-          'path',
-          async a =>
-            (await this._query()
-              .select(a.refListId)
-              .from(this._manyTable(a.path))
-              .where(`${this.key}_id`, result.id)
-              .returning(a.refListId)).map(x => x[a.refListId])
-        )
-      )),
-    };
-  }
+  ////////// Queries //////////
 
-  async _update(id, data) {
-    // Update the real data
-    const realData = pick(data, this.realKeys);
-    const query = this._query()
-      .table(this.key)
-      .where({ id });
-    if (Object.keys(realData).length) {
-      query.update(realData);
-    }
-    const item = (await query.returning(['id', ...this.realKeys]))[0];
-
-    // For every many-field, update the many-table
-    const manyData = omit(data, this.realKeys);
-    await Promise.all(
-      Object.entries(manyData).map(async ([path, newValues]) => {
-        newValues = newValues.map(id => id);
-        const a = this.fieldAdaptersByPath[path];
-        const tableName = this._manyTable(a.path);
-
-        // Future task: Is there some way to combine the following three
-        // operations into a single query?
-
-        // Work out what we've currently got
-        const currentValues = await this._query()
-          .select(a.refListId)
-          .from(tableName)
-          .where(`${this.key}_id`, item.id);
-
-        // Delete what needs to be deleted
-        const needsDelete = currentValues
-          .filter(x => !newValues.includes(x[a.refListId]))
-          .map(row => row[a.refListId]);
-        if (needsDelete.length) {
-          await this._query()
-            .table(tableName)
-            .where(`${this.key}_id`, item.id)
-            .whereIn(a.refListId, needsDelete)
-            .del();
-        }
-        // Add what needs to be added
-        const currentRefIds = currentValues.map(x => x[a.refListId]);
-        const valuesToInsert = newValues
-          .filter(id => !currentRefIds.includes(id))
-          .map(id => ({
-            [`${this.key}_id`]: item.id,
-            [a.refListId]: id,
-          }));
-        if (valuesToInsert.length) {
-          await this._query()
-            .insert(valuesToInsert)
-            .into(tableName);
-        }
-      })
-    );
-
-    return this._populateMany(item);
-  }
-
-  async _findAll() {
-    const results = await this._query()
-      .table(this.key)
-      .select();
-    return results.map(result => this._populateMany(result));
-  }
-
-  async _findById(id) {
-    const result = (await this._query()
-      .table(this.key)
-      .select()
-      .where('id', id))[0];
-    return result ? await this._populateMany(result) : null;
-  }
-
-  async _find(condition) {
-    return await this._itemsQuery({ where: { ...condition } });
-  }
-
-  async _findOne(condition) {
-    return (await this._itemsQuery({ where: { ...condition } }))[0];
-  }
-
-  _allQueryConditions(tableAlias) {
-    const dbPathTransform = dbPath => `${tableAlias}.${dbPath}`;
-    return {
-      ...objMerge(
-        this.fieldAdapters.map(fieldAdapter =>
-          fieldAdapter.getQueryConditions(dbPathTransform(fieldAdapter.dbPath))
-        )
-      ),
-    };
-  }
-
-  // Recursively traverse the `where` query to identify which tables need to be joined, and on which fields.
-  // We perform joins on non-many relationship fields which are mentioned in the where query.
-  // Many relationships are handle with separate queries.
-  // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
-  // Returns: [{
-  //   fromCol:
-  //   fromTable:
-  //   toTable:
-  // }]
-  _traverseJoins(where, alias, aliases) {
-    // These are the conditions which we know how to explicitly handle
-    const nonJoinConditions = Object.keys(this._allQueryConditions());
-    // Which means these are all the `where` conditions which are non-trivial and may require a join operation.
-    Object.keys(where)
-      .filter(path => !nonJoinConditions.includes(path))
-      .forEach(path => {
-        if (path === 'AND' || path === 'OR') {
-          // AND/OR we need to traverse their children
-          where[path].forEach(x => this._traverseJoins(x, alias, aliases));
-        } else {
-          const adapter = this.fieldAdaptersByPath[path];
-          if (adapter) {
-            // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
-            // These correspond to many-relationships, which are handled separately
-
-            // We need a join of the form:
-            // ... LEFT OUTER JOIN {otherList} AS t1 ON {alias}.{path} = t1.id
-            // Each join should result in a unique alias (t1, t2, etc), so we key the aliases
-            // object on a key which combines the current alias, path, and the name of the list we're joining to.
-            const otherList = adapter.refListKey;
-            const key = `${alias}.${path}.${otherList}`;
-            if (!aliases[key]) {
-              aliases[key] = `t${Object.keys(aliases).length + 1}`;
-            }
-            this.getListAdapterByKey(otherList)._traverseJoins(where[path], aliases[key], aliases);
-          }
-        }
-      });
-  }
-
-  async _buildManyWhereClause(path, where) {
-    // Many relationship. Do explicit queries to identify which IDs match the query
-    // and return a where clause of the form `id in [...]`.
-    // (NB: Is there a more efficient way to do this? Quite probably. Definitely worth
-    // investigating for someone with mad SQL skills)
-    const [p, q] = path.split('_');
-    const thisID = `${this.key}_id`;
-    const tableName = this._manyTable(p);
-    const otherList = this.fieldAdaptersByPath[p].refListKey;
-
-    // If performing an <>_every query, we need to count how many related items each item has
-    const relatedCountById =
-      q === 'every' &&
-      arrayToObject(
-        await this._query()
-          .select(thisID)
-          .count('*')
-          .from(tableName)
-          .groupBy(thisID),
-        thisID,
-        x => x.count
-      );
-
-    // Identify and count all the items in the referenced list which match the query
-    const matchingItems = await this.getListAdapterByKey(otherList)._itemsQuery({ where });
-    const matchingCount = await this._query()
-      .select(thisID)
-      .count('*')
-      .from(tableName)
-      .whereIn(`${otherList}_id`, matchingItems.map(({ id }) => id))
-      .groupBy(thisID);
-    const matchingCountById = arrayToObject(matchingCount, thisID, x => x.count);
-
-    // Identify all the IDs in this table which meet the every/some/none criteria
-    const validIDs = (await this._query()
-      .select('id')
-      .from(this.key))
-      .map(({ id }) => ({ id, count: matchingCountById[id] || 0 }))
-      .filter(
-        ({ id, count }) =>
-          (q === 'every' && count === (relatedCountById[id] || 0)) ||
-          (q === 'some' && count > 0) ||
-          (q === 'none' && count === 0)
-      )
-      .map(({ id }) => id);
-    return b => b.whereIn('id', validIDs);
-  }
-
-  // Recursively traverses the `where` query to build up a list of knex query functions.
-  // These will be applied as a where ... andWhere chain on the joined table.
-  async _traverseWhereClauses(where, alias, aliases) {
-    let whereClauses = [];
-    const conditions = this._allQueryConditions(alias);
-    const nonJoinConditions = Object.keys(conditions);
-
-    await Promise.all(
-      Object.keys(where).map(async path => {
-        if (nonJoinConditions.includes(path)) {
-          // This is a simple data field which we know how to handle
-          whereClauses.push(conditions[path](where[path]));
-        } else if (path === 'AND' || path === 'OR') {
-          // AND/OR need to traverse both side of the query
-          const subClauses = flatten(
-            await Promise.all(where[path].map(d => this._traverseWhereClauses(d, alias, aliases)))
-          );
-          whereClauses.push(b => {
-            b.where(subClauses[0]);
-            subClauses.slice(1).forEach(whereClause => {
-              if (path === 'AND') b.andWhere(whereClause);
-              else b.orWhere(whereClause);
-            });
-          });
-        } else {
-          // We have a relationship field
-          const adapter = this.fieldAdaptersByPath[path];
-          if (adapter) {
-            // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
-            whereClauses.push(
-              ...(await this.getListAdapterByKey(adapter.refListKey)._traverseWhereClauses(
-                where[path],
-                aliases[`${alias}.${path}.${adapter.refListKey}`],
-                aliases
-              ))
-            );
-          } else {
-            // Many relationship
-            whereClauses.push(await this._buildManyWhereClause(path, where[path]));
-          }
-        }
-      })
-    );
-    return whereClauses;
-  }
-
-  async _itemsQuery(args, { meta = false } = {}) {
-    const { where = {}, first, skip, orderBy } = args;
-
-    // Construct the base of the query, which will either be a select or count operation
-    const baseAlias = 't0';
-    const partialQuery = this._query().from(`${this.key} as ${baseAlias}`);
-    if (meta) {
-      partialQuery.count();
-    } else {
-      partialQuery.select(`${baseAlias}.*`);
-    }
-
-    // Join all the tables required to perform the query
-    const aliases = {};
-    this._traverseJoins(where, baseAlias, aliases);
-    Object.entries(aliases).forEach(([key, toAlias]) => {
-      const [fromAlias, fromCol, toTable] = key.split('.');
-      partialQuery.leftOuterJoin(
-        `${toTable} as ${toAlias}`,
-        `${toAlias}.id`,
-        `${fromAlias}.${fromCol}`
-      );
-    });
-
-    // Add all the where clauses to the query
-    const whereClauses = await this._traverseWhereClauses(where, baseAlias, aliases);
-    if (whereClauses.length) {
-      partialQuery.where(whereClauses[0]);
-      whereClauses.slice(1).forEach(whereClause => {
-        partialQuery.andWhere(whereClause);
-      });
-    }
-
-    // Add query modifiers as required
-    if (!meta) {
-      if (first !== undefined) {
-        partialQuery.limit(first);
-      }
-      if (skip !== undefined) {
-        partialQuery.offset(skip);
-      }
-      if (orderBy !== undefined) {
-        const [orderField, orderDirection] = orderBy.split('_');
-        const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
-        partialQuery.orderBy(sortKey, orderDirection);
-      }
-    }
-
-    // Perform the query for everything except the `many` fields.
-    const results = await partialQuery;
+  async _itemsQuery(args, { meta = false, from = {} } = {}) {
+    const query = new QueryBuilder(this, args, { meta, from }).get();
+    const results = await query;
 
     if (meta) {
+      const { first, skip } = args;
       const ret = results[0];
       let count = ret.count;
 
@@ -589,8 +477,242 @@ class KnexListAdapter extends BaseListAdapter {
       return { count };
     }
 
-    // Populate the `many` fields with IDs and return the result
-    return Promise.all(results.map(result => this._populateMany(result)));
+    return results;
+  }
+}
+
+class QueryBuilder {
+  constructor(
+    listAdapter,
+    { where = {}, first, skip, orderBy, search },
+    { meta = false, from = {} }
+  ) {
+    this._tableAliases = {};
+    this._nextBaseTableAliasId = 0;
+    const baseTableAlias = this._getNextBaseTableAlias();
+    this._query = listAdapter._query().from(`${listAdapter.tableName} as ${baseTableAlias}`);
+    if (meta) {
+      // SELECT count from <tableName> as t0
+      this._query.count();
+    } else {
+      // SELECT t0.* from <tableName> as t0
+      this._query.column(`${baseTableAlias}.*`);
+    }
+
+    this._addJoins(this._query, listAdapter, where, baseTableAlias);
+    if (Object.keys(from).length) {
+      const rel = {
+        cardinality: 'N:N',
+        tableName: from.fromList.adapter._manyTable(from.fromField),
+        columnNames: {
+          [listAdapter.key]: {
+            near: `${listAdapter.key}_id`,
+            far: `${from.fromList.adapter.key}_id`,
+          },
+        },
+      };
+      const { cardinality, tableName, columnNames } = rel;
+      const otherTableAlias = this._getNextBaseTableAlias();
+
+      if (cardinality === 'N:N') {
+        const { near, far } = columnNames[listAdapter.key];
+        this._query.leftOuterJoin(
+          `${tableName} as ${otherTableAlias}`,
+          `${otherTableAlias}.${near}`,
+          `${baseTableAlias}.id`
+        );
+        this._query.whereRaw('true');
+        this._query.andWhere(`${otherTableAlias}.${far}`, `=`, from.fromId);
+      } else {
+        // Implement me
+      }
+    } else {
+      // Dumb sentinel to avoid juggling where() vs andWhere()
+      // PG is smart enough to see it's a no-op, and now we can just keep chaining andWhere()
+      this._query.whereRaw('true');
+    }
+
+    this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias);
+
+    // TODO: Implement configurable search fields for lists
+    const searchField = listAdapter.fieldAdaptersByPath['name'];
+    if (search !== undefined && searchField) {
+      if (searchField.fieldName === 'Text') {
+        const f = escapeRegExp;
+        this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
+      } else {
+        this._query.whereRaw('false'); // Return no results
+      }
+    }
+
+    // Add query modifiers as required
+    if (!meta) {
+      if (first !== undefined) {
+        // SELECT ... LIMIT <first>
+        this._query.limit(first);
+      }
+      if (skip !== undefined) {
+        // SELECT ... OFFSET <skip>
+        this._query.offset(skip);
+      }
+      if (orderBy !== undefined) {
+        // SELECT ... ORDER BY <orderField>
+        const [orderField, orderDirection] = orderBy.split('_');
+        const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
+        this._query.orderBy(sortKey, orderDirection);
+      }
+    }
+  }
+
+  get() {
+    return this._query;
+  }
+
+  _getNextBaseTableAlias() {
+    const alias = `t${this._nextBaseTableAliasId++}`;
+    this._tableAliases[alias] = true;
+    return alias;
+  }
+
+  _getQueryConditionByPath(listAdapter, path, tableAlias) {
+    const dbPath = path.split('_', 1);
+    const fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
+    // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
+    return (
+      fieldAdapter && fieldAdapter.getQueryConditions(`${tableAlias}.${fieldAdapter.dbPath}`)[path]
+    );
+  }
+
+  // Recursively traverse the `where` query to identify required joins and add them to the query
+  // We perform joins on non-many relationship fields which are mentioned in the where query.
+  // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
+  _addJoins(query, listAdapter, where, tableAlias) {
+    const joinPaths = Object.keys(where).filter(
+      path => !this._getQueryConditionByPath(listAdapter, path)
+    );
+    for (let path of joinPaths) {
+      if (path === 'AND' || path === 'OR') {
+        // AND/OR we need to traverse their children
+        where[path].forEach(x => this._addJoins(query, listAdapter, x, tableAlias));
+      } else {
+        const otherAdapter = listAdapter.fieldAdaptersByPath[path];
+        // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
+        // These correspond to many-relationships, which are handled separately
+        if (otherAdapter) {
+          // We need a join of the form:
+          // ... LEFT OUTER JOIN {otherList} AS t1 ON {tableAlias}.{path} = t1.id
+          // Each table has a unique path to the root table via foreign keys
+          // This is used to give each table join a unique alias
+          // E.g., t0__fk1__fk2
+          const otherList = otherAdapter.refListKey;
+          const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
+          const otherTableAlias = `${tableAlias}__${path}`;
+          if (!this._tableAliases[otherTableAlias]) {
+            this._tableAliases[otherTableAlias] = true;
+            query.leftOuterJoin(
+              `${otherListAdapter.tableName} as ${otherTableAlias}`,
+              `${otherTableAlias}.id`,
+              `${tableAlias}.${path}`
+            );
+          }
+          this._addJoins(query, otherListAdapter, where[path], otherTableAlias);
+        }
+      }
+    }
+  }
+
+  // Recursively traverses the `where` query and pushes knex query functions to whereJoiner,
+  // which will normally do something like pass it to q.andWhere() to add to a query
+  _addWheres(whereJoiner, listAdapter, where, tableAlias) {
+    for (let path of Object.keys(where)) {
+      const condition = this._getQueryConditionByPath(listAdapter, path, tableAlias);
+      if (condition) {
+        whereJoiner(condition(where[path]));
+      } else if (path === 'AND' || path === 'OR') {
+        whereJoiner(q => {
+          // AND/OR need to traverse both side of the query
+          let subJoiner;
+          if (path == 'AND') {
+            q.whereRaw('true');
+            subJoiner = w => q.andWhere(w);
+          } else {
+            q.whereRaw('false');
+            subJoiner = w => q.orWhere(w);
+          }
+          where[path].forEach(subWhere =>
+            this._addWheres(subJoiner, listAdapter, subWhere, tableAlias)
+          );
+        });
+      } else {
+        // We have a relationship field
+        const fieldAdapter = listAdapter.fieldAdaptersByPath[path];
+        if (fieldAdapter) {
+          // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
+          const otherListAdapter = listAdapter.getListAdapterByKey(fieldAdapter.refListKey);
+          this._addWheres(whereJoiner, otherListAdapter, where[path], `${tableAlias}__${path}`);
+        } else {
+          // Many relationship
+          const [p, constraintType] = path.split('_');
+          const rel = {
+            cardinality: 'N:N',
+            tableName: listAdapter._manyTable(p),
+            columnNames: {
+              [listAdapter.key]: {
+                near: `${listAdapter.key}_id`,
+                far: `${listAdapter.fieldAdaptersByPath[p].refListKey}_id`,
+              },
+            },
+          };
+          const { cardinality, tableName, columnNames } = rel;
+          const subBaseTableAlias = this._getNextBaseTableAlias();
+          const otherList = listAdapter.fieldAdaptersByPath[p].refListKey;
+          const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
+          const subQuery = listAdapter._query();
+          let otherTableAlias;
+          if (cardinality === '1:N' || cardinality === 'N:1') {
+            // Implement me
+          } else {
+            otherTableAlias = `${subBaseTableAlias}__${p}`;
+            subQuery
+              .select(`${subBaseTableAlias}.${columnNames[listAdapter.key].near}`)
+              .from(`${tableName} as ${subBaseTableAlias}`);
+            subQuery.innerJoin(
+              `${otherListAdapter.tableName} as ${otherTableAlias}`,
+              `${otherTableAlias}.id`,
+              `${subBaseTableAlias}.${columnNames[listAdapter.key].far}`
+            );
+          }
+          this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias);
+
+          // some: the ID is in the examples found
+          // none: the ID is not in the examples found
+          // every: the ID is not in the counterexamples found
+          // FIXME: This works in a general and logical way, but doesn't always generate the queries that PG can best optimise
+          // 'some' queries would more efficient as inner joins
+
+          if (constraintType === 'every') {
+            subQuery.whereNot(q => {
+              q.whereRaw('true');
+              this._addWheres(w => q.andWhere(w), otherListAdapter, where[path], otherTableAlias);
+            });
+          } else {
+            subQuery.whereRaw('true');
+            this._addWheres(
+              w => subQuery.andWhere(w),
+              otherListAdapter,
+              where[path],
+              otherTableAlias
+            );
+          }
+
+          if (constraintType === 'some') {
+            whereJoiner(q => q.whereIn(`${tableAlias}.id`, subQuery));
+          } else {
+            whereJoiner(q => q.whereNotIn(`${tableAlias}.id`, subQuery));
+          }
+        }
+      }
+    }
   }
 }
 
@@ -602,21 +724,28 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     this.knexOptions = this.config.knexOptions || {};
   }
 
-  // Gives us a way to referrence knex when configuring DB-level defaults, eg:
-  //   knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
+  _hasRealKeys() {
+    return !(this.isRelationship && this.config.many);
+  }
+
+  // Gives us a way to reference knex when configuring DB-level defaults, eg:
+  // knexOptions: { dbDefault: (knex) => knex.raw('uuid_generate_v4()') }
   // We can't do this in the constructor as the knex instance doesn't exists
   get defaultTo() {
-    if (this._defaultTo) return this._defaultTo;
+    if (this._defaultTo) {
+      return this._defaultTo;
+    }
 
     const defaultToSupplied = this.knexOptions.defaultTo;
     const knex = this.listAdapter.parentAdapter.knex;
-    const resolve = () => {
-      if (typeof defaultToSupplied === 'undefined') return this.field.defaultValue;
-      if (typeof defaultToSupplied === 'function') return defaultToSupplied(knex);
-      return defaultToSupplied;
-    };
 
-    return (this._defaultTo = resolve());
+    if (typeof defaultToSupplied === 'function') {
+      this._defaultTo = defaultToSupplied(knex);
+    } else {
+      this._defaultTo = defaultToSupplied;
+    }
+
+    return this._defaultTo;
   }
 
   // Default nullability from isRequired in most cases
@@ -624,9 +753,25 @@ class KnexFieldAdapter extends BaseFieldAdapter {
   get isNotNullable() {
     if (this._isNotNullable) return this._isNotNullable;
 
-    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
-      ? this.field.isRequired || (typeof this.defaultTo !== 'undefined' && this.defaultTo !== null)
-      : this.knexOptions.isNotNullable));
+    if (typeof this.knexOptions.isNotNullable === 'undefined') {
+      if (this.field.isRequired) {
+        this._isNotNullable = true;
+      } else {
+        // NOTE: We do our best to check for a default value below, but if a
+        // function was supplied, we have no way of knowing what that function
+        // will return until it's executed, so we err on the side of
+        // permissiveness and assume the function may return `null`, and hence
+        // this field is nullable.
+        if (typeof this.field.defaultValue === 'function') {
+          this._isNotNullable = false;
+        } else {
+          this._isNotNullable =
+            typeof this.field.defaultValue !== 'undefined' && this.field.defaultValue !== null;
+        }
+      }
+    }
+
+    return this._isNotNullable;
   }
 
   addToTableSchema() {

@@ -3,13 +3,17 @@ const {
   unmergeRelationships,
   createRelationships,
 } = require('../lib/Keystone/relationship-utils');
-const { Text, Relationship } = require('@keystone-alpha/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 
 describe('mergeRelationships', () => {
   test('merges relationships', () => {
     const merged = mergeRelationships(
       {
-        User: [{ name: 'Jess', id: 1 }, { name: 'Tici', id: 2 }, { name: 'Lauren', id: 3 }],
+        User: [
+          { name: 'Jess', id: 1 },
+          { name: 'Tici', id: 2 },
+          { name: 'Lauren', id: 3 },
+        ],
         Post: [
           { title: 'Hello world', id: 'abc123' },
           { title: 'Foo Article', id: 'def789' },
@@ -26,7 +30,11 @@ describe('mergeRelationships', () => {
     );
 
     expect(merged).toEqual({
-      User: [{ name: 'Jess', id: 1 }, { name: 'Tici', id: 2 }, { name: 'Lauren', id: 3 }],
+      User: [
+        { name: 'Jess', id: 1 },
+        { name: 'Tici', id: 2 },
+        { name: 'Lauren', id: 3 },
+      ],
       Post: [
         { title: 'Hello world', id: 'abc123', author: 1 },
         { title: 'Foo Article', id: 'def789', author: 3 },
@@ -38,7 +46,11 @@ describe('mergeRelationships', () => {
   test('merges sparse relationships', () => {
     const merged = mergeRelationships(
       {
-        User: [{ name: 'Jess', id: 1 }, { name: 'Tici', id: 2 }, { name: 'Lauren', id: 3 }],
+        User: [
+          { name: 'Jess', id: 1 },
+          { name: 'Tici', id: 2 },
+          { name: 'Lauren', id: 3 },
+        ],
         Post: [
           { title: 'Hello world', id: 'abc123' },
           { title: 'Foo Article', id: 'def789' },
@@ -54,7 +66,11 @@ describe('mergeRelationships', () => {
     );
 
     expect(merged).toEqual({
-      User: [{ name: 'Jess', id: 1 }, { name: 'Tici', id: 2 }, { name: 'Lauren', id: 3 }],
+      User: [
+        { name: 'Jess', id: 1 },
+        { name: 'Tici', id: 2 },
+        { name: 'Lauren', id: 3 },
+      ],
       Post: [
         { title: 'Hello world', id: 'abc123', author: 1 },
         { title: 'Foo Article', id: 'def789' },
@@ -66,7 +82,11 @@ describe('mergeRelationships', () => {
   test('ignores unknown sparse relationships', () => {
     const merged = mergeRelationships(
       {
-        User: [{ name: 'Jess', id: 1 }, { name: 'Tici', id: 2 }, { name: 'Lauren', id: 3 }],
+        User: [
+          { name: 'Jess', id: 1 },
+          { name: 'Tici', id: 2 },
+          { name: 'Lauren', id: 3 },
+        ],
         Post: [
           { title: 'Hello world', id: 'abc123' },
           { title: 'Foo Article', id: 'def789' },
@@ -83,7 +103,11 @@ describe('mergeRelationships', () => {
     );
 
     expect(merged).toEqual({
-      User: [{ name: 'Jess', id: 1 }, { name: 'Tici', id: 2 }, { name: 'Lauren', id: 3 }],
+      User: [
+        { name: 'Jess', id: 1 },
+        { name: 'Tici', id: 2 },
+        { name: 'Lauren', id: 3 },
+      ],
       Post: [
         { title: 'Hello world', id: 'abc123', author: 1 },
         { title: 'Foo Article', id: 'def789' },
@@ -95,7 +119,11 @@ describe('mergeRelationships', () => {
   test('supports many-relationships', () => {
     const merged = mergeRelationships(
       {
-        User: [{ name: 'Jess', id: 1 }, { name: 'Tici', id: 2 }, { name: 'Lauren', id: 3 }],
+        User: [
+          { name: 'Jess', id: 1 },
+          { name: 'Tici', id: 2 },
+          { name: 'Lauren', id: 3 },
+        ],
         Post: [
           { title: 'Hello world', id: 'abc123' },
           { title: 'Foo Article', id: 'def789' },

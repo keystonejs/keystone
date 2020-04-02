@@ -1,41 +1,51 @@
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class CalendarDay extends Implementation {
-  constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
+  constructor(
+    path,
+    {
+      format = 'YYYY-MM-DD',
+      yearRangeFrom = new Date().getFullYear() - 100,
+      yearRangeTo = new Date().getFullYear(),
+    }
+  ) {
     super(...arguments);
     this.format = format;
     this.yearRangeFrom = yearRangeFrom;
     this.yearRangeTo = yearRangeTo;
-    this.yearPickerType = yearPickerType;
+    this.isOrderable = true;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  get gqlQueryInputFields() {
+
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.orderingInputFields('String'),
       ...this.inInputFields('String'),
     ];
   }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
+
   get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
+
   extendAdminMeta(meta) {
     return {
       ...meta,
       format: this.format,
       yearRangeFrom: this.yearRangeFrom,
       yearRangeTo: this.yearRangeTo,
-      yearPickerType: this.yearPickerType,
     };
   }
 }

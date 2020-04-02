@@ -1,10 +1,13 @@
-// @flow
 import build from '../';
 import fixturez from 'fixturez';
 import { FatalError } from '../../errors';
 import { snapshotDirectory, install } from '../../../test-utils';
 
 const f = fixturez(__dirname);
+
+// we're increasing the timeout here because we run `yarn install`
+// and that sometimes takes longer than the default timeout
+jest.setTimeout(30000);
 
 jest.mock('../../prompt');
 
@@ -18,7 +21,7 @@ test('typescript', async () => {
   await install(tmpPath);
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath, 'all');
+  await snapshotDirectory(tmpPath, { files: 'all' });
 });
 
 test('package resolvable but not in deps', async () => {

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const inflection = require('inflection');
+
 const pSettle = require('p-settle');
 const {
   escapeRegExp,
@@ -8,103 +8,67 @@ const {
   mapKeys,
   mapKeyNames,
   identity,
-} = require('@keystone-alpha/utils');
+  mergeWhereClause,
+  versionGreaterOrEqualTo,
+} = require('@keystonejs/utils');
 
-const {
-  BaseKeystoneAdapter,
-  BaseListAdapter,
-  BaseFieldAdapter,
-} = require('@keystone-alpha/keystone');
-const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
-const logger = require('@keystone-alpha/logger').logger('mongoose');
+const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
+const { queryParser, pipelineBuilder } = require('@keystonejs/mongo-join-builder');
+const logger = require('@keystonejs/logger').logger('mongoose');
 
-const simpleTokenizer = require('./tokenizers/simple');
-const relationshipTokenizer = require('./tokenizers/relationship');
-const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
+const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
-
-const modifierConditions = {
-  // TODO: Implement configurable search fields for lists
-  $search: value => {
-    if (!value || (getType(value) === 'String' && !value.trim())) {
-      return undefined;
-    }
-    return {
-      $match: {
-        name: new RegExp(`${escapeRegExp(value)}`, 'i'),
-      },
-    };
-  },
-
-  $orderBy: (value, _, listAdapter) => {
-    const [orderField, orderDirection] = value.split('_');
-
-    const mongoField = listAdapter.graphQlQueryPathToMongoField(orderField);
-
-    return {
-      $sort: {
-        [mongoField]: orderDirection === 'DESC' ? -1 : 1,
-      },
-    };
-  },
-
-  $skip: value => {
-    if (value < Infinity && value > 0) {
-      return {
-        $skip: value,
-      };
-    }
-  },
-
-  $first: value => {
-    if (value < Infinity && value > 0) {
-      return {
-        $limit: value,
-      };
-    }
-  },
-
-  $count: value => ({
-    $count: value,
-  }),
-};
 
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
-
-    this.name = this.name || 'mongoose';
-
+    this.name = 'mongoose';
     this.mongoose = new mongoose.Mongoose();
+    this.minVer = '4.0.0';
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  async _connect(to, config = {}) {
-    // NOTE: We pull out `name` here, but don't use it, so it
-    // doesn't conflict with the options the user wants passed to mongodb.
-    const { name: _, ...adapterConnectOptions } = config;
-
+  async _connect({ name }) {
+    const { mongoUri, ...mongooseConfig } = this.config;
     // Default to the localhost instance
-    let uri = to;
+    let uri =
+      mongoUri ||
+      process.env.CONNECT_TO ||
+      process.env.DATABASE_URL ||
+      process.env.MONGO_URI ||
+      process.env.MONGODB_URI ||
+      process.env.MONGO_URL ||
+      process.env.MONGODB_URL ||
+      process.env.MONGOLAB_URI ||
+      process.env.MONGOLAB_URL;
+
     if (!uri) {
-      const defaultDbName = inflection.dasherize(config.name).toLowerCase() || 'keystone';
-      uri = `mongodb://localhost:27017/${defaultDbName}`;
+      const defaultDbName = slugify(name) || 'keystone';
+      uri = `mongodb://localhost/${defaultDbName}`;
       logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
 
     await this.mongoose.connect(uri, {
       useNewUrlParser: true,
       useFindAndModify: false,
-      ...adapterConnectOptions,
+      useUnifiedTopology: true,
+      ...mongooseConfig,
     });
   }
-  async postConnect() {
+  async postConnect({ rels }) {
+    // Setup all schemas
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter.fieldAdapters.forEach(fieldAdapter => {
+        fieldAdapter.addToMongooseSchema(listAdapter.schema, listAdapter.mongoose);
+      });
+    });
+
     return await pSettle(
-      Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect())
+      Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect({ rels }))
     );
   }
 
@@ -119,8 +83,24 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { MongoId } = require('@keystone-alpha/fields-mongoid');
+    const { MongoId } = require('@keystonejs/fields-mongoid');
     return MongoId.primaryKeyDefaults[this.name].getConfig();
+  }
+
+  async checkDatabaseVersion() {
+    let info;
+
+    try {
+      info = await new this.mongoose.mongo.Admin(this.mongoose.connection.db).buildInfo();
+    } catch (error) {
+      console.log(`Error reading version from MongoDB: ${error}`);
+    }
+
+    if (!versionGreaterOrEqualTo(info.versionArray, this.minVer)) {
+      throw new Error(
+        `MongoDB version ${info.version} is incompatible. Version ${this.minVer} or later is required.`
+      );
+    }
   }
 }
 
@@ -156,30 +136,7 @@ class MongooseListAdapter extends BaseListAdapter {
 
     // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
-
-    this.queryBuilder = mongoJoinBuilder({
-      tokenizer: {
-        // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
-        simple: simpleTokenizer({
-          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-          modifierConditions,
-        }),
-        // executed for complex query components (eg; items: { ... })
-        relationship: relationshipTokenizer({
-          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
-        }),
-      },
-    });
-  }
-
-  findFieldAdapterForQuerySegment(segment) {
-    return this.fieldAdapters
-      .filter(adapter => adapter.isRelationship)
-      .find(adapter => adapter.supportsRelationshipQuery(segment));
-  }
-
-  prepareFieldAdapter(fieldAdapter) {
-    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
+    this.rels = undefined;
   }
 
   /**
@@ -189,7 +146,14 @@ class MongooseListAdapter extends BaseListAdapter {
    *
    * @return Promise<>
    */
-  async postConnect() {
+  async postConnect({ rels }) {
+    this.rels = rels;
+    this.fieldAdapters.forEach(fieldAdapter => {
+      fieldAdapter.rel = rels.find(
+        ({ left, right }) =>
+          left.adapter === fieldAdapter || (right && right.adapter === fieldAdapter)
+      );
+    });
     if (this.configureMongooseSchema) {
       this.configureMongooseSchema(this.schema, { mongoose: this.mongoose });
     }
@@ -221,35 +185,27 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.syncIndexes();
   }
 
+  ////////// Mutations //////////
+
   _create(data) {
     return this.model.create(data);
   }
 
   _delete(id) {
-    return this.model.findByIdAndRemove(id);
+    return this.model.deleteOne({ _id: id }).then(result => result.deletedCount);
   }
 
   _update(id, data) {
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
     // Return the modified item, not the original
-    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
+    return this.model.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true, context: 'query' }
+    );
   }
 
-  _findAll() {
-    return this.model.find();
-  }
-
-  _findById(id) {
-    return this.model.findById(id);
-  }
-
-  _find(condition) {
-    return this.model.find(condition);
-  }
-
-  _findOne(condition) {
-    return this.model.findOne(condition);
-  }
+  ////////// Queries //////////
 
   graphQlQueryPathToMongoField(path) {
     const fieldAdapter = this.fieldAdaptersByPath[path];
@@ -261,44 +217,50 @@ class MongooseListAdapter extends BaseListAdapter {
     return fieldAdapter.getMongoFieldName();
   }
 
-  _itemsQuery(args, { meta = false } = {}) {
-    function graphQlQueryToMongoJoinQuery(query) {
-      const _query = {
-        ...query.where,
-        ...mapKeyNames(
-          // Grab all the modifiers
-          pick(query, ['search', 'orderBy', 'skip', 'first']),
-          // and prefix with a dollar symbol so they can be picked out by the
-          // query builder tokeniser
-          key => `$${key}`
-        ),
-      };
-
-      return mapKeys(_query, field => {
-        if (getType(field) !== 'Object' || !field.where) {
-          return field;
-        }
-
-        // recurse on object (ie; relationship) types
-        return graphQlQueryToMongoJoinQuery(field);
-      });
+  async _itemsQuery(args, { meta = false, from, include } = {}) {
+    if (from && Object.keys(from).length) {
+      const ids = await from.fromList.adapter._itemsQuery(
+        { where: { id: from.fromId } },
+        { include: from.fromField }
+      );
+      if (ids.length) {
+        args = mergeWhereClause(args, { id: { $in: ids[0][from.fromField] || [] } });
+      }
     }
 
+    // Convert the args `where` clauses and modifiers into a data structure
+    // which can be consumed by the queryParser. Modifiers are prefixed with a
+    // $ symbol (e.g. skip => $skip) to be identified by the tokenizer.
+    // `where` keys are removed, and nested queries are handled recursively.
+    // { where: { a: 'A', b: { where: { c: 'C' } } }, skip: 10 }
+    //       => { a: 'A', b: { c: 'C' }, $skip: 10 }
+    const graphQlQueryToMongoJoinQuery = ({ where, ...modifiers }) => ({
+      ...mapKeys(where || {}, whereElement =>
+        getType(whereElement) === 'Object' && whereElement.where
+          ? graphQlQueryToMongoJoinQuery(whereElement) // Recursively traverse relationship fields
+          : whereElement
+      ),
+      ...mapKeyNames(pick(modifiers, ['search', 'orderBy', 'skip', 'first']), key => `$${key}`),
+    });
     let query;
     try {
       query = graphQlQueryToMongoJoinQuery(args);
     } catch (error) {
       return Promise.reject(error);
     }
-
     if (meta) {
       // Order is important here, which is why we do it last (v8 will append the
       // key, and keep them stable)
       query.$count = 'count';
     }
 
-    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
-      foundItems => {
+    const queryTree = queryParser({ listAdapter: this }, query, [], include);
+
+    // Run the query against the given database and collection
+    return this.model
+      .aggregate(pipelineBuilder(queryTree))
+      .exec()
+      .then(foundItems => {
         if (meta) {
           // When there are no items, we get undefined back, so we simulate the
           // normal result of 0 items.
@@ -308,8 +270,7 @@ class MongooseListAdapter extends BaseListAdapter {
           return foundItems[0];
         }
         return foundItems;
-      }
-    );
+      });
   }
 }
 
@@ -334,7 +295,7 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
-    // Aapplying these config to all field types is probably wrong;
+    // Applying these config to all field types is probably wrong;
     // ie. unique constraints on Checkboxes, Files, etc. probably don't make sense
     if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose

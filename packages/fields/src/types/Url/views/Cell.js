@@ -1,13 +1,8 @@
-// @flow
-
-import type { CellProps } from '../../../types';
 import * as React from 'react';
 
 const stripHttpPattern = /^https?\:\/\//i;
 
-type Props = CellProps<string>;
-
-const Cell = (props: Props) => {
+const Cell = props => {
   let { data } = props;
 
   if (!data) {

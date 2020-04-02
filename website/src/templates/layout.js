@@ -1,24 +1,38 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
+import { Fragment, useState } from 'react';
 import { jsx, Global } from '@emotion/core';
-import { colors, globalStyles } from '@arch-ui/theme';
+import { colors, borderRadius, gridSize } from '@arch-ui/theme';
 import { SkipNavLink } from '@reach/skip-nav';
 
 import { Header, SiteMeta } from '../components';
 import { media, mediaMax } from '../utils/media';
-import { useDimensions } from '../utils/hooks';
 
-const Layout = ({ children }) => {
+export const Layout = ({ children }) => {
   const [isVisible, setVisible] = useState(false);
   const toggleMenu = bool => () => setVisible(bool);
-  const [headerRef, headerDimensions] = useDimensions();
 
   return (
-    <>
+    <Fragment>
       <Global
         styles={{
-          ...globalStyles,
+          body: {
+            backgroundColor: colors.page,
+            color: colors.N80,
+            fontFamily:
+              '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+            letterSpacing: '-0.005em',
+            margin: 0,
+            textDecorationSkip: 'ink',
+            textRendering: 'optimizeLegibility',
+            msOverflowStyle: '-ms-autohiding-scrollbar',
+            MozFontFeatureSettings: "'liga' on",
+            MozOsxFontSmoothing: 'grayscale',
+            WebkitFontSmoothing: 'antialiased',
+          },
+          a: {
+            textDecoration: 'none',
+          },
 
           // Accessibility
           // ------------------------------
@@ -74,10 +88,73 @@ const Layout = ({ children }) => {
       />
       <SkipNavLink />
       <SiteMeta pathname="/" />
-      <Header key="global-header" ref={headerRef} toggleMenu={toggleMenu(!isVisible)} />
-      {children({ sidebarOffset: headerDimensions.height, sidebarIsVisible: isVisible })}
-    </>
+      <Header key="global-header" toggleMenu={toggleMenu(!isVisible)} />
+      {children({
+        sidebarIsVisible: isVisible,
+        toggleSidebar: toggleMenu(!isVisible),
+      })}
+    </Fragment>
   );
 };
 
-export default Layout;
+// ==============================
+// Layout
+// ==============================
+
+export const Content = props => (
+  <main
+    css={{
+      minWidth: 0,
+      lineHeight: '1.6',
+
+      [mediaMax.sm]: {
+        padding: gridSize * 2,
+      },
+      [media.sm]: {
+        paddingLeft: gridSize * 6,
+      },
+
+      // TODO: doesn't play nice with "gatsby-resp-image-wrapper"
+      img: {
+        backgroundColor: 'white',
+        borderRadius,
+        boxSizing: 'border-box',
+        boxShadow: '0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1) !important',
+        display: 'block',
+        marginBottom: '2rem',
+        marginTop: '2rem',
+        maxWidth: '100%',
+      },
+
+      // NOTE: consider removing `gatsby-resp-image-wrapper`
+      '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
+        background: 0,
+        border: 0,
+        marginBottom: '2rem',
+        marginTop: '2rem',
+      },
+
+      // Misc. Typography
+      // ------------------------------
+      'li, p': {
+        lineHeight: 1.6,
+      },
+      'ul > li > ul, ol > li > ol, ul > li > ol, ol > li > ul': {
+        paddingLeft: '1.33rem',
+      },
+      blockquote: {
+        borderLeft: `2px solid ${colors.B.base}`,
+        margin: `1.66rem 0`,
+        padding: '1rem',
+        position: 'relative',
+      },
+      'blockquote > p:first-of-type': {
+        marginTop: 0,
+      },
+      'blockquote > p:last-of-type': {
+        marginBottom: 0,
+      },
+    }}
+    {...props}
+  />
+);
