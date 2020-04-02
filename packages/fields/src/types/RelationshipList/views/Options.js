@@ -5,6 +5,8 @@ import Tooltip from '@arch-ui/tooltip';
 import { CheckIcon, XIcon, TrashcanIcon } from '@arch-ui/icons';
 import { headerCase } from 'change-case';
 import { jsx, css } from '@emotion/core';
+import styled from '@emotion/styled';
+
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 // eslint-disable-next-line no-unused-vars
@@ -20,7 +22,7 @@ import {
 } from '../../../../../app-admin-ui/client/components/ListTable';
 import { colors } from '@arch-ui/theme/src';
 
-console.log(colors);
+const maxVisible = 8;
 
 // Styles
 const booleanStyle = {
@@ -51,8 +53,9 @@ const lastTwoColumns = css`
   }
 `;
 
-// Components
-const Unavailable = () => <span className="relationship-list__unavailable">Not available</span>;
+export const Unavailable = styled('span')({
+  color: '#cacaca',
+});
 
 const OptionElement = ({ data, config = {} }) => {
   const { style = {}, type } = config;
@@ -82,14 +85,28 @@ const OptionElement = ({ data, config = {} }) => {
       {isBoolean && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {data ? (
-            <CheckIcon className="relationship-list__active" />
+            <CheckIcon
+              css={css`
+                width: 25px;
+                path {
+                  fill: #d64242;
+                }
+              `}
+            />
           ) : (
-            <XIcon className="relationship-list__inactive" />
+            <XIcon
+              css={css`
+                width: 18px;
+                path {
+                  fill: #2684ff;
+                }
+              `}
+            />
           )}
         </div>
       )}
 
-      {!isLink && !isBoolean && (data || <Unavailable />)}
+      {!isLink && !isBoolean && (data || <Unavailable>Not available</Unavailable>)}
     </BodyCell>
   );
 };
@@ -122,8 +139,8 @@ const OptionRow = ({ id, removeItem, config }) => {
   return (
     <TableRow
       css={css`
-        &:nth-of-type(odd) {
-          background: ${colors.N10};
+        &:nth-of-type(even) {
+          background: ${colors.N05};
         }
 
         ${lastTwoColumns}
@@ -161,7 +178,15 @@ const OptionRow = ({ id, removeItem, config }) => {
               onClick={e => removeItem(e, id)}
               ref={tooltipRef}
               variant="ghost"
-              className="relationship-list__remove"
+              css={css`
+                path {
+                  fill: #6c798f;
+                }
+
+                &:hover path {
+                  fill: #d64242;
+                }
+              `}
             />
           )}
         </Tooltip>
@@ -188,8 +213,6 @@ const OptionTitle = ({ field }) => {
 };
 
 const OptionsList = ({ options, config, innerSelectChange }) => {
-  const [maxVisible, setMaxVisible] = useState(0);
-
   const onRemoveClick = (e, idClick) => {
     e.preventDefault();
 
@@ -225,14 +248,11 @@ const OptionsList = ({ options, config, innerSelectChange }) => {
         </Table>
       </div>
       <div
-        className="scrollable-list"
-        ref={ref => {
-          if (ref && !maxVisible) {
-            setMaxVisible(
-              Number(window.getComputedStyle(ref).getPropertyValue('--visible-elements')) || 0
-            );
-          }
-        }}
+        css={css`
+          max-height: ${54 * maxVisible + 1}px;
+          overflow-y: auto;
+          margin-bottom: 1rem;
+        `}
       >
         <Table style={tableStyle}>
           <tbody>
@@ -244,7 +264,18 @@ const OptionsList = ({ options, config, innerSelectChange }) => {
       </div>
     </Fragment>
   ) : (
-    <h2 className="empty-relationship">Try adding a {config.ref}</h2>
+    <h2
+      css={css`
+        color: #97a0af;
+        font-size: 1.2rem;
+        font-weight: normal;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+      `}
+    >
+      Try adding a {config.ref}
+    </h2>
   );
 };
 
