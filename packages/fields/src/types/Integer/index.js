@@ -1,4 +1,10 @@
-import { Integer, MongoIntegerInterface, KnexIntegerInterface } from './Implementation';
+import {
+  Integer,
+  MongoIntegerInterface,
+  KnexIntegerInterface,
+  JSONIntegerInterface,
+  MemoryIntegerInterface,
+} from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
 export default {
@@ -12,5 +18,7 @@ export default {
   adapters: {
     mongoose: MongoIntegerInterface,
     knex: KnexIntegerInterface,
+    memory: MemoryIntegerInterface,
+    json: JSONIntegerInterface,
   },
 };

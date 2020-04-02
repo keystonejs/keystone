@@ -1,5 +1,6 @@
 {
   "name": "@keystonejs/adapter-json",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-json",
   "description": "KeystoneJS JSON Database adapter.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
@@ -15,7 +16,7 @@
     "cuid": "^2.1.6",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
-    "memoize-one": "^4.0.2",
+    "memoize-one": "^5.1.1",
     "p-settle": "^3.1.0"
   }
 }

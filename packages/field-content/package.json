@@ -20,7 +20,7 @@
     "@emotion/core": "^10.0.27",
     "@keystonejs/build-field-types": "^5.2.2",
     "@keystonejs/fields": "^7.0.0",
-    "@keystonejs/utils": "^5.2.2",
+    "@keystonejs/utils": "^5.4.0",
     "apply-ref": "^0.2.0",
     "get-selection-range": "^0.1.0",
     "image-extensions": "^1.1.0",

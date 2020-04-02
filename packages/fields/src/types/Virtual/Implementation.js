@@ -39,14 +39,14 @@ export class Virtual extends Implementation {
   }
 }
 
-const CommonTextInterface = superclass =>
+const CommonVirtualInterface = superclass =>
   class extends superclass {
     getQueryConditions() {
       return {};
     }
   };
 
-export class MongoVirtualInterface extends CommonTextInterface(MongooseFieldAdapter) {
+export class MongoVirtualInterface extends CommonVirtualInterface(MongooseFieldAdapter) {
   constructor() {
     super(...arguments);
     this.realKeys = [];
@@ -54,7 +54,23 @@ export class MongoVirtualInterface extends CommonTextInterface(MongooseFieldAdap
   addToMongooseSchema() {}
 }
 
-export class KnexVirtualInterface extends CommonTextInterface(KnexFieldAdapter) {
+export class KnexVirtualInterface extends CommonVirtualInterface(KnexFieldAdapter) {
+  constructor() {
+    super(...arguments);
+    this.realKeys = [];
+  }
+  addToTableSchema() {}
+}
+
+export class JSONVirtualInterface extends CommonVirtualInterface(KnexFieldAdapter) {
+  constructor() {
+    super(...arguments);
+    this.realKeys = [];
+  }
+  addToTableSchema() {}
+}
+
+export class MemoryVirtualInterface extends CommonVirtualInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
     this.realKeys = [];

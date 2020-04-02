@@ -62,10 +62,11 @@ const getStudent = async (keystone, studentId) =>
   ).data.Student;
 
 // We can't assume what IDs get assigned, or what order they come back in
-const compareIds = (list, ids) =>
-  expect(toStr(list.map(({ id }) => id).sort())).toMatchObject(
+const compareIds = (list, ids) => {
+  return expect(toStr(list.map(({ id }) => id).sort())).toMatchObject(
     ids.map(({ id }) => id.toString()).sort()
   );
+};
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {

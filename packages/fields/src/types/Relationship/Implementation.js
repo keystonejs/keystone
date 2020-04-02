@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-// import omitBy from 'lodash.omitby';
-// import { mergeWhereClause } from '@keystonejs/utils';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';

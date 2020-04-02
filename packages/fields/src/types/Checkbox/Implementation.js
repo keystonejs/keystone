@@ -1,6 +1,8 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Checkbox extends Implementation {
   constructor() {
@@ -50,6 +52,18 @@ export class KnexCheckboxInterface extends KnexFieldAdapter {
     if (this.isNotNullable) column.notNullable();
     if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
+  }
+}
+
+export class JSONCheckboxInterface extends JSONFieldAdapter {
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
+  }
+}
+
+export class MemoryCheckboxInterface extends MemoryFieldAdapter {
   getQueryConditions(dbPath) {
     return this.equalityConditions(dbPath);
   }

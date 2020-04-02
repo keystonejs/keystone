@@ -2,6 +2,8 @@ import inflection from 'inflection';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 function initOptions(options) {
   let optionsArray = options;
@@ -92,3 +94,7 @@ export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter)
     if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }
+
+export class JSONSelectInterface extends CommonSelectInterface(JSONFieldAdapter) {}
+
+export class MemorySelectInterface extends CommonSelectInterface(MemoryFieldAdapter) {}

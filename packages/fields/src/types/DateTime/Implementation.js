@@ -4,6 +4,8 @@ import { DateTime, FixedOffsetZone } from 'luxon';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { Implementation } from '../../Implementation';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 class _DateTime extends Implementation {
   constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
@@ -74,7 +76,7 @@ const CommonDateTimeInterface = superclass =>
       const utc_field = `${field_path}_utc`;
       const offset_field = `${field_path}_offset`;
 
-      // Updates the relevant value in the item provided (by referrence)
+      // Updates the relevant value in the item provided (by reference)
       addPreSaveHook(item => {
         // Only run the hook if the item actually contains the datetime field
         // NOTE: Can't use hasOwnProperty here, as the mongoose data object
@@ -216,3 +218,15 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
 }
 
 export { _DateTime as DateTime };
+
+export class JSONDateTimeInterface extends JSONFieldAdapter {
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
+  }
+}
+
+export class MemoryDateTimeInterface extends MemoryFieldAdapter {
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
+  }
+}

@@ -1,4 +1,10 @@
-import { UuidImplementation, MongoUuidInterface, KnexUuidInterface, JSONUuidInterface } from './Implementation';
+import {
+  UuidImplementation,
+  MongoUuidInterface,
+  KnexUuidInterface,
+  JSONUuidInterface,
+  MemoryUuidInterface,
+} from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
 const Uuid = {
@@ -13,6 +19,7 @@ const Uuid = {
     knex: KnexUuidInterface,
     mongoose: MongoUuidInterface,
     json: JSONUuidInterface,
+    memory: MemoryUuidInterface,
   },
 
   primaryKeyDefaults: {
@@ -37,6 +44,9 @@ const Uuid = {
       },
     },
     json: {
+      getConfig: () => ({ type: Uuid }),
+    },
+    memory: {
       getConfig: () => ({ type: Uuid }),
     },
   },

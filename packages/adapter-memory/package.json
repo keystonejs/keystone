@@ -1,5 +1,6 @@
 {
   "name": "@keystonejs/adapter-memory",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-memory",
   "description": "KeystoneJS Memory Database adapter.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",

@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Decimal extends Implementation {
   constructor(path, { symbol }) {
@@ -116,6 +118,26 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
     if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath),
+      ...this.orderingConditions(dbPath),
+      ...this.inConditions(dbPath),
+    };
+  }
+}
+
+export class JSONDateTimeInterface extends JSONFieldAdapter {
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath),
+      ...this.orderingConditions(dbPath),
+      ...this.inConditions(dbPath),
+    };
+  }
+}
+
+export class MemoryDateTimeInterface extends MemoryFieldAdapter {
   getQueryConditions(dbPath) {
     return {
       ...this.equalityConditions(dbPath),

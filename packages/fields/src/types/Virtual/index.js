@@ -13,5 +13,7 @@ export default {
   adapters: {
     mongoose: MongoVirtualInterface,
     knex: KnexVirtualInterface,
+    json: JSONVirtualInterface,
+    memory: MemoryVirtualInterface,
   },
 };
