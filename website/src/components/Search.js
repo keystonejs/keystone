@@ -29,6 +29,7 @@ export const Search = () => {
     let keyboardHandler = event => {
       if (allowKeyboardRequest(event)) {
         inputRef.current.focus();
+        // prevent the "/" character from making it into the input
         event.preventDefault();
       }
     };
@@ -137,7 +138,6 @@ const HiddenLabel = props => (
   />
 );
 
-// label for screen-readers
 const SearchIcon = () => (
   <svg
     fill="currentColor"
