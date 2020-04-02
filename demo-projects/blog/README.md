@@ -6,7 +6,7 @@ The Blog is a great example and boilerplate for more complex, real-world impleme
 
 ## Running the Project.
 
-To run this project, open your terminal and run `yarn` within the Keystone project root to install all required packages, then run `yarn start blog` to begin running Keystone.
+To run this project, open your terminal and run `yarn` within the Keystone project root to install all required packages, then run `yarn start` inside `/demo-docs/blog/` to begin running Keystone.
 
 The Keystone Admin UI is reachable from `localhost:3000/admin`. To log in, use the following credentials:
 

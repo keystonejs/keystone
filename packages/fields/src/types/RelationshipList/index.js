@@ -11,10 +11,10 @@ export default {
   isRelationship: true, // Used internally for this special case
   implementation: Relationship,
   views: {
-    Controller: importView('../Relationshipviews/Controller'),
+    Controller: importView('../Relationship/views/Controller'),
     Field: importView('./views/Field'),
     Filter: importView('./views/Filter'),
-    Cell: importView('../Relationshipviews/Cell'),
+    Cell: importView('../Relationship/views/Cell'),
   },
   adapters: {
     mongoose: MongoRelationshipInterface,

@@ -32,7 +32,7 @@
     "build:build-field-types": "rimraf packages/build-field-types/lib && babel packages/build-field-types/src --out-dir packages/build-field-types/dist --ignore '**/__tests__/**/*','**/__mocks__/**/*'",
     "build": "preconstruct build && yarn workspace @keystonejs/build-field-types build && node ./packages/build-field-types/bin.js build",
     "prepare": "manypkg check && yarn build:build-field-types && preconstruct dev && node ./packages/build-field-types/bin.js dev  && yarn run --silent contributing-guide",
-    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
+    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link '🔗  Read the full Contributing Guide' ' https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md ' ",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build"
