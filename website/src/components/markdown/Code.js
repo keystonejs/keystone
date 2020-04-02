@@ -85,9 +85,7 @@ export const CodeBlock = ({
         <Header>
           {title ? <Title>{title}</Title> : <span />}
           <div css={{ alignItems: 'center', display: 'flex' }}>
-            {language && showLanguage && (
-              <Language allowCopy={allowCopy}>{languageLabel(language)}</Language>
-            )}
+            {language && showLanguage && <Language>{languageLabel(language)}</Language>}
             {allowCopy && (
               <CopyButton onClick={handleCopy}>{clipboard.copied ? 'Copied!' : 'Copy'}</CopyButton>
             )}

@@ -45,7 +45,7 @@ because the CLI arguments were not passed to the `create-keystone-app` script.
 
 ## Run the app
 
-```shell
-cd my-app
-yarn dev
+```shell allowCopy=false showLanguage=false
+cd my-app # Change directory
+yarn dev  # Start the development server
 ```

@@ -14,13 +14,9 @@ they will be updated automatically when items are created or updated.
 const { byTracking } = require('@keystonejs/list-plugins');
 
 keystone.createList('ListWithPlugin', {
-  fields: {
-    // ...
-  },
+  fields: {...},
   plugins: [
-    byTracking({
-      /* ...config */
-    }),
+    byTracking({...}),
   ],
 });
 ```
@@ -38,7 +34,7 @@ keystone.createList('ListWithPlugin', {
 
 By default access control on at tracking fields is read only:
 
-```javascript
+```javascript allowCopy=false showLanguage=false
 {
   read: true,
   create: false,
