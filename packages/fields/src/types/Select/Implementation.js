@@ -24,13 +24,27 @@ function validateOptions({ options, dataType, listKey, path }) {
 `
     );
   }
-  options.forEach(option => {
+  options.forEach((option, i) => {
     if (dataType === 'enum') {
       if (!/^[a-zA-Z]\w*$/.test(option.value)) {
         throw new Error(
           `
-🚫 The select field ${listKey}.${path} contains an invalid enum value ("${option.value}")
-👉 You may want to use the string dataType
+🚫 The select field ${listKey}.${path} contains an invalid enum value ("${option.value}") in option ${i}
+👉 You may want to use the "string" dataType
+📖 see ${DOCS_URL}
+`
+        );
+      }
+    } else if (dataType === 'string') {
+      if (typeof option.value !== 'string') {
+        const integerHint =
+          typeof option.value === 'number'
+            ? `
+👉 Did you mean to use the the "integer" dataType?`
+            : '';
+        throw new Error(
+          `
+🚫 The select field ${listKey}.${path} contains an invalid value (type ${typeof option.value}) in option ${i}${integerHint}
 📖 see ${DOCS_URL}
 `
         );
@@ -39,7 +53,7 @@ function validateOptions({ options, dataType, listKey, path }) {
       if (!Number.isInteger(option.value)) {
         throw new Error(
           `
-🚫 The select field ${listKey}.${path} contains an invalid integer value ("${option.value}")
+🚫 The select field ${listKey}.${path} contains an invalid integer value ("${option.value}") in option ${i}
 📖 see ${DOCS_URL}
 `
         );
