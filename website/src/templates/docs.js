@@ -130,7 +130,7 @@ export default function Template({
 function sortVisible(allIds, targetId) {
   return ids => [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
 }
-let observerOptions = {
+const observerOptions = {
   rootMargin: '0px',
   threshold: 1.0,
 };
@@ -140,21 +140,21 @@ const TableOfContents = ({ container, headings, editUrl }) => {
   let [visibleIds, setVisibleIds] = useState([]);
   let [lastVisibleId, setLastVisbleId] = useState('');
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const targetId = entry.target.getAttribute('id');
-      if (entry.isIntersecting && entry.intersectionRatio === 1) {
-        setVisibleIds(sortVisible(allIds, targetId));
-        setLastVisbleId(targetId);
-      } else {
-        setVisibleIds(ids => ids.filter(id => id !== targetId));
-      }
-    });
-  }, observerOptions);
-
   // observe relevant headings
   useEffect(() => {
     if (container) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const targetId = entry.target.getAttribute('id');
+          if (entry.isIntersecting && entry.intersectionRatio === 1) {
+            setVisibleIds(sortVisible(allIds, targetId));
+            setLastVisbleId(targetId);
+          } else {
+            setVisibleIds(ids => ids.filter(id => id !== targetId));
+          }
+        });
+      }, observerOptions);
+
       container.querySelectorAll('h2, h3').forEach(node => {
         observer.observe(node);
       });
