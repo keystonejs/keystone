@@ -121,40 +121,44 @@ export default function Template({
 // Styled Components
 // ==============================
 
+// it's important that IDs are sorted by the order they appear in the document
+// so we can pluck active from the beginning
+function getVisible(allIds, targetId) {
+  return ids => [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
+}
+let observerOptions = {
+  rootMargin: '0px',
+  threshold: 1.0,
+};
+
 const TableOfContents = ({ container, headings, editUrl }) => {
+  let allIds = headings.filter(h => h.depth > 1 && h.depth < 4).map(h => h.id);
   let [visibleIds, setVisibleIds] = useState([]);
   let [lastVisibleId, setLastVisbleId] = useState('');
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        const targetId = entry.target.getAttribute('id');
 
-        if (entry.isIntersecting && entry.intersectionRatio === 1) {
-          setVisibleIds(ids => [...ids, targetId]);
-          setLastVisbleId(targetId);
-        } else {
-          setVisibleIds(ids => ids.filter(id => id !== targetId));
-        }
-      });
-    },
-    {
-      rootMargin: '0px', // maybe tinker with this to offset the pseudo element above headings
-      threshold: 1.0,
-    }
-  );
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const targetId = entry.target.getAttribute('id');
+      if (entry.isIntersecting && entry.intersectionRatio === 1) {
+        setVisibleIds(getVisible(allIds, targetId));
+        setLastVisbleId(targetId);
+      } else {
+        setVisibleIds(ids => ids.filter(id => id !== targetId));
+      }
+    });
+  }, observerOptions);
 
-  // catch if we're in a long gap between headings and resolve to the last available.
-  let activeId = visibleIds[0] || lastVisibleId;
-  console.log(visibleIds, activeId);
-
-  // observer relevant headings
+  // observe relevant headings
   useEffect(() => {
     if (container) {
-      container.querySelectorAll('h2, h3').forEach(heading => {
-        observer.observe(heading);
+      container.querySelectorAll('h2, h3').forEach(node => {
+        observer.observe(node);
       });
     }
   }, [container]);
+
+  // catch if we're in a long gap between headings and resolve to the last available.
+  let activeId = visibleIds[0] || lastVisibleId;
 
   return (
     <div
@@ -202,7 +206,7 @@ const TableOfContents = ({ container, headings, editUrl }) => {
               >
                 <a
                   css={{
-                    color: isActive ? colors.N100 : h.depth === 2 ? colors.N80 : colors.N60,
+                    color: isActive ? colors.B.base : h.depth === 2 ? colors.N80 : colors.N60,
                     display: 'block',
                     fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                     fontWeight: isActive ? '500' : 'normal',
