@@ -134,6 +134,11 @@ const observerOptions = {
   rootMargin: '0px',
   threshold: 1.0,
 };
+const canUseDOM = !!(
+  typeof window !== 'undefined' &&
+  window.document &&
+  window.document.createElement
+);
 
 const TableOfContents = ({ container, headings, editUrl }) => {
   let allIds = headings.map(h => h.id);
@@ -142,7 +147,7 @@ const TableOfContents = ({ container, headings, editUrl }) => {
 
   // observe relevant headings
   useEffect(() => {
-    if (container) {
+    if (container && canUseDOM) {
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const targetId = entry.target.getAttribute('id');
