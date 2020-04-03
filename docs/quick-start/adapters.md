@@ -46,7 +46,7 @@ You can override these options when [configuring the Mongoose adapter](/packages
 
 The simplest way to install PostgreSQL is using [Homebrew](https://brew.sh/).
 
-```bash
+```shell
 brew install postgres
 ```
 
@@ -64,6 +64,6 @@ You can override these options when [configuring the Knex adapter](/packages/ada
 
 To create database run the following command:
 
-```bash
+```shell
 createdb my-database-name
 ```

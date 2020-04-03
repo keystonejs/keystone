@@ -42,11 +42,10 @@ Here's how we would set that up:
 ```javascript
 const { Text, Select, Checkbox, Password } = require('@keystonejs/fields');
 
-const keystone = // ...
+const keystone = new Keystone({...})
 
-// Setup the Authentication Strategy.
-// See /guides/authentication for more
-const authStrategy = // ...
+// Setup the authentication strategy
+const authStrategy = keystone.createAuthStrategy({...})
 
 keystone.createList('User', {
   access: {
