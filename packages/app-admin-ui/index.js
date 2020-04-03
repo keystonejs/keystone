@@ -162,7 +162,7 @@ class AdminUIApp {
         // For private pages, we want to redirect back to signin page
         'text/html': () => {
           const isPublicUrl = this.publicPaths.includes(req.originalUrl);
-          if (!isPublicUrl && !this.isAccessAllowed(req)) {
+          if (!isPublicUrl && !this.isAccessAllowed(req) && !req.user) {
             return res.redirect(this.routes.signinPath);
           }
           next();
