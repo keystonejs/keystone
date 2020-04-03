@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, useMemo, useState, useEffect, useRef } from 'react';
+import { Fragment, useMemo, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
