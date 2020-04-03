@@ -10,8 +10,6 @@ import { jsx } from '@emotion/core';
 import { SkipNavContent } from '@reach/skip-nav';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
-import 'intersection-observer';
-
 import { Layout, Content } from '../templates/layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
@@ -134,11 +132,6 @@ const observerOptions = {
   rootMargin: '0px',
   threshold: 1.0,
 };
-const canUseDOM = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
-);
 
 const TableOfContents = ({ container, headings, editUrl }) => {
   let allIds = headings.map(h => h.id);
@@ -147,7 +140,7 @@ const TableOfContents = ({ container, headings, editUrl }) => {
 
   // observe relevant headings
   useEffect(() => {
-    if (container && canUseDOM) {
+    if (container) {
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const targetId = entry.target.getAttribute('id');
