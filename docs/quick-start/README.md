@@ -1,19 +1,13 @@
 <!--[meta]
 section: quick-start
-title: Getting Started
+title: Getting started
 order: 1
 slug: /quick-start/
 [meta]-->
 
-# Getting Started
-
-## Your first KeystoneJS app in 5 minutes.
+# Getting started
 
 This quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of Keystone!
-
-![Screenshot of KeystoneJS Todo App](./img/to-do-app-example.png)
-
-<br/>
 
 ## Requirements
 
@@ -34,13 +28,9 @@ All set? Great, let's get started!
 
 To create a new Keystone application, run the following commands in your terminal:
 
-```sh
+```shell allowCopy=false showLanguage=false
 npm init keystone-app my-app
-```
-
-or with yarn:
-
-```sh
+# or
 yarn create keystone-app my-app
 ```
 
@@ -50,49 +40,39 @@ You'll be prompted with a few questions:
 2. **Select a starter project.** Select the `Todo` application if you wish to follow this guide.
 3. **Select an adapter.** Choose `Mongoose` if you're running a MongoDB database and `Knex` if you're running a PostgreSQL one.
 
-Wait a few minutes for all the project dependencies to install. Once that's finished, run this:
+Wait until all the project dependencies are installed, then run:
 
-```sh
-cd my-app
-npm run dev
+```shell allowCopy=false showLanguage=false
+cd my-app   # This changes directory
+npm run dev # This starts the development server
 ```
 
-## Congratulations! 🎉
+If you run into database related errors at this stage, follow the [Database Setup and Adapters](/docs/quick-start/adapters.md) instructions.
+
+## Summary
 
 You are now running your very own Keystone application! Here's what you get out of the box:
 
-### A simple todo application
+### Application
 
-Your app is up and running at the following URL:
+Your simple todo application is up and running:
 
-<pre>
-	<code>
-		<a href="http://localhost:3000">http://localhost:3000</a>
-	</code>
-</pre>
+- [http://localhost:3000](http://localhost:3000)
 
-### An Admin UI for content management
+### Admin UI
 
 Your application also has an Admin UI, which lets you directly manipulate the data in your database:
 
-<pre>
-	<code>
-		<a href="http://localhost:3000/admin/">http://localhost:3000/admin</a>
-	</code>
-</pre>
+- [http://localhost:3000/admin](http://localhost:3000/admin)
 
-### A GraphQL API
+### GraphQL API
 
 Both your application and the Admin UI are powered by a GraphQL API.
 Keystone provides a web interface for this API at this URL:
 
-<pre>
-	<code>
-		<a href="http://localhost:3000/admin/graphiql">http://localhost:3000/admin/graphiql</a>
-	</code>
-</pre>
+- [http://localhost:3000/admin/graphiql](http://localhost:3000/admin/graphiql)
 
-## What next?
+## Next steps
 
 This todo app is a good introduction to Keystone, but chances are you'll want to build something a bit more complex and secure than that!
 

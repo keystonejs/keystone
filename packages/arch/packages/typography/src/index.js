@@ -27,13 +27,9 @@ export const PageTitle = styled.h1({
   marginTop: '1.0rem',
 });
 
-export const Truncate = ({ as: Tag, ...props }) => <Tag css={truncate} {...props} />;
+export const Truncate = ({ as: Tag = 'div', ...props }) => <Tag css={truncate} {...props} />;
 
-Truncate.defaultProps = {
-  as: 'div',
-};
-
-export const Title = ({ as: Tag, crop, margin, ...props }) => {
+export const Title = ({ as: Tag = 'h3', crop = false, margin = 'none', ...props }) => {
   const gutter = gridSize * 3;
   const margins = {
     none: { margin: 0 },
@@ -58,12 +54,6 @@ export const Title = ({ as: Tag, crop, margin, ...props }) => {
   );
 };
 
-Title.defaultProps = {
-  as: 'h3',
-  crop: false,
-  margin: 'none',
-};
-
 export const Kbd = styled.kbd({
   backgroundColor: colors.N05,
   border: `1px solid ${colors.N20}`,
@@ -81,7 +71,7 @@ export const Kbd = styled.kbd({
   whiteSpace: 'nowrap',
 });
 
-export const A11yText = ({ tag: Tag, ...props }) => (
+export const A11yText = ({ tag: Tag = 'span', ...props }) => (
   <Tag
     css={{
       border: 0,
@@ -96,6 +86,3 @@ export const A11yText = ({ tag: Tag, ...props }) => (
     {...props}
   />
 );
-A11yText.defaultProps = {
-  tag: 'span',
-};

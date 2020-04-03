@@ -1,23 +1,20 @@
 <!--[meta]
 section: api
-title: Query Validation
+title: Query validation
 order: 6
 [meta]-->
 
-# Query Validation
+# Query validation
 
 Stop maliciously complex or invalid queries against your `Keystone` instance.
 
 ```javascript
 const { validation } = require('@keystonejs/app-graphql');
 
-// ...
-
 const app = new GraphQLApp({
   apollo: {
     validationRules: [validation.depthLimit(3)],
   },
-  ...otherOptions,
 });
 ```
 

@@ -10,18 +10,15 @@ import { format } from 'date-fns';
 
 import Layout from '../../templates/layout';
 import Header from '../../components/header';
+import { Banner } from '../../components/banner';
+import { withApollo } from '../../lib/apollo';
 
 /** @jsx jsx */
 
 const ADD_COMMENT = gql`
-  mutation AddComment($body: String!, $author: ID!, $postId: ID!, $posted: DateTime!) {
+  mutation AddComment($body: String!, $postId: ID!, $posted: DateTime!) {
     createComment(
-      data: {
-        body: $body
-        author: { connect: { id: $author } }
-        originalPost: { connect: { id: $postId } }
-        posted: $posted
-      }
+      data: { body: $body, originalPost: { connect: { id: $postId } }, posted: $posted }
     ) {
       id
       body
@@ -62,12 +59,6 @@ const ALL_QUERIES = gql`
         }
       }
       posted
-    }
-
-    allUsers {
-      name
-      email
-      id
     }
   }
 `;
@@ -117,88 +108,107 @@ const Comments = ({ data }) => (
   </div>
 );
 
-const AddComments = ({ users, post }) => {
-  let user = users.filter(u => u.email == 'user@keystonejs.com')[0];
+const AddComments = ({ post }) => {
   let [comment, setComment] = useState('');
 
-  const [createComment] = useMutation(ADD_COMMENT, {
-    update: (cache, { data: data }) => {
-      const { allComments, allUsers, allPosts } = cache.readQuery({
-        query: ALL_QUERIES,
-        variables: { slug: post.slug },
-      });
+  const { data, loading: userLoading, error: userError } = useQuery(gql`
+    query {
+      authenticatedUser {
+        id
+      }
+    }
+  `);
 
-      cache.writeQuery({
-        query: ALL_QUERIES,
-        variables: { slug: post.slug },
-        data: {
-          allPosts,
-          allUsers,
-          allComments: allComments.concat([data.createComment]),
-        },
-      });
-    },
+  const [createComment, { loading: savingComment, error: saveError }] = useMutation(ADD_COMMENT, {
+    refetchQueries: ['AllQueries'],
   });
+
+  const loggedIn = !userLoading && !!data.authenticatedUser;
+  const formDisabled = !loggedIn || savingComment;
+  const error = userError || saveError;
 
   return (
     <div>
       <h2>Add new Comment</h2>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
 
-          createComment({
-            variables: {
-              body: comment,
-              author: user.id,
-              postId: post.id,
-              posted: new Date(),
-            },
-          });
+      {userLoading ? (
+        <p>loading...</p>
+      ) : (
+        <>
+          {error && (
+            <Banner style={'error'}>
+              <strong>Whoops!</strong> Something has gone wrong
+              <br />
+              {error.message || userError.toString()}
+            </Banner>
+          )}
+          {!loggedIn && (
+            <Banner style={'error'}>
+              <a href="/signin" as="/signin">
+                Sign In
+              </a>{' '}
+              to leave a comment.
+            </Banner>
+          )}
+          <form
+            onSubmit={e => {
+              e.preventDefault();
 
-          setComment('');
-        }}
-      >
-        <textarea
-          type="text"
-          placeholder="Write a comment"
-          name="comment"
-          css={{
-            padding: 12,
-            fontSize: 16,
-            width: '100%',
-            height: 60,
-            border: 0,
-            borderRadius: 6,
-            resize: 'none',
-          }}
-          value={comment}
-          onChange={event => {
-            setComment(event.target.value);
-          }}
-        />
+              createComment({
+                variables: {
+                  body: comment,
+                  postId: post.id,
+                  posted: new Date(),
+                },
+              });
 
-        <input
-          type="submit"
-          value="Submit"
-          css={{
-            padding: '6px 12px',
-            borderRadius: 6,
-            background: 'hsl(200, 20%, 50%)',
-            fontSize: '1em',
-            color: 'white',
-            border: 0,
-            marginTop: 6,
-          }}
-        />
-      </form>
+              setComment('');
+            }}
+          >
+            <textarea
+              type="text"
+              placeholder="Write a comment"
+              name="comment"
+              disabled={formDisabled}
+              css={{
+                padding: 12,
+                fontSize: 16,
+                width: '100%',
+                height: 60,
+                border: 0,
+                borderRadius: 6,
+                resize: 'none',
+              }}
+              value={comment}
+              onChange={event => {
+                setComment(event.target.value);
+              }}
+            />
+
+            <input
+              type="submit"
+              value="Submit"
+              disabled={formDisabled}
+              css={{
+                padding: '6px 12px',
+                borderRadius: 6,
+                background: 'hsl(200, 20%, 50%)',
+                fontSize: '1em',
+                color: 'white',
+                border: 0,
+                marginTop: 6,
+              }}
+            />
+          </form>
+        </>
+      )}
     </div>
   );
 };
 
 const Render = ({ children }) => children();
 
-const PostPage = ({ slug }) => {
+const PostPage = withApollo(({ slug }) => {
   const { data, loading, error } = useQuery(ALL_QUERIES, { variables: { slug } });
 
   return (
@@ -248,7 +258,7 @@ const PostPage = ({ slug }) => {
 
                 <Comments data={data} />
 
-                <AddComments post={post} users={data.allUsers} />
+                <AddComments post={post} />
               </>
             );
           }}
@@ -256,7 +266,7 @@ const PostPage = ({ slug }) => {
       </div>
     </Layout>
   );
-};
+});
 
 PostPage.getInitialProps = ({ query: { slug } }) => ({ slug });
 

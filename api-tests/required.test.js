@@ -1,15 +1,12 @@
-const fs = require('fs');
-const path = require('path');
 const cuid = require('cuid');
+const globby = require('globby');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
 
 describe('Test isRequired flag for all field types', () => {
-  const typesLoc = path.resolve('packages/fields/src/types');
-  const testModules = fs
-    .readdirSync(typesLoc)
-    .map(name => `${typesLoc}/${name}/filterTests.js`)
-    .filter(filename => fs.existsSync(filename));
+  const testModules = globby.sync(`packages/fields/src/types/**/test-fixtures.js`, {
+    absolute: true,
+  });
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {
       testModules.map(require).forEach(mod => {

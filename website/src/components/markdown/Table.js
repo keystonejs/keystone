@@ -76,7 +76,6 @@ export const Table = props => {
           css={{
             borderCollapse: 'collapse',
             borderSpacing: 0,
-            fontSize: '0.9rem',
             whiteSpace: 'nowrap',
             width: '100%',
 
@@ -88,8 +87,13 @@ export const Table = props => {
               '&:not(:first-of-type)': {
                 paddingLeft: gridSize,
               },
+
               '&:not(:last-of-type)': {
                 paddingRight: gridSize,
+              },
+
+              '&:last-of-type': {
+                whiteSpace: 'normal',
               },
 
               '&[align="right"]': {

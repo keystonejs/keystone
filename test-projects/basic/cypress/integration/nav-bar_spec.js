@@ -11,7 +11,7 @@ describe('Nav Bar', () => {
     { text: 'Post Categories', target: '/admin/post-categories' },
     {
       text: 'GitHub',
-      target: 'https://github.com/keystonejs/keystone-5',
+      target: 'https://github.com/keystonejs/keystone',
       newTab: true,
     },
     { text: 'Graphiql', target: '/admin/graphiql', newTab: true },

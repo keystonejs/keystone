@@ -22,11 +22,8 @@ const {
   validateCustomAccessControl,
   validateAuthAccessControl,
 } = require('@keystonejs/access-control');
-const {
-  startAuthedSession,
-  endAuthedSession,
-  commonSessionMiddleware,
-} = require('@keystonejs/session');
+const { SessionManager } = require('@keystonejs/session');
+const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
 
 const {
   unmergeRelationships,
@@ -35,12 +32,7 @@ const {
 } = require('./relationship-utils');
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
-const {
-  CustomProvider,
-  ListAuthProvider,
-  ListCRUDProvider,
-  VersionProvider,
-} = require('../providers');
+const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
 module.exports = class Keystone {
   constructor({
@@ -69,10 +61,12 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._schemas = {};
-    this._cookieSecret = cookieSecret;
-    this._secureCookies = secureCookies;
-    this._cookieMaxAge = cookieMaxAge;
-    this._sessionStore = sessionStore;
+    this._sessionManager = new SessionManager({
+      cookieSecret,
+      secureCookies,
+      cookieMaxAge,
+      sessionStore,
+    });
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
@@ -82,12 +76,16 @@ module.exports = class Keystone {
     this._customProvider = new CustomProvider({
       schemaNames,
       defaultAccess: this.defaultAccess,
-      buildQueryHelper: this._buildQueryHelper,
+      buildQueryHelper: this._buildQueryHelper.bind(this),
     });
     this._providers = [
       this._listCRUDProvider,
       this._customProvider,
-      new VersionProvider({ appVersion, schemaNames }),
+      new AppVersionProvider({
+        version: appVersion.version,
+        access: appVersion.access,
+        schemaNames,
+      }),
     ];
 
     if (adapters) {
@@ -116,13 +114,6 @@ module.exports = class Keystone {
         'Attempted to execute keystone.query() before keystone.prepare() has completed.'
       );
     };
-  }
-
-  getCookieSecret() {
-    if (!this._cookieSecret) {
-      throw new Error('No cookieSecret set in Keystone constructor');
-    }
-    return this._cookieSecret;
   }
 
   _executeOperation({
@@ -222,11 +213,7 @@ module.exports = class Keystone {
 
     return {
       schemaName,
-      startAuthedSession: ({ item, list }, audiences) =>
-        startAuthedSession(req, { item, list }, audiences, this._cookieSecret),
-      endAuthedSession: endAuthedSession.bind(null, req),
-      authedItem: req.user,
-      authedListKey: req.authedListKey,
+      ...this._sessionManager.getContext(req),
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
@@ -374,6 +361,8 @@ module.exports = class Keystone {
         `${left.listKey}.${left.path} refers to a non-existant field, ${left.config.ref}`
       );
     }
+
+    return Object.values(rels);
   }
 
   /**
@@ -381,11 +370,14 @@ module.exports = class Keystone {
    */
   connect() {
     const { adapters, name } = this;
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name }))).then(() => {
-      if (this.eventHandlers.onConnect) {
-        return this.eventHandlers.onConnect(this);
+    const rels = this._consolidateRelationships();
+    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels }))).then(
+      () => {
+        if (this.eventHandlers.onConnect) {
+          return this.eventHandlers.onConnect(this);
+        }
       }
-    });
+    );
   }
 
   /**
@@ -509,31 +501,14 @@ module.exports = class Keystone {
     return mergeRelationships(createdItems, createdRelationships);
   }
 
-  async prepare({
-    dev = false,
-    apps = [],
-    distDir,
-    pinoOptions,
-    cors = { origin: true, credentials: true },
-  } = {}) {
-    this._consolidateRelationships();
-    const middlewares = flattenDeep([
-      this.appVersion.addVersionToHttpHeaders &&
-        ((req, res, next) => {
-          res.set('X-Keystone-App-Version', this.appVersion.version);
-          next();
-        }),
+  async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
+    return flattenDeep([
+      this.appVersion.addVersionToHttpHeaders && appVersionMiddleware(this.appVersion.version),
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
       // TODO: set up a session test rig (maybe by wrapping an in-memory store)
-      commonSessionMiddleware({
-        keystone: this,
-        cookieSecret: this._cookieSecret,
-        sessionStore: this._sessionStore,
-        secureCookies: this._secureCookies,
-        cookieMaxAge: this._cookieMaxAge,
-      }),
+      this._sessionManager.getSessionMiddleware({ keystone: this }),
       falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
       cors && createCorsMiddleware(cors),
       ...(await Promise.all(
@@ -557,6 +532,16 @@ module.exports = class Keystone {
           )
       )),
     ]).filter(middleware => !!middleware);
+  }
+
+  async prepare({
+    dev = false,
+    apps = [],
+    distDir,
+    pinoOptions,
+    cors = { origin: true, credentials: true },
+  } = {}) {
+    const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
 
     // Now that the middlewares are done, it's safe to assume all the schemas
     // are registered, so we can setup our query helper

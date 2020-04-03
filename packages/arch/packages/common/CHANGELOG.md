@@ -1,5 +1,14 @@
 # @arch-ui/common
 
+## 0.0.11
+
+### Patch Changes
+
+- [`c49fe40d`](https://github.com/keystonejs/keystone/commit/c49fe40d39719bc0e11db9e6b6340a2b80fbcf99) [#2519](https://github.com/keystonejs/keystone/pull/2519) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed some letters being cut off in input fields.
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+
 ## 0.0.10
 
 ### Patch Changes
@@ -32,25 +41,25 @@
 
 ## 0.0.6
 
-- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
   - @arch-ui/theme@0.0.5
 
 ## 0.0.5
 
 ### Patch Changes
 
-- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
 
   Minor Admin UI Tweaks
 
 ## 0.0.4
 
-- Updated dependencies [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- Updated dependencies [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
   - @arch-ui/theme@0.0.4
 
 ## 0.0.3
 
-- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- [patch][e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
 
   - admin revamp
 

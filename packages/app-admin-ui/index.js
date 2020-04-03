@@ -66,9 +66,7 @@ class AdminUIApp {
 
     return (
       req.user &&
-      this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } }) &&
-      req.session.audiences &&
-      req.session.audiences.includes('admin')
+      this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } })
     );
   }
 
@@ -80,8 +78,6 @@ class AdminUIApp {
     // Short-circuit GET requests when the user already signed in (avoids
     // downloading UI bundle, doing a client side redirect, etc)
     app.get(signinPath, (req, res, next) =>
-      // This session is currently authenticated as part of the 'admin'
-      // audience.
       this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
     );
 
