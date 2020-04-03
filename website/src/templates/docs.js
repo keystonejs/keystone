@@ -202,7 +202,7 @@ const TableOfContents = ({ container, headings, editUrl }) => {
               >
                 <a
                   css={{
-                    color: h.depth === 2 || isActive ? colors.N80 : colors.N60,
+                    color: isActive ? colors.N100 : h.depth === 2 ? colors.N80 : colors.N60,
                     display: 'block',
                     fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                     fontWeight: isActive ? '500' : 'normal',
