@@ -85,7 +85,8 @@ export class Select extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    return { ...meta, options: this.options };
+    const { options, dataType } = this;
+    return { ...meta, options, dataType };
   }
   gqlQueryInputFields() {
     // TODO: This could be extended for Int type options with numeric filters
