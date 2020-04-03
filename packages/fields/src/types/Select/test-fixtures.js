@@ -12,6 +12,7 @@ export const getTestFields = () => {
     name: { type: Text }, // Provide a field to sort on
     company: {
       type: Select,
+      dataType: 'enum',
       options: [
         { label: 'Thinkmill', value: 'thinkmill' },
         { label: 'Atlassian', value: 'atlassian' },
@@ -60,7 +61,7 @@ export const filterTests = withKeystone => {
     });
 
   test(
-    'No filter',
+    'No filter (dataType: enum)',
     withKeystone(({ keystone }) =>
       match(keystone, undefined, [
         { company: 'thinkmill', name: 'a' },
@@ -106,7 +107,7 @@ export const filterTests = withKeystone => {
   );
 
   test(
-    'Filter: company',
+    'Filter: company (dataType: enum)',
     withKeystone(({ keystone }) =>
       match(keystone, 'where: { company: thinkmill }', [{ company: 'thinkmill', name: 'a' }])
     )
@@ -143,7 +144,7 @@ export const filterTests = withKeystone => {
   );
 
   test(
-    'Filter: company_not',
+    'Filter: company_not (dataType: enum)',
     withKeystone(({ keystone }) =>
       match(keystone, 'where: { company_not: thinkmill }', [
         { company: 'atlassian', name: 'b' },
@@ -184,7 +185,7 @@ export const filterTests = withKeystone => {
   );
 
   test(
-    'Filter: company_in',
+    'Filter: company_in (dataType: enum)',
     withKeystone(({ keystone }) =>
       match(keystone, 'where: { company_in: [ atlassian, gelato ] }', [
         { company: 'atlassian', name: 'b' },
@@ -224,7 +225,7 @@ export const filterTests = withKeystone => {
   );
 
   test(
-    'Filter: company_not_in',
+    'Filter: company_not_in (dataType: enum)',
     withKeystone(({ keystone }) =>
       match(keystone, 'where: { company_not_in: [ atlassian, gelato ] }', [
         { company: 'thinkmill', name: 'a' },
