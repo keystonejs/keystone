@@ -5,6 +5,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
+const {URLSearchParams} = require('url');
 const fallback = require('express-history-api-fallback');
 
 const getWebpackConfig = require('./server/getWebpackConfig');
@@ -137,10 +138,10 @@ class AdminUIApp {
 
     app.use(this.routes.signinPath, (req, res, next) => {
       if (this.isAccessAllowed(req)) {
-        return res.redirect(this.adminPath)
+        return res.redirect(req.query.redirect || this.adminPath);
       }
       if (req.user) {
-        return res.redirect('/')
+        return res.redirect(req.query.redirect || '/');
       }
       next()
     });
@@ -161,9 +162,9 @@ class AdminUIApp {
         },
         // For private pages, we want to redirect unauthenticated users back to signin page
         'text/html': () => {
-          const isPublicUrl = this.publicPaths.includes(req.originalUrl);
+          const isPublicUrl = this.publicPaths.includes(`${adminPath}${req.path}`);
           if (!isPublicUrl && !this.isAccessAllowed(req) && !req.user) {
-            return res.redirect(this.routes.signinPath);
+            return res.redirect(`${this.routes.signinPath}?${new URLSearchParams({redirect: req.originalUrl})}`);
           }
           next();
         },
