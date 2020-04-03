@@ -10,6 +10,8 @@ import { jsx } from '@emotion/core';
 import { SkipNavContent } from '@reach/skip-nav';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
+require('intersection-observer');
+
 import { Layout, Content } from '../templates/layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';

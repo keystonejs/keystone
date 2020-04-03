@@ -46,6 +46,7 @@
     "get-workspaces": "^0.5.0",
     "github-slugger": "^1.2.1",
     "gray-matter": "^4.0.2",
+    "intersection-observer": "^0.7.0",
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "lodash.throttle": "^4.1.1",
