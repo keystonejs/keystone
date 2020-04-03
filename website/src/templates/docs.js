@@ -51,7 +51,9 @@ export default function Template({
 
   let sluggedHeadings = useMemo(() => {
     slugger.reset();
-    return headings.map(h => ({ ...h, id: slugger.slug(h.value) }));
+    return headings
+      .filter(h => h.depth > 1 && h.depth < 4)
+      .map(h => ({ ...h, id: slugger.slug(h.value) }));
   }, [headings]);
 
   return (
@@ -123,7 +125,7 @@ export default function Template({
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
-function getVisible(allIds, targetId) {
+function sortVisible(allIds, targetId) {
   return ids => [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
 }
 let observerOptions = {
@@ -132,7 +134,7 @@ let observerOptions = {
 };
 
 const TableOfContents = ({ container, headings, editUrl }) => {
-  let allIds = headings.filter(h => h.depth > 1 && h.depth < 4).map(h => h.id);
+  let allIds = headings.map(h => h.id);
   let [visibleIds, setVisibleIds] = useState([]);
   let [lastVisibleId, setLastVisbleId] = useState('');
 
@@ -140,7 +142,7 @@ const TableOfContents = ({ container, headings, editUrl }) => {
     entries.forEach(entry => {
       const targetId = entry.target.getAttribute('id');
       if (entry.isIntersecting && entry.intersectionRatio === 1) {
-        setVisibleIds(getVisible(allIds, targetId));
+        setVisibleIds(sortVisible(allIds, targetId));
         setLastVisbleId(targetId);
       } else {
         setVisibleIds(ids => ids.filter(id => id !== targetId));
@@ -191,42 +193,40 @@ const TableOfContents = ({ container, headings, editUrl }) => {
         On this page
       </h4>
       <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {headings
-          .filter(h => h.depth > 1 && h.depth < 4)
-          .map((h, i) => {
-            let isActive = activeId === h.id;
-            return (
-              <li
-                key={h.value + i}
+        {headings.map((h, i) => {
+          let isActive = activeId === h.id;
+          return (
+            <li
+              key={h.value + i}
+              css={{
+                // increase specificity to element - avoid `!important` declaration
+                // override CSS targeting LI elements from `<Content/>`
+                'li&': { lineHeight: 1.4 },
+              }}
+            >
+              <a
                 css={{
-                  // increase specificity to element - avoid `!important` declaration
-                  // override CSS targeting LI elements from `<Content/>`
-                  'li&': { lineHeight: 1.4 },
+                  color: isActive ? colors.B.base : h.depth === 2 ? colors.N80 : colors.N60,
+                  display: 'block',
+                  fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
+                  fontWeight: isActive ? '500' : 'normal',
+                  paddingLeft: h.depth === 3 ? '0.5rem' : null,
+
+                  // prefer padding an anchor, rather than margin on list-item, to increase hit area
+                  paddingBottom: '0.4em',
+                  paddingTop: '0.4em',
+
+                  ':hover': {
+                    color: colors.B.base,
+                  },
                 }}
+                href={`#${h.id}`}
               >
-                <a
-                  css={{
-                    color: isActive ? colors.B.base : h.depth === 2 ? colors.N80 : colors.N60,
-                    display: 'block',
-                    fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
-                    fontWeight: isActive ? '500' : 'normal',
-                    paddingLeft: h.depth === 3 ? '0.5rem' : null,
-
-                    // prefer padding an anchor, rather than margin on list-item, to increase hit area
-                    paddingBottom: '0.4em',
-                    paddingTop: '0.4em',
-
-                    ':hover': {
-                      color: colors.B.base,
-                    },
-                  }}
-                  href={`#${h.id}`}
-                >
-                  {h.value}
-                </a>
-              </li>
-            );
-          })}
+                {h.value}
+              </a>
+            </li>
+          );
+        })}
       </ul>
       <EditSection>
         {/* <p>
