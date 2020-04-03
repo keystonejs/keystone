@@ -87,6 +87,9 @@ class ListCRUDProvider {
     const firstClassLists = this.lists.filter(list => !list.isAuxList);
     return flatten(firstClassLists.map(list => list.getGqlMutations({ schemaName })));
   }
+  getSubscriptions({}) {
+    return [];
+  }
 
   getTypeResolvers({ schemaName }) {
     const queryMetaResolver = {
@@ -161,6 +164,9 @@ class ListCRUDProvider {
       ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
       ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
     };
+  }
+  getSubscriptionResolvers({}) {
+    return {};
   }
 }
 

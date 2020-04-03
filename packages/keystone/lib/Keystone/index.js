@@ -320,8 +320,8 @@ module.exports = class Keystone {
     return list;
   }
 
-  extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
-    return this._customProvider.extendGraphQLSchema({ types, queries, mutations });
+  extendGraphQLSchema({ types = [], queries = [], mutations = [], subscriptions = [] }) {
+    return this._customProvider.extendGraphQLSchema({ types, queries, mutations, subscriptions });
   }
 
   _consolidateRelationships() {
@@ -422,6 +422,10 @@ module.exports = class Keystone {
   getTypeDefs({ schemaName }) {
     const queries = unique(flatten(this._providers.map(p => p.getQueries({ schemaName }))));
     const mutations = unique(flatten(this._providers.map(p => p.getMutations({ schemaName }))));
+    const subscriptions = unique(
+      flatten(this._providers.map(p => p.getSubscriptions({ schemaName })))
+    );
+
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGqlAuxTypes()` method, it will be
     // duplicated.
@@ -431,6 +435,7 @@ module.exports = class Keystone {
       ...unique(flatten(this._providers.map(p => p.getTypes({ schemaName })))),
       queries.length > 0 && `type Query { ${queries.join('\n')} }`,
       mutations.length > 0 && `type Mutation { ${mutations.join('\n')} }`,
+      subscriptions.length > 0 && `type Subscription { ${subscriptions.join('\n')} }`,
     ]
       .filter(s => s)
       .map(s => print(gql(s)));
@@ -439,8 +444,8 @@ module.exports = class Keystone {
   getResolvers({ schemaName }) {
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
-    // - first one wins)
-    // TODO: Document this order of precendence, because it's not obvious, and
+    // - last one wins)
+    // TODO: Document this order of precedence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
     return filterValues(
@@ -450,6 +455,9 @@ module.exports = class Keystone {
         ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
         Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
         Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
+        Subscription: objMerge(
+          this._providers.map(p => p.getSubscriptionResolvers({ schemaName }))
+        ),
       },
       o => Object.entries(o).length > 0
     );
