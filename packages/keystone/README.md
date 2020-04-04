@@ -267,21 +267,23 @@ Extends keystones generated schema with custom types, queries, and mutations.
 
 ```javascript
 keystone.extendGraphQLSchema({
-  types: [{ type: 'type FooBar { foo: Int, bar: Float }' }],
+  types: [{ type: 'type MyType { original: Int, double: Float }' }],
   queries: [
     {
-      schema: 'double(x: Int): Int',
-      resolver: (_, { x }) => 2 * x,
+      schema: 'double(x: Int): MyType',
+      resolver: (_, { x }) => ({ original: x, double: 2.0 * x }),
     },
   ],
   mutations: [
     {
-      schema: 'double(x: Int): Int',
-      resolver: (_, { x }) => 2 * x,
+      schema: 'triple(x: Int): Int',
+      resolver: (_, { x }) => 3 * x,
     },
   ],
 });
 ```
+
+See the [Custom schema guide](https://www.keystonejs.com/guides/custom-schema) for more information on utilizing custom schema.
 
 #### Config
 
@@ -291,19 +293,30 @@ keystone.extendGraphQLSchema({
 | queries   | `array` | A list of objects of the form { schema, resolver, access }.                                  |
 | mutations | `array` | A list of objects of the form { schema, resolver, access }.                                  |
 
-The `schema` for both queries and mutations should be a string defining the graphQL schema element for the query/mutation, e.g.
+- The `schema` for both queries and mutations should be a string defining the graphQL schema element for the query/mutation, e.g.
 
 ```javascript
 {
-  schema: 'getBestPosts(author: ID!): [Post]';
+  schema: 'getBestPosts(author: ID!): [Post]',
 }
 ```
 
-The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info, extra)`.
+- The `resolver` for both queries and mutations should be a resolver function with following signature:
 
-For more information about the first 4 arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains 2 properties: `query` and `access`. `query` is an executable function for running a query, while `access` provides access control information about the current user.
+```javascript
+{
+  resolver: (obj, args, context, info, extra) => {},
+}
+```
 
-The `access` argument for `types`, `queries`, and `mutations` are all boolean values which are used at schema generation time to include or exclude the item from the schema.
+For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains the following properties:
+
+| Name     | Description                                        |
+| -------- | -------------------------------------------------- |
+| `query`  | An executable helper function for running a query. |
+| `access` | Access control information about the current user. |
+
+- The `access` argument for `types`, `queries`, and `mutations` are all boolean values which are used at schema generation time to include or exclude the item from the schema.
 
 ### `prepare(config)`
 
