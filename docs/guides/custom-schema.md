@@ -218,11 +218,16 @@ Now add the query alongside our custom type and mutation. Note that custom queri
 And finally, to define our query's resolver:
 
 ```javascript
-const handleCheckPageViews = async (_, { id, threshold }) => {
-  const list = keystone.lists.Page;
-  const item = await list.adapter.findById(id);
+const handleCheckPageViews = async (_, { id, threshold }, _, _, { query }) => {
+  const {
+    data: { views },
+  } = await query(`
+    Post(where: { id: "${id}" }) {
+      views
+    }
+  `);
 
-  return item.views > threshold;
+  return views > threshold;
 };
 ```
 
@@ -230,7 +235,7 @@ const handleCheckPageViews = async (_, { id, threshold }) => {
 
 As you can see, custom schema can be used to augment Keystone's existing GraphQL functionality in various ways. Custom mutations can be used for actions like incrementation that require a single operation that should not rely on data from the client, but they can also be used for operations that have side effects not related to updating lists.
 
-> **Reminder:** This this example, we used a custom mutation to increase the reliability of operations like incrementation because client requests can be received out of order.
+> **Reminder:** We used a custom mutation to increase the reliability of operations like incrementation because client requests can be received out of order.
 
 Whilst a custom mutation is a huge improvement over a two-step query-then-mutate solution, it is not completely transactional in every situation. The `incrementPageViews` function is asynchronous. This means it awaits database operations like `findById` and `update`. Depending on your server environment database operations, just like http requests, can be returned in a different order than executed in JavaScript.
 
