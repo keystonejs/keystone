@@ -21,7 +21,7 @@ First let's define a `Page` list. For the sake of simplicity, we'll give it only
 ```js title=/lists/Page.js
 const { Text, Integer } = require('@keystonejs/fields');
 
-keystone.createList('Page', {
+const pageList = keystone.createList('Page', {
   fields: {
     title: { type: Text },
     views: { type: Integer },
@@ -61,9 +61,9 @@ Like any problem, there are multiple solutions. You could implement an increment
 
 For this example, we will be adding three things to Keystone's GraphQL schema:
 
-1. A custom **type** which will be returned by our mutation.
-2. A custom **mutation** which will increment the page views.
-3. A custom **query** which will check if the current page views are over a certain threshold.
+1. A custom [**type**](#custom-type) which will be returned by our mutation.
+2. A custom [**mutation**](#custom-mutation) which will increment the page views.
+3. A custom [**query**](#custom-query) which will check if the current page views are over a certain threshold.
 
 > **Note:** This custom query is somewhat superfluous; you could just query the page directly and check the views client-side. However, it serves to illustrate how custom queries are set up.
 
@@ -117,7 +117,7 @@ Now, to wire it in:
 +  mutations: [
 +    {
 +      schema: 'incrementPageViews(id: ID!): IncrementPageViewsOutput',
-+      resolver: handleIncrementPageViews,
++      resolver: incrementPageViews,
 +    },
 +  ],
  });
@@ -131,7 +131,8 @@ Let's define the resolver function:
 
 ```javascript title=/lists/Page.js
 const incrementPageViews = async (_, { id }) => {
-  const { adapter } = keystone.lists.Page;
+  // pageList was defined above when we created the Page list
+  const { adapter } = pageList;
 
   const oldItem = await adapter.findById(id);
   const newItem = await adapter.update(id, {
@@ -181,13 +182,13 @@ Add the query alongside our custom type and mutation. Note that custom queries t
    mutations: [
      {
        schema: 'incrementPageViews(id: ID!): IncrementPageViewsOutput',
-       resolver: handleIncrementPageViews,
+       resolver: incrementPageViews,
      },
    ],
 +  queries: [
 +    {
 +      schema: 'pageViewsOver(id: ID!, threshold: Integer!): Boolean',
-+      resolver: handleCheckPageViews,
++      resolver: pageViewsOver,
 +    },
 +  ],
  });
@@ -196,7 +197,7 @@ Add the query alongside our custom type and mutation. Note that custom queries t
 And finally, define our query's resolver:
 
 ```javascript
-const handleCheckPageViews = async (_, { id, threshold }, _, _, { query }) => {
+const pageViewsOver = async (_, { id, threshold }, _, _, { query }) => {
   const {
     data: { views },
   } = await query(`
