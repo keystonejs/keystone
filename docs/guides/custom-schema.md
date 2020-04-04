@@ -14,7 +14,7 @@ Adding to Keystone's generated schema can be done using the [`keystone.extendGra
 
 ## The problem
 
-A common situation where custom schema might be beneficial is incrementing a value on a list. Like any problem, there are multiple solutions. You could implement an incrementing value with [Hooks](/docs/guides/hooks.md), but in this example we're going to look at how to do this with a custom mutation.
+A common situation where custom schema would be beneficial is incrementing a value stored in the database.
 
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
@@ -53,19 +53,21 @@ mutation updatePageViews($id: ID!, $views: Int!) {
 
 ### Why is this bad?
 
-The problem with this approach is that the client can update the views with any arbitrary value. Even if there is no deliberate manipulation of the value, the GraphQL server is trusting that the update mutation is received from the same client immediately after the view query. On heavily trafficked sites this will not always be the case. Read and Update requests from multiple clients can be received in any order depending on the speed of their internet connections, which means updates could override one another.
+The problem with this approach is that the client can set the view count to any arbitrary value. Moreover, even if there is no untoward manipulation of the count, the GraphQL server is trusting that the update mutation is received from the same client immediately after the view query. On heavily trafficked sites this will not always be the case. Read and Update requests from multiple clients can be received in any order depending on the speed of their internet connections, which means updates could override one another.
 
-## Setup
+## The solution
+
+Like any problem, there are multiple solutions. You could implement an incrementing value with [Hooks](/docs/guides/hooks.md), but in this example we're going to look at how to do this with a custom GraphQL mutation which will perform the incrementation on the server.
 
 For this example, we will be adding three things to Keystone's GraphQL schema:
 
 1. A custom **type** which will be returned by our mutation.
-2. A custom **mutation** which will actually increment the page views.
+2. A custom **mutation** which will increment the page views.
 3. A custom **query** which will check if the current page views are over a certain threshold.
 
 > **Note:** This custom query is somewhat superfluous; you could just query the page directly and check the views client-side. However, it serves to illustrate how custom queries are set up.
 
-## The type
+### The type
 
 First, let's define what we want our custom GraphQL type to look like:
 
@@ -93,7 +95,7 @@ keystone.extendGraphQLSchema({
 });
 ```
 
-## The mutation
+### The mutation
 
 Now, let's define our custom mutation:
 
@@ -157,7 +159,7 @@ mutation incrementPageViews($id: ID!) {
 }
 ```
 
-### A note on access control
+#### A note on access control
 
 In this mutation, we want to access an existing item in the list. We don't care about access control; in-fact, we will make the field read-only so that it cannot be updated with normal mutations or in the Admin UI. Our new Page definition is:
 
@@ -181,7 +183,7 @@ Our resolver function will bypass access control and update the value directly b
 
 Refer to the [Access control guide](https://www.keystonejs.com/guides/access-control) for more information.
 
-## The query
+### The query
 
 Finally, let's define a custom query that checks if a page's views are over a certain threshold.
 
@@ -189,7 +191,7 @@ Finally, let's define a custom query that checks if a page's views are over a ce
 pageViewsOver(id: ID!, threshold: Integer!): Boolean
 ```
 
-This query is called `pageViewsOver`. It accepts a mandatory `id` argument (just like our mutation) and a `threshold` argument. It will return true if the `Post` with the given id has been views more than `threshold` times, false otherwise.
+This query is called `pageViewsOver`. It accepts a mandatory `id` argument (just like our mutation) and a `threshold` argument. It will return true if the `Post` with the given id has been viewed more than `threshold` times, false otherwise.
 
 Now add the query alongside our custom type and mutation. Note that custom queries take the same `schema` and `resolver` keys as custom mutations.
 
@@ -231,12 +233,14 @@ const handleCheckPageViews = async (_, { id, threshold }, _, _, { query }) => {
 };
 ```
 
+> **Note:** As shown here, resolvers can execute further GraphQL operations of their own.
+
 ## Conclusion
 
 As you can see, custom schema can be used to augment Keystone's existing GraphQL functionality in various ways. Custom mutations can be used for actions like incrementation that require a single operation that should not rely on data from the client, but they can also be used for operations that have side effects not related to updating lists.
 
 > **Reminder:** We used a custom mutation to increase the reliability of operations like incrementation because client requests can be received out of order.
 
-Whilst a custom mutation is a huge improvement over a two-step query-then-mutate solution, it is not completely transactional in every situation. The `incrementPageViews` function is asynchronous. This means it awaits database operations like `findById` and `update`. Depending on your server environment database operations, just like http requests, can be returned in a different order than executed in JavaScript.
+Whilst a custom mutation is a huge improvement over a client-side query-then-mutate solution, it is not completely transactional in every situation. The `incrementPageViews` function is asynchronous. This means it awaits database operations like `findById` and `update`. Depending on your server environment database operations, just like http requests, can be returned in a different order than executed in JavaScript.
 
-In this example we've reduced the window this can occur in from seconds to milliseconds. It's not likely a problem for simple page views but you may want to consider implementing database transactions where accuracy is absolutely critical.
+In this example we've reduced the window this can occur in from seconds to milliseconds. It's not likely a problem for simple page views, but you may want to consider implementing database transactions where accuracy is absolutely critical.
