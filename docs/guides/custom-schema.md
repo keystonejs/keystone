@@ -67,7 +67,7 @@ For this example, we will be adding three things to Keystone's GraphQL schema:
 
 > **Note:** This custom query is somewhat superfluous; you could just query the page directly and check the views client-side. However, it serves to illustrate how custom queries are set up.
 
-### The type
+### Custom type
 
 First, let's define what we want our custom GraphQL type to look like:
 
@@ -78,7 +78,7 @@ type IncrementPageViewsOutput {
   # The new page views after the mutation.
   currentViews: Int!
 
-  # The time and date at which the mutation was executed.
+  # The time and date when the page was viewed.
   timestamp: String!
 }
 ```
@@ -95,15 +95,15 @@ keystone.extendGraphQLSchema({
 });
 ```
 
-### The mutation
+### Custom mutation
 
-Now, let's define our custom mutation:
+Next, let's define our custom mutation to actually handle the view count incrementation:
 
 ```graphql
 incrementPageViews(id: ID!): IncrementPageViewsOutput
 ```
 
-This defines a mutation called `incrementPageViews`that accepts a single mandatory argument called `id` of type `ID` (an internal GraphQL type). This is the id of the specific `Post` whose views you which to increment. Finally, the mutation returns an object of our custom `IncrementPageViewsOutput` type.
+This defines a mutation called `incrementPageViews` that accepts a single mandatory `id` argument of type `ID` (an internal GraphQL type). This is the id of the specific `Post` whose views you which to increment. Finally, the mutation returns an object of our custom `IncrementPageViewsOutput` type.
 
 Now, to wire it in:
 
@@ -123,25 +123,25 @@ Now, to wire it in:
  });
 ```
 
-Custom mutations (and queries) take a `schema` and a `resolver` key. Like with the custom type, `schema` is simply the custom mutation definition, while `resolver` is a function which tells Keystone how to execute this mutation. In our case, it must return a `IncrementPageViewsOutput` object.
+Custom mutations (and queries) take a `schema` and a `resolver` key. Like with the custom type's `type` key, `schema` is simply the custom mutation definition, while `resolver` is a function which tells the GraphQL server how to execute this mutation. In our case, it must return an `IncrementPageViewsOutput` object.
 
 > **Note:** Refer to the [`keystone.extendGraphQLSchema`](/packages/keystone/README.md#extendgraphqlschemaconfig) API documentation for details on the `resolver` function's signature.
 
-Let's define our resolver function:
+Let's define the resolver function:
 
 ```javascript title=/lists/Page.js
 const incrementPageViews = async (_, { id }) => {
-  const list = keystone.lists.Page;
+  const { adapter } = keystone.lists.Page;
 
-  const oldItem = await list.adapter.findById(id);
-  const newItem = await list.adapter.update(id, {
+  const oldItem = await adapter.findById(id);
+  const newItem = await adapter.update(id, {
     ...oldItem,
-    views: (oldItem.views || 0) + 1,
+    views: ++(oldItem.views || 0),
   });
 
   return {
     currentViews: newItem.views,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toUTCString(),
   };
 };
 ```
@@ -159,7 +159,7 @@ mutation incrementPageViews($id: ID!) {
 }
 ```
 
-### The query
+### Custom query
 
 Finally, let's define a custom query that checks if a page's views are over a certain threshold.
 
@@ -167,9 +167,9 @@ Finally, let's define a custom query that checks if a page's views are over a ce
 pageViewsOver(id: ID!, threshold: Integer!): Boolean
 ```
 
-This query is called `pageViewsOver`. It accepts a mandatory `id` argument (just like our mutation) and a `threshold` argument. It will return true if the `Post` with the given id has been viewed more than `threshold` times, false otherwise.
+This defines a query called `pageViewsOver`. It requires two arguments: an `id` (just like our mutation) and an integer `threshold`. It will true if the `Post` with the given id has been viewed more than the specified number of times, false otherwise.
 
-Now add the query alongside our custom type and mutation. Note that custom queries take the same `schema` and `resolver` keys as custom mutations.
+Add the query alongside our custom type and mutation. Note that custom queries take the same `schema` and `resolver` keys as custom mutations.
 
 ```diff title=/lists/Page.js
  keystone.extendGraphQLSchema({
@@ -193,7 +193,7 @@ Now add the query alongside our custom type and mutation. Note that custom queri
  });
 ```
 
-And finally, to define our query's resolver:
+And finally, define our query's resolver:
 
 ```javascript
 const handleCheckPageViews = async (_, { id, threshold }, _, _, { query }) => {
