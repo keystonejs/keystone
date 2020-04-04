@@ -6,29 +6,22 @@ subSection: advanced
 
 # Custom schema
 
-Out of the box Keystone provides predictable CRUD (Create, Read, Update and Delete) operations for [Lists](/docs/guides/schema.md#lists). The generated GraphQL queries and mutations are the primary method for updating data in a List.
+Out of the box, Keystone provides predictable CRUD (Create, Read, Update, Delete) GraphQL operations for [Lists](/docs/guides/schema.md#lists). They are the primary methods for updating list data and should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
 
-## Introduction
-
-The automatically generated GraphQL API should be enough for most applications. However, custom types, queries and mutations may be added if you wish to preform non-CRUD operations.
+> **Hint:** See the [GraphQL philosophy](/docs/guides/graphql-philosophy.md) page for more information on how Keystone implements CRUD operations in GraphQL and when custom schema may be required.
 
 Adding to Keystone's generated schema can be done using the [`keystone.extendGraphQLSchema`](/packages/keystone/README.md#extendgraphqlschemaconfig) method.
 
-See the [GraphQL Philosophy](/docs/guides/graphql-philosophy.md) for more information on how Keystone implements CRUD operations in GraphQL and when Custom Queries and Mutations may be required.
+## The problem
 
-## Creating a custom mutation
-
-A common example where a custom mutation might be beneficial is if you want to increment a value.
-
-Like any problem there are multiple solutions.
-You can implement an incrementing value with [Hooks](/docs/guides/hooks.md) but in this example we're going to look at how to do this with a custom mutation.
+A common situation where custom schema might be beneficial is incrementing a value on a list. Like any problem, there are multiple solutions. You could implement an incrementing value with [Hooks](/docs/guides/hooks.md), but in this example we're going to look at how to do this with a custom mutation.
 
 First let's define a `Page` list. For the sake of simplicity, we'll give it only two fields: `title` and `views`.
 
 ```js title=/lists/Page.js
 const { Text, Integer } = require('@keystonejs/fields');
 
-const Page = keystone.createList('Page', {
+keystone.createList('Page', {
   fields: {
     title: { type: Text },
     views: { type: Integer },
@@ -58,39 +51,118 @@ mutation updatePageViews($id: ID!, $views: Int!) {
 }
 ```
 
-The problem with this approach is the client can update the views with any arbitrary value. And even if there is no deliberate manipulation of the value, the GraphQL server is trusting that the update mutation is received from the same client, immediately after the view query. On heavily trafficked sites this will not always be the case.
+### Why is this bad?
 
-Read and Update requests from multiple clients can be received in any order depending on the speed of their internet connections. This means updates can override each other. One solution to this problem is a custom mutation.
+The problem with this approach is that the client can update the views with any arbitrary value. Even if there is no deliberate manipulation of the value, the GraphQL server is trusting that the update mutation is received from the same client immediately after the view query. On heavily trafficked sites this will not always be the case. Read and Update requests from multiple clients can be received in any order depending on the speed of their internet connections, which means updates could override one another.
 
-You can add to Keystone's generated schema using `keystone.extendGraphQLSchema()`. This method accepts an array of types, queries and mutations. For our example we are going to add a `mutation` array with a single item.
+## Setup
 
-Each item in the mutation array requires a `schema` and a `resolver`.
+For this example, we will be adding three things to Keystone's GraphQL schema:
 
-The Schema defines the input and return types of the mutation. You can [learn more about schemas and types](https://graphql.org/learn/schema/) on <https://graphql.org>.
+1. A custom **type** which will be returned by our mutation.
+2. A custom **mutation** which will actually increment the page views.
+3. A custom **query** which will check if the current page views are over a certain threshold.
 
-Our Schema is simple: `incrementPageViews(id: ID!): Page`. It's called `incrementPageViews` and requires an `id` parameter that must be of an `ID` type. It returns a `Page` type.
+> **Note:** This custom query is somewhat superfluous; you could just query the page directly and check the views client-side. However, it serves to illustrate how custom queries are set up.
 
-`ID` is an internal GraphQL type and `Page` is a type that has been generated automatically by Keystone when we created the `Page` list.
+## The type
 
-The resolver is a function that returns an object matching the `Page` type. You can see all the types generated by Keystone by looking at the GraphQL Playground documentation that is accessible via the Admin UI.
+First, let's define what we want our custom GraphQL type to look like:
 
-All together our custom mutation looks like this:
+> **Hint:** You can [learn more about schemas and types](https://graphql.org/learn/schema/) on <https://graphql.org>. You can also find a reference of all the types generated by Keystone in built-in GraphQL Playground's Docs tab, accessible via the Admin UI.
 
-```js
+```graphql
+type IncrementPageViewsOutput {
+  # The new page views after the mutation.
+  currentViews: Int!
+
+  # The time and date at which the mutation was executed.
+  timestamp: String!
+}
+```
+
+We can register this type with Keystone using the `keystone.extendGraphQLSchema()` method, like so. Note the `type` key simply takes the definition as a string:
+
+```javascript title=/lists/Page.js
 keystone.extendGraphQLSchema({
-  mutations: [
+  types: [
     {
-      schema: `incrementPageViews(id: ID!): Page`,
-      resolver: incrementPageViews,
+      type: 'type IncrementPageViewsOutput { currentViews: Int!, timestamp: String! }',
     },
   ],
 });
 ```
 
-In this mutation we want to access an existing item in the list. We don't care about access control, in-fact we will make the field read-only so that it cannot be updated with normal mutations or in the Admin UI. Our new Page definition is:
+## The mutation
+
+Now, let's define our custom mutation:
+
+```graphql
+incrementPageViews(id: ID!): IncrementPageViewsOutput
+```
+
+This defines a mutation called `incrementPageViews`that accepts a single mandatory argument called `id` of type `ID` (an internal GraphQL type). This is the id of the specific `Post` whose views you which to increment. Finally, the mutation returns an object of our custom `IncrementPageViewsOutput` type.
+
+Now, to wire it in:
+
+```diff title=/lists/Page.js
+ keystone.extendGraphQLSchema({
+   types: [
+     {
+       type: 'type IncrementPageViewsOutput { currentViews: Int!, timestamp: String! }',
+     },
+   ],
++  mutations: [
++    {
++      schema: 'incrementPageViews(id: ID!): IncrementPageViewsOutput',
++      resolver: handleIncrementPageViews,
++    },
++  ],
+ });
+```
+
+Custom mutations (and queries) take a `schema` and a `resolver` key. Like with the custom type, `schema` is simply the custom mutation definition, while `resolver` is a function which tells Keystone how to execute this mutation. In our case, it must return a `IncrementPageViewsOutput` object.
+
+> **Note:** Refer to the [`keystone.extendGraphQLSchema`](/packages/keystone/README.md#extendgraphqlschemaconfig) API documentation for details on the `resolver` function's signature.
+
+Let's define our resolver function:
+
+```javascript title=/lists/Page.js
+const incrementPageViews = async (_, { id }) => {
+  const list = keystone.lists.Page;
+
+  const oldItem = await list.adapter.findById(id);
+  const newItem = await list.adapter.update(id, {
+    ...oldItem,
+    views: (oldItem.views || 0) + 1,
+  });
+
+  return {
+    currentViews: newItem.views,
+    timestamp: new Date().toISOString(),
+  };
+};
+```
+
+> **Note:** The value of `views` may be `undefined` initially, so before we increment it we make sure to convert any `falsey` values to `0`.
+
+Our custom mutation is now available to the client! It can be utilized like so:
+
+```graphql
+mutation incrementPageViews($id: ID!) {
+  incrementPageViews(id: $id) {
+    currentViews
+    timestamp
+  }
+}
+```
+
+### A note on access control
+
+In this mutation, we want to access an existing item in the list. We don't care about access control; in-fact, we will make the field read-only so that it cannot be updated with normal mutations or in the Admin UI. Our new Page definition is:
 
 ```diff title=/lists/Page.js allowCopy=false showLanguage=false
- const Page = keystone.createList('Page', {
+ keystone.createList('Page', {
    fields: {
      title: { type: Text },
      views: {
@@ -105,39 +177,61 @@ In this mutation we want to access an existing item in the list. We don't care a
  };
 ```
 
-The last step is to define the resolver function `incrementPageViews`.
+Our resolver function will bypass access control and update the value directly by getting the list item and then by calling `findById` on the list adapter. Once we have the old item we can call `update` with the new values.
 
-Our function will bypass access control and update the value directly by getting the list item and then by calling `findById` on the list adapter. Once we have the old item we can call `update` with the new values.
+Refer to the [Access control guide](https://www.keystonejs.com/guides/access-control) for more information.
 
-```js
-const incrementPageViews = async (_, { id }) => {
+## The query
+
+Finally, let's define a custom query that checks if a page's views are over a certain threshold.
+
+```graphql
+pageViewsOver(id: ID!, threshold: Integer!): Boolean
+```
+
+This query is called `pageViewsOver`. It accepts a mandatory `id` argument (just like our mutation) and a `threshold` argument. It will return true if the `Post` with the given id has been views more than `threshold` times, false otherwise.
+
+Now add the query alongside our custom type and mutation. Note that custom queries take the same `schema` and `resolver` keys as custom mutations.
+
+```diff title=/lists/Page.js
+ keystone.extendGraphQLSchema({
+   types: [
+     {
+       type: 'type IncrementPageViewsOutput { currentViews: Int!, timestamp: String! }',
+     },
+   ],
+   mutations: [
+     {
+       schema: 'incrementPageViews(id: ID!): IncrementPageViewsOutput',
+       resolver: handleIncrementPageViews,
+     },
+   ],
++  queries: [
++    {
++      schema: 'pageViewsOver(id: ID!, threshold: Integer!): Boolean',
++      resolver: handleCheckPageViews,
++    },
++  ],
+ });
+```
+
+And finally, to define our query's resolver:
+
+```javascript
+const handleCheckPageViews = async (_, { id, threshold }) => {
   const list = keystone.lists.Page;
-  const oldItem = await list.adapter.findById(id);
-  const newItem = await list.adapter.update(id, {
-    ...oldItem,
-    views: (oldItem.views || 0) + 1,
-  });
-  return newItem;
+  const item = await list.adapter.findById(id);
+
+  return item.views > threshold;
 };
 ```
 
-> **Note:** The value of `views` may be `undefined` initially, so before we increment it we make sure to convert any `falsey` values to `0`.
+## Conclusion
 
-Our custom mutation is now available to the client that can use it to increment page views like this:
+As you can see, custom schema can be used to augment Keystone's existing GraphQL functionality in various ways. Custom mutations can be used for actions like incrementation that require a single operation that should not rely on data from the client, but they can also be used for operations that have side effects not related to updating lists.
 
-```graphql
-mutation incrementPageViews($id: ID!) {
-  mutation {
-    incrementPageViews(id: $id) {
-      views
-  }
-}
-```
+> **Reminder:** This this example, we used a custom mutation to increase the reliability of operations like incrementation because client requests can be received out of order.
 
-Custom mutations can be used for actions like increment that require a single operation that should not rely on data from the client but can also be used for operations that have side effects not related to updating lists.
-
-> **Note:** We used a custom mutation to increase the reliability of operations like increment because client requests can be received out of order.
-
-Whilst a custom mutation is a huge improvement, it is not completely transactional in every situation. The `incrementPageViews` function is asynchronous. This means it awaits database operations like `findById` and `update`. Depending on your server environment database operations, just like http requests, can be returned in a different order than executed in JavaScript.
+Whilst a custom mutation is a huge improvement over a two-step query-then-mutate solution, it is not completely transactional in every situation. The `incrementPageViews` function is asynchronous. This means it awaits database operations like `findById` and `update`. Depending on your server environment database operations, just like http requests, can be returned in a different order than executed in JavaScript.
 
 In this example we've reduced the window this can occur in from seconds to milliseconds. It's not likely a problem for simple page views but you may want to consider implementing database transactions where accuracy is absolutely critical.
