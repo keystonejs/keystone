@@ -159,30 +159,6 @@ mutation incrementPageViews($id: ID!) {
 }
 ```
 
-#### A note on access control
-
-In this mutation, we want to access an existing item in the list. We don't care about access control; in-fact, we will make the field read-only so that it cannot be updated with normal mutations or in the Admin UI. Our new Page definition is:
-
-```diff title=/lists/Page.js allowCopy=false showLanguage=false
- keystone.createList('Page', {
-   fields: {
-     title: { type: Text },
-     views: {
-       type: Integer,
-+      access: {
-+        create: false,
-+        read: true,
-+        update: false,
-+      },
-     },
-   },
- };
-```
-
-Our resolver function will bypass access control and update the value directly by getting the list item and then by calling `findById` on the list adapter. Once we have the old item we can call `update` with the new values.
-
-Refer to the [Access control guide](https://www.keystonejs.com/guides/access-control) for more information.
-
 ### The query
 
 Finally, let's define a custom query that checks if a page's views are over a certain threshold.
