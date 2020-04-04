@@ -2,6 +2,7 @@
 section: guides
 title: Mutation lifecycle
 subSection: graphql
+order: 2
 [meta]-->
 
 # Mutation lifecycle
