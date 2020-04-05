@@ -70,21 +70,6 @@ class AdminUIApp {
     );
   }
 
-  createSessionMiddleware() {
-    const { signinPath } = this.routes;
-
-    const app = express();
-
-    // Short-circuit GET requests when the user already signed in (avoids
-    // downloading UI bundle, doing a client side redirect, etc)
-    app.get(signinPath, (req, res, next) =>
-      this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
-    );
-
-    // TODO: Attach a server-side signout to signoutPath
-
-    return app;
-  }
 
   build({ keystone, distDir }) {
     const builtAdminRoot = path.join(distDir, 'admin');
@@ -146,6 +131,16 @@ class AdminUIApp {
     const { adminPath } = this;
     const app = express.Router();
 
+    app.use(this.routes.signinPath, (req, res, next) => {
+      if (this.isAccessAllowed(req)) {
+        return res.redirect(this.adminPath)
+      }
+      if (req.user) {
+        return res.redirect('/')
+      }
+      next()
+    });
+
     app.use(adminPath, (req, res, next) => {
       // Depending on what was requested, we might redirect the user based on
       // their access
@@ -191,7 +186,6 @@ class AdminUIApp {
     }
 
     if (this.authStrategy) {
-      app.use(this.createSessionMiddleware());
       for (const pair of middlewarePairs) {
         app.use(mountPath, (req, res, next) => {
           return this.isAccessAllowed(req)
