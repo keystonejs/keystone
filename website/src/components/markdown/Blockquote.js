@@ -7,21 +7,30 @@ export function Blockquote(props) {
   let variant = getVariant(props);
   let lineColor = variants[variant];
 
+  let importantStyles =
+    variant === 'important'
+      ? {
+          backgroundColor: 'white',
+          border: `1px solid ${lineColor}`,
+          borderRadius: 4,
+        }
+      : null;
+
   return (
     <blockquote
       css={{
-        margin: `1.66rem 0`,
-        padding: '0.5rem 1rem',
+        margin: `1.6rem 0`,
+        padding: '0.6rem 1.2rem',
         position: 'relative',
 
         '::before': {
           background: lineColor,
           borderRadius: 4,
           content: '" "',
-          height: '100%',
-          left: '0',
+          height: 'calc(100% - 4px)',
+          left: 2,
           position: 'absolute',
-          top: '0',
+          top: 2,
           width: 4,
         },
 
@@ -35,6 +44,8 @@ export function Blockquote(props) {
         '& > p:last-of-type': {
           marginBottom: 0,
         },
+
+        ...importantStyles,
       }}
       {...props}
     />
