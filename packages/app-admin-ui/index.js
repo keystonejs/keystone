@@ -5,7 +5,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
-const {URLSearchParams} = require('url');
+const { URLSearchParams } = require('url');
 const fallback = require('express-history-api-fallback');
 
 const getWebpackConfig = require('./server/getWebpackConfig');
@@ -44,10 +44,7 @@ class AdminUIApp {
       signinPath: `${this.adminPath}/signin`,
       signoutPath: `${this.adminPath}/signout`,
     };
-    this.publicPaths = [
-      this.routes.signinPath,
-      this.routes.signoutPath,
-    ];
+    this.publicPaths = [this.routes.signinPath, this.routes.signoutPath];
   }
 
   getAdminMeta() {
@@ -74,7 +71,6 @@ class AdminUIApp {
       this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } })
     );
   }
-
 
   build({ keystone, distDir }) {
     const builtAdminRoot = path.join(distDir, 'admin');
@@ -143,7 +139,7 @@ class AdminUIApp {
       if (req.user) {
         return res.redirect(req.query.redirect || '/');
       }
-      next()
+      next();
     });
 
     app.use(adminPath, (req, res, next) => {
@@ -164,7 +160,9 @@ class AdminUIApp {
         'text/html': () => {
           const isPublicUrl = this.publicPaths.includes(`${adminPath}${req.path}`);
           if (!isPublicUrl && !this.isAccessAllowed(req) && !req.user) {
-            return res.redirect(`${this.routes.signinPath}?${new URLSearchParams({redirect: req.originalUrl})}`);
+            return res.redirect(
+              `${this.routes.signinPath}?${new URLSearchParams({ redirect: req.originalUrl })}`
+            );
           }
           next();
         },

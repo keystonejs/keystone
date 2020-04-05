@@ -1,7 +1,7 @@
 import React, { Suspense, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
 
@@ -26,15 +26,7 @@ import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
 
 export const KeystoneAdminUI = () => {
-  const {
-    getListByPath,
-    adminPath,
-    signinPath,
-    signoutPath,
-    apiPath,
-    pages,
-    hooks,
-  } = useAdminMeta();
+  const { getListByPath, adminPath, signoutPath, apiPath, pages, hooks } = useAdminMeta();
 
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 

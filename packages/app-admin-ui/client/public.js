@@ -12,6 +12,7 @@ import ApolloClient from './apolloClient';
 import ConnectivityListener from './components/ConnectivityListener';
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 
+import InvalidRoutePage from './pages/InvalidRoute';
 import AccessDeniedPage from './pages/AccessDeniedPage';
 import SignoutPage from './pages/Signout';
 import SigninPage from './pages/Signin';
