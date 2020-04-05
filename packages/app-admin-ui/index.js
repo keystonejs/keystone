@@ -26,8 +26,8 @@ class AdminUIApp {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
     }
 
-    if (authStrategy && authStrategy.authType !== 'password') {
-      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
+    if (authStrategy && authStrategy.authType !== 'password' && !authStrategy.loginPath) {
+      throw new Error('Keystone 5 Admin does not support the given auth strategy');
     }
 
     this.adminPath = adminPath;
@@ -138,6 +138,10 @@ class AdminUIApp {
       }
       if (req.user) {
         return res.redirect(req.query.redirect || '/');
+      }
+      if (this.authStrategy && this.authStrategy.loginPath) {
+        const query = req.url.split('?')[1] || '';
+        return res.redirect(`${this.authStrategy.loginPath}?${query}`);
       }
       next();
     });
