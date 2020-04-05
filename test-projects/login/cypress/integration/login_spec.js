@@ -13,7 +13,7 @@ describe.only('Can access Admin UI', () => {
   });
 
   it('allows users who pass the isAccessAllowed() filter', () => {
-    cy.visit('/admin');
+    cy.visit('/admin/users');
     cy.url().should('match', /admin\/signin/);
 
     cy.get('input[name="identity"]')
@@ -26,20 +26,16 @@ describe.only('Can access Admin UI', () => {
 
     cy.get('button[type="submit"]').click({ force: true });
 
-    // Wait for page to load (completing the signin round trip)
-    cy.get('main h1').should('contain', 'Dashboard');
-
-    cy.visit('/admin/users');
     cy.url().should('match', /admin\/users$/);
     cy.get('body').should('contain', 'Users');
     cy.get('body').should('contain', 'Showing 3 Users');
+
+    cy.visit('/admin');
+    cy.get('main h1').should('contain', 'Dashboard');
   });
 
   it('disallows users who do not pass the isAccessAllowed() filter', () => {
-    cy.visit('/admin');
-
-    // mark our window object to "know" when it gets reloaded
-    cy.window().then(win => (win._stillOnSamePage = true));
+    cy.visit('/admin/users');
 
     cy.get('input[name="identity"]')
       .clear({ force: true })
@@ -49,29 +45,16 @@ describe.only('Can access Admin UI', () => {
       .clear({ force: true })
       .type('supersecure', { force: true });
 
-    // initially the new property is there
-    cy.window().should('have.prop', '_stillOnSamePage', true);
-
     cy.get('button[type="submit"]').click({ force: true });
 
-    // after reload the property should be gone
-    cy.window().should('not.have.prop', '_stillOnSamePage');
+    cy.url().should('match', /admin\/users$/);
+    cy.get('main h1').should('not.contain', 'Users');
+    cy.get('body').should('contain', 'Access Denied');
 
-    // The login screen is still shown
-    cy.get('[name="identity"]').should('exist');
-    cy.get('[name="secret"]').should('exist');
-    cy.get('button[type="submit"]')
-      .should('exist')
-      .should('contain', 'Sign In');
-
-    // Trying to visit a page still shows login screen
-    cy.visit('/admin/users');
-    cy.url().should('match', /admin\/signin/);
-    cy.get('[name="identity"]').should('exist');
-    cy.get('[name="secret"]').should('exist');
-    cy.get('button[type="submit"]')
-      .should('exist')
-      .should('contain', 'Sign In');
+    // Trying to visit a page shows Access Denied screen
+    cy.visit('/admin');
+    cy.get('main h1').should('not.contain', 'Dashboard');
+    cy.get('body').should('contain', 'Access Denied');
   });
 });
 
