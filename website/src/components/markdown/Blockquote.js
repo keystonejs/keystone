@@ -64,9 +64,10 @@ function getFirstLeaf(children) {
 function getVariant(props) {
   let variant = variantKeys[0];
   let text = getFirstLeaf(props.children);
+  let firstWord = text.split(' ')[0];
 
   variantKeys.forEach(key => {
-    if (text.toLowerCase().includes(key)) {
+    if (firstWord.toLowerCase() === `${key}:`) {
       variant = key;
     }
   });
