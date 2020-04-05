@@ -112,6 +112,11 @@ class PassportAuthStrategy {
     passport.use(this._passportStrategy);
   }
 
+  getAdminMeta() {
+    const listKey = this._listKey;
+    return { listKey };
+  }
+
   getInputFragment() {
     return `
       itemId: ID!
