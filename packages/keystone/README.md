@@ -283,7 +283,7 @@ keystone.extendGraphQLSchema({
 });
 ```
 
-See the [Custom schema guide](https://www.keystonejs.com/guides/custom-schema) for more information on utilizing custom schema.
+See the [Custom schema guide](/docs/guides/custom-schema.md) for more information on utilizing custom schema.
 
 #### Config
 

@@ -79,7 +79,7 @@ type User {
 ```
 
 > **Note:** Only a subset of the generated types/mutations/queries are shown here.
-> For more details, see the [GraphQL introduction](https://www.keystonejs.com/guides/intro-to-graphql) page.
+> For more details, see the [GraphQL introduction guide](/docs/guides/intro-to-graphql.md).
 
 ### Customising lists and fields
 
