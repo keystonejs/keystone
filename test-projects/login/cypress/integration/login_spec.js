@@ -1,7 +1,7 @@
 const IDENTITY = 'boris@keystone.com';
 const SECRET = 'correctbattery';
 
-describe.only('Can access Admin UI', () => {
+describe('Can access Admin UI', () => {
   afterEach(() => {
     // Cypress claims to clear cookies before each test, but it appears that
     // the first test in the next describe block will continue to retain
