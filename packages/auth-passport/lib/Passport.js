@@ -79,6 +79,7 @@ class PassportAuthStrategy {
     }
 
     this.authType = authType;
+    this.loginPath = config.loginPath;
 
     // Capture some useful variables
     this._keystone = keystone;
@@ -89,7 +90,6 @@ class PassportAuthStrategy {
     // Pull all the required data off the `config` object
     this._serviceAppId = config.appId;
     this._serviceAppSecret = config.appSecret;
-    this._loginPath = config.loginPath;
     this._loginPathMiddleware = config.loginPathMiddleware || ((req, res, next) => next());
     this._callbackPath = config.callbackPath;
     this._callbackPathMiddleware = config.callbackPathMiddleware || ((req, res, next) => next());
@@ -138,7 +138,7 @@ class PassportAuthStrategy {
     }
     isInitialized = true;
 
-    app.get(this._loginPath, this._loginPathMiddleware, (req, res, next) => {
+    app.get(this.loginPath, this._loginPathMiddleware, (req, res, next) => {
       // If the user isn't already logged in
       // kick off the service auth process
       passport.authenticate(this.authType, {
