@@ -43,6 +43,10 @@ class AdminUIApp {
       signinPath: `${this.adminPath}/signin`,
       signoutPath: `${this.adminPath}/signout`,
     };
+    this.publicPaths = [
+      this.routes.signinPath,
+      this.routes.signoutPath,
+    ];
   }
 
   getAdminMeta() {
@@ -155,9 +159,10 @@ class AdminUIApp {
         '*/*': () => {
           next();
         },
-        // For page loads, we want to redirect back to signin page
+        // For private pages, we want to redirect unauthenticated users back to signin page
         'text/html': () => {
-          if (req.originalUrl !== this.routes.signinPath && !this.isAccessAllowed(req)) {
+          const isPublicUrl = this.publicPaths.includes(req.originalUrl);
+          if (!isPublicUrl && !this.isAccessAllowed(req) && !req.user) {
             return res.redirect(this.routes.signinPath);
           }
           next();

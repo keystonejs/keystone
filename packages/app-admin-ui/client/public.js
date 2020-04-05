@@ -12,7 +12,7 @@ import ApolloClient from './apolloClient';
 import ConnectivityListener from './components/ConnectivityListener';
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 
-import InvalidRoutePage from './pages/InvalidRoute';
+import AccessDeniedPage from './pages/AccessDeniedPage';
 import SignoutPage from './pages/Signout';
 import SigninPage from './pages/Signin';
 
@@ -24,7 +24,7 @@ import SigninPage from './pages/Signin';
 */
 
 const Keystone = () => {
-  const { authStrategy, apiPath, signoutPath } = useAdminMeta();
+  const { authStrategy, apiPath, signinPath, signoutPath } = useAdminMeta();
 
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
@@ -37,8 +37,9 @@ const Keystone = () => {
         {authStrategy ? (
           <BrowserRouter>
             <Switch>
+              <Route exact path={signinPath} render={() => <SigninPage />} />
               <Route exact path={signoutPath} render={() => <SignoutPage />} />
-              <Route render={() => <SigninPage />} />
+              <Route render={() => <AccessDeniedPage />} />,
             </Switch>
           </BrowserRouter>
         ) : (
