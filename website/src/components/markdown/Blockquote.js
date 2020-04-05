@@ -5,16 +5,15 @@ import { colors } from '@arch-ui/theme';
 
 export function Blockquote(props) {
   let variant = getVariant(props);
-  let lineColor = variants[variant];
+  let { lineColor, isBold } = variants[variant];
 
-  let importantStyles =
-    variant === 'important'
-      ? {
-          backgroundColor: 'white',
-          border: `1px solid ${lineColor}`,
-          borderRadius: 4,
-        }
-      : null;
+  let boldStyles = isBold
+    ? {
+        backgroundColor: 'white',
+        border: `1px solid ${lineColor}`,
+        borderRadius: 4,
+      }
+    : null;
 
   return (
     <blockquote
@@ -40,8 +39,7 @@ export function Blockquote(props) {
         '& > p:last-of-type': {
           marginBottom: 0,
         },
-
-        ...importantStyles,
+        ...boldStyles,
       }}
       {...props}
     />
@@ -83,9 +81,9 @@ function getVariant(props) {
 }
 
 let variants = {
-  __standard: colors.N20,
-  tip: colors.B.L50,
-  note: colors.B.base,
-  important: colors.Y.base,
+  __standard: { lineColor: colors.N20, isBold: false },
+  tip: { lineColor: colors.B.base, isBold: false },
+  note: { lineColor: colors.B.base, isBold: true },
+  important: { lineColor: colors.Y.base, isBold: true },
 };
 let variantKeys = Object.keys(variants);
