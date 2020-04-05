@@ -59,6 +59,10 @@ class PassportAuthStrategy {
       ['function', 'undefined'].includes(typeof config.callbackPathMiddleware),
       'When `config.callbackPathMiddleware` is passed, it must be an express middleware function.'
     );
+    assert(
+      ['function', 'undefined'].includes(typeof config.resolveState),
+      'When `config.resolveState` is passed, it must be a function.'
+    );
 
     // NOTE: Remove after March 1st, 2020 (ie; 6mo since deprecation)
     if (typeof config.hostURL !== 'undefined') {
@@ -97,6 +101,7 @@ class PassportAuthStrategy {
       (error => {
         throw error;
       });
+    this._resolveState = config.resolveState || (() => '');
 
     // The field name on the User list (for example) such as `facebookUserId` or
     // `twitterUserId` which the application developer has set.
@@ -139,6 +144,7 @@ class PassportAuthStrategy {
       passport.authenticate(this.authType, {
         session: false,
         scope: this._passportScope,
+        state: this._resolveState(req, res),
       })(req, res, next);
     });
 

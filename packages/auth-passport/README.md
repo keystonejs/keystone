@@ -127,6 +127,9 @@ const googleStrategy = keystone.createAuthStrategy({
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
 
+    // In the [initial] login request, compute a 'state' query param to be used for the callback request.
+    resolveState: (req, res) => JSON.stringify({ redirect: req.query.redirect }),
+
     // Once a user is found/created and successfully matched to the
     // googleId, they are authenticated, and the token is returned here.
     // NOTE: By default Keystone sets a `keystone.sid` which authenticates the
@@ -134,7 +137,9 @@ const googleStrategy = keystone.createAuthStrategy({
     // you must pass the `token` as a Bearer Token to GraphQL requests.
     onAuthenticated: ({ token, item, isNewItem }, req, res) => {
       console.log(token);
-      res.redirect('/');
+      // Get any redirect path saved with `resolveState` above
+      const { redirect } = JSON.parse(req.query.state);
+      res.redirect(redirect || '/');
     },
 
     // If there was an error during any of the authentication flow, this
