@@ -34,10 +34,6 @@ export function Blockquote(props) {
           width: 4,
         },
 
-        strong: {
-          color: colors.N100,
-        },
-
         '& > p:first-of-type': {
           marginTop: 0,
         },
@@ -88,7 +84,6 @@ function getVariant(props) {
 
 let variants = {
   __standard: colors.N20,
-  hint: colors.B.L50,
   tip: colors.B.L50,
   note: colors.B.base,
   important: colors.Y.base,
