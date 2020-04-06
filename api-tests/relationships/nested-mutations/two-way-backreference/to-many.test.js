@@ -62,11 +62,10 @@ const getStudent = async (keystone, studentId) =>
   ).data.Student;
 
 // We can't assume what IDs get assigned, or what order they come back in
-const compareIds = (list, ids) => {
-  return expect(toStr(list.map(({ id }) => id).sort())).toMatchObject(
+const compareIds = (list, ids) =>
+  expect(toStr(list.map(({ id }) => id).sort())).toMatchObject(
     ids.map(({ id }) => id.toString()).sort()
   );
-};
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
@@ -76,12 +75,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'during create mutation',
           runner(setupKeystone, async ({ keystone, create }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await create('Teacher', { students: [] });
+            let teacher1 = await create('Teacher', {});
             await new Promise(resolve => process.nextTick(resolve));
-            let teacher2 = await create('Teacher', { students: [] });
+            let teacher2 = await create('Teacher', {});
 
             // canaryStudent is used as a canary to make sure nothing crosses over
-            let canaryStudent = await create('Student', { teachers: [] });
+            let canaryStudent = await create('Student', {});
 
             teacher1 = await getTeacher(keystone, teacher1.id);
             teacher2 = await getTeacher(keystone, teacher2.id);
@@ -132,12 +131,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'during update mutation',
           runner(setupKeystone, async ({ keystone, create }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await create('Teacher', { students: [] });
-            let teacher2 = await create('Teacher', { students: [] });
-            let student1 = await create('Student', { teachers: [] });
+            let teacher1 = await create('Teacher', {});
+            let teacher2 = await create('Teacher', {});
+            let student1 = await create('Student', {});
             // Student2 is used as a canary to make sure things don't accidentally
             // cross over
-            let student2 = await create('Student', { teachers: [] });
+            let student2 = await create('Student', {});
 
             teacher1 = await getTeacher(keystone, teacher1.id);
             teacher2 = await getTeacher(keystone, teacher2.id);
@@ -276,8 +275,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested disconnect during update mutation',
         runner(setupKeystone, async ({ keystone, create, update }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await create('Teacher', { students: [] });
-          let teacher2 = await create('Teacher', { students: [] });
+          let teacher1 = await create('Teacher', {});
+          let teacher2 = await create('Teacher', {});
           let student1 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
           let student2 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
 
@@ -335,8 +334,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested disconnectAll during update mutation',
         runner(setupKeystone, async ({ keystone, create, update }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await create('Teacher', { students: [] });
-          let teacher2 = await create('Teacher', { students: [] });
+          let teacher1 = await create('Teacher', {});
+          let teacher2 = await create('Teacher', {});
           let student1 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
           let student2 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
 
@@ -395,8 +394,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       'delete mutation updates back references in to-many relationship',
       runner(setupKeystone, async ({ keystone, create, update }) => {
         // Manually setup a connected Student <-> Teacher
-        let teacher1 = await create('Teacher', { students: [] });
-        let teacher2 = await create('Teacher', { students: [] });
+        let teacher1 = await create('Teacher', {});
+        let teacher2 = await create('Teacher', {});
         let student1 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
         let student2 = await create('Student', { teachers: [teacher1.id, teacher2.id] });
 
