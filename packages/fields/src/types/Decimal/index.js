@@ -12,5 +12,7 @@ export default {
   adapters: {
     mongoose: MongoDecimalInterface,
     knex: KnexDecimalInterface,
+    memory: MongoDecimalInterface,
+    json: KnexDecimalInterface,
   },
 };

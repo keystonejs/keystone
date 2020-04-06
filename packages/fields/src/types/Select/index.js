@@ -1,4 +1,10 @@
-import { Select, MongoSelectInterface, KnexSelectInterface } from './Implementation';
+import {
+  Select,
+  MongoSelectInterface,
+  KnexSelectInterface,
+  JSONSelectInterface,
+  MemorySelectInterface,
+} from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
 export default {
@@ -13,5 +19,7 @@ export default {
   adapters: {
     mongoose: MongoSelectInterface,
     knex: KnexSelectInterface,
+    memory: MemorySelectInterface,
+    json: JSONSelectInterface,
   },
 };

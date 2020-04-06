@@ -1,4 +1,10 @@
-import { DateTime, MongoDateTimeInterface, KnexDateTimeInterface } from './Implementation';
+import {
+  DateTime,
+  MongoDateTimeInterface,
+  KnexDateTimeInterface,
+  JSONDateTimeInterface,
+  MemoryDateTimeInterface,
+} from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
 export default {
@@ -13,5 +19,7 @@ export default {
   adapters: {
     mongoose: MongoDateTimeInterface,
     knex: KnexDateTimeInterface,
+    json: JSONDateTimeInterface,
+    memory: MemoryDateTimeInterface,
   },
 };

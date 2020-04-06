@@ -2,8 +2,8 @@ import {
   Relationship,
   MongoRelationshipInterface,
   KnexRelationshipInterface,
-  JSONRelationshipInterface,
-  MemoryRelationshipInterface,
+  // JSONRelationshipInterface,
+  // MemoryRelationshipInterface,
 } from './Implementation';
 import { resolveBacklinks } from './backlinks';
 import { importView } from '@keystonejs/build-field-types';
@@ -21,8 +21,9 @@ export default {
   adapters: {
     mongoose: MongoRelationshipInterface,
     knex: KnexRelationshipInterface,
-    json: JSONRelationshipInterface,
-    memory: MemoryRelationshipInterface,
+    // TODO: Support JSON/Memory
+    json: MongoRelationshipInterface, // JSONRelationshipInterface,
+    memory: MongoRelationshipInterface, // MemoryRelationshipInterface,
   },
   resolveBacklinks,
 };

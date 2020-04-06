@@ -6,7 +6,6 @@ const pSettle = require('p-settle');
 const memoizeOne = require('memoize-one');
 
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
-const logger = require('@keystonejs/logger').logger('adapter-json');
 
 class JSONAdapter extends BaseKeystoneAdapter {
   constructor({ adapter, ...args } = {}) {
