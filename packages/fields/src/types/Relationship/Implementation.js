@@ -411,6 +411,10 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       : this.knexOptions.isNotNullable));
   }
 
+  getRefListAdapter() {
+    return this.getListByKey(this.refListKey).adapter;
+  }
+
   addToTableSchema(table) {
     // If we're relating to 'many' things, we don't store ids in this table
     if (!this.field.many) {
@@ -432,6 +436,12 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       [`${this.path}_is_null`]: value => b =>
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
     };
+  }
+
+  supportsRelationshipQuery(query) {
+    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
+      query
+    );
   }
 }
 

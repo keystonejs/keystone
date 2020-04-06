@@ -136,6 +136,7 @@ class MongooseListAdapter extends BaseListAdapter {
 
     // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
+
     this.rels = undefined;
   }
 

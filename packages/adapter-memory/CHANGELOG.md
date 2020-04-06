@@ -1,1 +1,1 @@
-# @keystone-alpha/adapter-memory
+# @keystonejs/adapter-memory

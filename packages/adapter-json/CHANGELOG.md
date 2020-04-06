@@ -1,1 +1,1 @@
-# @keystone-alpha/adapter-json
+# @keystonejs/adapter-json
