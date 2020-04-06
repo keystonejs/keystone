@@ -188,32 +188,12 @@ function _keystoneRunner(adapterName, tearDownFunction) {
   };
 }
 
-function keystoneMemoryRunner(setupKeystoneFn, testFn) {
-  return async function() {
-    const setup = await setupKeystoneFn('memory');
-    const { keystone } = setup;
-
-    await keystone.connect();
-
-    return pFinally(
-      testFn({
-        ...setup,
-        create: getCreate(keystone),
-        findById: getFindById(keystone),
-        findOne: getFindOne(keystone),
-        update: getUpdate(keystone),
-        delete: getDelete(keystone),
-      }),
-      () => keystone.disconnect()
-    );
-  };
-}
-
 function multiAdapterRunners(only) {
   return [
     { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
     { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
     { runner: _keystoneRunner('json', () => {}), adapterName: 'json' },
+    // { runner: _keystoneRunner('memory', () => {}), adapterName: 'memory' },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 

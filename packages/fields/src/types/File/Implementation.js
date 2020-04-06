@@ -2,6 +2,8 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import mongoose from 'mongoose';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 // Disabling the getter of mongoose >= 5.1.0
 // https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md#checking-if-a-path-is-populated
@@ -174,3 +176,7 @@ export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
     if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }
+
+export class JSONFileInterface extends CommonFileInterface(JSONFieldAdapter) {}
+
+export class MemoryFileInterface extends CommonFileInterface(MemoryFieldAdapter) {}

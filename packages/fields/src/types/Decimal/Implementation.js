@@ -127,7 +127,7 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
   }
 }
 
-export class JSONDateTimeInterface extends JSONFieldAdapter {
+export class JSONDecimalInterface extends JSONFieldAdapter {
   getQueryConditions(dbPath) {
     return {
       ...this.equalityConditions(dbPath),
@@ -137,7 +137,7 @@ export class JSONDateTimeInterface extends JSONFieldAdapter {
   }
 }
 
-export class MemoryDateTimeInterface extends MemoryFieldAdapter {
+export class MemoryDecimalInterface extends MemoryFieldAdapter {
   getQueryConditions(dbPath) {
     return {
       ...this.equalityConditions(dbPath),

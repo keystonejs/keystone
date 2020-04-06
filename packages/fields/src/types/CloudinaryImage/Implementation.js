@@ -1,4 +1,10 @@
-import { File, MongoFileInterface, KnexFileInterface } from '../File/Implementation';
+import {
+  File,
+  MongoFileInterface,
+  KnexFileInterface,
+  MemoryFileInterface,
+  JSONFileInterface,
+} from '../File/Implementation';
 
 class CloudinaryImage extends File {
   constructor() {
@@ -88,4 +94,6 @@ export {
   CloudinaryImage,
   MongoFileInterface as MongoCloudinaryImageInterface,
   KnexFileInterface as KnexCloudinaryImageInterface,
+  MemoryFileInterface as MemoryCloudinaryImageInterface,
+  JSONFileInterface as JSONCloudinaryImageInterface,
 };

@@ -163,3 +163,7 @@ export class KnexLocationInterface extends CommonLocationInterface(KnexFieldAdap
     if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }
+
+export class JSONLocationInterface extends CommonLocationInterface(JSONFieldAdapter) {}
+
+export class MemoryLocationInterface extends CommonLocationInterface(MemoryFieldAdapter) {}

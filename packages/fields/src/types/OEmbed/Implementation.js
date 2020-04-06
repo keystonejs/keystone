@@ -297,3 +297,7 @@ export class KnexOEmbedInterface extends CommonOEmbedInterface(KnexFieldAdapter)
     if (this.defaultTo) column.defaultTo(this.defaultTo);
   }
 }
+
+export class JSONOEmbedInterface extends CommonOEmbedInterface(JSONFieldAdapter) {}
+
+export class MemoryOEmbedInterface extends CommonOEmbedInterface(MemoryFieldAdapter) {}
