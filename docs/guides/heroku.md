@@ -14,7 +14,7 @@ Before we start, make sure you have [Git](https://git-scm.com/downloads) install
 
 If not, see the guide [Your first KeystoneJS app in 5 minutes](https://www.keystonejs.com/quick-start/).
 
-At the moment it is only possible to deploy the TODO starter project without any modifications. Deploying [the STARTER starter project](#deploy-the-starter-starter-project) or [the BLANK starter project](#deploy-the-blank-starter-project) requires a few tweaks.
+> **Note:** Deploying [the STARTER starter project](#deploy-the-starter-starter-project) requires a few tweaks.
 
 ## MongoDB Atlas
 
@@ -87,10 +87,6 @@ Your KeystoneJS project is now pushed to Heroku and the build process is started
 You should now be able to open your new app by pressing [Open App].
 
 ## Caveats
-
-### Deploy the BLANK starter project
-
-A KeystoneJS issue currently prevent os from accessing the admin interface if we haven't specified any lists. Solution, well, just [add a list](https://www.keystonejs.com/tutorials/add-lists) and we are good to go.
 
 ### Deploy the STARTER starter project
 
