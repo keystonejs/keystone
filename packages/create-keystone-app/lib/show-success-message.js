@@ -26,7 +26,7 @@ For troubleshooting and further information see:
   }
 
   console.log(`
-  🎉  KeystoneJS created a starter project in: ${c.bold(projectDir)}
+  🎉  Keystone created a starter project in: ${c.bold(projectDir)}
   ${knexMessage}
   ${c.bold('To launch your app, run:')}
 
