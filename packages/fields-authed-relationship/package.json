@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-authed-relationship",
   "description": "KeystoneJS AuthedRelationship Field Type",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/fields-authed-relationship.cjs.js",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
-    "@keystonejs/fields": "^7.0.2"
+    "@keystonejs/fields": "^8.0.0"
   },
   "module": "dist/fields-authed-relationship.esm.js"
 }
