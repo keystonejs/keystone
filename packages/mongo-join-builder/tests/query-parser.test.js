@@ -74,7 +74,7 @@ describe('query parser', () => {
     test('builds a query tree with to-many relationship and other postjoin filters', () => {
       const queryTree = queryParser(
         { listAdapter, getUID: jest.fn(key => key) },
-        { name: 'foobar', age: 23, $first: 1, posts: { title: 'hello', $orderBy: 'title_ASC' } }
+        { name: 'foobar', age: 23, $first: 1, posts: { title: 'hello', $sortBy: ['title_ASC'] } }
       );
 
       expect(queryTree).toMatchObject({

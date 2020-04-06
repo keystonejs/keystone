@@ -241,7 +241,10 @@ class MongooseListAdapter extends BaseListAdapter {
           ? graphQlQueryToMongoJoinQuery(whereElement) // Recursively traverse relationship fields
           : whereElement
       ),
-      ...mapKeyNames(pick(modifiers, ['search', 'orderBy', 'skip', 'first']), key => `$${key}`),
+      ...mapKeyNames(
+        pick(modifiers, ['search', 'sortBy', 'orderBy', 'skip', 'first']),
+        key => `$${key}`
+      ),
     });
     let query;
     try {

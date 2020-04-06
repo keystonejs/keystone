@@ -186,6 +186,7 @@ module.exports = class List {
       listQueryName: `all${_listQueryName}`,
       listQueryMetaName: `_all${_listQueryName}Meta`,
       listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
+      listSortName: `Sort${_listQueryName}By`,
       deleteMutationName: `delete${_itemQueryName}`,
       updateMutationName: `update${_itemQueryName}`,
       createMutationName: `create${_itemQueryName}`,
@@ -356,10 +357,18 @@ module.exports = class List {
       .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
   }
 
+  /** Equivalent to getFieldsWithAccess but includes `id` fields. */
+  getAllFieldsWithAccess({ schemaName, access }) {
+    return this.fields.filter(field => field.access[schemaName][access]);
+  }
+
   getGqlTypes({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
     const types = [];
+
+    // We want to include `id` fields
+    // If read is globally set to false, makes sense to never show it
+    const readFields = this.getAllFieldsWithAccess({ schemaName, access: 'read' });
     if (
       schemaAccess.read ||
       schemaAccess.create ||
@@ -381,26 +390,21 @@ module.exports = class List {
           """
           _label_: String
           ${flatten(
-            this.fields
-              .filter(field => field.access[schemaName].read) // If it's globally set to false, makes sense to never show it
-              .map(field =>
-                field.schemaDoc
-                  ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields({ schemaName })}`
-                  : field.gqlOutputFields({ schemaName })
-              )
+            readFields.map(field =>
+              field.schemaDoc
+                ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields({ schemaName })}`
+                : field.gqlOutputFields({ schemaName })
+            )
           ).join('\n')}
-        }
-      `,
+        }`,
+
+        // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
         `
         input ${this.gqlNames.whereInputName} {
           AND: [${this.gqlNames.whereInputName}]
           OR: [${this.gqlNames.whereInputName}]
 
-          ${flatten(
-            this.fields
-              .filter(field => field.access[schemaName].read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.gqlQueryInputFields({ schemaName }))
-          ).join('\n')}
+          ${flatten(readFields.map(field => field.gqlQueryInputFields({ schemaName }))).join('\n')}
         }`,
         // TODO: Include other `unique` fields and allow filtering by them
         `
@@ -408,6 +412,21 @@ module.exports = class List {
           id: ID!
         }`
       );
+
+      const sortOptions = flatten(
+        readFields.map(({ path, isOrderable }) =>
+          // Explicitly allow sorting by id
+          isOrderable || path === 'id' ? [`${path}_ASC`, `${path}_DESC`] : []
+        )
+      );
+
+      if (sortOptions.length) {
+        types.push(`
+          enum ${this.gqlNames.listSortName} {
+            ${sortOptions.join('\n')}
+          }
+        `);
+      }
     }
 
     const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
@@ -446,6 +465,7 @@ module.exports = class List {
     return [
       `where: ${this.gqlNames.whereInputName}`,
       `search: String`,
+      `sortBy: [${this.gqlNames.listSortName}!]`,
       `orderBy: String`,
       `first: Int`,
       `skip: Int`,

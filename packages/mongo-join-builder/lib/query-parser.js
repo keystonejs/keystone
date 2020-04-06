@@ -34,7 +34,7 @@ function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], incl
         ),
         { AND: '$and', OR: '$or' }[key]
       );
-    } else if (['$search', '$orderBy', '$skip', '$first', '$count'].includes(key)) {
+    } else if (['$search', '$sortBy', '$orderBy', '$skip', '$first', '$count'].includes(key)) {
       return { postJoinPipeline: [modifierTokenizer(listAdapter, query, key, path)] };
     } else if (key === 'id') {
       if (getType(value) === 'Object') {

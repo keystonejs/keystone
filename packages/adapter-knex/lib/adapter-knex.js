@@ -484,7 +484,7 @@ class KnexListAdapter extends BaseListAdapter {
 class QueryBuilder {
   constructor(
     listAdapter,
-    { where = {}, first, skip, orderBy, search },
+    { where = {}, first, skip, sortBy, orderBy, search },
     { meta = false, from = {} }
   ) {
     this._tableAliases = {};
@@ -560,6 +560,17 @@ class QueryBuilder {
         const [orderField, orderDirection] = orderBy.split('_');
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
         this._query.orderBy(sortKey, orderDirection);
+      }
+      if (sortBy !== undefined) {
+        // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
+        this._query.orderBy(
+          sortBy.map(s => {
+            const [orderField, orderDirection] = s.split('_');
+            const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
+
+            return { column: sortKey, order: orderDirection };
+          })
+        );
       }
     }
   }

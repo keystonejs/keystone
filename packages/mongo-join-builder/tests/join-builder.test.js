@@ -172,7 +172,7 @@ describe('join builder', () => {
             many: true,
             uniqueField: 'abc123_posts',
           },
-          postJoinPipeline: [{ $orderBy: 'title' }],
+          postJoinPipeline: [{ $sortBy: 'title' }],
           relationships: [],
           excludeFields: [],
         },
@@ -197,7 +197,7 @@ describe('join builder', () => {
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
             { $addFields: { id: '$_id' } },
-            { $orderBy: 'title' },
+            { $sortBy: 'title' },
           ],
         },
       },
