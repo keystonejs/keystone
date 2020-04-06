@@ -88,7 +88,7 @@ Avatar.defaultProps = {
 };
 
 // Stack
-export const AvatarStack = ({ size, users, ...props }) => {
+export const AvatarStack = ({ size = 'medium', users, ...props }) => {
   const stroke = STROKE_MAP[size];
   const height = SIZE_MAP[size];
   const width = SIZE_MAP[size] + (users.length - 1) * 10;
@@ -117,7 +117,4 @@ export const AvatarStack = ({ size, users, ...props }) => {
 AvatarStack.propTypes = {
   size: PropTypes.oneOf(Object.keys(SIZE_MAP)),
   users: PropTypes.arrayOf(PropTypes.object),
-};
-AvatarStack.defaultProps = {
-  size: 'medium',
 };

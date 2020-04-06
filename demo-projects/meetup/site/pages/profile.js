@@ -1,4 +1,4 @@
-import React, { Component, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import gql from 'graphql-tag';
 import { useFormState } from 'react-use-form-state';
 import { useToasts } from 'react-toast-notifications';
@@ -7,37 +7,40 @@ import { useMutation } from '@apollo/react-hooks';
 import { AvatarUpload } from '../components/AvatarUpload';
 import Meta from '../components/Meta';
 
-export default class ProfilePage extends Component {
-  static async getInitialProps(ctx) {
-    try {
-      const { data, error } = await ctx.apolloClient.query({
-        query: USER,
-      });
-      // Redirect to the Signin page when the user is not logged in or if there is an error.
-      if (!data.authenticatedUser || error) {
-        ctx.res.redirect('/signin');
-      }
+const ProfilePage = props => {
+  const { error, user } = props;
 
-      return {
-        user: data.authenticatedUser,
-        error: error,
-      };
-    } catch (error) {
-      // If there was an error, we need to pass it down so the page can handle it.
-      return { error };
+  return error ? (
+    <h1>Error loading User Profile.</h1>
+  ) : (
+    <>
+      <Meta title={user.name} />
+      <Profile {...props} />
+    </>
+  );
+};
+
+ProfilePage.getInitialProps = async ctx => {
+  try {
+    const { data, error } = await ctx.apolloClient.query({
+      query: USER,
+    });
+    // Redirect to the Signin page when the user is not logged in or if there is an error.
+    if (!data.authenticatedUser || error) {
+      ctx.res.redirect('/signin');
     }
-  }
 
-  render() {
-    if (this.props.error) return <h1>Error loading User Profile.</h1>;
-    return (
-      <>
-        <Meta title={this.props.user.name} />
-        <Profile {...this.props} />
-      </>
-    );
+    return {
+      user: data.authenticatedUser,
+      error: error,
+    };
+  } catch (error) {
+    // If there was an error, we need to pass it down so the page can handle it.
+    return { error };
   }
-}
+};
+
+export default ProfilePage;
 
 const Profile = ({ user }) => {
   const [formState, { text, email, password }] = useFormState({
