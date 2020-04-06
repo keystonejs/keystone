@@ -9,7 +9,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/fields": "^7.0.2",
+    "@keystonejs/fields": "^8.0.0",
     "@keystonejs/keystone": "^7.0.0",
     "@keystonejs/logger": "^5.1.1",
     "@keystonejs/utils": "^5.4.0",

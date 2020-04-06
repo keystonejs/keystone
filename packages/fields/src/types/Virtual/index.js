@@ -1,4 +1,10 @@
-import { Virtual, MongoVirtualInterface, KnexVirtualInterface } from './Implementation';
+import {
+  Virtual,
+  MongoVirtualInterface,
+  KnexVirtualInterface,
+  JSONVirtualInterface,
+  MemoryVirtualInterface,
+} from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
 export default {
