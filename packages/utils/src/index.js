@@ -1,7 +1,7 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import isPromise from 'p-is-promise';
-import invariant from 'tiny-invariant';
+import semver from 'semver';
 
 export const noop = x => x;
 export const identity = noop;
@@ -60,7 +60,11 @@ export const intersection = (array1, array2) =>
 export const pick = (obj, keys) =>
   keys.reduce((acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc), {});
 
-export const omitBy = (obj, func) => pick(obj, Object.keys(obj).filter(value => !func(value)));
+export const omitBy = (obj, func) =>
+  pick(
+    obj,
+    Object.keys(obj).filter(value => !func(value))
+  );
 
 export const omit = (obj, keys) => omitBy(obj, value => keys.includes(value));
 
@@ -70,6 +74,12 @@ export const objMerge = objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), 
 
 // [x, y, z] => { x: val, y: val, z: val}
 export const defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
+
+export const filterValues = (obj, predicate) =>
+  Object.entries(obj).reduce(
+    (acc, [key, value]) => (predicate(value) ? { ...acc, [key]: value } : acc),
+    {}
+  );
 
 // [x, y, z] => { x[keyedBy]: mapFn(x), ... }
 // [{ name: 'a', animal: 'cat' },
@@ -95,6 +105,9 @@ export const zipObj = obj =>
   Object.values(obj)[0].map((_, i) =>
     Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
   );
+
+// compose([f, g, h])(o) = h(g(f(o)))
+export const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
 
 export const mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   if (
@@ -192,18 +205,28 @@ export const captureSuspensePromises = executors => {
 export const countArrays = obj =>
   Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
 
-const emptyArray = [];
+/**
+ * Compares two version strings or number arrays in the major.minor.patch format.
+ * Returns true if comp if each element of comp is greater than than base.
+ */
+export const versionGreaterOrEqualTo = (comp, base) => {
+  const parseVersion = input => {
+    if (typeof input === 'object') {
+      input = input.join('.');
+    }
+    return semver.coerce(input);
+  };
 
-export const spliceImmutably = (
-  collection,
-  index,
-  deleteNum = collection.length,
-  newStuff = emptyArray,
-) => {
-  invariant(index >= 0, 'Index must be a positive integer');
-  invariant(deleteNum >= 0, 'deleteNum must be a positive integer');
-  invariant(Array.isArray(newStuff), 'Must provide an array to insert');
-  return collection
-    .slice(0, index)
-    .concat(...newStuff, collection.slice(index + deleteNum));
+  const v1 = parseVersion(comp);
+  const v2 = parseVersion(base);
+  return semver.gte(v1, v2);
+};
+
+export const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+
+// Iteratively execute a callback against each item in an array
+export const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
 };

@@ -8,7 +8,7 @@ describe('Test Project Smoke Tests', () => {
   it('Should be able to click through to admin page.', () => {
     cy.visit('/');
 
-    cy.contains('Open').click();
+    cy.contains('Open').click({ force: true });
 
     cy.url().should('include', '/admin');
   });

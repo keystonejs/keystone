@@ -1,37 +1,37 @@
 const users = [
   {
     name: 'Boris Bozic',
-    email: 'boris@keystone-alpha.com',
+    email: 'boris@keystone.com',
     isAdmin: true,
   },
   {
     name: 'Jed Watson',
-    email: 'jed@keystone-alpha.com',
+    email: 'jed@keystone.com',
     isAdmin: true,
   },
   {
     name: 'John Molomby',
-    email: 'john@keystone-alpha.com',
+    email: 'john@keystone.com',
     isAdmin: true,
   },
   {
     name: 'Joss Mackison',
-    email: 'joss@keystone-alpha.com',
+    email: 'joss@keystone.com',
     isAdmin: true,
   },
   {
     name: 'Ben Conolly',
-    email: 'ben@keystone-alpha.com',
+    email: 'ben@keystone.com',
     isAdmin: true,
   },
   {
     name: 'Luke Batchelor',
-    email: 'luke@keystone-alpha.com',
+    email: 'luke@keystone.com',
     isAdmin: false,
   },
   {
     name: 'Jared Crowe',
-    email: 'jared@keystone-alpha.com',
+    email: 'jared@keystone.com',
     isAdmin: false,
   },
   {

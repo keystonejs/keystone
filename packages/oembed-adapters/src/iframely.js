@@ -1,12 +1,12 @@
 import fetch from 'node-fetch';
 import crypto from 'crypto';
-import { importView } from '@keystone-alpha/build-field-types';
+import { importView } from '@keystonejs/build-field-types';
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
 
 export class IframelyOEmbedAdapter {
-  constructor({ apiKey }) {
+  constructor({ apiKey } = {}) {
     if (!apiKey) {
       throw new Error('Must provide an apiKey to IFramely OEmbed Adapter');
     }
@@ -24,7 +24,7 @@ export class IframelyOEmbedAdapter {
   }
 
   /**
-   * @param paramters{Object} An object of paramters to be sent to the IFramely
+   * @param parameters{Object} An object of parameters to be sent to the IFramely
    * service. See more: https://iframely.com/docs/parameters
    * @param parameters.url{String} (required) The url to fetch oEmbed data for.
    */

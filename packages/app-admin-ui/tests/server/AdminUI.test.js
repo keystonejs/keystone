@@ -21,7 +21,6 @@ jest.doMock('html-webpack-plugin', () => {
 const { AdminUIApp } = require('../../');
 
 const keystone = {
-  getAdminSchema: jest.fn(),
   getAdminMeta: jest.fn(),
 };
 const adminPath = 'admin_path';
@@ -38,12 +37,11 @@ describe('Add Middleware', () => {
       adminPath,
     });
 
-    //expect(adminUI.createSessionMiddleware()).not.toBe(null);
+    const adminMeta = adminUI.getAdminUIMeta(keystone);
+
     expect(
       adminUI.createDevMiddleware({
-        keystone,
-        apiPath: adminPath,
-        graphiqlPath: `${adminPath}/graphiql`,
+        adminMeta,
       })
     ).not.toBe(null);
   });

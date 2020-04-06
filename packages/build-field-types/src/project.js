@@ -1,4 +1,3 @@
-// @flow
 import is from 'sarcastic';
 import nodePath from 'path';
 import { promptInput } from './prompt';
@@ -8,11 +7,11 @@ import { Item } from './item';
 import { Package } from './package';
 
 export class Project extends Item {
-  get configPackages(): Array<string> {
+  get configPackages() {
     return is(this._config.packages, is.default(is.arrayOf(is.string), ['.']));
   }
   // probably gonna be irrelevant later but i want it for now
-  get isBolt(): boolean {
+  get isBolt() {
     // we only want to return true when there is bolt config
     // AND no yarn workspaces config
     // because emotion has a bolt config and yarn workspaces
@@ -21,7 +20,7 @@ export class Project extends Item {
     let hasYarnWorkspaces = !!this.json.workspaces;
     return hasBolt && !hasYarnWorkspaces;
   }
-  static async create(directory: string): Promise<Project> {
+  static async create(directory) {
     let filePath = nodePath.join(directory, 'package.json');
     let contents = await fs.readFile(filePath, 'utf-8');
     let project = new Project(filePath, contents);
@@ -30,15 +29,14 @@ export class Project extends Item {
     return project;
   }
 
-  get name(): string {
+  get name() {
     return is(this.json.name, is.string);
   }
-  set name(name: string) {
+  set name(name) {
     this.json.name = name;
   }
-  packages: Array<Package>;
 
-  async _packages(): Promise<Array<Package>> {
+  async _packages() {
     // suport bolt later probably
     // maybe lerna too though probably not
     if (!this._config.packages && this.json.workspaces) {

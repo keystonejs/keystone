@@ -61,8 +61,16 @@ const spinner = ora({
 }).start();
 
 // Everything else is assumed to be a command we want to execute
-commandRunner.exec(args, commands, spinner).catch(error => {
-  spinner.fail();
-  console.error(error);
-  process.exit(1);
-});
+commandRunner
+  .exec(args, commands, spinner)
+  .then(({ endProcessWithSuccess = false } = {}) => {
+    // Allow commands to forcibly end the process with success
+    if (endProcessWithSuccess) {
+      process.exit(0);
+    }
+  })
+  .catch(error => {
+    spinner.fail();
+    console.error(error);
+    process.exit(1);
+  });

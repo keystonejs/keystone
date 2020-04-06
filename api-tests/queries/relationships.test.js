@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 
-const { Text, Relationship } = require('@keystone-alpha/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
+const { Text, Relationship } = require('@keystonejs/fields');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 const cuid = require('cuid');
@@ -180,7 +180,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               feed_some: { title_contains: "J" }
             }) {
               id
-              feed {
+              feed(orderBy: "title_ASC") {
                 title
               }
             }
@@ -299,7 +299,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }) {
               id
               name
-              feed {
+              feed(orderBy: "title_ASC") {
                 id
                 title
               }
@@ -330,7 +330,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           query {
             allUsers(where: {
               feed_none: { title_contains: "J" }
-            }) {
+            },
+            orderBy: "id_ASC") {
               id
               feed {
                 title

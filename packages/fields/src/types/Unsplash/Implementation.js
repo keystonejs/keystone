@@ -1,5 +1,5 @@
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import UnsplashAPI, { toJson } from 'unsplash-js';
 import queryString from 'query-string';
 
@@ -59,17 +59,17 @@ export class Unsplash extends Implementation {
     this.graphQLOutputType = 'UnsplashImage';
 
     this.unsplash = new UnsplashAPI({
-      applicationId: accessKey,
+      accessKey,
       secret: secretKey,
     });
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
 
   // Filter based on Unsplash Image IDs
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),
@@ -154,7 +154,7 @@ export class Unsplash extends Implementation {
     ];
   }
 
-  get gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers() {
     return {
       searchUnsplash: async (_, { query, page, perPage, orientation, collections }) => {
         const { total, total_pages, results } = await this.unsplash
@@ -207,7 +207,7 @@ export class Unsplash extends Implementation {
   }
 
   // Called on `User.avatar` for example
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];
@@ -222,7 +222,19 @@ export class Unsplash extends Implementation {
 
   async resolveInput({ resolvedData }) {
     const inputId = resolvedData[this.path];
-    if (!inputId) {
+
+    // NOTE: The following two conditions could easily be combined into a
+    // single `if (!inputId) return inputId`, but that would lose the nuance of
+    // returning `undefined` vs `null`.
+    // Premature Optimisers; be ware!
+    if (typeof inputId === 'undefined') {
+      // Nothing was passed in, so we can bail early.
+      return undefined;
+    }
+
+    if (inputId === null) {
+      // `null` was specifically uploaded, and we should set the field value to
+      // null. To do that we... return `null`
       return null;
     }
 
@@ -232,7 +244,9 @@ export class Unsplash extends Implementation {
     // Unsplash.
     this.unsplash.photos.downloadPhoto(apiResponse);
 
-    return transformImageFromApiToKs5(apiResponse);
+    // NOTE: we need to provide an id for the image to avoid issues with Apollo
+    // More info here: https://github.com/keystonejs/keystone/pull/1799
+    return transformImageFromApiToKs5(apiResponse, { includeId: true });
   }
 
   get gqlUpdateInputFields() {

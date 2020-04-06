@@ -1,4 +1,3 @@
-// @flow
 export const fontFamily = `
   -apple-system,
   BlinkMacSystemFont,
@@ -11,6 +10,10 @@ export const fontFamily = `
   "Segoe UI Emoji",
   "Segoe UI Symbol"
 `;
+
+// BlinkMacSystemFont produces very strange characters when printing from Chrome on Mac.
+const printFontFamily = fontFamily.replace('BlinkMacSystemFont,', '');
+
 export const borderRadius = 6;
 export const gridSize = 8;
 export const fontSize = 16;
@@ -34,6 +37,10 @@ export const globalStyles = {
     MozFontFeatureSettings: "'liga' on",
     MozOsxFontSmoothing: 'grayscale',
     WebkitFontSmoothing: 'antialiased',
+    '@media print': {
+      backgroundColor: 'white',
+      fontFamily: printFontFamily,
+    },
   },
   a: {
     color: colors.primary,

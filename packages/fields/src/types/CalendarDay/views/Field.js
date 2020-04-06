@@ -1,41 +1,36 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { getYear } from 'date-fns';
-import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { TextDayPicker } from '@arch-ui/day-picker';
+import { Alert } from '@arch-ui/alert';
 
-export default class CalendarDayField extends Component {
-  handleSelectedChange = value => {
-    const { field, onChange } = this.props;
-    if (
-      value === null ||
-      (getYear(value).toString().length <= 4 &&
-        getYear(value) <= field.config.yearRangeTo &&
-        getYear(value) >= field.config.yearRangeFrom)
-    ) {
-      onChange(value);
-    }
-  };
+const CalendarDayField = ({ autoFocus, field, value, errors, onChange }) => {
+  const htmlID = `ks-daypicker-${field.path}`;
 
-  render() {
-    const { autoFocus, field, value, errors } = this.props;
-    const htmlID = `ks-input-${field.path}`;
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldInput>
+        <TextDayPicker
+          id={htmlID}
+          autoFocus={autoFocus}
+          date={value}
+          format={field.config.format}
+          onChange={onChange}
+        />
+      </FieldInput>
 
-    return (
-      <FieldContainer>
-        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        <FieldInput>
-          <TextDayPicker
-            id={`ks-daypicker-${field.path}`}
-            autoFocus={autoFocus}
-            date={value}
-            onChange={this.handleSelectedChange}
-          />
-        </FieldInput>
-      </FieldContainer>
-    );
-  }
-}
+      {errors.map(({ message, data }) => (
+        <Alert appearance="danger" key={message}>
+          {message}
+          {data ? ` - ${JSON.stringify(data)}` : null}
+        </Alert>
+      ))}
+    </FieldContainer>
+  );
+};
+
+export default CalendarDayField;

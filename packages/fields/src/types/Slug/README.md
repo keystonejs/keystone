@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: Slug
 [meta]-->
 
@@ -22,8 +23,8 @@ As we have specified a `title` field, its value will be used to generate a
 unique slug.
 
 ```javascript
-const { Slug, Text } = require('@keystone-alpha/fields');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Slug, Text } = require('@keystonejs/fields');
+const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone(/* ... */);
 
@@ -40,8 +41,8 @@ keystone.createList('Post', {
 The item's `username` value will be used to generate a unique slug.
 
 ```javascript
-const { Slug, Text } = require('@keystone-alpha/fields');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Slug, Text } = require('@keystonejs/fields');
+const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone(/* ... */);
 
@@ -56,11 +57,11 @@ keystone.createList('User', {
 });
 ```
 
-### A custom `generate` method
+### Custom `generate` method
 
 ```javascript
-const { Slug, Text, DateTime } = require('@keystone-alpha/fields');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Slug, Text, DateTime } = require('@keystonejs/fields');
+const { Keystone } = require('@keystonejs/keystone');
 const slugify = require('slugify');
 
 const keystone = new Keystone(/* ... */);
@@ -87,7 +88,7 @@ For example, if you create an item with a slug `abc123`, then perform an
 `update` mutation without changing any of the data which the slug initial
 generation was based on, the slug should stay as `abc123`.
 
-### Caveats with Updates and `makeUnique`
+### Caveats with updates and `makeUnique`
 
 There is one situation where the `Slug` field cannot guarantee stability; when:
 
@@ -142,7 +143,7 @@ A mutation to create a new item will auto-generate a slug:
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS" }) {
     id
     title
     url
@@ -153,8 +154,8 @@ mutation {
 # {
 #   createPost: {
 #     id: "1",
-#     title: "Why I ♥ Keystone",
-#     url: "why-i-love-keystone"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "why-i-love-keystonejs"
 #   }
 # }
 ```
@@ -164,7 +165,7 @@ subsequently created item with the same `title` will generate a unique slug:
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS" }) {
     id
     title
     url
@@ -175,8 +176,8 @@ mutation {
 # {
 #   createPost: {
 #     id: "2",
-#     title: "Why I ♥ Keystone",
-#     url: "why-i-love-keystone-2108fh3"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "why-i-love-keystonejs-2108fh3"
 #   }
 # }
 ```
@@ -185,7 +186,7 @@ You can also manually override the slug's value:
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone", url: "keystone-is-great" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS", url: "keystonejs-is-great" }) {
     id
     title
     url
@@ -196,18 +197,18 @@ mutation {
 # {
 #   createPost: {
 #     id: "2",
-#     title: "Why I ♥ Keystone",
-#     url: "keystone-is-great"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "keystonejs-is-great"
 #   }
 # }
 ```
 
 And overwritten slugs will be uniquified for you when `isUnique: true` (with
-[one caveat](#caveats-with-updates-and-makeUnique)):
+[one caveat](#caveats-with-updates-and-makeunique)):
 
 ```graphql
 mutation {
-  createPost(data: { title: "Why I ♥ Keystone", url: "keystone-is-great" }) {
+  createPost(data: { title: "Why I ♥ KeystoneJS", url: "keystonejs-is-great" }) {
     id
     title
     url
@@ -218,34 +219,35 @@ mutation {
 # {
 #   createPost: {
 #     id: "2",
-#     title: "Why I ♥ Keystone",
-#     url: "keystone-is-great-f80p5sm"
+#     title: "Why I ♥ KeystoneJS",
+#     url: "keystonejs-is-great-f80p5sm"
 #   }
 # }
 ```
 
 ## Config
 
-| Option               | Type               | Default                                                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| -------------------- | ------------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `from`               | `String`           | `undefined`                                                              | Specify a field whos value will be used to generate a slug. An error will be thrown if the value of the specified field is not of type `string`. NOTE: Only one of the `from` or `generate` options should be set.                                                                                                                                                                                                                                 |
-| `generate`           | `Function<String>` | Either `name`, `title`, or the first non-id field found                  | Will be passed `{ resolvedData, existingItem }` as the first parameter from which you can generate a slug. An error will be thrown if the returned value is not of type `string`. NOTE: Only one of the `from` or `generate` options should be set.                                                                                                                                                                                                |
-| `makeUnique`         | `Function<String>` | Appends a hyphen followed by 7-10 random lowercase alpha-num characters. | If `isUnique === true` and the slug returned from `generate` is not unique, this method will be executed. This method receives a single parameter `{ value, slug, previousSlug }` where `slug` is the result of calling `generate` and `previousSlug` is the previous result of calling `makeUnique`. If the uniqueified string returned is still not unique, this function will be called again with the uniqueified value set to `previousSlug`. |
-| `regenerateOnUpdate` | `Boolean`          | `true`                                                                   | If no value is received during an `update<List>` mutation, generate a value as per a `create<List>` mutation. NOTE: If a value is received, it will overwrite this setting.                                                                                                                                                                                                                                                                        |
-| `isUnique`           | `Boolean`          | `true`                                                                   | Ensures `makeUnique` is executed if the value is not unique. Adds a unique database index that allows only unique values to be stored. Implies `isIndexed`.                                                                                                                                                                                                                                                                                        |
-| `isIndexed`          | `Boolean`          | `true`                                                                   | Set a database index on this field. Setting `isUnique` will also set `isIndexed` to `true`.                                                                                                                                                                                                                                                                                                                                                        |
+| Option               | Type               | Default                                                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------------- | ------------------ | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `from`               | `String`           | `undefined`                                                              | Specify a field whos value will be used to generate a slug. An error will be thrown if the value of the specified field is not of type `string`. NOTE: Only one of the `from` or `generate` options should be set.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `generate`           | `Function<String>` | Either `name`, `title`, or the first non-id field found                  | Will be passed `{ resolvedData, existingItem }` as the first parameter from which you can generate a slug. An error will be thrown if the returned value is not of type `string`. NOTE: Only one of the `from` or `generate` options should be set.                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `makeUnique`         | `Function<String>` | Appends a hyphen followed by 7-10 random lowercase alpha-num characters. | If `isUnique === true` and the slug returned from `generate` is not unique, this method will be executed. This method receives a single parameter `{ value, slug, previousSlug, generatedSlug }` where `slug` is the slug to make unique, `previousSlug` is the previous result of calling `makeUnique`, and `generatedSlug` is the original result of calling `generate` / any value passed in the mutation. If the uniqueified string returned is still not unique, this function will be called again with the uniqueified value set to `previousSlug`.                                                                                                    |
+| `alwaysMakeUnique`   | `Boolean`          | `false`                                                                  | Always run the `makeUnique` method, even if the uniquified slug from `generate` does not collide with any existing slugs. The default of only uniquifying on collision can lead to subtle data leak vulnerabilities such as revealing the existence of a slug for a given field value to exist, even if that item in the list is otherwise innaccessible to queries (eg via Access Control). For example; a deactivated user with slug `sam-smith` will cause a collision for new accounts with a `name` of `Sam Smith`, revealing the existence of previously created accounts of that name by checking if the returned `slug` has a unique string appended. |
+| `regenerateOnUpdate` | `Boolean`          | `true`                                                                   | If no value is received during an `update<List>` mutation, generate a value as per a `create<List>` mutation. NOTE: If a value is received, it will overwrite this setting.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `isUnique`           | `Boolean`          | `true`                                                                   | Ensures `makeUnique` is executed if the value is not unique. Adds a unique database index that allows only unique values to be stored. Implies `isIndexed`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `isIndexed`          | `Boolean`          | `true`                                                                   | Set a database index on this field. Setting `isUnique` will also set `isIndexed` to `true`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 ## GraphQL
 
 `Slug` fields use the `String` type in GraphQL.
 
-### Input Fields
+### Input fields
 
 | Field name | Type     | Description                            |
 | ---------- | -------- | -------------------------------------- |
 | `${path}`  | `String` | A slug, or blank to execute `generate` |
 
-### Output Fields
+### Output fields
 
 | Field name | Type     | Description   |
 | ---------- | -------- | ------------- |

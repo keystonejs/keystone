@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: CalendarDay
 [meta]-->
 
@@ -8,6 +9,8 @@ title: CalendarDay
 ## Usage
 
 ```js
+const { Text, Password, CalendarDay } = require('@keystonejs/fields');
+
 keystone.createList('User', {
   fields: {
     email: { type: Text },
@@ -17,7 +20,6 @@ keystone.createList('User', {
       format: 'Do MMMM YYYY',
       yearRangeFrom: 1901,
       yearRangeTo: 2018,
-      yearPickerType: 'auto',
     },
   },
 });
@@ -25,18 +27,17 @@ keystone.createList('User', {
 
 ### Config
 
-| Option           | Type      | Default                | Description                                                                |
-| ---------------- | --------- | ---------------------- | -------------------------------------------------------------------------- |
-| `format`         | `String`  | `YYYY-MM-DD`           | Defines the format of string that the component generates                  |
-| `yearRangeFrom`  | `String`  | The current year - 100 | Defines the starting point of the year range, eg `1918`                    |
-| `yearRangeTo`    | `String`  | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018` |
-| `yearPickerType` | `String`  | `auto`                 | Defines the input type for the year selector                               |
-| `isRequired`     | `Boolean` | `false`                | Does this field require a value?                                           |
-| `isUnique`       | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored            |
+| Option          | Type      | Default                | Description                                                                |
+| --------------- | --------- | ---------------------- | -------------------------------------------------------------------------- |
+| `format`        | `String`  | `YYYY-MM-DD`           | Defines the format of string that the component will display               |
+| `yearRangeFrom` | `Integer` | The current year - 100 | Defines the starting point of the year range, eg `1918`                    |
+| `yearRangeTo`   | `Integer` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018` |
+| `isRequired`    | `Boolean` | `false`                | Does this field require a value?                                           |
+| `isUnique`      | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored            |
 
 #### `format`
 
-Defines the format of string that the component generates. For example, `Do MMMM YYYY`.
+Defines the format of string that the component will display, such as `Do MMMM YYYY`. Values will be stored in the database in ISO8601 (`YYYY-MM-DD`) format.
 
 #### `yearRangeFrom`
 
@@ -52,32 +53,22 @@ This prop allows the user to set the end of that range.
 
 The default value for this field is the current year.
 
-#### `yearPickerType`
-
-The CalendarDay component includes an input that allows the user to change the current year from a range of options. This prop allows the user to change the type of that input.
-
-| Option   | Description                                                                             |
-| -------- | --------------------------------------------------------------------------------------- |
-| `input`  | Generates an input that allows the user to type in a value                              |
-| `select` | Generates a drop-down menu that allows the user to select a value from a list           |
-| `auto`   | Will generate a `select` if the range is 50 or less, otherwise will generate an `input` |
-
 ## GraphQL
 
 `CalendarDay` fields use the `String` type in GraphQL.
-They produce and values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
+They produce values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
 
-### Input Fields
+### Input fields
 
 | Field name | Type     | Description                                              |
 | :--------- | :------- | :------------------------------------------------------- |
 | `${path}`  | `String` | The value to be stored, in ISO8601 (`YYYY-MM-DD`) format |
 
-### Output Fields
+### Output fields
 
-| Field name | Type      | Description                                 |
-| :--------- | :-------- | :------------------------------------------ |
-| `${path}`  | `Boolean` | The stored value in the configured `format` |
+| Field name | Type     | Description                                 |
+| :--------- | :------- | :------------------------------------------ |
+| `${path}`  | `String` | The stored value in the configured `format` |
 
 ### Filters
 
@@ -96,14 +87,14 @@ All filter fields expect values in the ISO8601 (`YYYY-MM-DD`) format.
 
 ## Storage
 
-### Mongoose Adaptor
+### Mongoose adapter
 
 In Mongoose the field is added using the `String` schema type.
 
-The `isRequired` config option is enforces by Keystone only.
+The `isRequired` config option is enforced by KeystoneJS only.
 
-### Knex Adaptor
+### Knex adapter
 
-The Knex adaptor uses the [Knex `date` type](https://knexjs.org/#Schema-date):
+The Knex adapter uses the [Knex `date` type](https://knexjs.org/#Schema-date):
 
-The `isRequired` config option is enforces by Keystone and, if equal to `true`, the column is set as not nullable.
+The `isRequired` config option is enforced by KeystoneJS and, if equal to `true`, the column is set as not nullable.

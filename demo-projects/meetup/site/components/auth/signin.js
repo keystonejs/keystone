@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { jsx } from '@emotion/core';
 
-import { useAuth } from '../../lib/authetication';
+import { useAuth } from '../../lib/authentication';
 import { Button, Field, Group, Label, Link, Input } from '../../primitives/forms';
 import { gridSize, colors } from '../../theme';
 
@@ -21,7 +21,7 @@ export default ({ onSuccess, onClickForgot }) => {
 
     setIsLoading(true);
     try {
-      await signin({ email, password });
+      await signin({ variables: { email, password } });
       setIsLoading(false);
       setErrorState(false);
       if (onSuccess && typeof onSuccess === 'function') {

@@ -1,5 +1,5 @@
-import { importView } from '@keystone-alpha/build-field-types';
-import { Text } from '@keystone-alpha/fields';
+import { importView } from '@keystonejs/build-field-types';
+import { Text } from '@keystonejs/fields';
 import {
   Content as ContentType,
   MongoContentInterface,
@@ -20,6 +20,7 @@ export const Content = {
   views: {
     Controller: importView('./views/Controller'),
     Field: importView('./views/Field'),
+    Cell: importView('./views/Cell'),
     Filter: Text.views.Filter,
   },
   adapters: {

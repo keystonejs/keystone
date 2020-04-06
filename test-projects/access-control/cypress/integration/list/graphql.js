@@ -68,7 +68,7 @@ describe('Access Control, List, GraphQL', () => {
           const name = getStaticListName(access);
 
           // The type is used in all the queries and mutations as a return type
-          if (access.create || access.read || access.update || access.delete) {
+          if (access.create || access.read || access.update || access.delete || access.auth) {
             expect(types, 'types').include(`${name}`);
             // Filter types are also available for update/delete/create (thanks
             // to nested mutations)

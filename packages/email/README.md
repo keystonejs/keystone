@@ -1,14 +1,21 @@
 <!--[meta]
-section: packages
-title: Email Sending
+section: api
+subSection: utilities
+title: Keystone email
 [meta]-->
 
-# Email Sending
+# Keystone email
 
 Send emails via various transports, rendered with Express-compatible
-renderers.
+renderers. Powered by [`keystone-email`](https://github.com/keystonejs/keystone-email).
 
-Powered by [`keystone-email`](https://github.com/keystonejs/keystone-email).
+## Installation
+
+```bash
+yarn add @keystonejs/email
+# or
+npm install @keystonejs/email
+```
 
 ## Transports
 
@@ -29,7 +36,7 @@ Usage:
 `index.js`
 
 ```javascript
-const { emailSender } = require('@keystone-alpha/email');
+const { emailSender } = require('@keystonejs/email');
 
 const jsxEmailSender = emailSender.jsx({
   // The directory containing the email templates
@@ -62,7 +69,7 @@ module.exports = class extends React.Component {
 };
 ```
 
-> NOTE: The `jsx` renderer has a peer dependency on `react` and `react-dom`
+> **Note:** The `jsx` renderer has a peer dependency on `react` and `react-dom`
 
 ### mjml
 
@@ -74,7 +81,7 @@ Usage:
 `index.js`
 
 ```javascript
-const { emailSender } = require('@keystone-alpha/email');
+const { emailSender } = require('@keystonejs/email');
 
 const mjmlEmailSender = emailSender.mjml({
   // The directory containing the email templates
@@ -113,14 +120,14 @@ module.exports = class extends React.Component {
 };
 ```
 
-> NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
+> **Note:** The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
 
 ### Pug (previously Jade)
 
 Usage:
 
 ```javascript
-const { emailSender } = require('@keystone-alpha/email');
+const { emailSender } = require('@keystonejs/email');
 
 const pugEmailSender = emailSender.pug({
   // The directory containing the email templates
@@ -142,7 +149,7 @@ Above are examples of using 2 renderers, `jsx`, and `pug`.
 In general, renderers are available directly on the exported object:
 
 ```javascript
-const { emailSender } = require('@keystone-alpha/email');
+const { emailSender } = require('@keystonejs/email');
 
 emailSender.<renderer>(...);
 ```

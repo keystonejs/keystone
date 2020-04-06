@@ -1,5 +1,11 @@
-import { importView } from '@keystone-alpha/build-field-types';
-import { Checkbox, MongoCheckboxInterface, KnexCheckboxInterface } from './Implementation';
+import { importView } from '@keystonejs/build-field-types';
+import {
+  Checkbox,
+  MongoCheckboxInterface,
+  KnexCheckboxInterface,
+  JSONCheckboxInterface,
+  MemoryCheckboxInterface,
+} from './Implementation';
 
 export default {
   type: 'Checkbox',
@@ -13,5 +19,7 @@ export default {
   adapters: {
     mongoose: MongoCheckboxInterface,
     knex: KnexCheckboxInterface,
+    json: JSONCheckboxInterface,
+    memory: MemoryCheckboxInterface,
   },
 };

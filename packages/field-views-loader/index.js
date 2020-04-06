@@ -1,4 +1,5 @@
 const loaderUtils = require('loader-utils');
+const fs = require('fs');
 
 function serialize(value, allPaths) {
   if (typeof value === 'string') {
@@ -12,6 +13,7 @@ function serialize(value, allPaths) {
     return (
       '{\n' +
       Object.keys(value)
+        .filter(key => value[key] !== undefined)
         .map(key => {
           // we need to use getters so circular dependencies work
           return `${JSON.stringify(key)}: ${serialize(value[key], allPaths)}`;
@@ -50,7 +52,7 @@ module.exports = function() {
       lists: {
         [listPath]: {  // e.g "User"
           ...
-          access: { create, read, update, delete },
+          access: { create, read, update, delete, auth },
           views: {
             [fieldPath]: {  // e.g 'email'
               Controller: 'absolute/path/to/controller',
@@ -84,15 +86,15 @@ module.exports = function() {
    */
 
   let allPaths = new Set();
-
   let pageComponents = findPageComponents(adminMeta.pages);
+  let hooks = fs.existsSync(adminMeta.hooks) ? adminMeta.hooks : {};
 
   let allViews = Object.entries(adminMeta.lists).reduce(
     (obj, [listPath, { views }]) => {
       obj[listPath] = views;
       return obj;
     },
-    { __pages__: pageComponents }
+    { __pages__: pageComponents, __hooks__: hooks }
   );
 
   const stringifiedObject = serialize(allViews, allPaths);
@@ -104,7 +106,7 @@ module.exports = function() {
     .join(',\n')}\n}`;
 
   const source = `
-    import { captureSuspensePromises } from '@keystone-alpha/utils';
+    import { captureSuspensePromises } from '@keystonejs/utils';
     let promiseCache = new Map();
     let valueCache = new Map();
 

@@ -1,9 +1,12 @@
 <!--[meta]
-section: packages
-title: Database Adapter - Mongoose
+section: api
+subSection: database-adapters
+title: Mongoose adapter
 [meta]-->
 
-# Mongoose Database Adapter
+# Mongoose database adapter
+
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-mongoose)
 
 ## Usage
 
@@ -12,29 +15,43 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({...}),
 });
-
-const mongooseOptions = {
-  /* .. */
-};
-const mongoDbUri = '';
-
-keystone.connect(mongoDbUri, mongooseOptions);
 ```
 
-## API
+## Config
 
-### `mongoDbUri`
+### `mongoUri` (optional)
 
-_**Default:**_ `'mongodb://localhost:27017/${SAFE_KEYSTONE_NAME}'`
+This is used as the `uri` parameter for `mongoose.connect()`.
 
-This URI will be passed directly to Mongoose (and hence MongoDB) as the location of the database.
+_**Default:**_ Environmental variable (see below) or `'mongodb://localhost/<DATABASE_NAME>'`
 
-### `mongooseOptions`
+If not specified, KeystoneJS will first look for one of the following environmental variables:
 
-#### `mongooseOptions.*`
+- `CONNECT_TO`
+- `DATABASE_URL`
+- `MONGO_URI`
+- `MONGODB_URI`
+- `MONGO_URL`
+- `MONGODB_URL`
+- `MONGOLAB_URI`
+- `MONGOLAB_URL`
 
-All other options are passed directly to Mongoose.
+If none of these are found a connection string is derived with a `DATABASE_NAME` from the KeystoneJS project name.
 
-See [the Mongoose docs](https://mongoosejs.com/docs/connections.html) for more.
+### Mongoose options (optional)
+
+Additional Mongoose config options are passed directly through to `mongoose.connect()`.
+
+_**Default:**_
+
+```javascript
+{
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+}
+```
+
+See the [Mongoose docs](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect) for a detailed list of options.

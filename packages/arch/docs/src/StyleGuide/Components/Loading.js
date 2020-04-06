@@ -18,12 +18,8 @@ const LoadingBox = styled.div(({ on, size }) => ({
 }));
 
 const appearances = ['default', 'dark', 'primary', 'inverted'];
-type State = {
-  size: number,
-  appearance: 'default' | 'dark' | 'primary' | 'inverted',
-};
 
-export default class ProgressGuide extends Component<*, State> {
+export default class ProgressGuide extends Component {
   state = { appearance: 'default', size: 8 };
   handleAppearance = ({ target: { value } }) => {
     this.setState({ appearance: value });

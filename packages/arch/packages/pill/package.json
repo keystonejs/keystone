@@ -1,23 +1,24 @@
 {
   "name": "@arch-ui/pill",
-  "description": "Pill Component as used in @keystone-alpha Admin UI.",
-  "version": "0.1.6",
+  "description": "Pill Component as used in @keystonejs Admin UI.",
+  "version": "0.1.13",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/pill.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.8.6"
+    "react": "^16.13.0"
   },
   "dependencies": {
-    "@arch-ui/common": "^0.0.6",
-    "@arch-ui/icons": "^0.0.5",
-    "@arch-ui/theme": "0.0.5",
-    "@babel/runtime": "^7.4.3",
-    "@emotion/core": "^10.0.14",
-    "@emotion/styled": "^10.0.14"
+    "@arch-ui/common": "^0.0.11",
+    "@arch-ui/icons": "^0.0.10",
+    "@arch-ui/theme": "0.0.10",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.27",
+    "@emotion/styled": "^10.0.27"
   },
-  "module": "dist/pill.esm.js"
+  "module": "dist/pill.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/pill"
 }

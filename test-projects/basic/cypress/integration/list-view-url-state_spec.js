@@ -6,7 +6,7 @@ describe('List view URL state', () => {
     cy.visit('/admin/posts?currentPage=3');
 
     // expand all pages first
-    cy.get('#ks-pagination-show-pages').click();
+    cy.get('#ks-pagination-show-pages').click({ force: true });
 
     cy.get('[aria-label="Go to page 3"]')
       .should('have.attr', 'aria-current', 'page')
@@ -15,16 +15,16 @@ describe('List view URL state', () => {
     // Navigate to page 2
     cy.get('[aria-label="Go to page 2"]')
       .should('contain', '2')
-      .click();
+      .click({ force: true });
     cy.location('search').should('eq', '?currentPage=2');
 
     // expand all pages first
-    cy.get('#ks-pagination-show-pages').click();
+    cy.get('#ks-pagination-show-pages').click({ force: true });
 
     // Navigate to page 1 - this is the default so it should remove the search string
     cy.get('[aria-label="Go to page 1"]')
       .should('contain', '1')
-      .click();
+      .click({ force: true });
 
     cy.location('search').should('eq', '');
   });
@@ -40,10 +40,10 @@ describe('List view URL state', () => {
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 75);
 
     // expand all pages first
-    cy.get('#ks-pagination-show-pages').click();
+    cy.get('#ks-pagination-show-pages').click({ force: true });
 
     // click on a page button - to make sure we do not loose the page size
-    cy.get('[aria-label="Go to page 2"]').click();
+    cy.get('[aria-label="Go to page 2"]').click({ force: true });
     cy.location('search')
       .should('contain', 'currentPage=2')
       .should('contain', 'pageSize=75');
@@ -51,7 +51,18 @@ describe('List view URL state', () => {
   it('Stores search state in the url', () => {
     cy.visit('/admin/posts');
 
-    cy.get('#ks-list-search-input').type('Why');
+    // Setup to track XHR requests
+    cy.server();
+    // Alias the graphql request route
+    cy.route('post', '**/admin/api').as('graphqlPost');
+    // Avoid accidentally mocking routes
+    cy.server({ enable: false });
+
+    cy.wait(500); // Search is now suspenseful need to wait
+    cy.get('#ks-list-search-input').type('Why', { force: true });
+
+    cy.wait('@graphqlPost');
+
     cy.location('search').should('eq', '?search=Why');
 
     // The results should be updated.
@@ -71,7 +82,7 @@ describe('List view URL state', () => {
       .should('contain', 'Status');
 
     // UI should update the URL
-    cy.get('#ks-column-button').click();
+    cy.get('#ks-column-button').click({ force: true });
     cy.get('#app ~ div')
       .find('input[id^="react-select-"]')
       .clear({ force: true })
@@ -103,7 +114,7 @@ describe('List view URL state', () => {
     cy.get('#list-page-sort-button').should('contain', 'Name');
 
     // UI should update url
-    cy.get('#list-page-sort-button').click();
+    cy.get('#list-page-sort-button').click({ force: true });
     cy.get('#app ~ div')
       .find('input[id^="react-select-"]')
       .clear({ force: true })
@@ -112,19 +123,19 @@ describe('List view URL state', () => {
   });
   it('Stores filter state in the url', () => {
     // Filter defined in the url
-    cy.visit('/admin/posts?!name_contains="Hello"');
+    cy.visit('/admin/posts?!name_contains_i="Hello"');
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
       'contain',
       'Name contains: "Hello"'
     );
 
     // Clear the filter
-    cy.get('#ks-list-active-filters button:nth-of-type(2)').click({ force: true }); // FIXME: this is likely due to the filters' height animating
+    cy.get('#ks-list-active-filters button:nth-of-type(2)').click({ force: true });
     cy.location('search').should('eq', '');
 
     // Set a filter
     cy.visit('/admin/posts');
-    cy.get('button:contains("Filters")').click();
+    cy.get('button:contains("Filters")').click({ force: true });
     cy.get('#app ~ div')
       .find('input[id^="react-select-"]')
       .clear({ force: true })
@@ -132,8 +143,8 @@ describe('List view URL state', () => {
     cy.get('#app ~ div')
       .find('input[placeholder="Name contains"]')
       .clear()
-      .type(`keystone{enter}`);
-    cy.location('search').should('eq', '?!name_contains=%22keystone%22');
+      .type(`keystone{enter}`, { force: true });
+    cy.location('search').should('eq', '?!name_contains_i=%22keystone%22');
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
       'contain',
       'Name contains: "keystone"'
@@ -155,7 +166,7 @@ describe('List view URL state', () => {
     cy.visit(`/admin/posts?${params.join('&')}`);
 
     // expand all pages first
-    cy.get('#ks-pagination-show-pages').click();
+    cy.get('#ks-pagination-show-pages').click({ force: true });
 
     cy.get('[aria-label="Go to page 2"]').should('have.attr', 'aria-current', 'page');
     // Has the correct number of items per page (pageSize)
@@ -179,7 +190,7 @@ describe('List view URL state', () => {
     // ---------------------------------
 
     // Go to page 1
-    cy.get('[aria-label="Go to page 1"]').click();
+    cy.get('[aria-label="Go to page 1"]').click({ force: true });
 
     cy.location('search')
       .should('not.contain', 'currentPage')

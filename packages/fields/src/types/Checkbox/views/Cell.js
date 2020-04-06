@@ -1,13 +1,7 @@
-// @flow
+const CheckboxCellView = ({ data }) => {
+  if (data === true) return 'Checked';
+  if (data === false) return 'Unchecked';
+  return 'Not set';
+};
 
-import React, { Component } from 'react';
-import type { CellProps } from '../../../types';
-
-type Props = CellProps<boolean>;
-
-export default class CheckboxCellView extends Component<Props> {
-  render() {
-    const { data } = this.props;
-    return <input type="checkbox" checked={data} disabled />;
-  }
-}
+export default CheckboxCellView;

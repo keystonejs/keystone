@@ -1,8 +1,4 @@
-const {
-  JSONAdapter,
-  JSONListAdapter,
-  JSONFieldAdapter,
-} = require('@keystone-alpha/adapter-json');
+const { JSONAdapter, JSONListAdapter, JSONFieldAdapter } = require('@keystonejs/adapter-json');
 const Memory = require('lowdb/adapters/Memory');
 
 class MemoryAdapter extends JSONAdapter {
@@ -12,4 +8,8 @@ class MemoryAdapter extends JSONAdapter {
   }
 }
 
-module.exports = { MemoryAdapter, MemoryListAdapter: JSONListAdapter, MemoryFieldAdapter: JSONFieldAdapter };
+module.exports = {
+  MemoryAdapter,
+  MemoryListAdapter: JSONListAdapter,
+  MemoryFieldAdapter: JSONFieldAdapter,
+};

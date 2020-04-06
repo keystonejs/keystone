@@ -1,75 +1,142 @@
 <!--[meta]
-section: field-types
-title: Introduction
+section: api
+title: Fields
+order: 3
 [meta]-->
 
-# Field Types
+# Fields
 
-What makes up a Field Type:
+Keystone contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
 
+- [CalendarDay](https://keystonejs.com/keystonejs/fields/src/types/calendar-day)
+- [Checkbox](https://keystonejs.com/keystonejs/fields/src/types/checkbox)
+- [CloudinaryImage](https://keystonejs.com/keystonejs/fields/src/types/cloudinary-image)
+- [Color](https://keystonejs.com/keystonejs/fields/src/types/color)
+- [Content](https://keystonejs.com/keystonejs/field-content)
+- [DateTime](https://keystonejs.com/keystonejs/fields/src/types/date-time)
+- [Decimal](https://keystonejs.com/keystonejs/fields/src/types/decimal)
+- [File](https://keystonejs.com/keystonejs/fields/src/types/file)
+- [Float](https://keystonejs.com/keystonejs/fields/src/types/float)
+- [Integer](https://keystonejs.com/keystonejs/fields/src/types/integer)
+- [Location](https://keystonejs.com/keystonejs/fields/src/types/location)
+- [OEmbed](https://keystonejs.com/keystonejs/fields/src/types/o-embed)
+- [Password](https://keystonejs.com/keystonejs/fields/src/types/password)
+- [Relationship](https://keystonejs.com/keystonejs/fields/src/types/relationship)
+- [Select](https://keystonejs.com/keystonejs/fields/src/types/select)
+- [Slug](https://keystonejs.com/keystonejs/fields/src/types/slug)
+- [Text](https://keystonejs.com/keystonejs/fields/src/types/text)
+- [Unsplash](https://keystonejs.com/keystonejs/fields/src/types/unsplash)
+- [Url](https://keystonejs.com/keystonejs/fields/src/types/url)
+- [Uuid](https://keystonejs.com/keystonejs/fields/src/types/uuid)
+
+In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
+
+> **Hint:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/)
+
+## Usage
+
+Fields definitions are provided when creating a list. Field definitions should be an object where the key is the field name and the value is an object containing the fields config:
+
+```javascript
+const { Text } = require('@keystonejs/fields');
+
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+  },
+});
 ```
-Type/index.js           -- The field definition, points to other files and defines the type
-Type/Controller.js      -- Client-side controller for the field type
-Type/Implementation.js  -- Back-end implementation of the field type
-Type/README.md          -- Type specific documentation and usage examples
-Type/views/
-  Field.js              -- Main React component rendered by the Item Details view
-  Cell.js               -- Main React component rendered by the List view
+
+## Config
+
+Fields share some standard configuration options.
+
+| Option         | Type                                | Default     | Description                                                                             |
+| -------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
+| `type`         | `FieldType`                         | (required)  |                                                                                         |
+| `schemaDoc`    | `String`                            | `false`     | A description for the field used in the AdminUI.                                        |
+| `defaultValue` | `Boolean`                           | `undefined` | A default value of the field.                                                           |
+| `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
+| `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
+| `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
+| `label`        | `String`                            |             | Label for the field.                                                                    |
+
+_Note_: Many field types have additional config options. See the documentation for individual field types for more detail.
+
+### `type`
+
+A valid `Keystone` field type.
+
+### `label`
+
+Sets the label for the field in the AdminUI
+
+### `schemaDoc`
+
+A description of the field used in the AdminUI.
+
+### `defaultValue`
+
+Sets the value when no data is provided.
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: {
+      type: Text,
+      defaultValue: ({ context, originalInput, actions }) => {
+        /**/
+      },
+    },
+    description: { type: Text, defaultValue: 'Lorem ipsum...' },
+  },
+});
 ```
 
-## Controller
+For a 'nullable' field, set `defaultValue: null`.
 
-This is the client-side class that implements helpers for the Admin UI React app
-and views.
+The `defaultValue` can be a `String` or `Function`. Functions should returns the value, or a Promise for the value.
 
-It should extend the `./Controller.js` in the package root.
+### `isUnique`
 
-It is generally responsible for getting the default data for new items,
-processing raw data returned by the API, implementing client-side validation
-methods, and other helper utilities.
+Specifies whether the value should be unique or not. Will return an error is a user tries to create a field with a non-unique value.
 
-## Implementation
+### `isRequired`
 
-This is the back-end class that implements the field type and its schema in
-Keystone. It implements the GraphQL schema types, custom argument definitions
-and resolvers, as well as Field Config and Admin Meta management.
+Specifies whether the field is required or not. Will return an error if mutations do not contain data.
 
-Back-end logic for value validation, processing and hooks should be implemented
-here.
+### `access`
 
-## Views
+[Access control](https://keystonejs.com/guides/access-control) options for fields.
 
-These are the client-side React Components that render various pieces of UI for
-the field type.
+Options for `create`, `read`, `update` and `delete` - can be a function or Boolean. See the [access control API documentation](https://keystonejs.com/api/access-control) for more details.
 
-There are currently three views that can be provided:
+_Note_: Field level access control does not accept graphQL where clauses.
 
-- `Field` - the form control rendered in the **Item Details** view
-- `Cell` - the content rendered in the List view
-- `Filter` - the filter control rendered in the filters dropdown in the List view
+### `cacheHint`
 
-```jsx
-type FilterProps<Value> = {
-  innerRef: React.Ref<*>,
-  value: Value,
-  onChange: Value => mixed,
-  field: Field,
-  filter: *,
-};
+[HTTP cache hint](https://keystonejs.com/api/create-list#cacheHint) for field.
 
-type CellProps<Value> = {
-  list: List,
-  field: Field,
-  data: Value,
-  Link: React.ComponentType<{ children: React.Node, id: string, path: string }>,
-};
+Only static hints are supported for fields.
 
-type FieldProps<Value> = {
-  autoFocus: boolean,
-  field: Field,
-  value: Value,
-  error: Error,
-  onChange: Value => mixed,
-  renderContext: 'dialog' | 'page',
-};
+## Native type aliases
+
+Keystone allows the use of a few native JavaScript types for fields. They are converted to their Keystone field equivalents at runtime.
+
+| Native type | Field type equivalent |
+| ----------- | --------------------- |
+| `Boolean`   | `Checkbox`            |
+| `Number`    | `Float`               |
+| `String`    | `Text`                |
+
+### Usage
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: {
+      type: String,
+    }
+  }
+}
 ```

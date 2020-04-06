@@ -1,8 +1,6 @@
-// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
-import * as React from 'react';
 
 import { colors, gridSize } from '@arch-ui/theme';
 
@@ -29,23 +27,13 @@ export const PageTitle = styled.h1({
   marginTop: '1.0rem',
 });
 
-type TruncateProps = {
-  as: React.ElementType,
-};
-
-export const Truncate = ({ as: Tag, ...props }: TruncateProps) => <Tag css={truncate} {...props} />;
+export const Truncate = ({ as: Tag, ...props }) => <Tag css={truncate} {...props} />;
 
 Truncate.defaultProps = {
   as: 'div',
 };
 
-type TitleProps = {
-  as: React.ElementType,
-  crop: boolean,
-  margin: 'none' | 'both' | 'bottom' | 'top',
-};
-
-export const Title = ({ as: Tag, crop, margin, ...props }: TitleProps) => {
+export const Title = ({ as: Tag, crop, margin, ...props }) => {
   const gutter = gridSize * 3;
   const margins = {
     none: { margin: 0 },
@@ -93,11 +81,7 @@ export const Kbd = styled.kbd({
   whiteSpace: 'nowrap',
 });
 
-type A11yTextProps = {
-  tag: React.ElementType,
-};
-
-export const A11yText = ({ tag: Tag, ...props }: A11yTextProps) => (
+export const A11yText = ({ tag: Tag, ...props }) => (
   <Tag
     css={{
       border: 0,

@@ -1,4 +1,3 @@
-// @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
@@ -6,12 +5,7 @@ import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 
-type Props = {
-  isLight?: boolean,
-  isTinted?: boolean,
-};
-
-export const Blanket = ({ isTinted, isLight, ...props }: Props) => {
+export const Blanket = ({ isTinted, isLight, ...props }) => {
   let bg = 'transparent';
 
   if (isTinted) {

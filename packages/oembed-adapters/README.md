@@ -1,11 +1,12 @@
 <!--[meta]
-section: packages
-title: OEmbed Adapters
+section: api
+subSection: field-adapters
+title: OEmbed adapters
 [meta]-->
 
-# OEmbed Adapters
+# OEmbed adapters
 
-The `OEmbed` field type (from `@keystone-alpha/fields`) can fetch oEmbed data
+The `OEmbed` field type (from `@keystonejs/fields`) can fetch oEmbed data
 from a number of providers such as [Iframely](https://iframely.com).
 
 This package contains adapters for different providers.
@@ -13,9 +14,9 @@ This package contains adapters for different providers.
 ## `IframelyOEmbedAdapter`
 
 ```javascript
-const { Keystone } = require('@keystone-alpha/keystone');
-const { OEmbed } = require('@keystone-alpha/fields');
-const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+const { Keystone } = require('@keystonejs/keystone');
+const { OEmbed } = require('@keystonejs/fields');
+const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 
 const keystone = new Keystone(/* ... */);
 
@@ -33,7 +34,7 @@ keystone.createList('User', {
 });
 ```
 
-NOTE: The request to Iframely will include the following [parameters](https://iframely.com/docs/parameters):
+The request to Iframely will include the following [parameters](https://iframely.com/docs/parameters):
 
 - `iframe=1`
 - `omit_script=1`

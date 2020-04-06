@@ -1,9 +1,7 @@
 /** @jsx jsx */
-
 import { jsx } from '@emotion/core';
-import React from 'react';
-
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Fragment, useMemo } from 'react';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
 import SketchPicker from 'react-color/lib/Sketch';
@@ -12,10 +10,23 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
   const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
 
+  const colorPickerValue = useMemo(() => {
+    // keystone previously stored values as a hex string and this should still be supported
+    // it is now stored as an rgba string
+    if (value) {
+      if (value.indexOf('rgba', 0) === 0) {
+        const rgbaValues = value.replace(/^rgba\(|\s+|\)$/g, '').split(',');
+        return { r: rgbaValues[0], g: rgbaValues[1], b: rgbaValues[2], a: rgbaValues[3] };
+      }
+      return value;
+    }
+    return '';
+  }, [value]);
+
   const target = props => (
     <Button {...props} variant="ghost">
       {value ? (
-        <React.Fragment>
+        <Fragment>
           <div
             style={{
               // using inline styles instead of emotion for setting the color
@@ -40,7 +51,7 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
           >
             {value}
           </span>
-        </React.Fragment>
+        </Fragment>
       ) : (
         'Set Color'
       )}
@@ -50,6 +61,7 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
       <FieldInput>
         <Popout width={220} target={target}>
           <SketchPicker
@@ -58,10 +70,10 @@ const ColorField = ({ field, value: serverValue, errors, onChange }) => {
               // but Popout already applies a box shadow
               boxShadow: 'none !important',
             }}
-            noAlpha
-            color={value}
-            onChange={({ hex }) => {
-              onChange(hex);
+            presetColors={[]}
+            color={colorPickerValue}
+            onChange={({ rgb: { r, g, b, a } }) => {
+              onChange(`rgba(${r}, ${g}, ${b}, ${a})`);
             }}
           />
         </Popout>

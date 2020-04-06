@@ -1,6 +1,6 @@
-// @flow
 export {
   BrandItem,
+  NavIcon,
   PrimaryNav,
   PrimaryNavItem,
   PrimaryNavHeading,

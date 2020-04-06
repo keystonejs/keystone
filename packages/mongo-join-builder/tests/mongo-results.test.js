@@ -1,7 +1,17 @@
-const { mongoJoinBuilder } = require('../');
+const { queryParser, pipelineBuilder } = require('../');
+const { postsAdapter, listAdapter } = require('./utils');
 
 const { MongoClient } = require('mongodb');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
+
+const mongoJoinBuilder = parserOptions => {
+  return async (query, aggregate) => {
+    const queryTree = queryParser(parserOptions, query);
+    const pipeline = pipelineBuilder(queryTree);
+    // Run the query against the given database and collection
+    return await aggregate(pipeline);
+  };
+};
 
 function getAggregate(database, collection) {
   return pipeline => {
@@ -27,7 +37,10 @@ jest.setTimeout(60000);
 beforeAll(async () => {
   mongoServer = new MongoDBMemoryServer();
   const mongoUri = await mongoServer.getConnectionString();
-  mongoConnection = await MongoClient.connect(mongoUri, { useNewUrlParser: true });
+  mongoConnection = await MongoClient.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
   mongoDb = mongoConnection.db(await mongoServer.getDbName());
 });
 
@@ -38,7 +51,7 @@ afterAll(() => {
 
 beforeEach(async () => {
   const collections = await mongoDb.collections();
-  await Promise.all(collections.map(collection => collection.remove({})));
+  await Promise.all(collections.map(collection => collection.deleteMany({})));
 });
 
 describe('mongo memory servier is alive', () => {
@@ -52,727 +65,221 @@ describe('mongo memory servier is alive', () => {
 
 describe('Testing against real data', () => {
   test('performs simple queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key) => {
-        const [table] = key.split('_');
-        return {
-          from: `${table}-collection`,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: () => {},
-          matchTerm: { $exists: true, $ne: [] },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const collection = mongoDb.collection('users');
     await collection.insertMany([
-      {
-        name: 'Jess',
-        age: 23,
-        address: '123 nowhere',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'Alice',
-        age: 45,
-        address: 'Ramsay Street',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
-      {
-        name: 'foobar',
-        age: 89,
-        address: '456 somewhere',
-      },
+      { name: 'Jess', age: 23, address: '123 nowhere' },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'Alice', age: 45, address: 'Ramsay Street' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
+      { name: 'foobar', age: 89, address: '456 somewhere' },
     ]);
 
-    const query = {
-      name: 'foobar',
-      age: 23,
-    };
+    const query = { name: 'foobar', age: 23 };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
     ]);
   });
 
   test('performs AND queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key) => {
-        const [table] = key.split('_');
-        return {
-          from: `${table}-collection`,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: () => {},
-          matchTerm: { $exists: true, $ne: [] },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const collection = mongoDb.collection('users');
     await collection.insertMany([
-      {
-        name: 'Jess',
-        age: 23,
-        address: '123 nowhere',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'Alice',
-        age: 45,
-        address: 'Ramsay Street',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
-      {
-        name: 'foobar',
-        age: 89,
-        address: '456 somewhere',
-      },
+      { name: 'Jess', age: 23, address: '123 nowhere' },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'Alice', age: 45, address: 'Ramsay Street' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
+      { name: 'foobar', age: 89, address: '456 somewhere' },
     ]);
 
-    const query = {
-      AND: [{ name: 'foobar' }, { age: 23 }],
-    };
+    const query = { AND: [{ name: 'foobar' }, { age: 23 }] };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'foobar',
-        age: 23,
-        address: '90210',
-      },
-      {
-        name: 'foobar',
-        age: 23,
-        address: 'The Joneses',
-      },
+      { name: 'foobar', age: 23, address: '90210' },
+      { name: 'foobar', age: 23, address: 'The Joneses' },
     ]);
   });
 
   test('performs to-one relationship queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const tableMap = {
-          author: 'users',
-        };
-
-        return {
-          from: tableMap[key],
-          field: key,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found item back into the original key
-            [key]: parentData[keyOfRelationship][0],
-          }),
-          matchTerm: { [`${uid}_${key}_every`]: true },
-          many: false,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter: postsAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-      },
+      { name: 'Jess', type: 'author' },
+      { name: 'Sam', type: 'editor' },
     ]);
 
     await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-        author: insertedIds[0],
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-        author: insertedIds[1],
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-        author: insertedIds[0],
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-        author: insertedIds[1],
-      },
+      { title: 'Hello world', status: 'published', author: insertedIds[0] },
+      { title: 'Testing', status: 'published', author: insertedIds[1] },
+      { title: 'An awesome post', status: 'draft', author: insertedIds[0] },
+      { title: 'Another Thing', status: 'published', author: insertedIds[1] },
     ]);
 
-    const query = {
-      status: 'published',
-      author: {
-        name: 'Jess',
-      },
-    };
+    const query = { status: 'published', author: { name: 'Jess' } };
 
     const result = await builder(query, getAggregate(mongoDb, 'posts'));
 
     expect(result).toMatchObject([
-      {
-        title: 'Hello world',
-        status: 'published',
-        author: {
-          name: 'Jess',
-          type: 'author',
-        },
-      },
+      { title: 'Hello world', status: 'published', author: insertedIds[0] },
     ]);
   });
 
   test('performs to-many relationship queries with no filter', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
-    const query = {
-      type: 'author',
-      posts_every: {},
-    };
+    const query = { type: 'author' };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [
-          {
-            title: 'Hello world',
-            status: 'published',
-          },
-          {
-            title: 'An awesome post',
-            status: 'draft',
-          },
-        ],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-        ],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
   test('performs to-many relationship queries with postJoinPipeline', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => {
-        const value = query[key];
-        if (key === '$limit') {
-          return { postJoinPipeline: [{ $limit: value }] };
-        } else if (key === '$sort') {
-          const [sortBy, sortDirection] = value.split('_');
-          return { postJoinPipeline: [{ $sort: { [sortBy]: sortDirection === 'ASC' ? 1 : -1 } }] };
-        }
-        return { matchTerm: { [key]: { $eq: value } } };
-      }),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[keyOfRelationship],
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'author',
-        posts: [insertedIds[3]],
-      },
-      {
-        name: 'Alex',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'author', posts: [insertedIds[3]] },
+      { name: 'Alex', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
     const query = {
       type: 'author',
-      posts_every: {
-        status: 'published',
-        $sort: 'title_ASC',
-      },
-      $limit: 1,
+      posts_every: { status: 'published', $sort: 'title_ASC' },
+      $first: 1,
     };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
-
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-        ],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
   test('performs to-many relationship queries', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
-    const query = {
-      type: 'author',
-      posts_every: {
-        status: 'published',
-      },
-    };
+    const query = { type: 'author', posts_every: { status: 'published' } };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-        ],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
   test('performs to-many relationship queries with nested AND', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-        approved: true,
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-        approved: true,
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-        approved: true,
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-        approved: true,
-      },
+      { title: 'Hello world', status: 'published', approved: true },
+      { title: 'Testing', status: 'published', approved: true },
+      { title: 'An awesome post', status: 'draft', approved: true },
+      { title: 'Another Thing', status: 'published', approved: true },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
     const query = {
       type: 'author',
-      posts_every: {
-        AND: [{ approved: true }, { status: 'published' }],
-      },
+      posts_every: { AND: [{ approved: true }, { status: 'published' }] },
     };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-            approved: true,
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-            approved: true,
-          },
-        ],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 
   test('performs AND query with nested to-many relationship', async () => {
-    const tokenizer = {
-      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
-      relationship: jest.fn((query, key, path, uid) => {
-        const [table, criteria] = key.split('_');
-        return {
-          from: table,
-          field: table,
-          // called with (parentValue, keyOfRelationship, rootObject, path)
-          postQueryMutation: (parentData, keyOfRelationship) => ({
-            ...parentData,
-            // Merge the found items back into the original key
-            [table]: parentData[table].map(id => {
-              return (
-                parentData[keyOfRelationship].find(
-                  relatedItem => relatedItem._id.toString() === id.toString()
-                ) || id
-              );
-            }),
-          }),
-          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
-          many: true,
-        };
-      }),
-    };
-
-    const builder = mongoJoinBuilder({ tokenizer });
+    const builder = mongoJoinBuilder({ listAdapter });
 
     const usersCollection = mongoDb.collection('users');
     const postsCollection = mongoDb.collection('posts');
 
     const { insertedIds } = await postsCollection.insertMany([
-      {
-        title: 'Hello world',
-        status: 'published',
-      },
-      {
-        title: 'Testing',
-        status: 'published',
-      },
-      {
-        title: 'An awesome post',
-        status: 'draft',
-      },
-      {
-        title: 'Another Thing',
-        status: 'published',
-      },
+      { title: 'Hello world', status: 'published' },
+      { title: 'Testing', status: 'published' },
+      { title: 'An awesome post', status: 'draft' },
+      { title: 'Another Thing', status: 'published' },
     ]);
 
     await usersCollection.insertMany([
-      {
-        name: 'Jess',
-        type: 'author',
-        posts: [insertedIds[0], insertedIds[2]],
-      },
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [insertedIds[1], insertedIds[3]],
-      },
-      {
-        name: 'Sam',
-        type: 'editor',
-        posts: [insertedIds[3]],
-      },
+      { name: 'Jess', type: 'author', posts: [insertedIds[0], insertedIds[2]] },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
+      { name: 'Sam', type: 'editor', posts: [insertedIds[3]] },
     ]);
 
-    const query = {
-      AND: [
-        { type: 'author' },
-        {
-          posts_every: {
-            status: 'published',
-          },
-        },
-      ],
-    };
+    const query = { AND: [{ type: 'author' }, { posts_every: { status: 'published' } }] };
 
     const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
-      {
-        name: 'Alice',
-        type: 'author',
-        posts: [
-          {
-            title: 'Testing',
-            status: 'published',
-          },
-          {
-            title: 'Another Thing',
-            status: 'published',
-          },
-        ],
-      },
+      { name: 'Alice', type: 'author', posts: [insertedIds[1], insertedIds[3]] },
     ]);
   });
 });

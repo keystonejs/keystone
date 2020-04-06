@@ -1,5 +1,5 @@
 import { Decimal, MongoDecimalInterface, KnexDecimalInterface } from './Implementation';
-import { importView } from '@keystone-alpha/build-field-types';
+import { importView } from '@keystonejs/build-field-types';
 
 export default {
   type: 'Decimal',
@@ -12,5 +12,7 @@ export default {
   adapters: {
     mongoose: MongoDecimalInterface,
     knex: KnexDecimalInterface,
+    memory: MongoDecimalInterface,
+    json: KnexDecimalInterface,
   },
 };

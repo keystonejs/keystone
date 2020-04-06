@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { arrayToObject, mapKeys, omit } from '@keystone-alpha/utils';
+import { arrayToObject, mapKeys, omit } from '@keystonejs/utils';
 
 export const gqlCountQueries = lists => gql`{
   ${lists.map(list => list.countQuery()).join('\n')}
@@ -14,14 +14,12 @@ export default class List {
     // TODO: undo this
     Object.assign(this, config);
 
-    this.fields = config.fields
-      .filter(field => !field.isPrimaryKey)
-      .map(fieldConfig => {
-        const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
-        return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
-      });
+    this.fields = config.fields.map(fieldConfig => {
+      const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
+      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
+    });
 
-    this.fieldsByPath = arrayToObject(this.fields, 'path');
+    this._fieldsByPath = arrayToObject(this.fields, 'path');
 
     this.createMutation = gql`
       mutation create($data: ${this.gqlNames.createInputName}!) {
@@ -73,10 +71,12 @@ export default class List {
   }
 
   buildQuery(queryName, queryArgs = '', fields = []) {
+    let requiredFields = ['id', '_label_'];
     return `
       ${queryName}${queryArgs} {
-        id
-        _label_
+        ${requiredFields
+          .filter(requiredField => !fields.find(({ path }) => path === requiredField))
+          .join(' ')}
         ${fields.map(field => field.getQueryFragment()).join(' ')}
       }`;
   }
@@ -101,8 +101,12 @@ export default class List {
     }`;
   }
 
-  getQuery({ fields, filters, search, orderBy, skip, first }) {
-    const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
+  getQuery(args) {
+    const { fields, filters, search, orderBy, skip, first } = args;
+    const sanatisedQueryArgs = Object.keys({ first, filters, search, skip, orderBy })
+      .filter(key => args[key])
+      .reduce((acc, key) => ({ ...acc, [key]: args[key] }), {});
+    const queryArgs = List.getQueryArgs(sanatisedQueryArgs);
     const metaQueryArgs = List.getQueryArgs({ filters, search });
     const safeFields = fields.filter(field => field.path !== '_label_');
     return gql`{
@@ -115,15 +119,23 @@ export default class List {
     return `${this.gqlNames.listQueryMetaName}${metaQueryArgs} { count }`;
   }
 
-  getInitialItemData() {
-    return mapKeys(this.fieldsByPath, field => field.getDefaultValue());
+  getInitialItemData({ originalInput = {}, prefill = {} } = {}) {
+    return this.fields
+      .filter(({ isPrimaryKey }) => !isPrimaryKey)
+      .reduce(
+        (memo, field) => ({
+          ...memo,
+          [field.path]: field.getDefaultValue({ originalInput, prefill }),
+        }),
+        {}
+      );
   }
 
   deserializeItemData(item) {
     return {
-      ...mapKeys(this.fieldsByPath, field => field.deserialize(item)),
+      ...mapKeys(this._fieldsByPath, field => field.deserialize(item)),
       // Handle the special case of `_label_` (and potentially others)
-      ...omit(item, Object.keys(this.fieldsByPath)),
+      ...omit(item, Object.keys(this._fieldsByPath)),
     };
   }
 

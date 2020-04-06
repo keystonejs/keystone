@@ -1,10 +1,11 @@
 require('dotenv').config();
 
-const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { GraphQLApp } = require('@keystone-alpha/app-graphql');
-const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { NextApp } = require('@keystone-alpha/app-next');
+const { Keystone } = require('@keystonejs/keystone');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { NextApp } = require('@keystonejs/app-next');
 
 const { Event, Talk, User, Rsvp, Organiser, Sponsor, ForgottenPasswordToken } = require('./schema');
 
@@ -17,11 +18,6 @@ const keystone = new Keystone({
   onConnect: initialiseData,
 });
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 keystone.createList('Event', Event);
 keystone.createList('Rsvp', Rsvp);
 keystone.createList('Talk', Talk);
@@ -29,6 +25,11 @@ keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
 keystone.createList('Sponsor', Sponsor);
 keystone.createList('ForgottenPasswordToken', ForgottenPasswordToken);
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+});
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',

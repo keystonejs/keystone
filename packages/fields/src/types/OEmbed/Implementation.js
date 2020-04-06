@@ -1,6 +1,6 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class OEmbed extends Implementation {
   constructor(path, { adapter, parameters = {} }, { listKey }) {
@@ -20,7 +20,7 @@ export class OEmbed extends Implementation {
 
     if (typeof parameters !== 'object') {
       throw new Error(
-        `paramters passed to the OEmbed Adapter must be an object. See the ${listKey}.${path} field.`
+        `parameters passed to the OEmbed Adapter must be an object. See the ${listKey}.${path} field.`
       );
     }
 
@@ -29,11 +29,11 @@ export class OEmbed extends Implementation {
     this.parameters = parameters;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),
@@ -48,7 +48,7 @@ export class OEmbed extends Implementation {
       # The original input URL which the oEmbed data was generated from
       originalUrl: String!
       # The oEmbed version number. Will be 1.0.
-      version: String!
+      version: String
       # A text title, describing the resource.
       title: String
       # The suggested cache lifetime for this resource, in seconds. Consumers may choose to use this value or not.
@@ -147,7 +147,7 @@ export class OEmbed extends Implementation {
   }
 
   // Called on `User.avatar` for example
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         if (!item[this.path]) {
@@ -173,7 +173,19 @@ export class OEmbed extends Implementation {
 
   async resolveInput({ resolvedData }) {
     const inputUrl = resolvedData[this.path];
-    if (!inputUrl) {
+
+    // NOTE: The following two conditions could easily be combined into a
+    // single `if (!inputUrl) return inputUrl`, but that would lose the nuance of
+    // returning `undefined` vs `null`.
+    // Premature Optimisers; be ware!
+    if (typeof inputUrl === 'undefined') {
+      // Nothing was passed in, so we can bail early.
+      return undefined;
+    }
+
+    if (inputUrl === null || inputUrl.trim() === '') {
+      // `null` or `''` was specifically uploaded, and we should set the field
+      // value to null. To do that we... return `null`
       return null;
     }
 
@@ -194,6 +206,7 @@ export class OEmbed extends Implementation {
       html,
       width,
       height,
+      error,
     } = await this.adapter.fetch({
       ...this.parameters,
       // Force the url parameter
@@ -203,7 +216,7 @@ export class OEmbed extends Implementation {
     // Convert them into a more GraphQL friendly format
     return {
       originalUrl: inputUrl,
-      type,
+      type: type || 'link',
       version,
       title,
       cache_age,
@@ -236,6 +249,7 @@ export class OEmbed extends Implementation {
       html,
       width,
       height,
+      error,
     };
   }
 

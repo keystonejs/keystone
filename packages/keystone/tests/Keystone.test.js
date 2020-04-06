@@ -1,27 +1,30 @@
 const isPromise = require('p-is-promise');
 const Keystone = require('../lib/Keystone');
 const List = require('../lib/List');
-const { Text, Relationship } = require('@keystone-alpha/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 
 class MockFieldAdapter {}
 
 class MockFieldImplementation {
-  constructor() {
+  constructor(name) {
     this.access = {
-      create: true,
-      read: true,
-      update: true,
-      delete: true,
+      public: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
     };
     this.config = {};
+    this.name = name;
   }
   getGqlAuxTypes() {
     return ['scalar Foo'];
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return ['foo: Boolean'];
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return ['zip: Boolean'];
   }
   get gqlUpdateInputFields() {
@@ -92,8 +95,8 @@ test('unique typeDefs', () => {
       hero: { type: MockFieldType },
     },
   });
-
-  const schema = keystone.getTypeDefs().join('\n');
+  const schemaName = 'public';
+  const schema = keystone.getTypeDefs({ schemaName }).join('\n');
   expect(schema.match(/scalar Foo/g) || []).toHaveLength(1);
   expect(schema.match(/getFoo: Boolean/g) || []).toHaveLength(1);
   expect(schema.match(/mutateFoo: Boolean/g) || []).toHaveLength(1);
@@ -132,6 +135,124 @@ describe('Keystone.createList()', () => {
     test.todo('throws error when create/read/update/delete are not correct type');
   });
   /* eslint-enable jest/no-disabled-tests */
+
+  test('plugins', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+
+    keystone.createList('User', {
+      fields: {
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
+      },
+    });
+    keystone.createList('Post', {
+      fields: {
+        title: { type: MockFieldType },
+        content: { type: MockFieldType },
+      },
+      plugins: [
+        config => ({ ...config, fields: { ...config.fields, extra: { type: MockFieldType } } }),
+      ],
+    });
+    keystone.createList('Comment', {
+      fields: {
+        heading: { type: MockFieldType },
+        content: { type: MockFieldType },
+      },
+      plugins: [
+        // Add a field and then remove it, to make sure plugins happen in the right order
+        config => ({ ...config, fields: { ...config.fields, extra: { type: MockFieldType } } }),
+        config => ({
+          ...config,
+          fields: Object.entries(config.fields)
+            .filter(([name]) => name !== 'extra')
+            .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
+        }),
+      ],
+    });
+    expect(keystone.lists['User'].fields.length).toEqual(3); // id, name, email
+    expect(keystone.lists['Post'].fields.length).toEqual(4); // id, title, content, extra
+    expect(keystone.lists['Comment'].fields.length).toEqual(3); // id, heading, content
+  });
+});
+
+describe('Keystone.extendGraphQLSchema()', () => {
+  test('types', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+    keystone.createList('User', {
+      fields: {
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
+      },
+    });
+
+    keystone.extendGraphQLSchema({ types: [{ type: 'type FooBar { foo: Int, bar: Float }' }] });
+    const schemaName = 'public';
+    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    expect(schema.match(/type FooBar {\s*foo: Int\s*bar: Float\s*}/g) || []).toHaveLength(1);
+  });
+
+  test('queries', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+    keystone.createList('User', {
+      fields: {
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
+      },
+    });
+
+    keystone.extendGraphQLSchema({
+      queries: [
+        {
+          schema: 'double(x: Int): Int',
+          resolver: (_, { x }) => 2 * x,
+        },
+      ],
+    });
+    const schemaName = 'public';
+    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
+    expect(keystone._customProvider._extendedQueries).toHaveLength(1);
+  });
+
+  test('mutations', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+    keystone.createList('User', {
+      fields: {
+        name: { type: MockFieldType },
+        email: { type: MockFieldType },
+      },
+    });
+
+    keystone.extendGraphQLSchema({
+      mutations: [
+        {
+          schema: 'double(x: Int): Int',
+          resolver: (_, { x }) => 2 * x,
+        },
+      ],
+    });
+    const schemaName = 'public';
+    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
+    expect(keystone._customProvider._extendedMutations).toHaveLength(1);
+  });
 });
 
 describe('Keystone.createItems()', () => {
@@ -249,8 +370,14 @@ describe('Keystone.createItems()', () => {
     });
 
     expect(createdItems).toEqual({
-      User: [{ id: 1, name: 'Jess' }, { id: 2, name: 'Lauren' }],
-      Post: [{ id: 3, title: 'Hello world' }, { id: 4, title: 'Goodbye' }],
+      User: [
+        { id: 1, name: 'Jess' },
+        { id: 2, name: 'Lauren' },
+      ],
+      Post: [
+        { id: 3, title: 'Hello world' },
+        { id: 4, title: 'Goodbye' },
+      ],
     });
   });
 
@@ -274,8 +401,14 @@ describe('Keystone.createItems()', () => {
     });
 
     expect(createdItems).toEqual({
-      User: [{ id: 1, name: 'Jess' }, { id: 2, name: 'Lauren' }],
-      Post: [{ id: 3, title: 'Hello world', author: 2 }, { id: 4, title: 'Goodbye', author: 1 }],
+      User: [
+        { id: 1, name: 'Jess' },
+        { id: 2, name: 'Lauren' },
+      ],
+      Post: [
+        { id: 3, title: 'Hello world', author: 2 },
+        { id: 4, title: 'Goodbye', author: 1 },
+      ],
     });
   });
 
@@ -342,7 +475,6 @@ describe('keystone.prepare()', () => {
     const { middlewares } = await keystone.prepare({ apps: undefined });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
   });
 
   test('handles apps:[]', async () => {
@@ -354,7 +486,6 @@ describe('keystone.prepare()', () => {
     const { middlewares } = await keystone.prepare({ apps: [] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
   });
 
   test('Handles apps without a `prepareMiddleware`', async () => {
@@ -363,10 +494,13 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
+    // For less-brittle tests, we grab the list of middlewares when prepare is
+    // given no apps, then compare it with the one that did.
+    const { middlewares: defaultMiddlewares } = await keystone.prepare();
     const { middlewares } = await keystone.prepare({ apps: [{ foo: 'bar' }] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
+    expect(middlewares).toHaveLength(defaultMiddlewares.length);
   });
 
   test('filters out null middleware results', async () => {
@@ -375,10 +509,13 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
+    // For less-brittle tests, we grab the list of middlewares when prepare is
+    // given no apps, then compare it with the one that did.
+    const { middlewares: defaultMiddlewares } = await keystone.prepare();
     const { middlewares } = await keystone.prepare({ apps: [{ prepareMiddleware: () => {} }] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
+    expect(middlewares).toHaveLength(defaultMiddlewares.length);
   });
 
   test('filters out empty middleware arrays', async () => {
@@ -387,10 +524,13 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
+    // For less-brittle tests, we grab the list of middlewares when prepare is
+    // given no apps, then compare it with the one that did.
+    const { middlewares: defaultMiddlewares } = await keystone.prepare();
     const { middlewares } = await keystone.prepare({ apps: [{ prepareMiddleware: () => [] }] });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(0);
+    expect(middlewares).toHaveLength(defaultMiddlewares.length);
   });
 
   test('returns middlewares', async () => {
@@ -398,13 +538,14 @@ describe('keystone.prepare()', () => {
       adapter: new MockAdapter(),
       name: 'Jest Test',
     };
+    const middleware = jest.fn(() => {});
     const keystone = new Keystone(config);
     const { middlewares } = await keystone.prepare({
-      apps: [{ prepareMiddleware: () => () => {} }],
+      apps: [{ prepareMiddleware: () => middleware }],
     });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(1);
+    expect(middlewares).toEqual(expect.arrayContaining([middleware]));
   });
 
   test('flattens deeply nested middlewares', async () => {
@@ -413,18 +554,15 @@ describe('keystone.prepare()', () => {
       name: 'Jest Test',
     };
     const keystone = new Keystone(config);
-    const fn0 = () => {};
-    const fn1 = () => {};
-    const fn2 = () => {};
+    const fn0 = jest.fn(() => {});
+    const fn1 = jest.fn(() => {});
+    const fn2 = jest.fn(() => {});
     const { middlewares } = await keystone.prepare({
       apps: [{ prepareMiddleware: () => [[fn0, fn1], fn2] }],
     });
 
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(3);
-    expect(middlewares[0]).toBe(fn0);
-    expect(middlewares[1]).toBe(fn1);
-    expect(middlewares[2]).toBe(fn2);
+    expect(middlewares).toEqual(expect.arrayContaining([fn0, fn1, fn2]));
   });
 
   test('executes FIELD.prepareMiddleware()', async () => {
@@ -432,7 +570,7 @@ describe('keystone.prepare()', () => {
       adapter: new MockAdapter(),
       name: 'Jest Test',
     };
-    const mockMiddlewareFn = () => {};
+    const mockMiddlewareFn = jest.fn(() => {});
     const MockFieldWithMiddleware = {
       prepareMiddleware: jest.fn(() => mockMiddlewareFn),
       implementation: MockFieldImplementation,
@@ -445,8 +583,7 @@ describe('keystone.prepare()', () => {
 
     expect(MockFieldWithMiddleware.prepareMiddleware).toHaveBeenCalled();
     expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toHaveLength(1);
-    expect(middlewares[0]).toBe(mockMiddlewareFn);
+    expect(middlewares).toEqual(expect.arrayContaining([mockMiddlewareFn]));
   });
 
   test('orders field middlewares before app middlewares', async () => {});

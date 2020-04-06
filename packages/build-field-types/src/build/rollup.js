@@ -1,15 +1,11 @@
-// @flow
-const resolve = require('rollup-plugin-node-resolve');
+const resolve = require('@rollup/plugin-node-resolve');
 const resolveFrom = require('resolve-from');
 const chalk = require('chalk');
 import path from 'path';
 import builtInModules from 'builtin-modules';
-import { Package } from '../package';
-import { StrictEntrypoint } from '../entrypoint';
 import { rollup as _rollup } from 'rollup';
-import type { Aliases } from './aliases';
 import { FatalError } from '../errors';
-import flowAndNodeDevProdEntry from '../rollup-plugins/flow-and-prod-dev-entry';
+import pkgJsonRedirectPlugin from '../rollup-plugins/pkg-json-redirect';
 import babel from '../rollup-plugins/babel';
 import { getNameForDist } from '../utils';
 import { EXTENSIONS } from '../constants';
@@ -20,19 +16,12 @@ const makeExternalPredicate = externalArr => {
     return () => false;
   }
   const pattern = new RegExp(`^(${externalArr.join('|')})($|/)`);
-  return (id: string) => pattern.test(id);
+  return id => pattern.test(id);
 };
 
 let unsafeRequire = require;
 
-function getChildPeerDeps(
-  finalPeerDeps: Array<string>,
-  isUMD: boolean,
-  depKeys: Array<string>,
-  doneDeps: Array<string>,
-  aliases: Aliases,
-  pkg: Package
-) {
+function getChildPeerDeps(finalPeerDeps, isUMD, depKeys, doneDeps, aliases, pkg) {
   depKeys
     .filter(x => !doneDeps.includes(x))
     .forEach(key => {
@@ -59,21 +48,13 @@ function getChildPeerDeps(
     });
 }
 
-import type { RollupSingleFileBuild } from './types';
+export let rollup = _rollup;
 
-export let rollup: RollupConfig => Promise<RollupSingleFileBuild> = _rollup;
-
-export opaque type RollupConfig = Object;
-
-export function toUnsafeRollupConfig(config: RollupConfig): Object {
+export function toUnsafeRollupConfig(config) {
   return config;
 }
 
-export let getRollupConfig = (
-  pkg: Package,
-  entrypoints: Array<StrictEntrypoint>,
-  aliases: Aliases
-): RollupConfig => {
+export let getRollupConfig = (pkg, entrypoints, aliases) => {
   let external = [];
   if (pkg.peerDependencies) {
     external.push(...Object.keys(pkg.peerDependencies));
@@ -110,7 +91,7 @@ export let getRollupConfig = (
   const config = {
     input,
     external: makeExternalPredicate(external),
-    onwarn: (warning: *) => {
+    onwarn: warning => {
       switch (warning.code) {
         case 'CIRCULAR_DEPENDENCY':
         case 'UNUSED_EXTERNAL_IMPORT': {
@@ -163,7 +144,7 @@ export let getRollupConfig = (
           moduleDirectory: [],
         },
       }),
-      flowAndNodeDevProdEntry(),
+      pkgJsonRedirectPlugin(),
     ].filter(Boolean),
   };
 

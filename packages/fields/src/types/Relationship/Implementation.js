@@ -1,10 +1,8 @@
 import mongoose from 'mongoose';
-import omitBy from 'lodash.omitby';
-import { mergeWhereClause } from '@keystone-alpha/utils';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
-import { JSONFieldAdapter } from '@keystone-alpha/adapter-json';
-import { MemoryFieldAdapter } from '@keystone-alpha/adapter-memory';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+// import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 const {
   Schema: {
@@ -24,6 +22,7 @@ export class Relationship extends Implementation {
     const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isOrderable = true;
 
     this.isRelationship = true;
     this.many = many;
@@ -53,10 +52,10 @@ export class Relationship extends Implementation {
     return { refList, refField };
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
 
-    if (!refList.access.read) {
+    if (!refList.access[schemaName].read) {
       // It's not accessible in any way, so we can't expose the related field
       return [];
     }
@@ -77,10 +76,10 @@ export class Relationship extends Implementation {
     return { ...meta, ref, refFieldPath, many };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
 
-    if (!refList.access.read) {
+    if (!refList.access[schemaName].read) {
       // It's not accessible in any way, so we can't expose the related field
       return [];
     }
@@ -101,10 +100,10 @@ export class Relationship extends Implementation {
     }
   }
 
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers({ schemaName }) {
     const { refList } = this.tryResolveRefList();
 
-    if (!refList.access.read) {
+    if (!refList.access[schemaName].read) {
       // It's not accessible in any way, so we can't expose the related field
       return [];
     }
@@ -112,7 +111,7 @@ export class Relationship extends Implementation {
     // to-one relationships are much easier to deal with.
     if (!this.many) {
       return {
-        [this.path]: (item, _, context) => {
+        [this.path]: (item, _, context, info) => {
           // No ID set, so we return null for the value
           if (!item[this.path]) {
             return null;
@@ -120,40 +119,28 @@ export class Relationship extends Implementation {
           const filteredQueryArgs = { where: { id: item[this.path].toString() } };
           // We do a full query to ensure things like access control are applied
           return refList
-            .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
+            .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName, info)
             .then(items => (items && items.length ? items[0] : null));
         },
       };
     }
 
-    const buildManyQueryArgs = (item, args) => {
-      let ids = [];
-      if (item[this.path]) {
-        ids = item[this.path]
-          .map(value => {
-            // The field may have already been filled in during an early DB lookup
-            // (ie; joining when doing a filter)
-            if (value && value.id) {
-              return value.id;
-            }
-
-            return value;
-          })
-          .filter(value => value);
-      }
-      return mergeWhereClause(args, { id_in: ids });
-    };
-
     return {
-      [this.path]: (item, args, context, { fieldName }) => {
-        const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.listQuery(filteredQueryArgs, context, fieldName);
+      [this.path]: (item, args, context, info) => {
+        return refList.listQuery(args, context, info.fieldName, info, {
+          fromList: this.getListByKey(this.listKey),
+          fromId: item.id,
+          fromField: this.path,
+        });
       },
 
       ...(this.withMeta && {
-        [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
-          const filteredQueryArgs = buildManyQueryArgs(item, args);
-          return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
+        [`_${this.path}Meta`]: (item, args, context, info) => {
+          return refList.listQueryMeta(args, context, info.fieldName, info, {
+            fromList: this.getListByKey(this.listKey),
+            fromId: item.id,
+            fromField: this.path,
+          });
         },
       }),
     };
@@ -180,9 +167,7 @@ export class Relationship extends Implementation {
    * The indexes within the return arrays are guaranteed to match the indexes as
    * passed in `operations`.
    * Due to Access Control, it is possible thata some operations result in a
-   * value of `null`. Be sure to guard against this in your code (or use the
-   * .convertResolvedOperationsToFieldValue() method which handles this for
-   * you).
+   * value of `null`. Be sure to guard against this in your code.
    * NOTE: If `disconnectAll` is true, `disconnect` will be an array of all
    * previous stored values, which means indecies may not match those passed in
    * `operations`.
@@ -216,10 +201,21 @@ export class Relationship extends Implementation {
       });
     }
 
-    let currentValue = item && item[this.path];
+    let currentValue;
     if (this.many) {
-      currentValue = (currentValue || []).map(id => id.toString());
+      const info = { fieldName: this.path };
+      currentValue = item
+        ? await refList.listQuery(
+            {},
+            { ...context, getListAccessControlForUser: () => true },
+            info.fieldName,
+            info,
+            { fromList: this.getListByKey(this.listKey), fromId: item.id, fromField: this.path }
+          )
+        : [];
+      currentValue = currentValue.map(({ id }) => id.toString());
     } else {
+      currentValue = item && item[this.path];
       currentValue = currentValue && currentValue.toString();
     }
 
@@ -245,30 +241,7 @@ export class Relationship extends Implementation {
       );
     }
 
-    return { create, connect, disconnect };
-  }
-
-  // This function codifies the order of operations for nested mutations:
-  // 1. disconnectAll
-  // 2. disconnect
-  // 3. create
-  // 4. connect
-  convertResolvedOperationsToFieldValue({ create, connect, disconnect }, item) {
-    if (this.many) {
-      const currentValue = ((item && item[this.path]) || []).map(id => id.toString());
-      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect, ...create].filter(
-        id => !!id
-      );
-    } else {
-      const currentValue = (item && item[this.path] && item[this.path].toString()) || null;
-      return create && create[0]
-        ? create[0]
-        : connect && connect[0]
-        ? connect[0]
-        : disconnect && disconnect[0]
-        ? null
-        : currentValue;
-    }
+    return { create, connect, disconnect, currentValue };
   }
 
   registerBacklink(data, item, mutationState) {
@@ -293,8 +266,11 @@ export class Relationship extends Implementation {
     // Beware of circular delete hooks!
   }
 
-  getGqlAuxTypes() {
+  getGqlAuxTypes({ schemaName }) {
     const { refList } = this.tryResolveRefList();
+    if (!refList.access[schemaName].update) {
+      return [];
+    }
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
     //
@@ -361,9 +337,6 @@ export class Relationship extends Implementation {
   get gqlCreateInputFields() {
     return this.gqlUpdateInputFields;
   }
-  getDefaultValue() {
-    return null;
-  }
 }
 
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
@@ -396,51 +369,6 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       [`${this.path}_is_null`]: value => ({
         [dbPath]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
       }),
-    };
-  }
-
-  getRelationshipQueryCondition(queryKey, uid) {
-    const filterType = {
-      [this.path]: 'every',
-      [`${this.path}_every`]: 'every',
-      [`${this.path}_some`]: 'some',
-      [`${this.path}_none`]: 'none',
-    }[queryKey];
-
-    return {
-      from: this.getRefListAdapter().model.collection.name, // the collection name to join with
-      field: this.path, // The field on this collection
-      // A mutation to run on the data post-join. Useful for merging joined
-      // data back into the original object.
-      // Executed on a depth-first basis for nested relationships.
-      postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
-        return omitBy(
-          parentObj,
-          /*
-          {
-            ...parentObj,
-            // Given there could be sorting and limiting that's taken place, we
-            // want to overwrite the entire object rather than merging found items
-            // in.
-            [field]: parentObj[keyOfRelationship],
-          },
-          */
-          // Clean up the result to remove the intermediate results
-          (_, keyToOmit) => keyToOmit.startsWith(uid)
-        );
-      },
-      // The conditions under which an item from the 'orders' collection is
-      // considered a match and included in the end result
-      // All the keys on an 'order' are available, plus 3 special keys:
-      // 1) <uid>_<field>_every - is `true` when every joined item matches the
-      //    query
-      // 2) <uid>_<field>_some - is `true` when some joined item matches the
-      //    query
-      // 3) <uid>_<field>_none - is `true` when none of the joined items match
-      //    the query
-      matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
-      // Flag this is a to-many relationship
-      many: this.field.many,
     };
   }
 
@@ -497,14 +425,6 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       };
       refId.adapter.addToForeignTableSchema(table, foreignKeyConfig);
     }
-  }
-
-  // JM TODO: This should be part of the addToTableSchema() function
-  createForeignKey(table, schemaName) {
-    return table
-      .foreign(this.path)
-      .references('id')
-      .inTable(`${schemaName}.${this.refListKey}`);
   }
 
   getQueryConditions(dbPath) {

@@ -1,18 +1,20 @@
 import inflection from 'inflection';
-import { parseFieldAccess } from '@keystone-alpha/access-control';
+import { parseFieldAccess } from '@keystonejs/access-control';
 
 class Field {
   constructor(
     path,
-    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
-    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
+    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, adminDoc, ...config },
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
     this.schemaDoc = schemaDoc;
+    this.adminDoc = adminDoc;
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
+    this.isOrderable = false;
     this.hooks = hooks;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
@@ -29,19 +31,24 @@ class Field {
     // Should be overwritten by types that implement a Relationship interface
     this.isRelationship = false;
 
-    this.access = parseFieldAccess({
+    this.access = this.parseFieldAccess({
+      schemaNames,
       listKey,
       fieldKey: path,
       defaultAccess,
-      access: access,
+      access,
     });
   }
 
+  parseFieldAccess(args) {
+    return parseFieldAccess(args);
+  }
+
   // Field types should replace this if they want to any fields to the output type
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return {};
   }
 
@@ -52,41 +59,27 @@ class Field {
    *
    * These are special cases, and should be used sparingly
    *
-   * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
+   * NOTE: When a naming conflict occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
-   *
-   * @param options Object skipAccessControl: will be true when the types
-   * should include those that otherwise would be excluded due to access control
-   * checks.
    */
   getGqlAuxTypes() {
     return [];
   }
-  get gqlAuxFieldResolvers() {
+  gqlAuxFieldResolvers() {
     return {};
   }
 
-  /**
-   * @param options Object skipAccessControl: will be true when the types
-   * should include those that otherwise would be excluded due to access control
-   * checks.
-   */
   getGqlAuxQueries() {
     return [];
   }
-  get gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers() {
     return {};
   }
 
-  /**
-   * @param options Object skipAccessControl: will be true when the types
-   * should include those that otherwise would be excluded due to access control
-   * checks.
-   */
   getGqlAuxMutations() {
     return [];
   }
-  get gqlAuxMutationResolvers() {
+  gqlAuxMutationResolvers() {
     return {};
   }
 
@@ -102,7 +95,7 @@ class Field {
    * (no relationships or defaults resolved)
    * @param {Object} data.actions
    * @param {Function} data.actions.query Perform a graphQl query
-   * programatically
+   * programmatically
    */
   async resolveInput({ resolvedData }) {
     return resolvedData[this.path];
@@ -120,7 +113,7 @@ class Field {
 
   async afterDelete() {}
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [];
   }
   equalityInputFields(type) {
@@ -166,14 +159,28 @@ class Field {
   get gqlUpdateInputFields() {
     return [];
   }
-  getAdminMeta() {
+  getAdminMeta({ schemaName }) {
+    const schemaAccess = this.access[schemaName];
     return this.extendAdminMeta({
       label: this.label,
       path: this.path,
       type: this.constructor.name,
       isRequired: this.isRequired,
-      defaultValue: this.getDefaultValue(),
+      isOrderable: this.isOrderable,
+      // We can only pass scalar default values through to the admin ui, not
+      // functions
+      defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
       isPrimaryKey: this.isPrimaryKey,
+      // NOTE: This data is serialised, so we're unable to pass through any
+      // access control _functions_. But we can still check for the boolean case
+      // and pass that through (we assume that if there is a function, it's a
+      // "maybe" true, so default it to true).
+      access: {
+        create: !!schemaAccess.create,
+        read: !!schemaAccess.read,
+        update: !!schemaAccess.update,
+      },
+      adminDoc: this.adminDoc,
     });
   }
   extendAdminMeta(meta) {
@@ -182,8 +189,16 @@ class Field {
   extendAdminViews(views) {
     return views;
   }
-  getDefaultValue() {
-    return this.defaultValue;
+  getDefaultValue({ context, originalInput, actions }) {
+    if (typeof this.defaultValue !== 'undefined') {
+      if (typeof this.defaultValue === 'function') {
+        return this.defaultValue({ context, originalInput, actions });
+      } else {
+        return this.defaultValue;
+      }
+    }
+    // By default, the default value is undefined
+    return undefined;
   }
 }
 

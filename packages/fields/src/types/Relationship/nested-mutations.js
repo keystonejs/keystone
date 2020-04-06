@@ -1,6 +1,6 @@
 import groupBy from 'lodash.groupby';
 import pSettle from 'p-settle';
-import { intersection, pick } from '@keystone-alpha/utils';
+import { intersection, pick } from '@keystonejs/utils';
 import { ParameterError } from './graphqlErrors';
 
 const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
@@ -173,11 +173,13 @@ async function resolveNestedSingle({
     } else {
       try {
         // Support other unique fields for disconnection
-        idToDisconnect = (await refList.itemQuery(
-          { where: input.disconnect },
-          context,
-          refList.gqlNames.itemQueryName
-        )).id.toString();
+        idToDisconnect = (
+          await refList.itemQuery(
+            { where: input.disconnect },
+            context,
+            refList.gqlNames.itemQueryName
+          )
+        ).id.toString();
       } catch (error) {
         // Maybe we don't have read access, or maybe the item doesn't exist
         // (recently deleted, or it's an erroneous value in the relationship field)

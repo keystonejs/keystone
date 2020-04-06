@@ -6,23 +6,23 @@ The Blog is a great example and boilerplate for more complex, real-world impleme
 
 ## Running the Project.
 
-To run this project, open your terminal and run `bolt` within the Keystone project root to install all required packages, then run `bolt start blog` to begin running Keystone.
+To run this project, open your terminal and run `yarn` within the Keystone project root to install all required packages, then run `yarn start blog` to begin running Keystone.
 
 The Keystone Admin UI is reachable from `localhost:3000/admin`. To log in, use the following credentials:
 
 Username: `admin@keystonejs.com`
 Password: `password`
 
-To see an example Next.js app using Keystone's GraphQl APIs, head to `localhost:3000`.
+To see an example Next.js app using KeystoneJS' GraphQl APIs, head to `localhost:3000`.
 
 You can change the port that this demo runs on by setting the `PORT` environment variable.
 
 ```sh
-PORT=5000 bolt start blog
+PORT=5000 yarn start blog
 ```
 
 ## TODO: Permissions and Authorisation
 
 Although the "Password" auth strategy is enabled for the Admin UI on this project, we haven't implemented any restrictions on the GraphQL API yet. So unauthenticated users are able to create and destroy admin users (!)
 
-See the [Access Control](https://v5.keystonejs.com/guides/access-control) documentation for information on how to do this.
+See the [Access Control](https://keystonejs.com/guides/access-control) documentation for information on how to do this.

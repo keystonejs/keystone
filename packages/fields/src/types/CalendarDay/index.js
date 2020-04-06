@@ -1,5 +1,11 @@
-import { importView } from '@keystone-alpha/build-field-types';
-import { CalendarDay, MongoCalendarDayInterface, KnexCalendarDayInterface } from './Implementation';
+import { importView } from '@keystonejs/build-field-types';
+import {
+  CalendarDay,
+  MongoCalendarDayInterface,
+  KnexCalendarDayInterface,
+  MemoryCalendarDayInterface,
+  JSONCalendarDayInterface,
+} from './Implementation';
 
 export default {
   type: 'CalendarDay',
@@ -13,5 +19,7 @@ export default {
   adapters: {
     mongoose: MongoCalendarDayInterface,
     knex: KnexCalendarDayInterface,
+    memory: MemoryCalendarDayInterface,
+    json: JSONCalendarDayInterface,
   },
 };

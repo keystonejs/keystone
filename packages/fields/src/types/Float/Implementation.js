@@ -1,20 +1,23 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Float extends Implementation {
   constructor() {
     super(...arguments);
+    this.isOrderable = true;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: Float`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('Float'),
       ...this.orderingInputFields('Float'),
@@ -61,3 +64,7 @@ export class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
     if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }
+
+export class JSONFloatInterface extends CommonFloatInterface(JSONFieldAdapter) {}
+
+export class MemoryFloatInterface extends CommonFloatInterface(MemoryFieldAdapter) {}

@@ -1,21 +1,22 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
-import { JSONFieldAdapter } from '@keystone-alpha/adapter-json';
-import { MemoryFieldAdapter } from '@keystone-alpha/adapter-memory';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Text extends Implementation {
   constructor(path, { isMultiline }) {
     super(...arguments);
     this.isMultiline = isMultiline;
+    this.isOrderable = true;
   }
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
       ...this.stringInputFields('String'),

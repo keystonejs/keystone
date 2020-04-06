@@ -101,7 +101,7 @@ As such, there are two methods that work:
 ## Links
 
 Links should be used generously to reference related material both inside and outside the current document.
-You can link to any section in a markdown document by lower-casing it's heading,
+You can link to any section in a markdown document by lower-casing its heading,
 replacing spaces with hyphens and prefixing with a hash, eg: the [Text Blocks section](#text-blocks).
 
 ## Code and Code Blocks

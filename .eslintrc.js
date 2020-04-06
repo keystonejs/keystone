@@ -7,7 +7,12 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', 'flowtype', 'emotion'],
+  plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', 'emotion'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -37,6 +42,8 @@ module.exports = {
       },
     ],
     'import/no-unresolved': 'error',
+    'jest/valid-describe': 'off',
+    'jest/valid-expect': 'off',
     'object-curly-spacing': ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     'react/jsx-boolean-value': 'warn',
@@ -52,10 +59,6 @@ module.exports = {
     'react/sort-prop-types': 'warn',
     semi: 'error',
     strict: 'off',
-    // there are some special flow types that ESLint doesn't know about,
-    // this stops ESLint from throwing errors
-    'flowtype/define-flow-type': 'error',
-    'flowtype/use-flow-type': 'error',
     'emotion/jsx-import': 'error',
     'emotion/no-vanilla': 'error',
     'emotion/import-from-emotion': 'error',

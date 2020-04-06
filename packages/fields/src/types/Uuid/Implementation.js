@@ -1,7 +1,8 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
-import { JSONFieldAdapter } from '@keystone-alpha/adapter-json';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class UuidImplementation extends Implementation {
   constructor(path, { caseTo = 'lower' }) {
@@ -13,15 +14,16 @@ export class UuidImplementation extends Implementation {
     } else if (caseTo && caseTo.toString().toLowerCase() === 'lower') {
       this.normaliseValue = a => a.toString().toLowerCase();
     }
+    this.isOrderable = true;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: ID`];
   }
-  get gqlOutputFieldResolvers() {
+  gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [...this.equalityInputFields('ID'), ...this.inInputFields('ID')];
   }
   get gqlUpdateInputFields() {
@@ -126,6 +128,15 @@ export class KnexUuidInterface extends KnexFieldAdapter {
 }
 
 export class JSONUuidInterface extends JSONFieldAdapter {
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath, this.field.normaliseValue),
+      ...this.inConditions(dbPath, this.field.normaliseValue),
+    };
+  }
+}
+
+export class MemoryUuidInterface extends MemoryFieldAdapter {
   getQueryConditions(dbPath) {
     return {
       ...this.equalityConditions(dbPath, this.field.normaliseValue),

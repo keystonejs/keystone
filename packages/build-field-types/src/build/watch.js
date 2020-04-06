@@ -1,23 +1,21 @@
-// @flow
 import { Project } from '../project';
-import { Package } from '../package';
 import { watch } from 'rollup';
 import chalk from 'chalk';
 import path from 'path';
 import ms from 'ms';
 import * as fs from 'fs-extra';
 import { getRollupConfigs } from './config';
-import { type Aliases, getAliases } from './aliases';
+import { getAliases } from './aliases';
 import { toUnsafeRollupConfig } from './rollup';
 import { success, info } from '../logger';
 import { successes } from '../messages';
 import { createWorker } from '../worker-client';
 
-function relativePath(id: string) {
-  return path.relative(process.cwd(), id);
+function relativePath(id) {
+  return path.relative(process.cwd(), String(id));
 }
 
-async function watchPackage(pkg: Package, aliases: Aliases) {
+async function watchPackage(pkg, aliases) {
   const _configs = getRollupConfigs(pkg, aliases);
   await Promise.all([
     fs.remove(path.join(pkg.directory, 'dist')),
@@ -63,7 +61,6 @@ async function watchPackage(pkg: Package, aliases: Aliases) {
                 : Array.isArray(event.input)
                 ? event.input.map(relativePath).join(', ')
                 : Object.values(event.input)
-                    // $FlowFixMe
                     .map(relativePath)
                     .join(', ')
             )} → ${chalk.bold(event.output.map(relativePath).join(', '))}...`
@@ -93,12 +90,7 @@ async function watchPackage(pkg: Package, aliases: Aliases) {
   return { error: errPromise, start: startPromise };
 }
 
-async function retryableWatch(
-  pkg: Package,
-  aliases: Aliases,
-  getPromises: ({ start: Promise<*> }) => mixed,
-  depth: number
-) {
+async function retryableWatch(pkg, aliases, getPromises, depth) {
   try {
     let { error, start } = await watchPackage(pkg, aliases);
     if (depth === 0) {
@@ -115,7 +107,7 @@ async function retryableWatch(
   }
 }
 
-export default async function build(directory: string) {
+export default async function build(directory) {
   createWorker();
   let project = await Project.create(directory);
   // do more stuff with checking whether the repo is using yarn workspaces or bolt

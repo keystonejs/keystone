@@ -1,26 +1,16 @@
-// @flow
-
-import React, { Component } from 'react';
+import React from 'react';
 import { Input } from '@arch-ui/input';
-import type { FilterProps } from '../../../types';
 
-type Props = FilterProps<string>;
-
-export default class TextFilterView extends Component<Props> {
-  handleChange = (event: Object) => {
+const TextFilterView = ({ onChange, filter, field, innerRef, value }) => {
+  const handleChange = event => {
     const value = event.target.value;
-    this.props.onChange(value.replace(/\D/g, ''));
+    onChange(value.replace(/[^\d,\s]/g, ''));
   };
 
-  render() {
-    const { filter, field, innerRef, value } = this.props;
+  if (!filter) return null;
+  const placeholder = field.getFilterLabel(filter);
 
-    if (!filter) return null;
+  return <Input onChange={handleChange} ref={innerRef} placeholder={placeholder} value={value} />;
+};
 
-    const placeholder = field.getFilterLabel(filter);
-
-    return (
-      <Input onChange={this.handleChange} ref={innerRef} placeholder={placeholder} value={value} />
-    );
-  }
-}
+export default TextFilterView;

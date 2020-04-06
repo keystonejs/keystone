@@ -1,16 +1,11 @@
-const { escapeRegExp, identity, mapKeys, objMerge, flatten } = require('@keystone-alpha/utils');
+const { escapeRegExp, identity, mapKeys, objMerge, flatten } = require('@keystonejs/utils');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const lowdb = require('lowdb');
 const lodashId = require('lodash-id');
 const pSettle = require('p-settle');
 const memoizeOne = require('memoize-one');
 
-const {
-  BaseKeystoneAdapter,
-  BaseListAdapter,
-  BaseFieldAdapter,
-} = require('@keystone-alpha/keystone');
-const logger = require('@keystone-alpha/logger').logger('adapter-json');
+const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
 
 class JSONAdapter extends BaseKeystoneAdapter {
   constructor({ adapter, ...args } = {}) {
@@ -59,7 +54,7 @@ class JSONAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { Uuid } = require('@keystone-alpha/fields');
+    const { Uuid } = require('@keystonejs/fields');
     return Uuid.primaryKeyDefaults[this.name].getConfig();
   }
 

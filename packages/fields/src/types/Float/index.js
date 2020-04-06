@@ -1,5 +1,11 @@
-import { Float, MongoFloatInterface, KnexFloatInterface } from './Implementation';
-import { importView } from '@keystone-alpha/build-field-types';
+import {
+  Float,
+  MongoFloatInterface,
+  KnexFloatInterface,
+  JSONFloatInterface,
+  MemoryFloatInterface,
+} from './Implementation';
+import { importView } from '@keystonejs/build-field-types';
 
 export default {
   type: 'Float',
@@ -12,5 +18,7 @@ export default {
   adapters: {
     mongoose: MongoFloatInterface,
     knex: KnexFloatInterface,
+    memory: MemoryFloatInterface,
+    json: JSONFloatInterface,
   },
 };

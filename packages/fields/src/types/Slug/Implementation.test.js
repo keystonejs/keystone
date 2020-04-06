@@ -1,13 +1,8 @@
-import { multiAdapterRunners, setupServer } from '@keystone-alpha/test-utils';
+import { multiAdapterRunners, setupServer, graphqlRequest } from '@keystonejs/test-utils';
 
 import cuid from 'cuid';
 import Text from '../Text';
 import Slug from './';
-
-const SCHEMA_NAME = 'testing';
-
-const graphqlRequest = ({ keystone, query }) =>
-  keystone._graphQLQuery[SCHEMA_NAME](query, keystone.getAccessContext(SCHEMA_NAME, {}));
 
 const reverse = str =>
   str
@@ -22,7 +17,7 @@ const generateListName = () =>
   // Add randomness
   cuid.slug() +
   // Ensure plurality isn't a problem
-  'n';
+  'foo';
 
 const setupList = (adapterName, fields) =>
   setupServer({
@@ -34,7 +29,7 @@ const setupList = (adapterName, fields) =>
   });
 
 describe('Slug#implementation', () => {
-  multiAdapterRunners('knex').map(({ runner, adapterName }) =>
+  multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {
       it('Instantiates correctly if from is a string', () => {
         expect(() => {
@@ -300,6 +295,91 @@ describe('Slug#implementation', () => {
                   url: 'awesome-sauce',
                 });
                 expect(makeUnique).not.toHaveBeenCalled();
+              });
+            }
+          )();
+        });
+
+        it('Generates a unique slug when alwaysMakeUnique: true', () => {
+          return runner(
+            () =>
+              setupList(adapterName, {
+                name: { type: Text },
+                url: { type: Slug, from: 'name', alwaysMakeUnique: true },
+              }),
+            async ({ keystone }) => {
+              const {
+                gqlNames: { createMutationName },
+              } = keystone.listsArray[0];
+              return graphqlRequest({
+                keystone,
+                query: `mutation { ${createMutationName}(data: { name: "Wicked Sauce", url: "wicked-sauce" } ) { id name url } }`,
+              }).then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).toMatchObject({
+                  url: expect.stringMatching(/^wicked-sauce-[a-zA-Z0-9]+$/),
+                });
+              });
+            }
+          )();
+        });
+
+        it("Calls 'makeUnique' when alwaysMakeUnique is true", () => {
+          return runner(
+            () =>
+              setupList(adapterName, {
+                name: { type: Text },
+                url: {
+                  type: Slug,
+                  from: 'name',
+                  alwaysMakeUnique: true,
+                  makeUnique: ({ slug }) => reverse(slug),
+                },
+              }),
+            async ({ keystone }) => {
+              const {
+                gqlNames: { createMutationName },
+              } = keystone.listsArray[0];
+              return graphqlRequest({
+                keystone,
+                query: `mutation { ${createMutationName}(data: { name: "Awesome Sauce", url: "awesome-sauce" } ) { id name url } }`,
+              }).then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).toMatchObject({
+                  url: reverse('awesome-sauce'),
+                });
+              });
+            }
+          )();
+        });
+
+        it("Still calls 'makeUnique' when isUnique: false & alwaysMakeUnique: true", () => {
+          const makeUnique = jest.fn(({ slug }) => reverse(slug));
+          return runner(
+            () =>
+              setupList(adapterName, {
+                name: { type: Text },
+                url: {
+                  type: Slug,
+                  from: 'name',
+                  alwaysMakeUnique: true,
+                  makeUnique,
+                  isUnique: false,
+                },
+              }),
+            async ({ keystone }) => {
+              const {
+                gqlNames: { createMutationName },
+              } = keystone.listsArray[0];
+              return graphqlRequest({
+                keystone,
+                query: `mutation { ${createMutationName}(data: { name: "Awesome Sauce", url: "awesome-sauce" } ) { id name url } }`,
+              }).then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).toMatchObject({
+                  url: reverse('awesome-sauce'),
+                });
+                expect(makeUnique).toHaveBeenCalled();
               });
             }
           )();
@@ -647,55 +727,47 @@ describe('Slug#implementation', () => {
       describe('error handling', () => {
         it("throws if 'regenerateOnUpdate' is not a bool", () => {
           return expect(
-            runner(
-              () =>
-                setupList(adapterName, {
-                  url: { type: Slug, from: 'foo', regenerateOnUpdate: 13 },
-                }),
-              // Empty test, we just want to assert the setup works
-              () => {}
+            runner(() =>
+              setupList(adapterName, {
+                url: { type: Slug, from: 'foo', regenerateOnUpdate: 13 },
+              })
             )()
           ).rejects.toThrow(/The 'regenerateOnUpdate' option on .*\.url must be true\/false/);
         });
 
+        it("throws if 'alwaysMakeUnique' is not a bool", () => {
+          return expect(
+            runner(() =>
+              setupList(adapterName, {
+                url: { type: Slug, from: 'foo', alwaysMakeUnique: 13 },
+              })
+            )()
+          ).rejects.toThrow(/The 'alwaysMakeUnique' option on .*\.url must be true\/false/);
+        });
+
         it("throws if both 'from' and 'generate' specified", () => {
           return expect(
-            runner(
-              () =>
-                setupList(adapterName, { url: { type: Slug, from: 'foo', generate: () => {} } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
+            runner(() =>
+              setupList(adapterName, { url: { type: Slug, from: 'foo', generate: () => {} } })
             )()
           ).rejects.toThrow("Only one of 'from' or 'generate' can be supplied");
         });
 
         it("throws if 'from' is not a string", () => {
           return expect(
-            runner(
-              () => setupList(adapterName, { url: { type: Slug, from: 12 } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
-            )()
+            runner(() => setupList(adapterName, { url: { type: Slug, from: 12 } }))()
           ).rejects.toThrow(/The 'from' option on .* must be a string/);
         });
 
         it("throws if 'from' is a function", () => {
           return expect(
-            runner(
-              () => setupList(adapterName, { url: { type: Slug, from: () => {} } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
-            )()
+            runner(() => setupList(adapterName, { url: { type: Slug, from: () => {} } }))()
           ).rejects.toThrow(/A function was specified for the 'from' option/);
         });
 
         it("throws when 'makeUnique' isn't a function", () => {
           return expect(
-            runner(
-              () => setupList(adapterName, { url: { type: Slug, makeUnique: 'foo' } }),
-              // Empty test, we just want to assert the setup works
-              () => {}
-            )()
+            runner(() => setupList(adapterName, { url: { type: Slug, makeUnique: 'foo' } }))()
           ).rejects.toThrow(
             /The 'makeUnique' option on .* must be a function, but received string/
           );

@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: Float
 [meta]-->
 
@@ -8,10 +9,12 @@ title: Float
 ## Usage
 
 ```js
+const { Float, DateTime } = require('@keystonejs/fields');
+
 keystone.createList('SensorReading', {
   fields: {
-    loggedAt: { type: DateTime, isRequired: true },
-    temperature: { type: Float, isRequired: true },
+    loggedAt: { type: DateTime },
+    temperature: { type: Float },
     humidity: { type: Float },
   },
 });
@@ -23,9 +26,3 @@ keystone.createList('SensorReading', {
 | ------------ | --------- | ------- | --------------------------------------------------------------- |
 | `isRequired` | `Boolean` | `false` | Does this field require a value?                                |
 | `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
-
----
-
-```DOCS_TODO
-TODO
-```

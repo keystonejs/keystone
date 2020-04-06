@@ -1,5 +1,11 @@
-import { Text, MongoTextInterface, KnexTextInterface } from '../Text/Implementation';
-import { importView } from '@keystone-alpha/build-field-types';
+import {
+  Text,
+  MongoTextInterface,
+  KnexTextInterface,
+  JSONTextInterface,
+  MemoryTextInterface,
+} from '../Text/Implementation';
+import { importView } from '@keystonejs/build-field-types';
 
 export default {
   type: 'Color',
@@ -13,5 +19,7 @@ export default {
   adapters: {
     mongoose: MongoTextInterface,
     knex: KnexTextInterface,
+    json: JSONTextInterface,
+    memory: MemoryTextInterface,
   },
 };

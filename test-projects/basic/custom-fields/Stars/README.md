@@ -10,7 +10,7 @@ In this post we will be creating a simple custom Field Type for star ratings ⭐
 For this component, our data requirements are simple. We need to store an Integer in the database
 to represent the number of stars on a blog post. This makes things easy because Integer is a built
 in field type so we can leverage much of the Integer field type's default implementation and then
-provide custom UI components for Keystone's admin interface.
+provide custom UI components for KeystoneJS' admin interface.
 
 ## Directory structure
 
@@ -41,7 +41,7 @@ for the Admin UI in the browser.
 of the field type work such as: GraphQL filter options, the formatting of various labels for
 Keystone Admin UI, how data is formatted for sending via GraphQl and how it is interpreted when
 retrieved from the server. In this example our requirements are the same as for Integer so we can
-re-export the default [Integer field type's Controller](https://github.com/keystonejs/keystone-5/blob/master/packages/fields/types/Integer/Controller.js).
+re-export the default [Integer field type's Controller](/packages/fields/src/types/Integer/views/Controller.js).
 
 `Implementation.js` is used server side by Keystone. It exports an `Implementation` class and one or
 more `Database Field Adapters`.
@@ -63,7 +63,7 @@ This is where we will spend most of our time in this tutorial.
 
 ## Defining The Field Type
 
-Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](../../../../packages/fields/README.md).
+Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README.md).
 
 ```jsx
 const { Stars, MongoIntegerInterface } = require('./Implementation');
@@ -91,7 +91,7 @@ For now, `Implementation.js` is only going to re-export from the `Integer` imple
 const {
   Integer,
   MongoIntegerInterface,
-} = require('@keystone-alpha/fields/types/Integer/Implementation');
+} = require('@keystonejs/fields/types/Integer/Implementation');
 
 class Stars extends Integer {}
 
@@ -104,7 +104,7 @@ module.exports = {
 `Controller.js` is also going to re-export from the `Integer` Controller.
 
 ```jsx
-export { default } from '@keystone-alpha/fields/types/Integer/Controller';
+export { default } from '@keystonejs/fields/types/Integer/Controller';
 ```
 
 ### Views
@@ -126,7 +126,7 @@ export default function Cell(props) {
 We're going to reuse the Integer filter here so we'll re-export it.
 
 ```jsx
-export { default } from '@keystone-alpha/fields/types/Integer/views/Filter';
+export { default } from '@keystonejs/fields/types/Integer/views/Filter';
 ```
 
 #### views/Field.js
@@ -134,7 +134,7 @@ export { default } from '@keystone-alpha/fields/types/Integer/views/Filter';
 For now, we're also going to re-export the Integer Field Type.
 
 ```jsx
-export { default } from '@keystone-alpha/fields/types/Integer/views/Field';
+export { default } from '@keystonejs/fields/types/Integer/views/Field';
 ```
 
 ## Use the Field Type
@@ -212,7 +212,7 @@ First we need to expose it to the Admin UI, to do this, we can define a `extendA
 const {
   Integer,
   MongoIntegerInterface,
-} = require('@keystone-alpha/fields/types/Integer/Implementation');
+} = require('@keystonejs/fields/types/Integer/Implementation');
 
 class Stars extends Integer {
   extendAdminMeta(meta) {

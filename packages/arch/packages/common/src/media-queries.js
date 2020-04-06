@@ -1,4 +1,3 @@
-// @flow
 const XL_DEVICE = 1199;
 const LG_DEVICE = 991;
 const MD_DEVICE = 768;

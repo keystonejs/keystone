@@ -1,17 +1,17 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: AutoIncrement
 [meta]-->
 
-# Keystone 5 `AutoIncrement` Field Type
+# AutoIncrement
 
-An automatically incrementing integer with support for the Knex adapter.
-It's important to note, this type..
+An automatically incrementing integer with support for the Knex adapter. It's important to note that this type:
 
 - Has [important limitations](#limitations) due to varying support from the underlying DB platform
-- Has [non-standard defaults](#non-standard-defaults) for much of it's configuration
+- Has [non-standard defaults](#non-standard-defaults) for much of its configuration
 
-**Currently, outside it's use as a primary key, this field type will only work on PostgreSQL.**
+**Currently, outside its use as a primary key, this field type will only work on PostgreSQL.**
 
 ## Limitations
 
@@ -30,7 +30,7 @@ Of the DB platforms supported by Knex, only
 [Amazon Redshift](https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html#identity-clause)
 supports _multiple_ auto incrementing columns.
 
-## Non-Standard Defaults
+## Non-standard defaults
 
 The configuration for `AutoIncrement` fields has different default values than most field types.
 Specifically:
@@ -51,27 +51,27 @@ Specifically:
 ## Usage
 
 ```js
-const { Keystone } = require('@keystone-alpha/keystone');
-const { AutoIncrement } = require('@keystone-alpha/fields-auto-increment');
+const { Keystone } = require('@keystonejs/keystone');
+const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
+const { Text } = require('@keystonejs/fields');
 
-const keystone = new Keystone(/* ... */);
+const keystone = new Keystone({...});
 
 keystone.createList('Order', {
   fields: {
     name: { type: Text },
     orderNumber: { type: AutoIncrement, gqlType: 'Int' },
-    // ...
   },
 });
 ```
 
 ### Config
 
-| Option       | Type      | Default       | Description                                                                                |
-| :----------- | :-------- | :------------ | :----------------------------------------------------------------------------------------- |
-| `isRequired` | `Boolean` | `false`       | Does this field require a value?                                                           |
-| `isUnique`   | `Boolean` | `true`        | Adds a unique index that allows only unique values to be stored                            |
-| `gqlType`    | `String`  | `Int` or `ID` | The GraphQL to be used by this field. Defaults to `ID` for primay keys or `Int` otherwise. |
+| Option       | Type      | Default       | Description                                                                                 |
+| :----------- | :-------- | :------------ | :------------------------------------------------------------------------------------------ |
+| `isRequired` | `Boolean` | `false`       | Does this field require a value?                                                            |
+| `isUnique`   | `Boolean` | `true`        | Adds a unique index that allows only unique values to be stored                             |
+| `gqlType`    | `String`  | `Int` or `ID` | The GraphQL to be used by this field. Defaults to `ID` for primary keys or `Int` otherwise. |
 
 ## Admin UI
 
@@ -81,9 +81,9 @@ keystone.createList('Order', {
 
 `AutoIncrement` fields can use the `Int` or `ID` GraphQL types.
 This can be specified using the `gqlType` config option if needed.
-The default is `ID` for primay key fields and `Int` otherwise.
+The default is `ID` for primary key fields and `Int` otherwise.
 
-### Input Fields
+### Input fields
 
 `AutoIncrement` fields are read-only by default.
 As such, input fields and types may not be added to the GraphQL schema.
@@ -93,7 +93,7 @@ See the [non-standard defaults section](#non-standard-defaults) for details.
 | :--------- | :------------ | :------------------------ |
 | `${path}`  | `Int` or `ID` | The integer value to save |
 
-### Output Fields
+### Output fields
 
 | Field name | Type          | Description              |
 | :--------- | :------------ | :----------------------- |
@@ -114,7 +114,11 @@ See the [non-standard defaults section](#non-standard-defaults) for details.
 
 ## Storage
 
-### Knex Adapter
+### Mongoose adapter
+
+Not supported.
+
+### Knex adapter
 
 The `AutoIncrement` field type uses [`increments()`](https://knexjs.org/#Schema-increments) by default.
 The underlying implementation varies in significant ways depending on the DB platform used (see [limitations](#limitations)).
@@ -125,7 +129,3 @@ To work around this, if this type is not being used as the lists primary key,
 we replace the generic `increments()` call with an explicitly build `serial` column.
 This work around only supports PostgreSQL; on other DB platforms, this type can only be used for the `id` field.
 See the [Limitations section](#limitations) more about auto inc and their usage as primary keys.
-
-### Mongoose Adapter
-
-Not supported.

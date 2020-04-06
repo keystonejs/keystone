@@ -1,32 +1,15 @@
 <!--[meta]
-section: packages
-title: Database Adapter - Knex
+section: api
+subSection: database-adapters
+title: Knex adapter
 [meta]-->
 
-# Knex Database Adapter
+# Knex database adapter
 
-** WARNING: This adapter is under active development and is not production ready. It _will_ drop your entire database every time you connect! **
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-knex)
 
 The [Knex](https://knexjs.org/#changelog) adapter is a general purpose adapter which can be used to connect to a range of different database backends.
 At present, the only fully tested backend is `Postgres`, however Knex gives the potential for `MSSQL`, `MySQL`, `MariaDB`, `SQLite3`, `Oracle`, and `Amazon Redshift` to be supported.
-
-## Setting Up Your Database
-
-Before running Keystone, you must set up a database, a schema, and a user.
-Assuming you're on MacOS and have Postgres installed the `build-test-db.sh` does this for you:
-
-```sh
-./packages/adapter-knex/build-test-db.sh
-```
-
-Otherwise, you can run the steps manually:
-
-```shell
-createdb -U postgres ks5_dev
-psql ks5_dev -U postgres -c "CREATE SCHEMA keystone;"
-psql ks5_dev -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
-psql ks5_dev -U postgres -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
-```
 
 ## Usage
 
@@ -35,48 +18,69 @@ const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
 const keystone = new Keystone({
   name: 'My Awesome Project',
-  adapter: new KnexAdapter(),
-});
-
-const uri = 'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev';
-const client = 'postgres';
-const schemaName = 'keystone';
-
-const knexOptions = { ... };
-
-keystone.connect(uri, {
-  client,
-  schemaName,
-  ...knexOptions,
+  adapter: new KnexAdapter({...}),
 });
 ```
 
-## API
-
-### `uri`
-
-_**Default:**_ `'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev'`
-
-Either a connection string, or a connection object, as accepted by Knex.
-See [knex docs](https://knexjs.org/#Installation-client) for more details.
-If the environment variable `KNEX_URI` is set, its value will be used as the default.
-
-### `client`
-
-_**Default:**_ `'postgres'`
-
-Defines the type of backend to use. Current `postgres` is supported, but any value supported by Knex may be supported in the future.
+## Config
 
 ### `schemaName`
 
-_**Default:**_ `'keystone'`
+_**Default:**_ `'public'`
 
-All keystone tables are grouped within a schema. This value should match the name of the schema used in the `CREATE SCHEMA` step above.
+All postgres tables are grouped within a schema and `public` is the default schema.
+
+### `dropDatabase`
+
+_**Default:**_ `false`
+
+Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application. This option is ignored in production, i.e. when the environment variable NODE_ENV === 'production'.
 
 ### `knexOptions`
 
-Any extra options provided will be passed through to the Knex configuration function. See the [Knex docs](https://knexjs.org/#Installation-client) for possible values.
+These options are passed directly through to Knex.
+
+See the [knex docs](https://knexjs.org/#Installation-client) for more details.
+
+_**Default:**_
+
+```javaScript
+{
+  client: 'postgres',
+  connection: '<DEFAULT_CONNECTION_URL>'
+}
+```
+
+The `DEFAULT_CONNECTION_URL` will be either one of the following environmental variables:
+
+- `CONNECT_TO`,
+- `DATABASE_URL`,
+- `KNEX_URI`
+
+or `'postgres://localhost/<DATABASE_NAME>'`where `DATABASE_NAME` is be derived from the KeystoneJS project name.
 
 ## Debugging
 
 To log all Knex queries, run the server with the environment variable `DEBUG=knex:query`.
+
+## Setup
+
+Before running Keystone with the Knex adapter you should configure a database. By default Knex will look for a Postgres database on the default port, matching the project name, as the current user.
+
+In most cases this database will not exist and you will want to configure a user and database for your application.
+
+Assuming you're on MacOS and have Postgres installed the `build-test-db.sh` does this for you:
+
+```sh
+./build-test-db.sh
+```
+
+Otherwise, you can run these steps manually:
+
+```shell
+createdb -U postgres keystone
+psql keystone -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
+psql keystone -U postgres -c "GRANT ALL ON DATABASE keystone TO keystone5;"
+```
+
+If using the above, you will want to set a connection string of: `postgres://keystone5:k3yst0n3@localhost:5432/keystone`

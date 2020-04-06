@@ -1,4 +1,3 @@
-// @flow
 import is from 'sarcastic';
 import nodePath from 'path';
 import { validateEntrypoint } from './validate';
@@ -7,49 +6,46 @@ import resolve from 'resolve';
 import { EXTENSIONS } from './constants';
 
 /*::
-import { Package } from './package'
+import type { Package } from './package'
 */
 
 export class Entrypoint extends Item {
-  package: Package;
-
-  constructor(filePath: string, contents: string, pkg: Package) {
+  constructor(filePath, contents, pkg) {
     super(filePath, contents);
     this.package = pkg;
   }
 
-  get name(): string {
+  get name() {
     return nodePath.join(
       this.package.name,
       nodePath.relative(this.package.directory, this.directory)
     );
   }
 
-  get main(): string | null {
+  get main() {
     return is(this.json.main, is.maybe(is.string));
   }
-  set main(path: string) {
+  set main(path) {
     this.json.main = path;
   }
-  get module(): string | null {
+  get module() {
     return is(this.json.module, is.maybe(is.string));
   }
-  set module(path: string) {
+  set module(path) {
     this.json.module = path;
   }
 
-  get configSource(): string {
+  get configSource() {
     return is(this._config.source, is.default(is.string, 'src/index'));
   }
 
-  get source(): string {
+  get source() {
     return resolve.sync(nodePath.join(this.directory, this.configSource), {
       extensions: EXTENSIONS,
     });
   }
 
-  _strict: StrictEntrypoint;
-  strict(): StrictEntrypoint {
+  strict() {
     if (!this._strict) {
       validateEntrypoint(this, false);
       this._strict = new StrictEntrypoint(this.path, this._contents, this.package);
@@ -59,19 +55,19 @@ export class Entrypoint extends Item {
 }
 
 export class StrictEntrypoint extends Entrypoint {
-  get main(): string {
+  get main() {
     return is(this.json.main, is.string);
   }
-  set main(path: string) {
+  set main(path) {
     this.json.main = path;
   }
-  get module(): string {
+  get module() {
     return is(this.json.module, is.string);
   }
-  set module(path: string) {
+  set module(path) {
     this.json.module = path;
   }
-  updater(json: Object) {
+  updater(json) {
     super.updater(json);
     validateEntrypoint(this, false);
   }

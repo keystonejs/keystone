@@ -1,16 +1,6 @@
-// @flow
-
 import React, { Fragment } from 'react';
-import type { CellProps } from '../../../types';
 
-type Relationship = {
-  id: string,
-  _label_: string,
-};
-
-type Props = CellProps<Relationship | Array<Relationship>>;
-
-export default ({ data, field, Link }: Props) => {
+export default ({ data, field, Link }) => {
   if (!data) {
     return null;
   }
@@ -22,7 +12,7 @@ export default ({ data, field, Link }: Props) => {
         .map((item, index) => (
           <Fragment key={item.id}>
             {!!index ? ', ' : ''}
-            <Link path={refList.path} id={item.id}>
+            <Link path={refList.path} item={item}>
               {item._label_}
             </Link>
           </Fragment>

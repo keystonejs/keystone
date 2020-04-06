@@ -1,3 +1,4 @@
+require('dotenv').config();
 const {
   File,
   Text,
@@ -9,9 +10,10 @@ const {
   CalendarDay,
   DateTime,
   OEmbed,
-} = require('@keystone-alpha/fields');
-const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
-const { LocalFileAdapter } = require('@keystone-alpha/file-adapters');
+} = require('@keystonejs/fields');
+const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
+const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
+const { LocalFileAdapter } = require('@keystonejs/file-adapters');
 const getYear = require('date-fns/get_year');
 
 const { staticRoute, staticPath, distDir } = require('./config');
@@ -20,20 +22,20 @@ const dev = process.env.NODE_ENV !== 'production';
 let iframelyAdapter;
 
 if (process.env.IFRAMELY_API_KEY) {
-  const { IframelyOEmbedAdapter } = require('@keystone-alpha/oembed-adapters');
+  const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
   iframelyAdapter = new IframelyOEmbedAdapter({
     apiKey: process.env.IFRAMELY_API_KEY,
   });
 }
 
 const fileAdapter = new LocalFileAdapter({
-  directory: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
-  route: `${staticRoute}/uploads`,
+  src: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
+  path: `${staticRoute}/uploads`,
 });
 
 const avatarFileAdapter = new LocalFileAdapter({
-  directory: `${staticPath}/avatars`,
-  route: `${staticRoute}/avatars`,
+  src: `${staticPath}/avatars`,
+  path: `${staticRoute}/avatars`,
 });
 
 exports.User = {
@@ -58,13 +60,20 @@ exports.User = {
   labelResolver: item => `${item.name} <${item.email}>`,
 };
 
+const isAdmin = ({ authentication: { item: user } }) => !!user && !!user.isAdmin;
+
 exports.Post = {
   fields: {
     title: { type: Text },
     slug: { type: Slug, from: 'title' },
     author: {
-      type: Relationship,
+      type: AuthedRelationship,
       ref: 'User',
+      isRequired: true,
+      access: {
+        create: isAdmin,
+        update: isAdmin,
+      },
     },
     categories: {
       type: Relationship,
@@ -74,11 +83,31 @@ exports.Post = {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
     },
     body: { type: Wysiwyg },
     posted: { type: DateTime, format: 'DD/MM/YYYY' },
-    image: { type: File, adapter: fileAdapter },
+    image: {
+      type: File,
+      adapter: fileAdapter,
+      hooks: {
+        beforeChange: async ({ existingItem }) => {
+          if (existingItem && existingItem.image) {
+            await fileAdapter.delete(existingItem.image);
+          }
+        },
+      },
+    },
+  },
+  hooks: {
+    afterDelete: ({ existingItem }) => {
+      if (existingItem.image) {
+        fileAdapter.delete(existingItem.image);
+      }
+    },
   },
   adminConfig: {
     defaultPageSize: 20,
@@ -103,8 +132,13 @@ exports.Comment = {
       ref: 'Post',
     },
     author: {
-      type: Relationship,
+      type: AuthedRelationship,
       ref: 'User',
+      isRequired: true,
+      access: {
+        create: isAdmin,
+        update: isAdmin,
+      },
     },
     posted: { type: DateTime },
   },

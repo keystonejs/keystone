@@ -1,12 +1,13 @@
 {
-  "projectName": "keystone-5",
+  "projectName": "keystone",
   "projectOwner": "keystonejs",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "README.md"
   ],
-  "imageSize": 100,
+  "imageSize": 80,
   "commit": false,
   "contributors": [
     {
@@ -78,7 +79,8 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/2416367?v=4",
       "profile": "https://github.com/molomby",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -96,7 +98,9 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/15622106?v=4",
       "profile": "https://github.com/Noviny",
       "contributions": [
-        "code"
+        "code",
+        "maintenance",
+        "tool"
       ]
     },
     {
@@ -170,7 +174,8 @@
       "profile": "http://www.wesbos.com",
       "contributions": [
         "doc",
-        "ideas"
+        "ideas",
+        "maintenance"
       ]
     },
     {
@@ -208,7 +213,8 @@
       "contributions": [
         "ideas",
         "projectManagement",
-        "review"
+        "review",
+        "code"
       ]
     },
     {
@@ -217,7 +223,8 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/6265154?v=4",
       "profile": "https://jordanoverbye.com",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -228,7 +235,174 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "kennedybaird",
+      "name": "Kennedy Baird",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/20593811?v=4",
+      "profile": "https://github.com/kennedybaird",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "thiagodebastos",
+      "name": "Thiago De Bastos",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6151341?v=4",
+      "profile": "http://thiagodebastos.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "dcousens",
+      "name": "Daniel Cousens",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/413395?v=4",
+      "profile": "https://dcousens.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "simonswiss",
+      "name": "Simon Vrachliotis",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/485747?v=4",
+      "profile": "http://simonswiss.com",
+      "contributions": [
+        "example",
+        "tutorial",
+        "video"
+      ]
+    },
+    {
+      "login": "Vultraz",
+      "name": "Charles Dang",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3558659?v=4",
+      "profile": "https://github.com/Vultraz",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "dzigg",
+      "name": "dzigg",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/4436922?v=4",
+      "profile": "https://github.com/dzigg",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cmosgh",
+      "name": "Cristian Mos",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/911925?v=4",
+      "profile": "https://github.com/cmosgh",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "arnaud-zg",
+      "name": "Arnaud Zheng",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10991546?v=4",
+      "profile": "https://arnaud-zg.github.io/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ashinzekene",
+      "name": "Ashinze Ekene",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20991583?v=4",
+      "profile": "https://twitter.com/ashinzekene",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Fabyao",
+      "name": "Fabyao",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5112982?v=4",
+      "profile": "https://github.com/Fabyao",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "marcosrjjunior",
+      "name": "Marcos RJJunior",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5287262?v=4",
+      "profile": "https://marcosrjjunior.github.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ginkgoch",
+      "name": "Ginkgoch",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/41072618?v=4",
+      "profile": "https://ginkgoch.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MaisaMilena",
+      "name": "MaisaMilena",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/28612369?v=4",
+      "profile": "https://github.com/MaisaMilena",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "marxvn",
+      "name": "Martin Pham",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4975208?v=4",
+      "profile": "http://www.marxvn.com",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "justintemps",
+      "name": "Justin Smith",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12401179?v=4",
+      "profile": "https://github.com/justintemps",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "gabipetrovay",
+      "name": "Gabriel Petrovay",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1170398?v=4",
+      "profile": "https://github.com/gabipetrovay",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "LiamAttClarke",
+      "name": "Liam Clarke",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9361948?v=4",
+      "profile": "https://atticus.dev",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "wbarcovsky",
+      "name": "Vladimir Barcovsky",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5498761?v=4",
+      "profile": "https://github.com/wbarcovsky",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }

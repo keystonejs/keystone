@@ -1,4 +1,4 @@
-const { resolveAllKeys, mapKeys } = require('@keystone-alpha/utils');
+const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
 
 function isRelationshipField({ list, fieldKey }) {
   return !!list._fields[fieldKey].type.isRelationship;
@@ -201,7 +201,7 @@ const createRelationships = (lists, relationships, createdItems) => {
           // Promise<{ author: <id-of-User>, ... }>
           return resolveAllKeys(
             mapKeys(relationItem, (relationConditions, relationshipField) => {
-              const relatedListKey = listFieldsConfig[relationshipField].ref;
+              const relatedListKey = listFieldsConfig[relationshipField].ref.split('.')[0];
 
               return relateTo({
                 relatedFrom: {

@@ -5,17 +5,17 @@ import { jsx, Global } from '@emotion/core';
 import { globalStyles, gridSize } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
 
-import Layout from '../templates/layout';
+import { Layout } from '../templates/layout';
 import { Container, Sidebar } from '../components';
 import { mq } from '../utils/media';
 
 export default () => (
   <Layout>
-    {({ sidebarIsVisible, sidebarOffset }) => (
+    {({ sidebarIsVisible }) => (
       <>
         <Global styles={globalStyles} />
         <Container>
-          <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
+          <Sidebar isVisible={sidebarIsVisible} mobileOnly />
         </Container>
         <NotFound />
       </>
@@ -44,6 +44,10 @@ const NotFound = () => (
         Page Not Found
       </h1>
       <p>We couldn't find what you were looking for.</p>
+      <p>
+        If you were looking for the Keystone version 4 the docs these have moved to:{' '}
+        <a href="https://v4.keystonejs.com/">https://v4.keystonejs.com/</a>.
+      </p>
     </Container>
   </div>
 );

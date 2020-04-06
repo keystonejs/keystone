@@ -1,9 +1,11 @@
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 import { DateTime, FixedOffsetZone } from 'luxon';
-import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { Implementation } from '../../Implementation';
+import { JSONFieldAdapter } from '@keystonejs/adapter-json';
+import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 class _DateTime extends Implementation {
   constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
@@ -12,12 +14,13 @@ class _DateTime extends Implementation {
     this.yearRangeFrom = yearRangeFrom;
     this.yearRangeTo = yearRangeTo;
     this.yearPickerType = yearPickerType;
+    this.isOrderable = true;
   }
 
-  get gqlOutputFields() {
+  gqlOutputFields() {
     return [`${this.path}: DateTime`];
   }
-  get gqlQueryInputFields() {
+  gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('DateTime'),
       ...this.orderingInputFields('DateTime'),
@@ -42,7 +45,7 @@ class _DateTime extends Implementation {
       yearPickerType: this.yearPickerType,
     };
   }
-  get gqlAuxFieldResolvers() {
+  gqlAuxFieldResolvers() {
     return {
       DateTime: new GraphQLScalarType({
         name: 'DateTime',
@@ -73,7 +76,7 @@ const CommonDateTimeInterface = superclass =>
       const utc_field = `${field_path}_utc`;
       const offset_field = `${field_path}_offset`;
 
-      // Updates the relevant value in the item provided (by referrence)
+      // Updates the relevant value in the item provided (by reference)
       addPreSaveHook(item => {
         // Only run the hook if the item actually contains the datetime field
         // NOTE: Can't use hasOwnProperty here, as the mongoose data object
@@ -150,21 +153,21 @@ const CommonDateTimeInterface = superclass =>
 export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFieldAdapter) {
   constructor() {
     super(...arguments);
-    this.dbPath = `${this.path}_utc`;
+    this.utcPath = `${this.path}_utc`;
+    this.offsetPath = `${this.path}_offset`;
+    this.realKeys = [this.utcPath, this.offsetPath];
+    this.dbPath = this.utcPath;
   }
 
   addToMongooseSchema(schema) {
     const { mongooseOptions } = this.config;
-    const field_path = this.path;
-    const utc_field = `${field_path}_utc`;
-    const offset_field = `${field_path}_offset`;
     schema.add({
       // FIXME: Mongoose needs to know about this field in order for the correct
       // attributes to make it through to the pre-hooks.
-      [field_path]: { type: String, ...mongooseOptions },
+      [this.path]: { type: String, ...mongooseOptions },
       // These are the actual fields we care about storing in the database.
-      [utc_field]: { type: Date, ...mongooseOptions },
-      [offset_field]: { type: String, ...mongooseOptions },
+      [this.utcPath]: { type: Date, ...mongooseOptions },
+      [this.offsetPath]: { type: String, ...mongooseOptions },
     });
   }
 
@@ -215,3 +218,15 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
 }
 
 export { _DateTime as DateTime };
+
+export class JSONDateTimeInterface extends JSONFieldAdapter {
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
+  }
+}
+
+export class MemoryDateTimeInterface extends MemoryFieldAdapter {
+  getQueryConditions(dbPath) {
+    return this.equalityConditions(dbPath);
+  }
+}

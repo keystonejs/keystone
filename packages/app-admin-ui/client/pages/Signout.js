@@ -1,8 +1,14 @@
 import React, { Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import SessionProvider from '../providers/Session';
-import logo from '../assets/logo.png';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
+import KeystoneLogo from '../components/KeystoneLogo';
+
+import { LoadingIndicator } from '@arch-ui/loading';
+
+import { useAdminMeta } from '../providers/AdminMeta';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -48,22 +54,45 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
-  let showLoading = isLoading;
-  // If the user is still signed in, sign them out
-  if (isSignedIn) {
-    showLoading = true; // Pretend we're still loading
-    setTimeout(signOut, 1); // Will cause a re-render, so wait a moment
+const SignedOutPage = () => {
+  const {
+    authStrategy: { listKey },
+    signinPath,
+  } = useAdminMeta();
+
+  const UNAUTH_MUTATION = gql`
+    mutation {
+      unauthenticate: unauthenticate${listKey} {
+        success
+      }
+    }
+  `;
+
+  const [signOut, { loading, client, called }] = useMutation(UNAUTH_MUTATION, {
+    onCompleted: ({ error }) => {
+      if (error) {
+        throw error;
+      }
+
+      // Ensure there's no old authenticated data hanging around
+      client.resetStore();
+    },
+    onError: console.error,
+  });
+
+  if (!called) {
+    signOut();
   }
+
   return (
     <Container>
       <Alerts />
       <Box>
-        <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+        <KeystoneLogo />
         <Divider />
         <Content>
-          {showLoading ? (
-            'Loading...'
+          {loading ? (
+            <LoadingIndicator />
           ) : (
             <Fragment>
               <p>You have been signed out.</p>
@@ -79,8 +108,4 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
   );
 };
 
-export default ({ signinPath, signoutPath }) => (
-  <SessionProvider signinPath={signinPath} signoutPath={signoutPath}>
-    {props => <SignedOutPage signinPath={signinPath} {...props} />}
-  </SessionProvider>
-);
+export default SignedOutPage;

@@ -1,5 +1,6 @@
 <!--[meta]
-section: field-types
+section: api
+subSection: field-types
 title: Integer
 [meta]-->
 
@@ -8,6 +9,8 @@ title: Integer
 ## Usage
 
 ```js
+const { Integer, Text } = require('@keystonejs/fields');
+
 keystone.createList('Review', {
   fields: {
     comments: { type: Text },
@@ -22,9 +25,3 @@ keystone.createList('Review', {
 | ------------ | --------- | ------- | --------------------------------------------------------------- |
 | `isRequired` | `Boolean` | `false` | Does this field require a value?                                |
 | `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored |
-
----
-
-```DOCS_TODO
-TODO
-```

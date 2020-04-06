@@ -1,15 +1,14 @@
-// @flow
 /** @jsx jsx */
 
-import { Component, type Node as ReactNode, type Element } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
-import { FocusTrap } from 'react-focus-marshal';
-import { withModalHandlers, slideDown, type ModalHandlerProps } from '@arch-ui/modal-utils';
+import FocusTrap from 'focus-trap-react';
+import { withModalHandlers, slideDown } from '@arch-ui/modal-utils';
 
 const ItemElement = props => {
   if (props.to) return <Link {...props} />;
@@ -79,39 +78,13 @@ const Menu = styled.div(({ left, top }) => {
   };
 });
 
-type ItemType = {
-  content: ReactNode,
-  href?: string,
-  icon?: Element<*>,
-  isDisabled: boolean,
-  onClick?: (*) => void,
-  to?: string,
-};
-type ClickArgs = { onClick?: ({ event: MouseEvent, data: Object }) => void };
-
-type Props = ModalHandlerProps & {
-  align: 'left' | 'right',
-  getModalRef: HTMLElement => void,
-  items: Array<ItemType>,
-  mouseCoords: { clientX: number, clientY: number },
-  selectClosesMenu: boolean,
-  style: Object,
-  targetNode: HTMLElement,
-};
-type State = {
-  leftOffset: number,
-  topOffset: number,
-};
-
-function focus(el: ?HTMLElement) {
+function focus(el) {
   if (el && el instanceof HTMLElement && typeof el.focus === 'function') {
     el.focus();
   }
 }
 
-class Dropdown extends Component<Props, State> {
-  menu: HTMLElement;
-  lastHover: HTMLElement;
+class Dropdown extends Component {
   state = { leftOffset: 0, topOffset: 0 };
   static defaultProps = {
     align: 'left',
@@ -126,12 +99,12 @@ class Dropdown extends Component<Props, State> {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  handleItemClick = ({ onClick, ...data }: ClickArgs) => (event: MouseEvent) => {
+  handleItemClick = ({ onClick, ...data }) => event => {
     const { close, selectClosesMenu } = this.props;
     if (selectClosesMenu) close(event);
     if (onClick) onClick({ event, data });
   };
-  handleKeyDown = (event: KeyboardEvent) => {
+  handleKeyDown = event => {
     const { key, target } = event;
 
     // appease flow
@@ -151,10 +124,10 @@ class Dropdown extends Component<Props, State> {
     const isPageUp = key === 'PageUp';
     const isPageDown = key === 'PageDown';
 
-    const firstItem = ((this.menu.firstChild: any): HTMLElement);
-    const lastItem = ((this.menu.lastChild: any): HTMLElement);
-    const previousItem = ((target.previousSibling: any): HTMLElement);
-    const nextItem = ((target.nextSibling: any): HTMLElement);
+    const firstItem = this.menu.firstChild;
+    const lastItem = this.menu.lastChild;
+    const previousItem = target.previousSibling;
+    const nextItem = target.nextSibling;
 
     // typical item traversal
     if (isArrowUp) focus(previousItem);
@@ -166,7 +139,7 @@ class Dropdown extends Component<Props, State> {
     if (target === firstItem && isArrowUp) focus(lastItem);
     if (target === lastItem && isArrowDown) focus(firstItem);
   };
-  handleMouseEnter = ({ target }: MouseEvent) => {
+  handleMouseEnter = ({ target }) => {
     if (target instanceof HTMLElement) {
       this.lastHover = target;
     }
@@ -237,7 +210,7 @@ class Dropdown extends Component<Props, State> {
 
     if (attachTo) {
       return createPortal(
-        <FocusTrap options={{ clickOutsideDeactivates: true }}>
+        <FocusTrap focusTrapOptions={{ clickOutsideDeactivates: true }}>
           <Menu
             left={leftOffset}
             onMouseLeave={this.handleMenuLeave}

@@ -1,5 +1,11 @@
-import { UuidImplementation, MongoUuidInterface, KnexUuidInterface, JSONUuidInterface } from './Implementation';
-import { importView } from '@keystone-alpha/build-field-types';
+import {
+  UuidImplementation,
+  MongoUuidInterface,
+  KnexUuidInterface,
+  JSONUuidInterface,
+  MemoryUuidInterface,
+} from './Implementation';
+import { importView } from '@keystonejs/build-field-types';
 
 const Uuid = {
   type: 'Uuid',
@@ -13,6 +19,7 @@ const Uuid = {
     knex: KnexUuidInterface,
     mongoose: MongoUuidInterface,
     json: JSONUuidInterface,
+    memory: MemoryUuidInterface,
   },
 
   primaryKeyDefaults: {
@@ -26,17 +33,20 @@ const Uuid = {
         }
         throw `The Uuid field type doesn't provide a default primary key field configuration for the ` +
           `'${client}' knex client. You'll need to supply your own 'id' field for each list or use a ` +
-          `different field type for your ids (eg '@keystone-alpha/fields-auto-increment').`;
+          `different field type for your ids (eg '@keystonejs/fields-auto-increment').`;
       },
     },
     mongoose: {
       getConfig: () => {
         throw `The Uuid field type doesn't provide a default primary key field configuration for mongoose. ` +
           `You'll need to supply your own 'id' field for each list or use a different field type for your ` +
-          `ids (eg '@keystone-alpha/fields-mongoid').`;
+          `ids (eg '@keystonejs/fields-mongoid').`;
       },
     },
     json: {
+      getConfig: () => ({ type: Uuid }),
+    },
+    memory: {
       getConfig: () => ({ type: Uuid }),
     },
   },

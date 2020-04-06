@@ -1,5 +1,6 @@
 <!--[meta]
-section: packages
+section: api
+subSection: utilities
 title: Logger
 [meta]-->
 
@@ -7,7 +8,7 @@ title: Logger
 
 ## API
 
-### `require('@keystone-alpha/logger').logger(name)`
+### `require('@keystonejs/logger').logger(name)`
 
 Provides an instance of [`pino`](https://github.com/pinojs/pino) based on the given `name`.
 

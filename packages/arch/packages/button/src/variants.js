@@ -1,4 +1,3 @@
-// @flow
 import { colors } from '@arch-ui/theme';
 import { alpha, darken } from '@arch-ui/color-utils';
 
@@ -12,21 +11,25 @@ const boldAppearance = {
   primary: {
     bg: colors.primary,
     border: colors.primary,
+    focusRing: null,
     text: '#fff',
   },
   create: {
     bg: colors.create,
     border: colors.create,
+    focusRing: null,
     text: '#fff',
   },
   danger: {
     bg: colors.danger,
     border: colors.danger,
+    focusRing: null,
     text: '#fff',
   },
   warning: {
     bg: colors.warning,
     border: colors.warning,
+    focusRing: null,
     text: '#fff',
   },
 };
@@ -61,6 +64,10 @@ const subtleAppearance = {
     text: colors.N40,
     textHover: colors.primary,
   },
+  create: {
+    text: null,
+    textHover: null,
+  },
   warning: {
     text: colors.N40,
     textHover: colors.danger,
@@ -77,6 +84,9 @@ const nuanceAppearance = {
   primary: {
     text: colors.primary,
   },
+  create: {
+    text: null,
+  },
   warning: {
     text: colors.danger,
   },
@@ -85,7 +95,7 @@ const nuanceAppearance = {
   },
 };
 
-export function makeSubtleVariant({ appearance }: { appearance: $Keys<typeof subtleAppearance> }) {
+export function makeSubtleVariant({ appearance }) {
   const { text, textHover } = subtleAppearance[appearance];
 
   return {
@@ -99,13 +109,7 @@ export function makeSubtleVariant({ appearance }: { appearance: $Keys<typeof sub
   };
 }
 
-export function makeNuanceVariant({
-  appearance,
-  isDisabled,
-}: {
-  appearance: $Keys<typeof nuanceAppearance>,
-  isDisabled: boolean,
-}) {
+export function makeNuanceVariant({ appearance, isDisabled }) {
   const { text } = nuanceAppearance[appearance];
 
   return {
@@ -119,13 +123,7 @@ export function makeNuanceVariant({
 // Ghost
 // ------------------------------
 
-export function makeGhostVariant({
-  appearance,
-  isDisabled,
-}: {
-  appearance: $Keys<typeof ghostAppearance>,
-  isDisabled: boolean,
-}) {
+export function makeGhostVariant({ appearance, isDisabled }) {
   const { border, text } = ghostAppearance[appearance];
 
   return {
@@ -157,15 +155,7 @@ export function makeBoldVariant({
   isHover,
   isFocus,
   isSelected,
-}: {
-  appearance: $Keys<typeof boldAppearance>,
-  isDisabled: boolean,
-  isActive: boolean,
-  isHover: boolean,
-  isFocus: boolean,
-  isSelected?: boolean,
 }) {
-  // $FlowFixMe
   const { bg, border, focusRing, text } = boldAppearance[appearance];
   const activeBg = appearance === 'default' ? colors.N10 : darken(bg, 12);
 

@@ -1,5 +1,11 @@
-import { SlugImplementation, MongoSlugInterface, KnexSlugInterface, JSONSlugInterface, MemorySlugInterface } from './Implementation';
-import { importView } from '@keystone-alpha/build-field-types';
+import {
+  SlugImplementation,
+  MongoSlugInterface,
+  KnexSlugInterface,
+  JSONSlugInterface,
+  MemorySlugInterface,
+} from './Implementation';
+import { importView } from '@keystonejs/build-field-types';
 
 const Slug = {
   type: 'Slug',

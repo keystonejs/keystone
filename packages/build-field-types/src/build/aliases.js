@@ -1,13 +1,6 @@
-// @flow
-
-import { Project } from '../project';
 import path from 'path';
 
-export type Aliases = {
-  [key: string]: string,
-};
-
-export function getAliases(project: Project, getKey: string => string = x => x): Aliases {
+export function getAliases(project, getKey = x => x) {
   let aliases = {};
   project.packages.forEach(pkg => {
     pkg.entrypoints
