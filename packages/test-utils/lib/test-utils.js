@@ -159,7 +159,7 @@ function _keystoneRunner(adapterName, tearDownFunction) {
     return async function() {
       if (!testFn) {
         // If a testFn is not defined then we just need
-        // to excute setup and tear down in isolation.
+        // to execute setup and tear down in isolation.
         try {
           await setupKeystoneFn(adapterName);
         } catch (error) {
@@ -170,7 +170,6 @@ function _keystoneRunner(adapterName, tearDownFunction) {
       }
       const setup = await setupKeystoneFn(adapterName);
       const { keystone } = setup;
-
       await keystone.connect();
 
       return pFinally(
@@ -190,7 +189,7 @@ function _keystoneRunner(adapterName, tearDownFunction) {
 
 function multiAdapterRunners(only) {
   return [
-    { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
+    // { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
     { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
     // { runner: _keystoneRunner('json', () => {}), adapterName: 'json' },
     // { runner: _keystoneRunner('memory', () => {}), adapterName: 'memory' },

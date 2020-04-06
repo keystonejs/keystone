@@ -37,7 +37,7 @@ We believe it's the ideal back-end for rich React / Vue / Angular applications, 
 
 To get up and running with a basic project template, run the following commands.
 
-```bash
+```shell
 yarn create keystone-app my-app
 cd my-app
 yarn start
@@ -170,7 +170,7 @@ Also make sure you have a local MongoDB server running
 
 Then install the dependencies and start the test project:
 
-```sh
+```shell
 yarn
 yarn dev
 ```
@@ -182,7 +182,7 @@ the available demo projects.
 
 While running `yarn` on Windows, the process may fail with an error such as this:
 
-```sh
+```shell
 Error: EPERM: operation not permitted, symlink 'C:\Users\user\Documents\keystone\packages\arch\packages\alert\src\index.js' -> 'C:\Users\user\Documents\keystone\packages\arch\packages\alert\dist\alert.cjs.js.flow'
 ```
 
@@ -197,20 +197,20 @@ All tests can be run locally and on [CircleCI](https://circleci.com/gh/keystonej
 
 To run the unit tests, run the script:
 
-```sh
+```shell
 yarn jest
 ```
 
 Unit tests for each package can be found in `packages/<package>/tests` and following the naming pattern `<module>.test.js`.
 To see test coverage of the files touched by the unit tests, run:
 
-```sh
+```shell
 yarn jest --coverage
 ```
 
 To see test coverage of the entire monorepo, including files which have zero test coverage, use the special script:
 
-```sh
+```shell
 yarn coverage
 ```
 
@@ -220,21 +220,21 @@ Keystone tests end-to-end functionality with the help of [Cypress](https://www.c
 Each project (ie; `test-projects/basic`, `test-projects/login`, etc) have their own set of Cypress tests.
 To run an individual project's tests, `cd` into that directory and run:
 
-```sh
+```shell
 yarn cypress:run
 ```
 
 Cypress can be run in interactive mode from project directories with its built in GUI,
 which is useful when developing and debugging tests:
 
-```sh
+```shell
 cd test-projects/basic && yarn cypress:open
 ```
 
 End-to-end tests live in `project/**/cypress/integration/*spec.js`.
 It is possible to run all cypress tests at once from the monorepo root with the command:
 
-```sh
+```shell
 yarn cypress:run
 ```
 
@@ -249,13 +249,13 @@ Install the `circleci` cli tool:
 
 **If you've already got [Docker For Mac](https://docs.docker.com/docker-for-mac/install) installed (recommended)**
 
-```bash
+```shell
 brew install --ignore-dependencies circleci
 ```
 
 **If you do not have Docker installed**
 
-```bash
+```shell
 brew install circleci
 ```
 
@@ -270,7 +270,7 @@ Make sure Docker is running.
 
 Execute the tests:
 
-```bash
+```shell
 # Clean up the node_modules folders so everything is installed fresh
 yarn clean
 

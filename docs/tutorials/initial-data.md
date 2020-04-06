@@ -20,7 +20,7 @@ of a `Todo` list, there will be a `Post` list. It is best to start from a fresh
 project and start from an empty database (delete data from previous chapters).
 Also, make sure to have all of the following packages installed:
 
-```bash
+```shell allowCopy=false showLanguage=false
 yarn add @keystonejs/keystone
 yarn add @keystonejs/adapter-mongoose
 yarn add @keystonejs/app-graphql

@@ -61,7 +61,7 @@ Fields share some standard configuration options.
 | `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
 | `label`        | `String`                            |             | Label for the field.                                                                    |
 
-_Note_: Many field types have additional config options. See the documentation for individual field types for more detail.
+> **Note:** Many field types have additional config options. See the documentation for individual field types for more detail.
 
 ### `type`
 

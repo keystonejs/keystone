@@ -65,7 +65,7 @@ To define a set of Domain Objects, it helps to think about it in terms of what a
 
 In general, Domain Objects map to Lists in Keystone:
 
-```javascript
+```javascript allowCopy=false showLanguage=false
 keystone.createList('User', {
   /* ... */
 });
@@ -122,13 +122,22 @@ Nested Mutations are useful when you need to make changes to more than one Domai
 
 For example, imagine a UI where an author could update their bio at the same time as creating a post. The mutation would look something like:
 
+<!-- prettier-ignore-start -->
 ```graphql
 mutation {
-  createPost(data: { title: "Hello World", author: { update: { bio: "Hi, I'm a writer now!" } } }) {
+  createPost(data: {
+    title: "Hello World",
+    author: {
+      update: {
+        bio: "Hi, I'm a writer now!"
+      }
+    }
+  }) {
     title
   }
 }
 ```
+<!-- prettier-ignore-end -->
 
 Note the `data.author.update` object, this is the _Nested Mutation_. Beyond `update` there are also other operations you may wish to perform:
 

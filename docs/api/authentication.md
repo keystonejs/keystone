@@ -14,21 +14,21 @@ This can be used to restrict access to the AdminUI, and to configure [access con
 
 ## Usage
 
-```javascript
+```javascript title=index.js
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+
+const keystone = new Keystone({...});
 
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
-  config: {
-    /*...config */
-  },
+  config: {...},
 });
 ```
 
 You then provide `authStrategy` to apps that facilitate login (typically the Admin UI):
 
-```javascript
+```javascript title=index.js
 module.exports = {
   keystone,
   apps: [new AdminUIApp({ authStrategy })],
