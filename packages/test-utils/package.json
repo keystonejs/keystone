@@ -1,17 +1,17 @@
 {
   "name": "@keystonejs/test-utils",
   "description": "Common utilities used while testing @keystonejs/* packages.",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/adapter-knex": "^7.0.0",
-    "@keystonejs/adapter-mongoose": "^6.0.0",
-    "@keystonejs/app-graphql": "^5.1.4",
-    "@keystonejs/keystone": "^7.0.0",
+    "@keystonejs/adapter-knex": "^8.0.0",
+    "@keystonejs/adapter-mongoose": "^7.0.0",
+    "@keystonejs/app-graphql": "^5.1.5",
+    "@keystonejs/keystone": "^7.1.0",
     "express": "^4.17.1",
     "mongodb-memory-server": "^6.3.3",
     "p-finally": "^2.0.1",
