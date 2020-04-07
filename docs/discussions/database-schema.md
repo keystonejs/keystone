@@ -3,7 +3,7 @@ section: discussions
 title: Database schema
 [meta]-->
 
-# Database Schema
+# Database schema
 
 Keystone models its data using `Lists`, which comprise of `Fields`.
 In order to store data we need to translate the Keystone data model into an appropriate form for the underlying data store.
@@ -17,7 +17,7 @@ Each field type is responsible for articulating the exact correspondence, which 
 The most complicated aspect of the database schema is the representation of relationships.
 To understand the storage of relationships you should first make sure you understand the basic ideas behind [Keystone relationships](/docs/discussions/relationships.md).
 
-## One to many
+## One-to-many
 
 ```javascript
 keystone.createList('User', {
@@ -35,7 +35,7 @@ keystone.createList('Post', {
 });
 ```
 
-If we consider the above `one to many` relationship we know that each `Post` has a single `author` of type `User`.
+If we consider the above `one-to-many` relationship we know that each `Post` has a single `author` of type `User`.
 This means that we `Post` needs to store a reference to a single `User`.
 
 In PostgreSQL this is stored as a [foreign key column](https://www.postgresql.org/docs/12/ddl-constraints.html#DDL-CONSTRAINTS-FK) called `author` on the `Posts` table,
@@ -43,7 +43,7 @@ In MongoDB it is stored as a field called `author` on the `posts` collection wit
 
 The two-sided cases is handled identically to the one-sided case.
 
-## Many to many
+## Many-to-many
 
 ```javascript
 keystone.createList('User', {
@@ -61,7 +61,7 @@ keystone.createList('Post', {
 });
 ```
 
-If we consider the above `many to many` relationship we know that each `Post` has a multiple `authors` of type `User`.
+If we consider the above `many-to-many` relationship we know that each `Post` has a multiple `authors` of type `User`.
 This means that we `Post` needs to store multiple reference to `Users`, and also each `User` can be referenced by multiple `Posts`.
 
 To store this information we use a join table with two columns.
@@ -71,7 +71,7 @@ In MongoDB this is implemented as a collection the the contents of each field is
 
 The two-sided cases is handled using the same pattern, however the generated table/collection and column/fields names will be different.
 
-## One to one
+## One-to-one
 
 ```javascript
 keystone.createList('User', {
@@ -90,9 +90,9 @@ keystone.createList('Post', {
 });
 ```
 
-If we consider the above `one to one` relationship we know that each `Post` has a single `author`, and each `User` is the author of a single `Post`.
-This is similar to the `one to many` case, however now because of the symmetry of the configuration it is possible to store the data on either the `Post` or `User` table.
+If we consider the above `one-to-one` relationship we know that each `Post` has a single `author`, and each `User` is the author of a single `Post`.
+This is similar to the `one-to-many` case, however now because of the symmetry of the configuration it is possible to store the data on either the `Post` or `User` table.
 
 To break this symmetry we pick the list with the name that comes first alphabetically, so in this case `Post`.
-Just as in the `one to many` case, in PostgreSQL the data is stored as a [foreign key column](https://www.postgresql.org/docs/12/ddl-constraints.html#DDL-CONSTRAINTS-FK) called `author` on the `Posts` table,
+Just as in the `one-to-many` case, in PostgreSQL the data is stored as a [foreign key column](https://www.postgresql.org/docs/12/ddl-constraints.html#DDL-CONSTRAINTS-FK) called `author` on the `Posts` table.
 In MongoDB it is stored as a field called `author` on the `posts` collection with type `ObjectID`.

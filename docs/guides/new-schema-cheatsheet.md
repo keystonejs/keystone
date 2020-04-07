@@ -1,16 +1,14 @@
 <!--[meta]
 section: guides
-title: New Schema Cheatsheet
+title: New schema cheatsheet
 [meta]-->
 
-# New Schema Cheatsheet
+# New schema cheatsheet
 
-This cheatsheet summarises the changes needed to update your database to use the new Keystone database schema, introduced in the [`Aracde`](/docs/discussions/new-data-schema.md) release.
+This cheatsheet summarises the changes needed to update your database to use the new Keystone database schema, introduced in the [`Arcade`](/docs/discussions/new-data-schema.md) release.
 For full instructions please consult the [migration guide](/docs/guides/relationship-migration.md).
 
-## One to Many (one-sided)
-
-### Example list config
+## One-to-many (one-sided)
 
 ```javascript
 keystone.createList('User', { fields: { name: { type: Text } } });
@@ -24,13 +22,11 @@ keystone.createList('Post', {
 });
 ```
 
-### Migration Strategy
+### Migration strategy
 
 - No changes are required for these relationships.
 
-## Many to Many (one-sided)
-
-### Example list config
+## Many-to-many (one-sided)
 
 ```javascript
 keystone.createList('User', { fields: { name: { type: Text } } });
@@ -57,9 +53,7 @@ keystone.createList('Post', {
 - Move the data from `posts.authors` into `post_authors_manies`.
 - Delete `posts.authors`.
 
-## One to Many (two-sided)
-
-### Example list config
+## One-to-many (two-sided)
 
 ```javascript
 keystone.createList('User', {
@@ -78,7 +72,7 @@ keystone.createList('Post', {
 });
 ```
 
-### Migration Strategy
+### Migration strategy
 
 #### PostgreSQL
 
@@ -88,9 +82,7 @@ keystone.createList('Post', {
 
 - Remove `users.posts`.
 
-## Many to Many (two-sided)
-
-### Example list config
+## Many-to-many (two-sided)
 
 ```javascript
 keystone.createList('User', {
@@ -109,7 +101,7 @@ keystone.createList('Post', {
 });
 ```
 
-### Migration Strategy
+### Migration strategy
 
 #### PostgreSQL
 
@@ -124,9 +116,7 @@ keystone.createList('Post', {
 - Delete `users.posts`.
 - Delete `posts.authors`.
 
-## One to One (two-sided)
-
-### Example list config
+## One-to-one (two-sided)
 
 ```javascript
 keystone.createList('User', {
@@ -145,13 +135,13 @@ keystone.createList('Post', {
 });
 ```
 
-### Migration Strategy
+### Migration strategy
 
 #### PostgreSQL
 
 One to one relationships in the `before` state had a foreign key column on each table.
 In the `after` state, only one of these is stored.
-Because of the symmetry of the one to one relationship, Keystone makes an arbitrary decision about which column to use.
+Because of the symmetry of the one-to-one relationship, Keystone makes an arbitrary decision about which column to use.
 
 - Identify the foreign key column which is no longer required, and delete it.
 - In our example above we would delete the `Post.author` column.
@@ -160,7 +150,7 @@ Because of the symmetry of the one to one relationship, Keystone makes an arbitr
 
 One to one relationships in the `before` state had a field in each collection.
 In the `after` state, only one of these is stored.
-Because of the symmetry of the one to one relationship, Keystone makes an arbitrary decision about which field to use.
+Because of the symmetry of the one-to-one relationship, Keystone makes an arbitrary decision about which field to use.
 
 - Identify the field which is no longer required, and delete it.
 - In our example above we would delete the `post.author` field.
