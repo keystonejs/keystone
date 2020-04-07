@@ -1,5 +1,11 @@
 # @keystonejs/adapter-mongoose
 
+## 8.0.1
+
+### Patch Changes
+
+- [`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7) [#2666](https://github.com/keystonejs/keystone/pull/2666) Thanks [@timleslie](https://github.com/timleslie)! - Removed a stray `console.log()`.
+
 ## 8.0.0
 
 ### Major Changes
