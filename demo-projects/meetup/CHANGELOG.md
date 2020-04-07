@@ -1,5 +1,17 @@
 # @keystonejs/demo-project-meetup
 
+## 5.1.7
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/adapter-mongoose@8.0.0
+  - @keystonejs/fields@9.0.0
+  - @keystonejs/keystone@8.0.0
+  - @keystonejs/app-admin-ui@5.9.5
+  - @keystonejs/auth-password@5.1.5
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.3
+
 ## 5.1.6
 
 ### Patch Changes
