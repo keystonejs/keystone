@@ -46,6 +46,14 @@ describe('Fields', () => {
             test.todo('CRUD operations - tests missing');
           }
 
+          if (mod.metaTests) {
+            describe(`Meta query`, () => {
+              mod.metaTests(keystoneTestWrapper);
+            });
+          } else {
+            test.todo('Meta query - tests missing');
+          }
+
           if (mod.filterTests) {
             describe(`Filtering`, () => {
               mod.filterTests(keystoneTestWrapper);

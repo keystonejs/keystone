@@ -97,6 +97,29 @@ export class Select extends Implementation {
         ]
       : [];
   }
+  getGqlMetaTypes({ interfaceType }) {
+    const dataTypeEnum = `${this.gqlMetaType}DataType`;
+    return [
+      `
+        enum ${dataTypeEnum} {
+          ${VALID_DATA_TYPES.map(type => type.toUpperCase()).join('\n')}
+        }
+      `,
+      `
+        type ${this.gqlMetaType} implements ${interfaceType} {
+          name: String
+          type: String
+          dataType: ${dataTypeEnum}
+        }
+      `
+    ];
+  }
+  gqlMetaQueryResolver() {
+    return {
+      ...super.gqlMetaQueryResolver(),
+      dataType: this.dataType.toUpperCase(),
+    };
+  }
 
   extendAdminMeta(meta) {
     const { options, dataType } = this;

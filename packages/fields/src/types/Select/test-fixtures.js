@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystonejs/test-utils';
+import { matchFilter, graphqlRequest } from '@keystonejs/test-utils';
 import Select from './';
 import Text from '../Text';
 
@@ -262,5 +262,67 @@ export const filterTests = withKeystone => {
         'name selectNumber'
       )
     )
+  );
+};
+
+export const metaTests = withKeystone => {
+  const queryListMeta = async ({ keystone, listName }) => {
+    const list = keystone.getListByKey(listName);
+    const { listMetaName } = list.gqlNames;
+    const { data: { [listMetaName]: items } = {}, errors } = await graphqlRequest({
+      keystone,
+      query: `query {
+          ${listMetaName} {
+            schema {
+              fields {
+                __typename
+                name
+                type
+                ...on _SelectMeta {
+                  dataType
+                }
+              }
+            }
+          }
+        }`,
+    });
+    expect(errors).toBe(undefined);
+    return items;
+  };
+
+  test(
+    'includes all expected fields',
+    withKeystone(async ({ keystone, listName }) => {
+      const items = await queryListMeta({ keystone, listName });
+      expect(items).toEqual({
+        schema: {
+          fields: [
+            {
+              __typename: '_TextMeta',
+              name: 'name',
+              type: 'Text',
+            },
+            {
+              __typename: '_SelectMeta',
+              name: 'company',
+              type: 'Select',
+              dataType: 'ENUM',
+            },
+            {
+              __typename: '_SelectMeta',
+              name: 'selectString',
+              type: 'Select',
+              dataType: 'STRING',
+            },
+            {
+              __typename: '_SelectMeta',
+              name: 'selectNumber',
+              type: 'Select',
+              dataType: 'INTEGER',
+            },
+          ],
+        },
+      });
+    })
   );
 };
