@@ -117,7 +117,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 fields {
                   name
                   type
-                  config
                 }
                 relatedFields {
                   type
@@ -140,17 +139,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   {
                     name: 'company',
                     type: 'Relationship',
-                    config: {
-                      ref: 'Company',
-                    },
                   },
                   {
                     name: 'workHistory',
                     type: 'Relationship',
-                    config: {
-                      ref: 'Company',
-                      many: true,
-                    },
                   },
                 ],
                 relatedFields: [
@@ -175,15 +167,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   {
                     name: 'name',
                     type: 'Text',
-                    config: {},
                   },
                   {
                     name: 'employees',
                     type: 'Relationship',
-                    config: {
-                      ref: 'User',
-                      many: true,
-                    },
                   },
                 ],
                 relatedFields: [
@@ -202,14 +189,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   {
                     name: 'content',
                     type: 'Text',
-                    config: {},
                   },
                   {
                     name: 'author',
                     type: 'Relationship',
-                    config: {
-                      ref: 'User',
-                    },
                   },
                 ],
                 relatedFields: [],
@@ -235,7 +218,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 fields {
                   name
                   type
-                  config
                 }
                 relatedFields {
                   type
@@ -258,17 +240,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   {
                     name: 'company',
                     type: 'Relationship',
-                    config: {
-                      ref: 'Company',
-                    },
                   },
                   {
                     name: 'workHistory',
                     type: 'Relationship',
-                    config: {
-                      ref: 'Company',
-                      many: true,
-                    },
                   },
                 ],
                 relatedFields: [
@@ -303,7 +278,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 fields(where: { type: "Text" }) {
                   name
                   type
-                  config
                 }
                 relatedFields {
                   type
@@ -327,7 +301,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   {
                     name: 'name',
                     type: 'Text',
-                    config: {},
                   },
                 ],
                 relatedFields: [
