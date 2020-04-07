@@ -381,7 +381,7 @@ export function serialize({ node }) {
     mutations,
     node: {
       ...node.toJSON(),
-      // Zero out the data so we don't unnecesarily duplicate the url
+      // Zero out the data so we don't unnecessarily duplicate the url
       data: {},
     },
   };
