@@ -31,7 +31,7 @@ Keystone contains a set of primitive fields types that can be imported from `@ke
 
 In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
 
-> **Hint:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/)
+> **Tip:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/)
 
 ## Usage
 
