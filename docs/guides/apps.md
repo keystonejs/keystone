@@ -72,6 +72,7 @@ Other interesting Keystone compatible Apps are:
 If you need to provide your own custom middleware for your system you can create a custom app and include it in your exported `apps`.
 
 <!-- prettier-ignore-start -->
+
 ```javascript title=index.js
 class CustomApp {
   prepareMiddleware({ keystone, dev, distDir }) {
@@ -89,4 +90,5 @@ module.exports = {
   ],
 };
 ```
+
 <!-- prettier-ignore-end -->
