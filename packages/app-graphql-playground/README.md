@@ -7,6 +7,8 @@ draft: true
 
 # GraphQL Playground App
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-graphql-playground)
+
 A KeystoneJS App that creates an Apollo GraphQL playground.
 
 ## Usage
@@ -19,8 +21,9 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
 // Ensure that the GraphQLApp and GraphQLAppPlayground are referring to the same endpoint
 const apiPath = '/admin/api';
+
 module.exports = {
-  new Keystone(),
+  keystone: new Keystone(),
   apps: [
     // This should come before the GraphQLApp, as it sets up the dev query middleware
     new GraphQLAppPlayground({ apiPath })

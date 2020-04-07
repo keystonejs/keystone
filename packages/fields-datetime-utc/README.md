@@ -18,6 +18,8 @@ This package is not part of the core fields, and needs to be installed separatel
 ## Usage
 
 ```js
+const { DateTimeUtc } = require('@keystonejs/fields-datetime-utc');
+
 keystone.createList('User', {
   fields: {
     lastOnline: { type: DateTimeUtc },

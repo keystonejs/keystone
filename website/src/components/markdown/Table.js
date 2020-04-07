@@ -87,8 +87,13 @@ export const Table = props => {
               '&:not(:first-of-type)': {
                 paddingLeft: gridSize,
               },
+
               '&:not(:last-of-type)': {
                 paddingRight: gridSize,
+              },
+
+              '&:last-of-type': {
+                whiteSpace: 'normal',
               },
 
               '&[align="right"]': {

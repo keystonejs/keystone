@@ -6,6 +6,8 @@ title: Admin UI app
 
 # Admin UI app
 
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-admin-ui)
+
 A KeystoneJS app which provides an Admin UI for content management.
 
 ## Usage

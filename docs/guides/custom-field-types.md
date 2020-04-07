@@ -8,7 +8,7 @@ subSection: advanced
 
 What makes up a field type?
 
-```bash
+```shell allowCopy=false showLanguage=false
 Type/index.js           # The field definition, points to other files and defines the type
 Type/Controller.js      # Client-side controller for the field type
 Type/Implementation.js  # Back-end implementation of the field type
@@ -53,28 +53,28 @@ There are currently three views that can be provided:
 - `Cell` - the content rendered in the List view
 - `Filter` - the filter control rendered in the filters dropdown in the List view
 
-```jsx
+```typescript
 type FilterProps<Value> = {
-  innerRef: React.Ref<*>,
-  value: Value,
-  onChange: Value => mixed,
-  field: Field,
-  filter: *,
+  innerRef: React.Ref<HTMLElement>;
+  value: Value;
+  onChange: Value => mixed;
+  field: Field;
+  filter: string;
 };
 
 type CellProps<Value> = {
-  list: List,
-  field: Field,
-  data: Value,
-  Link: React.ComponentType<{ children: React.Node, id: string, path: string }>,
+  list: List;
+  field: Field;
+  data: Value;
+  Link: React.ComponentType<{ children: React.Node, id: string, path: string }>;
 };
 
 type FieldProps<Value> = {
-  autoFocus: boolean,
-  field: Field,
-  value: Value,
-  error: Error,
-  onChange: Value => mixed,
-  renderContext: 'dialog' | 'page',
+  autoFocus: boolean;
+  field: Field;
+  value: Value;
+  error: Error;
+  onChange: Value => mixed;
+  renderContext: 'dialog' | 'page';
 };
 ```

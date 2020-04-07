@@ -3,9 +3,11 @@
 const colors = {
   blue: '#0065FF',
   red: '#DE350B',
+  redDark: '#b31d28',
   redLight: '#FFEEF0',
   yellow: '#FF991F',
   green: '#36B37E',
+  greenDark: '#22863a',
   greenLight: '#E6FFED',
   teal: '#00B8D9',
   purple: '#6554C0',
@@ -90,12 +92,14 @@ export default {
       types: ['deleted'],
       style: {
         backgroundColor: colors.redLight,
+        color: colors.redDark,
       },
     },
     {
       types: ['inserted'],
       style: {
         backgroundColor: colors.greenLight,
+        color: colors.greenDark,
       },
     },
     {

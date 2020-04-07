@@ -1,5 +1,47 @@
 # @keystonejs/adapter-mongoose
 
+## 8.0.1
+
+### Patch Changes
+
+- [`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7) [#2666](https://github.com/keystonejs/keystone/pull/2666) Thanks [@timleslie](https://github.com/timleslie)! - Removed a stray `console.log()`.
+
+## 8.0.0
+
+### Major Changes
+
+- [`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d) [#2000](https://github.com/keystonejs/keystone/pull/2000) Thanks [@timleslie](https://github.com/timleslie)! - ## Release - Arcade
+
+  This release introduces a **new and improved data schema** for Keystone.
+  The new data schema simplifies the way your data is stored and will unlock the development of new functionality within Keystone.
+
+  > **Important:** You will need to make changes to your database to take advantage of the new data schema. Please read the full [release notes](https://www.keystonejs.com/discussions/new-data-schema) for instructions on updating your database.
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/keystone@8.0.0
+  - @keystonejs/mongo-join-builder@7.0.0
+  - @keystonejs/fields-mongoid@5.1.6
+
+## 7.0.0
+
+### Major Changes
+
+- [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258) [#2623](https://github.com/keystonejs/keystone/pull/2623) Thanks [@maryam-mv](https://github.com/maryam-mv)! - Updated @sindresorhus/slugify to fix a problem where it was producing unexpected output, eg. adding unexpected underscores: 'NAME1 Website' => 'nam_e1_website'. The slugify output for db name may be different with this change. For the above example, the output will now be 'name_1_website' for the same string.
+
+  If your database name changes unexpectedly, you can add an environment variable called `DATABASE_URL` with a full path to the database. For more information on configuring database connections read the documentation for the [Knex adapter](https://v5.keystonejs.com/keystonejs/adapter-knex/#knexoptions) or [Mongoose adapter](https://v5.keystonejs.com/keystonejs/adapter-mongoose/#mongoose-database-adapter).
+
+  If you are using the `Slug` field type, in some edge-cases, slugs may change when saved after this update. You can use the `generate` option on the slug field for [custom slug generation](https://v5.keystonejs.com/keystonejs/fields/src/types/slug/#custom-generate-method) if required.
+
+### Patch Changes
+
+- [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+- Updated dependencies [[`4a7d1eab`](https://github.com/keystonejs/keystone/commit/4a7d1eabf9b44fac7e16dfe20afdce409986e8dc), [`cef28dfd`](https://github.com/keystonejs/keystone/commit/cef28dfdad332cf185a577b06600acc3d8ba4888), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf), [`3407fa68`](https://github.com/keystonejs/keystone/commit/3407fa68b91d7ebb3e7288c7e95631013fe12535), [`c2b1b725`](https://github.com/keystonejs/keystone/commit/c2b1b725a9474348964a4ac2e0f5b4aaf1a7f486)]:
+  - @keystonejs/keystone@7.1.0
+  - @keystonejs/fields-mongoid@5.1.5
+
 ## 6.0.0
 
 ### Major Changes
@@ -124,7 +166,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -132,7 +174,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
   - @keystonejs/fields-mongoid@5.0.0
   - @keystonejs/keystone@5.0.0
   - @keystonejs/logger@5.0.0
@@ -145,9 +187,9 @@
 
 ### Patch Changes
 
-- [`768420f5`](https://github.com/keystonejs/keystone-5/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d) [#1781](https://github.com/keystonejs/keystone-5/pull/1781) Thanks [@simonswiss](https://github.com/simonswiss)! - changing require path to "@keystone-alpha" instead of "@keystonejs"
+- [`768420f5`](https://github.com/keystonejs/keystone/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d) [#1781](https://github.com/keystonejs/keystone/pull/1781) Thanks [@simonswiss](https://github.com/simonswiss)! - changing require path to "@keystone-alpha" instead of "@keystonejs"
 
-- Updated dependencies [[`0a36b0f4`](https://github.com/keystonejs/keystone-5/commit/0a36b0f403da73a76106b5e14940a789466b4f94), [`3bc02545`](https://github.com/keystonejs/keystone-5/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb), [`a48281ba`](https://github.com/keystonejs/keystone-5/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec), [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+- Updated dependencies [[`0a36b0f4`](https://github.com/keystonejs/keystone/commit/0a36b0f403da73a76106b5e14940a789466b4f94), [`3bc02545`](https://github.com/keystonejs/keystone/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb), [`a48281ba`](https://github.com/keystonejs/keystone/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec), [`effc1f63`](https://github.com/keystonejs/keystone/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
   - @keystone-alpha/keystone@16.1.0
   - @keystone-alpha/fields-mongoid@1.1.6
 
@@ -155,7 +197,7 @@
 
 ### Major Changes
 
-- [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9) [#1729](https://github.com/keystonejs/keystone-5/pull/1729) Thanks [@timleslie](https://github.com/timleslie)! - This change significantly changes how and when we populate `many`-relationships during queries and mutations.
+- [`6d7d0df0`](https://github.com/keystonejs/keystone/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9) [#1729](https://github.com/keystonejs/keystone/pull/1729) Thanks [@timleslie](https://github.com/timleslie)! - This change significantly changes how and when we populate `many`-relationships during queries and mutations.
   The behaviour of the GraphQL API has not changed, but queries should be more performant, particularly for items with many related items.
   The `existingItem` parameter in hooks will no longer have the `many`-relationship fields populated.
   `List.listQuery()` no longer populates `many` relationship fields.
@@ -163,7 +205,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
   - @keystone-alpha/keystone@16.0.0
   - @keystone-alpha/mongo-join-builder@4.0.0
   - @keystone-alpha/fields-mongoid@1.1.5
@@ -172,35 +214,35 @@
 
 ### Major Changes
 
-- [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58): Remove `.queryBuilder` property of the `MongooseListAdapter`.
+- [b96a3a58](https://github.com/keystonejs/keystone/commit/b96a3a58): Remove `.queryBuilder` property of the `MongooseListAdapter`.
 
 ### Patch Changes
 
-- [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d): Internal refactor to inline the logic which was previously computed by getRelationshipQueryCondition().
-- [a48ff0a3](https://github.com/keystonejs/keystone-5/commit/a48ff0a3): Internal refactor to move defintion of modifierConditions closer to where they're used.
-- [82dfef03](https://github.com/keystonejs/keystone-5/commit/82dfef03): Move tokenizer functions out of this package and into `mongo-join-builder`.
+- [4e6a574d](https://github.com/keystonejs/keystone/commit/4e6a574d): Internal refactor to inline the logic which was previously computed by getRelationshipQueryCondition().
+- [a48ff0a3](https://github.com/keystonejs/keystone/commit/a48ff0a3): Internal refactor to move defintion of modifierConditions closer to where they're used.
+- [82dfef03](https://github.com/keystonejs/keystone/commit/82dfef03): Move tokenizer functions out of this package and into `mongo-join-builder`.
 
-- Updated dependencies [da4013e4](https://github.com/keystonejs/keystone-5/commit/da4013e4):
-- Updated dependencies [157a439d](https://github.com/keystonejs/keystone-5/commit/157a439d):
+- Updated dependencies [da4013e4](https://github.com/keystonejs/keystone/commit/da4013e4):
+- Updated dependencies [157a439d](https://github.com/keystonejs/keystone/commit/157a439d):
   - @keystone-alpha/mongo-join-builder@3.0.0
 
 ## 4.0.8
 
 ### Patch Changes
 
-- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
-- [a7a9249b](https://github.com/keystonejs/keystone-5/commit/a7a9249b): Internal refactor
+- [9b532072](https://github.com/keystonejs/keystone/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+- [a7a9249b](https://github.com/keystonejs/keystone/commit/a7a9249b): Internal refactor
 
 ## 4.0.7
 
-- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone/commit/42a45bbd):
   - @keystone-alpha/keystone@15.1.0
 
 ## 4.0.6
 
-- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):
-- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07):
-- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone/commit/b61289b4):
+- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone/commit/0bba9f07):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone/commit/9ade2b2d):
   - @keystone-alpha/keystone@15.0.0
   - @keystone-alpha/fields-mongoid@1.1.2
 
@@ -208,100 +250,100 @@
 
 ### Patch Changes
 
-- [a7ac4264](https://github.com/keystonejs/keystone-5/commit/a7ac4264): Enabled useUnifiedTopology to address deprecation warning
+- [a7ac4264](https://github.com/keystonejs/keystone/commit/a7ac4264): Enabled useUnifiedTopology to address deprecation warning
 
-- Updated dependencies [decf7319](https://github.com/keystonejs/keystone-5/commit/decf7319):
-- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
-- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d):
+- Updated dependencies [decf7319](https://github.com/keystonejs/keystone/commit/decf7319):
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone/commit/89c0d7e9):
+- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone/commit/a8e9378d):
   - @keystone-alpha/keystone@14.0.0
   - @keystone-alpha/fields-mongoid@1.1.1
 
 ## 4.0.4
 
-- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
+- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone/commit/8d0d98c7):
   - @keystone-alpha/keystone@13.0.0
 
 ## 4.0.3
 
-- Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):
+- Updated dependencies [33001656](https://github.com/keystonejs/keystone/commit/33001656):
   - @keystone-alpha/keystone@12.0.0
 
 ## 4.0.2
 
-- Updated dependencies [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a):
+- Updated dependencies [e42fdb4a](https://github.com/keystonejs/keystone/commit/e42fdb4a):
   - @keystone-alpha/keystone@11.0.0
 
 ## 4.0.1
 
-- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone/commit/b86f0e26):
   - @keystone-alpha/keystone@10.5.0
 
 ## 4.0.0
 
 ### Major Changes
 
-- [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86): - API Changes to Adapters: - Configs are now passed directly to the adapters rather than via `adapterConnectOptions`. - Default connections strings changed for both Knex and Mongoose adapters to be more inline with system defaults. - `keystone.connect()` no longer accepts a `to` paramter - the connection options must be passed to the adapter constructor (as above).
+- [144e6e86](https://github.com/keystonejs/keystone/commit/144e6e86): - API Changes to Adapters: - Configs are now passed directly to the adapters rather than via `adapterConnectOptions`. - Default connections strings changed for both Knex and Mongoose adapters to be more inline with system defaults. - `keystone.connect()` no longer accepts a `to` paramter - the connection options must be passed to the adapter constructor (as above).
 
 ## 3.0.1
 
 ### Patch Changes
 
-- [ba146456](https://github.com/keystonejs/keystone-5/commit/ba146456): Depend on correct version of @keystone-alpha/fields-mongoid
+- [ba146456](https://github.com/keystonejs/keystone/commit/ba146456): Depend on correct version of @keystone-alpha/fields-mongoid
 
 ## 3.0.0
 
 ### Major Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Adding isIndexed field config and support for in most field types
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Adding isIndexed field config and support for in most field types
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade to mongoose 5.6.5
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade to mongoose 5.6.5
 
 ## 2.2.1
 
-- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone/commit/4007f5dd):
   - @keystone-alpha/keystone@8.0.0
 
 ## 2.2.0
 
 ### Minor Changes
 
-- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
 
   Allow transforming input types for `equalityConditionsInsensitive` & `stringConditions` methods on the MongooseAdapter.
 
-* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
   - @keystone-alpha/keystone@7.0.0
 
 ## 2.1.0
 
 ### Minor Changes
 
-- [3958a9c7](https://github.com/keystonejs/keystone-5/commit/3958a9c7):
+- [3958a9c7](https://github.com/keystonejs/keystone/commit/3958a9c7):
 
   Removed the isRequired parameter from MongooseFieldAdapter.buildValidator()
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
-* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
   - @keystone-alpha/keystone@6.0.0
 
 ## 2.0.1
 
-- Updated dependencies [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- Updated dependencies [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
   - @keystone-alpha/keystone@5.0.0
 
 ## 2.0.0
 
 ### Major Changes
 
-- [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+- [9a0456ff](https://github.com/keystonejs/keystone/commit/9a0456ff):
 
   Removing 'dbName' config option
 
@@ -309,101 +351,101 @@
 
 ### Patch Changes
 
-- [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+- [bd0ea21f](https://github.com/keystonejs/keystone/commit/bd0ea21f):
 
   - Add .isRequired and .isUnique properties to field adapters
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
-- [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+- [bd0ea21f](https://github.com/keystonejs/keystone/commit/bd0ea21f):
 
   - `mergeSchemaOptions` now uses `this.isUnique` rather than taking it as a config paramter
 
-* Updated dependencies [24cd26ee](https://github.com/keystonejs/keystone-5/commit/24cd26ee):
-* Updated dependencies [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
-* Updated dependencies [ae5cf6cc](https://github.com/keystonejs/keystone-5/commit/ae5cf6cc):
-* Updated dependencies [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
-* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+* Updated dependencies [24cd26ee](https://github.com/keystonejs/keystone/commit/24cd26ee):
+* Updated dependencies [2ef2658f](https://github.com/keystonejs/keystone/commit/2ef2658f):
+* Updated dependencies [ae5cf6cc](https://github.com/keystonejs/keystone/commit/ae5cf6cc):
+* Updated dependencies [b22d6c16](https://github.com/keystonejs/keystone/commit/b22d6c16):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone/commit/b7a2ea9c):
   - @keystone-alpha/keystone@4.0.0
   - @keystone-alpha/mongo-join-builder@2.0.1
   - @keystone-alpha/utils@3.0.0
 
 ## 1.0.6
 
-- [patch][06464afb](https://github.com/keystonejs/keystone-5/commit/06464afb):
+- [patch][06464afb](https://github.com/keystonejs/keystone/commit/06464afb):
 
   - Simplify internal APIs
 
 ## 1.0.5
 
-- [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+- [patch][b4dcf44b](https://github.com/keystonejs/keystone/commit/b4dcf44b):
 
   - Use named exports from @keystone-alpha/keystone package.
 
-- [patch][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+- [patch][baff3c89](https://github.com/keystonejs/keystone/commit/baff3c89):
 
   - Use the updated logger API
 
-- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+- [patch][302930a4](https://github.com/keystonejs/keystone/commit/302930a4):
 
   - Minor internal code cleanups
 
-- [patch][2f908f30](https://github.com/keystonejs/keystone-5/commit/2f908f30):
+- [patch][2f908f30](https://github.com/keystonejs/keystone/commit/2f908f30):
 
   - Use the updated mongo-join-builder package API.
 
-- [patch][8041c67e](https://github.com/keystonejs/keystone-5/commit/8041c67e):
+- [patch][8041c67e](https://github.com/keystonejs/keystone/commit/8041c67e):
 
   - Restructure internal code
 
-- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
-- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
-- Updated dependencies [b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
-- Updated dependencies [2f908f30](https://github.com/keystonejs/keystone-5/commit/2f908f30):
+- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone/commit/baff3c89):
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone/commit/656e90c2):
+- Updated dependencies [b4dcf44b](https://github.com/keystonejs/keystone/commit/b4dcf44b):
+- Updated dependencies [2f908f30](https://github.com/keystonejs/keystone/commit/2f908f30):
   - @keystone-alpha/keystone@3.0.0
   - @keystone-alpha/logger@2.0.0
   - @keystone-alpha/mongo-join-builder@2.0.0
 
 ## 1.0.4
 
-- Updated dependencies [8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):
-- Updated dependencies [52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+- Updated dependencies [8d385ede](https://github.com/keystonejs/keystone/commit/8d385ede):
+- Updated dependencies [52f1c47b](https://github.com/keystonejs/keystone/commit/52f1c47b):
   - @keystone-alpha/keystone@2.0.0
 
 ## 1.0.3
 
-- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone/commit/98c02a46):
   - @keystone-alpha/keystone@1.0.4
   - @keystone-alpha/mongo-join-builder@1.0.3
   - @keystone-alpha/utils@2.0.0
 
 ## 1.0.2
 
-- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+- [patch][11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
 
   - Update minor-level dependencies
 
-- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+- [patch][619b17c2](https://github.com/keystonejs/keystone/commit/619b17c2):
 
   - Reformat code using latest version of Prettier (1.16.4)
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 
 ## 1.0.1
 
-- [patch][6ba2fd99](https://github.com/keystonejs/keystone-5/commit/6ba2fd99):
+- [patch][6ba2fd99](https://github.com/keystonejs/keystone/commit/6ba2fd99):
 
   - Mongoose option useFindAndModify is defaulted to false, resolves deprecation warnings
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 
-- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+- [patch][9534f98f](https://github.com/keystonejs/keystone/commit/9534f98f):
 
   - Add README.md to package
 

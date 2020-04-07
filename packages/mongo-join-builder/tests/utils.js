@@ -4,6 +4,7 @@ const findFieldAdapterForQuerySegment = ({ fieldAdapters }) => segment =>
 const tagsAdapter = {
   key: 'Tag',
   model: { collection: { name: 'tags' } },
+  _getModel: () => ({ collection: { name: 'posts_tags' } }),
   fieldAdapters: [
     {
       dbPath: 'name',
@@ -16,6 +17,7 @@ const tagsAdapter = {
 const postsAdapter = {
   key: 'Post',
   model: { collection: { name: 'posts' } },
+  _getModel: () => ({ collection: { name: 'posts_tags' } }),
   fieldAdapters: [
     {
       dbPath: 'title',
@@ -28,6 +30,14 @@ const postsAdapter = {
     {
       path: 'tags',
       field: { many: true },
+      rel: {
+        cardinality: 'N:N',
+        columnNames: {
+          'Tag.posts': { near: 'Tag_id', far: 'Post_id' },
+          'Post.tags': { near: 'Post_id', far: 'Tag_id' },
+        },
+        collectionName: 'posts_tags',
+      },
       getQueryConditions: () => {},
       getRefListAdapter: () => tagsAdapter,
     },
@@ -62,6 +72,7 @@ const listAdapter = {
     {
       path: 'company',
       field: { many: false },
+      rel: { columnNames: { User: {}, Company: {} } },
       getQueryConditions: () => {},
       getRefListAdapter: () => ({
         model: { collection: { name: 'company-collection' } },
@@ -80,12 +91,26 @@ listAdapter.fieldAdapters.push({
   getQueryConditions: () => {},
   path: 'posts',
   field: { many: true },
+  rel: {
+    cardinality: '1:N',
+    columnNames: { Tag: {}, Post: {} },
+    columnName: 'author',
+    tableName: 'Post',
+  },
   getRefListAdapter: () => postsAdapter,
 });
 
 tagsAdapter.fieldAdapters.push({
   path: 'posts',
   field: { many: true },
+  rel: {
+    cardinality: 'N:N',
+    columnNames: {
+      'Tag.posts': { near: 'Tag_id', far: 'Post_id' },
+      'Post.tags': { near: 'Post_id', far: 'Tag_id' },
+    },
+    collectionName: 'posts_tags',
+  },
   getQueryConditions: () => {},
   getRefListAdapter: () => postsAdapter,
 });
@@ -94,6 +119,12 @@ postsAdapter.fieldAdapters.push({
   getQueryConditions: () => {},
   path: 'author',
   field: { many: false },
+  rel: {
+    cardinality: '1:N',
+    columnNames: { Tag: {}, Post: {} },
+    columnName: 'author',
+    tableName: 'Post',
+  },
   getRefListAdapter: () => listAdapter,
 });
 
