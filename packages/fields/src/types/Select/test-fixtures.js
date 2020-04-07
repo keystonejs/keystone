@@ -280,6 +280,18 @@ export const metaTests = withKeystone => {
                 type
                 ...on _SelectMeta {
                   dataType
+                  options {
+                    label
+                    ...on _SelectMetaTypeEnum {
+                      enumValue
+                    }
+                    ...on _SelectMetaTypeString {
+                      stringValue
+                    }
+                    ...on _SelectMetaTypeInteger {
+                      integerValue
+                    }
+                  }
                 }
               }
             }
@@ -307,18 +319,34 @@ export const metaTests = withKeystone => {
               name: 'company',
               type: 'Select',
               dataType: 'ENUM',
+              options: [
+                { label: 'Thinkmill', enumValue: 'thinkmill' },
+                { label: 'Atlassian', enumValue: 'atlassian' },
+                { label: 'Thomas Walker Gelato', enumValue: 'gelato' },
+                { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', enumValue: 'cete' },
+              ],
             },
             {
               __typename: '_SelectMeta',
               name: 'selectString',
               type: 'Select',
               dataType: 'STRING',
+              options: [
+                { label: 'A string', stringValue: 'a string' },
+                { label: '1number', stringValue: '1number' },
+                { label: '@¯\\_(ツ)_/¯', stringValue: '@¯\\_(ツ)_/¯' },
+              ],
             },
             {
               __typename: '_SelectMeta',
               name: 'selectNumber',
               type: 'Select',
               dataType: 'INTEGER',
+              options: [
+                { label: 'One', integerValue: 1 },
+                { label: 'Two', integerValue: 2 },
+                { label: 'Three', integerValue: 3 },
+              ],
             },
           ],
         },

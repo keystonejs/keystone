@@ -2,6 +2,7 @@ import inflection from 'inflection';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { upcase } from '@keystonejs/utils';
 
 function initOptions(options) {
   let optionsArray = options;
@@ -14,6 +15,14 @@ function initOptions(options) {
 
 const VALID_DATA_TYPES = ['enum', 'string', 'integer'];
 const DOCS_URL = 'https://keystonejs.com/keystonejs/fields/src/types/select/';
+
+function dataTypeToGqlMetaType({ gqlMetaType, dataType }) {
+  return `${gqlMetaType}Type${upcase(dataType)}`;
+}
+
+function dataTypeToGqlValueField({ dataType }) {
+  return `${dataType.toLowerCase()}Value`;
+}
 
 function validateOptions({ options, dataType, listKey, path }) {
   if (!VALID_DATA_TYPES.includes(dataType)) {
@@ -98,7 +107,14 @@ export class Select extends Implementation {
       : [];
   }
   getGqlMetaTypes({ interfaceType }) {
+    const { gqlMetaType } = this;
     const dataTypeEnum = `${this.gqlMetaType}DataType`;
+    const optionsType = `${this.gqlMetaType}Options`;
+    const dataTypeToValueType = {
+      enum: 'String',
+      string: 'String',
+      integer: 'Int',
+    };
     return [
       `
         enum ${dataTypeEnum} {
@@ -106,18 +122,47 @@ export class Select extends Implementation {
         }
       `,
       `
+        interface ${optionsType} {
+          label: String
+        }
+      `,
+      ...VALID_DATA_TYPES.map(dataType => {
+        return `
+          type ${dataTypeToGqlMetaType({ gqlMetaType, dataType })} implements ${optionsType} {
+            label: String
+            ${dataTypeToGqlValueField({ dataType })}: ${dataTypeToValueType[dataType]}
+          }
+        `;
+      }),
+      `
         type ${this.gqlMetaType} implements ${interfaceType} {
           name: String
           type: String
           dataType: ${dataTypeEnum}
+          options: [${optionsType}]
         }
-      `
+      `,
     ];
   }
   gqlMetaQueryResolver() {
+    const { gqlMetaType, dataType } = this;
     return {
       ...super.gqlMetaQueryResolver(),
       dataType: this.dataType.toUpperCase(),
+      options: this.options.map(({ value, label }) => ({
+        __typename: dataTypeToGqlMetaType({ gqlMetaType, dataType }),
+        [dataTypeToGqlValueField({ dataType })]: value,
+        label,
+      })),
+    };
+  }
+  gqlAuxFieldResolvers() {
+    return {
+      // We have to implement this to avoid Apollo throwing a warning about it
+      // missing (even though it works just fine without it, grrrr)
+      [`${this.gqlMetaType}Options`]: {
+        __resolveType: ({ __typename }) => __typename,
+      },
     };
   }
 
