@@ -1,5 +1,54 @@
 # @arch-ui/fields
 
+## 2.1.5
+
+### Patch Changes
+
+- [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939) [#2616](https://github.com/keystonejs/keystone/pull/2616) Thanks [@JedWatson](https://github.com/JedWatson)! - Improved layout of checkbox fields.
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad)]:
+  - @arch-ui/lozenge@0.0.15
+
+## 2.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+  - @arch-ui/lozenge@0.0.14
+
+## 2.1.3
+
+### Patch Changes
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/lozenge@0.0.13
+  - @arch-ui/theme@0.0.9
+
+## 2.1.2
+
+### Patch Changes
+
+- [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+* [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+* Updated dependencies [[`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09)]:
+  - @arch-ui/lozenge@0.0.12
+  - @arch-ui/icons@0.0.9
+  - @arch-ui/theme@0.0.8
+
+## 2.1.1
+
+### Patch Changes
+
+- [`e93c2da7`](https://github.com/keystonejs/keystone/commit/e93c2da73a3d9f4adb17e00dd596c4326dc1993a) [#2340](https://github.com/keystonejs/keystone/pull/2340) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed rendering of `false` string when value is `Boolean`
+
 ## 2.1.0
 
 ### Minor Changes
@@ -47,13 +96,13 @@
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
 
 ## 2.0.0
 
 ### Major Changes
 
-- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
 
   - **Blocks**
     - Blocks must now be classes, which implement the `Block` interface.
@@ -69,30 +118,30 @@
 
 ### Major Changes
 
-- [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+- [16befb6a](https://github.com/keystonejs/keystone/commit/16befb6a):
 
   Update the FieldLabel component to take `htmlFor`, `field` and `errors` as props in order to have a consistent mechanism for surfacing the isRequired flag and any access denied errors.
 
-* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+* Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
   - @arch-ui/theme@0.0.5
 
 ## 0.0.5
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 0.0.4
 
-- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- [patch][e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
 
   - admin revamp
 
 ## 0.0.3
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 

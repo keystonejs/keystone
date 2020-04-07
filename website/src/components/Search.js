@@ -1,165 +1,159 @@
 /** @jsx jsx */
 
-import { useState, useEffect, useCallback } from 'react';
-import debounce from 'lodash.debounce';
 import { jsx } from '@emotion/core';
-import Select from '@arch-ui/select';
+import { useEffect, useRef } from 'react';
 import { navigate } from 'gatsby';
+import { Input } from '@arch-ui/input';
+import { borderRadius, colors } from '@arch-ui/theme';
 
-import { getResults } from '../utils/search';
+import { addCallback } from '../utils/async-load-search';
 
-const buildOptions = arr => {
-  let ops = [];
+const searchId = 'algolia-doc-search';
 
-  arr.forEach(i => {
-    if (!i.navGroup) {
-      return;
-    }
+function allowKeyboardRequest(event) {
+  if (event.key !== '/') {
+    return false;
+  }
+  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.nodeName)) {
+    return false;
+  }
 
-    const groupLabel = i.navGroup.replace('-', ' ');
-
-    if (!ops.some(o => o.label === groupLabel)) {
-      ops.push({
-        label: groupLabel,
-        options: [],
-      });
-    }
-
-    ops.find(o => o.label === groupLabel).options.push(i);
-  });
-
-  return ops;
-};
+  return true;
+}
 
 export const Search = () => {
-  let [query, setQuery] = useState('');
-  let [results, setResults] = useState([]);
+  const inputRef = useRef();
 
-  const setQueryDebounced = useCallback(
-    debounce(value => setQuery(value), 200),
-    [setQuery]
-  );
-
+  // focus the input on "/" press
   useEffect(() => {
-    let cancelled = false;
-
-    if (!query) {
-      return;
-    }
-
-    getResults(query, { limit: 20 }).then(queryResults => {
-      if (cancelled) {
-        return;
+    let keyboardHandler = event => {
+      if (allowKeyboardRequest(event)) {
+        inputRef.current.focus();
+        // prevent the "/" character from making it into the input
+        event.preventDefault();
       }
-
-      setResults(buildOptions(queryResults.results));
-    });
-
-    return () => {
-      cancelled = true;
     };
-  }, [query]);
+    window.addEventListener('keydown', keyboardHandler);
+    return () => {
+      window.removeEventListener('keydown', keyboardHandler);
+    };
+  }, []);
 
+  // algolia docsearch callback
+  useEffect(() => {
+    addCallback(loaded => {
+      if (loaded) {
+        window.docsearch({
+          apiKey: '211e94c001e6b4c6744ae72fb252eaba',
+          indexName: 'keystonejs',
+          inputSelector: `#${searchId}`,
+          handleSelected: (input, e, suggestion) => {
+            e.preventDefault();
+            input.setVal('');
+            input.close();
+            inputRef.current.blur();
+            const url = suggestion.url.replace(/https*:\/\/[www.]*keystonejs\.com/, '');
+            navigate(url);
+          },
+        });
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn('Search has failed to load and is now disabled');
+      }
+    });
+  }, []);
+
+  // NOTE: might be nice to have an actual form that submits to a
+  // dedicated search page.
   return (
-    <Select
-      key="select"
-      components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
-      placeholder="Search..."
-      options={results}
-      value={null}
-      onInputChange={setQueryDebounced}
-      openMenuOnClick={false}
-      tabSelectsValue={false}
-      onChange={result => {
-        setQueryDebounced.cancel();
-        navigate(result.slug);
-        setQuery('');
-      }}
-      css={{ zIndex: 2 }}
-      filterOption={filterOption}
-      getOptionValue={result => result.slug}
-      getOptionLabel={result => result.title}
-      noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
-    />
-  );
-};
-
-// ==============================
-// Styled Components
-// ==============================
-
-const DropdownIndicator = ({ innerProps, isFocused }) => (
-  <div css={{ padding: '4px 6px', opacity: isFocused ? 0.8 : 0.6 }} {...innerProps}>
-    <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
-      <path
-        d="M14.823 15.883a5.5 5.5 0 1 1 1.06-1.06l2.647 2.647c.293.293.53.59 0 1.06-.53.47-.767.293-1.06 0l-2.647-2.647zM11.5 15.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
-        fill="currentColor"
+    <Wrapper>
+      <HiddenLabel htmlFor={searchId}>Search the docs (press "/" to focus)</HiddenLabel>
+      <Input
+        ref={inputRef}
+        id={searchId}
+        type="search"
+        placeholder='Search the docs (press "/" to focus)'
+        css={{
+          paddingLeft: 36,
+          height: 40,
+        }}
       />
-    </svg>
-  </div>
-);
-const Control = ({ children, innerProps, innerRef, isFocused }) => {
-  const backgroundColor = isFocused ? 'rgba(9, 30, 66, 0.1)' : 'rgba(9, 30, 66, 0.05)';
-  return (
-    <div
-      ref={innerRef}
-      css={{
-        backgroundColor,
-        boxSizing: 'border-box',
-        borderRadius: 4,
-        display: 'flex',
-        paddingLeft: 2,
-        paddingRight: 2,
-      }}
-      {...innerProps}
-    >
-      {children}
-    </div>
+      <SearchIcon />
+    </Wrapper>
   );
 };
-const Input = ({
-  className,
-  cx,
-  getStyles,
-  innerRef,
-  isDisabled,
-  isHidden,
-  selectProps,
-  theme,
-  ...props
-}) => (
+
+// Styled Components
+// ------------------------------
+
+const Wrapper = props => (
   <div
     css={{
-      margin: 2,
-      paddingBottom: 2,
-      paddingTop: 2,
-      visibility: isDisabled ? 'hidden' : 'visible',
+      position: 'relative',
+
+      '.algolia-autocomplete': {
+        width: '100%',
+      },
+      '.ds-dropdown-menu': {
+        boxShadow: `rgba(9, 30, 66, 0.31) 0px 0px 1px, rgba(9, 30, 66, 0.25) 0px 4px 8px -2px`,
+        borderRadius: borderRadius,
+        maxWidth: '100%',
+        width: '100%',
+
+        // hide the arrow
+        '::before': {
+          display: 'none',
+        },
+
+        // remove border and adjust radius on inner dialog wrapper
+        '[class^=ds-dataset-]': {
+          border: 0,
+          borderRadius: borderRadius,
+        },
+
+        // remove border marks under headings (it's covered by the result item)
+        '.algolia-docsearch-suggestion--category-header .algolia-docsearch-suggestion--highlight': {
+          boxShadow: 'none',
+        },
+      },
+    }}
+    {...props}
+  />
+);
+
+// label for screen-readers
+const HiddenLabel = props => (
+  <label
+    css={{
+      border: 0,
+      clip: 'rect(0, 0, 0, 0)',
+      height: 1,
+      overflow: 'hidden',
+      padding: 0,
+      position: 'absolute',
+      whiteSpace: 'nowrap',
+      width: 1,
+    }}
+    {...props}
+  />
+);
+
+const SearchIcon = () => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+    css={{
+      color: colors.N40,
+      height: 40,
+      left: 0,
+      marginLeft: 12,
+      pointerEvents: 'none',
+      position: 'absolute',
+      top: 0,
+      width: 16,
     }}
   >
-    <input
-      ref={innerRef}
-      css={{
-        background: 0,
-        border: 0,
-        color: 'inherit',
-        fontSize: 'inherit',
-        opacity: isHidden ? 0 : 1,
-        outline: 0,
-        padding: 0,
-
-        '&.focus-visible': {
-          outline: 0,
-        },
-      }}
-      {...props}
-    />
-  </div>
+    <path d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z" />
+  </svg>
 );
-const IndicatorSeparator = null;
-
-// ==============================
-// Utilities
-// ==============================
-
-// remove options that aren't present in the sidebar
-let filterOption = ({ data }) => Boolean(data.navGroup);

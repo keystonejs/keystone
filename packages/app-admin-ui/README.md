@@ -1,12 +1,14 @@
 <!--[meta]
 section: api
 subSection: apps
-title: Admin UI
+title: Admin UI app
 [meta]-->
 
-# Admin UI App
+# Admin UI app
 
-A KeystoneJS App which provides an Admin UI for content management.
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-admin-ui)
+
+A KeystoneJS app which provides an Admin UI for content management.
 
 ## Usage
 
@@ -15,17 +17,15 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
-const authStrategy = keystone.createAuthStrategy({ ... });
-
-...
+const authStrategy = keystone.createAuthStrategy({...});
 
 module.exports = {
   keystone: new Keystone(),
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
-        adminPath: '/admin',
-        authStrategy,
+      adminPath: '/admin',
+      authStrategy,
     }),
   ],
 };

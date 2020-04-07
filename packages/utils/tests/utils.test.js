@@ -17,10 +17,23 @@ const {
   flatMap,
   zipObj,
   captureSuspensePromises,
+  upcase,
+  asyncForEach,
   ...utils
 } = require('../src');
 
 describe('utils', () => {
+  test('upcase', () => {
+    expect(upcase('Foo')).toEqual('Foo');
+    expect(upcase('foo')).toEqual('Foo');
+    expect(upcase('FooBar')).toEqual('FooBar');
+    expect(upcase('fooBar')).toEqual('FooBar');
+    expect(upcase('Foo bar')).toEqual('Foo bar');
+    expect(upcase('foo bar')).toEqual('Foo bar');
+    expect(upcase('Foo Bar')).toEqual('Foo Bar');
+    expect(upcase('foo Bar')).toEqual('Foo Bar');
+  });
+
   test('getType', () => {
     expect(getType(undefined)).toEqual('Undefined');
     expect(getType(null)).toEqual('Null');
@@ -282,6 +295,16 @@ describe('utils', () => {
         ],
       },
     });
+  });
+
+  test('asyncForEach', async () => {
+    const callback = jest.fn().mockResolvedValue(1);
+    const array = [10, 20, 30];
+    await asyncForEach(array, callback);
+    expect(callback).toHaveBeenCalledTimes(3);
+    expect(callback).toHaveBeenNthCalledWith(1, 10, 0, array);
+    expect(callback).toHaveBeenNthCalledWith(2, 20, 1, array);
+    expect(callback).toHaveBeenNthCalledWith(3, 30, 2, array);
   });
 
   describe('captureSuspensePromises', () => {

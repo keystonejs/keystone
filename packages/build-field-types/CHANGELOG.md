@@ -1,5 +1,49 @@
 # @keystonejs/build-field-types
 
+## 5.2.4
+
+### Patch Changes
+
+- [`7c9d36a2`](https://github.com/keystonejs/keystone/commit/7c9d36a2d5002258964cbd9414766ee244945005) [#2570](https://github.com/keystonejs/keystone/pull/2570) Thanks [@jesstelford](https://github.com/jesstelford)! - Updated `@babel/core` to latest version: v7.9.0
+
+## 5.2.3
+
+### Patch Changes
+
+- [`fb510d67`](https://github.com/keystonejs/keystone/commit/fb510d67ab124d8c1bda1884fa2a0d48262b5e4d) [#2527](https://github.com/keystonejs/keystone/pull/2527) Thanks [@jesstelford](https://github.com/jesstelford)! - Updated to latest version of globby for discovering test files to run.
+
+## 5.2.2
+
+### Patch Changes
+
+- [`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b) [#2476](https://github.com/keystonejs/keystone/pull/2476) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated rollup dependencies.
+
+* [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+## 5.2.1
+
+### Patch Changes
+
+- [`6929a7e3`](https://github.com/keystonejs/keystone/commit/6929a7e3339f36e712bcbafc71ddf7a133730b29) [#2383](https://github.com/keystonejs/keystone/pull/2383) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded to latest `jest` packages.
+
+* [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+- [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+## 5.2.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+## 5.1.5
+
+### Patch Changes
+
+- [`1e026fff`](https://github.com/keystonejs/keystone/commit/1e026fff05f777225105ebc188c8411a3b23beac) [#2379](https://github.com/keystonejs/keystone/pull/2379) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused `magic-string` dependency.
+
 ## 5.1.4
 
 ### Patch Changes
@@ -86,7 +130,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -98,31 +142,31 @@
 
 ### Patch Changes
 
-- [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d): Remove lodash.omitby dependency
+- [4e6a574d](https://github.com/keystonejs/keystone/commit/4e6a574d): Remove lodash.omitby dependency
 
 ## 1.0.5
 
 ### Patch Changes
 
-- [37b52b7b](https://github.com/keystonejs/keystone-5/commit/37b52b7b): support windows paths in development build
+- [37b52b7b](https://github.com/keystonejs/keystone/commit/37b52b7b): support windows paths in development build
 
 ## 1.0.4
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade jest dependency
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade jest dependency
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade prettier to 1.18.2
 
 ## 1.0.3
 
 ### Patch Changes
 
-- [afc7e835](https://github.com/keystonejs/keystone-5/commit/afc7e835):
+- [afc7e835](https://github.com/keystonejs/keystone/commit/afc7e835):
 
   Remove broken automatic @babel/runtime installation
 
-- [a738a247](https://github.com/keystonejs/keystone-5/commit/a738a247):
+- [a738a247](https://github.com/keystonejs/keystone/commit/a738a247):
 
   Improve entrypoint package.json creation
   Remove dead code
@@ -132,7 +176,7 @@
 
 ### Patch Changes
 
-- [01f12bfb](https://github.com/keystonejs/keystone-5/commit/01f12bfb):
+- [01f12bfb](https://github.com/keystonejs/keystone/commit/01f12bfb):
 
   Remove copy of preconstruct's require hook and use @preconstruct/hook instead
 
@@ -140,7 +184,7 @@
 
 ### Patch Changes
 
-- [e502af66](https://github.com/keystonejs/keystone-5/commit/e502af66):
+- [e502af66](https://github.com/keystonejs/keystone/commit/e502af66):
 
   Fix dist directories not being cleared before builds causing broken builds with build-field-types
 
@@ -148,19 +192,19 @@
 
 ### Major Changes
 
-- [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
+- [e6e95173](https://github.com/keystonejs/keystone/commit/e6e95173):
 
   - Remove `devBabelPlugin` export which is unnecessary now because there is now a runtime implementation of `importView` for dev
   - Remove `aliases` export which is superseded by the `dev` command
 
 ### Minor Changes
 
-- [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+- [1a7b706c](https://github.com/keystonejs/keystone/commit/1a7b706c):
 
   - Create build-field-types package
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies

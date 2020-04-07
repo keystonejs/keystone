@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
-import { withRouter, Route, Link } from 'react-router-dom';
+import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
+import { Link, useRouteMatch } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
 import styled from '@emotion/styled';
@@ -233,11 +233,14 @@ function PrimaryNavItems({
   listKeys,
   mouseIsOverNav,
 }) {
+  const isAtDashboard = useRouteMatch({ path: adminPath, exact: true });
+
   let hasRenderedIndexPage = false;
-  let onRenderIndexPage = () => {
+  const onRenderIndexPage = () => {
     hasRenderedIndexPage = true;
   };
-  let pageNavItems =
+
+  const pageNavItems =
     pages && pages.length
       ? pages
           .filter(node => node.addToNav !== false)
@@ -265,27 +268,23 @@ function PrimaryNavItems({
         );
   return (
     <Relative>
-      <Route>
-        {({ location }) => (
-          <ScrollQuery isPassive={false}>
-            {(ref, snapshot) => (
-              <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                {hasRenderedIndexPage === false && (
-                  <PrimaryNavItem
-                    to={adminPath}
-                    isSelected={location.pathname === adminPath}
-                    mouseIsOverNav={mouseIsOverNav}
-                  >
-                    Dashboard
-                  </PrimaryNavItem>
-                )}
-
-                {pageNavItems}
-              </PrimaryNavScrollArea>
+      <ScrollQuery isPassive={false}>
+        {(ref, snapshot) => (
+          <PrimaryNavScrollArea ref={ref} {...snapshot}>
+            {hasRenderedIndexPage === false && (
+              <PrimaryNavItem
+                to={adminPath}
+                isSelected={isAtDashboard}
+                mouseIsOverNav={mouseIsOverNav}
+              >
+                Dashboard
+              </PrimaryNavItem>
             )}
-          </ScrollQuery>
+
+            {pageNavItems}
+          </PrimaryNavScrollArea>
         )}
-      </Route>
+      </ScrollQuery>
     </Relative>
   );
 }
@@ -329,96 +328,93 @@ let PrimaryNavContent = ({ mouseIsOverNav }) => {
   );
 };
 
-class Nav extends Component {
-  state = { mouseIsOverNav: false };
+const Nav = ({ children }) => {
+  const [mouseIsOverNav, setMouseIsOverNav] = useState(false);
 
-  handleMouseEnter = () => {
-    this.setState({ mouseIsOverNav: true });
+  const handleMouseEnter = () => {
+    setMouseIsOverNav(true);
   };
-  handleMouseLeave = () => {
-    this.setState({ mouseIsOverNav: false });
+
+  const handleMouseLeave = () => {
+    setMouseIsOverNav(false);
   };
-  render() {
-    const { children } = this.props;
-    const { mouseIsOverNav } = this.state;
 
-    return (
-      <ResizeHandler isActive={mouseIsOverNav}>
-        {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
-          const navWidth = isCollapsed ? 0 : width;
-          const makeResizeStyles = key => {
-            const pointers = isDragging ? { pointerEvents: 'none' } : null;
-            const transitions = isDragging
-              ? null
-              : {
-                  transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-                };
-            return { [key]: navWidth, ...pointers, ...transitions };
-          };
+  return (
+    <ResizeHandler isActive={mouseIsOverNav}>
+      {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
+        const navWidth = isCollapsed ? 0 : width;
+        const makeResizeStyles = key => {
+          const pointers = isDragging ? { pointerEvents: 'none' } : null;
+          const transitions = isDragging
+            ? null
+            : {
+                transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+              };
+          return { [key]: navWidth, ...pointers, ...transitions };
+        };
 
-          return (
-            <PageWrapper>
-              <PropToggle
-                isActive={isDragging}
-                styles={{
-                  cursor: 'col-resize',
-                  '-moz-user-select': 'none',
-                  '-ms-user-select': 'none',
-                  '-webkit-user-select': 'none',
-                  'user-select': 'none',
-                }}
-              />
-              <PrimaryNav
-                onMouseEnter={this.handleMouseEnter}
-                onMouseLeave={this.handleMouseLeave}
-                style={makeResizeStyles('width')}
+        return (
+          <PageWrapper>
+            <PropToggle
+              isActive={isDragging}
+              styles={{
+                cursor: 'col-resize',
+                '-moz-user-select': 'none',
+                '-ms-user-select': 'none',
+                '-webkit-user-select': 'none',
+                'user-select': 'none',
+              }}
+            />
+            <PrimaryNav
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              style={makeResizeStyles('width')}
+            >
+              <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
+              {isCollapsed ? null : (
+                <GrabHandle
+                  onDoubleClick={clickProps.onClick}
+                  isActive={mouseIsOverNav || isDragging}
+                  {...resizeProps}
+                />
+              )}
+              <Tooltip
+                content={
+                  <TooltipContent kbd={KEYBOARD_SHORTCUT}>
+                    {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
+                  </TooltipContent>
+                }
+                placement="right"
+                hideOnMouseDown
+                hideOnKeyDown
+                delay={600}
               >
-                <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
-                {isCollapsed ? null : (
-                  <GrabHandle
-                    onDoubleClick={clickProps.onClick}
-                    isActive={mouseIsOverNav || isDragging}
-                    {...resizeProps}
-                  />
-                )}
-                <Tooltip
-                  content={
-                    <TooltipContent kbd={KEYBOARD_SHORTCUT}>
-                      {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
-                    </TooltipContent>
-                  }
-                  placement="right"
-                  hideOnMouseDown
-                  hideOnKeyDown
-                  delay={600}
-                >
-                  {ref => (
-                    <CollapseExpand
-                      isCollapsed={isCollapsed}
-                      mouseIsOverNav={mouseIsOverNav}
-                      {...clickProps}
-                      ref={ref}
+                {ref => (
+                  <CollapseExpand
+                    isCollapsed={isCollapsed}
+                    mouseIsOverNav={mouseIsOverNav}
+                    {...clickProps}
+                    ref={ref}
+                  >
+                    <svg
+                      fill="currentColor"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <svg
-                        fill="currentColor"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
-                      </svg>
-                    </CollapseExpand>
-                  )}
-                </Tooltip>
-              </PrimaryNav>
-              <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
-            </PageWrapper>
-          );
-        }}
-      </ResizeHandler>
-    );
-  }
-}
+                      <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
+                    </svg>
+                  </CollapseExpand>
+                )}
+              </Tooltip>
+            </PrimaryNav>
+            <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
+          </PageWrapper>
+        );
+      }}
+    </ResizeHandler>
+  );
+};
 
-export default withRouter(Nav);
+export default Nav;

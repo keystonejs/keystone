@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
@@ -41,50 +40,47 @@ const PlaceholderPreview = ({ originalUrl, fieldPath }) => (
   />
 );
 
-export default class OEmbedField extends Component {
-  onChange = event => {
-    this.props.onChange({
+const OEmbedField = ({ onChange, autoFocus, field, value = null, savedValue = null, errors }) => {
+  const handleChange = event => {
+    onChange({
       originalUrl: event.target.value,
     });
   };
 
-  render() {
-    const { autoFocus, field, value = null, savedValue = null, errors } = this.props;
-    const htmlID = `ks-oembed-${field.path}`;
-    const canRead = errors.every(
-      error => !(error instanceof Error && error.name === 'AccessDeniedError')
-    );
-    const error = errors.find(
-      error => error instanceof Error && error.name === 'AccessDeniedError'
-    );
-    const hasChanged = field.hasChanged({ [field.path]: savedValue }, { [field.path]: value });
+  const htmlID = `ks-oembed-${field.path}`;
+  const canRead = errors.every(
+    error => !(error instanceof Error && error.name === 'AccessDeniedError')
+  );
+  const error = errors.find(error => error instanceof Error && error.name === 'AccessDeniedError');
+  const hasChanged = field.hasChanged({ [field.path]: savedValue }, { [field.path]: value });
 
-    return (
-      <FieldContainer>
-        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
-        <FieldInput>
-          <Input
-            autoComplete="off"
-            autoFocus={autoFocus}
-            type="url"
-            value={(canRead && value && value.originalUrl) || ''}
-            placeholder={canRead ? undefined : error.message}
-            onChange={this.onChange}
-            id={htmlID}
-          />
-        </FieldInput>
-        {value && value.originalUrl && hasChanged && (
-          <PlaceholderPreview originalUrl={value.originalUrl} fieldPath={field.path} />
-        )}
-        {value && value.originalUrl && !hasChanged && (
-          <StyledPreview
-            preview={value.preview}
-            originalUrl={value.originalUrl}
-            fieldPath={field.path}
-          />
-        )}
-      </FieldContainer>
-    );
-  }
-}
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldInput>
+        <Input
+          autoComplete="off"
+          autoFocus={autoFocus}
+          type="url"
+          value={(canRead && value && value.originalUrl) || ''}
+          placeholder={canRead ? undefined : error.message}
+          onChange={handleChange}
+          id={htmlID}
+        />
+      </FieldInput>
+      {value && value.originalUrl && hasChanged && (
+        <PlaceholderPreview originalUrl={value.originalUrl} fieldPath={field.path} />
+      )}
+      {value && value.originalUrl && !hasChanged && (
+        <StyledPreview
+          preview={value.preview}
+          originalUrl={value.originalUrl}
+          fieldPath={field.path}
+        />
+      )}
+    </FieldContainer>
+  );
+};
+
+export default OEmbedField;

@@ -1,15 +1,16 @@
 {
   "name": "@keystonejs/logger",
   "description": "Common logging functionality used within @keystonejs/* packages.",
-  "version": "5.0.0",
+  "version": "5.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "dependencies": {
     "falsey": "^1.0.0",
     "fast-memoize": "^2.4.0",
     "pino": "5.11.1"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/logger"
 }

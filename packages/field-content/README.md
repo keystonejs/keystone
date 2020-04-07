@@ -25,7 +25,15 @@ keystone.createList('Post', {
   fields: {
     body: {
       type: Content,
-      blocks: [Content.blocks.blockquote, CloudinaryImage.blocks.image],
+      blocks: [
+        Content.blocks.blockquote,
+        Content.blocks.image,
+        Content.blocks.link,
+        Content.blocks.orderedList,
+        Content.blocks.unorderedList,
+        Content.blocks.heading,
+        CloudinaryImage.blocks.image,
+      ],
     },
   },
 });

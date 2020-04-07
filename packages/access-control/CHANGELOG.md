@@ -1,10 +1,34 @@
 # @keystonejs/access-control
 
+## 5.2.0
+
+### Minor Changes
+
+- [`42497b8e`](https://github.com/keystonejs/keystone/commit/42497b8ebbaeaf0f4d7881dbb76c6abafde4cace) [#2456](https://github.com/keystonejs/keystone/pull/2456) Thanks [@timleslie](https://github.com/timleslie)! - Added `validateAuthAccessControl` as a special case for validating access control on authentication queries and mutations.
+
+### Patch Changes
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+- Updated dependencies [[`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/utils@5.2.2
+
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/utils@5.2.0
+
 ## 5.0.0
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -12,7 +36,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
   - @keystonejs/utils@5.0.0
 
 # @keystone-alpha/access-control
@@ -21,30 +45,30 @@
 
 ### Minor Changes
 
-- [1405eb07](https://github.com/keystonejs/keystone-5/commit/1405eb07): Add `listKey`, `fieldKey` (fields only), `operation`, `gqlName`, `itemId` and `itemIds` as arguments to imperative access control functions.
+- [1405eb07](https://github.com/keystonejs/keystone/commit/1405eb07): Add `listKey`, `fieldKey` (fields only), `operation`, `gqlName`, `itemId` and `itemIds` as arguments to imperative access control functions.
 
 ## 3.0.0
 
 ### Major Changes
 
-- [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d): Add support for `access: { auth: ... }` which controls whether authentication queries and mutations are accessible on a List
+- [9ade2b2d](https://github.com/keystonejs/keystone/commit/9ade2b2d): Add support for `access: { auth: ... }` which controls whether authentication queries and mutations are accessible on a List
 
   If you have a `List` which is being used as the target of an Authentication Strategy, you should set `access: { auth: true }` on that list.
 
 ### Minor Changes
 
-- [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4): Add `parseCustomAccess()` for parsing the access control directives on custom types/queries/mutations.
-- [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07): Add `validateCustomAccessControl()` for use by custom queries/mutations access control checking.
+- [b61289b4](https://github.com/keystonejs/keystone/commit/b61289b4): Add `parseCustomAccess()` for parsing the access control directives on custom types/queries/mutations.
+- [0bba9f07](https://github.com/keystonejs/keystone/commit/0bba9f07): Add `validateCustomAccessControl()` for use by custom queries/mutations access control checking.
 
 ### Patch Changes
 
-- [9ece715c](https://github.com/keystonejs/keystone-5/commit/9ece715c): Refactor access-control internals to better support future changes
+- [9ece715c](https://github.com/keystonejs/keystone/commit/9ece715c): Refactor access-control internals to better support future changes
 
 ## 2.0.0
 
 ### Major Changes
 
-- [bc0b9813](https://github.com/keystonejs/keystone-5/commit/bc0b9813): `parseListAccess` and `parseFieldAccess` now take `schemaNames` as an argument, and return a nested access object, with the `schemaNames` as keys.
+- [bc0b9813](https://github.com/keystonejs/keystone/commit/bc0b9813): `parseListAccess` and `parseFieldAccess` now take `schemaNames` as an argument, and return a nested access object, with the `schemaNames` as keys.
 
   For example,
 
@@ -81,39 +105,39 @@
 
 ### Minor Changes
 
-- [e5d4ee76](https://github.com/keystonejs/keystone-5/commit/e5d4ee76): Expose 'originalInput' to access control functions for lists & fields
+- [e5d4ee76](https://github.com/keystonejs/keystone/commit/e5d4ee76): Expose 'originalInput' to access control functions for lists & fields
 
 ## 1.0.5
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
 ## 1.0.4
 
-- Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+- Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone/commit/b7a2ea9c):
   - @keystone-alpha/utils@3.0.0
 
 ## 1.0.3
 
-- [patch][10d96db2](https://github.com/keystonejs/keystone-5/commit/10d96db2):
+- [patch][10d96db2](https://github.com/keystonejs/keystone/commit/10d96db2):
 
   - Restructure internal code
 
 ## 1.0.2
 
-- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone/commit/98c02a46):
   - @keystone-alpha/utils@2.0.0
 
 ## 1.0.1
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 
-- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+- [patch][9534f98f](https://github.com/keystonejs/keystone/commit/9534f98f):
 
   - Add README.md to package
 

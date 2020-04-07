@@ -14,7 +14,7 @@ const SocialIconsNav = props => (
         <IconGithub href="https://github.com/keystonejs/keystone" target="_blank" title="Github" />
       </li>
       <li css={{ marginRight: [`0`] }}>
-        <IconSlack href="https://launchpass.com/keystonejs" target="_blank" title="Slack" />
+        <IconSlack href="http://community.keystonejs.com/" target="_blank" title="Slack" />
       </li>
     </ul>
   </nav>
@@ -95,7 +95,7 @@ const IconSlack = props => (
 // Misc
 // ==============================
 
-const A11yText = ({ tag: Tag, ...props }) => (
+const A11yText = ({ tag: Tag = 'span', ...props }) => (
   <Tag
     css={{
       border: 0,
@@ -110,8 +110,5 @@ const A11yText = ({ tag: Tag, ...props }) => (
     {...props}
   />
 );
-A11yText.defaultProps = {
-  tag: 'span',
-};
 
 export { SocialIconsNav };

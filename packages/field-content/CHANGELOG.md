@@ -1,5 +1,94 @@
 # @keystonejs/field-content
 
+## 5.4.5
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/fields@9.0.0
+
+## 5.4.4
+
+### Patch Changes
+
+- Updated dependencies [[`e7e4bc1d`](https://github.com/keystonejs/keystone/commit/e7e4bc1d22149d4daceb31d303f6ad10c2b853ba), [`58c4ffc3`](https://github.com/keystonejs/keystone/commit/58c4ffc3d4b1edf8bdfbc4ea299133d303239fc6), [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`d138736d`](https://github.com/keystonejs/keystone/commit/d138736db184c5884171c7a65e43377f248046b5), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf), [`0b37b13b`](https://github.com/keystonejs/keystone/commit/0b37b13b5b11a5391b70920f9e8cbd6c5a71f586)]:
+  - @keystonejs/fields@8.0.0
+  - @arch-ui/tooltip@0.1.10
+  - @arch-ui/typography@0.0.16
+  - @arch-ui/fields@2.1.5
+
+## 5.4.3
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9), [`161bf3e5`](https://github.com/keystonejs/keystone/commit/161bf3e57acb1b3d88a0836507d4c8dd4935f260)]:
+  - @arch-ui/theme@0.0.10
+  - @keystonejs/fields@7.0.0
+  - @arch-ui/input@0.1.7
+  - @arch-ui/fields@2.1.4
+  - @arch-ui/tooltip@0.1.9
+  - @arch-ui/typography@0.0.15
+
+## 5.4.2
+
+### Patch Changes
+
+- [`ca4d2178`](https://github.com/keystonejs/keystone/commit/ca4d217878c6e3829ed0c7a7e7a1909095a2eb7d) [#2464](https://github.com/keystonejs/keystone/pull/2464) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Changed the min-height of the content field. Changed the UI so the blocks menu doesn't appear if there are not blocks configured.
+
+* [`70f2101a`](https://github.com/keystonejs/keystone/commit/70f2101ab8dd57615800f11df5b72b8fedb09298) [#2458](https://github.com/keystonejs/keystone/pull/2458) Thanks [@SeanDoyleGit](https://github.com/SeanDoyleGit)! - Changed the `deserialize` method of the content field to filter out missing oEmbeds
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`8aa42fae`](https://github.com/keystonejs/keystone/commit/8aa42fae79d4a63a74d4a0f1e3ac6c74fae6885b), [`fe42a997`](https://github.com/keystonejs/keystone/commit/fe42a997c81825a819ac28f05e02d1ed61099542), [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/build-field-types@5.2.2
+  - @keystonejs/fields@6.3.2
+  - @arch-ui/fields@2.1.3
+  - @arch-ui/hooks@0.0.9
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/tooltip@0.1.8
+  - @arch-ui/typography@0.0.14
+  - @arch-ui/color-utils@0.0.2
+  - @arch-ui/theme@0.0.9
+  - @keystonejs/utils@5.2.2
+
+## 5.4.1
+
+### Patch Changes
+
+- [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2) [#2395](https://github.com/keystonejs/keystone/pull/2395) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded all `@emotion.*` dependencies.
+
+* [`92b8fc4f`](https://github.com/keystonejs/keystone/commit/92b8fc4f2fc83dd40a8be50fc7344d27c59a4085) [#2417](https://github.com/keystonejs/keystone/pull/2417) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fixed a console error and z-index on the content field.
+
+- [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09) [#2381](https://github.com/keystonejs/keystone/pull/2381) Thanks [@timleslie](https://github.com/timleslie)! - Updated `@babel/*` dependency packages to latest versions.
+
+- Updated dependencies [[`6929a7e3`](https://github.com/keystonejs/keystone/commit/6929a7e3339f36e712bcbafc71ddf7a133730b29), [`d8a7b8a2`](https://github.com/keystonejs/keystone/commit/d8a7b8a23b4c3e1545d101a92323be165ad362e2), [`9a388f01`](https://github.com/keystonejs/keystone/commit/9a388f01e388272d56f81af2247d8030e0f2c972), [`bd4096ee`](https://github.com/keystonejs/keystone/commit/bd4096ee86f7790c76db23090b38f880e5aa7ecc), [`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09), [`c059b63c`](https://github.com/keystonejs/keystone/commit/c059b63c6ebdbb60ac4095d1efd791d598b2756c)]:
+  - @keystonejs/build-field-types@5.2.1
+  - @arch-ui/fields@2.1.2
+  - @arch-ui/input@0.1.5
+  - @arch-ui/tooltip@0.1.7
+  - @arch-ui/typography@0.0.13
+  - @keystonejs/fields@6.3.1
+  - @arch-ui/hooks@0.0.8
+  - @arch-ui/icons@0.0.9
+  - @arch-ui/theme@0.0.8
+  - @keystonejs/utils@5.2.1
+
+## 5.4.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/build-field-types@5.2.0
+  - @keystonejs/fields@6.3.0
+  - @keystonejs/utils@5.2.0
+
 ## 5.3.0
 
 ### Minor Changes
@@ -95,7 +184,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -103,7 +192,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
   - @keystonejs/build-field-types@5.0.0
   - @keystonejs/fields@5.0.0
   - @keystonejs/utils@5.0.0
@@ -114,37 +203,37 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
   - @keystone-alpha/fields@15.0.0
 
 ## 3.1.3
 
 ### Patch Changes
 
-- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
   - @keystone-alpha/fields@14.0.0
 
 ## 3.1.2
 
-- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone/commit/4e6a574d):
   - @keystone-alpha/fields@13.0.0
 
 ## 3.1.1
 
 ### Patch Changes
 
-- [04aa6a08](https://github.com/keystonejs/keystone-5/commit/04aa6a08): Fix regression when parent list of a Content field had a `where` clause as its access control.
+- [04aa6a08](https://github.com/keystonejs/keystone/commit/04aa6a08): Fix regression when parent list of a Content field had a `where` clause as its access control.
 
 ## 3.1.0
 
 ### Minor Changes
 
-- [f56ffdfd](https://github.com/keystonejs/keystone-5/commit/f56ffdfd): Apply access control to auxiliary lists
+- [f56ffdfd](https://github.com/keystonejs/keystone/commit/f56ffdfd): Apply access control to auxiliary lists
 
 ## 3.0.1
 
-- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
-- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone/commit/7689753c):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone/commit/9ade2b2d):
   - @keystone-alpha/fields@12.0.0
   - @arch-ui/input@0.1.0
 
@@ -152,7 +241,7 @@
 
 ### Major Changes
 
-- [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9): The `.access` property of Fields is now keyed by `schemaName`. As such, a number of getters have been replaced with methods which take `{ schemaName }`.
+- [89c0d7e9](https://github.com/keystonejs/keystone/commit/89c0d7e9): The `.access` property of Fields is now keyed by `schemaName`. As such, a number of getters have been replaced with methods which take `{ schemaName }`.
 
   - `get gqlOutputFields()` -> `gqlOutputFields({ schemaName })`
   - `get gqlOutputFieldResolvers()` -> `gqlOutputFieldResolvers({ schemaName })`
@@ -161,42 +250,42 @@
   - `get gqlAuxMutationResolvers()` -> `gqlAuxMutationResolvers({ schemaName })`
   - `get gqlQueryInputFields()` -> `gqlQueryInputFields({ schemaName })`
 
-* Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d):
+* Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone/commit/a8e9378d):
   - @keystone-alpha/fields@11.0.0
 
 ## 2.1.0
 
 ### Minor Changes
 
-- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function in view Controllers
+- [e049cfcb](https://github.com/keystonejs/keystone/commit/e049cfcb): Support defaultValue as a function in view Controllers
 
 ## 2.0.2
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade prettier to 1.18.2
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade promise utility dependencies
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade prettier to 1.18.2
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade promise utility dependencies
 
-- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9):
   - @keystone-alpha/fields@10.0.0
 
 ## 2.0.1
 
-- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone/commit/2b094b7f):
   - @keystone-alpha/fields@9.0.0
 
 ## 2.0.0
 
 ### Major Changes
 
-- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+- [ac7934fe](https://github.com/keystonejs/keystone/commit/ac7934fe):
 
   Update Slate 0.44.12 -> 0.47.4 & slate-rect 0.21.18 -> 0.22.4
 
 ### Patch Changes
 
-- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+- [ac7934fe](https://github.com/keystonejs/keystone/commit/ac7934fe):
 
   Ensure all plugins for default Blocks are added to Slate correctly
 
@@ -204,6 +293,6 @@
 
 ### Major Changes
 
-- [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+- [b6a9f6b9](https://github.com/keystonejs/keystone/commit/b6a9f6b9):
 
   Extract `Content` field into its own package: `@keystone-alpha/field-content`.

@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
-import { withRouter, Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
+import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
+import { useLazyQuery } from '@apollo/react-hooks';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
@@ -12,56 +12,57 @@ import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
-class HomePage extends Component {
-  render() {
-    const { lists, data, adminPath } = this.props;
+import { useAdminMeta } from '../../providers/AdminMeta';
 
-    return (
-      <main>
-        <Container>
-          <HeaderInset>
-            <PageTitle>Dashboard</PageTitle>
-          </HeaderInset>
-          <ContainerQuery>
-            {({ width }) => {
-              let cellWidth = 3;
-              if (width < 1024) cellWidth = 4;
-              if (width < 768) cellWidth = 6;
-              if (width < 480) cellWidth = 12;
-              return (
-                <Grid gap={16}>
-                  {lists.map(list => {
-                    const { key, path } = list;
-                    const meta = data && data[list.gqlNames.listQueryMetaName];
-                    return (
-                      <ListProvider list={list} key={key}>
-                        <Cell width={cellWidth}>
-                          <Box to={`${adminPath}/${path}`} meta={meta} />
-                        </Cell>
-                      </ListProvider>
-                    );
-                  })}
-                </Grid>
-              );
-            }}
-          </ContainerQuery>
-        </Container>
-      </main>
-    );
-  }
-}
+const HomePage = ({ lists, data, adminPath }) => (
+  <main>
+    <Container>
+      <HeaderInset>
+        <PageTitle>Dashboard</PageTitle>
+      </HeaderInset>
+      <ContainerQuery>
+        {({ width }) => {
+          let cellWidth = 3;
+          if (width < 1024) cellWidth = 4;
+          if (width < 768) cellWidth = 6;
+          if (width < 480) cellWidth = 12;
+          return (
+            <Grid gap={16}>
+              {lists.map(list => {
+                const { key, path } = list;
+                const meta = data && data[list.gqlNames.listQueryMetaName];
+                return (
+                  <ListProvider list={list} key={key}>
+                    <Cell width={cellWidth}>
+                      <Box to={`${adminPath}/${path}`} meta={meta} />
+                    </Cell>
+                  </ListProvider>
+                );
+              })}
+            </Grid>
+          );
+        }}
+      </ContainerQuery>
+    </Container>
+  </main>
+);
 
-const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
+const HomepageListProvider = () => {
+  const { getListByKey, listKeys, adminPath } = useAdminMeta();
+
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
-  const query = gqlCountQueries(lists);
-  const { data, error } = useQuery(query, { fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
+  const query = lists.length !== 0 ? gqlCountQueries(lists) : null;
+  const [getLists, { data, error, called }] = useLazyQuery(query, {
+    fetchPolicy: 'cache-and-network',
+    errorPolicy: 'all',
+  });
 
   if (lists.length === 0) {
     return (
       <Fragment>
-        <DocTitle>Home</DocTitle>
+        <DocTitle title="Home" />
         <PageError>
           <p>
             No lists defined.{' '}
@@ -72,6 +73,10 @@ const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
         </PageError>
       </Fragment>
     );
+  }
+
+  if (!called) {
+    getLists();
   }
 
   let allowedLists = lists;
@@ -106,16 +111,16 @@ const HomepageListProvider = ({ getListByKey, listKeys, ...props }) => {
 
   return (
     <Fragment>
-      <DocTitle>Home</DocTitle>
+      <DocTitle title="Home" />
       {
         // NOTE: `loading` is intentionally omitted here
         // the display of a loading indicator for counts is deferred to the
         // list component so we don't block rendering the lists immediately
         // to the user.
       }
-      <HomePage lists={allowedLists} data={data} {...props} />
+      <HomePage lists={allowedLists} data={data} adminPath={adminPath} />
     </Fragment>
   );
 };
 
-export default withRouter(HomepageListProvider);
+export default HomepageListProvider;

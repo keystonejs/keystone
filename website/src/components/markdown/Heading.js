@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 import { LinkIcon } from '@arch-ui/icons';
@@ -43,19 +42,27 @@ const Heading = ({ as: Tag, children, id, ...props }) => {
     <Tag
       css={{
         color: colors.N100,
+        fontWeight: 600,
         lineHeight: 1,
         marginBottom: '0.66em',
-        position: 'relative',
-
-        '&:hover a': {
-          opacity: 1,
-        },
+        marginTop: '1.66em',
       }}
       id={id}
       {...props}
     >
-      {link}
-      {children}
+      <span
+        css={{
+          display: 'block',
+          position: 'relative',
+
+          '&:hover a, &:focus-within a': {
+            opacity: 1,
+          },
+        }}
+      >
+        {link}
+        {children}
+      </span>
     </Tag>
   );
 };
@@ -63,7 +70,9 @@ const Heading = ({ as: Tag, children, id, ...props }) => {
 export const H1 = props => (
   <Heading
     css={mq({
-      fontSize: ['2.4rem', '3.2rem'],
+      fontSize: '2.4rem',
+      fontWeight: 500,
+      letterSpacing: '-0.025em',
       marginTop: 0,
     })}
     {...props}
@@ -74,9 +83,18 @@ export const H2 = props => (
   <Heading
     {...props}
     css={mq({
-      fontSize: ['1.8rem', '2.4rem'],
-      fontWeight: 300,
-      marginTop: '1.33em',
+      fontSize: '1.8rem',
+      fontWeight: 500,
+      letterSpacing: '-0.025em',
+      marginTop: 0,
+
+      // offset header height for hash links
+      '::before': {
+        content: '" "',
+        height: 'calc(32px + 60px)',
+        display: 'block',
+        marginTop: -60,
+      },
     })}
     as="h2"
   />
@@ -84,16 +102,25 @@ export const H2 = props => (
 export const H3 = props => (
   <Heading
     css={mq({
-      fontSize: ['1.4rem', '1.6rem'],
+      fontSize: '1.4rem',
       fontWeight: 500,
-      marginTop: '1.5em',
+      letterSpacing: '-0.025em',
+      marginTop: 0,
+
+      // offset header height for hash links
+      '::before': {
+        content: '" "',
+        height: 'calc(32px + 60px)',
+        display: 'block',
+        marginTop: -60,
+      },
     })}
     {...props}
     as="h3"
   />
 );
-export const H4 = props => <Heading css={{ fontSize: '1.2rem' }} {...props} as="h4" />;
-export const H5 = props => <Heading {...props} css={{ fontSize: '1rem' }} as="h5" />;
-export const H6 = props => <Heading {...props} css={{ fontSize: '0.9rem' }} as="h6" />;
+export const H4 = props => <Heading css={{ fontSize: '1.2rem' }} as="h4" {...props} />;
+export const H5 = props => <Heading css={{ fontSize: '1rem' }} as="h5" {...props} />;
+export const H6 = props => <Heading css={{ fontSize: '0.9rem' }} as="h6" {...props} />;
 
 export default Heading;

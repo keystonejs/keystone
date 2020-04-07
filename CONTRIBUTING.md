@@ -260,11 +260,11 @@ Now, for each release we want to backport to, we follow this process:
 
 ### Build Process
 
-Some of the packages in keystone-5 need to compiled before they're published, we use [preconstruct](https://github.com/preconstruct/preconstruct) to do this.
+Some of the packages in keystone need to compiled before they're published, we use [preconstruct](https://github.com/preconstruct/preconstruct) to do this.
 
-Preconstruct reads from the `packages.json` preconstruct field for configuration, in keystone-5 all we need to do is set the packages that we need to build. Preconstruct reads all of the packages specified in the packages and checks the `main` and `module` fields and generates compiled versions. Preconstruct under the hood uses rollup to bundle all of the modules together which means people can't expose and interact with the modules (e.g. to change internals that could change in a patch version), it's also results in smaller builds because rollup is better at tree shaking than webpack. Preconstruct also uses babel and reads from the babel config in the repo to compile the code, there is one important babel plugin that Preconstruct adds which is `@babel/plugin-transform-runtime` which tells babel to import the helpers that it uses in generated code from a certain place rather than duplicating them in each package.
+Preconstruct reads from the `packages.json` preconstruct field for configuration, in all we need to do is set the packages that we need to build. Preconstruct reads all of the packages specified in the packages and checks the `main` and `module` fields and generates compiled versions. Preconstruct under the hood uses rollup to bundle all of the modules together which means people can't expose and interact with the modules (e.g. to change internals that could change in a patch version). It also results in smaller builds because rollup is better at tree shaking than webpack. Preconstruct also uses babel and reads from the babel config in the repo to compile the code, there is one important babel plugin that Preconstruct adds which is `@babel/plugin-transform-runtime` which tells babel to import the helpers that it uses in generated code from a certain place rather than duplicating them in each package.
 
-Preconstruct can generate a couple different types of modules, in keystone-5, we build esm and commonjs modules.
+Preconstruct can generate a couple different types of modules, in keystone, we build esm and commonjs modules.
 
 ESM bundles are built for newer bundlers like parcel, rollup and newer versions of webpack which understand ES modules and can build more optimised bundles from them than they can with commonjs.
 
@@ -275,8 +275,11 @@ We also build commonjs builds to run in node (for testing with jest or etc.) and
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+
 <!-- prettier-ignore-start -->
+
 <!-- markdownlint-disable -->
+
 <table>
   <tr>
     <td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="80px;" alt=""/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=JedWatson" title="Code">💻</a></td>
@@ -290,7 +293,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/molomby"><img src="https://avatars0.githubusercontent.com/u/2416367?v=4" width="80px;" alt=""/><br /><sub><b>John Molomby</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=molomby" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone/issues?q=author%3Amolomby" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://dominik-wilkowski.com"><img src="https://avatars3.githubusercontent.com/u/1266923?v=4" width="80px;" alt=""/><br /><sub><b>Dominik Wilkowski</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=dominikwilkowski" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/Noviny"><img src="https://avatars1.githubusercontent.com/u/15622106?v=4" width="80px;" alt=""/><br /><sub><b>Ben Conolly</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=Noviny" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Noviny"><img src="https://avatars1.githubusercontent.com/u/15622106?v=4" width="80px;" alt=""/><br /><sub><b>Ben Conolly</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=Noviny" title="Code">💻</a> <a href="#maintenance-Noviny" title="Maintenance">🚧</a> <a href="#tool-Noviny" title="Tools">🔧</a></td>
     <td align="center"><a href="https://github.com/jaredcrowe"><img src="https://avatars1.githubusercontent.com/u/4995433?v=4" width="80px;" alt=""/><br /><sub><b>Jared Crowe</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=jaredcrowe" title="Code">💻</a></td>
     <td align="center"><a href="https://www.linkedin.com/in/gautamsi"><img src="https://avatars2.githubusercontent.com/u/5769869?v=4" width="80px;" alt=""/><br /><sub><b>Gautam Singh</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=gautamsi" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/lukebatchelor"><img src="https://avatars2.githubusercontent.com/u/18694878?v=4" width="80px;" alt=""/><br /><sub><b>lukebatchelor</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=lukebatchelor" title="Code">💻</a></td>
@@ -329,13 +332,15 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://www.marxvn.com"><img src="https://avatars2.githubusercontent.com/u/4975208?v=4" width="80px;" alt=""/><br /><sub><b>Martin Pham</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/issues?q=author%3Amarxvn" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/justintemps"><img src="https://avatars3.githubusercontent.com/u/12401179?v=4" width="80px;" alt=""/><br /><sub><b>Justin Smith</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=justintemps" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/gabipetrovay"><img src="https://avatars0.githubusercontent.com/u/1170398?v=4" width="80px;" alt=""/><br /><sub><b>Gabriel Petrovay</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=gabipetrovay" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone/commits?author=gabipetrovay" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://atticus.dev"><img src="https://avatars1.githubusercontent.com/u/9361948?v=4" width="80px;" alt=""/><br /><sub><b>Liam Clarke</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=LiamAttClarke" title="Code">💻</a></td>
+    <td align="center"><a href="https://atticus.dev"><img src="https://avatars1.githubusercontent.com/u/9361948?v=4" width="80px;" alt=""/><br /><sub><b>Liam Clarke</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=LiamAttClarke" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/wbarcovsky"><img src="https://avatars2.githubusercontent.com/u/5498761?v=4" width="80px;" alt=""/><br /><sub><b>Vladimir Barcovsky</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=wbarcovsky" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
+
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

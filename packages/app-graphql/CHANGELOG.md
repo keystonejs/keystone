@@ -1,5 +1,91 @@
 # @keystonejs/app-graphql
 
+## 5.1.5
+
+### Patch Changes
+
+- [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+- Updated dependencies [[`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063)]:
+  - @keystonejs/session@6.0.1
+
+## 5.1.4
+
+### Patch Changes
+
+- [`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a) [#2540](https://github.com/keystonejs/keystone/pull/2540) Thanks [@timleslie](https://github.com/timleslie)! - Removed the undocumented `restrictAudienceMiddleware` function.
+
+- Updated dependencies [[`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a), [`61a70503`](https://github.com/keystonejs/keystone/commit/61a70503f6c184a8f0f5440466399f12e6d7fa41), [`663ae7b4`](https://github.com/keystonejs/keystone/commit/663ae7b453f450f077795fbbc6c9f138e6b27f52)]:
+  - @keystonejs/session@6.0.0
+  - @keystonejs/utils@5.4.0
+  - @keystonejs/app-graphql-playground@5.1.2
+
+## 5.1.3
+
+### Patch Changes
+
+- [`29ad8a17`](https://github.com/keystonejs/keystone/commit/29ad8a175cc4324fe722eefd22c09f7fb6c5be5e) [#2531](https://github.com/keystonejs/keystone/pull/2531) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a minor typo.
+
+- Updated dependencies [[`51546e41`](https://github.com/keystonejs/keystone/commit/51546e4142fb8c66cfc413479c671a59618f885b)]:
+  - @keystonejs/utils@5.3.0
+
+## 5.1.2
+
+### Patch Changes
+
+- [`10e88dc3`](https://github.com/keystonejs/keystone/commit/10e88dc3d81f5e021db0bfb31f7547852c602c14) [#2468](https://github.com/keystonejs/keystone/pull/2468) Thanks [@timleslie](https://github.com/timleslie)! - Removed `Keystone.getAdminSchema` in favour of a new `Keystone.getResolvers({ schemaName })` method, along with the pre-existing `Keystone.getTypeDefs({ schemaName })`.
+
+* [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+- [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+- Updated dependencies [[`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20)]:
+  - @keystonejs/app-graphql-playground@5.1.1
+  - @keystonejs/logger@5.1.1
+  - @keystonejs/session@5.1.1
+  - @keystonejs/utils@5.2.2
+
+## 5.1.1
+
+### Patch Changes
+
+- [`362efbc2`](https://github.com/keystonejs/keystone/commit/362efbc2e054fa48aedb515c54b5a64757832be9) [#2437](https://github.com/keystonejs/keystone/pull/2437) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated apollo-server-express dependency to 2.10.1.
+
+- Updated dependencies [[`dcdd8ed9`](https://github.com/keystonejs/keystone/commit/dcdd8ed9142cf3328a7af80bc167ef93c7669b09)]:
+  - @keystonejs/utils@5.2.1
+
+## 5.1.0
+
+### Minor Changes
+
+- [`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf) [#2391](https://github.com/keystonejs/keystone/pull/2391) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for Node 8.x, as it is [no longer in maintenance mode](https://nodejs.org/en/about/releases/).
+
+### Patch Changes
+
+- Updated dependencies [[`517b23e4`](https://github.com/keystonejs/keystone/commit/517b23e4b17414ed1807e8d7af1e67377ba3b7bf)]:
+  - @keystonejs/app-graphql-playground@5.1.0
+  - @keystonejs/logger@5.1.0
+  - @keystonejs/session@5.1.0
+  - @keystonejs/utils@5.2.0
+
+## 5.0.4
+
+### Patch Changes
+
+- [`b8631cf7`](https://github.com/keystonejs/keystone/commit/b8631cf770db14b90f83300358213b7572ca01f2) [#2320](https://github.com/keystonejs/keystone/pull/2320) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `graphql` dependency from 14.4.2 to 14.6.0 and `graphql-type-json` depedency from 0.2.1 to 0.3.1.
+
+* [`36a3e6a0`](https://github.com/keystonejs/keystone/commit/36a3e6a089b81a37276bbbe87dea7cf24dd5db9e) [#2323](https://github.com/keystonejs/keystone/pull/2323) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Apollo-related dependencies:
+
+  apollo-boost: 0.4.4 -> 0.4.7
+  apollo-cache-inmemory: 1.5.1 -> 1.6.5
+  apollo-client: 2.6.4 -> 2.6.8
+  apollo-server-express: 2.9.1 -> 2.9.16
+  apollo-upload-client: 10.0.0 -> 12.1.0
+  apollo-utilities: 1.3.2 -> 1.3.3
+
+* Updated dependencies [[`59fd3689`](https://github.com/keystonejs/keystone/commit/59fd3689af3bc73682e430feed21b77376e54092)]:
+  - @keystonejs/app-graphql-playground@5.0.1
+
 ## 5.0.3
 
 ### Patch Changes
@@ -24,7 +110,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -32,7 +118,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
   - @keystonejs/app-graphql-playground@5.0.0
   - @keystonejs/logger@5.0.0
   - @keystonejs/session@5.0.0
@@ -44,36 +130,36 @@
 
 ### Patch Changes
 
-- [`7129c887`](https://github.com/keystonejs/keystone-5/commit/7129c8878a825d961f2772be497dcd5bd6b2b697) [#1757](https://github.com/keystonejs/keystone-5/pull/1757) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Removed warnings about deprecated packages
+- [`7129c887`](https://github.com/keystonejs/keystone/commit/7129c8878a825d961f2772be497dcd5bd6b2b697) [#1757](https://github.com/keystonejs/keystone/pull/1757) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Removed warnings about deprecated packages
 
 ## 8.2.0
 
 ### Minor Changes
 
-- [588c50cd](https://github.com/keystonejs/keystone-5/commit/588c50cd): Support protection against Billion Laughs DoS attacks
+- [588c50cd](https://github.com/keystonejs/keystone/commit/588c50cd): Support protection against Billion Laughs DoS attacks
 
 ## 8.1.1
 
 ### Patch Changes
 
-- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+- [9b532072](https://github.com/keystonejs/keystone/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
 
 ## 8.1.0
 
 ### Minor Changes
 
-- [b9e2c45b](https://github.com/keystonejs/keystone-5/commit/b9e2c45b): Add support for query validation
+- [b9e2c45b](https://github.com/keystonejs/keystone/commit/b9e2c45b): Add support for query validation
 
 ## 8.0.0
 
 ### Major Changes
 
-- [f8ad0975](https://github.com/keystonejs/keystone-5/commit/f8ad0975): The `cors` and `pinoOptions` parameters now live on `keystone.prepare()` rather than `new GraphQLApp()`
+- [f8ad0975](https://github.com/keystonejs/keystone/commit/f8ad0975): The `cors` and `pinoOptions` parameters now live on `keystone.prepare()` rather than `new GraphQLApp()`
 
 ### Patch Changes
 
-- [c99c7cd2](https://github.com/keystonejs/keystone-5/commit/c99c7cd2): First iteration of the GraphQLPlaygroundApp.
-- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+- [c99c7cd2](https://github.com/keystonejs/keystone/commit/c99c7cd2): First iteration of the GraphQLPlaygroundApp.
+- [a8e9378d](https://github.com/keystonejs/keystone/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
   - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
   - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
   - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
@@ -85,24 +171,24 @@
 
 ### Major Changes
 
-- [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7): `cookieSecret` and `sessionStore` config options are now passed to the `Keystone` constructor instead of the individual auth or graphql packages.
+- [8d0d98c7](https://github.com/keystonejs/keystone/commit/8d0d98c7): `cookieSecret` and `sessionStore` config options are now passed to the `Keystone` constructor instead of the individual auth or graphql packages.
 
 ### Patch Changes
 
-- [b27f6eed](https://github.com/keystonejs/keystone-5/commit/b27f6eed): Upgrade apollo-server to 2.9.1
+- [b27f6eed](https://github.com/keystonejs/keystone/commit/b27f6eed): Upgrade apollo-server to 2.9.1
 
 ## 6.3.1
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade graphql to 14.4.2
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade graphql to 14.4.2
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade express to 4.17.1
 
 ## 6.3.0
 
 ### Minor Changes
 
-- [04371d0d](https://github.com/keystonejs/keystone-5/commit/04371d0d):
+- [04371d0d](https://github.com/keystonejs/keystone/commit/04371d0d):
 
   Prepare middlewares for auth strategies immediately after setting up session middleware.
 
@@ -110,7 +196,7 @@
 
 ### Minor Changes
 
-- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
 
   Expose the incoming Request object as `context.req` enabling things like logging IPs in custom hooks, etc.
 
@@ -118,7 +204,7 @@
 
 ### Minor Changes
 
-- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+- [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
 
   - GraphQL Playground now correctly sends auth cookies by default.
   - The GraphQL `context` object now has `startAuthedSession` and
@@ -127,11 +213,11 @@
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
-* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
   - @keystone-alpha/session@2.0.0
 
 ## 6.0.0
@@ -140,7 +226,7 @@
 
 - This packages has been renamed from `server`.
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Specify custom servers from within the index.js file
 
@@ -171,7 +257,7 @@
          });
       ```
 
-- [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+- [b2651279](https://github.com/keystonejs/keystone/commit/b2651279):
 
   Remove usage of `port` arg from `prepareMiddleware()` and stop doing inline console.logs
 
@@ -183,104 +269,104 @@
 
 ### Major Changes
 
-- [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+- [b7a2ea9c](https://github.com/keystonejs/keystone/commit/b7a2ea9c):
 
   - Remove `.config` property from `WebServer`. No longer allow `admin ui` or `cookie secret` as config fields. User must use `adminUI` and `cookieSecret` respectively.
 
 ### Minor Changes
 
-- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+- [6f598e83](https://github.com/keystonejs/keystone/commit/6f598e83):
 
   - Add Admin UI static building
 
 ### Patch Changes
 
-- [fdc5fe3a](https://github.com/keystonejs/keystone-5/commit/fdc5fe3a):
+- [fdc5fe3a](https://github.com/keystonejs/keystone/commit/fdc5fe3a):
 
   - GraphiQL playground now only accepts GET requests (not POST)
 
-* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone/commit/b7a2ea9c):
   - @keystone-alpha/utils@3.0.0
 
 ## 4.0.1
 
-- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+- [patch][ec76b500](https://github.com/keystonejs/keystone/commit/ec76b500):
 
   - Don't create graphiql shortlinks for multipart forms
 
 ## 4.0.0
 
-- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone/commit/b69fb9b7):
 
   - Update dev devependencies
 
-- [patch][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+- [patch][baff3c89](https://github.com/keystonejs/keystone/commit/baff3c89):
 
   - Use the updated logger API
 
-- [patch][78266983](https://github.com/keystonejs/keystone-5/commit/78266983):
+- [patch][78266983](https://github.com/keystonejs/keystone/commit/78266983):
 
   - Restructure internal code
 
-- [major][656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+- [major][656e90c2](https://github.com/keystonejs/keystone/commit/656e90c2):
 
   - `WebServer.start()` no longer takes any arguments. Developer must now explicitly call `keystone.connect()` before calling `WebServer.start()`.
 
-- [minor][21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+- [minor][21be780b](https://github.com/keystonejs/keystone/commit/21be780b):
 
   - Expose `createApolloServer` in the public API
 
-- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone/commit/baff3c89):
   - @keystone-alpha/logger@2.0.0
 
 ## 3.0.0
 
-- [patch][022724ab](https://github.com/keystonejs/keystone-5/commit/022724ab):
+- [patch][022724ab](https://github.com/keystonejs/keystone/commit/022724ab):
 
   - Factor out a `createApolloServer` function.
 
-- [patch][289123a6](https://github.com/keystonejs/keystone-5/commit/289123a6):
+- [patch][289123a6](https://github.com/keystonejs/keystone/commit/289123a6):
 
   - Decouple creation of ApolloServer from setting up of middleware
 
-- [patch][52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+- [patch][52f1c47b](https://github.com/keystonejs/keystone/commit/52f1c47b):
 
   - Use the new Keystone.registerSchema interface.
 
-- [major][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- [major][5ebf4c3a](https://github.com/keystonejs/keystone/commit/5ebf4c3a):
 
   - Remove the .sessionManager property from the Keystone class
 
-- [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- [patch][5ebf4c3a](https://github.com/keystonejs/keystone/commit/5ebf4c3a):
 
   - Use the new @keystone-alpha/session package
 
-- Updated dependencies [d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
-- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- Updated dependencies [d718c016](https://github.com/keystonejs/keystone/commit/d718c016):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone/commit/5ebf4c3a):
   - @keystone-alpha/session@1.0.0
 
 ## 2.0.2
 
-- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone/commit/5ddb2ed6):
 
   - Always display clickable links when starting a server in dev mode
 
-- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone/commit/98c02a46):
   - @keystone-alpha/utils@2.0.0
 
 ## 2.0.1
 
-- [patch][0c754410](https://github.com/keystonejs/keystone-5/commit/0c754410):
+- [patch][0c754410](https://github.com/keystonejs/keystone/commit/0c754410):
 
   - Fix the graphql dev query links
 
 ## 2.0.0
 
-- [patch][1f2ebc81](https://github.com/keystonejs/keystone-5/commit/1f2ebc81):
+- [patch][1f2ebc81](https://github.com/keystonejs/keystone/commit/1f2ebc81):
 
   - Internal refactoring
 
-- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+- [major][de616f7e](https://github.com/keystonejs/keystone/commit/de616f7e):
 
   - Update authStrategy APIs
     - Removes `authStrategy` from the `config` API of `Webserver`.
@@ -291,25 +377,25 @@
 
 ## 1.2.0
 
-- [minor][74e0363](https://github.com/keystonejs/keystone-5/commit/74e0363):
+- [minor][74e0363](https://github.com/keystonejs/keystone/commit/74e0363):
 
   - Reinstate ability to pass args to keystone.connect
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 
 ## 1.1.0
 
-- [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):
+- [minor][91557b24](https://github.com/keystonejs/keystone/commit/91557b24):
 
   - Make links in terminal clicky where possible
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 
-- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+- [patch][9534f98f](https://github.com/keystonejs/keystone/commit/9534f98f):
 
   - Add README.md to package
 

@@ -19,7 +19,7 @@ const showSuccessMessage = async () => {
   - Edit ${c.bold(`${projectDir}${path.sep}index.js`)} to customize your app.
   - ${terminalLink('Open the Admin UI', 'http://localhost:3000/admin')}
   - ${terminalLink('Read the docs', 'https://keystonejs.com')}
-  - ${terminalLink('Star KeystoneJS on GitHub', 'https://github.com/keystonejs/keystone-5')}
+  - ${terminalLink('Star KeystoneJS on GitHub', 'https://github.com/keystonejs/keystone')}
 `);
 };
 
