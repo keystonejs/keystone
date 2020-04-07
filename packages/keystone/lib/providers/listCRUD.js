@@ -75,7 +75,7 @@ class ListCRUDProvider {
         count: Int
       }`,
       `input ${this.gqlNames.listsMetaInput} {
-        name: String
+        key: String
       }`,
     ]);
   }
@@ -158,9 +158,9 @@ class ListCRUDProvider {
       ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
 
       // And the Keystone meta queries must always be available
-      [this.gqlNames.listsMeta]: (_, { where: { name } = {} }, context) =>
+      [this.gqlNames.listsMeta]: (_, { where: { key } = {} }, context) =>
         this.lists
-          .filter(list => list.access[schemaName].read && (!name || list.key === name))
+          .filter(list => list.access[schemaName].read && (!key || list.key === key))
           .map(list => list.listMeta(context)),
     };
   }
