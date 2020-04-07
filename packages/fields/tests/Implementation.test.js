@@ -8,6 +8,7 @@ const args = {
   },
   defaultAccess: true,
   schemaNames: ['public'],
+  type: { type: 'AType' },
 };
 
 describe('new Implementation()', () => {
@@ -23,6 +24,7 @@ describe('new Implementation()', () => {
         },
         defaultAccess: true,
         schemaNames: ['public'],
+        type: { type: 'AType' },
       }
     );
     expect(impl).not.toBeNull();

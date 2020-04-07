@@ -39,12 +39,30 @@ class MockFieldImplementation {
   getGqlAuxMutations() {
     return ['mutateFoo: Boolean'];
   }
+  getGqlMetaTypes({ interfaceType }) {
+    return [
+      `
+        type _MockFieldMeta implements ${interfaceType} {
+          name: String
+          type: String
+        }
+      `,
+    ];
+  }
+  gqlMetaQueryResolver() {
+    return {
+      __typename: '_MockFieldMeta',
+      name: this.path,
+      type: this.type.type,
+    };
+  }
   extendAdminViews(views) {
     return views;
   }
 }
 
 const MockFieldType = {
+  type: 'MockField',
   implementation: MockFieldImplementation,
   views: {},
   adapters: { mock: MockFieldAdapter },
@@ -572,6 +590,7 @@ describe('keystone.prepare()', () => {
     };
     const mockMiddlewareFn = jest.fn(() => {});
     const MockFieldWithMiddleware = {
+      type: 'MockFieldWithMiddleware',
       prepareMiddleware: jest.fn(() => mockMiddlewareFn),
       implementation: MockFieldImplementation,
       views: {},

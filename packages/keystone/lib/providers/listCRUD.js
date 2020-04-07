@@ -1,6 +1,8 @@
 const { GraphQLJSON } = require('graphql-type-json');
 const { flatten, objMerge, unique } = require('@keystonejs/utils');
 
+const interfaceType = '_ListSchemaFields';
+
 class ListCRUDProvider {
   constructor({ metaPrefix = 'ks' } = {}) {
     this.lists = [];
@@ -13,6 +15,11 @@ class ListCRUDProvider {
   getTypes({ schemaName }) {
     return unique([
       ...flatten(this.lists.map(list => list.getGqlTypes({ schemaName }))),
+      ...flatten(
+        this.lists.map(list =>
+          flatten(list.fields.map(field => field.getGqlMetaTypes({ schemaName, interfaceType })))
+        )
+      ),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -41,7 +48,7 @@ class ListCRUDProvider {
            user when performing 'auth' operations."""
         auth: JSON
       }`,
-      `type _ListSchemaFields {
+      `interface ${interfaceType} {
         """The name of the field in its list."""
         name: String
 
@@ -64,7 +71,7 @@ class ListCRUDProvider {
         queries: [String]
 
         """Information about fields defined on this list. """
-        fields(where: _ListSchemaFieldsInput): [_ListSchemaFields]
+        fields(where: _ListSchemaFieldsInput): [${interfaceType}]
 
         """Information about fields on other types which return this type, or
            provide aggregate information about this type"""
@@ -138,11 +145,21 @@ class ListCRUDProvider {
         return this.lists
           .find(list => list.key === key)
           .getFieldsWithAccess({ schemaName, access: 'read' })
-          .filter(field => !type || field.constructor.name === type)
-          .map(field => ({
-            name: field.path,
-            type: field.constructor.name,
-          }));
+          .filter(field => !type || field.type.type === type)
+          .map(field => {
+            const result = field.gqlMetaQueryResolver({ interfaceType });
+            // We do this check here, and not in the `${interfaceType}`
+            // __resolveType resolver because by the time that's executed we no
+            // longer know what field we were resolving against.
+            // Instead, we throw here with a more meaningful error.
+            if (!result.__typename) {
+              throw new Error(
+                `Cannot resolve field ${field.type.type}.__typename from ${field.type.type}::gqlMetaQueryResolver()`
+              );
+            }
+
+            return result;
+          });
       },
 
       // A function so we can lazily evaluate this potentially expensive
@@ -165,6 +182,12 @@ class ListCRUDProvider {
           .filter(({ fields }) => fields.length),
     };
 
+    const fieldSchemaResolver = {
+      // We have to implement this to avoid Apollo throwing an error about it
+      // missing (even though it works just fine without it, grrrr)
+      __resolveType: obj => obj.__typename,
+    };
+
     return {
       ...objMerge(this.lists.map(list => list.gqlAuxFieldResolvers({ schemaName }))),
       ...objMerge(this.lists.map(list => list.gqlFieldResolvers({ schemaName }))),
@@ -173,6 +196,7 @@ class ListCRUDProvider {
       _ListMeta: listMetaResolver,
       _ListAccess: listAccessResolver,
       _ListSchema: listSchemaResolver,
+      [interfaceType]: fieldSchemaResolver,
     };
   }
   getQueryResolvers({ schemaName }) {

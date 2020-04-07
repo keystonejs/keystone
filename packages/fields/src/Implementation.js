@@ -5,7 +5,7 @@ class Field {
   constructor(
     path,
     { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, adminDoc, ...config },
-    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames, type }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
@@ -27,6 +27,8 @@ class Field {
       getListByKey,
       { ...config }
     );
+    this.type = type;
+    this.gqlMetaType = `_${type.type}Meta`;
 
     // Should be overwritten by types that implement a Relationship interface
     this.isRelationship = false;
@@ -81,6 +83,24 @@ class Field {
   }
   gqlAuxMutationResolvers() {
     return {};
+  }
+
+  getGqlMetaTypes({ interfaceType }) {
+    return [
+      `
+        type ${this.gqlMetaType} implements ${interfaceType} {
+          name: String
+          type: String
+        }
+      `,
+    ];
+  }
+  gqlMetaQueryResolver() {
+    return {
+      __typename: this.gqlMetaType,
+      name: this.path,
+      type: this.type.type,
+    };
   }
 
   /*

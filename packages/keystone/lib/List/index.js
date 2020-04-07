@@ -314,6 +314,7 @@ module.exports = class List {
           defaultAccess: this.defaultAccess.field,
           createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
+          type,
         })
     );
     this.fields = Object.values(this.fieldsByPath);
