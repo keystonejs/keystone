@@ -140,9 +140,9 @@ export class JSONDecimalInterface extends JSONFieldAdapter {
 export class MemoryDecimalInterface extends MemoryFieldAdapter {
   getQueryConditions(dbPath) {
     return {
-      ...this.equalityConditions(dbPath),
-      ...this.orderingConditions(dbPath),
-      ...this.inConditions(dbPath),
+      ...this.equalityConditions(dbPath, parseFloat),
+      ...this.orderingConditions(dbPath, parseFloat),
+      ...this.inConditions(dbPath, parseFloat),
     };
   }
 }

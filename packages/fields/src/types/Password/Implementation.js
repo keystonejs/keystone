@@ -166,6 +166,20 @@ export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdap
   }
 }
 
-export class JSONPasswordInterface extends CommonPasswordInterface(JSONFieldAdapter) {}
+export class JSONPasswordInterface extends CommonPasswordInterface(JSONFieldAdapter) {
+  constructor() {
+    super(...arguments);
+  }
+
+  getQueryConditions(dbPath) {
+    console.log(this.path, dbPath);
+    return {
+      [`${this.path}_is_set`]: value => item => {
+        console.log({ value, item, dbPath });
+        return true; // { value, item, dbPath };
+      },
+    };
+  }
+}
 
 export class MemoryPasswordInterface extends CommonPasswordInterface(MemoryFieldAdapter) {}

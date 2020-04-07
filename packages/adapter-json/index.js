@@ -128,23 +128,18 @@ class JSONListAdapter extends BaseListAdapter {
 
       const buildChainableClauses = this._buildChainableClauses.bind(this);
 
-      // prettier-ignore
       return {
-        id:        value =>  _ =>          _.matchesProperty('id', value),
-        id_not:    value =>  _ => _.negate(_.matchesProperty('id', value)),
+        id: value => _ => _.matchesProperty('id', value),
+        id_not: value => _ => _.negate(_.matchesProperty('id', value)),
 
-        id_in:     value => () =>          idMatcher(value),
-        id_not_in: value =>  _ => _.negate(idMatcher(value)),
+        id_in: value => () => idMatcher(value),
+        id_not_in: value => _ => _.negate(idMatcher(value)),
 
-        AND: values => _ => _.overEvery(
-          flatten(values.map(buildChainableClauses))
-            .map(clause => clause(_))
-        ),
+        AND: values => _ =>
+          _.overEvery(flatten(values.map(buildChainableClauses)).map(clause => clause(_))),
 
-        OR: values => _ => _.overSome(
-          flatten(values.map(buildChainableClauses))
-            .map(clause => clause(_))
-        ),
+        OR: values => _ =>
+          _.overSome(flatten(values.map(buildChainableClauses)).map(clause => clause(_))),
 
         ...objMerge(
           this.fieldAdapters.map(fieldAdapter =>
@@ -363,9 +358,8 @@ class JSONFieldAdapter extends BaseFieldAdapter {
   //   `f`: (non-string methods only) A value transformation function which converts from a string type
   //        provided by graphQL into a native adapter type.
   equalityConditions(dbPath, f = identity) {
-    // prettier-ignore
     return {
-      [this.path]:          value => _ =>          _.matchesProperty(dbPath, f(value)),
+      [this.path]: value => _ => _.matchesProperty(dbPath, f(value)),
       [`${this.path}_not`]: value => _ => _.negate(_.matchesProperty(dbPath, f(value))),
     };
   }
@@ -373,57 +367,68 @@ class JSONFieldAdapter extends BaseFieldAdapter {
   equalityConditionsInsensitive(dbPath) {
     const f = escapeRegExp;
     const matcher = value => item => new RegExp(`^${f(value)}$`, 'i').test(item[dbPath]);
-    // prettier-ignore
+
     return {
-      [`${this.path}_i`]:     value => () =>          matcher(value),
-      [`${this.path}_not_i`]: value =>  _ => _.negate(matcher(value)),
+      [`${this.path}_i`]: value => () => matcher(value),
+      [`${this.path}_not_i`]: value => _ => _.negate(matcher(value)),
     };
   }
 
   inConditions(dbPath, f = identity) {
     const matcher = value => item => (value || []).map(f).includes(item[dbPath]);
-    // prettier-ignore
+
     return {
-      [`${this.path}_in`]:     value => () =>          matcher(value),
-      [`${this.path}_not_in`]: value =>  _ => _.negate(matcher(value)),
+      [`${this.path}_in`]: value => () => matcher(value),
+      [`${this.path}_not_in`]: value => _ => _.negate(matcher(value)),
     };
   }
 
   orderingConditions(dbPath, f = identity) {
-    // prettier-ignore
+    const filterNullValues = cb => item => {
+      if (item[dbPath] === null) {
+        return false;
+      }
+      return cb(item);
+    };
     return {
-      [`${this.path}_lt`]:  value => () => item => item[dbPath] <  f(value),
-      [`${this.path}_lte`]: value => () => item => item[dbPath] <= f(value),
-      [`${this.path}_gt`]:  value => () => item => item[dbPath] >  f(value),
-      [`${this.path}_gte`]: value => () => item => item[dbPath] >= f(value),
+      [`${this.path}_lt`]: value => () => filterNullValues(item => item[dbPath] < f(value)),
+      [`${this.path}_lte`]: value => () => filterNullValues(item => item[dbPath] <= f(value)),
+      [`${this.path}_gt`]: value => () => filterNullValues(item => item[dbPath] > f(value)),
+      [`${this.path}_gte`]: value => () =>
+        filterNullValues(item => {
+          console.log({
+            parsedValue: typeof f(value), // number 
+            dbValue: typeof item[dbPath], // string 
+          });
+          return item[dbPath] >= f(value);
+        }),
     };
   }
 
   stringConditions(dbPath) {
     const f = escapeRegExp;
     const regexTest = (regex, item) => new RegExp(regex).test(item[dbPath]);
-    // prettier-ignore
     return {
-      [`${this.path}_contains`]:        value => () => item =>  regexTest(f(value), item),
-      [`${this.path}_not_contains`]:    value => () => item => !regexTest(f(value), item),
-      [`${this.path}_starts_with`]:     value => () => item =>  regexTest(`^${f(value)}`, item),
+      [`${this.path}_contains`]: value => () => item => regexTest(f(value), item),
+      [`${this.path}_not_contains`]: value => () => item => !regexTest(f(value), item),
+      [`${this.path}_starts_with`]: value => () => item => regexTest(`^${f(value)}`, item),
       [`${this.path}_not_starts_with`]: value => () => item => !regexTest(`^${f(value)}`, item),
-      [`${this.path}_ends_with`]:       value => () => item =>  regexTest(`${f(value)}$`, item),
-      [`${this.path}_not_ends_with`]:   value => () => item => !regexTest(`${f(value)}$`, item),
+      [`${this.path}_ends_with`]: value => () => item => regexTest(`${f(value)}$`, item),
+      [`${this.path}_not_ends_with`]: value => () => item => !regexTest(`${f(value)}$`, item),
     };
   }
 
   stringConditionsInsensitive(dbPath) {
     const f = escapeRegExp;
     const regexTest = (regex, item) => new RegExp(regex, 'i').test(item[dbPath]);
-    // prettier-ignore
+
     return {
-      [`${this.path}_contains_i`]:        value => () => item =>  regexTest(f(value), item),
-      [`${this.path}_not_contains_i`]:    value => () => item => !regexTest(f(value), item),
-      [`${this.path}_starts_with_i`]:     value => () => item =>  regexTest(`^${f(value)}`, item),
+      [`${this.path}_contains_i`]: value => () => item => regexTest(f(value), item),
+      [`${this.path}_not_contains_i`]: value => () => item => !regexTest(f(value), item),
+      [`${this.path}_starts_with_i`]: value => () => item => regexTest(`^${f(value)}`, item),
       [`${this.path}_not_starts_with_i`]: value => () => item => !regexTest(`^${f(value)}`, item),
-      [`${this.path}_ends_with_i`]:       value => () => item =>  regexTest(`${f(value)}$`, item),
-      [`${this.path}_not_ends_with_i`]:   value => () => item => !regexTest(`${f(value)}$`, item),
+      [`${this.path}_ends_with_i`]: value => () => item => regexTest(`${f(value)}$`, item),
+      [`${this.path}_not_ends_with_i`]: value => () => item => !regexTest(`${f(value)}$`, item),
     };
   }
 }

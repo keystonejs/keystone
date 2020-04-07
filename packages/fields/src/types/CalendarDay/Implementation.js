@@ -102,6 +102,6 @@ export class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldA
   }
 }
 
-export class JSONTextInterface extends CommonCalendarInterface(JSONFieldAdapter) {}
+export class JSONCalendarDayInterface extends CommonCalendarInterface(JSONFieldAdapter) {}
 
-export class MemoryTextInterface extends CommonCalendarInterface(MemoryFieldAdapter) {}
+export class MemoryCalendarDayInterface extends CommonCalendarInterface(MemoryFieldAdapter) {}
