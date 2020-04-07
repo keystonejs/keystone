@@ -183,6 +183,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         );
       });
 
+        describe('Count', () => {
+          test(
+            'Count',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
+                {
+                  _allUsersMeta { count }
+                }
+            `,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allUsersMeta.count).toEqual(3);
+            })
+          );
+        });
+
       describe('Create', () => {
         test(
           'With connect',

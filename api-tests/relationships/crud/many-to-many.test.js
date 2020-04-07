@@ -208,6 +208,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           );
         });
 
+        describe('Count', () => {
+          test(
+            'Count',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
+                {
+                  _allCompaniesMeta { count }
+                  _allLocationsMeta { count }
+                }
+            `,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allCompaniesMeta.count).toEqual(3);
+              expect(data._allLocationsMeta.count).toEqual(3);
+            })
+          );
+        });
+
         describe('Create', () => {
           test(
             'With connect',
