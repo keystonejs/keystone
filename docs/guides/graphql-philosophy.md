@@ -123,6 +123,7 @@ Nested Mutations are useful when you need to make changes to more than one Domai
 For example, imagine a UI where an author could update their bio at the same time as creating a post. The mutation would look something like:
 
 <!-- prettier-ignore-start -->
+
 ```graphql
 mutation {
   createPost(data: {
@@ -137,6 +138,7 @@ mutation {
   }
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 Note the `data.author.update` object, this is the _Nested Mutation_. Beyond `update` there are also other operations you may wish to perform:
