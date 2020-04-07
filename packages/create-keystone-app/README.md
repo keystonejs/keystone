@@ -31,8 +31,8 @@ npm init keystone-app --name "My App" --template "starter" --adapter "Mongoose" 
 The app generation will fall back to interactive prompts if any of the arguments are
 missing or have incorrect values.
 
-**NOTE**: By the time this documentation was written, `yarn create` was not working
-because the CLI arguments were not passed to the `create-keystone-app` script.
+> **Note:** By the time this documentation was written, `yarn create` was not working
+> because the CLI arguments were not passed to the `create-keystone-app` script.
 
 ### Arguments
 
