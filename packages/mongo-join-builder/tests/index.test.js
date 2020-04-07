@@ -24,18 +24,29 @@ describe('Test main export', () => {
         $lookup: {
           from: 'posts',
           as: 'posts_every_posts',
-          let: { tmpVar: { $ifNull: ['$posts', []] } },
+          let: { tmpVar: `$_id` },
           pipeline: [
-            { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
+            { $match: { $expr: { $eq: [`$author`, '$$tmpVar'] } } },
             {
               $lookup: {
-                from: 'tags',
+                from: 'posts_tags',
                 as: 'tags_some_tags',
-                let: { tmpVar: { $ifNull: ['$tags', []] } },
+                let: { tmpVar: `$_id` },
                 pipeline: [
-                  { $match: { $expr: { $in: ['$_id', '$$tmpVar'] } } },
-                  { $match: { name: { $eq: 'foo' } } },
-                  { $addFields: { id: '$_id' } },
+                  { $match: { $expr: { $eq: [`$Post_id`, '$$tmpVar'] } } },
+                  {
+                    $lookup: {
+                      from: 'tags',
+                      as: 'tags_some_tags_0',
+                      let: { tmpVar: '$Tag_id' },
+                      pipeline: [
+                        { $match: { $expr: { $eq: [`$_id`, '$$tmpVar'] } } },
+                        { $match: { name: { $eq: 'foo' } } },
+                        { $addFields: { id: '$_id' } },
+                      ],
+                    },
+                  },
+                  { $match: { $expr: { $gt: [{ $size: '$tags_some_tags_0' }, 0] } } },
                 ],
               },
             },
@@ -53,20 +64,28 @@ describe('Test main export', () => {
         },
       },
       {
+        $lookup: {
+          from: 'posts',
+          as: 'posts_every_posts_all',
+          let: { tmpVar: '$_id' },
+          pipeline: [{ $match: { $expr: { $eq: [`$author`, '$$tmpVar'] } } }],
+        },
+      },
+      {
         $match: {
           $and: [
             { name: { $eq: 'foobar' } },
             { age: { $eq: 23 } },
             {
               $expr: {
-                $eq: [{ $size: '$posts_every_posts' }, { $size: { $ifNull: ['$posts', []] } }],
+                $eq: [{ $size: '$posts_every_posts' }, { $size: '$posts_every_posts_all' }],
               },
             },
           ],
         },
       },
       { $addFields: { id: '$_id' } },
-      { $project: { posts_every_posts: 0 } },
+      { $project: { posts_every_posts: 0, posts_every_posts_all: 0 } },
     ]);
   });
 });
