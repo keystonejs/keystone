@@ -3,8 +3,6 @@ import styled from '@emotion/styled';
 
 import KeystoneLogo from '../components/KeystoneLogo';
 
-import { useAdminMeta } from '../providers/AdminMeta';
-
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
@@ -50,7 +48,6 @@ const Spacer = styled.div({
 });
 
 const AccessDeniedPage = () => {
-  const {} = useAdminMeta();
   return (
     <Container>
       <Alerts />
