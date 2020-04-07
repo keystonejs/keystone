@@ -571,7 +571,7 @@ class QueryBuilder {
       this._query.column(`${baseTableAlias}.*`);
     }
 
-    this._addJoins(this._query, listAdapter, where, baseTableAlias);
+    this._addJoins(this._query, listAdapter, where, baseTableAlias, meta);
 
     // Joins/where to effectively translate us onto a different list
     if (Object.keys(from).length) {
@@ -603,7 +603,7 @@ class QueryBuilder {
       this._query.whereRaw('true');
     }
 
-    this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias);
+    this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias, meta);
 
     // TODO: Implement configurable search fields for lists
     const searchField = listAdapter.fieldAdaptersByPath['name'];
@@ -657,27 +657,29 @@ class QueryBuilder {
   // Recursively traverse the `where` query to identify required joins and add them to the query
   // We perform joins on non-many relationship fields which are mentioned in the where query.
   // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
-  _addJoins(query, listAdapter, where, tableAlias) {
+  _addJoins(query, listAdapter, where, tableAlias, meta) {
     // Insert joins to handle 1:1 relationships where the FK is stored on the other table.
     // We join against the other table and select its ID as the path name, so that it appears
     // as if it existed on the primary table all along!
-    listAdapter.fieldAdapters
-      .filter(a => a.isRelationship && a.rel.cardinality === '1:1' && a.rel.right === a.field)
-      .forEach(a => {
-        const { tableName, columnName } = a.rel;
-        const otherTableAlias = `${tableAlias}__${a.path}_11`;
-        if (!this._tableAliases[otherTableAlias]) {
-          this._tableAliases[otherTableAlias] = true;
-          // LEFT OUTERJOIN on ... table>.<id> = <otherTable>.<columnName> SELECT <othertable>.<id> as <path>
-          query
-            .leftOuterJoin(
-              `${tableName} as ${otherTableAlias}`,
-              `${otherTableAlias}.${columnName}`,
-              `${tableAlias}.id`
-            )
-            .select(`${otherTableAlias}.id as ${a.path}`);
-        }
-      });
+    if (!meta) {
+      listAdapter.fieldAdapters
+        .filter(a => a.isRelationship && a.rel.cardinality === '1:1' && a.rel.right === a.field)
+        .forEach(a => {
+          const { tableName, columnName } = a.rel;
+          const otherTableAlias = `${tableAlias}__${a.path}_11`;
+          if (!this._tableAliases[otherTableAlias]) {
+            this._tableAliases[otherTableAlias] = true;
+            // LEFT OUTERJOIN on ... table>.<id> = <otherTable>.<columnName> SELECT <othertable>.<id> as <path>
+            query
+              .leftOuterJoin(
+                `${tableName} as ${otherTableAlias}`,
+                `${otherTableAlias}.${columnName}`,
+                `${tableAlias}.id`
+              )
+              .select(`${otherTableAlias}.id as ${a.path}`);
+          }
+        });
+    }
 
     const joinPaths = Object.keys(where).filter(
       path => !this._getQueryConditionByPath(listAdapter, path)
@@ -685,7 +687,7 @@ class QueryBuilder {
     for (let path of joinPaths) {
       if (path === 'AND' || path === 'OR') {
         // AND/OR we need to traverse their children
-        where[path].forEach(x => this._addJoins(query, listAdapter, x, tableAlias));
+        where[path].forEach(x => this._addJoins(query, listAdapter, x, tableAlias, meta));
       } else {
         const otherAdapter = listAdapter.fieldAdaptersByPath[path];
         // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
@@ -707,7 +709,7 @@ class QueryBuilder {
               `${tableAlias}.${path}`
             );
           }
-          this._addJoins(query, otherListAdapter, where[path], otherTableAlias);
+          this._addJoins(query, otherListAdapter, where[path], otherTableAlias, meta);
         }
       }
     }
@@ -715,7 +717,7 @@ class QueryBuilder {
 
   // Recursively traverses the `where` query and pushes knex query functions to whereJoiner,
   // which will normally do something like pass it to q.andWhere() to add to a query
-  _addWheres(whereJoiner, listAdapter, where, tableAlias) {
+  _addWheres(whereJoiner, listAdapter, where, tableAlias, meta) {
     for (let path of Object.keys(where)) {
       const condition = this._getQueryConditionByPath(listAdapter, path, tableAlias);
       if (condition) {
@@ -732,7 +734,7 @@ class QueryBuilder {
             subJoiner = w => q.orWhere(w);
           }
           where[path].forEach(subWhere =>
-            this._addWheres(subJoiner, listAdapter, subWhere, tableAlias)
+            this._addWheres(subJoiner, listAdapter, subWhere, tableAlias, meta)
           );
         });
       } else {
@@ -741,7 +743,13 @@ class QueryBuilder {
         if (fieldAdapter) {
           // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
           const otherListAdapter = listAdapter.getListAdapterByKey(fieldAdapter.refListKey);
-          this._addWheres(whereJoiner, otherListAdapter, where[path], `${tableAlias}__${path}`);
+          this._addWheres(
+            whereJoiner,
+            otherListAdapter,
+            where[path],
+            `${tableAlias}__${path}`,
+            meta
+          );
         } else {
           // Many relationship
           const [p, constraintType] = path.split('_');
@@ -773,7 +781,7 @@ class QueryBuilder {
               `${subBaseTableAlias}.${far}`
             );
           }
-          this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias);
+          this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias, meta);
 
           // some: the ID is in the examples found
           // none: the ID is not in the examples found
@@ -784,7 +792,13 @@ class QueryBuilder {
           if (constraintType === 'every') {
             subQuery.whereNot(q => {
               q.whereRaw('true');
-              this._addWheres(w => q.andWhere(w), otherListAdapter, where[path], otherTableAlias);
+              this._addWheres(
+                w => q.andWhere(w),
+                otherListAdapter,
+                where[path],
+                otherTableAlias,
+                meta
+              );
             });
           } else {
             subQuery.whereRaw('true');
@@ -792,7 +806,8 @@ class QueryBuilder {
               w => subQuery.andWhere(w),
               otherListAdapter,
               where[path],
-              otherTableAlias
+              otherTableAlias,
+              meta
             );
           }
 
