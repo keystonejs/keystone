@@ -10,19 +10,21 @@ Control who can do what with your GraphQL API.
 
 > **Hint:** This is the API documentation for access control. For getting started, see the [Access control guide](/docs/guides/access-control.md) or the [Authentication Guide](/docs/guides/authentication.md).
 
-There are two ways of specifying access control:
+There are three domains of access control:
 
 1. List level
 2. Field level
+3. Custom schema
 
-To set defaults for all lists and fields, use the `defaultAccess` config when
-creating a `Keystone` instance:
+To set defaults for all lists, fields, and custom schema, use the `defaultAccess` config when
+creating a `Keystone` instance. Each defaults to `true` if omitted.
 
 ```javascript
 const keystone = new Keystone('My App', {
   defaultAccess: {
     list: true,
     field: true,
+    custom: true,
   },
 });
 ```
@@ -413,3 +415,67 @@ keystone.createList('User', {
 > queries/mutations/types exclusively used by that operation.
 > Eg, setting `update: () => false` in the example above will still include the
 > `name` field in the `UserUpdateInput` type.
+
+## Custom schema access control
+
+[Custom GraphQL schema](https://www.keystonejs.com/keystonejs/keystone/#extendgraphqlschemaconfig) can also be access-controlled.
+Each custom type, query, and mutation accepts an `access` key.
+
+There are two ways to define the value of `access`:
+
+1. Static
+2. Imperative
+
+```typescript
+interface AccessInput {
+  authentication: {
+    item?: {};
+    listKey?: string;
+  };
+}
+
+type StaticAccess = boolean;
+type ImperativeAccess = (arg: AccessInput) => boolean;
+
+type CustomOperationConfig = {
+  access: StaticAccess | ImperativeAccess;
+};
+```
+
+### Static boolean
+
+```javascript
+keystone.extendGraphQLSchema({
+  queries: [
+    {
+      schema: 'getUserByName(name: String!): Boolean',
+      resolver: async (item, context, info, info) => {...},
+      access: true,
+    },
+  ],
+});
+```
+
+> Useful if default custom access controls are set to `false`.
+
+_NOTE:_ When set to `false`, the custom queries/mutations/types will not be included in the GraphQL schema.
+
+### Imperative boolean
+
+```javascript
+keystone.extendGraphQLSchema({
+  queries: [
+    {
+      schema: 'getUserByName(name: String!): Boolean',
+      resolver: async (item, context, info, info) => {...},
+      access: ({ authentication: { item, listKey } }) => {
+        return true;
+      },
+    },
+  ],
+});
+```
+
+> Enables turning access on/off based on the currently authenticated user.
+
+_NOTE:_ Even when returning `false`, the custom queries/mutations/types _will_ be included in the GraphQL Schema.
