@@ -53,8 +53,6 @@ This transaction encapsulates a database transaction, as well as any state requi
 
 This transaction is used by all the nested mutations of the operation.
 
-It is committed after the [resolve backlinks](#7-resolve-backlinks-createupdatedelete) step of the root operation.
-
 The Operational Phase for a `many` mutation consists of the the Operational Phase for the corresponding `single` mutation performed in parallel over each of the target items.
 
 Each of these `single` mutations is executed within its own transaction.
@@ -117,7 +115,7 @@ Custom field types can override this behaviour by defining the method `getDefaul
 
 Relationship fields do not currently support default values.
 
-#### 2a. Resolve Relationship (`create/update`)
+#### 2. Resolve Relationship (`create/update`)
 
 The create and update mutations specify the value of relationship fields using the [nested mutation] pattern.
 
@@ -130,16 +128,6 @@ In the case that a nested mutation specifies a `create` operation, this will tri
 Any errors thrown by this nested `createMutation` will cause the current mutation to terminate, and the errors will be passed up the call stack.
 
 As well as resolving the IDs and performing any nested create mutations, this step must also track.
-
-#### 2b. Register Backlinks (`delete`)
-
-When deleting an item with relationship fields, it is important that any backlinks to the deleted item are also removed.
-
-A backlink exists when a relationship field is configured with a `ref` attribute of the form `listRef.fieldRef`.
-
-During this step, any backlinks which need to be updated are identified and registered internally.
-
-The actual update step for these backlinks will be performed during the `Resolve backlinks` step, once all other pre-hooks and database operations have been completed on the primary target list.
 
 #### 3. Resolve Input (`create/update`)
 
@@ -165,18 +153,7 @@ For full details of how and when to use these hooks, please consult the [API doc
 
 The database operation is where the keystone database adapter is used to make the requested changes in the database.
 
-#### 7. Resolve Backlinks (`create/update/delete`)
-
-During this stage, all pending backlinks which need to be updated on referenced lists are resolved.
-This involves performing an `updateMutation` on the referenced list, performing either a `connect` or `disconnect` operation on the referenced relationship field.
-
-Unlike the `Resolve relationship` step, this operation will only ever nest one level deep.
-
-It can still result in either an `AccessDeniedError` or `ValidationFailureError`.
-
-As with `Resolve relationship`, the nested `AfterChange` hooks will be returned an added to the stack of deferred hooks for this mutation.
-
-#### 8. After Operation (`create/update/delete`)
+#### 7. After Operation (`create/update/delete`)
 
 The `afterChange` and `afterDelete` hooks are only executed once all database operations for the mutation have been completed and the transaction has been finalised.
 This means that the database is in a consistent state when this hook is executed.

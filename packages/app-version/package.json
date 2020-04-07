@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-version",
   "description": "KeystoneJS App Version Plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
