@@ -32,7 +32,12 @@ const {
 } = require('./relationship-utils');
 const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
-const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
+const {
+  CustomProvider,
+  ListAuthProvider,
+  ListCRUDProvider,
+  KeystoneMetaProvider,
+} = require('../providers');
 
 module.exports = class Keystone {
   constructor({
@@ -86,6 +91,7 @@ module.exports = class Keystone {
         access: appVersion.access,
         schemaNames,
       }),
+      new KeystoneMetaProvider({ name: this.name }),
     ];
 
     if (adapters) {

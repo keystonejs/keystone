@@ -1,6 +1,7 @@
 const { CustomProvider } = require('./custom');
 const { ListAuthProvider } = require('./listAuth');
 const { ListCRUDProvider } = require('./listCRUD');
+const { KeystoneMetaProvider } = require('./keystoneMeta');
 
 // The GraphQL Provider Framework expects to see classes with the following API:
 //
@@ -28,4 +29,4 @@ const { ListCRUDProvider } = require('./listCRUD');
 //   }
 // }
 
-module.exports = { CustomProvider, ListAuthProvider, ListCRUDProvider };
+module.exports = { CustomProvider, ListAuthProvider, ListCRUDProvider, KeystoneMetaProvider };
