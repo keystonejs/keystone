@@ -1,12 +1,12 @@
 const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
 
 function isRelationshipField({ list, fieldKey }) {
-  return !!list._fields[fieldKey].type.isRelationship;
+  return !!list.fieldsByPath[fieldKey].isRelationship;
 }
 
 function isManyRelationship({ list, fieldKey }) {
-  const field = list._fields[fieldKey];
-  return !!field.type.isRelationship && field.many;
+  const { isRelationship, many } = list.fieldsByPath[fieldKey];
+  return !!isRelationship && many;
 }
 
 function splitObject(input, filterFn) {
@@ -155,7 +155,7 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
 };
 
 /**
- * @param lists {Object} The lists object from keyston
+ * @param lists {Object} The lists object from keystone
  * @param relationships {Object} Is an object of sparse arrays containing
  * fields that have where clauses. ie;
  * {
@@ -190,7 +190,7 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
 const createRelationships = (lists, relationships, createdItems) => {
   return resolveAllKeys(
     mapKeys(relationships, (relationList, listKey) => {
-      const listFieldsConfig = lists[listKey]._fields;
+      const listFields = lists[listKey].fieldsByPath;
 
       return resolveAllKeys(
         // NOTE: Sparse array / indexes match the indexes from the `createdItems`
@@ -201,7 +201,7 @@ const createRelationships = (lists, relationships, createdItems) => {
           // Promise<{ author: <id-of-User>, ... }>
           return resolveAllKeys(
             mapKeys(relationItem, (relationConditions, relationshipField) => {
-              const relatedListKey = listFieldsConfig[relationshipField].ref.split('.')[0];
+              const relatedListKey = listFields[relationshipField].refListKey;
 
               return relateTo({
                 relatedFrom: {

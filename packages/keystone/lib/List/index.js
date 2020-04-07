@@ -320,6 +320,9 @@ module.exports = class List {
     this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
       this.fieldsByPath[path].extendAdminViews({ ...type.views })
     );
+
+    // We're done. Clean up the raw field config.
+    delete this._fields;
   }
 
   getAdminMeta({ schemaName }) {
