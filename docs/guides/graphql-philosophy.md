@@ -61,7 +61,7 @@ To define a set of Domain Objects, it helps to think about it in terms of what a
 | **Comments**  | `createComment` | `getComment` | `updateComment` | `deleteComment` |
 | **Images**    | `createImage`   | `getImage`   | `updateImage`   | `deleteImage`   |
 
-> **Hint:** Because an `Image` may be uploaded and interacted with independently of a `Post`, or used across multiple posts. Even if they're only used in a single `Post`, they still meet the definition as a _thing_ which might be queried or modified in some way (for example, querying for a thumbnail version of the image, or updating alt text).
+> **Tip:** Because an `Image` may be uploaded and interacted with independently of a `Post`, or used across multiple posts, we're creating an **Images** list. Even if they're only used in a single `Post`, they still meet the definition as a _thing_ which might be queried or modified in some way (for example, querying for a thumbnail version of the image, or updating alt text).
 
 In general, Domain Objects map to Lists in Keystone:
 
@@ -151,7 +151,7 @@ Note the `data.author.update` object, this is the _Nested Mutation_. Beyond `upd
 | `update`     | Update an already connected item's data                                                                                   |
 | `delete`     | Delete an already connected item and disconnect it from the parent so future queries for related data return `null`       |
 
-> **Hint:** Since `get` is a query concern, and we're only dealing with nested _Mutations_, it is not included here.
+> **Note:** Since `get` is a query concern, and we're only dealing with nested _Mutations_, it is not included here.
 
 This might be represented in the GraphQL Schema like so:
 

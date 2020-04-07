@@ -1,9 +1,9 @@
 <!--[meta]
 section: discussions
-title: A New Data Schema For Keystone
+title: A new data schema
 [meta]-->
 
-# Arcade - A New Data Schema For Keystone
+# Arcade - A new data schema for Keystone
 
 > **Note:** This document refers to a set of package releases which are all part of one Keystone release.
 > These package releases are collectively known as the `Arcade` release of Keystone. The packages included are:
@@ -34,7 +34,7 @@ Unfortunately we have now outgrown this original schema.
 More and more we are finding that certain bugs are hard to fix, and certain features difficult to implement, because of the limitations of our initial design.
 While it has served us well, it's time for an upgrade.
 
-## The Problem
+## The problem
 
 The key challenge in designing our schema is how we represent relationships between lists.
 Our initial design borrowed heavily from a `MongDB` inspired pattern, where each object was responsible for tracking its related items.
@@ -49,7 +49,7 @@ Maintaining the denormalised data is now more complex than generating queries ag
 We are finding that some reported bugs are difficult to resolve due to the complex nature of resolving denormalised data.
 There are also more sophisticated relationship patterns, such as ordered relationships, which are too difficult to implement in the current schema.
 
-## The Solution
+## The solution
 
 To address these problems at their core we have changed our data schema to be normalised and to eliminate the duplicated data.
 This means that our query generation code has become more complex, but this trade off gains us a number of benefits:
@@ -87,6 +87,6 @@ To assist with this process we have written a [Schema Upgrade Guide](/docs/guide
 
 ## Summary
 
-The new Keystone data schema will simplify and improve the storage of your crucial system data, and will unlock
+The new Keystone data schema will simplify and improve the storage of your crucial system data, and will unlock new functionality.
 We appreciate that making changes to your production database can be a daunting task, but we hope to make this process as smooth as possible.
 We are looking forward to building on these change to provide an even more powerful Keystone in the future 🚀
