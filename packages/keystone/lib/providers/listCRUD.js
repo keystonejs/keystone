@@ -41,6 +41,13 @@ class ListCRUDProvider {
            user when performing 'auth' operations."""
         auth: JSON
       }`,
+      `type _ListSchemaFields {
+        """The name of the field in its list."""
+        name: String
+
+        """The field type (ie, Checkbox, Text, etc)"""
+        type: String
+      }`,
       `type _ListSchemaRelatedFields {
         """The typename as used in GraphQL queries"""
         type: String
@@ -55,6 +62,9 @@ class ListCRUDProvider {
         """Top level GraphQL query names which either return this type, or
            provide aggregate information about this type"""
         queries: [String]
+
+        """Information about fields defined on this list. """
+        fields(where: _ListSchemaFieldsInput): [_ListSchemaFields]
 
         """Information about fields on other types which return this type, or
            provide aggregate information about this type"""
@@ -76,6 +86,9 @@ class ListCRUDProvider {
       }`,
       `input ${this.gqlNames.listsMetaInput} {
         key: String
+      }`,
+      `input _ListSchemaFieldsInput {
+        type: String
       }`,
     ]);
   }
@@ -119,6 +132,19 @@ class ListCRUDProvider {
     // NOTE: some fields are passed through unchanged from the list, and so are
     // not specified here.
     const listSchemaResolver = {
+      // Aux lists aren't filtered out here since you can query them via _ksListsMeta.
+      // They need to be included so the `key` check can match them and fetch their fields.
+      fields: ({ key }, { where: { type } = {} }) => {
+        return this.lists
+          .find(list => list.key === key)
+          .getFieldsWithAccess({ schemaName, access: 'read' })
+          .filter(field => !type || field.constructor.name === type)
+          .map(field => ({
+            name: field.path,
+            type: field.constructor.name,
+          }));
+      },
+
       // A function so we can lazily evaluate this potentially expensive
       // operation
       // (Could we memoize this in the future?)
