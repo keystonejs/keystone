@@ -3,7 +3,6 @@ import {
   MongoRelationshipInterface,
   KnexRelationshipInterface,
 } from './Implementation';
-import { resolveBacklinks } from './backlinks';
 import { importView } from '@keystonejs/build-field-types';
 
 export default {
@@ -20,5 +19,4 @@ export default {
     mongoose: MongoRelationshipInterface,
     knex: KnexRelationshipInterface,
   },
-  resolveBacklinks,
 };
