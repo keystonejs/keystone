@@ -1,9 +1,9 @@
 <!--[meta]
 section: guides
-title: Relationship Migration Guide
+title: Relationship migration
 [meta]-->
 
-# Relationship Migration Guide
+# Relationship migration guide
 
 In the [`Arcade`](/docs/discussions/new-data-schema.md) release of Keystone we [changed the database schema](/docs/discussions/new-data-schema.md) which Keystone uses to store its data.
 This means that if you are upgrading to these new packages you will need to perform a migration on your database in order for it to continue working.
@@ -14,7 +14,7 @@ We recommend familiarising yourself with the [relationships](/docs/discussions/r
 
 ## Overview
 
-There are four steps to updating your database
+There are four steps to updating your database:
 
 1. Take a backup of your production database.
 2. Identify the changes required for your system.
@@ -44,7 +44,7 @@ The [official PostgreSQL documentation](https://www.postgresql.org/docs/12/backu
 ## Identify required changes
 
 The next step is to identify the changes you need to make to your database.
-To assist with this you can use the command `keystone upgrade-relationships`
+To assist with this you can use the command `keystone upgrade-relationships`.
 This tool will analyse your relationships and generate a summary of the changes you need to make in your database.
 We recommend adding it as a script into your `package.json` file and running it with `yarn`.
 
