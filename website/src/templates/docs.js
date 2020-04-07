@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, useMemo } from 'react';
+import { Fragment, useMemo, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
@@ -26,6 +26,7 @@ export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
   pageContext: { slug },
 }) {
+  let [contentRef, setContentRef] = useState(null);
   let navData = useNavData();
   let flatNavData = navData.reduce((prev, next) => {
     const subNavData = next.subNavs.reduce((prev, next) => [...prev].concat(next.pages), []);
@@ -50,7 +51,9 @@ export default function Template({
 
   let sluggedHeadings = useMemo(() => {
     slugger.reset();
-    return headings.map(h => ({ ...h, id: slugger.slug(h.value) }));
+    return headings
+      .filter(h => h.depth > 1 && h.depth < 4)
+      .map(h => ({ ...h, id: slugger.slug(h.value) }));
   }, [headings]);
 
   return (
@@ -69,11 +72,10 @@ export default function Template({
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Container hasGutters={false} css={{ display: 'flex' }}>
             <Sidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
-            <Content
-              className="docSearch-content"
-              css={{ alignItems: 'flex-start', display: 'flex', flex: 1 }}
-            >
+            <Content css={{ alignItems: 'flex-start', display: 'flex', flex: 1 }}>
               <div
+                ref={setContentRef}
+                className="docSearch-content"
                 css={{
                   flex: 1,
                   minWidth: 0,
@@ -104,90 +106,11 @@ export default function Template({
                   )}
                 </Pagination>
               </div>
-              {/* Table of Contents */}
-              <div
-                css={{
-                  boxSizing: 'border-box',
-                  display: 'none',
-                  flexShrink: 0,
-                  height: 'calc(100vh - 60px)',
-                  overflowY: 'auto',
-                  paddingLeft: gridSize * 6,
-                  paddingRight: gridSize * 3,
-                  paddingTop: 32,
-                  position: 'sticky',
-                  top: 60,
-                  WebkitOverflowScrolling: 'touch',
-                  width: 280,
-
-                  [media.sm]: { display: 'block' },
-                }}
-              >
-                <h4
-                  css={{
-                    color: colors.N40,
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    marginTop: 0,
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  On this page
-                </h4>
-                <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                  {sluggedHeadings
-                    .filter(h => h.depth > 1 && h.depth < 4)
-                    .map((h, i) => (
-                      <li
-                        key={h.value + i}
-                        css={{
-                          // increase specificity to element - avoid `!important` declaration
-                          // override CSS targeting LI elements from `<Content/>`
-                          'li&': { lineHeight: 1.4 },
-                        }}
-                      >
-                        <a
-                          css={{
-                            color: h.depth === 3 ? colors.N60 : colors.N80,
-                            display: 'block',
-                            fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
-                            paddingLeft: h.depth === 3 ? '0.5rem' : null,
-
-                            // prefer padding an anchor, rather than margin on list-item, to increase hit area
-                            paddingBottom: '0.4em',
-                            paddingTop: '0.4em',
-
-                            ':hover': {
-                              color: colors.B.base,
-                            },
-                          }}
-                          href={`#${h.id}`}
-                        >
-                          {h.value}
-                        </a>
-                      </li>
-                    ))}
-                </ul>
-                <EditSection>
-                  {/* <p>
-                    Have you found a mistake, something that is missing, or could be improved on
-                    this page? Please edit the Markdown file on GitHub and submit a PR with your
-                    changes.
-                  </p> */}
-                  <EditButton href={fields.editUrl} target="_blank">
-                    <svg
-                      fill="currentColor"
-                      height="1.25em"
-                      width="1.25em"
-                      viewBox="0 0 40 40"
-                      css={{ marginLeft: -(gridSize / 2), marginRight: '0.5em' }}
-                    >
-                      <path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z" />
-                    </svg>
-                    Edit on GitHub
-                  </EditButton>
-                </EditSection>
-              </div>
+              <TableOfContents
+                container={contentRef}
+                headings={sluggedHeadings}
+                editUrl={fields.editUrl}
+              />
             </Content>
           </Container>
         )}
@@ -197,12 +120,136 @@ export default function Template({
 }
 
 // ==============================
-// Meta
-// ==============================
-
-// ==============================
 // Styled Components
 // ==============================
+
+// it's important that IDs are sorted by the order they appear in the document
+// so we can pluck active from the beginning
+function sortVisible(allIds, targetId) {
+  return ids => [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
+}
+const observerOptions = {
+  rootMargin: '0px',
+  threshold: 1.0,
+};
+
+const TableOfContents = ({ container, headings, editUrl }) => {
+  let allIds = headings.map(h => h.id);
+  let [visibleIds, setVisibleIds] = useState([]);
+  let [lastVisibleId, setLastVisbleId] = useState('');
+
+  // observe relevant headings
+  useEffect(() => {
+    if (container) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const targetId = entry.target.getAttribute('id');
+          if (entry.isIntersecting && entry.intersectionRatio === 1) {
+            setVisibleIds(sortVisible(allIds, targetId));
+            setLastVisbleId(targetId);
+          } else {
+            setVisibleIds(ids => ids.filter(id => id !== targetId));
+          }
+        });
+      }, observerOptions);
+
+      container.querySelectorAll('h2, h3').forEach(node => {
+        observer.observe(node);
+      });
+    }
+  }, [container]);
+
+  // catch if we're in a long gap between headings and resolve to the last available.
+  let activeId = visibleIds[0] || lastVisibleId;
+
+  return (
+    <div
+      css={{
+        boxSizing: 'border-box',
+        display: 'none',
+        flexShrink: 0,
+        height: 'calc(100vh - 60px)',
+        overflowY: 'auto',
+        paddingLeft: gridSize * 6,
+        paddingRight: gridSize * 3,
+        paddingTop: 32,
+        position: 'sticky',
+        top: 60,
+        WebkitOverflowScrolling: 'touch',
+        width: 280,
+
+        [media.sm]: { display: 'block' },
+      }}
+    >
+      <h4
+        css={{
+          color: colors.N40,
+          fontSize: '0.8rem',
+          fontWeight: 700,
+          marginTop: 0,
+          textTransform: 'uppercase',
+        }}
+      >
+        On this page
+      </h4>
+      <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
+        {headings.map((h, i) => {
+          let isActive = activeId === h.id;
+          return (
+            <li
+              key={h.value + i}
+              css={{
+                // increase specificity to element - avoid `!important` declaration
+                // override CSS targeting LI elements from `<Content/>`
+                'li&': { lineHeight: 1.4 },
+              }}
+            >
+              <a
+                css={{
+                  color: isActive ? colors.B.base : h.depth === 2 ? colors.N80 : colors.N60,
+                  display: 'block',
+                  fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
+                  fontWeight: isActive ? '500' : 'normal',
+                  paddingLeft: h.depth === 3 ? '0.5rem' : null,
+
+                  // prefer padding an anchor, rather than margin on list-item, to increase hit area
+                  paddingBottom: '0.4em',
+                  paddingTop: '0.4em',
+
+                  ':hover': {
+                    color: colors.B.base,
+                  },
+                }}
+                href={`#${h.id}`}
+              >
+                {h.value}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <EditSection>
+        {/* <p>
+          Have you found a mistake, something that is missing, or could be improved on
+          this page? Please edit the Markdown file on GitHub and submit a PR with your
+          changes.
+        </p> */}
+        <EditButton href={editUrl} target="_blank">
+          <svg
+            fill="currentColor"
+            height="1.25em"
+            width="1.25em"
+            viewBox="0 0 40 40"
+            css={{ marginLeft: -(gridSize / 2), marginRight: '0.5em' }}
+          >
+            <path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z" />
+          </svg>
+          Edit on GitHub
+        </EditButton>
+      </EditSection>
+    </div>
+  );
+};
 
 const Button = ({ as: Tag, ...props }) => (
   <Tag

@@ -1,21 +1,29 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
 const relType = process.env.REL_TYPE || 'one_one_to_many';
 
+const adapter = process.env.MONGO
+  ? new MongooseAdapter()
+  : new KnexAdapter({
+      knexOptions: { connection: 'postgres://keystone5:k3yst0n3@localhost:5432/keystone' },
+    });
+
 const keystone = new Keystone({
   name: 'Keystone Relationships',
-  adapter: new MongooseAdapter(),
+  adapter,
   onConnect: async keystone => {
-    const executeQuery = keystone._buildQueryHelper(
-      keystone.getGraphQlContext({ skipAccessControl: true, schemaName: 'public' })
-    );
-    let query;
-    if (['one_one_to_many', 'two_one_to_many', 'two_one_to_one'].includes(relType)) {
-      query = `
+    if (!process.env.CREATE_TABLES) {
+      const executeQuery = keystone._buildQueryHelper(
+        keystone.getGraphQlContext({ skipAccessControl: true, schemaName: 'public' })
+      );
+      let query;
+      if (['one_one_to_many', 'two_one_to_many', 'two_one_to_one'].includes(relType)) {
+        query = `
         mutation {
           createPost(
             data: {
@@ -28,8 +36,8 @@ const keystone = new Keystone({
           }
         }
       `;
-    } else if (['one_many_to_many', 'two_many_to_many'].includes(relType)) {
-      query = `
+      } else if (['one_many_to_many', 'two_many_to_many'].includes(relType)) {
+        query = `
         mutation {
           createPost(
             data: {
@@ -42,8 +50,10 @@ const keystone = new Keystone({
           }
         }
       `;
+      }
+      await executeQuery(query);
+      process.exit(0);
     }
-    await executeQuery(query);
   },
 });
 

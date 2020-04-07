@@ -23,7 +23,7 @@ function validateRsvp({ userRsvps, eventRsvps, event }) {
   return { okay: true };
 }
 
-const Rsvp = ({ children, event, text, themeColor }) => {
+const Rsvp = ({ children = () => null, event, text = 'Are you going?', themeColor }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const eventId = event.id;
   const isPast = new Date() > new Date(event.startTime);
@@ -137,11 +137,6 @@ const Rsvp = ({ children, event, text, themeColor }) => {
       </ButtonWrapper>
     ),
   });
-};
-
-Rsvp.defaultProps = {
-  children: () => null,
-  text: 'Are you going?',
 };
 
 const ButtonWrapper = props => (

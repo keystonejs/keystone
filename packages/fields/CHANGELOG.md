@@ -1,5 +1,68 @@
 # @keystonejs/fields
 
+## 9.0.0
+
+### Major Changes
+
+- [`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d) [#2000](https://github.com/keystonejs/keystone/pull/2000) Thanks [@timleslie](https://github.com/timleslie)! - ## Release - Arcade
+
+  This release introduces a **new and improved data schema** for Keystone.
+  The new data schema simplifies the way your data is stored and will unlock the development of new functionality within Keystone.
+
+  > **Important:** You will need to make changes to your database to take advantage of the new data schema. Please read the full [release notes](https://www.keystonejs.com/discussions/new-data-schema) for instructions on updating your database.
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/adapter-knex@9.0.0
+  - @keystonejs/adapter-mongoose@8.0.0
+  - @keystonejs/test-utils@6.0.3
+  - @keystonejs/app-admin-ui@5.9.5
+  - @keystonejs/field-content@5.4.5
+
+## 8.0.0
+
+### Major Changes
+
+- [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258) [#2623](https://github.com/keystonejs/keystone/pull/2623) Thanks [@maryam-mv](https://github.com/maryam-mv)! - Updated @sindresorhus/slugify to fix a problem where it was producing unexpected output, eg. adding unexpected underscores: 'NAME1 Website' => 'nam_e1_website'. The slugify output for db name may be different with this change. For the above example, the output will now be 'name_1_website' for the same string.
+
+  If your database name changes unexpectedly, you can add an environment variable called `DATABASE_URL` with a full path to the database. For more information on configuring database connections read the documentation for the [Knex adapter](https://v5.keystonejs.com/keystonejs/adapter-knex/#knexoptions) or [Mongoose adapter](https://v5.keystonejs.com/keystonejs/adapter-mongoose/#mongoose-database-adapter).
+
+  If you are using the `Slug` field type, in some edge-cases, slugs may change when saved after this update. You can use the `generate` option on the slug field for [custom slug generation](https://v5.keystonejs.com/keystonejs/fields/src/types/slug/#custom-generate-method) if required.
+
+### Minor Changes
+
+- [`d138736d`](https://github.com/keystonejs/keystone/commit/d138736db184c5884171c7a65e43377f248046b5) [#2617](https://github.com/keystonejs/keystone/pull/2617) Thanks [@JedWatson](https://github.com/JedWatson)! - Added dataType support to Select fields, values can now be stored as enums, strings or integers
+
+### Patch Changes
+
+- [`e7e4bc1d`](https://github.com/keystonejs/keystone/commit/e7e4bc1d22149d4daceb31d303f6ad10c2b853ba) [#2585](https://github.com/keystonejs/keystone/pull/2585) Thanks [@timleslie](https://github.com/timleslie)! - Internal refactor, no functional changes.
+
+* [`58c4ffc3`](https://github.com/keystonejs/keystone/commit/58c4ffc3d4b1edf8bdfbc4ea299133d303239fc6) [#2611](https://github.com/keystonejs/keystone/pull/2611) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed a build error with OEmbed field.
+
+- [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939) [#2616](https://github.com/keystonejs/keystone/pull/2616) Thanks [@JedWatson](https://github.com/JedWatson)! - Improved layout of checkbox fields.
+
+* [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+- [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf) [#2539](https://github.com/keystonejs/keystone/pull/2539) Thanks [@jesstelford](https://github.com/jesstelford)! - Normalize the behaviour of presaving in Mongo based on Decimal field fix in #2537
+
+- Updated dependencies [[`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373), [`7fc00071`](https://github.com/keystonejs/keystone/commit/7fc00071cd22514103593f0da68b9efa3bf853e9), [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`0b37b13b`](https://github.com/keystonejs/keystone/commit/0b37b13b5b11a5391b70920f9e8cbd6c5a71f586)]:
+  - @keystonejs/app-admin-ui@5.9.4
+  - @arch-ui/alert@0.0.16
+  - @arch-ui/day-picker@0.0.22
+  - @arch-ui/drawer@0.0.20
+  - @arch-ui/loading@0.0.16
+  - @arch-ui/lozenge@0.0.15
+  - @arch-ui/options@0.0.17
+  - @arch-ui/tooltip@0.1.10
+  - @arch-ui/typography@0.0.16
+  - @arch-ui/fields@2.1.5
+  - @keystonejs/adapter-knex@8.0.0
+  - @keystonejs/adapter-mongoose@7.0.0
+  - @keystonejs/test-utils@6.0.2
+  - @keystonejs/field-content@5.4.4
+  - @arch-ui/button@0.0.17
+
 ## 7.0.2
 
 ### Patch Changes
