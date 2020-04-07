@@ -1,5 +1,15 @@
 # @keystonejs/api-tests
 
+## 5.1.3
+
+### Patch Changes
+
+- [`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7) [#2666](https://github.com/keystonejs/keystone/pull/2666) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug with `_allItemsMeta { count }` queries on one-to-one relationships.
+
+- Updated dependencies [[`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7), [`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7)]:
+  - @keystonejs/adapter-knex@9.0.1
+  - @keystonejs/adapter-mongoose@8.0.1
+
 ## 5.1.2
 
 ### Patch Changes

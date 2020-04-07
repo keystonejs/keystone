@@ -3,8 +3,11 @@ const { flatten, objMerge, unique } = require('@keystonejs/utils');
 
 class ListCRUDProvider {
   constructor({ metaPrefix = 'ks' } = {}) {
-    this._listsMeta = `_${metaPrefix}ListsMeta`;
     this.lists = [];
+    this.gqlNames = {
+      listsMeta: `_${metaPrefix}ListsMeta`,
+      listsMetaInput: `_${metaPrefix}ListsMetaInput`,
+    };
   }
 
   getTypes({ schemaName }) {
@@ -71,6 +74,9 @@ class ListCRUDProvider {
       `type _QueryMeta {
         count: Int
       }`,
+      `input ${this.gqlNames.listsMetaInput} {
+        key: String
+      }`,
     ]);
   }
   getQueries({ schemaName }) {
@@ -80,7 +86,7 @@ class ListCRUDProvider {
     return [
       ...flatten(firstClassLists.map(list => list.getGqlQueries({ schemaName }))),
       `""" Retrieve the meta-data for all lists. """
-          ${this._listsMeta}: [_ListMeta]`,
+      ${this.gqlNames.listsMeta}(where: ${this.gqlNames.listsMetaInput}): [_ListMeta]`,
     ];
   }
   getMutations({ schemaName }) {
@@ -150,9 +156,12 @@ class ListCRUDProvider {
       // shouldn't be able to override list-level queries
       ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
       ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
+
       // And the Keystone meta queries must always be available
-      [this._listsMeta]: (_, args, context) =>
-        this.lists.filter(list => list.access[schemaName].read).map(list => list.listMeta(context)),
+      [this.gqlNames.listsMeta]: (_, { where: { key } = {} }, context) =>
+        this.lists
+          .filter(list => list.access[schemaName].read && (!key || list.key === key))
+          .map(list => list.listMeta(context)),
     };
   }
   getMutationResolvers({ schemaName }) {

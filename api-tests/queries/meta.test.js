@@ -168,6 +168,52 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
         })
       );
+
+      test(
+        'returns results for one list lists',
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
+            query: `
+          query {
+            _ksListsMeta(where: { key: "User" }) {
+              name
+              schema {
+                type
+                queries
+                relatedFields {
+                  type
+                  fields
+                }
+              }
+            }
+          }
+      `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_ksListsMeta');
+          expect(data._ksListsMeta).toMatchObject([
+            {
+              name: 'User',
+              schema: {
+                queries: ['User', 'allUsers', '_allUsersMeta'],
+                relatedFields: [
+                  {
+                    fields: ['employees', '_employeesMeta'],
+                    type: 'Company',
+                  },
+                  {
+                    fields: ['author'],
+                    type: 'Post',
+                  },
+                ],
+                type: 'User',
+              },
+            },
+          ]);
+        })
+      );
     });
   })
 );
