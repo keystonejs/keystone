@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
@@ -23,6 +24,7 @@ keystone
     }
 
     const app = express();
+    app.use(helmet());
 
     app.get('/reset-db', async (req, res) => {
       Object.values(keystone.adapters).forEach(async adapter => {

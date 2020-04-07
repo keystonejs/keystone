@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const supertest = require('supertest-light');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 const pFinally = require('p-finally');
@@ -55,6 +56,8 @@ async function setupServer({
   const { middlewares } = await keystone.prepare({ dev: true, apps });
 
   const app = express();
+  app.use(helmet());
+  
   app.use(middlewares);
 
   return { keystone, app };

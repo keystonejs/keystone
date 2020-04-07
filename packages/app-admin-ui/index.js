@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -74,6 +75,7 @@ class AdminUIApp {
     const { signinPath } = this.routes;
 
     const app = express();
+    app.use(helmet());
 
     // Short-circuit GET requests when the user already signed in (avoids
     // downloading UI bundle, doing a client side redirect, etc)

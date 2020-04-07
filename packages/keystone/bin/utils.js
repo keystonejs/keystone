@@ -1,5 +1,6 @@
 const terminalLink = require('terminal-link');
 const express = require('express');
+const helmet = require('helmet');
 const endent = require('endent');
 const ciInfo = require('ci-info');
 const chalk = require('chalk');
@@ -62,6 +63,7 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   spinner.text = 'Starting Keystone server';
   const app = express();
+  app.use(helmet());
 
   app.use((req, res, next) => {
     if (status === 'started') {

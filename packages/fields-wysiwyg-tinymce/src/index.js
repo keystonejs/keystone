@@ -1,5 +1,6 @@
 import { dirname } from 'path';
 import express from 'express';
+const helmet = require('helmet');
 import { Text } from '@keystonejs/fields';
 import { importView } from '@keystonejs/build-field-types';
 import { WysiwygImplementation } from './Implementation';
@@ -7,6 +8,7 @@ import { WysiwygImplementation } from './Implementation';
 function prepareMiddleware() {
   const tinymcePath = dirname(require.resolve('tinymce'));
   const app = express();
+  app.use(helmet());
   app.use('/tinymce-assets', express.static(tinymcePath));
   return app;
 }

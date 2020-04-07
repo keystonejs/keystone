@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const express = require('express');
+const helmet = require('helmet');
 const fallback = require('express-history-api-fallback');
 const pathModule = require('path');
 
@@ -23,6 +24,7 @@ class StaticApp {
 
   prepareMiddleware({ dev, distDir }) {
     const app = express();
+    app.use(helmet());
     const folderToServe = dev ? this._src : getDistDir(this._src, distDir);
     app.use(this._path, express.static(folderToServe));
     if (this._fallback) {

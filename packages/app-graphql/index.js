@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const { GraphQLPlaygroundApp } = require('@keystonejs/app-graphql-playground');
 const { createApolloServer } = require('./lib/apolloServer');
 const validation = require('./validation');
@@ -24,6 +25,7 @@ class GraphQLApp {
     const apiPath = this._apiPath;
     const graphiqlPath = this._graphiqlPath;
     const app = express();
+    app.use(helmet());
 
     if (dev && graphiqlPath) {
       // This is a convenience to make the out of the box experience slightly simpler.

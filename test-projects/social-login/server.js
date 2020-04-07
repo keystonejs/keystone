@@ -1,4 +1,6 @@
 const express = require('express');
+const helmet = require('helmet');
+
 const cookieParser = require('cookie-parser');
 const {
   GoogleAuthStrategy,
@@ -208,6 +210,7 @@ keystone
     }
 
     const app = express();
+    app.use(helmet());
 
     app.use(cookieParser());
     app.use(middlewares);

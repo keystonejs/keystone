@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const { renderPlaygroundPage } = require('@apollographql/graphql-playground-html');
 const playgroundPkg = require('@apollographql/graphql-playground-react/package.json');
 const falsey = require('falsey');
@@ -17,6 +18,7 @@ class GraphQLPlaygroundApp {
     const graphiqlPath = this._graphiqlPath;
     const apiPath = this._apiPath;
     const app = express();
+    app.use(helmet());
     if (dev && falsey(process.env.DISABLE_LOGGING)) {
       // NOTE: Must come before we setup the GraphQL API
       const devQueryPath = `${graphiqlPath}/go`;
