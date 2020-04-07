@@ -1,4 +1,5 @@
 ---
+'@keystonejs/api-tests': minor
 '@keystonejs/keystone': minor
 ---
 
