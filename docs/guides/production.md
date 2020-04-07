@@ -31,7 +31,7 @@ Sessions are stored inside the Keystone app by default, but in production it's r
 - You can restart your app for upgrades without breaking sessions
 - You can replicate your Keystone app for availability, while keeping sessions consistent
 
-This option [can be set](/packages/keystone/README.md) in the `Keystone` constructor.
+This option can be set using the [sessionStore](/packages/keystone/README.md#sessionstore) property in the `Keystone` constructor configuration object.
 
 ## Caching
 
