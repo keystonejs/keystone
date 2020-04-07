@@ -37,7 +37,7 @@ While it has served us well, it's time for an upgrade.
 ## The Problem
 
 The key challenge in designing our schema is how we represent relationships between lists.
-Our initial designe borrowed heavily from a `MongDB` inspired pattern, where each object was responsible for tracking its related items.
+Our initial design borrowed heavily from a `MongDB` inspired pattern, where each object was responsible for tracking its related items.
 This made the initial implementation very simple, particularly for the `MongoDB` adapter.
 The `PostgreSQL` adapter was more complex, as it had to emulate the patterns from `MongoDB`, but it also worked.
 
@@ -61,7 +61,7 @@ This means that our query generation code has become more complex, but this trad
 
 ### No more duplicated data
 
-Eliminating duplicated data removes the risk of the data getting out of sync, and also simplied all of our `create`, `update`, and `delete` operations.
+Eliminating duplicated data removes the risk of the data getting out of sync, and also simplified all of our `create`, `update`, and `delete` operations.
 
 ### Conventional database schema
 

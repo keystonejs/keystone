@@ -35,7 +35,7 @@ If you are using a managed database, you should consult the documentation for yo
 
 ### MongoDB
 
-The [official MongoDB documentation](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/) prodives details on how to use `mongodump` and `mongorestore` to backup and restore your database.
+The [official MongoDB documentation](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/) provides details on how to use `mongodump` and `mongorestore` to backup and restore your database.
 
 ### PostgreSQL
 
