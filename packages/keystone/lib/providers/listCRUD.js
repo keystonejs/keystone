@@ -47,6 +47,9 @@ class ListCRUDProvider {
 
         """The field type (ie, Checkbox, Text, etc)"""
         type: String
+
+        """The user-provided field config options. """
+        config: JSON
       }`,
       `type _ListSchemaRelatedFields {
         """The typename as used in GraphQL queries"""
@@ -139,9 +142,10 @@ class ListCRUDProvider {
           .find(list => list.key === key)
           .getFieldsWithAccess({ schemaName, access: 'read' })
           .filter(field => !type || field.constructor.name === type)
-          .map(field => ({
-            name: field.path,
-            type: field.constructor.name,
+          .map(({ path, constructor, config }) => ({
+            name: path,
+            type: constructor.name,
+            config,
           }));
       },
 

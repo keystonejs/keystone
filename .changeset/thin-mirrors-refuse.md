@@ -3,4 +3,4 @@
 '@keystonejs/keystone': minor
 ---
 
-Added `fields` list to ListSchema. This optionally takes a `where: { type }` argument and returns all matching field names on a list along with their types.
+Added `fields` list to ListSchema. This optionally takes a `where: { type }` argument and returns metadata for all matching fields on list, including name, type, and user-provided config.
