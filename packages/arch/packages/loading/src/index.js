@@ -36,7 +36,7 @@ const Dot = styled.span(({ appearance, delay = 0, isOffset }) => ({
   verticalAlign: 'top',
   width: '1em',
 }));
-export const LoadingIndicator = ({ appearance, size }) => (
+export const LoadingIndicator = ({ appearance = 'default', size = 4 }) => (
   <DotsContainer size={size}>
     <Dot appearance={appearance} />
     <Dot appearance={appearance} delay={160} isOffset />
@@ -44,10 +44,6 @@ export const LoadingIndicator = ({ appearance, size }) => (
     <A11yText>Loading</A11yText>
   </DotsContainer>
 );
-LoadingIndicator.defaultProps = {
-  appearance: 'default',
-  size: 4,
-};
 
 // ==============================
 // Spinner
@@ -83,7 +79,7 @@ const SpinnerSatellite = styled.div(({ color, size }) => ({
   top: 0,
 }));
 
-export const LoadingSpinner = ({ appearance, size }) => {
+export const LoadingSpinner = ({ appearance = 'default', size = 16 }) => {
   const color = appearanceColor[appearance];
 
   return (
@@ -93,9 +89,4 @@ export const LoadingSpinner = ({ appearance, size }) => {
       <A11yText>Loading</A11yText>
     </SpinnerWrapper>
   );
-};
-
-LoadingSpinner.defaultProps = {
-  appearance: 'default',
-  size: 16,
 };

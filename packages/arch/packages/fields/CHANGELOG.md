@@ -1,5 +1,14 @@
 # @arch-ui/fields
 
+## 2.1.5
+
+### Patch Changes
+
+- [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939) [#2616](https://github.com/keystonejs/keystone/pull/2616) Thanks [@JedWatson](https://github.com/JedWatson)! - Improved layout of checkbox fields.
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad)]:
+  - @arch-ui/lozenge@0.0.15
+
 ## 2.1.4
 
 ### Patch Changes

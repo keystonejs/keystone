@@ -125,7 +125,12 @@ const defaultComponents = {
   IndicatorSeparator: null,
 };
 
-export const Options = ({ displaySearch, innerRef, components: propComponents, ...props }) => {
+export const Options = ({
+  displaySearch = true,
+  innerRef,
+  components: propComponents,
+  ...props
+}) => {
   const components = useMemo(
     () => ({
       ...defaultComponents,
@@ -156,8 +161,4 @@ export const Options = ({ displaySearch, innerRef, components: propComponents, .
       components={components}
     />
   );
-};
-
-Options.defaultProps = {
-  displaySearch: true,
 };
