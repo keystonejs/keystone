@@ -9,10 +9,10 @@ Keystone models its data using `Lists`, which comprise of `Fields`.
 In order to store data we need to translate the Keystone data model into an appropriate form for the underlying data store.
 This transformation is handled by the [database adapters](/docs/quick-start/adapters.md).
 
-This transformation is generaly reasonably simple.
+This transformation is generally reasonably simple.
 A `List` called `User` in Keystone will have table called `Users` in PostgreSQL or a collection called `users` in MongoDB.
-For most field types there is also a one to to correspondance between a Keystone `Field` and a PostgreSQL column or MongoDB field.
-Each field type is responsible for articulating the exact correspondance, which includes the storage types and any auxillary data that needs to be stored.
+For most field types there is also a one to to correspondence between a Keystone `Field` and a PostgreSQL column or MongoDB field.
+Each field type is responsible for articulating the exact correspondence, which includes the storage types and any auxillary data that needs to be stored.
 
 The most complicated aspect of the database schema is the representation of relationships.
 To understand the storage of relationships you should first make sure you understand the basic ideas behind [Keystone relationships](/docs/discussions/relationships.md).
@@ -90,7 +90,7 @@ keystone.createList('Post', {
 });
 ```
 
-If we consider the above `one to one` relationship we know that each `Post` has a single `author`, and each `User` is the auther of a single `Post`.
+If we consider the above `one to one` relationship we know that each `Post` has a single `author`, and each `User` is the author of a single `Post`.
 This is similar to the `one to many` case, however now because of the symmetry of the configuration it is possible to store the data on either the `Post` or `User` table.
 
 To break this symmetry we pick the list with the name that comes first alphabetically, so in this case `Post`.
