@@ -55,7 +55,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       uri = `mongodb://localhost/${defaultDbName}`;
       logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
-    console.log(uri);
+
     await this.mongoose.connect(uri, {
       useNewUrlParser: true,
       useFindAndModify: false,
