@@ -11,10 +11,12 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
     "build": "cross-env NODE_ENV=production keystone build",
+    "create-tables": "cross-env NODE_ENV=production CREATE_TABLES=true keystone create-tables",
     "start": "cross-env NODE_ENV=production keystone start",
     "rels": "cross-env NODE_ENV=production keystone upgrade-relationships"
   },
   "dependencies": {
+    "@keystonejs/adapter-knex": "^8.0.0",
     "@keystonejs/adapter-mongoose": "^7.0.0",
     "@keystonejs/app-admin-ui": "^5.9.4",
     "@keystonejs/app-graphql": "^5.1.5",

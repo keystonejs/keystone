@@ -1,4 +1,3 @@
-const cuid = require('cuid');
 const { getType, flatten } = require('@keystonejs/utils');
 
 const { simpleTokenizer, relationshipTokenizer, modifierTokenizer } = require('./tokenizers');
@@ -16,7 +15,7 @@ const flattenQueries = (parsedQueries, joinOp) => ({
   relationships: flatten(parsedQueries.map(q => q.relationships || [])),
 });
 
-function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], include) {
+function queryParser({ listAdapter, getUID }, query, pathSoFar = [], include) {
   if (getType(query) !== 'Object') {
     throw new Error(
       `Expected an Object for query, got ${getType(query)} at path ${pathSoFar.join('.')}`
@@ -44,12 +43,7 @@ function queryParser({ listAdapter, getUID = cuid }, query, pathSoFar = [], incl
       }
     } else if (getType(value) === 'Object') {
       // A relationship query component
-      const { matchTerm, relationshipInfo } = relationshipTokenizer(
-        listAdapter,
-        key,
-        path,
-        getUID(key)
-      );
+      const { matchTerm, relationshipInfo } = relationshipTokenizer(listAdapter, key, path, getUID);
       return {
         // matchTerm is our filtering expression. This determines if the
         // parent item is included in the final list
