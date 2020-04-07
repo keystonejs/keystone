@@ -39,6 +39,11 @@ export function Blockquote(props) {
         '& > p:last-of-type': {
           marginBottom: 0,
         },
+
+        a: {
+          borderBottomColor: lineColor,
+        },
+
         ...boldStyles,
       }}
       {...props}
@@ -82,8 +87,10 @@ function getVariant(props) {
 
 let variants = {
   __standard: { lineColor: colors.N20, isBold: false },
-  tip: { lineColor: colors.B.base, isBold: false },
-  note: { lineColor: colors.B.base, isBold: true },
+  note: { lineColor: colors.N20, isBold: true },
+  hint: { lineColor: colors.B.base, isBold: true },
+  tip: { lineColor: colors.G.base, isBold: true },
   important: { lineColor: colors.Y.base, isBold: true },
+  warning: { lineColor: colors.R.base, isBold: true },
 };
 let variantKeys = Object.keys(variants);
