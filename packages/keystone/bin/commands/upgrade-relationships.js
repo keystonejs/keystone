@@ -52,32 +52,27 @@ const ttyLink = (url, text) => {
 const printArrow = ({ migration, left, right }) => {
   if (!migration) {
     if (right) {
-      console.log(`  ${left.listKey}.${left.path} -> ${right.listKey}.${right.path}`);
+      console.log(`\n  ${left.listKey}.${left.path} -> ${right.listKey}.${right.path}`);
     } else {
-      console.log(`  ${left.listKey}.${left.path} -> ${left.refListKey}`);
+      console.log(`\n  ${left.listKey}.${left.path} -> ${left.refListKey}`);
     }
   }
 };
 
 const strategySummary = (
-  { one_one_to_many, one_many_to_many, two_one_to_one, two_one_to_many, two_many_to_many },
+  { one_many_to_many, two_one_to_one, two_one_to_many, two_many_to_many },
   keystone,
   migration
 ) => {
   const mongo = !!keystone.adapters.MongooseAdapter;
 
   if (!migration) {
-    console.log(chalk.bold('One-sided: one to many'));
+    console.log('\n', chalk.bold('One-sided: one to many'));
+    console.log('    ✅ No action required');
   }
-  one_one_to_many.forEach(({ left }) => {
-    printArrow({ migration, left });
-    if (!migration) {
-      console.log('    * No action required');
-    }
-  });
 
   if (!migration) {
-    console.log(chalk.bold('One-sided: many to many'));
+    console.log('\n\n', chalk.bold('One-sided: many to many'));
   }
   one_many_to_many.forEach(({ left, columnNames, tableName }) => {
     const { near, far } = columnNames[`${left.listKey}.${left.path}`];
@@ -95,7 +90,7 @@ const strategySummary = (
   });
 
   if (!migration) {
-    console.log(chalk.bold('Two-sided: one to one'));
+    console.log('\n\n', chalk.bold('Two-sided: one to one'));
   }
   two_one_to_one.forEach(({ left, right }) => {
     printArrow({ migration, left, right });
@@ -109,7 +104,7 @@ const strategySummary = (
   });
 
   if (!migration) {
-    console.log(chalk.bold('Two-sided: one to many'));
+    console.log('\n\n', chalk.bold('Two-sided: one to many'));
   }
   two_one_to_many.forEach(({ left, right, tableName }) => {
     const dropper = left.listKey === tableName ? right : left;
@@ -124,7 +119,7 @@ const strategySummary = (
   });
 
   if (!migration) {
-    console.log(chalk.bold('Two-sided: many to many'));
+    console.log('\n\n', chalk.bold('Two-sided: many to many'));
   }
   two_many_to_many.forEach(({ left, right, tableName, columnNames }) => {
     const { near, far } = columnNames[`${left.listKey}.${left.path}`];
@@ -152,7 +147,6 @@ const upgradeRelationships = async (args, entryFile) => {
 
   const rels = keystone._consolidateRelationships();
 
-  const one_one_to_many = rels.filter(({ right, cardinality }) => !right && cardinality !== 'N:N');
   const one_many_to_many = rels.filter(({ right, cardinality }) => !right && cardinality === 'N:N');
 
   const two_one_to_one = rels.filter(({ right, cardinality }) => right && cardinality === '1:1');
@@ -163,7 +157,6 @@ const upgradeRelationships = async (args, entryFile) => {
 
   strategySummary(
     {
-      one_one_to_many,
       one_many_to_many,
       two_one_to_one,
       two_one_to_many,
