@@ -57,20 +57,20 @@ You are now running your very own Keystone application! Here's what you get out 
 
 Your simple todo application is up and running:
 
-- [http://localhost:3000](http://localhost:3000)
+- <http://localhost:3000>
 
 ### Admin UI
 
 Your application also has an Admin UI, which lets you directly manipulate the data in your database:
 
-- [http://localhost:3000/admin](http://localhost:3000/admin)
+- <http://localhost:3000/admin>
 
 ### GraphQL API
 
 Both your application and the Admin UI are powered by a GraphQL API.
 Keystone provides a web interface for this API at this URL:
 
-- [http://localhost:3000/admin/graphiql](http://localhost:3000/admin/graphiql)
+- <http://localhost:3000/admin/graphiql>
 
 ## Next steps
 

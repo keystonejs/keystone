@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/field-content",
   "description": "A block-based content field for KeystoneJS",
-  "version": "5.4.4",
+  "version": "5.4.5",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -19,7 +19,7 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27",
     "@keystonejs/build-field-types": "^5.2.2",
-    "@keystonejs/fields": "^8.0.0",
+    "@keystonejs/fields": "^9.0.0",
     "@keystonejs/utils": "^5.2.2",
     "apply-ref": "^0.2.0",
     "get-selection-range": "^0.1.0",
