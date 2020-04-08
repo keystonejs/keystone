@@ -637,10 +637,12 @@ module.exports = class Keystone {
       })
     );
 
-    // This function can't be called after prepare(), so make it throw an error from now on.
-    this.extendGraphQLSchema = () => {
-      throw new Error(`keystone.extendGraphQLSchema must be called before keystone.prepare()`);
-    };
+    // These function can't be called after prepare(), so make them throw an error from now on.
+    ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
+      this[f] = () => {
+        throw new Error(`keystone.${f} must be called before keystone.prepare()`);
+      };
+    });
 
     return { middlewares };
   }
