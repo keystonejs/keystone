@@ -356,6 +356,11 @@ module.exports = class List {
       .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
   }
 
+  /** Equivalent to getFieldsWithAccess but includes `id` fields. */
+  getAllFieldsWithAccess({ schemaName, access }) {
+    return this.fields.filter(field => field.access[schemaName][access]);
+  }
+
   getGqlTypes({ schemaName }) {
     const schemaAccess = this.access[schemaName];
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions

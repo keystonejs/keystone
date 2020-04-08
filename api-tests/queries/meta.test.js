@@ -137,6 +137,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 queries: ['User', 'allUsers', '_allUsersMeta'],
                 fields: [
                   {
+                    name: 'id',
+                    type: 'MongoIdImplementation',
+                  },
+                  {
                     name: 'company',
                     type: 'Relationship',
                   },
@@ -165,6 +169,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
                 fields: [
                   {
+                    name: 'id',
+                    type: 'MongoIdImplementation',
+                  },
+                  {
                     name: 'name',
                     type: 'Text',
                   },
@@ -186,6 +194,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               schema: {
                 queries: ['Post', 'allPosts', '_allPostsMeta'],
                 fields: [
+                  {
+                    name: 'id',
+                    type: 'MongoIdImplementation',
+                  },
                   {
                     name: 'content',
                     type: 'Text',
@@ -238,6 +250,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 queries: ['User', 'allUsers', '_allUsersMeta'],
                 fields: [
                   {
+                    name: 'id',
+                    type: 'MongoIdImplementation',
+                  },
+                  {
                     name: 'company',
                     type: 'Relationship',
                   },
@@ -264,7 +280,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
 
       test(
-        'returns results for one list and one type of fields',
+        'returns results for one list and one type of field',
         runner(setupKeystone, async ({ keystone }) => {
           const { data, errors } = await graphqlRequest({
             keystone,
