@@ -193,8 +193,8 @@ function _keystoneRunner(adapterName, tearDownFunction) {
 
 function multiAdapterRunners(only) {
   return [
-    { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
-    { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
+    // { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
+    // { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
     { runner: _keystoneRunner('json', () => {}), adapterName: 'json' },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }

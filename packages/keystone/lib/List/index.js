@@ -926,6 +926,7 @@ module.exports = class List {
     }
     const results = await this.adapter.itemsQuery(args, extra);
     if (results.length > maxResults) {
+      console.log({ results, args, extra });
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
     if (extra && extra.context) {

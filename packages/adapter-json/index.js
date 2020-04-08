@@ -206,6 +206,8 @@ class JSONListAdapter extends BaseListAdapter {
     return Object.entries(where).map(([condition, value]) => {
       // A "basic" condition we know how to handle
       if (conditions[condition]) {
+        console.log({ condition, value, c: conditions[condition](value) });
+
         return conditions[condition](value);
       }
 
@@ -214,12 +216,16 @@ class JSONListAdapter extends BaseListAdapter {
         fieldAdapter.supportsWhereClause(condition)
       );
 
+      console.log({ fieldAdapterForClause });
+
       // Nope, nothing supports it, so we bail
       if (!fieldAdapterForClause) {
         throw new Error(
           `Unexpected where clause '${condition}: ${JSON.stringify(value)}' for list '${this.key}'.`
         );
       }
+
+      console.log({ fieldAdapterForClause });
 
       // This adapter only knows how to handle special cases for `Relationship`
       // fields, so it'll throw for everything else left over
