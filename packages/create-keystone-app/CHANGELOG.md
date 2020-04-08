@@ -1,5 +1,22 @@
 # create-keystone-app
 
+## 3.0.0
+
+### Major Changes
+
+- [`8d31f10c`](https://github.com/keystonejs/keystone/commit/8d31f10cdc7255cd7414c3a6393049f794042ea7) [#2684](https://github.com/keystonejs/keystone/pull/2684) Thanks [@timleslie](https://github.com/timleslie)! - This release adds support for specifying and testing the database connection string used when setting up a new project.
+  The quick-start guide has also been updated to give better instructions on to setup both MongoDB and PostgreSQL databases.
+
+  The command line API for `create keystone-app` has also changed:
+
+  - `--adapter` has been replaced with `--database`, which accepts options of either `MongoDB` or `PostgreSQL`.
+  - `--conection-string` has been added, which allows you to specify either a `mongodb://` or `postgres://` connection string.
+  - `--test-connection` has been added, which will tell the installer to test the connection string before setting up the project.
+
+### Minor Changes
+
+- [`22f3356f`](https://github.com/keystonejs/keystone/commit/22f3356fece3057d81ca9c1cedc1d225088cb42a) [#2662](https://github.com/keystonejs/keystone/pull/2662) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added instructions for Knex adapters on how to initialise tables after running the CLI.
+
 ## 2.0.0
 
 ### Major Changes
