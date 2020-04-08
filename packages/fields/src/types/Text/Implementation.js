@@ -2,7 +2,6 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Text extends Implementation {
   constructor(path, { isMultiline }) {
@@ -74,5 +73,3 @@ export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
 }
 
 export class JSONTextInterface extends CommonTextInterface(JSONFieldAdapter) {}
-
-export class MemoryTextInterface extends CommonTextInterface(MemoryFieldAdapter) {}

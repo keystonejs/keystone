@@ -3,7 +3,6 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import UnsplashAPI, { toJson } from 'unsplash-js';
 import queryString from 'query-string';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 import { Implementation } from '../../Implementation';
 
@@ -297,5 +296,3 @@ export class KnexUnsplashInterface extends CommonUnsplashInterface(KnexFieldAdap
 }
 
 export class JSONTextInterface extends CommonUnsplashInterface(JSONFieldAdapter) {}
-
-export class MemoryTextInterface extends CommonUnsplashInterface(MemoryFieldAdapter) {}

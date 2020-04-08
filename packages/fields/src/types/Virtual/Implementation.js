@@ -69,11 +69,3 @@ export class JSONVirtualInterface extends CommonVirtualInterface(KnexFieldAdapte
   }
   addToTableSchema() {}
 }
-
-export class MemoryVirtualInterface extends CommonVirtualInterface(KnexFieldAdapter) {
-  constructor() {
-    super(...arguments);
-    this.realKeys = [];
-  }
-  addToTableSchema() {}
-}

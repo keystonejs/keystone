@@ -2,7 +2,6 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 import mongoose from 'mongoose';
 
 import fetch from 'node-fetch';
@@ -167,5 +166,3 @@ export class KnexLocationInterface extends CommonLocationInterface(KnexFieldAdap
 }
 
 export class JSONLocationInterface extends CommonLocationInterface(JSONFieldAdapter) {}
-
-export class MemoryLocationInterface extends CommonLocationInterface(MemoryFieldAdapter) {}

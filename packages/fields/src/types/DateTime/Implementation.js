@@ -5,7 +5,6 @@ import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { Implementation } from '../../Implementation';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 class _DateTime extends Implementation {
   constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
@@ -81,19 +80,22 @@ const CommonDateTimeInterface = superclass =>
         // Only run the hook if the item actually contains the datetime field
         // NOTE: Can't use hasOwnProperty here, as the mongoose data object
         // returned isn't a POJO
-        if (!(field_path in item)) {
-          return item;
+
+        let itemCopy = { ...item };
+
+        if (!(field_path in itemCopy)) {
+          return itemCopy;
         }
 
-        const datetimeString = item[field_path];
+        const datetimeString = itemCopy[field_path];
 
         // NOTE: Even though `0` is a valid timestamp (the unix epoch), it's not a valid ISO string,
         // so it's ok to check for falseyness here.
         if (!datetimeString) {
-          item[utc_field] = null;
-          item[offset_field] = null;
-          delete item[field_path]; // Never store this field
-          return item;
+          itemCopy[utc_field] = null;
+          itemCopy[offset_field] = null;
+          delete itemCopy[field_path]; // Never store this field
+          return itemCopy;
         }
 
         if (!DateTime.fromISO(datetimeString, { zone: 'utc' }).isValid) {
@@ -102,11 +104,10 @@ const CommonDateTimeInterface = superclass =>
           );
         }
 
-        item[utc_field] = toDate(datetimeString);
-        item[offset_field] = DateTime.fromISO(datetimeString, { setZone: true }).toFormat('ZZ');
-        delete item[field_path]; // Never store this field
-
-        return item;
+        itemCopy[utc_field] = toDate(datetimeString);
+        itemCopy[offset_field] = DateTime.fromISO(datetimeString, { setZone: true }).toFormat('ZZ');
+        delete itemCopy[field_path]; // Never store this field
+        return itemCopy;
       });
 
       addPostReadHook(item => {
@@ -114,30 +115,32 @@ const CommonDateTimeInterface = superclass =>
         // don't bother trying to process anything
         // NOTE: Can't use hasOwnProperty here, as the mongoose data object
         // returned isn't a POJO
-        if (!(utc_field in item) && !(offset_field in item)) {
-          return item;
+
+        let itemCopy = { ...item };
+
+        if (!(utc_field in itemCopy) && !(offset_field in itemCopy)) {
+          return itemCopy;
         }
 
-        if (!item[utc_field] || !item[offset_field]) {
-          item[field_path] = null;
-          return item;
+        if (!itemCopy[utc_field] || !itemCopy[offset_field]) {
+          itemCopy[field_path] = null;
+          return itemCopy;
         }
 
-        const datetimeString = DateTime.fromJSDate(item[utc_field], { zone: 'utc' })
+        const datetimeString = DateTime.fromJSDate(itemCopy[utc_field], { zone: 'utc' })
           .setZone(
             new FixedOffsetZone(
-              DateTime.fromISO(`1234-01-01T00:00:00${item[offset_field]}`, {
+              DateTime.fromISO(`1234-01-01T00:00:00${itemCopy[offset_field]}`, {
                 setZone: true,
               }).offset
             )
           )
           .toISO();
 
-        item[field_path] = datetimeString;
-        item[utc_field] = undefined;
-        item[offset_field] = undefined;
-
-        return item;
+        itemCopy[field_path] = datetimeString;
+        itemCopy[utc_field] = undefined;
+        itemCopy[offset_field] = undefined;
+        return itemCopy;
       });
     }
 
@@ -219,14 +222,19 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
 
 export { _DateTime as DateTime };
 
-export class JSONDateTimeInterface extends JSONFieldAdapter {
-  getQueryConditions(dbPath) {
-    return this.equalityConditions(dbPath);
+export class JSONDateTimeInterface extends CommonDateTimeInterface(JSONFieldAdapter) {
+  constructor() {
+    super(...arguments);
+    this.utcPath = `${this.path}_utc`;
+    this.realKeys = [this.utcPath, this.offsetPath];
+    this.sortKey = this.utcPath;
+    this.dbPath = this.utcPath;
   }
-}
-
-export class MemoryDateTimeInterface extends MemoryFieldAdapter {
   getQueryConditions(dbPath) {
-    return this.equalityConditions(dbPath);
+    return {
+      ...this.equalityConditions(dbPath, toDate),
+      ...this.orderingConditions(dbPath, toDate),
+      ...this.inConditions(dbPath, toDate),
+    };
   }
 }

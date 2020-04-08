@@ -3,7 +3,6 @@ import {
   MongoTextInterface,
   KnexTextInterface,
   JSONTextInterface,
-  MemoryTextInterface,
 } from '../Text/Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
@@ -20,6 +19,5 @@ export default {
     mongoose: MongoTextInterface,
     knex: KnexTextInterface,
     json: JSONTextInterface,
-    memory: MemoryTextInterface,
   },
 };

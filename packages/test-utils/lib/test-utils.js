@@ -7,7 +7,7 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
-const { MemoryAdapter } = require('@keystonejs/adapter-memory');
+const { JSONAdapter } = require('@keystonejs/adapter-json');
 
 async function setupServer({
   name,
@@ -18,9 +18,11 @@ async function setupServer({
   keystoneOptions,
   graphqlOptions = {},
 }) {
-  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter, json: MemoryAdapter }[
-    adapterName
-  ];
+  const Adapter = {
+    mongoose: MongooseAdapter,
+    knex: KnexAdapter,
+    json: JSONAdapter,
+  }[adapterName];
 
   const argGenerator = {
     mongoose: getMongoMemoryServerConfig,
@@ -28,7 +30,9 @@ async function setupServer({
       dropDatabase: true,
       knexOptions: { connection: process.env.KNEX_URI || 'postgres://localhost/keystone' },
     }),
-    json: () => undefined,
+    json: () => ({
+      inMemory: true,
+    }),
   }[adapterName];
 
   const keystone = new Keystone({
@@ -189,10 +193,9 @@ function _keystoneRunner(adapterName, tearDownFunction) {
 
 function multiAdapterRunners(only) {
   return [
-    // { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
-    // { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
+    { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
+    { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
     { runner: _keystoneRunner('json', () => {}), adapterName: 'json' },
-    // { runner: _keystoneRunner('memory', () => {}), adapterName: 'memory' },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 

@@ -1,20 +1,17 @@
 const { escapeRegExp, identity, mapKeys, objMerge, flatten } = require('@keystonejs/utils');
 const FileAsync = require('lowdb/adapters/FileAsync');
+const Memory = require('lowdb/adapters/Memory');
 const lowdb = require('lowdb');
 const lodashId = require('lodash-id');
 const pSettle = require('p-settle');
 const memoizeOne = require('memoize-one');
-
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
 
 class JSONAdapter extends BaseKeystoneAdapter {
-  constructor({ adapter, ...args } = {}) {
+  constructor({ adapter, inMemory = false, ...args } = {}) {
     super(args);
-
-    this.adapter = adapter || new FileAsync();
-
+    this.adapter = adapter || inMemory ? new Memory() : new FileAsync();
     this.name = this.name || 'json';
-
     this.listAdapterClass = JSONListAdapter;
   }
 
@@ -225,7 +222,7 @@ class JSONListAdapter extends BaseListAdapter {
       }
 
       // This adapter only knows how to handle special cases for `Relationship`
-      // fields, so it'll throw for everythign else left over
+      // fields, so it'll throw for everything else left over
       if (!fieldAdapterForClause.isRelationship) {
         throw new Error(
           `Expected where clause '${condition}: ${JSON.stringify(value)}' to be handled by '${
@@ -324,11 +321,14 @@ class JSONListAdapter extends BaseListAdapter {
     }
 
     if (orderBy) {
-      const [field, direction] = orderBy.split('_');
-      if (!field || !direction || !['ASC', 'DESC'].includes(direction)) {
+      const [orderField, orderDirection] = orderBy.split('_');
+
+      if (!orderField || !orderDirection || !['ASC', 'DESC'].includes(orderDirection)) {
         throw new Error('Invalid `orderBy` option received: ' + orderBy);
       }
-      chain = chain.orderBy([field], [direction.toLowerCase()]);
+      const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
+
+      chain = chain.orderBy([sortKey], [orderDirection.toLowerCase()]);
     }
 
     if (typeof skip === 'number') {
@@ -359,7 +359,12 @@ class JSONFieldAdapter extends BaseFieldAdapter {
   //        provided by graphQL into a native adapter type.
   equalityConditions(dbPath, f = identity) {
     return {
-      [this.path]: value => _ => _.matchesProperty(dbPath, f(value)),
+      [this.path]: value => _ => item => {
+        if (item[dbPath] !== null && item[dbPath] !== undefined) {
+          return _.matchesProperty(dbPath, f(value))(item);
+        }
+        return false;
+      },
       [`${this.path}_not`]: value => _ => _.negate(_.matchesProperty(dbPath, f(value))),
     };
   }
@@ -375,33 +380,33 @@ class JSONFieldAdapter extends BaseFieldAdapter {
   }
 
   inConditions(dbPath, f = identity) {
-    const matcher = value => item => (value || []).map(f).includes(item[dbPath]);
+    // using matchesProperty cause it handles date comparision
+    // But there's gotta be a more "lodashy" way to write this?
+    const matcher = (value, _) => item =>
+      (value || []).some(v => _.matchesProperty(dbPath, f(v))(item));
 
     return {
-      [`${this.path}_in`]: value => () => matcher(value),
-      [`${this.path}_not_in`]: value => _ => _.negate(matcher(value)),
+      [`${this.path}_in`]: value => _ => matcher(value, _),
+      [`${this.path}_not_in`]: value => _ => _.negate(matcher(value, _)),
     };
   }
 
   orderingConditions(dbPath, f = identity) {
-    const filterNullValues = cb => item => {
+    const filterNullValues = (cb, v) => item => {
       if (item[dbPath] === null) {
         return false;
       }
       return cb(item);
     };
     return {
-      [`${this.path}_lt`]: value => () => filterNullValues(item => item[dbPath] < f(value)),
-      [`${this.path}_lte`]: value => () => filterNullValues(item => item[dbPath] <= f(value)),
-      [`${this.path}_gt`]: value => () => filterNullValues(item => item[dbPath] > f(value)),
+      [`${this.path}_lt`]: value => () =>
+        filterNullValues(item => item[dbPath] < f(value), f(value)),
+      [`${this.path}_lte`]: value => () =>
+        filterNullValues(item => item[dbPath] <= f(value), f(value)),
+      [`${this.path}_gt`]: value => () =>
+        filterNullValues(item => item[dbPath] > f(value), f(value)),
       [`${this.path}_gte`]: value => () =>
-        filterNullValues(item => {
-          console.log({
-            parsedValue: typeof f(value), // number 
-            dbValue: typeof item[dbPath], // string 
-          });
-          return item[dbPath] >= f(value);
-        }),
+        filterNullValues(item => item[dbPath] >= f(value), f(value)),
     };
   }
 

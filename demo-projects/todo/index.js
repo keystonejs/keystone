@@ -1,4 +1,4 @@
-const { MemoryAdapter } = require('@keystonejs/adapter-memory');
+const { JSONAdapter } = require('@keystonejs/adapter-json');
 const { Keystone } = require('@keystonejs/keystone');
 // const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const { Text, Relationship } = require('@keystonejs/fields');
@@ -8,7 +8,7 @@ const { StaticApp } = require('@keystonejs/app-static');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
-  adapter: new MemoryAdapter(),
+  adapter: new JSONAdapter({ inMemory: true }),
 });
 
 keystone.createList('Todo', {

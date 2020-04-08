@@ -3,7 +3,6 @@ import {
   CalendarDay,
   MongoCalendarDayInterface,
   KnexCalendarDayInterface,
-  MemoryCalendarDayInterface,
   JSONCalendarDayInterface,
 } from './Implementation';
 
@@ -19,7 +18,6 @@ export default {
   adapters: {
     mongoose: MongoCalendarDayInterface,
     knex: KnexCalendarDayInterface,
-    memory: MemoryCalendarDayInterface,
     json: JSONCalendarDayInterface,
   },
 };

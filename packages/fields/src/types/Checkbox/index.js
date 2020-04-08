@@ -4,7 +4,6 @@ import {
   MongoCheckboxInterface,
   KnexCheckboxInterface,
   JSONCheckboxInterface,
-  MemoryCheckboxInterface,
 } from './Implementation';
 
 export default {
@@ -20,6 +19,5 @@ export default {
     mongoose: MongoCheckboxInterface,
     knex: KnexCheckboxInterface,
     json: JSONCheckboxInterface,
-    memory: MemoryCheckboxInterface,
   },
 };

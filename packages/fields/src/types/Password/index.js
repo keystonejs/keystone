@@ -2,7 +2,6 @@ import {
   Password,
   MongoPasswordInterface,
   KnexPasswordInterface,
-  MemoryPasswordInterface,
   JSONPasswordInterface,
 } from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
@@ -18,7 +17,6 @@ export default {
   adapters: {
     mongoose: MongoPasswordInterface,
     knex: KnexPasswordInterface,
-    memory: MemoryPasswordInterface,
     json: JSONPasswordInterface,
   },
 };

@@ -3,7 +3,6 @@ import {
   MongoVirtualInterface,
   KnexVirtualInterface,
   JSONVirtualInterface,
-  MemoryVirtualInterface,
 } from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
@@ -20,6 +19,5 @@ export default {
     mongoose: MongoVirtualInterface,
     knex: KnexVirtualInterface,
     json: JSONVirtualInterface,
-    memory: MemoryVirtualInterface,
   },
 };

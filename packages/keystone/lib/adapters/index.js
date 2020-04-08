@@ -76,10 +76,22 @@ class BaseListAdapter {
 
   newFieldAdapter(fieldAdapterClass, name, path, field, getListByKey, config) {
     const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
+    // if (name == 'Decimal') {
+    //   console.log({
+    //     adapter: fieldAdapterClass.name,
+    //     name,
+    //     path,
+    //     field,
+    //     config,
+    //     setupHooks: adapter.setupHooks,
+    //   });
+    // }
+
     adapter.setupHooks({
       addPreSaveHook: this.addPreSaveHook.bind(this),
       addPostReadHook: this.addPostReadHook.bind(this),
     });
+
     this.fieldAdapters.push(adapter);
     this.fieldAdaptersByPath[adapter.path] = adapter;
     return adapter;

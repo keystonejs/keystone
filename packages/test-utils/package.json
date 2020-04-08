@@ -8,6 +8,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "@keystonejs/adapter-json": "^0.0.0",
     "@keystonejs/adapter-knex": "^8.0.0",
     "@keystonejs/adapter-mongoose": "^7.0.0",
     "@keystonejs/app-graphql": "^5.1.5",

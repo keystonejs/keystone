@@ -36,7 +36,6 @@
     "@keystonejs/access-control": "^5.2.0",
     "@keystonejs/adapter-json": "^0.0.0",
     "@keystonejs/adapter-knex": "^8.0.0",
-    "@keystonejs/adapter-memory": "^0.0.0",
     "@keystonejs/adapter-mongoose": "^7.0.0",
     "@keystonejs/app-admin-ui": "^5.9.4",
     "@keystonejs/build-field-types": "^5.2.4",

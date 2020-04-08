@@ -2,7 +2,6 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Integer extends Implementation {
   constructor() {
@@ -73,5 +72,3 @@ export class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapte
 }
 
 export class JSONIntegerInterface extends CommonIntegerInterface(JSONFieldAdapter) {}
-
-export class MemoryIntegerInterface extends CommonIntegerInterface(MemoryFieldAdapter) {}

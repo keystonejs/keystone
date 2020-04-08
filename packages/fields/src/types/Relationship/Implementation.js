@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-// import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 const {
   Schema: {
@@ -479,5 +478,3 @@ export class JSONRelationshipInterface extends JSONFieldAdapter {
     ].includes(clause);
   }
 }
-
-export { JSONRelationshipInterface as MemoryRelationshipInterface };

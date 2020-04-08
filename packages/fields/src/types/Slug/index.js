@@ -3,7 +3,6 @@ import {
   MongoSlugInterface,
   KnexSlugInterface,
   JSONSlugInterface,
-  MemorySlugInterface,
 } from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
@@ -19,7 +18,6 @@ const Slug = {
     knex: KnexSlugInterface,
     mongoose: MongoSlugInterface,
     json: JSONSlugInterface,
-    memory: MemorySlugInterface,
   },
 };
 

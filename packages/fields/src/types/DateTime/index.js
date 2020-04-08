@@ -3,7 +3,6 @@ import {
   MongoDateTimeInterface,
   KnexDateTimeInterface,
   JSONDateTimeInterface,
-  MemoryDateTimeInterface,
 } from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
@@ -20,6 +19,5 @@ export default {
     mongoose: MongoDateTimeInterface,
     knex: KnexDateTimeInterface,
     json: JSONDateTimeInterface,
-    memory: MemoryDateTimeInterface,
   },
 };

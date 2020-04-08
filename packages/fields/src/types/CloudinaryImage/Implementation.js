@@ -2,7 +2,6 @@ import {
   File,
   MongoFileInterface,
   KnexFileInterface,
-  MemoryFileInterface,
   JSONFileInterface,
 } from '../File/Implementation';
 
@@ -94,6 +93,5 @@ export {
   CloudinaryImage,
   MongoFileInterface as MongoCloudinaryImageInterface,
   KnexFileInterface as KnexCloudinaryImageInterface,
-  MemoryFileInterface as MemoryCloudinaryImageInterface,
   JSONFileInterface as JSONCloudinaryImageInterface,
 };

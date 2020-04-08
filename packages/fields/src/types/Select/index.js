@@ -3,7 +3,6 @@ import {
   MongoSelectInterface,
   KnexSelectInterface,
   JSONSelectInterface,
-  MemorySelectInterface,
 } from './Implementation';
 import { importView } from '@keystonejs/build-field-types';
 
@@ -19,7 +18,6 @@ export default {
   adapters: {
     mongoose: MongoSelectInterface,
     knex: KnexSelectInterface,
-    memory: MemorySelectInterface,
     json: JSONSelectInterface,
   },
 };

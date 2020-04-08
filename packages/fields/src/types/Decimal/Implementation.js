@@ -3,7 +3,6 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Decimal extends Implementation {
   constructor(path, { symbol }) {
@@ -15,6 +14,7 @@ export class Decimal extends Implementation {
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
+
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
@@ -26,12 +26,15 @@ export class Decimal extends Implementation {
       ...this.inInputFields('String'),
     ];
   }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
+
   get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
+
   extendAdminMeta(meta) {
     return {
       ...meta,
@@ -59,6 +62,7 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
       // Only run the hook if the item actually contains the field
       // NOTE: Can't use hasOwnProperty here, as the mongoose data object
       // returned isn't a POJO
+
       if (!(this.path in item)) {
         return item;
       }
@@ -101,7 +105,7 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
 
     // In addition to the standard knexOptions this type supports precision and scale
-    const { precision, scale } = this.knexOptions;
+    const { precision, scale } = this.config.knexOptions;
     this.precision = precision === null ? null : parseInt(precision) || 18;
     this.scale = scale === null ? null : (this.precision, parseInt(scale) || 4);
     if (this.scale !== null && this.precision !== null && this.scale > this.precision) {
@@ -128,21 +132,38 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
 }
 
 export class JSONDecimalInterface extends JSONFieldAdapter {
+  constructor() {
+    super(...arguments);
+    const { scale } = this.config.JSONOptions || {};
+    this.scale = parseInt(scale) || 4;
+  }
+  setupHooks({ addPreSaveHook, addPostReadHook }) {
+    addPreSaveHook(item => {
+      const field_path = this.path;
+      // Only run the hook if the item actually contains the decimal field
+      if (!(field_path in item)) {
+        return item;
+      }
+      if (item[this.path]) {
+        item[this.path] = parseFloat(item[this.path]).toFixed(this.scale);
+      } else {
+        item[this.path] = null;
+      }
+      return item;
+    });
+    addPostReadHook(item => {
+      if (item[this.path]) {
+        item[this.path] = item[this.path].toString();
+      }
+      return item;
+    });
+  }
+
   getQueryConditions(dbPath) {
     return {
       ...this.equalityConditions(dbPath),
-      ...this.orderingConditions(dbPath),
-      ...this.inConditions(dbPath),
-    };
-  }
-}
-
-export class MemoryDecimalInterface extends MemoryFieldAdapter {
-  getQueryConditions(dbPath) {
-    return {
-      ...this.equalityConditions(dbPath, parseFloat),
       ...this.orderingConditions(dbPath, parseFloat),
-      ...this.inConditions(dbPath, parseFloat),
+      ...this.inConditions(dbPath),
     };
   }
 }

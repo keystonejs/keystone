@@ -2,7 +2,6 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 export class Float extends Implementation {
   constructor() {
@@ -66,5 +65,3 @@ export class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
 }
 
 export class JSONFloatInterface extends CommonFloatInterface(JSONFieldAdapter) {}
-
-export class MemoryFloatInterface extends CommonFloatInterface(MemoryFieldAdapter) {}

@@ -4,7 +4,6 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import dumbPasswords from 'dumb-passwords';
 
 import { JSONFieldAdapter } from '@keystonejs/adapter-json';
-import { MemoryFieldAdapter } from '@keystonejs/adapter-memory';
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
@@ -167,19 +166,13 @@ export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdap
 }
 
 export class JSONPasswordInterface extends CommonPasswordInterface(JSONFieldAdapter) {
-  constructor() {
-    super(...arguments);
-  }
-
   getQueryConditions(dbPath) {
-    console.log(this.path, dbPath);
     return {
-      [`${this.path}_is_set`]: value => item => {
-        console.log({ value, item, dbPath });
-        return true; // { value, item, dbPath };
+      [`${this.path}_is_set`]: value => () => {
+        return item => {
+          return bcryptHashRegex.test(item[dbPath]) === value;
+        };
       },
     };
   }
 }
-
-export class MemoryPasswordInterface extends CommonPasswordInterface(MemoryFieldAdapter) {}
