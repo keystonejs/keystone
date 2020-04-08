@@ -53,7 +53,7 @@ You'll be prompted with a few questions:
 
 1. **What is your project name?** Pick any name for your project. You can change it later if you like.
 2. **Select a starter project.** These are some preconfigured projects you can use as the base of your own application. Select the `Todo` application if you wish to follow the rest of the Keystone tutorials.
-3. **Select an database type.** Choose between `MongoDB` and `PostgreSQL`.
+3. **Select a database type.** Choose between `MongoDB` and `PostgreSQL`.
 4. **Where is your database located?** Provide the `connection string` for your database.
 5. **Test your database connection.** Test that Keystone can connect to your database.
 
