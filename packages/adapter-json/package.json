@@ -9,8 +9,8 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/fields": "^8.0.0",
-    "@keystonejs/keystone": "^7.0.0",
+    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/keystone": "^8.0.0",
     "@keystonejs/logger": "^5.1.1",
     "@keystonejs/utils": "^5.4.0",
     "cuid": "^2.1.6",
