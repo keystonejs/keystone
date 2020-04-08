@@ -11,6 +11,8 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "dependencies": {
+    "@keystonejs/adapter-knex": "^9.0.1",
+    "@keystonejs/adapter-mongoose": "^8.0.1",
     "@sindresorhus/slugify": "^0.11.0",
     "arg": "^4.1.1",
     "cfonts": "^2.7.0",
