@@ -165,8 +165,23 @@ const upgradeRelationships = async (args, entryFile) => {
     keystone,
     migration
   );
+
   console.log('');
   ttyLink('https://www.keystonejs.com/discussions/relationships', 'More info on relationships');
+
+  if (!migration) {
+    const mongo = !!keystone.adapters.MongooseAdapter;
+    console.log('');
+    console.log(
+      chalk.green(
+        `💡 Re-run with --migration flag to generate executable ${
+          mongo ? 'MongoDB commands' : 'SQL statements'
+        }`
+      )
+    );
+    console.log('');
+  }
+
   process.exit(0);
 };
 
