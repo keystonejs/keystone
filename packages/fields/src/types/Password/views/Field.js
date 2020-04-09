@@ -11,7 +11,14 @@ import { Button } from '@arch-ui/button';
 import { EyeIcon, LockIcon } from '@arch-ui/icons';
 import { A11yText } from '@arch-ui/typography';
 
-const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors, warnings }) => {
+const PasswordField = ({
+  onChange,
+  autoFocus,
+  field,
+  item: { password_is_set } = {},
+  errors,
+  warnings,
+}) => {
   const focusTarget = useRef();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -53,7 +60,6 @@ const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors,
     ));
   };
 
-  const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
 
   return (
@@ -96,7 +102,7 @@ const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors,
           </FlexGroup>
         ) : (
           <Button id={`${htmlID}-button`} onClick={toggleInterface} variant="ghost">
-            {value ? 'Update Password' : 'Set Password'}
+            {password_is_set ? 'Update Password' : 'Set Password'}
           </Button>
         )}
       </FieldInput>
