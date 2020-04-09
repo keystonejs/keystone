@@ -52,7 +52,32 @@ const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue }
 
   if (accessError) return null;
 
-  const overrideOptions = field.config.editorConfig;
+  let overrideOptions = field.config.editorConfig;
+
+  if (overrideOptions.images_upload_url && overrideOptions.cloudinary_upload_preset) {
+    overrideOptions = {
+      ...overrideOptions,
+      images_upload_handler: async (blobInfo, success, failure) => {
+        const formData = new FormData();
+        formData.append("file", blobInfo.blob());
+        formData.append("upload_preset", overrideOptions.cloudinary_upload_preset);
+        formData.append("timestamp", Date.now() / 1000);
+
+        // Replace cloudinary upload URL with yours
+        const response = await fetch(
+          overrideOptions.images_upload_url,
+          {
+            method: 'post',
+            mode: 'cors',
+            body: formData,
+          }
+        );
+
+        const uploadedFile = await response.json();
+        success(uploadedFile.secure_url)
+      }
+    };
+  }
 
   return (
     <FieldContainer>
