@@ -33,7 +33,7 @@ const getAdapterConfig = async () => {
         },
       }
     );
-    CONNECTION_STRING = response.value;
+    CONNECTION_STRING = response.value.trim();
   }
   return CONNECTION_STRING;
 };
