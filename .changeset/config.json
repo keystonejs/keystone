@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@0.2.1/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "keystonejs/keystone-5" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "keystonejs/keystone" }],
   "commit": false,
   "linked": [],
   "access": "public"

@@ -25,7 +25,12 @@ const SIZE_MAP = {
   medium: '.9rem 2rem',
 };
 
-export default function Button({ background, outline, size, ...props }) {
+export default function Button({
+  background = colors.purple,
+  outline = false,
+  size = 'medium',
+  ...props
+}) {
   const Tag = getTag(props);
   const foreground = background ? getForegroundColor(background) : colors.greyDark;
 
@@ -58,10 +63,4 @@ Button.propTypes = {
   background: PropTypes.string,
   outline: PropTypes.bool,
   size: PropTypes.oneOf(['medium', 'small']),
-};
-
-Button.defaultProps = {
-  background: colors.purple,
-  outline: false,
-  size: 'medium',
 };

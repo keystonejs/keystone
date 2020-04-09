@@ -1,17 +1,17 @@
 <!--[meta]
 section: guides
-title: GraphQL Introduction
+title: Introduction
 subSection: graphql
 order: 1
 [meta]-->
 
 # GraphQL API Introduction
 
-_Before you begin:_ This guide assumes you have a running instance of KeystoneJS with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
+_Before you begin:_ This guide assumes you have a running instance of Keystone with the GraphQL App configured, and a list with some data to query. (Get started in 5min by running `npx create-keystone-app` and select the `Starter` project)
 
-Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any KeystoneJS list.
+Examples in this guide will refer to a `Users` list, however the queries, mutations and methods listed here would be the same for any Keystone list.
 
-For each list, KeystoneJS generates four top level queries. Given the following example:
+For each list, Keystone generates four top level queries. Given the following example:
 
 ```javascript
 keystone.createList('User', {
@@ -23,20 +23,18 @@ keystone.createList('User', {
 
 ## Queries
 
-KeystoneJS would generate the following queries:
+Keystone would generate the following queries:
 
 - `allUsers`
 - `_allUsersMeta`
 - `User`
 - `_UsersMeta`
 
-### allUsers
+### `allUsers`
 
-Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, Limit and Sorting](#filter-limit-and-sorting).
+Retrieves all items from the `User` list. The `allUsers` query also allows you to search, limit and filter results. See: [Filter, limit and sorting](#filter-limit-and-sorting).
 
-#### Usage
-
-```gql
+```graphql
 query {
   allUsers {
     id
@@ -44,13 +42,11 @@ query {
 }
 ```
 
-### \_allUsersMeta
+### `_allUsersMeta`
 
 Retrieves meta information about items in the `User` list such as a `count` of all items which can be used for pagination. The `_allUsersMeta` query accepts the same [filter, limit and sorting](#filter-limit-and-sorting) parameters as the `allUsers` query.
 
-#### Usage
-
-```gql
+```graphql
 query {
   _allUsersMeta {
     count
@@ -58,13 +54,11 @@ query {
 }
 ```
 
-### User
+### `User`
 
 Retrieves a single item from the `User` list. The single entity query accepts a where parameter which must provide an id.
 
-#### Usage
-
-```gql
+```graphql
 query {
   User(where: { id: $id }) {
     name
@@ -72,13 +66,13 @@ query {
 }
 ```
 
-### \_UsersMeta
+### `_UsersMeta`
 
 Retrieves meta information about the `User` list itself (i.e. not about items in the list) such as access control information. This query accepts no parameters.
 
 ## Mutations
 
-For each list KeystoneJS generates six top level mutations:
+For each list Keystone generates six top level mutations:
 
 - `createUser`
 - `createUsers`
@@ -87,13 +81,11 @@ For each list KeystoneJS generates six top level mutations:
 - `deleteUser`
 - `deleteUsers`
 
-### createUser
+### `createUser`
 
 Add a single `User` to the `User` list. Requires a `data` parameter that is an object where keys match the field names in the list definition and the values are the data to create.
 
-#### Usage
-
-```gql
+```graphql
 mutation {
   createUser(data: { name: "Mike" }) {
     id
@@ -101,13 +93,11 @@ mutation {
 }
 ```
 
-### createUsers
+### `createUsers`
 
 Creates multiple `Users`. Parameters are the same as `createUser` except the data parameter should be an array of objects.
 
-#### Usage
-
-```gql
+```graphql
 mutation {
   createUsers(data: [{ name: "Mike" }]) {
     id
@@ -115,13 +105,11 @@ mutation {
 }
 ```
 
-### updateUser
+### `updateUser`
 
 Update a `User` by ID. Accepts an `id` parameter that should match the id of a `User` item. The object should contain keys matching the field definition of the list. `updateUser` performs a _partial update_, meaning only keys that you wish to update need to be provided.
 
-#### Usage
-
-```gql
+```graphql
 mutation {
   updateUser(id: ID, data: { name: "Simon" }) {
     id
@@ -129,11 +117,11 @@ mutation {
 }
 ```
 
-### updateUsers
+### `updateUsers`
 
 Update multiple `Users` by ID. Accepts a single data parameter that contains an array of objects. The object parameters are the same as `createUser` and should contain an `id` and nested `data` parameter with the field data.
 
-```gql
+```graphql
 mutation {
   updateUsers(data: [{ id: ID, data: { name: "Simon" } }]) {
     id
@@ -141,33 +129,33 @@ mutation {
 }
 ```
 
-### deleteUser
+### `deleteUser`
 
 Delete a single Entity by ID. Accepts a single parameter where the `id` matches a `User` id.
 
-```gql
+```graphql
 mutation {
   deleteUser(id: ID)
 }
 ```
 
-### deleteUsers
+### `deleteUsers`
 
 Delete multiple entities by ID. Similar to `deleteUser` where the `id` parameter is an array of ids.
 
-```gql
+```graphql
 mutation {
   deleteUsers(id: [ID])
 }
 ```
 
-## Executing Queries and Mutations
+## Execution
 
 Before you begin writing application code, a great place test queries and mutations is the [GraphQL Playground](https://www.apollographql.com/docs/apollo-server/features/graphql-playground/).
-The default path for KeystoneJS' GraphQl Playground is `http://localhost:3000/admin/graphql`.
-Here you can execute queries and mutations against the KeystoneJS API without writing any JavaScript.
+The default path for Keystone' GraphQl Playground is `http://localhost:3000/admin/graphql`.
+Here you can execute queries and mutations against the Keystone API without writing any JavaScript.
 
-Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to KeystoneJS' API. The default API endpoint is: `http://localhost:3000/admin/api`.
+Once you have determined the correct query or mutation, you can add this to your application. To do this you will need to submit a `POST` request to Keystone' API. The default API endpoint is: `http://localhost:3000/admin/api`.
 
 In our examples we're going to use the browser's [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make a `POST` request.
 
@@ -220,17 +208,15 @@ fetch('/admin/api', {
 
 A good next step is to write an `executeQuery` function that accepts a query and variables and returns the results from the API. Take a look at the `todo` sample application in the `cli` for examples of this.
 
-**Note:** If you have configured [Access Control](/docs/api/access-control.md) it can effect the result of some queries.
+> **Note:** If you have configured [Access Control](/docs/api/access-control.md) it can effect the result of some queries.
 
-## Executing Queries and Mutations on the Server
+## Execution on the server
 
 In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/packages/keystone/README.md#executequeryquerystring-config).
 
-**Note:** No access control checks are run when executing queries on the server.
-Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`.
-See: [Keystone executeQuery()](/packages/keystone/README.md#executequeryquerystring-config)
+> **Note:** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/packages/keystone/README.md#executequeryquerystring-config)
 
-## Filter, Limit and Sorting
+## Filter, limit and sorting
 
 When executing queries and mutations there are a number of ways you can filter, limit and sort items. These include:
 
@@ -240,13 +226,13 @@ When executing queries and mutations there are a number of ways you can filter, 
 - `first`
 - `orderby`
 
-#### `where`
+### `where`
 
 Limit results to items matching the where clause. Where clauses are used to query fields in a keystone list before retrieving data.
 
 The options available in a where clause depend on the field types.
 
-```gql
+```graphql
 query {
   allUsers (where: { name_starts_with_i: 'A'} ) {
     id
@@ -254,16 +240,16 @@ query {
 }
 ```
 
-**Note**: The documentation in the GraphQL Playground provides a complete reference of filters for any field type in your application.
+> **Note:** The documentation in the GraphQL Playground provides a complete reference of filters for any field type in your application.
 
-##### Relationship `where` filters
+#### Relationship `where` filters
 
 - `{relatedList}_every`: whereInput
 - `{relatedList}_some`: whereInput
 - `{relatedList}_none`: whereInput
 - `{relatedList}_is_null`: Boolean
 
-##### String `where` filters
+#### String `where` filters
 
 - `{Field}:` String
 - `{Field}_not`: String
@@ -284,14 +270,14 @@ query {
 - `{Field}_in`: [String]
 - `{Field}_not_in`: [String]
 
-##### ID `where` filters
+#### ID `where` filters
 
 - `{Field}`: ID
 - `{Field}_not`: ID
 - `{Field}_in`: [ID!]
 - `{Field}_not_in`: [ID!]
 
-##### Integer `where` filters
+#### Integer `where` filters
 
 - `{Field}: Int`
 - `{Field}_not`: Int
@@ -302,16 +288,14 @@ query {
 - `{Field}_in`: [Int]
 - `{Field}_not_in`: [Int]
 
-#### Operators
+### Operators
 
 You can combine multiple where clauses with `AND` or `OR` operators.
 
 - `AND`: [whereInput]
 - `OR`: [whereInput]
 
-##### Usage
-
-```gql
+```graphql
 query {
   allUsers (where: {
     OR: [
@@ -324,11 +308,11 @@ query {
 }
 ```
 
-#### `search`
+### `search`
 
 Will search the list to limit results.
 
-```gql
+```graphql
 query {
   allUsers(search: "Mike") {
     id
@@ -336,11 +320,11 @@ query {
 }
 ```
 
-#### `orderBy`
+### `orderBy`
 
 Order results. The orderBy string should match the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
 
-```gql
+```graphql
 query {
   allUsers(orderBy: "name_DESC") {
     id
@@ -348,13 +332,13 @@ query {
 }
 ```
 
-#### `first`
+### `first`
 
 Limits the number of items returned from the query. Limits will be applied after `skip`, `orderBy`, `where` and `search` values are applied.
 
 If less results are available, the number of available results will be returned.
 
-```gql
+```graphql
 query {
   allUsers(first: 10) {
     id
@@ -362,13 +346,13 @@ query {
 }
 ```
 
-#### `skip`
+### `skip`
 
 Skip the number of results specified. Is applied before `first` parameter, but after `orderBy`, `where` and `search` values.
 
 If the value of `skip` is greater than the number of available results, zero results will be returned.
 
-```gql
+```graphql
 query {
   allUsers(skip: 10) {
     id
@@ -376,13 +360,13 @@ query {
 }
 ```
 
-### Combining query arguments for pagination
+## Combining query arguments
 
 When `first` and `skip` are used together with the `count` from `_allUsersMeta`, this is sufficient to implement pagination on the list.
 
 It is important to provide the same `where` and `search` arguments to both the `allUser` and `_allUserMeta` queries. For example:
 
-```gql
+```graphql
 query {
   allUsers (search:'a', skip: 10, first: 10) {
     id
@@ -397,11 +381,9 @@ When `first` and `skip` are used together, skip works as an offset for the `firs
 
 Both `skip` and `first` respect the values of the `where`, `search` and `orderBy` arguments.
 
-## Custom Queries and Mutations
+## Custom queries and mutations
 
 You can add to Keystone's generated schema with custom types, queries, and mutations using the `keystone.extendGraphQLSchema()` method.
-
-### Usage
 
 ```javascript
 keystone.extendGraphQLSchema({

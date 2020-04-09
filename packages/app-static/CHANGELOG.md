@@ -1,5 +1,11 @@
 # @keystonejs/app-static
 
+## 5.1.2
+
+### Patch Changes
+
+- [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
 ## 5.1.1
 
 ### Patch Changes
@@ -16,7 +22,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -28,31 +34,31 @@
 
 ### Patch Changes
 
-- [9b532072](https://github.com/keystonejs/keystone-5/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
+- [9b532072](https://github.com/keystonejs/keystone/commit/9b532072): Rename Keystone to KeystoneJS in docs where possible in docs
 
 ## 1.1.1
 
 ### Patch Changes
 
-- [5598701f](https://github.com/keystonejs/keystone-5/commit/5598701f): throwing errors when the StaticApp doesn't have a string valued passed to the "path" or "src" properties
+- [5598701f](https://github.com/keystonejs/keystone/commit/5598701f): throwing errors when the StaticApp doesn't have a string valued passed to the "path" or "src" properties
 
 ## 1.1.0
 
 ### Minor Changes
 
-- [fe23c719](https://github.com/keystonejs/keystone-5/commit/fe23c719): Added a new fallback option to support client-side routing
+- [fe23c719](https://github.com/keystonejs/keystone/commit/fe23c719): Added a new fallback option to support client-side routing
 
 ## 1.0.3
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade express to 4.17.1
 
 ## 1.0.2
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
@@ -60,7 +66,7 @@
 
 ### Patch Changes
 
-- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+- [af3f31dd](https://github.com/keystonejs/keystone/commit/af3f31dd):
 
   Output builds to correct directory
 
@@ -68,7 +74,7 @@
 
 ### Major Changes
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Specify custom servers from within the index.js file
 

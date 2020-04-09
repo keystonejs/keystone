@@ -22,11 +22,7 @@ const {
   validateCustomAccessControl,
   validateAuthAccessControl,
 } = require('@keystonejs/access-control');
-const {
-  startAuthedSession,
-  endAuthedSession,
-  commonSessionMiddleware,
-} = require('@keystonejs/session');
+const { SessionManager } = require('@keystonejs/session');
 const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
 
 const {
@@ -65,10 +61,12 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._schemas = {};
-    this._cookieSecret = cookieSecret;
-    this._secureCookies = secureCookies;
-    this._cookieMaxAge = cookieMaxAge;
-    this._sessionStore = sessionStore;
+    this._sessionManager = new SessionManager({
+      cookieSecret,
+      secureCookies,
+      cookieMaxAge,
+      sessionStore,
+    });
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
@@ -116,13 +114,6 @@ module.exports = class Keystone {
         'Attempted to execute keystone.query() before keystone.prepare() has completed.'
       );
     };
-  }
-
-  getCookieSecret() {
-    if (!this._cookieSecret) {
-      throw new Error('No cookieSecret set in Keystone constructor');
-    }
-    return this._cookieSecret;
   }
 
   _executeOperation({
@@ -222,11 +213,7 @@ module.exports = class Keystone {
 
     return {
       schemaName,
-      startAuthedSession: ({ item, list }) =>
-        startAuthedSession(req, { item, list }, this._cookieSecret),
-      endAuthedSession: endAuthedSession.bind(null, req),
-      authedItem: req.user,
-      authedListKey: req.authedListKey,
+      ...this._sessionManager.getContext(req),
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
@@ -374,6 +361,91 @@ module.exports = class Keystone {
         `${left.listKey}.${left.path} refers to a non-existant field, ${left.config.ref}`
       );
     }
+
+    // Ensure that the left/right pattern is always the same no matter what order
+    // the lists and fields are defined.
+    Object.values(rels).forEach(rel => {
+      const { left, right } = rel;
+      if (right) {
+        const order = left.listKey.localeCompare(right.listKey);
+        if (order > 0) {
+          // left comes after right, so swap them.
+          rel.left = right;
+          rel.right = left;
+        } else if (order === 0) {
+          // self referential list, so check the paths.
+          if (left.path.localeCompare(right.path) > 0) {
+            rel.left = right;
+            rel.right = left;
+          }
+        }
+      }
+    });
+
+    Object.values(rels).forEach(rel => {
+      const { left, right } = rel;
+      let cardinality;
+      if (left.config.many) {
+        if (right) {
+          if (right.config.many) {
+            cardinality = 'N:N';
+          } else {
+            cardinality = '1:N';
+          }
+        } else {
+          // right not specified, have to assume that it's N:N
+          cardinality = 'N:N';
+        }
+      } else {
+        if (right) {
+          if (right.config.many) {
+            cardinality = 'N:1';
+          } else {
+            cardinality = '1:1';
+          }
+        } else {
+          // right not specified, have to assume that it's N:1
+          cardinality = 'N:1';
+        }
+      }
+      rel.cardinality = cardinality;
+
+      let tableName;
+      let columnName;
+      if (cardinality === 'N:N') {
+        tableName = right
+          ? `${left.listKey}_${left.path}_${right.listKey}_${right.path}`
+          : `${left.listKey}_${left.path}_many`;
+        if (right) {
+          const leftKey = `${left.listKey}.${left.path}`;
+          const rightKey = `${right.listKey}.${right.path}`;
+          rel.columnNames = {
+            [leftKey]: { near: `${left.listKey}_left_id`, far: `${right.listKey}_right_id` },
+            [rightKey]: { near: `${right.listKey}_right_id`, far: `${left.listKey}_left_id` },
+          };
+        } else {
+          const leftKey = `${left.listKey}.${left.path}`;
+          const rightKey = `${left.config.ref}`;
+          rel.columnNames = {
+            [leftKey]: { near: `${left.listKey}_left_id`, far: `${left.config.ref}_right_id` },
+            [rightKey]: { near: `${left.config.ref}_right_id`, far: `${left.listKey}_left_id` },
+          };
+        }
+      } else if (cardinality === '1:1') {
+        tableName = left.listKey;
+        columnName = left.path;
+      } else if (cardinality === '1:N') {
+        tableName = right.listKey;
+        columnName = right.path;
+      } else {
+        tableName = left.listKey;
+        columnName = left.path;
+      }
+      rel.tableName = tableName;
+      rel.columnName = columnName;
+    });
+
+    return Object.values(rels);
   }
 
   /**
@@ -381,11 +453,14 @@ module.exports = class Keystone {
    */
   connect() {
     const { adapters, name } = this;
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name }))).then(() => {
-      if (this.eventHandlers.onConnect) {
-        return this.eventHandlers.onConnect(this);
+    const rels = this._consolidateRelationships();
+    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels }))).then(
+      () => {
+        if (this.eventHandlers.onConnect) {
+          return this.eventHandlers.onConnect(this);
+        }
       }
-    });
+    );
   }
 
   /**
@@ -516,13 +591,7 @@ module.exports = class Keystone {
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
       // TODO: set up a session test rig (maybe by wrapping an in-memory store)
-      commonSessionMiddleware({
-        keystone: this,
-        cookieSecret: this._cookieSecret,
-        sessionStore: this._sessionStore,
-        secureCookies: this._secureCookies,
-        cookieMaxAge: this._cookieMaxAge,
-      }),
+      this._sessionManager.getSessionMiddleware({ keystone: this }),
       falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
       cors && createCorsMiddleware(cors),
       ...(await Promise.all(
@@ -555,7 +624,6 @@ module.exports = class Keystone {
     pinoOptions,
     cors = { origin: true, credentials: true },
   } = {}) {
-    this._consolidateRelationships();
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
 
     // Now that the middlewares are done, it's safe to assume all the schemas
@@ -568,6 +636,13 @@ module.exports = class Keystone {
         schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
       })
     );
+
+    // These function can't be called after prepare(), so make them throw an error from now on.
+    ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
+      this[f] = () => {
+        throw new Error(`keystone.${f} must be called before keystone.prepare()`);
+      };
+    });
 
     return { middlewares };
   }

@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 5.4.0
+
+### Minor Changes
+
+- [`663ae7b4`](https://github.com/keystonejs/keystone/commit/663ae7b453f450f077795fbbc6c9f138e6b27f52) [#2552](https://github.com/keystonejs/keystone/pull/2552) Thanks [@timleslie](https://github.com/timleslie)! - Added `asyncForEach` to `utils` package for iteratively executing an async function over an array.
+
 ## 5.3.0
 
 ### Minor Changes
@@ -54,7 +60,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -66,25 +72,25 @@
 
 ### Minor Changes
 
-- [b2c5277e](https://github.com/keystonejs/keystone-5/commit/b2c5277e): Add a compose() function to utils.
+- [b2c5277e](https://github.com/keystonejs/keystone/commit/b2c5277e): Add a compose() function to utils.
 
 ## 3.1.0
 
 ### Minor Changes
 
-- [857386db](https://github.com/keystonejs/keystone-5/commit/857386db): Add `filterValues(object, predicate)` to remove entries from an object where the value does not match the predicate.
+- [857386db](https://github.com/keystonejs/keystone/commit/857386db): Add `filterValues(object, predicate)` to remove entries from an object where the value does not match the predicate.
 
 ## 3.0.2
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade promise utility dependencies
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade promise utility dependencies
 
 ## 3.0.1
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
@@ -92,35 +98,35 @@
 
 ### Major Changes
 
-- [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+- [b7a2ea9c](https://github.com/keystonejs/keystone/commit/b7a2ea9c):
 
   - Remove `checkRequiredConfig`, `fixConfigKeys` and `camelize`.
 
 ### Minor Changes
 
-- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+- [c9102446](https://github.com/keystonejs/keystone/commit/c9102446):
 
   - Add a mechanism for loading multiple Suspense-aware components in parallel
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 2.0.0
 
-- [major][98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+- [major][98c02a46](https://github.com/keystonejs/keystone/commit/98c02a46):
 
   - Distribute CommonJS & ESM builds of the @keystone-alpha/utils package.
 
 ## 1.0.1
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 
-- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+- [patch][9534f98f](https://github.com/keystonejs/keystone/commit/9534f98f):
 
   - Add README.md to package
 
