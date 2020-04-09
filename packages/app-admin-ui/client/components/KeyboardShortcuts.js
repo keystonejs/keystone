@@ -41,10 +41,10 @@ export default class KeyboardShortcuts extends React.Component {
 
     // setup
     this.keyIsDown = true;
-    const activeNode = document.activeElement.nodeName;
+    const { nodeName, isContentEditable } = document.activeElement;
 
     // bail if the user is focused on an input element
-    if (activeNode === 'INPUT' || activeNode === 'TEXTAREA') {
+    if (nodeName === 'INPUT' || nodeName === 'TEXTAREA' || isContentEditable) {
       return;
     }
 
