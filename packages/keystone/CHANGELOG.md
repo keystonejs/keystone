@@ -1,5 +1,13 @@
 # @keystonejs/keystone
 
+## 8.1.1
+
+### Patch Changes
+
+- [`ec8d84c4`](https://github.com/keystonejs/keystone/commit/ec8d84c49a5c22cd0c96ffb2209e61f6775aaf40) [#2685](https://github.com/keystonejs/keystone/pull/2685) Thanks [@Vultraz](https://github.com/Vultraz)! - Made extendGraphQLSchema(), createList(), and createAuthStrategy() error if called after prepare().
+
+* [`a50494e5`](https://github.com/keystonejs/keystone/commit/a50494e53bdc9712f8aa4a54b9718609b65d85e1) [#2688](https://github.com/keystonejs/keystone/pull/2688) Thanks [@jesstelford](https://github.com/jesstelford)! - Improve legibility of `keystone upgrade-relationships` CLI command
+
 ## 8.1.0
 
 ### Minor Changes
