@@ -22,7 +22,7 @@ export const mapKeyNames = (obj, func) =>
     {}
   );
 
-export const resolveAllKeys = obj => {
+export const resolveAllKeys = async obj => {
   const returnValue = {};
   const errors = {};
 
@@ -38,18 +38,19 @@ export const resolveAllKeys = obj => {
     })
   );
 
-  return Promise.all(allPromises).then(results => {
-    // If there are any errors, we want to surface them in the same shape as the
-    // input object
-    if (Object.keys(errors).length) {
-      const firstError = results.find(({ isRejected }) => isRejected).reason;
-      // Use the first error as the message so it's at least meaningful
-      const error = new Error(firstError.message || firstError.toString());
-      error.errors = errors;
-      throw error;
-    }
-    return returnValue;
-  });
+  const results = await Promise.all(allPromises);
+
+  // If there are any errors, we want to surface them in the same shape as the
+  // input object
+  if (Object.keys(errors).length) {
+    const firstError = results.find(({ isRejected }) => isRejected).reason;
+    // Use the first error as the message so it's at least meaningful
+    const error = new Error(firstError.message || firstError.toString());
+    error.errors = errors;
+    throw error;
+  }
+
+  return returnValue;
 };
 
 export const unique = arr => [...new Set(arr)];
