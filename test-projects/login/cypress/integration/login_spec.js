@@ -180,7 +180,7 @@ describe('Testing Login', () => {
     });
 
     // See: https://github.com/keystonejs/keystone/issues/2656
-    it.failing('Redirects to requested page after login', () => {
+    it.skip('Redirects to requested page after login', () => {
       cy.visit('/admin/users');
 
       cy.get('input[name="identity"]')
