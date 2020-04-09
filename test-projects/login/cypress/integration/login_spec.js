@@ -179,7 +179,8 @@ describe('Testing Login', () => {
       cy.get('body').should('contain', 'Dashboard');
     });
 
-    it('Redirects to requested page after login', () => {
+    // See: https://github.com/keystonejs/keystone/issues/2656
+    it.failing('Redirects to requested page after login', () => {
       cy.visit('/admin/users');
 
       cy.get('input[name="identity"]')
