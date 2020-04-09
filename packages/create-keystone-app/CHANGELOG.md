@@ -1,5 +1,38 @@
 # create-keystone-app
 
+## 3.0.0
+
+### Major Changes
+
+- [`8d31f10c`](https://github.com/keystonejs/keystone/commit/8d31f10cdc7255cd7414c3a6393049f794042ea7) [#2684](https://github.com/keystonejs/keystone/pull/2684) Thanks [@timleslie](https://github.com/timleslie)! - This release adds support for specifying and testing the database connection string used when setting up a new project.
+  The quick-start guide has also been updated to give better instructions on to setup both MongoDB and PostgreSQL databases.
+
+  The command line API for `create keystone-app` has also changed:
+
+  - `--adapter` has been replaced with `--database`, which accepts options of either `MongoDB` or `PostgreSQL`.
+  - `--conection-string` has been added, which allows you to specify either a `mongodb://` or `postgres://` connection string.
+  - `--test-connection` has been added, which will tell the installer to test the connection string before setting up the project.
+
+### Minor Changes
+
+- [`22f3356f`](https://github.com/keystonejs/keystone/commit/22f3356fece3057d81ca9c1cedc1d225088cb42a) [#2662](https://github.com/keystonejs/keystone/pull/2662) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added instructions for Knex adapters on how to initialise tables after running the CLI.
+
+## 2.0.0
+
+### Major Changes
+
+- [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258) [#2623](https://github.com/keystonejs/keystone/pull/2623) Thanks [@maryam-mv](https://github.com/maryam-mv)! - Updated @sindresorhus/slugify to fix a problem where it was producing unexpected output, eg. adding unexpected underscores: 'NAME1 Website' => 'nam_e1_website'. The slugify output for db name may be different with this change. For the above example, the output will now be 'name_1_website' for the same string.
+
+  If your database name changes unexpectedly, you can add an environment variable called `DATABASE_URL` with a full path to the database. For more information on configuring database connections read the documentation for the [Knex adapter](https://v5.keystonejs.com/keystonejs/adapter-knex/#knexoptions) or [Mongoose adapter](https://v5.keystonejs.com/keystonejs/adapter-mongoose/#mongoose-database-adapter).
+
+  If you are using the `Slug` field type, in some edge-cases, slugs may change when saved after this update. You can use the `generate` option on the slug field for [custom slug generation](https://v5.keystonejs.com/keystonejs/fields/src/types/slug/#custom-generate-method) if required.
+
+### Patch Changes
+
+- [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373) [#2560](https://github.com/keystonejs/keystone/pull/2560) Thanks [@JedWatson](https://github.com/JedWatson)! - Updated links to Keystone github project.
+
+* [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
 ## 1.7.0
 
 ### Minor Changes

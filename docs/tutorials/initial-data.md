@@ -20,7 +20,7 @@ of a `Todo` list, there will be a `Post` list. It is best to start from a fresh
 project and start from an empty database (delete data from previous chapters).
 Also, make sure to have all of the following packages installed:
 
-```bash
+```shell allowCopy=false showLanguage=false
 yarn add @keystonejs/keystone
 yarn add @keystonejs/adapter-mongoose
 yarn add @keystonejs/app-graphql
@@ -74,7 +74,7 @@ module.exports = {
 };
 ```
 
-> **Hint**: A similar setup can be achieved by running the Keystone CLI `yarn create keystone-app` and selecting `Starter (Users + Authentication)`. This starter project has a `User` list, `PasswordAuthStrategy` and seeding of the database already configured. For now, we will proceed manually.
+> **Tip:** A similar setup can be achieved by running the Keystone CLI `yarn create keystone-app` and selecting `Starter (Users + Authentication)`. This starter project has a `User` list, `PasswordAuthStrategy` and seeding of the database already configured. For now, we will proceed manually.
 
 ## Creating items
 
@@ -90,7 +90,7 @@ keystone.createItems({
 });
 ```
 
-> **Note**: The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the `email` field has `isUnique: true`, therefor it would not be possible for the above code to have the same email for each user that should be generated.
+> **Note:** The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the `email` field has `isUnique: true`, therefor it would not be possible for the above code to have the same email for each user that should be generated.
 
 Example on how to `seed` the data upon database connection:
 
@@ -111,7 +111,7 @@ const keystone = new Keystone({
 
 Start the application and visit the Admin UI, two users are available on startup.
 
-> **Note**: In this example the same two users would be generated _every_ startup. Since email should be unique this will cause a duplicate error to show up. To avoid this, clear the database before starting Keystone.
+> **Note:** In this example the same two users would be generated _every_ startup. Since email should be unique this will cause a duplicate error to show up. To avoid this, clear the database before starting Keystone.
 
 ## Relationships
 
@@ -180,7 +180,7 @@ Upon insertion, Keystone will resolve the `{ where: { name: 'John Duck' } }` que
 against the `User` list, ultimately setting the `author` field to the ID of the
 _first_ `User` that is found.
 
-> **Note**: An error is thrown if no items match the query.
+> **Note:** An error is thrown if no items match the query.
 
 Clear the database, then start Keystone and visit the Admin UI to see that two users are generated and one post is generated. The post has an `author` named `John Duck`. In the database `author` will be the ID of the user with name John Duck.
 

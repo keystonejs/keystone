@@ -111,29 +111,10 @@ db.orders.aggregate([
       as: 'abc123_items',
       let: { tmpVar: '$items' },
       pipeline: [
-        {
-          $match: {
-            $and: [{ name: { $regex: /a/ } }, { $expr: { $in: ['$_id', '$$tmpVar'] } }],
-          },
-        },
-        {
-          $addFields: {
-            id: '$_id',
-          },
-        },
+        { $match: { $expr: { $eq: [`$foreignKey`, '$$tmpVar'] } } },
+        { $match: { $and: [{ name: { $regex: /a/ } }] } },
+        { $addFields: { id: '$_id' } },
       ],
-    },
-  },
-  {
-    $addFields: {
-      abc123_items_every: { $eq: [{ $size: '$abc123_items' }, { $size: '$items' }] },
-      abc123_items_none: { $eq: [{ $size: '$abc123_items' }, 0] },
-      abc123_items_some: {
-        $and: [
-          { $gt: [{ $size: '$abc123_items' }, 0] },
-          { $lte: [{ $size: '$abc123_items' }, { $size: '$items' }] },
-        ],
-      },
     },
   },
   {

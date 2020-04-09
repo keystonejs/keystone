@@ -44,7 +44,7 @@ See the [knex docs](https://knexjs.org/#Installation-client) for more details.
 
 _**Default:**_
 
-```javaScript
+```javascript
 {
   client: 'postgres',
   connection: '<DEFAULT_CONNECTION_URL>'
@@ -71,13 +71,13 @@ In most cases this database will not exist and you will want to configure a user
 
 Assuming you're on MacOS and have Postgres installed the `build-test-db.sh` does this for you:
 
-```sh
+```shell
 ./build-test-db.sh
 ```
 
 Otherwise, you can run these steps manually:
 
-```shell
+```shell allowCopy=false showLanguage=false
 createdb -U postgres keystone
 psql keystone -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
 psql keystone -U postgres -c "GRANT ALL ON DATABASE keystone TO keystone5;"

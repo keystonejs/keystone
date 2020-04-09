@@ -4,7 +4,8 @@ export default class SelectController extends FieldController {
   constructor(config, ...args) {
     const defaultValue = 'defaultValue' in config ? config.defaultValue : null;
     super({ ...config, defaultValue }, ...args);
-    this.options = this.config.options;
+    this.options = config.options;
+    this.dataType = config.dataType;
   }
   getFilterGraphQL = ({ value: { inverted, options } }) => {
     const isMulti = options.length > 1;
@@ -20,7 +21,7 @@ export default class SelectController extends FieldController {
 
     const value = isMulti ? options.map(x => x.value).join(',') : options[0].value;
 
-    return `${key}: ${value}`;
+    return this.dataType === 'string' ? `${key}: "${value}"` : `${key}: ${value}`;
   };
   getFilterLabel = (/*{ value }*/) => {
     return this.label;

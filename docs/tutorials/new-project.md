@@ -19,7 +19,7 @@ database is ready to go.
 
 First things first. Create a directory for your project and initialise it:
 
-```bash
+```shell allowCopy=false showLanguage=false
 mkdir new-project
 cd new-project
 yarn init
@@ -29,7 +29,7 @@ Let's start with the minimal setup. We will need two packages here:
 `@keystonejs/keystone`, which is the core of Keystone, and
 `@keystonejs/adapter-mongoose`, which allows our app to connect to MongoDB:
 
-```bash
+```shell
 yarn add @keystonejs/keystone @keystonejs/adapter-mongoose
 ```
 
@@ -38,7 +38,7 @@ yarn add @keystonejs/keystone @keystonejs/adapter-mongoose
 After installation we can start coding. The main entry point of a Keystone app
 is the `index.js` file in the root folder. Create it and add the following:
 
-```javascript
+```javascript title=index.js
 const { Keystone } = require('@keystonejs/keystone');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
@@ -55,7 +55,7 @@ passed it to `Keystone`'s constructor.
 Now we can export our `Keystone` instance and make it available to run. Add the
 following to the end of `index.js`:
 
-```javascript
+```javascript title=index.js
 module.exports = {
   keystone,
 };
@@ -70,19 +70,19 @@ database.
 
 As in the previous step, install the necessary package.
 
-```bash
+```shell
 yarn add @keystonejs/app-graphql
 ```
 
 Import it in index.js:
 
-```javascript
+```javascript title=index.js
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 ```
 
 And add a new array export named `apps` with a new instance of `GraphQLApp`, like so:
 
-```javascript
+```javascript title=index.js
 module.exports = {
   keystone,
   apps: [new GraphQLApp()],
@@ -97,20 +97,20 @@ is a model that is compatible with Keystone's Admin UI.
 Lists are composed of `fields`. To add fields to a list, we must install the
 `@keystonejs/fields` package:
 
-```bash
+```shell
 yarn add @keystonejs/fields
 ```
 
 In this example the field type `Text` is used, which must be `required` in `index.js`:
 
-```javascript
+```javascript title=index.js
 const { Text } = require('@keystonejs/fields');
 ```
 
 Create your first list in `index.js` by adding the following before the module
 export and after instantiating `Keystone`:
 
-```javascript
+```javascript title=index.js
 keystone.createList('Todo', {
   fields: {
     name: { type: Text },
@@ -128,7 +128,7 @@ In our example, the `Todo` list has a single field called `name` of type `Text`.
 
 Add the following to `package.json`:
 
-```json
+```json title=package.json
 "scripts": {
   "start:dev": "keystone"
 }
@@ -136,13 +136,13 @@ Add the following to `package.json`:
 
 Now ensure that `mongod` is running and execute the start script:
 
-```bash
+```shell
 yarn start:dev
 ```
 
 You should see something like this:
 
-```bash
+```shell allowCopy=false showLanguage=false
 ✔ Keystone instance is ready 🚀
 🔗 GraphQL Playground:   http://localhost:3000/admin/graphiql
 🔗 GraphQL API:          http://localhost:3000/admin/api

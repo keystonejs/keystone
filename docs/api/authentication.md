@@ -14,9 +14,9 @@ This can be used to restrict access to the AdminUI, and to configure [access con
 
 ## Usage
 
-```javascript
-const { Text, Checkbox, Password } = require('@keystonejs/fields');
+```javascript title=index.js
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { Text, Checkbox, Password } = require('@keystonejs/fields');
 
 const keystone = new Keystone({...});
 
@@ -37,7 +37,7 @@ keystone.createList('User', {
 
 You then provide `authStrategy` to apps that facilitate login (typically the Admin UI) in the format `<list>.<strategy>`:
 
-```javascript
+```javascript title=index.js
 module.exports = {
   keystone,
   apps: [new AdminUIApp({ authStrategy: 'User.password' })],

@@ -11,7 +11,7 @@ const SIZE_MAP = {
   xlarge: 72,
 };
 
-export default function Loading({ color, isCentered, size }) {
+export default function Loading({ color = 'currentColor', isCentered = false, size = 'medium' }) {
   const sizePx = SIZE_MAP[size];
 
   return (
@@ -48,11 +48,6 @@ Loading.propTypes = {
   color: PropTypes.string,
   isCentered: PropTypes.bool,
   size: PropTypes.oneOf(Object.keys(SIZE_MAP)),
-};
-Loading.defaultProps = {
-  color: 'currentColor',
-  isCentered: false,
-  size: 'medium',
 };
 
 const centerStyles = width => ({
