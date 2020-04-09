@@ -1,5 +1,13 @@
 # @keystonejs/app-next
 
+## 5.1.2
+
+### Patch Changes
+
+- [`89bec596`](https://github.com/keystonejs/keystone/commit/89bec5966c07ea700a863d3a7a8d1ebb8fb5541a) [#2608](https://github.com/keystonejs/keystone/pull/2608) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Next.js to 9.3.2. Includes an important security fix.
+
+* [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
 ## 5.1.1
 
 ### Patch Changes
@@ -28,7 +36,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -40,17 +48,17 @@
 
 ### Minor Changes
 
-- [700cd9c6](https://github.com/keystonejs/keystone-5/commit/700cd9c6): NextApp: Throw an error if the 'dir' config option is not set. Also set the default config to an empty object.
+- [700cd9c6](https://github.com/keystonejs/keystone/commit/700cd9c6): NextApp: Throw an error if the 'dir' config option is not set. Also set the default config to an empty object.
 
 ### Patch Changes
 
-- [7c0908d7](https://github.com/keystonejs/keystone-5/commit/7c0908d7): Update documentation for NextApp
+- [7c0908d7](https://github.com/keystonejs/keystone/commit/7c0908d7): Update documentation for NextApp
 
 ## 2.0.0
 
 ### Major Changes
 
-- [db212300](https://github.com/keystonejs/keystone-5/commit/db212300):
+- [db212300](https://github.com/keystonejs/keystone/commit/db212300):
 
   Upgrade next to v9 and remove support for next-routes. You should switch to the native support for dynamic routes in next@9
 
@@ -58,7 +66,7 @@
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
@@ -66,7 +74,7 @@
 
 ### Patch Changes
 
-- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+- [af3f31dd](https://github.com/keystonejs/keystone/commit/af3f31dd):
 
   Output builds to correct directory
 
@@ -74,7 +82,7 @@
 
 ### Major Changes
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Specify custom servers from within the index.js file
 

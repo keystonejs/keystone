@@ -6,21 +6,21 @@ title: OEmbed
 
 # OEmbed
 
-> oEmbed is a format for allowing an embedded representation of a URL on third
-> party sites. The simple API allows a website to display embedded content (such
-> as photos or videos) when a user posts a link to that resource, without having
-> to parse the resource directly.
+`oEmbed` is a format for allowing an embedded representation of a URL on third
+party sites. The simple API allows a website to display embedded content (such
+as photos or videos) when a user posts a link to that resource, without having
+to parse the resource directly.
 
-- _[oEmbed Spec](https://oembed.com/)_
+> View the [oEmbed Spec](https://oembed.com/) for more information
 
 ## Usage
 
 ```js
 const { Keystone } = require('@keystonejs/keystone');
-const { OEmbed } = require('@keystonejs/fields');
+const { OEmbed, Text } = require('@keystonejs/fields');
 const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 
-const keystone = new Keystone(/* ... */);
+const keystone = new Keystone({...});
 
 const iframelyAdapter = new IframelyOEmbedAdapter({
   apiKey: '...', // Get one from https://iframely.com
@@ -30,7 +30,6 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     portfolio: { type: OEmbed, adapter: iframelyAdapter },
-    // ..
   },
 });
 ```
@@ -232,5 +231,3 @@ Will result in something like:
   }
 }
 ```
-
----

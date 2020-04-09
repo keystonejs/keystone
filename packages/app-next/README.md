@@ -1,19 +1,19 @@
 <!--[meta]
 section: api
 subSection: apps
-title: Next.js App
+title: Next.js app
 [meta]-->
 
-# Next.js App
+# Next.js app
 
-A KeystoneJS App for serving a [Next.js](https://nextjs.org/) application.
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-next)
+
+A KeystoneJS app for serving a [Next.js](https://nextjs.org/) application.
 
 ## Usage
 
 ```javascript
 const { NextApp } = require('@keystonejs/app-next');
-
-...
 
 module.exports = {
   keystone,

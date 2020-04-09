@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
@@ -40,23 +40,30 @@ const { publicRuntimeConfig } = getConfig();
 
 // Featured Event
 const FeaturedEvent = ({ isLoading, error, event }) => {
-  const {
-    data: { allRsvps = {} },
-    loading: queryLoading,
-    error: queryError,
-  } = useQuery(GET_EVENT_RSVPS, { variables: { event: id } });
+  const [
+    getResponses,
+    { data: { allRsvps = [] } = {}, called, loading: queryLoading, error: queryError },
+  ] = useLazyQuery(GET_EVENT_RSVPS);
 
-  const attending = `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}`;
-
-  if (isLoading && !event) {
+  // event is null while the outer query is fetching it
+  if ((isLoading && !event) || queryLoading) {
     return <Loading isCentered />;
   }
+
+  // Error fetching the event, show nothing
   if (error) {
     console.error('Failed to render the featured event', error);
     return null;
   }
+
+  // Event is loaded but somehow still null. Bail.
   if (!isLoading && !event) {
     return null;
+  }
+
+  // Call the query now that we know event is valid
+  if (!called) {
+    getResponses({ variables: { event: event.id } });
   }
 
   const { description, id, locationAddress, maxRsvps, name, startTime, talks, themeColor } = event;
@@ -65,6 +72,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     : formatPastDate(startTime);
 
   const hex = themeColor ? themeColor.slice(1) : null;
+  const attending = `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}`;
 
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
@@ -186,11 +194,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
 };
 
 const Sponsors = () => {
-  const {
-    data: { allSponsors },
-    loading,
-    error,
-  } = useQuery(GET_SPONSORS);
+  const { data: { allSponsors } = {}, loading, error } = useQuery(GET_SPONSORS);
 
   return (
     <Container css={{ textAlign: 'center' }}>

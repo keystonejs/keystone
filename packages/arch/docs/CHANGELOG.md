@@ -1,5 +1,20 @@
 # @arch-ui/docs
 
+## 1.1.16
+
+### Patch Changes
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`0b37b13b`](https://github.com/keystonejs/keystone/commit/0b37b13b5b11a5391b70920f9e8cbd6c5a71f586)]:
+  - @arch-ui/alert@0.0.16
+  - @arch-ui/loading@0.0.16
+  - @arch-ui/lozenge@0.0.15
+  - @arch-ui/tooltip@0.1.10
+  - @arch-ui/typography@0.0.16
+  - @arch-ui/fields@2.1.5
+  - @arch-ui/button@0.0.17
+  - @arch-ui/pagination@0.0.17
+  - @arch-ui/dialog@0.0.19
+
 ## 1.1.15
 
 ### Patch Changes
@@ -212,41 +227,41 @@
 
 ## 1.1.5
 
-- Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+- Updated dependencies [464d7579](https://github.com/keystonejs/keystone/commit/464d7579):
   - @arch-ui/select@0.1.0
 
 ## 1.1.4
 
-- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone/commit/7689753c):
   - @arch-ui/controls@0.0.10
   - @arch-ui/input@0.1.0
 
 ## 1.1.3
 
-- Updated dependencies [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9):
+- Updated dependencies [957a40d9](https://github.com/keystonejs/keystone/commit/957a40d9):
   - @arch-ui/select@0.0.8
 
 ## 1.1.2
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Update gatsby to 2.13.25
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Update gatsby to 2.13.25
 
 ## 1.1.1
 
-- Updated dependencies [3544f852](https://github.com/keystonejs/keystone-5/commit/3544f852):
+- Updated dependencies [3544f852](https://github.com/keystonejs/keystone/commit/3544f852):
   - @arch-ui/tooltip@0.1.0
 
 ## 1.1.0
 
 ### Minor Changes
 
-- [9f4c2878](https://github.com/keystonejs/keystone-5/commit/9f4c2878):
+- [9f4c2878](https://github.com/keystonejs/keystone/commit/9f4c2878):
 
   Added 'new project', 'adding lists' and 'relationships' guides.
 
 ## 1.0.1
 
-- Updated dependencies [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+- Updated dependencies [c2dc6eb3](https://github.com/keystonejs/keystone/commit/c2dc6eb3):
   - @arch-ui/navbar@0.1.0

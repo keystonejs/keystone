@@ -1,35 +1,33 @@
 <!--[meta]
 section: guides
-title: KeystoneJS Apps
+title: Keystone apps
 [meta]-->
 
-# KeystoneJS Apps
+# Keystone apps
 
-A KeystoneJS instance can be summarised as a function of your schema which
+A Keystone instance can be summarised as a function of your schema which
 creates a GraphQL API for querying, and an AdminUI for managing your data:
 
+```javascript allowCopy=false showLanguage=false
+schema => ({ GraphQL, AdminUI });
 ```
-schema => ({ GraphQL, AdminUI })
-```
+
+## Introduction
 
 Here, `GraphQL` and `AdminUI` are referred to as **Apps**.
 
-A KeystoneJS **App** has two primary purposes
+A Keystone **App** has two primary purposes
 
 1. Prepare an `express`-compatible middleware for handling incoming http requests
 2. Provide a `build()` method to create a static production build for this app
 
-At a minimum a KeystoneJS application requires one app, the [GraphQL API](/packages/app-graphql/README.md):
+At a minimum a Keystone application requires one app, the [GraphQL API](/packages/app-graphql/README.md):
 
-`index.js`
-
-```javascript
+```javascript title=index.js
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { Keystone } = require('@keystonejs/keystone');
 
-const keystone = new Keystone(/* ... */);
-
-// ...
+const keystone = new Keystone();
 
 module.exports = {
   keystone,
@@ -38,18 +36,14 @@ module.exports = {
 ```
 
 Most of the time the `GraphQLApp` will be paired with an `AdminUIApp` which
-provides the functionality of the KeystoneJS Admin UI:
+provides the functionality of the Keystone Admin UI:
 
-`index.js`
-
-```diff
+```diff title=index.js allowCopy=false showLanguage=false
  const { GraphQLApp } = require('@keystonejs/app-graphql');
-+const { AdminUIApp } = require('@keystonejs/app-admin-ui');
  const { Keystone } = require('@keystonejs/keystone');
++const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
- const keystone = new Keystone(/* ... */);
-
- // ...
+ const keystone = new Keystone();
 
  module.exports = {
    keystone,
@@ -68,25 +62,24 @@ If you're using a [Custom Server](/docs/guides/custom-server.md), it will be you
 responsibility to ensure each app's middleware is correctly injected into any
 http server you setup.
 
-Other interesting KeystoneJS compatible Apps are:
+Other interesting Keystone compatible Apps are:
 
 - [Static App](/packages/app-static/README.md) for serving static files.
 - [Next.js App](/packages/app-next/README.md) for serving a Next.js App on the same server as the API
 
-## Custom Apps
+## Custom apps
 
-If you need to provide your own custom middleware for your system you can create a custom **App** and include it in your exported `apps`.
+If you need to provide your own custom middleware for your system you can create a custom app and include it in your exported `apps`.
 
-```
+<!-- prettier-ignore-start -->
+
+```javascript title=index.js
 class CustomApp {
   prepareMiddleware({ keystone, dev, distDir }) {
     const middleware = express();
-    // ...
     return middleware;
   }
 }
-
-// ...
 
 module.exports = {
   keystone,
@@ -94,6 +87,8 @@ module.exports = {
     new GraphQLApp(),
     new AdminUIApp(),
     new CustomApp(),
-  ]
-}
+  ],
+};
 ```
+
+<!-- prettier-ignore-end -->
