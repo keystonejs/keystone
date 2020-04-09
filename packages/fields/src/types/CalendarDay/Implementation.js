@@ -21,7 +21,21 @@ export class CalendarDay extends Implementation {
   }
 
   gqlOutputFields() {
-    return [`${this.path}: String`];
+    return [
+      `${this.path}(
+        """Whether to return the date in the config-provided format or as a raw ISO8601 string."""
+        format: Boolean = false
+      ): String`,
+    ];
+  }
+
+  gqlOutputFieldResolvers() {
+    return {
+      // TODO: consider a schema directive
+      [this.path]: ({ [this.path]: value }, { format: shouldFormat }) => {
+        return shouldFormat ? format(value, this.format) : value;
+      },
+    };
   }
 
   gqlQueryInputFields() {
