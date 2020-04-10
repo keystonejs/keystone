@@ -111,7 +111,7 @@ module.exports = class Keystone {
     // graphql app is setup, which is checked for elsewhere).
     this.executeQuery = () => {
       throw new Error(
-        'Attempted to execute keystone.query() before keystone.prepare() has completed.'
+        'Attempted to execute keystone.query() before keystone.connect() has completed.'
       );
     };
   }
@@ -449,18 +449,30 @@ module.exports = class Keystone {
   }
 
   /**
-   * @return Promise<null>
+   * Connects to the database via the given adapter(s)
+   *
+   * @return Promise<any> the result of executing `onConnect` as passed to the
+   * constructor, or `undefined` if no `onConnect` method specified.
    */
-  connect() {
+  async connect() {
     const { adapters, name } = this;
     const rels = this._consolidateRelationships();
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels }))).then(
-      () => {
-        if (this.eventHandlers.onConnect) {
-          return this.eventHandlers.onConnect(this);
-        }
-      }
+    await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels })));
+
+    // Now that the middlewares are done, and we're connected to the database,
+    // it's safe to assume all the schemas are registered, so we can setup our
+    // query helper This enables god-mode queries with no access control checks
+    this.executeQuery = this._buildQueryHelper(
+      this.getGraphQlContext({
+        skipAccessControl: true,
+        // This is for backwards compatibility with single-schema Keystone
+        schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
+      })
     );
+
+    if (this.eventHandlers.onConnect) {
+      return this.eventHandlers.onConnect(this);
+    }
   }
 
   /**
@@ -625,18 +637,6 @@ module.exports = class Keystone {
     cors = { origin: true, credentials: true },
   } = {}) {
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
-
-    // Now that the middlewares are done, it's safe to assume all the schemas
-    // are registered, so we can setup our query helper
-    // This enables god-mode queries with no access control checks
-    this.executeQuery = this._buildQueryHelper(
-      this.getGraphQlContext({
-        skipAccessControl: true,
-        // This is for backwards compatibility with single-schema Keystone
-        schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
-      })
-    );
-
     // These function can't be called after prepare(), so make them throw an error from now on.
     ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
       this[f] = () => {
