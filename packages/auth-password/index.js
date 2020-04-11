@@ -52,7 +52,17 @@ class PasswordAuthStrategy {
     // Verify the secret matches
     const match = await this._matchItem(item, args, secretFieldInstance);
 
-    if (!match.success) {
+    const { success, message } = await this._matchItem(item, args, secretFieldInstance);
+
+    if (!success) {
+      return {
+        success,
+        message: this.config.protectIdentities
+          ? '[passwordAuth:failure] Authentication failed'
+          : message,
+      };
+    }
+    return { success, list, item, message };
       return {
         success: false,
         message: this.config.protectIdentities
@@ -96,7 +106,25 @@ class PasswordAuthStrategy {
 
   async _matchItem(item, args, secretFieldInstance) {
     const { secretField } = this.config;
-    let hash = item[secretField];
+    const { secretField } = this.config;
+    const secret = args[secretField];
+    if (item[secretField]) {
+      const success = await secretFieldInstance.compare(secret, item[secretField]);
+      return {
+        success,
+        message: success
+          ? 'Authentication successful'
+          : `[passwordAuth:secret:mismatch] The ${secretField} provided is incorrect`,
+      };
+    } else {
+      hash = await secretFieldInstance.generateHash('password1234');
+      await secretFieldInstance.compare(secret, hash);
+      return {
+        success: false,
+        message:
+          '[passwordAuth:secret:notSet] The item identified has no secret set so can not be authenticated',
+      };
+    }
     const secret = args[secretField];
     let message = `[passwordAuth:secret:mismatch] The ${secretField} provided is incorrect`;
     if (!hash) {
