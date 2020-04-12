@@ -91,7 +91,7 @@ class ListCRUDProvider {
         count: Int
       }`,
       `input ${this.gqlNames.listsMetaInput} {
-        key: String
+        key: [String]
       }`,
       `input _ListSchemaFieldsInput {
         type: String
@@ -193,7 +193,7 @@ class ListCRUDProvider {
       // And the Keystone meta queries must always be available
       [this.gqlNames.listsMeta]: (_, { where: { key } = {} }, context) =>
         this.lists
-          .filter(list => list.access[schemaName].read && (!key || list.key === key))
+          .filter(list => list.access[schemaName].read && (!key || key.includes(list.key)))
           .map(list => list.listMeta(context)),
     };
   }
