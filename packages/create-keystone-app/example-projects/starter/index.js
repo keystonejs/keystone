@@ -23,7 +23,7 @@ const userOwnsItem = ({ authentication: { item: user } }) => {
   if (!user) {
     return false;
   }
-  
+
   // Instead of a boolean, you can return a GraphQL query
   return { id: user.id };
 };
