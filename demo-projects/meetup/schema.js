@@ -282,7 +282,7 @@ exports.customSchema = {
           { variables: { email: email }, skipAccessControl: true }
         );
 
-        if (userErrors) {
+        if (userErrors || !userData.allUsers || !userData.allUsers.length) {
           console.error(
             userErrors,
             `Unable to find user when trying to create forgotten password token.`
