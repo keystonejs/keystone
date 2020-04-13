@@ -66,19 +66,22 @@ This is where we will spend most of our time in this tutorial.
 Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README.md).
 
 ```jsx
-const { Stars, MongoIntegerInterface } = require('./Implementation');
+const { Stars, MongoIntegerInterface, KnexIntegerInterface } = require('./Implementation');
+
+const { Integer } = require('@keystonejs/fields');
 
 module.exports = {
   type: 'Stars',
   implementation: Stars,
   views: {
-    Controller: require.resolve('./Controller'),
+    Controller: Integer.views.Controller,
     Field: require.resolve('./views/Field'),
-    Filter: require.resolve('./views/Filter'),
+    Filter: Integer.views.Filter,
     Cell: require.resolve('./views/Cell'),
   },
   adapters: {
     mongoose: MongoIntegerInterface,
+    knex: KnexIntegerInterface,
   },
 };
 ```
@@ -88,24 +91,18 @@ Right now, the Field Type defintion is referencing a bunch of files that don't e
 For now, `Implementation.js` is only going to re-export from the `Integer` implementation
 
 ```jsx
-const {
-  Integer,
-  MongoIntegerInterface,
-} = require('@keystonejs/fields/types/Integer/Implementation');
+const { Integer } = require('@keystonejs/fields');
 
-class Stars extends Integer {}
+class Stars extends Integer.implementation {}
 
 module.exports = {
   Stars,
-  MongoIntegerInterface,
+  MongoIntegerInterface: Integer.adapters.mongoose,
+  KnexIntegerInterface: Integer.adapters.knex,
 };
 ```
 
-`Controller.js` is also going to re-export from the `Integer` Controller.
-
-```jsx
-export { default } from '@keystonejs/fields/types/Integer/Controller';
-```
+`Controller` and `Filter` are also going to re-export from the `Integer`.
 
 ### Views
 
@@ -119,14 +116,6 @@ This is the component that will render into the List view. For now, we're going 
 export default function Cell(props) {
   return props.data;
 }
-```
-
-#### views/Filter.js
-
-We're going to reuse the Integer filter here so we'll re-export it.
-
-```jsx
-export { default } from '@keystonejs/fields/types/Integer/views/Filter';
 ```
 
 #### views/Field.js
@@ -173,7 +162,7 @@ export default class StarsField extends React.Component {
   };
 
   render() {
-    const { field, item, value } = this.props;
+    const { field, value, errors } = this.props;
     const { starCount } = field.config;
     const htmlID = `ks-input-${field.path}`;
 
@@ -206,15 +195,12 @@ export default function StarsCell({ data }) {
 
 Now we have a custom Field Type with its own views but we hard coded a maximum of five stars but it would be nice if people could configure the number of stars so let's add a `starCount` option for that.
 
-First we need to expose it to the Admin UI, to do this, we can define a `extendAdminMeta` method on the `Stars` `Implementation`. You can pass anything here that can be stringified to JSON(i.e. no functions).
+First we need to expose it to the Admin UI, to do this, we can define a `extendAdminMeta` method on the `Stars` `Implementation`. You can pass anything here that can be stringified to JSON (i.e. no functions).
 
 ```jsx
-const {
-  Integer,
-  MongoIntegerInterface,
-} = require('@keystonejs/fields/types/Integer/Implementation');
+const { Integer } = require('@keystonejs/fields');
 
-class Stars extends Integer {
+class Stars extends Integer.implementation {
   extendAdminMeta(meta) {
     return { ...meta, starCount: this.config.starCount || 5 };
   }
@@ -222,7 +208,8 @@ class Stars extends Integer {
 
 module.exports = {
   Stars,
-  MongoIntegerInterface,
+  MongoIntegerInterface: Integer.adapters.mongoose,
+  KnexIntegerInterface: Integer.adapters.knex,
 };
 ```
 
