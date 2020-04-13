@@ -1,16 +1,17 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { forwardRef } from 'react';
 
 // Hidden Input
 // ------------------------------
 
-export const HiddenInput = ({ innerRef, ...props }) => (
+export const HiddenInput = forwardRef((props, ref) => (
   <input
-    ref={innerRef}
+    ref={ref}
     tabIndex="-1"
     css={{
+      display: 'none',
       border: 0,
-      clip: 'rect(1px, 1px, 1px, 1px)',
       height: 1,
       margin: 0,
       opacity: 0,
@@ -22,4 +23,4 @@ export const HiddenInput = ({ innerRef, ...props }) => (
     }}
     {...props}
   />
-);
+));
