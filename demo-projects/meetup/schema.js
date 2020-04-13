@@ -254,6 +254,9 @@ exports.ForgottenPasswordToken = {
       await sendEmail('forgot-password.jsx', props, options);
     },
   },
+};
+
+exports.customSchema = {
   mutations: [
     {
       schema: 'startPasswordRecovery(email: String!): ForgottenPasswordToken',
