@@ -47,7 +47,7 @@ keystone.createList('User', {
 And each list can have as many fields as you need.
 
 Keystone will process each List, converting it into a series of GraphQL CRUD
-(<strong>C</strong>reate, <strong>R</strong>ead, <strong>U</strong>pdate, <strong>D</strong>elete) operations. For example, the above lists will generate;
+(**C**reate, **R**ead, **U**pdate, **D**elete) operations. For example, the above lists will generate:
 
 ```graphql
 type Mutation {
@@ -78,8 +78,8 @@ type User {
 }
 ```
 
-> **Note:** Only a subset of all the generated types/mutations/queries are shown
-> here. To see a more complete example [follow the Quick Start](/docs/quick-start/README.md)
+> **Note:** Only a subset of the generated types/mutations/queries are shown here.
+> For more details, see the [GraphQL introduction guide](/docs/guides/intro-to-graphql.md).
 
 ### Customising lists and fields
 
