@@ -1,7 +1,7 @@
 const IDENTITY = 'boris@keystone.com';
 const SECRET = 'correctbattery';
 
-describe.only('Can access Admin UI', () => {
+describe('Can access Admin UI', () => {
   afterEach(() => {
     // Cypress claims to clear cookies before each test, but it appears that
     // the first test in the next describe block will continue to retain
@@ -179,7 +179,8 @@ describe('Testing Login', () => {
       cy.get('body').should('contain', 'Dashboard');
     });
 
-    it('Redirects to requested page after login', () => {
+    // See: https://github.com/keystonejs/keystone/issues/2656
+    it.skip('Redirects to requested page after login', () => {
       cy.visit('/admin/users');
 
       cy.get('input[name="identity"]')
@@ -233,8 +234,9 @@ describe('authenticated item', () => {
 
     it('current user query returns user info', () => {
       cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(({ data, errors }) => {
-        expect(data).to.have.deep.property('authenticatedUser.id');
         expect(errors).to.equal(undefined);
+        console.log({ data });
+        expect(data).to.have.nested.property('authenticatedUser.id');
       });
     });
   });
