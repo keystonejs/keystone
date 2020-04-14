@@ -77,7 +77,7 @@ const defaultComponents = { Wrapper, Label, Text };
 export const Control = ({
   checked = false,
   children,
-  components: passedComponents = {},
+  components: propComponents = {},
   isDisabled = false,
   isRequired,
   name,
@@ -89,9 +89,13 @@ export const Control = ({
   id,
   ...wrapperProps
 }) => {
-  const components = useMemo(() => ({ ...defaultComponents, ...passedComponents }), [
-    passedComponents,
-  ]);
+  const components = useMemo(
+    () => ({
+      ...defaultComponents,
+      ...propComponents,
+    }),
+    [propComponents]
+  );
 
   return (
     <components.Wrapper {...wrapperProps}>
