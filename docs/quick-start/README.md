@@ -115,7 +115,7 @@ This todo app is a good introduction to Keystone, but chances are you'll want to
 
 <!-- FIXME:TL Next step should be tutorials, not guides. -->
 
-The [guides section](/docs/guides/index.md) is a great next step.
+The [guides section](/docs/guides/apps.md) is a great next step.
 It will walk you through concepts like [creating lists](/docs/tutorials/add-lists.md),
 setting up [content relationships](/docs/tutorials/relationships.md),
 managing [access control](/docs/guides/access-control.md) and much more.
