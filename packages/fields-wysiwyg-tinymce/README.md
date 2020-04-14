@@ -20,6 +20,11 @@ const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 ## Config
 
+| Option         | Type   | Description                                                 |
+| -------------- | ------ | ----------------------------------------------------------- |
+| `apiKey`       | String | A [Tiny Cloud API key](https://www.tiny.cloud/auth/signup). |
+| `editorConfig` | Object | TinyMCE config options.                                     |
+
 ### `editorConfig`
 
 **Default:** `{}`
