@@ -1,18 +1,15 @@
 import React from 'react';
+import { RadioGroup, Radio } from '@arch-ui/filters';
 
-const CheckboxFilterView = ({ onChange, filter, innerRef, value }) => {
-  const handleChange = ({ target: { value } }) => {
-    onChange(value);
-  };
-
+const CheckboxFilterView = ({ onChange, filter, value }) => {
   if (!filter) return null;
 
   return (
-    <select onChange={handleChange} ref={innerRef} value={value}>
-      <option value="true">Checked</option>
-      <option value="false">Unchecked</option>
-      <option value="null">Not set</option>
-    </select>
+    <RadioGroup onChange={onChange} value={value}>
+      <Radio value="true">Checked</Radio>
+      <Radio value="false">Unchecked</Radio>
+      <Radio value="null">Not set</Radio>
+    </RadioGroup>
   );
 };
 
