@@ -21,8 +21,7 @@
     "@tinymce/tinymce-react": "^3.5.0",
     "cuid": "^2.1.6",
     "prop-types": "^15.7.2",
-    "react": "^16.13.0",
-    "tinymce": "^5.2.0"
+    "react": "^16.13.0"
   },
   "peerDependencies": {
     "express": "^4.17.1"

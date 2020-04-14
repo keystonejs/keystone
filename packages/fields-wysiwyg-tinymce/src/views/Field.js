@@ -4,10 +4,6 @@ import { Global, css, jsx } from '@emotion/core';
 
 import { FieldContainer, FieldLabel } from '@arch-ui/fields';
 
-// MUST IMPORT for TinyMCE to work!
-// eslint-disable-next-line no-unused-vars
-import tinymce from 'tinymce/tinymce';
-
 import { Editor } from '@tinymce/tinymce-react';
 
 const defaultOptions = {
@@ -52,7 +48,7 @@ const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue }
 
   if (accessError) return null;
 
-  const overrideOptions = field.config.editorConfig;
+  const { apiKey, editorConfig: overrideOptions } = field.config;
 
   return (
     <FieldContainer>
@@ -60,6 +56,7 @@ const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue }
       <div css={{ display: 'flex', flex: 1 }}>
         <GlobalStyles />
         <Editor
+          apiKey={apiKey}
           init={{ ...defaultOptions, auto_focus: autoFocus, ...overrideOptions }}
           onEditorChange={handleChange}
           value={value}
