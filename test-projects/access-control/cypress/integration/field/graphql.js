@@ -96,7 +96,7 @@ describe('Access Control, Field, GraphQL', () => {
         it(`${JSON.stringify(access)} on ${staticList}`, () => {
           const name = getFieldName(access);
 
-          expect(types, 'types').to.have.deep.property(`${staticList}.fields`);
+          expect(types, 'types').to.have.nested.property(`${staticList}.fields`);
 
           const fields = types[staticList].fields;
 
@@ -107,43 +107,43 @@ describe('Access Control, Field, GraphQL', () => {
           }
 
           // Filter types are only used when reading
-          expect(types, 'WhereInput exists').to.have.deep.property(
+          expect(types, 'WhereInput exists').to.have.nested.property(
             `${staticList}WhereInput.inputFields`
           );
           if (access.read) {
-            expect(types, `WhereInput.${name} exists`).to.have.deep.property(
+            expect(types, `WhereInput.${name} exists`).to.have.nested.property(
               `${staticList}WhereInput.inputFields.${name}`
             );
           } else {
-            expect(types, `WhereInput.${name} doesn't exist`).to.not.have.deep.property(
+            expect(types, `WhereInput.${name} doesn't exist`).to.not.have.nested.property(
               `${staticList}WhereInput.inputFields.${name}`
             );
           }
 
           // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
+          expect(types, 'CreateInput exists').to.have.nested.property(
             `${staticList}CreateInput.inputFields`
           );
           if (access.create) {
-            expect(types, `CreateInput.${name} exists`).to.have.deep.property(
+            expect(types, `CreateInput.${name} exists`).to.have.nested.property(
               `${staticList}CreateInput.inputFields.${name}`
             );
           } else {
-            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.deep.property(
+            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.nested.property(
               `${staticList}CreateInput.inputFields.${name}`
             );
           }
 
           // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
+          expect(types, 'CreateInput exists').to.have.nested.property(
             `${staticList}CreateInput.inputFields`
           );
           if (access.create) {
-            expect(types, `CreateInput.${name} exists`).to.have.deep.property(
+            expect(types, `CreateInput.${name} exists`).to.have.nested.property(
               `${staticList}CreateInput.inputFields.${name}`
             );
           } else {
-            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.deep.property(
+            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.nested.property(
               `${staticList}CreateInput.inputFields.${name}`
             );
           }
@@ -164,33 +164,33 @@ describe('Access Control, Field, GraphQL', () => {
         it(`${JSON.stringify(access)} on ${imperativeList}`, () => {
           const name = getFieldName(access);
 
-          expect(types, 'types').to.have.deep.property(`${imperativeList}.fields`);
+          expect(types, 'types').to.have.nested.property(`${imperativeList}.fields`);
 
           const fields = types[imperativeList].fields;
 
           expect(fields, 'fields').to.have.property(name);
 
           // Filter types are only used when reading
-          expect(types, 'WhereInput exists').to.have.deep.property(
+          expect(types, 'WhereInput exists').to.have.nested.property(
             `${imperativeList}WhereInput.inputFields`
           );
-          expect(types, `WhereInput.${name} exists`).to.have.deep.property(
+          expect(types, `WhereInput.${name} exists`).to.have.nested.property(
             `${imperativeList}WhereInput.inputFields.${name}`
           );
 
           // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
+          expect(types, 'CreateInput exists').to.have.nested.property(
             `${imperativeList}CreateInput.inputFields`
           );
-          expect(types, `CreateInput.${name} exists`).to.have.deep.property(
+          expect(types, `CreateInput.${name} exists`).to.have.nested.property(
             `${imperativeList}CreateInput.inputFields.${name}`
           );
 
           // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
+          expect(types, 'CreateInput exists').to.have.nested.property(
             `${imperativeList}CreateInput.inputFields`
           );
-          expect(types, `CreateInput.${name} exists`).to.have.deep.property(
+          expect(types, `CreateInput.${name} exists`).to.have.nested.property(
             `${imperativeList}CreateInput.inputFields.${name}`
           );
 
@@ -339,15 +339,15 @@ describe('Access Control, Field, GraphQL', () => {
                 ).then(({ data, errors }) => {
                   expect(data, 'create mutation denied').to.have.property(createMutationName, null);
 
-                  expect(errors, 'create mutation denied').to.have.deep.property(
+                  expect(errors, 'create mutation denied').to.have.nested.property(
                     '[0].name',
                     'AccessDeniedError'
                   );
-                  expect(errors, 'create mutation denied').to.have.deep.property(
+                  expect(errors, 'create mutation denied').to.have.nested.property(
                     '[0].message',
                     'You do not have access to this resource'
                   );
-                  expect(errors, 'create mutation denied').to.have.deep.property(
+                  expect(errors, 'create mutation denied').to.have.nested.property(
                     '[0].path[0]',
                     createMutationName
                   );
@@ -433,20 +433,20 @@ describe('Access Control, Field, GraphQL', () => {
                       `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`
                     )
                     .then(({ data, errors }) => {
-                      expect(data, 'read singular denied').to.have.deep.property(
+                      expect(data, 'read singular denied').to.have.nested.property(
                         `${singleQueryName}.${fieldName}`,
                         null
                       );
 
-                      expect(errors, 'read singular denied').to.have.deep.property(
+                      expect(errors, 'read singular denied').to.have.nested.property(
                         '[0].name',
                         'AccessDeniedError'
                       );
-                      expect(errors, 'read singular denied').to.have.deep.property(
+                      expect(errors, 'read singular denied').to.have.nested.property(
                         '[0].message',
                         'You do not have access to this resource'
                       );
-                      expect(errors, 'read singular denied').to.have.deep.property(
+                      expect(errors, 'read singular denied').to.have.nested.property(
                         '[0].path[0]',
                         singleQueryName
                       );
@@ -506,15 +506,15 @@ describe('Access Control, Field, GraphQL', () => {
                         null
                       );
 
-                      expect(errors, 'update mutation denied').to.have.deep.property(
+                      expect(errors, 'update mutation denied').to.have.nested.property(
                         '[0].name',
                         'AccessDeniedError'
                       );
-                      expect(errors, 'update mutation denied').to.have.deep.property(
+                      expect(errors, 'update mutation denied').to.have.nested.property(
                         '[0].message',
                         'You do not have access to this resource'
                       );
-                      expect(errors, 'update mutation denied').to.have.deep.property(
+                      expect(errors, 'update mutation denied').to.have.nested.property(
                         '[0].path[0]',
                         updateMutationName
                       );
@@ -548,19 +548,19 @@ describe('Access Control, Field, GraphQL', () => {
     it('current user query returns user info', () => {
       cy.graphql_query('/admin/api', '{ authenticatedUser { id yesRead noRead } }').then(
         ({ data, errors }) => {
-          expect(data).to.have.deep.property('authenticatedUser.id');
-          expect(data).to.have.deep.property('authenticatedUser.yesRead', 'yes');
-          expect(data).to.have.deep.property('authenticatedUser.noRead', null);
+          expect(data).to.have.nested.property('authenticatedUser.id');
+          expect(data).to.have.nested.property('authenticatedUser.yesRead', 'yes');
+          expect(data).to.have.nested.property('authenticatedUser.noRead', null);
           expect(errors).to.have.length(1);
-          expect(errors, 'authenticatedUser read denied').to.have.deep.property(
+          expect(errors, 'authenticatedUser read denied').to.have.nested.property(
             '[0].name',
             'AccessDeniedError'
           );
-          expect(errors, 'authenticatedUser read denied').to.have.deep.property(
+          expect(errors, 'authenticatedUser read denied').to.have.nested.property(
             '[0].message',
             'You do not have access to this resource'
           );
-          expect(errors, 'authenticatedUser read denied').to.have.deep.property('[0].path');
+          expect(errors, 'authenticatedUser read denied').to.have.nested.property('[0].path');
           expect(errors[0].path, 'authenticatedUser read denied').to.deep.equal([
             'authenticatedUser',
             'noRead',
