@@ -236,7 +236,7 @@ describe('authenticated item', () => {
       cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(({ data, errors }) => {
         expect(errors).to.equal(undefined);
         console.log({ data });
-        expect(data).to.have.deep.property('authenticatedUser.id');
+        expect(data).to.have.nested.property('authenticatedUser.id');
       });
     });
   });
