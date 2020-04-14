@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, keyframes } from '@emotion/core';
-import { Component } from 'react';
+import { useState } from 'react';
 
 const pulse = keyframes`
   from { transform: scale3d(1, 1, 1); }
@@ -26,39 +26,31 @@ const animations = {
   tada,
 };
 
-export default class Animation extends Component {
-  state = {
-    hasAnimation: true,
-    name: this.props.name,
-  };
-  static defaultProps = {
-    duration: '1s',
-    isInfinite: false,
-    tag: 'div',
-    timing: 'ease',
-  };
-  static getDerivedStateFromProps(props, state) {
-    if (!state.hasAnimation && props.name !== state.name) {
-      return { hasAnimation: true, name: props.name };
-    }
+const Animation = ({
+  duration = '1s',
+  isInfinite = false,
+  tag: Tag = 'div',
+  timing = 'ease',
+  ...props
+}) => {
+  const [hasAnimation, setHasAnimation] = useState(true);
+  const [name, setName] = useState(props.name);
 
-    return null;
+  if (!hasAnimation && props.name !== name) {
+    setHasAnimation(true);
+    setName(props.name);
   }
-  onAnimationEnd = () => {
-    this.setState({ hasAnimation: false });
-  };
-  render() {
-    const { duration, isInfinite, tag: Tag, timing, ...props } = this.props;
-    const { hasAnimation, name } = this.state;
-    const infinite = isInfinite ? 'infinite' : '';
-    const animation = `${animations[name]} ${duration} ${timing} ${infinite}`;
 
-    return (
-      <Tag
-        css={hasAnimation ? { animation } : null}
-        onAnimationEnd={this.onAnimationEnd}
-        {...props}
-      />
-    );
-  }
-}
+  const onAnimationEnd = () => {
+    setHasAnimation(false);
+  };
+
+  const infinite = isInfinite ? 'infinite' : '';
+  const animation = `${animations[name]} ${duration} ${timing} ${infinite}`;
+
+  return (
+    <Tag css={hasAnimation ? { animation } : null} onAnimationEnd={onAnimationEnd} {...props} />
+  );
+};
+
+export default Animation;
