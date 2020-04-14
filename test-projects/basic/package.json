@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "start:debug": "node --inspect-brk -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
-    "cypress:run:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` run",
+    "cypress:run:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` run --browser firefox",
     "cypress:open:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` open",
     "prepare-test-server": "cross-env NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.exitCode) })'",
     "cypress:run:ci": "touch .env && yarn prepare-test-server cypress:run:cmd",

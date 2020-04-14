@@ -7,7 +7,7 @@ version: 2
 x-job-setup: &job-setup
   docker:
     # specify the version you desire here
-    - image: circleci/node:dubnium-browsers
+    - image: cypress/browsers:node12.13.0-chrome80-ff74
       environment:
         TEST_DATABASE_URL: postgresql://root@localhost/circle_test
         KNEX_URI: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
