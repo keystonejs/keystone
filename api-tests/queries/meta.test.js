@@ -114,6 +114,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               schema {
                 type
                 queries
+                fields {
+                  name
+                  type
+                }
                 relatedFields {
                   type
                   fields
@@ -131,6 +135,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name: 'User',
               schema: {
                 queries: ['User', 'allUsers', '_allUsersMeta'],
+                fields: [
+                  {
+                    name: 'company',
+                    type: 'Relationship',
+                  },
+                  {
+                    name: 'workHistory',
+                    type: 'Relationship',
+                  },
+                ],
                 relatedFields: [
                   {
                     fields: ['employees', '_employeesMeta'],
@@ -149,6 +163,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               schema: {
                 type: 'Company',
                 queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                fields: [
+                  {
+                    name: 'name',
+                    type: 'Text',
+                  },
+                  {
+                    name: 'employees',
+                    type: 'Relationship',
+                  },
+                ],
                 relatedFields: [
                   {
                     type: 'User',
@@ -161,8 +185,130 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name: 'Post',
               schema: {
                 queries: ['Post', 'allPosts', '_allPostsMeta'],
+                fields: [
+                  {
+                    name: 'content',
+                    type: 'Text',
+                  },
+                  {
+                    name: 'author',
+                    type: 'Relationship',
+                  },
+                ],
                 relatedFields: [],
                 type: 'Post',
+              },
+            },
+          ]);
+        })
+      );
+
+      test(
+        'returns results for one list',
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
+            query: `
+          query {
+            _ksListsMeta(where: { key: "User" }) {
+              name
+              schema {
+                type
+                queries
+                fields {
+                  name
+                  type
+                }
+                relatedFields {
+                  type
+                  fields
+                }
+              }
+            }
+          }
+      `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_ksListsMeta');
+          expect(data._ksListsMeta).toMatchObject([
+            {
+              name: 'User',
+              schema: {
+                queries: ['User', 'allUsers', '_allUsersMeta'],
+                fields: [
+                  {
+                    name: 'company',
+                    type: 'Relationship',
+                  },
+                  {
+                    name: 'workHistory',
+                    type: 'Relationship',
+                  },
+                ],
+                relatedFields: [
+                  {
+                    fields: ['employees', '_employeesMeta'],
+                    type: 'Company',
+                  },
+                  {
+                    fields: ['author'],
+                    type: 'Post',
+                  },
+                ],
+                type: 'User',
+              },
+            },
+          ]);
+        })
+      );
+
+      test(
+        'returns results for one list and one type of fields',
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
+            query: `
+          query {
+            _ksListsMeta(where: { key: "Company" }) {
+              name
+              schema {
+                type
+                queries
+                fields(where: { type: "Text" }) {
+                  name
+                  type
+                }
+                relatedFields {
+                  type
+                  fields
+                }
+              }
+            }
+          }
+      `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_ksListsMeta');
+          expect(data._ksListsMeta).toMatchObject([
+            {
+              name: 'Company',
+              schema: {
+                type: 'Company',
+                queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                fields: [
+                  {
+                    name: 'name',
+                    type: 'Text',
+                  },
+                ],
+                relatedFields: [
+                  {
+                    type: 'User',
+                    fields: ['company', 'workHistory', '_workHistoryMeta'],
+                  },
+                ],
               },
             },
           ]);

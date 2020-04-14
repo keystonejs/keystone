@@ -1,5 +1,43 @@
 # @keystonejs/website
 
+## 5.3.1
+
+### Patch Changes
+
+- [`d3a99dec`](https://github.com/keystonejs/keystone/commit/d3a99dec744f8d2b57cf7727b2b3af193139f603) [#2598](https://github.com/keystonejs/keystone/pull/2598) Thanks [@ropaolle](https://github.com/ropaolle)! - Added a guide on deploying Keystone to Heroku.
+
+## 5.3.0
+
+### Minor Changes
+
+- [`82d68a12`](https://github.com/keystonejs/keystone/commit/82d68a12f3de7b9d0969e5f132dbf721b0fc290d) [#2640](https://github.com/keystonejs/keystone/pull/2640) Thanks [@jossmac](https://github.com/jossmac)! - Improved docs search experience:
+  - support focus on "/" press
+  - update styles to align with docs
+
+* [`6458ffa0`](https://github.com/keystonejs/keystone/commit/6458ffa08e0e77fbb039a042a13129310937946d) [#2579](https://github.com/keystonejs/keystone/pull/2579) Thanks [@jossmac](https://github.com/jossmac)! - Added heading navigation to docs pages.
+
+- [`510db7e7`](https://github.com/keystonejs/keystone/commit/510db7e71c15efd9cd8cc27aaafdf6ce0f278455) [#2631](https://github.com/keystonejs/keystone/pull/2631) Thanks [@jossmac](https://github.com/jossmac)! - Introduced meta data to code blocks.
+
+* [`665741e3`](https://github.com/keystonejs/keystone/commit/665741e30981c2acb2a16645549387c3485c1ebe) [#2648](https://github.com/keystonejs/keystone/pull/2648) Thanks [@jossmac](https://github.com/jossmac)! - Highlight the active item in the docs layout table of contents.
+
+### Patch Changes
+
+- [`b6f99f8e`](https://github.com/keystonejs/keystone/commit/b6f99f8ed07e72a51ab6acf10e9141e7526976a2) [#2594](https://github.com/keystonejs/keystone/pull/2594) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated API documentation.
+
+* [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373) [#2560](https://github.com/keystonejs/keystone/pull/2560) Thanks [@JedWatson](https://github.com/JedWatson)! - Updated links to Keystone github project.
+
+- [`a426a58d`](https://github.com/keystonejs/keystone/commit/a426a58d10dadbb4cf87b41984909726dce315f7) [#2622](https://github.com/keystonejs/keystone/pull/2622) Thanks [@jossmac](https://github.com/jossmac)! - Fix table-of-contents in docs pages:
+  - resolve out-of-sync ID issue (`github-slugger` VS `@sindresorhus/slugify`)
+  - allow items to wrap, without looking like separate items
+
+* [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+- [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+* [`3a75a419`](https://github.com/keystonejs/keystone/commit/3a75a419e57bd99d5f7628b3c43dce3885d8efc5) [#2637](https://github.com/keystonejs/keystone/pull/2637) Thanks [@jossmac](https://github.com/jossmac)! - Cleanup any weirdness that the new code block metadata introduced in #2631.
+
+- [`6458ffa0`](https://github.com/keystonejs/keystone/commit/6458ffa08e0e77fbb039a042a13129310937946d) [#2579](https://github.com/keystonejs/keystone/pull/2579) Thanks [@jossmac](https://github.com/jossmac)! - Made the header and sidebar sticky.
+
 ## 5.2.0
 
 ### Minor Changes

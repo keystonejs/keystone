@@ -116,11 +116,11 @@ The above configuration would also add the following types to the GraphQL schema
 ```graphql
 type authenticateUserOutput {
   """
-   Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'.
+  Used to make subsequent authenticated requests by setting this token in a header: 'Authorization: Bearer <token>'.
   """
   token: String
   """
-   Retrieve information on the newly authenticated User here.
+  Retrieve information on the newly authenticated User here.
   """
   item: User
 }

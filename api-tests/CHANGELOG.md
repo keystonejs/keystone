@@ -1,5 +1,28 @@
 # @keystonejs/api-tests
 
+## 5.2.0
+
+### Minor Changes
+
+- [`515b4ff6`](https://github.com/keystonejs/keystone/commit/515b4ff697e4df40ece8e5ab30def93f9df866d1) [#2664](https://github.com/keystonejs/keystone/pull/2664) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a `where: { key }` argument to List meta queries.
+
+* [`f9fe301f`](https://github.com/keystonejs/keystone/commit/f9fe301f525f3591e20d069083276d296543d54a) [#2673](https://github.com/keystonejs/keystone/pull/2673) Thanks [@Vultraz](https://github.com/Vultraz)! - Added `fields` list to ListSchema. This optionally takes a `where: { type }` argument and returns all matching field names on a list along with their types.
+
+### Patch Changes
+
+- Updated dependencies [[`515b4ff6`](https://github.com/keystonejs/keystone/commit/515b4ff697e4df40ece8e5ab30def93f9df866d1), [`f9fe301f`](https://github.com/keystonejs/keystone/commit/f9fe301f525f3591e20d069083276d296543d54a)]:
+  - @keystonejs/keystone@8.1.0
+
+## 5.1.3
+
+### Patch Changes
+
+- [`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7) [#2666](https://github.com/keystonejs/keystone/pull/2666) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug with `_allItemsMeta { count }` queries on one-to-one relationships.
+
+- Updated dependencies [[`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7), [`c1345884`](https://github.com/keystonejs/keystone/commit/c134588491c73fabbd5186df1787bce5aec5c7c7)]:
+  - @keystonejs/adapter-knex@9.0.1
+  - @keystonejs/adapter-mongoose@8.0.1
+
 ## 5.1.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { useState, useEffect, Component } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
@@ -32,18 +32,17 @@ const GET_PASSWORD_TOKEN = gql`
   }
 `;
 
-export default class ChangePassword extends Component {
-  static async getInitialProps(context) {
-    const token = context.query.key;
-    const accessedAt = new Date().toISOString();
-    return { token, accessedAt };
-  }
+const ChangePassword = ({ token, accessedAt }) => {
+  return <ChangePasswordForm token={token} accessedAt={accessedAt} />;
+};
 
-  render() {
-    const { token, accessedAt } = this.props;
-    return <ChangePasswordForm token={token} accessedAt={accessedAt} />;
-  }
-}
+ChangePassword.getInitialProps = async context => {
+  const token = context.query.key;
+  const accessedAt = new Date().toISOString();
+  return { token, accessedAt };
+};
+
+export default ChangePassword;
 
 const ChangePasswordForm = ({ token, accessedAt }) => {
   const [password, setPassword] = useState('');

@@ -2,7 +2,7 @@
   "name": "@keystonejs/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "5.2.0",
+  "version": "5.3.1",
   "author": "The KeystoneJS Development Team",
   "repository": "https://github.com/keystonejs/keystone/tree/master/website",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -46,6 +46,7 @@
     "get-workspaces": "^0.5.0",
     "github-slugger": "^1.2.1",
     "gray-matter": "^4.0.2",
+    "intersection-observer": "^0.5.1",
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "lodash.throttle": "^4.1.1",
@@ -58,6 +59,7 @@
     "react-helmet": "^5.2.0",
     "rehype-slug": "^2.0.3",
     "underscore.string": "^3.3.5",
-    "unist-util-visit": "^1.4.0"
+    "unist-util-visit": "^1.4.0",
+    "use-clipboard-copy": "^0.1.2"
   }
 }

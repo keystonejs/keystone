@@ -1,5 +1,56 @@
 # @keystonejs/keystone
 
+## 8.1.1
+
+### Patch Changes
+
+- [`ec8d84c4`](https://github.com/keystonejs/keystone/commit/ec8d84c49a5c22cd0c96ffb2209e61f6775aaf40) [#2685](https://github.com/keystonejs/keystone/pull/2685) Thanks [@Vultraz](https://github.com/Vultraz)! - Made extendGraphQLSchema(), createList(), and createAuthStrategy() error if called after prepare().
+
+* [`a50494e5`](https://github.com/keystonejs/keystone/commit/a50494e53bdc9712f8aa4a54b9718609b65d85e1) [#2688](https://github.com/keystonejs/keystone/pull/2688) Thanks [@jesstelford](https://github.com/jesstelford)! - Improve legibility of `keystone upgrade-relationships` CLI command
+
+## 8.1.0
+
+### Minor Changes
+
+- [`515b4ff6`](https://github.com/keystonejs/keystone/commit/515b4ff697e4df40ece8e5ab30def93f9df866d1) [#2664](https://github.com/keystonejs/keystone/pull/2664) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a `where: { key }` argument to List meta queries.
+
+* [`f9fe301f`](https://github.com/keystonejs/keystone/commit/f9fe301f525f3591e20d069083276d296543d54a) [#2673](https://github.com/keystonejs/keystone/pull/2673) Thanks [@Vultraz](https://github.com/Vultraz)! - Added `fields` list to ListSchema. This optionally takes a `where: { type }` argument and returns all matching field names on a list along with their types.
+
+## 8.0.0
+
+### Major Changes
+
+- [`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d) [#2000](https://github.com/keystonejs/keystone/pull/2000) Thanks [@timleslie](https://github.com/timleslie)! - ## Release - Arcade
+
+  This release introduces a **new and improved data schema** for Keystone.
+  The new data schema simplifies the way your data is stored and will unlock the development of new functionality within Keystone.
+
+  > **Important:** You will need to make changes to your database to take advantage of the new data schema. Please read the full [release notes](https://www.keystonejs.com/discussions/new-data-schema) for instructions on updating your database.
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/fields@9.0.0
+
+## 7.1.0
+
+### Minor Changes
+
+- [`3407fa68`](https://github.com/keystonejs/keystone/commit/3407fa68b91d7ebb3e7288c7e95631013fe12535) [#2575](https://github.com/keystonejs/keystone/pull/2575) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a cli script `keystone create-tables` that will initialise an empty database with the Knex Adapter.
+
+### Patch Changes
+
+- [`4a7d1eab`](https://github.com/keystonejs/keystone/commit/4a7d1eabf9b44fac7e16dfe20afdce409986e8dc) [#2627](https://github.com/keystonejs/keystone/pull/2627) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Updated documentation for the last argument in custom resolver functions.
+
+* [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+- [`c2b1b725`](https://github.com/keystonejs/keystone/commit/c2b1b725a9474348964a4ac2e0f5b4aaf1a7f486) [#2615](https://github.com/keystonejs/keystone/pull/2615) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved list label logic.
+
+- Updated dependencies [[`e7e4bc1d`](https://github.com/keystonejs/keystone/commit/e7e4bc1d22149d4daceb31d303f6ad10c2b853ba), [`58c4ffc3`](https://github.com/keystonejs/keystone/commit/58c4ffc3d4b1edf8bdfbc4ea299133d303239fc6), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`d138736d`](https://github.com/keystonejs/keystone/commit/d138736db184c5884171c7a65e43377f248046b5), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf)]:
+  - @keystonejs/fields@8.0.0
+  - @keystonejs/app-version@1.0.1
+  - @keystonejs/session@6.0.1
+
 ## 7.0.0
 
 ### Major Changes

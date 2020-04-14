@@ -55,7 +55,7 @@ const Heading = ({ as: Tag, children, id, ...props }) => {
           display: 'block',
           position: 'relative',
 
-          '&:hover a': {
+          '&:hover a, &:focus-within a': {
             opacity: 1,
           },
         }}
