@@ -1,5 +1,11 @@
 # @keystonejs/fields-markdown
 
+## 5.1.6
+
+### Patch Changes
+
+- [`96727948`](https://github.com/keystonejs/keystone/commit/967279488691f2eef28cdd8a9e9374e58f3b2beb) [#2661](https://github.com/keystonejs/keystone/pull/2661) Thanks [@marcosrjjunior](https://github.com/marcosrjjunior)! - Fixing italic button
+
 ## 5.1.5
 
 ### Patch Changes

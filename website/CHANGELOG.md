@@ -1,5 +1,11 @@
 # @keystonejs/website
 
+## 5.3.1
+
+### Patch Changes
+
+- [`d3a99dec`](https://github.com/keystonejs/keystone/commit/d3a99dec744f8d2b57cf7727b2b3af193139f603) [#2598](https://github.com/keystonejs/keystone/pull/2598) Thanks [@ropaolle](https://github.com/ropaolle)! - Added a guide on deploying Keystone to Heroku.
+
 ## 5.3.0
 
 ### Minor Changes

@@ -3,22 +3,19 @@ const path = require('path');
 const terminalLink = require('terminal-link');
 const { getProjectDirectory } = require('./util');
 const { getAdapterChoice } = require('./get-adapter-choice');
-const { getProjectName } = require('./get-project-name');
-const slugify = require('@sindresorhus/slugify');
 
 const showSuccessMessage = async () => {
   const projectDir = await getProjectDirectory();
-  const projectName = await getProjectName();
   const adapterConfig = await getAdapterChoice();
   let knexMessage = '';
-  if (adapterConfig.file === 'adapter-knex.js') {
+  if (adapterConfig.name === 'PostgreSQL') {
     knexMessage = `
-${c.bold('Before you run Keystone you will need to create a database and initialise tables:')}
+${c.bold('  Before you run Keystone you will need to initialise the tables in your database:')}
 
-  - createdb ${slugify(projectName, { separator: '_' })}
+  - cd ${projectDir}
   - yarn create-tables
 
-For troubleshooting and further information see:
+  For troubleshooting and further information see:
 
   - https://www.keystonejs.com/quick-start/adapters/
   - https://www.keystonejs.com/keystonejs/adapter-knex/
