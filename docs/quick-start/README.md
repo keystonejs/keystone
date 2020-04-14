@@ -35,7 +35,7 @@ You can use either `MongoDB` or `PostgreSQL`.
 - [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful NoSQL document storage database.
 - [PostgreSQL](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
 
-Follow the [database setup](/docs/quick-start/adapters.md) instructions to install and configure your databasem, and to find out what your `connection string` is.
+Follow the [database setup](/docs/quick-start/adapters.md) instructions to install and configure your database, and to find out what your `connection string` is.
 
 > **Important:** You will need to make sure you have a valid `connection string` for your database in order to set up Keystone.
 

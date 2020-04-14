@@ -83,7 +83,7 @@ class Field {
     return {};
   }
 
-  /*
+  /**
    * @param {Object} data
    * @param {Object} data.resolvedData  The incoming item for the mutation with
    * relationships and defaults already resolved
