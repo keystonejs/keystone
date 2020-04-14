@@ -53,7 +53,7 @@ Make sure to relaunch Keystone and check that everything is working as expected.
 deadlines and the assignee of a task:
 
 ```javascript title=/lists/Todo.js
-const { Text, CalendarDay } = require('@keystonejs/fields');
+const { Text, CalendarDay, Checkbox } = require('@keystonejs/fields');
 
 module.exports = {
   fields: {
