@@ -23,6 +23,9 @@ const userOwnsItem = ({ authentication: { item: user } }) => {
   if (!user) {
     return false;
   }
+
+  // Instead of a boolean, you can return a GraphQL query:
+  // https://www.keystonejs.com/api/access-control#graphqlwhere
   return { id: user.id };
 };
 
