@@ -57,7 +57,7 @@ The Operational Phase for a `many` mutation consists of the the Operational Phas
 
 Each of these `single` mutations is executed within its own transaction.
 
-As such, a `many` mutation maybe have partial success during this phase, as some of the the single mutations may succeed while others fail.
+As such, a `many` mutation maybe have partial success during this phase, as some of the single mutations may succeed while others fail.
 
 ### Access control phase
 
