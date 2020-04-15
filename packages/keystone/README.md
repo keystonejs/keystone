@@ -317,7 +317,7 @@ For more information about the first four arguments, please see the [Apollo docs
 | `access` | Access control information about the current user. |
 
 - The `access` argument for `types`, `queries`, and `mutations` are all either boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
-See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
+- See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
 
 ### `prepare(config)`
 
