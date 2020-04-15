@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-admin-ui",
   "description": "KeystoneJS Admin UI App.",
-  "version": "5.9.5",
+  "version": "5.9.6",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -42,7 +42,7 @@
     "@emotion/styled": "^10.0.27",
     "@keystonejs/build-field-types": "^5.2.4",
     "@keystonejs/field-views-loader": "^5.2.1",
-    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/fields": "^9.0.1",
     "@keystonejs/session": "^6.0.1",
     "@keystonejs/utils": "^5.4.0",
     "apollo-cache-inmemory": "^1.6.5",

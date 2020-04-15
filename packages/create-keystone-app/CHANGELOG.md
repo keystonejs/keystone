@@ -1,5 +1,13 @@
 # create-keystone-app
 
+## 3.0.1
+
+### Patch Changes
+
+- [`4c2d3927`](https://github.com/keystonejs/keystone/commit/4c2d3927d4b81592d65a404c814f111f5b97ce54) [#2735](https://github.com/keystonejs/keystone/pull/2735) Thanks [@timleslie](https://github.com/timleslie)! - Fixed `Starter` project so that it doesn't attempt to initialise data before tables are created.
+
+* [`a9bc0cda`](https://github.com/keystonejs/keystone/commit/a9bc0cda879a12b152063875ca9593cdcaf0b33e) [#2693](https://github.com/keystonejs/keystone/pull/2693) Thanks [@Vultraz](https://github.com/Vultraz)! - Trimmed whitespace from database connection string input.
+
 ## 3.0.0
 
 ### Major Changes
