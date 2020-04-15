@@ -67,7 +67,7 @@
     "react-dom": "^16.13.0",
     "react-popper": "^1.3.6",
     "react-popper-tooltip": "^2.10.0",
-    "react-select": "^3.0.8",
+    "react-select": "^3.1.0",
     "react-toast-notifications": "^2.3.0",
     "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
