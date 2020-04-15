@@ -1,5 +1,19 @@
 # @keystonejs/fields
 
+## 9.0.1
+
+### Patch Changes
+
+- [`c013d8bc`](https://github.com/keystonejs/keystone/commit/c013d8bc1113b2a31ededc3918ab98c2c99f25f4) [#2425](https://github.com/keystonejs/keystone/pull/2425) Thanks [@Vultraz](https://github.com/Vultraz)! - The `password_is_set` flag is now used to display "Update password" or "Set password" in the Admin UI for `Password` fields.
+
+* [`93ae77ef`](https://github.com/keystonejs/keystone/commit/93ae77efe71151279a15ddb7ddc3df60651022b4) [#2701](https://github.com/keystonejs/keystone/pull/2701) Thanks [@BasitAli](https://github.com/BasitAli)! - Fixed "Is exactly" filter on `Text` fields.
+
+- [`eb90aea6`](https://github.com/keystonejs/keystone/commit/eb90aea6b33dda8d95baba818306328dd747247f) [#2726](https://github.com/keystonejs/keystone/pull/2726) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved Checkbox field filter interface.
+
+- Updated dependencies [[`3193f4a5`](https://github.com/keystonejs/keystone/commit/3193f4a56c6391d07e8c04913a667940ef7b8815), [`390a7fc3`](https://github.com/keystonejs/keystone/commit/390a7fc3b20169c628dd7aa2e2a4d72b678a345f)]:
+  - @keystonejs/app-admin-ui@5.9.6
+  - @arch-ui/day-picker@0.0.23
+
 ## 9.0.0
 
 ### Major Changes

@@ -2,7 +2,7 @@
   "name": "@keystonejs/cypress-project-client-validation",
   "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
-  "version": "5.1.6",
+  "version": "5.1.7",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -20,10 +20,10 @@
   "dependencies": {
     "@arch-ui/fields": "^2.1.5",
     "@keystonejs/adapter-mongoose": "^8.0.0",
-    "@keystonejs/app-admin-ui": "^5.9.5",
+    "@keystonejs/app-admin-ui": "^5.9.6",
     "@keystonejs/app-graphql": "^5.1.5",
     "@keystonejs/app-static": "^5.1.2",
-    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/fields": "^9.0.1",
     "@keystonejs/file-adapters": "^6.0.1",
     "@keystonejs/keystone": "^8.0.0",
     "cross-env": "^7.0.0",
