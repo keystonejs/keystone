@@ -20,6 +20,14 @@ const getAdapterChoice = async () => {
       ADAPTER_CHOICE = project.adapters[argValue];
       return ADAPTER_CHOICE;
     }
+
+    const foundArg = Object.values(project.adapters).find(
+      adapter => adapter.name.toLowerCase() === argValue.trim().toLowerCase()
+    );
+    if (foundArg) {
+      ADAPTER_CHOICE = foundArg.name;
+      return ADAPTER_CHOICE;
+    }
     console.error('Invalid --database value:', argValue);
   }
 

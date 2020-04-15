@@ -13,6 +13,7 @@ const getAdapterConfig = async () => {
     const argValue = args['--connection-string'];
     if (argValue) {
       CONNECTION_STRING = argValue;
+      return CONNECTION_STRING;
     }
 
     const adapter = await getAdapterChoice();
