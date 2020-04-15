@@ -67,6 +67,18 @@ function graphqlRequest({ keystone, query, variables, operationName }) {
   });
 }
 
+function authedGraphqlRequest({ keystone, query, variables, operationName, authentication }) {
+  const context = keystone.getGraphQlContext({
+    schemaName: 'testing',
+    req: { user: authentication.user, authedListKey: authentication.listKey },
+  });
+  const executeQuery = keystone._buildQueryHelper(context);
+  return executeQuery(query, {
+    variables,
+    operationName,
+  });
+}
+
 function networkedGraphqlRequest({
   app,
   query,
@@ -184,10 +196,35 @@ function _keystoneRunner(adapterName, tearDownFunction) {
   };
 }
 
+function _before(adapterName) {
+  return async function(setupKeystone) {
+    const { keystone, app } = await setupKeystone(adapterName);
+    await keystone.connect();
+    return { keystone, app };
+  };
+}
+
+function _after(tearDownFunction) {
+  return async function(keystone) {
+    await keystone.disconnect();
+    await tearDownFunction();
+  };
+}
+
 function multiAdapterRunners(only) {
   return [
-    { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
-    { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
+    {
+      runner: _keystoneRunner('mongoose', teardownMongoMemoryServer),
+      adapterName: 'mongoose',
+      before: _before('mongoose'),
+      after: _after(teardownMongoMemoryServer),
+    },
+    {
+      runner: _keystoneRunner('knex', () => {}),
+      adapterName: 'knex',
+      before: _before('knex'),
+      after: _after(() => {}),
+    },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 
@@ -223,6 +260,7 @@ module.exports = {
   setupServer,
   multiAdapterRunners,
   graphqlRequest,
+  authedGraphqlRequest,
   networkedGraphqlRequest,
   matchFilter,
 };

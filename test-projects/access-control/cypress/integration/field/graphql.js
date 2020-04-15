@@ -34,16 +34,6 @@ describe('Access Control, Field, GraphQL', () => {
     let queries;
     let mutations;
     let types;
-
-    function sanityCheckGraphQL() {
-      // check to make sure we're not getting false positives
-      return Promise.all([
-        expect(types).to.have.property('User'),
-        expect(queries).to.have.property('allUsers'),
-        expect(mutations).to.have.property('createUser'),
-      ]);
-    }
-
     stayLoggedIn('su');
 
     before(() =>
@@ -88,10 +78,6 @@ describe('Access Control, Field, GraphQL', () => {
     );
 
     describe('static', () => {
-      it('sanity check', () => {
-        sanityCheckGraphQL();
-      });
-
       fieldMatrix.forEach(access => {
         it(`${JSON.stringify(access)} on ${staticList}`, () => {
           const name = getFieldName(access);
@@ -156,10 +142,6 @@ describe('Access Control, Field, GraphQL', () => {
     });
 
     describe('imperative', () => {
-      it('sanity check', () => {
-        sanityCheckGraphQL();
-      });
-
       fieldMatrix.forEach(access => {
         it(`${JSON.stringify(access)} on ${imperativeList}`, () => {
           const name = getFieldName(access);

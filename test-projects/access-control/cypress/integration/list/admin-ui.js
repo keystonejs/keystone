@@ -25,6 +25,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ read }) => !read)
+        .slice(0, 1)
         .forEach(access => {
           it(`is not visible when not readable: ${JSON.stringify(access)}`, () => {
             const name = getStaticListName(access);
@@ -43,6 +44,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ read }) => read)
+        .slice(0, 1)
         .forEach(access => {
           it(`is visible when readable: ${JSON.stringify(access)}`, () => {
             const name = getStaticListName(access);
@@ -65,6 +67,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ read }) => read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows items when readable: ${JSON.stringify(access)}`, () => {
             const name = getImperativeListName(access);
@@ -84,6 +87,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ read }) => !read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows an access restricted message when not readable: ${JSON.stringify(
             access
@@ -110,6 +114,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ read }) => read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows items when readable: ${JSON.stringify(access)}`, () => {
             const name = getDeclarativeListName(access);
@@ -129,6 +134,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ read }) => !read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows an access restricted message when not readable: ${JSON.stringify(
             access
@@ -156,6 +162,7 @@ describe('Access Control Lists > Admin UI', () => {
 
         listAccessVariations
           .filter(({ read }) => read)
+          .slice(0, 1)
           .forEach(access => {
             it(`shows items when readable & admin: ${JSON.stringify(access)}`, () => {
               const name = getDeclarativeListName(access);
@@ -179,6 +186,7 @@ describe('Access Control Lists > Admin UI', () => {
 
         listAccessVariations
           .filter(({ read }) => read)
+          .slice(0, 1)
           .forEach(access => {
             it(`does not show items when readable & not admin: ${JSON.stringify(access)}`, () => {
               const name = getDeclarativeListName(access);
@@ -208,6 +216,7 @@ describe('Access Control Lists > Admin UI', () => {
       // non-readable lists show access denied above
       listAccessVariations
         .filter(({ create, read }) => create && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows create option when creatable (list view): ${JSON.stringify(access)}`, () => {
             const name = getStaticListName(access);
@@ -235,6 +244,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ create, read }) => !create && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`does not show create option when not creatable (list view): ${JSON.stringify(
             access
@@ -272,6 +282,7 @@ describe('Access Control Lists > Admin UI', () => {
       // non-readable lists show access denied above
       listAccessVariations
         .filter(({ create, read }) => create && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows create option when creatable (list view): ${JSON.stringify(access)}`, () => {
             const name = getImperativeListName(access);
@@ -309,6 +320,7 @@ describe('Access Control Lists > Admin UI', () => {
       // non-readable lists show access denied above
       listAccessVariations
         .filter(({ create, read }) => create && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows create option when creatable (list view): ${JSON.stringify(access)}`, () => {
             const name = getDeclarativeListName(access);
@@ -356,6 +368,7 @@ describe('Access Control Lists > Admin UI', () => {
       // non-readable lists show access denied above
       listAccessVariations
         .filter(({ update, read }) => update && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows update option when updatable (list view): ${JSON.stringify(access)}`, () => {
             const name = getStaticListName(access);
@@ -393,6 +406,7 @@ describe('Access Control Lists > Admin UI', () => {
 
       listAccessVariations
         .filter(({ update, read }) => !update && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`does not show update option when not updatable (list view): ${JSON.stringify(
             access
@@ -440,6 +454,7 @@ describe('Access Control Lists > Admin UI', () => {
       // non-readable lists show access denied above
       listAccessVariations
         .filter(({ create, read }) => create && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows create option when creatable: ${JSON.stringify(access)}`, () => {
             const name = getImperativeListName(access);
@@ -463,6 +478,7 @@ describe('Access Control Lists > Admin UI', () => {
       // non-readable lists show access denied above
       listAccessVariations
         .filter(({ create, read }) => create && read)
+        .slice(0, 1)
         .forEach(access => {
           it(`shows create option when creatable: ${JSON.stringify(access)}`, () => {
             const name = getDeclarativeListName(access);
