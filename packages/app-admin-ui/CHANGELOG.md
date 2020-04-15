@@ -1,5 +1,14 @@
 # @keystonejs/app-admin-ui
 
+## 5.9.6
+
+### Patch Changes
+
+- [`3193f4a5`](https://github.com/keystonejs/keystone/commit/3193f4a56c6391d07e8c04913a667940ef7b8815) [#2732](https://github.com/keystonejs/keystone/pull/2732) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted more React components to functional form.
+
+- Updated dependencies [[`c013d8bc`](https://github.com/keystonejs/keystone/commit/c013d8bc1113b2a31ededc3918ab98c2c99f25f4), [`93ae77ef`](https://github.com/keystonejs/keystone/commit/93ae77efe71151279a15ddb7ddc3df60651022b4), [`eb90aea6`](https://github.com/keystonejs/keystone/commit/eb90aea6b33dda8d95baba818306328dd747247f)]:
+  - @keystonejs/fields@9.0.1
+
 ## 5.9.5
 
 ### Patch Changes
