@@ -1,8 +1,7 @@
 <!--[meta]
 section: api
 subSection: apps
-title: GraphQL API
-draft: true
+title: GraphQL Schema Router
 [meta]-->
 
 # GraphQL Schema Router
@@ -43,8 +42,8 @@ module.exports = {
 
 ## Config
 
-| Option     | Type       | Default      | Description                                                  |
-| ---------- | ---------- | ------------ | ------------------------------------------------------------ |
-| `apiPath`  | `String`   | `/admin/api` | Change the API path                                          |
-| `routerFn` | `Function` | `() => {}`   | A function which takes `(req, res)` and returns a `routerId` |
-| `apps`     | `Object`   | `{}`         | An object with `routerId`s as key and `GraphQLApp` as value  |
+| Option     | Type       | Default      | Description                                                    |
+| ---------- | ---------- | ------------ | -------------------------------------------------------------- |
+| `apiPath`  | `String`   | `/admin/api` | The GraphQL API path                                           |
+| `routerFn` | `Function` | `() => {}`   | A function which takes `(req, res)` and returns a `routerId`   |
+| `apps`     | `Object`   | `{}`         | An object with `routerId`s as keys and `GraphQLApp`s as values |
