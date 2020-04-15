@@ -14,7 +14,7 @@ const adapterConfig = {};
 const keystone = new Keystone({
   name: PROJECT_NAME,
   adapter: new Adapter(adapterConfig),
-  onConnect: initialiseData,
+  onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
 });
 
 // Access control functions
