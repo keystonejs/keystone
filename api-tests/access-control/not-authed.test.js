@@ -1,6 +1,15 @@
 const { multiAdapterRunners, authedGraphqlRequest } = require('@keystonejs/test-utils');
 const { FAKE_ID, nameFn, listAccessVariations, setupKeystone } = require('./utils');
 
+const expectNoAccess = (data, errors, name) => {
+  expect(data[name]).toBe(null);
+  expect(errors).toHaveLength(1);
+  const error = errors[0];
+  expect(error.message).toEqual('You do not have access to this resource');
+  expect(error.path).toHaveLength(1);
+  expect(error.path[0]).toEqual(name);
+};
+
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     let keystone;
@@ -20,16 +29,9 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             .forEach(access => {
               test(`denied: ${JSON.stringify(access)}`, async () => {
                 const createMutationName = `create${nameFn[mode](access)}`;
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
-                  query: `mutation { ${createMutationName}(data: { name: "bar" }) { id } }`,
-                });
-                expect(data[createMutationName]).toBe(null);
-                expect(errors).toHaveLength(1);
-                const error = errors[0];
-                expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(createMutationName);
+                const query = `mutation { ${createMutationName}(data: { name: "bar" }) { id } }`;
+                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                expectNoAccess(data, errors, createMutationName);
               });
             });
         });
@@ -44,24 +46,15 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             .forEach(access => {
               test(`'all' denied: ${JSON.stringify(access)}`, async () => {
                 const allQueryName = `all${nameFn[mode](access)}s`;
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
-                  query: `query { ${allQueryName} { id } }`,
-                });
-                expect(data[allQueryName]).toBe(null);
-                expect(errors).toHaveLength(1);
-                const error = errors[0];
-                expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(allQueryName);
+                const query = `query { ${allQueryName} { id } }`;
+                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                expectNoAccess(data, errors, allQueryName);
               });
 
               test(`meta denied: ${JSON.stringify(access)}`, async () => {
                 const metaName = `_all${nameFn[mode](access)}sMeta`;
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
-                  query: `query { ${metaName} { count } }`,
-                });
+                const query = `query { ${metaName} { count } }`;
+                const { data, errors } = await authedGraphqlRequest({ keystone, query });
                 expect(data[metaName].count).toBe(null);
                 expect(errors).toHaveLength(1);
                 const error = errors[0];
@@ -73,16 +66,9 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
               test(`single denied: ${JSON.stringify(access)}`, async () => {
                 const singleQueryName = nameFn[mode](access);
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
-                  query: `query { ${singleQueryName}(where: { id: "abc123" }) { id } }`,
-                });
-                expect(data[singleQueryName]).toBe(null);
-                expect(errors).toHaveLength(1);
-                const error = errors[0];
-                expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(singleQueryName);
+                const query = `query { ${singleQueryName}(where: { id: "abc123" }) { id } }`;
+                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                expectNoAccess(data, errors, singleQueryName);
               });
             });
         });
@@ -97,16 +83,9 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             .forEach(access => {
               test(`denies: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
-                  query: `mutation { ${updateMutationName}(id: "${FAKE_ID}", data: { name: "bar" }) { id } }`,
-                });
-                expect(data[updateMutationName]).toBe(null);
-                expect(errors).toHaveLength(1);
-                const error = errors[0];
-                expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(updateMutationName);
+                const query = `mutation { ${updateMutationName}(id: "${FAKE_ID}", data: { name: "bar" }) { id } }`;
+                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                expectNoAccess(data, errors, updateMutationName);
               });
             });
         });
@@ -121,30 +100,16 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             .forEach(access => {
               test(`single denied: ${JSON.stringify(access)}`, async () => {
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
-                  query: `mutation { ${deleteMutationName}(id: "${FAKE_ID}") { id } }`,
-                });
-                expect(data[deleteMutationName]).toBe(null);
-                expect(errors).toHaveLength(1);
-                const error = errors[0];
-                expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(deleteMutationName);
+                const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID}") { id } }`;
+                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                expectNoAccess(data, errors, deleteMutationName);
               });
 
               test(`multi denied: ${JSON.stringify(access)}`, async () => {
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
-                  query: `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID}"]) { id } }`,
-                });
-                expect(data[multiDeleteMutationName]).toBe(null);
-                expect(errors).toHaveLength(1);
-                const error = errors[0];
-                expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(multiDeleteMutationName);
+                const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID}"]) { id } }`;
+                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                expectNoAccess(data, errors, multiDeleteMutationName);
               });
             });
         });

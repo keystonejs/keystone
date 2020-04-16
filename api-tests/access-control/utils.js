@@ -96,18 +96,10 @@ function setupKeystone(adapterName) {
           fields: { name: { type: Text } },
           access: {
             create: access.create,
-            read: () =>
-              access.read && {
-                name_starts_with: 'Hello', // arbitrarily restrict the data to a single item (see data.js)
-              },
-            update: () =>
-              access.update && {
-                name_starts_with: 'Hello', // arbitrarily restrict the data to a single item (see data.js)
-              },
-            delete: () =>
-              access.delete && {
-                name_starts_with: 'Hello', // arbitrarily restrict the data to a single item (see data.js)
-              },
+            // arbitrarily restrict the data to a single item (see data.js)
+            read: () => access.read && { name_starts_with: 'Hello' },
+            update: () => access.update && { name_starts_with: 'Hello' },
+            delete: () => access.delete && { name_starts_with: 'Hello' },
             auth: access.auth,
           },
         });
