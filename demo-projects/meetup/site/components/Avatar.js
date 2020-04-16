@@ -4,7 +4,15 @@ import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 
-export const Avatar = ({ alt, margin, size, shape, image, src, ...props }) => {
+export const Avatar = ({
+  alt,
+  margin = 'none',
+  size = 'medium',
+  shape = 'circle',
+  image,
+  src,
+  ...props
+}) => {
   const pixelSize = sizeMap[size];
   const offset = marginMap[margin];
   const styles = {
@@ -57,11 +65,6 @@ Avatar.propTypes = {
   shape: PropTypes.oneOf(['circle', 'rounded', 'square']).isRequired,
   size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge', 'xxlarge']).isRequired,
   src: PropTypes.string,
-};
-Avatar.defaultProps = {
-  margin: 'none',
-  shape: 'circle',
-  size: 'medium',
 };
 
 const textGutter = '1em';
@@ -124,7 +127,13 @@ Avatar.fragments = {
 // Normalize a common pattern
 // ==============================
 
-export const AvatarLayout = ({ as: Tag, children, margin, spacing, ...props }) => {
+export const AvatarLayout = ({
+  as: Tag = 'div',
+  children,
+  margin = 'none',
+  spacing = '1em',
+  ...props
+}) => {
   const [avatar, ...content] = Children.toArray(children);
   const offset = marginMap[margin];
 
@@ -140,9 +149,4 @@ AvatarLayout.propTypes = {
   as: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   margin: PropTypes.oneOf(['none', 'both', 'bottom', 'top']),
   spacing: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // 30, '1.2em'
-};
-AvatarLayout.defaultProps = {
-  as: 'div',
-  margin: 'none',
-  spacing: '1em',
 };

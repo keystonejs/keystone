@@ -20,7 +20,7 @@ Make sure the production deployment sets a long, unguessable value for [Keystone
 
 A randomly generated value is suitable (but keep it secret):
 
-```
+```shell
 openssl rand -hex 32
 ```
 
@@ -31,7 +31,7 @@ Sessions are stored inside the Keystone app by default, but in production it's r
 - You can restart your app for upgrades without breaking sessions
 - You can replicate your Keystone app for availability, while keeping sessions consistent
 
-This option [can be set](/packages/keystone/README.md) in the `Keystone` constructor.
+This option can be set using the [sessionStore](/packages/keystone/README.md#sessionstore) property in the `Keystone` constructor configuration object.
 
 ## Caching
 
@@ -47,13 +47,20 @@ Add [query limits](/docs/api/create-list.md#querylimits) and [validation](/docs/
 
 ## Using reverse proxies
 
-It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](<https://en.wikipedia.org/wiki/Slowloris_(computer_security)>).
+It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)). The express application variable [`trust proxy`](https://expressjs.com/en/guide/behind-proxies.html) must be set to support reverse proxying:
+```javascript title=index.js
+module.exports = {
+    configureExpress: app => {
+        app.set("trust proxy", true);
+    },
+};
+```
 
 ## Environment variables
 
 Don't forget to set the `NODE_ENV` environment variable to `production` when running. Many `npm` libraries check this to enable production mode.
 
-```
+```shell
 NODE_ENV=production keystone start
 ```
 
