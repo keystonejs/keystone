@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/react-hooks';
 
@@ -9,45 +9,14 @@ import { ListProvider } from '../../providers/List';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
-import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
 
-const HomePage = ({ lists, data, adminPath }) => (
-  <main>
-    <Container>
-      <HeaderInset>
-        <PageTitle>Dashboard</PageTitle>
-      </HeaderInset>
-      <ContainerQuery>
-        {({ width }) => {
-          let cellWidth = 3;
-          if (width < 1024) cellWidth = 4;
-          if (width < 768) cellWidth = 6;
-          if (width < 480) cellWidth = 12;
-          return (
-            <Grid gap={16}>
-              {lists.map(list => {
-                const { key, path } = list;
-                const meta = data && data[list.gqlNames.listQueryMetaName];
-                return (
-                  <ListProvider list={list} key={key}>
-                    <Cell width={cellWidth}>
-                      <Box to={`${adminPath}/${path}`} meta={meta} />
-                    </Cell>
-                  </ListProvider>
-                );
-              })}
-            </Grid>
-          );
-        }}
-      </ContainerQuery>
-    </Container>
-  </main>
-);
+import useResizeObserver from 'use-resize-observer';
+import throttle from 'lodash.throttle';
 
-const HomepageListProvider = () => {
+const Homepage = () => {
   const { getListByKey, listKeys, adminPath } = useAdminMeta();
 
   // TODO: A permission query to limit which lists are visible
@@ -57,6 +26,21 @@ const HomepageListProvider = () => {
   const [getLists, { data, error, called }] = useLazyQuery(query, {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
+  });
+
+  const [cellWidth, setCellWidth] = useState(3);
+
+  // Restrict size updates to ~15 FPS (60ms)
+  const throttledSetCellWidth = useMemo(() => throttle(setCellWidth, 60), []);
+
+  const { ref: measureElement } = useResizeObserver({
+    onResize: ({ width }) => {
+      // requestAnimationFrame works around a weird 'ResizeObserver loop limit exceeded' error.
+      // See https://stackoverflow.com/a/50387233 and https://github.com/WICG/ResizeObserver/issues/38.
+      window.requestAnimationFrame(() =>
+        throttledSetCellWidth(width < 480 ? 12 : width < 768 ? 6 : width < 1024 ? 4 : 3)
+      );
+    },
   });
 
   if (lists.length === 0) {
@@ -118,9 +102,28 @@ const HomepageListProvider = () => {
         // list component so we don't block rendering the lists immediately
         // to the user.
       }
-      <HomePage lists={allowedLists} data={data} adminPath={adminPath} />
+      <main>
+        <Container>
+          <HeaderInset>
+            <PageTitle>Dashboard</PageTitle>
+          </HeaderInset>
+          <Grid ref={measureElement} gap={16}>
+            {allowedLists.map(list => {
+              const { key, path } = list;
+              const meta = data && data[list.gqlNames.listQueryMetaName];
+              return (
+                <ListProvider list={list} key={key}>
+                  <Cell width={cellWidth}>
+                    <Box to={`${adminPath}/${path}`} meta={meta} />
+                  </Cell>
+                </ListProvider>
+              );
+            })}
+          </Grid>
+        </Container>
+      </main>
     </Fragment>
   );
 };
 
-export default HomepageListProvider;
+export default Homepage;
