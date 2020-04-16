@@ -11,6 +11,7 @@ import ApolloClient from './apolloClient';
 
 import ConnectivityListener from './components/ConnectivityListener';
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
+import { HooksProvider } from './providers/Hooks';
 
 import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
@@ -24,28 +25,30 @@ import SigninPage from './pages/Signin';
 */
 
 const Keystone = () => {
-  const { authStrategy, apiPath, signoutPath } = useAdminMeta();
+  const { authStrategy, apiPath, signoutPath, hooks } = useAdminMeta();
 
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <ToastProvider>
-        <ConnectivityListener />
-        <Global styles={globalStyles} />
+    <HooksProvider hooks={hooks}>
+      <ApolloProvider client={apolloClient}>
+        <ToastProvider>
+          <ConnectivityListener />
+          <Global styles={globalStyles} />
 
-        {authStrategy ? (
-          <BrowserRouter>
-            <Switch>
-              <Route exact path={signoutPath} render={() => <SignoutPage />} />
-              <Route render={() => <SigninPage />} />
-            </Switch>
-          </BrowserRouter>
-        ) : (
-          <InvalidRoutePage />
-        )}
-      </ToastProvider>
-    </ApolloProvider>
+          {authStrategy ? (
+            <BrowserRouter>
+              <Switch>
+                <Route exact path={signoutPath} render={() => <SignoutPage />} />
+                <Route render={() => <SigninPage />} />
+              </Switch>
+            </BrowserRouter>
+          ) : (
+            <InvalidRoutePage />
+          )}
+        </ToastProvider>
+      </ApolloProvider>
+    </HooksProvider>
   );
 };
 
