@@ -20,6 +20,7 @@ class AdminUIApp {
     isAccessAllowed = () => true,
     hooks = path.resolve('./admin-ui/'),
     schemaName = 'public',
+    adminMeta = {},
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -38,6 +39,7 @@ class AdminUIApp {
     this.hooks = hooks;
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
+    this._adminMeta = adminMeta;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -56,6 +58,7 @@ class AdminUIApp {
             authStrategy: this.authStrategy.getAdminMeta(),
           }
         : {}),
+      ...this._adminMeta,
     };
   }
 
