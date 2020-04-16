@@ -1,16 +1,25 @@
 const { multiAdapterRunners, graphqlRequest } = require('@keystonejs/test-utils');
+const { arrayToObject } = require('@keystonejs/utils');
 const {
   setupKeystone,
   getStaticListName,
   getImperativeListName,
   getDeclarativeListName,
   listAccessVariations,
+  fieldMatrix,
+  getFieldName,
 } = require('./utils');
 
 const introspectionQuery = `{
   __schema {
     types {
       name
+      fields {
+        name
+      }
+      inputFields {
+        name
+      }
     }
     queryType {
       fields {
@@ -25,12 +34,35 @@ const introspectionQuery = `{
   }
 }`;
 
+const staticList = getStaticListName({ create: true, read: true, update: true, delete: true });
+const imperativeList = getImperativeListName({
+  create: true,
+  read: true,
+  update: true,
+  delete: true,
+});
+
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone;
+    let keystone, queries, mutations, types, fieldTypes;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
+
+      const { data, errors } = await graphqlRequest({
+        keystone,
+        query: introspectionQuery,
+      });
+      expect(errors).toBe(undefined);
+      queries = data.__schema.queryType.fields.map(({ name }) => name);
+      mutations = data.__schema.mutationType.fields.map(({ name }) => name);
+      types = data.__schema.types.map(({ name }) => name);
+      fieldTypes = arrayToObject(data.__schema.types, 'name', type =>
+        Object.assign({}, type, {
+          fields: arrayToObject(type.fields || [], 'name'),
+          inputFields: arrayToObject(type.inputFields || [], 'name'),
+        })
+      );
     });
     afterAll(async () => {
       await after(keystone);
@@ -40,15 +72,6 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
       listAccessVariations.forEach(access => {
         test(JSON.stringify(access), async () => {
           const name = getStaticListName(access);
-          const { data, errors } = await graphqlRequest({
-            keystone,
-            query: introspectionQuery,
-          });
-          expect(errors).toBe(undefined);
-          const queries = data.__schema.queryType.fields.map(({ name }) => name);
-          const mutations = data.__schema.mutationType.fields.map(({ name }) => name);
-          const types = data.__schema.types.map(({ name }) => name);
-
           // The type is used in all the queries and mutations as a return type
           if (access.create || access.read || access.update || access.delete || access.auth) {
             expect(types).toContain(`${name}`);
@@ -92,21 +115,72 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           }
         });
       });
+
+      fieldMatrix.forEach(access => {
+        test(`${JSON.stringify(access)} on ${staticList}`, () => {
+          const name = getFieldName(access);
+
+          expect(fieldTypes[staticList].fields).not.toBe(null);
+
+          const fields = fieldTypes[staticList].fields;
+          if (access.read) {
+            expect(fields[name]).not.toBe(undefined);
+          } else {
+            expect(fields[name]).toBe(undefined);
+          }
+
+          // Filter types are only used when reading
+          expect(fieldTypes[`${staticList}WhereInput`].inputFields).not.toBe(undefined);
+          if (access.read) {
+            expect(fieldTypes[`${staticList}WhereInput`].inputFields[name]).not.toBe(undefined);
+          } else {
+            expect(fieldTypes[`${staticList}WhereInput`].inputFields[name]).toBe(undefined);
+          }
+
+          // Create inputs
+          expect(fieldTypes[`${staticList}CreateInput`].inputFields).not.toBe(undefined);
+          if (access.create) {
+            expect(fieldTypes[`${staticList}CreateInput`].inputFields[name]).not.toBe(undefined);
+          } else {
+            expect(fieldTypes[`${staticList}CreateInput`].inputFields[name]).toBe(undefined);
+          }
+
+          // Update inputs
+          expect(fieldTypes[`${staticList}UpdateInput`].inputFields).not.toBe(undefined);
+          if (access.update) {
+            expect(fieldTypes[`${staticList}UpdateInput`].inputFields[name]).not.toBe(undefined);
+          } else {
+            expect(fieldTypes[`${staticList}UpdateInput`].inputFields[name]).toBe(undefined);
+          }
+        });
+
+        test(`${JSON.stringify(access)} on ${imperativeList}`, () => {
+          const name = getFieldName(access);
+
+          expect(fieldTypes[imperativeList].fields).not.toBe(null);
+
+          const fields = fieldTypes[imperativeList].fields;
+          expect(fields[name]).not.toBe(undefined);
+
+          // Filter types are only used when reading
+          expect(fieldTypes[`${imperativeList}WhereInput`].inputFields).not.toBe(undefined);
+          expect(fieldTypes[`${imperativeList}WhereInput`].inputFields[name]).not.toBe(undefined);
+
+          // Create inputs
+          expect(fieldTypes[`${imperativeList}CreateInput`].inputFields).not.toBe(undefined);
+          expect(fieldTypes[`${imperativeList}CreateInput`].inputFields[name]).not.toBe(undefined);
+
+          // Update inputs
+          expect(fieldTypes[`${imperativeList}UpdateInput`].inputFields).not.toBe(undefined);
+          expect(fieldTypes[`${imperativeList}UpdateInput`].inputFields[name]).not.toBe(undefined);
+        });
+      });
     });
 
     describe('imperative', () => {
       listAccessVariations.forEach(access => {
         test(JSON.stringify(access), async () => {
           const name = getImperativeListName(access);
-          const { data, errors } = await graphqlRequest({
-            keystone,
-            query: introspectionQuery,
-          });
-          expect(errors).toBe(undefined);
-          const queries = data.__schema.queryType.fields.map(({ name }) => name);
-          const mutations = data.__schema.mutationType.fields.map(({ name }) => name);
-          const types = data.__schema.types.map(({ name }) => name);
-
           // All types, etc, are included when imperative no matter the config (because
           // it can't be resolved until runtime)
           expect(types).toContain(`${name}`);
@@ -128,15 +202,6 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
       listAccessVariations.forEach(access => {
         test(JSON.stringify(access), async () => {
           const name = getDeclarativeListName(access);
-          const { data, errors } = await graphqlRequest({
-            keystone,
-            query: introspectionQuery,
-          });
-          expect(errors).toBe(undefined);
-          const queries = data.__schema.queryType.fields.map(({ name }) => name);
-          const mutations = data.__schema.mutationType.fields.map(({ name }) => name);
-          const types = data.__schema.types.map(({ name }) => name);
-
           // All types, etc, are included when declarative no matter the config (because
           // it can't be resolved until runtime)
           expect(types).toContain(`${name}`);

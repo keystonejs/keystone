@@ -1,6 +1,7 @@
 const cuid = require('cuid');
 const { setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
+const { objMerge } = require('@keystonejs/utils');
 
 const FAKE_ID = { mongoose: '5b3eabd9e9f2e3e4866742ea', knex: 137 };
 const FAKE_ID_2 = { mongoose: '5b3eabd9e9f2e3e4866742eb', knex: 138 };
@@ -68,8 +69,36 @@ const listAccessVariations = [
   { create: true, read: true, update: true, delete: true, auth: false },
 ];
 
+const fieldMatrix = [
+  { create: false, read: false, update: false },
+  { create: true, read: false, update: false },
+  { create: false, read: true, update: false },
+  { create: true, read: true, update: false },
+  { create: false, read: false, update: true },
+  { create: true, read: false, update: true },
+  { create: false, read: true, update: true },
+  { create: true, read: true, update: true },
+];
+const getFieldName = access => getPrefix(access);
+
 const nameFn = { imperative: getImperativeListName, declarative: getDeclarativeListName };
 
+const createFieldStatic = fieldAccess => ({
+  [getFieldName(fieldAccess)]: {
+    type: Text,
+    access: fieldAccess,
+  },
+});
+const createFieldImperative = fieldAccess => ({
+  [getFieldName(fieldAccess)]: {
+    type: Text,
+    access: {
+      create: () => fieldAccess.create,
+      read: () => fieldAccess.read,
+      update: () => fieldAccess.update,
+    },
+  },
+});
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
@@ -79,11 +108,17 @@ function setupKeystone(adapterName) {
 
       listAccessVariations.forEach(access => {
         keystone.createList(getStaticListName(access), {
-          fields: { name: { type: Text } },
+          fields: {
+            name: { type: Text },
+            ...objMerge(fieldMatrix.map(variation => createFieldStatic(variation))),
+          },
           access,
         });
         keystone.createList(getImperativeListName(access), {
-          fields: { name: { type: Text } },
+          fields: {
+            name: { type: Text },
+            ...objMerge(fieldMatrix.map(variation => createFieldImperative(variation))),
+          },
           access: {
             create: () => access.create,
             read: () => access.read,
@@ -114,6 +149,8 @@ module.exports = {
   getImperativeListName,
   getDeclarativeListName,
   listAccessVariations,
+  fieldMatrix,
   nameFn,
   setupKeystone,
+  getFieldName,
 };

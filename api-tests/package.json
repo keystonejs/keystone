@@ -16,6 +16,7 @@
     "@keystonejs/app-graphql": "*",
     "@keystonejs/keystone": "*",
     "@keystonejs/session": "*",
+    "@keystonejs/utils": "*",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "globby": "^11.0.0",
