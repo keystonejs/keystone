@@ -6,7 +6,16 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 
-const { Event, Talk, User, Rsvp, Organiser, Sponsor, ForgottenPasswordToken } = require('./schema');
+const {
+  Event,
+  Talk,
+  User,
+  Rsvp,
+  Organiser,
+  Sponsor,
+  ForgottenPasswordToken,
+  customSchema,
+} = require('./schema');
 
 const MEETUP = require('./meetupConfig');
 const initialiseData = require('./initialData');
@@ -24,6 +33,8 @@ keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
 keystone.createList('Sponsor', Sponsor);
 keystone.createList('ForgottenPasswordToken', ForgottenPasswordToken);
+
+keystone.extendGraphQLSchema(customSchema);
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',

@@ -36,7 +36,7 @@ Hooks are available for these core operations:
 - `delete`
 
 These operations are reused used for both "single" and "many" modes.
-E.g. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
+E.g. the `deleteUser` (singular) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
 Hooks for these operations have different signatures due to the nature of the operations being performed.
 See the [Hook API docs](/docs/api/hooks.md) for specifics.
