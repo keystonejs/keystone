@@ -1,7 +1,10 @@
 ---
 '@keystonejs/fields': patch
-'@keystonejs/keystone': patch
+'@keystonejs/app-admin-ui': patch
 ---
 
-* Modified Field and adminMeta to make custom field config and custom list adminConfig values available to `admin-ui`.
-* Added `publicConfig` option in Keystone constructor which is also made available to `admin-ui` through `adminMeta`
+* Made all values in `adminConfig` list options available to `admin-ui` as part of list's `adminMeta`.
+* Added `adminConfig` option to all Fields which are made available to field's `adminMeta` in `admin-ui`.
+* Added `adminMeta` option in `AdminUIApp` constructor which is also made available to `adminMeta` of `admin-ui`.
+
+All the improvements are useful in `admin-ui` customizations like UI Hooks or custom Field Views.
