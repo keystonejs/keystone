@@ -6,13 +6,10 @@ title: Unsplash
 
 # Unsplash
 
-> The internet’s source of freely useable images.
-> Powered by creators everywhere.
-
-- _[Unsplash.com](https://unsplash.com)_
-
 The Unsplash Field Type enables storing meta data from the Unsplash API and
 generating URLs to dynamically transformed images.
+
+> **Note:** Visit the [unsplash developer docs](https://unsplash.com/developers) for more information.
 
 ## Usage
 
@@ -20,7 +17,7 @@ generating URLs to dynamically transformed images.
 const { Keystone } = require('@keystonejs/keystone');
 const { Unsplash } = require('@keystonejs/fields');
 
-const keystone = new Keystone(/* ... */);
+const keystone = new Keystone({...});
 
 keystone.createList('Post', {
   fields: {
@@ -33,7 +30,7 @@ keystone.createList('Post', {
 });
 ```
 
-### Config
+## Config
 
 | Option       | Type      | Default | Description                      |
 | ------------ | --------- | ------- | -------------------------------- |

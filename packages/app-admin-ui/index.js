@@ -20,6 +20,7 @@ class AdminUIApp {
     isAccessAllowed = () => true,
     hooks = path.resolve('./admin-ui/'),
     schemaName = 'public',
+    adminMeta = {},
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -38,6 +39,7 @@ class AdminUIApp {
     this.hooks = hooks;
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
+    this._adminMeta = adminMeta;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -56,6 +58,7 @@ class AdminUIApp {
             authStrategy: this.authStrategy.getAdminMeta(),
           }
         : {}),
+      ...this._adminMeta,
     };
   }
 
@@ -66,9 +69,7 @@ class AdminUIApp {
 
     return (
       req.user &&
-      this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } }) &&
-      req.session.audiences &&
-      req.session.audiences.includes('admin')
+      this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } })
     );
   }
 
@@ -80,8 +81,6 @@ class AdminUIApp {
     // Short-circuit GET requests when the user already signed in (avoids
     // downloading UI bundle, doing a client side redirect, etc)
     app.get(signinPath, (req, res, next) =>
-      // This session is currently authenticated as part of the 'admin'
-      // audience.
       this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
     );
 

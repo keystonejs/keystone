@@ -15,3 +15,5 @@ export { default as UpdateManyItemsModal } from '../client/components/UpdateMany
 export { default as KeystoneLogo } from '../client/components/KeystoneLogo';
 export { Popout } from '../client/components/Popout';
 export { useAdminMeta } from '../client/providers/AdminMeta';
+export { default as AddNewItem } from '../client/pages/Item/AddNewItem';
+export { default as ItemId } from '../client/pages/Item/ItemId';

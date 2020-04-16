@@ -1,11 +1,12 @@
 <!--[meta]
 section: api
 subSection: apps
-title: GraphQL API
-draft: true
+title: GraphQL Schema Router
 [meta]-->
 
 # GraphQL Schema Router
+
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/app-schema-router)
 
 A KeystoneJS App that route requests to different GraphQL schemas.
 
@@ -23,7 +24,7 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
 module.exports = {
-  new Keystone(),
+  keystone: new Keystone(),
   apps: [
     new GraphQLAppPlayground({ apiPath })
     new SchemaRouterApp({
@@ -41,8 +42,8 @@ module.exports = {
 
 ## Config
 
-| Option     | Type       | Default      | Description                                                  |
-| ---------- | ---------- | ------------ | ------------------------------------------------------------ |
-| `apiPath`  | `String`   | `/admin/api` | Change the API path                                          |
-| `routerFn` | `Function` | `() => {}`   | A function which takes `(req, res)` and returns a `routerId` |
-| `apps`     | `Object`   | `{}`         | An object with `routerId`s as key and `GraphQLApp` as value  |
+| Option     | Type       | Default      | Description                                                    |
+| ---------- | ---------- | ------------ | -------------------------------------------------------------- |
+| `apiPath`  | `String`   | `/admin/api` | The GraphQL API path                                           |
+| `routerFn` | `Function` | `() => {}`   | A function which takes `(req, res)` and returns a `routerId`   |
+| `apps`     | `Object`   | `{}`         | An object with `routerId`s as keys and `GraphQLApp`s as values |

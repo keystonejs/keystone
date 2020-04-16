@@ -43,29 +43,88 @@ const { flatten, defaultObj } = require('@keystonejs/utils');
   }
  */
 
+const lookupStage = ({ from, as, targetKey, foreignKey, extraPipeline = [] }) => ({
+  $lookup: {
+    from,
+    as,
+    let: { tmpVar: `$${targetKey}` },
+    pipeline: [{ $match: { $expr: { $eq: [`$${foreignKey}`, '$$tmpVar'] } } }, ...extraPipeline],
+  },
+});
+
 function relationshipPipeline(relationship) {
-  const { field, many, from, uniqueField } = relationship.relationshipInfo;
-  return [
-    {
-      $lookup: {
+  const { from, thisTable, path, rel, filterType, uniqueField } = relationship.relationshipInfo;
+  const { cardinality, columnNames } = rel;
+  const extraPipeline = pipelineBuilder(relationship);
+  const extraField = `${uniqueField}_all`;
+  if (cardinality === '1:N' || cardinality === 'N:1') {
+    // Perform a single FK join
+    let targetKey, foreignKey;
+    // FIXME: I feel like the logic here could use some revie
+    if (filterType !== 'only' && rel.right && rel.left.listKey === rel.right.listKey) {
+      targetKey = '_id';
+      foreignKey = rel.columnName;
+    } else {
+      targetKey = rel.tableName === thisTable ? rel.columnName : '_id';
+      foreignKey = rel.tableName === thisTable ? '_id' : rel.columnName;
+    }
+    return [
+      // Join against all the items which match the relationship filter condition
+      lookupStage({ from, as: uniqueField, targetKey, foreignKey, extraPipeline }),
+      // Match against *all* the items. Required for the _every condition.
+      filterType === 'every' && lookupStage({ from, as: extraField, targetKey, foreignKey }),
+    ];
+  } else {
+    // Perform a pair of joins through the join table
+    const { farCollection } = relationship.relationshipInfo;
+    const columnKey = `${thisTable}.${path}`;
+    return [
+      // Join against all the items which match the relationship filter condition
+      lookupStage({
         from,
         as: uniqueField,
-        // We use `ifNull` here to handle the case unique to mongo where a record may be
-        // entirely missing a field (or have the value set to `null`).
-        let: { tmpVar: many ? { $ifNull: [`$${field}`, []] } : `$${field}` },
-        pipeline: [
-          // The ID / list of IDs we're joining by. Do this very first so it limits any work
-          // required in subsequent steps / $and's.
-          { $match: { $expr: { [many ? '$in' : '$eq']: ['$_id', `$$tmpVar`] } } },
-          ...pipelineBuilder(relationship),
+        targetKey: '_id',
+        foreignKey: columnNames[columnKey].near,
+        extraPipeline: [
+          lookupStage({
+            from: farCollection,
+            as: `${uniqueField}_0`,
+            targetKey: columnNames[columnKey].far,
+            foreignKey: '_id',
+            extraPipeline,
+          }),
+          { $match: { $expr: { $gt: [{ $size: `$${uniqueField}_0` }, 0] } } },
         ],
-      },
-    },
-  ];
+      }),
+      // Match against *all* the items. Required for the _every condition.
+      filterType === 'every' &&
+        lookupStage({
+          from,
+          as: extraField,
+          targetKey: '_id',
+          foreignKey: columnNames[columnKey].near,
+          extraPipeline: [
+            lookupStage({
+              from: farCollection,
+              as: `${uniqueField}_0`,
+              targetKey: columnNames[columnKey].far,
+              foreignKey: '_id',
+            }),
+          ],
+        }),
+    ];
+  }
 }
 
 function pipelineBuilder({ relationships, matchTerm, excludeFields, postJoinPipeline }) {
-  excludeFields.push(...relationships.map(({ relationshipInfo }) => relationshipInfo.uniqueField));
+  excludeFields.push(
+    ...flatten(
+      relationships.map(({ relationshipInfo: { uniqueField, filterType } }) => [
+        uniqueField,
+        filterType === 'every' && `${uniqueField}_all`,
+      ])
+    ).filter(i => i)
+  );
   return [
     ...flatten(relationships.map(relationshipPipeline)),
     matchTerm && { $match: matchTerm },

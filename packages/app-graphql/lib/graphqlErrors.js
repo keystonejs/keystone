@@ -2,7 +2,7 @@ const { createError } = require('apollo-errors');
 
 module.exports = {
   NestedError: createError('NestedError', {
-    message: 'Nested errors occured',
+    message: 'Nested errors occurred',
     options: {
       showPath: true,
     },

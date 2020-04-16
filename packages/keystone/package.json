@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/keystone",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "5.6.0",
+  "version": "8.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -11,11 +11,12 @@
     "keystone": "bin/cli.js"
   },
   "dependencies": {
-    "@keystonejs/access-control": "^5.1.0",
-    "@keystonejs/fields": "^6.3.1",
-    "@keystonejs/logger": "^5.1.0",
-    "@keystonejs/session": "^5.1.0",
-    "@keystonejs/utils": "^5.2.1",
+    "@keystonejs/access-control": "^5.2.0",
+    "@keystonejs/app-version": "^1.0.1",
+    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/logger": "^5.1.1",
+    "@keystonejs/session": "^6.0.1",
+    "@keystonejs/utils": "^5.4.0",
     "apollo-errors": "^1.9.0",
     "arg": "^4.1.1",
     "chalk": "^2.4.2",
@@ -28,7 +29,7 @@
     "falsey": "^1.0.0",
     "fast-memoize": "^2.4.0",
     "fs-extra": "^7.0.0",
-    "globby": "^9.1.0",
+    "globby": "^11.0.0",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.1",
     "graphql-type-json": "^0.3.1",
@@ -41,5 +42,6 @@
   "devDependencies": {
     "p-is-promise": "^3.0.0",
     "tmp": "^0.1.0"
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
 }

@@ -6,7 +6,7 @@ import { jsx } from '@emotion/core';
 // BASE
 // ------------------------------
 
-const Svg = ({ color, size, stroke, ...props }) => (
+const Svg = ({ color = 'currentColor', size = 24, stroke = 2, ...props }) => (
   <svg
     fill="none"
     height={size}
@@ -24,11 +24,6 @@ Svg.propTypes = {
   color: PropTypes.string,
   size: PropTypes.number,
   stroke: PropTypes.number,
-};
-Svg.defaultProps = {
-  color: 'currentColor',
-  size: 24,
-  stroke: 2,
 };
 
 // Icons

@@ -9,7 +9,7 @@ import { NavIcon, NavGroupIcons } from '@arch-ui/navbar';
 import { A11yText } from '@arch-ui/typography';
 import { useAdminMeta } from '../../providers/AdminMeta';
 
-const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
+const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone';
 
 export function NavIcons() {
   let { graphiqlPath, signoutPath, authStrategy } = useAdminMeta();

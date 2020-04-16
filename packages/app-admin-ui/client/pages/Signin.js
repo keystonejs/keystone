@@ -10,12 +10,12 @@ import { PageTitle } from '@arch-ui/typography';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
+import { upcase } from '@keystonejs/utils';
+
 import KeystoneLogo from '../components/KeystoneLogo';
 
 import { useAdminMeta } from '../providers/AdminMeta';
 import { useUIHooks } from '../providers/Hooks';
-
-const upcase = str => str[0].toUpperCase() + str.substring(1);
 
 const Container = styled.div({
   alignItems: 'center',

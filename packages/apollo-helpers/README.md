@@ -1,23 +1,27 @@
 <!--[meta]
 section: api
 subSection: utilities
-title: Apollo Helpers
+title: Apollo helpers
 [meta]-->
 
-# Apollo Helpers
+# Apollo helpers
+
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/apollo-helpers)
 
 A set of functions and components to ease using
-[Apollo](https://www.apollographql.com/docs/react/) with KeystoneJS.
+[Apollo](https://www.apollographql.com/docs/react/) with Keystone.
 
 ## Installation
 
-```bash
+```shell
 yarn add @keystonejs/apollo-helpers
 ```
 
 ## Usage
 
 ### Minimal example
+
+<!-- prettier-ignore-start -->
 
 ```javascript
 import gql from 'graphql-tag';
@@ -27,13 +31,10 @@ import { HttpLink } from 'apollo-link-http';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
-import {
-  Query,
-  KeystoneProvider,
-} from '@keystonejs/apollo-helpers';
+import { Query, KeystoneProvider } from '@keystonejs/apollo-helpers';
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: /* ... */ }),
+  link: new HttpLink({ uri: '...' }),
   cache: new InMemoryCache(),
 });
 
@@ -51,6 +52,8 @@ const App = () => (
 
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
+
+<!-- prettier-ignore-end -->
 
 ### Complete example
 
@@ -160,9 +163,9 @@ type Mutation {
 
 When we perform the following query using Apollo's `<Query>` component:
 
-```javascript
+```jsx
 <Query
-  query=`
+  query={`
     query {
       allEvents {
         id
@@ -173,13 +176,13 @@ When we perform the following query using Apollo's `<Query>` component:
         }
       }
     }
-  `
+  `}
 />
 ```
 
 Apollo will cache the result of `allEvents`/`allGroups`, plus the individual events, which looks roughly like:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123"],
   "allGroups": ["xyz789"],
@@ -190,21 +193,21 @@ Apollo will cache the result of `allEvents`/`allGroups`, plus the individual eve
 
 Now, when we do a mutation using Apollo's `<Mutation>` component:
 
-```javascript
+```jsx
 <Mutation
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
 We've created a new `Event` with data `{ id: "def456" }`, which Apollo will also cache:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123"],
   "allGroups": ["xyz789"],
@@ -230,13 +233,13 @@ What does that mean? Let's continue using the above example but with this module
 ```javascript
 <Mutation
   invalidateTypes="Event"
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
@@ -244,7 +247,7 @@ What does that mean? Let's continue using the above example but with this module
 
 Will immediately result in the following cache:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allGroups": ["xyz789"],
   "Event:abc123": { "id": "abc123" },
@@ -257,7 +260,7 @@ Will immediately result in the following cache:
 
 Which, when using this module's `<Query>` component, will re-load the now removed data from the server, resulting in a final cache of:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456"],
   "allGroups": ["xyz789"],
@@ -269,13 +272,13 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 
 Now everything's up to date and we didn't have to use `writeQuery` or couple any of our components.
 
-### But why is this coupled to KeystoneJS?
+### Why is this coupled to Keystone?
 
 Let's continue the example above with another query:
 
 ```javascript
 <Query
-  query=`
+  query={`
     query {
       allEvents {
         id
@@ -284,13 +287,13 @@ Let's continue the example above with another query:
         count
       }
     }
-  `
+  `}
 />
 ```
 
 Would result in the cache:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456"],
   "_allEventsMeta": { "count": 2 },
@@ -305,19 +308,19 @@ Then we add another Event (using an Apollo `<Mutation>`):
 
 ```javascript
 <Mutation
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
 Now the cache is:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456"],
   "_allEventsMeta": { "count": 2 },
@@ -331,9 +334,9 @@ Now the cache is:
 
 Not only are `allEvents` & `Group:xyz789` out of date, but so is `_allEventsMeta` (it should be `{ count: 3 }`).
 
-If we were to use this module's `<Mutation>` component, _but decoupled from KeystoneJS_, the cache at this point would be:
+If we were to use this module's `<Mutation>` component, _but decoupled from Keystone_, the cache at this point would be:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "_allEventsMeta": { "count": 2 },
   "allGroups": ["xyz789"],
@@ -348,28 +351,28 @@ If we were to use this module's `<Mutation>` component, _but decoupled from Keys
 
 This example highlights the limits of other approaches (see below for possible workarounds / other solutions to this).
 
-In swoops KeystoneJS to the rescue! 🦅
+In swoops Keystone to the rescue! 🦅
 
-We _do_ know the related type information within KeystoneJS! It's a walled garden which we control, so can extract further information such as _`_allEventsMeta` is a query that relates to `Event`s_.
+We _do_ know the related type information within Keystone! It's a walled garden which we control, so can extract further information such as _`_allEventsMeta` is a query that relates to `Event`s_.
 
 So, using this module's `<Mutation>` component:
 
 ```javascript
 <Mutation
   invalidateTypes="Event"
-  mutation=`
+  mutation={`
     mutation {
       addEvent(group: "xyz789") {
         id
       }
     }
-  `
+  `}
 />
 ```
 
 Will result in an immediate cache of:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allGroups": ["xyz789"],
   "Event:abc123": { "id": "abc123" },
@@ -383,7 +386,7 @@ Will result in an immediate cache of:
 
 Which, when using this module's `<Query>` component, will re-load the now removed data from the server, resulting in a final cache of:
 
-```json
+```json allowCopy=false showLanguage=false
 {
   "allEvents": ["abc123", "def456", "hij098"],
   "_allEventsMeta": { "count": 3 },
@@ -395,7 +398,7 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 }
 ```
 
-### Can we decouple from KeystoneJS?
+### Can we decouple from Keystone?
 
 If we only cared about queries that explicitly relate to a given type, then we can scan the GraphQL AST / Introspection query to get all the correct queries. This will miss queries such as `_allEventsMeta`.
 
@@ -423,4 +426,4 @@ type Query {
 }
 ```
 
-If we went with this method, we could automatically inject that directive into KeystoneJS generated GraphQL schemas.
+If we went with this method, we could automatically inject that directive into Keystone generated GraphQL schemas.

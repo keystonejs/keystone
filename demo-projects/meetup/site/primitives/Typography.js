@@ -19,7 +19,7 @@ const baseStyles = {
   margin: 0,
 };
 
-export const Headline = ({ as: Tag, hasSeparator, size, ...props }) => {
+export const Headline = ({ as: Tag = 'h2', hasSeparator, size, ...props }) => {
   const fontSize = SIZE_MAP[size - 1] ? SIZE_MAP[size - 1] : SIZE_MAP[1];
   const fontStyle = mq({ fontSize: [fontSize / 1.5, fontSize] });
   const separatorStyles = hasSeparator ? getSeparatorStyles(fontSize / 2) : null;
@@ -38,9 +38,6 @@ Headline.propTypes = {
   as: PropTypes.string.isRequired,
   hasSeparator: PropTypes.bool,
   size: PropTypes.number.isRequired,
-};
-Headline.defaultProps = {
-  as: 'h2',
 };
 
 const getSeparatorStyles = gutter => ({

@@ -9,6 +9,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
     title: 'KeystoneJS',
     template: 'index.html',
     chunksSortMode: 'none',
+    scriptLoading: 'defer',
   });
   const environmentPlugin = new webpack.DefinePlugin({
     ENABLE_DEV_FEATURES: enableDevFeatures,

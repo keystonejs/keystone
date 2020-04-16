@@ -1,5 +1,45 @@
 # @arch-ui/day-picker
 
+## 0.0.23
+
+### Patch Changes
+
+- [`390a7fc3`](https://github.com/keystonejs/keystone/commit/390a7fc3b20169c628dd7aa2e2a4d72b678a345f) [#2424](https://github.com/keystonejs/keystone/pull/2424) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved TextDayPicker interface and fixed a bug with the CalendarDay field where the set date could change when the field lost focus.
+
+## 0.0.22
+
+### Patch Changes
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad)]:
+  - @arch-ui/typography@0.0.16
+
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies [[`0de5f232`](https://github.com/keystonejs/keystone/commit/0de5f2321ef8f9fe6dd247c3201372a4156e61e9)]:
+  - @arch-ui/theme@0.0.10
+  - @arch-ui/input@0.1.7
+  - @arch-ui/select@0.1.6
+  - @arch-ui/typography@0.0.15
+
+## 0.0.20
+
+### Patch Changes
+
+- [`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded React to 16.13.0.
+
+* [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20) [#2487](https://github.com/keystonejs/keystone/pull/2487) Thanks [@Noviny](https://github.com/Noviny)! - Small changes to package.json (mostly adding a repository field)
+
+* Updated dependencies [[`6b353eff`](https://github.com/keystonejs/keystone/commit/6b353effc8b617137a3978b2c845e01403889722), [`5ba330b8`](https://github.com/keystonejs/keystone/commit/5ba330b8b2609ea0033a636daf9a215a5a192c20), [`9d11d7ce`](https://github.com/keystonejs/keystone/commit/9d11d7cea6f31eeceb7326d86460a3f0e25ad01d)]:
+  - @arch-ui/icons@0.0.10
+  - @arch-ui/input@0.1.6
+  - @arch-ui/select@0.1.5
+  - @arch-ui/typography@0.0.14
+  - @arch-ui/theme@0.0.9
+
 ## 0.0.19
 
 ### Patch Changes
@@ -74,33 +114,33 @@
 
 ## 0.0.13
 
-- Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+- Updated dependencies [464d7579](https://github.com/keystonejs/keystone/commit/464d7579):
   - @arch-ui/select@0.1.0
 
 ## 0.0.12
 
-- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone/commit/7689753c):
   - @arch-ui/input@0.1.0
 
 ## 0.0.11
 
-- Updated dependencies [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9):
+- Updated dependencies [957a40d9](https://github.com/keystonejs/keystone/commit/957a40d9):
   - @arch-ui/select@0.0.8
 
 ## 0.0.10
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
 
 ## 0.0.9
 
-- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
   - @arch-ui/input@0.0.8
 
 ## 0.0.8
 
-- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
   - @arch-ui/select@0.0.7
   - @arch-ui/icons@0.0.5
   - @arch-ui/input@0.0.7
@@ -111,11 +151,11 @@
 
 ### Patch Changes
 
-- [71766bd8](https://github.com/keystonejs/keystone-5/commit/71766bd8):
+- [71766bd8](https://github.com/keystonejs/keystone/commit/71766bd8):
 
   Fix "Invalid Date" message when creating new items
 
-* Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+* Updated dependencies [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
   - @arch-ui/input@0.0.6
   - @arch-ui/select@0.0.6
   - @arch-ui/typography@0.0.6
@@ -124,17 +164,17 @@
 
 ### Patch Changes
 
-- [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+- [81b481d0](https://github.com/keystonejs/keystone/commit/81b481d0):
 
   - Added support for isMultiline to Text field type
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 0.0.5
 
-- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
   - @arch-ui/select@0.0.4
   - @arch-ui/input@0.0.4
   - @arch-ui/theme@0.0.3
@@ -142,33 +182,33 @@
 
 ## 0.0.4
 
-- [patch][39067f44](https://github.com/keystonejs/keystone-5/commit/39067f44):
+- [patch][39067f44](https://github.com/keystonejs/keystone/commit/39067f44):
 
   - Add text date and time pickers
 
 ## 0.0.3
 
-- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+- [patch][11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
 
   - Update minor-level dependencies
 
-- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+- [patch][3a775092](https://github.com/keystonejs/keystone/commit/3a775092):
 
   - Update dependencies
 
-- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+- [patch][619b17c2](https://github.com/keystonejs/keystone/commit/619b17c2):
 
   - Reformat code using latest version of Prettier (1.16.4)
 
-- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+- [patch][d9a1be91](https://github.com/keystonejs/keystone/commit/d9a1be91):
 
   - Update dependencies
 
-- [patch][96015257](https://github.com/keystonejs/keystone-5/commit/96015257):
+- [patch][96015257](https://github.com/keystonejs/keystone/commit/96015257):
 
   - Update dependencies
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 
