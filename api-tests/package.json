@@ -16,7 +16,6 @@
     "@keystonejs/app-graphql": "*",
     "@keystonejs/keystone": "*",
     "@keystonejs/session": "*",
-    "@keystonejs/utils": "*",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "globby": "^11.0.0",
@@ -27,6 +26,7 @@
     "@keystonejs/auth-password": "^5.1.1",
     "@keystonejs/fields": "^9.0.1",
     "@keystonejs/test-utils": "^6.0.3",
+    "@keystonejs/utils": "^5.4.0",
     "cuid": "^2.1.6",
     "express": "^4.17.1"
   }
