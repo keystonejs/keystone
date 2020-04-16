@@ -68,6 +68,7 @@
     "html-webpack-plugin": "^3.2.0",
     "lodash.debounce": "^4.0.8",
     "lodash.set": "^4.3.2",
+    "lodash.throttle": "^4.1.1",
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
     "raf-schd": "^4.0.0",
@@ -82,6 +83,7 @@
     "react-uid": "^2.2.0",
     "resize-observer-polyfill": "^1.5.1",
     "style-loader": "^1.0.0",
+    "use-resize-observer": "^6.0.0",
     "webpack": "4.41.6",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-hot-middleware": "^2.25.0"
