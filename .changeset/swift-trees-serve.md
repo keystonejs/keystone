@@ -1,5 +1,6 @@
 ---
 '@keystonejs/fields': patch
+'@keystonejs/keystone': patch
 '@keystonejs/app-admin-ui': patch
 ---
 
