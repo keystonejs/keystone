@@ -57,19 +57,32 @@ If omitted, Keystone will look under `./admin-ui/` for a hooks config export.
 new AdminUIApp({ hooks: require.resolve('./custom-hooks-path') });
 ```
 
+The following hooks are available. Each is a function that takes no arguments.
+
 ```javascript title=/custom-hooks-path/index.js
 export default {
-  pages: () => {},
+  logo,
+  pages,
 };
 ```
 
-The following hooks are available:
+#### `logo`
+
+The logo to display on the signin screen.
+
+Should return a React component.
+
+```javascript
+export default {
+  logo: () => <MyAwesomeLogo />,
+};
+```
 
 #### `pages`
 
 Allows grouping list pages in the sidebar or defining completely new pages.
 
-This should be a function that returns an array of objects, which may contain the following properties:
+Should return an array of objects, which may contain the following properties:
 
 | Name        | Type             | Description                                                                             |
 | ----------- | ---------------- | --------------------------------------------------------------------------------------- |
