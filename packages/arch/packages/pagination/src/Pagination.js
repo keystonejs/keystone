@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, ListOrderedIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
 import { LoadingSpinner } from '@arch-ui/loading';
@@ -36,23 +36,23 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
   );
 };
 
-class Pagination extends Component {
-  static defaultProps = {
-    ariaPageLabel: ariaPageLabelFn,
-    currentPage: 1,
-    limit: 5,
+const Pagination = ({
+  ariaPageLabel = ariaPageLabelFn,
+  currentPage = 1,
+  limit = 5,
+  pageSize,
+  total,
+  isLoading,
+  onChange,
+  ...props
+}) => {
+  const [allPagesVisible, setAllPagesVisible] = useState(false);
+
+  const toggleAllPages = () => {
+    setAllPagesVisible(wereAllPagesVisible => !wereAllPagesVisible);
   };
-  state = { allPagesVisible: false };
 
-  toggleAllPages = () => {
-    this.setState(state => ({
-      allPagesVisible: !state.allPagesVisible,
-    }));
-  };
-
-  renderPages() {
-    let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
-
+  const renderPages = () => {
     if (total <= pageSize) return [];
 
     let pages = [];
@@ -77,10 +77,10 @@ class Pagination extends Component {
       }
     }
 
-    const onChange = page => {
-      if (this.props.onChange) {
-        this.setState({ allPagesVisible: false });
-        this.props.onChange(page, {
+    const handleChange = page => {
+      if (onChange) {
+        setAllPagesVisible(false);
+        onChange(page, {
           pageSize,
           total,
           minPage,
@@ -92,7 +92,7 @@ class Pagination extends Component {
     // go to first
     if (minPage > 1) {
       pages.push(
-        <Page aria-label={ariaPageLabel(1)} key="page_start" onClick={onChange} value={1}>
+        <Page aria-label={ariaPageLabel(1)} key="page_start" onClick={handleChange} value={1}>
           {moreCharacter}
         </Page>
       );
@@ -107,10 +107,10 @@ class Pagination extends Component {
           aria-current={isSelected ? 'page' : null}
           key={`page_${page}`}
           isSelected={isSelected}
-          onClick={onChange}
+          onClick={handleChange}
           value={page}
         >
-          <PageChildren isLoading={this.props.isLoading} page={page} isSelected={isSelected} />
+          <PageChildren isLoading={isLoading} page={page} isSelected={isSelected} />
         </Page>
       );
     }
@@ -121,7 +121,7 @@ class Pagination extends Component {
         <Page
           aria-label={ariaPageLabel(totalPages)}
           key="page_end"
-          onClick={onChange}
+          onClick={handleChange}
           value={totalPages}
         >
           {moreCharacter}
@@ -134,19 +134,19 @@ class Pagination extends Component {
       <Page
         aria-label="Go to previous page"
         key="page_prev"
-        onClick={onChange}
+        onClick={handleChange}
         value={currentPage - 1}
         isDisabled={currentPage === 1}
       >
         <ChevronLeftIcon />
       </Page>,
-      this.state.allPagesVisible ? (
+      allPagesVisible ? (
         pages
       ) : (
         <Page
           aria-label="Click to show all pages"
           key="page_dot"
-          onClick={this.toggleAllPages}
+          onClick={toggleAllPages}
           id="ks-pagination-show-pages"
           value={1} // needs value for flow...
         >
@@ -156,33 +156,20 @@ class Pagination extends Component {
       <Page
         aria-label="Go to next page"
         key="page_next"
-        onClick={onChange}
+        onClick={handleChange}
         value={currentPage + 1}
         isDisabled={currentPage === totalPages}
       >
         <ChevronRightIcon />
       </Page>,
     ];
-  }
+  };
 
-  render() {
-    // strip props to get `rest` attributes; things id, className etc.
-    const {
-      ariaPageLabel,
-      currentPage,
-      isLoading,
-      limit,
-      onChange,
-      pageSize,
-      total,
-      ...rest
-    } = this.props;
-    return (
-      <FlexGroup as="nav" align="center" aria-label="Pagination" isContiguous isInline {...rest}>
-        {this.renderPages()}
-      </FlexGroup>
-    );
-  }
-}
+  return (
+    <FlexGroup as="nav" align="center" aria-label="Pagination" isContiguous isInline {...props}>
+      {renderPages()}
+    </FlexGroup>
+  );
+};
 
 export default Pagination;
