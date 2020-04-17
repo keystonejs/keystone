@@ -102,30 +102,65 @@ class HookManager {
     await this._validateHook({ args, fields, operation, hookName: 'validateDelete' });
   }
 
-  async _validateHook({ args, fields, operation, hookName }) {
+  async _validateHook(args, fields, operation, hookName) {
     const { originalInput } = args;
     const fieldValidationErrors = [];
+
     // FIXME: Can we do this in a way where we simply return validation errors instead?
-    args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
+    args.addValidationError = (msg, _data = {}, internalData = {}) => {
       fieldValidationErrors.push({ msg, data: _data, internalData });
-    await mapToFields(fields, field => field[hookName](args));
-    await mapToFields(
-      fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
-    );
-    if (fieldValidationErrors.length) {
-      this._throwValidationFailure({ errors: fieldValidationErrors, operation, originalInput });
+    };
+
+    // Compatibility. Remove at some point
+    args.addFieldValidationError = (...passthrough) => {
+      console.warn(
+        '`addFieldValidationError` is deprecated in field-level hooks. Use `addValidationError` instead'
+      );
+
+      args.addValidationError(...passthrough);
+    };
+
+    try {
+      await this._mapToFields(
+        fields,
+        ({ [hookName]: typeHook, hooks: { [hookName]: fieldHook } }) => {
+          return Promise.all([typeHook(args), fieldHook ? fieldHook(args) : undefined]);
+        }
+      );
+    } catch ({ message }) {
+      // Convert any generic Errors to a ValidationFailureError
+      fieldValidationErrors.push({ msg: message, data: {}, internalData: {} });
     }
 
+    if (fieldValidationErrors.length) {
+      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
+    }
+
+    // This was non-functional before in list-level hooks. Make it throw an error now.
+    args.addFieldValidationError = () => {
+      throw new Error(
+        'Use `addValidationError` instead of `addFieldValidationError` in list-level hooks'
+      );
+    };
+
+    // List hook
     if (this.hooks[hookName]) {
       const listValidationErrors = [];
-      await this.hooks[hookName]({
-        ...args,
-        addValidationError: (msg, _data = {}, internalData = {}) =>
-          listValidationErrors.push({ msg, data: _data, internalData }),
-      });
+
+      try {
+        await this.hooks[hookName]({
+          ...args,
+          addValidationError: (msg, _data = {}, internalData = {}) => {
+            listValidationErrors.push({ msg, data: _data, internalData });
+          },
+        });
+      } catch ({ message }) {
+        // Convert any thrown Errors to a ValidationFailureError
+        listValidationErrors.push({ msg: message, data: {}, internalData: {} });
+      }
+
       if (listValidationErrors.length) {
-        this._throwValidationFailure({ errors: listValidationErrors, operation, originalInput });
+        this._throwValidationFailure(listValidationErrors, operation, originalInput);
       }
     }
   }

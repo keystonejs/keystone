@@ -158,7 +158,7 @@ const resolveInput = ({
 - Invoked after all `resolveInput` hooks have resolved
 - Available for `create` and `update` operations
 
-If errors are found in `resolvedData` the function should either throw or call the supplied `addFieldValidationError` argument.
+If errors are found in `resolvedData` the function should either throw or call the supplied `addValidationError` argument.
 Return values are ignored.
 
 #### Arguments
@@ -170,7 +170,7 @@ Return values are ignored.
 | `originalInput`           | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `resolvedData`            | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `addFieldValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
+| `addValidationError`      | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
 
@@ -183,9 +183,9 @@ const validateInput = ({
   originalInput,
   resolvedData,
   context,
-  addFieldValidationError,
+  addValidationError,
 }) => {
-  // Throw error objects or register validation errors with addFieldValidationError(<String>)
+  // Throw error objects or register validation errors with addValidationError(<String>)
   // Return values ignored
 };
 ```
@@ -275,7 +275,7 @@ const afterChange = ({
 - Invoked after access control has been tested
 - Available for `delete` operations
 
-Should throw or register errors with `addFieldValidationError(<String>)` if the delete operation is invalid.
+Should throw or register errors with `addValidationError(<String>)` if the delete operation is invalid.
 
 #### Arguments
 
@@ -284,7 +284,7 @@ Should throw or register errors with `addFieldValidationError(<String>)` if the 
 | `operation`               | `String`         | The operation being performed (`delete` in this case)                                                                        |
 | `existingItem`            | `Object`         | The current stored item                                                                                                      |
 | `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
+| `addValidationError`      | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
 
@@ -295,9 +295,9 @@ const validateDelete = ({
   operation,
   existingItem,
   context,
-  addFieldValidationError,
+  addValidationError,
 }) => {
-  // Throw error objects or register validation errors with addFieldValidationError(<String>)
+  // Throw error objects or register validation errors with addValidationError(<String>)
   // Return values ignored
 };
 ```
