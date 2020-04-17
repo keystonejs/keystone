@@ -37,7 +37,7 @@
     "react": "^16.13.0"
   },
   "devDependencies": {
-    "cypress": "^4.3.0",
+    "cypress": "^4.4.0",
     "cypress-file-upload": "^3.4.0",
     "cypress-multi-reporters": "^1.2.3",
     "dotenv-safe": "^8.1.0",
