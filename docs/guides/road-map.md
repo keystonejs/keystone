@@ -49,8 +49,8 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 - Virtual\\Dynamic fields ([#1117](https://github.com/keystonejs/keystone/issues/1117))
 - Repeating sections ([#313](https://github.com/keystonejs/keystone/issues/313), [#195](https://github.com/keystonejs/keystone/issues/195))
 - Ability to deploy the Admin UI to a static server ([#734](https://github.com/keystonejs/keystone/issues/734), [#1258](https://github.com/keystonejs/keystone/issues/1258), [#1257](https://github.com/keystonejs/keystone/issues/1257))
-- Add a DateRange field type ([#215](https://github.com/keystonejs/keystone/issues/215))
-- Add case options to text fields ([#1639](https://github.com/keystonejs/keystone/issues/1639))
+- Add a DateRange field type ([#215](https://github.com/keystonejs/keystone/issues/215), [#1642](https://github.com/keystonejs/keystone/issues/1642))
+- Add case options to text fields ([#1641](https://github.com/keystonejs/keystone/issues/1641))
 - A React App ([#1669](https://github.com/keystonejs/keystone/issues/1669))
 - Transaction Support ([#211](https://github.com/keystonejs/keystone/issues/211))
 - Admin UI Hooks ([#1665](https://github.com/keystonejs/keystone/issues/1665))
@@ -73,7 +73,3 @@ All PRs in these areas will be welcome. The list of features and bugs below repr
 
 - Plugin Architecture ([#1489](https://github.com/keystonejs/keystone/issues/1489))
 - Relationship field types ([#1322](https://github.com/keystonejs/keystone/issues/1322))
-
-### High priority bugs
-
-- Create many mutation not connecting relationships ([#1318](https://github.com/keystonejs/keystone/issues/1318))
