@@ -233,7 +233,7 @@ export default class FileField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+        <FieldDescription text={field.config.adminDoc} />
         <FieldInput>
           {!isEmpty && imagePath ? (
             <Wrapper>
