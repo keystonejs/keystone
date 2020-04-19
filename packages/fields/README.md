@@ -60,6 +60,7 @@ Fields share some standard configuration options.
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
 | `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
 | `label`        | `String`                            |             | Label for the field.                                                                    |
+| `adminConfig`  | `Object`                            | `{}`        | Additional config which can be used when customizing `admin-ui`                         |
 
 > **Note:** Many field types have additional config options. See the documentation for individual field types for more detail.
 
@@ -71,9 +72,13 @@ A valid `Keystone` field type.
 
 Sets the label for the field in the AdminUI
 
-### `schemaDoc`
+### `adminDoc`
 
 A description of the field used in the AdminUI.
+
+### `schemaDoc`
+
+A description of the field used for GraphiQL.
 
 ### `defaultValue`
 

@@ -41,7 +41,6 @@ exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
 
   const template = path.resolve(`src/templates/docs.js`);
-  const indexTemplate = path.resolve(`src/templates/index.js`);
 
   // The 'fields' values are injected during the `onCreateNode` call below
   return graphql(`
@@ -90,7 +89,7 @@ exports.createPages = ({ actions, graphql }) => {
     pages.forEach(({ node: { id, fields } }) => {
       createPage({
         path: `${fields.slug}`,
-        component: fields.isIndex ? indexTemplate : template,
+        component: template,
         context: {
           mdPageId: id,
           ...fields,
