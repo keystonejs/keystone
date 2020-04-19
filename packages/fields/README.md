@@ -55,7 +55,7 @@ Fields share some standard configuration options.
 | -------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
 | `type`         | `FieldType`                         | (required)  |                                                                                         |
 | `schemaDoc`    | `String`                            | `false`     | A description for the field used in the AdminUI.                                        |
-| `defaultValue` | `Boolean`                           | `undefined` | A default value of the field.                                                           |
+| `defaultValue` | `String` \| `Function` \| `null`    | `undefined` | A default value of the field.                                                           |
 | `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
 | `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
