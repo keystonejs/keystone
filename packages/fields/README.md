@@ -72,9 +72,13 @@ A valid `Keystone` field type.
 
 Sets the label for the field in the AdminUI
 
-### `schemaDoc`
+### `adminDoc`
 
 A description of the field used in the AdminUI.
+
+### `schemaDoc`
+
+A description of the field used for GraphiQL.
 
 ### `defaultValue`
 
