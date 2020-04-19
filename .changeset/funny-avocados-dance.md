@@ -2,4 +2,4 @@
 '@keystonejs/fields': patch
 ---
 
-Set test-utils as development dependency.
+Changed test-utils to a development dependency.
