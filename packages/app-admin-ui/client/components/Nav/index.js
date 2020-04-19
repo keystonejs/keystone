@@ -310,7 +310,6 @@ const UserIcon = styled.div`
   background-color: ${colors.primary};
   color: white;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-right: ${PRIMARY_NAV_GUTTER}px;
