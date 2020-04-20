@@ -1,5 +1,14 @@
 # @keystonejs/fields-markdown
 
+## 5.1.7
+
+### Patch Changes
+
+- [`39175092`](https://github.com/keystonejs/keystone/commit/391750921cba84cd22e933232b44fa1ea9c849dd) [#2759](https://github.com/keystonejs/keystone/pull/2759) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a few issues with the Markdown field UI.
+
+- Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0)]:
+  - @keystonejs/fields@9.0.2
+
 ## 5.1.6
 
 ### Patch Changes
