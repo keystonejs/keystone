@@ -253,12 +253,13 @@ class KnexListAdapter extends BaseListAdapter {
     super(...arguments);
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
     this.realKeys = [];
-    this.tableName = this.key;
+    this.tableName = key;
     this.rels = undefined;
   }
 
   _postConnect({ rels }) {
     this.rels = rels;
+
     this.fieldAdapters.forEach(fieldAdapter => {
       fieldAdapter.rel = rels.find(
         ({ left, right }) =>

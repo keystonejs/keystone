@@ -22,6 +22,7 @@ function setupKeystone(adapterName) {
         fields: {
           name: { type: Text },
           feed: { type: Relationship, ref: 'Post', many: true },
+          friends: { type: Relationship, ref: 'User', many: true },
         },
       });
     },
@@ -354,6 +355,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           })
         );
       });
+
+      describe('search', () => {});
 
       describe('to-many with empty related list', () => {
         const setup = async create => {

@@ -807,10 +807,11 @@ module.exports = class List {
     return resolvers;
   }
 
-  async listQuery(args, context, gqlName, info, from) {
+  async listQuery(args, context, gqlName, info, from, { miketempdebug } = {}) {
+    // if (miketempdebug) console.log('HERETOO', { args });
     const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-    return this._itemsQuery(mergeWhereClause(args, access), { context, info, from });
+    return this._itemsQuery(mergeWhereClause(args, access), { context, info, from }, miketempdebug);
   }
 
   async listQueryMeta(args, context, gqlName, info, from) {
@@ -887,7 +888,8 @@ module.exports = class List {
     return result;
   }
 
-  async _itemsQuery(args, extra) {
+  async _itemsQuery(args, extra, miketempdebug) {
+    // if (miketempdebug) console.log('HERE', args);
     // This is private because it doesn't handle access control
 
     const { maxResults } = this.queryLimits;
@@ -924,7 +926,8 @@ module.exports = class List {
         args.first = resultsLimit;
       }
     }
-    const results = await this.adapter.itemsQuery(args, extra);
+    const results = await this.adapter.itemsQuery(args, extra, miketempdebug);
+
     if (results.length > maxResults) {
       console.log({ results, args, extra });
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
@@ -954,6 +957,7 @@ module.exports = class List {
           break;
       }
     }
+    // if (miketempdebug) console.log('json', { results });
 
     return results;
   }
@@ -1025,6 +1029,7 @@ module.exports = class List {
 
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
+
     const resolvedRelationships = await this._mapToFields(fields, async field => {
       const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
@@ -1033,6 +1038,7 @@ module.exports = class List {
         getItem,
         mutationState
       );
+
       // This code codifies the order of operations for nested mutations:
       // 1. disconnectAll
       // 2. disconnect
@@ -1320,6 +1326,7 @@ module.exports = class List {
 
   async _createSingle(originalInput, existingItem, context, mutationState) {
     const operation = 'create';
+
     return await this._nestedMutation(mutationState, context, async mutationState => {
       const defaultedItem = await this._resolveDefaults({ context, originalInput });
 
@@ -1420,6 +1427,7 @@ module.exports = class List {
 
   async _updateSingle(id, data, existingItem, context, mutationState) {
     const operation = 'update';
+
     return await this._nestedMutation(mutationState, context, async mutationState => {
       let resolvedData = await this._resolveRelationship(
         data,

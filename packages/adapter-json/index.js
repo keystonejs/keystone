@@ -1,4 +1,14 @@
-const { escapeRegExp, identity, mapKeys, objMerge, flatten } = require('@keystonejs/utils');
+const {
+  escapeRegExp,
+  pick,
+  omit,
+  arrayToObject,
+  resolveAllKeys,
+  identity,
+  mapKeys,
+  objMerge,
+  flatten,
+} = require('@keystonejs/utils');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const Memory = require('lowdb/adapters/Memory');
 const lowdb = require('lowdb');
@@ -15,6 +25,10 @@ class JSONAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = JSONListAdapter;
   }
 
+  logDB() {
+    return JSON.parse(JSON.stringify(this._dbInstance.getState(), null, 2));
+  }
+
   async _connect(to = './database.json') {
     // Set the source file
     this.adapter.source = to;
@@ -27,7 +41,11 @@ class JSONAdapter extends BaseKeystoneAdapter {
     this._dbInstance._.mixin(lodashId);
   }
 
-  postConnect() {
+  async postConnect({ rels }) {
+    this.rels = rels;
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._postConnect({ rels });
+    });
     // Ensure we have a default empty array for all the lists
     return pSettle([this._dbInstance.defaults(mapKeys(this.listAdapters, () => [])).write()]);
   }
@@ -115,10 +133,13 @@ query onlyOR {
 class JSONListAdapter extends BaseListAdapter {
   constructor(key, parentAdapter) {
     super(...arguments);
-
     this._parentAdapter = parentAdapter;
-    this.getDBCollection = parentAdapter.getLowDBInstanceForList.bind(parentAdapter, key);
+    this.getDBCollection = (collection = key) =>
+      parentAdapter.getLowDBInstanceForList.bind(parentAdapter)(collection);
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
+    this.realKeys = [];
+    this.tableName = this.key;
+    this.rels = undefined;
 
     this._allQueryConditions = memoizeOne(() => {
       const idMatcher = value => item => (value || []).includes(item.id);
@@ -147,13 +168,82 @@ class JSONListAdapter extends BaseListAdapter {
     });
   }
 
-  async _create(input) {
-    return await this.getDBCollection()
-      .insert(input)
+  _postConnect({ rels }) {
+    this.rels = rels;
+    this.fieldAdapters.forEach(fieldAdapter => {
+      fieldAdapter.rel = rels.find(
+        ({ left, right }) =>
+          left.adapter === fieldAdapter || (right && right.adapter === fieldAdapter)
+      );
+      if (fieldAdapter._hasRealKeys()) {
+        this.realKeys.push(
+          ...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path])
+        );
+      }
+    });
+  }
+
+  async _processNonRealFields(data, processFunction) {
+    // console.log('_processNonRealFields', data);
+    const processed = await resolveAllKeys(
+      arrayToObject(
+        Object.entries(omit(data, this.realKeys)).map(([path, value]) => ({
+          path,
+          value,
+          adapter: this.fieldAdaptersByPath[path],
+        })),
+        'path',
+        processFunction
+      )
+    );
+    // console.log({ processed });
+
+    return processed;
+  }
+
+  logDB() {
+    return JSON.parse(JSON.stringify(this.parentAdapter._dbInstance.getState(), null, 2));
+  }
+
+  async _createSingle(realData) {
+    const beforeCreateSingle = this.logDB();
+    const item = await this.getDBCollection()
+      .insert(realData)
       .write();
+    const afterCreateSingle = this.logDB();
+
+    console.log('create input', realData);
+    console.log('before create single', beforeCreateSingle);
+    console.log('after create single', afterCreateSingle);
+    console.log('Should be single item:', { item });
+    return { item, itemId: item.id };
+  }
+
+  async _create(data) {
+    console.log('_create step 1', { data });
+    const realData = pick(data, this.realKeys);
+
+    // Unset any real 1:1 fields
+    await this._unsetOneToOneValues(realData);
+
+    // Insert the real data into the table
+    const { item, itemId } = await this._createSingle(realData);
+
+    // For every non-real-field, update the corresponding FK/join table.
+    const manyItem = await this._processNonRealFields(data, async ({ value, adapter }) =>
+      this._createOrUpdateField({ value, adapter, itemId })
+    );
+
+    // This currently over-populates the returned item.
+    // We should only be populating non-many fields, but the non-real-fields are generally many,
+    // which we want to ignore, with the exception of 1:1 fields with the FK on the other table,
+    // which we want to actually keep!
+    console.log('Were not expecting a company key on location yet', { ...item, ...manyItem });
+    return { ...item, ...manyItem };
   }
 
   async _delete(id) {
+    console.log('_delete', { id });
     return await this.getDBCollection()
       // Remove it by id
       .remove({ id })
@@ -163,18 +253,89 @@ class JSONListAdapter extends BaseListAdapter {
   }
 
   async _update(id, data) {
-    return await this.getDBCollection()
+    console.log('_update step 2 with company', { data });
+    const realData = pick(data, this.realKeys);
+
+    // Unset any real 1:1 fields
+    await this._unsetOneToOneValues(realData);
+    const db = this.getDBCollection();
+
+    // Update the real data
+    if (Object.keys(realData).length) {
+      await db.find({ id }).assign(realData);
+    }
+
+    const item = await db
       .find({ id })
-      .assign(data)
-      .thru(value => {
-        // it doesn't exist, so return null as a fallback to the "return the new
-        // item" API.
-        if (!value.id) {
-          return null;
+      .thru(value => (!value.id ? null : value))
+      .pick(['id', ...this.realKeys])
+      .value();
+
+    console.log('I wrote this code so it might be wrong', { item });
+
+    // For every many-field, update the many-table
+    await this._processNonRealFields(data, async ({ path, value: newValues, adapter }) => {
+      const { cardinality, columnName, tableName } = adapter.rel;
+      console.log({ cardinality, columnName, tableName, newValues });
+      let value;
+      // Future task: Is there some way to combine the following three
+      // operations into a single query?
+
+      if (cardinality !== '1:1') {
+        // Work out what we've currently got
+        let matchCol, selectCol;
+        if (cardinality === 'N:N') {
+          const { near, far } = this._getNearFar(adapter);
+          matchCol = near;
+          selectCol = far;
+        } else {
+          matchCol = columnName;
+          selectCol = 'id';
         }
-        return value;
-      })
-      .write();
+
+        const currentRefIds = (
+          (await this.getDBCollection(tableName)
+            .find({ [matchCol]: item.id })
+            .value()) || []
+        ).map(x => x[selectCol].toString());
+
+        console.log('This is empty', { currentRefIds });
+
+        // Delete what needs to be deleted
+        const needsDelete = currentRefIds.filter(x => !newValues.includes(x));
+        if (needsDelete.length) {
+          if (cardinality === 'N:N') {
+            await this.getDBCollection(tableName)
+              .remove(item => {
+                const match1 = item[matchCol] === item.id;
+                const match2 = needsDelete.includes(item[selectCol] === item.id);
+                return match1 && match2;
+              }) // far side
+              .write();
+          } else {
+            await this.getDBCollection(tableName)
+              .find(item => needsDelete.includes(item[selectCol] === item.id))
+              .assign({ [columnName]: null })
+              .write();
+          }
+        }
+        value = newValues.filter(id => !currentRefIds.includes(id));
+
+        console.log('This is empty', { currentRefIds });
+      } else {
+        // If there are values, update the other side to point to me,
+        // otherwise, delete the thing that was pointing to me
+        if (newValues === null) {
+          const selectCol = columnName === path ? 'id' : columnName;
+          await this._setNullByValue({ tableName, columnName: selectCol, value: item.id });
+        }
+        value = newValues;
+      }
+
+      await this._createOrUpdateField({ value, adapter, itemId: item.id });
+    });
+
+    return (await this._itemsQuery({ where: { id: item.id }, first: 1 }))[0] || null;
   }
 
   async _findAll() {
@@ -204,10 +365,10 @@ class JSONListAdapter extends BaseListAdapter {
 
     // Build up a list of functions we want to chain together as AND filters
     return Object.entries(where).map(([condition, value]) => {
+      // console.log({ condition, value, f: conditions[condition] });
+
       // A "basic" condition we know how to handle
       if (conditions[condition]) {
-        console.log({ condition, value, c: conditions[condition](value) });
-
         return conditions[condition](value);
       }
 
@@ -310,7 +471,12 @@ class JSONListAdapter extends BaseListAdapter {
    *     item => new RegExp(f('zip')).test(item.name),
    *   ]))
    */
-  _itemsQuery({ where, first, skip, orderBy, search }, { meta = false } = {}) {
+  async _itemsQuery({ where, first, skip, orderBy, search }, { meta = false } = {}, miketempdebug) {
+    if (miketempdebug) {
+      return [];
+      console.log('HEREEEEE for JSON');
+      console.log({ where, first, skip, orderBy, search });
+    }
     let chain = this.getDBCollection();
 
     if (where) {
@@ -347,6 +513,8 @@ class JSONListAdapter extends BaseListAdapter {
 
     const items = chain.value();
 
+    if (miketempdebug) console.log('json', { items });
+
     if (!meta) {
       return items;
     }
@@ -354,6 +522,90 @@ class JSONListAdapter extends BaseListAdapter {
     return {
       count: items.length,
     };
+  }
+
+  _getNearFar(fieldAdapter) {
+    const { rel, path, listAdapter } = fieldAdapter;
+    const { columnNames } = rel;
+    const columnKey = `${listAdapter.key}.${path}`;
+    return columnNames[columnKey];
+  }
+
+  async _createOrUpdateField({ value, adapter, itemId }) {
+    const { cardinality, columnName, tableName } = adapter.rel;
+    console.log('_createOrUpdateField this is step 3', {
+      value, // is locations
+      cardinality,
+      columnName,
+      tableName,
+      itemId, // is company id
+    });
+
+    // N:N - put it in the many table
+    // 1:N - put it in the FK col of the other table
+    // 1:1 - put it in the FK col of the other table
+
+    if (cardinality === '1:1') {
+      if (value !== null) {
+        const item = await this.getDBCollection(tableName)
+          .find({ id: value })
+          .assign({ [columnName]: itemId })
+          .write();
+        return { id: item.id };
+      } else {
+        return null;
+      }
+    } else {
+      const values = value; // Rename this because we have a many situation
+      if (values.length) {
+        if (cardinality === 'N:N') {
+          const { near, far } = this._getNearFar(adapter);
+          const item = await this.getDBCollection(tableName)
+            .insert(values.map(id => ({ [near]: itemId, [far]: id })))
+            .write();
+          return { item };
+        } else {
+          // Update tableName.columnName's with related item
+          const items = await this.getDBCollection(tableName)
+            .filter(d => values.includes(d.id))
+            .each(item => (item[columnName] = itemId))
+            .write();
+          return items.map(item => item.id);
+        }
+      } else {
+        return [];
+      }
+    }
+  }
+
+  // ToDo: Adapt these methods for JSON
+  async _unsetOneToOneValues(realData) {
+    // console.log('_unsetOneToOneValues', realData);
+
+    // If there's a 1:1 FK in the real data we need to go and
+    // delete it from any other item;
+    await Promise.all(
+      Object.entries(realData)
+        .map(([key, value]) => ({ value, adapter: this.fieldAdaptersByPath[key] }))
+        .filter(({ adapter }) => adapter && adapter.isRelationship)
+        .filter(({ value, adapter: { rel } }) => {
+          console.log({ rel });
+          return rel.cardinality === '1:1' && rel.tableName === this.tableName && value !== null;
+        })
+        .map(({ value, adapter: { rel: { tableName, columnName } } }) =>
+          this._setNullByValue({ tableName, columnName, value })
+        )
+    );
+  }
+
+  async _setNullByValue({ tableName, columnName, value }) {
+    console.log('_setNullByValue');
+    // Untested:
+    const item = await this.getDBCollection(tableName)
+      .find({ [columnName]: value })
+      .set({ [columnName]: null });
+
+    return item;
   }
 }
 
@@ -398,7 +650,7 @@ class JSONFieldAdapter extends BaseFieldAdapter {
   }
 
   orderingConditions(dbPath, f = identity) {
-    const filterNullValues = (cb, v) => item => {
+    const filterNullValues = cb => item => {
       if (item[dbPath] === null) {
         return false;
       }
@@ -441,6 +693,17 @@ class JSONFieldAdapter extends BaseFieldAdapter {
       [`${this.path}_ends_with_i`]: value => () => item => regexTest(`${f(value)}$`, item),
       [`${this.path}_not_ends_with_i`]: value => () => item => !regexTest(`${f(value)}$`, item),
     };
+  }
+
+  _hasRealKeys() {
+    // We don't have a "real key" (i.e. a column in the table) if:
+    //  * We're a N:N
+    //  * We're the right hand side of a 1:1
+    //  * We're the 1 side of a 1:N or N:1 (e.g we are the one with config: many)
+    return !(
+      this.isRelationship &&
+      (this.config.many || (this.rel.cardinality === '1:1' && this.rel.right.adapter === this))
+    );
   }
 }
 

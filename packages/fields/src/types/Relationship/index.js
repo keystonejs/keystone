@@ -19,7 +19,6 @@ export default {
   adapters: {
     mongoose: MongoRelationshipInterface,
     knex: KnexRelationshipInterface,
-    // TODO: Support JSON/Memory
     json: JSONRelationshipInterface,
   },
 };

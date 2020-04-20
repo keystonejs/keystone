@@ -46,7 +46,6 @@ export const resolveAllKeys = obj => {
       // Use the first error as the message so it's at least meaningful
       const error = new Error(firstError.message || firstError.toString());
       error.errors = errors;
-      console.log(errors);
       throw error;
     }
     return returnValue;

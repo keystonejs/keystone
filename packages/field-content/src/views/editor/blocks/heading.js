@@ -22,6 +22,7 @@ export function ToolbarElement({ editor, editorState }) {
     />
   );
 }
+
 export function Node({ attributes, children }) {
   return <h2 {...attributes}>{children}</h2>;
 }

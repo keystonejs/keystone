@@ -374,6 +374,7 @@ class MongooseListAdapter extends BaseListAdapter {
     // For every many-field, update the many-table
     await this._processNonRealFields(data, async ({ path, value: newValues, adapter }) => {
       const { cardinality, columnName, tableName } = adapter.rel;
+
       let value;
       // Future task: Is there some way to combine the following three
       // operations into a single query?
@@ -389,6 +390,12 @@ class MongooseListAdapter extends BaseListAdapter {
           matchCol = columnName;
           selectCol = '_id';
         }
+
+        // const mod = await this._getModel(tableName);
+        // console.log('Mongo');
+        // console.log(await mod.find({}).exec());
+        // console.log({ tableName, find: { [matchCol]: item.id } });
+
         const currentRefIds = (
           await this._getModel(tableName).aggregate([
             { $match: { [matchCol]: mongoose.Types.ObjectId(item.id) } },
@@ -422,6 +429,7 @@ class MongooseListAdapter extends BaseListAdapter {
         }
         value = newValues;
       }
+
       await this._createOrUpdateField({ value, adapter, itemId: item.id });
     });
     return (await this._itemsQuery({ where: { id: item.id }, first: 1 }))[0] || null;
@@ -481,7 +489,11 @@ class MongooseListAdapter extends BaseListAdapter {
     return fieldAdapter.getMongoFieldName();
   }
 
-  async _itemsQuery(args, { meta = false, from, include } = {}) {
+  async _itemsQuery(args, { meta = false, from, include } = {}, miketempdebug) {
+    // if (miketempdebug) {
+    //   console.log('HEREEEEE for mongo');
+    //   console.log({ ...args });
+    // }
     if (from && Object.keys(from).length) {
       const { rel } = from.fromList.adapter.fieldAdaptersByPath[from.fromField];
       const { cardinality, tableName, columnName, columnNames } = rel;
@@ -556,6 +568,8 @@ class MongooseListAdapter extends BaseListAdapter {
         );
       });
     // Run the query against the given database and collection
+
+    // if (miketempdebug) console.log(queryTree);
     const pipeline = pipelineBuilder(queryTree);
     const ret = await this.model
       .aggregate([...pipeline, ...lookups])
@@ -571,6 +585,9 @@ class MongooseListAdapter extends BaseListAdapter {
         }
         return foundItems;
       });
+
+    // if (miketempdebug) console.log('mongo', { items: ret });
+
     return ret;
   }
 }

@@ -130,7 +130,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     [
       [createListsLR, 'Left -> Right'],
-      [createListsRL, 'Right -> Left'],
+      // [createListsRL, 'Right -> Left'],
     ].forEach(([createLists, order]) => {
       describe(`One-to-many relationships - ${order}`, () => {
         function setupKeystone(adapterName) {
@@ -441,12 +441,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          test(
+          test.only(
             'With create',
             runner(setupKeystone, async ({ keystone }) => {
               const { companies } = await createInitialData(keystone);
               let company = companies[0];
-              const locationName = sampleOne(alphanumGenerator);
+              const locationName = 'Something more humble'; //sampleOne(alphanumGenerator);
+              console.log('=========================================');
               const { data, errors } = await graphqlRequest({
                 keystone,
                 query: `
@@ -458,6 +459,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
             `,
               });
+
+              console.log(keystone.adapters.JSONAdapter.logDB());
+              console.log({ updateCompanyLocations: data.updateCompany.locations });
+
               expect(errors).toBe(undefined);
 
               const { Company, Location } = await getCompanyAndLocation(

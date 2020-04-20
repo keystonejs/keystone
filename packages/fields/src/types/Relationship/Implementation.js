@@ -200,7 +200,10 @@ export class Relationship extends Implementation {
     }
 
     let currentValue;
+
     if (this.many) {
+      console.log('many', item);
+
       const info = { fieldName: this.path };
       currentValue = item
         ? await refList.listQuery(
@@ -208,7 +211,8 @@ export class Relationship extends Implementation {
             { ...context, getListAccessControlForUser: () => true },
             info.fieldName,
             info,
-            { fromList: this.getListByKey(this.listKey), fromId: item.id, fromField: this.path }
+            { fromList: this.getListByKey(this.listKey), fromId: item.id, fromField: this.path },
+            { miketempdebug: true }
           )
         : [];
       currentValue = currentValue.map(({ id }) => id.toString());
@@ -431,9 +435,10 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
 export class JSONRelationshipInterface extends JSONFieldAdapter {
   constructor() {
     super(...arguments);
-    this.isRelationship = true;
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
 
   getQueryConditions(dbPath) {
