@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/layout",
   "description": "Layout component as used in @keystonejs Admin UI.",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/layout.cjs.js",

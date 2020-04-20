@@ -36,8 +36,9 @@ const createCompanyAndLocation = async keystone => {
     query: `
 mutation {
   createCompany(data: {
+    name: "${sampleOne(alphanumGenerator)}"
     location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id location { id } }
+  }) { id name location { id name } }
 }`,
   });
   const { Company, Location } = await getCompanyAndLocation(
@@ -110,7 +111,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
         }
 
-        describe('Count', () => {
+        describe('Read', () => {
+          if (adapterName !== 'mongoose') {
+            test(
+              'Where',
+              runner(setupKeystone, async ({ keystone }) => {
+                await createInitialData(keystone);
+                const { location, company } = await createCompanyAndLocation(keystone);
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{
+                  allLocations(where: { company: { name: "${company.name}"} }) { id }
+                  allCompanies(where: { location: { name: "${location.name}"} }) { id }
+                }`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data.allLocations.length).toEqual(1);
+                expect(data.allLocations[0].id).toEqual(location.id);
+                expect(data.allCompanies.length).toEqual(1);
+                expect(data.allCompanies[0].id).toEqual(company.id);
+              })
+            );
+          }
+
           test(
             'Count',
             runner(setupKeystone, async ({ keystone }) => {
@@ -129,6 +152,26 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               expect(data._allLocationsMeta.count).toEqual(3);
             })
           );
+
+          if (adapterName !== 'mongoose') {
+            test(
+              'Where with count',
+              runner(setupKeystone, async ({ keystone }) => {
+                await createInitialData(keystone);
+                const { location, company } = await createCompanyAndLocation(keystone);
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{
+                  _allLocationsMeta(where: { company: { name: "${company.name}"} }) { count }
+                  _allCompaniesMeta(where: { location: { name: "${location.name}"} }) { count }
+                }`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data._allCompaniesMeta.count).toEqual(1);
+                expect(data._allLocationsMeta.count).toEqual(1);
+              })
+            );
+          }
         });
 
         describe('Create', () => {
