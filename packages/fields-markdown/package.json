@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-markdown",
   "description": "KeystoneJS Markdown Field Type",
-  "version": "5.1.6",
+  "version": "5.1.7",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -17,7 +17,7 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.27",
     "@keystonejs/build-field-types": "^5.2.2",
-    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/fields": "^9.0.2",
     "codemirror": "^5.48.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
