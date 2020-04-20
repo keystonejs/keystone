@@ -661,29 +661,32 @@ class QueryBuilder {
     // Insert joins to handle 1:1 relationships where the FK is stored on the other table.
     // We join against the other table and select its ID as the path name, so that it appears
     // as if it existed on the primary table all along!
-    if (!meta) {
-      listAdapter.fieldAdapters
-        .filter(a => a.isRelationship && a.rel.cardinality === '1:1' && a.rel.right === a.field)
-        .forEach(a => {
-          const { tableName, columnName } = a.rel;
-          const otherTableAlias = `${tableAlias}__${a.path}_11`;
-          if (!this._tableAliases[otherTableAlias]) {
-            this._tableAliases[otherTableAlias] = true;
-            // LEFT OUTERJOIN on ... table>.<id> = <otherTable>.<columnName> SELECT <othertable>.<id> as <path>
-            query
-              .leftOuterJoin(
-                `${tableName} as ${otherTableAlias}`,
-                `${otherTableAlias}.${columnName}`,
-                `${tableAlias}.id`
-              )
-              .select(`${otherTableAlias}.id as ${a.path}`);
-          }
-        });
-    }
 
     const joinPaths = Object.keys(where).filter(
       path => !this._getQueryConditionByPath(listAdapter, path)
     );
+
+    const joinedPaths = [];
+    listAdapter.fieldAdapters
+      .filter(a => a.isRelationship && a.rel.cardinality === '1:1' && a.rel.right === a.field)
+      .forEach(({ path, rel }) => {
+        const { tableName, columnName } = rel;
+        const otherTableAlias = `${tableAlias}__${path}`;
+        if (!this._tableAliases[otherTableAlias] && (!meta || joinPaths.includes(path))) {
+          this._tableAliases[otherTableAlias] = true;
+          // LEFT OUTERJOIN on ... table>.<id> = <otherTable>.<columnName> SELECT <othertable>.<id> as <path>
+          query.leftOuterJoin(
+            `${tableName} as ${otherTableAlias}`,
+            `${otherTableAlias}.${columnName}`,
+            `${tableAlias}.id`
+          );
+          if (!meta) {
+            query.select(`${otherTableAlias}.id as ${path}`);
+          }
+          joinedPaths.push(path);
+        }
+      });
+
     for (let path of joinPaths) {
       if (path === 'AND' || path === 'OR') {
         // AND/OR we need to traverse their children
@@ -692,7 +695,7 @@ class QueryBuilder {
         const otherAdapter = listAdapter.fieldAdaptersByPath[path];
         // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
         // These correspond to many-relationships, which are handled separately
-        if (otherAdapter) {
+        if (otherAdapter && !joinedPaths.includes(path)) {
           // We need a join of the form:
           // ... LEFT OUTER JOIN {otherList} AS t1 ON {tableAlias}.{path} = t1.id
           // Each table has a unique path to the root table via foreign keys
