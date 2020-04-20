@@ -1,5 +1,5 @@
 ---
-'@arch-ui/fields': patch
+'@arch-ui/fields': major
 '@keystonejs/fields-markdown': patch
 '@keystonejs/fields-mongoid': patch
 ---
