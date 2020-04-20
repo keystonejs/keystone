@@ -1,5 +1,16 @@
 # @arch-ui/pagination
 
+## 0.0.18
+
+### Patch Changes
+
+- [`70f3529b`](https://github.com/keystonejs/keystone/commit/70f3529bbdb6dee76c0b278415d340c53c68530a) [#2755](https://github.com/keystonejs/keystone/pull/2755) Thanks [@Vultraz](https://github.com/Vultraz)! - Highlight active page in Pagination control.
+
+* [`bcfa092d`](https://github.com/keystonejs/keystone/commit/bcfa092d026c0d626087e641d91b729de7c5480b) [#2754](https://github.com/keystonejs/keystone/pull/2754) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted the Pagination component to functional form.
+
+* Updated dependencies [[`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32)]:
+  - @arch-ui/layout@0.2.12
+
 ## 0.0.17
 
 ### Patch Changes
