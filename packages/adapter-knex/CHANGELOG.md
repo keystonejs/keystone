@@ -1,5 +1,14 @@
 # @keystonejs/adapter-knex
 
+## 9.0.2
+
+### Patch Changes
+
+- [`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f) [#2785](https://github.com/keystonejs/keystone/pull/2785) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug with `where` queries again one-to-one relationships.
+
+- Updated dependencies [[`6a27fcf1`](https://github.com/keystonejs/keystone/commit/6a27fcf1896c5a745308346e5b0e66dd8bdd57a3), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0)]:
+  - @keystonejs/keystone@8.1.2
+
 ## 9.0.1
 
 ### Patch Changes
