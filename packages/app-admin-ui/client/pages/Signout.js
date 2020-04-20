@@ -9,6 +9,7 @@ import KeystoneLogo from '../components/KeystoneLogo';
 import { LoadingIndicator } from '@arch-ui/loading';
 
 import { useAdminMeta } from '../providers/AdminMeta';
+import { useUIHooks } from '../providers/Hooks';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -60,6 +61,8 @@ const SignedOutPage = () => {
     signinPath,
   } = useAdminMeta();
 
+  const { logo: getCustomLogo } = useUIHooks();
+
   const UNAUTH_MUTATION = gql`
     mutation {
       unauthenticate: unauthenticate${listKey} {
@@ -88,7 +91,7 @@ const SignedOutPage = () => {
     <Container>
       <Alerts />
       <Box>
-        <KeystoneLogo />
+        {getCustomLogo ? getCustomLogo() : <KeystoneLogo />}
         <Divider />
         <Content>
           {loading ? (
