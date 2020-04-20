@@ -256,7 +256,7 @@ export default class FileField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             id={htmlID}
-            innerRef={this.getInputRef}
+            ref={this.getInputRef}
             name={field.path}
             onChange={this.onChange}
             type="file"

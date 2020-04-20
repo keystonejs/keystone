@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/keystone",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "8.1.1",
+  "version": "8.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -13,7 +13,7 @@
   "dependencies": {
     "@keystonejs/access-control": "^5.2.0",
     "@keystonejs/app-version": "^1.0.1",
-    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/fields": "^9.0.2",
     "@keystonejs/logger": "^5.1.1",
     "@keystonejs/session": "^6.0.1",
     "@keystonejs/utils": "^5.4.0",
