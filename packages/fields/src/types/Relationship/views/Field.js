@@ -187,7 +187,7 @@ const RelationshipField = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.config.adminDoc} />
       <FieldInput>
         <div css={{ flex: 1 }}>
           <RelationshipSelect
