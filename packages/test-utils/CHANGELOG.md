@@ -1,5 +1,17 @@
 # @keystonejs/test-utils
 
+## 6.1.0
+
+### Minor Changes
+
+- [`62f09391`](https://github.com/keystonejs/keystone/commit/62f093911879ca6b57ec0a06ce646e2296593c9a) [#2781](https://github.com/keystonejs/keystone/pull/2781) Thanks [@timleslie](https://github.com/timleslie)! - Added `authedGraphqlRequest` to support running queries with access control. Added `before` and `after` to the output of `multiAdapterRunners` to allow setting up a system to be shared across tests.
+
+### Patch Changes
+
+- Updated dependencies [[`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f), [`6a27fcf1`](https://github.com/keystonejs/keystone/commit/6a27fcf1896c5a745308346e5b0e66dd8bdd57a3), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0)]:
+  - @keystonejs/adapter-knex@9.0.2
+  - @keystonejs/keystone@8.1.2
+
 ## 6.0.3
 
 ### Patch Changes
