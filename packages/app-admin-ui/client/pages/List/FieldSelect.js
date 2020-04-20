@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Component } from 'react';
+import { useMemo } from 'react';
 import { jsx } from '@emotion/core';
 import { Options } from '@arch-ui/options';
 import { arrayToObject } from '@keystonejs/utils';
@@ -25,21 +25,19 @@ export const pseudoLabelField = { label: 'Label', path: '_label_' };
  * By removing the `options` property before passing fields on to react-select,
  * and returning it during `onChange`.
  */
+const FieldSelect = props => {
+  const { fields: listFields, includeLabelField, isMulti, onChange } = props;
 
-export default class FieldSelect extends Component {
-  constructor(props) {
-    super(props);
-    const { fields, includeLabelField } = props;
-    const sanitizedOptions = fields.map(({ options, ...field }) => field);
+  const options = useMemo(() => {
+    const sanitizedOptions = listFields.map(({ options, ...field }) => field);
     if (includeLabelField) {
       sanitizedOptions.unshift(pseudoLabelField);
     }
 
-    this.options = sanitizedOptions;
-  }
-  options = [];
-  onChange = selected => {
-    const { fields: listFields, isMulti, onChange } = this.props;
+    return sanitizedOptions;
+  }, [listFields, includeLabelField]);
+
+  const handleChange = selected => {
     const arr = Array.isArray(selected) ? selected : [selected];
     const diffMap = arrayToObject(arr, 'path', () => true);
     const fields = [pseudoLabelField].concat(listFields).filter(i => diffMap[i.path]);
@@ -48,15 +46,15 @@ export default class FieldSelect extends Component {
     onChange(value);
   };
 
-  render() {
-    return (
-      <Options
-        isOptionSelected={isOptionSelected}
-        getOptionValue={getOptionValue}
-        {...this.props}
-        options={this.options}
-        onChange={this.onChange}
-      />
-    );
-  }
-}
+  return (
+    <Options
+      isOptionSelected={isOptionSelected}
+      getOptionValue={getOptionValue}
+      {...props}
+      options={options}
+      onChange={handleChange}
+    />
+  );
+};
+
+export default FieldSelect;
