@@ -32,7 +32,8 @@ keystone.createList('ListKey', {...});
 | `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.                 |
 | `plural`        | `String`                            |                               | Specify a plural for `Keystone` to use for the list.                   |
 | `queryLimits`   | `Object`                            | `{}`                          | Configures list-level query limits.                                    |
-| `schemaDoc`     | `String`                            |                               | A description for the list. Used in the Admin UI.                      |
+| `adminDoc`      | `String`                            |                               | A description for the list. Used in the Admin UI.                      |
+| `schemaDoc`     | `String`                            |                               | A description for the list. Used in GraphiQL.                          |
 | `singular`      | `String`                            |                               | Specify a singular noun for `Keystone` to use for the list.            |
 
 ## Definitions
