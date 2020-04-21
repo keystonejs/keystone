@@ -50,7 +50,7 @@ const Homepage = () => {
         <PageError>
           <p>
             No lists defined.{' '}
-            <Link href="https://keystonejs.com/guides/add-lists">
+            <Link href="https://keystonejs.com/tutorials/add-lists">
               Get started by creating your first list.
             </Link>
           </p>
