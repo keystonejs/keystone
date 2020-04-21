@@ -1,5 +1,27 @@
 # @keystonejs/fields
 
+## 9.0.2
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
+* [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0) [#2314](https://github.com/keystonejs/keystone/pull/2314) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Made all values in `adminConfig` list options available to `admin-ui` as part of list's `adminMeta`.
+
+  - Added `adminConfig` option to all Fields which are made available to field's `adminMeta` in `admin-ui`.
+  - Added `adminMeta` option in `AdminUIApp` constructor which is also made available to `adminMeta` of `admin-ui`.
+
+  All the improvements are useful in `admin-ui` customizations like UI Hooks or custom Field Views.
+
+* Updated dependencies [[`62f09391`](https://github.com/keystonejs/keystone/commit/62f093911879ca6b57ec0a06ce646e2296593c9a), [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`344c45ef`](https://github.com/keystonejs/keystone/commit/344c45efbb96a90010f81e4c8447a9c5728ea87f), [`81822d67`](https://github.com/keystonejs/keystone/commit/81822d67822bdc77b360b709f2e824cc43d88f15), [`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f), [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0), [`57e6ce29`](https://github.com/keystonejs/keystone/commit/57e6ce293e5afd0add52728aa73c74e90fcbe0f7)]:
+  - @keystonejs/test-utils@6.1.0
+  - @keystonejs/app-admin-ui@5.10.0
+  - @arch-ui/options@0.0.18
+  - @arch-ui/select@0.1.7
+  - @arch-ui/controls@0.1.7
+  - @keystonejs/adapter-knex@9.0.2
+  - @arch-ui/layout@0.2.12
+
 ## 9.0.1
 
 ### Patch Changes

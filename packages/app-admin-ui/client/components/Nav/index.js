@@ -16,7 +16,7 @@ import {
   PrimaryNavScrollArea,
   PRIMARY_NAV_GUTTER,
 } from '@arch-ui/navbar';
-import { Title } from '@arch-ui/typography';
+import { Title, Truncate } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 import { PersonIcon } from '@arch-ui/icons';
@@ -25,6 +25,9 @@ import { useAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
 import { NavIcons } from './NavIcons';
 import ScrollQuery from '../ScrollQuery';
+
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
 const TRANSITION_DURATION = '220ms';
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
@@ -289,8 +292,74 @@ function PrimaryNavItems({
   );
 }
 
-let PrimaryNavContent = ({ mouseIsOverNav }) => {
-  let {
+const UserInfoContainer = styled.div`
+  align-self: stretch;
+  padding: ${PRIMARY_NAV_GUTTER}px 0;
+  margin: 0 ${PRIMARY_NAV_GUTTER}px;
+  border-bottom: 2px solid ${colors.N10};
+  display: flex;
+  align-items: center;
+  font-size: 1.3em;
+`;
+
+const UserIcon = styled.div`
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: ${colors.primary};
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: ${PRIMARY_NAV_GUTTER}px;
+`;
+
+const UserInfo = ({ authListKey, authListPath }) => {
+  // We're assuming the user list as a 'name' field
+  const AUTHED_USER_QUERY = gql`
+    query {
+      user: authenticated${authListKey} {
+        id
+        name
+      }
+    }
+  `;
+
+  // FIXME: figure out how best to handle a case where the user changed their name from the Admin UI.
+  // Perhaps a subscription once those are implemented?
+  const { data: { user } = {}, loading } = useQuery(AUTHED_USER_QUERY);
+
+  // Can't fetch user data for some reason. Don't show anything.
+  if (!loading && !user) {
+    return null;
+  }
+
+  return (
+    <UserInfoContainer>
+      <UserIcon>
+        <PersonIcon width={20} height={20} />
+      </UserIcon>
+      <div css={{ overflow: 'hidden' }}>
+        <Truncate css={{ fontSize: '0.7em' }}>Logged in as</Truncate>
+        {loading ? (
+          'Loading...'
+        ) : (
+          <Truncate
+            as={Link}
+            to={`${authListPath}/${user.id}`}
+            css={{ fontWeight: 'bold', color: colors.N90 }}
+          >
+            {user.name}
+          </Truncate>
+        )}
+      </div>
+    </UserInfoContainer>
+  );
+};
+
+const PrimaryNavContent = ({ mouseIsOverNav }) => {
+  const {
     adminPath,
     getListByKey,
     listKeys,
@@ -323,6 +392,12 @@ let PrimaryNavContent = ({ mouseIsOverNav }) => {
         pages={pages}
         mouseIsOverNav={mouseIsOverNav}
       />
+      {authListKey && (
+        <UserInfo
+          authListKey={authListKey}
+          authListPath={`${adminPath}/${getListByKey(authListKey).path}`}
+        />
+      )}
       <NavIcons />
     </Inner>
   );

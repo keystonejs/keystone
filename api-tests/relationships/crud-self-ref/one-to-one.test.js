@@ -31,8 +31,9 @@ const createUserAndFriend = async keystone => {
     query: `
 mutation {
   createUser(data: {
+    name: "${sampleOne(alphanumGenerator)}"
     friend: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id friend { id } }
+  }) { id name friend { id name } }
 }`,
   });
   const { User, Friend } = await getUserAndFriend(keystone, createUser.id, createUser.friend.id);
@@ -96,7 +97,43 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
         }
 
-        describe('Count', () => {
+        describe('Read', () => {
+          if (adapterName !== 'mongoose') {
+            test(
+              'Where - friend',
+              runner(setupKeystone, async ({ keystone }) => {
+                await createInitialData(keystone);
+                const { user, friend } = await createUserAndFriend(keystone);
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{
+                  allUsers(where: { friend: { name: "${friend.name}"} }) { id }
+                }`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data.allUsers.length).toEqual(1);
+                expect(data.allUsers[0].id).toEqual(user.id);
+              })
+            );
+
+            test(
+              'Where - friendOf',
+              runner(setupKeystone, async ({ keystone }) => {
+                await createInitialData(keystone);
+                const { user, friend } = await createUserAndFriend(keystone);
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{
+                  allUsers(where: { friendOf: { name: "${user.name}"} }) { id }
+                }`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data.allUsers.length).toEqual(1);
+                expect(data.allUsers[0].id).toEqual(friend.id);
+              })
+            );
+          }
+
           test(
             'Count',
             runner(setupKeystone, async ({ keystone }) => {
@@ -113,6 +150,40 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               expect(data._allUsersMeta.count).toEqual(3);
             })
           );
+
+          if (adapterName !== 'mongoose') {
+            test(
+              'Where with count - friend',
+              runner(setupKeystone, async ({ keystone }) => {
+                await createInitialData(keystone);
+                const { friend } = await createUserAndFriend(keystone);
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{
+                  _allUsersMeta(where: { friend: { name: "${friend.name}"} }) { count }
+                }`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data._allUsersMeta.count).toEqual(1);
+              })
+            );
+
+            test(
+              'Where with count - friendOf',
+              runner(setupKeystone, async ({ keystone }) => {
+                await createInitialData(keystone);
+                const { user } = await createUserAndFriend(keystone);
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{
+                  _allUsersMeta(where: { friendOf: { name: "${user.name}"} }) { count }
+                }`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data._allUsersMeta.count).toEqual(1);
+              })
+            );
+          }
         });
 
         describe('Create', () => {
