@@ -39,7 +39,6 @@
     "@keystonejs/app-admin-ui": "^5.10.0",
     "@keystonejs/build-field-types": "^5.2.4",
     "@keystonejs/field-content": "^5.4.5",
-    "@keystonejs/test-utils": "^6.1.0",
     "@keystonejs/utils": "^5.4.0",
     "@sindresorhus/slugify": "^0.11.0",
     "apollo-errors": "^1.9.0",
@@ -71,6 +70,9 @@
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.22.4",
     "unsplash-js": "^6.0.0"
+  },
+  "devDependencies": {
+    "@keystonejs/test-utils": "*"
   },
   "field-types": {
     "entrypoints": [
