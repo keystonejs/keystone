@@ -330,6 +330,11 @@ const UserInfo = ({ authListKey, authListPath }) => {
   // Perhaps a subscription once those are implemented?
   const { data: { user } = {}, loading } = useQuery(AUTHED_USER_QUERY);
 
+  // Can't fetch user data for some reason. Don't show anything.
+  if (!loading && !user) {
+    return null;
+  }
+
   return (
     <UserInfoContainer>
       <UserIcon>
