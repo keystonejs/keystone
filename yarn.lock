@@ -2984,6 +2984,11 @@
     string-width "^2.0.0"
     strip-ansi "^3"
 
+"@popperjs/core@^2.3.3":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.3.3.tgz#8731722aeb7330e8fd9eb5d424be6b98dea7d6da"
+  integrity sha512-yEvVC8RfhRPkD9TUn7cFcLcgoJePgZRAOR7T21rcRY5I8tpuhzeWfGa7We7tB14fe9R7wENdqUABcMdwD4SQLw==
+
 "@preconstruct/cli@^1.1.2":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.3.tgz#e63636960d3c557ee39a25dd0d8073deb41096ed"
@@ -3033,6 +3038,13 @@
     "@babel/plugin-transform-modules-commonjs" "^7.6.0"
     pirates "^4.0.1"
     source-map-support "^0.5.13"
+
+"@primer/octicons@^9.6.0":
+  version "9.6.0"
+  resolved "https://registry.yarnpkg.com/@primer/octicons/-/octicons-9.6.0.tgz#e195f2dd5f30b6918ad5d8ff224c12f778d02408"
+  integrity sha512-B5Wzk5izRXXz0JqEXJkVUtqhCXSpUKgqYkVwegMkp5sziBW+ksd9LPbONlCWyyLODwf9GsI2sBXekR7m+JJDBw==
+  dependencies:
+    object-assign "^4.1.1"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -7463,7 +7475,7 @@ create-react-class@^15.5.1:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-create-react-context@0.3.0, create-react-context@^0.3.0:
+create-react-context@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/create-react-context/-/create-react-context-0.3.0.tgz#546dede9dc422def0d3fc2fe03afe0bc0f4f7d8c"
   integrity sha512-dNldIoSuNSvlTJ7slIKC/ZFGKexBMBrrcc+TTe1NdmROnaASuLPvqpwj9v4XS4uXZ8+YPu0sNmShX2rXI5LNsw==
@@ -17265,13 +17277,6 @@ obuf@^1.0.0, obuf@^1.1.2:
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
   integrity sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==
 
-octicons@^7.2.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/octicons/-/octicons-7.4.0.tgz#0be0082ed75b81e680800ef978bf47078b670091"
-  integrity sha512-j53BDX+FpJ4DQwENARbk9hHkwG/Oaq5NPUMNzYdGxRA/R5M6BbPVQEakUVMNKLzvzPue/gEEUTtSj6utFse5QQ==
-  dependencies:
-    object-assign "^4.1.1"
-
 omggif@^1.0.9:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/omggif/-/omggif-1.0.10.tgz#ddaaf90d4a42f532e9e7cb3a95ecdd47f17c7b19"
@@ -18431,11 +18436,6 @@ pnp-webpack-plugin@^1.4.1:
   integrity sha512-S4kz+5rvWvD0w1O63eTJeXIxW4JHK0wPRMO7GmPhbZXJnTePcfrWZlni4BoglIf7pLSY18xtqo3MSnVkoAFXKg==
   dependencies:
     ts-pnp "^1.0.0"
-
-popper.js@^1.14.4:
-  version "1.14.6"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.6.tgz#ab20dd4edf9288b8b3b6531c47c361107b60b4b0"
-  integrity sha512-AGwHGQBKumlk/MDfrSOf0JHhJCImdDMcGNoqKmKkU+68GFazv3CQ6q9r7Ja1sKDZmYWTckY/uLyEznheTDycnA==
 
 portfinder@^1.0.9:
   version "1.0.20"
@@ -19948,6 +19948,11 @@ react-error-overlay@^3.0.0:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-3.0.0.tgz#c2bc8f4d91f1375b3dad6d75265d51cd5eeaf655"
   integrity sha512-XzgvowFrwDo6TWcpJ/WTiarb9UI6lhA4PMzS7n1joK3sHfBBBOQHUc0U4u57D6DWO9vHv6lVSWx2Q/Ymfyv4hw==
 
+react-fast-compare@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.0.1.tgz#884d339ce1341aad22392e7a88664c71da48600e"
+  integrity sha512-C5vP0J644ofZGd54P8++O7AvrqMEbrGf8Ue0eAUJLJyw168dAX2aiYyX/zcY/eSNwO0IDjsKUaLE6n83D+TnEg==
+
 react-github-btn@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/react-github-btn/-/react-github-btn-1.1.1.tgz#d08f6da1683a7994c54163af240d88ba5efa7057"
@@ -20036,24 +20041,12 @@ react-node-resolver@^2.0.1:
   resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-2.0.1.tgz#1f0cc83938bf590a1cf42006b23f6b8f68e7b886"
   integrity sha512-+PPy/FtAAo5wsLQYMlHkxJ3AMUGL33gpEIx/HBzS8OrcIfacRhGaNVWUJ8bhEbc64en+/bbCNTVZR+pkhqXEbA==
 
-react-popper-tooltip@^2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/react-popper-tooltip/-/react-popper-tooltip-2.10.0.tgz#4d8383644d1002a50bd2bf74b2d1214d84ffc77c"
-  integrity sha512-iMNWaY41G7kcx2/kcV+37GLe4C93yI9CPZ9DH+V9tOtJIJwEzm/w9+mlr6G1QLzxefDxjliqymMXk9X73pyuWA==
+react-popper@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-2.2.2.tgz#7530087c1bb496b6372c722a1266e886c6ac4f70"
+  integrity sha512-oGjnvvvQbSQr1KQjVmBuoOZ090iVw8U3RhaCTLa8T1v1aQgt800bhjElKdjJL4fkaqeqMHFGpndgXy1HkIBeZg==
   dependencies:
-    "@babel/runtime" "^7.6.3"
-    react-popper "^1.3.4"
-
-react-popper@^1.3.4, react-popper@^1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-1.3.6.tgz#32122f83af8fda01bdd4f86625ddacaf64fdd06d"
-  integrity sha512-kLTfa9z8n+0jJvRVal9+vIuirg41rObg4Bbrvv/ZfsGPQDN9reyVVSxqnHF1ZNgXgV7x11PeUfd5ItF8DZnqhg==
-  dependencies:
-    "@babel/runtime" "^7.1.2"
-    create-react-context "^0.3.0"
-    popper.js "^1.14.4"
-    prop-types "^15.6.1"
-    typed-styles "^0.0.7"
+    react-fast-compare "^3.0.1"
     warning "^4.0.2"
 
 react-prop-toggle@^1.0.2:
@@ -23821,11 +23814,6 @@ type@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/type/-/type-2.0.0.tgz#5f16ff6ef2eb44f260494dae271033b29c09a9c3"
   integrity sha512-KBt58xCHry4Cejnc2ISQAF7QY+ORngsWfxezO68+12hKV6lQY8P/psIkcbjeHWn7MqcgciWJyCCevFMJdIXpow==
-
-typed-styles@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/typed-styles/-/typed-styles-0.0.7.tgz#93392a008794c4595119ff62dde6809dbc40a3d9"
-  integrity sha512-pzP0PWoZUhsECYjABgCGQlRGL1n7tOHsgwYv3oIiEpJwGhFTuty/YNeduxQYzXXa3Ge5BdT6sHYIQYpl4uJ+5Q==
 
 typedarray-to-buffer@^3.1.5:
   version "3.1.5"
