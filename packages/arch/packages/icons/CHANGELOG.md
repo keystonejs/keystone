@@ -1,5 +1,11 @@
 # @arch-ui/icons
 
+## 0.1.0
+
+### Minor Changes
+
+- [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477) [#2774](https://github.com/keystonejs/keystone/pull/2774) Thanks [@Vultraz](https://github.com/Vultraz)! - Switched to new @primer/octicons package and regenerated icon components.
+
 ## 0.0.10
 
 ### Patch Changes

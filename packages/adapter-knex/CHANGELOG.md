@@ -1,5 +1,11 @@
 # @keystonejs/adapter-knex
 
+## 9.0.3
+
+### Patch Changes
+
+- [`875aa0ed`](https://github.com/keystonejs/keystone/commit/875aa0ed787d901061aa0409160a360546014df3) [#2796](https://github.com/keystonejs/keystone/pull/2796) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug with updating one-to-one relationship values.
+
 ## 9.0.2
 
 ### Patch Changes
