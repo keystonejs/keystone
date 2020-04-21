@@ -1,5 +1,32 @@
 # @arch-ui/docs
 
+## 1.1.17
+
+### Patch Changes
+
+- [`a05f2b43`](https://github.com/keystonejs/keystone/commit/a05f2b43fab6760dc17baa37eea077cbbcec80fc) [#2753](https://github.com/keystonejs/keystone/pull/2753) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated remaining ArchUI style guide React components to functional ones.
+
+- Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`81822d67`](https://github.com/keystonejs/keystone/commit/81822d67822bdc77b360b709f2e824cc43d88f15), [`70f3529b`](https://github.com/keystonejs/keystone/commit/70f3529bbdb6dee76c0b278415d340c53c68530a), [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32), [`bcfa092d`](https://github.com/keystonejs/keystone/commit/bcfa092d026c0d626087e641d91b729de7c5480b)]:
+  - @arch-ui/select@0.1.7
+  - @arch-ui/controls@0.1.7
+  - @arch-ui/pagination@0.0.18
+  - @arch-ui/layout@0.2.12
+
+## 1.1.16
+
+### Patch Changes
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`0b37b13b`](https://github.com/keystonejs/keystone/commit/0b37b13b5b11a5391b70920f9e8cbd6c5a71f586)]:
+  - @arch-ui/alert@0.0.16
+  - @arch-ui/loading@0.0.16
+  - @arch-ui/lozenge@0.0.15
+  - @arch-ui/tooltip@0.1.10
+  - @arch-ui/typography@0.0.16
+  - @arch-ui/fields@2.1.5
+  - @arch-ui/button@0.0.17
+  - @arch-ui/pagination@0.0.17
+  - @arch-ui/dialog@0.0.19
+
 ## 1.1.15
 
 ### Patch Changes

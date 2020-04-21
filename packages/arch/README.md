@@ -9,7 +9,7 @@ Resources, tooling, and design guidelines by KeystoneJS using [GastbyJS](https:/
 
 ## Getting Started
 
-To start, run
+To start, run:
 
 ```sh
 cd docs

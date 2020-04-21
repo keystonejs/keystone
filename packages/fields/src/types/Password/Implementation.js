@@ -94,15 +94,24 @@ const CommonPasswordInterface = superclass =>
         const path = this.field.path;
         const plaintext = item[path];
 
-        if (typeof plaintext === 'undefined') {
+        // Only run the hook if the item actually contains the field
+        // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+        // returned isn't a POJO
+        if (!(path in item)) {
           return item;
         }
 
-        if (String(plaintext) === plaintext && plaintext !== '') {
-          item[path] = await this.field.generateHash(plaintext);
+        if (plaintext) {
+          if (typeof plaintext === 'string') {
+            item[path] = await this.field.generateHash(plaintext);
+          } else {
+            // Should have been caught by the validator??
+            throw `Invalid Password value given for '${path}'`;
+          }
         } else {
           item[path] = null;
         }
+
         return item;
       });
     }

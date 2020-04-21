@@ -12,7 +12,7 @@ Each Keystone list contains one or more specialized **fields** which handle the 
 
 Most primitive field types can be imported from the `@keystonejs/fields` package. More complex field types can be imported from their individual packages, listed below:
 
-> **Hint:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/).
+> **Tip:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/).
 
 ### `@keystonejs/fields`
 
@@ -92,8 +92,9 @@ Fields share some standard configuration options.
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
 | `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
 | `label`        | `String`                            |             | Label for the field.                                                                    |
+| `adminConfig`  | `Object`                            | `{}`        | Additional config which can be used when customizing `admin-ui`                         |
 
-_Note_: Many field types have additional config options. See the documentation for individual field types for more detail.
+> **Note:** Many field types have additional config options. See the documentation for individual field types for more detail.
 
 ### `type`
 
@@ -103,9 +104,13 @@ A valid `Keystone` field type.
 
 Sets the label for the field in the AdminUI
 
-### `schemaDoc`
+### `adminDoc`
 
 A description of the field used in the AdminUI.
+
+### `schemaDoc`
+
+A description of the field used for GraphiQL.
 
 ### `defaultValue`
 

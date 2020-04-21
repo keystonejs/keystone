@@ -8,7 +8,7 @@ const CARDS = [
   {
     heading: `Fully featured`,
     content: `Zero assumptions doesn’t mean zero features. Keystone comes with dozens of features out of the box including Lists, Fields, Access Control, Authentication, and Apps. You can add and configure each these, as well as extend, modify or build your own.`,
-    to: '/guides',
+    to: '/guides/apps',
   },
   {
     heading: `Highly extensible`,

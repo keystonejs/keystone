@@ -1,5 +1,12 @@
 # @arch-ui/dialog
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad)]:
+  - @arch-ui/typography@0.0.16
+
 ## 0.0.18
 
 ### Patch Changes
