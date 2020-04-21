@@ -1,5 +1,29 @@
 # @keystonejs/app-admin-ui
 
+## 5.11.0
+
+### Minor Changes
+
+- [`501fd3e4`](https://github.com/keystonejs/keystone/commit/501fd3e4a06cfeba0f96a76ff8763d3be577af6e) [#2779](https://github.com/keystonejs/keystone/pull/2779) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a section to the sidebar displaying the currently signed-in user.
+
+### Patch Changes
+
+- [`e7afc083`](https://github.com/keystonejs/keystone/commit/e7afc08338cc04bfc8b6eec1a21f777f81f4d6c8) [#2471](https://github.com/keystonejs/keystone/pull/2471) Thanks [@Vultraz](https://github.com/Vultraz)! - Redesigned signout page.
+
+* [`b14c07a1`](https://github.com/keystonejs/keystone/commit/b14c07a154ae1cb92e7cbc87484d99419f92d649) [#2792](https://github.com/keystonejs/keystone/pull/2792) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a broken link.
+
+- [`16f6c300`](https://github.com/keystonejs/keystone/commit/16f6c3003d1decbb77474455ef608e3efd41ec4b) [#2699](https://github.com/keystonejs/keystone/pull/2699) Thanks [@Vultraz](https://github.com/Vultraz)! - Made keyboard shortcuts not trigger in contenteditable nodes.
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c), [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @keystonejs/fields@9.0.3
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+  - @arch-ui/options@0.0.19
+  - @arch-ui/pagination@0.0.19
+  - @arch-ui/pill@0.1.14
+
 ## 5.10.0
 
 ### Minor Changes

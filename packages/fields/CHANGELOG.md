@@ -1,5 +1,29 @@
 # @keystonejs/fields
 
+## 9.0.3
+
+### Patch Changes
+
+- [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621) [#2786](https://github.com/keystonejs/keystone/pull/2786) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to react-popper 2.2.2.
+
+* [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c) [#2783](https://github.com/keystonejs/keystone/pull/2783) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Changed the name of variables in several field types. No functional change.
+
+- [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64) [#2772](https://github.com/keystonejs/keystone/pull/2772) Thanks [@Abogical](https://github.com/Abogical)! - Changed test-utils to a development dependency.
+
+* [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa) [#2730](https://github.com/keystonejs/keystone/pull/2730) Thanks [@Vultraz](https://github.com/Vultraz)! - Made HiddenInput component actually hidden.
+
+* Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`e7afc083`](https://github.com/keystonejs/keystone/commit/e7afc08338cc04bfc8b6eec1a21f777f81f4d6c8), [`501fd3e4`](https://github.com/keystonejs/keystone/commit/501fd3e4a06cfeba0f96a76ff8763d3be577af6e), [`b14c07a1`](https://github.com/keystonejs/keystone/commit/b14c07a154ae1cb92e7cbc87484d99419f92d649), [`875aa0ed`](https://github.com/keystonejs/keystone/commit/875aa0ed787d901061aa0409160a360546014df3), [`16f6c300`](https://github.com/keystonejs/keystone/commit/16f6c3003d1decbb77474455ef608e3efd41ec4b), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @keystonejs/field-content@5.4.6
+  - @keystonejs/app-admin-ui@5.11.0
+  - @keystonejs/adapter-knex@9.0.3
+  - @keystonejs/adapter-mongoose@8.0.2
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+  - @arch-ui/day-picker@0.0.24
+  - @arch-ui/options@0.0.19
+
 ## 9.0.2
 
 ### Patch Changes
