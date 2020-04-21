@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Link, useHistory } from 'react-router-dom';

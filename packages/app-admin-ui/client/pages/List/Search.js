@@ -1,6 +1,3 @@
-/** @jsx jsx */
-
-import { jsx } from '@emotion/core';
 import { useRef, forwardRef, useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 

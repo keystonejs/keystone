@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import React, { Component, Suspense, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';

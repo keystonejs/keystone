@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { memo } from 'react';
 
 import { ChevronLeftIcon } from '@arch-ui/icons';

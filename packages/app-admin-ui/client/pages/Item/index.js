@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useMutation, useQuery } from '@apollo/react-hooks';

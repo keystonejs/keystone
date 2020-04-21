@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { Button, LoadingButton } from '@arch-ui/button';

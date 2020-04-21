@@ -1,6 +1,3 @@
-/** @jsx jsx */
-
-import { jsx } from '@emotion/core';
 import { useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
 import { CheckMark, OptionPrimitive, Options } from '@arch-ui/options';

@@ -31,8 +31,8 @@ module.exports = function({ adminMeta, entry, outputPath }) {
               mode === 'production'
                 ? require.resolve('babel-preset-react-app/prod')
                 : require.resolve('babel-preset-react-app/dev'),
+              require.resolve('@emotion/babel-preset-css-prop'),
             ],
-            plugins: [require.resolve('babel-plugin-emotion')],
           },
         },
       ],

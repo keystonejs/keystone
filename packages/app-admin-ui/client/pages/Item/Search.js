@@ -1,6 +1,4 @@
-/** @jsx jsx */
-
-import { jsx, keyframes } from '@emotion/core';
+import { keyframes } from '@emotion/core';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 

@@ -1,6 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
-
 import { StopIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 import { Container } from '@arch-ui/layout';

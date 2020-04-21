@@ -1,6 +1,3 @@
-/** @jsx jsx */
-
-import { jsx } from '@emotion/core';
 import { OptionPrimitive, CheckMark } from '@arch-ui/options';
 
 import { Popout, POPOUT_GUTTER } from '../../components/Popout';

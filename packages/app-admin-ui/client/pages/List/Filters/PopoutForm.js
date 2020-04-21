@@ -1,6 +1,3 @@
-/** @jsx jsx */
-
-import { jsx } from '@emotion/core';
 import { Fragment, useRef, useCallback } from 'react';
 
 import { colors, gridSize } from '@arch-ui/theme';

@@ -1,6 +1,3 @@
-/** @jsx jsx */
-
-import { jsx } from '@emotion/core';
 import { Pagination } from '@arch-ui/pagination';
 import { useListPagination } from './dataHooks';
 

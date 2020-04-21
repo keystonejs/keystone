@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { Component, createRef, Suspense } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 

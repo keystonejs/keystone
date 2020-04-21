@@ -1,8 +1,6 @@
 /* global ENABLE_DEV_FEATURES */
-/** @jsx jsx */
 
 import { Fragment } from 'react';
-import { jsx } from '@emotion/core';
 
 import { TerminalIcon, MarkGithubIcon, SignOutIcon } from '@arch-ui/icons';
 import { NavIcon, NavGroupIcons } from '@arch-ui/navbar';

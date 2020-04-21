@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { useCallback, memo, useState, useEffect } from 'react';
 
 import copyToClipboard from 'clipboard-copy';

@@ -1,5 +1,3 @@
-/** @jsx jsx **/
-import { jsx } from '@emotion/core';
 import set from 'lodash.set';
 
 // When there are errors, we want to see if they're Access Denied.

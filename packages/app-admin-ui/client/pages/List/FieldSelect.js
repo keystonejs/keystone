@@ -1,7 +1,5 @@
-/** @jsx jsx */
-
 import { useMemo } from 'react';
-import { jsx } from '@emotion/core';
+
 import { Options } from '@arch-ui/options';
 import { arrayToObject } from '@keystonejs/utils';
 

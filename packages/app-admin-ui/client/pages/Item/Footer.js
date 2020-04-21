@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { Fragment, useState, memo, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Button, LoadingButton } from '@arch-ui/button';
