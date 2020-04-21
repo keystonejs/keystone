@@ -20,7 +20,7 @@ const UrlField = ({ onChange, autoFocus, field, value: serverValue, errors }) =>
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.config.adminDoc} />
       <FieldInput>
         <Input
           autoComplete="off"
