@@ -1,5 +1,5 @@
-const FieldController = require('@keystonejs/fields/Controller').default;
-const { parseDefaultValues } = require('../util');
+import FieldController from '@keystonejs/fields/Controller';
+import { parseDefaultValues } from '../util';
 
 class MultiCheckController extends FieldController {
   constructor(config, ...args) {
