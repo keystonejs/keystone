@@ -22,7 +22,7 @@ import { FlexGroup } from '@arch-ui/layout';
 import { PersonIcon } from '@arch-ui/icons';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
-import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
+import { useResizeHandler, KEYBOARD_SHORTCUT } from './ResizeHandler';
 import { NavIcons } from './NavIcons';
 import ScrollQuery from '../ScrollQuery';
 
@@ -414,81 +414,81 @@ const Nav = ({ children }) => {
     setMouseIsOverNav(false);
   };
 
-  return (
-    <ResizeHandler isActive={mouseIsOverNav}>
-      {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
-        const navWidth = isCollapsed ? 0 : width;
-        const makeResizeStyles = key => {
-          const pointers = isDragging ? { pointerEvents: 'none' } : null;
-          const transitions = isDragging
-            ? null
-            : {
-                transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-              };
-          return { [key]: navWidth, ...pointers, ...transitions };
-        };
+  const {
+    resizeProps,
+    clickProps,
+    snapshot: { isCollapsed, isDragging, width },
+  } = useResizeHandler();
 
-        return (
-          <PageWrapper>
-            <PropToggle
-              isActive={isDragging}
-              styles={{
-                cursor: 'col-resize',
-                '-moz-user-select': 'none',
-                '-ms-user-select': 'none',
-                '-webkit-user-select': 'none',
-                'user-select': 'none',
-              }}
-            />
-            <PrimaryNav
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              style={makeResizeStyles('width')}
+  const navWidth = isCollapsed ? 0 : width;
+  const makeResizeStyles = key => {
+    const pointers = isDragging ? { pointerEvents: 'none' } : null;
+    const transitions = isDragging
+      ? null
+      : {
+          transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+        };
+    return { [key]: navWidth, ...pointers, ...transitions };
+  };
+
+  return (
+    <PageWrapper>
+      <PropToggle
+        isActive={isDragging}
+        styles={{
+          cursor: 'col-resize',
+          '-moz-user-select': 'none',
+          '-ms-user-select': 'none',
+          '-webkit-user-select': 'none',
+          'user-select': 'none',
+        }}
+      />
+      <PrimaryNav
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={makeResizeStyles('width')}
+      >
+        <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
+        {isCollapsed ? null : (
+          <GrabHandle
+            onDoubleClick={clickProps.onClick}
+            isActive={mouseIsOverNav || isDragging}
+            {...resizeProps}
+          />
+        )}
+        <Tooltip
+          content={
+            <TooltipContent kbd={KEYBOARD_SHORTCUT}>
+              {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
+            </TooltipContent>
+          }
+          placement="right"
+          hideOnMouseDown
+          hideOnKeyDown
+          delay={600}
+        >
+          {ref => (
+            <CollapseExpand
+              isCollapsed={isCollapsed}
+              mouseIsOverNav={mouseIsOverNav}
+              {...clickProps}
+              ref={ref}
             >
-              <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
-              {isCollapsed ? null : (
-                <GrabHandle
-                  onDoubleClick={clickProps.onClick}
-                  isActive={mouseIsOverNav || isDragging}
-                  {...resizeProps}
-                />
-              )}
-              <Tooltip
-                content={
-                  <TooltipContent kbd={KEYBOARD_SHORTCUT}>
-                    {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
-                  </TooltipContent>
-                }
-                placement="right"
-                hideOnMouseDown
-                hideOnKeyDown
-                delay={600}
+              <svg
+                fill="currentColor"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {ref => (
-                  <CollapseExpand
-                    isCollapsed={isCollapsed}
-                    mouseIsOverNav={mouseIsOverNav}
-                    {...clickProps}
-                    ref={ref}
-                  >
-                    <svg
-                      fill="currentColor"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
-                    </svg>
-                  </CollapseExpand>
-                )}
-              </Tooltip>
-            </PrimaryNav>
-            <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
-          </PageWrapper>
-        );
-      }}
-    </ResizeHandler>
+                <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
+              </svg>
+            </CollapseExpand>
+          )}
+        </Tooltip>
+      </PrimaryNav>
+      <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
+    </PageWrapper>
   );
 };
 
