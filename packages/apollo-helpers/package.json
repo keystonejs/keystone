@@ -25,7 +25,7 @@
     "react-adopt": "^0.6.0"
   },
   "peerDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "devDependencies": {
     "react": "^16.13.1"

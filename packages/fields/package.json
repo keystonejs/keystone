@@ -63,7 +63,7 @@
     "query-string": "^6.8.1",
     "react": "^16.13.1",
     "react-color": "^2.17.3",
-    "react-dom": "^16.13.0",
+    "react-dom": "^16.13.1",
     "react-select": "^3.1.0",
     "react-toast-notifications": "^2.3.0",
     "slate": "^0.47.4",

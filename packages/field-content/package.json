@@ -31,7 +31,7 @@
     "nanoassert": "^2.0.0",
     "p-is-promise": "^3.0.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.0",
+    "react-dom": "^16.13.1",
     "react-popper": "^2.2.2",
     "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",

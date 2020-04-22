@@ -6,12 +6,12 @@
   "license": "MIT",
   "main": "dist/popout.cjs.js",
   "peerDependencies": {
-    "react": "^16.13.0",
+    "react": "^16.13.1",
     "react-dom": "^16.13.0"
   },
   "devDependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.2",
