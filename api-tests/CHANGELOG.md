@@ -1,5 +1,38 @@
 # @keystonejs/api-tests
 
+## 5.4.0
+
+### Minor Changes
+
+- [`7badaa0b`](https://github.com/keystonejs/keystone/commit/7badaa0b974fafd61ac7a4d51ab25522ee075d9c) [#2784](https://github.com/keystonejs/keystone/pull/2784) Thanks [@timleslie](https://github.com/timleslie)! - Added tests for access control cases where access is allowed.
+
+### Patch Changes
+
+- [`875aa0ed`](https://github.com/keystonejs/keystone/commit/875aa0ed787d901061aa0409160a360546014df3) [#2796](https://github.com/keystonejs/keystone/pull/2796) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug with updating one-to-one relationship values.
+
+- Updated dependencies [[`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c), [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64), [`875aa0ed`](https://github.com/keystonejs/keystone/commit/875aa0ed787d901061aa0409160a360546014df3), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa)]:
+  - @keystonejs/fields@9.0.3
+  - @keystonejs/adapter-knex@9.0.3
+  - @keystonejs/adapter-mongoose@8.0.2
+
+## 5.3.0
+
+### Minor Changes
+
+- [`62f09391`](https://github.com/keystonejs/keystone/commit/62f093911879ca6b57ec0a06ce646e2296593c9a) [#2781](https://github.com/keystonejs/keystone/pull/2781) Thanks [@timleslie](https://github.com/timleslie)! - Added tests to ensure access control configures the GraphQL schema correctly.
+
+* [`ace1c518`](https://github.com/keystonejs/keystone/commit/ace1c5181a2191577151f9bf264f389d9aa7d7c9) [#2782](https://github.com/keystonejs/keystone/pull/2782) Thanks [@timleslie](https://github.com/timleslie)! - Added tests for access control cases where access is not allowed.
+
+### Patch Changes
+
+- [`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f) [#2785](https://github.com/keystonejs/keystone/pull/2785) Thanks [@timleslie](https://github.com/timleslie)! - Added tests for `where` queries against one-to-one relationships.
+
+- Updated dependencies [[`62f09391`](https://github.com/keystonejs/keystone/commit/62f093911879ca6b57ec0a06ce646e2296593c9a), [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f), [`6a27fcf1`](https://github.com/keystonejs/keystone/commit/6a27fcf1896c5a745308346e5b0e66dd8bdd57a3), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0)]:
+  - @keystonejs/test-utils@6.1.0
+  - @keystonejs/fields@9.0.2
+  - @keystonejs/adapter-knex@9.0.2
+  - @keystonejs/keystone@8.1.2
+
 ## 5.2.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @arch-ui/tooltip
 
+## 0.1.11
+
+### Patch Changes
+
+- [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621) [#2786](https://github.com/keystonejs/keystone/pull/2786) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to react-popper 2.2.2.
+
 ## 0.1.10
 
 ### Patch Changes

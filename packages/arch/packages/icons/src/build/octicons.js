@@ -1,6 +1,6 @@
 /* Inspired by https://github.com/philschatz/react-octicons */
 
-const octicons = require('octicons');
+const octicons = require('@primer/octicons');
 const toPascalCase = require('to-pascal-case');
 const { emptyDirSync, outputFileSync } = require('fs-extra');
 const path = require('path');
@@ -29,7 +29,10 @@ Object.getOwnPropertyNames(octicons).forEach(octiconName => {
 
   iconsIndex.push({ iconName, componentName });
 
-  svgContents = svgContents.replace(/fill-rule="/g, 'fillRule="');
+  svgContents = svgContents.replace(/([fill|clip])-rule="/g, '$1Rule="');
+
+  // FIXME: we don't really want to do this here, but prettier >= 1.18 won't close empty tags anymore...
+  svgContents = svgContents.replace(/><\/path>/g, ' />');
 
   const componentSrc = template({
     componentName,
