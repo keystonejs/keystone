@@ -6,15 +6,15 @@
   "license": "MIT",
   "main": "dist/typography.cjs.js",
   "peerDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "devDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "dependencies": {
     "@arch-ui/theme": "0.0.10",
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.27",
+    "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27"
   },
   "module": "dist/typography.esm.js",
