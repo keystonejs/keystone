@@ -71,7 +71,7 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected, mouseIsO
     display: 'block',
     marginBottom: 2,
     overflow: 'hidden',
-    padding: PRIMARY_NAV_GUTTER,
+    padding: `${gridSize * 1.5}px`,
     paddingLeft: depth ? PRIMARY_NAV_GUTTER * depth : PRIMARY_NAV_GUTTER,
     position: 'relative',
     textDecoration: 'none',
