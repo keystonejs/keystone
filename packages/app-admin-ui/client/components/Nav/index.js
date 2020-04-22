@@ -415,7 +415,7 @@ const ActionItems = ({ mouseIsOverNav }) => {
           mouseIsOverNav={mouseIsOverNav}
           css={{ display: 'flex', alignItems: 'center' }}
         >
-          <ActionIcon />
+          <ActionIcon css={{ flexShrink: 0 }} />
           <span css={{ padding: `0 ${PRIMARY_NAV_GUTTER}px` }}>{label}</span>
         </PrimaryNavItem>
       ))}
