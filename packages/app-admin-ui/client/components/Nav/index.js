@@ -386,13 +386,13 @@ const ActionItems = ({ mouseIsOverNav }) => {
               label: 'GraphiQL Playground',
               to: graphiqlPath,
               icon: TerminalIcon,
-              external: true,
+              target: '_blank',
             },
             {
               label: 'Keystone on GitHub',
               to: GITHUB_PROJECT,
               icon: MarkGithubIcon,
-              external: true,
+              target: '_blank',
             },
           ]
         : []),
@@ -407,11 +407,11 @@ const ActionItems = ({ mouseIsOverNav }) => {
 
   return (
     <div css={{ marginBottom: `${PRIMARY_NAV_GUTTER}px` }}>
-      {entries.map(({ label, to, icon: ActionIcon, external }) => (
+      {entries.map(({ label, to, icon: ActionIcon, target }) => (
         <PrimaryNavItem
           key={to}
-          to={to}
-          target={external ? '_blank' : undefined}
+          href={to}
+          target={target}
           mouseIsOverNav={mouseIsOverNav}
           css={{ display: 'flex', alignItems: 'center' }}
         >
