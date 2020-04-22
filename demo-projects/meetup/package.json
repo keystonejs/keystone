@@ -45,7 +45,7 @@
     "next": "^9.3.2",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.0",
+    "react-dom": "^16.13.1",
     "react-toast-notifications": "^2.3.0",
     "react-use-form-state": "^0.12.0",
     "uuid": "^3.3.2"

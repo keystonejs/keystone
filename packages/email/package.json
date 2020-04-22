@@ -23,7 +23,7 @@
     "mjml-react": "^1.0.55",
     "pug": "2.0.4",
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/email"
 }

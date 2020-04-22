@@ -30,7 +30,7 @@
     "clipboard-copy": "^3.0.0",
     "gatsby": "^2.13.25",
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "scripts": {
     "start": "gatsby develop",

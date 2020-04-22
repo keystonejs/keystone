@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "dependencies": {
     "@arch-ui/modal-utils": "^1.0.9",

@@ -45,7 +45,7 @@
     "next": "^9.3.2",
     "node-fetch": "^2.3.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/blog"
 }
