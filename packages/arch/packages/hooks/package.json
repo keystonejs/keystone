@@ -9,7 +9,7 @@
     "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "module": "dist/hooks.esm.js",
   "dependencies": {

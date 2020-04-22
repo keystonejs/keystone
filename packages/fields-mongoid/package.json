@@ -17,7 +17,7 @@
     "@keystonejs/adapter-mongoose": "^8.0.0",
     "@keystonejs/build-field-types": "^5.2.4",
     "@keystonejs/fields": "^9.0.0",
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "module": "dist/fields-mongoid.esm.js"
 }

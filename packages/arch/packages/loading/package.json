@@ -9,13 +9,13 @@
     "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "dependencies": {
     "@arch-ui/theme": "0.0.10",
     "@arch-ui/typography": "0.0.16",
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.27",
+    "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27"
   },
   "module": "dist/loading.esm.js",

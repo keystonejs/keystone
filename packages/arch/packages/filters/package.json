@@ -9,14 +9,14 @@
     "react": "^16.13.0"
   },
   "devDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "dependencies": {
     "@arch-ui/controls": "^0.1.6",
     "@arch-ui/layout": "^0.2.11",
     "@arch-ui/theme": "^0.0.10",
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.27",
+    "@emotion/core": "^10.0.28",
     "react-radios": "^1.1.0"
   },
   "module": "dist/filters.esm.js",
