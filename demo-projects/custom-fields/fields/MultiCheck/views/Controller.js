@@ -21,4 +21,4 @@ class MultiCheckController extends FieldController {
   getFilterTypes = () => [];
 }
 
-module.exports = MultiCheckController;
+export default MultiCheckController;
