@@ -130,6 +130,8 @@ keystone upgrade-relationships --migration
 > **Note:** Always be careful when running auto-generated migration code.
 > Be sure to manually verify that the changes are doing what you want, as incorrect migrations can lead to data loss.
 
+# 
+
 > **Important:** While we have taken every effort to ensure the auto-generated migration code is correct, we cannot account for every possible scenario.
 > Again; please verify the changes work as expected to avoid data loss.
 
@@ -137,7 +139,7 @@ keystone upgrade-relationships --migration
 
 ```javascript title="Example migration" allowCopy=false showLanguage=false
 db.todos.find({}).forEach(function(doc) {
-  doc.reviewers.forEach(function(itemId) {
+  (doc.reviewers || []).forEach(function(itemId) {
     db.todo_reviewers_manies.insert({ Todo_left_id: doc._id, User_right_id: itemId });
   });
 });
@@ -145,7 +147,7 @@ db.todos.updateMany({}, { $unset: { reviewers: 1 } });
 db.users.updateMany({}, { $unset: { leadPost: 1 } });
 db.users.updateMany({}, { $unset: { published: 1 } });
 db.todos.find({}).forEach(function(doc) {
-  doc.readers.forEach(function(itemId) {
+  (doc.readers || []).forEach(function(itemId) {
     db.todo_readers_user_readposts.insert({ Todo_left_id: doc._id, User_right_id: itemId });
   });
 });

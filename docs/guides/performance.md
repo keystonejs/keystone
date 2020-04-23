@@ -2,7 +2,7 @@
 section: guides
 title: Performance monitoring
 subSection: graphql
-order: 2
+order: 4
 [meta]-->
 
 # GraphQL performance monitoring

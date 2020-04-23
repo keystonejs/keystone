@@ -224,7 +224,7 @@ export default class FileField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+        <FieldDescription text={field.config.adminDoc} />
         <FieldInput>
           {file ? (
             <Wrapper>
@@ -256,7 +256,7 @@ export default class FileField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             id={htmlID}
-            innerRef={this.getInputRef}
+            ref={this.getInputRef}
             name={field.path}
             onChange={this.onChange}
             type="file"

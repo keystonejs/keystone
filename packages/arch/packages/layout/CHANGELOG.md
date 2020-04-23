@@ -1,5 +1,11 @@
 # @arch-ui/layout
 
+## 0.2.12
+
+### Patch Changes
+
+- [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32) [#2463](https://github.com/keystonejs/keystone/pull/2463) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced ContainerQuery component with useResizeObserver.
+
 ## 0.2.11
 
 ### Patch Changes

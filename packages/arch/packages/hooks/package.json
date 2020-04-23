@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/hooks.cjs.js",
   "peerDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "devDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "module": "dist/hooks.esm.js",
   "dependencies": {
