@@ -38,6 +38,7 @@ import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
 import { useAdminMeta } from '../../providers/AdminMeta';
 import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
 
 let Render = ({ children }) => children();
 
@@ -82,6 +83,7 @@ const ItemDetails = ({
 
   const history = useHistory();
   const { addToast } = useToasts();
+  const { [`toast${list.key}Saved`]: customToast } = useUIHooks();
 
   const { query: listQuery } = useList();
 
@@ -231,7 +233,7 @@ const ItemDetails = ({
     const savedItem = await onUpdate();
 
     // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
-    toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
+    toastItemSuccess({ addToast, customToast }, savedItem, 'Saved successfully');
 
     // No changes since we kicked off the item saving
     if (!itemHasChanged.current) {

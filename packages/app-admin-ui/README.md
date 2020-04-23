@@ -63,6 +63,7 @@ The following hooks are available. Each is a function that takes no arguments.
 export default {
   logo,
   pages,
+  [toast${listKey}Saved],
 };
 ```
 
@@ -119,6 +120,23 @@ export default {
       children: ['User'],
     },
   ],
+};
+```
+
+#### `toast${listKey}Saved`
+
+Allows customizing the content of the Success toast notification when an item is saved. These may be specified on a per-list basis. For example, to customize the Success toast for a list called `MyList`, use `toastMyListSaved`.
+
+Unlike most hooks, this takes a single argument containing the newly-saved item data. It should return a React component.
+
+```javascript
+export default {
+  toastMyListSaved: itemData => (
+    <div>
+      <strong>My custom toast notification!</strong>
+      <span>{itemData._label_}</span>
+    </div>
+  ),
 };
 ```
 

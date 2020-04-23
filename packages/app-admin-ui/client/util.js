@@ -29,8 +29,10 @@ export const deconstructErrorsToDataShape = error => {
 // Toast Formatters
 // ==============================
 
-export function toastItemSuccess({ addToast }, item, message = 'Success') {
-  const toastContent = (
+export function toastItemSuccess({ addToast, customToast }, item, message = 'Success') {
+  const toastContent = customToast ? (
+    customToast(item)
+  ) : (
     <div>
       {item && item._label_ ? <strong>{item._label_}</strong> : null}
       <div>{message}</div>
