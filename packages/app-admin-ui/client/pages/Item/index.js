@@ -209,18 +209,6 @@ const ItemDetails = ({
 
     updateItem({ variables: { id: item.id, data } })
       .then(() => {
-        const toastContent = (
-          <div>
-            {item._label_ ? <strong>{item._label_}</strong> : null}
-            <div>Saved successfully</div>
-          </div>
-        );
-
-        addToast(toastContent, {
-          autoDismiss: true,
-          appearance: 'success',
-        });
-
         setValidationErrors({});
         setValidationWarnings({});
 
@@ -234,6 +222,9 @@ const ItemDetails = ({
       })
       .then(onUpdate)
       .then(savedItem => {
+        // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
+        toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
+
         // No changes since we kicked off the item saving
         if (!itemHasChanged.current) {
           // Then reset the state to the current server value
