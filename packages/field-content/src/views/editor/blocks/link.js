@@ -3,18 +3,20 @@ import { jsx } from '@emotion/core';
 import React, { useContext, useState, Fragment, useEffect } from 'react';
 import { LinkIcon, CheckIcon, CircleSlashIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
-import { Popper } from 'react-popper';
+import { usePopper } from 'react-popper';
 import { createPortal } from 'react-dom';
 import { ToolbarButton } from '../toolbar-components';
 
 export let type = 'link';
 
 export function Node({ node, attributes, children, isSelected, editor }) {
-  let { data } = node;
+  const { data } = node;
   const href = data.get('href');
-  let [aElement, setAElement] = useState(null);
 
-  let [linkInputValue, setLinkInputValue] = useState(href);
+  const [aElement, setAElement] = useState(null);
+  const [popperElement, setPopperElement] = useState(null);
+
+  const [linkInputValue, setLinkInputValue] = useState(href);
 
   // this is terrible
   // but probably necessary
@@ -23,6 +25,10 @@ export function Node({ node, attributes, children, isSelected, editor }) {
   useEffect(() => {
     setLinkInputValue(href);
   }, [href]);
+
+  const { styles } = usePopper(aElement, popperElement, {
+    placement: 'bottom',
+  });
 
   return (
     <Fragment>
@@ -36,44 +42,38 @@ export function Node({ node, attributes, children, isSelected, editor }) {
       </a>
       {isSelected &&
         createPortal(
-          <Popper placement="bottom" referenceElement={aElement}>
-            {({ style, ref }) => {
-              return (
-                <div style={style} css={{ margin: gridSize, display: 'flex' }}>
-                  <div
-                    ref={ref}
-                    css={{
-                      backgroundColor: colors.N90,
-                      color: 'white',
-                      padding: 8,
-                      borderRadius: 6,
-                      display: 'flex',
-                    }}
-                  >
-                    <LinkInput
-                      value={linkInputValue}
-                      onChange={event => {
-                        setLinkInputValue(event.target.value);
-                        editor.setNodeByKey(node.key, {
-                          data: data.set('href', event.target.value),
-                        });
-                      }}
-                    />
-                    <ToolbarButton
-                      as="a"
-                      tooltipPlacement="bottom"
-                      icon={<LinkExternalIcon />}
-                      target="_blank"
-                      rel="noopener"
-                      label="Open Link"
-                      css={{ marginLeft: gridSize }}
-                      href={href}
-                    />
-                  </div>
-                </div>
-              );
-            }}
-          </Popper>,
+          <div ref={setPopperElement} style={styles.popper} css={{ display: 'flex' }}>
+            <div
+              css={{
+                margin: gridSize,
+                backgroundColor: colors.N90,
+                color: 'white',
+                padding: 8,
+                borderRadius: 6,
+                display: 'flex',
+              }}
+            >
+              <LinkInput
+                value={linkInputValue}
+                onChange={event => {
+                  setLinkInputValue(event.target.value);
+                  editor.setNodeByKey(node.key, {
+                    data: data.set('href', event.target.value),
+                  });
+                }}
+              />
+              <ToolbarButton
+                as="a"
+                tooltipPlacement="bottom"
+                icon={<LinkExternalIcon />}
+                target="_blank"
+                rel="noopener"
+                label="Open Link"
+                css={{ marginLeft: gridSize }}
+                href={href}
+              />
+            </div>
+          </div>,
           document.body
         )}
     </Fragment>

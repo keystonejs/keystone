@@ -35,9 +35,7 @@ custom server. The Keystone CLI accepts an additional `configureExpress` export 
 This function takes a single `app` parameter. The running Express instance will be passed to this function
 before any middlewares are set up, so you can perform any Express configuration you need here.
 
-For example:
-
-```javascript
+```javascript title=index.js
 module.exports = {
   configureExpress: app => {
     app.set('view engine', 'pug');
@@ -47,9 +45,7 @@ module.exports = {
 
 ## Minimal custom server
 
-### `package.json`
-
-```json
+```json title=package.json
 {
   "scripts": {
     "start": "node server.js"
@@ -57,9 +53,7 @@ module.exports = {
 }
 ```
 
-### `index.js`
-
-```javascript
+```javascript title=index.js
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 
@@ -71,17 +65,19 @@ module.exports = {
 };
 ```
 
-### `server.js`
-
-```javascript
+```javascript title=server.js
 const express = require('express');
 const { keystone, apps } = require('./index.js');
 
 keystone
-  .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
+  .prepare({
+    apps: apps,
+    dev: process.env.NODE_ENV !== 'production',
+  })
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
+
     app.use(middlewares).listen(3000);
   });
 ```
@@ -92,9 +88,7 @@ When using a custom server, there is nothing special about the `index.js` file.
 In this example there is no `index.js` file, instead the `keystone` instance and
 `apps` are declared directly in `server.js`.
 
-### `package.json`
-
-```json
+```json title=package.json
 {
   "scripts": {
     "start": "node server.js"
@@ -102,25 +96,22 @@ In this example there is no `index.js` file, instead the `keystone` instance and
 }
 ```
 
-### `server.js`
-
-```javascript
+```javascript title=server.js
 const express = require('express');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 
-const keystone = new Keystone();
-keystone.createList(/* ... */);
-
-// ...
-
-const apps = [new GraphQLApp()];
+const keystone = new Keystone({...});
 
 keystone
-  .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
+  .prepare({
+    apps: [new GraphQLApp()],
+    dev: process.env.NODE_ENV !== 'production',
+  })
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
+
     app.use(middlewares).listen(3000);
   });
 ```
@@ -131,9 +122,7 @@ For really fine-grained control, a custom server can skip calling
 `keystone.prepare()` in favour of calling an app's `.prepareMiddleware()`
 function directly.
 
-### `package.json`
-
-```json
+```json title=package.json
 {
   "scripts": {
     "start": "node server.js"
@@ -141,27 +130,24 @@ function directly.
 }
 ```
 
-### `server.js`
-
-```javascript
+```javascript title=server.js
 const express = require('express');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
-const keystone = new Keystone();
-keystone.createList(/* ... */);
-
-// ...
+const keystone = new Keystone({...});
 
 const dev = process.env.NODE_ENV !== 'production';
-const preparations = [new GraphQLApp(), new AdminUIApp()].map(app =>
+const apps = [new GraphQLApp(), new AdminUIApp()];
+const preparations = apps.map(app =>
   app.prepareMiddleware({ keystone, dev })
 );
 
 Promise.all(preparations).then(async middlewares => {
   await keystone.connect();
   const app = express();
+
   app.use(middlewares).listen(3000);
 });
 ```
@@ -176,25 +162,26 @@ With a little finesse (and the [`serverless-http`
 library](https://github.com/dougmoscrop/serverless-http)), we can run our
 Keystone instance in AWS Lambda:
 
-### `lambda.js`
-
-```javascript
+```javascript title=lambda.js
 const express = require('express');
 const serverless = require('serverless-http');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 
-const keystone = new Keystone();
-keystone.createList(/* ... */);
-// ...
+const keystone = new Keystone({...});
 
 // Only setup once per instance
 const setup = keystone
-  .prepare({ apps: [new GraphQLApp()], dev: process.env.NODE_ENV !== 'production' })
+  .prepare({
+    apps: [new GraphQLApp()],
+    dev: process.env.NODE_ENV !== 'production',
+  })
   .then(async ({ middlewares }) => {
     await keystone.connect();
     const app = express();
+
     app.use(middlewares);
+
     return serverless(app);
   });
 

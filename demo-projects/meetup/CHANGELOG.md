@@ -1,5 +1,69 @@
 # @keystonejs/demo-project-meetup
 
+## 5.1.9
+
+### Patch Changes
+
+- [`2686c9f8`](https://github.com/keystonejs/keystone/commit/2686c9f8cd49a1ce6876787a0a634ddf4e19952c) [#2724](https://github.com/keystonejs/keystone/pull/2724) Thanks [@Vultraz](https://github.com/Vultraz)! - Used functional components for email templates.
+
+- Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`344c45ef`](https://github.com/keystonejs/keystone/commit/344c45efbb96a90010f81e4c8447a9c5728ea87f), [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32), [`6a27fcf1`](https://github.com/keystonejs/keystone/commit/6a27fcf1896c5a745308346e5b0e66dd8bdd57a3), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0), [`57e6ce29`](https://github.com/keystonejs/keystone/commit/57e6ce293e5afd0add52728aa73c74e90fcbe0f7), [`2686c9f8`](https://github.com/keystonejs/keystone/commit/2686c9f8cd49a1ce6876787a0a634ddf4e19952c)]:
+  - @keystonejs/app-admin-ui@5.10.0
+  - @keystonejs/fields@9.0.2
+  - @keystonejs/keystone@8.1.2
+  - @keystonejs/email@5.1.3
+
+## 5.1.8
+
+### Patch Changes
+
+- [`a5a6663c`](https://github.com/keystonejs/keystone/commit/a5a6663cd1139a404b03270966c0766dc5a42b50) [#2723](https://github.com/keystonejs/keystone/pull/2723) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed custom schema not getting registered in Meetup demo.
+
+- Updated dependencies [[`c013d8bc`](https://github.com/keystonejs/keystone/commit/c013d8bc1113b2a31ededc3918ab98c2c99f25f4), [`3193f4a5`](https://github.com/keystonejs/keystone/commit/3193f4a56c6391d07e8c04913a667940ef7b8815), [`885bc678`](https://github.com/keystonejs/keystone/commit/885bc6786dd63cad86515b2fe6a39ea52b39d4c0), [`93ae77ef`](https://github.com/keystonejs/keystone/commit/93ae77efe71151279a15ddb7ddc3df60651022b4), [`eb90aea6`](https://github.com/keystonejs/keystone/commit/eb90aea6b33dda8d95baba818306328dd747247f)]:
+  - @keystonejs/fields@9.0.1
+  - @keystonejs/app-admin-ui@5.9.6
+  - @keystonejs/auth-password@5.1.6
+
+## 5.1.7
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/adapter-mongoose@8.0.0
+  - @keystonejs/fields@9.0.0
+  - @keystonejs/keystone@8.0.0
+  - @keystonejs/app-admin-ui@5.9.5
+  - @keystonejs/auth-password@5.1.5
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.3
+
+## 5.1.6
+
+### Patch Changes
+
+- [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373) [#2560](https://github.com/keystonejs/keystone/pull/2560) Thanks [@JedWatson](https://github.com/JedWatson)! - Updated links to Keystone github project.
+
+* [`0339eaf1`](https://github.com/keystonejs/keystone/commit/0339eaf1bde1b5d814f8745812ab3a1bd72fc8aa) [#2607](https://github.com/keystonejs/keystone/pull/2607) Thanks [@Vultraz](https://github.com/Vultraz)! - Made the Meetup demo functional again, and refactored out last use of withApollo.
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+* [`89bec596`](https://github.com/keystonejs/keystone/commit/89bec5966c07ea700a863d3a7a8d1ebb8fb5541a) [#2608](https://github.com/keystonejs/keystone/pull/2608) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Next.js to 9.3.2. Includes an important security fix.
+
+- [`cef28dfd`](https://github.com/keystonejs/keystone/commit/cef28dfdad332cf185a577b06600acc3d8ba4888) [#2645](https://github.com/keystonejs/keystone/pull/2645) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted more class components to functional ones.
+
+* [`c70c339a`](https://github.com/keystonejs/keystone/commit/c70c339a307d92427962f7332bc371f9226bb2d6) [#2603](https://github.com/keystonejs/keystone/pull/2603) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed apollo-boost dependency and switched the meetup demo to using apollo-upload-client.
+
+* Updated dependencies [[`e7e4bc1d`](https://github.com/keystonejs/keystone/commit/e7e4bc1d22149d4daceb31d303f6ad10c2b853ba), [`58c4ffc3`](https://github.com/keystonejs/keystone/commit/58c4ffc3d4b1edf8bdfbc4ea299133d303239fc6), [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373), [`7fc00071`](https://github.com/keystonejs/keystone/commit/7fc00071cd22514103593f0da68b9efa3bf853e9), [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`89bec596`](https://github.com/keystonejs/keystone/commit/89bec5966c07ea700a863d3a7a8d1ebb8fb5541a), [`4a7d1eab`](https://github.com/keystonejs/keystone/commit/4a7d1eabf9b44fac7e16dfe20afdce409986e8dc), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`d138736d`](https://github.com/keystonejs/keystone/commit/d138736db184c5884171c7a65e43377f248046b5), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf), [`3407fa68`](https://github.com/keystonejs/keystone/commit/3407fa68b91d7ebb3e7288c7e95631013fe12535), [`c2b1b725`](https://github.com/keystonejs/keystone/commit/c2b1b725a9474348964a4ac2e0f5b4aaf1a7f486)]:
+  - @keystonejs/fields@8.0.0
+  - @keystonejs/app-admin-ui@5.9.4
+  - @keystonejs/app-next@5.1.2
+  - @keystonejs/keystone@7.1.0
+  - @keystonejs/adapter-mongoose@7.0.0
+  - @keystonejs/app-graphql@5.1.5
+  - @keystonejs/auth-password@5.1.4
+  - @keystonejs/email@5.1.2
+  - @keystonejs/file-adapters@6.0.1
+  - @keystonejs/session@6.0.1
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.2
+
 ## 5.1.5
 
 ### Patch Changes

@@ -6,12 +6,11 @@ order: 2
 
 # Creating lists
 
-## Usage
+Keystone lists define your application's models. These models represent the
+entities of your application domain and map to the tables in your database.
 
-```javascript
-keystone.createList('Post', {
-  /* ...config */
-});
+```javascript allowCopy=false showLanguage=false
+keystone.createList('ListKey', {...});
 ```
 
 ## Config
@@ -33,7 +32,8 @@ keystone.createList('Post', {
 | `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.                 |
 | `plural`        | `String`                            |                               | Specify a plural for `Keystone` to use for the list.                   |
 | `queryLimits`   | `Object`                            | `{}`                          | Configures list-level query limits.                                    |
-| `schemaDoc`     | `String`                            |                               | A description for the list. Used in the Admin UI.                      |
+| `adminDoc`      | `String`                            |                               | A description for the list. Used in the Admin UI.                      |
+| `schemaDoc`     | `String`                            |                               | A description for the list. Used in GraphiQL.                          |
 | `singular`      | `String`                            |                               | Specify a singular noun for `Keystone` to use for the list.            |
 
 ## Definitions
@@ -51,9 +51,7 @@ Override the adapter config options for a specific list. Normally `adapterConfig
 ```javascript
 const keystone = new Keystone({
   name: 'my-project',
-  adapter: new Adapter({
-    /* ...adapterConfig */
-  }),
+  adapter: new Adapter({...}),
 });
 ```
 
@@ -67,8 +65,6 @@ Options for the AdminUI including:
 - `defaultColumns`
 - `defaultSort`
 - `maximumPageSize`
-
-#### Usage
 
 ```javascript
 keystone.createList('User', {
@@ -102,7 +98,6 @@ const app = new GraphQLApp({
       defaultMaxAge: 3600,
     },
   },
-  ...otherGraphqlOptions,
 });
 ```
 
@@ -153,8 +148,6 @@ keystone.createList('Post', {
 
 Defines the fields to use in a list.
 
-#### Usage
-
 ```javascript
 keystone.createList('Post', {
   fields: {
@@ -203,8 +196,6 @@ keystone.createList('User', {
 
 Changes the item name in GraphQL queries and mutations.
 
-#### Usage
-
 ```javascript
 keystone.createList('User', {
   fields: {
@@ -216,9 +207,9 @@ keystone.createList('User', {
 
 With the above example a GraphQL query might look like this:
 
-```
+```graphql
 query {
-  Person(where: {id: "1"}) {
+  Person(where: { id: "1" }) {
     name
   }
 }
@@ -231,8 +222,6 @@ Overrides label for the list in the AdminUI. Default is `listName`.
 ### `labelField`
 
 Specify a field to use as a label for individual list items.
-
-#### Usage
 
 ```javascript
 keystone.createList('User', {
@@ -248,8 +237,6 @@ keystone.createList('User', {
 
 Function to resolve labels for individual list item. Default resolves the `labelField`.
 
-#### Usage
-
 ```javascript
 keystone.createList('User', {
   fields: {
@@ -260,24 +247,9 @@ keystone.createList('User', {
 });
 ```
 
-#### Usage
-
-```javascript
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-  },
-  access: {
-    read: false,
-  },
-});
-```
-
 ### `listQueryName`
 
 Changes the list name in GraphQL queries and mutations.
-
-#### Usage
 
 ```javascript
 keystone.createList('User', {
@@ -290,7 +262,7 @@ keystone.createList('User', {
 
 With the above example a GraphQL query might look like this:
 
-```
+```graphql
 query {
   allPeople {
     name
@@ -362,6 +334,15 @@ keystone.createList('Post', {
 ### `schemaDoc`
 
 A description for the list used in the GraphQL schema.
+
+```javascript
+keystone.createList('Todo', {
+  schemaDoc: 'A list of things which need to be done.',
+  fields: {
+    description: { type: Text },
+  },
+});
+```
 
 ### `singular`
 

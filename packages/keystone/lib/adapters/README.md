@@ -64,7 +64,7 @@ All required information is passed in to the adapter as parameters to the constr
 
 Each `KeystoneAdapter` contains references to its associated `ListAdapter` instances, via the `.listAdapters` property.
 The `ListAdapter` instances contain a back reference to the `KeystoneAdapter` via the `.parentAdapter` property.
-Each `ListAttribute` keeps a list of associated `FieldAdapter` instances, via .`fieldAdapters`.
+Each `ListAdapter` keeps a list of associated `FieldAdapter` instances, via .`fieldAdapters`.
 These in turn have back reference to the `ListAdapter` in the property `.listAdapter`.
 
 This data model allows all fields under a `KeystoneAdapter` to access all other fields in the same adapter,
@@ -149,6 +149,8 @@ keystone.createList('User', {
 The recommended mechanism for customising the field type adapter is to create a new field type which overrides a specific field adapter mapping.
 
 ```js
+import { Text } from '@keystonejs/fields';
+
 const CustomText = {
   ...Text,
   adapters: {

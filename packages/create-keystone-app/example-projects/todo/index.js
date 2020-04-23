@@ -7,11 +7,12 @@ const { StaticApp } = require('@keystonejs/app-static');
 /* keystone-cli: generated-code */
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const PROJECT_NAME = 'My KeystoneJS Project';
+const adapterConfig = {};
 /* /keystone-cli: generated-code */
 
 const keystone = new Keystone({
   name: PROJECT_NAME,
-  adapter: new Adapter(),
+  adapter: new Adapter(adapterConfig),
 });
 
 keystone.createList('Todo', {

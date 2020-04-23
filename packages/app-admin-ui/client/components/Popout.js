@@ -64,7 +64,7 @@ export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
 
 export const Popout = ({
   buttonLabel,
-  component: Wrapper,
+  component: Wrapper = Fragment,
   children,
   innerRef,
   bodyRef,
@@ -95,8 +95,4 @@ export const Popout = ({
       </Wrapper>
     </PopoutModal>
   );
-};
-
-Popout.defaultProps = {
-  component: Fragment,
 };

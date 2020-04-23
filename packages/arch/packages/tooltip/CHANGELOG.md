@@ -1,5 +1,19 @@
 # @arch-ui/tooltip
 
+## 0.1.11
+
+### Patch Changes
+
+- [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621) [#2786](https://github.com/keystonejs/keystone/pull/2786) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to react-popper 2.2.2.
+
+## 0.1.10
+
+### Patch Changes
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+* [`0b37b13b`](https://github.com/keystonejs/keystone/commit/0b37b13b5b11a5391b70920f9e8cbd6c5a71f586) [#2633](https://github.com/keystonejs/keystone/pull/2633) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed state updates on Tooltip when unmounted.
+
 ## 0.1.9
 
 ### Patch Changes

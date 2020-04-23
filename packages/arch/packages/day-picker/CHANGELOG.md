@@ -1,5 +1,28 @@
 # @arch-ui/day-picker
 
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [[`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+
+## 0.0.23
+
+### Patch Changes
+
+- [`390a7fc3`](https://github.com/keystonejs/keystone/commit/390a7fc3b20169c628dd7aa2e2a4d72b678a345f) [#2424](https://github.com/keystonejs/keystone/pull/2424) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved TextDayPicker interface and fixed a bug with the CalendarDay field where the set date could change when the field lost focus.
+
+## 0.0.22
+
+### Patch Changes
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad)]:
+  - @arch-ui/typography@0.0.16
+
 ## 0.0.21
 
 ### Patch Changes

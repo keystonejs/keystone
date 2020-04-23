@@ -13,10 +13,10 @@ Let's make our `Todo` list a bit more complex.
 ## Creating lists by file
 
 To improve maintainability of your code it can be convenient to split `List` schemas
-into separate files. Create a directory named `lists`, with a file `Todos.js`
+into separate files. Create a directory named `lists`, with a file `Todo.js`
 and put the following code inside.
 
-```javascript
+```javascript title=/lists/Todo.js
 const { Text, Checkbox } = require('@keystonejs/fields');
 
 module.exports = {
@@ -39,10 +39,10 @@ Here we described a very basic schema for a generic `Todo`. Let's add it to our
 Keystone application. Inside of `index.js` import the defined schema and replace
 the existing one with the required version.
 
-```javascript
-const TodosSchema = require('./lists/Todos.js');
+```javascript title=index.js
+const TodoSchema = require('./lists/Todo.js');
 
-keystone.createList('Todo', TodosSchema);
+keystone.createList('Todo', TodoSchema);
 ```
 
 Make sure to relaunch Keystone and check that everything is working as expected.
@@ -52,11 +52,21 @@ Make sure to relaunch Keystone and check that everything is working as expected.
 `Todo` tasks usually have a few more fields. Let's add the ability to set
 deadlines and the assignee of a task:
 
-```javascript
-const { Text, CalendarDay } = require('@keystonejs/fields');
+```javascript title=/lists/Todo.js
+const { Text, CalendarDay, Checkbox } = require('@keystonejs/fields');
 
 module.exports = {
-  {
+  fields: {
+    // existing fields
+    description: {
+      type: Text,
+      isRequired: true,
+    },
+    isComplete: {
+      type: Checkbox,
+      defaultValue: false,
+    },
+    // added fields
     deadline: {
       type: CalendarDay,
       format: 'Do MMMM YYYY',
@@ -70,7 +80,7 @@ module.exports = {
       isRequired: true,
     },
   },
-}
+};
 ```
 
 If you're curious about the usage options you can read [more about `CalendarDay`](/packages/fields/src/types/CalendarDay/README.md).
@@ -80,9 +90,9 @@ Now it's time to explore docs on other field types and get a bit familiar with t
 
 Take a look at the `assignee` field. Now we're just typing in a name.
 Why don't we make a separate `User` list, so we can point assigned tasks to a specific `User`.
-Create another file `Users.js` in the `lists` directory. It should look like this:
+Create another file `User.js` in the `lists` directory. It should look like this:
 
-```javascript
+```javascript title=/lists/User.js
 const { Text, Password } = require('@keystonejs/fields');
 
 module.exports = {
@@ -101,15 +111,18 @@ module.exports = {
 
 And register it in `index.js`:
 
-```javascript
-const UsersSchema = require('./lists/Users.js');
+```javascript title=index.js
+const TodoSchema = require('./lists/Todo.js');
+const UserSchema = require('./lists/User.js');
 
-keystone.createList('User', UsersSchema);
+keystone.createList('Todo', TodoSchema);
+keystone.createList('User', UserSchema);
 ```
 
-<!-- FIXME:TL We haven't shown then how to get an Admin UI yes!!!! -->
+<!-- FIXME:TL We haven't shown then how to get an Admin UI yet!!!! -->
 
-Relaunch your app and check if new the list appeared in the Admin UI.
+Relaunch your app and see the lists appear in the Admin UI.
+
 But how can we assign a task to specific user? Let's proceed with [Defining Relationships](/docs/tutorials/relationships.md)
 
 See also:
