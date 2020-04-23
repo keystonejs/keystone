@@ -5,7 +5,7 @@ export class AuthedRelationship extends Relationship.implementation {
     let access;
     if (typeof config.access === 'object') {
       access = config.access;
-    } else {
+    } else if (typeof config.access !== 'undefined') {
       access = {
         create: config.access,
         read: config.access,
