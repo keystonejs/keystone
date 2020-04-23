@@ -110,7 +110,7 @@ class ListAuthProvider {
     this.checkAccess(context, 'mutation', { gqlName });
 
     // Verify incoming details
-    const { item, success, message } = await this.authStrategy.validate(args);
+    const { item, success, message } = await this.authStrategy.validate(args, context);
     if (!success) {
       throw new Error(message);
     }
