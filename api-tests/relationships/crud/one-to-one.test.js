@@ -69,8 +69,8 @@ mutation {
   });
   const { Company, Location } = await getCompanyAndLocation(
     keystone,
-    createLocation.id,
-    createLocation.company.id
+    createLocation.company.id,
+    createLocation.id
   );
 
   // Sanity check the links are setup correctly
@@ -138,46 +138,44 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
 
         describe('Read', () => {
-          if (adapterName !== 'mongoose') {
-            test(
-              'Where A',
-              runner(setupKeystone, async ({ keystone }) => {
-                await createInitialData(keystone);
-                const { location, company } = await createCompanyAndLocation(keystone);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `{
+          test(
+            'Where A',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              const { location, company } = await createCompanyAndLocation(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
                   allLocations(where: { company: { name: "${company.name}"} }) { id }
                   allCompanies(where: { location: { name: "${location.name}"} }) { id }
                 }`,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.allLocations.length).toEqual(1);
-                expect(data.allLocations[0].id).toEqual(location.id);
-                expect(data.allCompanies.length).toEqual(1);
-                expect(data.allCompanies[0].id).toEqual(company.id);
-              })
-            );
-            test(
-              'Where B',
-              runner(setupKeystone, async ({ keystone }) => {
-                await createInitialData(keystone);
-                const { location, company } = await createLocationAndCompany(keystone);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `{
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allLocations.length).toEqual(1);
+              expect(data.allLocations[0].id).toEqual(location.id);
+              expect(data.allCompanies.length).toEqual(1);
+              expect(data.allCompanies[0].id).toEqual(company.id);
+            })
+          );
+          test(
+            'Where B',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              const { location, company } = await createLocationAndCompany(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
                   allLocations(where: { company: { name: "${company.name}"} }) { id }
                   allCompanies(where: { location: { name: "${location.name}"} }) { id }
                 }`,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.allLocations.length).toEqual(1);
-                expect(data.allLocations[0].id).toEqual(location.id);
-                expect(data.allCompanies.length).toEqual(1);
-                expect(data.allCompanies[0].id).toEqual(company.id);
-              })
-            );
-          }
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allLocations.length).toEqual(1);
+              expect(data.allLocations[0].id).toEqual(location.id);
+              expect(data.allCompanies.length).toEqual(1);
+              expect(data.allCompanies[0].id).toEqual(company.id);
+            })
+          );
 
           test(
             'Count',
@@ -198,42 +196,40 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          if (adapterName !== 'mongoose') {
-            test(
-              'Where with count A',
-              runner(setupKeystone, async ({ keystone }) => {
-                await createInitialData(keystone);
-                const { location, company } = await createCompanyAndLocation(keystone);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `{
+          test(
+            'Where with count A',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              const { location, company } = await createCompanyAndLocation(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
                   _allLocationsMeta(where: { company: { name: "${company.name}"} }) { count }
                   _allCompaniesMeta(where: { location: { name: "${location.name}"} }) { count }
                 }`,
-                });
-                expect(errors).toBe(undefined);
-                expect(data._allCompaniesMeta.count).toEqual(1);
-                expect(data._allLocationsMeta.count).toEqual(1);
-              })
-            );
-            test(
-              'Where with count B',
-              runner(setupKeystone, async ({ keystone }) => {
-                await createInitialData(keystone);
-                const { location, company } = await createLocationAndCompany(keystone);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `{
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allCompaniesMeta.count).toEqual(1);
+              expect(data._allLocationsMeta.count).toEqual(1);
+            })
+          );
+          test(
+            'Where with count B',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              const { location, company } = await createLocationAndCompany(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
                   _allLocationsMeta(where: { company: { name: "${company.name}"} }) { count }
                   _allCompaniesMeta(where: { location: { name: "${location.name}"} }) { count }
                 }`,
-                });
-                expect(errors).toBe(undefined);
-                expect(data._allCompaniesMeta.count).toEqual(1);
-                expect(data._allLocationsMeta.count).toEqual(1);
-              })
-            );
-          }
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allCompaniesMeta.count).toEqual(1);
+              expect(data._allLocationsMeta.count).toEqual(1);
+            })
+          );
         });
 
         describe('Create', () => {
@@ -398,54 +394,51 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          if (adapterName !== 'mongoose') {
-            test(
-              'With nested connect B',
-              runner(setupKeystone, async ({ keystone }) => {
-                const { locations } = await createInitialData(keystone);
-                const location = locations[0];
-                const companyName = sampleOne(alphanumGenerator);
+          test(
+            'With nested connect B',
+            runner(setupKeystone, async ({ keystone }) => {
+              const { locations } = await createInitialData(keystone);
+              const location = locations[0];
+              const companyName = sampleOne(alphanumGenerator);
 
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   createLocation(data: {
                     company: { create: { name: "${companyName}" location: { connect: { id: "${location.id}" } } } }
                   }) { id company { id location { id } } }
-                }
-            `,
+                }`,
+              });
+              expect(errors).toBe(undefined);
+
+              const { Company, Location } = await getCompanyAndLocation(
+                keystone,
+                data.createLocation.company.id,
+                data.createLocation.id
+              );
+              // Everything should now be connected
+              expect(Company.location.id.toString()).toBe(Location.id.toString());
+              expect(Location.company.id.toString()).toBe(Company.id.toString());
+
+              const {
+                data: { allLocations },
+              } = await graphqlRequest({
+                keystone,
+                query: `{ allLocations { id company { id location { id }} } }`,
+              });
+
+              // The nested company should not have a location
+              expect(
+                allLocations.filter(({ id }) => id === Location.id)[0].company.location.id
+              ).toEqual(Location.id);
+              allLocations
+                .filter(({ id }) => id !== Location.id)
+                .forEach(location => {
+                  expect(location.company).toBe(null);
                 });
-                expect(errors).toBe(undefined);
-
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  data.createLocation.company.id,
-                  data.createLocation.id
-                );
-                // Everything should now be connected
-                expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
-
-                const {
-                  data: { allLocations },
-                } = await graphqlRequest({
-                  keystone,
-                  query: `{ allLocations { id company { id location { id }} } }`,
-                });
-
-                // The nested company should not have a location
-                expect(
-                  allLocations.filter(({ id }) => id === Location.id)[0].company.location.id
-                ).toEqual(Company.id);
-                allLocations
-                  .filter(({ id }) => id !== Location.id)
-                  .forEach(location => {
-                    expect(location.company).toBe(null);
-                  });
-              })
-            );
-          }
+            })
+          );
 
           test(
             'With nested create',
@@ -528,41 +521,38 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          if (adapterName !== 'mongoose') {
-            test(
-              'With connect B',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createLocationAndCompany(keystone);
+          test(
+            'With connect B',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createLocationAndCompany(keystone);
 
-                // Sanity check the links don't yet exist
-                // `...not.toBe(expect.anything())` allows null and undefined values
-                expect(company.location).not.toBe(expect.anything());
-                expect(location.company).not.toBe(expect.anything());
+              // Sanity check the links don't yet exist
+              // `...not.toBe(expect.anything())` allows null and undefined values
+              expect(company.location).not.toBe(expect.anything());
+              expect(location.company).not.toBe(expect.anything());
 
-                const { errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+              const { errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   updateLocation(
                     id: "${location.id}",
                     data: { company: { connect: { id: "${company.id}" } } }
-                  ) { id company { id } } }
-            `,
-                });
-                expect(errors).toBe(undefined);
+                  ) { id company { id } } }`,
+              });
+              expect(errors).toBe(undefined);
 
-                const { Company, Location } = await getCompanyAndLocation(
-                  keystone,
-                  location.id,
-                  company.id
-                );
-                // Everything should now be connected
-                expect(Company.location.id.toString()).toBe(Location.id.toString());
-                expect(Location.company.id.toString()).toBe(Company.id.toString());
-              })
-            );
-          }
+              const { Company, Location } = await getCompanyAndLocation(
+                keystone,
+                company.id,
+                location.id
+              );
+              // Everything should now be connected
+              expect(Company.location.id.toString()).toBe(Location.id.toString());
+              expect(Location.company.id.toString()).toBe(Company.id.toString());
+            })
+          );
           test(
             'With create A',
             runner(setupKeystone, async ({ keystone }) => {
@@ -784,36 +774,33 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          if (adapterName !== 'mongoose') {
-            test(
-              'With disconnect B',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createLocationAndCompany(keystone);
+          test(
+            'With disconnect B',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createLocationAndCompany(keystone);
 
-                // Run the query to disconnect the location from company
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+              // Run the query to disconnect the location from company
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   updateLocation(
                     id: "${location.id}",
                     data: { company: { disconnect: { id: "${company.id}" } } }
                   ) { id company { id name } }
-                }
-            `,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.updateLocation.id).toEqual(location.id);
-                expect(data.updateLocation.company).toBe(null);
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.updateLocation.id).toEqual(location.id);
+              expect(data.updateLocation.company).toBe(null);
 
-                // Check the link has been broken
-                const result = await getCompanyAndLocation(keystone, company.id, location.id);
-                expect(result.Company.location).toBe(null);
-                expect(result.Location.company).toBe(null);
-              })
-            );
-          }
+              // Check the link has been broken
+              const result = await getCompanyAndLocation(keystone, company.id, location.id);
+              expect(result.Company.location).toBe(null);
+              expect(result.Location.company).toBe(null);
+            })
+          );
           test(
             'With disconnectAll A',
             runner(setupKeystone, async ({ keystone }) => {
@@ -829,8 +816,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     id: "${company.id}",
                     data: { location: { disconnectAll: true } }
                   ) { id location { id name } }
-                }
-            `,
+                }`,
               });
               expect(errors).toBe(undefined);
               expect(data.updateCompany.id).toEqual(company.id);
@@ -843,36 +829,33 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          if (adapterName !== 'mongoose') {
-            test(
-              'With disconnectAll B',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createLocationAndCompany(keystone);
+          test(
+            'With disconnectAll B',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createLocationAndCompany(keystone);
 
-                // Run the query to disconnect the location from company
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `
+              // Run the query to disconnect the location from company
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `
                 mutation {
                   updateLocation(
                     id: "${location.id}",
                     data: { company: { disconnectAll: true } }
                   ) { id company { id name } }
-                }
-            `,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.updateLocation.id).toEqual(location.id);
-                expect(data.updateLocation.company).toBe(null);
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.updateLocation.id).toEqual(location.id);
+              expect(data.updateLocation.company).toBe(null);
 
-                // Check the link has been broken
-                const result = await getCompanyAndLocation(keystone, company.id, location.id);
-                expect(result.Company.location).toBe(null);
-                expect(result.Location.company).toBe(null);
-              })
-            );
-          }
+              // Check the link has been broken
+              const result = await getCompanyAndLocation(keystone, company.id, location.id);
+              expect(result.Company.location).toBe(null);
+              expect(result.Location.company).toBe(null);
+            })
+          );
         });
 
         describe('Delete', () => {
@@ -897,28 +880,26 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             })
           );
 
-          if (adapterName !== 'mongoose') {
-            test(
-              'delete B',
-              runner(setupKeystone, async ({ keystone }) => {
-                // Manually setup a connected Company <-> Location
-                const { location, company } = await createLocationAndCompany(keystone);
+          test(
+            'delete B',
+            runner(setupKeystone, async ({ keystone }) => {
+              // Manually setup a connected Company <-> Location
+              const { location, company } = await createLocationAndCompany(keystone);
 
-                // Run the query to disconnect the location from company
-                const { data, errors } = await graphqlRequest({
-                  keystone,
-                  query: `mutation { deleteLocation(id: "${location.id}") { id } } `,
-                });
-                expect(errors).toBe(undefined);
-                expect(data.deleteLocation.id).toBe(location.id);
+              // Run the query to disconnect the location from company
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `mutation { deleteLocation(id: "${location.id}") { id } } `,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.deleteLocation.id).toBe(location.id);
 
-                // Check the link has been broken
-                const result = await getCompanyAndLocation(keystone, company.id, location.id);
-                expect(result.Company.location).toBe(null);
-                expect(result.Location).toBe(null);
-              })
-            );
-          }
+              // Check the link has been broken
+              const result = await getCompanyAndLocation(keystone, company.id, location.id);
+              expect(result.Company.location).toBe(null);
+              expect(result.Location).toBe(null);
+            })
+          );
         });
       });
     });
