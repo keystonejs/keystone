@@ -8,7 +8,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/fields": "^9.0.0"
+    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/fields-authed-relationship": "^1.0.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/list-plugins"
 }
