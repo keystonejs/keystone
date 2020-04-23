@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, Suspense } from 'react';
+import { Fragment, useEffect, Suspense } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { useList } from '../../providers/List';
 
@@ -18,6 +18,7 @@ import { LoadingIndicator } from '@arch-ui/loading';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
+import ListDescription from '../../components/ListDescription';
 import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
 import { DisclosureArrow } from '../../components/Popout';
@@ -39,7 +40,6 @@ const HeaderInset = props => (
 
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, routeProps, query } = props;
-  const measureElementRef = useRef();
   const { list, openCreateItemModal } = useList();
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
@@ -97,8 +97,6 @@ export function ListLayout(props) {
   const Render = ({ children }) => children();
   return (
     <main>
-      <div ref={measureElementRef} />
-
       <Container isFullWidth>
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
@@ -114,6 +112,7 @@ export function ListLayout(props) {
               </IconButton>
             ) : null}
           </FlexGroup>
+          <ListDescription text={list.adminDoc} />
           <div
             css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
             id={cypressFiltersId}

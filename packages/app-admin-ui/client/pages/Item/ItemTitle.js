@@ -14,6 +14,8 @@ import { useList } from '../../providers/List';
 import AddNewItem from './AddNewItem';
 import ItemId from './ItemId';
 
+import ListDescription from '../../components/ListDescription';
+
 const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
@@ -25,6 +27,7 @@ export let ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
   return (
     <HeaderInset>
       <PageTitle>{titleText}</PageTitle>
+      <ListDescription text={list.adminDoc} />
       <FlexGroup align="center" justify="space-between" css={{ marginBottom: '0.9rem' }}>
         <div>
           <IconButton
