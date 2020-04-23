@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, forwardRef, useMemo } from 'react';
+import { useState, useRef, Fragment, useLayoutEffect, forwardRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { Popper } from 'react-popper';
+import { usePopper } from 'react-popper';
 import { marks, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
 import { CircleSlashIcon } from '@arch-ui/icons';
@@ -69,7 +69,7 @@ function InnerToolbar({ blocks, editor, editorState }) {
   );
 }
 
-const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children }, ref) => {
+const PopperRender = forwardRef(({ update, editorState, style, children }, ref) => {
   let { fragment } = editorState;
   let shouldShowToolbar = fragment.text !== '';
   let containerRef = useRef(null);
@@ -78,9 +78,9 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
 
   useLayoutEffect(() => {
     if (shouldShowToolbar) {
-      scheduleUpdate();
+      update();
     }
-  }, [scheduleUpdate, editorState, snapshot, shouldShowToolbar]);
+  }, [update, editorState, snapshot, shouldShowToolbar]);
 
   return createPortal(
     <div
@@ -117,31 +117,31 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
 export default ({ editorState, blocks, editor }) => {
   // this element is created here so that when the popper rerenders
   // the inner toolbar won't have to update
-  let children = <InnerToolbar blocks={blocks} editor={editor} editorState={editorState} />;
+  const children = <InnerToolbar blocks={blocks} editor={editor} editorState={editorState} />;
+
+  // the reason we do this rather than having the selection reference
+  // be constant is because the selection reference
+  // has some internal state and it shouldn't persist between different
+  // editor references
+  const virtualElement = useMemo(getSelectionReference, []);
+
+  const [popperElement, setPopperElement] = useState(null);
+  const { styles, update } = usePopper(virtualElement, popperElement, {
+    placement: 'top',
+    modifiers: [{ name: 'computeStyles', options: { adaptive: false } }],
+  });
+
   return (
-    <Popper
-      placement="top"
-      referenceElement={
-        // the reason we do this rather than having the selection reference
-        // be constant is because the selection reference
-        // has some internal state and it shouldn't persist between different
-        // editor references
-        useMemo(getSelectionReference, [])
-      }
-    >
-      {({ style, ref, scheduleUpdate }) => (
-        <PopperRender
-          {...{
-            scheduleUpdate,
-            editorState,
-            style: { ...style, zIndex: 10 },
-            blocks,
-            editor,
-            ref,
-            children,
-          }}
-        />
-      )}
-    </Popper>
+    <PopperRender
+      {...{
+        update,
+        editorState,
+        style: { ...styles.popper, zIndex: 10 },
+        blocks,
+        editor,
+        ref: setPopperElement,
+        children,
+      }}
+    />
   );
 };

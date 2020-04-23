@@ -1,5 +1,13 @@
 # @arch-ui/day-picker
 
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [[`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+
 ## 0.0.23
 
 ### Patch Changes
