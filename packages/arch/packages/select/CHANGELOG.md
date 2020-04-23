@@ -1,5 +1,11 @@
 # @arch-ui/select
 
+## 0.1.7
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
 ## 0.1.6
 
 ### Patch Changes

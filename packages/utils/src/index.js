@@ -42,6 +42,7 @@ export const resolveAllKeys = obj => {
     // If there are any errors, we want to surface them in the same shape as the
     // input object
     if (Object.keys(errors).length) {
+      console.log(errors);
       const firstError = results.find(({ isRejected }) => isRejected).reason;
       // Use the first error as the message so it's at least meaningful
       const error = new Error(firstError.message || firstError.toString());

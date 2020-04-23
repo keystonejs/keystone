@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import memoize from 'memoize-one';
+import React, { useMemo } from 'react';
 import { PseudoState } from 'react-pseudo-state';
 import styled from '@emotion/styled';
 
@@ -10,11 +9,13 @@ const Wrapper = styled.div({
   display: 'flex',
   alignItems: 'center',
 });
+
 const Label = styled.label({
   alignItems: 'center',
   display: 'flex',
   lineHeight: 1,
 });
+
 const Text = 'span';
 
 const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }) => {
@@ -73,108 +74,79 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }) =>
 
 const defaultComponents = { Wrapper, Label, Text };
 
-export class Control extends Component {
-  static defaultProps = {
-    checked: false,
-    components: {},
-    isDisabled: false,
-  };
-  cacheComponents = memoize(components => ({
-    ...defaultComponents,
-    ...components,
-  }));
+export const Control = ({
+  checked = false,
+  children,
+  components: propComponents = {},
+  isDisabled = false,
+  isRequired,
+  name,
+  onChange,
+  icon: IconContent,
+  tabIndex,
+  type,
+  value,
+  id,
+  ...wrapperProps
+}) => {
+  const components = useMemo(
+    () => ({
+      ...defaultComponents,
+      ...propComponents,
+    }),
+    [propComponents]
+  );
 
-  focus() {
-    if (this.control) this.control.focus();
-  }
-  blur() {
-    if (this.control) this.control.blur();
-  }
-  getRef = ref => {
-    this.control = ref;
-  };
+  return (
+    <components.Wrapper {...wrapperProps}>
+      <PseudoState>
+        {(
+          {
+            onBlur,
+            onFocus,
+            onKeyDown,
+            onKeyUp,
+            onMouseDown,
+            onMouseEnter,
+            onMouseLeave,
+            onMouseUp,
+            onTouchEnd,
+            onTouchStart,
+          },
+          snapshot
+        ) => {
+          const labelHandlers = {
+            onMouseDown,
+            onMouseUp,
+            onMouseEnter,
+            onMouseLeave,
+            onTouchEnd,
+            onTouchStart,
+          };
+          const inputHandlers = { onBlur, onChange, onFocus, onKeyDown, onKeyUp };
+          const iconProps = { ...snapshot, checked, isDisabled };
 
-  render() {
-    const {
-      checked,
-      children,
-      isDisabled,
-      isRequired,
-      name,
-      onChange,
-      svg,
-      tabIndex,
-      type,
-      value,
-      id,
-      ...wrapperProps
-    } = this.props;
-    const components = this.cacheComponents(this.props.components);
-
-    return (
-      <components.Wrapper {...wrapperProps}>
-        <PseudoState>
-          {(
-            {
-              onBlur,
-              onFocus,
-              onKeyDown,
-              onKeyUp,
-              onMouseDown,
-              onMouseEnter,
-              onMouseLeave,
-              onMouseUp,
-              onTouchEnd,
-              onTouchStart,
-            },
-            snapshot
-          ) => {
-            const labelHandlers = {
-              onMouseDown,
-              onMouseUp,
-              onMouseEnter,
-              onMouseLeave,
-              onTouchEnd,
-              onTouchStart,
-            };
-            const inputHandlers = { onBlur, onChange, onFocus, onKeyDown, onKeyUp };
-            const iconProps = { ...snapshot, checked, isDisabled };
-
-            return (
-              <components.Label isChecked={checked} isDisabled={isDisabled} {...labelHandlers}>
-                <HiddenInput
-                  {...inputHandlers}
-                  checked={checked}
-                  disabled={isDisabled}
-                  innerRef={this.getRef}
-                  name={name}
-                  required={isRequired}
-                  tabIndex={tabIndex}
-                  type={type}
-                  value={value}
-                  id={id}
-                />
-                <Icon {...iconProps}>
-                  <Svg html={svg} />
-                </Icon>
-                {children ? <components.Text>{children}</components.Text> : null}
-              </components.Label>
-            );
-          }}
-        </PseudoState>
-      </components.Wrapper>
-    );
-  }
-}
-
-const Svg = ({ html, ...props }) => (
-  <svg
-    dangerouslySetInnerHTML={{ __html: html }}
-    focusable="false"
-    height="24"
-    role="presentation"
-    viewBox="0 0 24 24"
-    width="24"
-    {...props}
-  />
-);
+          return (
+            <components.Label isChecked={checked} isDisabled={isDisabled} {...labelHandlers}>
+              <HiddenInput
+                {...inputHandlers}
+                checked={checked}
+                disabled={isDisabled}
+                name={name}
+                required={isRequired}
+                tabIndex={tabIndex}
+                type={type}
+                value={value}
+                id={id}
+              />
+              <Icon {...iconProps}>
+                <IconContent />
+              </Icon>
+              {children ? <components.Text>{children}</components.Text> : null}
+            </components.Label>
+          );
+        }}
+      </PseudoState>
+    </components.Wrapper>
+  );
+};

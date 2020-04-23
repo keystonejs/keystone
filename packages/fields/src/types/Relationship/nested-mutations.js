@@ -198,12 +198,12 @@ async function resolveNestedSingle({
 
   if (input.connect) {
     operation = 'connect';
-    console.log({ refList, connect: input.connect, itemQueryName: refList.gqlNames.itemQueryName });
+    // mike console.log({ refList, connect: input.connect, itemQueryName: refList.gqlNames.itemQueryName });
     method = () =>
       refList.itemQuery({ where: input.connect }, context, refList.gqlNames.itemQueryName);
   } else if (input.create) {
     operation = 'create';
-    console.log({ refList, connect: input.connect, itemQueryName: refList.gqlNames.itemQueryName });
+    // mike console.log({ refList, connect: input.connect, itemQueryName: refList.gqlNames.itemQueryName });
     method = () => refList.createMutation(input.create, context, mutationState);
   }
 
@@ -225,8 +225,6 @@ async function resolveNestedSingle({
       result_[operation] = [item.id];
     }
   }
-  console.log({ result: result_ });
-
   return result_;
 }
 

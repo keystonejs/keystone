@@ -42,7 +42,7 @@ const VirtualField = ({ field, errors, value: serverValue }) => {
   return (
     <FieldContainer>
       <FieldLabel field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.config.adminDoc} />
       <PrettyData data={canRead ? value : undefined} />
     </FieldContainer>
   );

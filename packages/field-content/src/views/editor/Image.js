@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useLayoutEffect, forwardRef } from 'react';
-import { Popper } from 'react-popper';
+import { useState, useLayoutEffect, forwardRef } from 'react';
+import { usePopper } from 'react-popper';
 import { useStateWithEqualityCheck } from './hooks';
 
-let PopperRender = forwardRef(
-  ({ scheduleUpdate, alignment, isFocused, style, onAlignmentChange }, ref) => {
-    useLayoutEffect(scheduleUpdate, [alignment]);
+const PopperRender = forwardRef(
+  ({ update, alignment, isFocused, style, onAlignmentChange }, ref) => {
+    useLayoutEffect(update, [alignment]);
     return (
       <div
         ref={ref}
@@ -39,14 +39,20 @@ let PopperRender = forwardRef(
   }
 );
 
-let popperModifiers = {
-  flip: { enabled: false },
-  hide: { enabled: false },
-  preventOverflow: { enabled: false },
-};
+const popperModifiers = [
+  { name: 'flip', enabled: false },
+  { name: 'hide', enabled: false },
+  { name: 'preventOverflow', enabled: false },
+];
 
-let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...props }) => {
-  let [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
+const Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...props }) => {
+  const [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
+  const [popperElement, setPopperElement] = useState(null);
+
+  const { styles, update } = usePopper(referenceElement, popperElement, {
+    placement: 'top',
+    modifiers: popperModifiers,
+  });
 
   return (
     <div>
@@ -60,13 +66,16 @@ let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...prop
           outline: isFocused ? 'auto' : null,
         }}
       />
-      <Popper modifiers={popperModifiers} placement="top" referenceElement={referenceElement}>
-        {({ style, ref, scheduleUpdate }) => (
-          <PopperRender
-            {...{ scheduleUpdate, alignment, ref, isFocused, style, onAlignmentChange }}
-          />
-        )}
-      </Popper>
+      <PopperRender
+        {...{
+          update,
+          alignment,
+          ref: setPopperElement,
+          isFocused,
+          style: styles.popper,
+          onAlignmentChange,
+        }}
+      />
     </div>
   );
 };

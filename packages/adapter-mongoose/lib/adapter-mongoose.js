@@ -262,6 +262,20 @@ class MongooseListAdapter extends BaseListAdapter {
     );
   }
 
+  async _unsetForeignOneToOneValues(data, id) {
+    // If there's a 1:1 FK in the data on a different list we need to go and
+    // delete it from any other item;
+    await Promise.all(
+      Object.keys(data)
+        .map(key => ({ adapter: this.fieldAdaptersByPath[key] }))
+        .filter(({ adapter }) => adapter && adapter.isRelationship)
+        .filter(({ adapter: { rel } }) => rel.cardinality === '1:1' && rel.tableName !== this.key)
+        .map(({ adapter: { rel: { tableName, columnName } } }) =>
+          this._setNullByValue({ tableName, columnName, value: id })
+        )
+    );
+  }
+
   async _processNonRealFields(data, processFunction) {
     return resolveAllKeys(
       arrayToObject(
@@ -285,7 +299,6 @@ class MongooseListAdapter extends BaseListAdapter {
 
   async _createSingle(realData) {
     const item = (await this.model.create(realData)).toObject();
-
     const itemId = item._id;
     return { item, itemId };
   }
@@ -361,6 +374,7 @@ class MongooseListAdapter extends BaseListAdapter {
 
     // Unset any real 1:1 fields
     await this._unsetOneToOneValues(realData);
+    await this._unsetForeignOneToOneValues(data, id);
 
     // Update the real data
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
@@ -390,11 +404,6 @@ class MongooseListAdapter extends BaseListAdapter {
           matchCol = columnName;
           selectCol = '_id';
         }
-
-        // const mod = await this._getModel(tableName);
-        // console.log('Mongo');
-        // console.log(await mod.find({}).exec());
-        // console.log({ tableName, find: { [matchCol]: item.id } });
 
         const currentRefIds = (
           await this._getModel(tableName).aggregate([

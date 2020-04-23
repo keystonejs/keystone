@@ -130,7 +130,7 @@ class ListAuthProvider {
   checkAccess(context, type, { gqlName }) {
     const operation = 'auth';
     const access = context.getAuthAccessControlForUser(this.list.key, { gqlName });
-    if (!access) {
+    if (!access || true) {
       graphqlLogger.debug({ operation, access, gqlName }, 'Access statically or implicitly denied');
       graphqlLogger.info({ operation, gqlName }, 'Access Denied');
       // If the client handles errors correctly, it should be able to

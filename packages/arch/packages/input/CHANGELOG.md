@@ -1,5 +1,11 @@
 # @arch-ui/input
 
+## 0.1.8
+
+### Patch Changes
+
+- [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa) [#2730](https://github.com/keystonejs/keystone/pull/2730) Thanks [@Vultraz](https://github.com/Vultraz)! - Made HiddenInput component actually hidden.
+
 ## 0.1.7
 
 ### Patch Changes

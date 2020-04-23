@@ -47,7 +47,19 @@ class JSONAdapter extends BaseKeystoneAdapter {
       listAdapter._postConnect({ rels });
     });
     // Ensure we have a default empty array for all the lists
-    return pSettle([this._dbInstance.defaults(mapKeys(this.listAdapters, () => [])).write()]);
+
+    let adjacencyTables = {};
+
+    rels
+      .filter(({ cardinality }) => {
+        return cardinality === 'N:N';
+      })
+      .forEach(({ tableName }) => {
+        adjacencyTables = { ...adjacencyTables, [tableName]: [] };
+      });
+
+    const listTables = mapKeys(this.listAdapters, () => []);
+    return pSettle([this._dbInstance.defaults({ ...listTables, ...adjacencyTables }).write()]);
   }
 
   read() {
@@ -184,7 +196,6 @@ class JSONListAdapter extends BaseListAdapter {
   }
 
   async _processNonRealFields(data, processFunction) {
-    // console.log('_processNonRealFields', data);
     const processed = await resolveAllKeys(
       arrayToObject(
         Object.entries(omit(data, this.realKeys)).map(([path, value]) => ({
@@ -196,8 +207,6 @@ class JSONListAdapter extends BaseListAdapter {
         processFunction
       )
     );
-    // console.log({ processed });
-
     return processed;
   }
 
@@ -206,25 +215,17 @@ class JSONListAdapter extends BaseListAdapter {
   }
 
   async _createSingle(realData) {
-    const beforeCreateSingle = this.logDB();
     const item = await this.getDBCollection()
       .insert(realData)
       .write();
-    const afterCreateSingle = this.logDB();
-
-    console.log('create input', realData);
-    console.log('before create single', beforeCreateSingle);
-    console.log('after create single', afterCreateSingle);
-    console.log('Should be single item:', { item });
     return { item, itemId: item.id };
   }
 
   async _create(data) {
-    console.log('_create step 1', { data });
     const realData = pick(data, this.realKeys);
-
     // Unset any real 1:1 fields
     await this._unsetOneToOneValues(realData);
+    // await this._unsetForeignOneToOneValues(data, id); // todo
 
     // Insert the real data into the table
     const { item, itemId } = await this._createSingle(realData);
@@ -238,12 +239,11 @@ class JSONListAdapter extends BaseListAdapter {
     // We should only be populating non-many fields, but the non-real-fields are generally many,
     // which we want to ignore, with the exception of 1:1 fields with the FK on the other table,
     // which we want to actually keep!
-    console.log('Were not expecting a company key on location yet', { ...item, ...manyItem });
+
     return { ...item, ...manyItem };
   }
 
   async _delete(id) {
-    console.log('_delete', { id });
     return await this.getDBCollection()
       // Remove it by id
       .remove({ id })
@@ -253,16 +253,19 @@ class JSONListAdapter extends BaseListAdapter {
   }
 
   async _update(id, data) {
-    console.log('_update step 2 with company', { data });
     const realData = pick(data, this.realKeys);
 
     // Unset any real 1:1 fields
     await this._unsetOneToOneValues(realData);
+    // await this._unsetForeignOneToOneValues(data, id);
     const db = this.getDBCollection();
 
     // Update the real data
     if (Object.keys(realData).length) {
-      await db.find({ id }).assign(realData);
+      await db
+        .find({ id })
+        .assign(realData)
+        .write();
     }
 
     const item = await db
@@ -271,12 +274,9 @@ class JSONListAdapter extends BaseListAdapter {
       .pick(['id', ...this.realKeys])
       .value();
 
-    console.log('I wrote this code so it might be wrong', { item });
-
     // For every many-field, update the many-table
     await this._processNonRealFields(data, async ({ path, value: newValues, adapter }) => {
       const { cardinality, columnName, tableName } = adapter.rel;
-      console.log({ cardinality, columnName, tableName, newValues });
       let value;
       // Future task: Is there some way to combine the following three
       // operations into a single query?
@@ -289,17 +289,15 @@ class JSONListAdapter extends BaseListAdapter {
           matchCol = near;
           selectCol = far;
         } else {
+          //cardinality === '1:N'
           matchCol = columnName;
           selectCol = 'id';
         }
 
-        const currentRefIds = (
-          (await this.getDBCollection(tableName)
-            .find({ [matchCol]: item.id })
-            .value()) || []
-        ).map(x => x[selectCol].toString());
-
-        console.log('This is empty', { currentRefIds });
+        const currentRefIds = await this.getDBCollection(tableName)
+          .filter({ [matchCol]: item.id })
+          .value()
+          .map(x => x[selectCol].toString());
 
         // Delete what needs to be deleted
         const needsDelete = currentRefIds.filter(x => !newValues.includes(x));
@@ -313,15 +311,14 @@ class JSONListAdapter extends BaseListAdapter {
               }) // far side
               .write();
           } else {
+            //cardinality === '1:N'
             await this.getDBCollection(tableName)
-              .find(item => needsDelete.includes(item[selectCol] === item.id))
+              .find(item => needsDelete.includes(item[selectCol]))
               .assign({ [columnName]: null })
               .write();
           }
         }
         value = newValues.filter(id => !currentRefIds.includes(id));
-
-        console.log('This is empty', { currentRefIds });
       } else {
         // If there are values, update the other side to point to me,
         // otherwise, delete the thing that was pointing to me
@@ -331,11 +328,10 @@ class JSONListAdapter extends BaseListAdapter {
         }
         value = newValues;
       }
-
       await this._createOrUpdateField({ value, adapter, itemId: item.id });
     });
-
-    return (await this._itemsQuery({ where: { id: item.id }, first: 1 }))[0] || null;
+    const itemQRes = await this._itemsQuery({ where: { id: item.id }, first: 1 }, {}, true);
+    return itemQRes[0] || null;
   }
 
   async _findAll() {
@@ -350,11 +346,11 @@ class JSONListAdapter extends BaseListAdapter {
     return await (foundItem || null);
   }
 
-  _find(where) {
+  async _find(where) {
     return this._constructWhereChain(this.getDBCollection(), where).value();
   }
 
-  _findOne(where) {
+  async _findOne(where) {
     return this._constructWhereChain(this.getDBCollection(), where)
       .head()
       .value();
@@ -362,11 +358,8 @@ class JSONListAdapter extends BaseListAdapter {
 
   _buildChainableClauses(where) {
     const conditions = this._allQueryConditions();
-
     // Build up a list of functions we want to chain together as AND filters
     return Object.entries(where).map(([condition, value]) => {
-      // console.log({ condition, value, f: conditions[condition] });
-
       // A "basic" condition we know how to handle
       if (conditions[condition]) {
         return conditions[condition](value);
@@ -377,16 +370,12 @@ class JSONListAdapter extends BaseListAdapter {
         fieldAdapter.supportsWhereClause(condition)
       );
 
-      console.log({ fieldAdapterForClause });
-
       // Nope, nothing supports it, so we bail
       if (!fieldAdapterForClause) {
         throw new Error(
           `Unexpected where clause '${condition}: ${JSON.stringify(value)}' for list '${this.key}'.`
         );
       }
-
-      console.log({ fieldAdapterForClause });
 
       // This adapter only knows how to handle special cases for `Relationship`
       // fields, so it'll throw for everything else left over
@@ -401,31 +390,37 @@ class JSONListAdapter extends BaseListAdapter {
       const refListAdapter = fieldAdapterForClause.getRefListAdapter();
 
       // Finally, we have our filter for the Relationship field
-      return () => obj => {
+      return () => async obj => {
         const { many } = fieldAdapterForClause.config;
         // This nested where clause should only operate on the IDs that are
         // setup as relationships.
-        const idFilter = many
-          ? { id_in: obj[fieldAdapterForClause.path] || [] }
-          : { id: obj[fieldAdapterForClause.path] };
+        const { dbPath, refListKey, refFieldPath } = fieldAdapterForClause;
+        const relID = obj.id;
+        const refCollection = this.getDBCollection(refListKey);
+        // Get the ID of every related item from the refCollection
+        const inIDs = await refCollection
+          .filter(item => item[refFieldPath] === relID)
+          .map(item => item.id)
+          .value();
 
-        // Combine the ID filter with whatever filter was passed in
+        const idFilter = many ? { id_in: inIDs } : { id: obj[dbPath] };
+
+        // Combine the ID filter with whatever filter was initially passed in
         const refListWhere = { AND: [idFilter, value] };
 
         // And finally count how many of the related items match that filter
-        const { count } = refListAdapter._itemsQuery({ where: refListWhere }, { meta: true });
+        const { count } = await refListAdapter._itemsQuery({ where: refListWhere }, { meta: true });
 
         if (many) {
           // Check for _some/_every/_none
-          const [, conditionModifier] = condition.split('_');
+          const conditionModifier = condition.split('_')[1];
           if (conditionModifier === 'some') {
             return count !== 0;
           } else if (conditionModifier === 'every') {
-            return count === obj[fieldAdapterForClause.path].length;
+            return count === inIDs.length;
           } else if (conditionModifier === 'none') {
             return count === 0;
           }
-
           return false;
         }
 
@@ -435,12 +430,15 @@ class JSONListAdapter extends BaseListAdapter {
     });
   }
 
-  _constructWhereChain(chain, where) {
+  async _constructWhereChain(chain, where) {
     const lodash = this._parentAdapter.getLodash();
-    return this._buildChainableClauses(where).reduce(
-      (whereChain, clause) => whereChain.filter(clause(lodash)),
-      chain
-    );
+    // _buildChainableClauses returns an array of functions (that, sadly, return more functions that can be async)
+    // this async is 😭😭😭
+    const asyncFilter = async (arr, predicate) =>
+      Promise.all(arr.map(predicate)).then(results => arr.filter((_v, index) => results[index]));
+    return this._buildChainableClauses(where)
+      .map(clause => clause(lodash))
+      .reduce(async (whereChain, clause) => asyncFilter(await whereChain, clause), chain);
   }
 
   /**
@@ -471,16 +469,38 @@ class JSONListAdapter extends BaseListAdapter {
    *     item => new RegExp(f('zip')).test(item.name),
    *   ]))
    */
-  async _itemsQuery({ where, first, skip, orderBy, search }, { meta = false } = {}, miketempdebug) {
-    if (miketempdebug) {
-      return [];
-      console.log('HEREEEEE for JSON');
-      console.log({ where, first, skip, orderBy, search });
-    }
+  async _itemsQuery({ where, first, skip, orderBy, search }, { meta = false, from = {} } = {}) {
     let chain = this.getDBCollection();
 
+    // Joins/where to effectively translate us onto a different list
+    if (Object.keys(from).length) {
+      const a = from.fromList.adapter.fieldAdaptersByPath[from.fromField];
+
+      const { cardinality, columnName } = a.rel;
+
+      // const otherTableAlias = this._getNextBaseTableAlias();
+
+      if (cardinality === 'N:N') {
+        const { near, far } = from.fromList.adapter._getNearFar(a);
+        // this._query.leftOuterJoin(
+        //   `${tableName} as ${otherTableAlias}`,
+        //   `${otherTableAlias}.${far}`,
+        //   `${baseTableAlias}.id`
+        // );
+        // this._query.whereRaw('true');
+        // this._query.andWhere(`${otherTableAlias}.${near}`, `=`, from.fromId);
+
+        console.log({ near, far });
+
+        chain = chain.filter(item => item[columnName] === from.fromId);
+      } else {
+        // 1:N
+        chain = chain.filter(item => item[columnName] === from.fromId);
+      }
+    }
+
     if (where) {
-      chain = this._constructWhereChain(chain, where);
+      chain = await this._constructWhereChain(chain, where);
     }
 
     if (search) {
@@ -511,17 +531,14 @@ class JSONListAdapter extends BaseListAdapter {
       chain = chain.take(first);
     }
 
-    const items = chain.value();
+    const items = await chain.value();
 
-    if (miketempdebug) console.log('json', { items });
-
-    if (!meta) {
-      return items;
+    if (meta) {
+      return {
+        count: items.length,
+      };
     }
-
-    return {
-      count: items.length,
-    };
+    return items;
   }
 
   _getNearFar(fieldAdapter) {
@@ -533,13 +550,6 @@ class JSONListAdapter extends BaseListAdapter {
 
   async _createOrUpdateField({ value, adapter, itemId }) {
     const { cardinality, columnName, tableName } = adapter.rel;
-    console.log('_createOrUpdateField this is step 3', {
-      value, // is locations
-      cardinality,
-      columnName,
-      tableName,
-      itemId, // is company id
-    });
 
     // N:N - put it in the many table
     // 1:N - put it in the FK col of the other table
@@ -565,7 +575,7 @@ class JSONListAdapter extends BaseListAdapter {
             .write();
           return { item };
         } else {
-          // Update tableName.columnName's with related item
+          // cardinality === '1:N'
           const items = await this.getDBCollection(tableName)
             .filter(d => values.includes(d.id))
             .each(item => (item[columnName] = itemId))
@@ -580,18 +590,16 @@ class JSONListAdapter extends BaseListAdapter {
 
   // ToDo: Adapt these methods for JSON
   async _unsetOneToOneValues(realData) {
-    // console.log('_unsetOneToOneValues', realData);
-
     // If there's a 1:1 FK in the real data we need to go and
     // delete it from any other item;
     await Promise.all(
       Object.entries(realData)
         .map(([key, value]) => ({ value, adapter: this.fieldAdaptersByPath[key] }))
         .filter(({ adapter }) => adapter && adapter.isRelationship)
-        .filter(({ value, adapter: { rel } }) => {
-          console.log({ rel });
-          return rel.cardinality === '1:1' && rel.tableName === this.tableName && value !== null;
-        })
+        .filter(
+          ({ value, adapter: { rel } }) =>
+            rel.cardinality === '1:1' && rel.tableName === this.tableName && value !== null
+        )
         .map(({ value, adapter: { rel: { tableName, columnName } } }) =>
           this._setNullByValue({ tableName, columnName, value })
         )

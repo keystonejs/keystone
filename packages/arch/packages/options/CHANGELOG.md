@@ -1,5 +1,18 @@
 # @arch-ui/options
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [[`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/icons@0.1.0
+
+## 0.0.18
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
 ## 0.0.17
 
 ### Patch Changes

@@ -148,7 +148,6 @@ class BaseListAdapter {
   }
 
   async itemsQuery(args, { meta = false, from = {} } = {}, miketempdebug) {
-    // if (miketempdebug) console.log('ISHERE', args, { meta, from }, miketempdebug);
     const results = await this._itemsQuery(args, { meta, from }, miketempdebug);
     return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
   }

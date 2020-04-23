@@ -202,8 +202,6 @@ export class Relationship extends Implementation {
     let currentValue;
 
     if (this.many) {
-      console.log('many', item);
-
       const info = { fieldName: this.path };
       currentValue = item
         ? await refList.listQuery(

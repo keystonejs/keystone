@@ -324,6 +324,13 @@ module.exports = class List {
 
   getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
+    const {
+      defaultPageSize,
+      defaultColumns,
+      defaultSort,
+      maximumPageSize,
+      ...adminConfig
+    } = this.adminConfig;
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
@@ -339,13 +346,11 @@ module.exports = class List {
         .map(field => field.getAdminMeta({ schemaName })),
       views: this.views,
       adminConfig: {
-        defaultPageSize: this.adminConfig.defaultPageSize,
-        defaultColumns: this.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: this.adminConfig.defaultSort,
-        maximumPageSize: Math.max(
-          this.adminConfig.defaultPageSize,
-          this.adminConfig.maximumPageSize
-        ),
+        defaultPageSize,
+        defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        defaultSort: defaultSort,
+        maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
+        ...adminConfig,
       },
     };
   }
@@ -889,7 +894,9 @@ module.exports = class List {
   }
 
   async _itemsQuery(args, extra, miketempdebug) {
-    // if (miketempdebug) console.log('HERE', args);
+    // if (miketempdebug) {
+    //   console.log('HERE', args);
+    // }
     // This is private because it doesn't handle access control
 
     const { maxResults } = this.queryLimits;
@@ -929,7 +936,6 @@ module.exports = class List {
     const results = await this.adapter.itemsQuery(args, extra, miketempdebug);
 
     if (results.length > maxResults) {
-      console.log({ results, args, extra });
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
     if (extra && extra.context) {
@@ -1289,7 +1295,6 @@ module.exports = class List {
         await afterChangeStack.pop()();
       }
     }
-
     // Return the result of the mutation
     return result;
   }
@@ -1356,6 +1361,7 @@ module.exports = class List {
       await this._beforeChange(resolvedData, existingItem, context, operation, originalInput);
 
       let newItem;
+
       try {
         newItem = await this.adapter.create(resolvedData);
         createdPromise.resolve(newItem);

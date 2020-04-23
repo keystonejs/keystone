@@ -69,7 +69,7 @@ class CustomProvider {
       const gqlName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
 
       // Perform access control check before passing off control to the
-      // user defined resolver (along with the evalutated access).
+      // user defined resolver (along with the evaluated access).
       const computeAccess = context => {
         const _access = context.getCustomAccessControlForUser(access);
         if (!_access) {
