@@ -1,5 +1,33 @@
 # @keystonejs/fields
 
+## 9.0.4
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/app-admin-ui@5.11.1
+  - @arch-ui/alert@0.0.17
+  - @arch-ui/button@0.0.18
+  - @arch-ui/controls@0.1.8
+  - @arch-ui/day-picker@0.0.25
+  - @arch-ui/drawer@0.0.21
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/filters@0.0.19
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+  - @arch-ui/lozenge@0.0.16
+  - @arch-ui/options@0.0.20
+  - @arch-ui/popout@0.0.18
+  - @arch-ui/select@0.1.8
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+  - @keystonejs/build-field-types@5.2.5
+  - @keystonejs/field-content@5.4.7
+
 ## 9.0.3
 
 ### Patch Changes
