@@ -1,5 +1,14 @@
 # @keystonejs/fields-authed-relationship
 
+## 1.0.3
+
+### Patch Changes
+
+- [`5958d58a`](https://github.com/keystonejs/keystone/commit/5958d58abc98c4f1b9a28e4a5a5666b2f634a054) [#2813](https://github.com/keystonejs/keystone/pull/2813) Thanks [@jesstelford](https://github.com/jesstelford)! - Correctly handles AuthedRelationship field with default access control; no longer throws an error about `update` being undefined.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/fields@9.0.4
+
 ## 1.0.2
 
 ### Patch Changes

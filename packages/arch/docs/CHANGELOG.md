@@ -1,5 +1,32 @@
 # @arch-ui/docs
 
+## 1.1.19
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/alert@0.0.17
+  - @arch-ui/badge@0.0.15
+  - @arch-ui/button@0.0.18
+  - @arch-ui/controls@0.1.8
+  - @arch-ui/dialog@0.0.20
+  - @arch-ui/dropdown@0.0.17
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+  - @arch-ui/lozenge@0.0.16
+  - @arch-ui/navbar@0.1.9
+  - @arch-ui/pagination@0.0.20
+  - @arch-ui/pill@0.1.15
+  - @arch-ui/popout@0.0.18
+  - @arch-ui/select@0.1.8
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+
 ## 1.1.18
 
 ### Patch Changes
