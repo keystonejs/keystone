@@ -6,19 +6,15 @@ import { ChevronLeftIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
 import { IconButton } from '@arch-ui/button';
 import { PageTitle } from '@arch-ui/typography';
-import { gridSize } from '@arch-ui/theme';
 
 import { Search } from './Search';
 import { useUIHooks } from '../../providers/Hooks';
 import { useList } from '../../providers/List';
 import AddNewItem from './AddNewItem';
 import ItemId from './ItemId';
+import { HeaderInset } from '../Home/components';
 
-const HeaderInset = props => (
-  <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
-);
-
-export let ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
+export const ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
   const { list } = useList();
   const listHref = `${adminPath}/${list.path}`;
   const { itemHeaderActions } = useUIHooks();
