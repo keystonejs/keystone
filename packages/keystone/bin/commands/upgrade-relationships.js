@@ -9,14 +9,16 @@ const c = s => chalk.cyan(s);
 // Mongoose operations
 const deleteField = (migration, field, _pluralize) =>
   migration
-    ? `db.${_pluralize(field.listKey)}.updateMany({}, { $unset: { "${field.path}": 1 } })`
+    ? `db.collection('${_pluralize(field.listKey)}').updateMany({}, { $unset: { "${
+        field.path
+      }": 1 } })`
     : `    * Delete ${c(`${_pluralize(field.listKey)}.${field.path}`)}`;
 
 const moveData = (migration, left, tableName, near, far, _pluralize) =>
   migration
-    ? `db.${_pluralize(left.listKey)}.find({}).forEach(function(doc){ doc.${
+    ? `db.collection('${_pluralize(left.listKey)}').find({}).forEach(function(doc){ (doc.${
         left.path
-      }.forEach(function(itemId) { db.${_pluralize(
+      } || []).forEach(function(itemId) { db.${_pluralize(
         tableName
       )}.insert({ ${near}: doc._id, ${far}: itemId }) } ) });`
     : `    * Create a collection ${c(_pluralize(tableName))} with fields ${c(near)} and ${c(

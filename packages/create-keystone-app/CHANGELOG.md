@@ -1,5 +1,22 @@
 # create-keystone-app
 
+## 3.1.1
+
+### Patch Changes
+
+- [`0229e9f5`](https://github.com/keystonejs/keystone/commit/0229e9f5a0e783d8ace577d3b49bc532cc213754) [#2804](https://github.com/keystonejs/keystone/pull/2804) Thanks [@timleslie](https://github.com/timleslie)! - Updated `create-table` script to use `cross-env` to support Windows. Fixes #2803.
+
+## 3.1.0
+
+### Minor Changes
+
+- [`efff8d66`](https://github.com/keystonejs/keystone/commit/efff8d66a0c6f0d76960927c2839170643b8a3ac) [#2747](https://github.com/keystonejs/keystone/pull/2747) Thanks [@ohmonster](https://github.com/ohmonster)! - Fixed command line arguments to not prompt when connection-string and test-connection arguments are supplied
+
+### Patch Changes
+
+- Updated dependencies [[`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f)]:
+  - @keystonejs/adapter-knex@9.0.2
+
 ## 3.0.1
 
 ### Patch Changes

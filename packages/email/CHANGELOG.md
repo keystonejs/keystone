@@ -1,5 +1,17 @@
 # @keystonejs/email
 
+## 5.1.4
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+## 5.1.3
+
+### Patch Changes
+
+- [`2686c9f8`](https://github.com/keystonejs/keystone/commit/2686c9f8cd49a1ce6876787a0a634ddf4e19952c) [#2724](https://github.com/keystonejs/keystone/pull/2724) Thanks [@Vultraz](https://github.com/Vultraz)! - Used functional components for email templates.
+
 ## 5.1.2
 
 ### Patch Changes

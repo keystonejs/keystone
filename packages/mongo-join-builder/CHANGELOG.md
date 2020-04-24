@@ -1,5 +1,11 @@
 # @keystonejs/mongo-join-builder
 
+## 7.0.1
+
+### Patch Changes
+
+- [`3af6cc21`](https://github.com/keystonejs/keystone/commit/3af6cc214110c318fd674f2e47a5ab36bdfb215d) [#2807](https://github.com/keystonejs/keystone/pull/2807) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when querying one-to-one relationships.
+
 ## 7.0.0
 
 ### Major Changes

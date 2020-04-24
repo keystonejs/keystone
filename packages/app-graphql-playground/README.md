@@ -16,7 +16,7 @@ A KeystoneJS App that creates an Apollo GraphQL playground.
 ```javascript
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
-const { GraphQLAppPlayground } = require('@keystonejs/app-graphql-playground');
+const { GraphQLPlaygroundApp } = require('@keystonejs/app-graphql-playground');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
 // Ensure that the GraphQLApp and GraphQLAppPlayground are referring to the same endpoint
@@ -26,7 +26,7 @@ module.exports = {
   keystone: new Keystone(),
   apps: [
     // This should come before the GraphQLApp, as it sets up the dev query middleware
-    new GraphQLAppPlayground({ apiPath })
+    new GraphQLPlaygroundApp({ apiPath })
     // Disable the default playground on this app
     new GraphQLApp({ apiPath, graphiqlPath: undefined }),
     new AdminUIApp()
