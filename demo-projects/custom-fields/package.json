@@ -2,7 +2,7 @@
   "name": "@keystonejs/demo-custom-fields",
   "description": "An example KeystoneJS project showcasing custom fields.",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,17 +14,17 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@arch-ui/controls": "^0.1.6",
-    "@arch-ui/fields": "^3.0.0",
-    "@arch-ui/icons": "^0.1.0",
-    "@arch-ui/lozenge": "^0.0.15",
+    "@arch-ui/controls": "^0.1.8",
+    "@arch-ui/fields": "^3.0.1",
+    "@arch-ui/icons": "^0.1.1",
+    "@arch-ui/lozenge": "^0.0.16",
     "@arch-ui/theme": "^0.0.10",
     "@emotion/core": "^10.0.28",
     "@keystonejs/adapter-mongoose": "^8.0.0",
-    "@keystonejs/app-admin-ui": "^5.9.5",
+    "@keystonejs/app-admin-ui": "^5.11.1",
     "@keystonejs/app-graphql": "^5.1.5",
     "@keystonejs/app-static": "^5.1.2",
-    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/fields": "^9.0.4",
     "@keystonejs/keystone": "^8.0.0",
     "cross-env": "^7.0.0",
     "react": "^16.13.1"

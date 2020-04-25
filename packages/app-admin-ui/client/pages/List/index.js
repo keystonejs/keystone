@@ -22,6 +22,7 @@ import ListDescription from '../../components/ListDescription';
 import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
 import { DisclosureArrow } from '../../components/Popout';
+import { HeaderInset } from '../Home/components';
 
 import ColumnPopout from './ColumnSelect';
 import ActiveFilters from './Filters/ActiveFilters';
@@ -33,10 +34,6 @@ import { useListFilter, useListSelect, useListSort, useListUrlState } from './da
 import { captureSuspensePromises } from '@keystonejs/utils';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
-
-const HeaderInset = props => (
-  <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
-);
 
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, routeProps, query } = props;
