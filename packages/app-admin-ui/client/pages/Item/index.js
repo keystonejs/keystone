@@ -37,6 +37,7 @@ import {
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
 import { useAdminMeta } from '../../providers/AdminMeta';
+import { useList } from '../../providers/List';
 
 let Render = ({ children }) => children();
 
@@ -82,6 +83,8 @@ const ItemDetails = ({
   const history = useHistory();
   const { addToast } = useToasts();
 
+  const { query: listQuery } = useList();
+
   const getFieldsObject = memoizeOne(() =>
     arrayToObject(
       // NOTE: We _exclude_ read only fields
@@ -116,20 +119,25 @@ const ItemDetails = ({
     }
   };
 
-  const onDelete = deletePromise => {
+  const onDelete = async deletePromise => {
     deleteConfirmed.current = true;
-    deletePromise
-      .then(() => {
-        if (mounted) {
-          setShowDeleteModal(false);
-        }
 
-        history.replace(`${adminPath}/${list.path}`);
-        toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
-      })
-      .catch(error => {
-        toastError({ addToast }, error);
-      });
+    try {
+      await deletePromise;
+      const refetch = listQuery.refetch();
+
+      if (mounted) {
+        setShowDeleteModal(false);
+      }
+
+      toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
+
+      // Wait for the refetch to finish before returning to the list
+      await refetch;
+      history.replace(`${adminPath}/${list.path}`);
+    } catch (error) {
+      toastError({ addToast }, error);
+    }
   };
 
   const openDeleteModal = () => {
@@ -359,7 +367,8 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId }) => {
+const ItemPage = ({ itemId }) => {
+  const { list } = useList();
   const { adminPath, getListByKey } = useAdminMeta();
   const { addToast } = useToasts();
 

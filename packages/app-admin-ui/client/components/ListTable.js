@@ -310,7 +310,7 @@ export default function ListTable(props) {
     linkField = '_label_',
   } = props;
 
-  const [sortBy, onSortChange] = useListSort(list.key);
+  const [sortBy, onSortChange] = useListSort();
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;

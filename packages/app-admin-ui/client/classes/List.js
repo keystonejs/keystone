@@ -29,31 +29,31 @@ export default class List {
         }
       }
     `;
+
     this.createManyMutation = gql`
-    mutation createMany($data: ${this.gqlNames.createManyInputName}!) {
-      ${this.gqlNames.createManyMutationName}(data: $data) {
-        id
+      mutation createMany($data: ${this.gqlNames.createManyInputName}!) {
+        ${this.gqlNames.createManyMutationName}(data: $data) {
+          id
+        }
       }
-    }
-  `;
+    `;
+
     this.updateMutation = gql`
-      mutation update(
-        $id: ID!,
-        $data: ${this.gqlNames.updateInputName})
-      {
+      mutation update($id: ID!, $data: ${this.gqlNames.updateInputName}) {
         ${this.gqlNames.updateMutationName}(id: $id, data: $data) {
           id
         }
       }
     `;
+
     this.updateManyMutation = gql`
-      mutation updateMany($data: [${this.gqlNames.updateManyInputName}])
-      {
+      mutation updateMany($data: [${this.gqlNames.updateManyInputName}]){
         ${this.gqlNames.updateManyMutationName}(data: $data) {
           id
         }
       }
     `;
+
     this.deleteMutation = gql`
       mutation delete($id: ID!) {
         ${this.gqlNames.deleteMutationName}(id: $id) {
@@ -61,6 +61,7 @@ export default class List {
         }
       }
     `;
+
     this.deleteManyMutation = gql`
       mutation deleteMany($ids: [ID!]) {
         ${this.gqlNames.deleteManyMutationName}(ids: $ids) {
@@ -143,9 +144,11 @@ export default class List {
     const count = Array.isArray(items) ? items.length : items;
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;
   }
+
   getPersistedSearch() {
     return localStorage.getItem(`search:${this.config.path}`);
   }
+
   setPersistedSearch(value) {
     localStorage.setItem(`search:${this.config.path}`, value);
   }
