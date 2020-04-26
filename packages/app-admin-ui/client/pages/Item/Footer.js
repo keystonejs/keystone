@@ -5,6 +5,8 @@ import { Button, LoadingButton } from '@arch-ui/button';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 
+import { useList } from '../../providers/List';
+
 const Toolbar = props => (
   <div
     css={{
@@ -77,6 +79,11 @@ function Reset({ canReset, onReset }) {
 
 export default memo(function Footer(props) {
   const { onSave, onDelete, canReset, updateInProgress, onReset, hasWarnings, hasErrors } = props;
+  const {
+    list: {
+      access: { delete: canDelete = true },
+    },
+  } = useList();
   const cypressId = 'item-page-save-button';
 
   return (
@@ -99,7 +106,7 @@ export default memo(function Footer(props) {
         <div>
           <Button
             appearance="danger"
-            isDisabled={updateInProgress}
+            isDisabled={updateInProgress || !canDelete}
             variant="nuance"
             onClick={onDelete}
           >

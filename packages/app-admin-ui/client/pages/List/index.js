@@ -32,6 +32,7 @@ import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
+import { useAdminMeta } from '../../providers/AdminMeta';
 
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
@@ -225,7 +226,7 @@ const ListPage = props => {
     queryErrorsParsed,
     query,
   } = useList();
-
+  const { adminPath } = useAdminMeta();
   const history = useHistory();
   const location = useLocation();
 
@@ -276,6 +277,10 @@ const ListPage = props => {
         <p>{message}</p>
       </PageError>
     );
+  }
+
+  if (list.adminConfig.singleton && itemCount > 0) {
+    history.push(`${adminPath}/${list.path}/${items[0].id}`);
   }
 
   // Success
