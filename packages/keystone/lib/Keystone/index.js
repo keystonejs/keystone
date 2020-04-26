@@ -306,7 +306,7 @@ module.exports = class Keystone {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
 
-    const list = new List(key, compose(config.plugins || [])(config), {
+    const list = new List(key, compose(config.plugins || [])({ ...config, key, keystone: this }), {
       getListByKey,
       queryHelper: this._buildQueryHelper.bind(this),
       adapter: adapters[adapterName],
