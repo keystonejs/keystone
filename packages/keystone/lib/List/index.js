@@ -113,6 +113,7 @@ module.exports = class List {
     {
       fields,
       hooks = {},
+      adminDoc,
       schemaDoc,
       labelResolver,
       labelField,
@@ -143,6 +144,7 @@ module.exports = class List {
     this._fields = fields;
     this.hooks = hooks;
     this.schemaDoc = schemaDoc;
+    this.adminDoc = adminDoc;
 
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
@@ -345,6 +347,7 @@ module.exports = class List {
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
       views: this.views,
+      adminDoc: this.adminDoc,
       adminConfig: {
         defaultPageSize,
         defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
