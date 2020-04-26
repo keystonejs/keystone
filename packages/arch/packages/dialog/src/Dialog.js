@@ -23,7 +23,7 @@ const ModalDialog = memo(
     width = 640,
   }) => {
     useEffect(() => {
-      const handleKeyDown = () => {
+      const handleKeyDown = e => {
         if (onKeyDown) onKeyDown(e);
       };
 
