@@ -1,9 +1,42 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 import { pseudoLabelField } from './FieldSelect';
 import { decodeSearch, encodeSearch } from './url-state';
 import { useList } from '../../providers/List';
+
+/**
+ * URL State Hook
+ * ------------------------------
+ * @param {Object} list - The the list to operate on.
+ * @returns {Object}
+ * - decodeConfig - config necessary to decode url state
+ * - urlState - the current list state decoded from from the URL
+ */
+
+// type UrlState = {
+//  currentPage: number,
+//  fields: Array<FieldController>,
+//  filters: Array<Object>,
+//  pageSize: number,
+//  search: string,
+//  sortBy: SortBy,
+// };
+// type DecodeConfig = {
+//  history: HistoryInterface,
+//  list: ListMeta,
+//  location: LocationInterface,
+//  match: MatchInterface,
+// };
+
+export function useListUrlState(list) {
+  const location = useLocation();
+
+  const decodeConfig = { list };
+  const urlState = useMemo(() => decodeSearch(location.search, decodeConfig), [location.search]);
+
+  return { decodeConfig, urlState };
+}
 
 /**
  * Modifier Hook
@@ -14,7 +47,8 @@ import { useList } from '../../providers/List';
 export function useListModifier() {
   const history = useHistory();
   const location = useLocation();
-  const { list, urlState, decodeConfig } = useList();
+  const { list } = useList();
+  const { urlState, decodeConfig } = useListUrlState(list);
 
   /**
    * setSearch
@@ -54,7 +88,8 @@ export function useListModifier() {
  */
 
 export function useReset() {
-  const { decodeConfig } = useList();
+  const { list } = useList();
+  const { decodeConfig } = useListUrlState(list);
   const setSearch = useListModifier();
 
   return () => setSearch(decodeSearch('', decodeConfig));
@@ -72,9 +107,12 @@ export function useReset() {
 
 export function useListSearch() {
   const {
+    list,
     listData: { items },
-    urlState: { search: searchValue },
   } = useList();
+  const {
+    urlState: { search: searchValue },
+  } = useListUrlState(list);
   const setSearch = useListModifier();
 
   const history = useHistory();
@@ -132,9 +170,10 @@ export function useListSearch() {
 // }>
 
 export function useListFilter() {
+  const { list } = useList();
   const {
     urlState: { filters },
-  } = useList();
+  } = useListUrlState(list);
   const setSearch = useListModifier();
 
   const onRemove = value => () => {
@@ -184,9 +223,12 @@ export function useListFilter() {
 
 export function useListPagination() {
   const {
+    list,
     listData: { itemCount },
-    urlState: { currentPage, pageSize },
   } = useList();
+  const {
+    urlState: { currentPage, pageSize },
+  } = useListUrlState(list);
   const setSearch = useListModifier();
 
   const onChange = cp => {
@@ -222,9 +264,10 @@ export function useListPagination() {
 // };
 
 export function useListSort() {
+  const { list } = useList();
   const {
     urlState: { sortBy },
-  } = useList();
+  } = useListUrlState(list);
   const setSearch = useListModifier();
 
   const onChange = sb => {
@@ -245,10 +288,10 @@ export function useListSort() {
 // type Fields = Array<FieldController>;
 
 export function useListColumns() {
+  const { list } = useList();
   const {
-    list,
     urlState: { fields },
-  } = useList();
+  } = useListUrlState(list);
   const setSearch = useListModifier();
 
   const onChange = selectedFields => {

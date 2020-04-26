@@ -1,8 +1,7 @@
-import React, { useContext, createContext, useState, useMemo, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useContext, createContext, useState, useMemo } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
-import { decodeSearch } from '../pages/List/url-state';
+import { useListUrlState } from '../pages/List/dataHooks';
 
 const ListContext = createContext();
 
@@ -27,20 +26,13 @@ export const ListProvider = ({ list, children }) => {
   };
 
   // ==============================
-  // URL state
-  // ==============================
-
-  const urlState = useRef({});
-  const location = useLocation();
-  const decodeConfig = { list };
-
-  // ==============================
   // List items
   // ==============================
 
+  const { urlState } = useListUrlState(list);
+
   const LIST_QUERY = useMemo(() => {
-    urlState.current = decodeSearch(location.search, decodeConfig);
-    const { currentPage, fields, filters, pageSize, search, sortBy } = urlState.current;
+    const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
 
     return list.getQuery({
       fields,
@@ -50,7 +42,7 @@ export const ListProvider = ({ list, children }) => {
       search,
       skip: (currentPage - 1) * pageSize,
     });
-  }, [location]);
+  }, [urlState]);
 
   const query = useQuery(LIST_QUERY, {
     fetchPolicy: 'cache-and-network',
@@ -73,8 +65,6 @@ export const ListProvider = ({ list, children }) => {
         list,
         listData: { items, itemCount: count, queryErrors: error },
         query,
-        urlState: urlState.current,
-        decodeConfig,
         isCreateItemModalOpen: isOpen,
         openCreateItemModal,
         closeCreateItemModal,
