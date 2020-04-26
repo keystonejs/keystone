@@ -54,7 +54,8 @@ Fields share some standard configuration options.
 | Option         | Type                                | Default     | Description                                                                             |
 | -------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
 | `type`         | `FieldType`                         | (required)  |                                                                                         |
-| `schemaDoc`    | `String`                            | `false`     | A description for the field used in the AdminUI.                                        |
+| `adminDoc`     | `String`                            | `false`     | A description for the field used in the AdminUI.                                        |
+| `schemaDoc`    | `String`                            | `false`     | A description for the field used in the GraphQL schema.                                 |
 | `defaultValue` | `Any` \| `Function`                 | `undefined` | A valid default value for the field type. Functions must return a valid value. Use `undefined` to set no default, and `null` to set an empty default. |
 | `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
@@ -78,7 +79,7 @@ A description of the field used in the AdminUI.
 
 ### `schemaDoc`
 
-A description of the field used for GraphiQL.
+A description of the field used used in the GraphQL schema.
 
 ### `defaultValue`
 

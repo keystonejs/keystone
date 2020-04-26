@@ -1,4 +1,4 @@
-const { Relationship } = require('@keystonejs/fields');
+const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
 const { composeResolveInput } = require('../utils');
 
 const _byTracking = ({ created = true, updated = true }) => ({
@@ -7,13 +7,8 @@ const _byTracking = ({ created = true, updated = true }) => ({
   ...byFieldOptions
 } = {}) => ({ fields = {}, hooks = {}, ...rest }) => {
   const relationshipOptions = {
-    type: Relationship,
+    type: AuthedRelationship,
     ref: 'User',
-    access: {
-      read: true,
-      create: false,
-      update: false,
-    },
     ...byFieldOptions,
   };
 
@@ -30,30 +25,19 @@ const _byTracking = ({ created = true, updated = true }) => ({
   }
 
   const newResolveInput = ({ resolvedData, existingItem, originalInput, context }) => {
-    const { authedItem: { id = null } = {} } = context;
-    if (existingItem === undefined) {
-      // create mode
-      if (created) {
-        resolvedData[createdByField] = id;
-      }
-      if (updated) {
-        resolvedData[updatedByField] = id;
-      }
-    } else {
-      // update mode
-
+    if (
       // if no data received from the mutation, skip the update
-      if (Object.keys(originalInput).length === 0) {
-        return resolvedData;
-      }
-
-      if (created) {
-        delete resolvedData[createdByField]; // createdByField No longer sent by api/admin, but access control can be skipped!
-      }
-      if (updated) {
-        resolvedData[updatedByField] = id;
-      }
+      Object.keys(originalInput).length === 0 &&
+      // opted-in to updatedBy tracking
+      updated &&
+      // this is an update
+      existingItem !== undefined
+    ) {
+      // If not logged in, the id is set to `null`
+      const { authedItem: { id = null } = {} } = context;
+      resolvedData[updatedByField] = id;
     }
+
     return resolvedData;
   };
   const originalResolveInput = hooks.resolveInput;
