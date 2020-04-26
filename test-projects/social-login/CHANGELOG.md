@@ -1,5 +1,17 @@
 # @keystonejs/cypress-project-facebook-login
 
+## 5.1.7
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/app-admin-ui@5.11.1
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/input@0.1.9
+  - @keystonejs/fields@9.0.4
+
 ## 5.1.6
 
 ### Patch Changes
