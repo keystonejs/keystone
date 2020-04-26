@@ -45,8 +45,8 @@ const NotFound = () => (
       </h1>
       <p>We couldn't find what you were looking for.</p>
       <p>
-        If you were looking for the Keystone version 4 the docs these have moved to:{' '}
-        <a href="https://v4.keystonejs.com/">https://v4.keystonejs.com/</a>.
+        If you were looking for the Keystone version 4 documentation, it has been moved{' '}
+        <a href="https://v4.keystonejs.com/">here</a>.
       </p>
     </Container>
   </div>
