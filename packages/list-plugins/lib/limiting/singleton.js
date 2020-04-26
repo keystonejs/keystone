@@ -1,6 +1,13 @@
-const { composeHook } = require('../utils');
+const { composeHook, composeAccess } = require('../utils');
 
-exports.singleton = () => ({ key, keystone, hooks = {}, adminConfig = {}, ...rest }) => {
+exports.singleton = ({ preventDelete = true }) => ({
+  key,
+  keystone,
+  access,
+  hooks = {},
+  adminConfig = {},
+  ...rest
+}) => {
   const newResolveInput = async ({ resolvedData, operation }) => {
     if (operation === 'create') {
       const list = keystone.getListByKey(key);
@@ -18,7 +25,19 @@ exports.singleton = () => ({ key, keystone, hooks = {}, adminConfig = {}, ...res
     }
     return resolvedData;
   };
+
+  let listAccess = access || {};
+  if (preventDelete) {
+    listAccess = composeAccess(listAccess, { delete: false }, keystone.defaultAccess.list);
+  }
   const originalResolveInput = hooks.resolveInput;
   hooks.resolveInput = composeHook(originalResolveInput, newResolveInput);
-  return { key, keystone, hooks, adminConfig: { ...adminConfig, singleton: true }, ...rest };
+  return {
+    key,
+    keystone,
+    access: listAccess,
+    hooks,
+    adminConfig: { ...adminConfig, singleton: true },
+    ...rest,
+  };
 };
