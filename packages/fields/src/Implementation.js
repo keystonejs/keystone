@@ -13,6 +13,7 @@ class Field {
       schemaDoc,
       adminDoc,
       adminConfig,
+      adminIsReadOnly,
       ...config
     },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
@@ -22,6 +23,7 @@ class Field {
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
     this.adminConfig = adminConfig;
+    this.adminIsReadOnly = adminIsReadOnly;
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
@@ -193,6 +195,7 @@ class Field {
         update: !!schemaAccess.update,
       },
       adminDoc: this.adminDoc,
+      adminIsReadOnly: this.adminIsReadOnly,
     });
   }
   extendAdminMeta(meta) {

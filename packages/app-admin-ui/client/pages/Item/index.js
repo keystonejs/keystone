@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
 
@@ -11,7 +11,8 @@ import { Container } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
 import { Card } from '@arch-ui/card';
-import { gridSize } from '@arch-ui/theme';
+import { FieldContainer, FieldLabel, FieldDescription } from '@arch-ui/fields';
+import { colors, gridSize } from '@arch-ui/theme';
 import {
   mapKeys,
   arrayToObject,
@@ -44,6 +45,10 @@ const Form = styled.form({
   marginBottom: gridSize * 3,
 });
 
+const ItemLink = styled(Link)`
+  color: ${colors.text};
+`;
+
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
@@ -59,6 +64,10 @@ const getRenderableFields = memoizeOne(list =>
   list.fields
     .filter(({ isPrimaryKey }) => !isPrimaryKey)
     .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
+);
+
+const LinkComponent = adminPath => ({ children, path, item }) => (
+  <ItemLink to={`${adminPath}/${path}/${item.id}`}>{children}</ItemLink>
 );
 
 const ItemDetails = ({
@@ -263,6 +272,8 @@ const ItemDetails = ({
             <Render key={field.path}>
               {() => {
                 const [Field] = field.adminMeta.readViews([field.views.Field]);
+                const [Cell] = field.views.Cell ? field.adminMeta.readViews([field.views.Cell]) : [];
+
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -287,7 +298,21 @@ const ItemDetails = ({
                 );
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
-                  () => (
+                  () => field.config.adminIsReadOnly ? (
+                    <FieldContainer>
+                      <FieldLabel field={field} />
+                      <FieldDescription text={field.config.adminDoc} />
+                      {Cell ? (
+                        <Cell
+                          isSelected={false}
+                          list={list}
+                          data={item[field.path]}
+                          field={field}
+                          Link={LinkComponent(adminPath)}
+                        />
+                      ) : item[field.path]}
+                    </FieldContainer>
+                  ) : (
                     <Field
                       autoFocus={!i}
                       field={field}
@@ -315,6 +340,7 @@ const ItemDetails = ({
                     validationErrors[field.path],
                     validationWarnings[field.path],
                     initialData[field.path],
+                    field.config.adminIsReadOnly,
                     onChange,
                   ]
                 );
