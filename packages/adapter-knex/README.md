@@ -47,17 +47,9 @@ _**Default:**_
 ```javascript
 {
   client: 'postgres',
-  connection: '<DEFAULT_CONNECTION_URL>'
+  connection: 'process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI'
 }
 ```
-
-The `DEFAULT_CONNECTION_URL` will be either one of the following environmental variables:
-
-- `CONNECT_TO`,
-- `DATABASE_URL`,
-- `KNEX_URI`
-
-or `'postgres://localhost/<DATABASE_NAME>'`where `DATABASE_NAME` is be derived from the KeystoneJS project name.
 
 ## Debugging
 

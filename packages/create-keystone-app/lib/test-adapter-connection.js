@@ -6,7 +6,6 @@ const { error, tick } = require('./util');
 const { getArgs } = require('./get-args');
 const { getAdapterChoice } = require('./get-adapter-choice');
 const { getAdapterConfig } = require('./get-adapter-config');
-const { getProjectName } = require('../lib/get-project-name');
 
 let TEST_CONNECTION;
 
@@ -53,7 +52,7 @@ const testAdapterConnection = async () => {
         : { knexOptions: { connection: config } };
     const adapter = new Adapter(adapterConfig);
     try {
-      await adapter._connect({ name: await getProjectName() });
+      await adapter._connect();
       adapter.disconnect();
       tick(`Successfully connected to ${config}`);
     } catch (err) {
