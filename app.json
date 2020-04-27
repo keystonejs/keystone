@@ -8,7 +8,7 @@
     "ENABLE_DEV_FEATURES": {
       "required": true
     },
-    "MONGODB_URI": {
+    "DATABASE_URL": {
       "required": true
     },
     "NPM_CONFIG_PRODUCTION": {

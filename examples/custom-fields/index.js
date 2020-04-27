@@ -7,7 +7,7 @@ const Stars = require('./fields/Stars');
 const MultiCheck = require('./fields/MultiCheck');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/custom-field' }),
+  adapter: new MongooseAdapter({ url: 'mongodb://localhost/custom-field' }),
 });
 
 keystone.createList('Movie', {

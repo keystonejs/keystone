@@ -3,6 +3,12 @@ const pWaterfall = require('p-waterfall');
 class BaseKeystoneAdapter {
   constructor(config = {}) {
     this.config = { ...config };
+    this.url = config.url || process.env.DATABASE_URL;
+    if (!this.url) {
+      throw Error(
+        'No database URL provided. You must use the config option { url } or set the environment variable DATABASE_URL.'
+      );
+    }
     this.listAdapters = {};
     this.listAdapterClass = undefined;
   }

@@ -35,24 +35,10 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   }
 
   async _connect() {
-    const { mongoUri, ...mongooseConfig } = this.config;
+    const { url, ...mongooseConfig } = this.config;
     // Default to the localhost instance
-    let uri =
-      mongoUri ||
-      process.env.CONNECT_TO ||
-      process.env.DATABASE_URL ||
-      process.env.MONGO_URI ||
-      process.env.MONGODB_URI ||
-      process.env.MONGO_URL ||
-      process.env.MONGODB_URL ||
-      process.env.MONGOLAB_URI ||
-      process.env.MONGOLAB_URL;
 
-    if (!uri) {
-      throw new Error(`No MongoDB connection URI specified.`);
-    }
-
-    await this.mongoose.connect(uri, {
+    await this.mongoose.connect(this.url, {
       useNewUrlParser: true,
       useFindAndModify: false,
       useUnifiedTopology: true,

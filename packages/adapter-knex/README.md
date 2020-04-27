@@ -46,7 +46,7 @@ _**Default:**_
 ```javascript
 {
   client: 'postgres',
-  connection: process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI
+  connection: process.env.DATABASE_URL
 }
 ```
 

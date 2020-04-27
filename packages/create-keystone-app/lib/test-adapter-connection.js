@@ -51,11 +51,7 @@ const testAdapterConnection = async () => {
     const Adapter = { MongoDB: MongooseAdapter, PostgreSQL: KnexAdapter, Prisma: KnexAdapter }[
       adapterChoice.key
     ];
-    const adapterConfig = {
-      MongoDB: { mongoUri: config },
-      PostgreSQL: { knexOptions: { connection: config } },
-      Prisma: { knexOptions: { connection: config } },
-    }[adapterChoice.key];
+    const adapterConfig = { url: config };
     const adapter = new Adapter(adapterConfig);
     try {
       await adapter._connect();

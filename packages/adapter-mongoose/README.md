@@ -20,22 +20,16 @@ const keystone = new Keystone({
 
 ## Config
 
-### `mongoUri` (required)
+### `url` (required)
 
+The URL of your database.
 This is used as the `uri` parameter for `mongoose.connect()`.
 
 _**Default:**_ Environment variable (see below) or `'mongodb://localhost/<DATABASE_NAME>'`
 
 If not specified, KeystoneJS will look for one of the following environment variables:
 
-- `CONNECT_TO`
 - `DATABASE_URL`
-- `MONGO_URI`
-- `MONGODB_URI`
-- `MONGO_URL`
-- `MONGODB_URL`
-- `MONGOLAB_URI`
-- `MONGOLAB_URL`
 
 ### Mongoose options (optional)
 

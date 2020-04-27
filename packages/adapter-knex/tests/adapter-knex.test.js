@@ -8,9 +8,7 @@ global.console = {
 
 describe('Knex Adapter', () => {
   test('throws when database cannot be found using connection string', async () => {
-    const testAdapter = new KnexAdapter({
-      knexOptions: { connection: 'postgres://localhost/undefined_database' },
-    });
+    const testAdapter = new KnexAdapter({ uri: 'postgres://localhost/undefined_database' });
     const result = await testAdapter._connect().catch(result => result);
 
     expect(result).toBeInstanceOf(Error);

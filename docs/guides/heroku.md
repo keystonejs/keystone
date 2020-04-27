@@ -53,7 +53,7 @@ KeystoneJS automatically fetches the database connection string from an environm
 
 - Go to your Heroku app in the dashboard, select Settings and press [Reveal config vars].
 
-- Create a new environment variable called `MONGO_URI` set it to the database connection string we got from MongoDB Atlas, e.g. `mongodb+srv://<username>:<password>@cluster0-szafh.azure.mongodb.net/test?retryWrites=true&w=majority`.
+- Create a new environment variable called `DATABASE_URL` set it to the database connection string we got from MongoDB Atlas, e.g. `mongodb+srv://<username>:<password>@cluster0-szafh.azure.mongodb.net/test?retryWrites=true&w=majority`.
 
 ### Push the KeystoneJS app to Heroku
 

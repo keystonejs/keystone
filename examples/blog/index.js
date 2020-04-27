@@ -12,7 +12,7 @@ const { staticRoute, staticPath, distDir } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/keystone-demo-blog' }),
+  adapter: new MongooseAdapter({ url: 'mongodb://localhost/keystone-demo-blog' }),
   onConnect: async () => {
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
