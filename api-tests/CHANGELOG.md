@@ -1,5 +1,16 @@
 # @keystonejs/api-tests
 
+## 5.4.1
+
+### Patch Changes
+
+- [`3af6cc21`](https://github.com/keystonejs/keystone/commit/3af6cc214110c318fd674f2e47a5ab36bdfb215d) [#2807](https://github.com/keystonejs/keystone/pull/2807) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when querying one-to-one relationships.
+
+* [`d3d8d7f2`](https://github.com/keystonejs/keystone/commit/d3d8d7f20d906577c3b5a534a027766c4025f085) [#2806](https://github.com/keystonejs/keystone/pull/2806) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bugs in one to one tests.
+
+* Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/fields@9.0.4
+
 ## 5.4.0
 
 ### Minor Changes
