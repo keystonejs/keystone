@@ -13,6 +13,7 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
+  backgroundColor: colors.page,
   boxSizing: 'border-box',
   display: 'flex',
   flexDirection: 'column',
@@ -20,6 +21,7 @@ export const PrimaryNav = styled.nav({
   position: 'fixed',
   zIndex: 2,
 });
+
 export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrollable }) => {
   const divider = {
     backgroundColor: 'rgba(9, 30, 66, 0.1)',
