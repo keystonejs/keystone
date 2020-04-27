@@ -272,7 +272,9 @@ const ItemDetails = ({
             <Render key={field.path}>
               {() => {
                 const [Field] = field.adminMeta.readViews([field.views.Field]);
-                const [Cell] = field.views.Cell ? field.adminMeta.readViews([field.views.Cell]) : [];
+                const [Cell] = field.views.Cell
+                  ? field.adminMeta.readViews([field.views.Cell])
+                  : [];
 
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
@@ -298,38 +300,41 @@ const ItemDetails = ({
                 );
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
-                  () => field.config.adminIsReadOnly ? (
-                    <FieldContainer>
-                      <FieldLabel field={field} />
-                      <FieldDescription text={field.config.adminDoc} />
-                      {Cell ? (
-                        <Cell
-                          isSelected={false}
-                          list={list}
-                          data={item[field.path]}
-                          field={field}
-                          Link={LinkComponent(adminPath)}
-                        />
-                      ) : item[field.path]}
-                    </FieldContainer>
-                  ) : (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      list={list}
-                      item={item}
-                      errors={[
-                        ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                        ...(validationErrors[field.path] || []),
-                      ]}
-                      warnings={validationWarnings[field.path] || []}
-                      value={item[field.path]}
-                      savedValue={initialData[field.path]}
-                      onChange={onChange}
-                      renderContext="page"
-                      CreateItemModal={CreateItemModal}
-                    />
-                  ),
+                  () =>
+                    field.config.adminIsReadOnly ? (
+                      <FieldContainer>
+                        <FieldLabel field={field} />
+                        <FieldDescription text={field.config.adminDoc} />
+                        {Cell ? (
+                          <Cell
+                            isSelected={false}
+                            list={list}
+                            data={item[field.path]}
+                            field={field}
+                            Link={LinkComponent(adminPath)}
+                          />
+                        ) : (
+                          item[field.path]
+                        )}
+                      </FieldContainer>
+                    ) : (
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        list={list}
+                        item={item}
+                        errors={[
+                          ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                          ...(validationErrors[field.path] || []),
+                        ]}
+                        warnings={validationWarnings[field.path] || []}
+                        value={item[field.path]}
+                        savedValue={initialData[field.path]}
+                        onChange={onChange}
+                        renderContext="page"
+                        CreateItemModal={CreateItemModal}
+                      />
+                    ),
                   [
                     i,
                     field,
