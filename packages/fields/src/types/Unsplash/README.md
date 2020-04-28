@@ -171,7 +171,7 @@ Will result in something like:
 
 ## Unsplash block
 
-The `Unsplash` field exposes a block that can be used in the [content field](../../../../field-content/README.md).
+The `Unsplash` field exposes a block that can be used in the [content field](/packages/field-content/README.md).
 
 ### Usage
 
