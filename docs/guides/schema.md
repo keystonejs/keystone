@@ -1,25 +1,19 @@
 <!--[meta]
 section: guides
-title: Data modeling - Lists & Fields
+title: Data modelling
 [meta]-->
 
-# Data modeling - Lists & Fields
+# Data modelling
 
-A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
+A schema definition (_often abbreviated to "schema"_) is defined by:
 
 - a set of **Lists**
 - containing one or more **Fields**
 - which each have a **Type**
-  <!-- TODO: Link to glossary -->
+
+<!-- TODO: Link to glossary -->
 
 <!-- TODO: Make this a component that can be imported somehow -->
-
-<div style={{
-  backgroundColor: '#f3f5f7',
-  padding: '1rem 2rem',
-  border: '3px solid #e7e9ed',
-}}>
-  <center><strong>Minimal Schema Example</strong></center>
 
 ```javascript
 keystone.createList('Todo', {
@@ -29,12 +23,7 @@ keystone.createList('Todo', {
 });
 ```
 
-  <center>
-    <em>
-      Create a <strong>List</strong> called <code>Todo</code>, containing a single <strong>Field</strong> <code>task</code>, with a <strong>Type</strong> of <code>Text</code>
-    </em>
-  </center>
-</div>
+> Create a **List** called `Todo`, containing a single **Field** `task`, with a **Type** of `Text`
 
 ## Lists
 
@@ -57,24 +46,24 @@ keystone.createList('User', {
 
 And each list can have as many fields as you need.
 
-KeystoneJS will process each List, converting it into a series of GraphQL CRUD
-(<strong>C</strong>reate, <strong>R</strong>ead, <strong>U</strong>pdate, <strong>D</strong>elete) operations. For example, the above lists will generate;
+Keystone will process each List, converting it into a series of GraphQL CRUD
+(**C**reate, **R**ead, **U**pdate, **D**elete) operations. For example, the above lists will generate:
 
 ```graphql
 type Mutation {
-  createTodo(..): Todo
-  updateTodo(..): Todo
-  deleteTodo(..): Todo
-  createUser(..): User
-  updateUser(..): User
-  deleteUser(..): User
+  createTodo(...): Todo
+  updateTodo(...): Todo
+  deleteTodo(...): Todo
+  createUser(...): User
+  updateUser(...): User
+  deleteUser(...): User
 }
 
 type Query {
-  allTodos(..): [Todo]
-  Todo(..): Todo
-  allUsers(..): [User]
-  User(..): User
+  allTodos(...): [Todo]
+  Todo(...): Todo
+  allUsers(...): [User]
+  User(...): User
 }
 
 type Todo {
@@ -89,10 +78,10 @@ type User {
 }
 ```
 
-_(NOTE: Only a subset of all the generated types/mutations/queries are shown
-here. To see a more complete example [follow the Quick Start](/docs/quick-start/README.md).)_
+> **Note:** Only a subset of the generated types/mutations/queries are shown here.
+> For more details, see the [GraphQL introduction guide](/docs/guides/intro-to-graphql.md).
 
-### Customizing Lists & Fields
+### Customising lists and fields
 
 Both lists and fields can accept further options:
 
@@ -119,16 +108,16 @@ _For more List options, see the [`createList()` API docs](/docs/api/create-list.
 _[There are many different field types available](/packages/fields/README.md),
 each specifying their own options._
 
-### Related Lists
+### Related lists
 
-One of KeystoneJS' most powerful features is defining **Relationships** between
+One of Keystone' most powerful features is defining **Relationships** between
 Lists.
 
-Relationships are a special field type in KeystoneJS used to generate rich
+Relationships are a special field type in Keystone used to generate rich
 GraphQL operations and an intuitive Admin UI, especially useful for complex
 data modeling requirements.
 
-#### Why Relationships?
+#### Why relationships?
 
 _Already know Relationships? [Skip to **Defining Relationships** below](#defining-relationships)._
 
@@ -148,14 +137,9 @@ can query for all todos owned by a particular user, update the user, etc.
 
 Let's imagine we have a single item in our `Todo` list:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
-
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | Tici        |
-
-</div>
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | Tici        |
 
 We could query this data like so:
 
@@ -170,22 +154,19 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 'Tici' }
+#     { task: 'Use Keystone', createdBy: 'Tici' }
 #   ]
 # }
 ```
 
 Everything looks great so far. Now, let's add another task:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | Tici        |
-| 2    | Setup linter   | Tici        |
-
-</div>
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | Tici        |
+| 2    | Setup linter | Tici        |
 
 ```graphql
 query {
@@ -198,7 +179,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 'Tici' }
+#     { task: 'Use Keystone', createdBy: 'Tici' }
 #     { task: 'Setup linter', createdBy: 'Tici' }
 #   ]
 # }
@@ -218,15 +199,12 @@ keystone.createList('Todo', {
 });
 ```
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
-| `id` | `task`         | `createdBy` | `email`          |
-| ---- | -------------- | ----------- | ---------------- |
-| 1    | Use KeystoneJS | Tici        | tici@example.com |
-| 2    | Setup Linter   | Tici        | tici@example.com |
-
-</div>
+| `id` | `task`       | `createdBy` | `email`          |
+| ---- | ------------ | ----------- | ---------------- |
+| 1    | Use Keystone | Tici        | tici@example.com |
+| 2    | Setup Linter | Tici        | tici@example.com |
 
 ```graphql
 query {
@@ -240,7 +218,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 'Tici', email: 'tici@example.com' }
+#     { task: 'Use Keystone', createdBy: 'Tici', email: 'tici@example.com' }
 #     { task: 'Setup linter', createdBy: 'Tici', email: 'tici@example.com' }
 #   ]
 # }
@@ -253,23 +231,18 @@ what about 300? 10,000? It can be quite a big operation to make these changes.
 
 We can avoid the duplicate data by moving it out into its own `User` list:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter   | 1           |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | 1           |
+| 2    | Setup Linter | 1           |
 
-</div>
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          |
 | ---- | ------ | ---------------- |
 | 1    | Tici   | tici@example.com |
-
-</div>
 
 The `createdBy` field is no longer a name, but instead refers to the `id` of an
 item in the `User` list (commonly referred to as _[data
@@ -290,7 +263,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: 1 }
+#     { task: 'Use Keystone', createdBy: 1 }
 #     { task: 'Setup linter', createdBy: 1 }
 #   ]
 # }
@@ -361,7 +334,7 @@ query {
 # output:
 # {
 #   allTodos: [
-#     { task: 'Use KeystoneJS', createdBy: { name: 'Tici', email: 'tici@example.com' } }
+#     { task: 'Use Keystone', createdBy: { name: 'Tici', email: 'tici@example.com' } }
 #     { task: 'Setup linter', createdBy: { name: 'Tici', email: 'tici@example.com' } }
 #   ]
 # }
@@ -421,24 +394,18 @@ query {
 
 The data stored in the database for the `createdBy` field will be a single ID:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter   | 1           |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | 1           |
+| 2    | Setup Linter | 1           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          |
 | ---- | ------ | ---------------- |
 | 1    | Tici   | tici@example.com |
-
-</div>
 
 #### To-many Relationships
 
@@ -478,7 +445,7 @@ query {
 # {
 #   User: {
 #     todoList: [
-#       { task: 'Use KeystoneJS' },
+#       { task: 'Use Keystone' },
 #       { task: 'Setup linter' },
 #     ]
 #   ]
@@ -488,28 +455,22 @@ query {
 The data stored in the database for the `todoList` field will be an array of
 IDs:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
-| `id` | `task`         |
-| ---- | -------------- |
-| 1    | Use KeystoneJS |
-| 2    | Setup Linter   |
-| 3    | Be Awesome     |
-| 4    | Write docs     |
-| 5    | Buy milk       |
+| `id` | `task`       |
+| ---- | ------------ |
+| 1    | Use Keystone |
+| 2    | Setup Linter |
+| 3    | Be Awesome   |
+| 4    | Write docs   |
+| 5    | Buy milk     |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1, 2]     |
 | 2    | Jess   | jess@example.com | [3, 4, 5]  |
-
-</div>
 
 #### Two-way Relationships
 
@@ -567,7 +528,7 @@ query {
 # {
 #   User: {
 #     todoList: [
-#       { task: 'Use KeystoneJS' },
+#       { task: 'Use Keystone' },
 #       { task: 'Setup linter' },
 #     ]
 #   ],
@@ -579,28 +540,22 @@ query {
 
 The database would look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
-| `id` | `task`         | `createdBy` |
-| ---- | -------------- | ----------- |
-| 1    | Use KeystoneJS | 1           |
-| 2    | Setup Linter   | 1           |
-| 3    | Be Awesome     | 2           |
-| 4    | Write docs     | 2           |
-| 5    | Buy milk       | 2           |
+| `id` | `task`       | `createdBy` |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | 1           |
+| 2    | Setup Linter | 1           |
+| 3    | Be Awesome   | 2           |
+| 4    | Write docs   | 2           |
+| 5    | Buy milk     | 2           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1, 2]     |
 | 2    | Jess   | jess@example.com | [3, 4, 5]  |
-
-</div>
 
 Note the two relationship fields in this example _know nothing about each other_.
 They are not specially linked. This means if you update data in one place, you
@@ -648,23 +603,17 @@ _See [the Relationship API docs for more on `connect`](/packages/fields/src/type
 
 If this was the first `Todo` item created, the database would now look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | \[]        |
-
-</div>
 
 Notice the `Todo` item's `createdBy` field is set, but the `User` item's
 `todoList` does _not_ contain the ID of the newly created `Todo`!
@@ -740,23 +689,17 @@ mutation {
 
 Our database would look like:
 
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-</div>
-
-<div style={{ border: '1px solid lightgray', padding: '1rem' }}>
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |
 | 1    | Tici   | tici@example.com | [1]        |
-
-</div>
 
 ```graphql
 query {
@@ -825,13 +768,13 @@ mutation {
 
 The data would finally look like:
 
-<code><strong>Todo</strong></code>
+##### Todo
 
 | `id` | `task`     | `createdBy` |
 | ---- | ---------- | ----------- |
 | 1    | Learn Node | 1           |
 
-<code><strong>User</strong></code>
+##### User
 
 | `id` | `name` | `email`          | `todoList` |
 | ---- | ------ | ---------------- | ---------- |

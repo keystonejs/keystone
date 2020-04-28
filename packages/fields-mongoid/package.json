@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-mongoid",
   "description": "KeystoneJS MongoId Field Type",
-  "version": "5.1.4",
+  "version": "5.1.8",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/fields-mongoid.cjs.js",
@@ -11,13 +11,13 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@arch-ui/input": "^0.1.7",
+    "@arch-ui/input": "^0.1.9",
     "@babel/runtime": "^7.8.4",
-    "@keystonejs/adapter-knex": "^7.0.0",
-    "@keystonejs/adapter-mongoose": "^6.0.0",
-    "@keystonejs/build-field-types": "^5.2.4",
-    "@keystonejs/fields": "^7.0.2",
-    "react": "^16.13.0"
+    "@keystonejs/adapter-knex": "^9.0.3",
+    "@keystonejs/adapter-mongoose": "^8.0.2",
+    "@keystonejs/build-field-types": "^5.2.5",
+    "@keystonejs/fields": "^9.0.4",
+    "react": "^16.13.1"
   },
   "module": "dist/fields-mongoid.esm.js"
 }

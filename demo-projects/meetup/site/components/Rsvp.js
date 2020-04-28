@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { jsx } from '@emotion/core';
 
 import { Button as ButtonPrimitive, CheckmarkIcon, Loading } from '../primitives';
@@ -23,27 +23,21 @@ function validateRsvp({ userRsvps, eventRsvps, event }) {
   return { okay: true };
 }
 
-const Rsvp = ({ children, event, text, themeColor }) => {
+const Rsvp = ({ children = () => null, event, text = 'Are you going?', themeColor }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const eventId = event.id;
   const isPast = new Date() > new Date(event.startTime);
 
-  const { data, loading: loadingData, error } = useQuery(GET_RSVPS, {
-    variables: { event: eventId, user: user.id },
-  });
+  const [
+    getRsvps,
+    { data: { userRsvps, eventRsvps, event: RSVPEvent } = {}, called, loading: loadingData, error },
+  ] = useLazyQuery(GET_RSVPS);
 
-  const refetch = () => [
-    {
-      query: GET_RSVPS,
-      variables: { event: eventId, user: user.id },
-    },
-  ];
+  const userResponse = userRsvps && userRsvps[0];
+  const hasResponded = Boolean(userResponse);
 
   const [updateRsvp, { error: mutationError, loading: mutationLoading }] = useMutation(
-    hasResponded ? UPDATE_RSVP : ADD_RSVP,
-    {
-      refetchQueries: refetch,
-    }
+    hasResponded ? UPDATE_RSVP : ADD_RSVP
   );
 
   if (isLoading) {
@@ -69,6 +63,11 @@ const Rsvp = ({ children, event, text, themeColor }) => {
         });
   }
 
+  // Launch the query now that we know `user` isn't null (happens if there's no authed user)
+  if (!called) {
+    getRsvps({ variables: { event: eventId, user: user.id } });
+  }
+
   if (error) {
     console.error(error);
     return null;
@@ -85,11 +84,7 @@ const Rsvp = ({ children, event, text, themeColor }) => {
     });
   }
 
-  // TODO: is this event the same as the event passed to this component?
-  const { userRsvps, eventRsvps, event: eventName } = data;
-  const userResponse = userRsvps && userRsvps[0];
-  const hasResponded = Boolean(userResponse);
-  const { okay, message } = validateRsvp({ userRsvps, eventRsvps, eventName });
+  const { okay, message } = validateRsvp({ userRsvps, eventRsvps, event: RSVPEvent });
 
   if (!okay) {
     return children({ message });
@@ -107,6 +102,12 @@ const Rsvp = ({ children, event, text, themeColor }) => {
         user: user.id,
         status,
       },
+      refetchQueries: [
+        {
+          query: GET_RSVPS,
+          variables: { event: eventId, user: user.id },
+        },
+      ],
     });
   const respondYes = () => doRespond('yes');
   const respondNo = () => doRespond('no');
@@ -136,11 +137,6 @@ const Rsvp = ({ children, event, text, themeColor }) => {
       </ButtonWrapper>
     ),
   });
-};
-
-Rsvp.defaultProps = {
-  children: () => null,
-  text: 'Are you going?',
 };
 
 const ButtonWrapper = props => (

@@ -1,5 +1,43 @@
 # @arch-ui/pagination
 
+## 0.0.20
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/button@0.0.18
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [[`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/icons@0.1.0
+
+## 0.0.18
+
+### Patch Changes
+
+- [`70f3529b`](https://github.com/keystonejs/keystone/commit/70f3529bbdb6dee76c0b278415d340c53c68530a) [#2755](https://github.com/keystonejs/keystone/pull/2755) Thanks [@Vultraz](https://github.com/Vultraz)! - Highlight active page in Pagination control.
+
+* [`bcfa092d`](https://github.com/keystonejs/keystone/commit/bcfa092d026c0d626087e641d91b729de7c5480b) [#2754](https://github.com/keystonejs/keystone/pull/2754) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted the Pagination component to functional form.
+
+* Updated dependencies [[`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32)]:
+  - @arch-ui/layout@0.2.12
+
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [[`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad)]:
+  - @arch-ui/loading@0.0.16
+  - @arch-ui/button@0.0.17
+
 ## 0.0.16
 
 ### Patch Changes
@@ -93,19 +131,19 @@
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
 
 ## 0.0.8
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
 ## 0.0.7
 
-- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
   - @arch-ui/button@0.0.7
   - @arch-ui/layout@0.2.2
   - @arch-ui/loading@0.0.6
@@ -114,33 +152,33 @@
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 0.0.5
 
-- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- [patch][e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
 
   - admin revamp
 
 ## 0.0.4
 
-- [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+- [patch][24bed583](https://github.com/keystonejs/keystone/commit/24bed583):
 
   - Update react-router-dom dependency to 5.0.0
 
 ## 0.0.3
 
-- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+- [patch][11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
 
   - Update minor-level dependencies
 
-- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+- [patch][619b17c2](https://github.com/keystonejs/keystone/commit/619b17c2):
 
   - Reformat code using latest version of Prettier (1.16.4)
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 

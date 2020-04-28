@@ -1,13 +1,13 @@
 <!--[meta]
 section: guides
-title: GraphQL Philosophy
+title: Philosophy
 subSection: graphql
 order: 3
 [meta]-->
 
 # GraphQL Philosophy
 
-> 💡 _This is a conceptual introduction to how the Keystone team think about GraphQL APIs (and hence how Keystone's GraphQL API is generated). For more specific API docs, see the [**GraphQL API Introduction**](/docs/guides/intro-to-graphql.md)._
+> **Note:** This is a conceptual introduction to how the Keystone team think about GraphQL APIs (and hence how Keystone's GraphQL API is generated). For more specific API docs, see the [**GraphQL API Introduction**](/docs/guides/intro-to-graphql.md).
 
 ## Goals
 
@@ -20,21 +20,21 @@ A good GraphQL API is a combination of the following criteria:
 - Be **forward compatible** with future unknown use-cases
 - Fully **leverage the _Graph_** of GraphQL through Relationships
 
-## Keystone's Schema Design
+## Keystone's schema design
 
 Keystone's auto-generated GraphQL Schema meets these goals by following a pattern with two distinct sets of things:
 
-1. **Domain Objects**
+### Domain objects
 
-   Modelled with CRUD (_Create, Read, Update, Delete_) operations, this covers the majority of functionality for most applications.
+Modelled with CRUD (_Create, Read, Update, Delete_) operations, this covers the majority of functionality for most applications.
 
-   For example; the `User` type would have `createUser` / `getUser` / `updateUser` / `deleteUser` mutations.
+For example; the `User` type would have `createUser` / `getUser` / `updateUser` / `deleteUser` mutations.
 
-2. **Custom Operations**.
+### Custom operations
 
-   Become apparent over time while building applications and adding to the schema.
+Become apparent over time while building applications and adding to the schema.
 
-   For example; an `authenticateUser` / `submitTPSReport` mutation, or a `recentlyActiveUsers` query.
+For example; an `authenticateUser` / `submitTPSReport` mutation, or a `recentlyActiveUsers` query.
 
 <p align="center">
   <img src="tweet-graphql-2-things.png" alt="Tweet by Jess Telford: In my experience, the best GraphQL APIs have 2 distinct sets of things: 1. Domain Objects are modelled as type with CRUD mutations (`createUser`/`updateUser`/etc). 2. Common actions involving 0 or more Domain Objects are mutations (`sendEmail`/`finalizeTPSReport`)" width="500" />
@@ -46,9 +46,7 @@ _[Tweet](https://twitter.com/JessTelford/status/1179175687560630272) by [Jess Te
 
 </sub>
 
-<br />
-
-### Domain Objects & CRUD Operations
+## Domain objects and CRUD
 
 Every _thing_ in your application / website / database which can be queried or modified in some way is a Domain Object. Each Domain Object has its own set of CRUD operations.
 
@@ -63,28 +61,26 @@ To define a set of Domain Objects, it helps to think about it in terms of what a
 | **Comments**  | `createComment` | `getComment` | `updateComment` | `deleteComment` |
 | **Images**    | `createImage`   | `getImage`   | `updateImage`   | `deleteImage`   |
 
-> 🤔 Why is **Images** its own Domain Object, and not part of the **Posts**?
->
-> Because Images may be uploaded and interacted with independently of a Post, or used across multiple posts. Even if they're only used in a single Post, they still meet the definition as a _thing_ which might be queried or modified in some way (for example, querying for a thumbnail version of the image, or updating alt text).
->
-> 💡 In general, Domain Objects map to Lists in Keystone:
->
-> ```javascript
-> keystone.createList('User', {
->   /* ... */
-> });
-> keystone.createList('Post', {
->   /* ... */
-> });
-> keystone.createList('Comment', {
->   /* ... */
-> });
-> keystone.createList('Image', {
->   /* ... */
-> });
-> ```
+> **Tip:** Because an `Image` may be uploaded and interacted with independently of a `Post`, or used across multiple posts, we're creating an **Images** list. Even if they're only used in a single `Post`, they still meet the definition as a _thing_ which might be queried or modified in some way (for example, querying for a thumbnail version of the image, or updating alt text).
 
-#### Related Domain Objects
+In general, Domain Objects map to Lists in Keystone:
+
+```javascript allowCopy=false showLanguage=false
+keystone.createList('User', {
+  /* ... */
+});
+keystone.createList('Post', {
+  /* ... */
+});
+keystone.createList('Comment', {
+  /* ... */
+});
+keystone.createList('Image', {
+  /* ... */
+});
+```
+
+### Related domain objects
 
 To fully leverage the _Graph_ of GraphQL, relationships between Domain Objects must be defined in a way that allows for both **querying** and **mutating** related data.
 
@@ -120,19 +116,30 @@ query {
 
 Defining _mutations_ requires a bit more setup and consideration to performing _nested mutations_.
 
-> _💡 Keystone implements this pattern with the `Relationship` type_
+> **Hint:** Keystone implements this pattern with the `Relationship` type
 
 Nested Mutations are useful when you need to make changes to more than one Domain Object at a time. Just like you may want to query for `Post.author` at the same time as getting `Post.title`, you may want to update `User.name` at the same time as you create a new `Post`.
 
 For example, imagine a UI where an author could update their bio at the same time as creating a post. The mutation would look something like:
 
+<!-- prettier-ignore-start -->
+
 ```graphql
 mutation {
-  createPost(data: { title: "Hello World", author: { update: { bio: "Hi, I'm a writer now!" } } }) {
+  createPost(data: {
+    title: "Hello World",
+    author: {
+      update: {
+        bio: "Hi, I'm a writer now!"
+      }
+    }
+  }) {
     title
   }
 }
 ```
+
+<!-- prettier-ignore-end -->
 
 Note the `data.author.update` object, this is the _Nested Mutation_. Beyond `update` there are also other operations you may wish to perform:
 
@@ -144,9 +151,7 @@ Note the `data.author.update` object, this is the _Nested Mutation_. Beyond `upd
 | `update`     | Update an already connected item's data                                                                                   |
 | `delete`     | Delete an already connected item and disconnect it from the parent so future queries for related data return `null`       |
 
-> 🤔 Where is `get`?
->
-> Since `get` is a query concern, and we're only dealing with Nested _Mutations_, it is not included here.
+> **Note:** Since `get` is a query concern, and we're only dealing with nested _Mutations_, it is not included here.
 
 This might be represented in the GraphQL Schema like so:
 
@@ -199,9 +204,9 @@ type Mutation {
 }
 ```
 
-### Custom Operations
+### Custom operations
 
-Custom Operations are an emergent property of the schema design. They are not something which should be defined up front.
+Custom operations are an emergent property of the schema design. They are not something which should be defined up front.
 
 As products are built, it will become obvious which operations are missing and what their inputs/outputs should be.
 

@@ -1,12 +1,12 @@
 <!--[meta]
 section: api
 title: Authentication
-order: 4
+order: 5
 [meta]-->
 
 # Authentication
 
-Authentication strategies allow users to identify themselves to KeystoneJS.
+Authentication strategies allow users to identify themselves to Keystone.
 This can be used to restrict access to the AdminUI, and to configure [access controls](/docs/guides/access-control.md).
 
 - For password logins see: [`auth-password`](/packages/auth-password/README.md)
@@ -14,21 +14,21 @@ This can be used to restrict access to the AdminUI, and to configure [access con
 
 ## Usage
 
-```javascript
+```javascript title=index.js
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+
+const keystone = new Keystone({...});
 
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
-  config: {
-    /*...config */
-  },
+  config: {...},
 });
 ```
 
 You then provide `authStrategy` to apps that facilitate login (typically the Admin UI):
 
-```javascript
+```javascript title=index.js
 module.exports = {
   keystone,
   apps: [new AdminUIApp({ authStrategy })],
@@ -43,7 +43,7 @@ module.exports = {
 | `list`   | `String`       | (required) | The list that contains an authenticated item, for example a user. |
 | `config` | `Object`       | `{}`       | Strategy-specific config options.                                 |
 
-_Note_: Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
+> **Note:** Different authentication strategies may have additional config options. See the documentation for individual authentication strategies for more details.
 
 ### `type`
 
@@ -52,3 +52,5 @@ A valid authentication strategy.
 ### `list`
 
 Authentication strategies need to authenticate an item in a Keystone list (typically a User). The authenticated item will be provided to access control functions.
+
+This list should have the `{ auth: true }` access control set. See the [Access control API](https://www.keystonejs.com/api/access-control) docs for more details.

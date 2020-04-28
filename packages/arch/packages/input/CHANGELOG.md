@@ -1,5 +1,17 @@
 # @arch-ui/input
 
+## 0.1.9
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+## 0.1.8
+
+### Patch Changes
+
+- [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa) [#2730](https://github.com/keystonejs/keystone/pull/2730) Thanks [@Vultraz](https://github.com/Vultraz)! - Made HiddenInput component actually hidden.
+
 ## 0.1.7
 
 ### Patch Changes
@@ -67,19 +79,19 @@
 
 ### Minor Changes
 
-- [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c): Allows multiline input content to wrap
+- [7689753c](https://github.com/keystonejs/keystone/commit/7689753c): Allows multiline input content to wrap
 
 ## 0.0.9
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
 
 ## 0.0.8
 
 ### Patch Changes
 
-- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
 
   When rendered as a <textarea>, the <Input> component is no longer limited to 100px height. `height` is replaced with `min-height`.
 
@@ -87,36 +99,36 @@
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
 ## 0.0.6
 
-- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
   - @arch-ui/common@0.0.5
 
 ## 0.0.5
 
 ### Patch Changes
 
-- [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+- [81b481d0](https://github.com/keystonejs/keystone/commit/81b481d0):
 
   - Added support for isMultiline to Text field type
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 0.0.4
 
-- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- [patch][e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
 
   - admin revamp
 
 ## 0.0.3
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 

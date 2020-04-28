@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useRef, useLayoutEffect, forwardRef, useMemo } from 'react';
+import { useState, useRef, Fragment, useLayoutEffect, forwardRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { Popper } from 'react-popper';
+import { usePopper } from 'react-popper';
 
 import { Editor } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
@@ -69,7 +69,7 @@ const InnerToolbar = () => {
   );
 };
 
-const PopperRender = forwardRef(({ scheduleUpdate, style, children }, ref) => {
+const PopperRender = forwardRef(({ update, style, children }, ref) => {
   const editor = useSlate();
   const { selection } = editor;
 
@@ -80,9 +80,9 @@ const PopperRender = forwardRef(({ scheduleUpdate, style, children }, ref) => {
 
   useLayoutEffect(() => {
     if (shouldShowToolbar) {
-      scheduleUpdate();
+      update();
     }
-  }, [scheduleUpdate, snapshot, shouldShowToolbar]);
+  }, [update, snapshot, shouldShowToolbar]);
 
   return createPortal(
     <div
@@ -121,28 +121,30 @@ const Toolbar = () => {
   // the inner toolbar won't have to update
   const children = <InnerToolbar />;
 
+  // the reason we do this rather than having the selection reference
+  // be constant is because the selection reference
+  // has some internal state and it shouldn't persist between different
+  // editor references
+  const virtualElement = useMemo(getSelectionReference, []);
+
+  const [popperElement, setPopperElement] = useState(null);
+  const { styles, update } = usePopper(virtualElement, popperElement, {
+    placement: 'top',
+    modifiers: [{ name: 'computeStyles', options: { adaptive: false } }],
+  });
+
   return (
-    <Popper
-      placement="top"
-      referenceElement={
-        // the reason we do this rather than having the selection reference
-        // be constant is because the selection reference
-        // has some internal state and it shouldn't persist between different
-        // editor references
-        useMemo(getSelectionReference, [])
-      }
-    >
-      {({ style, ref, scheduleUpdate }) => (
-        <PopperRender
-          {...{
-            scheduleUpdate,
-            style: { ...style, zIndex: 10 },
-            ref,
-            children,
-          }}
-        />
-      )}
-    </Popper>
+    <PopperRender
+      {...{
+        update,
+        editorState,
+        style: { ...styles.popper, zIndex: 10 },
+        blocks,
+        editor,
+        ref: setPopperElement,
+        children,
+      }}
+    />
   );
 };
 

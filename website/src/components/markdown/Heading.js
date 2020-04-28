@@ -42,8 +42,7 @@ const Heading = ({ as: Tag, children, id, ...props }) => {
     <Tag
       css={{
         color: colors.N100,
-        fontWeight: 700,
-        letterSpacing: '-0.025em',
+        fontWeight: 600,
         lineHeight: 1,
         marginBottom: '0.66em',
         marginTop: '1.66em',
@@ -56,7 +55,7 @@ const Heading = ({ as: Tag, children, id, ...props }) => {
           display: 'block',
           position: 'relative',
 
-          '&:hover a': {
+          '&:hover a, &:focus-within a': {
             opacity: 1,
           },
         }}
@@ -73,6 +72,7 @@ export const H1 = props => (
     css={mq({
       fontSize: '2.4rem',
       fontWeight: 500,
+      letterSpacing: '-0.025em',
       marginTop: 0,
     })}
     {...props}
@@ -85,6 +85,8 @@ export const H2 = props => (
     css={mq({
       fontSize: '1.8rem',
       fontWeight: 500,
+      letterSpacing: '-0.025em',
+      marginTop: 0,
 
       // offset header height for hash links
       '::before': {
@@ -102,6 +104,16 @@ export const H3 = props => (
     css={mq({
       fontSize: '1.4rem',
       fontWeight: 500,
+      letterSpacing: '-0.025em',
+      marginTop: 0,
+
+      // offset header height for hash links
+      '::before': {
+        content: '" "',
+        height: 'calc(32px + 60px)',
+        display: 'block',
+        marginTop: -60,
+      },
     })}
     {...props}
     as="h3"

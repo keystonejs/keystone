@@ -65,7 +65,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
             flex: 1,
 
             [media.md]: {
-              paddingLeft: gridSize * 4,
+              paddingLeft: gridSize * 6,
             },
           }}
         >
@@ -82,11 +82,12 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
           </div>
           <div
             css={{
+              boxSizing: 'border-box',
               display: 'flex',
               alignItems: 'center',
-              paddingLeft: gridSize * 4,
+              paddingLeft: gridSize * 6,
               paddingRight: gridSize * 3,
-              width: 240,
+              width: 280,
 
               [mediaMax.sm]: {
                 display: 'none',

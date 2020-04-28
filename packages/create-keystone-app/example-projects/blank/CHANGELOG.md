@@ -1,5 +1,24 @@
 # @keystonejs/example-projects-blank
 
+## 5.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/adapter-mongoose@8.0.0
+  - @keystonejs/keystone@8.0.0
+  - @keystonejs/app-admin-ui@5.9.5
+
+## 5.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373), [`7fc00071`](https://github.com/keystonejs/keystone/commit/7fc00071cd22514103593f0da68b9efa3bf853e9), [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`4a7d1eab`](https://github.com/keystonejs/keystone/commit/4a7d1eabf9b44fac7e16dfe20afdce409986e8dc), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`3407fa68`](https://github.com/keystonejs/keystone/commit/3407fa68b91d7ebb3e7288c7e95631013fe12535), [`c2b1b725`](https://github.com/keystonejs/keystone/commit/c2b1b725a9474348964a4ac2e0f5b4aaf1a7f486)]:
+  - @keystonejs/app-admin-ui@5.9.4
+  - @keystonejs/keystone@7.1.0
+  - @keystonejs/adapter-mongoose@7.0.0
+  - @keystonejs/app-graphql@5.1.5
+
 ## 5.0.2
 
 ### Patch Changes
@@ -24,7 +43,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -32,7 +51,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
   - @keystonejs/adapter-mongoose@5.0.0
   - @keystonejs/app-admin-ui@5.0.0
   - @keystonejs/app-graphql@5.0.0
@@ -44,37 +63,37 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
   - @keystone-alpha/adapter-mongoose@6.0.0
   - @keystone-alpha/keystone@16.0.0
   - @keystone-alpha/app-admin-ui@5.10.2
 
 ## 1.1.14
 
-- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone/commit/b96a3a58):
   - @keystone-alpha/adapter-mongoose@5.0.0
 
 ## 1.1.13
 
-- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone/commit/42a45bbd):
   - @keystone-alpha/adapter-mongoose@4.0.7
   - @keystone-alpha/keystone@15.1.0
 
 ## 1.1.12
 
-- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):
-- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07):
-- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone/commit/b61289b4):
+- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone/commit/0bba9f07):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone/commit/9ade2b2d):
   - @keystone-alpha/adapter-mongoose@4.0.6
   - @keystone-alpha/keystone@15.0.0
   - @keystone-alpha/app-admin-ui@5.8.1
 
 ## 1.1.11
 
-- Updated dependencies [decf7319](https://github.com/keystonejs/keystone-5/commit/decf7319):
-- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
-- Updated dependencies [f8ad0975](https://github.com/keystonejs/keystone-5/commit/f8ad0975):
-- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d):
+- Updated dependencies [decf7319](https://github.com/keystonejs/keystone/commit/decf7319):
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone/commit/89c0d7e9):
+- Updated dependencies [f8ad0975](https://github.com/keystonejs/keystone/commit/f8ad0975):
+- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone/commit/a8e9378d):
   - @keystone-alpha/adapter-mongoose@4.0.5
   - @keystone-alpha/keystone@14.0.0
   - @keystone-alpha/app-graphql@8.0.0
@@ -82,14 +101,14 @@
 
 ## 1.1.10
 
-- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
+- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone/commit/8d0d98c7):
   - @keystone-alpha/adapter-mongoose@4.0.4
   - @keystone-alpha/app-graphql@7.0.0
   - @keystone-alpha/keystone@13.0.0
 
 ## 1.1.9
 
-- Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):
+- Updated dependencies [33001656](https://github.com/keystonejs/keystone/commit/33001656):
   - @keystone-alpha/adapter-mongoose@4.0.3
   - @keystone-alpha/keystone@12.0.0
 
@@ -97,4 +116,4 @@
 
 ### Patch Changes
 
-- [](https://github.com/keystonejs/keystone-5/commit/): Fixing changeset error
+- [](https://github.com/keystonejs/keystone/commit/): Fixing changeset error

@@ -6,13 +6,10 @@ title: Unsplash
 
 # Unsplash
 
-> The internet’s source of freely useable images.
-> Powered by creators everywhere.
-
-- _[Unsplash.com](https://unsplash.com)_
-
 The Unsplash Field Type enables storing meta data from the Unsplash API and
 generating URLs to dynamically transformed images.
+
+> **Note:** Visit the [unsplash developer docs](https://unsplash.com/developers) for more information.
 
 ## Usage
 
@@ -20,7 +17,7 @@ generating URLs to dynamically transformed images.
 const { Keystone } = require('@keystonejs/keystone');
 const { Unsplash } = require('@keystonejs/fields');
 
-const keystone = new Keystone(/* ... */);
+const keystone = new Keystone({...});
 
 keystone.createList('Post', {
   fields: {
@@ -33,7 +30,7 @@ keystone.createList('Post', {
 });
 ```
 
-### Config
+## Config
 
 | Option       | Type      | Default | Description                      |
 | ------------ | --------- | ------- | -------------------------------- |
@@ -170,4 +167,35 @@ Will result in something like:
     }
   }
 }
+```
+
+## Unsplash block
+
+The `Unsplash` field exposes a block that can be used in the [content field](../../../../field-content/README.md).
+
+### Usage
+
+```js
+const { Keystone } = require('@keystonejs/keystone');
+const { Content } = require('@keystonejs/field-content');
+const { Unsplash, Text } = require('@keystonejs/fields');
+
+keystone.createList('Post', {
+  fields: {
+    body: {
+      type: Content,
+      blocks: [
+        Content.blocks.heading,
+        [
+          Unsplash.blocks.unsplashImage,
+          {
+            attribution: 'KeystoneJS',
+            accessKey: process.env.UNSPLASH_ACCESS_KEY,
+            secretKey: process.env.UNSPLASH_SECRET_KEY,
+          },
+        ],
+      ],
+    },
+  },
+});
 ```

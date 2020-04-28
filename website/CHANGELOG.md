@@ -1,5 +1,62 @@
 # @keystonejs/website
 
+## 5.3.3
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/select@0.1.8
+
+## 5.3.2
+
+### Patch Changes
+
+- Updated dependencies [[`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+
+## 5.3.1
+
+### Patch Changes
+
+- [`d3a99dec`](https://github.com/keystonejs/keystone/commit/d3a99dec744f8d2b57cf7727b2b3af193139f603) [#2598](https://github.com/keystonejs/keystone/pull/2598) Thanks [@ropaolle](https://github.com/ropaolle)! - Added a guide on deploying Keystone to Heroku.
+
+## 5.3.0
+
+### Minor Changes
+
+- [`82d68a12`](https://github.com/keystonejs/keystone/commit/82d68a12f3de7b9d0969e5f132dbf721b0fc290d) [#2640](https://github.com/keystonejs/keystone/pull/2640) Thanks [@jossmac](https://github.com/jossmac)! - Improved docs search experience:
+  - support focus on "/" press
+  - update styles to align with docs
+
+* [`6458ffa0`](https://github.com/keystonejs/keystone/commit/6458ffa08e0e77fbb039a042a13129310937946d) [#2579](https://github.com/keystonejs/keystone/pull/2579) Thanks [@jossmac](https://github.com/jossmac)! - Added heading navigation to docs pages.
+
+- [`510db7e7`](https://github.com/keystonejs/keystone/commit/510db7e71c15efd9cd8cc27aaafdf6ce0f278455) [#2631](https://github.com/keystonejs/keystone/pull/2631) Thanks [@jossmac](https://github.com/jossmac)! - Introduced meta data to code blocks.
+
+* [`665741e3`](https://github.com/keystonejs/keystone/commit/665741e30981c2acb2a16645549387c3485c1ebe) [#2648](https://github.com/keystonejs/keystone/pull/2648) Thanks [@jossmac](https://github.com/jossmac)! - Highlight the active item in the docs layout table of contents.
+
+### Patch Changes
+
+- [`b6f99f8e`](https://github.com/keystonejs/keystone/commit/b6f99f8ed07e72a51ab6acf10e9141e7526976a2) [#2594](https://github.com/keystonejs/keystone/pull/2594) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated API documentation.
+
+* [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373) [#2560](https://github.com/keystonejs/keystone/pull/2560) Thanks [@JedWatson](https://github.com/JedWatson)! - Updated links to Keystone github project.
+
+- [`a426a58d`](https://github.com/keystonejs/keystone/commit/a426a58d10dadbb4cf87b41984909726dce315f7) [#2622](https://github.com/keystonejs/keystone/pull/2622) Thanks [@jossmac](https://github.com/jossmac)! - Fix table-of-contents in docs pages:
+  - resolve out-of-sync ID issue (`github-slugger` VS `@sindresorhus/slugify`)
+  - allow items to wrap, without looking like separate items
+
+* [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+- [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+* [`3a75a419`](https://github.com/keystonejs/keystone/commit/3a75a419e57bd99d5f7628b3c43dce3885d8efc5) [#2637](https://github.com/keystonejs/keystone/pull/2637) Thanks [@jossmac](https://github.com/jossmac)! - Cleanup any weirdness that the new code block metadata introduced in #2631.
+
+- [`6458ffa0`](https://github.com/keystonejs/keystone/commit/6458ffa08e0e77fbb039a042a13129310937946d) [#2579](https://github.com/keystonejs/keystone/pull/2579) Thanks [@jossmac](https://github.com/jossmac)! - Made the header and sidebar sticky.
+
 ## 5.2.0
 
 ### Minor Changes
@@ -103,7 +160,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -113,61 +170,61 @@
 
 ## 1.1.4
 
-- Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+- Updated dependencies [464d7579](https://github.com/keystonejs/keystone/commit/464d7579):
   - @arch-ui/select@0.1.0
 
 ## 1.1.3
 
-- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone/commit/7689753c):
   - @arch-ui/input@0.1.0
 
 ## 1.1.2
 
 ### Patch Changes
 
-- [589de757](https://github.com/keystonejs/keystone-5/commit/589de757): quick start documentation page copy improvements
+- [589de757](https://github.com/keystonejs/keystone/commit/589de757): quick start documentation page copy improvements
 
 ## 1.1.1
 
 ### Patch Changes
 
-- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+- [957a40d9](https://github.com/keystonejs/keystone/commit/957a40d9): Upgrade react-select
 
 ## 1.1.0
 
 ### Minor Changes
 
-- [601ad192](https://github.com/keystonejs/keystone-5/commit/601ad192): Remove sizeByPixelDensity option in gatsby-remark-images
+- [601ad192](https://github.com/keystonejs/keystone/commit/601ad192): Remove sizeByPixelDensity option in gatsby-remark-images
 
 ## 1.0.13
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Update gatsby to 2.13.25
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Update gatsby to 2.13.25
 
 ## 1.0.12
 
-- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
   - @arch-ui/input@0.0.8
 
 ## 1.0.11
 
 ### Patch Changes
 
-- [ac119f88](https://github.com/keystonejs/keystone-5/commit/ac119f88):
+- [ac119f88](https://github.com/keystonejs/keystone/commit/ac119f88):
 
   Homepage of the documentation website reveals the video on hover/touch of the image to avoid double click on play
 
-- [df48bc05](https://github.com/keystonejs/keystone-5/commit/df48bc05):
+- [df48bc05](https://github.com/keystonejs/keystone/commit/df48bc05):
 
   Move meta generation to build time and stringify the contents of title and description nodes properly
 
-- [d362e82d](https://github.com/keystonejs/keystone-5/commit/d362e82d):
+- [d362e82d](https://github.com/keystonejs/keystone/commit/d362e82d):
 
   Make previous and next buttons consistent with order in sidebar
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
@@ -175,7 +232,7 @@
 
 ### Patch Changes
 
-- [b47fb186](https://github.com/keystonejs/keystone-5/commit/b47fb186):
+- [b47fb186](https://github.com/keystonejs/keystone/commit/b47fb186):
 
   Documentation website now features the egghead intro video instead of the illustration. The only changes here are on the homepage.
 
@@ -183,13 +240,13 @@
 
 ### Patch Changes
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Remove unused dependency
 
 ## 1.0.8
 
-- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
   - @arch-ui/input@0.0.6
   - @arch-ui/select@0.0.6
 
@@ -197,78 +254,78 @@
 
 ### Patch Changes
 
-- [2e59d131](https://github.com/keystonejs/keystone-5/commit/2e59d131):
+- [2e59d131](https://github.com/keystonejs/keystone/commit/2e59d131):
 
   [docs] Add discussions on Schemas and Relationships
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
-- [94ed17bd](https://github.com/keystonejs/keystone-5/commit/94ed17bd):
+- [94ed17bd](https://github.com/keystonejs/keystone/commit/94ed17bd):
 
   [docs] Clearer path to follow immediately following the Quick Start tutorial
 
-* Updated dependencies [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+* Updated dependencies [81b481d0](https://github.com/keystonejs/keystone/commit/81b481d0):
   - @arch-ui/input@0.0.5
 
 ## 1.0.6
 
-- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
   - @arch-ui/select@0.0.4
   - @arch-ui/input@0.0.4
   - @arch-ui/theme@0.0.3
 
 ## 1.0.5
 
-- [patch][a76721db](https://github.com/keystonejs/keystone-5/commit/a76721db):
+- [patch][a76721db](https://github.com/keystonejs/keystone/commit/a76721db):
 
   - Update gatsby dependencies
 
 ## 1.0.4
 
-- [patch][2d704f98](https://github.com/keystonejs/keystone-5/commit/2d704f98):
+- [patch][2d704f98](https://github.com/keystonejs/keystone/commit/2d704f98):
 
   - Make all docs headers clicky for perma-linking.
 
 ## 1.0.3
 
-- [patch][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+- [patch][9a9f214a](https://github.com/keystonejs/keystone/commit/9a9f214a):
 
   - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
 
 ## 1.0.2
 
-- [patch][60c13d0d](https://github.com/keystonejs/keystone-5/commit/60c13d0d):
+- [patch][60c13d0d](https://github.com/keystonejs/keystone/commit/60c13d0d):
 
   - Internal code changes
 
-- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+- [patch][11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
 
   - Update minor-level dependencies
 
-- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+- [patch][3a775092](https://github.com/keystonejs/keystone/commit/3a775092):
 
   - Update dependencies
 
-- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+- [patch][619b17c2](https://github.com/keystonejs/keystone/commit/619b17c2):
 
   - Reformat code using latest version of Prettier (1.16.4)
 
-- [patch][233dd5a1](https://github.com/keystonejs/keystone-5/commit/233dd5a1):
+- [patch][233dd5a1](https://github.com/keystonejs/keystone/commit/233dd5a1):
 
   - Adding trailing slash to quick-start main navigation link to appropriately trigger the active state in the sidebar.
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 
-- Updated dependencies [d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+- Updated dependencies [d9a1be91](https://github.com/keystonejs/keystone/commit/d9a1be91):
   - @arch-ui/select@0.0.3
 
 ## 1.0.1
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 

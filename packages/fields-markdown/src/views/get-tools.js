@@ -84,7 +84,7 @@ export let getTools = cm => {
       label: 'Italicize',
       action() {
         cm.focus();
-        this.toggleAround('*', '*');
+        toggleAround('*', '*');
       },
     },
     {

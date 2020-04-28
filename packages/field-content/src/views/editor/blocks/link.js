@@ -9,7 +9,8 @@ import { useSlate, useSelected } from 'slate-react';
 
 import { LinkIcon, CheckIcon, CircleSlashIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
-
+import { usePopper } from 'react-popper';
+import { createPortal } from 'react-dom';
 import { ToolbarButton } from '../toolbar-components';
 import { isBlockActive } from '../utils';
 
@@ -22,6 +23,7 @@ export const Node = ({ element: { href }, attributes, children }) => {
   const isSelected = useSelected();
 
   const [aElement, setAElement] = useState(null);
+  const [popperElement, setPopperElement] = useState(null);
   const [linkInputValue, setLinkInputValue] = useState(href);
 
   // this is terrible
@@ -31,6 +33,10 @@ export const Node = ({ element: { href }, attributes, children }) => {
   useEffect(() => {
     setLinkInputValue(href);
   }, [href]);
+
+  const { styles } = usePopper(aElement, popperElement, {
+    placement: 'bottom',
+  });
 
   // TODO: get editing working
   return (
@@ -45,42 +51,36 @@ export const Node = ({ element: { href }, attributes, children }) => {
       </a>
       {isSelected &&
         createPortal(
-          <Popper placement="bottom" referenceElement={aElement}>
-            {({ style, ref }) => {
-              return (
-                <div style={style} css={{ margin: gridSize, display: 'flex' }}>
-                  <div
-                    ref={ref}
-                    css={{
-                      backgroundColor: colors.N90,
-                      color: 'white',
-                      padding: 8,
-                      borderRadius: 6,
-                      display: 'flex',
-                    }}
-                  >
-                    <LinkInput
-                      value={linkInputValue}
-                      onChange={event => {
-                        setLinkInputValue(event.target.value);
-                        Transforms.setNodes(editor, { href: event.target.value });
-                      }}
-                    />
-                    <ToolbarButton
-                      as="a"
-                      tooltipPlacement="bottom"
-                      icon={<LinkExternalIcon />}
-                      target="_blank"
-                      rel="noopener"
-                      label="Open Link"
-                      css={{ marginLeft: gridSize }}
-                      href={href}
-                    />
-                  </div>
-                </div>
-              );
-            }}
-          </Popper>,
+          <div ref={setPopperElement} style={styles.popper} css={{ display: 'flex' }}>
+            <div
+              css={{
+                margin: gridSize,
+                backgroundColor: colors.N90,
+                color: 'white',
+                padding: 8,
+                borderRadius: 6,
+                display: 'flex',
+              }}
+            >
+              <LinkInput
+                value={linkInputValue}
+                onChange={event => {
+                  setLinkInputValue(event.target.value);
+                  Transforms.setNodes(editor, { href: event.target.value });
+                }}
+              />
+              <ToolbarButton
+                as="a"
+                tooltipPlacement="bottom"
+                icon={<LinkExternalIcon />}
+                target="_blank"
+                rel="noopener"
+                label="Open Link"
+                css={{ marginLeft: gridSize }}
+                href={href}
+              />
+            </div>
+          </div>,
           document.body
         )}
     </>

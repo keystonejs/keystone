@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useState, useLayoutEffect, forwardRef } from 'react';
-import { Popper } from 'react-popper';
+import { usePopper } from 'react-popper';
 import { colors } from '@arch-ui/theme';
 
 const PopperRender = forwardRef(
-  ({ scheduleUpdate, alignment, isFocused, style, onAlignmentChange }, ref) => {
-    useLayoutEffect(scheduleUpdate, [alignment]);
+  ({ update, alignment, isFocused, style, onAlignmentChange }, ref) => {
+    useLayoutEffect(update, [alignment]);
     return (
       <div
         ref={ref}
@@ -38,11 +38,11 @@ const PopperRender = forwardRef(
   }
 );
 
-const popperModifiers = {
-  flip: { enabled: false },
-  hide: { enabled: false },
-  preventOverflow: { enabled: false },
-};
+const popperModifiers = [
+  { name: 'flip', enabled: false },
+  { name: 'hide', enabled: false },
+  { name: 'preventOverflow', enabled: false },
+];
 
 const Image = ({
   attributes,
@@ -54,6 +54,12 @@ const Image = ({
   ...props
 }) => {
   const [referenceElement, setReferenceElement] = useState(null);
+  const [popperElement, setPopperElement] = useState(null);
+
+  const { styles, update } = usePopper(referenceElement, popperElement, {
+    placement: 'top',
+    modifiers: popperModifiers,
+  });
 
   return (
     <div {...attributes}>
@@ -66,14 +72,16 @@ const Image = ({
           outline: isFocused ? 'dashed' : null,
         }}
       />
-      {children}
-      <Popper modifiers={popperModifiers} placement="top" referenceElement={referenceElement}>
-        {({ style, ref, scheduleUpdate }) => (
-          <PopperRender
-            {...{ scheduleUpdate, alignment, ref, isFocused, style, onAlignmentChange }}
-          />
-        )}
-      </Popper>
+      <PopperRender
+        {...{
+          update,
+          alignment,
+          ref: setPopperElement,
+          isFocused,
+          style: styles.popper,
+          onAlignmentChange,
+        }}
+      />
     </div>
   );
 };

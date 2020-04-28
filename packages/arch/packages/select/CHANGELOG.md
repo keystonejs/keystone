@@ -1,5 +1,17 @@
 # @arch-ui/select
 
+## 0.1.8
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+## 0.1.7
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
 ## 0.1.6
 
 ### Patch Changes
@@ -55,24 +67,24 @@
 
 ### Minor Changes
 
-- [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579): Allow async and creatable react-selects
+- [464d7579](https://github.com/keystonejs/keystone/commit/464d7579): Allow async and creatable react-selects
 
 ## 0.0.8
 
 ### Patch Changes
 
-- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+- [957a40d9](https://github.com/keystonejs/keystone/commit/957a40d9): Upgrade react-select
 
 ## 0.0.7
 
-- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
   - @arch-ui/theme@0.0.5
 
 ## 0.0.6
 
 ### Patch Changes
 
-- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
 
   Minor Admin UI Tweaks
 
@@ -80,26 +92,26 @@
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 0.0.4
 
-- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
   - @arch-ui/theme@0.0.3
 
 ## 0.0.3
 
-- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+- [patch][11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
 
   - Update minor-level dependencies
 
-- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+- [patch][d9a1be91](https://github.com/keystonejs/keystone/commit/d9a1be91):
 
   - Update dependencies
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 

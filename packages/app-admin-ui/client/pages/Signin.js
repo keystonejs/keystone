@@ -15,6 +15,7 @@ import { upcase } from '@keystonejs/utils';
 import KeystoneLogo from '../components/KeystoneLogo';
 
 import { useAdminMeta } from '../providers/AdminMeta';
+import { useUIHooks } from '../providers/Hooks';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -74,6 +75,8 @@ const SignInPage = () => {
     authStrategy: { listKey, identityField, secretField },
   } = useAdminMeta();
 
+  const { logo: getCustomLogo } = useUIHooks();
+
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
   const [reloading, setReloading] = useState(false);
@@ -124,7 +127,7 @@ const SignInPage = () => {
       </Alerts>
       <PageTitle>{siteName}</PageTitle>
       <Form method="post" onSubmit={onSubmit}>
-        <KeystoneLogo />
+        {getCustomLogo ? getCustomLogo() : <KeystoneLogo />}
         <Divider />
         <div>
           <Fields>
