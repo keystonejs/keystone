@@ -137,10 +137,7 @@ const Toolbar = () => {
     <PopperRender
       {...{
         update,
-        editorState,
         style: { ...styles.popper, zIndex: 10 },
-        blocks,
-        editor,
         ref: setPopperElement,
         children,
       }}

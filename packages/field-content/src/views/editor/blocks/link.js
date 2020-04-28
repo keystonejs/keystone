@@ -2,15 +2,14 @@
 import { jsx } from '@emotion/core';
 import React, { useContext, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Popper } from 'react-popper';
+import { usePopper } from 'react-popper';
 
 import { Transforms, Range } from 'slate';
 import { useSlate, useSelected } from 'slate-react';
 
 import { LinkIcon, CheckIcon, CircleSlashIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
-import { usePopper } from 'react-popper';
-import { createPortal } from 'react-dom';
+
 import { ToolbarButton } from '../toolbar-components';
 import { isBlockActive } from '../utils';
 
