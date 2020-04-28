@@ -118,7 +118,7 @@
     "tmp": "^0.1.0",
     "to-pascal-case": "^1.0.0",
     "underscore.string": "^3.3.5",
-    "unist-util-visit": "^1.4.0",
+    "unist-util-visit": "^2.0.2",
     "unsplash-js": "^6.0.0",
     "uuid": "^3.3.2",
     "webpack": "4.41.6"
