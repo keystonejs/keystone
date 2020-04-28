@@ -37,7 +37,7 @@ keystone.createList('Item', {
 
 ## Cloudinary image block
 
-The `CloudinaryImage` field also exposes a block that can be used in the [content field](../../../../field-content/README.md).
+The `CloudinaryImage` field also exposes a block that can be used in the [content field](/packages/field-content/README.md).
 
 ### Usage
 

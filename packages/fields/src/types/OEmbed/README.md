@@ -234,7 +234,7 @@ Will result in something like:
 
 ## OEmbed block
 
-The `OEmbed` field exposes a block that can be used in the [content field](../../../../field-content/README.md).
+The `OEmbed` field exposes a block that can be used in the [content field](/packages/field-content/README.md).
 
 ### Usage
 
