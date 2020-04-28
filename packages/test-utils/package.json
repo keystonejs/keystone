@@ -13,7 +13,7 @@
     "@keystonejs/app-graphql": "^5.1.5",
     "@keystonejs/keystone": "^8.1.2",
     "express": "^4.17.1",
-    "mongodb-memory-server": "^6.3.3",
+    "mongodb-memory-server-core": "^6.5.2",
     "p-finally": "^2.0.1",
     "supertest-light": "^1.0.2"
   },
