@@ -59,7 +59,7 @@
     "react-helmet": "^5.2.0",
     "rehype-slug": "^2.0.3",
     "underscore.string": "^3.3.5",
-    "unist-util-visit": "^1.4.0",
+    "unist-util-visit": "^2.0.2",
     "use-clipboard-copy": "^0.1.2"
   }
 }
