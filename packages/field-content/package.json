@@ -34,9 +34,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-popper": "^2.2.2",
-    "slate": "^0.57.1",
-    "slate-history": "^0.57.1",
-    "slate-react": "^0.57.1"
+    "slate": "^0.57.2",
+    "slate-history": "^0.57.2",
+    "slate-react": "^0.57.2"
   },
   "peerDependencies": {},
   "field-types": {
