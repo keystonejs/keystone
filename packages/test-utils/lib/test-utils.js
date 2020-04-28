@@ -212,18 +212,18 @@ function _after(tearDownFunction) {
 
 function multiAdapterRunners(only) {
   return [
-    // {
-    //   runner: _keystoneRunner('mongoose', teardownMongoMemoryServer),
-    //   adapterName: 'mongoose',
-    //   before: _before('mongoose'),
-    //   after: _after(teardownMongoMemoryServer),
-    // },
-    // {
-    //   runner: _keystoneRunner('knex', () => {}),
-    //   adapterName: 'knex',
-    //   before: _before('knex'),
-    //   after: _after(() => {}),
-    // },
+    {
+      runner: _keystoneRunner('mongoose', teardownMongoMemoryServer),
+      adapterName: 'mongoose',
+      before: _before('mongoose'),
+      after: _after(teardownMongoMemoryServer),
+    },
+    {
+      runner: _keystoneRunner('knex', () => {}),
+      adapterName: 'knex',
+      before: _before('knex'),
+      after: _after(() => {}),
+    },
     {
       runner: _keystoneRunner('json', () => {}),
       adapterName: 'json',
