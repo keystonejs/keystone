@@ -1,6 +1,6 @@
 const express = require('express');
 const supertest = require('supertest-light');
-const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const MongoDBMemoryServer = require('mongodb-memory-server-core').default;
 const pFinally = require('p-finally');
 const url = require('url');
 const { Keystone } = require('@keystonejs/keystone');
