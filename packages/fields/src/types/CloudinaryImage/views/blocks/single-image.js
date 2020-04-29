@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
 //import imageExtensions from 'image-extensions';
 import { useSlate } from 'slate-react';
-import { Data, Transforms } from 'slate';
+import { Transforms } from 'slate';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import pluralize from 'pluralize';
 import { useContentField } from '@keystonejs/field-content';
@@ -165,24 +165,20 @@ export const getPlugin = ({ blocks }) => editor => {
   return editor;
 };
 
-export const serialize = ({ node: { alignment, _joinIds: joinIds }, blocks }) => {
+export const serialize = ({ node, blocks }) => {
   // Find the 'image' child node
-  const imageNode = node.findDescendant(
-    child => child.object === 'block' && child.type === blocks.image.type
-  );
+  const imageNode = node.children.find(child => child.type === blocks.image.type);
 
   if (!imageNode) {
     console.error('No image found in a cloudinaryImage block');
     return;
   }
 
-  const { file } = imageNode;
-
   // zero out the data field to ensure we don't accidentally store the `file` as
   // a JSON blob
-  // FIXME
-  const newNode = node.setNode(node.getPath(imageNode.key), { data: Data.create() });
+  const { file, src, ...rest } = imageNode;
 
+  const { _joinIds: joinIds } = node;
   const mutations =
     joinIds && joinIds.length
       ? {
@@ -199,9 +195,8 @@ export const serialize = ({ node: { alignment, _joinIds: joinIds }, blocks }) =>
   return {
     mutations,
     node: {
-      // FIXME
-      ...newNode.toJSON(),
-      align: alignment,
+      ...rest,
+      align: node.alignment,
     },
   };
 };
@@ -213,16 +208,13 @@ export const deserialize = ({ node, joins, blocks }) => {
   }
 
   // Find the 'image' child node
-  const imageNode = node.findDescendant(
-    child => child.object === 'block' && child.type === blocks.image.type
-  );
+  const imageNode = node.children.find(child => child.type === blocks.image.type);
 
   if (!imageNode) {
     console.error('No image found in a cloudinaryImage block');
     return;
   }
 
-  // FIXME
   Transforms.setNodes(editor, { src: joins[0].image.publicUrl }, { at: imageNode });
 
   return {
