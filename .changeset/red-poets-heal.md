@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Packages stylesheets imported in custom pages are kept in production build
+Updated Webpack config so stylesheets imported from node_modules are included in the production build.
