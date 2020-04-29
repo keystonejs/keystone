@@ -13,6 +13,7 @@
     "@arch-ui/hooks": "^0.0.10",
     "@arch-ui/icons": "^0.1.1",
     "@arch-ui/input": "^0.1.9",
+    "@arch-ui/modal-utils": "^1.0.10",
     "@arch-ui/theme": "^0.0.10",
     "@arch-ui/tooltip": "^0.1.12",
     "@arch-ui/typography": "^0.0.17",
