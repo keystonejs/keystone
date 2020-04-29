@@ -8048,12 +8048,10 @@ cyclist@~0.2.2:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
 
-cypress-file-upload@^4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-4.0.6.tgz#dc1d160b85b4b6ea4af97e5e9138331465740cd2"
-  integrity sha512-CltcHrspJtGjuwpF/Kgs2gVmJMWlSvZFFW9i6w1kpQIcm7q76/XDuoOBqTKJztrSHOgRT9Vq9g0jpoUBoty+HQ==
-  dependencies:
-    mime "^2.4.4"
+cypress-file-upload@^3.4.0:
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-3.5.3.tgz#cd706485de3fb2cbd4a8c2dd90fe96d537bb4311"
+  integrity sha512-S/czzqAj1BYz6Xxnfpx2aSc6hXsj76fd8/iuycJ2RxoxCcQMliw8eQV0ugzVlkzr1GD5dKGviNFGYqv3nRJ+Tg==
 
 cypress-multi-reporters@^1.2.3:
   version "1.2.3"

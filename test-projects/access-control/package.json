@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "cypress": "^4.4.0",
-    "cypress-file-upload": "^4.0.6",
+    "cypress-file-upload": "^3.4.0",
     "cypress-multi-reporters": "^1.2.3",
     "dotenv-safe": "^8.1.0",
     "execa": "^2.0.4",
