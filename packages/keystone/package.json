@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "p-is-promise": "^3.0.0",
-    "tmp": "^0.1.0"
+    "tmp": "^0.2.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
 }
