@@ -16,8 +16,6 @@ const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship')
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
 const getYear = require('date-fns/get_year');
 
-const { RelationshipList } = require('../../packages/fields/src');
-
 const { staticRoute, staticPath, distDir } = require('./config');
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -78,10 +76,9 @@ exports.Post = {
       },
     },
     categories: {
-      type: RelationshipList,
+      type: Relationship,
       ref: 'PostCategory',
       many: true,
-      innerFields: ['name', 'slug'],
     },
     status: {
       type: Select,
