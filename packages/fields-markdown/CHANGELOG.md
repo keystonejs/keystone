@@ -1,5 +1,44 @@
 # @keystonejs/fields-markdown
 
+## 5.1.9
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+  - @keystonejs/build-field-types@5.2.5
+  - @keystonejs/fields@9.0.4
+
+## 5.1.8
+
+### Patch Changes
+
+- [`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c) [#2775](https://github.com/keystonejs/keystone/pull/2775) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up FieldDescription usage. The `<FieldDescription>` component no longer accepts children and requires a `text` prop:
+
+  `<FieldDescription>Hello World</FieldDescription>` => `<FieldDescription text="Hello World" />`
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c), [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @keystonejs/fields@9.0.3
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+
+## 5.1.7
+
+### Patch Changes
+
+- [`39175092`](https://github.com/keystonejs/keystone/commit/391750921cba84cd22e933232b44fa1ea9c849dd) [#2759](https://github.com/keystonejs/keystone/pull/2759) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a few issues with the Markdown field UI.
+
+- Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0)]:
+  - @keystonejs/fields@9.0.2
+
 ## 5.1.6
 
 ### Patch Changes

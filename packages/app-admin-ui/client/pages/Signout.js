@@ -1,58 +1,42 @@
-import React, { Fragment } from 'react';
+/** @jsx jsx */
+
+import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
+
+import { Fragment } from 'react';
 
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import KeystoneLogo from '../components/KeystoneLogo';
-
+import { CheckIcon } from '@arch-ui/icons';
+import { Button } from '@arch-ui/button';
 import { LoadingIndicator } from '@arch-ui/loading';
+import { colors } from '@arch-ui/theme';
 
+import Animation from '../components/Animation';
 import { useAdminMeta } from '../providers/AdminMeta';
 
-const Container = styled.div({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  minHeight: '100vh',
-});
+const FlexBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
-const Alerts = styled.div({
-  margin: '20px auto',
-  width: 650,
-  height: 48,
-});
+const Container = styled(FlexBox)`
+  min-height: 100vh;
+`;
 
-const Box = styled.div({
-  boxShadow: '0 2px 1px #f1f1f1',
-  backgroundColor: 'white',
-  border: '1px solid #e9e9e9',
-  borderRadius: '0.3em',
-  margin: '0 auto',
-  minWidth: 650,
-  padding: 40,
-  display: 'flex',
-  flexWrap: 'nowrap',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+const Caption = styled.p`
+  font-size: 1.5em;
+`;
 
-const Divider = styled.div({
-  borderRight: '1px solid #eee',
-  minHeight: 185,
-  lineHeight: 185,
-  margin: '0 40px',
-});
-
-const Content = styled.div({
-  marginTop: 16,
-  minWidth: 280,
-});
-
-const Spacer = styled.div({
-  height: 120,
-});
+const SignOutPageButton = styled(Button)`
+  width: 200px;
+  height: 2.6em;
+  margin-bottom: 0.8em;
+  line-height: unset;
+`;
 
 const SignedOutPage = () => {
   const {
@@ -86,24 +70,24 @@ const SignedOutPage = () => {
 
   return (
     <Container>
-      <Alerts />
-      <Box>
-        <KeystoneLogo />
-        <Divider />
-        <Content>
-          {loading ? (
-            <LoadingIndicator />
-          ) : (
-            <Fragment>
-              <p>You have been signed out.</p>
-              <p>
-                <a href={signinPath}>Sign In</a>
-              </p>
-            </Fragment>
-          )}
-        </Content>
-      </Box>
-      <Spacer />
+      {loading ? (
+        <Fragment>
+          <LoadingIndicator css={{ height: '3em' }} size={12} />
+          <Caption>Signing out.</Caption>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Animation name="pulse" duration="500ms">
+            <CheckIcon css={{ color: colors.primary, height: '3em', width: '3em' }} />
+          </Animation>
+          <Caption>You have been signed out.</Caption>
+          <FlexBox>
+            <SignOutPageButton variant="ghost" href={signinPath}>
+              Sign In
+            </SignOutPageButton>
+          </FlexBox>
+        </Fragment>
+      )}
     </Container>
   );
 };

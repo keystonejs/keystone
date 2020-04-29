@@ -121,4 +121,5 @@ export default class FieldController {
   };
 
   getFilterTypes = () => [];
+  getFilterValue = value => value;
 }

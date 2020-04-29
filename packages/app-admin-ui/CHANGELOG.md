@@ -1,5 +1,101 @@
 # @keystonejs/app-admin-ui
 
+## 5.11.1
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/alert@0.0.17
+  - @arch-ui/badge@0.0.15
+  - @arch-ui/button@0.0.18
+  - @arch-ui/card@0.0.14
+  - @arch-ui/confirm@0.0.18
+  - @arch-ui/controls@0.1.8
+  - @arch-ui/dialog@0.0.20
+  - @arch-ui/drawer@0.0.21
+  - @arch-ui/dropdown@0.0.17
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/hooks@0.0.10
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+  - @arch-ui/lozenge@0.0.16
+  - @arch-ui/navbar@0.1.9
+  - @arch-ui/options@0.0.20
+  - @arch-ui/pagination@0.0.20
+  - @arch-ui/pill@0.1.15
+  - @arch-ui/popout@0.0.18
+  - @arch-ui/select@0.1.8
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+  - @keystonejs/build-field-types@5.2.5
+  - @keystonejs/fields@9.0.4
+
+## 5.11.0
+
+### Minor Changes
+
+- [`501fd3e4`](https://github.com/keystonejs/keystone/commit/501fd3e4a06cfeba0f96a76ff8763d3be577af6e) [#2779](https://github.com/keystonejs/keystone/pull/2779) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a section to the sidebar displaying the currently signed-in user.
+
+### Patch Changes
+
+- [`e7afc083`](https://github.com/keystonejs/keystone/commit/e7afc08338cc04bfc8b6eec1a21f777f81f4d6c8) [#2471](https://github.com/keystonejs/keystone/pull/2471) Thanks [@Vultraz](https://github.com/Vultraz)! - Redesigned signout page.
+
+* [`b14c07a1`](https://github.com/keystonejs/keystone/commit/b14c07a154ae1cb92e7cbc87484d99419f92d649) [#2792](https://github.com/keystonejs/keystone/pull/2792) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a broken link.
+
+- [`16f6c300`](https://github.com/keystonejs/keystone/commit/16f6c3003d1decbb77474455ef608e3efd41ec4b) [#2699](https://github.com/keystonejs/keystone/pull/2699) Thanks [@Vultraz](https://github.com/Vultraz)! - Made keyboard shortcuts not trigger in contenteditable nodes.
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c), [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @keystonejs/fields@9.0.3
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+  - @arch-ui/options@0.0.19
+  - @arch-ui/pagination@0.0.19
+  - @arch-ui/pill@0.1.14
+
+## 5.10.0
+
+### Minor Changes
+
+- [`57e6ce29`](https://github.com/keystonejs/keystone/commit/57e6ce293e5afd0add52728aa73c74e90fcbe0f7) [#2474](https://github.com/keystonejs/keystone/pull/2474) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a UI hook (`logo`) to display a custom logo on the signin screen.
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
+* [`344c45ef`](https://github.com/keystonejs/keystone/commit/344c45efbb96a90010f81e4c8447a9c5728ea87f) [#2740](https://github.com/keystonejs/keystone/pull/2740) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated html-webpack-plugin dependency to 4.2.0.
+
+- [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32) [#2463](https://github.com/keystonejs/keystone/pull/2463) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced ContainerQuery component with useResizeObserver.
+
+* [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0) [#2314](https://github.com/keystonejs/keystone/pull/2314) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Made all values in `adminConfig` list options available to `admin-ui` as part of list's `adminMeta`.
+
+  - Added `adminConfig` option to all Fields which are made available to field's `adminMeta` in `admin-ui`.
+  - Added `adminMeta` option in `AdminUIApp` constructor which is also made available to `adminMeta` of `admin-ui`.
+
+  All the improvements are useful in `admin-ui` customizations like UI Hooks or custom Field Views.
+
+* Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`81822d67`](https://github.com/keystonejs/keystone/commit/81822d67822bdc77b360b709f2e824cc43d88f15), [`70f3529b`](https://github.com/keystonejs/keystone/commit/70f3529bbdb6dee76c0b278415d340c53c68530a), [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0), [`bcfa092d`](https://github.com/keystonejs/keystone/commit/bcfa092d026c0d626087e641d91b729de7c5480b)]:
+  - @arch-ui/options@0.0.18
+  - @arch-ui/select@0.1.7
+  - @keystonejs/fields@9.0.2
+  - @arch-ui/controls@0.1.7
+  - @arch-ui/pagination@0.0.18
+  - @arch-ui/layout@0.2.12
+
+## 5.9.6
+
+### Patch Changes
+
+- [`3193f4a5`](https://github.com/keystonejs/keystone/commit/3193f4a56c6391d07e8c04913a667940ef7b8815) [#2732](https://github.com/keystonejs/keystone/pull/2732) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted more React components to functional form.
+
+- Updated dependencies [[`c013d8bc`](https://github.com/keystonejs/keystone/commit/c013d8bc1113b2a31ededc3918ab98c2c99f25f4), [`93ae77ef`](https://github.com/keystonejs/keystone/commit/93ae77efe71151279a15ddb7ddc3df60651022b4), [`eb90aea6`](https://github.com/keystonejs/keystone/commit/eb90aea6b33dda8d95baba818306328dd747247f)]:
+  - @keystonejs/fields@9.0.1
+
 ## 5.9.5
 
 ### Patch Changes

@@ -113,6 +113,7 @@ module.exports = class List {
     {
       fields,
       hooks = {},
+      adminDoc,
       schemaDoc,
       labelResolver,
       labelField,
@@ -143,6 +144,7 @@ module.exports = class List {
     this._fields = fields;
     this.hooks = hooks;
     this.schemaDoc = schemaDoc;
+    this.adminDoc = adminDoc;
 
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
@@ -324,6 +326,13 @@ module.exports = class List {
 
   getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
+    const {
+      defaultPageSize,
+      defaultColumns,
+      defaultSort,
+      maximumPageSize,
+      ...adminConfig
+    } = this.adminConfig;
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
@@ -338,14 +347,13 @@ module.exports = class List {
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
       views: this.views,
+      adminDoc: this.adminDoc,
       adminConfig: {
-        defaultPageSize: this.adminConfig.defaultPageSize,
-        defaultColumns: this.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: this.adminConfig.defaultSort,
-        maximumPageSize: Math.max(
-          this.adminConfig.defaultPageSize,
-          this.adminConfig.maximumPageSize
-        ),
+        defaultPageSize,
+        defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        defaultSort: defaultSort,
+        maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
+        ...adminConfig,
       },
     };
   }
