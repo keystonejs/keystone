@@ -107,7 +107,7 @@
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
     "split": "^1.0.1",
-    "stack-utils": "^1.0.2",
+    "stack-utils": "^2.0.2",
     "start-server-and-test": "^1.10.6",
     "supertest-light": "^1.0.3",
     "terminal-link": "^1.3.0",

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@keystonejs/utils": "^5.3.0",
-    "cuid": "^2.1.6"
+    "cuid": "^2.1.8"
   },
   "devDependencies": {
     "mongodb": "^3.5.5",
