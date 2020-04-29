@@ -22,7 +22,7 @@
     "cuid": "^2.1.6",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "tinymce": "^5.2.0"
+    "tinymce": "^5.2.2"
   },
   "peerDependencies": {
     "express": "^4.17.1"

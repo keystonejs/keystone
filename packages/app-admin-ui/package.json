@@ -71,7 +71,7 @@
     "lodash.throttle": "^4.1.1",
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
-    "raf-schd": "^4.0.0",
+    "raf-schd": "^4.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-prop-toggle": "^1.0.2",
