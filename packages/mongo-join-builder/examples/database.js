@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const MongoDBMemoryServer = require('mongodb-memory-server-core').default;
 
 module.exports = async () => {
   const mongoServer = new MongoDBMemoryServer();

@@ -1,5 +1,17 @@
 # @keystonejs/list-plugins
 
+## 5.2.0
+
+### Minor Changes
+
+- [`003c604a`](https://github.com/keystonejs/keystone/commit/003c604a8a8884457f2dda416eb14c2f64252596) [#2811](https://github.com/keystonejs/keystone/pull/2811) Thanks [@jesstelford](https://github.com/jesstelford)! - Leverage AuthedRelationship field within the byTracking plugin
+
+### Patch Changes
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a), [`5958d58a`](https://github.com/keystonejs/keystone/commit/5958d58abc98c4f1b9a28e4a5a5666b2f634a054)]:
+  - @keystonejs/fields@9.0.4
+  - @keystonejs/fields-authed-relationship@1.0.3
+
 ## 5.1.4
 
 ### Patch Changes

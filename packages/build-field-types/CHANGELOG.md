@@ -1,5 +1,11 @@
 # @keystonejs/build-field-types
 
+## 5.2.5
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
 ## 5.2.4
 
 ### Patch Changes

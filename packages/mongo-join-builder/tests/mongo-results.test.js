@@ -2,7 +2,7 @@ const { queryParser, pipelineBuilder } = require('../');
 const { postsAdapter, listAdapter } = require('./utils');
 
 const { MongoClient } = require('mongodb');
-const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const MongoDBMemoryServer = require('mongodb-memory-server-core').default;
 
 const mongoJoinBuilder = parserOptions => {
   return async (query, aggregate) => {

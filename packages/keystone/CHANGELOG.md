@@ -1,5 +1,11 @@
 # @keystonejs/keystone
 
+## 8.1.3
+
+### Patch Changes
+
+- [`830ed52a`](https://github.com/keystonejs/keystone/commit/830ed52a389c29107089a6a2cf8bb29f2d06750c) [#2814](https://github.com/keystonejs/keystone/pull/2814) Thanks [@timleslie](https://github.com/timleslie)! - The `authenticateMutation` resolver now passes the `context` object through to the `authStrategy.validate` method.
+
 ## 8.1.2
 
 ### Patch Changes

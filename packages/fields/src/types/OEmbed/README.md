@@ -23,7 +23,7 @@ const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 const keystone = new Keystone({...});
 
 const iframelyAdapter = new IframelyOEmbedAdapter({
-  apiKey: '...', // Get one from https://iframely.com
+  apiKey: process.env.IFRAMELY_API_KEY, // Get one from https://iframely.com
 });
 
 keystone.createList('User', {
@@ -230,4 +230,30 @@ Will result in something like:
     }
   }
 }
+```
+
+## OEmbed block
+
+The `OEmbed` field exposes a block that can be used in the [content field](/packages/field-content/README.md).
+
+### Usage
+
+```js
+const { Keystone } = require('@keystonejs/keystone');
+const { Content } = require('@keystonejs/field-content');
+const { OEmbed, Text } = require('@keystonejs/fields');
+const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
+
+const iframelyAdapter = new IframelyOEmbedAdapter({
+  apiKey: process.env.IFRAMELY_API_KEY, // Get one from https://iframely.com
+});
+
+keystone.createList('Post', {
+  fields: {
+    body: {
+      type: Content,
+      blocks: [Content.blocks.heading, [OEmbed.blocks.oEmbed, { adapter: iframelyAdapter }]],
+    },
+  },
+});
 ```

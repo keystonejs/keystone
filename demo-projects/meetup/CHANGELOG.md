@@ -1,5 +1,17 @@
 # @keystonejs/demo-project-meetup
 
+## 5.1.10
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/app-admin-ui@5.11.1
+  - @keystonejs/email@5.1.4
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.5
+  - @keystonejs/fields@9.0.4
+
 ## 5.1.9
 
 ### Patch Changes
