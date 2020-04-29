@@ -215,10 +215,9 @@ export const deserialize = ({ node, joins, blocks }) => {
     return;
   }
 
-  Transforms.setNodes(editor, { src: joins[0].image.publicUrl }, { at: imageNode });
-
   return {
     ...node,
+    src: joins[0].image.publicUrl,
     alignment: joins[0].align,
   };
 };
