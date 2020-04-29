@@ -4,7 +4,7 @@ import { Fragment, useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import flushable from 'flushable';
 import styled from '@emotion/styled';
-import { Popper } from 'react-popper';
+import { usePopper } from 'react-popper';
 
 import { TransitionProvider, fade } from '@arch-ui/modal-utils';
 import { colors, gridSize } from '@arch-ui/theme';
@@ -24,21 +24,23 @@ const TooltipElement = styled.div({
   zIndex: 2,
 });
 
-const TooltipPositioner = props => {
+const TooltipPositioner = ({ targetNode, placement, style, className, children }) => {
+  const [popperElement, setPopperElement] = useState(null);
+
+  const { styles } = usePopper(targetNode, popperElement, {
+    placement,
+    modifiers: [
+      { name: 'hide', enabled: false },
+      { name: 'preventOverflow', enabled: false },
+    ],
+  });
+
   return createPortal(
-    <Popper
-      referenceElement={props.targetNode}
-      placement={props.placement}
-      modifiers={{ hide: { enabled: false }, preventOverflow: { enabled: false } }}
-    >
-      {({ ref, style }) => (
-        <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>
-          <div css={{ margin: gridSize }}>
-            <TooltipElement className={props.className}>{props.children}</TooltipElement>
-          </div>
-        </div>
-      )}
-    </Popper>,
+    <div ref={setPopperElement} css={{ zIndex: 2000 }} style={{ ...style, ...styles.popper }}>
+      <div css={{ margin: gridSize }}>
+        <TooltipElement className={className}>{children}</TooltipElement>
+      </div>
+    </div>,
     document.body
   );
 };
@@ -71,11 +73,11 @@ const Tooltip = ({
   content,
   onHide,
   onShow,
-  placement,
+  placement = 'bottom',
   className,
   hideOnMouseDown,
   hideOnKeyDown,
-  delay,
+  delay = 300,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef();
@@ -167,11 +169,6 @@ const Tooltip = ({
       </TransitionProvider>
     </Fragment>
   );
-};
-
-Tooltip.defaultProps = {
-  delay: 300,
-  placement: 'bottom',
 };
 
 export default Tooltip;

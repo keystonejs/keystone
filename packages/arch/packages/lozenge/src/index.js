@@ -39,7 +39,7 @@ const subtleTextColor = {
   warning: colors.Y.L30,
 };
 
-export const Lozenge = styled.div(({ appearance, variant, crop }) => {
+export const Lozenge = styled.div(({ appearance = 'default', variant = 'subtle', crop }) => {
   const isClipRight = crop === 'right';
   const cropStyles = crop
     ? {
@@ -69,7 +69,3 @@ export const Lozenge = styled.div(({ appearance, variant, crop }) => {
     ...cropStyles,
   };
 });
-Lozenge.defaultProps = {
-  appearance: 'default',
-  variant: 'subtle',
-};

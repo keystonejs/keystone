@@ -5,7 +5,10 @@ import PropTypes from 'prop-types';
 import { AlertIcon, Container, H1 } from '../primitives';
 import Link from 'next/link';
 
-export default function Error({ message, title }) {
+export default function Error({
+  message = 'Something went wrong. Please try again later.',
+  title = 'Error',
+}) {
   return (
     <Container css={{ marginTop: '3rem', textAlign: 'center' }}>
       <AlertIcon size={48} />
@@ -21,8 +24,4 @@ export default function Error({ message, title }) {
 Error.propTypes = {
   message: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-};
-Error.defaultProps = {
-  message: 'Something went wrong. Please try again later.',
-  title: 'Error',
 };

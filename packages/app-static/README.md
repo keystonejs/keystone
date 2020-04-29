@@ -12,9 +12,7 @@ A KeystoneJS app to serve static files such as images, CSS and JavaScript with s
 
 ## Usage
 
-`index.js`
-
-```js
+```js title=index.js
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');

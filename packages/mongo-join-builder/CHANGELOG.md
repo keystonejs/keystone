@@ -1,5 +1,22 @@
 # @keystonejs/mongo-join-builder
 
+## 7.0.1
+
+### Patch Changes
+
+- [`3af6cc21`](https://github.com/keystonejs/keystone/commit/3af6cc214110c318fd674f2e47a5ab36bdfb215d) [#2807](https://github.com/keystonejs/keystone/pull/2807) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when querying one-to-one relationships.
+
+## 7.0.0
+
+### Major Changes
+
+- [`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d) [#2000](https://github.com/keystonejs/keystone/pull/2000) Thanks [@timleslie](https://github.com/timleslie)! - ## Release - Arcade
+
+  This release introduces a **new and improved data schema** for Keystone.
+  The new data schema simplifies the way your data is stored and will unlock the development of new functionality within Keystone.
+
+  > **Important:** You will need to make changes to your database to take advantage of the new data schema. Please read the full [release notes](https://www.keystonejs.com/discussions/new-data-schema) for instructions on updating your database.
+
 ## 6.1.3
 
 ### Patch Changes

@@ -30,178 +30,6 @@ const arrayToObject = (items, keyedBy, mapFn = identity) =>
   items.reduce((memo, item) => Object.assign(memo, { [item[keyedBy]]: mapFn(item) }), {});
 
 describe('Access Control, Field, GraphQL', () => {
-  describe('Schema', () => {
-    let queries;
-    let mutations;
-    let types;
-
-    function sanityCheckGraphQL() {
-      // check to make sure we're not getting false positives
-      return Promise.all([
-        expect(types).to.have.property('User'),
-        expect(queries).to.have.property('allUsers'),
-        expect(mutations).to.have.property('createUser'),
-      ]);
-    }
-
-    stayLoggedIn('su');
-
-    before(() =>
-      // Check graphql types via introspection
-      cy
-        .graphql_query(
-          '/admin/api',
-          `{
-          __schema {
-            types {
-              name
-              fields {
-                name
-              }
-              inputFields {
-                name
-              }
-            }
-            queryType {
-              fields {
-                name
-              }
-            }
-            mutationType {
-              fields {
-                name
-              }
-            }
-          }
-        }`
-        )
-        .then(({ data: { __schema } }) => {
-          queries = arrayToObject(__schema.queryType.fields, 'name');
-          mutations = arrayToObject(__schema.mutationType.fields, 'name');
-          types = arrayToObject(__schema.types, 'name', type =>
-            Object.assign({}, type, {
-              fields: arrayToObject(type.fields || [], 'name'),
-              inputFields: arrayToObject(type.inputFields || [], 'name'),
-            })
-          );
-        })
-    );
-
-    describe('static', () => {
-      it('sanity check', () => {
-        sanityCheckGraphQL();
-      });
-
-      fieldMatrix.forEach(access => {
-        it(`${JSON.stringify(access)} on ${staticList}`, () => {
-          const name = getFieldName(access);
-
-          expect(types, 'types').to.have.deep.property(`${staticList}.fields`);
-
-          const fields = types[staticList].fields;
-
-          if (access.read) {
-            expect(fields, 'fields').to.have.property(name);
-          } else {
-            expect(fields, 'fields').to.not.have.property(name);
-          }
-
-          // Filter types are only used when reading
-          expect(types, 'WhereInput exists').to.have.deep.property(
-            `${staticList}WhereInput.inputFields`
-          );
-          if (access.read) {
-            expect(types, `WhereInput.${name} exists`).to.have.deep.property(
-              `${staticList}WhereInput.inputFields.${name}`
-            );
-          } else {
-            expect(types, `WhereInput.${name} doesn't exist`).to.not.have.deep.property(
-              `${staticList}WhereInput.inputFields.${name}`
-            );
-          }
-
-          // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
-            `${staticList}CreateInput.inputFields`
-          );
-          if (access.create) {
-            expect(types, `CreateInput.${name} exists`).to.have.deep.property(
-              `${staticList}CreateInput.inputFields.${name}`
-            );
-          } else {
-            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.deep.property(
-              `${staticList}CreateInput.inputFields.${name}`
-            );
-          }
-
-          // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
-            `${staticList}CreateInput.inputFields`
-          );
-          if (access.create) {
-            expect(types, `CreateInput.${name} exists`).to.have.deep.property(
-              `${staticList}CreateInput.inputFields.${name}`
-            );
-          } else {
-            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.deep.property(
-              `${staticList}CreateInput.inputFields.${name}`
-            );
-          }
-
-          // NOTE: There's no delete type, nor is it possible to change how one
-          // would behave even if it existed since there's no `delete` access
-          // control option.
-        });
-      });
-    });
-
-    describe('imperative', () => {
-      it('sanity check', () => {
-        sanityCheckGraphQL();
-      });
-
-      fieldMatrix.forEach(access => {
-        it(`${JSON.stringify(access)} on ${imperativeList}`, () => {
-          const name = getFieldName(access);
-
-          expect(types, 'types').to.have.deep.property(`${imperativeList}.fields`);
-
-          const fields = types[imperativeList].fields;
-
-          expect(fields, 'fields').to.have.property(name);
-
-          // Filter types are only used when reading
-          expect(types, 'WhereInput exists').to.have.deep.property(
-            `${imperativeList}WhereInput.inputFields`
-          );
-          expect(types, `WhereInput.${name} exists`).to.have.deep.property(
-            `${imperativeList}WhereInput.inputFields.${name}`
-          );
-
-          // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
-            `${imperativeList}CreateInput.inputFields`
-          );
-          expect(types, `CreateInput.${name} exists`).to.have.deep.property(
-            `${imperativeList}CreateInput.inputFields.${name}`
-          );
-
-          // Create inputs
-          expect(types, 'CreateInput exists').to.have.deep.property(
-            `${imperativeList}CreateInput.inputFields`
-          );
-          expect(types, `CreateInput.${name} exists`).to.have.deep.property(
-            `${imperativeList}CreateInput.inputFields.${name}`
-          );
-
-          // NOTE: There's no delete type, nor is it possible to change how one
-          // would behave even if it existed since there's no `delete` access
-          // control option.
-        });
-      });
-    });
-  });
-
   describe('performing actions', () => {
     describe(`static on ${staticList}`, () => {
       before(() => {
@@ -339,15 +167,15 @@ describe('Access Control, Field, GraphQL', () => {
                 ).then(({ data, errors }) => {
                   expect(data, 'create mutation denied').to.have.property(createMutationName, null);
 
-                  expect(errors, 'create mutation denied').to.have.deep.property(
+                  expect(errors, 'create mutation denied').to.have.nested.property(
                     '[0].name',
                     'AccessDeniedError'
                   );
-                  expect(errors, 'create mutation denied').to.have.deep.property(
+                  expect(errors, 'create mutation denied').to.have.nested.property(
                     '[0].message',
                     'You do not have access to this resource'
                   );
-                  expect(errors, 'create mutation denied').to.have.deep.property(
+                  expect(errors, 'create mutation denied').to.have.nested.property(
                     '[0].path[0]',
                     createMutationName
                   );
@@ -433,20 +261,20 @@ describe('Access Control, Field, GraphQL', () => {
                       `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`
                     )
                     .then(({ data, errors }) => {
-                      expect(data, 'read singular denied').to.have.deep.property(
+                      expect(data, 'read singular denied').to.have.nested.property(
                         `${singleQueryName}.${fieldName}`,
                         null
                       );
 
-                      expect(errors, 'read singular denied').to.have.deep.property(
+                      expect(errors, 'read singular denied').to.have.nested.property(
                         '[0].name',
                         'AccessDeniedError'
                       );
-                      expect(errors, 'read singular denied').to.have.deep.property(
+                      expect(errors, 'read singular denied').to.have.nested.property(
                         '[0].message',
                         'You do not have access to this resource'
                       );
-                      expect(errors, 'read singular denied').to.have.deep.property(
+                      expect(errors, 'read singular denied').to.have.nested.property(
                         '[0].path[0]',
                         singleQueryName
                       );
@@ -506,15 +334,15 @@ describe('Access Control, Field, GraphQL', () => {
                         null
                       );
 
-                      expect(errors, 'update mutation denied').to.have.deep.property(
+                      expect(errors, 'update mutation denied').to.have.nested.property(
                         '[0].name',
                         'AccessDeniedError'
                       );
-                      expect(errors, 'update mutation denied').to.have.deep.property(
+                      expect(errors, 'update mutation denied').to.have.nested.property(
                         '[0].message',
                         'You do not have access to this resource'
                       );
-                      expect(errors, 'update mutation denied').to.have.deep.property(
+                      expect(errors, 'update mutation denied').to.have.nested.property(
                         '[0].path[0]',
                         updateMutationName
                       );
@@ -548,19 +376,19 @@ describe('Access Control, Field, GraphQL', () => {
     it('current user query returns user info', () => {
       cy.graphql_query('/admin/api', '{ authenticatedUser { id yesRead noRead } }').then(
         ({ data, errors }) => {
-          expect(data).to.have.deep.property('authenticatedUser.id');
-          expect(data).to.have.deep.property('authenticatedUser.yesRead', 'yes');
-          expect(data).to.have.deep.property('authenticatedUser.noRead', null);
+          expect(data).to.have.nested.property('authenticatedUser.id');
+          expect(data).to.have.nested.property('authenticatedUser.yesRead', 'yes');
+          expect(data).to.have.nested.property('authenticatedUser.noRead', null);
           expect(errors).to.have.length(1);
-          expect(errors, 'authenticatedUser read denied').to.have.deep.property(
+          expect(errors, 'authenticatedUser read denied').to.have.nested.property(
             '[0].name',
             'AccessDeniedError'
           );
-          expect(errors, 'authenticatedUser read denied').to.have.deep.property(
+          expect(errors, 'authenticatedUser read denied').to.have.nested.property(
             '[0].message',
             'You do not have access to this resource'
           );
-          expect(errors, 'authenticatedUser read denied').to.have.deep.property('[0].path');
+          expect(errors, 'authenticatedUser read denied').to.have.nested.property('[0].path');
           expect(errors[0].path, 'authenticatedUser read denied').to.deep.equal([
             'authenticatedUser',
             'noRead',

@@ -20,6 +20,7 @@ keystone.createList('ListKey', {...});
 | `access`        | `Function` \| `Object` \| `Boolean` | `true`                        | [Access control](/docs/guides/access-control.md) options for the list. |
 | `adapterConfig` | `Object`                            |                               | Override the adapter config options for a specific list.               |
 | `adminConfig`   | `Object`                            | `{}`                          | Options for the AdminUI.                                               |
+| `adminDoc`      | `String`                            |                               | A description for the list used in the Admin UI.                       |
 | `cacheHint`     | `Object`                            | `{}`                          | Configures a default caching hint for list.                            |
 | `fields`        | `Object`                            |                               | Defines the fields in a list.                                          |
 | `hooks`         | `Object`                            | `{}`                          | Functions to be called during list operations.                         |
@@ -32,7 +33,7 @@ keystone.createList('ListKey', {...});
 | `plugins`       | `Array`                             | `[]`                          | An array of `plugins` that can modify the list config.                 |
 | `plural`        | `String`                            |                               | Specify a plural for `Keystone` to use for the list.                   |
 | `queryLimits`   | `Object`                            | `{}`                          | Configures list-level query limits.                                    |
-| `schemaDoc`     | `String`                            |                               | A description for the list. Used in the Admin UI.                      |
+| `schemaDoc`     | `String`                            |                               | A description for the list used in the GraphQL schema.                 |
 | `singular`      | `String`                            |                               | Specify a singular noun for `Keystone` to use for the list.            |
 
 ## Definitions
@@ -77,6 +78,16 @@ keystone.createList('User', {
     defaultSort: 'email',
     maximumPageSize: 100,
   },
+});
+```
+
+### `adminDoc`
+
+A description for the list used in the Admin UI. To document the list in the GraphQL schema, see [`schemaDoc`](#schemadoc);
+
+```javascript
+keystone.createList('Todo', {
+  adminDoc: 'A list of things which need to be done.',
 });
 ```
 
@@ -332,14 +343,11 @@ keystone.createList('Post', {
 
 ### `schemaDoc`
 
-A description for the list used in the GraphQL schema.
+A description for the list used in the GraphQL schema. To document the list in the Admin UI, see [`adminDoc`](#admindoc);
 
 ```javascript
 keystone.createList('Todo', {
   schemaDoc: 'A list of things which need to be done.',
-  fields: {
-    description: { type: Text },
-  },
 });
 ```
 

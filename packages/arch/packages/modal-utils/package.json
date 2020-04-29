@@ -1,21 +1,21 @@
 {
   "name": "@arch-ui/modal-utils",
   "description": "Modal Utilities as used in @keystonejs Admin UI.",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/modal-utils.cjs.js",
   "peerDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "devDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.2",
     "@arch-ui/theme": "^0.0.10",
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.27",
+    "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "react-scrolllock": "^4.0.1",
     "react-transition-group": "^4.3.0"

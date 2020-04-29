@@ -126,38 +126,44 @@ function formatAreas(areas) {
   return areas.map(area => `"${area}"`).join(' ');
 }
 
-export const Grid = ({
-  alignContent,
-  areas,
-  columns = 12,
-  flow = 'row',
-  gap = 8,
-  justifyContent,
-  minRowHeight = 20,
-  rows,
-  ...props
-}) => {
-  const templateRows = rows ? { gridTemplateRows: rows } : {};
-  const templateAreas = areas ? { gridTemplateAreas: formatAreas(areas) } : {};
-  const gridTemplateColumns = Number.isInteger(columns) ? `repeat(${columns}, 1fr)` : columns;
+export const Grid = forwardRef(
+  (
+    {
+      alignContent,
+      areas,
+      columns = 12,
+      flow = 'row',
+      gap = 8,
+      justifyContent,
+      minRowHeight = 20,
+      rows,
+      ...props
+    },
+    ref
+  ) => {
+    const templateRows = rows ? { gridTemplateRows: rows } : {};
+    const templateAreas = areas ? { gridTemplateAreas: formatAreas(areas) } : {};
+    const gridTemplateColumns = Number.isInteger(columns) ? `repeat(${columns}, 1fr)` : columns;
 
-  return (
-    <div
-      css={{
-        display: 'grid',
-        gridAutoFlow: flow,
-        gridAutoRows: `minmax(${minRowHeight}px, auto)`,
-        gridGap: gap,
-        gridTemplateColumns,
-        justifyContent,
-        alignContent,
-        ...templateRows,
-        ...templateAreas,
-      }}
-      {...props}
-    />
-  );
-};
+    return (
+      <div
+        ref={ref}
+        css={{
+          display: 'grid',
+          gridAutoFlow: flow,
+          gridAutoRows: `minmax(${minRowHeight}px, auto)`,
+          gridGap: gap,
+          gridTemplateColumns,
+          justifyContent,
+          alignContent,
+          ...templateRows,
+          ...templateAreas,
+        }}
+        {...props}
+      />
+    );
+  }
+);
 
 export const Cell = ({ area, height = 1, left, top, width = 1, ...props }) => (
   <div

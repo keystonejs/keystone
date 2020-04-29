@@ -6,6 +6,7 @@ import { colors } from '@arch-ui/theme';
 
 import { Link } from 'gatsby';
 import { H1, H2, H3, H4, H5, H6 } from './Heading';
+import { Blockquote } from './Blockquote';
 import { InlineCode, CodeBlock } from './Code';
 import { Table } from './Table';
 
@@ -59,6 +60,7 @@ export default {
   h5: H5,
   h6: H6,
   hr: Hr,
+  blockquote: Blockquote,
   p: Paragraph,
   pre: ({ children }) => <Fragment>{children}</Fragment>, // The `CodeBlock` component handles pre-wrapping
   code: CodeBlock,

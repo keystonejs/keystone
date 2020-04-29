@@ -1,5 +1,17 @@
 # @arch-ui/typography
 
+## 0.0.17
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+## 0.0.16
+
+### Patch Changes
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
 ## 0.0.15
 
 ### Patch Changes
