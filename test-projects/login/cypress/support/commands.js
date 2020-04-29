@@ -47,7 +47,7 @@ Cypress.Commands.add('upload_file', (selector, fileUrl, type) =>
   cy
     .fixture(fileUrl)
     .then(fileContent =>
-      cy.get(selector).upload({ fileContent, fileName: fileUrl, mimeType: type })
+      cy.get(selector).attachFile({ fileContent, fileName: fileUrl, mimeType: type })
     )
 );
 

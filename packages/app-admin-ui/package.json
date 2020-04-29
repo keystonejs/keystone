@@ -45,6 +45,7 @@
     "@keystonejs/fields": "^9.0.4",
     "@keystonejs/session": "^6.0.1",
     "@keystonejs/utils": "^5.4.0",
+    "@types/react": "^16.8.12",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-link": "^1.2.13",
