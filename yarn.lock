@@ -8049,9 +8049,9 @@ cyclist@~0.2.2:
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
 
 cypress-file-upload@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-3.4.0.tgz#f066853357994ed7b64e0ea35920d3d85273914e"
-  integrity sha512-BY7jrpOPFEGcGBzkTReEjwQ59+O3u2SH2OleXdnDCuWIPHjbDx7haXukyAFd906JsI4Z2zXPiKrUVFHZc96eFA==
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-3.5.3.tgz#cd706485de3fb2cbd4a8c2dd90fe96d537bb4311"
+  integrity sha512-S/czzqAj1BYz6Xxnfpx2aSc6hXsj76fd8/iuycJ2RxoxCcQMliw8eQV0ugzVlkzr1GD5dKGviNFGYqv3nRJ+Tg==
 
 cypress-multi-reporters@^1.2.3:
   version "1.2.3"
@@ -12797,7 +12797,7 @@ imagemin@^6.1.0:
     pify "^4.0.1"
     replace-ext "^1.0.0"
 
-immutable@^4.0.0-rc.9:
+immutable@^4.0.0-rc.12, immutable@^4.0.0-rc.9:
   version "4.0.0-rc.12"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.12.tgz#ca59a7e4c19ae8d9bf74a97bdf0f6e2f2a5d0217"
   integrity sha512-0M2XxkZLx/mi3t8NVwIm1g8nHoEmM9p9UBl/G9k4+hm0kBgOVdMV/B3CY5dQ8qG8qc80NN4gDV4HQv6FTJ5q7A==
