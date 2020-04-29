@@ -239,7 +239,5 @@ export default function CreateItemModalWithMutation(props) {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });
-  return (
-    <CreateItemModal createItem={createItem} isLoading={loading} addToast={addToast} {...props} />
-  );
+  return <CreateItemModal createItem={createItem} isLoading={loading} {...props} />;
 }

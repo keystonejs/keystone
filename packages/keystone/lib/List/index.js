@@ -113,6 +113,7 @@ module.exports = class List {
     {
       fields,
       hooks = {},
+      adminDoc,
       schemaDoc,
       labelResolver,
       labelField,
@@ -143,6 +144,7 @@ module.exports = class List {
     this._fields = fields;
     this.hooks = hooks;
     this.schemaDoc = schemaDoc;
+    this.adminDoc = adminDoc;
 
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
@@ -324,6 +326,13 @@ module.exports = class List {
 
   getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
+    const {
+      defaultPageSize,
+      defaultColumns,
+      defaultSort,
+      maximumPageSize,
+      ...adminConfig
+    } = this.adminConfig;
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
@@ -338,14 +347,13 @@ module.exports = class List {
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
       views: this.views,
+      adminDoc: this.adminDoc,
       adminConfig: {
-        defaultPageSize: this.adminConfig.defaultPageSize,
-        defaultColumns: this.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: this.adminConfig.defaultSort,
-        maximumPageSize: Math.max(
-          this.adminConfig.defaultPageSize,
-          this.adminConfig.maximumPageSize
-        ),
+        defaultPageSize,
+        defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        defaultSort: defaultSort,
+        maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
+        ...adminConfig,
       },
     };
   }
@@ -1060,13 +1068,6 @@ module.exports = class List {
     };
   }
 
-  async _registerBacklinks(existingItem, mutationState) {
-    const fields = this.fields.filter(field => field.isRelationship);
-    await this._mapToFields(fields, field =>
-      field.registerBacklink(existingItem[field.path], existingItem, mutationState)
-    );
-  }
-
   async _resolveDefaults({ context, originalInput }) {
     const args = {
       context,
@@ -1266,22 +1267,17 @@ module.exports = class List {
   }
 
   async _nestedMutation(mutationState, context, mutation) {
-    const { Relationship } = require('@keystonejs/fields');
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {
       mutationState = {
         afterChangeStack: [], // post-hook stack
-        queues: {}, // backlink queues
         transaction: {}, // transaction
       };
     }
 
     // Perform the mutation
     const { result, afterHook } = await mutation(mutationState);
-
-    // resolve backlinks
-    await Relationship.resolveBacklinks(context, mutationState);
 
     // Push after-hook onto the stack and resolve all if we're the root.
     const { afterChangeStack } = mutationState;
@@ -1486,9 +1482,7 @@ module.exports = class List {
   async _deleteSingle(existingItem, context, mutationState) {
     const operation = 'delete';
 
-    return await this._nestedMutation(mutationState, context, async mutationState => {
-      await this._registerBacklinks(existingItem, mutationState);
-
+    return await this._nestedMutation(mutationState, context, async () => {
       await this._validateDelete(existingItem, context, operation);
 
       await this._beforeDelete(existingItem, context, operation);

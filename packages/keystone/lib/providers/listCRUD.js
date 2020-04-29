@@ -3,8 +3,11 @@ const { flatten, objMerge, unique } = require('@keystonejs/utils');
 
 class ListCRUDProvider {
   constructor({ metaPrefix = 'ks' } = {}) {
-    this._listsMeta = `_${metaPrefix}ListsMeta`;
     this.lists = [];
+    this.gqlNames = {
+      listsMeta: `_${metaPrefix}ListsMeta`,
+      listsMetaInput: `_${metaPrefix}ListsMetaInput`,
+    };
   }
 
   getTypes({ schemaName }) {
@@ -38,6 +41,13 @@ class ListCRUDProvider {
            user when performing 'auth' operations."""
         auth: JSON
       }`,
+      `type _ListSchemaFields {
+        """The name of the field in its list."""
+        name: String
+
+        """The field type (ie, Checkbox, Text, etc)"""
+        type: String
+      }`,
       `type _ListSchemaRelatedFields {
         """The typename as used in GraphQL queries"""
         type: String
@@ -52,6 +62,9 @@ class ListCRUDProvider {
         """Top level GraphQL query names which either return this type, or
            provide aggregate information about this type"""
         queries: [String]
+
+        """Information about fields defined on this list. """
+        fields(where: _ListSchemaFieldsInput): [_ListSchemaFields]
 
         """Information about fields on other types which return this type, or
            provide aggregate information about this type"""
@@ -71,6 +84,12 @@ class ListCRUDProvider {
       `type _QueryMeta {
         count: Int
       }`,
+      `input ${this.gqlNames.listsMetaInput} {
+        key: String
+      }`,
+      `input _ListSchemaFieldsInput {
+        type: String
+      }`,
     ]);
   }
   getQueries({ schemaName }) {
@@ -80,7 +99,7 @@ class ListCRUDProvider {
     return [
       ...flatten(firstClassLists.map(list => list.getGqlQueries({ schemaName }))),
       `""" Retrieve the meta-data for all lists. """
-          ${this._listsMeta}: [_ListMeta]`,
+      ${this.gqlNames.listsMeta}(where: ${this.gqlNames.listsMetaInput}): [_ListMeta]`,
     ];
   }
   getMutations({ schemaName }) {
@@ -113,6 +132,19 @@ class ListCRUDProvider {
     // NOTE: some fields are passed through unchanged from the list, and so are
     // not specified here.
     const listSchemaResolver = {
+      // Aux lists aren't filtered out here since you can query them via _ksListsMeta.
+      // They need to be included so the `key` check can match them and fetch their fields.
+      fields: ({ key }, { where: { type } = {} }) => {
+        return this.lists
+          .find(list => list.key === key)
+          .getFieldsWithAccess({ schemaName, access: 'read' })
+          .filter(field => !type || field.constructor.name === type)
+          .map(field => ({
+            name: field.path,
+            type: field.constructor.name,
+          }));
+      },
+
       // A function so we can lazily evaluate this potentially expensive
       // operation
       // (Could we memoize this in the future?)
@@ -150,9 +182,12 @@ class ListCRUDProvider {
       // shouldn't be able to override list-level queries
       ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
       ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
+
       // And the Keystone meta queries must always be available
-      [this._listsMeta]: (_, args, context) =>
-        this.lists.filter(list => list.access[schemaName].read).map(list => list.listMeta(context)),
+      [this.gqlNames.listsMeta]: (_, { where: { key } = {} }, context) =>
+        this.lists
+          .filter(list => list.access[schemaName].read && (!key || list.key === key))
+          .map(list => list.listMeta(context)),
     };
   }
   getMutationResolvers({ schemaName }) {

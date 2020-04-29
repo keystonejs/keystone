@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/apollo-helpers",
   "description": "Utilities to make using react-apollo + KeystoneJS easier.",
-  "version": "5.1.2",
+  "version": "5.1.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -25,10 +25,10 @@
     "react-adopt": "^0.6.0"
   },
   "peerDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "devDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   },
   "main": "dist/apollo-helpers.cjs.js",
   "module": "dist/apollo-helpers.esm.js",

@@ -47,11 +47,11 @@ export function getPaginationLabel({
   if (total > pageSize) {
     count = `Showing ${start} to ${end} of ${total}`;
   } else {
-    count = 'Showing ' + total;
+    count = `Showing ${total} `;
     if (total > 1 && plural) {
-      count += ' ' + plural;
+      count += plural;
     } else if (total === 1 && singular) {
-      count += ' ' + singular;
+      count += singular;
     }
   }
 

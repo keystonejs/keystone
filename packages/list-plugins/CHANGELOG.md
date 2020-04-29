@@ -1,5 +1,33 @@
 # @keystonejs/list-plugins
 
+## 5.2.0
+
+### Minor Changes
+
+- [`003c604a`](https://github.com/keystonejs/keystone/commit/003c604a8a8884457f2dda416eb14c2f64252596) [#2811](https://github.com/keystonejs/keystone/pull/2811) Thanks [@jesstelford](https://github.com/jesstelford)! - Leverage AuthedRelationship field within the byTracking plugin
+
+### Patch Changes
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a), [`5958d58a`](https://github.com/keystonejs/keystone/commit/5958d58abc98c4f1b9a28e4a5a5666b2f634a054)]:
+  - @keystonejs/fields@9.0.4
+  - @keystonejs/fields-authed-relationship@1.0.3
+
+## 5.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/fields@9.0.0
+
+## 5.1.3
+
+### Patch Changes
+
+- [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+- Updated dependencies [[`e7e4bc1d`](https://github.com/keystonejs/keystone/commit/e7e4bc1d22149d4daceb31d303f6ad10c2b853ba), [`58c4ffc3`](https://github.com/keystonejs/keystone/commit/58c4ffc3d4b1edf8bdfbc4ea299133d303239fc6), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`d138736d`](https://github.com/keystonejs/keystone/commit/d138736db184c5884171c7a65e43377f248046b5), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf)]:
+  - @keystonejs/fields@8.0.0
+
 ## 5.1.2
 
 ### Patch Changes

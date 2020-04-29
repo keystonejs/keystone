@@ -139,18 +139,6 @@ export const Content = props => (
       'ul > li > ul, ol > li > ol, ul > li > ol, ol > li > ul': {
         paddingLeft: '1.33rem',
       },
-      blockquote: {
-        borderLeft: `2px solid ${colors.B.base}`,
-        margin: `1.66rem 0`,
-        padding: '1rem',
-        position: 'relative',
-      },
-      'blockquote > p:first-of-type': {
-        marginTop: 0,
-      },
-      'blockquote > p:last-of-type': {
-        marginBottom: 0,
-      },
     }}
     {...props}
   />
