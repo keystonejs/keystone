@@ -19,7 +19,7 @@
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "globby": "^11.0.0",
-    "supertest-light": "^1.0.2",
+    "supertest-light": "^1.0.3",
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {

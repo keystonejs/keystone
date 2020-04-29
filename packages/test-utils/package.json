@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "mongodb-memory-server-core": "^6.5.2",
     "p-finally": "^2.0.1",
-    "supertest-light": "^1.0.2"
+    "supertest-light": "^1.0.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/test-utils"
 }
