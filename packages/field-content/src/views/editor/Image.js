@@ -1,47 +1,16 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useLayoutEffect, forwardRef } from 'react';
+import { useState, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
+import { Button } from '@arch-ui/button';
 import { colors } from '@arch-ui/theme';
-
-const PopperRender = forwardRef(
-  ({ update, alignment, isFocused, style, onAlignmentChange }, ref) => {
-    useLayoutEffect(update, [alignment]);
-    return (
-      <div
-        ref={ref}
-        css={{
-          display: isFocused ? 'block' : 'none',
-          padding: '0.2em',
-          borderRadius: '0.4em',
-          backgroundColor: colors.N90,
-        }}
-        style={style}
-      >
-        {['left', 'center', 'right'].map(align => (
-          <button
-            type="button"
-            key={align}
-            // so that the image block doesn't get deselected
-            onMouseDown={event => event.preventDefault()}
-            onClick={() => onAlignmentChange(align)}
-            css={{
-              padding: '0.2em 0.4em',
-              margin: '0.2em',
-            }}
-          >
-            {align}
-          </button>
-        ))}
-      </div>
-    );
-  }
-);
 
 const popperModifiers = [
   { name: 'flip', enabled: false },
   { name: 'hide', enabled: false },
   { name: 'preventOverflow', enabled: false },
+  { name: 'offset', options: { offset: [0, 16] } },
 ];
 
 const Image = ({
@@ -56,10 +25,14 @@ const Image = ({
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
 
-  const { styles, update } = usePopper(referenceElement, popperElement, {
+  const { styles, forceUpdate } = usePopper(referenceElement, popperElement, {
     placement: 'top',
     modifiers: popperModifiers,
   });
+
+  useLayoutEffect(() => {
+    if (forceUpdate) forceUpdate();
+  }, [forceUpdate, alignment]);
 
   return (
     <div {...attributes}>
@@ -72,16 +45,36 @@ const Image = ({
           outline: isFocused ? 'dashed' : null,
         }}
       />
-      <PopperRender
-        {...{
-          update,
-          alignment,
-          ref: setPopperElement,
-          isFocused,
-          style: styles.popper,
-          onAlignmentChange,
-        }}
-      />
+      {children}
+      {createPortal(
+        <div
+          ref={setPopperElement}
+          css={{
+            display: isFocused ? 'block' : 'none',
+            padding: '0.2em',
+            borderRadius: '0.4em',
+            backgroundColor: colors.N90,
+          }}
+          style={styles.popper}
+        >
+          {['left', 'center', 'right'].map(align => (
+            <button
+              variant="subtle"
+              key={align}
+              // so that the image block doesn't get deselected
+              onMouseDown={event => event.preventDefault()}
+              onClick={() => onAlignmentChange(align)}
+              css={{
+                padding: '0.2em 0.4em',
+                margin: '0.2em',
+              }}
+            >
+              {align}
+            </button>
+          ))}
+        </div>,
+        document.body
+      )}
     </div>
   );
 };
