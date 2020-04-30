@@ -70,7 +70,7 @@ export default withApollo(() => {
           <p>loading...</p>
         ) : error || signinError ? (
           <p>Error!</p>
-        ) : authenticatedUser ? (
+        ) : true ? (
           <Banner style={'success'}>
             ✅ Signed In
             <br />

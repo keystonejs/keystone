@@ -2,17 +2,18 @@ import mongoose from 'mongoose';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
+import { Implementation } from '../../Implementation';
+import { resolveNested } from './nested-mutations';
+import { enqueueBacklinkOperations } from './backlinks';
+
 const {
   Schema: {
     Types: { ObjectId },
   },
 } = mongoose;
 
-import { Implementation } from '../../Implementation';
-import { resolveNested } from './nested-mutations';
-
 export class Relationship extends Implementation {
-  constructor(path, { ref, many, withMeta }) {
+  constructor(path, { ref, many, withMeta, innerFields = [] }) {
     super(...arguments);
 
     // JM: It bugs me this is duplicated in the field adapters but initialisation order makes it hard to avoid
@@ -21,6 +22,7 @@ export class Relationship extends Implementation {
     this.refFieldPath = refFieldPath;
     this.isOrderable = true;
 
+    this.innerFields = innerFields;
     this.isRelationship = true;
     this.many = many;
     this.withMeta = typeof withMeta !== 'undefined' ? withMeta : true;
@@ -69,8 +71,8 @@ export class Relationship extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    const { refListKey: ref, refFieldPath, many } = this;
-    return { ...meta, ref, refFieldPath, many };
+    const { refListKey: ref, refFieldPath, many, innerFields } = this;
+    return { ...meta, ref, refFieldPath, many, innerFields };
   }
 
   gqlQueryInputFields({ schemaName }) {
@@ -92,9 +94,8 @@ export class Relationship extends Implementation {
         `""" is the relation field null """
         ${this.path}_is_null: Boolean`,
       ];
-    } else {
-      return [`${this.path}: ${refList.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
     }
+    return [`${this.path}: ${refList.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
   }
 
   gqlOutputFieldResolvers({ schemaName }) {
@@ -290,6 +291,7 @@ export class Relationship extends Implementation {
     `,
     ];
   }
+
   get gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
     if (this.many) {
@@ -298,6 +300,7 @@ export class Relationship extends Implementation {
 
     return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
   }
+
   get gqlCreateInputFields() {
     return this.gqlUpdateInputFields;
   }
@@ -419,6 +422,7 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
     };
   }
+
   supportsRelationshipQuery(query) {
     return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
       query

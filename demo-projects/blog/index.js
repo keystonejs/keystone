@@ -37,8 +37,10 @@ const authStrategy = keystone.createAuthStrategy({
 const adminApp = new AdminUIApp({
   adminPath: '/admin',
   hooks: require.resolve('./admin/'),
-  authStrategy,
-  isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+  //   TODO: Uncomment this on merge
+  //   authStrategy,
+  //   TODO: Revert this on merge
+  isAccessAllowed: ({ authentication: { item: user } }) => true,
 });
 
 module.exports = {

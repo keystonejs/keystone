@@ -13,6 +13,7 @@ export { default as Location } from './types/Location';
 export { default as OEmbed } from './types/OEmbed';
 export { default as Password } from './types/Password';
 export { default as Relationship } from './types/Relationship';
+export { default as RelationshipList } from './types/RelationshipList';
 export { default as Select } from './types/Select';
 export { default as Slug } from './types/Slug';
 export { default as Text } from './types/Text';
