@@ -91,9 +91,9 @@ You can read more about secure cookies on the [MDN web docs](https://developer.m
 const keystone = new Keystone({
   /* ...config */
   cookie: {
-    secure = process.env.NODE_ENV === 'production', // Default to true in production
-    maxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
-    sameSite = false,
+    secure: process.env.NODE_ENV === 'production', // Default to true in production
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+    sameSite: false,
   },
 });
 ```
