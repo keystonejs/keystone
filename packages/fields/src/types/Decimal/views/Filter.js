@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from '@arch-ui/input';
 
-const TextFilterView = ({ onChange, filter, field, innerRef, value }) => {
+const DecimalFilterView = ({ onChange, filter, field, innerRef, value }) => {
   const valueToString = value => {
     // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'string') {
@@ -31,4 +31,4 @@ const TextFilterView = ({ onChange, filter, field, innerRef, value }) => {
   );
 };
 
-export default TextFilterView;
+export default DecimalFilterView;
