@@ -1,5 +1,13 @@
 # @keystonejs/website
 
+## 5.3.4
+
+### Patch Changes
+
+- [`dcc75ead`](https://github.com/keystonejs/keystone/commit/dcc75ead10728351843c6ba13787412a140ac66f) [#2833](https://github.com/keystonejs/keystone/pull/2833) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved 404 page wording.
+
+* [`b484bad6`](https://github.com/keystonejs/keystone/commit/b484bad6df6dd7c97d2a7a40ae9417de0e4e6a63) [#2847](https://github.com/keystonejs/keystone/pull/2847) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded `unist-util-visit` from `1.x` to `2.x`.
+
 ## 5.3.3
 
 ### Patch Changes
