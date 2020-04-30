@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from '@arch-ui/input';
 
-const TextFilterView = ({ onChange, filter, field, innerRef, value }) => {
+const FileFilterView = ({ onChange, filter, field, innerRef, value }) => {
   const handleChange = event => {
     const value = event.target.value;
     onChange(value.replace(/\D/g, ''));
@@ -14,4 +14,4 @@ const TextFilterView = ({ onChange, filter, field, innerRef, value }) => {
   return <Input onChange={handleChange} ref={innerRef} placeholder={placeholder} value={value} />;
 };
 
-export default TextFilterView;
+export default FileFilterView;
