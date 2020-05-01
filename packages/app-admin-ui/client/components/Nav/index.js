@@ -383,7 +383,7 @@ const ActionItems = ({ mouseIsOverNav }) => {
       ...(ENABLE_DEV_FEATURES
         ? [
             {
-              label: 'GraphiQL Playground',
+              label: 'GraphQL Playground',
               to: graphiqlPath,
               icon: TerminalIcon,
               target: '_blank',
