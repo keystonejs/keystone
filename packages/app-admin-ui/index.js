@@ -84,6 +84,7 @@ class AdminUIApp {
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews: this.getAdminViews(keystone),
         entry: 'index',
         outputPath: path.join(builtAdminRoot, 'secure'),
       })
@@ -95,6 +96,7 @@ class AdminUIApp {
         getWebpackConfig({
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: undefined,
           entry: 'public',
           outputPath: path.join(builtAdminRoot, 'public'),
         })
@@ -120,7 +122,7 @@ class AdminUIApp {
 
   getAdminUIMeta(keystone) {
     // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
-    const { adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { adminPath, apiPath, graphiqlPath } = this;
     const { signinPath, signoutPath } = this.routes;
     const { lists, name } = keystone.getAdminMeta({ schemaName: this._schemaName });
     const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
@@ -128,8 +130,6 @@ class AdminUIApp {
       adminPath,
       apiPath,
       graphiqlPath,
-      pages,
-      hooks,
       signinPath,
       signoutPath,
       authStrategy,
@@ -137,6 +137,16 @@ class AdminUIApp {
       name,
       ...this._adminMeta,
     };
+  }
+
+  getAdminViews(keystone) {
+    const { pages, hooks } = this;
+    const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const listViews = Object.entries(lists).reduce(
+      (obj, [listPath, { views }]) => ({ ...obj, [listPath]: views }),
+      {}
+    );
+    return { pages, hooks, listViews };
   }
 
   prepareMiddleware({ keystone, distDir, dev }) {
@@ -186,7 +196,8 @@ class AdminUIApp {
         next();
       });
       const adminMeta = this.getAdminUIMeta(keystone);
-      middlewarePairs = this.createDevMiddleware({ adminMeta });
+      const adminViews = this.getAdminViews(keystone);
+      middlewarePairs = this.createDevMiddleware({ adminMeta, adminViews });
       mountPath = '/';
     } else {
       app.use(compression());
@@ -267,7 +278,7 @@ class AdminUIApp {
     }
   }
 
-  createDevMiddleware({ adminMeta }) {
+  createDevMiddleware({ adminMeta, adminViews }) {
     const webpackMiddlewareConfig = {
       publicPath: this.adminPath,
       stats: 'none',
@@ -281,6 +292,7 @@ class AdminUIApp {
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews,
         entry: 'index',
       })
     );
@@ -293,6 +305,7 @@ class AdminUIApp {
         getWebpackConfig({
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: undefined,
           entry: 'public',
         })
       );

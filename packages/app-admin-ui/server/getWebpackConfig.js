@@ -4,7 +4,7 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
-module.exports = function({ adminMeta, entry, outputPath }) {
+module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
@@ -55,15 +55,14 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       type: 'javascript/auto',
     },
   ];
-  if (adminMeta.lists) {
+  if (adminViews) {
+    const { pages, hooks, listViews } = adminViews;
     rules.push({
       test: /FIELD_TYPES/,
       use: [
         {
           loader: '@keystonejs/field-views-loader',
-          options: {
-            adminMeta,
-          },
+          options: { pages, hooks, listViews },
         },
       ],
     });
