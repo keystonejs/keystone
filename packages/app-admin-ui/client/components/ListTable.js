@@ -130,12 +130,12 @@ const ListRow = ({
   list,
   fields,
   item,
-  itemErrors,
+  itemErrors = {},
   link,
-  linkField,
+  linkField = '_label_',
   isSelected,
   onSelectChange,
-  onDelete: onDeleteCallback,
+  onDelete,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -163,8 +163,8 @@ const ListRow = ({
     setShowDeleteModal(false);
   };
 
-  const onDelete = result => {
-    if (onDeleteCallback) onDeleteCallback(result);
+  const handleDelete = result => {
+    if (onDelete) onDelete(result);
     if (!mounted.current) return;
     setShowDeleteModal(false);
   };
@@ -197,7 +197,7 @@ const ListRow = ({
           item={item}
           list={list}
           onClose={closeDeleteModal}
-          onDelete={onDelete}
+          onDelete={handleDelete}
         />
       </BodyCell>
       {fields.map(field => {
@@ -272,11 +272,6 @@ const ListRow = ({
       </BodyCell>
     </TableRow>
   );
-};
-
-ListRow.defaultProps = {
-  itemErrors: {},
-  linkField: '_label_',
 };
 
 const SingleCell = ({ columns, children }) => (
