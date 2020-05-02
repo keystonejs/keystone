@@ -1,5 +1,11 @@
 # @arch-ui/navbar
 
+## 0.1.10
+
+### Patch Changes
+
+- [`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d) [#2798](https://github.com/keystonejs/keystone/pull/2798) Thanks [@Vultraz](https://github.com/Vultraz)! - Revamped sidebar design.
+
 ## 0.1.9
 
 ### Patch Changes
