@@ -44,7 +44,7 @@ const AnimateHeight = ({ autoScroll = false, initialHeight = 0, onChange, render
     }
   };
 
-  const observer = useRef(new ResizeObserver(raf(calculateHeight));
+  const observer = useRef(new ResizeObserver(raf(calculateHeight)));
 
   // Disconnect on unmount
   useEffect(() => () => observer.current.disconnect(), []);
