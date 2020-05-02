@@ -47,9 +47,11 @@ export const useScrollQuery = ({ isPassive = true }) => {
   useEffect(() => {
     const { current } = scrollElement;
 
-    resizeObserver.current = new ResizeObserver(([entry]) => {
-      setScroll(entry.target);
-    });
+    resizeObserver.current = new ResizeObserver(
+      raf(([entry]) => {
+        setScroll(entry.target);
+      })
+    );
 
     resizeObserver.current.observe(current);
     setScroll(current);
