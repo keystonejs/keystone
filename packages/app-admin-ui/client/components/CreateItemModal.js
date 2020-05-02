@@ -212,7 +212,6 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
                           /* TODO: Permission query results */
                           errors={validationErrors[field.path] || []}
                           warnings={validationWarnings[field.path] || []}
-                          CreateItemModal={CreateItemModal}
                           onChange={onChange}
                           renderContext="dialog"
                         />
