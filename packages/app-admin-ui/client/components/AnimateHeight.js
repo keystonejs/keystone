@@ -2,6 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
+import raf from 'raf-schd';
 
 // TODO: see if this can use the useResizeObserver hook. Was having trouble doing so -CD
 const AnimateHeight = ({ autoScroll = false, initialHeight = 0, onChange, render, ...props }) => {
@@ -43,7 +44,7 @@ const AnimateHeight = ({ autoScroll = false, initialHeight = 0, onChange, render
     }
   };
 
-  const observer = useRef(new ResizeObserver(calculateHeight));
+  const observer = useRef(new ResizeObserver(raf(calculateHeight));
 
   // Disconnect on unmount
   useEffect(() => () => observer.current.disconnect(), []);
