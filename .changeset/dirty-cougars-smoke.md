@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Converted ResizeHandler component to a custom hook.
+Converted ResizeHandler and ScrollQuery components to custom hooks.

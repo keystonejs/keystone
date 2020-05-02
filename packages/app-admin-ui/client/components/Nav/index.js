@@ -24,7 +24,7 @@ import { PersonIcon, SignOutIcon, TerminalIcon, MarkGithubIcon } from '@arch-ui/
 
 import { useAdminMeta } from '../../providers/AdminMeta';
 import { useResizeHandler, KEYBOARD_SHORTCUT } from './ResizeHandler';
-import ScrollQuery from '../ScrollQuery';
+import { useScrollQuery } from '../ScrollQuery';
 
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -244,6 +244,7 @@ function PrimaryNavItems({
   mouseIsOverNav,
 }) {
   const isAtDashboard = useRouteMatch({ path: adminPath, exact: true });
+  const [scrollRef, snapshot] = useScrollQuery({ isPassive: false });
 
   let hasRenderedIndexPage = false;
   const onRenderIndexPage = () => {
@@ -278,23 +279,15 @@ function PrimaryNavItems({
         );
   return (
     <Relative>
-      <ScrollQuery isPassive={false}>
-        {(ref, snapshot) => (
-          <PrimaryNavScrollArea ref={ref} {...snapshot}>
-            {hasRenderedIndexPage === false && (
-              <PrimaryNavItem
-                to={adminPath}
-                isSelected={isAtDashboard}
-                mouseIsOverNav={mouseIsOverNav}
-              >
-                Dashboard
-              </PrimaryNavItem>
-            )}
-
-            {pageNavItems}
-          </PrimaryNavScrollArea>
+      <PrimaryNavScrollArea ref={scrollRef} {...snapshot}>
+        {hasRenderedIndexPage === false && (
+          <PrimaryNavItem to={adminPath} isSelected={isAtDashboard} mouseIsOverNav={mouseIsOverNav}>
+            Dashboard
+          </PrimaryNavItem>
         )}
-      </ScrollQuery>
+
+        {pageNavItems}
+      </PrimaryNavScrollArea>
     </Relative>
   );
 }
