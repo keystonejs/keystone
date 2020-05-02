@@ -1,7 +1,7 @@
 const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
-const fastMemoize = require('fast-memoize');
+const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { print } = require('graphql/language/printer');
@@ -157,15 +157,15 @@ module.exports = class Keystone {
       // memoizing to avoid requests that hit the same type multiple times.
       // We do it within the request callback so we can resolve it based on the
       // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = fastMemoize(access => {
+      getCustomAccessControlForUser = memoize(async access => {
         return validateCustomAccessControl({
           access: access[schemaName],
           authentication: { item: req.user, listKey: req.authedListKey },
         });
-      });
+      }, { isPromise: true });
 
-      getListAccessControlForUser = fastMemoize(
-        (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+      getListAccessControlForUser = memoize(
+        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
           return validateListAccessControl({
             access: this.lists[listKey].access[schemaName],
             originalInput,
@@ -176,11 +176,13 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
+        }, {
+          isPromise: true
         }
       );
 
-      getFieldAccessControlForUser = fastMemoize(
-        (
+      getFieldAccessControlForUser = memoize(
+        async (
           listKey,
           fieldKey,
           originalInput,
@@ -200,16 +202,20 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
+        }, {
+          isPromise: true
         }
       );
 
-      getAuthAccessControlForUser = fastMemoize((listKey, { gqlName } = {}) => {
+      getAuthAccessControlForUser = memoize( async (listKey, { gqlName } = {}) => {
         return validateAuthAccessControl({
           access: this.lists[listKey].access[schemaName],
           authentication: { item: req.user, listKey: req.authedListKey },
           listKey,
           gqlName,
         });
+      }, {
+        isPromise: true
       });
     }
 

@@ -70,8 +70,8 @@ class CustomProvider {
 
       // Perform access control check before passing off control to the
       // user defined resolver (along with the evalutated access).
-      const computeAccess = context => {
-        const _access = context.getCustomAccessControlForUser(access);
+      const computeAccess = async context => {
+        const _access = await context.getCustomAccessControlForUser(access);
         if (!_access) {
           graphqlLogger.debug({ access, gqlName }, 'Access statically or implicitly denied');
           graphqlLogger.info({ gqlName }, 'Access Denied');
