@@ -647,7 +647,7 @@ module.exports = class List {
     for ( const { existingItem, data } of itemsToUpdate ) {
 
       const fields = this.fields.filter(field => field.path in data);
-      
+
       for (const field of fields) {
         const access = await context.getFieldAccessControlForUser(
           this.key,
