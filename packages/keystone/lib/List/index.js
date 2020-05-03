@@ -644,8 +644,7 @@ module.exports = class List {
 
   async checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
-    for ( const { existingItem, data } of itemsToUpdate ) {
-
+    for (const { existingItem, data } of itemsToUpdate) {
       const fields = this.fields.filter(field => field.path in data);
 
       for (const field of fields) {
@@ -660,7 +659,7 @@ module.exports = class List {
           restrictedFields.push(field.path);
         }
       }
-    };
+    }
     if (restrictedFields.length) {
       throwAccessDenied(opToType[operation], context, gqlName, extraData, { restrictedFields });
     }
@@ -882,7 +881,10 @@ module.exports = class List {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
-    const access = await this.checkListAccess(context, undefined, operation, { gqlName, itemId: id });
+    const access = await this.checkListAccess(context, undefined, operation, {
+      gqlName,
+      itemId: id,
+    });
 
     const result = await this.getAccessControlledItem(id, access, {
       context,
@@ -1455,7 +1457,10 @@ module.exports = class List {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteMutationName;
 
-    const access = await this.checkListAccess(context, undefined, operation, { gqlName, itemId: id });
+    const access = await this.checkListAccess(context, undefined, operation, {
+      gqlName,
+      itemId: id,
+    });
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1470,7 +1475,10 @@ module.exports = class List {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
-    const access = await this.checkListAccess(context, undefined, operation, { gqlName, itemIds: ids });
+    const access = await this.checkListAccess(context, undefined, operation, {
+      gqlName,
+      itemIds: ids,
+    });
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 

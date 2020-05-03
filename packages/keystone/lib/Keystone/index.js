@@ -157,12 +157,15 @@ module.exports = class Keystone {
       // memoizing to avoid requests that hit the same type multiple times.
       // We do it within the request callback so we can resolve it based on the
       // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = memoize(async access => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-        });
-      }, { isPromise: true });
+      getCustomAccessControlForUser = memoize(
+        async access => {
+          return validateCustomAccessControl({
+            access: access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+          });
+        },
+        { isPromise: true }
+      );
 
       getListAccessControlForUser = memoize(
         async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
@@ -176,8 +179,9 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }, {
-          isPromise: true
+        },
+        {
+          isPromise: true,
         }
       );
 
@@ -202,21 +206,25 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }, {
-          isPromise: true
+        },
+        {
+          isPromise: true,
         }
       );
 
-      getAuthAccessControlForUser = memoize( async (listKey, { gqlName } = {}) => {
-        return validateAuthAccessControl({
-          access: this.lists[listKey].access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-          gqlName,
-        });
-      }, {
-        isPromise: true
-      });
+      getAuthAccessControlForUser = memoize(
+        async (listKey, { gqlName } = {}) => {
+          return validateAuthAccessControl({
+            access: this.lists[listKey].access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+            listKey,
+            gqlName,
+          });
+        },
+        {
+          isPromise: true,
+        }
+      );
     }
 
     return {
