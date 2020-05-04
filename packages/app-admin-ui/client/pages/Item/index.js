@@ -215,44 +215,34 @@ const ItemDetails = ({
     // Cache the current item data at the time of saving.
     itemSaveCheckCache.current = item;
 
-    updateItem({ variables: { id: item.id, data } })
-      .then(() => {
-        const toastContent = (
-          <div>
-            {item._label_ ? <strong>{item._label_}</strong> : null}
-            <div>Saved successfully</div>
-          </div>
-        );
+    await updateItem({ variables: { id: item.id, data } });
 
-        addToast(toastContent, {
-          autoDismiss: true,
-          appearance: 'success',
-        });
+    setValidationErrors({});
+    setValidationWarnings({});
 
-        setValidationErrors({});
-        setValidationWarnings({});
+    // we only want to set itemHasChanged to false
+    // when it hasn't changed since we did the mutation
+    // otherwise a user could edit the data and
+    // accidentally close the page without a warning
+    if (item === itemSaveCheckCache.current) {
+      itemHasChanged.current = false;
+    }
 
-        // we only want to set itemHasChanged to false
-        // when it hasn't changed since we did the mutation
-        // otherwise a user could edit the data and
-        // accidentally close the page without a warning
-        if (item === itemSaveCheckCache.current) {
-          itemHasChanged.current = false;
-        }
-      })
-      .then(onUpdate)
-      .then(savedItem => {
-        // No changes since we kicked off the item saving
-        if (!itemHasChanged.current) {
-          // Then reset the state to the current server value
-          // This ensures we are able to pass any extra information returned
-          // from the server that otherwise would be unknown to client state
-          setItem(savedItem);
+    const savedItem = await onUpdate();
 
-          // Clear the cache
-          itemSaveCheckCache.current = {};
-        }
-      });
+    // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
+    toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
+
+    // No changes since we kicked off the item saving
+    if (!itemHasChanged.current) {
+      // Then reset the state to the current server value
+      // This ensures we are able to pass any extra information returned
+      // from the server that otherwise would be unknown to client state
+      setItem(savedItem);
+
+      // Clear the cache
+      itemSaveCheckCache.current = {};
+    }
   };
 
   const onCreate = ({ data }) => {

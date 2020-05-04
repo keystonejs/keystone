@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { memo, Fragment, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import FocusTrap from 'focus-trap-react';
@@ -8,35 +8,31 @@ import { A11yText } from '@arch-ui/typography';
 
 import { Body, Dialog, Footer, Header, Positioner, Title } from './primitives';
 
-class ModalDialog extends PureComponent {
-  static defaultProps = {
-    attachTo: typeof document !== 'undefined' ? document.body : null,
-    closeOnBlanketClick: false,
-    component: 'div',
-    width: 640,
-  };
-  componentDidMount() {
-    document.addEventListener('keydown', this.onKeyDown, false);
-  }
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
-  }
-  onKeyDown = e => {
-    if (this.props.onKeyDown) this.props.onKeyDown(e);
-  };
-  render() {
-    const {
-      attachTo,
-      children,
-      closeOnBlanketClick,
-      component,
-      footer,
-      heading,
-      initialFocus,
-      onClose,
-      width,
-      transitionState,
-    } = this.props;
+const ModalDialog = memo(
+  ({
+    attachTo = typeof document !== 'undefined' ? document.body : null,
+    children,
+    closeOnBlanketClick = false,
+    component = 'div',
+    footer,
+    heading,
+    initialFocus,
+    onClose,
+    onKeyDown,
+    transitionState,
+    width = 640,
+  }) => {
+    useEffect(() => {
+      const handleKeyDown = e => {
+        if (onKeyDown) onKeyDown(e);
+      };
+
+      document.addEventListener('keydown', handleKeyDown, false);
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown, false);
+      };
+    });
+
     const dialogTitleId = generateUEID();
 
     if (!attachTo) {
@@ -74,6 +70,6 @@ class ModalDialog extends PureComponent {
       attachTo
     );
   }
-}
+);
 
 export default withTransitionState(ModalDialog);

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, PureComponent, forwardRef } from 'react';
+import { Fragment, memo, forwardRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import { jsx } from '@emotion/core';
@@ -50,23 +50,25 @@ const Body = styled.div({
   padding: innerGutter,
 });
 
-class ModalConfirm extends PureComponent {
-  static defaultProps = {
-    attachTo: typeof document !== 'undefined' ? document.body : null,
-    component: 'div',
-    width: 400,
-  };
-  componentDidMount() {
-    document.addEventListener('keydown', this.onKeyDown, false);
-  }
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
-  }
-  onKeyDown = e => {
-    if (this.props.onKeyDown) this.props.onKeyDown(e);
-  };
-  render() {
-    const { attachTo, children, component, width, transitionState } = this.props;
+const ModalConfirm = memo(
+  ({
+    attachTo = typeof document !== 'undefined' ? document.body : null,
+    children,
+    component = 'div',
+    onKeyDown,
+    transitionState,
+    width = 400,
+  }) => {
+    useEffect(() => {
+      const handleKeyDown = e => {
+        if (onKeyDown) onKeyDown(e);
+      };
+
+      document.addEventListener('keydown', handleKeyDown, false);
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown, false);
+      };
+    }, [onkeydown]);
 
     if (!attachTo) {
       return null;
@@ -87,6 +89,6 @@ class ModalConfirm extends PureComponent {
       attachTo
     );
   }
-}
+);
 
 export default withTransitionState(ModalConfirm);
