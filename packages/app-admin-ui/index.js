@@ -47,21 +47,6 @@ class AdminUIApp {
     };
   }
 
-  getAdminMeta() {
-    return {
-      adminPath: this.adminPath,
-      pages: this.pages,
-      hooks: this.hooks,
-      ...this.routes,
-      ...(this.authStrategy
-        ? {
-            authStrategy: this.authStrategy.getAdminMeta(),
-          }
-        : {}),
-      ...this._adminMeta,
-    };
-  }
-
   isAccessAllowed(req) {
     if (!this.authStrategy) {
       return true;
@@ -134,14 +119,23 @@ class AdminUIApp {
   }
 
   getAdminUIMeta(keystone) {
-    const { adminPath } = this;
-
+    // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
+    const { adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { signinPath, signoutPath } = this.routes;
+    const { lists, name } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
     return {
       adminPath,
-      apiPath: this.apiPath,
-      graphiqlPath: this.graphiqlPath,
-      ...this.getAdminMeta(),
-      ...keystone.getAdminMeta({ schemaName: this._schemaName }),
+      apiPath,
+      graphiqlPath,
+      pages,
+      hooks,
+      signinPath,
+      signoutPath,
+      authStrategy,
+      lists,
+      name,
+      ...this._adminMeta,
     };
   }
 
