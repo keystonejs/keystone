@@ -68,6 +68,7 @@ class AdminUIApp {
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
         outputPath: path.join(builtAdminRoot, 'secure'),
       })
@@ -79,6 +80,7 @@ class AdminUIApp {
         getWebpackConfig({
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
           outputPath: path.join(builtAdminRoot, 'public'),
         })
@@ -121,6 +123,18 @@ class AdminUIApp {
       name,
       ...this._adminMeta,
     };
+  }
+
+  getAdminViews({ keystone, includeLists }) {
+    const { pages, hooks } = this;
+    const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const listViews = includeLists
+      ? Object.entries(lists).reduce(
+          (obj, [listPath, { views }]) => ({ ...obj, [listPath]: views }),
+          {}
+        )
+      : {};
+    return { pages, hooks, listViews };
   }
 
   prepareMiddleware({ keystone, distDir, dev }) {
@@ -170,7 +184,7 @@ class AdminUIApp {
         next();
       });
       const adminMeta = this.getAdminUIMeta(keystone);
-      middlewarePairs = this.createDevMiddleware({ adminMeta });
+      middlewarePairs = this.createDevMiddleware({ adminMeta, keystone });
       mountPath = '/';
     } else {
       app.use(compression());
@@ -256,7 +270,7 @@ class AdminUIApp {
     }
   }
 
-  createDevMiddleware({ adminMeta }) {
+  createDevMiddleware({ adminMeta, keystone }) {
     const webpackMiddlewareConfig = {
       publicPath: this.adminPath,
       stats: 'none',
@@ -270,6 +284,7 @@ class AdminUIApp {
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
       })
     );
@@ -282,6 +297,7 @@ class AdminUIApp {
         getWebpackConfig({
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
         })
       );
