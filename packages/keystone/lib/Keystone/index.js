@@ -42,7 +42,7 @@ module.exports = class Keystone {
     defaultAdapter,
     name,
     onConnect,
-    cookieSecret = 'qwerty',
+    cookieSecret,
     sessionStore,
     queryLimits = {},
     cookie = {
