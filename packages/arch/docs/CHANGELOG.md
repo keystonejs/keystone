@@ -1,5 +1,14 @@
 # @arch-ui/docs
 
+## 1.1.20
+
+### Patch Changes
+
+- Updated dependencies [[`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d), [`45b151b0`](https://github.com/keystonejs/keystone/commit/45b151b05de0583ba50364caeda8b5bb7a111385)]:
+  - @arch-ui/navbar@0.1.10
+  - @arch-ui/badge@0.0.16
+  - @arch-ui/dialog@0.0.21
+
 ## 1.1.19
 
 ### Patch Changes
