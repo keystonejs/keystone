@@ -43,6 +43,7 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',
   adapter: new MongooseAdapter(),
+  cookieSecret: 'qwerty',
 });
 
 const fileAdapter = new LocalFileAdapter({
