@@ -337,7 +337,7 @@ export default class AddFilterPopout extends Component<Props, State> {
               >
                 <Render>
                   {() => {
-                    let [Filter] = field.adminMeta.readViews([field.views.Filter]);
+                    let [Filter] = field.readViews([field.views.Filter]);
 
                     return (
                       <Filter

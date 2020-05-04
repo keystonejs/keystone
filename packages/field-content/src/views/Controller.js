@@ -48,13 +48,13 @@ export default class ContentController extends Controller {
     // a Promise the first time it is called.
     this.getBlocks = memoizeOne(() => {
       // Loads all configured blocks and their dependencies
-      const blocksModules = this.adminMeta.readViews(this.views.blocks);
+      const blocksModules = this.readViews(this.views.blocks);
 
       const customBlocks = blocksModules.map(block => ({
         ...block,
         options: {
           ...this.config.blockOptions[block.type],
-          adminMeta: this.adminMeta,
+          readViews: this.readViews,
         },
         // This block exists because it was passed into the Content field
         // directly.
@@ -186,7 +186,7 @@ export default class ContentController extends Controller {
         if (!Field) {
           return;
         }
-        this.adminMeta.readViews([Field]);
+        this.readViews([Field]);
       },
       () => this.getBlocks(),
     ]);
@@ -199,7 +199,7 @@ export default class ContentController extends Controller {
         if (!Cell) {
           return;
         }
-        this.adminMeta.readViews([Cell]);
+        this.readViews([Cell]);
       },
       () => this.getBlocks(),
     ]);
@@ -212,7 +212,7 @@ export default class ContentController extends Controller {
         if (!Filter) {
           return;
         }
-        this.adminMeta.readViews([Filter]);
+        this.readViews([Filter]);
       },
       () => this.getBlocks(),
     ]);

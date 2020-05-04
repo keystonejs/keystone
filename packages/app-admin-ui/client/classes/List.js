@@ -9,7 +9,7 @@ export const gqlCountQueries = lists => gql`{
 export default class List {
   constructor(
     { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-    adminMeta,
+    { readViews, ...adminMeta },
     views
   ) {
     this.access = access;
@@ -23,8 +23,8 @@ export default class List {
     this.singular = singular;
 
     this.fields = fields.map(fieldConfig => {
-      const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
-      return new Controller(fieldConfig, adminMeta, views[fieldConfig.path]);
+      const [Controller] = readViews([views[fieldConfig.path].Controller]);
+      return new Controller(fieldConfig, { readViews, ...adminMeta }, views[fieldConfig.path]);
     });
 
     this._fieldsByPath = arrayToObject(this.fields, 'path');
