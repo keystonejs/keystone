@@ -1,5 +1,11 @@
 # @keystonejs/build-field-types
 
+## 5.2.6
+
+### Patch Changes
+
+- [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca) [#2845](https://github.com/keystonejs/keystone/pull/2845) Thanks [@timleslie](https://github.com/timleslie)! - Updated patch versions of dependencies.
+
 ## 5.2.5
 
 ### Patch Changes
