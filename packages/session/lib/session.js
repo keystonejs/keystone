@@ -14,7 +14,7 @@ class SessionManager {
           'No cookieSecret value was provided. Please generate a secure value and add it to your app. Until this is done, a random cookieSecret will be generated each time Keystone is started. This will cause sessions to be reset between restarts. See [https://www.keystonejs.com/keystonejs/keystone/#config] for details.'
         );
 
-        cookieSecret = [...Array(30)].map(i => ((Math.random() * 36) | 0).toString(36)).join('');
+        cookieSecret = [...Array(30)].map(() => ((Math.random() * 36) | 0).toString(36)).join('');
       }
     }
 
