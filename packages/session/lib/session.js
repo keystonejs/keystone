@@ -3,7 +3,21 @@ const expressSession = require('express-session');
 const cookie = require('cookie');
 
 class SessionManager {
-  constructor({ cookieSecret = 'qwerty', cookie, sessionStore }) {
+  constructor({ cookieSecret, cookie, sessionStore }) {
+    if (!cookieSecret) {
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error(
+          'The cookieSecret config option is required when running Keystone in a production environment. Update your app or environment config so this value is supplied to the Keystone constructor. See [https://www.keystonejs.com/keystonejs/keystone/#config] for details.'
+        );
+      } else {
+        console.warn(
+          'No cookieSecret value was provided. Please generate a secure value and add it to your app. Until this is done, a random cookieSecret will be generated each time Keystone is started. This will cause sessions to be reset between restarts. See [https://www.keystonejs.com/keystonejs/keystone/#config] for details.'
+        );
+
+        cookieSecret = [...Array(30)].map(i => ((Math.random() * 36) | 0).toString(36)).join('');
+      }
+    }
+
     this._cookieSecret = cookieSecret;
     this._cookie = cookie;
     this._sessionStore = sessionStore;
