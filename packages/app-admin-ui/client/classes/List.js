@@ -7,14 +7,22 @@ export const gqlCountQueries = lists => gql`{
 }`;
 
 export default class List {
-  constructor(config, adminMeta, views) {
-    this.config = config;
-    this.adminMeta = adminMeta;
+  constructor(
+    { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
+    adminMeta,
+    views
+  ) {
+    this.access = access;
+    this.adminConfig = adminConfig;
+    this.adminDoc = adminDoc;
+    this.gqlNames = gqlNames;
+    this.key = key;
+    this.label = label;
+    this.path = path;
+    this.plural = plural;
+    this.singular = singular;
 
-    // TODO: undo this
-    Object.assign(this, config);
-
-    this.fields = config.fields.map(fieldConfig => {
+    this.fields = fields.map(fieldConfig => {
       const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
       return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
     });
@@ -146,10 +154,10 @@ export default class List {
   }
 
   getPersistedSearch() {
-    return localStorage.getItem(`search:${this.config.path}`);
+    return localStorage.getItem(`search:${this.path}`);
   }
 
   setPersistedSearch(value) {
-    localStorage.setItem(`search:${this.config.path}`, value);
+    localStorage.setItem(`search:${this.path}`, value);
   }
 }
