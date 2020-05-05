@@ -24,7 +24,7 @@ export default class List {
 
     this.fields = fields.map(fieldConfig => {
       const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
-      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
+      return new Controller(fieldConfig, adminMeta, views[fieldConfig.path]);
     });
 
     this._fieldsByPath = arrayToObject(this.fields, 'path');
