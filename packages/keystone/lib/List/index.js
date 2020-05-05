@@ -826,15 +826,17 @@ module.exports = class List {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
       // Evaluation takes place in ../Keystone/index.js
-      getCount: () => {
+      getCount: async () => {
         const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), {
+        const { count } = await this._itemsQuery(mergeWhereClause(args, access), {
           meta: true,
           context,
           info,
           from,
-        }).then(({ count }) => count);
+        });
+
+        return count;
       },
     };
   }
