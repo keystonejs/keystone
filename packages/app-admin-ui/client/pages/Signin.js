@@ -72,7 +72,11 @@ const Spacer = styled.div({
 const SignInPage = () => {
   const {
     name: siteName,
-    authStrategy: { itemQueryName, identityField, secretField },
+    authStrategy: {
+      gqlNames: { authenticateMutationName },
+      identityField,
+      secretField,
+    },
   } = useAdminMeta();
 
   const { logo: getCustomLogo } = useUIHooks();
@@ -83,7 +87,7 @@ const SignInPage = () => {
 
   const AUTH_MUTATION = gql`
     mutation signin($identity: String, $secret: String) {
-      authenticate: authenticate${itemQueryName}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
+      authenticate: ${authenticateMutationName}(${identityField}: $identity, ${secretField}: $secret) {
         item {
           id
         }

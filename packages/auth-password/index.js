@@ -8,6 +8,7 @@ class PasswordAuthStrategy {
   constructor(keystone, listKey, config) {
     this.keystone = keystone;
     this.listKey = listKey;
+    this.gqlNames = {}; // Set by the auth provider
     this.config = {
       identityField: 'email',
       secretField: 'password',
@@ -117,10 +118,9 @@ class PasswordAuthStrategy {
   }
 
   getAdminMeta() {
-    const { listKey } = this;
-    const { itemQueryName } = this.getList().gqlNames;
+    const { listKey, gqlNames } = this;
     const { identityField, secretField } = this.config;
-    return { listKey, itemQueryName, identityField, secretField };
+    return { listKey, gqlNames, identityField, secretField };
   }
 }
 

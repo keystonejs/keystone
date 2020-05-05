@@ -318,7 +318,7 @@ const UserInfo = ({ authQueryName, authListPath }) => {
   // We're assuming the user list as a 'name' field
   const AUTHED_USER_QUERY = gql`
     query {
-      user: authenticated${authQueryName} {
+      user: ${authQueryName} {
         id
         name
       }
@@ -423,7 +423,7 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
     listKeys,
     name,
     pages,
-    authStrategy: { itemQueryName: authQueryName, listKey: authListKey } = {},
+    authStrategy: { gqlNames: { authenticatedQueryName }, listKey: authListKey } = {},
   } = useAdminMeta();
   return (
     <Inner>
@@ -444,7 +444,7 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
       </Title>
       {authListKey && (
         <UserInfo
-          authQueryName={authQueryName}
+          authQueryName={authenticatedQueryName}
           authListPath={`${adminPath}/${getListByKey(authListKey).path}`}
         />
       )}
