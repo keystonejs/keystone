@@ -232,7 +232,7 @@ export default class AddFilterPopout extends Component<Props, State> {
             exiting: { transform: 'translateX(-100%)' },
             exited: { transform: 'translateX(-100%)' },
           };
-          this.props.fields[0].adminMeta.preloadViews(
+          this.props.fields[0].preloadViews(
             this.props.fields.map(({ views }) => views.Filter).filter(x => x)
           );
 
@@ -337,7 +337,7 @@ export default class AddFilterPopout extends Component<Props, State> {
               >
                 <Render>
                   {() => {
-                    let [Filter] = field.adminMeta.readViews([field.views.Filter]);
+                    let [Filter] = field.readViews([field.views.Filter]);
 
                     return (
                       <Filter

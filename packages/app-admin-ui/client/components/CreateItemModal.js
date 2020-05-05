@@ -184,7 +184,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
               return creatable.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
-                    let [Field] = field.adminMeta.readViews([field.views.Field]);
+                    let [Field] = field.readViews([field.views.Field]);
                     // eslint-disable-next-line react-hooks/rules-of-hooks
                     let onChange = useCallback(value => {
                       setItem(item => ({
