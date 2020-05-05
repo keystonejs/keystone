@@ -346,7 +346,6 @@ module.exports = class List {
       fields: this.fields
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
-      views: this.views,
       adminDoc: this.adminDoc,
       adminConfig: {
         defaultPageSize,
