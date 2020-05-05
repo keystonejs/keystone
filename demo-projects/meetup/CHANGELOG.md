@@ -1,5 +1,19 @@
 # @keystonejs/demo-project-meetup
 
+## 5.1.11
+
+### Patch Changes
+
+- [`c68aed4a`](https://github.com/keystonejs/keystone/commit/c68aed4a414f5188f5dc9e99ac51d1afefc22e64) [#2846](https://github.com/keystonejs/keystone/pull/2846) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded `uuid` from `3.x` to `7.x`.
+
+- Updated dependencies [[`ab484f19`](https://github.com/keystonejs/keystone/commit/ab484f195752bb3ec59f6beb7d8817dce610ad06), [`1b059e72`](https://github.com/keystonejs/keystone/commit/1b059e726d95bbc6ad09a76ed3b40dbc4cf11682), [`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d), [`4af9e407`](https://github.com/keystonejs/keystone/commit/4af9e4075c9329ab27e7aa18a664d2f2bcc1ac2d), [`04ec9981`](https://github.com/keystonejs/keystone/commit/04ec998166a8b3044570769a8c3f501d80527bf9), [`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2), [`0aac3b41`](https://github.com/keystonejs/keystone/commit/0aac3b411a9e4f397645d9641c4675eab7a6e55b), [`b0bfcf79`](https://github.com/keystonejs/keystone/commit/b0bfcf79477249f3c0bb14db68588d84a68f0186), [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b), [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0), [`8a135a88`](https://github.com/keystonejs/keystone/commit/8a135a88ae6f3a4434db0ba7033cad2e5f18651e), [`63a2f7c3`](https://github.com/keystonejs/keystone/commit/63a2f7c31777d968bad32d6e746e2f960c6ef0ad), [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca), [`81a9aa7c`](https://github.com/keystonejs/keystone/commit/81a9aa7c2349f9bb71d1a9686e4fa359a14b033f)]:
+  - @keystonejs/app-admin-ui@5.12.0
+  - @keystonejs/file-adapters@6.0.2
+  - @keystonejs/fields@9.0.5
+  - @keystonejs/app-graphql@5.1.6
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.6
+  - @keystonejs/keystone@8.1.4
+
 ## 5.1.10
 
 ### Patch Changes

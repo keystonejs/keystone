@@ -47,21 +47,6 @@ class AdminUIApp {
     };
   }
 
-  getAdminMeta() {
-    return {
-      adminPath: this.adminPath,
-      pages: this.pages,
-      hooks: this.hooks,
-      ...this.routes,
-      ...(this.authStrategy
-        ? {
-            authStrategy: this.authStrategy.getAdminMeta(),
-          }
-        : {}),
-      ...this._adminMeta,
-    };
-  }
-
   isAccessAllowed(req) {
     if (!this.authStrategy) {
       return true;
@@ -134,14 +119,23 @@ class AdminUIApp {
   }
 
   getAdminUIMeta(keystone) {
-    const { adminPath } = this;
-
+    // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
+    const { adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { signinPath, signoutPath } = this.routes;
+    const { lists, name } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
     return {
       adminPath,
-      apiPath: this.apiPath,
-      graphiqlPath: this.graphiqlPath,
-      ...this.getAdminMeta(),
-      ...keystone.getAdminMeta({ schemaName: this._schemaName }),
+      apiPath,
+      graphiqlPath,
+      pages,
+      hooks,
+      signinPath,
+      signoutPath,
+      authStrategy,
+      lists,
+      name,
+      ...this._adminMeta,
     };
   }
 
@@ -160,7 +154,14 @@ class AdminUIApp {
         default: () => {
           next();
         },
+        // Without this, request with an 'Accept: */*' header get picked up by
+        // the 'text/html' handler rather than the default
         '*/*': () => {
+          // We need to reset the res 'Content-Type' otherwise it gets replaced by the format we've matched on: '*/*'.
+          // Returning a wildcard mimetype causes problems if a 'X-Content-Type-Options: nosniff' header is also set.
+          // See.. https://github.com/keystonejs/keystone/issues/2741
+          const extension = path.extname(req.url);
+          if (extension) res.type(extension);
           next();
         },
         // For page loads, we want to redirect back to signin page

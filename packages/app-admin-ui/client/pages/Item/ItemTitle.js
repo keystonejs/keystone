@@ -37,7 +37,7 @@ export const ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
             to={listHref}
             css={{ marginLeft: -12 }}
           >
-            Back
+            {list.label}
           </IconButton>
           <Search list={list} />
         </div>
