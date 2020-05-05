@@ -102,7 +102,7 @@ export default function MarkdownField({ field, errors, value, onChange }) {
       ]}
     >
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.config.adminDoc} />
+      <FieldDescription text={field.adminDoc} />
       <div
         css={{
           border: `1px ${colors.N20} solid`,

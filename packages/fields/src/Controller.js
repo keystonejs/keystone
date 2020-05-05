@@ -1,14 +1,22 @@
 import isEqual from 'lodash.isequal';
 
 export default class FieldController {
-  constructor(config, list, adminMeta, views) {
+  constructor(
+    { label, path, type, access, isOrderable, isPrimaryKey, isRequired, adminDoc, ...config },
+    list,
+    adminMeta,
+    views
+  ) {
     this.config = config;
-    this.label = config.label;
-    this.path = config.path;
-    this.type = config.type;
-    this.maybeAccess = config.access;
-    this.isPrimaryKey = config.isPrimaryKey;
+    this.label = label;
+    this.path = path;
+    this.type = type;
+    this.maybeAccess = access;
+    this.isOrderable = isOrderable;
+    this.isPrimaryKey = isPrimaryKey;
+    this.isRequired = isRequired;
     this.list = list;
+    this.adminDoc = adminDoc;
     this.adminMeta = adminMeta;
     this.views = views;
 
