@@ -17,74 +17,75 @@ export const ManageToolbar = styled.div(({ isVisible }) => ({
   marginTop: gridSize,
   visibility: isVisible ? 'visible' : 'hidden',
 }));
-const SelectedCount = styled.div({
-  color: colors.N40,
-  marginRight: gridSize,
-});
 
-export default function ListManage(props) {
-  const { onDeleteMany, onUpdateMany, selectedItems } = props;
-  const [deleteModalIsVisible, setDeleteModal] = useState(false);
-  const [updateModalIsVisible, setUpdateModal] = useState(false);
+const SelectedCount = styled.div`
+  color: ${colors.N40};
+  margin-right: ${gridSize}px;
+`;
+
+const ListManage = ({ list, pageSize, totalItems, selectedItems, onDeleteMany, onUpdateMany }) => {
+  const [deleteModalIsVisible, setDeleteModalIsVisible] = useState(false);
+  const [updateModalIsVisible, setUpdateModalIsVisible] = useState(false);
 
   const handleDelete = () => {
-    setDeleteModal(false);
+    setDeleteModalIsVisible(false);
     onDeleteMany();
   };
+
   const handleUpdate = () => {
-    setUpdateModal(false);
+    setUpdateModalIsVisible(false);
     onUpdateMany();
   };
-
-  const { list, pageSize, totalItems } = props;
-  const selectedCount = selectedItems.length;
 
   return (
     <Fragment>
       <FlexGroup align="center">
         <SelectedCount>
-          {selectedCount} of {Math.min(pageSize, totalItems)} Selected
+          {`${selectedItems.length} of ${Math.min(pageSize, totalItems)} Selected`}
         </SelectedCount>
-        {ENABLE_DEV_FEATURES ? (
-          list.access.update ? (
-            <IconButton
-              appearance="primary"
-              icon={SettingsIcon}
-              onClick={() => setUpdateModal(true)}
-              variant="nuance"
-              data-test-name="update"
-            >
-              Update
-            </IconButton>
-          ) : null
-        ) : null}
-        {list.access.update ? (
+
+        {ENABLE_DEV_FEATURES && list.access.update && (
+          <IconButton
+            appearance="primary"
+            icon={SettingsIcon}
+            onClick={() => setUpdateModalIsVisible(true)}
+            variant="nuance"
+            data-test-name="update"
+          >
+            Update
+          </IconButton>
+        )}
+
+        {list.access.update && (
           <IconButton
             appearance="danger"
             icon={TrashcanIcon}
-            onClick={() => setDeleteModal(true)}
+            onClick={() => setDeleteModalIsVisible(true)}
             variant="nuance"
             data-test-name="delete"
           >
             Delete
           </IconButton>
-        ) : null}
+        )}
       </FlexGroup>
 
       <UpdateManyItemsModal
         isOpen={updateModalIsVisible}
         items={selectedItems}
         list={list}
-        onClose={() => setUpdateModal(false)}
+        onClose={() => setUpdateModalIsVisible(false)}
         onUpdate={handleUpdate}
       />
+
       <DeleteManyItemsModal
         isOpen={deleteModalIsVisible}
         itemIds={selectedItems}
         list={list}
-        onClose={() => setDeleteModal(false)}
+        onClose={() => setDeleteModalIsVisible(false)}
         onDelete={handleDelete}
       />
     </Fragment>
   );
-}
+};
+
+export default ListManage;
