@@ -44,7 +44,6 @@ module.exports = function({ adminMeta, entry, outputPath }) {
     {
       test: /\.css$/,
       use: ['style-loader', 'css-loader'],
-      include: /node_modules/,
     },
     // This is a workaround for a problem with graphql@0.13.x. It can be removed
     // once we upgrade to graphql@14.0.2.
