@@ -1,6 +1,6 @@
 {
   "name": "@keystonejs/build-field-types",
-  "version": "5.2.5",
+  "version": "5.2.6",
   "description": "A build tool for KeystoneJS 5 Field Types",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/build-field-types",
@@ -60,7 +60,7 @@
     "@babel/runtime": "^7.8.4",
     "fixturez": "^1.1.0",
     "react": "^16.13.1",
-    "rimraf": "^3.0.0",
+    "rimraf": "^3.0.2",
     "spawndamnit": "^2.0.0"
   },
   "jest": {
