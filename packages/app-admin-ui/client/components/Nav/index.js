@@ -314,11 +314,11 @@ const UserIcon = styled.div`
   margin-right: ${PRIMARY_NAV_GUTTER}px;
 `;
 
-const UserInfo = ({ authListKey, authListPath }) => {
+const UserInfo = ({ authQueryName, authListPath }) => {
   // We're assuming the user list as a 'name' field
   const AUTHED_USER_QUERY = gql`
     query {
-      user: authenticated${authListKey} {
+      user: authenticated${authQueryName} {
         id
         name
       }
@@ -423,7 +423,7 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
     listKeys,
     name,
     pages,
-    authStrategy: { listKey: authListKey } = {},
+    authStrategy: { itemQueryName: authQueryName, listKey: authListKey } = {},
   } = useAdminMeta();
   return (
     <Inner>
@@ -444,7 +444,7 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
       </Title>
       {authListKey && (
         <UserInfo
-          authListKey={authListKey}
+          authQueryName={authQueryName}
           authListPath={`${adminPath}/${getListByKey(authListKey).path}`}
         />
       )}
