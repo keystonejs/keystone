@@ -31,13 +31,12 @@ const resolveCustomPages = pages => {
 
 export const AdminMetaProvider = ({ children }) => {
   // TODO: Permission query to see which lists to provide
-  const listKeys = Object.keys(lists || {});
   const listsByKey = {};
   const listsByPath = {};
 
   const adminMeta = {
     ...srcMeta,
-    listKeys,
+    listKeys: Object.keys(lists || {}),
     getListByKey: key => listsByKey[key],
     getListByPath: path => listsByPath[path],
     readViews,
@@ -63,11 +62,17 @@ export const AdminMetaProvider = ({ children }) => {
   // so we don't have a waterfall of requests
   readViews([...viewsToLoad]);
 
-  listKeys.forEach(key => {
-    const list = new List(lists[key], adminMeta, views[key]);
-    listsByKey[key] = list;
-    listsByPath[list.path] = list;
-  });
+  Object.entries(lists || {}).forEach(
+    ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
+      const list = new List(
+        { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
+        adminMeta,
+        views[key]
+      );
+      listsByKey[key] = list;
+      listsByPath[list.path] = list;
+    }
+  );
 
   let hooks = {};
   if (typeof hookView === 'function') {
