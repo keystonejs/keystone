@@ -65,7 +65,6 @@ describe('getDefaultValue()', () => {
   test('Default defined as `undefined`', () => {
     const controller = new FieldController(
       { ...config, defaultValue: undefined },
-
       'adminMeta'
     );
     const value = controller.getDefaultValue({});
@@ -81,7 +80,6 @@ describe('getDefaultValue()', () => {
   test('Default defined as a string', () => {
     const controller = new FieldController(
       { ...config, defaultValue: 'default' },
-
       'adminMeta'
     );
     const value = controller.getDefaultValue({});
@@ -92,7 +90,6 @@ describe('getDefaultValue()', () => {
     test('function is executed', () => {
       const controller = new FieldController(
         { ...config, defaultValue: () => 'default' },
-
         'adminMeta'
       );
       const value = controller.getDefaultValue({});
