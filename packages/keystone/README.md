@@ -24,7 +24,7 @@ const keystone = new Keystone({
 | `adapters`       | `Object`   | `undefined`                     | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                                      |
 | `appVersion`     | `Object`   | See [`appVersion`](#appversion) | Configure the application version and where it is made available.                                                                                 |
 | `cookie`         | `Object`   | See: [`cookie`](#cookie)        | Cookie object used to configure the [express-session middleware](https://github.com/expressjs/session#cookie).                                    |
-| `cookieSecret`   | `String`   | `qwerty`                        | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                                 |
+| `cookieSecret`   | `String`   | Required in production          | The secret used to sign session ID cookies. Should be long and unguessable.                                                                       |
 | `defaultAccess`  | `Object`   | `undefined`                     | Default list, field, and custom schema access. See the [Access control API](https://www.keystonejs.com/api/access-control) docs for more details. |
 | `defaultAdapter` | `String`   | `undefined`                     | The name of the database adapter to use by default if multiple are provided.                                                                      |
 | `name`           | `String`   | `undefined`                     | The name of the project. Appears in the Admin UI.                                                                                                 |
@@ -98,6 +98,10 @@ const keystone = new Keystone({
   },
 });
 ```
+
+### `cookieSecret`
+
+The secret used to sign session ID cookies. In production mode (`process.env.NODE_ENV === 'production'`) this option is required. In development mode, if undefined, a random `cookieSecret` will be generated each time Keystone starts (this will cause sessions to be reset between restarts).
 
 ### `sessionStore`
 

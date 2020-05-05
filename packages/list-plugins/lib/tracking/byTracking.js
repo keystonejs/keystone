@@ -1,5 +1,5 @@
 const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
-const { composeResolveInput } = require('../utils');
+const { composeHook } = require('../utils');
 
 const _byTracking = ({ created = true, updated = true }) => ({
   updatedByField = 'updatedBy',
@@ -24,14 +24,14 @@ const _byTracking = ({ created = true, updated = true }) => ({
     };
   }
 
-  const newResolveInput = ({ resolvedData, existingItem, originalInput, context }) => {
+  const newResolveInput = ({ resolvedData, operation, originalInput, context }) => {
     if (
       // if no data received from the mutation, skip the update
       Object.keys(originalInput).length === 0 &&
       // opted-in to updatedBy tracking
       updated &&
       // this is an update
-      existingItem !== undefined
+      operation === 'update'
     ) {
       // If not logged in, the id is set to `null`
       const { authedItem: { id = null } = {} } = context;
@@ -41,7 +41,7 @@ const _byTracking = ({ created = true, updated = true }) => ({
     return resolvedData;
   };
   const originalResolveInput = hooks.resolveInput;
-  hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
+  hooks.resolveInput = composeHook(originalResolveInput, newResolveInput);
   return { fields, hooks, ...rest };
 };
 
