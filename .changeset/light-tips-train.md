@@ -1,5 +1,5 @@
 ---
-'@keystonejs/keystone': patch
+'@keystonejs/keystone': major
 ---
 
 Fixed several access control input issues:
