@@ -118,8 +118,9 @@ class PasswordAuthStrategy {
 
   getAdminMeta() {
     const { listKey } = this;
+    const { itemQueryName } = this.getList().gqlNames;
     const { identityField, secretField } = this.config;
-    return { listKey, identityField, secretField };
+    return { listKey, itemQueryName, identityField, secretField };
   }
 }
 
