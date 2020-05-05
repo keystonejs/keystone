@@ -63,10 +63,7 @@ describe('getDefaultValue()', () => {
   });
 
   test('Default defined as `undefined`', () => {
-    const controller = new FieldController(
-      { ...config, defaultValue: undefined },
-      'adminMeta'
-    );
+    const controller = new FieldController({ ...config, defaultValue: undefined }, 'adminMeta');
     const value = controller.getDefaultValue({});
     expect(value).toEqual(undefined);
   });
@@ -78,10 +75,7 @@ describe('getDefaultValue()', () => {
   });
 
   test('Default defined as a string', () => {
-    const controller = new FieldController(
-      { ...config, defaultValue: 'default' },
-      'adminMeta'
-    );
+    const controller = new FieldController({ ...config, defaultValue: 'default' }, 'adminMeta');
     const value = controller.getDefaultValue({});
     expect(value).toEqual('default');
   });
