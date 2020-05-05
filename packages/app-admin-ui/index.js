@@ -47,21 +47,6 @@ class AdminUIApp {
     };
   }
 
-  getAdminMeta() {
-    return {
-      adminPath: this.adminPath,
-      pages: this.pages,
-      hooks: this.hooks,
-      ...this.routes,
-      ...(this.authStrategy
-        ? {
-            authStrategy: this.authStrategy.getAdminMeta(),
-          }
-        : {}),
-      ...this._adminMeta,
-    };
-  }
-
   isAccessAllowed(req) {
     if (!this.authStrategy) {
       return true;
@@ -71,22 +56,6 @@ class AdminUIApp {
       req.user &&
       this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } })
     );
-  }
-
-  createSessionMiddleware() {
-    const { signinPath } = this.routes;
-
-    const app = express();
-
-    // Short-circuit GET requests when the user already signed in (avoids
-    // downloading UI bundle, doing a client side redirect, etc)
-    app.get(signinPath, (req, res, next) =>
-      this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
-    );
-
-    // TODO: Attach a server-side signout to signoutPath
-
-    return app;
   }
 
   build({ keystone, distDir }) {
@@ -99,6 +68,7 @@ class AdminUIApp {
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
         outputPath: path.join(builtAdminRoot, 'secure'),
       })
@@ -110,6 +80,7 @@ class AdminUIApp {
         getWebpackConfig({
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
           outputPath: path.join(builtAdminRoot, 'public'),
         })
@@ -134,15 +105,36 @@ class AdminUIApp {
   }
 
   getAdminUIMeta(keystone) {
-    const { adminPath } = this;
-
+    // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
+    const { adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { signinPath, signoutPath } = this.routes;
+    const { lists, name } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
     return {
       adminPath,
-      apiPath: this.apiPath,
-      graphiqlPath: this.graphiqlPath,
-      ...this.getAdminMeta(),
-      ...keystone.getAdminMeta({ schemaName: this._schemaName }),
+      apiPath,
+      graphiqlPath,
+      pages,
+      hooks,
+      signinPath,
+      signoutPath,
+      authStrategy,
+      lists,
+      name,
+      ...this._adminMeta,
     };
+  }
+
+  getAdminViews({ keystone, includeLists }) {
+    const { pages, hooks } = this;
+    const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const listViews = includeLists
+      ? Object.entries(lists).reduce(
+          (obj, [listPath, { views }]) => ({ ...obj, [listPath]: views }),
+          {}
+        )
+      : {};
+    return { pages, hooks, listViews };
   }
 
   prepareMiddleware({ keystone, distDir, dev }) {
@@ -160,7 +152,14 @@ class AdminUIApp {
         default: () => {
           next();
         },
+        // Without this, request with an 'Accept: */*' header get picked up by
+        // the 'text/html' handler rather than the default
         '*/*': () => {
+          // We need to reset the res 'Content-Type' otherwise it gets replaced by the format we've matched on: '*/*'.
+          // Returning a wildcard mimetype causes problems if a 'X-Content-Type-Options: nosniff' header is also set.
+          // See.. https://github.com/keystonejs/keystone/issues/2741
+          const extension = path.extname(req.url);
+          if (extension) res.type(extension);
           next();
         },
         // For page loads, we want to redirect back to signin page
@@ -185,7 +184,7 @@ class AdminUIApp {
         next();
       });
       const adminMeta = this.getAdminUIMeta(keystone);
-      middlewarePairs = this.createDevMiddleware({ adminMeta });
+      middlewarePairs = this.createDevMiddleware({ adminMeta, keystone });
       mountPath = '/';
     } else {
       app.use(compression());
@@ -194,7 +193,12 @@ class AdminUIApp {
     }
 
     if (this.authStrategy) {
-      app.use(this.createSessionMiddleware());
+      // Short-circuit GET requests when the user already signed in (avoids
+      // downloading UI bundle, doing a client side redirect, etc)
+      app.get(this.routes.signinPath, (req, res, next) =>
+        this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
+      );
+
       for (const pair of middlewarePairs) {
         app.use(mountPath, (req, res, next) => {
           return this.isAccessAllowed(req)
@@ -266,7 +270,7 @@ class AdminUIApp {
     }
   }
 
-  createDevMiddleware({ adminMeta }) {
+  createDevMiddleware({ adminMeta, keystone }) {
     const webpackMiddlewareConfig = {
       publicPath: this.adminPath,
       stats: 'none',
@@ -280,6 +284,7 @@ class AdminUIApp {
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
       })
     );
@@ -292,6 +297,7 @@ class AdminUIApp {
         getWebpackConfig({
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
         })
       );

@@ -8,7 +8,7 @@ import { ShieldIcon } from '@arch-ui/icons';
 import { Lozenge } from '@arch-ui/lozenge';
 import { colors, gridSize } from '@arch-ui/theme';
 
-const TextField = ({ onChange, autoFocus, field, value, errors }) => {
+const MultiCheckField = ({ onChange, autoFocus, field, value, errors }) => {
   const initialState = value ? value : field.config.defaultValue;
   const [values, setValues] = useState(initialState);
   useEffect(() => {
@@ -42,7 +42,7 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
         <ShieldIcon title={accessError.message} css={{ color: colors.N20, marginRight: '1em' }} />
       ) : null}
       {field.config.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.config.adminDoc} />
       <div>
         {field.config.options.map(label => (
           <Checkbox
@@ -58,4 +58,4 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
   );
 };
 
-export default TextField;
+export default MultiCheckField;

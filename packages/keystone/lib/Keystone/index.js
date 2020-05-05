@@ -42,11 +42,14 @@ module.exports = class Keystone {
     defaultAdapter,
     name,
     onConnect,
-    cookieSecret = 'qwerty',
+    cookieSecret,
     sessionStore,
     queryLimits = {},
-    secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
-    cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
+    cookie = {
+      secure: process.env.NODE_ENV === 'production', // Default to true in production
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+      sameSite: false,
+    },
     schemaNames = ['public'],
     appVersion = {
       version: '1.0.0',
@@ -63,8 +66,7 @@ module.exports = class Keystone {
     this._schemas = {};
     this._sessionManager = new SessionManager({
       cookieSecret,
-      secureCookies,
-      cookieMaxAge,
+      cookie,
       sessionStore,
     });
     this.eventHandlers = { onConnect };
@@ -451,27 +453,20 @@ module.exports = class Keystone {
   /**
    * @return Promise<null>
    */
-  connect() {
+  async connect() {
     const { adapters, name } = this;
     const rels = this._consolidateRelationships();
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels }))).then(
-      () => {
-        if (this.eventHandlers.onConnect) {
-          return this.eventHandlers.onConnect(this);
-        }
-      }
-    );
+    await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels })));
+    if (this.eventHandlers.onConnect) {
+      return this.eventHandlers.onConnect(this);
+    }
   }
 
   /**
    * @return Promise<null>
    */
-  disconnect() {
-    return resolveAllKeys(
-      mapKeys(this.adapters, adapter => adapter.disconnect())
-      // Chain an empty function so that the result of this promise
-      // isn't unintentionally leaked to the caller
-    ).then(() => {});
+  async disconnect() {
+    await resolveAllKeys(mapKeys(this.adapters, adapter => adapter.disconnect()));
   }
 
   getAdminMeta({ schemaName }) {
