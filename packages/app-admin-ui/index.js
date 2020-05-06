@@ -120,13 +120,10 @@ class AdminUIApp {
 
   getAdminViews({ keystone, includeLists }) {
     const { pages, hooks } = this;
-    const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
-    const listViews = includeLists
-      ? Object.entries(lists).reduce(
-          (obj, [listPath, { views }]) => ({ ...obj, [listPath]: views }),
-          {}
-        )
-      : {};
+    const { listViews } = includeLists
+      ? keystone.getAdminViews({ schemaName: this._schemaName })
+      : { listViews: {} };
+
     return { pages, hooks, listViews };
   }
 
