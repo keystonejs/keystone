@@ -1,15 +1,19 @@
 <!--[meta]
 section: api
 subSection: authentication-strategies
-title: Passport Auth Strategy
+title: Passport auth strategy
 [meta]-->
 
-# Passport Auth Strategy
+# Passport auth strategy
 
-Enable KeystoneJS authentication via services such as Google, Twitter, Facebook,
-GitHub, and any [others supported by `passport.js`](http://www.passportjs.org).
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/auth-passport)
 
-## Authentication Flows
+> This feature is currently in progress. While passport works for the `GraphQLApp`, only password authentication is supported for the `AdminUIApp`. Please see [this issue](https://github.com/keystonejs/keystone/issues/2581) for more details.
+
+Enable Keystone authentication via services such as Google, Twitter, Facebook,
+GitHub, and any [others supported by passport.js](http://www.passportjs.org).
+
+## Authentication flows
 
 This package enables three authentication flows;
 
@@ -17,40 +21,40 @@ This package enables three authentication flows;
 2. Multi Step Account Creation & Authentication
 3. Existing Account Authentication
 
-### Single Step Account Creation & Authentication
+### Single-step account creation and authentication
 
-When creating a new account in KeystoneJS, the service (Google, Twitter, etc)
+When creating a new account in Keystone, the service (Google, Twitter, etc)
 provides some basic user information such as name and, if enabled, email. Often
-this information alone is enough to create a new KeystoneJS account, so it is
+this information alone is enough to create a new Keystone account, so it is
 the default authentication flow known as _Single Step Account Creation_.
 
 For example, when logging in with Google, the user will;
 
 - Click "Login with Google"
 - Be redirected to google.com's authentication page if not already logged in
-- Be asked to grant permission for your KeystoneJS app
+- Be asked to grant permission for your Keystone app
 - Be redirected to your application's _callback_ URL
 - This package will create a new account & authenticate the user, then trigger
   `onAuthenticated({ token, item, isNewItem })` with `isNewItem = true` (see [the API
   docs below](#api))
 
-### Multi Step Account Creation & Authentication
+### Multi-step account creation and authentication
 
 Sometimes the information provided by the service is not enough to create a new
-account in KeystoneJS. For example, your application may require the user's age,
+account in Keystone. For example, your application may require the user's age,
 or want to confirm the email address provided by the service.
 
-The [default Single Step Flow](#single-step-account-creation--authentication) can
+The [default Single Step Flow](#single-step-account-creation-and-authentication) can
 be extended to _pause_ account creation while we gather the extra information
 from the user. Pausing even works across page refreshes. This is known as _Multi
 Step Account Creation_.
 
 For example, when logging in with Google, the user will _(differences from [the
-Single Step Flow](#single-step-account-creation--authentication) are bolded)_:
+Single Step Flow](#single-step-account-creation-and-authentication) are bolded)_:
 
 - Click "Login with Google"
 - Be redirected to google.com's authentication page if not already logged in
-- Be asked to grant permission for your KeystoneJS app
+- Be asked to grant permission for your Keystone app
 - Be redirected to your application's _callback_ URL
 - **Be redirected to a form to gather more information**
 - **Submit the form which will resume account creation & authentication**
@@ -75,12 +79,13 @@ match the account and authenticate them:
 
 <!-- TODO -->
 
+The API needs documentation.
+
 ## Usage
 
-### Single Step With Google
+### Single-step with google
 
-_NOTE: The below can be done with any of the supported strategies (Twitter,
-Facebook, etc)._
+> **Note:** The documentation below applies to any of the supported strategies (Twitter, Facebook, etc)
 
 To run this example: `keystone dev`, then visit
 `http://localhost:3000/auth/google` to start the Google authentication process.
@@ -126,7 +131,7 @@ const googleStrategy = keystone.createAuthStrategy({
 
     // Once a user is found/created and successfully matched to the
     // googleId, they are authenticated, and the token is returned here.
-    // NOTE: By default KeystoneJS sets a `keystone.sid` which authenticates the
+    // NOTE: By default Keystone sets a `keystone.sid` which authenticates the
     // user for the API domain. If you want to authenticate via another domain,
     // you must pass the `token` as a Bearer Token to GraphQL requests.
     onAuthenticated: ({ token, item, isNewItem }, req, res) => {
@@ -145,14 +150,18 @@ const googleStrategy = keystone.createAuthStrategy({
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp()],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({
+      authStrategy: googleStrategy,
+    }),
+  ],
 };
 ```
 
-### Multi Step With Google
+### Multi-step with google
 
-_NOTE: The below can be done with any of the supported strategies (Twitter,
-Facebook, etc)._
+> **Note:** The documentation below applies to any of the supported strategies (Twitter, Facebook, etc)
 
 Due to the extra route used for gathering the user's name, this example implements
 [an All-in-one Custom Server](/docs/guides/custom-server.md#all-in-one-custom-server)
@@ -232,7 +241,7 @@ const googleStrategy = keystone.createAuthStrategy({
 
     // Once a user is found/created and successfully matched to the
     // googleId, they are authenticated, and the token is returned here.
-    // NOTE: By default KeystoneJS sets a `keystone.sid` which authenticates the
+    // NOTE: By default Keystone sets a `keystone.sid` which authenticates the
     // user for the API domain. If you want to authenticate via another domain,
     // you must pass the `token` as a Bearer Token to GraphQL requests.
     onAuthenticated: ({ token, item, isNewItem }, req, res) => {
@@ -251,7 +260,12 @@ const googleStrategy = keystone.createAuthStrategy({
 
 keystone
   .prepare({
-    apps: [new GraphQLApp(), new AdminUIApp()],
+    apps: [
+      new GraphQLApp(),
+      new AdminUIApp({
+        authStrategy: googleStrategy,
+      }),
+    ],
     dev: process.env.NODE_ENV !== 'production',
   })
   .then(async ({ middlewares }) => {
@@ -292,9 +306,9 @@ keystone
   });
 ```
 
-## Using other PassportJs Strategies
+## Using other Passport strategies
 
-You can create your own strategies to work with KeystoneJS by extending the
+You can create your own strategies to work with Keystone by extending the
 `PassportAuthStrategy` class:
 
 ```javascript

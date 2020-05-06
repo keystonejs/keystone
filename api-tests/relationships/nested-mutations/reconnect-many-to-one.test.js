@@ -27,7 +27,7 @@ function setupKeystone(adapterName) {
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('Reconnect', () => {
-      test.failing(
+      test(
         'Reconnect from the many side',
         runner(setupKeystone, async ({ keystone, create }) => {
           // Create some notes

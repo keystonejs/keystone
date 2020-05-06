@@ -1,6 +1,6 @@
 import FieldController from '@keystonejs/fields/Controller';
 
-export default class TextController extends FieldController {
+export default class MongoIdController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     switch (type) {
       case 'is': {

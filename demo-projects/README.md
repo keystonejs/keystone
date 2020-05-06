@@ -18,7 +18,7 @@ Minimum requirements for the Demo Projects:
 Download a copy of the Keystone 5 repo, and check out the latest release:
 
 ```bash
-git clone https://github.com/keystonejs/keystone-5.git
+git clone https://github.com/keystonejs/keystone.git
 cd keystone-5
 git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
 yarn

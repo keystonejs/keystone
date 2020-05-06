@@ -151,21 +151,21 @@ const CommonDateTimeInterface = superclass =>
 export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFieldAdapter) {
   constructor() {
     super(...arguments);
-    this.dbPath = `${this.path}_utc`;
+    this.utcPath = `${this.path}_utc`;
+    this.offsetPath = `${this.path}_offset`;
+    this.realKeys = [this.utcPath, this.offsetPath];
+    this.dbPath = this.utcPath;
   }
 
   addToMongooseSchema(schema) {
     const { mongooseOptions } = this.config;
-    const field_path = this.path;
-    const utc_field = `${field_path}_utc`;
-    const offset_field = `${field_path}_offset`;
     schema.add({
       // FIXME: Mongoose needs to know about this field in order for the correct
       // attributes to make it through to the pre-hooks.
-      [field_path]: { type: String, ...mongooseOptions },
+      [this.path]: { type: String, ...mongooseOptions },
       // These are the actual fields we care about storing in the database.
-      [utc_field]: { type: Date, ...mongooseOptions },
-      [offset_field]: { type: String, ...mongooseOptions },
+      [this.utcPath]: { type: Date, ...mongooseOptions },
+      [this.offsetPath]: { type: String, ...mongooseOptions },
     });
   }
 

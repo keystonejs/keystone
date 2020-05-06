@@ -58,13 +58,13 @@ The default value for this field is the current year.
 `CalendarDay` fields use the `String` type in GraphQL.
 They produce values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
 
-### Input Fields
+### Input fields
 
 | Field name | Type     | Description                                              |
 | :--------- | :------- | :------------------------------------------------------- |
 | `${path}`  | `String` | The value to be stored, in ISO8601 (`YYYY-MM-DD`) format |
 
-### Output Fields
+### Output fields
 
 | Field name | Type     | Description                                 |
 | :--------- | :------- | :------------------------------------------ |
@@ -87,14 +87,14 @@ All filter fields expect values in the ISO8601 (`YYYY-MM-DD`) format.
 
 ## Storage
 
-### Mongoose Adaptor
+### Mongoose adapter
 
 In Mongoose the field is added using the `String` schema type.
 
 The `isRequired` config option is enforced by KeystoneJS only.
 
-### Knex Adaptor
+### Knex adapter
 
-The Knex adaptor uses the [Knex `date` type](https://knexjs.org/#Schema-date):
+The Knex adapter uses the [Knex `date` type](https://knexjs.org/#Schema-date):
 
 The `isRequired` config option is enforced by KeystoneJS and, if equal to `true`, the column is set as not nullable.

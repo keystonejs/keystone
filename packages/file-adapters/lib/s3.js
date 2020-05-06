@@ -69,18 +69,22 @@ module.exports = class S3Adapter {
 
   /**
    * Deletes the given file from S3
-   * @param file file field data
+   * @param file File field data
    * @param options A config object to be passed with each call to S3.deleteObject.
    *                Options `Bucket` and `Key` will be set by default.
    *                For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
    */
   delete(file, options = {}) {
-    if (!file) throw new Error("Missing required argument 'file'.");
-    this.s3.deleteObject({
-      Bucket: this.bucket,
-      Key: path.join(this.folder, file.filename),
-      ...options,
-    });
+    if (file) {
+      return this.s3
+        .deleteObject({
+          Bucket: this.bucket,
+          Key: path.join(this.folder, file.filename),
+          ...options,
+        })
+        .promise();
+    }
+    return Promise.reject(new Error("Missing required argument 'file'."));
   }
 
   getFilename({ id, originalFilename }) {

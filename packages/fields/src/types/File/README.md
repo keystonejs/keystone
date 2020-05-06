@@ -8,6 +8,16 @@ title: File
 
 Support files hosted in a range of different contexts, e.g. in the local filesystem, or on a cloud based file server.
 
+> **Important:** As of this writing (April 2020), an upstream [issue](https://github.com/apollographql/apollo-server/issues/3508) with `apollo-server`'s dependencies can cause a server crash when using this field (regardless of adapter) with **Node 13 only**. To work around this, use Node 12 or below _or_ add the following to your `package.json`:
+>
+> ```js title=package.json
+> "resolutions": {
+>   "graphql-upload": "^10.0.0"
+> }
+> ```
+>
+> You can track this issue [here](https://github.com/keystonejs/keystone/issues/2101).
+
 ## Usage
 
 ```js
@@ -31,10 +41,8 @@ keystone.createList('Applicant', {
 
 ### Config
 
-| Option       | Type      | Default  | Description                                                                                          |
-| ------------ | --------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `adapter`    | `Object`  | Required | See the [File Adapters](https://keystonejs.com/keystonejs/file-adapters/) page for more information. |
-| `route`      | `String`  | `null`   |                                                                                                      |
-| `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                                     |
-
-_Note:_ `adapter` currently may be one of `LocalFileAdapter` or `CloudinaryFileAdapter`.
+| Option       | Type      | Default  | Description                                                                                            |
+| ------------ | --------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `adapter`    | `Object`  | Required | See the [File Adapters](https://keystonejs.com/keystonejs/file-adapters/) page for available adapters. |
+| `route`      | `String`  | `null`   |                                                                                                        |
+| `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                                       |

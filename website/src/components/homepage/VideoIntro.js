@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useState } from 'react';
+import { colors } from '@arch-ui/theme';
 
 import { mq } from '../../utils/media';
 import videoThumbnailPNG from '../../assets/video-thumbnail.png';
@@ -8,7 +9,7 @@ import videoThumbnailPNG from '../../assets/video-thumbnail.png';
 const VideoIntro = () => {
   const [showVideo, setShowVideo] = useState(false);
   return (
-    <MainWrapper>
+    <div>
       <VideoWrapper>
         <VideoEmbed
           showVideo={showVideo}
@@ -18,21 +19,10 @@ const VideoIntro = () => {
         {!showVideo && <VideoStartButton onClick={() => setShowVideo(true)} />}
       </VideoWrapper>
       <VideoCta />
-    </MainWrapper>
+    </div>
   );
 };
 
-// Implementation components
-const MainWrapper = ({ children }) => (
-  <div
-    css={mq({
-      marginLeft: [0, 0, 0, 50],
-      flex: [1, '0 1 600px'],
-    })}
-  >
-    {children}
-  </div>
-);
 const VideoWrapper = ({ children, ...rest }) => (
   <div
     css={{
@@ -140,14 +130,13 @@ const VideoCta = () => (
       height="36"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g fill="#000" fillRule="nonzero">
+      <g fill={colors.N90} fillRule="nonzero">
         <path d="M34.376 36a.657.657 0 0 1-.19-.029c-.281-.088-28.038-9.063-30.184-35.31a.615.615 0 0 1 .574-.658.618.618 0 0 1 .671.562c2.079 25.42 29.046 34.157 29.318 34.244a.61.61 0 0 1 .405.77.625.625 0 0 1-.593.421z" />
         <path d="M.623 9a.65.65 0 0 1-.31-.079.57.57 0 0 1-.229-.805L5.01 0l7.695 4.505c.292.17.383.535.202.812a.643.643 0 0 1-.859.192L5.452 1.65 1.168 8.707A.646.646 0 0 1 .623 9z" />
       </g>
     </svg>
-    <p css={{ paddingLeft: 54, paddingTop: 24 }}>
-      Click to see how to get a "To Do" app up and running in under 4 minutes with the Keystone 5
-      CLI.
+    <p css={{ paddingLeft: 54, paddingTop: 24, lineHeight: 1.4 }}>
+      See how to get a "To Do" app up and running in under 4 minutes with the KeystoneJS CLI
     </p>
   </div>
 );

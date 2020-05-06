@@ -1,7 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
 const { formatError, isInstance: isApolloErrorInstance } = require('apollo-errors');
 const ensureError = require('ensure-error');
-const serializeError = require('serialize-error');
+const { serializeError } = require('serialize-error');
 const StackUtils = require('stack-utils');
 const cuid = require('cuid');
 const { omit } = require('@keystonejs/utils');
@@ -144,7 +144,8 @@ function createApolloServer(keystone, apolloConfig, schemaName, dev) {
   const server = new ApolloServer({
     maxFileSize: 200 * 1024 * 1024,
     maxFiles: 5,
-    ...keystone.getAdminSchema({ schemaName }),
+    typeDefs: keystone.getTypeDefs({ schemaName }),
+    resolvers: keystone.getResolvers({ schemaName }),
     context: ({ req }) => ({
       ...keystone.getGraphQlContext({ schemaName, req }),
       req,

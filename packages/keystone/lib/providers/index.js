@@ -1,4 +1,6 @@
-const { VersionProvider } = require('./version');
+const { CustomProvider } = require('./custom');
+const { ListAuthProvider } = require('./listAuth');
+const { ListCRUDProvider } = require('./listCRUD');
 
 // The GraphQL Provider Framework expects to see classes with the following API:
 //
@@ -26,4 +28,4 @@ const { VersionProvider } = require('./version');
 //   }
 // }
 
-module.exports = { VersionProvider };
+module.exports = { CustomProvider, ListAuthProvider, ListCRUDProvider };

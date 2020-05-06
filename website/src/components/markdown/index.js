@@ -1,12 +1,13 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
+import { Fragment } from 'react';
 import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
 import { Link } from 'gatsby';
 import { H1, H2, H3, H4, H5, H6 } from './Heading';
-import { Code } from './Code';
+import { Blockquote } from './Blockquote';
+import { InlineCode, CodeBlock } from './Code';
 import { Table } from './Table';
 
 const Hr = props => (
@@ -59,7 +60,28 @@ export default {
   h5: H5,
   h6: H6,
   hr: Hr,
-  code: Code,
+  blockquote: Blockquote,
+  p: Paragraph,
+  pre: ({ children }) => <Fragment>{children}</Fragment>, // The `CodeBlock` component handles pre-wrapping
+  code: CodeBlock,
+  inlineCode: InlineCode,
   table: Table,
   a: Anchor,
 };
+
+// NOTE: filter out paragraphs that contain badges
+// ------------------------------
+// we're following a golden path here that assumes A LOT
+// the pattern we're expecting is `p > a > img` -- React's single child quirk lets us chain
+// i know it's super brittle, but will tidy things up for the moment
+function hasBadge(props) {
+  return props?.children?.props?.children?.props?.src?.includes('shields.io');
+}
+
+function Paragraph(props) {
+  if (hasBadge(props)) {
+    return null;
+  }
+
+  return <p {...props} />;
+}

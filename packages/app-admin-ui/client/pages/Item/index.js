@@ -36,6 +36,8 @@ import {
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
+import { useAdminMeta } from '../../providers/AdminMeta';
+import { useList } from '../../providers/List';
 
 let Render = ({ children }) => children();
 
@@ -81,6 +83,8 @@ const ItemDetails = ({
   const history = useHistory();
   const { addToast } = useToasts();
 
+  const { query: listQuery } = useList();
+
   const getFieldsObject = memoizeOne(() =>
     arrayToObject(
       // NOTE: We _exclude_ read only fields
@@ -115,20 +119,25 @@ const ItemDetails = ({
     }
   };
 
-  const onDelete = deletePromise => {
+  const onDelete = async deletePromise => {
     deleteConfirmed.current = true;
-    deletePromise
-      .then(() => {
-        if (mounted) {
-          setShowDeleteModal(false);
-        }
 
-        history.replace(`${adminPath}/${list.path}`);
-        toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
-      })
-      .catch(error => {
-        toastError({ addToast }, error);
-      });
+    try {
+      await deletePromise;
+      const refetch = listQuery.refetch();
+
+      if (mounted) {
+        setShowDeleteModal(false);
+      }
+
+      toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
+
+      // Wait for the refetch to finish before returning to the list
+      await refetch;
+      history.replace(`${adminPath}/${list.path}`);
+    } catch (error) {
+      toastError({ addToast }, error);
+    }
   };
 
   const openDeleteModal = () => {
@@ -206,44 +215,34 @@ const ItemDetails = ({
     // Cache the current item data at the time of saving.
     itemSaveCheckCache.current = item;
 
-    updateItem({ variables: { id: item.id, data } })
-      .then(() => {
-        const toastContent = (
-          <div>
-            {item._label_ ? <strong>{item._label_}</strong> : null}
-            <div>Saved successfully</div>
-          </div>
-        );
+    await updateItem({ variables: { id: item.id, data } });
 
-        addToast(toastContent, {
-          autoDismiss: true,
-          appearance: 'success',
-        });
+    setValidationErrors({});
+    setValidationWarnings({});
 
-        setValidationErrors({});
-        setValidationWarnings({});
+    // we only want to set itemHasChanged to false
+    // when it hasn't changed since we did the mutation
+    // otherwise a user could edit the data and
+    // accidentally close the page without a warning
+    if (item === itemSaveCheckCache.current) {
+      itemHasChanged.current = false;
+    }
 
-        // we only want to set itemHasChanged to false
-        // when it hasn't changed since we did the mutation
-        // otherwise a user could edit the data and
-        // accidentally close the page without a warning
-        if (item === itemSaveCheckCache.current) {
-          itemHasChanged.current = false;
-        }
-      })
-      .then(onUpdate)
-      .then(savedItem => {
-        // No changes since we kicked off the item saving
-        if (!itemHasChanged.current) {
-          // Then reset the state to the current server value
-          // This ensures we are able to pass any extra information returned
-          // from the server that otherwise would be unknown to client state
-          setItem(savedItem);
+    const savedItem = await onUpdate();
 
-          // Clear the cache
-          itemSaveCheckCache.current = {};
-        }
-      });
+    // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
+    toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
+
+    // No changes since we kicked off the item saving
+    if (!itemHasChanged.current) {
+      // Then reset the state to the current server value
+      // This ensures we are able to pass any extra information returned
+      // from the server that otherwise would be unknown to client state
+      setItem(savedItem);
+
+      // Clear the cache
+      itemSaveCheckCache.current = {};
+    }
   };
 
   const onCreate = ({ data }) => {
@@ -265,15 +264,22 @@ const ItemDetails = ({
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
-                    setItem(oldItem => ({
-                      ...oldItem,
-                      [field.path]: value,
-                    }));
+                    setItem(oldItem => {
+                      // Don't flag things as changed if they're not actually changed
+                      if (oldItem[field.path] === value) {
+                        return oldItem;
+                      }
 
-                    setValidationErrors({});
-                    setValidationWarnings({});
+                      setValidationErrors({});
+                      setValidationWarnings({});
 
-                    itemHasChanged.current = true;
+                      itemHasChanged.current = true;
+
+                      return {
+                        ...oldItem,
+                        [field.path]: value,
+                      };
+                    });
                   },
                   [field]
                 );
@@ -351,9 +357,12 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
-  const itemQuery = list.getItemQuery(itemId);
+const ItemPage = ({ itemId }) => {
+  const { list } = useList();
+  const { adminPath } = useAdminMeta();
   const { addToast } = useToasts();
+
+  const itemQuery = list.getItemQuery(itemId);
 
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache
@@ -444,7 +453,6 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
             itemErrors={itemErrors}
             key={itemId}
             list={list}
-            getListByKey={getListByKey}
             onUpdate={() =>
               refetch().then(refetchedData =>
                 deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])

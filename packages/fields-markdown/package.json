@@ -1,28 +1,29 @@
 {
   "name": "@keystonejs/fields-markdown",
   "description": "KeystoneJS Markdown Field Type",
-  "version": "5.1.0",
+  "version": "5.1.9",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^2.0.5",
-    "@arch-ui/icons": "^0.0.8",
-    "@arch-ui/input": "^0.1.4",
-    "@arch-ui/theme": "^0.0.7",
-    "@arch-ui/tooltip": "^0.1.6",
-    "@arch-ui/typography": "^0.0.12",
+    "@arch-ui/fields": "^3.0.1",
+    "@arch-ui/icons": "^0.1.1",
+    "@arch-ui/input": "^0.1.9",
+    "@arch-ui/theme": "^0.0.10",
+    "@arch-ui/tooltip": "^0.1.12",
+    "@arch-ui/typography": "^0.0.17",
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.27",
-    "@keystonejs/build-field-types": "^5.2.0",
-    "@keystonejs/fields": "^6.3.0",
+    "@emotion/core": "^10.0.28",
+    "@keystonejs/build-field-types": "^5.2.5",
+    "@keystonejs/fields": "^9.0.4",
     "codemirror": "^5.48.0",
     "prop-types": "^15.7.2",
-    "react": "^16.12.0",
+    "react": "^16.13.1",
     "react-codemirror2": "^6.0.0"
   },
   "main": "dist/fields-markdown.cjs.js",
-  "module": "dist/fields-markdown.esm.js"
+  "module": "dist/fields-markdown.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-markdown"
 }

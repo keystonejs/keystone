@@ -21,8 +21,8 @@ jest.doMock('html-webpack-plugin', () => {
 const { AdminUIApp } = require('../../');
 
 const keystone = {
-  getAdminSchema: jest.fn(),
-  getAdminMeta: jest.fn(),
+  getAdminMeta: jest.fn(() => ({ lists: [], name: 'test' })),
+  getAdminViews: jest.fn(() => ({ hooks: {}, pages: {}, listViews: {} })),
 };
 const adminPath = 'admin_path';
 
@@ -34,16 +34,8 @@ test('new AdminUIApp() - smoke test', () => {
 
 describe('Add Middleware', () => {
   test('Smoke test', () => {
-    const adminUI = new AdminUIApp({
-      adminPath,
-    });
-
+    const adminUI = new AdminUIApp({ adminPath });
     const adminMeta = adminUI.getAdminUIMeta(keystone);
-
-    expect(
-      adminUI.createDevMiddleware({
-        adminMeta,
-      })
-    ).not.toBe(null);
+    expect(adminUI.createDevMiddleware({ adminMeta, keystone })).not.toBe(null);
   });
 });

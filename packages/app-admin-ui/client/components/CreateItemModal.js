@@ -15,7 +15,13 @@ import { useToasts } from 'react-toast-notifications';
 
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { arrayToObject, captureSuspensePromises, countArrays } from '@keystonejs/utils';
+import {
+  arrayToObject,
+  captureSuspensePromises,
+  countArrays,
+  mapKeys,
+  omitBy,
+} from '@keystonejs/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
@@ -24,6 +30,8 @@ import { useList } from '../providers/List';
 import { validateFields, handleCreateUpdateMutationError } from '../util';
 
 let Render = ({ children }) => children();
+
+const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
 
 function useEventCallback(callback) {
   let callbackRef = useRef(callback);
@@ -58,12 +66,33 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // it's important to remember that react events
     // propagate through portals as if they aren't there
     event.stopPropagation();
-    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
+
+    const fieldsObject = arrayToObject(creatable, 'path');
+
+    const initialData = list.getInitialItemData({ prefill: prefillData });
+    const initialValues = getValues(fieldsObject, initialData);
+    const currentValues = getValues(fieldsObject, item);
+
+    // 'null' is explicit for the blank fields when making a GraphQL
+    // request. This prevents the `knex` DB-level default values to be applied
+    // correctly, But, if we exclude the blank field altogether, default values
+    // (knex DB-level default) are respected. Additionally, we need to make sure
+    // that we don't omit the required fields for client-side input validation.
+    function hasnotChangedAndIsNotRequired(path) {
+      const hasChanged = fieldsObject[path].hasChanged(initialValues, currentValues);
+      const isRequired = fieldsObject[path].isRequired;
+      return !hasChanged && !isRequired;
+    }
+
+    const data = omitBy(currentValues, hasnotChangedAndIsNotRequired);
+
+    const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
 
     if (isLoading) return;
+
     if (countArrays(validationErrors)) return;
     if (!countArrays(validationWarnings)) {
-      const { errors, warnings } = await validateFields(creatable, item, data);
+      const { errors, warnings } = await validateFields(fields, item, data);
 
       if (countArrays(errors) + countArrays(warnings) > 0) {
         setValidationErrors(errors);
@@ -210,7 +239,5 @@ export default function CreateItemModalWithMutation(props) {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });
-  return (
-    <CreateItemModal createItem={createItem} isLoading={loading} addToast={addToast} {...props} />
-  );
+  return <CreateItemModal createItem={createItem} isLoading={loading} {...props} />;
 }

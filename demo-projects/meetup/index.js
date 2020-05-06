@@ -7,7 +7,16 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 
-const { Event, Talk, User, Rsvp, Organiser, Sponsor, ForgottenPasswordToken } = require('./schema');
+const {
+  Event,
+  Talk,
+  User,
+  Rsvp,
+  Organiser,
+  Sponsor,
+  ForgottenPasswordToken,
+  customSchema,
+} = require('./schema');
 
 const MEETUP = require('./meetupConfig');
 const initialiseData = require('./initialData');
@@ -18,11 +27,6 @@ const keystone = new Keystone({
   onConnect: initialiseData,
 });
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 keystone.createList('Event', Event);
 keystone.createList('Rsvp', Rsvp);
 keystone.createList('Talk', Talk);
@@ -30,6 +34,13 @@ keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
 keystone.createList('Sponsor', Sponsor);
 keystone.createList('ForgottenPasswordToken', ForgottenPasswordToken);
+
+keystone.extendGraphQLSchema(customSchema);
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+});
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',

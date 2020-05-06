@@ -14,7 +14,6 @@ import Tooltip from '@arch-ui/tooltip';
 import { useAdminMeta } from '../../providers/AdminMeta';
 
 export function Search({ list }) {
-  // const { urlState } = useListUrlState(list.key);
   const [value, setValue] = useState('');
   const [formIsVisible, setFormVisible] = useState(false);
   const inputRef = useRef(null);

@@ -5,7 +5,7 @@ import { StopIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 import { Container } from '@arch-ui/layout';
 
-export default function PageError({ children, Icon, ...props }) {
+export default function PageError({ children, Icon = StopIcon, ...props }) {
   return (
     <Container>
       <div
@@ -23,6 +23,3 @@ export default function PageError({ children, Icon, ...props }) {
     </Container>
   );
 }
-PageError.defaultProps = {
-  Icon: StopIcon,
-};

@@ -5,13 +5,17 @@ import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
 import { colors } from '@arch-ui/theme';
+import { PageTitle } from '@arch-ui/typography';
 
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
+import { upcase } from '@keystonejs/utils';
+
 import KeystoneLogo from '../components/KeystoneLogo';
 
-const upcase = str => str[0].toUpperCase() + str.substring(1);
+import { useAdminMeta } from '../providers/AdminMeta';
+import { useUIHooks } from '../providers/Hooks';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -65,14 +69,25 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignInPage = ({ authStrategy: { listKey, identityField, secretField } }) => {
+const SignInPage = () => {
+  const {
+    name: siteName,
+    authStrategy: {
+      gqlNames: { authenticateMutationName },
+      identityField,
+      secretField,
+    },
+  } = useAdminMeta();
+
+  const { logo: getCustomLogo } = useUIHooks();
+
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
   const [reloading, setReloading] = useState(false);
 
   const AUTH_MUTATION = gql`
     mutation signin($identity: String, $secret: String) {
-      authenticate: authenticate${listKey}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
+      authenticate: ${authenticateMutationName}(${identityField}: $identity, ${secretField}: $secret) {
         item {
           id
         }
@@ -114,8 +129,9 @@ const SignInPage = ({ authStrategy: { listKey, identityField, secretField } }) =
           <Alert appearance="danger">Your username and password were incorrect</Alert>
         ) : null}
       </Alerts>
+      <PageTitle>{siteName}</PageTitle>
       <Form method="post" onSubmit={onSubmit}>
-        <KeystoneLogo />
+        {getCustomLogo ? getCustomLogo() : <KeystoneLogo />}
         <Divider />
         <div>
           <Fields>
@@ -141,6 +157,11 @@ const SignInPage = ({ authStrategy: { listKey, identityField, secretField } }) =
             type="submit"
             isLoading={loading || reloading}
             indicatorVariant="dots"
+            style={{
+              width: '280px',
+              height: '2.6em',
+              margin: '1em 0',
+            }}
           >
             Sign In
           </LoadingButton>
