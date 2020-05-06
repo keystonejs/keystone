@@ -72,15 +72,9 @@ export const KeystoneAdminUI = () => {
         }
 
         return (
-          <ListProvider list={list}>
+          <ListProvider key={listKey} list={list}>
             <Switch>
-              <Route
-                exact
-                path={`${adminPath}/:list`}
-                render={routeProps => (
-                  <ListPage key={listKey} list={list} routeProps={routeProps} />
-                )}
-              />
+              <Route exact path={`${adminPath}/:list`} render={() => <ListPage key={listKey} />} />
               ,
               <Route
                 exact
@@ -89,7 +83,7 @@ export const KeystoneAdminUI = () => {
                   match: {
                     params: { itemId },
                   },
-                }) => <ItemPage key={`${listKey}-${itemId}`} list={list} itemId={itemId} />}
+                }) => <ItemPage key={`${listKey}-${itemId}`} itemId={itemId} />}
               />
               ,
               <Route render={() => <InvalidRoutePage />} />,

@@ -1,5 +1,11 @@
 # @keystonejs/app-graphql
 
+## 5.1.6
+
+### Patch Changes
+
+- [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b) [#2854](https://github.com/keystonejs/keystone/pull/2854) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded dependencies.
+
 ## 5.1.5
 
 ### Patch Changes

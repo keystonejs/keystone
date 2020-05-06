@@ -80,7 +80,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // that we don't omit the required fields for client-side input validation.
     function hasnotChangedAndIsNotRequired(path) {
       const hasChanged = fieldsObject[path].hasChanged(initialValues, currentValues);
-      const isRequired = fieldsObject[path].config.isRequired;
+      const isRequired = fieldsObject[path].isRequired;
       return !hasChanged && !isRequired;
     }
 
@@ -239,7 +239,5 @@ export default function CreateItemModalWithMutation(props) {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });
-  return (
-    <CreateItemModal createItem={createItem} isLoading={loading} addToast={addToast} {...props} />
-  );
+  return <CreateItemModal createItem={createItem} isLoading={loading} {...props} />;
 }

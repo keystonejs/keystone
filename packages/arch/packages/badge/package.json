@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/badge",
   "description": "Badge Component used in @keystonejs Admin UI.",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/badge.cjs.js",

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo } from 'react';
 import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
@@ -52,25 +52,18 @@ const BadgeElement = styled.div(({ appearance, variant }) => ({
   textAlign: 'center',
 }));
 
-export class Badge extends PureComponent {
-  static defaultProps = {
-    appearance: 'default',
-    max: 99,
-    value: 0,
-    variant: 'subtle',
-  };
-  getValue = ({ value, max }) => {
-    if (value < 0) return '0';
-    if (max > 0 && value > max) return `${max}+`;
-    return value;
-  };
-  render() {
-    const { appearance, max, value, variant, ...rest } = this.props;
+export const Badge = memo(
+  ({ appearance = 'default', max = 99, value = 0, variant = 'subtle', ...props }) => {
+    const getValue = ({ value, max }) => {
+      if (value < 0) return '0';
+      if (max > 0 && value > max) return `${max}+`;
+      return value;
+    };
 
     return (
-      <BadgeElement appearance={appearance} variant={variant} {...rest}>
-        {this.getValue({ value, max })}
+      <BadgeElement appearance={appearance} variant={variant} {...props}>
+        {getValue({ value, max })}
       </BadgeElement>
     );
   }
-}
+);
