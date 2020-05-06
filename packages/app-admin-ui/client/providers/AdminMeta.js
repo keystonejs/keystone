@@ -8,7 +8,19 @@ import React, { useContext, createContext } from 'react';
 const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 
 // TODO: Pull this off `window.X` to support server side permission queries
-const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
+const {
+  adminPath,
+  apiPath,
+  graphiqlPath,
+  pages,
+  hooks,
+  signinPath,
+  signoutPath,
+  authStrategy,
+  lists,
+  name,
+  ...customMeta
+} = KEYSTONE_ADMIN_META;
 
 const AdminMetaContext = createContext();
 
@@ -35,7 +47,16 @@ export const AdminMetaProvider = ({ children }) => {
   const listsByPath = {};
 
   const adminMeta = {
-    ...srcMeta,
+    adminPath,
+    apiPath,
+    graphiqlPath,
+    pages,
+    hooks,
+    signinPath,
+    signoutPath,
+    authStrategy,
+    name,
+    ...customMeta,
     listKeys: Object.keys(lists || {}),
     getListByKey: key => listsByKey[key],
     getListByPath: path => listsByPath[path],
@@ -74,20 +95,18 @@ export const AdminMetaProvider = ({ children }) => {
     }
   );
 
-  let hooks = {};
+  let hookViews = {};
   if (typeof hookView === 'function') {
-    [hooks] = readViews([hookView]);
+    [hookViews] = readViews([hookView]);
   }
 
-  const hookPages = hooks.pages ? hooks.pages() : [];
+  const hookPages = hookViews.pages ? hookViews.pages() : [];
   const adminMetaPages = adminMeta.pages ? adminMeta.pages : [];
-
-  const pages = resolveCustomPages([...adminMetaPages, ...hookPages]);
 
   const value = {
     ...adminMeta,
-    hooks,
-    pages,
+    hooks: hookViews,
+    pages: resolveCustomPages([...adminMetaPages, ...hookPages]),
   };
 
   return <AdminMetaContext.Provider value={value}>{children}</AdminMetaContext.Provider>;
