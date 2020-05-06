@@ -4,8 +4,6 @@ const config = {
   path: 'path',
   label: 'label',
   type: 'type',
-  list: 'list',
-  adminMeta: 'adminMeta',
 };
 
 describe('new Controller()', () => {
@@ -13,7 +11,7 @@ describe('new Controller()', () => {
     const controller = new FieldController(config, 'adminMeta');
     expect(controller).not.toBeNull();
 
-    expect(controller.config).toEqual(config);
+    expect(controller.config).toEqual({});
     expect(controller.label).toEqual('label');
     expect(controller.type).toEqual('type');
     expect(controller.adminMeta).toEqual('adminMeta');
