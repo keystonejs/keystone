@@ -23,8 +23,8 @@ import { FlexGroup } from '@arch-ui/layout';
 import { PersonIcon, SignOutIcon, TerminalIcon, MarkGithubIcon } from '@arch-ui/icons';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
-import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
-import ScrollQuery from '../ScrollQuery';
+import { useResizeHandler, KEYBOARD_SHORTCUT } from './ResizeHandler';
+import { useScrollQuery } from '../ScrollQuery';
 
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -244,6 +244,7 @@ function PrimaryNavItems({
   mouseIsOverNav,
 }) {
   const isAtDashboard = useRouteMatch({ path: adminPath, exact: true });
+  const [scrollRef, snapshot] = useScrollQuery({ isPassive: false });
 
   let hasRenderedIndexPage = false;
   const onRenderIndexPage = () => {
@@ -278,23 +279,15 @@ function PrimaryNavItems({
         );
   return (
     <Relative>
-      <ScrollQuery isPassive={false}>
-        {(ref, snapshot) => (
-          <PrimaryNavScrollArea ref={ref} {...snapshot}>
-            {hasRenderedIndexPage === false && (
-              <PrimaryNavItem
-                to={adminPath}
-                isSelected={isAtDashboard}
-                mouseIsOverNav={mouseIsOverNav}
-              >
-                Dashboard
-              </PrimaryNavItem>
-            )}
-
-            {pageNavItems}
-          </PrimaryNavScrollArea>
+      <PrimaryNavScrollArea ref={scrollRef} {...snapshot}>
+        {hasRenderedIndexPage === false && (
+          <PrimaryNavItem to={adminPath} isSelected={isAtDashboard} mouseIsOverNav={mouseIsOverNav}>
+            Dashboard
+          </PrimaryNavItem>
         )}
-      </ScrollQuery>
+
+        {pageNavItems}
+      </PrimaryNavScrollArea>
     </Relative>
   );
 }
@@ -321,11 +314,17 @@ const UserIcon = styled.div`
   margin-right: ${PRIMARY_NAV_GUTTER}px;
 `;
 
-const UserInfo = ({ authListKey, authListPath }) => {
+const UserInfo = ({ authListPath }) => {
+  const {
+    authStrategy: {
+      gqlNames: { authenticatedQueryName },
+    },
+  } = useAdminMeta();
+
   // We're assuming the user list as a 'name' field
   const AUTHED_USER_QUERY = gql`
     query {
-      user: authenticated${authListKey} {
+      user: ${authenticatedQueryName} {
         id
         name
       }
@@ -383,7 +382,7 @@ const ActionItems = ({ mouseIsOverNav }) => {
       ...(ENABLE_DEV_FEATURES
         ? [
             {
-              label: 'GraphiQL Playground',
+              label: 'GraphQL Playground',
               to: graphiqlPath,
               icon: TerminalIcon,
               target: '_blank',
@@ -449,12 +448,7 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
       >
         {name}
       </Title>
-      {authListKey && (
-        <UserInfo
-          authListKey={authListKey}
-          authListPath={`${adminPath}/${getListByKey(authListKey).path}`}
-        />
-      )}
+      {authListKey && <UserInfo authListPath={`${adminPath}/${getListByKey(authListKey).path}`} />}
       <ActionItems mouseIsOverNav={mouseIsOverNav} />
       <PrimaryNavItems
         adminPath={adminPath}
@@ -479,81 +473,81 @@ const Nav = ({ children }) => {
     setMouseIsOverNav(false);
   };
 
-  return (
-    <ResizeHandler isActive={mouseIsOverNav}>
-      {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
-        const navWidth = isCollapsed ? 0 : width;
-        const makeResizeStyles = key => {
-          const pointers = isDragging ? { pointerEvents: 'none' } : null;
-          const transitions = isDragging
-            ? null
-            : {
-                transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-              };
-          return { [key]: navWidth, ...pointers, ...transitions };
-        };
+  const {
+    resizeProps,
+    clickProps,
+    snapshot: { isCollapsed, isDragging, width },
+  } = useResizeHandler();
 
-        return (
-          <PageWrapper>
-            <PropToggle
-              isActive={isDragging}
-              styles={{
-                cursor: 'col-resize',
-                '-moz-user-select': 'none',
-                '-ms-user-select': 'none',
-                '-webkit-user-select': 'none',
-                'user-select': 'none',
-              }}
-            />
-            <PrimaryNav
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              style={makeResizeStyles('width')}
+  const navWidth = isCollapsed ? 0 : width;
+  const makeResizeStyles = key => {
+    const pointers = isDragging ? { pointerEvents: 'none' } : null;
+    const transitions = isDragging
+      ? null
+      : {
+          transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+        };
+    return { [key]: navWidth, ...pointers, ...transitions };
+  };
+
+  return (
+    <PageWrapper>
+      <PropToggle
+        isActive={isDragging}
+        styles={{
+          cursor: 'col-resize',
+          '-moz-user-select': 'none',
+          '-ms-user-select': 'none',
+          '-webkit-user-select': 'none',
+          'user-select': 'none',
+        }}
+      />
+      <PrimaryNav
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={makeResizeStyles('width')}
+      >
+        <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
+        {isCollapsed ? null : (
+          <GrabHandle
+            onDoubleClick={clickProps.onClick}
+            isActive={mouseIsOverNav || isDragging}
+            {...resizeProps}
+          />
+        )}
+        <Tooltip
+          content={
+            <TooltipContent kbd={KEYBOARD_SHORTCUT}>
+              {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
+            </TooltipContent>
+          }
+          placement="right"
+          hideOnMouseDown
+          hideOnKeyDown
+          delay={600}
+        >
+          {ref => (
+            <CollapseExpand
+              isCollapsed={isCollapsed}
+              mouseIsOverNav={mouseIsOverNav}
+              {...clickProps}
+              ref={ref}
             >
-              <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
-              {isCollapsed ? null : (
-                <GrabHandle
-                  onDoubleClick={clickProps.onClick}
-                  isActive={mouseIsOverNav || isDragging}
-                  {...resizeProps}
-                />
-              )}
-              <Tooltip
-                content={
-                  <TooltipContent kbd={KEYBOARD_SHORTCUT}>
-                    {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
-                  </TooltipContent>
-                }
-                placement="right"
-                hideOnMouseDown
-                hideOnKeyDown
-                delay={600}
+              <svg
+                fill="currentColor"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {ref => (
-                  <CollapseExpand
-                    isCollapsed={isCollapsed}
-                    mouseIsOverNav={mouseIsOverNav}
-                    {...clickProps}
-                    ref={ref}
-                  >
-                    <svg
-                      fill="currentColor"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
-                    </svg>
-                  </CollapseExpand>
-                )}
-              </Tooltip>
-            </PrimaryNav>
-            <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
-          </PageWrapper>
-        );
-      }}
-    </ResizeHandler>
+                <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
+              </svg>
+            </CollapseExpand>
+          )}
+        </Tooltip>
+      </PrimaryNav>
+      <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
+    </PageWrapper>
   );
 };
 

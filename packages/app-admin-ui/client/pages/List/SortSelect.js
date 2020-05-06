@@ -9,15 +9,12 @@ import { Kbd } from '@arch-ui/typography';
 import { Button } from '@arch-ui/button';
 
 import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
-import { useList, useListSort, useKeyDown } from './dataHooks';
+import { useListSort, useKeyDown } from './dataHooks';
+import { useList } from '../../providers/List';
 
-type Props = {
-  listKey: string,
-};
-
-export default function SortPopout({ listKey }: Props) {
-  const list = useList(listKey);
-  const [sortValue, handleSortChange] = useListSort(listKey);
+export default function SortPopout() {
+  const { list } = useList();
+  const [sortValue, handleSortChange] = useListSort();
   const altIsDown = useKeyDown('Alt');
   const popoutRef = useRef();
 
