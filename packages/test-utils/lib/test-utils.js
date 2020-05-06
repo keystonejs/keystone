@@ -32,6 +32,7 @@ async function setupServer({
     adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
     schemaNames,
+    cookieSecret: 'secretForTesting',
     ...keystoneOptions,
   });
 

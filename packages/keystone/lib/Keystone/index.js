@@ -490,6 +490,16 @@ module.exports = class Keystone {
     return { lists, name: this.name };
   }
 
+  getAdminViews({ schemaName }) {
+    return {
+      listViews: arrayToObject(
+        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
+        'key',
+        list => list.views
+      ),
+    };
+  }
+
   // It's not Keystone core's responsibility to create an executable schema, but
   // once one is, Keystone wants to be able to expose the ability to query that
   // schema, so this function enables other modules to register that function.

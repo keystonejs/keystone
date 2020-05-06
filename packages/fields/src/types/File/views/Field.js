@@ -224,7 +224,7 @@ export default class FileField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        <FieldDescription text={field.config.adminDoc} />
+        <FieldDescription text={field.adminDoc} />
         <FieldInput>
           {file ? (
             <Wrapper>

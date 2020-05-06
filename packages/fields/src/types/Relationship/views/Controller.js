@@ -6,9 +6,7 @@ export default class RelationshipController extends FieldController {
     super({ ...config, defaultValue }, ...args);
   }
   getRefList() {
-    const { getListByKey } = this.adminMeta;
-    const { ref } = this.config;
-    return getListByKey(ref);
+    return this.adminMeta.getListByKey(this.config.ref);
   }
   getQueryFragment = (path = this.path) => {
     return `

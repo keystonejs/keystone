@@ -86,7 +86,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
     // that we don't omit the required fields for client-side input validation.
     const hasNotChangedAndIsNotRequired = path => {
       const hasChanged = fieldsObject[path].hasChanged(initialValues, currentValues);
-      const isRequired = fieldsObject[path].config.isRequired;
+      const isRequired = fieldsObject[path].isRequired;
       return !hasChanged && !isRequired;
     };
 

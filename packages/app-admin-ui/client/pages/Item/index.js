@@ -358,7 +358,7 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
 
 const ItemPage = ({ itemId }) => {
   const { list } = useList();
-  const { adminPath, getListByKey } = useAdminMeta();
+  const { adminPath } = useAdminMeta();
   const { addToast } = useToasts();
 
   const itemQuery = list.getItemQuery(itemId);
@@ -452,7 +452,6 @@ const ItemPage = ({ itemId }) => {
             itemErrors={itemErrors}
             key={itemId}
             list={list}
-            getListByKey={getListByKey}
             onUpdate={() =>
               refetch().then(refetchedData =>
                 deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])

@@ -41,8 +41,8 @@ const MultiCheckField = ({ onChange, autoFocus, field, value, errors }) => {
       {accessError ? (
         <ShieldIcon title={accessError.message} css={{ color: colors.N20, marginRight: '1em' }} />
       ) : null}
-      {field.config.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
-      <FieldDescription text={field.config.adminDoc} />
+      {field.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
+      <FieldDescription text={field.adminDoc} />
       <div>
         {field.config.options.map(label => (
           <Checkbox
