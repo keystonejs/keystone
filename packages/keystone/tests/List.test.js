@@ -733,12 +733,12 @@ test('getFieldsRelatedTo', () => {
   expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
 });
 
-test('_wrapFieldResolverWith', () => {
+test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
   const newResolver = list._wrapFieldResolver(list.fieldsByPath['name'], resolver);
-  expect(newResolver({}, {}, context)).toEqual('result');
-  expect(() => newResolver({ makeFalse: true }, {}, context)).toThrow(AccessDeniedError);
+  await expect(newResolver({}, {}, context)).resolves.toEqual('result');
+  await expect(newResolver({ makeFalse: true }, {}, context)).rejects.toThrow(AccessDeniedError);
 });
 
 test('gqlFieldResolvers', () => {
@@ -853,7 +853,7 @@ describe(`getGqlMutations()`, () => {
   });
 });
 
-test('checkFieldAccess', () => {
+test('checkFieldAccess', async () => {
   const list = setup();
   list.checkFieldAccess(
     'read',
@@ -863,17 +863,17 @@ test('checkFieldAccess', () => {
       gqlName: 'testing',
     }
   );
-  expect(() =>
+  await expect(
     list.checkFieldAccess(
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
       { gqlName: '' }
     )
-  ).toThrow(AccessDeniedError);
+  ).rejects.toThrow(AccessDeniedError);
   let thrownError;
   try {
-    list.checkFieldAccess(
+    await list.checkFieldAccess(
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
@@ -894,10 +894,10 @@ test('checkFieldAccess', () => {
   });
 });
 
-test('checkListAccess', () => {
+test('checkListAccess', async () => {
   const list = setup();
   const originalInput = {};
-  expect(list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })).toEqual(
+  await expect(list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })).resolves.toEqual(
     true
   );
 
@@ -905,12 +905,12 @@ test('checkListAccess', () => {
     ...context,
     getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
   };
-  expect(list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })).toEqual(
+  await expect(list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })).resolves.toEqual(
     true
   );
-  expect(() =>
+  await expect(
     list.checkListAccess(newContext, originalInput, 'read', { gqlName: 'testing' })
-  ).toThrow(AccessDeniedError);
+  ).rejects.toThrow(AccessDeniedError);
 });
 
 test('getAccessControlledItem', async () => {

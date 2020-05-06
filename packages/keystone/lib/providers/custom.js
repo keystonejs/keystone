@@ -89,10 +89,10 @@ class CustomProvider {
         return _access;
       };
       return {
-        [gqlName]: (obj, args, context, info) =>
+        [gqlName]: async (obj, args, context, info) =>
           resolver(obj, args, context, info, {
             query: this._buildQueryHelper(context),
-            access: computeAccess(context),
+            access: await computeAccess(context),
           }),
       };
     };
