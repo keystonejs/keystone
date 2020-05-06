@@ -80,8 +80,7 @@ export default class AnimateHeight extends Component {
           height,
           transition: isTransitioning
             ? 'height 220ms cubic-bezier(0.2, 0, 0, 1)'
-            : // idk why this is necessary but having this be null makes the transition break
-              'height 0s',
+            : 'none',
           overflow,
         }}
         onTransitionEnd={event => {
