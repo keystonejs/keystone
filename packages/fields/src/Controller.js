@@ -2,7 +2,18 @@ import isEqual from 'lodash.isequal';
 
 export default class FieldController {
   constructor(
-    { label, path, type, access, isOrderable, isPrimaryKey, isRequired, adminDoc, ...config },
+    {
+      label,
+      path,
+      type,
+      access,
+      isOrderable,
+      isPrimaryKey,
+      isRequired,
+      adminDoc,
+      defaultValue,
+      ...config
+    },
     adminMeta,
     views
   ) {
@@ -18,15 +29,11 @@ export default class FieldController {
     this.adminMeta = adminMeta;
     this.views = views;
 
-    if ('defaultValue' in config) {
-      if (typeof config.defaultValue !== 'function') {
-        this._getDefaultValue = ({ prefill }) => prefill[this.path] || config.defaultValue;
-      } else {
-        this._getDefaultValue = config.defaultValue;
-      }
-    } else {
+    if (typeof defaultValue !== 'function') {
       // By default, the default value is undefined
-      this._getDefaultValue = ({ prefill }) => prefill[this.path] || undefined;
+      this._getDefaultValue = ({ prefill }) => prefill[this.path] || defaultValue;
+    } else {
+      this._getDefaultValue = defaultValue;
     }
   }
 
@@ -97,7 +104,6 @@ export default class FieldController {
   hasChanged = (initialData, currentData) =>
     !isEqual(initialData[this.path], currentData[this.path]);
 
-  // eslint-disable-next-line no-unused-vars
   getDefaultValue = ({ originalInput = {}, prefill = {} } = {}) => {
     return this._getDefaultValue({ originalInput, prefill });
   };

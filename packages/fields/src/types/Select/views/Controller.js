@@ -1,8 +1,7 @@
 import FieldController from '../../../Controller';
 
 export default class SelectController extends FieldController {
-  constructor(config, ...args) {
-    const defaultValue = 'defaultValue' in config ? config.defaultValue : null;
+  constructor({ defaultValue = null, ...config }, ...args) {
     super({ ...config, defaultValue }, ...args);
     this.options = config.options;
     this.dataType = config.dataType;

@@ -33,9 +33,7 @@ const flattenBlocks = inputBlocks =>
   }, {});
 
 export default class ContentController extends Controller {
-  constructor(config, ...args) {
-    const defaultValue =
-      'defaultValue' in config ? config.defaultValue : Value.fromJSON(initialValue);
+  constructor({ defaultValue = Value.fromJSON(initialValue), ...config }, ...args) {
     super({ ...config, defaultValue }, ...args);
 
     // Attach this as a memoized member function to avoid two pitfalls;
