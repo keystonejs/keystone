@@ -38,6 +38,9 @@ export class DateTimeUtcImplementation extends Implementation {
 
 // All values must have an offset
 const toDate = str => {
+  if (str === null) {
+    return null;
+  }
   if (!str.match(/([zZ]|[\+\-][0-9]+(\:[0-9]+)?)$/)) {
     throw `Value supplied (${str}) is not a valid date time with offset.`;
   }
