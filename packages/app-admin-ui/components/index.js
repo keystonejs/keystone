@@ -1,5 +1,5 @@
 export { ListProvider, useList } from '../client/providers/List';
-export { default as ListData, List, ListLayout } from '../client/pages/List/index';
+export { default as ListPage, ListLayout } from '../client/pages/List/index';
 export { default as ListManage } from '../client/pages/List/Management';
 export { default as FieldSelect } from '../client/pages/List/FieldSelect';
 export { default as Search } from '../client/pages/List/Search';
@@ -12,6 +12,7 @@ export { default as DeleteManyItemsModal } from '../client/components/DeleteMany
 export { default as PageLoading } from '../client/components/PageLoading';
 export { default as ToastContainer } from '../client/components/ToastContainer';
 export { default as UpdateManyItemsModal } from '../client/components/UpdateManyItemsModal';
+export { default as KeystoneLogo } from '../client/components/KeystoneLogo';
 export { Popout } from '../client/components/Popout';
 export { useAdminMeta } from '../client/providers/AdminMeta';
 export { default as AddNewItem } from '../client/pages/Item/AddNewItem';

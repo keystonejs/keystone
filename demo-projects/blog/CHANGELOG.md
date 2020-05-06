@@ -1,5 +1,21 @@
 # keystone_demo_blog
 
+## 5.3.3
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a), [`5958d58a`](https://github.com/keystonejs/keystone/commit/5958d58abc98c4f1b9a28e4a5a5666b2f634a054)]:
+  - @keystonejs/app-admin-ui@5.11.1
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/typography@0.0.17
+  - @keystonejs/fields-markdown@5.1.9
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.5
+  - @keystonejs/fields@9.0.4
+  - @keystonejs/oembed-adapters@5.1.4
+  - @keystonejs/fields-authed-relationship@1.0.3
+
 ## 5.3.2
 
 ### Patch Changes

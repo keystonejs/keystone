@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Component, Fragment } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
@@ -49,69 +49,75 @@ const IconName = styled('div')`
   text-overflow: ellipsis;
 `;
 
-export default class IconsGuide extends Component {
-  state = { altIsDown: false, copyText: '' };
-  componentDidMount() {
-    document.body.addEventListener('keydown', this.handleKeyDown, false);
-    document.body.addEventListener('keyup', this.handleKeyUp, false);
-  }
-  componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.handleKeyDown);
-    document.body.removeEventListener('keyup', this.handleKeyUp);
-  }
-  handleKeyDown = e => {
-    if (e.key !== 'Alt') return;
-    this.setState({ altIsDown: true });
+const IconsGuide = () => {
+  const [altIsDown, setAltIsDown] = useState(false);
+  const [copyText, setCopyText] = useState('');
+
+  useEffect(() => {
+    const handleKeyDown = e => {
+      if (e.key === 'Alt') setAltIsDown(true);
+    };
+
+    const handleKeyUp = e => {
+      if (e.key === 'Alt') setAltIsDown(false);
+    };
+
+    document.body.addEventListener('keydown', handleKeyDown, false);
+    document.body.addEventListener('keyup', handleKeyUp, false);
+
+    return () => {
+      document.body.removeEventListener('keydown', handleKeyDown);
+      document.body.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (copyText !== '') {
+      setTimeout(() => setCopyText(''), 500);
+    }
+  }, [copyText]);
+
+  const handleCopy = text => () => {
+    setCopyText(text);
   };
-  handleKeyUp = e => {
-    if (e.key !== 'Alt') return;
-    this.setState({ altIsDown: false });
-  };
-  handleCopy = text => () => {
-    this.setState({ copyText: text }, () => {
-      setTimeout(() => {
-        this.setState({ copyText: '' });
-      }, 500);
-    });
-  };
-  render() {
-    const { altIsDown, copyText } = this.state;
-    return (
-      <Fragment>
-        {altIsDown ? (
-          <Instructions>Click an icon to copy its import code to your clipboard.</Instructions>
-        ) : (
-          <Instructions>
-            Click an icon to copy its name to your clipboard. Hold <Kbd>⌥ option</Kbd> to copy the
-            import code.
-          </Instructions>
-        )}
-        <Grid gap={16}>
-          {Object.keys(icons).map(name => {
-            const importText = altIsDown ? `import { ${name} } from '@arch-ui/icons';` : name;
-            const isCopied = copyText === importText;
-            const Icon = isCopied ? icons.CheckIcon : icons[name];
-            return (
-              <Cell width={2} key={name}>
-                <IconContainer
-                  onClick={() => {
-                    copyToClipboard(importText).then(this.handleCopy(importText));
+
+  return (
+    <Fragment>
+      {altIsDown ? (
+        <Instructions>Click an icon to copy its import code to your clipboard.</Instructions>
+      ) : (
+        <Instructions>
+          Click an icon to copy its name to your clipboard. Hold <Kbd>⌥ option</Kbd> to copy the
+          import code.
+        </Instructions>
+      )}
+      <Grid gap={16}>
+        {Object.keys(icons).map(name => {
+          const importText = altIsDown ? `import { ${name} } from '@arch-ui/icons';` : name;
+          const isCopied = copyText === importText;
+          const Icon = isCopied ? icons.CheckIcon : icons[name];
+          return (
+            <Cell width={2} key={name}>
+              <IconContainer
+                onClick={() => {
+                  copyToClipboard(importText).then(handleCopy(importText));
+                }}
+              >
+                <Icon
+                  css={{
+                    fill: isCopied ? `${colors.create} !important` : 'inherit',
+                    width: 24,
+                    height: 24,
                   }}
-                >
-                  <Icon
-                    css={{
-                      fill: isCopied ? `${colors.create} !important` : 'inherit',
-                      width: 24,
-                      height: 24,
-                    }}
-                  />
-                  <IconName className="icon-text">{isCopied ? 'Copied!' : name}</IconName>
-                </IconContainer>
-              </Cell>
-            );
-          })}
-        </Grid>
-      </Fragment>
-    );
-  }
-}
+                />
+                <IconName className="icon-text">{isCopied ? 'Copied!' : name}</IconName>
+              </IconContainer>
+            </Cell>
+          );
+        })}
+      </Grid>
+    </Fragment>
+  );
+};
+
+export default IconsGuide;

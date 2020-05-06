@@ -310,7 +310,7 @@ export default function ListTable(props) {
     linkField = '_label_',
   } = props;
 
-  const [sortBy, onSortChange] = useListSort(list.key);
+  const [sortBy, onSortChange] = useListSort();
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;
@@ -350,7 +350,7 @@ export default function ListTable(props) {
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                sortable={field.path !== '_label_' && field.config.isOrderable}
+                sortable={field.path !== '_label_' && field.isOrderable}
                 field={field}
                 handleSortChange={onSortChange}
                 active={sortBy ? sortBy.field.path === field.path : false}

@@ -1,5 +1,11 @@
 # @keystonejs/file-adapters
 
+## 6.0.2
+
+### Patch Changes
+
+- [`04ec9981`](https://github.com/keystonejs/keystone/commit/04ec998166a8b3044570769a8c3f501d80527bf9) [#2843](https://github.com/keystonejs/keystone/pull/2843) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated cloudinary dependency to 1.21.0.
+
 ## 6.0.1
 
 ### Patch Changes

@@ -1,5 +1,36 @@
 # @keystonejs/keystone
 
+## 8.1.4
+
+### Patch Changes
+
+- [`8a135a88`](https://github.com/keystonejs/keystone/commit/8a135a88ae6f3a4434db0ba7033cad2e5f18651e) [#2808](https://github.com/keystonejs/keystone/pull/2808) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed list-level `adminDoc` not doing anything.
+
+- Updated dependencies [[`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2), [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b), [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0)]:
+  - @keystonejs/fields@9.0.5
+
+## 8.1.3
+
+### Patch Changes
+
+- [`830ed52a`](https://github.com/keystonejs/keystone/commit/830ed52a389c29107089a6a2cf8bb29f2d06750c) [#2814](https://github.com/keystonejs/keystone/pull/2814) Thanks [@timleslie](https://github.com/timleslie)! - The `authenticateMutation` resolver now passes the `context` object through to the `authStrategy.validate` method.
+
+## 8.1.2
+
+### Patch Changes
+
+- [`6a27fcf1`](https://github.com/keystonejs/keystone/commit/6a27fcf1896c5a745308346e5b0e66dd8bdd57a3) [#2749](https://github.com/keystonejs/keystone/pull/2749) Thanks [@jesstelford](https://github.com/jesstelford)! - More resilient mongo migration output for Keystone Arcade in the upgrade-relationships command.
+
+* [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0) [#2314](https://github.com/keystonejs/keystone/pull/2314) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Made all values in `adminConfig` list options available to `admin-ui` as part of list's `adminMeta`.
+
+  - Added `adminConfig` option to all Fields which are made available to field's `adminMeta` in `admin-ui`.
+  - Added `adminMeta` option in `AdminUIApp` constructor which is also made available to `adminMeta` of `admin-ui`.
+
+  All the improvements are useful in `admin-ui` customizations like UI Hooks or custom Field Views.
+
+* Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0)]:
+  - @keystonejs/fields@9.0.2
+
 ## 8.1.1
 
 ### Patch Changes
