@@ -10,11 +10,11 @@ describe('Nav Bar', () => {
     { text: 'Posts', target: '/admin/posts' },
     { text: 'Post Categories', target: '/admin/post-categories' },
     {
-      text: 'GitHub',
+      text: 'Keystone on GitHub',
       target: 'https://github.com/keystonejs/keystone',
       newTab: true,
     },
-    { text: 'Graphiql', target: '/admin/graphiql', newTab: true },
+    { text: 'GraphQL Playground', target: '/admin/graphiql', newTab: true },
   ].forEach(({ text, target, newTab = false }) => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
       cy.visit('/admin');
