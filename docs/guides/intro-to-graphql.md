@@ -241,7 +241,7 @@ query {
 }
 ```
 
-> **Note**: The documentation in the GraphQL Playground provides a complete reference of filters for any field type in your application.
+> **Note:** The documentation in the GraphQL Playground provides a complete reference of filters for any field type in your application.
 
 #### Relationship `where` filters
 

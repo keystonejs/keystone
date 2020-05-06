@@ -10,7 +10,17 @@ Yes, Keystone can be (and is!) used for production websites. Here's a handy list
 
 ## Secure cookies
 
-In production builds, [Keystone's `secureCookies`](/packages/keystone/README.md#config) defaults to true. Make sure your server is HTTPS-enabled when `secureCookies` is enabled or you will be unable to log in.
+In production builds, [Keystone's `cookie` object](/packages/keystone/README.md#config) defaults to
+
+```js
+cookie = {
+  secure: process.env.NODE_ENV === 'production', // Defaults to true in production
+  maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+  sameSite: false,
+};
+```
+
+Make sure your server is HTTPS-enabled when `secure` is enabled or you will be unable to log in.
 
 ## Session handling
 
@@ -47,7 +57,15 @@ Add [query limits](/docs/api/create-list.md#querylimits) and [validation](/docs/
 
 ## Using reverse proxies
 
-It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)).
+It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)). The express application variable [`trust proxy`](https://expressjs.com/en/guide/behind-proxies.html) must be set to support reverse proxying:
+
+```javascript title=index.js
+module.exports = {
+  configureExpress: app => {
+    app.set('trust proxy', true);
+  },
+};
+```
 
 ## Environment variables
 

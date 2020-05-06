@@ -19,6 +19,9 @@ class ListAuthProvider {
       authenticateOutputName: `authenticate${itemQueryName}Output`,
       unauthenticateOutputName: `unauthenticate${itemQueryName}Output`,
     };
+
+    // Record GQL names in the strategy
+    authStrategy.gqlNames = this.gqlNames;
   }
 
   getTypes({ schemaName }) {
@@ -110,7 +113,7 @@ class ListAuthProvider {
     this.checkAccess(context, 'mutation', { gqlName });
 
     // Verify incoming details
-    const { item, success, message } = await this.authStrategy.validate(args);
+    const { item, success, message } = await this.authStrategy.validate(args, context);
     if (!success) {
       throw new Error(message);
     }

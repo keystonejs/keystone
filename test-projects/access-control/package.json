@@ -2,7 +2,7 @@
   "name": "@keystonejs/cypress-project-access-control",
   "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
-  "version": "5.1.6",
+  "version": "5.1.7",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -19,17 +19,17 @@
   },
   "dependencies": {
     "@keystonejs/adapter-mongoose": "^8.0.0",
-    "@keystonejs/app-admin-ui": "^5.9.5",
+    "@keystonejs/app-admin-ui": "^5.9.6",
     "@keystonejs/app-graphql": "^5.1.5",
-    "@keystonejs/auth-password": "^5.1.5",
-    "@keystonejs/fields": "^9.0.0",
+    "@keystonejs/auth-password": "^5.1.6",
+    "@keystonejs/fields": "^9.0.1",
     "@keystonejs/keystone": "^8.0.0",
     "@keystonejs/utils": "^5.4.0",
     "cross-env": "^7.0.0",
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "cypress": "^3.5.0",
+    "cypress": "^4.4.0",
     "cypress-file-upload": "^3.4.0",
     "cypress-multi-reporters": "^1.2.3",
     "dotenv-safe": "^8.1.0",

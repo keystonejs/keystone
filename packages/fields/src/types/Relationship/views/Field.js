@@ -56,12 +56,12 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 }
 
 function LinkToRelatedItems({ field, value }) {
-  const { many, ref } = field.config;
-  const { adminPath, getListByKey } = field.adminMeta;
-  const refList = getListByKey(ref);
+  const { many } = field.config;
+  const { adminPath } = field.adminMeta;
+  const { path } = field.getRefList();
   let isDisabled = false;
   let label;
-  let link = `${adminPath}/${refList.path}`;
+  let link = `${adminPath}/${path}`;
   if (many) {
     label = 'View List of Related Items';
 
@@ -106,7 +106,7 @@ function LinkToRelatedItems({ field, value }) {
 function CreateAndAddItem({ field, item, onCreate, CreateItemModal }) {
   const { list, openCreateItemModal } = useList();
 
-  let relatedList = field.adminMeta.getListByKey(field.config.ref);
+  let relatedList = field.getRefList();
   let label = `Create and add ${relatedList.singular}`;
 
   let prefillData;
@@ -182,12 +182,12 @@ const RelationshipField = ({
   const { authStrategy } = field.adminMeta;
   const htmlID = `ks-input-${field.path}`;
 
-  const relatedList = field.adminMeta.getListByKey(field.config.ref);
+  const relatedList = field.getRefList();
 
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         <div css={{ flex: 1 }}>
           <RelationshipSelect

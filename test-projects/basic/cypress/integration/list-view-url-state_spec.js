@@ -18,6 +18,8 @@ describe('List view URL state', () => {
       .click({ force: true });
     cy.location('search').should('eq', '?currentPage=2');
 
+    cy.wait(500);
+
     // expand all pages first
     cy.get('#ks-pagination-show-pages').click({ force: true });
 

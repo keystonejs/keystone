@@ -98,10 +98,12 @@ A default administrator is created the first time the app is started, or if the 
 
 The Heroku app start log can be reached by pressing [More] and View logs.
 
-    2020-03-25T07:19:04.841481+00:00 app[web.1]: User created:
-    2020-03-25T07:19:04.841483+00:00 app[web.1]:   email: admin@example.com
-    2020-03-25T07:19:04.841483+00:00 app[web.1]:   password: a04ecbcb963d
-    2020-03-25T07:19:04.841483+00:00 app[web.1]: Please change these details after initial login.
+```
+2020-03-25T07:19:04.841481+00:00 app[web.1]: User created:
+2020-03-25T07:19:04.841483+00:00 app[web.1]:   email: admin@example.com
+2020-03-25T07:19:04.841483+00:00 app[web.1]:   password: a04ecbcb963d
+2020-03-25T07:19:04.841483+00:00 app[web.1]: Please change these details after initial login.
+```
 
 #### Use secure cookies
 
@@ -110,7 +112,9 @@ To use secure cookies we need to add below to index.js.
 ```js
 const keystone = new Keystone({
   ...
-  secureCookies: true,
+  cookie: {
+    secure: true,
+  },
   cookieSecret: 'very-secret'
 });
 

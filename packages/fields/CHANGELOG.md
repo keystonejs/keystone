@@ -1,5 +1,109 @@
 # @keystonejs/fields
 
+## 9.0.5
+
+### Patch Changes
+
+- [`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2) [#2844](https://github.com/keystonejs/keystone/pull/2844) Thanks [@timleslie](https://github.com/timleslie)! - Fixed broken link in docs.
+
+* [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b) [#2854](https://github.com/keystonejs/keystone/pull/2854) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded dependencies.
+
+- [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0) [#2636](https://github.com/keystonejs/keystone/pull/2636) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added documentation about using blocks in the content field.
+
+- Updated dependencies [[`ab484f19`](https://github.com/keystonejs/keystone/commit/ab484f195752bb3ec59f6beb7d8817dce610ad06), [`1b059e72`](https://github.com/keystonejs/keystone/commit/1b059e726d95bbc6ad09a76ed3b40dbc4cf11682), [`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d), [`4af9e407`](https://github.com/keystonejs/keystone/commit/4af9e4075c9329ab27e7aa18a664d2f2bcc1ac2d), [`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2), [`0aac3b41`](https://github.com/keystonejs/keystone/commit/0aac3b411a9e4f397645d9641c4675eab7a6e55b), [`b0bfcf79`](https://github.com/keystonejs/keystone/commit/b0bfcf79477249f3c0bb14db68588d84a68f0186), [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0), [`8a135a88`](https://github.com/keystonejs/keystone/commit/8a135a88ae6f3a4434db0ba7033cad2e5f18651e), [`63a2f7c3`](https://github.com/keystonejs/keystone/commit/63a2f7c31777d968bad32d6e746e2f960c6ef0ad), [`3d40bd7d`](https://github.com/keystonejs/keystone/commit/3d40bd7dd39f2b5589012356dd2b1698eda4f0b2), [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca), [`81a9aa7c`](https://github.com/keystonejs/keystone/commit/81a9aa7c2349f9bb71d1a9686e4fa359a14b033f)]:
+  - @keystonejs/app-admin-ui@5.12.0
+  - @keystonejs/field-content@5.4.8
+  - @keystonejs/test-utils@6.1.1
+  - @keystonejs/build-field-types@5.2.6
+
+## 9.0.4
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/app-admin-ui@5.11.1
+  - @arch-ui/alert@0.0.17
+  - @arch-ui/button@0.0.18
+  - @arch-ui/controls@0.1.8
+  - @arch-ui/day-picker@0.0.25
+  - @arch-ui/drawer@0.0.21
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/filters@0.0.19
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+  - @arch-ui/lozenge@0.0.16
+  - @arch-ui/options@0.0.20
+  - @arch-ui/popout@0.0.18
+  - @arch-ui/select@0.1.8
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+  - @keystonejs/build-field-types@5.2.5
+  - @keystonejs/field-content@5.4.7
+
+## 9.0.3
+
+### Patch Changes
+
+- [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621) [#2786](https://github.com/keystonejs/keystone/pull/2786) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to react-popper 2.2.2.
+
+* [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c) [#2783](https://github.com/keystonejs/keystone/pull/2783) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Changed the name of variables in several field types. No functional change.
+
+- [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64) [#2772](https://github.com/keystonejs/keystone/pull/2772) Thanks [@Abogical](https://github.com/Abogical)! - Changed test-utils to a development dependency.
+
+* [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa) [#2730](https://github.com/keystonejs/keystone/pull/2730) Thanks [@Vultraz](https://github.com/Vultraz)! - Made HiddenInput component actually hidden.
+
+* Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`e7afc083`](https://github.com/keystonejs/keystone/commit/e7afc08338cc04bfc8b6eec1a21f777f81f4d6c8), [`501fd3e4`](https://github.com/keystonejs/keystone/commit/501fd3e4a06cfeba0f96a76ff8763d3be577af6e), [`b14c07a1`](https://github.com/keystonejs/keystone/commit/b14c07a154ae1cb92e7cbc87484d99419f92d649), [`875aa0ed`](https://github.com/keystonejs/keystone/commit/875aa0ed787d901061aa0409160a360546014df3), [`16f6c300`](https://github.com/keystonejs/keystone/commit/16f6c3003d1decbb77474455ef608e3efd41ec4b), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @keystonejs/field-content@5.4.6
+  - @keystonejs/app-admin-ui@5.11.0
+  - @keystonejs/adapter-knex@9.0.3
+  - @keystonejs/adapter-mongoose@8.0.2
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+  - @arch-ui/day-picker@0.0.24
+  - @arch-ui/options@0.0.19
+
+## 9.0.2
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
+* [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0) [#2314](https://github.com/keystonejs/keystone/pull/2314) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Made all values in `adminConfig` list options available to `admin-ui` as part of list's `adminMeta`.
+
+  - Added `adminConfig` option to all Fields which are made available to field's `adminMeta` in `admin-ui`.
+  - Added `adminMeta` option in `AdminUIApp` constructor which is also made available to `adminMeta` of `admin-ui`.
+
+  All the improvements are useful in `admin-ui` customizations like UI Hooks or custom Field Views.
+
+* Updated dependencies [[`62f09391`](https://github.com/keystonejs/keystone/commit/62f093911879ca6b57ec0a06ce646e2296593c9a), [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`344c45ef`](https://github.com/keystonejs/keystone/commit/344c45efbb96a90010f81e4c8447a9c5728ea87f), [`81822d67`](https://github.com/keystonejs/keystone/commit/81822d67822bdc77b360b709f2e824cc43d88f15), [`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f), [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0), [`57e6ce29`](https://github.com/keystonejs/keystone/commit/57e6ce293e5afd0add52728aa73c74e90fcbe0f7)]:
+  - @keystonejs/test-utils@6.1.0
+  - @keystonejs/app-admin-ui@5.10.0
+  - @arch-ui/options@0.0.18
+  - @arch-ui/select@0.1.7
+  - @arch-ui/controls@0.1.7
+  - @keystonejs/adapter-knex@9.0.2
+  - @arch-ui/layout@0.2.12
+
+## 9.0.1
+
+### Patch Changes
+
+- [`c013d8bc`](https://github.com/keystonejs/keystone/commit/c013d8bc1113b2a31ededc3918ab98c2c99f25f4) [#2425](https://github.com/keystonejs/keystone/pull/2425) Thanks [@Vultraz](https://github.com/Vultraz)! - The `password_is_set` flag is now used to display "Update password" or "Set password" in the Admin UI for `Password` fields.
+
+* [`93ae77ef`](https://github.com/keystonejs/keystone/commit/93ae77efe71151279a15ddb7ddc3df60651022b4) [#2701](https://github.com/keystonejs/keystone/pull/2701) Thanks [@BasitAli](https://github.com/BasitAli)! - Fixed "Is exactly" filter on `Text` fields.
+
+- [`eb90aea6`](https://github.com/keystonejs/keystone/commit/eb90aea6b33dda8d95baba818306328dd747247f) [#2726](https://github.com/keystonejs/keystone/pull/2726) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved Checkbox field filter interface.
+
+- Updated dependencies [[`3193f4a5`](https://github.com/keystonejs/keystone/commit/3193f4a56c6391d07e8c04913a667940ef7b8815), [`390a7fc3`](https://github.com/keystonejs/keystone/commit/390a7fc3b20169c628dd7aa2e2a4d72b678a345f)]:
+  - @keystonejs/app-admin-ui@5.9.6
+  - @arch-ui/day-picker@0.0.23
+
 ## 9.0.0
 
 ### Major Changes

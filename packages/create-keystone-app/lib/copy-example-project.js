@@ -8,7 +8,7 @@ const createNewProjectFolder = newProjectFolder => {
   fs.mkdirpSync(newProjectFolder);
   const readDir = fs.readdirSync(newProjectFolder);
   if (readDir && readDir.length > 0) {
-    error(`The project directory ${newProjectFolder} is not empty`);
+    error(`The project directory "./${newProjectFolder}" is not empty`);
     process.exit(0);
   }
 };
@@ -17,7 +17,7 @@ const copyExampleProject = async () => {
   const args = getArgs();
   if (args['--dry-run']) {
     tick('Skipping copy project files');
-    return true;
+    return;
   }
 
   const exampleProject = await getExampleProject();

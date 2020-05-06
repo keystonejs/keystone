@@ -1,14 +1,20 @@
+const slugify = require('@sindresorhus/slugify');
+
 const adapters = {
-  Mongoose: {
+  MongoDB: {
+    name: 'MongoDB',
     file: 'adapter-mongoose.js',
     dependencies: ['@keystonejs/adapter-mongoose'],
-    description: 'Connect to a Mongo database.',
+    description: 'Connect to a MongoDB database.',
+    defaultConfig: name => `mongodb://localhost/${slugify(name)}`,
   },
-  Knex: {
+  PostgreSQL: {
+    name: 'PostgreSQL',
     file: 'adapter-knex.js',
     dependencies: ['@keystonejs/adapter-knex'],
-    description: 'Connect to a Postgres database.',
+    description: 'Connect to a PostgreSQL database.',
     removeDependencies: ['@keystonejs/adapter-mongoose'],
+    defaultConfig: name => `postgres://localhost/${slugify(name, { separator: '_' })}`,
   },
 };
 

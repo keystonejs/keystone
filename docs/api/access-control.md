@@ -8,7 +8,7 @@ order: 4
 
 Control who can do what with your GraphQL API.
 
-> **Hint:** This is the API documentation for access control. For getting started, see the [Access control guide](/docs/guides/access-control.md) or the [Authentication Guide](/docs/guides/authentication.md).
+> **Note:** This is the API documentation for access control. For getting started, see the [Access control guide](/docs/guides/access-control.md) or the [Authentication Guide](/docs/guides/authentication.md).
 
 There are three domains of access control:
 

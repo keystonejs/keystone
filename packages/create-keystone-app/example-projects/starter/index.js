@@ -8,12 +8,13 @@ const initialiseData = require('./initial-data');
 /* keystone-cli: generated-code */
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const PROJECT_NAME = 'My KeystoneJS Project';
+const adapterConfig = {};
 /* /keystone-cli: generated-code */
 
 const keystone = new Keystone({
   name: PROJECT_NAME,
-  adapter: new Adapter(),
-  onConnect: initialiseData,
+  adapter: new Adapter(adapterConfig),
+  onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
 });
 
 // Access control functions
@@ -22,6 +23,9 @@ const userOwnsItem = ({ authentication: { item: user } }) => {
   if (!user) {
     return false;
   }
+
+  // Instead of a boolean, you can return a GraphQL query:
+  // https://www.keystonejs.com/api/access-control#graphqlwhere
   return { id: user.id };
 };
 

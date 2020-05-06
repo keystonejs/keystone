@@ -9,7 +9,7 @@ Keystone allows you to model your data as a collection of related `Lists`.
 For example, a blogging application might have lists called `Post` and `User`, where each post has a single author.
 This would be represented in Keystone by a relationship between the `Post` and `User` lists.
 
-## Defining a Relationship
+## Defining a relationship
 
 Relationships are implemented using the `Relationship` field type and defined along with other fields in `createLists`.
 For our blog example, we could define:
@@ -38,12 +38,12 @@ If we wanted to allow a post to have multiple authors we could change our defini
 We have used `many: true` to indicate that the post relates to multiple `Users`, who are the `authors` of that post.
 The default configuration is `many: false`, which indicates that each post is related to exactly one user.
 
-### One sided vs Two sided
+### One-sided vs two-sided
 
 In our example we know the authors of each post.
 We can access this information from our GraphQL API by querying for the `authors` field of a post.
 
-```graphQL
+```graphql
 Query {
   allPosts {
     title
@@ -83,7 +83,7 @@ This type of configuration is called a _two-sided_ relationship, while the origi
 
 We can now write the following query to find all the posts written by each user:
 
-```graphQL
+```graphql
 Query {
   allUsers {
     name
@@ -101,7 +101,7 @@ There are some important things to remember when defining a two-sided relationsh
 - The `ref` config must be formatted as `<listName>.<fieldName>` and both sides must refer to each other.
 - Both fields are sharing the same data. If you change the author of a post, that post will no longer show up in the original author's `posts`.
 
-## Self referential lists
+## Self-referential lists
 
 In the above examples we defined relationships between two different lists, `Users` and `Posts`.
 It is also possible to define relationships which refer to the same list.
@@ -135,15 +135,15 @@ The only relationship configuration not currently supported is having a field re
 
 The _cardinality_ of a relationship is the number items which can exist on either side of the relationship.
 In general, each side can have either `one` or `many` related items.
-Since each relationship has two sides this means we can have `one to one`, `one to many` and `many to many` relationships.
+Since each relationship has two sides this means we can have `one-to-one`, `one-to-many` and `many-to-many` relationships.
 
 The cardinality of your relationship is controlled by the use of the `many` config option.
 In two-sided relationships the `many` option on both sides must be considered.
 The follow examples will demonstrate how to set up each type of cardinality in the context of our blog.
 
-### One Sided
+### One-sided
 
-#### One to many
+#### One-to-many
 
 Each post has a single author, and each user can have multiple posts, however we cannot directly access a users' posts.
 
@@ -163,7 +163,7 @@ keystone.createList('Post', {
 });
 ```
 
-#### Many to many
+#### Many-to-many
 
 Each post has multiple authors, and each user can have multiple posts, however we cannot directly access a users' posts.
 
@@ -183,9 +183,9 @@ keystone.createList('Post', {
 });
 ```
 
-### Two Sided
+### Twos-sided
 
-#### One to one
+#### One-to-one
 
 Each post has a single author, and each user is only allowed to write one post.
 
@@ -206,7 +206,7 @@ keystone.createList('Post', {
 });
 ```
 
-#### One to many
+#### One-to-many
 
 Each post has a single author, and each user can have multiple posts.
 
@@ -227,7 +227,7 @@ keystone.createList('Post', {
 });
 ```
 
-#### Many to many
+#### Many-to-many
 
 Each post can have multiple authors, and each user can have multiple posts.
 

@@ -1,9 +1,9 @@
 <!--[meta]
 section: guides
-title: Configuring Relationships
+title: Configuring relationships
 [meta]-->
 
-# Configuring Relationships
+# Configuring relationships
 
 Keystone allows you to model your data by declaring [relationships](/docs/discussions/relationships.md) between lists.
 There are a number of different ways you can configure relationships, depending on how you want to model your data and how you need to access it from the graphQL API.
@@ -41,7 +41,7 @@ keystone.createList('Post', {
 In the `author` field we have specified `ref: 'User'` to indicate that this field relates to an item in the `User` list.
 We can now write the following query to find the author for each post:
 
-```graphQL
+```graphql
 Query {
   allPosts {
     title
@@ -77,7 +77,7 @@ keystone.createList('Post', {
 In this case we have a `Relationship` field on both lists, and they both have a `ref` config in the form `<listName>.<fieldName>`.
 These `Relationship` fields represent the two sides of the relationship, and we can now use the following graphQL query as well:
 
-```graphQL
+```graphql
 Query {
   allUsers {
     name
@@ -97,11 +97,11 @@ In our blog do we want each post to have exactly one author, or can it have mult
 Are users allowed to write more than one post or do we want to restrict them to exactly one post each for some reason?
 The answers to these questions will give us the cardinality of our relationship.
 
-There are three types of cardinality, `one to many`, `many to many`, and `one to one`, and they can be configured using the `many` config option.
+There are three types of cardinality, `one-to-many`, `many-to-many`, and `one-to-one`, and they can be configured using the `many` config option.
 
-### One to many
+### One-to-many
 
-If we want a blog where each post can have **one** author, and each user can be the author of **many** posts, then we have a `one to many` relationship.
+If we want a blog where each post can have **one** author, and each user can be the author of **many** posts, then we have a `one-to-many` relationship.
 We can configure a one-sided version of this:
 
 ```javascript
@@ -137,9 +137,9 @@ keystone.createList('Post', {
 
 Note that we have used `many: false` in the `author` field and `many: true` in the `posts` field.
 
-### Many to many
+### Many-to-many
 
-If we want a blog where each post can have **many** authors, and each user can be the author of **many** posts, then we have a `many to many` relationship.
+If we want a blog where each post can have **many** authors, and each user can be the author of **many** posts, then we have a `many-to-many` relationship.
 We can configure a one-sided version of this:
 
 ```javascript
@@ -175,9 +175,9 @@ keystone.createList('Post', {
 
 Note that we have used `many: true` in both the `authors` and `posts` fields.
 
-### One to one
+### One-to-one
 
-If we want a blog where each post has exactly **one** author, and each user is restricted to writing exactly **one** post, then we have a `one to one` relationship.
+If we want a blog where each post has exactly **one** author, and each user is restricted to writing exactly **one** post, then we have a `one-to-one` relationship.
 In this case we can only specify this with a two-sided relationship:
 
 ```javascript

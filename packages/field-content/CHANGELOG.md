@@ -1,5 +1,48 @@
 # @keystonejs/field-content
 
+## 5.4.8
+
+### Patch Changes
+
+- [`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2) [#2844](https://github.com/keystonejs/keystone/pull/2844) Thanks [@timleslie](https://github.com/timleslie)! - Fixed broken link in docs.
+
+* [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0) [#2636](https://github.com/keystonejs/keystone/pull/2636) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added documentation about using blocks in the content field.
+
+- [`81a9aa7c`](https://github.com/keystonejs/keystone/commit/81a9aa7c2349f9bb71d1a9686e4fa359a14b033f) [#2856](https://github.com/keystonejs/keystone/pull/2856) Thanks [@timleslie](https://github.com/timleslie)! - Added missing peer dependencies.
+
+- Updated dependencies [[`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2), [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b), [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0), [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca)]:
+  - @keystonejs/fields@9.0.5
+  - @keystonejs/build-field-types@5.2.6
+
+## 5.4.7
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/hooks@0.0.10
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+  - @keystonejs/build-field-types@5.2.5
+  - @keystonejs/fields@9.0.4
+
+## 5.4.6
+
+### Patch Changes
+
+- [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621) [#2786](https://github.com/keystonejs/keystone/pull/2786) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to react-popper 2.2.2.
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c), [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @keystonejs/fields@9.0.3
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+
 ## 5.4.5
 
 ### Patch Changes

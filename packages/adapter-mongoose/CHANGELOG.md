@@ -1,5 +1,14 @@
 # @keystonejs/adapter-mongoose
 
+## 8.0.2
+
+### Patch Changes
+
+- [`875aa0ed`](https://github.com/keystonejs/keystone/commit/875aa0ed787d901061aa0409160a360546014df3) [#2796](https://github.com/keystonejs/keystone/pull/2796) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug with updating one-to-one relationship values.
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c)]:
+  - @keystonejs/fields-mongoid@5.1.7
+
 ## 8.0.1
 
 ### Patch Changes
