@@ -346,7 +346,6 @@ module.exports = class List {
       fields: this.fields
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
-      views: this.views,
       adminDoc: this.adminDoc,
       adminConfig: {
         defaultPageSize,
@@ -362,6 +361,11 @@ module.exports = class List {
     return this.fields
       .filter(({ path }) => path !== 'id') // Exclude the id fields update types
       .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
+  }
+
+  /** Equivalent to getFieldsWithAccess but includes `id` fields. */
+  getAllFieldsWithAccess({ schemaName, access }) {
+    return this.fields.filter(field => field.access[schemaName][access]);
   }
 
   getGqlTypes({ schemaName }) {
@@ -642,9 +646,9 @@ module.exports = class List {
     return mutations;
   }
 
-  async checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
+  async checkFieldAccess(operation, itemsToUpdate, context, { gqlName, ...extraInternalData }) {
     const restrictedFields = [];
-    for (const { existingItem, data } of itemsToUpdate) {
+    for (const { existingItem, id, data } of itemsToUpdate) {
       const fields = this.fields.filter(field => field.path in data);
 
       for (const field of fields) {
@@ -653,7 +657,8 @@ module.exports = class List {
           field.path,
           data,
           existingItem,
-          operation
+          operation,
+          { gqlName, itemId: id, ...extraInternalData }
         );
         if (!access) {
           restrictedFields.push(field.path);
@@ -661,7 +666,9 @@ module.exports = class List {
       }
     }
     if (restrictedFields.length) {
-      throwAccessDenied(opToType[operation], context, gqlName, extraData, { restrictedFields });
+      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData, {
+        restrictedFields,
+      });
     }
   }
 
@@ -828,12 +835,14 @@ module.exports = class List {
       getCount: async () => {
         const access = await this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), {
+        const { count } = await this._itemsQuery(mergeWhereClause(args, access), {
           meta: true,
           context,
           info,
           from,
-        }).then(({ count }) => count);
+        });
+
+        return count;
       },
     };
   }
@@ -1384,9 +1393,9 @@ module.exports = class List {
   async updateMutation(id, data, context, mutationState) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
-    const extraData = { itemId: id };
+    const extraData = { gqlName, itemId: id };
 
-    const access = await this.checkListAccess(context, data, operation, { gqlName, ...extraData });
+    const access = await this.checkListAccess(context, data, operation, extraData);
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1396,7 +1405,7 @@ module.exports = class List {
 
     const itemsToUpdate = [{ existingItem, data }];
 
-    await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+    await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return await this._updateSingle(id, data, existingItem, context, mutationState);
   }
@@ -1405,20 +1414,20 @@ module.exports = class List {
     const operation = 'update';
     const gqlName = this.gqlNames.updateManyMutationName;
     const ids = data.map(d => d.id);
-    const extraData = { itemId: ids };
+    const extraData = { gqlName, itemIds: ids };
 
-    const access = await this.checkListAccess(context, data, operation, { gqlName, ...extraData });
+    const access = await this.checkListAccess(context, data, operation, extraData);
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
     const itemsToUpdate = zipObj({
       existingItem: existingItems,
-      id: ids,
+      id: ids, // itemId is taken from here in checkFieldAccess
       data: data.map(d => d.data),
     });
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations
-    await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+    await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return Promise.all(
       itemsToUpdate.map(({ existingItem, id, data }) =>

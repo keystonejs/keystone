@@ -40,13 +40,15 @@ const SignOutPageButton = styled(Button)`
 
 const SignedOutPage = () => {
   const {
-    authStrategy: { listKey },
+    authStrategy: {
+      gqlNames: { unauthenticateMutationName },
+    },
     signinPath,
   } = useAdminMeta();
 
   const UNAUTH_MUTATION = gql`
     mutation {
-      unauthenticate: unauthenticate${listKey} {
+      unauthenticate: ${unauthenticateMutationName} {
         success
       }
     }

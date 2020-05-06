@@ -65,7 +65,7 @@ const PasswordField = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.config.adminDoc} />
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         {isEditing ? (
           <FlexGroup growIndexes={[0, 1]}>

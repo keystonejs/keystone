@@ -1,51 +1,46 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import FocusTrap from 'focus-trap-react';
 import { withModalHandlers, springDown } from '@arch-ui/modal-utils';
+import { usePopper } from 'react-popper';
 
 const ARROW_WIDTH = 30;
-const CHROME_GUTTER = 30;
 
-const Wrapper = forwardRef(({ left, top, width, ...props }, ref) => {
-  const placementStyles = { left, top, width };
-
-  return (
-    <div
-      ref={ref}
-      css={{
-        backgroundColor: 'white',
-        borderRadius: borderRadius * 2,
-        boxShadow: shadows[2],
-        marginTop: gridSize * 2,
-        maxHeight: '100%',
-        position: 'absolute',
-        zIndex: 2,
-        ...placementStyles,
-      }}
-      {...props}
-    />
-  );
-});
+const Wrapper = forwardRef(({ left, top, width, ...props }, ref) => (
+  <div
+    ref={ref}
+    css={{
+      backgroundColor: 'white',
+      borderRadius: borderRadius * 2,
+      boxShadow: shadows[2],
+      marginTop: gridSize * 2,
+      maxHeight: '100%',
+      zIndex: 200,
+      width,
+    }}
+    {...props}
+  />
+));
 
 const WrapperInner = forwardRef((props, ref) => (
   <div ref={ref} css={{ position: 'relative' }} {...props} />
 ));
 
-const Arrow = ({ left }) => (
+const Arrow = forwardRef(({ style }, ref) => (
   <div
+    ref={ref}
     css={{
       height: ARROW_WIDTH,
-      left: left,
-      marginLeft: -ARROW_WIDTH / 2,
-      marginTop: -11,
+      marginTop: '-11px',
       position: 'absolute',
       width: ARROW_WIDTH,
     }}
+    style={style}
   >
     <svg
       viewBox="0 0 30 30"
@@ -63,88 +58,35 @@ const Arrow = ({ left }) => (
       />
     </svg>
   </div>
-);
+));
 
-class Popout extends Component {
-  state = { leftOffset: 0, topOffset: 0, arrowLeftOffset: '0' };
-  static defaultProps = {
-    width: 320,
-  };
+const Popout = ({ children, targetNode, contentNode, getModalRef, style, width = 320 }) => {
+  const [arrowElement, setArrowElement] = useState(null);
 
-  componentDidMount() {
-    window.addEventListener('resize', this.calculatePosition);
-    this.calculatePosition();
-  }
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.calculatePosition);
-  }
+  const { styles } = usePopper(targetNode, contentNode, {
+    placement: 'bottom',
+    modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
+  });
 
-  calculatePosition = () => {
-    const { targetNode, width } = this.props;
-
-    if (!targetNode || !document.body) return;
-
-    // prepare common values
-    const bodyRect = document.body.getBoundingClientRect();
-    const targetRect = targetNode.getBoundingClientRect();
-
-    const targetCenter = targetRect.left + targetRect.width / 2;
-    let leftOffset = Math.max(targetCenter - width / 2, CHROME_GUTTER);
-    let topOffset = targetRect.bottom - bodyRect.top;
-    let isAlignedRight = false;
-
-    // handle right aligned
-    const spaceOnRight = window.innerWidth - (leftOffset + width + CHROME_GUTTER);
-    if (spaceOnRight < 0) {
-      leftOffset = leftOffset + spaceOnRight;
-      isAlignedRight = true;
-    }
-
-    // get arrow offset
-    let arrowLeftOffset = '50%';
-    if (leftOffset === CHROME_GUTTER) {
-      arrowLeftOffset = `${targetCenter - ARROW_WIDTH / 2 - CHROME_GUTTER}px`;
-    }
-    if (isAlignedRight) {
-      arrowLeftOffset = `${targetCenter - leftOffset}px`;
-    }
-
-    // avoid state thrashing
-    const newStateAvaliable =
-      this.state.leftOffset !== leftOffset ||
-      this.state.topOffset !== topOffset ||
-      this.state.arrowLeftOffset !== arrowLeftOffset;
-
-    if (newStateAvaliable) {
-      this.setState({ leftOffset, topOffset, arrowLeftOffset });
-    }
-  };
-
-  render() {
-    const { children, getModalRef, style, width } = this.props;
-    let { leftOffset, topOffset, arrowLeftOffset } = this.state;
-    const attachTo = typeof document !== 'undefined' ? document.body : null;
-
-    return attachTo
-      ? createPortal(
+  const attachTo = typeof document !== 'undefined' ? document.body : null;
+  return attachTo
+    ? createPortal(
+        <div ref={getModalRef} style={{ ...styles.popper, zIndex: 2 }}>
           <Wrapper
-            ref={getModalRef}
-            left={leftOffset}
-            top={topOffset}
             width={width}
             style={style} // style comes from Transition
           >
             <FocusTrap focusTrapOptions={{ clickOutsideDeactivates: true }}>
               <WrapperInner>
-                <Arrow left={arrowLeftOffset} />
+                <Arrow ref={setArrowElement} style={styles.arrow} />
                 {children}
               </WrapperInner>
             </FocusTrap>
-          </Wrapper>,
-          attachTo
-        )
-      : null;
-  }
-}
+          </Wrapper>
+        </div>,
+        attachTo
+      )
+    : null;
+};
 
 export default withModalHandlers(Popout, { transition: springDown });

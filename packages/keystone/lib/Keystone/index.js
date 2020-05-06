@@ -467,27 +467,20 @@ module.exports = class Keystone {
   /**
    * @return Promise<null>
    */
-  connect() {
+  async connect() {
     const { adapters, name } = this;
     const rels = this._consolidateRelationships();
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels }))).then(
-      () => {
-        if (this.eventHandlers.onConnect) {
-          return this.eventHandlers.onConnect(this);
-        }
-      }
-    );
+    await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels })));
+    if (this.eventHandlers.onConnect) {
+      return this.eventHandlers.onConnect(this);
+    }
   }
 
   /**
    * @return Promise<null>
    */
-  disconnect() {
-    return resolveAllKeys(
-      mapKeys(this.adapters, adapter => adapter.disconnect())
-      // Chain an empty function so that the result of this promise
-      // isn't unintentionally leaked to the caller
-    ).then(() => {});
+  async disconnect() {
+    await resolveAllKeys(mapKeys(this.adapters, adapter => adapter.disconnect()));
   }
 
   getAdminMeta({ schemaName }) {
@@ -509,6 +502,16 @@ module.exports = class Keystone {
     );
 
     return { lists, name: this.name };
+  }
+
+  getAdminViews({ schemaName }) {
+    return {
+      listViews: arrayToObject(
+        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
+        'key',
+        list => list.views
+      ),
+    };
   }
 
   // It's not Keystone core's responsibility to create an executable schema, but

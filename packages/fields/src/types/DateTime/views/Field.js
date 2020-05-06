@@ -11,7 +11,7 @@ const DateTimeField = ({ autoFocus, field, onChange, value, errors }) => {
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.config.adminDoc} />
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         <TextDayTimePicker id={htmlID} date={value} onChange={onChange} autoFocus={autoFocus} />
       </FieldInput>

@@ -7,7 +7,7 @@ import { Global } from '@emotion/core';
 
 import { globalStyles } from '@arch-ui/theme';
 
-import ApolloClient from './apolloClient';
+import { initApolloClient } from './apolloClient';
 
 import ConnectivityListener from './components/ConnectivityListener';
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
@@ -27,7 +27,7 @@ import SigninPage from './pages/Signin';
 const Keystone = () => {
   const { authStrategy, apiPath, signoutPath, hooks } = useAdminMeta();
 
-  const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
+  const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
     <HooksProvider hooks={hooks}>

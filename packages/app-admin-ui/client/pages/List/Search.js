@@ -15,7 +15,7 @@ import { useListSearch } from './dataHooks';
 import { elementOffsetStyles } from './Filters/ActiveFilters';
 
 export default function Search({ isLoading, list }) {
-  const { searchValue, onChange, onClear, onSubmit } = useListSearch(list.key);
+  const { searchValue, onChange, onClear, onSubmit } = useListSearch();
   const [value, setValue] = useState(searchValue);
   const inputRef = useRef();
 
