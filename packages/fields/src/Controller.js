@@ -3,7 +3,6 @@ import isEqual from 'lodash.isequal';
 export default class FieldController {
   constructor(
     { label, path, type, access, isOrderable, isPrimaryKey, isRequired, adminDoc, ...config },
-    list,
     adminMeta,
     views
   ) {
@@ -15,7 +14,6 @@ export default class FieldController {
     this.isOrderable = isOrderable;
     this.isPrimaryKey = isPrimaryKey;
     this.isRequired = isRequired;
-    this.list = list;
     this.adminDoc = adminDoc;
     this.adminMeta = adminMeta;
     this.views = views;
