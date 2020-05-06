@@ -841,7 +841,7 @@ test('checkFieldAccess', () => {
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
-      { gqlName: 'testing', extraData: { extra: 1 } }
+      { gqlName: 'testing', extra: 1 }
     );
   } catch (error) {
     thrownError = error;
