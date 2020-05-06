@@ -1,6 +1,6 @@
 const express = require('express');
 const supertest = require('supertest-light');
-const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const MongoDBMemoryServer = require('mongodb-memory-server-core').default;
 const pFinally = require('p-finally');
 const url = require('url');
 const { Keystone } = require('@keystonejs/keystone');
@@ -32,6 +32,7 @@ async function setupServer({
     adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
     schemaNames,
+    cookieSecret: 'secretForTesting',
     ...keystoneOptions,
   });
 
@@ -61,10 +62,14 @@ async function setupServer({
 }
 
 function graphqlRequest({ keystone, query, variables, operationName }) {
-  return keystone.executeQuery(query, {
-    variables,
-    operationName,
-  });
+  return keystone.executeQuery(query, { variables, operationName });
+}
+
+// This is much like graphqlRequest except we don't skip access control checks!
+function authedGraphqlRequest({ keystone, query, variables, operationName }) {
+  const context = keystone.getGraphQlContext({ schemaName: 'testing' });
+  const executeQuery = keystone._buildQueryHelper(context);
+  return executeQuery(query, { variables, operationName });
 }
 
 function networkedGraphqlRequest({
@@ -184,10 +189,35 @@ function _keystoneRunner(adapterName, tearDownFunction) {
   };
 }
 
+function _before(adapterName) {
+  return async function(setupKeystone) {
+    const { keystone, app } = await setupKeystone(adapterName);
+    await keystone.connect();
+    return { keystone, app };
+  };
+}
+
+function _after(tearDownFunction) {
+  return async function(keystone) {
+    await keystone.disconnect();
+    await tearDownFunction();
+  };
+}
+
 function multiAdapterRunners(only) {
   return [
-    { runner: _keystoneRunner('mongoose', teardownMongoMemoryServer), adapterName: 'mongoose' },
-    { runner: _keystoneRunner('knex', () => {}), adapterName: 'knex' },
+    {
+      runner: _keystoneRunner('mongoose', teardownMongoMemoryServer),
+      adapterName: 'mongoose',
+      before: _before('mongoose'),
+      after: _after(teardownMongoMemoryServer),
+    },
+    {
+      runner: _keystoneRunner('knex', () => {}),
+      adapterName: 'knex',
+      before: _before('knex'),
+      after: _after(() => {}),
+    },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 
@@ -223,6 +253,7 @@ module.exports = {
   setupServer,
   multiAdapterRunners,
   graphqlRequest,
+  authedGraphqlRequest,
   networkedGraphqlRequest,
   matchFilter,
 };

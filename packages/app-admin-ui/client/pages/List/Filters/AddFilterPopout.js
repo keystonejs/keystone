@@ -181,7 +181,7 @@ export default class AddFilterPopout extends Component<Props, State> {
     const { field, filter, value } = this.state;
 
     event.preventDefault();
-    if (!filter || value === null) return;
+    if (!filter || value === null || field.getFilterValue(value) === null) return;
 
     onChange({ field, label: filter.label, type: filter.type, value });
   };

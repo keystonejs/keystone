@@ -1,5 +1,17 @@
 # @arch-ui/navbar
 
+## 0.1.10
+
+### Patch Changes
+
+- [`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d) [#2798](https://github.com/keystonejs/keystone/pull/2798) Thanks [@Vultraz](https://github.com/Vultraz)! - Revamped sidebar design.
+
+## 0.1.9
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
 ## 0.1.8
 
 ### Patch Changes

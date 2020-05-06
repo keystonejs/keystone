@@ -474,42 +474,6 @@ describe('getAdminMeta()', () => {
     expect(adminMeta.fields[3].path).toEqual('other');
     expect(adminMeta.fields[4].path).toEqual('writeOnce');
   });
-
-  test('getAdminMeta() - views', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.views).toEqual({
-      id: {}, // Mocked
-      name: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      email: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      other: {
-        Controller: resolveViewPath('Relationship/views/Controller'),
-        Field: resolveViewPath('Relationship/views/Field'),
-        Filter: resolveViewPath('Relationship/views/Filter'),
-        Cell: resolveViewPath('Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-    });
-  });
 });
 
 describe(`getGqlTypes() `, () => {
@@ -877,7 +841,7 @@ test('checkFieldAccess', () => {
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
-      { gqlName: 'testing', extraData: { extra: 1 } }
+      { gqlName: 'testing', extra: 1 }
     );
   } catch (error) {
     thrownError = error;

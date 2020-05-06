@@ -23,14 +23,13 @@ const keystone = new Keystone({
 | `adapter`        | `Object`   | Required                        | The database storage adapter. See the [Adapter framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) docs for more details.        |
 | `adapters`       | `Object`   | `undefined`                     | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                                      |
 | `appVersion`     | `Object`   | See [`appVersion`](#appversion) | Configure the application version and where it is made available.                                                                                 |
-| `cookieMaxAge`   | `Int`      | 30 days                         | The maximum time, in milliseconds, session ID cookies remain valid.                                                                               |
-| `cookieSecret`   | `String`   | `qwerty`                        | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                                 |
+| `cookie`         | `Object`   | See: [`cookie`](#cookie)        | Cookie object used to configure the [express-session middleware](https://github.com/expressjs/session#cookie).                                    |
+| `cookieSecret`   | `String`   | Required in production          | The secret used to sign session ID cookies. Should be long and unguessable.                                                                       |
 | `defaultAccess`  | `Object`   | `undefined`                     | Default list, field, and custom schema access. See the [Access control API](https://www.keystonejs.com/api/access-control) docs for more details. |
 | `defaultAdapter` | `String`   | `undefined`                     | The name of the database adapter to use by default if multiple are provided.                                                                      |
 | `name`           | `String`   | `undefined`                     | The name of the project. Appears in the Admin UI.                                                                                                 |
 | `onConnect`      | `Function` | `undefined`                     | Callback that executes once `keystone.connect()` complete. Takes no arguments.                                                                    |
 | `queryLimits`    | `Object`   | `{}`                            | Configures global query limits                                                                                                                    |
-| `secureCookies`  | `Boolean`  | Variable                        | Defaults to true in production mode, false otherwise. See [`secureCookies`](#securecookies) for important details.                                |
 | `sessionStore`   | `Object`   | `undefined`                     | A compatible Express session middleware.                                                                                                          |
 | `schemaNames`    | `Array`    | `['public']`                    |                                                                                                                                                   |
 
@@ -75,11 +74,34 @@ const keystone = new Keystone({
 
 Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
 
-### `secureCookies`
+### `cookie`
 
-A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a Keystone project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+_**Default:**_ see Usage.
+
+A description of the cookie properties is included in the [express-session documentation](https://github.com/expressjs/session#cookie).
+
+#### `secure`
+
+A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secure` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secure` to false. This does not affect development builds since this value is already false.
 
 You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
+
+#### Usage
+
+```javascript
+const keystone = new Keystone({
+  /* ...config */
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Default to true in production
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+    sameSite: false,
+  },
+});
+```
+
+### `cookieSecret`
+
+The secret used to sign session ID cookies. In production mode (`process.env.NODE_ENV === 'production'`) this option is required. In development mode, if undefined, a random `cookieSecret` will be generated each time Keystone starts (this will cause sessions to be reset between restarts).
 
 ### `sessionStore`
 
@@ -267,21 +289,23 @@ Extends keystones generated schema with custom types, queries, and mutations.
 
 ```javascript
 keystone.extendGraphQLSchema({
-  types: [{ type: 'type FooBar { foo: Int, bar: Float }' }],
+  types: [{ type: 'type MyType { original: Int, double: Float }' }],
   queries: [
     {
-      schema: 'double(x: Int): Int',
-      resolver: (_, { x }) => 2 * x,
+      schema: 'double(x: Int): MyType',
+      resolver: (_, { x }) => ({ original: x, double: 2.0 * x }),
     },
   ],
   mutations: [
     {
-      schema: 'double(x: Int): Int',
-      resolver: (_, { x }) => 2 * x,
+      schema: 'triple(x: Int): Int',
+      resolver: (_, { x }) => 3 * x,
     },
   ],
 });
 ```
+
+See the [Custom schema guide](/docs/guides/custom-schema.md) for more information on utilizing custom schema.
 
 #### Config
 
@@ -291,20 +315,31 @@ keystone.extendGraphQLSchema({
 | queries   | `array` | A list of objects of the form `{ schema, resolver, access }`.                                  |
 | mutations | `array` | A list of objects of the form `{ schema, resolver, access }`.                                  |
 
-The `schema` for both queries and mutations should be a string defining the GraphQL schema element for the query/mutation, e.g.
+- The `schema` for both queries and mutations should be a string defining the GraphQL schema element for the query/mutation, e.g.
 
 ```javascript
 {
-  schema: 'getBestPosts(author: ID!): [Post]';
+  schema: 'getBestPosts(author: ID!): [Post]',
 }
 ```
 
-The `resolver` for both queries and mutations should be a resolver function with the signature `(obj, args, context, info, extra)`.
+- The `resolver` for both queries and mutations should be a resolver function with following signature:
 
-For more information about the first 4 arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains 2 properties: `query` and `access`. `query` is an executable function for running a query, while `access` provides access control information about the current user.
+```javascript
+{
+  resolver: (obj, args, context, info, extra) => {},
+}
+```
 
-The `access` argument for `types`, `queries`, and `mutations` are all either, boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
-See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
+For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains the following properties:
+
+| Name     | Description                                        |
+| -------- | -------------------------------------------------- |
+| `query`  | An executable helper function for running a query. |
+| `access` | Access control information about the current user. |
+
+- The `access` argument for `types`, `queries`, and `mutations` are all either boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
+- See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
 
 ### `prepare(config)`
 

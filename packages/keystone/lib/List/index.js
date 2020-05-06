@@ -113,6 +113,7 @@ module.exports = class List {
     {
       fields,
       hooks = {},
+      adminDoc,
       schemaDoc,
       labelResolver,
       labelField,
@@ -143,6 +144,7 @@ module.exports = class List {
     this._fields = fields;
     this.hooks = hooks;
     this.schemaDoc = schemaDoc;
+    this.adminDoc = adminDoc;
 
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
@@ -324,6 +326,13 @@ module.exports = class List {
 
   getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
+    const {
+      defaultPageSize,
+      defaultColumns,
+      defaultSort,
+      maximumPageSize,
+      ...adminConfig
+    } = this.adminConfig;
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
@@ -337,15 +346,13 @@ module.exports = class List {
       fields: this.fields
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
-      views: this.views,
+      adminDoc: this.adminDoc,
       adminConfig: {
-        defaultPageSize: this.adminConfig.defaultPageSize,
-        defaultColumns: this.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: this.adminConfig.defaultSort,
-        maximumPageSize: Math.max(
-          this.adminConfig.defaultPageSize,
-          this.adminConfig.maximumPageSize
-        ),
+        defaultPageSize,
+        defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        defaultSort: defaultSort,
+        maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
+        ...adminConfig,
       },
     };
   }
@@ -639,10 +646,10 @@ module.exports = class List {
     return mutations;
   }
 
-  checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
+  checkFieldAccess(operation, itemsToUpdate, context, { gqlName, ...extraInternalData }) {
     const restrictedFields = [];
 
-    itemsToUpdate.forEach(({ existingItem, data }) => {
+    itemsToUpdate.forEach(({ existingItem, id, data }) => {
       this.fields
         .filter(field => field.path in data)
         .forEach(field => {
@@ -651,7 +658,8 @@ module.exports = class List {
             field.path,
             data,
             existingItem,
-            operation
+            operation,
+            { gqlName, itemId: id, ...extraInternalData }
           );
           if (!access) {
             restrictedFields.push(field.path);
@@ -659,7 +667,9 @@ module.exports = class List {
         });
     });
     if (restrictedFields.length) {
-      throwAccessDenied(opToType[operation], context, gqlName, extraData, { restrictedFields });
+      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData, {
+        restrictedFields,
+      });
     }
   }
 
@@ -823,15 +833,17 @@ module.exports = class List {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
       // Evaluation takes place in ../Keystone/index.js
-      getCount: () => {
+      getCount: async () => {
         const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), {
+        const { count } = await this._itemsQuery(mergeWhereClause(args, access), {
           meta: true,
           context,
           info,
           from,
-        }).then(({ count }) => count);
+        });
+
+        return count;
       },
     };
   }
@@ -1379,9 +1391,9 @@ module.exports = class List {
   async updateMutation(id, data, context, mutationState) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
-    const extraData = { itemId: id };
+    const extraData = { gqlName, itemId: id };
 
-    const access = this.checkListAccess(context, data, operation, { gqlName, ...extraData });
+    const access = this.checkListAccess(context, data, operation, extraData);
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1391,7 +1403,7 @@ module.exports = class List {
 
     const itemsToUpdate = [{ existingItem, data }];
 
-    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+    this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return await this._updateSingle(id, data, existingItem, context, mutationState);
   }
@@ -1400,20 +1412,20 @@ module.exports = class List {
     const operation = 'update';
     const gqlName = this.gqlNames.updateManyMutationName;
     const ids = data.map(d => d.id);
-    const extraData = { itemId: ids };
+    const extraData = { gqlName, itemIds: ids };
 
-    const access = this.checkListAccess(context, data, operation, { gqlName, ...extraData });
+    const access = this.checkListAccess(context, data, operation, extraData);
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
     const itemsToUpdate = zipObj({
       existingItem: existingItems,
-      id: ids,
+      id: ids, // itemId is taken from here in checkFieldAccess
       data: data.map(d => d.data),
     });
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations
-    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+    this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return Promise.all(
       itemsToUpdate.map(({ existingItem, id, data }) =>

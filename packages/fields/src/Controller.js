@@ -1,14 +1,13 @@
 import isEqual from 'lodash.isequal';
 
 export default class FieldController {
-  constructor(config, list, adminMeta, views) {
+  constructor(config, adminMeta, views) {
     this.config = config;
     this.label = config.label;
     this.path = config.path;
     this.type = config.type;
     this.maybeAccess = config.access;
     this.isPrimaryKey = config.isPrimaryKey;
-    this.list = list;
     this.adminMeta = adminMeta;
     this.views = views;
 
@@ -121,4 +120,5 @@ export default class FieldController {
   };
 
   getFilterTypes = () => [];
+  getFilterValue = value => value;
 }

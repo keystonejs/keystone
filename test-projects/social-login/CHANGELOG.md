@@ -1,5 +1,28 @@
 # @keystonejs/cypress-project-facebook-login
 
+## 5.1.7
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/app-admin-ui@5.11.1
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/input@0.1.9
+  - @keystonejs/fields@9.0.4
+
+## 5.1.6
+
+### Patch Changes
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`e7afc083`](https://github.com/keystonejs/keystone/commit/e7afc08338cc04bfc8b6eec1a21f777f81f4d6c8), [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c), [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64), [`501fd3e4`](https://github.com/keystonejs/keystone/commit/501fd3e4a06cfeba0f96a76ff8763d3be577af6e), [`b14c07a1`](https://github.com/keystonejs/keystone/commit/b14c07a154ae1cb92e7cbc87484d99419f92d649), [`875aa0ed`](https://github.com/keystonejs/keystone/commit/875aa0ed787d901061aa0409160a360546014df3), [`16f6c300`](https://github.com/keystonejs/keystone/commit/16f6c3003d1decbb77474455ef608e3efd41ec4b), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa)]:
+  - @arch-ui/fields@3.0.0
+  - @keystonejs/fields@9.0.3
+  - @keystonejs/app-admin-ui@5.11.0
+  - @keystonejs/adapter-mongoose@8.0.2
+  - @arch-ui/input@0.1.8
+
 ## 5.1.5
 
 ### Patch Changes

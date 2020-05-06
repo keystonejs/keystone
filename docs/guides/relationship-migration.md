@@ -12,6 +12,9 @@ This document will help you understand the changes to the database schema, which
 
 We recommend familiarising yourself with the [relationships](/docs/discussions/relationships.md) documentation to make sure you understand the terminology used in this document.
 
+> **Note:** If you're starting a new project today which includes the [`Arcade`](/docs/discussions/new-data-schema.md) release of Keystone (check your `package.json`), there is no action required; you already have the latest and greatest database schema.
+> If you have an existing project which you have upgraded to the [`Arcade`](/docs/discussions/new-data-schema.md) release of Keystone; read on.
+
 ## Overview
 
 There are four steps to updating your database:
@@ -66,7 +69,7 @@ The output you see will give you a summary of all the relationships in your syst
 
 #### MongoDB
 
-```shell title=Output showLanguage=false allowCopy=false
+```shell title="Example Output" showLanguage=false allowCopy=false
 ℹ Command: keystone upgrade-relationships
 One-sided: one to many
   Todo.author -> User
@@ -92,7 +95,7 @@ Two-sided: many to many
 
 #### PostgreSQL
 
-```shell title=Output showLanguage=false allowCopy=false
+```shell title="Example Output" showLanguage=false allowCopy=false
 ℹ Command: keystone upgrade-relationships
 One-sided: one to many
   Todo.author -> User
@@ -124,14 +127,19 @@ The `upgrade-relationships` script can also be used to generate migration code w
 keystone upgrade-relationships --migration
 ```
 
-> **Important:** Always be careful when running auto-generated migration code.
+> **Note:** Always be careful when running auto-generated migration code.
 > Be sure to manually verify that the changes are doing what you want, as incorrect migrations can lead to data loss.
+
+# 
+
+> **Important:** While we have taken every effort to ensure the auto-generated migration code is correct, we cannot account for every possible scenario.
+> Again; please verify the changes work as expected to avoid data loss.
 
 #### MongoDB
 
-```javascript allowCopy=false showLanguage=false
+```javascript title="Example migration" allowCopy=false showLanguage=false
 db.todos.find({}).forEach(function(doc) {
-  doc.reviewers.forEach(function(itemId) {
+  (doc.reviewers || []).forEach(function(itemId) {
     db.todo_reviewers_manies.insert({ Todo_left_id: doc._id, User_right_id: itemId });
   });
 });
@@ -139,7 +147,7 @@ db.todos.updateMany({}, { $unset: { reviewers: 1 } });
 db.users.updateMany({}, { $unset: { leadPost: 1 } });
 db.users.updateMany({}, { $unset: { published: 1 } });
 db.todos.find({}).forEach(function(doc) {
-  doc.readers.forEach(function(itemId) {
+  (doc.readers || []).forEach(function(itemId) {
     db.todo_readers_user_readposts.insert({ Todo_left_id: doc._id, User_right_id: itemId });
   });
 });
@@ -149,7 +157,7 @@ db.users.updateMany({}, { $unset: { readPosts: 1 } });
 
 #### PostgreSQL
 
-```SQL allowCopy=false
+```SQL title="Example migration" allowCopy=false
 ALTER TABLE public."Todo_reviewers" RENAME TO "Todo_reviewers_many";
 ALTER TABLE public."Todo_reviewers_many" RENAME COLUMN "Todo_id" TO "Todo_left_id";
 ALTER TABLE public."Todo_reviewers_many" RENAME COLUMN "User_id" TO "User_right_id";
@@ -179,7 +187,7 @@ This document outlines a number of different approaches to performing database m
 ## Test and deploy
 
 The final step is to test and deploy your upgraded Keystone system.
-If you have successfully migrated your database then should be able to start Keystone and have it connect to your updated database.
+If you have successfully migrated your database then you should be able to start Keystone and have it connect to your updated database.
 Keystone does not dictate how or where you run your deployments, so you should follow your existing processes for this step.
 
 It is advisable to do a test deployment in a controlled, non-production environment.
