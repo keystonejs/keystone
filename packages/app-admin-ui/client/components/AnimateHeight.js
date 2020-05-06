@@ -27,7 +27,7 @@ export default class AnimateHeight extends Component {
   }
   calculateHeight = () => {
     const { autoScroll, initialHeight, onChange } = this.props;
-    const height = this.node ? this.node.scrollHeight : initialHeight;
+    const height = this.node ? this.node.offsetHeight : initialHeight;
 
     if (height !== this.state.height) {
       this.setState({ height });
