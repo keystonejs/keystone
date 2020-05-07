@@ -20,6 +20,7 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const keystone = new Keystone({
   name: projectName,
   adapter: new MongooseAdapter(),
+  cookieSecret: 'qwerty',
 });
 
 keystone.createList('User', {

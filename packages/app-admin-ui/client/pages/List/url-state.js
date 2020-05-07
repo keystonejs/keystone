@@ -48,7 +48,7 @@ const parseSortBy = (sortBy, list) => {
     direction = 'DESC';
   }
 
-  const field = list.fields.filter(field => field.config.isOrderable).find(f => f.path === key);
+  const field = list.fields.filter(field => field.isOrderable).find(f => f.path === key);
   if (!field) {
     return null;
   }

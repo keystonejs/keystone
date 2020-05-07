@@ -12,7 +12,7 @@ import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
 import RelationshipSelect from './RelationshipSelect';
-import { ListProvider, useList } from '@keystonejs/app-admin-ui/components';
+import { CreateItemModal, ListProvider, useList } from '@keystonejs/app-admin-ui/components';
 
 const MAX_IDS_IN_FILTER = 100;
 
@@ -56,12 +56,12 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 }
 
 function LinkToRelatedItems({ field, value }) {
-  const { many, ref } = field.config;
-  const { adminPath, getListByKey } = field.adminMeta;
-  const refList = getListByKey(ref);
+  const { many } = field.config;
+  const { adminPath } = field;
+  const { path } = field.getRefList();
   let isDisabled = false;
   let label;
-  let link = `${adminPath}/${refList.path}`;
+  let link = `${adminPath}/${path}`;
   if (many) {
     label = 'View List of Related Items';
 
@@ -103,10 +103,10 @@ function LinkToRelatedItems({ field, value }) {
   );
 }
 
-function CreateAndAddItem({ field, item, onCreate, CreateItemModal }) {
+function CreateAndAddItem({ field, item, onCreate }) {
   const { list, openCreateItemModal } = useList();
 
-  let relatedList = field.adminMeta.getListByKey(field.config.ref);
+  let relatedList = field.getRefList();
   let label = `Create and add ${relatedList.singular}`;
 
   let prefillData;
@@ -167,7 +167,6 @@ const RelationshipField = ({
   onChange,
   item,
   list,
-  CreateItemModal,
 }) => {
   const handleChange = option => {
     const { many } = field.config;
@@ -179,15 +178,15 @@ const RelationshipField = ({
   };
 
   const { many, ref } = field.config;
-  const { authStrategy } = field.adminMeta;
+  const { authStrategy } = field;
   const htmlID = `ks-input-${field.path}`;
 
-  const relatedList = field.adminMeta.getListByKey(field.config.ref);
+  const relatedList = field.getRefList();
 
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.config.adminDoc} />
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         <div css={{ flex: 1 }}>
           <RelationshipSelect
@@ -209,7 +208,6 @@ const RelationshipField = ({
             field={field}
             item={item}
             list={list}
-            CreateItemModal={CreateItemModal}
           />
         </ListProvider>
         {authStrategy && ref === authStrategy.listKey && (

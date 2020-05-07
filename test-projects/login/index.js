@@ -19,6 +19,7 @@ const defaultAccess = ({ authentication: { item } }) => !!item;
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
   adapter: new MongooseAdapter(),
+  cookieSecret: 'qwerty',
   defaultAccess: {
     list: defaultAccess,
   },
