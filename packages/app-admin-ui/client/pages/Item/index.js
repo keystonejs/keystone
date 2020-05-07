@@ -298,7 +298,6 @@ const ItemDetails = ({
                       savedValue={initialData[field.path]}
                       onChange={onChange}
                       renderContext="page"
-                      CreateItemModal={CreateItemModal}
                     />
                   ),
                   [
