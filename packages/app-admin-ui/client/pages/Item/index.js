@@ -36,7 +36,6 @@ import {
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
-import { useAdminMeta } from '../../providers/AdminMeta';
 import { useList } from '../../providers/List';
 
 let Render = ({ children }) => children();
@@ -63,7 +62,6 @@ const getRenderableFields = memoizeOne(list =>
 );
 
 const ItemDetails = ({
-  adminPath,
   list,
   item: initialData,
   itemErrors,
@@ -134,7 +132,7 @@ const ItemDetails = ({
 
       // Wait for the refetch to finish before returning to the list
       await refetch;
-      history.replace(`${adminPath}/${list.path}`);
+      history.replace(list.fullPath);
     } catch (error) {
       toastError({ addToast }, error);
     }
@@ -247,13 +245,13 @@ const ItemDetails = ({
 
   const onCreate = ({ data }) => {
     const { id } = data[list.gqlNames.createMutationName];
-    history.push(`${adminPath}/${list.path}/${id}`);
+    history.push(`${list.fullPath}/${id}`);
   };
 
   return (
     <Fragment>
       {itemHasChanged.current && !deleteConfirmed.current && <PreventNavigation />}
-      <ItemTitle id={item.id} list={list} adminPath={adminPath} titleText={initialData._label_} />
+      <ItemTitle id={item.id} list={list} titleText={initialData._label_} />
       <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
         <Form>
           <AutocompleteCaptor />
@@ -343,10 +341,10 @@ const ItemDetails = ({
   );
 };
 
-const ItemNotFound = ({ adminPath, errorMessage, list }) => (
+const ItemNotFound = ({ errorMessage, list }) => (
   <PageError>
     <p>Couldn't find a {list.singular} matching that ID</p>
-    <Button to={`${adminPath}/${list.path}`} variant="ghost">
+    <Button to={list.fullPath} variant="ghost">
       Back to List
     </Button>
     {errorMessage ? (
@@ -359,7 +357,6 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
 
 const ItemPage = ({ itemId }) => {
   const { list } = useList();
-  const { adminPath } = useAdminMeta();
   const { addToast } = useToasts();
 
   const itemQuery = list.getItemQuery(itemId);
@@ -423,7 +420,7 @@ const ItemPage = ({ itemId }) => {
     return (
       <Fragment>
         <DocTitle title={`${list.singular} not found`} />
-        <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+        <ItemNotFound errorMessage={error.message} list={list} />
       </Fragment>
     );
   }
@@ -439,7 +436,7 @@ const ItemPage = ({ itemId }) => {
   };
 
   if (!item) {
-    return <ItemNotFound adminPath={adminPath} list={list} />;
+    return <ItemNotFound list={list} />;
   }
 
   return (
@@ -448,7 +445,6 @@ const ItemPage = ({ itemId }) => {
         <DocTitle title={`${item._label_} — ${list.singular}`} />
         <Container id="toast-boundary">
           <ItemDetails
-            adminPath={adminPath}
             item={item}
             itemErrors={itemErrors}
             key={itemId}
