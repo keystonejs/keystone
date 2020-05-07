@@ -45,6 +45,7 @@ export const AdminMetaProvider = ({ children }) => {
   // TODO: Permission query to see which lists to provide
   const listsByKey = {};
   const listsByPath = {};
+  const getListByKey = key => listsByKey[key];
 
   const adminMeta = {
     adminPath,
@@ -58,7 +59,7 @@ export const AdminMetaProvider = ({ children }) => {
     name,
     ...customMeta,
     listKeys: Object.keys(lists || {}),
-    getListByKey: key => listsByKey[key],
+    getListByKey,
     getListByPath: path => listsByPath[path],
     readViews,
     preloadViews,
@@ -87,7 +88,7 @@ export const AdminMetaProvider = ({ children }) => {
     ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
       const list = new List(
         { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-        adminMeta,
+        { readViews, preloadViews, getListByKey, apiPath, adminPath, authStrategy },
         views[key]
       );
       listsByKey[key] = list;
