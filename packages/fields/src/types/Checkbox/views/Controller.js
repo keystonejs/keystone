@@ -1,8 +1,7 @@
 import FieldController from '../../../Controller';
 
 export default class CheckboxController extends FieldController {
-  constructor(config, ...args) {
-    const defaultValue = 'defaultValue' in config ? config.defaultValue : false;
+  constructor({ defaultValue = false, ...config }, ...args) {
     super({ ...config, defaultValue }, ...args);
   }
   serialize = data => data[this.path];

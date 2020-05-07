@@ -2,7 +2,7 @@ import FieldController from '../../../Controller';
 
 export default class RelationshipController extends FieldController {
   constructor(config, ...args) {
-    const defaultValue = 'defaultValue' in config ? config.defaultValue : config.many ? [] : null;
+    const { defaultValue = config.many ? [] : null } = config;
     super({ ...config, defaultValue }, ...args);
   }
   getRefList() {
