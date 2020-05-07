@@ -17,7 +17,7 @@ export const elementOffsetStyles = {
 };
 
 export default function ActiveFilters({ list }) {
-  const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key);
+  const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter();
 
   return (
     <Fragment>

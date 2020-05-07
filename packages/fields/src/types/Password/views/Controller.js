@@ -28,9 +28,9 @@ export default class PasswordController extends FieldController {
   };
 
   validateInput = ({ originalInput, addFieldValidationError }) => {
-    const { isRequired, minLength } = this.config;
+    const { minLength } = this.config;
 
-    if (isRequired) {
+    if (this.isRequired) {
       if (!originalInput[this.path] || !originalInput[this.path].inputPassword) {
         return addFieldValidationError(`Password is required`);
       }

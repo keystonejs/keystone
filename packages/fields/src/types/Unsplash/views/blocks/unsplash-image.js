@@ -5,6 +5,9 @@ import pluralize from 'pluralize';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import { Input } from '@arch-ui/input';
 
+import { useLazyQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
 export let type = 'unsplashImage';
 
 // TODO: Receive this value from the server somehow. 'pluralize' is a fairly
@@ -110,60 +113,53 @@ const UnsplashImage = ({ width, height, unsplashId, publicUrl, alt, user, onClic
   );
 };
 
+const UNSPLASH_SEARCH_QUERY = gql`
+  query searchImages($query: String!, $page: Int, $perPage: Int, $width: String) {
+    searchUnsplash(query: $query, perPage: $perPage, page: $page) {
+      total
+      totalPages
+      results {
+        id
+        unsplashId
+        publicUrl: publicUrlTransformed(transformation: { w: $width })
+        width
+        height
+        alt
+        user {
+          name
+          url
+        }
+      }
+    }
+  }
+`;
+
 const Search = ({ onSelect }) => {
   const options = useContext(Context);
   const [searchPage, setSearchPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState();
+
+  const [getUnsplashImages, { data: { searchUnsplash: searchResults } = {} }] = useLazyQuery(
+    UNSPLASH_SEARCH_QUERY,
+    {
+      variables: {
+        query: searchTerm,
+        page: searchPage,
+        perPage: RESULTS_PER_PAGE,
+        width: RESULTS_WIDTH,
+      },
+    }
+  );
 
   const showPrevious = useCallback(() => {
-    const newPage = Math.max(1, searchPage - 1);
-    setSearchPage(newPage);
-    getUnsplashImages(searchTerm, newPage);
-  }, [searchPage, setSearchPage, searchTerm]);
+    setSearchPage(Math.max(1, searchPage - 1));
+  }, [searchPage]);
 
   const showNext = useCallback(() => {
-    const newPage = Math.min(
-      (searchResults && searchResults.totalPages) || Infinity,
-      searchPage + 1
+    setSearchPage(
+      Math.min((searchResults && searchResults.totalPages) || Infinity, searchPage + 1)
     );
-    setSearchPage(newPage);
-    getUnsplashImages(searchTerm, newPage);
-  }, [searchPage, setSearchPage, searchTerm]);
-
-  const getUnsplashImages = (query, page) => {
-    fetch(options.adminMeta.apiPath, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        variables: { query, page, perPage: RESULTS_PER_PAGE, width: RESULTS_WIDTH },
-        query: `query searchImages($query: String!, $page: Int, $perPage: Int, $width: String) {
-          searchUnsplash(query: $query, perPage: $perPage, page: $page) {
-            total
-            totalPages
-            results {
-              id
-              unsplashId
-              publicUrl: publicUrlTransformed(transformation: { w: $width})
-              width
-              height
-              alt
-              user {
-                name
-                url
-              }
-            }
-          }
-        }`,
-      }),
-    })
-      .then(x => x.json())
-      .then(results => {
-        setSearchResults(results.data.searchUnsplash);
-      });
-  };
+  }, [searchPage]);
 
   const onChange = useCallback(
     event => {
@@ -171,10 +167,10 @@ const Search = ({ onSelect }) => {
       event.stopPropagation();
       setSearchTerm(event.target.value);
       if (event.target.value.length > 3) {
-        getUnsplashImages(event.target.value, 1);
+        getUnsplashImages();
       }
     },
-    [searchTerm, setSearchTerm]
+    [getUnsplashImages]
   );
 
   const unsplashUrl = attributeUrl('https://unsplash.com', options.attribution);

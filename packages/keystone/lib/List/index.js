@@ -188,6 +188,7 @@ module.exports = class List {
       listQueryName: `all${_listQueryName}`,
       listQueryMetaName: `_all${_listQueryName}Meta`,
       listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
+      listSortName: `Sort${_listQueryName}By`,
       deleteMutationName: `delete${_itemQueryName}`,
       updateMutationName: `update${_itemQueryName}`,
       createMutationName: `create${_itemQueryName}`,
@@ -346,7 +347,6 @@ module.exports = class List {
       fields: this.fields
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
-      views: this.views,
       adminDoc: this.adminDoc,
       adminConfig: {
         defaultPageSize,
@@ -364,10 +364,18 @@ module.exports = class List {
       .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
   }
 
+  /** Equivalent to getFieldsWithAccess but includes `id` fields. */
+  getAllFieldsWithAccess({ schemaName, access }) {
+    return this.fields.filter(field => field.access[schemaName][access]);
+  }
+
   getGqlTypes({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
     const types = [];
+
+    // We want to include `id` fields
+    // If read is globally set to false, makes sense to never show it
+    const readFields = this.getAllFieldsWithAccess({ schemaName, access: 'read' });
     if (
       schemaAccess.read ||
       schemaAccess.create ||
@@ -389,26 +397,21 @@ module.exports = class List {
           """
           _label_: String
           ${flatten(
-            this.fields
-              .filter(field => field.access[schemaName].read) // If it's globally set to false, makes sense to never show it
-              .map(field =>
-                field.schemaDoc
-                  ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields({ schemaName })}`
-                  : field.gqlOutputFields({ schemaName })
-              )
+            readFields.map(field =>
+              field.schemaDoc
+                ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields({ schemaName })}`
+                : field.gqlOutputFields({ schemaName })
+            )
           ).join('\n')}
-        }
-      `,
+        }`,
+
+        // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
         `
         input ${this.gqlNames.whereInputName} {
           AND: [${this.gqlNames.whereInputName}]
           OR: [${this.gqlNames.whereInputName}]
 
-          ${flatten(
-            this.fields
-              .filter(field => field.access[schemaName].read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.gqlQueryInputFields({ schemaName }))
-          ).join('\n')}
+          ${flatten(readFields.map(field => field.gqlQueryInputFields({ schemaName }))).join('\n')}
         }`,
         // TODO: Include other `unique` fields and allow filtering by them
         `
@@ -416,6 +419,21 @@ module.exports = class List {
           id: ID!
         }`
       );
+
+      const sortOptions = flatten(
+        readFields.map(({ path, isOrderable }) =>
+          // Explicitly allow sorting by id
+          isOrderable || path === 'id' ? [`${path}_ASC`, `${path}_DESC`] : []
+        )
+      );
+
+      if (sortOptions.length) {
+        types.push(`
+          enum ${this.gqlNames.listSortName} {
+            ${sortOptions.join('\n')}
+          }
+        `);
+      }
     }
 
     const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
@@ -454,6 +472,7 @@ module.exports = class List {
     return [
       `where: ${this.gqlNames.whereInputName}`,
       `search: String`,
+      `sortBy: [${this.gqlNames.listSortName}!]`,
       `orderBy: String`,
       `first: Int`,
       `skip: Int`,
@@ -642,10 +661,10 @@ module.exports = class List {
     return mutations;
   }
 
-  checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
+  checkFieldAccess(operation, itemsToUpdate, context, { gqlName, ...extraInternalData }) {
     const restrictedFields = [];
 
-    itemsToUpdate.forEach(({ existingItem, data }) => {
+    itemsToUpdate.forEach(({ existingItem, id, data }) => {
       this.fields
         .filter(field => field.path in data)
         .forEach(field => {
@@ -654,7 +673,8 @@ module.exports = class List {
             field.path,
             data,
             existingItem,
-            operation
+            operation,
+            { gqlName, itemId: id, ...extraInternalData }
           );
           if (!access) {
             restrictedFields.push(field.path);
@@ -662,7 +682,9 @@ module.exports = class List {
         });
     });
     if (restrictedFields.length) {
-      throwAccessDenied(opToType[operation], context, gqlName, extraData, { restrictedFields });
+      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData, {
+        restrictedFields,
+      });
     }
   }
 
@@ -826,15 +848,17 @@ module.exports = class List {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
       // Evaluation takes place in ../Keystone/index.js
-      getCount: () => {
+      getCount: async () => {
         const access = this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        return this._itemsQuery(mergeWhereClause(args, access), {
+        const { count } = await this._itemsQuery(mergeWhereClause(args, access), {
           meta: true,
           context,
           info,
           from,
-        }).then(({ count }) => count);
+        });
+
+        return count;
       },
     };
   }
@@ -1382,9 +1406,9 @@ module.exports = class List {
   async updateMutation(id, data, context, mutationState) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
-    const extraData = { itemId: id };
+    const extraData = { gqlName, itemId: id };
 
-    const access = this.checkListAccess(context, data, operation, { gqlName, ...extraData });
+    const access = this.checkListAccess(context, data, operation, extraData);
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1394,7 +1418,7 @@ module.exports = class List {
 
     const itemsToUpdate = [{ existingItem, data }];
 
-    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+    this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return await this._updateSingle(id, data, existingItem, context, mutationState);
   }
@@ -1403,20 +1427,20 @@ module.exports = class List {
     const operation = 'update';
     const gqlName = this.gqlNames.updateManyMutationName;
     const ids = data.map(d => d.id);
-    const extraData = { itemId: ids };
+    const extraData = { gqlName, itemIds: ids };
 
-    const access = this.checkListAccess(context, data, operation, { gqlName, ...extraData });
+    const access = this.checkListAccess(context, data, operation, extraData);
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
     const itemsToUpdate = zipObj({
       existingItem: existingItems,
-      id: ids,
+      id: ids, // itemId is taken from here in checkFieldAccess
       data: data.map(d => d.data),
     });
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations
-    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+    this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return Promise.all(
       itemsToUpdate.map(({ existingItem, id, data }) =>

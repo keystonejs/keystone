@@ -233,7 +233,7 @@ class ListRow extends Component {
           let content;
 
           if (field.views.Cell) {
-            const [Cell] = field.adminMeta.readViews([field.views.Cell]);
+            const [Cell] = field.readViews([field.views.Cell]);
 
             // TODO
             // fix this later, creating a react component on every render is really bad
@@ -310,7 +310,7 @@ export default function ListTable(props) {
     linkField = '_label_',
   } = props;
 
-  const [sortBy, onSortChange] = useListSort(list.key);
+  const [sortBy, onSortChange] = useListSort();
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;
@@ -350,7 +350,7 @@ export default function ListTable(props) {
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                sortable={field.path !== '_label_' && field.config.isOrderable}
+                sortable={field.path !== '_label_' && field.isOrderable}
                 field={field}
                 handleSortChange={onSortChange}
                 active={sortBy ? sortBy.field.path === field.path : false}

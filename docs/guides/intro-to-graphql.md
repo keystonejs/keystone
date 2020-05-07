@@ -224,7 +224,8 @@ When executing queries and mutations there are a number of ways you can filter, 
 - `search`
 - `skip`
 - `first`
-- `orderby`
+- `sortBy`
+- `orderby` (deprecated)
 
 ### `where`
 
@@ -320,7 +321,21 @@ query {
 }
 ```
 
+### `sortBy`
+
+Order results. Accepts one or more list sort enums in the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
+
+```graphql
+query {
+  allUsers(sortBy: name_DESC) {
+    id
+  }
+}
+```
+
 ### `orderBy`
+
+> **Warning:** This argument is deprecated. Use `sortBy` instead.
 
 Order results. The orderBy string should match the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
 
