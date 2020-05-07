@@ -1,5 +1,11 @@
 # @arch-ui/day-picker
 
+## 0.0.26
+
+### Patch Changes
+
+- [`5ec4e5d5`](https://github.com/keystonejs/keystone/commit/5ec4e5d547503baeae2ac2f6317b66c2ebae93b7) [#2915](https://github.com/keystonejs/keystone/pull/2915) Thanks [@timleslie](https://github.com/timleslie)! - Updated website related dependencies.
+
 ## 0.0.25
 
 ### Patch Changes
