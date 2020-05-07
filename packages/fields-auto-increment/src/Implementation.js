@@ -13,7 +13,6 @@ export class AutoIncrementImplementation extends Implementation {
       path,
       {
         ...config,
-        gqlType,
         isUnique,
         access,
       },
