@@ -14,7 +14,6 @@ describe('new Controller()', () => {
     expect(controller.config).toEqual({});
     expect(controller.label).toEqual('label');
     expect(controller.type).toEqual('type');
-    expect(controller.adminMeta).toEqual('adminMeta');
   });
 });
 

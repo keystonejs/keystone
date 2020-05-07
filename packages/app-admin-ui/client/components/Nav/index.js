@@ -213,9 +213,7 @@ function renderChildren(
 
   const label = node.label || list.plural;
   const maybeSearchParam = list.getPersistedSearch() || '';
-  const path = getPath(location.pathname);
-  const href = `${adminPath}/${list.path}`;
-  const isSelected = href === path;
+  const isSelected = list.fullPath === getPath(location.pathname);
   const id = `ks-nav-${list.path}`;
 
   return (
@@ -224,7 +222,7 @@ function renderChildren(
       depth={depth}
       id={id}
       isSelected={isSelected}
-      to={`${href}${maybeSearchParam}`}
+      to={`${list.fullPath}${maybeSearchParam}`}
       mouseIsOverNav={mouseIsOverNav}
     >
       {label}
@@ -448,7 +446,7 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
       >
         {name}
       </Title>
-      {authListKey && <UserInfo authListPath={`${adminPath}/${getListByKey(authListKey).path}`} />}
+      {authListKey && <UserInfo authListPath={getListByKey(authListKey).fullPath} />}
       <ActionItems mouseIsOverNav={mouseIsOverNav} />
       <PrimaryNavItems
         adminPath={adminPath}
