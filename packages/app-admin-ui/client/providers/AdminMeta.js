@@ -45,24 +45,7 @@ export const AdminMetaProvider = ({ children }) => {
   // TODO: Permission query to see which lists to provide
   const listsByKey = {};
   const listsByPath = {};
-
-  const adminMeta = {
-    adminPath,
-    apiPath,
-    graphiqlPath,
-    pages,
-    hooks,
-    signinPath,
-    signoutPath,
-    authStrategy,
-    name,
-    ...customMeta,
-    listKeys: Object.keys(lists || {}),
-    getListByKey: key => listsByKey[key],
-    getListByPath: path => listsByPath[path],
-    readViews,
-    preloadViews,
-  };
+  const getListByKey = key => listsByKey[key];
 
   const viewsToLoad = new Set();
   if (typeof hookView === 'function') {
@@ -87,7 +70,7 @@ export const AdminMetaProvider = ({ children }) => {
     ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
       const list = new List(
         { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-        adminMeta,
+        { readViews, preloadViews, getListByKey, apiPath, adminPath, authStrategy },
         views[key]
       );
       listsByKey[key] = list;
@@ -101,17 +84,25 @@ export const AdminMetaProvider = ({ children }) => {
   }
 
   const hookPages = hookViews.pages ? hookViews.pages() : [];
-  const adminMetaPages = adminMeta.pages ? adminMeta.pages : [];
+  const adminMetaPages = pages || [];
 
   const value = {
-    ...adminMeta,
+    adminPath,
+    apiPath,
+    graphiqlPath,
+    signinPath,
+    signoutPath,
+    authStrategy,
+    name,
+    listKeys: Object.keys(lists || {}),
+    getListByKey,
+    getListByPath: path => listsByPath[path],
     hooks: hookViews,
     pages: resolveCustomPages([...adminMetaPages, ...hookPages]),
+    ...customMeta,
   };
 
   return <AdminMetaContext.Provider value={value}>{children}</AdminMetaContext.Provider>;
 };
 
-export const useAdminMeta = () => {
-  return useContext(AdminMetaContext);
-};
+export const useAdminMeta = () => useContext(AdminMetaContext);

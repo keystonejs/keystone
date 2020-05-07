@@ -21,7 +21,7 @@ const Embed = ({ url, oembedData }) => {
 
   if (options.previewComponent) {
     // The adapter should implement this option
-    const [Preview] = options.adminMeta.readViews([options.previewComponent]);
+    const [Preview] = options.readViews([options.previewComponent]);
     return <Preview url={url} options={options} />;
   } else {
     // This is a fallback so we can at least try to render _something_
