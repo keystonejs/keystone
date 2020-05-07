@@ -81,7 +81,7 @@
     "jest-junit": "^10.0.0",
     "jest-resolve": "^25.1.0",
     "kleur": "^3.0.3",
-    "knex": "^0.20.6",
+    "knex": "^0.21.1",
     "luxon": "^1.11.4",
     "mdast-util-to-string": "^1.1.0",
     "memoize-one": "^5.1.1",
