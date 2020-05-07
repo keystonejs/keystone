@@ -27,7 +27,7 @@ export default class AnimateHeight extends Component {
   }
   calculateHeight = () => {
     const { autoScroll, initialHeight, onChange } = this.props;
-    const height = this.node ? this.node.scrollHeight : initialHeight;
+    const height = this.node ? this.node.offsetHeight : initialHeight;
 
     if (height !== this.state.height) {
       this.setState({ height });
@@ -78,10 +78,7 @@ export default class AnimateHeight extends Component {
       <div
         css={{
           height,
-          transition: isTransitioning
-            ? 'height 220ms cubic-bezier(0.2, 0, 0, 1)'
-            : // idk why this is necessary but having this be null makes the transition break
-              'height 0s',
+          transition: isTransitioning ? 'height 220ms cubic-bezier(0.2, 0, 0, 1)' : 'none',
           overflow,
         }}
         onTransitionEnd={event => {

@@ -14,7 +14,7 @@ describe('Nav Bar', () => {
       target: 'https://github.com/keystonejs/keystone',
       newTab: true,
     },
-    { text: 'GraphiQL Playground', target: '/admin/graphiql', newTab: true },
+    { text: 'GraphQL Playground', target: '/admin/graphiql', newTab: true },
   ].forEach(({ text, target, newTab = false }) => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
       cy.visit('/admin');

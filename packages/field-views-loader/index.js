@@ -37,9 +37,7 @@ function findPageComponents(pages, pageComponents = {}) {
 }
 
 module.exports = function() {
-  const options = loaderUtils.getOptions(this);
-  const adminMeta = options.adminMeta;
-
+  const { pages, hooks, listViews } = loaderUtils.getOptions(this);
   /* adminMeta gives us a `lists` object in the shape:
     {
       pages: [
@@ -85,18 +83,12 @@ module.exports = function() {
   }
    */
 
+  const allViews = {
+    ...listViews,
+    __pages__: findPageComponents(pages),
+    __hooks__: fs.existsSync(hooks) ? hooks : {},
+  };
   let allPaths = new Set();
-  let pageComponents = findPageComponents(adminMeta.pages);
-  let hooks = fs.existsSync(adminMeta.hooks) ? adminMeta.hooks : {};
-
-  let allViews = Object.entries(adminMeta.lists).reduce(
-    (obj, [listPath, { views }]) => {
-      obj[listPath] = views;
-      return obj;
-    },
-    { __pages__: pageComponents, __hooks__: hooks }
-  );
-
   const stringifiedObject = serialize(allViews, allPaths);
 
   let loaders = `{\n${[...allPaths]
