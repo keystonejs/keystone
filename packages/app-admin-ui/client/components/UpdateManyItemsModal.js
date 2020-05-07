@@ -12,7 +12,6 @@ import { LoadingIndicator } from '@arch-ui/loading';
 import Select from '@arch-ui/select';
 
 import { validateFields, handleCreateUpdateMutationError } from '../util';
-import CreateItemModal from './CreateItemModal';
 
 const Render = ({ children }) => children();
 
@@ -153,7 +152,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
           >
             <Render>
               {() => {
-                const [Field] = field.adminMeta.readViews([field.views.Field]);
+                const [Field] = field.readViews([field.views.Field]);
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -177,7 +176,6 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
                       warnings={validationWarnings[field.path] || []}
                       onChange={onChange}
                       renderContext="dialog"
-                      CreateItemModal={CreateItemModal}
                     />
                   ),
                   [

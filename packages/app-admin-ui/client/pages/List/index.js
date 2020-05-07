@@ -66,7 +66,7 @@ export function ListLayout(props) {
   const onCreate = ({ data }) => {
     const id = data[list.gqlNames.createMutationName].id;
     query.refetch().then(() => {
-      history.push(`${adminPath}/${list.path}/${id}`);
+      history.push(`${list.fullPath}/${id}`);
     });
   };
 

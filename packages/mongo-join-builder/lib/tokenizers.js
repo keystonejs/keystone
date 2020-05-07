@@ -121,6 +121,17 @@ const modifierTokenizer = (listAdapter, query, queryKey, path) => {
 
       return { $sort: { [mongoField]: orderDirection === 'DESC' ? -1 : 1 } };
     },
+    $sortBy: (value, _, listAdapter) => {
+      const res = {};
+      value.map(s => {
+        const [orderField, orderDirection] = s.split('_');
+        const mongoField = listAdapter.graphQlQueryPathToMongoField(orderField);
+
+        res[mongoField] = orderDirection === 'DESC' ? -1 : 1;
+      });
+
+      return { $sort: res };
+    },
     $skip: value => {
       if (value < Infinity && value > 0) {
         return { $skip: value };

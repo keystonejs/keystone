@@ -1,5 +1,11 @@
 # @keystonejs/email
 
+## 5.1.5
+
+### Patch Changes
+
+- [`9e2e0071`](https://github.com/keystonejs/keystone/commit/9e2e00715aff50f2ddfedf3dbc14f390275ff23b) [#2853](https://github.com/keystonejs/keystone/pull/2853) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded dev dependencies.
+
 ## 5.1.4
 
 ### Patch Changes

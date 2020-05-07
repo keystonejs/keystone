@@ -199,11 +199,11 @@ export const filterTests = withKeystone => {
   );
 
   test(
-    'Sorting: orderBy: lastOnline_ASC',
+    'Sorting: sortBy: lastOnline_ASC',
     withKeystone(({ keystone, adapterName }) =>
       match(
         keystone,
-        'orderBy: "lastOnline_ASC"',
+        'sortBy: lastOnline_ASC',
         adapterName === 'mongoose'
           ? [
               { name: 'person5', lastOnline: null },
@@ -225,11 +225,11 @@ export const filterTests = withKeystone => {
   );
 
   test(
-    'Sorting: orderBy: lastOnline_DESC',
+    'Sorting: sortBy: lastOnline_DESC',
     withKeystone(({ keystone, adapterName }) =>
       match(
         keystone,
-        'orderBy: "lastOnline_DESC"',
+        'sortBy: lastOnline_DESC',
         adapterName === 'mongoose'
           ? [
               { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },

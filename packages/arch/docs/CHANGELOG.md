@@ -1,5 +1,12 @@
 # @arch-ui/docs
 
+## 1.1.21
+
+### Patch Changes
+
+- Updated dependencies [[`216e6dec`](https://github.com/keystonejs/keystone/commit/216e6deca2b0d9a22ddbf0657a01b5122c178269)]:
+  - @arch-ui/popout@0.0.19
+
 ## 1.1.20
 
 ### Patch Changes
