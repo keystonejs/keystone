@@ -1,5 +1,11 @@
 # @arch-ui/popout
 
+## 0.0.19
+
+### Patch Changes
+
+- [`216e6dec`](https://github.com/keystonejs/keystone/commit/216e6deca2b0d9a22ddbf0657a01b5122c178269) [#2831](https://github.com/keystonejs/keystone/pull/2831) Thanks [@Vultraz](https://github.com/Vultraz)! - Reimplemented Popup component with react-popper.
+
 ## 0.0.18
 
 ### Patch Changes

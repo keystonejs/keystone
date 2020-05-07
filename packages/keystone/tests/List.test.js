@@ -250,6 +250,7 @@ describe('new List()', () => {
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
       listMetaName: '_TestsMeta',
+      listSortName: 'SortTestsBy',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
       updateMutationName: 'updateTest',
@@ -438,6 +439,7 @@ describe('getAdminMeta()', () => {
       itemQueryName: 'Test',
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
+      listSortName: 'SortTestsBy',
       listMetaName: '_TestsMeta',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
@@ -577,7 +579,16 @@ describe(`getGqlTypes() `, () => {
   const createManyInput = `input TestsCreateInput {
         data: TestCreateInput
       }`;
-
+  const sortTestsBy = `enum SortTestsBy {
+        name_ASC
+        name_DESC
+        email_ASC
+        email_DESC
+        other_ASC
+        other_DESC
+        writeOnce_ASC
+        writeOnce_DESC
+      }`;
   const schemaName = 'public';
   test('access: true', () => {
     expect(
@@ -589,6 +600,7 @@ describe(`getGqlTypes() `, () => {
         type,
         whereInput,
         whereUniqueInput,
+        sortTestsBy,
         updateInput,
         updateManyInput,
         createInput,
@@ -608,7 +620,7 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: true, create: false, update: false, delete: false } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+    ).toEqual([type, whereInput, whereUniqueInput, sortTestsBy].map(s => print(gql(s))));
   });
   test('create: true', () => {
     expect(
@@ -616,7 +628,9 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, createInput, createManyInput].map(s => print(gql(s)))
+      [type, whereInput, whereUniqueInput, sortTestsBy, createInput, createManyInput].map(s =>
+        print(gql(s))
+      )
     );
   });
   test('update: true', () => {
@@ -625,7 +639,9 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, updateInput, updateManyInput].map(s => print(gql(s)))
+      [type, whereInput, whereUniqueInput, sortTestsBy, updateInput, updateManyInput].map(s =>
+        print(gql(s))
+      )
     );
   });
   test('delete: true', () => {
@@ -633,7 +649,7 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: false, create: false, update: false, delete: true } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+    ).toEqual([type, whereInput, whereUniqueInput, sortTestsBy].map(s => print(gql(s))));
   });
 });
 
@@ -642,6 +658,7 @@ test('getGraphqlFilterFragment', () => {
   expect(list.getGraphqlFilterFragment()).toEqual([
     'where: TestWhereInput',
     'search: String',
+    'sortBy: [SortTestsBy!]',
     'orderBy: String',
     'first: Int',
     'skip: Int',
@@ -661,6 +678,7 @@ describe(`getGqlQueries()`, () => {
           allTests(
           where: TestWhereInput
           search: String
+          sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
           skip: Int
@@ -673,6 +691,7 @@ describe(`getGqlQueries()`, () => {
           _allTestsMeta(
           where: TestWhereInput
           search: String
+          sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
           skip: Int

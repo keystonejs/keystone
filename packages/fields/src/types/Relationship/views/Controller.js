@@ -2,11 +2,11 @@ import FieldController from '../../../Controller';
 
 export default class RelationshipController extends FieldController {
   constructor(config, ...args) {
-    const defaultValue = 'defaultValue' in config ? config.defaultValue : config.many ? [] : null;
+    const { defaultValue = config.many ? [] : null } = config;
     super({ ...config, defaultValue }, ...args);
   }
   getRefList() {
-    return this.adminMeta.getListByKey(this.config.ref);
+    return this.getListByKey(this.config.ref);
   }
   getQueryFragment = (path = this.path) => {
     return `

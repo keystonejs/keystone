@@ -11,14 +11,11 @@ import { colors } from '@arch-ui/theme';
 import { uniformHeight } from '@arch-ui/common';
 import Tooltip from '@arch-ui/tooltip';
 
-import { useAdminMeta } from '../../providers/AdminMeta';
-
 export function Search({ list }) {
   const [value, setValue] = useState('');
   const [formIsVisible, setFormVisible] = useState(false);
   const inputRef = useRef(null);
   const history = useHistory();
-  const { adminPath } = useAdminMeta();
 
   const showForm = () => {
     setFormVisible(true);
@@ -37,7 +34,7 @@ export function Search({ list }) {
 
   const handleSubmit = event => {
     if (event) event.preventDefault();
-    history.push(`${adminPath}/${list.path}/?search=${value}`);
+    history.push(`${list.fullPath}/?search=${value}`);
   };
 
   const hasValue = value && value.length;

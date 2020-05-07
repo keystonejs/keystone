@@ -1,5 +1,11 @@
 # @arch-ui/options
 
+## 0.0.21
+
+### Patch Changes
+
+- [`d7eb2601`](https://github.com/keystonejs/keystone/commit/d7eb260144d2aa31e7ef4e636e7a23f91dc37285) [#2832](https://github.com/keystonejs/keystone/pull/2832) Thanks [@Vultraz](https://github.com/Vultraz)! - Added horizontal padding to Select field filter dropdown.
+
 ## 0.0.20
 
 ### Patch Changes

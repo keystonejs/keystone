@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 5.4.1
+
+### Patch Changes
+
+- [`e0e3e30a`](https://github.com/keystonejs/keystone/commit/e0e3e30a9051741de3f5a0c12ba00f2238d54800) [#2697](https://github.com/keystonejs/keystone/pull/2697) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted some stray promise chains to async/await.
+
 ## 5.4.0
 
 ### Minor Changes

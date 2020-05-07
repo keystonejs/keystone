@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/email",
   "description": "Easily send emails from a KeystoneJS application",
-  "version": "5.1.4",
+  "version": "5.1.5",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -15,12 +15,12 @@
     "pify": "^4.0.1"
   },
   "peerDependencies": {
-    "mjml-react": "^1.0.55",
+    "mjml-react": "^1.0.57",
     "react": "^16.13.1",
     "react-dom": "^16.13.0"
   },
   "devDependencies": {
-    "mjml-react": "^1.0.55",
+    "mjml-react": "^1.0.57",
     "pug": "2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
