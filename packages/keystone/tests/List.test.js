@@ -897,17 +897,17 @@ test('checkFieldAccess', async () => {
 test('checkListAccess', async () => {
   const list = setup();
   const originalInput = {};
-  await expect(list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })).resolves.toEqual(
-    true
-  );
+  await expect(
+    list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })
+  ).resolves.toEqual(true);
 
   const newContext = {
     ...context,
     getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
   };
-  await expect(list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })).resolves.toEqual(
-    true
-  );
+  await expect(
+    list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })
+  ).resolves.toEqual(true);
   await expect(
     list.checkListAccess(newContext, originalInput, 'read', { gqlName: 'testing' })
   ).rejects.toThrow(AccessDeniedError);

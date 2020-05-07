@@ -180,9 +180,7 @@ module.exports = class Keystone {
             itemIds,
           });
         },
-        {
-          isPromise: true,
-        }
+        { isPromise: true }
       );
 
       getFieldAccessControlForUser = memoize(
@@ -207,9 +205,7 @@ module.exports = class Keystone {
             itemIds,
           });
         },
-        {
-          isPromise: true,
-        }
+        { isPromise: true }
       );
 
       getAuthAccessControlForUser = memoize(
@@ -221,9 +217,7 @@ module.exports = class Keystone {
             gqlName,
           });
         },
-        {
-          isPromise: true,
-        }
+        { isPromise: true }
       );
     }
 

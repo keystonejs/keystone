@@ -258,16 +258,24 @@ describe('Access control package tests', () => {
     const access = { [operation]: true };
 
     // Test the static case: returning a boolean
-    await expect(validateListAccessControl({ access: { [operation]: true }, operation })).resolves.toBe(true);
-    await expect(validateListAccessControl({ access: { [operation]: false }, operation })).resolves.toBe(false);
-    await expect(validateListAccessControl({ access: { [operation]: 10 }, operation })).rejects.toThrow(
-      Error
-    );
+    await expect(
+      validateListAccessControl({ access: { [operation]: true }, operation })
+    ).resolves.toBe(true);
+    await expect(
+      validateListAccessControl({ access: { [operation]: false }, operation })
+    ).resolves.toBe(false);
+    await expect(
+      validateListAccessControl({ access: { [operation]: 10 }, operation })
+    ).rejects.toThrow(Error);
 
     const originalInput = {};
     const accessFn = jest.fn(() => true);
 
-    await validateListAccessControl({ access: { [operation]: accessFn }, operation, originalInput });
+    await validateListAccessControl({
+      access: { [operation]: accessFn },
+      operation,
+      originalInput,
+    });
 
     expect(accessFn).toHaveBeenCalledTimes(1);
     expect(accessFn).toHaveBeenCalledWith(
@@ -276,8 +284,8 @@ describe('Access control package tests', () => {
       })
     );
 
-    const items = [{}, { item: {} }]
-    for(const authentication of items) {
+    const items = [{}, { item: {} }];
+    for (const authentication of items) {
       operation = 'read';
 
       // Boolean function
@@ -319,17 +327,21 @@ describe('Access control package tests', () => {
       await expect(
         validateListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
       ).rejects.toThrow(Error);
-    };
+    }
   });
 
   test('validateFieldAccessControl', async () => {
     const operation = 'read';
     // Test the StaticAccess case: returning a boolean
-    await expect(validateFieldAccessControl({ access: { [operation]: true }, operation })).resolves.toBe(true);
-    await expect(validateFieldAccessControl({ access: { [operation]: false }, operation })).resolves.toBe(false);
-    await expect(validateFieldAccessControl({ access: { [operation]: 10 }, operation })).rejects.toThrow(
-      Error
-    );
+    await expect(
+      validateFieldAccessControl({ access: { [operation]: true }, operation })
+    ).resolves.toBe(true);
+    await expect(
+      validateFieldAccessControl({ access: { [operation]: false }, operation })
+    ).resolves.toBe(false);
+    await expect(
+      validateFieldAccessControl({ access: { [operation]: 10 }, operation })
+    ).rejects.toThrow(Error);
 
     const originalInput = {};
     const existingItem = {};
@@ -349,9 +361,9 @@ describe('Access control package tests', () => {
         existingItem,
       })
     );
-    
-    const items = [{}, { item: {} }]
-    for(const authentication of items) {
+
+    const items = [{}, { item: {} }];
+    for (const authentication of items) {
       // Test the ImperativeAccess case: a function which should return boolean
       await expect(
         validateFieldAccessControl({
@@ -372,7 +384,7 @@ describe('Access control package tests', () => {
       await expect(
         validateFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
       ).rejects.toThrow(Error);
-    };
+    }
   });
 
   test('validateAuthAccessControl', async () => {
@@ -381,7 +393,9 @@ describe('Access control package tests', () => {
 
     // Test the static case: returning a boolean
     await expect(validateAuthAccessControl({ access: { [operation]: true } })).resolves.toBe(true);
-    await expect(validateAuthAccessControl({ access: { [operation]: false } })).resolves.toBe(false);
+    await expect(validateAuthAccessControl({ access: { [operation]: false } })).resolves.toBe(
+      false
+    );
     await expect(validateAuthAccessControl({ access: { [operation]: 10 } })).rejects.toThrow(Error);
 
     const accessFn = jest.fn(() => true);
@@ -390,7 +404,7 @@ describe('Access control package tests', () => {
 
     expect(accessFn).toHaveBeenCalledTimes(1);
 
-    const items = [{}, { item: {} }]
+    const items = [{}, { item: {} }];
     for (const authentication of items) {
       operation = 'auth';
 
@@ -417,6 +431,6 @@ describe('Access control package tests', () => {
       await expect(
         validateAuthAccessControl({ access: { [operation]: () => 10 }, authentication })
       ).rejects.toThrow(Error);
-    };
+    }
   });
 });
