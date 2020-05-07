@@ -9,7 +9,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "loader-utils": "^1.2.3"
+    "loader-utils": "^2.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/field-views-loader"
 }
