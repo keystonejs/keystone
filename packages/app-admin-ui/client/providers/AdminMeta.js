@@ -47,24 +47,6 @@ export const AdminMetaProvider = ({ children }) => {
   const listsByPath = {};
   const getListByKey = key => listsByKey[key];
 
-  const adminMeta = {
-    adminPath,
-    apiPath,
-    graphiqlPath,
-    pages,
-    hooks,
-    signinPath,
-    signoutPath,
-    authStrategy,
-    name,
-    ...customMeta,
-    listKeys: Object.keys(lists || {}),
-    getListByKey,
-    getListByPath: path => listsByPath[path],
-    readViews,
-    preloadViews,
-  };
-
   const viewsToLoad = new Set();
   if (typeof hookView === 'function') {
     viewsToLoad.add(hookView);
@@ -102,17 +84,25 @@ export const AdminMetaProvider = ({ children }) => {
   }
 
   const hookPages = hookViews.pages ? hookViews.pages() : [];
-  const adminMetaPages = adminMeta.pages ? adminMeta.pages : [];
+  const adminMetaPages = pages || [];
 
   const value = {
-    ...adminMeta,
+    adminPath,
+    apiPath,
+    graphiqlPath,
+    signinPath,
+    signoutPath,
+    authStrategy,
+    name,
+    listKeys: Object.keys(lists || {}),
+    getListByKey,
+    getListByPath: path => listsByPath[path],
     hooks: hookViews,
     pages: resolveCustomPages([...adminMetaPages, ...hookPages]),
+    ...customMeta,
   };
 
   return <AdminMetaContext.Provider value={value}>{children}</AdminMetaContext.Provider>;
 };
 
-export const useAdminMeta = () => {
-  return useContext(AdminMetaContext);
-};
+export const useAdminMeta = () => useContext(AdminMetaContext);
