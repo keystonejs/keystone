@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+/** @jsx jsx */
+
+import { useState } from 'react';
+import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import { Alert } from '@arch-ui/alert';
-import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
-import { colors } from '@arch-ui/theme';
-import { PageTitle } from '@arch-ui/typography';
+import { Input } from '@arch-ui/input';
+import { colors, gridSize } from '@arch-ui/theme';
+import { PageTitle, Title } from '@arch-ui/typography';
 
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -17,57 +20,51 @@ import KeystoneLogo from '../components/KeystoneLogo';
 import { useAdminMeta } from '../providers/AdminMeta';
 import { useUIHooks } from '../providers/Hooks';
 
-const Container = styled.div({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  minHeight: '100vh',
-  width: '100%',
-});
+const _PADDING = gridSize * 2;
+const _BUTTON_WIDTH = 280;
 
-const Alerts = styled.div({
-  margin: '20px auto',
-  width: 650,
-  height: 48,
-});
+const Container = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+`;
 
-const Form = styled.form({
-  boxShadow: '0 2px 1px #f1f1f1',
-  backgroundColor: 'white',
-  border: '1px solid #e9e9e9',
-  borderRadius: '0.3em',
-  margin: '0 auto',
-  minWidth: 650,
-  padding: 40,
-  display: 'flex',
-  flexWrap: 'nowrap',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+const Alerts = styled.div`
+  height: 48px;
+`;
 
-const Divider = styled.div({
-  borderRight: '1px solid #eee',
-  minHeight: 185,
-  lineHeight: 185,
-  margin: '0 40px',
-});
+const Form = styled.form`
+  margin-bottom: 120px;
+  min-width: 650px;
+  padding: 40px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+`;
 
-const FieldLabel = styled.div({
-  color: colors.N60,
-  marginTop: 16,
-  marginBottom: 8,
-  fontSize: 16,
-});
+const Divider = styled.div`
+  border-right: 2px solid ${colors.N10};
+  min-height: 450px;
+  line-height: 450px;
+  margin-right: 40px;
+  margin-left: 60px;
+`;
 
-const Fields = styled.div({
-  marginBottom: 16,
-  width: 280,
-});
+const FieldLabel = styled.div`
+  color: ${colors.N60};
+  margin-top: ${_PADDING}px;
+  margin-bottom: ${gridSize}px;
+  font-size: ${_PADDING}px;
+`;
 
-const Spacer = styled.div({
-  height: 120,
-});
+const Fields = styled.div`
+  margin: ${_PADDING}px 0;
+  width: ${_BUTTON_WIDTH}px;
+`;
 
 const SignInPage = () => {
   const {
@@ -125,15 +122,14 @@ const SignInPage = () => {
   return (
     <Container>
       <Alerts>
-        {error ? (
-          <Alert appearance="danger">Your username and password were incorrect</Alert>
-        ) : null}
+        {error && <Alert appearance="danger">Your username or password were incorrect</Alert>}
       </Alerts>
-      <PageTitle>{siteName}</PageTitle>
       <Form method="post" onSubmit={onSubmit}>
         {getCustomLogo ? getCustomLogo() : <KeystoneLogo />}
         <Divider />
         <div>
+          <PageTitle css={{ marginTop: 0, marginBottom: `${gridSize}px` }}>{siteName}</PageTitle>
+          <Title css={{ marginBottom: `${_PADDING * 2}px` }}>Admin UI</Title>
           <Fields>
             <FieldLabel>{upcase(identityField)}</FieldLabel>
             <Input
@@ -157,17 +153,16 @@ const SignInPage = () => {
             type="submit"
             isLoading={loading || reloading}
             indicatorVariant="dots"
-            style={{
-              width: '280px',
+            css={{
+              width: `${_BUTTON_WIDTH}px`,
               height: '2.6em',
-              margin: '1em 0',
+              margin: `${_PADDING}px 0`,
             }}
           >
             Sign In
           </LoadingButton>
         </div>
       </Form>
-      <Spacer />
     </Container>
   );
 };

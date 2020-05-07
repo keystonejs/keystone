@@ -57,7 +57,7 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 
 function LinkToRelatedItems({ field, value }) {
   const { many } = field.config;
-  const { adminPath } = field.adminMeta;
+  const { adminPath } = field;
   const { path } = field.getRefList();
   let isDisabled = false;
   let label;
@@ -178,7 +178,7 @@ const RelationshipField = ({
   };
 
   const { many, ref } = field.config;
-  const { authStrategy } = field.adminMeta;
+  const { authStrategy } = field;
   const htmlID = `ks-input-${field.path}`;
 
   const relatedList = field.getRefList();

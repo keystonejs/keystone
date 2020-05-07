@@ -152,7 +152,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
           >
             <Render>
               {() => {
-                const [Field] = field.adminMeta.readViews([field.views.Field]);
+                const [Field] = field.readViews([field.views.Field]);
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {

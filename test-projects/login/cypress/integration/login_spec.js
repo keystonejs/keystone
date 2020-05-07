@@ -102,7 +102,7 @@ describe('Testing Login', () => {
       // appear to be attached, so the form is not getting validated correctly
       cy.wait(250);
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
 
     it('Does not log in with invalid credentials', () => {
@@ -117,7 +117,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
 
     it('Does not log in with invalid identity', () => {
@@ -132,7 +132,7 @@ describe('Testing Login', () => {
         .type(SECRET, { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
 
     it('Does not log in with invalid secret', () => {
@@ -147,7 +147,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
   });
 
