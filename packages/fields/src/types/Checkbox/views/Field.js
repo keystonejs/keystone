@@ -16,7 +16,7 @@ const CheckboxField = ({ onChange, autoFocus, field, value, errors }) => {
 
   return (
     <FieldContainer>
-      <FieldDescription text={field.config.adminDoc} />
+      <FieldDescription text={field.adminDoc} />
       <FieldInput css={{ height: 35, alignItems: 'center' }}>
         <CheckboxPrimitive
           autoFocus={autoFocus}

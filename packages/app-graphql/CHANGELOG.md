@@ -1,5 +1,20 @@
 # @keystonejs/app-graphql
 
+## 5.1.7
+
+### Patch Changes
+
+- Updated dependencies [[`e0e3e30a`](https://github.com/keystonejs/keystone/commit/e0e3e30a9051741de3f5a0c12ba00f2238d54800), [`0fbc5b98`](https://github.com/keystonejs/keystone/commit/0fbc5b989a9f96248d1bd7f2f589fe77cb1d8f7d), [`da1359df`](https://github.com/keystonejs/keystone/commit/da1359dfc1bff7e27505eff876efe3a0865bae2d)]:
+  - @keystonejs/utils@5.4.1
+  - @keystonejs/session@7.0.0
+  - @keystonejs/app-graphql-playground@5.1.3
+
+## 5.1.6
+
+### Patch Changes
+
+- [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b) [#2854](https://github.com/keystonejs/keystone/pull/2854) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded dependencies.
+
 ## 5.1.5
 
 ### Patch Changes

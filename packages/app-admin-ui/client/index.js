@@ -7,7 +7,7 @@ import { Global } from '@emotion/core';
 
 import { globalStyles } from '@arch-ui/theme';
 
-import ApolloClient from './apolloClient';
+import { initApolloClient } from './apolloClient';
 import Nav from './components/Nav';
 import ScrollToTop from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';
@@ -36,7 +36,7 @@ export const KeystoneAdminUI = () => {
     hooks,
   } = useAdminMeta();
 
-  const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
+  const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   const routes = [
     ...pages
@@ -72,15 +72,9 @@ export const KeystoneAdminUI = () => {
         }
 
         return (
-          <ListProvider list={list}>
+          <ListProvider key={listKey} list={list}>
             <Switch>
-              <Route
-                exact
-                path={`${adminPath}/:list`}
-                render={routeProps => (
-                  <ListPage key={listKey} list={list} routeProps={routeProps} />
-                )}
-              />
+              <Route exact path={`${adminPath}/:list`} render={() => <ListPage key={listKey} />} />
               ,
               <Route
                 exact
@@ -89,7 +83,7 @@ export const KeystoneAdminUI = () => {
                   match: {
                     params: { itemId },
                   },
-                }) => <ItemPage key={`${listKey}-${itemId}`} list={list} itemId={itemId} />}
+                }) => <ItemPage key={`${listKey}-${itemId}`} itemId={itemId} />}
               />
               ,
               <Route render={() => <InvalidRoutePage />} />,

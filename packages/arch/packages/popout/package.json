@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/popout",
   "description": "Popout Component used in @keystonejs Admin UI.",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/popout.cjs.js",
@@ -20,7 +20,9 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
-    "focus-trap-react": "^6.0.0"
+    "@popperjs/core": "^2.3.3",
+    "focus-trap-react": "^6.0.0",
+    "react-popper": "^2.2.2"
   },
   "module": "dist/popout.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/popout"

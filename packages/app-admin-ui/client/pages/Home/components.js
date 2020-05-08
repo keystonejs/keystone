@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { Link, useHistory } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 import { useList } from '../../providers/List';
-import { useAdminMeta } from '../../providers/AdminMeta';
 
 import CreateItemModal from '../../components/CreateItemModal';
 
@@ -37,11 +36,10 @@ const BoxElement = styled(Card)`
 const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props }) => {
   const { list, openCreateItemModal } = useList();
   const history = useHistory();
-  const { adminPath } = useAdminMeta();
 
   const onCreate = ({ data }) => {
     const id = data[list.gqlNames.createMutationName].id;
-    history.push(`${adminPath}/${list.path}/${id}`);
+    history.push(`${list.fullPpath}/${id}`);
   };
 
   const { label, singular } = list;
