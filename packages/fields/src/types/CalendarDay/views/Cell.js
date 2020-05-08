@@ -1,15 +1,4 @@
 import { format, parseISO } from 'date-fns';
 
-const CalendarDayCell = ({ data, field: { config } }) => {
-  if (!data) {
-    return null;
-  }
-
-  if (!config.format) {
-    return data;
-  }
-
-  return format(parseISO(data), config.format);
-};
-
-export default CalendarDayCell;
+export default ({ data, field: { format: formatString } }) =>
+  data ? (formatString ? format(parseISO(data), formatString) : data) : null;

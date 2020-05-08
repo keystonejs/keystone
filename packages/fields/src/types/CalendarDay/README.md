@@ -52,7 +52,7 @@ All date values must be in the 10 character ISO8601 format:`YYYY-MM-DD`.
 
 ### Filters
 
-All filter fields expect values in the ISO8601 (`YYYY-MM-DD`) format.
+All filter fields expect values in the ISO8601 (`yyyy-MM-dd`) format.
 
 | Field name       | Type       | Description                                |
 | :--------------- | :--------- | :----------------------------------------- |
@@ -69,7 +69,7 @@ All filter fields expect values in the ISO8601 (`YYYY-MM-DD`) format.
 
 ### Mongoose adapter
 
-In Mongoose the field is added using the `String` schema type.
+In Mongoose the field is stored using the `String` schema type.
 
 The `isRequired` config option is enforced by KeystoneJS only.
 

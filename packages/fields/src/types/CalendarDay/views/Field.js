@@ -8,14 +8,20 @@ import 'react-day-picker/dist/style.css';
 import { DayPicker } from 'react-day-picker';
 import { parseISO, compareAsc, formatISO, isValid } from 'date-fns';
 
-const CalendarDayField = ({ autoFocus, field, value, errors, onChange, isDisabled }) => {
-  const htmlID = `ks-daypicker-${field.path}`;
-  const handleDayClick = day => onChange(formatISO(day, { representation: 'date' }));
+const CalendarDayField = ({
+  autoFocus,
+  field: { format, path, label, isRequired, adminDoc },
+  value,
+  errors,
+  onChange,
+  isDisabled,
+}) => {
+  const htmlID = `ks-daypicker-${path}`;
 
   return (
     <FieldContainer>
-      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.adminDoc} />
+      <FieldLabel htmlFor={htmlID} field={{ label, isRequired }} errors={errors} />
+      <FieldDescription text={adminDoc} />
       <FieldInput>
         <DayPicker
           disabled={[
@@ -33,25 +39,9 @@ const CalendarDayField = ({ autoFocus, field, value, errors, onChange, isDisable
         <Input
           id={htmlID}
           autoFocus={autoFocus}
-          onKeyDown={e => {
-            // There is a strange bug where after interacting with the day picker
-            // and then pressing enter on the input the value is changed to the start
-            // of the month. I think this is bug with the day picker.
-            // The following is a work-around:
-            if (e.key === 'Enter') {
-              e.preventDefault();
-            }
-          }}
-          onChange={e => {
-            // Tiny bit of date format normalisation for convenience
-            const normalisedValue = e.target.value.replace('/', '-').replace('\\', '-');
-            const parsedValue = parseISO(normalisedValue);
-            if (normalisedValue.length === 10 && isValid(parsedValue)) {
-              handleDayClick(parsedValue);
-            } else {
-              onChange(normalisedValue);
-            }
-          }}
+          date={value}
+          format={format}
+          onChange={onChange}
           disabled={isDisabled}
           css={{ color: isValid(parseISO(value)) ? undefined : 'darkred' }}
           value={value}

@@ -27,7 +27,7 @@ keystone.createList('ListWithPlugin', {
 | ---------------- | -------- | ------------------- | ----------------------------------------- |
 | `createdAtField` | `String` | `createdAt`         | Name of the `createdAt` field.            |
 | `updatedAtField` | `String` | `updatedAt`         | Name of the `createdAt` field.            |
-| `format`         | `String` | `MM/DD/YYYY h:mm A` | Format of the generated `DateTime` field. |
+| `format`         | `String` | `MM/dd/yyyy h:mm a` | Format of the generated `DateTime` field. |
 | `access`         | `Object` | See: access         | Change default access controls.           |
 
 ### `access`

@@ -1,6 +1,12 @@
 import FieldController from '../../../Controller';
 
 export default class CalendarDayController extends FieldController {
+  constructor({ format, yearRangeFrom, yearRangeTo, ...config }, ...args) {
+    super({ ...config }, ...args);
+    this.format = format;
+    this.yearRangeFrom = yearRangeFrom;
+    this.yearRangeTo = yearRangeTo;
+  }
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return { [key]: value };
