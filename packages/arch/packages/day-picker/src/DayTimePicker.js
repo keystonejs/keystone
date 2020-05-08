@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { parse } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { DayPicker } from './DayPicker';
 import { Input } from '@arch-ui/input';
 import Select from '@arch-ui/select';
@@ -56,8 +56,8 @@ export const DayTimePicker = props => {
         yearRangeFrom={yearRangeFrom}
         yearRangeTo={yearRangeTo}
         yearPickerType={yearPickerType}
-        startCurrentDateAt={date ? parse(date) : TODAY}
-        selectedDate={date ? parse(date) : null}
+        startCurrentDateAt={date ? parseISO(date) : TODAY}
+        selectedDate={date ? parseISO(date) : null}
       />
       <Input
         type="time"
