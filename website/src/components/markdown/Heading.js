@@ -4,8 +4,6 @@ import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 import { LinkIcon } from '@arch-ui/icons';
 
-import { mq } from '../../utils/media';
-
 // offset header height for hash links
 const hashLinkOffset = {
   '::before': {
@@ -79,12 +77,12 @@ const Heading = ({ as: Tag, children, id, ...props }) => {
 
 export const H1 = props => (
   <Heading
-    css={mq({
+    css={{
       fontSize: '2.4rem',
       fontWeight: 500,
       letterSpacing: '-0.025em',
       marginTop: 0,
-    })}
+    }}
     {...props}
     as="h1"
   />
@@ -92,25 +90,25 @@ export const H1 = props => (
 export const H2 = props => (
   <Heading
     {...props}
-    css={mq({
+    css={{
       fontSize: '1.8rem',
       fontWeight: 500,
       letterSpacing: '-0.025em',
       marginTop: 0,
       ...hashLinkOffset,
-    })}
+    }}
     as="h2"
   />
 );
 export const H3 = props => (
   <Heading
-    css={mq({
+    css={{
       fontSize: '1.4rem',
       fontWeight: 500,
       letterSpacing: '-0.025em',
       marginTop: 0,
       ...hashLinkOffset,
-    })}
+    }}
     {...props}
     as="h3"
   />
@@ -118,10 +116,10 @@ export const H3 = props => (
 
 export const H4 = props => (
   <Heading
-    css={mq({
+    css={{
       fontSize: '1.2rem',
       ...hashLinkOffset,
-    })}
+    }}
     {...props}
     as="h4"
   />
