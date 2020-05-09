@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { DayTimePicker } from '@arch-ui/day-picker';
 import { stringifyDate, parseDate } from './utils';
 
-const CalendarDayFilterView = props => {
+const DateTimeFilterView = props => {
   const parsedDate = props.value ? parseDate(props.value) : parseDate(new Date().toISOString());
 
   let handleDayChange = day => {
@@ -38,4 +38,4 @@ const CalendarDayFilterView = props => {
   );
 };
 
-export default CalendarDayFilterView;
+export default DateTimeFilterView;
