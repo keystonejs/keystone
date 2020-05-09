@@ -11,3 +11,5 @@ Fixed many usability issues with the CalendarDay field:
 - Fixed filter input not initially displaying the current value when in edit mode (it was displaying the current date).
 - Fixed filter input not being initially focused.
 - Fixed filter input not being submitted properly if focus wasn't lost first.
+
+Updated chrono-node dependency to 1.4.6.
