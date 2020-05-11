@@ -75,7 +75,6 @@ const ItemDetails = ({
   const [validationWarnings, setValidationWarnings] = useState({});
 
   const itemHasChanged = useRef(false);
-  const itemSaveCheckCache = useRef({});
   const deleteConfirmed = useRef(false);
 
   const history = useHistory();
@@ -211,9 +210,13 @@ const ItemDetails = ({
     }
 
     // Cache the current item data at the time of saving.
-    itemSaveCheckCache.current = item;
+    const itemSaveCheckCache = item;
 
-    await updateItem({ variables: { id: item.id, data } });
+    // The result will be undefined if an error (such as access denial) occurred.
+    const mutationResult = await updateItem({ variables: { id: item.id, data } });
+    if (!mutationResult) {
+      return;
+    }
 
     setValidationErrors({});
     setValidationWarnings({});
@@ -222,7 +225,7 @@ const ItemDetails = ({
     // when it hasn't changed since we did the mutation
     // otherwise a user could edit the data and
     // accidentally close the page without a warning
-    if (item === itemSaveCheckCache.current) {
+    if (item === itemSaveCheckCache) {
       itemHasChanged.current = false;
     }
 
@@ -231,15 +234,12 @@ const ItemDetails = ({
     // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
     toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
 
-    // No changes since we kicked off the item saving
+    // No changes since we kicked off the item saving.
+    // Then reset the state to the current server value
+    // This ensures we are able to pass any extra information returned
+    // from the server that otherwise would be unknown to client state
     if (!itemHasChanged.current) {
-      // Then reset the state to the current server value
-      // This ensures we are able to pass any extra information returned
-      // from the server that otherwise would be unknown to client state
       setItem(savedItem);
-
-      // Clear the cache
-      itemSaveCheckCache.current = {};
     }
   };
 
@@ -369,13 +369,10 @@ const ItemPage = ({ itemId }) => {
     errorPolicy: 'all',
   });
 
-  const [updateItem, { loading: updateInProgress, error: updateError }] = useMutation(
-    list.updateMutation,
-    {
-      errorPolicy: 'all',
-      onError: error => handleCreateUpdateMutationError({ error, addToast }),
-    }
-  );
+  const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
+    errorPolicy: 'all',
+    onError: error => handleCreateUpdateMutationError({ error, addToast }),
+  });
 
   // Now that the network request for data has been triggered, we
   // try to initialise the fields. They are Suspense capable, so may
@@ -429,11 +426,6 @@ const ItemPage = ({ itemId }) => {
   const item = deserializeItem(list, data[list.gqlNames.itemQueryName]);
   const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
-  const handleUpdateItem = async args => {
-    const result = await updateItem(args);
-    if (!result) throw Error();
-  };
-
   if (!item) {
     return <ItemNotFound list={list} />;
   }
@@ -454,8 +446,7 @@ const ItemPage = ({ itemId }) => {
               )
             }
             updateInProgress={updateInProgress}
-            updateErrorMessage={updateError && updateError.message}
-            updateItem={handleUpdateItem}
+            updateItem={updateItem}
           />
         </Container>
       </main>
