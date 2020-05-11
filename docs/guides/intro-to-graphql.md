@@ -225,7 +225,6 @@ When executing queries and mutations there are a number of ways you can filter, 
 - `skip`
 - `first`
 - `sortBy`
-- `orderby` (deprecated)
 
 ### `where`
 
@@ -280,7 +279,7 @@ query {
 
 #### Integer `where` filters
 
-- `{Field}: Int`
+- `{Field}`: Int
 - `{Field}_not`: Int
 - `{Field}_lt`: Int
 - `{Field}_lte`: Int
@@ -289,7 +288,7 @@ query {
 - `{Field}_in`: [Int]
 - `{Field}_not_in`: [Int]
 
-### Operators
+#### Operators
 
 You can combine multiple where clauses with `AND` or `OR` operators.
 
@@ -323,7 +322,24 @@ query {
 
 ### `sortBy`
 
-Order results. Accepts one or more list sort enums in the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
+Order results.
+
+Each list generates a GraphQL enum called `Sort{$listQueryName}By` containing possible sorting options based on its orderable fields in the format `<field>_<ASC|DESC>`. For example, a `User` list with `name` and `email` fields would add the following to the schema:
+
+```graphql
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+```
+
+`sortBy` accepts one or more of these enum values. If a list of values is provided, sorting is evaluated left-to-right.
+
+Order by name descending (alphabetical order, A -> Z):
 
 ```graphql
 query {
@@ -333,15 +349,11 @@ query {
 }
 ```
 
-### `orderBy`
+Order by name descending then email ascending:
 
-> **Warning:** This argument is deprecated. Use `sortBy` instead.
-
-Order results. The orderBy string should match the format `<field>_<ASC|DESC>`. For example, to order by name descending (alphabetical order, A -> Z):
-
-```graphql
+```graphql title=
 query {
-  allUsers(orderBy: "name_DESC") {
+  allUsers(sortBy: [name_DESC, email_ASC]) {
     id
   }
 }
@@ -349,9 +361,9 @@ query {
 
 ### `first`
 
-Limits the number of items returned from the query. Limits will be applied after `skip`, `orderBy`, `where` and `search` values are applied.
+Limits the number of items returned from the query. Limits will be applied after `skip`, `sortBy`, `where` and `search` values are applied.
 
-If less results are available, the number of available results will be returned.
+If fewer results are available, the number of available results will be returned.
 
 ```graphql
 query {
@@ -363,7 +375,7 @@ query {
 
 ### `skip`
 
-Skip the number of results specified. Is applied before `first` parameter, but after `orderBy`, `where` and `search` values.
+Skip the number of results specified. Is applied before `first` parameter, but after `sortBy`, `where` and `search` values.
 
 If the value of `skip` is greater than the number of available results, zero results will be returned.
 
@@ -383,7 +395,7 @@ It is important to provide the same `where` and `search` arguments to both the `
 
 ```graphql
 query {
-  allUsers (search:'a', skip: 10, first: 10) {
+  allUsers (search: 'a', skip: 10, first: 10) {
     id
   }
   _allUsersMeta(search: 'a') {
@@ -394,7 +406,7 @@ query {
 
 When `first` and `skip` are used together, skip works as an offset for the `first` argument. For example`(skip:10, first:5)` selects results 11 through 15.
 
-Both `skip` and `first` respect the values of the `where`, `search` and `orderBy` arguments.
+Both `skip` and `first` respect the values of the `where`, `search` and `sortBy` arguments.
 
 ## Custom queries and mutations
 
