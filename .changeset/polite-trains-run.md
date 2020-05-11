@@ -1,12 +1,12 @@
 ---
-'@keystonejs/demo-project-blog': patch
-'@keystonejs/demo-project-meetup': patch
-'@arch-ui/day-picker': patch
+'@keystonejs/demo-project-blog': major
+'@keystonejs/demo-project-meetup': major
+'@arch-ui/day-picker': major
 '@keystonejs/fields': major
-'@keystonejs/fields-datetime-utc': patch
-'@keystonejs/list-plugins': patch
-'@keystonejs/cypress-project-basic': patch
-'@keystonejs/cypress-project-client-validation': patch
+'@keystonejs/fields-datetime-utc': major
+'@keystonejs/list-plugins': major
+'@keystonejs/cypress-project-basic': major
+'@keystonejs/cypress-project-client-validation': major
 ---
 
 Upgraded to date-fns 2.x. This version uses [Unicode tokens](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table) for its formatting strings. A conversion table is available [here](https://github.com/date-fns/date-fns/blob/master/CHANGELOG.md#200---2019-08-20).
