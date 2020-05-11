@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import FieldController from '../../../Controller';
 
 export default class DateTimeController extends FieldController {
@@ -14,7 +14,7 @@ export default class DateTimeController extends FieldController {
     let formattedValue = value;
 
     if (formatConfig) {
-      formattedValue = format(value, formatConfig);
+      formattedValue = format(parseISO(value), formatConfig);
     }
 
     return `${this.getFilterLabel({ label })}: "${formattedValue}"`;

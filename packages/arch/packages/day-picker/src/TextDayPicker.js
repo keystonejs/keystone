@@ -1,11 +1,11 @@
 import React, { useState, useEffect, forwardRef, useRef } from 'react';
 import chrono from 'chrono-node';
 import { Input } from '@arch-ui/input';
-import { format } from 'date-fns';
+import { format, formatISO, parseISO } from 'date-fns';
 
 export const TextDayPicker = forwardRef(
-  ({ date = '', onChange, format: displayFormat = 'Do MMMM YYYY', ...props }, ref) => {
-    const formatDate = newDate => (newDate ? format(newDate, displayFormat) : '');
+  ({ date = '', onChange, format: displayFormat = 'do MMMM yyyy', ...props }, ref) => {
+    const formatDate = newDate => (newDate ? format(parseISO(newDate), displayFormat) : '');
 
     const [isEditing, setIsEditing] = useState(false);
     const [value, setValue] = useState({
@@ -20,7 +20,7 @@ export const TextDayPicker = forwardRef(
       const parsedDate = chrono.parseDate(value.raw);
 
       // If valid, convert it to ISO 8601.
-      const isoDate = parsedDate ? format(parsedDate, 'YYYY-MM-DD') : null;
+      const isoDate = parsedDate ? formatISO(parsedDate, { representation: 'date' }) : null;
 
       // Pass it up the tree. The parent can handle the null case.
       onChange(isoDate);
