@@ -1,20 +1,22 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { formatISO } from 'date-fns';
 import { DayTimePicker } from '@arch-ui/day-picker';
 import { stringifyDate, parseDate } from './utils';
 
-const CalendarDayFilterView = props => {
+const DateTimeFilterView = props => {
   const parsedDate = props.value ? parseDate(props.value) : parseDate(new Date().toISOString());
 
-  let handleDayChange = day => {
-    props.onChange(stringifyDate({ ...parsedDate, date: format(day, 'YYYY-MM-DD') }));
+  const handleDayChange = day => {
+    props.onChange(
+      stringifyDate({ ...parsedDate, date: formatISO(day, { representation: 'date' }) })
+    );
   };
 
-  let handleTimeChange = event => {
+  const handleTimeChange = event => {
     props.onChange(stringifyDate({ ...parsedDate, time: event.target.value }));
   };
 
-  let handleOffsetChange = offset => {
+  const handleOffsetChange = offset => {
     props.onChange(stringifyDate({ ...parsedDate, offset }));
   };
 
@@ -38,4 +40,4 @@ const CalendarDayFilterView = props => {
   );
 };
 
-export default CalendarDayFilterView;
+export default DateTimeFilterView;

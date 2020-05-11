@@ -32,7 +32,7 @@ export class DateTimeUtcImplementation extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    return { ...meta, format: 'YYYY-MM-DD[T]HH:mm:ss.SSSZZ' };
+    return { ...meta, format: 'yyyy-MM-dd[T]HH:mm:ss.SSSxx' };
   }
 }
 
