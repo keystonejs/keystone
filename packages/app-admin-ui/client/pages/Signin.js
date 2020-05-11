@@ -94,11 +94,7 @@ const SignInPage = () => {
 
   const [signIn, { error, loading, client }] = useMutation(AUTH_MUTATION, {
     variables: { identity, secret },
-    onCompleted: ({ error }) => {
-      if (error) {
-        throw error;
-      }
-
+    onCompleted: () => {
       // Ensure there's no old unauthenticated data hanging around
       client.resetStore();
 
@@ -108,7 +104,7 @@ const SignInPage = () => {
       // Let the server-side redirects kick in to send the user to the right place
       window.location.reload(true);
     },
-    onError: console.error,
+    onError: () => {}, // Remove once a bad password no longer throws an error
   });
 
   const onSubmit = e => {
