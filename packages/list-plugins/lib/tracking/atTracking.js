@@ -8,7 +8,7 @@ const _atTracking = ({ created = true, updated = true }) => ({
 } = {}) => ({ fields = {}, hooks = {}, ...rest }) => {
   const dateTimeOptions = {
     type: DateTime,
-    format: 'MM/DD/YYYY h:mm A',
+    format: 'MM/dd/yyyy h:mm a',
     access: {
       read: true,
       create: false,

@@ -38,11 +38,11 @@ keystone.createList('User', {
 #### `format`
 
 Defines the format of date string that the will be displayed in the Admin UI.
-The Admin UI uses the [`date-fns` v1.x](https://date-fns.org/v1.30.1/docs/format) library for formatting, and any format supported by that library is valid. E.g.
+The Admin UI uses the [`date-fns` v2.x](https://date-fns.org/v2.13.0/docs/format) library for formatting, and any format supported by that library is valid. E.g.
 
-- `YYYY-MM-DD` => "1970-01-31"
-- `MM/DD/YYYY` => "01/31/1970"
-- `MMM Do, YY` => "Jan 31st, 70"
+- `yyyy-MM-dd` => "1970-01-31"
+- `MM/dd/yyyy` => "01/31/1970"
+- `MMM do, yy` => "Jan 31st, 70"
 
 #### `yearRangeFrom`
 
