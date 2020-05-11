@@ -319,12 +319,11 @@ const UserInfo = ({ authListPath }) => {
     },
   } = useAdminMeta();
 
-  // We're assuming the user list as a 'name' field
   const AUTHED_USER_QUERY = gql`
     query {
       user: ${authenticatedQueryName} {
         id
-        name
+        _label_
       }
     }
   `;
@@ -353,7 +352,7 @@ const UserInfo = ({ authListPath }) => {
             to={`${authListPath}/${user.id}`}
             css={{ fontWeight: 'bold', color: colors.N90 }}
           >
-            {user.name}
+            {user._label_}
           </Truncate>
         )}
       </div>
