@@ -1,6 +1,6 @@
 <!--[meta]
 section: tutorials
-title: Adding lists
+title: Custom fields
 order: 5
 [meta]-->
 
