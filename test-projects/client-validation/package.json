@@ -38,7 +38,6 @@
     "execa": "^2.0.4",
     "mocha": "^7.1.2",
     "mocha-junit-reporter": "^1.23.3",
-    "moment": "^2.24.0",
     "pino-colada": "^1.6.1",
     "start-server-and-test": "^1.11.0"
   },
