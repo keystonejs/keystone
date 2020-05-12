@@ -95,7 +95,7 @@ export default class List {
       }`;
   }
 
-  static getQueryArgs = ({ filters, ...args }) => {
+  static getQueryArgs = ({ filters, sortBy, ...args }) => {
     const queryArgs = Object.keys(args).map(
       // Using stringify to get the correct quotes depending on type
       argName => `${argName}: ${JSON.stringify(args[argName])}`
@@ -105,6 +105,9 @@ export default class List {
       if (filterArgs.length) {
         queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
       }
+    }
+    if (sortBy) {
+      queryArgs.push(`sortBy: ${sortBy.field.path}_${sortBy.direction}`);
     }
     return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
   };
@@ -116,8 +119,8 @@ export default class List {
   }
 
   getQuery(args) {
-    const { fields, filters, search, orderBy, skip, first } = args;
-    const sanatisedQueryArgs = Object.keys({ first, filters, search, skip, orderBy })
+    const { fields, filters, search, sortBy, skip, first } = args;
+    const sanatisedQueryArgs = Object.keys({ first, filters, search, skip, sortBy })
       .filter(key => args[key])
       .reduce((acc, key) => ({ ...acc, [key]: args[key] }), {});
     const queryArgs = List.getQueryArgs(sanatisedQueryArgs);
