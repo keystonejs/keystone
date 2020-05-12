@@ -20,7 +20,7 @@
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "focus-trap-react": "^6.0.0",
-    "react-router-dom": "5.1.2"
+    "react-router-dom": "5.2.0"
   },
   "module": "dist/dropdown.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/dropdown"
