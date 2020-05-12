@@ -39,7 +39,7 @@ const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props 
 
   const onCreate = ({ data }) => {
     const id = data[list.gqlNames.createMutationName].id;
-    history.push(`${list.fullPpath}/${id}`);
+    history.push(`${list.fullPath}/${id}`);
   };
 
   const { label, singular } = list;
