@@ -71,7 +71,7 @@ export function Search({ list }) {
           color: colors.N30,
           cursor: 'pointer',
           display: 'flex',
-          height: 34,
+          height: '100%',
           justifyContent: 'center',
           pointerEvents: hasValue ? 'all' : 'none',
           position: 'absolute',
