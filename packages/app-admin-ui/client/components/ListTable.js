@@ -291,25 +291,23 @@ const SingleCell = ({ columns, children }) => (
   </tr>
 );
 
-export default function ListTable(props) {
-  const {
-    adminPath,
-    columnControl,
-    fields,
-    isFullWidth,
-    items,
-    queryErrors = [],
-    list,
-    onChange,
-    onSelectChange,
-    selectedItems,
-    currentPage,
-    filters,
-    search,
-    itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
-    linkField = '_label_',
-  } = props;
-
+export default function ListTable({
+  adminPath,
+  columnControl,
+  fields,
+  isFullWidth,
+  items,
+  queryErrors = [],
+  list,
+  onChange,
+  onSelectChange,
+  selectedItems,
+  currentPage,
+  filters,
+  search,
+  itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
+  linkField = '_label_',
+}) {
   const [sortBy, onSortChange] = useListSort();
 
   const handleSelectAll = () => {
