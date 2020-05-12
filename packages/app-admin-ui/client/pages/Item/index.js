@@ -38,7 +38,7 @@ import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
 import { useList } from '../../providers/List';
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
 const Form = styled.form({
   marginBottom: gridSize * 3,
@@ -61,14 +61,7 @@ const getRenderableFields = memoizeOne(list =>
     .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
 );
 
-const ItemDetails = ({
-  list,
-  item: initialData,
-  itemErrors,
-  onUpdate,
-  updateItem,
-  updateInProgress,
-}) => {
+const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
   const [item, setItem] = useState(initialData);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
@@ -81,6 +74,11 @@ const ItemDetails = ({
   const { addToast } = useToasts();
 
   const { query: listQuery } = useList();
+
+  const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
+    errorPolicy: 'all',
+    onError: error => handleCreateUpdateMutationError({ error, addToast }),
+  });
 
   const getFieldsObject = memoizeOne(() =>
     arrayToObject(
@@ -346,17 +344,16 @@ const ItemNotFound = ({ errorMessage, list }) => (
     <Button to={list.fullPath} variant="ghost">
       Back to List
     </Button>
-    {errorMessage ? (
-      <p style={{ fontSize: '0.75rem', marginTop: gridSize * 4 }}>
+    {errorMessage && (
+      <p style={{ fontSize: '0.75rem', marginTop: `${gridSize * 4}px` }}>
         <code>{errorMessage}</code>
       </p>
-    ) : null}
+    )}
   </PageError>
 );
 
 const ItemPage = ({ itemId }) => {
   const { list } = useList();
-  const { addToast } = useToasts();
 
   const itemQuery = list.getItemQuery(itemId);
 
@@ -367,11 +364,6 @@ const ItemPage = ({ itemId }) => {
   const { loading, error, data, refetch } = useQuery(itemQuery, {
     fetchPolicy: 'network-only',
     errorPolicy: 'all',
-  });
-
-  const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
-    errorPolicy: 'all',
-    onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });
 
   // Now that the network request for data has been triggered, we
@@ -440,13 +432,10 @@ const ItemPage = ({ itemId }) => {
             itemErrors={itemErrors}
             key={itemId}
             list={list}
-            onUpdate={() =>
-              refetch().then(refetchedData =>
-                deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])
-              )
-            }
-            updateInProgress={updateInProgress}
-            updateItem={updateItem}
+            onUpdate={async () => {
+              const { data } = await refetch();
+              return deserializeItem(list, data[list.gqlNames.itemQueryName]);
+            }}
           />
         </Container>
       </main>
