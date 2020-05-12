@@ -38,7 +38,7 @@ export const ListProvider = ({ list, children }) => {
       fields,
       filters,
       first: pageSize,
-      orderBy: sortBy ? `${sortBy.field.path}_${sortBy.direction}` : null,
+      sortBy,
       search,
       skip: (currentPage - 1) * pageSize,
     });
