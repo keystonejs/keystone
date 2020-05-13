@@ -161,7 +161,7 @@ function CreateAndAddItem({ field, item, onCreate }) {
 const RelationshipField = ({
   autoFocus,
   field,
-  value,
+  value = [],
   renderContext,
   errors,
   onChange,
@@ -203,7 +203,7 @@ const RelationshipField = ({
         <ListProvider list={relatedList}>
           <CreateAndAddItem
             onCreate={item => {
-              onChange(many ? (value || []).concat(item) : item);
+              onChange(many ? value.concat(item) : item);
             }}
             field={field}
             item={item}
@@ -214,7 +214,7 @@ const RelationshipField = ({
           <SetAsCurrentUser
             many={many}
             onAddUser={user => {
-              onChange(many ? (value || []).concat(user) : user);
+              onChange(many ? value.concat(user) : user);
             }}
             value={value}
             listKey={authStrategy.listKey}
