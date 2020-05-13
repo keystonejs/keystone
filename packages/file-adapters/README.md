@@ -122,6 +122,23 @@ const fileAdapter = new S3Adapter({
 });
 ```
 
+You can also use an async functions that retrieves the object, ideal when you have to deal with vault/secrets
+
+```javascript
+const { S3Adapter } = require('@keystonejs/file-adapters');
+
+const baseConfig = {...}
+const fileAdapter = new S3Adapter(async () => {
+    // Or any asynchronous operation
+    const data = await vault.read('secret/path');
+
+    return {
+        ...baseConfi,
+        secretAccessKey: data.AMAZON_SECRET_KEY
+    }
+});
+```
+
 ### Config
 
 | Option            | Type              | Default     | Description                                                                                                                                                                                                                              |
