@@ -127,13 +127,13 @@ You can also use an async functions that retrieves the object, ideal when you ha
 ```javascript
 const { S3Adapter } = require('@keystonejs/file-adapters');
 
-const baseConfig = {...}
+const baseConfig = {...} // accessKeyId, region, bucket...
 const fileAdapter = new S3Adapter(async () => {
     // Or any asynchronous operation
     const data = await vault.read('secret/path');
 
     return {
-        ...baseConfi,
+        ...baseConfig,
         secretAccessKey: data.AMAZON_SECRET_KEY
     }
 });
