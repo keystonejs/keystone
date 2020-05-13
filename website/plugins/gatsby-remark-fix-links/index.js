@@ -36,6 +36,7 @@ module.exports = async function plugin({ markdownAST, markdownNode, files, getNo
     } else if (
       node.url.startsWith('//') ||
       node.url.startsWith('http') ||
+      node.url.startsWith('mailto:') ||
       fileExtensions.some(x => node.url.endsWith(`.${x}`))
     ) {
       // do nothing

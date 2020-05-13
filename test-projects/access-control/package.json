@@ -2,7 +2,7 @@
   "name": "@keystonejs/cypress-project-access-control",
   "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
-  "version": "5.1.7",
+  "version": "5.1.9",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,27 +18,27 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/access-control/.env file.\nSee test-projects/access-control/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^8.0.0",
-    "@keystonejs/app-admin-ui": "^5.9.6",
-    "@keystonejs/app-graphql": "^5.1.5",
-    "@keystonejs/auth-password": "^5.1.6",
-    "@keystonejs/fields": "^9.0.1",
-    "@keystonejs/keystone": "^8.0.0",
-    "@keystonejs/utils": "^5.4.0",
+    "@keystonejs/adapter-mongoose": "^8.1.0",
+    "@keystonejs/app-admin-ui": "^6.0.1",
+    "@keystonejs/app-graphql": "^5.1.7",
+    "@keystonejs/auth-password": "^5.1.8",
+    "@keystonejs/fields": "^11.0.0",
+    "@keystonejs/keystone": "^9.0.1",
+    "@keystonejs/utils": "^5.4.1",
     "cross-env": "^7.0.0",
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "cypress": "^4.4.0",
+    "cypress": "^4.5.0",
     "cypress-file-upload": "^3.4.0",
-    "cypress-multi-reporters": "^1.2.3",
-    "dotenv-safe": "^8.1.0",
+    "cypress-multi-reporters": "^1.2.4",
+    "dotenv-safe": "^8.2.0",
     "execa": "^2.0.4",
     "inflection": "^1.12.0",
-    "mocha": "^7.0.1",
-    "mocha-junit-reporter": "^1.21.0",
-    "pino-colada": "^1.4.5",
-    "start-server-and-test": "^1.10.6"
+    "mocha": "^7.1.2",
+    "mocha-junit-reporter": "^1.23.3",
+    "pino-colada": "^1.6.1",
+    "start-server-and-test": "^1.11.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/test-projects/access-control"
 }

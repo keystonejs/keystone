@@ -40,28 +40,25 @@ const SignOutPageButton = styled(Button)`
 
 const SignedOutPage = () => {
   const {
-    authStrategy: { listKey },
+    authStrategy: {
+      gqlNames: { unauthenticateMutationName },
+    },
     signinPath,
   } = useAdminMeta();
 
   const UNAUTH_MUTATION = gql`
     mutation {
-      unauthenticate: unauthenticate${listKey} {
+      unauthenticate: ${unauthenticateMutationName} {
         success
       }
     }
   `;
 
   const [signOut, { loading, client, called }] = useMutation(UNAUTH_MUTATION, {
-    onCompleted: ({ error }) => {
-      if (error) {
-        throw error;
-      }
-
+    onCompleted: () => {
       // Ensure there's no old authenticated data hanging around
       client.resetStore();
     },
-    onError: console.error,
   });
 
   if (!called) {

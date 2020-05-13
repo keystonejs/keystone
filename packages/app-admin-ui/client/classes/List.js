@@ -7,16 +7,29 @@ export const gqlCountQueries = lists => gql`{
 }`;
 
 export default class List {
-  constructor(config, adminMeta, views) {
-    this.config = config;
-    this.adminMeta = adminMeta;
+  constructor(
+    { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
+    { readViews, preloadViews, getListByKey, adminPath, authStrategy },
+    views
+  ) {
+    this.access = access;
+    this.adminConfig = adminConfig;
+    this.adminDoc = adminDoc;
+    this.gqlNames = gqlNames;
+    this.key = key;
+    this.label = label;
+    this.path = path;
+    this.plural = plural;
+    this.singular = singular;
+    this.fullPath = `${adminPath}/${path}`;
 
-    // TODO: undo this
-    Object.assign(this, config);
-
-    this.fields = config.fields.map(fieldConfig => {
-      const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
-      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
+    this.fields = fields.map(fieldConfig => {
+      const [Controller] = readViews([views[fieldConfig.path].Controller]);
+      return new Controller(
+        fieldConfig,
+        { readViews, preloadViews, getListByKey, adminPath, authStrategy },
+        views[fieldConfig.path]
+      );
     });
 
     this._fieldsByPath = arrayToObject(this.fields, 'path');
@@ -29,31 +42,31 @@ export default class List {
         }
       }
     `;
+
     this.createManyMutation = gql`
-    mutation createMany($data: ${this.gqlNames.createManyInputName}!) {
-      ${this.gqlNames.createManyMutationName}(data: $data) {
-        id
+      mutation createMany($data: ${this.gqlNames.createManyInputName}!) {
+        ${this.gqlNames.createManyMutationName}(data: $data) {
+          id
+        }
       }
-    }
-  `;
+    `;
+
     this.updateMutation = gql`
-      mutation update(
-        $id: ID!,
-        $data: ${this.gqlNames.updateInputName})
-      {
+      mutation update($id: ID!, $data: ${this.gqlNames.updateInputName}) {
         ${this.gqlNames.updateMutationName}(id: $id, data: $data) {
           id
         }
       }
     `;
+
     this.updateManyMutation = gql`
-      mutation updateMany($data: [${this.gqlNames.updateManyInputName}])
-      {
+      mutation updateMany($data: [${this.gqlNames.updateManyInputName}]) {
         ${this.gqlNames.updateManyMutationName}(data: $data) {
           id
         }
       }
     `;
+
     this.deleteMutation = gql`
       mutation delete($id: ID!) {
         ${this.gqlNames.deleteMutationName}(id: $id) {
@@ -61,6 +74,7 @@ export default class List {
         }
       }
     `;
+
     this.deleteManyMutation = gql`
       mutation deleteMany($ids: [ID!]) {
         ${this.gqlNames.deleteManyMutationName}(ids: $ids) {
@@ -81,7 +95,7 @@ export default class List {
       }`;
   }
 
-  static getQueryArgs = ({ filters, ...args }) => {
+  static getQueryArgs = ({ filters, sortBy, ...args }) => {
     const queryArgs = Object.keys(args).map(
       // Using stringify to get the correct quotes depending on type
       argName => `${argName}: ${JSON.stringify(args[argName])}`
@@ -91,6 +105,9 @@ export default class List {
       if (filterArgs.length) {
         queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
       }
+    }
+    if (sortBy) {
+      queryArgs.push(`sortBy: ${sortBy.field.path}_${sortBy.direction}`);
     }
     return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
   };
@@ -102,8 +119,8 @@ export default class List {
   }
 
   getQuery(args) {
-    const { fields, filters, search, orderBy, skip, first } = args;
-    const sanatisedQueryArgs = Object.keys({ first, filters, search, skip, orderBy })
+    const { fields, filters, search, sortBy, skip, first } = args;
+    const sanatisedQueryArgs = Object.keys({ first, filters, search, skip, sortBy })
       .filter(key => args[key])
       .reduce((acc, key) => ({ ...acc, [key]: args[key] }), {});
     const queryArgs = List.getQueryArgs(sanatisedQueryArgs);
@@ -143,10 +160,12 @@ export default class List {
     const count = Array.isArray(items) ? items.length : items;
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;
   }
+
   getPersistedSearch() {
-    return localStorage.getItem(`search:${this.config.path}`);
+    return localStorage.getItem(`search:${this.path}`);
   }
+
   setPersistedSearch(value) {
-    localStorage.setItem(`search:${this.config.path}`, value);
+    localStorage.setItem(`search:${this.path}`, value);
   }
 }

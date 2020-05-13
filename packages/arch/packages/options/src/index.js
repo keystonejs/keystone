@@ -46,10 +46,11 @@ export const CheckMark = ({ isDisabled, isFocused, isSelected }) => {
   );
 };
 
-export const OptionPrimitive = ({ children, isDisabled, innerProps, innerRef }) => {
+export const OptionPrimitive = ({ children, isDisabled, innerProps, innerRef, className }) => {
   return (
     <div
       ref={innerRef}
+      className={className}
       css={{
         alignItems: 'center',
         color: isDisabled ? colors.N40 : null,

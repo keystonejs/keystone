@@ -1,5 +1,11 @@
 # @arch-ui/dialog
 
+## 0.0.21
+
+### Patch Changes
+
+- [`45b151b0`](https://github.com/keystonejs/keystone/commit/45b151b05de0583ba50364caeda8b5bb7a111385) [#2829](https://github.com/keystonejs/keystone/pull/2829) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted React PureComponents to functional ones.
+
 ## 0.0.20
 
 ### Patch Changes

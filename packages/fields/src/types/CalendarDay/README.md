@@ -27,17 +27,22 @@ keystone.createList('User', {
 
 ### Config
 
-| Option          | Type      | Default                | Description                                                                |
-| --------------- | --------- | ---------------------- | -------------------------------------------------------------------------- |
-| `format`        | `String`  | `YYYY-MM-DD`           | Defines the format of string that the component will display               |
-| `yearRangeFrom` | `Integer` | The current year - 100 | Defines the starting point of the year range, eg `1918`                    |
-| `yearRangeTo`   | `Integer` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018` |
-| `isRequired`    | `Boolean` | `false`                | Does this field require a value?                                           |
-| `isUnique`      | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored            |
+| Option          | Type      | Default                | Description                                                                   |
+| --------------- | --------- | ---------------------- | ----------------------------------------------------------------------------- |
+| `format`        | `String`  | `YYYY-MM-DD`           | Defines the format of date string that the will be displayed in the Admin UI. |
+| `yearRangeFrom` | `Integer` | The current year - 100 | Defines the starting point of the year range, eg `1918`                       |
+| `yearRangeTo`   | `Integer` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018`    |
+| `isRequired`    | `Boolean` | `false`                | Does this field require a value?                                              |
+| `isUnique`      | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored               |
 
 #### `format`
 
-Defines the format of string that the component will display, such as `Do MMMM YYYY`. Values will be stored in the database in ISO8601 (`YYYY-MM-DD`) format.
+Defines the format of date string that the will be displayed in the Admin UI.
+The Admin UI uses the [`date-fns` v2.x](https://date-fns.org/v2.13.0/docs/format) library for formatting, and any format supported by that library is valid. E.g.
+
+- `yyyy-MM-dd` => "1970-01-31"
+- `MM/dd/yyyy` => "01/31/1970"
+- `MMM do, yy` => "Jan 31st, 70"
 
 #### `yearRangeFrom`
 

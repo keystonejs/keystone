@@ -2,22 +2,25 @@ import { Implementation } from '@keystonejs/fields';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class AutoIncrementImplementation extends Implementation {
-  constructor(path, config = {}, context = {}) {
+  constructor(path, { gqlType, isUnique = true, access = {}, ...config } = {}, context = {}) {
     // Apply some field type defaults before we hand off to super; see README.md
-    if (typeof config.isUnique === 'undefined') config.isUnique = true;
-    if (typeof config.access === 'undefined') config.access = {};
-    if (typeof config.access === 'object') {
-      config.access = { create: false, update: false, delete: false, ...config.access };
+    if (typeof access === 'object') {
+      access = { create: false, update: false, delete: false, ...access };
     }
 
     // The base implementation takes care of everything else
-    super(path, config, context);
+    super(
+      path,
+      {
+        ...config,
+        isUnique,
+        access,
+      },
+      context
+    );
 
     // If no valid gqlType is supplied, default based on whether or not we're the primary key
-    const gqlTypeDefault = this.isPrimaryKey ? 'ID' : 'Int';
-    this.gqlType = ['ID', 'Int'].includes(this.config.gqlType)
-      ? this.config.gqlType
-      : gqlTypeDefault;
+    this.gqlType = ['ID', 'Int'].includes(gqlType) ? gqlType : this.isPrimaryKey ? 'ID' : 'Int';
   }
 
   gqlOutputFields() {

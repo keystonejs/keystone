@@ -216,7 +216,7 @@ class ListRow extends Component {
           if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
             return (
               <BodyCell key={path}>
-                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
+                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N20 }} />
                 <A11yText>{itemErrors[path].message}</A11yText>
               </BodyCell>
             );
@@ -233,7 +233,7 @@ class ListRow extends Component {
           let content;
 
           if (field.views.Cell) {
-            const [Cell] = field.adminMeta.readViews([field.views.Cell]);
+            const [Cell] = field.readViews([field.views.Cell]);
 
             // TODO
             // fix this later, creating a react component on every render is really bad
@@ -291,26 +291,24 @@ const SingleCell = ({ columns, children }) => (
   </tr>
 );
 
-export default function ListTable(props) {
-  const {
-    adminPath,
-    columnControl,
-    fields,
-    isFullWidth,
-    items,
-    queryErrors = [],
-    list,
-    onChange,
-    onSelectChange,
-    selectedItems,
-    currentPage,
-    filters,
-    search,
-    itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
-    linkField = '_label_',
-  } = props;
-
-  const [sortBy, onSortChange] = useListSort(list.key);
+export default function ListTable({
+  adminPath,
+  columnControl,
+  fields,
+  isFullWidth,
+  items,
+  queryErrors = [],
+  list,
+  onChange,
+  onSelectChange,
+  selectedItems,
+  currentPage,
+  filters,
+  search,
+  itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
+  linkField = '_label_',
+}) {
+  const [sortBy, onSortChange] = useListSort();
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;
@@ -350,7 +348,7 @@ export default function ListTable(props) {
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                sortable={field.path !== '_label_' && field.config.isOrderable}
+                sortable={field.path !== '_label_' && field.isOrderable}
                 field={field}
                 handleSortChange={onSortChange}
                 active={sortBy ? sortBy.field.path === field.path : false}
