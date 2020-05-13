@@ -295,7 +295,6 @@ export default function ListTable({
   adminPath,
   columnControl,
   fields,
-  isFullWidth,
   items,
   queryErrors = [],
   list,
@@ -324,11 +323,11 @@ export default function ListTable({
   const TableContents = ({ isLoading, children }) => (
     <Fragment>
       <colgroup>
-        <col width="32" />
+        <col css={{ width: '40px' }} />
         {fields.map(f => (
           <col key={f.path} />
         ))}
-        <col width="32" />
+        <col css={{ width: '40px' }} />
       </colgroup>
       <thead>
         <tr>
@@ -365,7 +364,7 @@ export default function ListTable({
 
   return (
     <Card css={{ marginBottom: '3em' }}>
-      <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
+      <Table id={cypressId} style={{ tableLayout: 'fixed' }}>
         <Suspense
           fallback={
             <TableContents isLoading>
