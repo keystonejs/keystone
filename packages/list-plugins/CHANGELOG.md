@@ -1,5 +1,36 @@
 # @keystonejs/list-plugins
 
+## 6.0.0
+
+### Major Changes
+
+- [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc) [#2927](https://github.com/keystonejs/keystone/pull/2927) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to date-fns 2.x. This version uses [Unicode tokens](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table) for its formatting strings. A conversion table is available [here](https://github.com/date-fns/date-fns/blob/master/CHANGELOG.md#200---2019-08-20).
+
+  This change only affects the `CalendarDay` and `DateTime` fields' `format` config option.
+
+  The following script utilizes the [`@date-fns/upgrade`](https://github.com/date-fns/date-fns-upgrade) package and can be used to convert old formatting strings:
+
+  ```js
+  const { convertTokens } = require('@date-fns/upgrade/v2');
+
+  console.table(
+    [
+      // Add date-dns 1.x formatting strings here.
+    ].map(str => ({
+      v1: str,
+      v2: convertTokens(str).replace(/'/g, ''),
+    }))
+  );
+  ```
+
+  Do note this converts symbols to standalone style as opposed to formatted style which may not always be desired. For example, `DD/MM/YYYY` would be converted to `dd/LL/yyyy` instead of `dd/MM/yyyy`. See [here](http://cldr.unicode.org/translation/date-time-1/date-time#TOC-Stand-Alone-vs.-Format-Styles) for more information on which you should use.
+
+### Patch Changes
+
+- Updated dependencies [[`a124417f`](https://github.com/keystonejs/keystone/commit/a124417fddc75889db5e4e8e0d5625fb4af12590), [`54931d75`](https://github.com/keystonejs/keystone/commit/54931d75d3f26f4f300c2c4c3ee65ed3183b4a6a), [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc), [`59ed6310`](https://github.com/keystonejs/keystone/commit/59ed6310bacc76f571639de048689becbedbeac5)]:
+  - @keystonejs/fields@11.0.0
+  - @keystonejs/fields-authed-relationship@1.0.5
+
 ## 5.2.1
 
 ### Patch Changes

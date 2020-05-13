@@ -1,5 +1,34 @@
 # @keystonejs/app-admin-ui
 
+## 6.0.1
+
+### Patch Changes
+
+- [`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be) [#2946](https://github.com/keystonejs/keystone/pull/2946) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-router-dom to 5.2.0.
+
+* [`f9604621`](https://github.com/keystonejs/keystone/commit/f9604621048afceb071a43c7b8d36d944555487f) [#2950](https://github.com/keystonejs/keystone/pull/2950) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed Search icons being subtly off-center.
+
+- [`3e5a8962`](https://github.com/keystonejs/keystone/commit/3e5a8962cc982765574464537904008be975b446) [#2940](https://github.com/keystonejs/keystone/pull/2940) Thanks [@Vultraz](https://github.com/Vultraz)! - Used new sortBy argument in queries.
+
+* [`5a58bde6`](https://github.com/keystonejs/keystone/commit/5a58bde636f551f2d241086d47781d3c88852b99) [#2953](https://github.com/keystonejs/keystone/pull/2953) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed broken URL after creating item from dashboard.
+
+- [`3b0f4137`](https://github.com/keystonejs/keystone/commit/3b0f4137df4112c79e6db57ae68fe04ad338da4c) [#2926](https://github.com/keystonejs/keystone/pull/2926) Thanks [@Vultraz](https://github.com/Vultraz)! - Used _label_ query for logged-in-user display.
+
+* [`15c57317`](https://github.com/keystonejs/keystone/commit/15c573178fa056912503f3ed83efeccceabba3ec) [#2933](https://github.com/keystonejs/keystone/pull/2933) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed an uncaught error during updating if access was denied.
+
+- [`d60e2ca9`](https://github.com/keystonejs/keystone/commit/d60e2ca91ab4a7dd815e030bcc92991c3380fa7e) [#2944](https://github.com/keystonejs/keystone/pull/2944) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved error handling on Signin page.
+
+* [`94d55b8f`](https://github.com/keystonejs/keystone/commit/94d55b8fc3a334a556c19765063e9efb594b41a7) [#2954](https://github.com/keystonejs/keystone/pull/2954) Thanks [@Vultraz](https://github.com/Vultraz)! - Exclude fields without update access from Update popout.
+
+- [`2709a6b5`](https://github.com/keystonejs/keystone/commit/2709a6b512fe636d979837599b67bdb17b2517b1) [#2932](https://github.com/keystonejs/keystone/pull/2932) Thanks [@timleslie](https://github.com/timleslie)! - Updated README.
+
+- Updated dependencies [[`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be), [`a124417f`](https://github.com/keystonejs/keystone/commit/a124417fddc75889db5e4e8e0d5625fb4af12590), [`54931d75`](https://github.com/keystonejs/keystone/commit/54931d75d3f26f4f300c2c4c3ee65ed3183b4a6a), [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc), [`59ed6310`](https://github.com/keystonejs/keystone/commit/59ed6310bacc76f571639de048689becbedbeac5)]:
+  - @arch-ui/button@0.0.19
+  - @arch-ui/dropdown@0.0.18
+  - @arch-ui/navbar@0.1.11
+  - @arch-ui/pagination@0.0.21
+  - @keystonejs/fields@11.0.0
+
 ## 6.0.0
 
 ### Major Changes
