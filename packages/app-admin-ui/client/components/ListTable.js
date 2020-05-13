@@ -216,7 +216,7 @@ class ListRow extends Component {
           if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
             return (
               <BodyCell key={path}>
-                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
+                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N20 }} />
                 <A11yText>{itemErrors[path].message}</A11yText>
               </BodyCell>
             );
