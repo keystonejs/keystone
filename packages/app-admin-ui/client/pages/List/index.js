@@ -240,7 +240,8 @@ export function ListLayout(props) {
 const ListPage = props => {
   const {
     list,
-    listData: { items, itemCount, queryErrors },
+    listData: { items, itemCount },
+    queryErrorsParsed,
     query,
   } = useList();
 
@@ -268,7 +269,6 @@ const ListPage = props => {
   // ------------------------------
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
-  // Note this is the error returned from Apollo, *not* any that are part of the GQL result.
   if (query.error && (!query.data || !items || !Object.keys(items).length)) {
     let message = query.error.message;
 
@@ -306,7 +306,7 @@ const ListPage = props => {
         items={items}
         itemCount={itemCount}
         query={query}
-        queryErrors={queryErrors}
+        queryErrors={queryErrorsParsed}
       />
     </Fragment>
   );
