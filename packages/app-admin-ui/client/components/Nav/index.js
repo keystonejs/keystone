@@ -6,7 +6,7 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
 import styled from '@emotion/styled';
-import { jsx } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
@@ -66,64 +66,67 @@ const Relative = styled(Col)`
   position: relative;
 `;
 
-const GrabHandle = styled.div(({ isActive }) => ({
-  backgroundColor: alpha(colors.text, 0.06),
-  height: isActive ? '100%' : 0,
-  cursor: 'col-resize',
-  position: 'absolute',
-  right: 0,
-  top: 0,
-  transition: `background-color ${TRANSITION_DURATION} linear, height ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-  width: 1,
+const GrabHandle = styled.div(
+  ({ isActive }) => css`
+    background-color: ${alpha(colors.text, 0.06)};
+    height: ${isActive ? '100%' : 0};
+    cursor: col-resize;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: background-color ${TRANSITION_DURATION} linear,
+      height ${TRANSITION_DURATION} ${TRANSITION_EASING};
+    width: 1px;
 
-  ':hover': {
-    transitionDelay: '100ms', // avoid inadvertent mouse passes
-    backgroundColor: alpha(colors.text, 0.12),
-  },
-  ':active': {
-    backgroundColor: alpha(colors.text, 0.24),
-  },
+    :hover {
+      transition-delay: 100ms; /* avoid inadvertent mouse passes */
+      background-color: ${alpha(colors.text, 0.12)};
+    }
 
-  // increase hit-area
-  ':before': {
-    bottom: -gridSize,
-    content: '" "',
-    left: -gridSize,
-    position: 'absolute',
-    right: -gridSize,
-    top: -gridSize,
-  },
-}));
+    :active {
+      background-color: ${alpha(colors.text, 0.24)};
+    }
+
+    // increase hit-area
+    ::before {
+      bottom: -${gridSize}px;
+      content: '';
+      left: -${gridSize}px;
+      position: absolute;
+      right: -${gridSize}px;
+      top: -${gridSize}px;
+    }
+  `
+);
 
 const CollapseExpand = styled.button(({ isCollapsed, mouseIsOverNav }) => {
   const size = 32;
   const offsetTop = 20;
   const isActive = isCollapsed || mouseIsOverNav;
 
-  return {
-    alignItems: 'center',
-    background: 0,
-    border: 0,
-    borderRadius: '50%',
-    // boxShadow,
-    color: isActive ? colors.text : 'transparent',
-    cursor: 'pointer',
-    display: 'flex',
-    height: size,
-    justifyContent: 'center',
-    right: -size,
-    transform: isActive ? `translateX(0)` : `translateX(-10px)`,
-    outline: 0,
-    padding: 0,
-    position: 'absolute',
-    transition: `color ${TRANSITION_DURATION}, transform ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-    width: size,
-    top: offsetTop,
+  return css`
+    align-items: center;
+    background: 0;
+    border: 0;
+    border-radius: 50%;
+    color: ${isActive ? colors.text : 'transparent'};
+    cursor: pointer;
+    display: flex;
+    height: ${size}px;
+    justify-content: center;
+    right: -${size}px;
+    transform: ${isActive ? 'translateX(0)' : 'translateX(-10px)'};
+    outline: 0;
+    padding: 0;
+    position: absolute;
+    transition: color ${TRANSITION_DURATION}, transform ${TRANSITION_DURATION} ${TRANSITION_EASING};
+    width: ${size}px;
+    top: ${offsetTop}px;
 
-    ':hover': {
-      color: colors.primary,
-    },
-  };
+    :hover {
+      color: ${colors.primary};
+    }
+  `;
 });
 
 const TooltipContent = ({ kbd, children }) => (

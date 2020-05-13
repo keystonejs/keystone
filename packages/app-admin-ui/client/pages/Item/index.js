@@ -40,9 +40,9 @@ import { useList } from '../../providers/List';
 
 const Render = ({ children }) => children();
 
-const Form = styled.form({
-  marginBottom: gridSize * 3,
-});
+const Form = styled.form`
+  margin-bottom: ${gridSize * 3}px;
+`;
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 

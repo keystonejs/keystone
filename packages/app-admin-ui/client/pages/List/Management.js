@@ -1,6 +1,7 @@
 /* global ENABLE_DEV_FEATURES */
 
 import React, { Fragment, useState } from 'react';
+import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import { SettingsIcon, TrashcanIcon } from '@arch-ui/icons';
@@ -11,12 +12,14 @@ import { colors, gridSize } from '@arch-ui/theme';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
-export const ManageToolbar = styled.div(({ isVisible }) => ({
-  height: 35,
-  marginBottom: gridSize * 2,
-  marginTop: gridSize,
-  visibility: isVisible ? 'visible' : 'hidden',
-}));
+export const ManageToolbar = styled.div(
+  ({ isVisible }) => css`
+    height: 35px;
+    margin-bottom: ${gridSize * 2}px;
+    margin-top: ${gridSize}px;
+    visibility: ${isVisible ? 'visible' : 'hidden'};
+  `
+);
 
 const SelectedCount = styled.div`
   color: ${colors.N40};

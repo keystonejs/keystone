@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 import React, { Component, Suspense, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
@@ -22,46 +22,48 @@ import { NoResults } from './NoResults';
 const Render = ({ children }) => children();
 
 // Styled Components
-const Table = styled('table')({
-  borderCollapse: 'collapse',
-  borderSpacing: 0,
-  width: '100%',
-});
-const TableRow = styled('tr')(({ isActive }) => ({
-  '> td': {
-    backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
-  },
-}));
-const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
-  backgroundColor: 'white',
-  boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
-  boxSizing: 'border-box',
-  color: isSelected ? colors.text : colors.N40,
-  cursor: isSortable ? 'pointer' : 'auto',
-  display: 'table-cell',
-  fontWeight: 'normal',
-  padding: gridSize,
-  position: 'sticky',
-  top: 0,
-  transition: 'background-color 100ms',
-  zIndex: 1,
-  textAlign: 'left',
-  verticalAlign: 'bottom',
-  fontSize: '1.1rem',
+const Table = styled.table`
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+`;
 
-  ':hover': {
-    color: isSortable && !isSelected ? colors.N60 : null,
-  },
-}));
-const BodyCell = styled('td')(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.B.L95 : null,
-  boxShadow: isSelected
-    ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
-    : `0 -1px 0 ${colors.N10}`,
-  boxSizing: 'border-box',
-  padding: `${gridSize + 2}px ${gridSize}px`,
-  position: 'relative',
-}));
+const HeaderCell = styled.th(
+  ({ isSelected, isSortable }) => css`
+    background-color: white;
+    box-shadow: 0 2px 0 ${alpha(colors.text, 0.1)};
+    box-sizing: border-box;
+    color: ${isSelected ? colors.text : colors.N40};
+    cursor: ${isSortable ? 'pointer' : 'auto'};
+    display: table-cell;
+    font-weight: normal;
+    padding: ${gridSize}px;
+    position: sticky;
+    top: 0;
+    transition: background-color 100ms;
+    z-index: 1;
+    text-align: left;
+    vertical-align: bottom;
+    font-size: 1.1rem;
+
+    :hover {
+      color: ${isSortable && !isSelected ? colors.N60 : null};
+    }
+  `
+);
+
+const BodyCell = styled.td(
+  ({ isSelected }) => css`
+    background-color: ${isSelected ? colors.B.L95 : 'none'};
+    box-shadow: ${isSelected
+      ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
+      : `0 -1px 0 ${colors.N10}`};
+    box-sizing: border-box;
+    padding: ${gridSize + 2}px ${gridSize}px;
+    position: relative;
+  `
+);
+
 const ItemLink = styled(Link)`
   color: ${colors.text};
 
@@ -84,18 +86,20 @@ const BodyCellTruncated = styled(BodyCell)`
   word-wrap: normal;
 `;
 
-const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
-  borderLeft: `${size} solid transparent`,
-  borderRight: `${size} solid transparent`,
-  borderTop: `${size} solid`,
-  display: 'inline-block',
-  height: 0,
-  marginLeft: '0.33em',
-  marginTop: '-0.125em',
-  verticalAlign: 'middle',
-  width: 0,
-  transform: `rotate(${rotate})`,
-}));
+const SortDirectionArrow = styled.span(
+  ({ size = '0.25em', rotate = '0deg' }) => css`
+    border-left: ${size} solid transparent;
+    border-right: ${size} solid transparent;
+    border-top: ${size} solid;
+    display: inline-block;
+    height: 0;
+    margin-left: 0.33em;
+    margin-top: -0.125em;
+    vertical-align: middle;
+    width: 0;
+    transform: rotate(${rotate});
+  `
+);
 
 // Functional Components
 
@@ -199,7 +203,7 @@ class ListRow extends Component {
     ];
 
     return (
-      <TableRow>
+      <tr>
         <BodyCell isSelected={isSelected} key="checkbox">
           <CheckboxPrimitive
             checked={isSelected}
@@ -280,7 +284,7 @@ class ListRow extends Component {
             items={items}
           />
         </BodyCell>
-      </TableRow>
+      </tr>
     );
   }
 }

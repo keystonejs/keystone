@@ -86,10 +86,10 @@ export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
   );
 };
 
-const Note = styled.div({
-  color: colors.N60,
-  fontSize: '0.85em',
-});
+const Note = styled.div`
+  color: ${colors.N60};
+  font-size: 0.85em;
+`;
 
 // ==============================
 // Utilities

@@ -6,16 +6,16 @@ import { Button, LoadingButton } from '@arch-ui/button';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 
-const Toolbar = styled.div({
-  backgroundColor: alpha('#fff', 0.93),
-  bottom: 0,
-  boxShadow: `${alpha(colors.text, 0.1)} 0px -2px 0px`,
-  display: 'flex',
-  justifyContent: 'space-between',
-  paddingBottom: gridSize * 2,
-  paddingTop: gridSize * 2,
-  position: 'sticky',
-});
+const Toolbar = styled.div`
+  background-color: ${alpha('#fff', 0.93)};
+  bottom: 0;
+  box-shadow: ${alpha(colors.text, 0.1)} 0px -2px 0px;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: ${gridSize * 2}px;
+  padding-top: ${gridSize * 2}px;
+  position: sticky;
+`;
 
 function useKeyListener(listener, deps) {
   useEffect(() => {
