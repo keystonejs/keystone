@@ -246,6 +246,7 @@ class ListRow extends Component {
               <Cell
                 isSelected={isSelected}
                 list={list}
+                item={item} // FIXME: just passing this for the password cell, but not that optimal
                 data={item[path]}
                 field={field}
                 Link={LinkComponent}
