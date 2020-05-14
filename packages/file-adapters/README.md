@@ -109,9 +109,10 @@ const fileAdapter = new S3Adapter({
   publicUrl: ({ id, filename, _meta }) =>
     `https://${CF_DISTRIBUTION_ID}.cloudfront.net/${S3_PATH}/${filename}`,
   s3Options: {
+    // Optional paramaters to be supplied directly to AWS.S3 constructor
     apiVersion: '2006-03-01',
     accessKeyId: 'ACCESS_KEY_ID',
-    s3: 'SECRET_ACCESS_KEY',
+    secretAccessKey: 'SECRET_ACCESS_KEY',
     region: 'us-west-2',
   },
   uploadParams: ({ filename, id, mimetype, encoding }) => ({
