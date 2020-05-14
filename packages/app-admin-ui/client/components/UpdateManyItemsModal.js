@@ -120,7 +120,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
         <Fragment>
           <LoadingButton
             appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
-            isDisabled={hasErrors}
+            isDisabled={hasErrors || selectedFields.length === 0}
             isLoading={loading}
             onClick={handleUpdate}
           >
