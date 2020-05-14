@@ -6,62 +6,120 @@ title: CloudinaryImage
 
 # CloudinaryImage
 
-Upload an image to Cloudinary.
+The `CloudinaryImage` field extends the [`File`](/packages/fields/src/types/file/README.md) field and allows uploading images to Cloudinary. It also exposes additional GraphQL functionality for querying your uploaded images.
 
 ## Usage
 
-Import the field from the `@keystonejs/file-adapters` package and configure it:
+This field must be used with the [`CoundinaryAdapter`](/packages/file-adapters/README.md#cloudinaryfileadapter) file adapter:
 
-```js
+```js title=index.js
+const { Keystone } = require('@keystonejs/keystone');
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
+const { CloudinaryImage } = require('@keystonejs/fields');
 
-const cloudinaryAdapter = new CloudinaryAdapter({
+const keystone = new Keystone({...});
+
+const adapter = new CloudinaryAdapter({
   cloudName: process.env.CLOUDINARY_CLOUD_NAME,
   apiKey: process.env.CLOUDINARY_KEY,
   apiSecret: process.env.CLOUDINARY_SECRET,
   folder: 'my-keystone-app',
 });
-```
 
-Then when creating your list, use the field as so:
-
-```js
-const { CloudinaryImage } = require('@keystonejs/fields');
-
-keystone.createList('Item', {
+keystone.createList('Image', {
   fields: {
-    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
+    image: { type: CloudinaryImage, adapter },
   },
 });
 ```
 
+## Config
+
+Since this field extends the `File` field, it accepts all the same config options.
+
+## GraphQL
+
+Will add the following to the GraphQL schema:
+
+```graphql
+"""
+Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+All options are strings as they ultimately end up in a URL.
+"""
+input CloudinaryImageFormat {
+  """
+  Rewrites the filename to be this pretty string. Do not include \`/\` or \`.\`
+  """
+  prettyName: String
+  width: String
+  height: String
+  crop: String
+  aspect_ratio: String
+  gravity: String
+  zoom: String
+  x: String
+  y: String
+  format: String
+  fetch_format: String
+  quality: String
+  radius: String
+  angle: String
+  effect: String
+  opacity: String
+  border: String
+  background: String
+  overlay: String
+  underlay: String
+  default_image: String
+  delay: String
+  color: String
+  color_space: String
+  dpr: String
+  page: String
+  density: String
+  flags: String
+  transformation: String
+}
+
+type CloudinaryImage_File {
+  id: ID
+  path: String
+  filename: String
+  originalFilename: String
+  mimetype: String
+  encoding: String
+  publicUrl: String
+  publicUrlTransformed(transformation: CloudinaryImageFormat): String
+}
+```
+
+`CloudinaryImage` fields will have type `CloudinaryImage_File` in the schema. For example, to query an entry in our `Image` list, one could do:
+
+```graphql
+query getFirstCloudinaryImage {
+  allImages(first: 1) {
+    image {
+      filename
+      publicUrlTransformed(transformation: { width: "120", crop: "limit" })
+    }
+  }
+}
+```
+
 ## Cloudinary image block
 
-The `CloudinaryImage` field also exposes a block that can be used in the [content field](/packages/field-content/README.md).
+The `CloudinaryImage` field also exposes a block that can be used in the [Content](/packages/field-content/README.md) field.
 
 ### Usage
 
-```js
-const { Keystone } = require('@keystonejs/keystone');
+```js title=index.js
 const { Content } = require('@keystonejs/field-content');
-const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
-const { CloudinaryImage } = require('@keystonejs/fields');
-
-const cloudinaryAdapter = new CloudinaryAdapter({
-  cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-  apiKey: process.env.CLOUDINARY_KEY,
-  apiSecret: process.env.CLOUDINARY_SECRET,
-  folder: 'my-keystone-app',
-});
 
 keystone.createList('Post', {
   fields: {
     body: {
       type: Content,
-      blocks: [
-        Content.blocks.heading,
-        [CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }],
-      ],
+      blocks: [Content.blocks.heading, [CloudinaryImage.blocks.image, { adapter }]],
     },
   },
 });
