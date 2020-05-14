@@ -6,7 +6,7 @@ title: CloudinaryImage
 
 # CloudinaryImage
 
-The `CloudinaryImage` field extends the [`File`](/packages/fields/src/types/file/README.md) field and allows uploading images to Cloudinary. It also exposes additional GraphQL functionality for querying your uploaded images.
+The `CloudinaryImage` field extends the [`File`](/packages/fields/src/types/File/README.md) field and allows uploading images to Cloudinary. It also exposes additional GraphQL functionality for querying your uploaded images.
 
 ## Usage
 
