@@ -14,21 +14,26 @@ class CloudinaryImage extends File {
   gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
+
   extendAdminMeta(meta) {
     // Overwrite so we have only the original meta
     return meta;
   }
+
   getFileUploadType() {
     return 'Upload';
   }
+
   getGqlAuxTypes({ schemaName }) {
     return [
       ...super.getGqlAuxTypes({ schemaName }),
       `
-      """Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
-      All options are strings as they ultimately end up in a URL."""
+      """
+      Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+      All options are strings as they ultimately end up in a URL.
+      """
       input CloudinaryImageFormat {
-        # Rewrites the filename to be this pretty string. Do not include '/' or '.'
+        """ Rewrites the filename to be this pretty string. Do not include \`/\` or \`.\` """
         prettyName: String
         width: String
         height: String
@@ -65,6 +70,7 @@ class CloudinaryImage extends File {
       }`,
     ];
   }
+
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
