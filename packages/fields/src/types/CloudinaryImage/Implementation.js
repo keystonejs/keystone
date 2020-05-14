@@ -4,6 +4,11 @@ class CloudinaryImage extends File {
   constructor() {
     super(...arguments);
     this.graphQLOutputType = 'CloudinaryImage_File';
+
+    // Ducktype the adapter
+    if (typeof this.fileAdapter.publicUrlTransformed !== 'function') {
+      throw new Error('CloudinaryImage field must be used with CloudinaryAdapter');
+    }
   }
 
   gqlOutputFields() {
