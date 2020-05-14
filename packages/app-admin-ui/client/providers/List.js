@@ -2,6 +2,7 @@ import React, { useContext, createContext, useState, useMemo } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { useListUrlState } from '../pages/List/dataHooks';
+import { deconstructErrorsToDataShape } from '../util';
 
 const ListContext = createContext();
 
@@ -53,17 +54,17 @@ export const ListProvider = ({ list, children }) => {
 
   // Organize the data for easier use.
   // TODO: consider doing this at the query level with an alias
-  // TODO: should we use deconstructErrorsToDataShape on the error?
-  // Need to check all uses of this data before deciding.
   const {
-    data: { error, [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
+    error,
+    data: { [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
   } = query;
 
   return (
     <ListContext.Provider
       value={{
         list,
-        listData: { items, itemCount: count, queryErrors: error },
+        listData: { items, itemCount: count },
+        queryErrorsParsed: deconstructErrorsToDataShape(error)[listQueryName],
         query,
         isCreateItemModalOpen: isOpen,
         openCreateItemModal,
