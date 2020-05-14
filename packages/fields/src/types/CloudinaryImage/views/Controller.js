@@ -1,6 +1,6 @@
 import FieldController from '../../File/views/Controller';
 
-export default class FileController extends FieldController {
+export default class CloudinaryImageController extends FieldController {
   getQueryFragment = () => `
     ${this.path} {
        id
