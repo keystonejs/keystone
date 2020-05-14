@@ -32,7 +32,13 @@ export default function SortPopout() {
     popoutRef.current.close();
   };
 
-  const cachedOptions = useMemo(() => list.fields.map(({ options, ...field }) => field), [list]);
+  const cachedOptions = useMemo(
+    () =>
+      list.fields
+        .filter(({ isOrderable }) => isOrderable) // TODO: should we include ID fields here?
+        .map(({ options, ...field }) => field),
+    [list]
+  );
 
   const cypressId = 'list-page-sort-button';
 
