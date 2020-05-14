@@ -1,5 +1,54 @@
 # @keystonejs/fields
 
+## 11.0.0
+
+### Major Changes
+
+- [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc) [#2927](https://github.com/keystonejs/keystone/pull/2927) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to date-fns 2.x. This version uses [Unicode tokens](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table) for its formatting strings. A conversion table is available [here](https://github.com/date-fns/date-fns/blob/master/CHANGELOG.md#200---2019-08-20).
+
+  This change only affects the `CalendarDay` and `DateTime` fields' `format` config option.
+
+  The following script utilizes the [`@date-fns/upgrade`](https://github.com/date-fns/date-fns-upgrade) package and can be used to convert old formatting strings:
+
+  ```js
+  const { convertTokens } = require('@date-fns/upgrade/v2');
+
+  console.table(
+    [
+      // Add date-dns 1.x formatting strings here.
+    ].map(str => ({
+      v1: str,
+      v2: convertTokens(str).replace(/'/g, ''),
+    }))
+  );
+  ```
+
+  Do note this converts symbols to standalone style as opposed to formatted style which may not always be desired. For example, `DD/MM/YYYY` would be converted to `dd/LL/yyyy` instead of `dd/MM/yyyy`. See [here](http://cldr.unicode.org/translation/date-time-1/date-time#TOC-Stand-Alone-vs.-Format-Styles) for more information on which you should use.
+
+### Patch Changes
+
+- [`a124417f`](https://github.com/keystonejs/keystone/commit/a124417fddc75889db5e4e8e0d5625fb4af12590) [#2943](https://github.com/keystonejs/keystone/pull/2943) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed error when Relationship field was passed an undefined or null value.
+
+* [`54931d75`](https://github.com/keystonejs/keystone/commit/54931d75d3f26f4f300c2c4c3ee65ed3183b4a6a) [#2923](https://github.com/keystonejs/keystone/pull/2923) Thanks [@timleslie](https://github.com/timleslie)! - Updated documentation for the CalendarDay field type.
+
+- [`59ed6310`](https://github.com/keystonejs/keystone/commit/59ed6310bacc76f571639de048689becbedbeac5) [#2930](https://github.com/keystonejs/keystone/pull/2930) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed many usability issues with the CalendarDay field:
+
+  - Fixed field not functioning as a proper controlled component in the Create popout.
+  - Fixed field initially displaying "Invalid Date" before defaulting to 1970-01-01.
+  - Filter input no longer defaults to the current date. This was bugged; submitting the form with no changes would match nothing.
+  - Filter input now falls back to no value when given an invalid date. Previously, it was falling back to 1970-01-01.
+  - Fixed filter input not initially displaying the current value when in edit mode (it was displaying the current date).
+  - Fixed filter input not being initially focused.
+  - Fixed filter input not being submitted properly if focus wasn't lost first.
+
+  Updated chrono-node dependency to 1.4.6.
+
+- Updated dependencies [[`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be), [`f9604621`](https://github.com/keystonejs/keystone/commit/f9604621048afceb071a43c7b8d36d944555487f), [`3e5a8962`](https://github.com/keystonejs/keystone/commit/3e5a8962cc982765574464537904008be975b446), [`5a58bde6`](https://github.com/keystonejs/keystone/commit/5a58bde636f551f2d241086d47781d3c88852b99), [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc), [`3b0f4137`](https://github.com/keystonejs/keystone/commit/3b0f4137df4112c79e6db57ae68fe04ad338da4c), [`15c57317`](https://github.com/keystonejs/keystone/commit/15c573178fa056912503f3ed83efeccceabba3ec), [`d60e2ca9`](https://github.com/keystonejs/keystone/commit/d60e2ca91ab4a7dd815e030bcc92991c3380fa7e), [`94d55b8f`](https://github.com/keystonejs/keystone/commit/94d55b8fc3a334a556c19765063e9efb594b41a7), [`59ed6310`](https://github.com/keystonejs/keystone/commit/59ed6310bacc76f571639de048689becbedbeac5), [`2709a6b5`](https://github.com/keystonejs/keystone/commit/2709a6b512fe636d979837599b67bdb17b2517b1)]:
+  - @keystonejs/app-admin-ui@6.0.1
+  - @arch-ui/button@0.0.19
+  - @arch-ui/day-picker@1.0.0
+  - @keystonejs/field-content@6.0.1
+
 ## 10.0.0
 
 ### Major Changes

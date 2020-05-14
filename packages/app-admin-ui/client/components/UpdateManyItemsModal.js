@@ -98,7 +98,10 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
 
   const options = useMemo(
     // remove the `options` key from select type fields
-    () => list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey).map(f => omit(f, ['options'])),
+    () =>
+      list.fields
+        .filter(({ isPrimaryKey, maybeAccess }) => !isPrimaryKey && !!maybeAccess.update)
+        .map(f => omit(f, ['options'])),
     []
   );
 

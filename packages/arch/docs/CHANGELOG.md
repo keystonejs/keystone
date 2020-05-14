@@ -1,5 +1,15 @@
 # @arch-ui/docs
 
+## 1.1.22
+
+### Patch Changes
+
+- Updated dependencies [[`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be)]:
+  - @arch-ui/button@0.0.19
+  - @arch-ui/dropdown@0.0.18
+  - @arch-ui/navbar@0.1.11
+  - @arch-ui/pagination@0.0.21
+
 ## 1.1.21
 
 ### Patch Changes

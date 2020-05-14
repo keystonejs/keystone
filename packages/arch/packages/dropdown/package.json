@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/dropdown",
   "description": "Dropdown UI as used in @keystonejs Admin UI.",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/dropdown.cjs.js",
