@@ -1,5 +1,15 @@
 # @keystonejs/app-admin-ui
 
+## 6.0.2
+
+### Patch Changes
+
+- [`e783444a`](https://github.com/keystonejs/keystone/commit/e783444a10bb9ec5ce3db787705c0291cafb8719) [#2971](https://github.com/keystonejs/keystone/pull/2971) Thanks [@Vultraz](https://github.com/Vultraz)! - Don't include non-orderable field in Sort selection dropdown.
+
+* [`8e366026`](https://github.com/keystonejs/keystone/commit/8e366026988b7843513c49d701eda4165cdee3b5) [#2972](https://github.com/keystonejs/keystone/pull/2972) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed corner case where a non-orderable default could be selected.
+
+- [`15943a1e`](https://github.com/keystonejs/keystone/commit/15943a1e808957364c56707fc8289ddda6bb77aa) [#2939](https://github.com/keystonejs/keystone/pull/2939) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed no-access indicators not showing up in list table.
+
 ## 6.0.1
 
 ### Patch Changes
