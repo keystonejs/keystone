@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import Select from '@arch-ui/select';
 import { components } from 'react-select';
 import 'intersection-observer';
@@ -18,7 +17,7 @@ function useIntersectionObserver(cb, ref) {
   });
 }
 
-const initalItemsToLoad = 10;
+const initialItemsToLoad = 10;
 const subsequentItemsToLoad = 50;
 
 // to use hooks in render props
@@ -80,12 +79,10 @@ const Relationship = forwardRef(
           useIntersectionObserver(([{ isIntersecting }]) => {
             if (!props.isLoading && isIntersecting && props.options.length < count) {
               fetchMore({
-                query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
-                  refList.gqlNames.listQueryName,
-                  `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
-                )}}`,
+                query: refList.getListQuery(),
                 variables: {
                   search,
+                  first: subsequentItemsToLoad,
                   skip: props.options.length,
                 },
                 updateQuery: (prev, { fetchMoreResult }) => {
@@ -153,10 +150,7 @@ const RelationshipSelect = ({
 }) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
-  const query = gql`query RelationshipSelect($search: String!, $skip: Int!) {${refList.buildQuery(
-    refList.gqlNames.listQueryName,
-    `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`
-  )}${refList.countQuery(`(search: $search)`)}}`;
+  const query = refList.getListQuery();
 
   const canRead =
     !serverErrors ||
@@ -164,7 +158,7 @@ const RelationshipSelect = ({
   const selectProps = renderContext === 'dialog' ? { menuShouldBlockScroll: true } : null;
 
   const { data, error, loading, fetchMore } = useQuery(query, {
-    variables: { search, skip: 0 },
+    variables: { search, first: initialItemsToLoad, skip: 0 },
   });
 
   // TODO: better error UI

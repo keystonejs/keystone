@@ -24,7 +24,7 @@ export default class SelectController extends FieldController {
 
     const value = isMulti ? `[${options.map(x => x.value).join(',')}]` : options[0].value;
 
-    return this.dataType === 'string' ? `${key}: "${value}"` : `${key}: ${value}`;
+    return { [key]: value };
   };
   getFilterLabel = (/*{ value }*/) => {
     return this.label;

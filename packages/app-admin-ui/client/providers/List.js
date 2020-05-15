@@ -30,24 +30,20 @@ export const ListProvider = ({ list, children }) => {
   // List items
   // ==============================
 
-  const { urlState } = useListUrlState(list);
+  const {
+    urlState: { currentPage, fields, filters, pageSize, search, sortBy },
+  } = useListUrlState(list);
 
-  const LIST_QUERY = useMemo(() => {
-    const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
-
-    return list.getQuery({
-      fields,
-      filters,
-      first: pageSize,
-      sortBy,
-      search,
-      skip: (currentPage - 1) * pageSize,
-    });
-  }, [urlState]);
-
-  const query = useQuery(LIST_QUERY, {
+  const query = useQuery(list.getListQuery(fields), {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
+    variables: {
+      where: formatFilter(filters),
+      search,
+      sortBy: formatSortBy(sortBy),
+      first: pageSize,
+      skip: (currentPage - 1) * pageSize,
+    },
   });
 
   const { listQueryName, listQueryMetaName } = list.gqlNames;
@@ -74,4 +70,18 @@ export const ListProvider = ({ list, children }) => {
       {children}
     </ListContext.Provider>
   );
+};
+
+// ==============================
+// Formatting helpers
+// ==============================
+
+const formatFilter = (filters = []) => {
+  return filters
+    .map(({ field, ...config }) => field.getFilterGraphQL(config))
+    .reduce((acc, value) => ({ ...acc, ...value }), {});
+};
+
+const formatSortBy = sortBy => {
+  return sortBy ? `${sortBy.field.path}_${sortBy.direction}` : undefined;
 };

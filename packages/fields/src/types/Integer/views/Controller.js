@@ -7,7 +7,7 @@ export default class IntegerController extends FieldController {
     if (['in', 'not_in'].includes(type)) {
       arg = `[${arg}]`;
     }
-    return `${key}: ${arg}`;
+    return { [key]: arg };
   };
   getFilterLabel = ({ label, type }) => {
     const suffix = ['in', 'not_in'].includes(type) ? ' (comma separated)' : '';

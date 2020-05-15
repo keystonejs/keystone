@@ -18,9 +18,9 @@ export default class RelationshipController extends FieldController {
   };
   getFilterGraphQL = ({ type, value }) => {
     if (type === 'contains') {
-      return `${this.path}_some: {id: "${value}"}`;
+      return { [`${this.path}_some`]: { id: value } };
     } else if (type === 'is') {
-      return `${this.path}: {id: "${value}"}`;
+      return { [`${this.path}`]: { id: value } };
     }
   };
   getFilterLabel = ({ label }) => {

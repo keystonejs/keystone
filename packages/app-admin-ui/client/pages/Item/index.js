@@ -355,15 +355,14 @@ const ItemNotFound = ({ errorMessage, list }) => (
 const ItemPage = ({ itemId }) => {
   const { list } = useList();
 
-  const itemQuery = list.getItemQuery(itemId);
-
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache
   // NOTE: We specifically trigger this query here, before the later code which
   // could Suspend which allows the code and data to load in parallel.
-  const { loading, error, data, refetch } = useQuery(itemQuery, {
+  const { loading, error, data, refetch } = useQuery(list.itemQuery, {
     fetchPolicy: 'network-only',
     errorPolicy: 'all',
+    variables: { id: itemId },
   });
 
   // Now that the network request for data has been triggered, we
