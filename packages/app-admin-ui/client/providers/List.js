@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState, useMemo } from 'react';
+import React, { useContext, createContext, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { useListUrlState } from '../pages/List/dataHooks';
