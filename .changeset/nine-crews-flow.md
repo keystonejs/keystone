@@ -1,6 +1,7 @@
 ---
 '@keystonejs/access-control': major
 '@keystonejs/keystone': major
+'@keystonejs/logger': patch
 ---
 
 Added async capability for all Access Control resolvers. This changes the below methods to async functions, returning Promises:
