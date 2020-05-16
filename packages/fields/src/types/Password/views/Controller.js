@@ -2,7 +2,7 @@ import FieldController from '../../../Controller';
 
 export default class PasswordController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
-    return { [`${this.path}_${type}`]: value ? 'true' : 'false' };
+    return { [`${this.path}_${type}`]: value };
   };
   getFilterLabel = () => {
     return `${this.label}`;
