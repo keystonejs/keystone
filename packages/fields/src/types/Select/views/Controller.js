@@ -22,7 +22,7 @@ export default class SelectController extends FieldController {
       key = `${this.path}_not`;
     }
 
-    const value = isMulti ? `[${options.map(x => x.value).join(',')}]` : options[0].value;
+    const value = isMulti ? options.map(x => x.value) : options[0].value;
 
     return { [key]: value };
   };
