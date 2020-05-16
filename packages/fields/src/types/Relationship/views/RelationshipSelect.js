@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 import Select from '@arch-ui/select';
 import { components } from 'react-select';
 import 'intersection-observer';
@@ -75,11 +76,19 @@ const Relationship = forwardRef(
       () => ({
         MenuList: ({ children, ...props }) => {
           const loadingRef = useRef(null);
+          const QUERY = gql`
+            query RelationshipSelectMore($search: String!, $first: Int!, $skip: Int!) {
+              ${refList.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
+                _label_
+                id
+              }
+            }
+          `;
 
           useIntersectionObserver(([{ isIntersecting }]) => {
             if (!props.isLoading && isIntersecting && props.options.length < count) {
               fetchMore({
-                query: refList.getListQuery(),
+                query: QUERY,
                 variables: {
                   search,
                   first: subsequentItemsToLoad,
@@ -150,14 +159,27 @@ const RelationshipSelect = ({
 }) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
-  const query = refList.getListQuery();
+
+  const QUERY = gql`
+    query RelationshipSelect($search: String!, $first: Int!, $skip: Int!) {
+      ${refList.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
+        _label_
+        id
+      }
+
+      ${refList.gqlNames.listQueryMetaName}(search: $search) {
+        count
+      }
+    }
+  `;
 
   const canRead =
     !serverErrors ||
     serverErrors.every(error => !(error instanceof Error && error.name === 'AccessDeniedError'));
   const selectProps = renderContext === 'dialog' ? { menuShouldBlockScroll: true } : null;
 
-  const { data, error, loading, fetchMore } = useQuery(query, {
+  const { data, error, loading, fetchMore } = useQuery(QUERY, {
+    fetchPolicy: 'network-only',
     variables: { search, first: initialItemsToLoad, skip: 0 },
   });
 
