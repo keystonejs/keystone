@@ -5,7 +5,9 @@ export default class IntegerController extends FieldController {
     const key = type === 'is' ? path : `${path}_${type}`;
     let arg = value.replace(/\s/g, '');
     if (['in', 'not_in'].includes(type)) {
-      arg = `[${arg}]`;
+      arg = arg.split(',').map(i => parseInt(i));
+    } else {
+      arg = parseInt(arg);
     }
     return { [key]: arg };
   };
