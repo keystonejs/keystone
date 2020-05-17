@@ -103,11 +103,12 @@ export default class List {
     `;
   }
 
+  static requiredFields = ['_label_', 'id'];
+
   getListQuery(fields = []) {
-    const safeFields = fields.filter(field => field.path !== '_label_');
-    const requiredFields = ['_label_', 'id'].filter(
-      field => !safeFields.find(({ path }) => path === field)
-    );
+    const queryContents = fields
+      .filter(field => !List.requiredFields.includes(field.path))
+      .map(field => field.getQueryFragment().trim());
 
     return gql`
       query getList(
@@ -124,8 +125,8 @@ export default class List {
           first: $first,
           skip: $skip
         ) {
-          ${requiredFields.join('\n')}
-          ${safeFields.map(field => field.getQueryFragment()).join('\n')}
+          ${List.requiredFields.join('\n')}
+          ${queryContents.join('\n')}
         }
 
         ${this.gqlNames.listQueryMetaName}(where: $where, search: $search) {
