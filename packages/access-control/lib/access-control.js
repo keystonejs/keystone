@@ -81,7 +81,7 @@ module.exports = {
     const accessTypes = [];
     const parseAndValidate = access => {
       const type = getType(access);
-      if (!['Boolean', 'Function', 'Object'].includes(type)) {
+      if (!['Boolean', 'AsyncFunction', 'Function', 'Object'].includes(type)) {
         throw new Error(
           `Expected a Boolean, Object, or Function for custom access, but got ${type}`
         );
@@ -111,11 +111,11 @@ module.exports = {
         }),
         (type, accessType) => {
           if (accessType === 'create') {
-            if (!['Boolean', 'Function'].includes(type)) {
+            if (!['Boolean', 'AsyncFunction', 'Function'].includes(type)) {
               return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${type}. (NOTE: 'create' cannot have a Declarative access control config)`;
             }
           } else {
-            if (!['Object', 'Boolean', 'Function'].includes(type)) {
+            if (!['Object', 'Boolean', 'AsyncFunction', 'Function'].includes(type)) {
               return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${type}`;
             }
           }
@@ -143,7 +143,7 @@ module.exports = {
           },
         }),
         (type, accessType) => {
-          if (!['Boolean', 'Function'].includes(type)) {
+          if (!['Boolean', 'AsyncFunction', 'Function'].includes(type)) {
             return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${type}. (NOTE: Fields cannot have declarative access control config)`;
           }
         }
@@ -151,13 +151,13 @@ module.exports = {
     return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
   },
 
-  validateCustomAccessControl({ access, authentication = {} }) {
+  async validateCustomAccessControl({ access, authentication = {} }) {
     // Either a boolean or an object describing a where clause
     let result;
     if (typeof access !== 'function') {
       result = access;
     } else {
-      result = access({ authentication: authentication.item ? authentication : {} });
+      result = await access({ authentication: authentication.item ? authentication : {} });
     }
     const type = getType(result);
 
@@ -169,7 +169,7 @@ module.exports = {
     return result;
   },
 
-  validateListAccessControl({
+  async validateListAccessControl({
     access,
     listKey,
     operation,
@@ -184,7 +184,7 @@ module.exports = {
     if (typeof access[operation] !== 'function') {
       result = access[operation];
     } else {
-      result = access[operation]({
+      result = await access[operation]({
         authentication: authentication.item ? authentication : {},
         listKey,
         operation,
@@ -213,7 +213,7 @@ module.exports = {
     return result;
   },
 
-  validateFieldAccessControl({
+  async validateFieldAccessControl({
     access,
     listKey,
     fieldKey,
@@ -229,7 +229,7 @@ module.exports = {
     if (typeof access[operation] !== 'function') {
       result = access[operation];
     } else {
-      result = access[operation]({
+      result = await access[operation]({
         authentication: authentication.item ? authentication : {},
         listKey,
         fieldKey,
@@ -253,14 +253,14 @@ module.exports = {
     return result;
   },
 
-  validateAuthAccessControl({ access, listKey, authentication = {}, gqlName }) {
+  async validateAuthAccessControl({ access, listKey, authentication = {}, gqlName }) {
     const operation = 'auth';
     // Either a boolean or an object describing a where clause
     let result;
     if (typeof access[operation] !== 'function') {
       result = access[operation];
     } else {
-      result = access[operation]({
+      result = await access[operation]({
         authentication: authentication.item ? authentication : {},
         listKey,
         operation,
