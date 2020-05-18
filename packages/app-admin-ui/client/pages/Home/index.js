@@ -9,12 +9,22 @@ import { ListProvider } from '../../providers/List';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
-import { gqlCountQueries } from '../../classes/List';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
 
 import useResizeObserver from 'use-resize-observer';
 import throttle from 'lodash.throttle';
+import gql from 'graphql-tag';
+
+const getCountQuery = lists => {
+  if (!lists) return null;
+
+  return gql`
+    query getAllListCounts {
+      ${lists.map(({ gqlNames }) => `${gqlNames.listQueryMetaName} { count }`).join('\n')}
+    }
+  `;
+};
 
 const Homepage = () => {
   const { getListByKey, listKeys, adminPath } = useAdminMeta();
@@ -22,8 +32,7 @@ const Homepage = () => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
-  const query = lists.length !== 0 ? gqlCountQueries(lists) : null;
-  const [getLists, { data, error, called }] = useLazyQuery(query, {
+  const [getLists, { data, error, called }] = useLazyQuery(getCountQuery(lists), {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
   });
