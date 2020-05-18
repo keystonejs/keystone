@@ -48,7 +48,6 @@ export function ListLayout(props) {
   const [selectedItems, onSelectChange] = useListSelect(items);
 
   const { adminPath } = useAdminMeta();
-  const history = useHistory();
 
   // Misc.
   // ------------------------------
