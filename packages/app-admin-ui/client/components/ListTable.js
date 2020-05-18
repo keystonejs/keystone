@@ -178,7 +178,7 @@ const ListRow = ({
     {
       content: 'Copy Link',
       icon: <LinkIcon />,
-      onClick: () => copyToClipboard(`${window.location.origin}${list.fullPath}${item.id}`),
+      onClick: () => copyToClipboard(`${window.location.origin}${list.fullPath}/${item.id}`),
     },
     {
       content: 'Delete',
