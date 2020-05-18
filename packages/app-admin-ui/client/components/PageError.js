@@ -5,7 +5,7 @@ import { StopIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 import { Container } from '@arch-ui/layout';
 
-export default function PageError({ children, Icon = StopIcon, ...props }) {
+export default function PageError({ children, icon: Icon = StopIcon, ...props }) {
   return (
     <Container>
       <div
