@@ -30,7 +30,6 @@ import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
   toastItemSuccess,
-  toastError,
   validateFields,
   handleCreateUpdateMutationError,
 } from '../../util';
@@ -73,8 +72,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
   const history = useHistory();
   const { addToast } = useToasts();
 
-  const { query: listQuery } = useList();
-
   const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
@@ -114,25 +111,14 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     }
   };
 
-  const onDelete = async deletePromise => {
+  const onDelete = () => {
     deleteConfirmed.current = true;
-
-    try {
-      await deletePromise;
-      const refetch = listQuery.refetch();
-
-      if (mounted) {
-        setShowDeleteModal(false);
-      }
-
-      toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
-
-      // Wait for the refetch to finish before returning to the list
-      await refetch;
-      history.replace(list.fullPath);
-    } catch (error) {
-      toastError({ addToast }, error);
+    if (mounted) {
+      setShowDeleteModal(false);
     }
+
+    toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
+    history.replace(list.fullPath);
   };
 
   const openDeleteModal = () => {

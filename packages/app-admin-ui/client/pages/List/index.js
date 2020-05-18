@@ -54,20 +54,15 @@ export function ListLayout(props) {
   // ------------------------------
 
   const onDeleteSelectedItems = () => {
-    query.refetch();
     onSelectChange([]);
   };
-  const onDeleteItem = () => {
-    query.refetch();
-  };
-  const onUpdateSelectedItems = () => {
-    query.refetch();
-  };
+
+  const onDeleteItem = () => {};
+  const onUpdateSelectedItems = () => {};
+
   const onCreate = ({ data }) => {
     const id = data[list.gqlNames.createMutationName].id;
-    query.refetch().then(() => {
-      history.push(`${list.fullPath}/${id}`);
-    });
+    history.push(`${list.fullPath}/${id}`);
   };
 
   // Success
