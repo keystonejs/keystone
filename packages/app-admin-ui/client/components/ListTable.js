@@ -27,9 +27,12 @@ const Table = styled('table')({
   borderSpacing: 0,
   width: '100%',
 });
-const TableRow = styled('tr')(({ isActive }) => ({
+const TableRow = styled('tr')(({ isSelected }) => ({
   '> td': {
-    backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
+    backgroundColor: isSelected ? colors.B.L95 : null,
+    boxShadow: isSelected
+      ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
+      : `0 -1px 0 ${colors.N10}`,
   },
 }));
 const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
@@ -53,15 +56,11 @@ const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
     color: isSortable && !isSelected ? colors.N60 : null,
   },
 }));
-const BodyCell = styled('td')(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.B.L95 : null,
-  boxShadow: isSelected
-    ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
-    : `0 -1px 0 ${colors.N10}`,
+const BodyCell = styled('td')({
   boxSizing: 'border-box',
   padding: `${gridSize + 2}px ${gridSize}px`,
   position: 'relative',
-}));
+});
 const ItemLink = styled(Link)`
   color: ${colors.text};
 
@@ -184,8 +183,8 @@ const ListRow = ({
   ];
 
   return (
-    <TableRow>
-      <BodyCell isSelected={isSelected} key="checkbox">
+    <TableRow isSelected={isSelected}>
+      <BodyCell key="checkbox">
         <CheckboxPrimitive
           checked={isSelected}
           value={item.id}
@@ -214,7 +213,7 @@ const ListRow = ({
 
         if (path === linkField) {
           return (
-            <BodyCellTruncated isSelected={isSelected} key={path}>
+            <BodyCellTruncated key={path}>
               <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
             </BodyCellTruncated>
           );
@@ -245,13 +244,9 @@ const ListRow = ({
           content = item[path];
         }
 
-        return (
-          <BodyCellTruncated isSelected={isSelected} key={path}>
-            {content}
-          </BodyCellTruncated>
-        );
+        return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
       })}
-      <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
+      <BodyCell css={{ padding: 0 }}>
         <Dropdown
           align="right"
           target={handlers => (
