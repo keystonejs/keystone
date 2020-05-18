@@ -1,6 +1,7 @@
 /* global ENABLE_DEV_FEATURES */
-
-import React, { Fragment, useState } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Fragment, useState } from 'react';
 
 import { SettingsIcon, TrashcanIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
