@@ -10,6 +10,7 @@ import {
   useEffect,
   forwardRef,
 } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import { useToasts } from 'react-toast-notifications';
 
@@ -46,11 +47,14 @@ const useEventCallback = callback => {
 
 const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
   const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
+
   const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
 
+  const history = useHistory();
   const { addToast } = useToasts();
+
   const [createItem, { loading }] = useMutation(list.createMutation, {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
@@ -117,6 +121,9 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
     if (onCreate) {
       onCreate(savedData);
     }
+
+    const newItemID = savedData.data[list.gqlNames.createMutationName].id;
+    history.push(`${list.fullPath}/${newItemID}`);
   });
 
   const _onClose = () => {

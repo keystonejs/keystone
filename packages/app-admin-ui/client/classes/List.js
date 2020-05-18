@@ -168,4 +168,8 @@ export default class List {
   setPersistedSearch(value) {
     localStorage.setItem(`search:${this.path}`, value);
   }
+
+  getFullPersistentPath() {
+    return `${this.fullPath}${this.getPersistedSearch() || ''}`;
+  }
 }

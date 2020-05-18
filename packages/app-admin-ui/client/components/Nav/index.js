@@ -212,7 +212,6 @@ function renderChildren(
   }
 
   const label = node.label || list.plural;
-  const maybeSearchParam = list.getPersistedSearch() || '';
   const isSelected = list.fullPath === getPath(location.pathname);
   const id = `ks-nav-${list.path}`;
 
@@ -222,7 +221,7 @@ function renderChildren(
       depth={depth}
       id={id}
       isSelected={isSelected}
-      to={`${list.fullPath}${maybeSearchParam}`}
+      to={list.getFullPersistentPath()}
       mouseIsOverNav={mouseIsOverNav}
     >
       {label}

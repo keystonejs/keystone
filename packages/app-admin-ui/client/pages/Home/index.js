@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
@@ -32,7 +31,7 @@ const Homepage = () => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
-  const [getLists, { data, error, called }] = useLazyQuery(getCountQuery(lists), {
+  const { data, error } = useQuery(getCountQuery(lists), {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
   });
@@ -51,26 +50,6 @@ const Homepage = () => {
       );
     },
   });
-
-  if (lists.length === 0) {
-    return (
-      <Fragment>
-        <DocTitle title="Home" />
-        <PageError>
-          <p>
-            No lists defined.{' '}
-            <Link href="https://keystonejs.com/tutorials/add-lists">
-              Get started by creating your first list.
-            </Link>
-          </p>
-        </PageError>
-      </Fragment>
-    );
-  }
-
-  if (!called) {
-    getLists();
-  }
 
   let allowedLists = lists;
 

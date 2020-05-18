@@ -48,7 +48,6 @@ export function ListLayout(props) {
   const [selectedItems, onSelectChange] = useListSelect(items);
 
   const { adminPath } = useAdminMeta();
-  const history = useHistory();
 
   // Misc.
   // ------------------------------
@@ -59,11 +58,6 @@ export function ListLayout(props) {
 
   const onDeleteItem = () => {};
   const onUpdateSelectedItems = () => {};
-
-  const onCreate = ({ data }) => {
-    const id = data[list.gqlNames.createMutationName].id;
-    history.push(`${list.fullPath}/${id}`);
-  };
 
   // Success
   // ------------------------------
@@ -184,7 +178,7 @@ export function ListLayout(props) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal />
 
       <Container isFullWidth>
         <ListTable
@@ -247,11 +241,12 @@ const ListPage = props => {
   // ------------------------------
   useEffect(() => {
     const maybePersistedSearch = list.getPersistedSearch();
+    if (location.search === maybePersistedSearch) {
+      return;
+    }
 
     if (location.search) {
-      if (location.search !== maybePersistedSearch) {
-        list.setPersistedSearch(location.search);
-      }
+      list.setPersistedSearch(location.search);
     } else if (maybePersistedSearch) {
       history.replace({
         ...location,
