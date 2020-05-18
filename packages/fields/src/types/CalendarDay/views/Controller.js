@@ -4,7 +4,7 @@ import { getYear, parseISO } from 'date-fns';
 export default class CalendarDayController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    return `${key}: "${value}"`;
+    return { [key]: value };
   };
 
   getFilterLabel = ({ label }) => {

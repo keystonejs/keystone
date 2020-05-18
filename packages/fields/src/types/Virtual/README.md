@@ -6,9 +6,12 @@ title: Virtual
 
 # Virtual
 
+The `Virtual` field type allows you to define a read-only field which you define the resolver for.
+This can be used to return computed values, values combining multiple fields, or custom formated values.
+
 ## Usage
 
-If the resolver is a function that returns a string you don't need to define a return type.
+The most basic usage is to provide a `resolver` function which returns a `String` value.
 
 ```js
 const { Virtual, Text } = require('@keystonejs/fields');
@@ -19,14 +22,14 @@ keystone.createList('Example', {
     lastName: { type: Text },
     name: {
       type: Virtual,
-      resolver: item => (`${item.firstName} ${item.lastName}`)
+      resolver: item => `${item.firstName} ${item.lastName}`
       };
     },
   },
 });
 ```
 
-If the return type is not a string define a `graphQLReturnType`.
+If the return type is not `String` then you need to define `graphQLReturnType`.
 
 ```js
 const { Virtual } = require('@keystonejs/fields');
@@ -67,14 +70,33 @@ keystone.createList('Example', {
 });
 ```
 
+`Virtual` fields can take arguments to be used by the resolver function using the `args` option, which takes a list of `{ name, type }` values.
+
+```js
+const { Virtual, CalendarDay } = require('@keystonejs/fields');
+const { format, parseISO } = require('date-fns');
+
+keystone.createList('Example', {
+  fields: {
+    date: { type: CalendarDay },
+    formattedDate: {
+      resolver: (item, { formatAs = 'do MMMM, yyyy' }) =>
+        item.date && format(parseISO(item.date), formatAs),
+      args: [{ name: 'formatAs', type: 'String' }],
+    },
+  },
+});
+```
+
 ## Config
 
-| Option                  | Type       | Default    | Description                                                 |
-| ----------------------- | ---------- | ---------- | ----------------------------------------------------------- |
-| `resolver`              | `Function` | (required) |                                                             |
-| `graphQLReturnType`     | `String`   | `String`   | A GraphQL Type String                                       |
-| `graphQLReturnFragment` | `String`   | `''`       | A GraphQL Fragment String -required for nested return types |
-| `extendGraphQLTypes`    | `Array`    | `[]`       | An array of custom GraphQL type definitions                 |
+| Option                  | Type       | Default    | Description                                                                                          |
+| ----------------------- | ---------- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| `resolver`              | `Function` | (required) |                                                                                                      |
+| `graphQLReturnType`     | `String`   | `String`   | A GraphQL Type String                                                                                |
+| `graphQLReturnFragment` | `String`   | `''`       | A GraphQL Fragment String - Used by the Admin UI and required if using a nested `graphQLReturnType`. |
+| `extendGraphQLTypes`    | `Array`    | `[]`       | An array of custom GraphQL type definitions                                                          |
+| `args`                  | `Array`    | `[]`       | An array of `{ name, type }` indicating the supported arguments for the field                        |
 
 > **Note:** Related fields within a virtual field resolver will not return related items.
 

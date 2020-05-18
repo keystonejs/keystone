@@ -54,20 +54,15 @@ export function ListLayout(props) {
   // ------------------------------
 
   const onDeleteSelectedItems = () => {
-    query.refetch();
     onSelectChange([]);
   };
-  const onDeleteItem = () => {
-    query.refetch();
-  };
-  const onUpdateSelectedItems = () => {
-    query.refetch();
-  };
+
+  const onDeleteItem = () => {};
+  const onUpdateSelectedItems = () => {};
+
   const onCreate = ({ data }) => {
     const id = data[list.gqlNames.createMutationName].id;
-    query.refetch().then(() => {
-      history.push(`${list.fullPath}/${id}`);
-    });
+    history.push(`${list.fullPath}/${id}`);
   };
 
   // Success
@@ -270,7 +265,7 @@ const ListPage = props => {
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
   if (query.error && (!query.data || !items || !Object.keys(items).length)) {
-    let message = query.error.message;
+    let message = queryErrorsParsed.message;
 
     // If there was an error returned by GraphQL, use that message instead
     // FIXME: convert this to an optional chaining operator at some point

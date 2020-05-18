@@ -20,6 +20,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
   const [updateItem, { loading }] = useMutation(list.updateManyMutation, {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
+    refetchQueries: ['getList'],
   });
 
   const [item, setItem] = useState({});
@@ -120,7 +121,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
         <Fragment>
           <LoadingButton
             appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
-            isDisabled={hasErrors}
+            isDisabled={hasErrors || selectedFields.length === 0}
             isLoading={loading}
             onClick={handleUpdate}
           >
