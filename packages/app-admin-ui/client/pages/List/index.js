@@ -60,11 +60,6 @@ export function ListLayout(props) {
   const onDeleteItem = () => {};
   const onUpdateSelectedItems = () => {};
 
-  const onCreate = ({ data }) => {
-    const id = data[list.gqlNames.createMutationName].id;
-    history.push(`${list.fullPath}/${id}`);
-  };
-
   // Success
   // ------------------------------
 
@@ -184,7 +179,7 @@ export function ListLayout(props) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal />
 
       <Container isFullWidth>
         <ListTable

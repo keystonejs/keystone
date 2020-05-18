@@ -227,11 +227,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     }
   };
 
-  const onCreate = ({ data }) => {
-    const { id } = data[list.gqlNames.createMutationName];
-    history.push(`${list.fullPath}/${id}`);
-  };
-
   return (
     <Fragment>
       {itemHasChanged.current && !deleteConfirmed.current && <PreventNavigation />}
@@ -312,7 +307,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
         />
       </Card>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal />
       <DeleteItemModal
         isOpen={showDeleteModal}
         item={initialData}

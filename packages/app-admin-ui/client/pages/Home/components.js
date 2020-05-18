@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment } from 'react';
 import styled from '@emotion/styled';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 import { useList } from '../../providers/List';
 
@@ -35,13 +35,6 @@ const BoxElement = styled(Card)`
 
 const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props }) => {
   const { list, openCreateItemModal } = useList();
-  const history = useHistory();
-
-  const onCreate = ({ data }) => {
-    const id = data[list.gqlNames.createMutationName].id;
-    history.push(`${list.fullPath}/${id}`);
-  };
-
   const { label, singular } = list;
 
   return (
@@ -69,7 +62,7 @@ const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props 
           <A11yText>Create {singular}</A11yText>
         </CreateButton>
       </BoxElement>
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal />
     </Fragment>
   );
 };
