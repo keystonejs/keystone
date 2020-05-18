@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component, Suspense, Fragment } from 'react';
+import { Suspense, Fragment, useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
@@ -27,9 +27,12 @@ const Table = styled('table')({
   borderSpacing: 0,
   width: '100%',
 });
-const TableRow = styled('tr')(({ isActive }) => ({
+const TableRow = styled('tr')(({ isSelected }) => ({
   '> td': {
-    backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
+    backgroundColor: isSelected ? colors.B.L95 : null,
+    boxShadow: isSelected
+      ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
+      : `0 -1px 0 ${colors.N10}`,
   },
 }));
 const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
@@ -53,15 +56,11 @@ const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
     color: isSortable && !isSelected ? colors.N60 : null,
   },
 }));
-const BodyCell = styled('td')(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.B.L95 : null,
-  boxShadow: isSelected
-    ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
-    : `0 -1px 0 ${colors.N10}`,
+const BodyCell = styled('td')({
   boxSizing: 'border-box',
   padding: `${gridSize + 2}px ${gridSize}px`,
   position: 'relative',
-}));
+});
 const ItemLink = styled(Link)`
   color: ${colors.text};
 
@@ -99,57 +98,55 @@ const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) =>
 
 // Functional Components
 
-type SortLinkProps = {
-  handleSortChange: Function,
-  active: boolean,
-  sortAscending: boolean,
-};
-
-class SortLink extends React.Component<SortLinkProps> {
-  onClick = () => {
-    const { field, sortAscending, sortable } = this.props;
+const SortLink = ({
+  field,
+  'data-field': dataField,
+  active,
+  sortAscending,
+  sortable,
+  handleSortChange,
+}) => {
+  const onClick = () => {
     if (sortable) {
       // Set direction to the opposite of the current sortAscending value
-      this.props.handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
+      handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
     }
   };
 
-  render() {
-    // TODO: Do we want to make `sortable` a field config option?
-    return (
-      <HeaderCell
-        isSortable={this.props.sortable}
-        isSelected={this.props.active}
-        onClick={this.onClick}
-        data-field={this.props['data-field']}
-      >
-        {this.props.field.label}
-        {this.props.sortable && (
-          <SortDirectionArrow
-            rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
-          />
-        )}
-      </HeaderCell>
-    );
-  }
-}
+  return (
+    <HeaderCell isSortable={sortable} isSelected={active} onClick={onClick} data-field={dataField}>
+      {field.label}
+      {sortable && <SortDirectionArrow rotate={active && !sortAscending ? '180deg' : '0deg'} />}
+    </HeaderCell>
+  );
+};
 
 // ==============================
 // Common for display & manage
 // ==============================
 
-class ListRow extends Component {
-  static defaultProps = { itemErrors: {}, linkField: '_label_' };
-  state = { showDeleteModal: false };
-  componentDidMount() {
-    this.mounted = true;
-  }
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+const ListRow = ({
+  list,
+  fields,
+  item,
+  itemErrors = {},
+  link,
+  linkField = '_label_',
+  isSelected,
+  onSelectChange,
+  onDelete,
+}) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  onCheckboxChange = () => {
-    const { item, onSelectChange } = this.props;
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const onCheckboxChange = () => {
     onSelectChange(item.id);
   };
 
@@ -157,133 +154,120 @@ class ListRow extends Component {
   // Display
   // ==============================
 
-  showDeleteModal = () => {
-    this.setState({ showDeleteModal: true });
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
   };
-  closeDeleteModal = () => {
-    this.setState({ showDeleteModal: false });
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
   };
-  onDelete = result => {
-    if (this.props.onDelete) this.props.onDelete(result);
-    if (!this.mounted) return;
-    this.setState({ showDeleteModal: false });
+
+  const handleDelete = result => {
+    if (onDelete) onDelete(result);
+    if (!mounted.current) return;
+    setShowDeleteModal(false);
   };
-  renderDeleteModal() {
-    const { showDeleteModal } = this.state;
-    const { item, list } = this.props;
 
-    return (
-      <DeleteItemModal
-        isOpen={showDeleteModal}
-        item={item}
-        list={list}
-        onClose={this.closeDeleteModal}
-        onDelete={this.onDelete}
-      />
-    );
-  }
-  render() {
-    const { list, link, isSelected, item, itemErrors, fields, linkField } = this.props;
-    const copyText = window.location.origin + link({ path: list.path, item });
-    const items = [
-      {
-        content: 'Copy Link',
-        icon: <LinkIcon />,
-        onClick: () => copyToClipboard(copyText),
-      },
-      {
-        content: 'Delete',
-        icon: <TrashcanIcon />,
-        onClick: this.showDeleteModal,
-      },
-    ];
+  const copyText = window.location.origin + link({ path: list.path, item });
+  const items = [
+    {
+      content: 'Copy Link',
+      icon: <LinkIcon />,
+      onClick: () => copyToClipboard(copyText),
+    },
+    {
+      content: 'Delete',
+      icon: <TrashcanIcon />,
+      onClick: openDeleteModal,
+    },
+  ];
 
-    return (
-      <TableRow>
-        <BodyCell isSelected={isSelected} key="checkbox">
-          <CheckboxPrimitive
-            checked={isSelected}
-            innerRef={this.getCheckbox}
-            value={item.id}
-            onChange={this.onCheckboxChange}
-            tabIndex="0"
-          />
-          {this.renderDeleteModal()}
-        </BodyCell>
-        {fields.map(field => {
-          const { path } = field;
+  return (
+    <TableRow isSelected={isSelected}>
+      <BodyCell key="checkbox">
+        <CheckboxPrimitive
+          checked={isSelected}
+          value={item.id}
+          onChange={onCheckboxChange}
+          tabIndex="0"
+        />
+        <DeleteItemModal
+          isOpen={showDeleteModal}
+          item={item}
+          list={list}
+          onClose={closeDeleteModal}
+          onDelete={handleDelete}
+        />
+      </BodyCell>
+      {fields.map(field => {
+        const { path } = field;
 
-          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
-            return (
-              <BodyCell key={path}>
-                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N20 }} />
-                <A11yText>{itemErrors[path].message}</A11yText>
-              </BodyCell>
-            );
-          }
-
-          if (path === linkField) {
-            return (
-              <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
-              </BodyCellTruncated>
-            );
-          }
-
-          let content;
-
-          if (field.views.Cell) {
-            const [Cell] = field.readViews([field.views.Cell]);
-
-            // TODO
-            // fix this later, creating a react component on every render is really bad
-            // react will rerender into the DOM on every react render
-            // probably not a huge deal on a leaf component like this but still bad
-            const LinkComponent = ({ children, ...data }) => (
-              <ItemLink to={link(data)}>{children}</ItemLink>
-            );
-            content = (
-              <Cell
-                isSelected={isSelected}
-                list={list}
-                data={item[path]}
-                field={field}
-                Link={LinkComponent}
-              />
-            );
-          } else {
-            content = item[path];
-          }
-
+        if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
           return (
-            <BodyCellTruncated isSelected={isSelected} key={path}>
-              {content}
+            <BodyCell key={path}>
+              <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N20 }} />
+              <A11yText>{itemErrors[path].message}</A11yText>
+            </BodyCell>
+          );
+        }
+
+        if (path === linkField) {
+          return (
+            <BodyCellTruncated key={path}>
+              <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
             </BodyCellTruncated>
           );
-        })}
-        <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
-          <Dropdown
-            align="right"
-            target={handlers => (
-              <Button
-                variant="subtle"
-                css={{
-                  opacity: 0,
-                  transition: 'opacity 150ms',
-                  'tr:hover > td > &': { opacity: 1 },
-                }}
-                {...handlers}
-              >
-                <KebabHorizontalIcon />
-              </Button>
-            )}
-            items={items}
-          />
-        </BodyCell>
-      </TableRow>
-    );
-  }
-}
+        }
+
+        let content;
+
+        if (field.views.Cell) {
+          const [Cell] = field.readViews([field.views.Cell]);
+
+          // TODO
+          // fix this later, creating a react component on every render is really bad
+          // react will rerender into the DOM on every react render
+          // probably not a huge deal on a leaf component like this but still bad
+          const LinkComponent = ({ children, ...data }) => (
+            <ItemLink to={link(data)}>{children}</ItemLink>
+          );
+          content = (
+            <Cell
+              isSelected={isSelected}
+              list={list}
+              data={item[path]}
+              field={field}
+              Link={LinkComponent}
+            />
+          );
+        } else {
+          content = item[path];
+        }
+
+        return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
+      })}
+      <BodyCell css={{ padding: 0 }}>
+        <Dropdown
+          align="right"
+          target={handlers => (
+            <Button
+              variant="subtle"
+              css={{
+                opacity: 0,
+                transition: 'opacity 150ms',
+                'tr:hover > td > &': { opacity: 1 },
+              }}
+              {...handlers}
+            >
+              <KebabHorizontalIcon />
+            </Button>
+          )}
+          items={items}
+        />
+      </BodyCell>
+    </TableRow>
+  );
+};
 
 const SingleCell = ({ columns, children }) => (
   <tr>
