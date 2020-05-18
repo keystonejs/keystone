@@ -45,7 +45,6 @@ export function ListLayout(props) {
   const [sortBy, handleSortChange] = useListSort();
   const [selectedItems, onSelectChange] = useListSelect(items);
 
-
   // Misc.
   // ------------------------------
 
