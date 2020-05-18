@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { jsx } from '@emotion/core';
-import styled from '@emotion/styled';
 
 import { Alert } from '@arch-ui/alert';
 import { LoadingButton } from '@arch-ui/button';
@@ -23,48 +22,65 @@ import { useUIHooks } from '../providers/Hooks';
 const _PADDING = gridSize * 2;
 const _BUTTON_WIDTH = 280;
 
-const Container = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
-  width: 100%;
-`;
+const Container = props => (
+  <div
+    css={{
+      alignItems: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      width: '100%',
+    }}
+    {...props}
+  />
+);
 
-const Alerts = styled.div`
-  height: 48px;
-`;
+const Alerts = props => <div css={{ height: '48px' }} {...props} />;
 
-const Form = styled.form`
-  margin-bottom: 120px;
-  min-width: 650px;
-  padding: 40px;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-`;
+const Form = props => (
+  <form
+    css={{
+      marginBottom: '120px',
+      minWidth: '650px',
+      padding: '40px',
+      display: 'flex',
+      flexWrap: 'nowrap',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+    {...props}
+  />
+);
 
-const Divider = styled.div`
-  border-right: 2px solid ${colors.N10};
-  min-height: 450px;
-  line-height: 450px;
-  margin-right: 40px;
-  margin-left: 60px;
-`;
+const Divider = props => (
+  <div
+    css={{
+      borderRight: `2px solid ${colors.N10}`,
+      minHeight: '450px',
+      lineHeight: '450px',
+      marginRight: '40px',
+      marginLeft: '60px',
+    }}
+    {...props}
+  />
+);
 
-const FieldLabel = styled.div`
-  color: ${colors.N60};
-  margin-top: ${_PADDING}px;
-  margin-bottom: ${gridSize}px;
-  font-size: ${_PADDING}px;
-`;
+const FieldLabel = props => (
+  <div
+    css={{
+      color: `${colors.N60}`,
+      marginTop: `${_PADDING}px`,
+      marginBottom: `${gridSize}px`,
+      fontSize: `${_PADDING}px`,
+    }}
+    {...props}
+  />
+);
 
-const Fields = styled.div`
-  margin: ${_PADDING}px 0;
-  width: ${_BUTTON_WIDTH}px;
-`;
+const Fields = props => (
+  <div css={{ margin: `${_PADDING}px 0`, width: `${_BUTTON_WIDTH}px` }} {...props} />
+);
 
 const SignInPage = () => {
   const {
