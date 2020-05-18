@@ -20,6 +20,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
   const [updateItem, { loading }] = useMutation(list.updateManyMutation, {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
+    refetchQueries: ['getList'],
   });
 
   const [item, setItem] = useState({});
