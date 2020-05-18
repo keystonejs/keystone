@@ -2,7 +2,6 @@
 
 import { jsx } from '@emotion/core';
 import { useMemo, useRef } from 'react';
-import styled from '@emotion/styled';
 import { CheckMark, OptionPrimitive, Options } from '@arch-ui/options';
 import { colors } from '@arch-ui/theme';
 import { Kbd } from '@arch-ui/typography';
@@ -92,10 +91,15 @@ export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
   );
 };
 
-const Note = styled.div({
-  color: colors.N60,
-  fontSize: '0.85em',
-});
+const Note = props => (
+  <div
+    css={{
+      color: colors.N60,
+      fontSize: '0.85em',
+    }}
+    {...props}
+  />
+);
 
 // ==============================
 // Utilities

@@ -1,21 +1,25 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Fragment, useState, memo, useEffect } from 'react';
-import styled from '@emotion/styled';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 
-const Toolbar = styled.div({
-  backgroundColor: alpha('#fff', 0.93),
-  bottom: 0,
-  boxShadow: `${alpha(colors.text, 0.1)} 0px -2px 0px`,
-  display: 'flex',
-  justifyContent: 'space-between',
-  paddingBottom: gridSize * 2,
-  paddingTop: gridSize * 2,
-  position: 'sticky',
-});
+const Toolbar = props => (
+  <div
+    css={{
+      backgroundColor: alpha('#fff', 0.93),
+      bottom: 0,
+      boxShadow: `${alpha(colors.text, 0.1)} 0px -2px 0px`,
+      display: 'flex',
+      justifyContent: 'space-between',
+      paddingBottom: gridSize * 2,
+      paddingTop: gridSize * 2,
+      position: 'sticky',
+    }}
+    {...props}
+  />
+);
 
 function useKeyListener(listener, deps) {
   useEffect(() => {

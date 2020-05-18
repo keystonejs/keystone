@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
-import styled from '@emotion/styled';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
@@ -39,9 +38,7 @@ import { useList } from '../../providers/List';
 
 const Render = ({ children }) => children();
 
-const Form = styled.form({
-  marginBottom: gridSize * 3,
-});
+const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...props} />;
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
@@ -118,7 +115,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     }
 
     toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
-    history.replace(list.fullPath);
+    history.replace(list.getFullPersistentPath());
   };
 
   const openDeleteModal = () => {
