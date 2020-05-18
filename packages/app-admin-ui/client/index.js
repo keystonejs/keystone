@@ -63,7 +63,7 @@ export const KeystoneAdminUI = () => {
           return (
             <Fragment>
               <DocTitle title="Home" />
-              <PageError Icon={InfoIcon}>
+              <PageError icon={InfoIcon}>
                 <p>
                   No lists defined.{' '}
                   <a target="_blank" href="https://keystonejs.com/tutorials/add-lists">
