@@ -67,7 +67,7 @@ export default class ContentController extends Controller {
 
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    return `${key}: "${value}"`;
+    return { [key]: value };
   };
   getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;

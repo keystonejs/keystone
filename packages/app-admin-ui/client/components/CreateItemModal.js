@@ -54,6 +54,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
   const [createItem, { loading }] = useMutation(list.createMutation, {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
+    refetchQueries: ['getList', 'RelationshipSelect'],
   });
 
   const { fields } = list;
