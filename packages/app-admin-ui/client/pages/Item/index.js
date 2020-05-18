@@ -118,7 +118,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     }
 
     toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
-    history.replace(list.fullPath);
+    history.replace(list.getFullPersistentPath());
   };
 
   const openDeleteModal = () => {
