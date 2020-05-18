@@ -247,11 +247,12 @@ const ListPage = props => {
   // ------------------------------
   useEffect(() => {
     const maybePersistedSearch = list.getPersistedSearch();
+    if (location.search === maybePersistedSearch) {
+      return;
+    }
 
     if (location.search) {
-      if (location.search !== maybePersistedSearch) {
-        list.setPersistedSearch(location.search);
-      }
+      list.setPersistedSearch(location.search);
     } else if (maybePersistedSearch) {
       history.replace({
         ...location,

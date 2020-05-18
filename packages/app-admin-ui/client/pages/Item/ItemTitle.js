@@ -33,7 +33,7 @@ export const ItemTitle = memo(function ItemTitle({ titleText }) {
           <IconButton
             variant="subtle"
             icon={ChevronLeftIcon}
-            to={list.fullPath}
+            to={list.getFullPersistentPath()}
             css={{ marginLeft: -12 }}
           >
             {list.label}
