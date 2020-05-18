@@ -33,8 +33,6 @@ import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
 
-import { useAdminMeta } from '../../providers/AdminMeta';
-
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
@@ -47,7 +45,6 @@ export function ListLayout(props) {
   const [sortBy, handleSortChange] = useListSort();
   const [selectedItems, onSelectChange] = useListSelect(items);
 
-  const { adminPath } = useAdminMeta();
 
   // Misc.
   // ------------------------------
@@ -56,7 +53,6 @@ export function ListLayout(props) {
     onSelectChange([]);
   };
 
-  const onDeleteItem = () => {};
   const onUpdateSelectedItems = () => {};
 
   // Success
@@ -183,7 +179,6 @@ export function ListLayout(props) {
       <Container isFullWidth>
         <ListTable
           {...props}
-          adminPath={adminPath}
           columnControl={
             <ColumnPopout
               listKey={list.key}
@@ -213,7 +208,6 @@ export function ListLayout(props) {
           items={items}
           queryErrors={queryErrors}
           list={list}
-          onChange={onDeleteItem}
           onSelectChange={onSelectChange}
           selectedItems={selectedItems}
           sortBy={sortBy}
