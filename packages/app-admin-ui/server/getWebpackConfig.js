@@ -4,11 +4,12 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
-module.exports = function({ adminMeta, entry, outputPath }) {
+module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
     chunksSortMode: 'none',
+    scriptLoading: 'defer',
   });
   const environmentPlugin = new webpack.DefinePlugin({
     ENABLE_DEV_FEATURES: enableDevFeatures,
@@ -45,19 +46,12 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       use: ['style-loader', 'css-loader'],
     },
   ];
-  if (adminMeta.lists) {
-    rules.push({
-      test: /FIELD_TYPES/,
-      use: [
-        {
-          loader: '@keystonejs/field-views-loader',
-          options: {
-            adminMeta,
-          },
-        },
-      ],
-    });
-  }
+  const { pages, hooks, listViews } = adminViews;
+  rules.push({
+    test: /FIELD_TYPES/,
+    use: [{ loader: '@keystonejs/field-views-loader', options: { pages, hooks, listViews } }],
+  });
+
   const entryPath = `./${entry}.js`;
   return {
     mode,

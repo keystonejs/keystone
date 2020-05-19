@@ -66,17 +66,17 @@ app.post('/admin/signin', async (req, res) => {
 
 | Option              | Type      | Default    | Description                                                               |
 | ------------------- | --------- | ---------- | ------------------------------------------------------------------------- |
-| `identity`          | `String`  | `email`    | The field `path` for values that uniquely identifies items                |
-| `secret`            | `String`  | `password` | The field `path` for secret values known only to the authenticating party |
+| `identityField`     | `String`  | `email`    | The field `path` for values that uniquely identifies items                |
+| `secretField`       | `String`  | `password` | The field `path` for secret values known only to the authenticating party |
 | `protectIdentities` | `Boolean` | `false`    | Protect identities at the expense of usability                            |
 
-### `identity`
+### `identityField`
 
 The field `path` for values that _uniquely_ identifies items.
 For human actors this is usually a field that contains usernames or email addresses.
 For automated access, the `id` may be appropriate.
 
-### `secret`
+### `secretField`
 
 The field `path` for secret values known only to the authenticating party.
 The type used by this field must expose a comparison function with the signature

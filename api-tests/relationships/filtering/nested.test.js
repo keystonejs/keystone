@@ -100,7 +100,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         query {
           allUsers {
             id
-            posts (first: 1, orderBy: "content_ASC") {
+            posts (first: 1, sortBy: content_ASC) {
               id
               content
             }

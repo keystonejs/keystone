@@ -71,7 +71,7 @@ const { keystone, apps } = require('./index.js');
 
 keystone
   .prepare({
-    apps: [new GraphQLApp()],
+    apps: apps,
     dev: process.env.NODE_ENV !== 'production',
   })
   .then(async ({ middlewares }) => {

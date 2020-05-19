@@ -137,7 +137,7 @@ class ListCRUDProvider {
       fields: ({ key }, { where: { type } = {} }) => {
         return this.lists
           .find(list => list.key === key)
-          .getFieldsWithAccess({ schemaName, access: 'read' })
+          .getAllFieldsWithAccess({ schemaName, access: 'read' })
           .filter(field => !type || field.constructor.name === type)
           .map(field => ({
             name: field.path,

@@ -28,14 +28,12 @@ const NoResultsWrapper = ({ children, ...props }) => (
 );
 
 export const NoResults = ({ currentPage, filters, list, search }) => {
-  const { onChange } = useListPagination(list.key);
+  const { onChange } = useListPagination();
   const onResetPage = () => onChange(1);
 
   const pageDepthMessage = (
     <NoResultsWrapper>
-      <p>
-        Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
-      </p>
+      <p>{`Not enough ${list.plural.toLowerCase()} found to show page ${currentPage}.`}</p>
       <Button variant="ghost" onClick={onResetPage}>
         Show first page
       </Button>
@@ -49,8 +47,9 @@ export const NoResults = ({ currentPage, filters, list, search }) => {
   if (filters && filters.length) {
     return (
       <NoResultsWrapper>
-        No {list.plural.toLowerCase()} found matching the{' '}
-        {filters.length > 1 ? 'filters' : 'filter'}
+        {`No ${list.plural.toLowerCase()} found matching the ${
+          filters.length > 1 ? 'filters' : 'filter'
+        }`}
       </NoResultsWrapper>
     );
   }
@@ -58,12 +57,10 @@ export const NoResults = ({ currentPage, filters, list, search }) => {
   if (search && search.length) {
     return (
       <NoResultsWrapper>
-        No {list.plural.toLowerCase()} found matching &ldquo;
-        {search}
-        &rdquo;
+        {`No ${list.plural.toLowerCase()} found matching “${search}”`}
       </NoResultsWrapper>
     );
   }
 
-  return <NoResultsWrapper>No {list.plural.toLowerCase()} to display yet...</NoResultsWrapper>;
+  return <NoResultsWrapper>{`No ${list.plural.toLowerCase()} to display yet...`}</NoResultsWrapper>;
 };

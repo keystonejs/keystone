@@ -82,7 +82,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             notes: { create: [{ content: "${noteContent}" }] }
           }) {
             id
-            notes(orderBy: "content_ASC") {
+            notes(sortBy: content_ASC) {
               id
               content
             }
@@ -118,7 +118,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }) {
             id
-            notes(orderBy: "content_ASC") {
+            notes(sortBy: content_ASC) {
               id
               content
             }
@@ -245,7 +245,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           ) {
             id
-            notes(orderBy: "content_ASC") {
+            notes(sortBy: content_ASC) {
               id
               content
             }

@@ -1,5 +1,33 @@
 # @arch-ui/options
 
+## 0.0.21
+
+### Patch Changes
+
+- [`d7eb2601`](https://github.com/keystonejs/keystone/commit/d7eb260144d2aa31e7ef4e636e7a23f91dc37285) [#2832](https://github.com/keystonejs/keystone/pull/2832) Thanks [@Vultraz](https://github.com/Vultraz)! - Added horizontal padding to Select field filter dropdown.
+
+## 0.0.20
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/icons@0.1.1
+
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [[`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/icons@0.1.0
+
+## 0.0.18
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
 ## 0.0.17
 
 ### Patch Changes
