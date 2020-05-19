@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment } from 'react';
+import { Fragment, forwardRef } from 'react';
 
 import { Button } from '@arch-ui/button';
 import PopoutModal from '@arch-ui/popout';
@@ -67,8 +67,9 @@ const HeaderRight = props => (
   />
 );
 
-const Body = props => (
+const Body = forwardRef((props, ref) => (
   <div
+    ref={ref}
     css={{
       maxHeight: '300px',
       overflowY: 'auto',
@@ -77,7 +78,7 @@ const Body = props => (
     }}
     {...props}
   />
-);
+));
 
 const Footer = props => (
   <Bar
