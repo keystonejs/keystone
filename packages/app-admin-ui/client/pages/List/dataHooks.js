@@ -375,13 +375,6 @@ export function useListSelect(items) {
     }
   };
 
-  // TODO: deal with this elsewhere
-  // const deleteSelectedItems = () => {
-  //   const { query } = this.props;
-  //   if (query.refetch) query.refetch();
-  //   setSelectedItems([]);
-  // };
-
   return [selectedItems, onSelect];
 }
 
