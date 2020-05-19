@@ -1,10 +1,10 @@
 import FieldController from '../../../Controller';
-import { getYear } from 'date-fns';
+import { getYear, parseISO } from 'date-fns';
 
 export default class CalendarDayController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    return `${key}: "${value}"`;
+    return { [key]: value };
   };
 
   getFilterLabel = ({ label }) => {
@@ -61,7 +61,7 @@ export default class CalendarDayController extends FieldController {
   validateInput = ({ resolvedData, addFieldValidationError }) => {
     const { yearRangeFrom, yearRangeTo } = this.config;
 
-    const inputYear = getYear(resolvedData[this.path]);
+    const inputYear = getYear(parseISO(resolvedData[this.path]));
     const inRange = yearRangeFrom <= inputYear && inputYear <= yearRangeTo;
 
     if (!inRange) {

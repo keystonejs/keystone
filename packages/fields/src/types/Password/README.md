@@ -14,22 +14,23 @@ is a one-way, cryptographic hash function with build-in salt and a flexible work
 It allows a candidate string (eg. a password sent for a login attempt)
 to be verified without knowledge of the original value.
 
-> Note: The `bcrypt` algorithm is applied by pre-save hooks on the model.
+> **Note:** The `bcrypt` algorithm is applied by pre-save hooks on the model.
 > Values set to Password fields may be readable by Node until the item has been saved.
 
 ## Usage
 
 ```js
+const { Password, Text } = require('@keystonejs/fields');
+
 keystone.createList('User', {
   fields: {
     email: { type: Text },
     password: { type: Password },
-    // ...
   },
 });
 ```
 
-### Config
+## Config
 
 | Option              | Type      | Default | Description                                                           |
 | ------------------- | --------- | ------- | --------------------------------------------------------------------- |
@@ -39,7 +40,7 @@ keystone.createList('User', {
 | `isRequired`        | `Boolean` | `false` | Does this field require a value?                                      |
 | `useCompiledBcrypt` | `Boolean` | `false` | Use the compiled `bcrypt` package rather than `bcryptjs`              |
 
-#### `minLength`
+### `minLength`
 
 The minimum number of characters this field will accept.
 
@@ -55,7 +56,7 @@ multi-code-point glyphs and other Unicode magic.
 If a value is supplied that fails to fulfil the minimum length an error will be thrown.
 The error message will contain the string `[password:minLength:${listKey}:${fieldPath}]`.
 
-#### `rejectCommon`
+### `rejectCommon`
 
 Values are checked against a list of 10,000 common passwords as
 [compiled by Mark Burnett](https://xato.net/10-000-top-passwords-6d6380716fe0).
@@ -65,7 +66,7 @@ You should strongly consider enabling this feature in accordance with the
 When enable, if a a known-common password is supplied, an error will be thrown.
 The error message will contain the string `[password:rejectCommon:${listKey}:${fieldPath}]`.
 
-#### `workFactor`
+### `workFactor`
 
 Supplied as the bcrypt cost parameter; controls the computational cost of both creating and validating a hash.
 The value supplied should be between 4 and 31 (lower/higher values will be limited to this range).
@@ -78,7 +79,7 @@ Note the `workFactor` supplied is applied by the bcrypt algorithm as an exponent
 As such, a work factor of 11 will cause passwords to take _twice_ as long to hash and validate as a work factor of 10.
 A work factor of 12 will cause passwords to take _four times_ as long as 10. Etc.
 
-#### `useCompiledBcrypt`
+### `useCompiledBcrypt`
 
 By default the [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) package is used for computing and comparing hashes.
 This package provides a javascript implementation of the `bcrypt` algorithm.
@@ -89,7 +90,7 @@ If you use this flag you must include `bcrypt` in your package dependencies.
 The compiled package provides a ~20% performance improvement, and avoids the thread blocking of the JavaScript implementation.
 This comes with the trade off that the compiled package can be challenging to work with when working in some environments (e.g. Windows) or when trying to deploy code built in one environment onto a different environment (e.g. build on OSX to deploy in a Linux based lambda process).
 
-### Auth Strategies
+### Auth strategies
 
 The `Password` field exposes a `compare()` function.
 This allows `Password` fields to be specified as a `secretField` when configuring a `PasswordAuthStrategy`.
@@ -99,7 +100,7 @@ See the [Authentication docs](/docs/guides/authentication.md) for details.
 
 `Password` fields are somewhat unusual in that they can be written to but not read.
 
-### Input Fields
+### Input fields
 
 `Password` fields at a `String` field to both create and update GraphQL Input types.
 
@@ -107,7 +108,7 @@ See the [Authentication docs](/docs/guides/authentication.md) for details.
 | ---------- | -------- | ---------------------- |
 | `${path}`  | `String` | The value to be hashed |
 
-### Output Fields
+### Output fields
 
 In normal usage, hash values should not be externally accessible.
 As such `Password` fields do _not_ add a `String` output field.
@@ -126,11 +127,11 @@ As such `Password` fields do _not_ add a `String` output field.
 
 The value stored is a bcrypt hash of the string provided.
 
-### Mongoose Adaptor
+### Mongoose adapter
 
 The hash is stored at `${path}` as a `String`.
 
-### Knex Adaptor
+### Knex adapter
 
 The hash is stored at `${path}` using the
 [Knex `string` type](https://knexjs.org/#Schema-string) with a max length of 60.

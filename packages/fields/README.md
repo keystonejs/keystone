@@ -6,7 +6,7 @@ order: 3
 
 # Fields
 
-KeystoneJS contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
+Keystone contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
 
 - [CalendarDay](https://keystonejs.com/keystonejs/fields/src/types/calendar-day)
 - [Checkbox](https://keystonejs.com/keystonejs/fields/src/types/checkbox)
@@ -31,13 +31,15 @@ KeystoneJS contains a set of primitive fields types that can be imported from `@
 
 In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
 
-Need more? See our guide on [Custom field types](https://keystonejs.com/guides/custom-field-types/).
+> **Tip:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/)
 
 ## Usage
 
 Fields definitions are provided when creating a list. Field definitions should be an object where the key is the field name and the value is an object containing the fields config:
 
 ```javascript
+const { Text } = require('@keystonejs/fields');
+
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
@@ -49,17 +51,19 @@ keystone.createList('Post', {
 
 Fields share some standard configuration options.
 
-| Option         | Type                                | Default     | Description                                                                             |
-| -------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
-| `type`         | `FieldType`                         | (required)  |                                                                                         |
-| `schemaDoc`    | `String`                            | `false`     | A description for the field used in the AdminUI.                                        |
-| `defaultValue` | `Boolean`                           | `undefined` | A default value of the field.                                                           |
-| `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                              |
-| `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                           |
-| `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields. |
-| `label`        | `String`                            |             | Label for the field.                                                                    |
+| Option         | Type                                | Default     | Description                                                                                                                                           |
+| -------------- | ----------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`         | `FieldType`                         | (required)  |                                                                                                                                                       |
+| `adminDoc`     | `String`                            | `false`     | A description for the field used in the AdminUI.                                                                                                      |
+| `schemaDoc`    | `String`                            | `false`     | A description for the field used in the GraphQL schema.                                                                                               |
+| `defaultValue` | `Any` \| `Function`                 | `undefined` | A valid default value for the field type. Functions must return a valid value. Use `undefined` to set no default, and `null` to set an empty default. |
+| `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                                                                                            |
+| `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                                                                                         |
+| `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields.                                                               |
+| `label`        | `String`                            |             | Label for the field.                                                                                                                                  |
+| `adminConfig`  | `Object`                            | `{}`        | Additional config which can be used when customizing `admin-ui`                                                                                       |
 
-_Note_: Many field types have additional config options. See the documentation for individual field types for more detail.
+> **Note:** Many field types have additional config options. See the documentation for individual field types for more detail.
 
 ### `type`
 
@@ -69,15 +73,17 @@ A valid `Keystone` field type.
 
 Sets the label for the field in the AdminUI
 
-### `schemaDoc`
+### `adminDoc`
 
 A description of the field used in the AdminUI.
+
+### `schemaDoc`
+
+A description of the field used used in the GraphQL schema.
 
 ### `defaultValue`
 
 Sets the value when no data is provided.
-
-#### Usage
 
 ```javascript
 keystone.createList('Post', {
@@ -118,3 +124,25 @@ _Note_: Field level access control does not accept graphQL where clauses.
 [HTTP cache hint](https://keystonejs.com/api/create-list#cacheHint) for field.
 
 Only static hints are supported for fields.
+
+## Native type aliases
+
+Keystone allows the use of a few native JavaScript types for fields. They are converted to their Keystone field equivalents at runtime.
+
+| Native type | Field type equivalent |
+| ----------- | --------------------- |
+| `Boolean`   | `Checkbox`            |
+| `Number`    | `Float`               |
+| `String`    | `Text`                |
+
+### Usage
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: {
+      type: String,
+    }
+  }
+}
+```

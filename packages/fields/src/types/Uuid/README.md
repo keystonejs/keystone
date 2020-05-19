@@ -10,21 +10,22 @@ The `Uuid` field type stores Universally Unique Identifiers (UUIDs).
 UUIDs are 128-bit numbers but they're often represented in hexadecimal using the format `00000000-0000-0000-0000-000000000000`.
 Here we refer to this encoding as the `8-4-4-4-12` hex format.
 
-The encoding used for storage differs by DB adaptor, see the [Storage section](#storage).
+The encoding used for storage differs by DB adapter, see the [Storage section](#storage).
 
 ## Usage
 
 ```js
+const { Uuid, Text } = require('@keystonejs/fields');
+
 keystone.createList('Products', {
   fields: {
     name: { type: Text },
     supplierId: { type: Uuid, caseTo: 'upper' },
-    // ...
   },
 });
 ```
 
-### Config
+## Config
 
 | Option       | Type      | Default   | Description                                                                                                                                                                                                                                                       |
 | :----------- | :-------- | :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -36,13 +37,13 @@ keystone.createList('Products', {
 
 `Uuid` fields use the `ID` type in GraphQL.
 
-### Input Fields
+### Input fields
 
 | Field name | Type | Description                         |
 | :--------- | :--- | :---------------------------------- |
 | `${path}`  | `ID` | UUID in the `8-4-4-4-12` hex format |
 
-### Output Fields
+### Output fields
 
 | Field name | Type | Description                         |
 | :--------- | :--- | :---------------------------------- |
@@ -64,7 +65,7 @@ See the the [Casing section](#casing).
 
 ## Storage
 
-### Mongoose Adaptor
+### Mongoose adapter
 
 When storing UUIDs, Mongo [recommends BSON objects are used](https://docs.mongodb.com/manual/reference/method/UUID/).
 The BSON spec indicates subtype `0x04` specifically.
@@ -76,11 +77,11 @@ This is not ideal (PRs welcome).
 In additional to not being inefficiently stored, working with UUIDs as Strings potentially causes problems with casing.
 See the [Casing section](#casing).
 
-### Knex Adaptor
+### Knex adapter
 
-The Knex adaptor uses the [Knex `uuid` type](https://knexjs.org/#Schema-uuid):
+The Knex adapter uses the [Knex `uuid` type](https://knexjs.org/#Schema-uuid):
 
-> .. this uses the built-in uuid type in PostgreSQL, and falling back to a char(36) in other databases.
+> **Note:** this uses the built-in uuid type in PostgreSQL, and falling back to a char(36) in other databases.
 
 The PostgreSQL `uuid` type is a proper binary representation of the value.
 UUIDs in the text/hex format are implicitly cast to the `uuid` type when required so inserts, comparisons, etc. work as intended.

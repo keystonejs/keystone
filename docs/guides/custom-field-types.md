@@ -1,26 +1,35 @@
 <!--[meta]
 section: guides
-title: Custom Field Types
+title: Custom field types
 subSection: advanced
 [meta]-->
 
-# Custom Field Types
+# Custom field types
 
-What makes up a Field Type:
+What makes up a field type?
 
-```
-Type/index.js           -- The field definition, points to other files and defines the type
-Type/Controller.js      -- Client-side controller for the field type
-Type/Implementation.js  -- Back-end implementation of the field type
-Type/README.md          -- Type specific documentation and usage examples
+```shell allowCopy=false showLanguage=false
+Type/index.js           # The field definition, points to other files and defines the type
+Type/Implementation.js  # Back-end implementation of the field type
+Type/README.md          # Type specific documentation and usage examples
 Type/views/
-  Field.js              -- Main React component rendered by the Item Details view
-  Cell.js               -- Main React component rendered by the List view
+├── Field.js            # Main React component rendered by the Item Details view
+└── Cell.js             # Main React component rendered by the List view
+└── Controller.js       # Client-side controller for the field type
 ```
 
 ## Example
 
-For an example of a custom field, please see the [Stars field](https://github.com/keystonejs/keystone/tree/master/test-projects/basic/custom-fields/Stars) in the basic test project.
+For an example of a custom field, please see the [Stars field](https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields/) in the basic test project.
+
+## Implementation
+
+This is the back-end class that implements the field type and its schema in
+Keystone. It implements the GraphQL schema types, custom argument definitions
+and resolvers, as well as Field Config and Admin Meta management.
+
+Back-end logic for value validation, processing and hooks should be implemented
+here.
 
 ## Controller
 
@@ -33,15 +42,6 @@ It is generally responsible for getting the default data for new items,
 processing raw data returned by the API, implementing client-side validation
 methods, and other helper utilities.
 
-## Implementation
-
-This is the back-end class that implements the field type and its schema in
-KeystoneJS. It implements the GraphQL schema types, custom argument definitions
-and resolvers, as well as Field Config and Admin Meta management.
-
-Back-end logic for value validation, processing and hooks should be implemented
-here.
-
 ## Views
 
 These are the client-side React Components that render various pieces of UI for
@@ -53,28 +53,28 @@ There are currently three views that can be provided:
 - `Cell` - the content rendered in the List view
 - `Filter` - the filter control rendered in the filters dropdown in the List view
 
-```jsx
+```typescript
 type FilterProps<Value> = {
-  innerRef: React.Ref<*>,
-  value: Value,
-  onChange: Value => mixed,
-  field: Field,
-  filter: *,
+  innerRef: React.Ref<HTMLElement>;
+  value: Value;
+  onChange: Value => mixed;
+  field: Field;
+  filter: string;
 };
 
 type CellProps<Value> = {
-  list: List,
-  field: Field,
-  data: Value,
-  Link: React.ComponentType<{ children: React.Node, id: string, path: string }>,
+  list: List;
+  field: Field;
+  data: Value;
+  Link: React.ComponentType<{ children: React.Node, id: string, path: string }>;
 };
 
 type FieldProps<Value> = {
-  autoFocus: boolean,
-  field: Field,
-  value: Value,
-  error: Error,
-  onChange: Value => mixed,
-  renderContext: 'dialog' | 'page',
+  autoFocus: boolean;
+  field: Field;
+  value: Value;
+  error: Error;
+  onChange: Value => mixed;
+  renderContext: 'dialog' | 'page';
 };
 ```

@@ -1,7 +1,7 @@
 const IDENTITY = 'boris@keystone.com';
 const SECRET = 'correctbattery';
 
-describe.only('Can access Admin UI', () => {
+describe('Can access Admin UI', () => {
   afterEach(() => {
     // Cypress claims to clear cookies before each test, but it appears that
     // the first test in the next describe block will continue to retain
@@ -102,7 +102,7 @@ describe('Testing Login', () => {
       // appear to be attached, so the form is not getting validated correctly
       cy.wait(250);
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
 
     it('Does not log in with invalid credentials', () => {
@@ -117,7 +117,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
 
     it('Does not log in with invalid identity', () => {
@@ -132,7 +132,7 @@ describe('Testing Login', () => {
         .type(SECRET, { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
 
     it('Does not log in with invalid secret', () => {
@@ -147,7 +147,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
-      cy.get('body').should('contain', 'Your username and password were incorrect');
+      cy.get('body').should('contain', 'Your username or password were incorrect');
     });
   });
 
@@ -179,7 +179,8 @@ describe('Testing Login', () => {
       cy.get('body').should('contain', 'Dashboard');
     });
 
-    it('Redirects to requested page after login', () => {
+    // See: https://github.com/keystonejs/keystone/issues/2656
+    it.skip('Redirects to requested page after login', () => {
       cy.visit('/admin/users');
 
       cy.get('input[name="identity"]')
@@ -233,8 +234,9 @@ describe('authenticated item', () => {
 
     it('current user query returns user info', () => {
       cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(({ data, errors }) => {
-        expect(data).to.have.deep.property('authenticatedUser.id');
         expect(errors).to.equal(undefined);
+        console.log({ data });
+        expect(data).to.have.nested.property('authenticatedUser.id');
       });
     });
   });

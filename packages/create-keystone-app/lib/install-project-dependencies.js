@@ -8,7 +8,8 @@ const installProjectDependencies = async () => {
     return true;
   }
 
-  console.log('Installing dependencies with yarn. This could take a few minutes.');
+  console.log('Installing dependencies with yarn. This will take a few minutes.');
+  // FIXME: Can we put a spinner in here to make it look like something is happening?
   const result = await exec('yarn');
 
   if (result.failed) {

@@ -4,7 +4,6 @@ import { importView } from '@keystonejs/build-field-types';
 import { Block } from '@keystonejs/field-content/Block';
 import OEmbed from './';
 import RelationshipType from '../Relationship';
-import queryFragment from './query-fragment.js';
 
 const RelationshipWrapper = {
   ...RelationshipType,
@@ -98,7 +97,39 @@ export class OEmbedBlock extends Block {
         oEmbeds {
           id
           embed {
-            ${queryFragment}
+            type
+            originalUrl
+            version
+            title
+            cacheAge
+            provider {
+              name
+              url
+            }
+            author {
+              name
+              url
+            }
+            thumbnail {
+              url
+              width
+              height
+            }
+            ...on OEmbedPhoto {
+              url
+              width
+              height
+            }
+            ...on OEmbedVideo {
+              html
+              width
+              height
+            }
+            ...on OEmbedRich {
+              html
+              width
+              height
+            }
           }
         }
       `,

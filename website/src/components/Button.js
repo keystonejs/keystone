@@ -57,7 +57,7 @@ const variants = {
   },
 };
 
-export const Button = ({ appearance, variant, as, ...props }) => {
+export const Button = ({ appearance = 'default', variant = 'hollow', as = 'button', ...props }) => {
   let Tag = as;
   if (props.href) {
     Tag = 'a';
@@ -85,9 +85,4 @@ export const Button = ({ appearance, variant, as, ...props }) => {
       {...props}
     />
   );
-};
-Button.defaultProps = {
-  as: 'button',
-  appearance: 'default',
-  variant: 'hollow',
 };

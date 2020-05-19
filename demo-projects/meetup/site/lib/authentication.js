@@ -1,5 +1,5 @@
-import React, { Component, createContext, useContext } from 'react';
-import { withApollo } from '@apollo/react-hoc';
+import React, { createContext, useContext, useState } from 'react';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 /**
@@ -19,6 +19,34 @@ export const useAuth = () => useContext(AuthContext);
 
 const userFragment = `
   id
+  name
+  isAdmin
+`;
+
+const USER_QUERY = gql`
+  query {
+    authenticatedUser {
+      ${userFragment}
+    }
+  }
+`;
+
+const AUTH_MUTATION = gql`
+  mutation signin($email: String, $password: String) {
+    authenticateUserWithPassword(email: $email, password: $password) {
+      item {
+        ${userFragment}
+      }
+    }
+  }
+`;
+
+const UNAUTH_MUTATION = gql`
+  mutation {
+    unauthenticateUser {
+      success
+    }
+  }
 `;
 
 /**
@@ -27,142 +55,65 @@ const userFragment = `
  * AuthProvider is a component which keeps track of the user's
  * authenticated state and provides methods for managing the auth state.
  */
-class AuthProviderClass extends Component {
-  constructor(props) {
-    super(props);
+export const AuthProvider = ({ children, initialUserValue }) => {
+  const [user, setUser] = useState(initialUserValue);
+  const client = useApolloClient();
 
-    this.state = {
-      user: props.initialUserValue,
-      isLoading: true,
-    };
-  }
-
-  componentDidMount() {
-    this.checkSession();
-  }
-
-  setUserData = user => {
-    this.setState({
-      isInitialising: false,
-      isLoading: false,
-      isAuthenticated: !!user,
-      user,
-    });
-  };
-
-  checkSession = async () => {
-    // Avoid an extra re-render
-    const { isLoading } = this.state;
-    if (!isLoading) {
-      this.setState({ isLoading: true });
-    }
-
-    return this.props.client
-      .query({
-        query: gql`
-          query {
-            authenticatedUser {
-              ${userFragment}
-            }
-          }
-        `,
-        fetchPolicy: 'no-cache',
-      })
-      .then(({ data: { authenticatedUser }, error }) => {
-        if (error) {
-          throw error;
-        }
-        this.setUserData(authenticatedUser);
-      })
-      .catch(error => {
-        console.error(error);
-        this.setState({ error, isLoading: false });
+  const { loading: userLoading } = useQuery(USER_QUERY, {
+    fetchPolicy: 'no-cache',
+    onCompleted: ({ authenticatedUser, error }) => {
+      if (error) {
         throw error;
-      });
-  };
+      }
 
-  signin = async ({ email, password }) => {
-    this.setState({ error: null, isLoading: true });
-    // NOTE: We are not capturing the `token` here on purpose; The GraphQL API
-    // will set a `keystone.sid` cookie on its domain, which will be
-    // automatically read for each subsequent query.
-    return this.props.client
-      .mutate({
-        mutation: gql`
-          mutation signin($email: String, $password: String) {
-            authenticateUserWithPassword(email: $email, password: $password) {
-              item {
-                ${userFragment}
-              }
-            }
-          }
-        `,
-        fetchPolicy: 'no-cache',
-        variables: { email, password },
-      })
-      .then(async ({ data: { authenticateUserWithPassword }, error }) => {
-        if (error) {
-          throw error;
-        }
-        // Ensure there's no old unauthenticated data hanging around
-        await this.props.client.resetStore();
-        if (authenticateUserWithPassword && authenticateUserWithPassword.item) {
-          this.setUserData(authenticateUserWithPassword.item);
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        this.setState({ error, isLoading: false });
+      setUser(authenticatedUser);
+    },
+    onError: console.error,
+  });
+
+  const [signin, { loading: authLoading }] = useMutation(AUTH_MUTATION, {
+    onCompleted: async ({ authenticateUserWithPassword: { item } = {}, error }) => {
+      if (error) {
         throw error;
-      });
-  };
+      }
 
-  signout = async () => {
-    this.setState({ error: null, isLoading: true });
-    return this.props.client
-      .mutate({
-        mutation: gql`
-          mutation {
-            unauthenticateUser {
-              success
-            }
-          }
-        `,
-        fetchPolicy: 'no-cache',
-      })
-      .then(async ({ data: { unauthenticateUser }, error }) => {
-        if (error) {
-          throw error;
-        }
-        // Ensure there's no old authenticated data hanging around
-        await this.props.client.resetStore();
-        if (unauthenticateUser && unauthenticateUser.success) {
-          this.setUserData(null);
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        this.setState({ error, isLoading: false });
+      // Ensure there's no old unauthenticated data hanging around
+      await client.resetStore();
+
+      if (item) {
+        setUser(item);
+      }
+    },
+    onError: console.error,
+  });
+
+  const [signout, { loading: unauthLoading }] = useMutation(UNAUTH_MUTATION, {
+    onCompleted: async ({ unauthenticateUser: { success } = {}, error }) => {
+      if (error) {
         throw error;
-      });
-  };
+      }
 
-  render() {
-    const { user, isLoading, isAuthenticated } = this.state;
-    return (
-      <AuthContext.Provider
-        value={{
-          isAuthenticated,
-          isLoading,
-          signin: this.signin,
-          signout: this.signout,
-          user,
-        }}
-      >
-        {this.props.children}
-      </AuthContext.Provider>
-    );
-  }
-}
+      // Ensure there's no old authenticated data hanging around
+      await client.resetStore();
 
-export const AuthProvider = withApollo(AuthProviderClass);
+      if (success) {
+        setUser(null);
+      }
+    },
+    onError: console.error,
+  });
+
+  return (
+    <AuthContext.Provider
+      value={{
+        isAuthenticated: !!user,
+        isLoading: userLoading || authLoading || unauthLoading,
+        signin,
+        signout,
+        user,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};

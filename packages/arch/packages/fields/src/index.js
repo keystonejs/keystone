@@ -24,27 +24,31 @@ export const FieldLabel = props => {
         flexDirection: 'row',
         justifyContent: 'space-between',
       }}
+      className={props.className}
       htmlFor={props.htmlFor}
     >
       {props.field.label}{' '}
       {accessError ? (
         <ShieldIcon title={accessError.message} css={{ color: colors.N20, marginRight: '1em' }} />
       ) : null}{' '}
-      {props.field.config.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
+      {props.field.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
     </label>
   );
 };
 
-export const FieldDescription = props => (
-  <p
-    css={{
-      margin: '0 0 8px',
-      color: colors.N60,
-      fontSize: '0.9rem',
-    }}
-    {...props}
-  />
-);
+export const FieldDescription = ({ text, ...props }) =>
+  text ? (
+    <p
+      css={{
+        margin: '0 0 8px',
+        color: colors.N60,
+        fontSize: '0.9rem',
+      }}
+      {...props}
+    >
+      {text}
+    </p>
+  ) : null;
 
 export const FieldInput = props => (
   <div

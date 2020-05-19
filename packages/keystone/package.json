@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/keystone",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "7.0.0",
+  "version": "9.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -12,11 +12,11 @@
   },
   "dependencies": {
     "@keystonejs/access-control": "^5.2.0",
-    "@keystonejs/app-version": "^1.0.0",
-    "@keystonejs/fields": "^7.0.2",
+    "@keystonejs/app-version": "^1.0.1",
+    "@keystonejs/fields": "^11.0.0",
     "@keystonejs/logger": "^5.1.1",
-    "@keystonejs/session": "^6.0.0",
-    "@keystonejs/utils": "^5.4.0",
+    "@keystonejs/session": "^7.0.0",
+    "@keystonejs/utils": "^5.4.1",
     "apollo-errors": "^1.9.0",
     "arg": "^4.1.1",
     "chalk": "^2.4.2",
@@ -27,13 +27,13 @@
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "falsey": "^1.0.0",
-    "fast-memoize": "^2.4.0",
     "fs-extra": "^7.0.0",
     "globby": "^11.0.0",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.1",
     "graphql-type-json": "^0.3.1",
     "lodash.flattendeep": "^4.4.0",
+    "micro-memoize": "^4.0.9",
     "ora": "^3.4.0",
     "p-waterfall": "^2.1.0",
     "pluralize": "^7.0.0",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "p-is-promise": "^3.0.0",
-    "tmp": "^0.1.0"
+    "tmp": "^0.2.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
 }

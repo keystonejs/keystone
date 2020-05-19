@@ -95,7 +95,7 @@ const IconSlack = props => (
 // Misc
 // ==============================
 
-const A11yText = ({ tag: Tag, ...props }) => (
+const A11yText = ({ tag: Tag = 'span', ...props }) => (
   <Tag
     css={{
       border: 0,
@@ -110,8 +110,5 @@ const A11yText = ({ tag: Tag, ...props }) => (
     {...props}
   />
 );
-A11yText.defaultProps = {
-  tag: 'span',
-};
 
 export { SocialIconsNav };

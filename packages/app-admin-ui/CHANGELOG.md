@@ -1,5 +1,281 @@
 # @keystonejs/app-admin-ui
 
+## 6.0.2
+
+### Patch Changes
+
+- [`e783444a`](https://github.com/keystonejs/keystone/commit/e783444a10bb9ec5ce3db787705c0291cafb8719) [#2971](https://github.com/keystonejs/keystone/pull/2971) Thanks [@Vultraz](https://github.com/Vultraz)! - Don't include non-orderable field in Sort selection dropdown.
+
+* [`8e366026`](https://github.com/keystonejs/keystone/commit/8e366026988b7843513c49d701eda4165cdee3b5) [#2972](https://github.com/keystonejs/keystone/pull/2972) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed corner case where a non-orderable default could be selected.
+
+- [`15943a1e`](https://github.com/keystonejs/keystone/commit/15943a1e808957364c56707fc8289ddda6bb77aa) [#2939](https://github.com/keystonejs/keystone/pull/2939) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed no-access indicators not showing up in list table.
+
+## 6.0.1
+
+### Patch Changes
+
+- [`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be) [#2946](https://github.com/keystonejs/keystone/pull/2946) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-router-dom to 5.2.0.
+
+* [`f9604621`](https://github.com/keystonejs/keystone/commit/f9604621048afceb071a43c7b8d36d944555487f) [#2950](https://github.com/keystonejs/keystone/pull/2950) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed Search icons being subtly off-center.
+
+- [`3e5a8962`](https://github.com/keystonejs/keystone/commit/3e5a8962cc982765574464537904008be975b446) [#2940](https://github.com/keystonejs/keystone/pull/2940) Thanks [@Vultraz](https://github.com/Vultraz)! - Used new sortBy argument in queries.
+
+* [`5a58bde6`](https://github.com/keystonejs/keystone/commit/5a58bde636f551f2d241086d47781d3c88852b99) [#2953](https://github.com/keystonejs/keystone/pull/2953) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed broken URL after creating item from dashboard.
+
+- [`3b0f4137`](https://github.com/keystonejs/keystone/commit/3b0f4137df4112c79e6db57ae68fe04ad338da4c) [#2926](https://github.com/keystonejs/keystone/pull/2926) Thanks [@Vultraz](https://github.com/Vultraz)! - Used _label_ query for logged-in-user display.
+
+* [`15c57317`](https://github.com/keystonejs/keystone/commit/15c573178fa056912503f3ed83efeccceabba3ec) [#2933](https://github.com/keystonejs/keystone/pull/2933) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed an uncaught error during updating if access was denied.
+
+- [`d60e2ca9`](https://github.com/keystonejs/keystone/commit/d60e2ca91ab4a7dd815e030bcc92991c3380fa7e) [#2944](https://github.com/keystonejs/keystone/pull/2944) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved error handling on Signin page.
+
+* [`94d55b8f`](https://github.com/keystonejs/keystone/commit/94d55b8fc3a334a556c19765063e9efb594b41a7) [#2954](https://github.com/keystonejs/keystone/pull/2954) Thanks [@Vultraz](https://github.com/Vultraz)! - Exclude fields without update access from Update popout.
+
+- [`2709a6b5`](https://github.com/keystonejs/keystone/commit/2709a6b512fe636d979837599b67bdb17b2517b1) [#2932](https://github.com/keystonejs/keystone/pull/2932) Thanks [@timleslie](https://github.com/timleslie)! - Updated README.
+
+- Updated dependencies [[`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be), [`a124417f`](https://github.com/keystonejs/keystone/commit/a124417fddc75889db5e4e8e0d5625fb4af12590), [`54931d75`](https://github.com/keystonejs/keystone/commit/54931d75d3f26f4f300c2c4c3ee65ed3183b4a6a), [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc), [`59ed6310`](https://github.com/keystonejs/keystone/commit/59ed6310bacc76f571639de048689becbedbeac5)]:
+  - @arch-ui/button@0.0.19
+  - @arch-ui/dropdown@0.0.18
+  - @arch-ui/navbar@0.1.11
+  - @arch-ui/pagination@0.0.21
+  - @keystonejs/fields@11.0.0
+
+## 6.0.0
+
+### Major Changes
+
+- [`12126788`](https://github.com/keystonejs/keystone/commit/121267885eb3e279eb5b6d035568f547323dd245) [#2893](https://github.com/keystonejs/keystone/pull/2893) Thanks [@timleslie](https://github.com/timleslie)! - Added a method `Keystone.getAdminViews({ schemaName })` which returns the views for the Admin UI. `List.getAdminMeta()` no longer returns a `views` values.
+
+* [`08087998`](https://github.com/keystonejs/keystone/commit/08087998af0045aa45b26d721f75639cd279ae1b) [#2881](https://github.com/keystonejs/keystone/pull/2881) Thanks [@timleslie](https://github.com/timleslie)! - The default function in `@keystonejs/field-views-loader` now takes `{ pages, hooks, listViews }` rather than `{ adminMeta }`.
+  `AdminUIApp` now has a method `.getAdminViews({ keystone, includeLists })` which returns these values.
+  `AdminUIApp.createDevMiddleware` now takes `{ adminMeta, keystone }` as arguments.
+  These changes will only effect users who may have explicitly been using the `@keystone/fields-views-loader` packages or `.createDevMiddleware()`.
+
+- [`fcb9f2c1`](https://github.com/keystonejs/keystone/commit/fcb9f2c1751ec866adddeb6946e8ab60ffef06e6) [#2886](https://github.com/keystonejs/keystone/pull/2886) Thanks [@timleslie](https://github.com/timleslie)! - Removed `AdminUIApp.createSessionMiddleware()`. No need to take an action if you were explicitly using this method.
+
+* [`d8584765`](https://github.com/keystonejs/keystone/commit/d85847652e224e5000e036be2df0b8a45ab96385) [#2906](https://github.com/keystonejs/keystone/pull/2906) Thanks [@timleslie](https://github.com/timleslie)! - Removed `Controller.adminMeta` in favour of explicit values for `.readViews`, `.preloadViews`, `.getListByKey`, `.adminPath`, and `.authStrategy`.
+
+- [`9a94cee8`](https://github.com/keystonejs/keystone/commit/9a94cee8e59fdf7956d82887390dfb84bf6185fa) [#2869](https://github.com/keystonejs/keystone/pull/2869) Thanks [@timleslie](https://github.com/timleslie)! - Removed the method `AdminUIApp.getAdminMeta()` in favour of the more complete `AdminUIApp.getAdminUIMeta(keystone)`.
+
+### Minor Changes
+
+- [`4d3efe0f`](https://github.com/keystonejs/keystone/commit/4d3efe0fb65e0155c130cf3e0c378f024965f46d) [#2827](https://github.com/keystonejs/keystone/pull/2827) Thanks [@Vultraz](https://github.com/Vultraz)! - Refactored the internal handling of list data fetching. This resolves two issues:
+  - Fixed two API requests being made when loading a list.
+  - Fixed Ract errors in the search and pagination components.
+
+* [`72e0a4e1`](https://github.com/keystonejs/keystone/commit/72e0a4e19942df11c72d11c2cf6ee9bc94300d87) [#2895](https://github.com/keystonejs/keystone/pull/2895) Thanks [@Vultraz](https://github.com/Vultraz)! - The base `FieldController` class no longer takes the owning list as a second argument.
+
+- [`6e507838`](https://github.com/keystonejs/keystone/commit/6e5078380e1d17eb2884554eef114fdd521a15f4) [#2890](https://github.com/keystonejs/keystone/pull/2890) Thanks [@Vultraz](https://github.com/Vultraz)! - Refactored the Unsplash content block to use Apollo query hooks.
+
+* [`bcf03a7f`](https://github.com/keystonejs/keystone/commit/bcf03a7f8067a3f29f22dde397b957bf5cee1a07) [#2873](https://github.com/keystonejs/keystone/pull/2873) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up CreateItemModal implementation. The component is no longer passed to field views and should be imported from the @keystonejs/app-admin-ui package instead.
+
+### Patch Changes
+
+- [`c506dfa8`](https://github.com/keystonejs/keystone/commit/c506dfa81a5ef3640716f69412b1a37c947d4f95) [#2894](https://github.com/keystonejs/keystone/pull/2894) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused prop passed to `ItemDetails`.
+
+* [`5e20df81`](https://github.com/keystonejs/keystone/commit/5e20df81aaa8b464071c1e0adc64635752163362) [#2871](https://github.com/keystonejs/keystone/pull/2871) Thanks [@Vultraz](https://github.com/Vultraz)! - Refactored `UpdateManyModal` component.
+
+- [`a1c9c372`](https://github.com/keystonejs/keystone/commit/a1c9c372c274de8cb0d0012c0d5c20c46f356b0a) [#2830](https://github.com/keystonejs/keystone/pull/2830) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up and simplified ApolloClient initialization. The `cross-fetch` dependency was also updated to 3.0.4.
+
+* [`04dffb3c`](https://github.com/keystonejs/keystone/commit/04dffb3c0abd03712df431ff57b3271b10f4f47b) [#2904](https://github.com/keystonejs/keystone/pull/2904) Thanks [@Nikodermus](https://github.com/Nikodermus)! - Revert change in CSS import
+
+- [`bfa3a287`](https://github.com/keystonejs/keystone/commit/bfa3a287a40f625b74d1f430dff6826296bb7019) [#2874](https://github.com/keystonejs/keystone/pull/2874) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up duplicated and/or unnecessary list config data.
+
+* [`d639624d`](https://github.com/keystonejs/keystone/commit/d639624db8615b52731af56fea0ae9c573ef38a1) [#2801](https://github.com/keystonejs/keystone/pull/2801) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted ResizeHandler and ScrollQuery components to custom hooks.
+
+- [`3e9bfb85`](https://github.com/keystonejs/keystone/commit/3e9bfb854196dffcca98f60c5de9ad463d79f4f2) [#2911](https://github.com/keystonejs/keystone/pull/2911) Thanks [@Vultraz](https://github.com/Vultraz)! - Revamped Sign In page design to better match Sign Out page.
+
+* [`3cd5f205`](https://github.com/keystonejs/keystone/commit/3cd5f205348311a2ad00875782530b96c3c477af) [#2892](https://github.com/keystonejs/keystone/pull/2892) Thanks [@timleslie](https://github.com/timleslie)! - Refactored internals for readability.
+
+- [`6c19f04c`](https://github.com/keystonejs/keystone/commit/6c19f04c0e5ce972283562daebe60c9f4a29c55c) [#2910](https://github.com/keystonejs/keystone/pull/2910) Thanks [@tomasztunik](https://github.com/tomasztunik)! - Fixed reading of `AnimateHeight` node height which because of the rounding-down nature of `scrollHeight` property value could sometimes cause scrollbar to be present in the filter popout.
+
+  Provided correct value for `AnimateHeight` css transition property's disabled state.
+
+* [`547fd837`](https://github.com/keystonejs/keystone/commit/547fd8373797f0cb5d8dd0acd193750686053fac) [#2891](https://github.com/keystonejs/keystone/pull/2891) Thanks [@timleslie](https://github.com/timleslie)! - Refactored internals of AdminUIApp, no functional changes.
+
+- [`2a1e4f49`](https://github.com/keystonejs/keystone/commit/2a1e4f49d7f234c49e5b04440ff786ddf3e9e7ed) [#2901](https://github.com/keystonejs/keystone/pull/2901) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed Admin UI sometimes using the wrong auth mutation name.
+
+* [`405d0ae1`](https://github.com/keystonejs/keystone/commit/405d0ae1d332e31423db43f58ac26c25abbe94a3) [#2917](https://github.com/keystonejs/keystone/pull/2917) Thanks [@timleslie](https://github.com/timleslie)! - Refactored internals, no functional changes.
+
+- [`121cb02d`](https://github.com/keystonejs/keystone/commit/121cb02d1c9886a24bfa14c985ede48d6a56edca) [#2896](https://github.com/keystonejs/keystone/pull/2896) Thanks [@timleslie](https://github.com/timleslie)! - Internal refactor, no functional changes.
+
+* [`e2800875`](https://github.com/keystonejs/keystone/commit/e28008756cbcc1e07e012a9fdb0cfa0ad94f3673) [#2897](https://github.com/keystonejs/keystone/pull/2897) Thanks [@Vultraz](https://github.com/Vultraz)! - Elevated isOrderable, isRequired, and adminDoc keys to direct FieldController properties.
+
+- [`1ca8951c`](https://github.com/keystonejs/keystone/commit/1ca8951c71c5af3b0ff338a9a6a8733231fb90c4) [#2908](https://github.com/keystonejs/keystone/pull/2908) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.fullPath` attribute to the `List` controller which includes the `adminPath`.
+
+- Updated dependencies [[`72e0a4e1`](https://github.com/keystonejs/keystone/commit/72e0a4e19942df11c72d11c2cf6ee9bc94300d87), [`e0e3e30a`](https://github.com/keystonejs/keystone/commit/e0e3e30a9051741de3f5a0c12ba00f2238d54800), [`5ec4e5d5`](https://github.com/keystonejs/keystone/commit/5ec4e5d547503baeae2ac2f6317b66c2ebae93b7), [`6e507838`](https://github.com/keystonejs/keystone/commit/6e5078380e1d17eb2884554eef114fdd521a15f4), [`08087998`](https://github.com/keystonejs/keystone/commit/08087998af0045aa45b26d721f75639cd279ae1b), [`9e2e0071`](https://github.com/keystonejs/keystone/commit/9e2e00715aff50f2ddfedf3dbc14f390275ff23b), [`0fbc5b98`](https://github.com/keystonejs/keystone/commit/0fbc5b989a9f96248d1bd7f2f589fe77cb1d8f7d), [`e3d46ce4`](https://github.com/keystonejs/keystone/commit/e3d46ce4bd9f9ec8808ab3194672c6849e624e27), [`d8584765`](https://github.com/keystonejs/keystone/commit/d85847652e224e5000e036be2df0b8a45ab96385), [`5d1efd48`](https://github.com/keystonejs/keystone/commit/5d1efd48a11d7688b95cb51a949b039b030caf69), [`da1359df`](https://github.com/keystonejs/keystone/commit/da1359dfc1bff7e27505eff876efe3a0865bae2d), [`285026a0`](https://github.com/keystonejs/keystone/commit/285026a04ffce23ab72d7defc18ced2e980b0de4), [`d4811b02`](https://github.com/keystonejs/keystone/commit/d4811b0231c5d64e95dbbce57531df0931d4defa), [`216e6dec`](https://github.com/keystonejs/keystone/commit/216e6deca2b0d9a22ddbf0657a01b5122c178269), [`e2800875`](https://github.com/keystonejs/keystone/commit/e28008756cbcc1e07e012a9fdb0cfa0ad94f3673), [`60e2c7eb`](https://github.com/keystonejs/keystone/commit/60e2c7eb2298a016c68a19a056040a3b45beab2a), [`99da34a8`](https://github.com/keystonejs/keystone/commit/99da34a8db26b8861b08cee330407605e787a80c), [`bcf03a7f`](https://github.com/keystonejs/keystone/commit/bcf03a7f8067a3f29f22dde397b957bf5cee1a07), [`e765ad20`](https://github.com/keystonejs/keystone/commit/e765ad20abae9838f64b72b7d43767ec87db336a), [`d7eb2601`](https://github.com/keystonejs/keystone/commit/d7eb260144d2aa31e7ef4e636e7a23f91dc37285)]:
+  - @keystonejs/fields@10.0.0
+  - @keystonejs/utils@5.4.1
+  - @keystonejs/field-views-loader@6.0.0
+  - @keystonejs/build-field-types@5.2.7
+  - @keystonejs/session@7.0.0
+  - @arch-ui/popout@0.0.19
+  - @arch-ui/options@0.0.21
+
+## 5.12.0
+
+### Minor Changes
+
+- [`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d) [#2798](https://github.com/keystonejs/keystone/pull/2798) Thanks [@Vultraz](https://github.com/Vultraz)! - Revamped sidebar design.
+
+### Patch Changes
+
+- [`ab484f19`](https://github.com/keystonejs/keystone/commit/ab484f195752bb3ec59f6beb7d8817dce610ad06) [#2440](https://github.com/keystonejs/keystone/pull/2440) Thanks [@gautamsi](https://github.com/gautamsi)! - Enabled selection of multiple options in Filter for Select type fields. This also disables use of filter with empty values, you can not apply new filter if none of the options are selected. Can not deselect last filter item when adding or editing.
+
+* [`1b059e72`](https://github.com/keystonejs/keystone/commit/1b059e726d95bbc6ad09a76ed3b40dbc4cf11682) [#2810](https://github.com/keystonejs/keystone/pull/2810) Thanks [@Vultraz](https://github.com/Vultraz)! - Clarified functionality of item view 'Back' button.
+
+- [`4af9e407`](https://github.com/keystonejs/keystone/commit/4af9e4075c9329ab27e7aa18a664d2f2bcc1ac2d) [#2864](https://github.com/keystonejs/keystone/pull/2864) Thanks [@molomby](https://github.com/molomby)! - Static assets loaded for the Admin UI (eg. JS bundles) now have correct Content-Type response headers
+
+* [`0aac3b41`](https://github.com/keystonejs/keystone/commit/0aac3b411a9e4f397645d9641c4675eab7a6e55b) [#2860](https://github.com/keystonejs/keystone/pull/2860) Thanks [@Nikodermus](https://github.com/Nikodermus)! - Updated Webpack config so stylesheets imported from node_modules are included in the production build.
+
+- [`b0bfcf79`](https://github.com/keystonejs/keystone/commit/b0bfcf79477249f3c0bb14db68588d84a68f0186) [#2812](https://github.com/keystonejs/keystone/pull/2812) Thanks [@Vultraz](https://github.com/Vultraz)! - Don't duplicate HeaderInset multiple times.
+
+* [`8a135a88`](https://github.com/keystonejs/keystone/commit/8a135a88ae6f3a4434db0ba7033cad2e5f18651e) [#2808](https://github.com/keystonejs/keystone/pull/2808) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed list-level `adminDoc` not doing anything.
+
+- [`63a2f7c3`](https://github.com/keystonejs/keystone/commit/63a2f7c31777d968bad32d6e746e2f960c6ef0ad) [#2816](https://github.com/keystonejs/keystone/pull/2816) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed Success toast showing stale data when changing an item's name.
+
+* [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca) [#2845](https://github.com/keystonejs/keystone/pull/2845) Thanks [@timleslie](https://github.com/timleslie)! - Updated patch versions of dependencies.
+
+- [`81a9aa7c`](https://github.com/keystonejs/keystone/commit/81a9aa7c2349f9bb71d1a9686e4fa359a14b033f) [#2856](https://github.com/keystonejs/keystone/pull/2856) Thanks [@timleslie](https://github.com/timleslie)! - Added missing peer dependencies.
+
+- Updated dependencies [[`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d), [`45b151b0`](https://github.com/keystonejs/keystone/commit/45b151b05de0583ba50364caeda8b5bb7a111385), [`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2), [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b), [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0), [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca)]:
+  - @arch-ui/navbar@0.1.10
+  - @arch-ui/badge@0.0.16
+  - @arch-ui/confirm@0.0.19
+  - @arch-ui/dialog@0.0.21
+  - @keystonejs/fields@9.0.5
+  - @keystonejs/build-field-types@5.2.6
+
+## 5.11.1
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/alert@0.0.17
+  - @arch-ui/badge@0.0.15
+  - @arch-ui/button@0.0.18
+  - @arch-ui/card@0.0.14
+  - @arch-ui/confirm@0.0.18
+  - @arch-ui/controls@0.1.8
+  - @arch-ui/dialog@0.0.20
+  - @arch-ui/drawer@0.0.21
+  - @arch-ui/dropdown@0.0.17
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/hooks@0.0.10
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+  - @arch-ui/lozenge@0.0.16
+  - @arch-ui/navbar@0.1.9
+  - @arch-ui/options@0.0.20
+  - @arch-ui/pagination@0.0.20
+  - @arch-ui/pill@0.1.15
+  - @arch-ui/popout@0.0.18
+  - @arch-ui/select@0.1.8
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+  - @keystonejs/build-field-types@5.2.5
+  - @keystonejs/fields@9.0.4
+
+## 5.11.0
+
+### Minor Changes
+
+- [`501fd3e4`](https://github.com/keystonejs/keystone/commit/501fd3e4a06cfeba0f96a76ff8763d3be577af6e) [#2779](https://github.com/keystonejs/keystone/pull/2779) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a section to the sidebar displaying the currently signed-in user.
+
+### Patch Changes
+
+- [`e7afc083`](https://github.com/keystonejs/keystone/commit/e7afc08338cc04bfc8b6eec1a21f777f81f4d6c8) [#2471](https://github.com/keystonejs/keystone/pull/2471) Thanks [@Vultraz](https://github.com/Vultraz)! - Redesigned signout page.
+
+* [`b14c07a1`](https://github.com/keystonejs/keystone/commit/b14c07a154ae1cb92e7cbc87484d99419f92d649) [#2792](https://github.com/keystonejs/keystone/pull/2792) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a broken link.
+
+- [`16f6c300`](https://github.com/keystonejs/keystone/commit/16f6c3003d1decbb77474455ef608e3efd41ec4b) [#2699](https://github.com/keystonejs/keystone/pull/2699) Thanks [@Vultraz](https://github.com/Vultraz)! - Made keyboard shortcuts not trigger in contenteditable nodes.
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`fecf9179`](https://github.com/keystonejs/keystone/commit/fecf9179718f4527f6951a88307d9792cf32d08c), [`667bed43`](https://github.com/keystonejs/keystone/commit/667bed43ed0a075565c959dc0d5699cc911c7d64), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @keystonejs/fields@9.0.3
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+  - @arch-ui/options@0.0.19
+  - @arch-ui/pagination@0.0.19
+  - @arch-ui/pill@0.1.14
+
+## 5.10.0
+
+### Minor Changes
+
+- [`57e6ce29`](https://github.com/keystonejs/keystone/commit/57e6ce293e5afd0add52728aa73c74e90fcbe0f7) [#2474](https://github.com/keystonejs/keystone/pull/2474) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a UI hook (`logo`) to display a custom logo on the signin screen.
+
+### Patch Changes
+
+- [`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad) [#2738](https://github.com/keystonejs/keystone/pull/2738) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-select dependency to 3.1.0.
+
+* [`344c45ef`](https://github.com/keystonejs/keystone/commit/344c45efbb96a90010f81e4c8447a9c5728ea87f) [#2740](https://github.com/keystonejs/keystone/pull/2740) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated html-webpack-plugin dependency to 4.2.0.
+
+- [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32) [#2463](https://github.com/keystonejs/keystone/pull/2463) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced ContainerQuery component with useResizeObserver.
+
+* [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0) [#2314](https://github.com/keystonejs/keystone/pull/2314) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Made all values in `adminConfig` list options available to `admin-ui` as part of list's `adminMeta`.
+
+  - Added `adminConfig` option to all Fields which are made available to field's `adminMeta` in `admin-ui`.
+  - Added `adminMeta` option in `AdminUIApp` constructor which is also made available to `adminMeta` of `admin-ui`.
+
+  All the improvements are useful in `admin-ui` customizations like UI Hooks or custom Field Views.
+
+* Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`81822d67`](https://github.com/keystonejs/keystone/commit/81822d67822bdc77b360b709f2e824cc43d88f15), [`70f3529b`](https://github.com/keystonejs/keystone/commit/70f3529bbdb6dee76c0b278415d340c53c68530a), [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0), [`bcfa092d`](https://github.com/keystonejs/keystone/commit/bcfa092d026c0d626087e641d91b729de7c5480b)]:
+  - @arch-ui/options@0.0.18
+  - @arch-ui/select@0.1.7
+  - @keystonejs/fields@9.0.2
+  - @arch-ui/controls@0.1.7
+  - @arch-ui/pagination@0.0.18
+  - @arch-ui/layout@0.2.12
+
+## 5.9.6
+
+### Patch Changes
+
+- [`3193f4a5`](https://github.com/keystonejs/keystone/commit/3193f4a56c6391d07e8c04913a667940ef7b8815) [#2732](https://github.com/keystonejs/keystone/pull/2732) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted more React components to functional form.
+
+- Updated dependencies [[`c013d8bc`](https://github.com/keystonejs/keystone/commit/c013d8bc1113b2a31ededc3918ab98c2c99f25f4), [`93ae77ef`](https://github.com/keystonejs/keystone/commit/93ae77efe71151279a15ddb7ddc3df60651022b4), [`eb90aea6`](https://github.com/keystonejs/keystone/commit/eb90aea6b33dda8d95baba818306328dd747247f)]:
+  - @keystonejs/fields@9.0.1
+
+## 5.9.5
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/fields@9.0.0
+
+## 5.9.4
+
+### Patch Changes
+
+- [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373) [#2560](https://github.com/keystonejs/keystone/pull/2560) Thanks [@JedWatson](https://github.com/JedWatson)! - Updated links to Keystone github project.
+
+* [`7fc00071`](https://github.com/keystonejs/keystone/commit/7fc00071cd22514103593f0da68b9efa3bf853e9) [#2573](https://github.com/keystonejs/keystone/pull/2573) Thanks [@ropaolle](https://github.com/ropaolle)! - Fixed an uncaught GraphQLError in the AdminUI where no list was defined.
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+* [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063) [#2593](https://github.com/keystonejs/keystone/pull/2593) Thanks [@jossmac](https://github.com/jossmac)! - Applied a more consistent voice throughout documentation.
+
+* Updated dependencies [[`e7e4bc1d`](https://github.com/keystonejs/keystone/commit/e7e4bc1d22149d4daceb31d303f6ad10c2b853ba), [`58c4ffc3`](https://github.com/keystonejs/keystone/commit/58c4ffc3d4b1edf8bdfbc4ea299133d303239fc6), [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`d138736d`](https://github.com/keystonejs/keystone/commit/d138736db184c5884171c7a65e43377f248046b5), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf), [`0b37b13b`](https://github.com/keystonejs/keystone/commit/0b37b13b5b11a5391b70920f9e8cbd6c5a71f586)]:
+  - @keystonejs/fields@8.0.0
+  - @arch-ui/alert@0.0.16
+  - @arch-ui/card@0.0.13
+  - @arch-ui/drawer@0.0.20
+  - @arch-ui/loading@0.0.16
+  - @arch-ui/lozenge@0.0.15
+  - @arch-ui/options@0.0.17
+  - @arch-ui/tooltip@0.1.10
+  - @arch-ui/typography@0.0.16
+  - @arch-ui/fields@2.1.5
+  - @keystonejs/session@6.0.1
+  - @arch-ui/button@0.0.17
+  - @arch-ui/pagination@0.0.17
+  - @arch-ui/dialog@0.0.19
+
 ## 5.9.3
 
 ### Patch Changes
@@ -570,7 +846,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -578,7 +854,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
   - @keystonejs/build-field-types@5.0.0
   - @keystonejs/field-views-loader@5.0.0
   - @keystonejs/fields@5.0.0
@@ -591,16 +867,16 @@
 
 ### Patch Changes
 
-- [`a8ee0179`](https://github.com/keystonejs/keystone-5/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26) [#1805](https://github.com/keystonejs/keystone-5/pull/1805) Thanks [@gautamsi](https://github.com/gautamsi)! - export `useAdminMeta` which is useful in developing custom pages
+- [`a8ee0179`](https://github.com/keystonejs/keystone/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26) [#1805](https://github.com/keystonejs/keystone/pull/1805) Thanks [@gautamsi](https://github.com/gautamsi)! - export `useAdminMeta` which is useful in developing custom pages
 
-- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+- Updated dependencies [[`effc1f63`](https://github.com/keystonejs/keystone/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
   - @keystone-alpha/fields@15.0.0
 
 ## 5.10.2
 
 ### Patch Changes
 
-- Updated dependencies [[`68134f7a`](https://github.com/keystonejs/keystone-5/commit/68134f7ac6d56122640c42304ab8796c1aa2f17c), [`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+- Updated dependencies [[`68134f7a`](https://github.com/keystonejs/keystone/commit/68134f7ac6d56122640c42304ab8796c1aa2f17c), [`6d7d0df0`](https://github.com/keystonejs/keystone/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
   - @keystone-alpha/field-views-loader@2.2.1
   - @keystone-alpha/fields@14.0.0
 
@@ -608,10 +884,10 @@
 
 ### Patch Changes
 
-- [afcc2fa4](https://github.com/keystonejs/keystone-5/commit/afcc2fa4): Fix Admin UI redirects in prod mode
-- [1463d535](https://github.com/keystonejs/keystone-5/commit/1463d535): Update documentation for the Admin UI app.
+- [afcc2fa4](https://github.com/keystonejs/keystone/commit/afcc2fa4): Fix Admin UI redirects in prod mode
+- [1463d535](https://github.com/keystonejs/keystone/commit/1463d535): Update documentation for the Admin UI app.
 
-* Updated dependencies [464d7579](https://github.com/keystonejs/keystone-5/commit/464d7579):
+* Updated dependencies [464d7579](https://github.com/keystonejs/keystone/commit/464d7579):
   - @keystone-alpha/fields@13.1.0
   - @arch-ui/select@0.1.0
 
@@ -619,27 +895,27 @@
 
 ### Minor Changes
 
-- [7ee3b0ad](https://github.com/keystonejs/keystone-5/commit/7ee3b0ad): Display an error toast in the admin-ui if there was an error when creating an item. Also created a custom ToastContainer to fix an issue with z-indexing.
+- [7ee3b0ad](https://github.com/keystonejs/keystone/commit/7ee3b0ad): Display an error toast in the admin-ui if there was an error when creating an item. Also created a custom ToastContainer to fix an issue with z-indexing.
 
-- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone/commit/4e6a574d):
   - @keystone-alpha/fields@13.0.0
 
 ## 5.9.0
 
 ### Minor Changes
 
-- [b88c4038](https://github.com/keystonejs/keystone-5/commit/b88c4038): When no list is defined the AdminUI will now load with an error message.
+- [b88c4038](https://github.com/keystonejs/keystone/commit/b88c4038): When no list is defined the AdminUI will now load with an error message.
 
 ## 5.8.2
 
 ### Patch Changes
 
-- [8b087627](https://github.com/keystonejs/keystone-5/commit/8b087627): Show correct pluralised value in admin-ui sidebar nav
+- [8b087627](https://github.com/keystonejs/keystone/commit/8b087627): Show correct pluralised value in admin-ui sidebar nav
 
 ## 5.8.1
 
-- Updated dependencies [7689753c](https://github.com/keystonejs/keystone-5/commit/7689753c):
-- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+- Updated dependencies [7689753c](https://github.com/keystonejs/keystone/commit/7689753c):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone/commit/9ade2b2d):
   - @arch-ui/controls@0.0.10
   - @keystone-alpha/fields@12.0.0
   - @arch-ui/input@0.1.0
@@ -648,7 +924,7 @@
 
 ### Minor Changes
 
-- [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
+- [a8e9378d](https://github.com/keystonejs/keystone/commit/a8e9378d): `Keystone`, `List` and `Field` constructors now take `schemaNames` as config options. A number of methods also now take `schemaName` parameters.
   - `keystone.getTypeDefs()` -> `keystone.getTypeDefs({ schemaName })`
   - `keystone.getAdminSchema()` -> `keystone.getAdminSchema({ schemaName })`
   - `keystone.dumpSchema(file)` -> `keystone.dumpSchema(file, schemaName)`
@@ -658,70 +934,70 @@
 
 ### Patch Changes
 
-- [087ceeac](https://github.com/keystonejs/keystone-5/commit/087ceeac): Add robots exclusion meta tags to Admin UI
+- [087ceeac](https://github.com/keystonejs/keystone/commit/087ceeac): Add robots exclusion meta tags to Admin UI
 
-- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone/commit/89c0d7e9):
   - @keystone-alpha/fields@11.0.0
 
 ## 5.7.0
 
 ### Minor Changes
 
-- [2350a9fd](https://github.com/keystonejs/keystone-5/commit/2350a9fd): Admin UI has a new config option: `isAccessAllowed({ authentication: { user, listKey } }) => Boolean` to restrict who can login to the Admin UI.
+- [2350a9fd](https://github.com/keystonejs/keystone/commit/2350a9fd): Admin UI has a new config option: `isAccessAllowed({ authentication: { user, listKey } }) => Boolean` to restrict who can login to the Admin UI.
 
 ## 5.6.1
 
 ### Patch Changes
 
-- [99dc6cae](https://github.com/keystonejs/keystone-5/commit/99dc6cae): Revert usage of Apollo Hooks
+- [99dc6cae](https://github.com/keystonejs/keystone/commit/99dc6cae): Revert usage of Apollo Hooks
 
 ## 5.6.0
 
 ### Minor Changes
 
-- [79e362c0](https://github.com/keystonejs/keystone-5/commit/79e362c0): upgrade react-apollo and use hooks instead of Query and Mutation components
+- [79e362c0](https://github.com/keystonejs/keystone/commit/79e362c0): upgrade react-apollo and use hooks instead of Query and Mutation components
 
 ## 5.5.2
 
 ### Patch Changes
 
-- [b822d229](https://github.com/keystonejs/keystone-5/commit/b822d229): fix issue related to react-toast-notifications update. toasts are not triggered after delete success.
+- [b822d229](https://github.com/keystonejs/keystone/commit/b822d229): fix issue related to react-toast-notifications update. toasts are not triggered after delete success.
 
 ## 5.5.1
 
 ### Patch Changes
 
-- [30f6b7eb](https://github.com/keystonejs/keystone-5/commit/30f6b7eb): upgraded `react-toast-notifications` to `2.2.4`. use `useToasts` hook when possible.
+- [30f6b7eb](https://github.com/keystonejs/keystone/commit/30f6b7eb): upgraded `react-toast-notifications` to `2.2.4`. use `useToasts` hook when possible.
 
 ## 5.5.0
 
 ### Minor Changes
 
-- [f7ba8a35](https://github.com/keystonejs/keystone-5/commit/f7ba8a35): Prefill nested creates for Relationship fields with back referennces
+- [f7ba8a35](https://github.com/keystonejs/keystone/commit/f7ba8a35): Prefill nested creates for Relationship fields with back referennces
 
 ## 5.4.0
 
 ### Minor Changes
 
-- [33ed590e](https://github.com/keystonejs/keystone-5/commit/33ed590e): Respect static field-level access control in the Admin UI
+- [33ed590e](https://github.com/keystonejs/keystone/commit/33ed590e): Respect static field-level access control in the Admin UI
 
 ## 5.3.0
 
 ### Minor Changes
 
-- [da65e1a0](https://github.com/keystonejs/keystone-5/commit/da65e1a0): Allow display and filtering of 'Id' column in Admin UI
+- [da65e1a0](https://github.com/keystonejs/keystone/commit/da65e1a0): Allow display and filtering of 'Id' column in Admin UI
 
 ## 5.2.0
 
 ### Minor Changes
 
-- [e049cfcb](https://github.com/keystonejs/keystone-5/commit/e049cfcb): Support defaultValue as a function in view Controllers
+- [e049cfcb](https://github.com/keystonejs/keystone/commit/e049cfcb): Support defaultValue as a function in view Controllers
 
 ### Patch Changes
 
-- [957a40d9](https://github.com/keystonejs/keystone-5/commit/957a40d9): Upgrade react-select
+- [957a40d9](https://github.com/keystonejs/keystone/commit/957a40d9): Upgrade react-select
 
-- Updated dependencies [fc437e06](https://github.com/keystonejs/keystone-5/commit/fc437e06):
+- Updated dependencies [fc437e06](https://github.com/keystonejs/keystone/commit/fc437e06):
   - @keystone-alpha/fields@10.2.0
   - @arch-ui/drawer@0.0.10
 
@@ -729,60 +1005,60 @@
 
 ### Minor Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Switching lists to use standard field types for primary keys (instead of weird pseudo-field)
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade graphql to 14.4.2
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Fixing minor potential perf issue, flagged by DeepCheck
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade graphql to 14.4.2
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Fixing minor potential perf issue, flagged by DeepCheck
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade express to 4.17.1
 
 ## 5.0.4
 
-- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+- Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone/commit/2b094b7f):
   - @keystone-alpha/fields@9.0.0
 
 ## 5.0.3
 
 ### Patch Changes
 
-- [a6c3ac0c](https://github.com/keystonejs/keystone-5/commit/a6c3ac0c):
+- [a6c3ac0c](https://github.com/keystonejs/keystone/commit/a6c3ac0c):
 
   Stop re-rendering ItemTitle on every change in an Item
 
-* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+* Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone/commit/b6a9f6b9):
   - @keystone-alpha/fields@8.0.0
 
 ## 5.0.2
 
 ### Patch Changes
 
-- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+- [c2dc6eb3](https://github.com/keystonejs/keystone/commit/c2dc6eb3):
 
   Replace custom copy to clipboard utility with the clipboard-copy package
 
-- [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+- [c2dc6eb3](https://github.com/keystonejs/keystone/commit/c2dc6eb3):
 
   Remove Admin UI style guide. The style guide is now in the keystone-5 repo at packages/arch/docs
 
-* Updated dependencies [c2dc6eb3](https://github.com/keystonejs/keystone-5/commit/c2dc6eb3):
+* Updated dependencies [c2dc6eb3](https://github.com/keystonejs/keystone/commit/c2dc6eb3):
   - @arch-ui/navbar@0.1.0
 
 ## 5.0.1
 
 ### Patch Changes
 
-- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
 
   Correctly send user to Admin UI after logging in (under some circumstances, it would just show the word "Error")
 
-- [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
 
   Correctly sign the user out when clicking the icon in the Admin UI
 
-* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
-* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
+* Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
   - @keystone-alpha/fields@7.1.0
   - @arch-ui/fields@2.0.0
   - @arch-ui/controls@0.0.8
@@ -792,7 +1068,7 @@
 
 ### Major Changes
 
-- [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+- [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
 
   - Removed the `<adminPath>/signin`, `<adminPath>/signout`, and
     `<adminPath>/session` routes.
@@ -808,11 +1084,11 @@
 
 ### Minor Changes
 
-- [abce2e6c](https://github.com/keystonejs/keystone-5/commit/abce2e6c):
+- [abce2e6c](https://github.com/keystonejs/keystone/commit/abce2e6c):
 
   `<Field>` views now receive a `savedValue` prop representing the current state as saved to the database.
 
-- [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
+- [30c1b1e1](https://github.com/keystonejs/keystone/commit/30c1b1e1):
 
   - Execute the new `validateInput()` method from fields before saving on
     create/update pages.
@@ -825,21 +1101,21 @@
 
 ### Patch Changes
 
-- [5c28c142](https://github.com/keystonejs/keystone-5/commit/5c28c142):
+- [5c28c142](https://github.com/keystonejs/keystone/commit/5c28c142):
 
   Silence a useless warning produced by Apollo when using the OEmbed field
 
-- [dc2cd8e5](https://github.com/keystonejs/keystone-5/commit/dc2cd8e5):
+- [dc2cd8e5](https://github.com/keystonejs/keystone/commit/dc2cd8e5):
 
   Allow changing to default dashboard to a custom component
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
-* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
-* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
-* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone-5/commit/16befb6a):
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
+* Updated dependencies [16befb6a](https://github.com/keystonejs/keystone/commit/16befb6a):
   - @keystone-alpha/fields@7.0.0
   - @keystone-alpha/session@2.0.0
   - @arch-ui/fields@1.0.0
@@ -850,7 +1126,7 @@
 
 - This packages has been renamed from `admin-ui`.
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Specify custom servers from within the index.js file
 
@@ -881,25 +1157,25 @@
          });
       ```
 
-- [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+- [b2651279](https://github.com/keystonejs/keystone/commit/b2651279):
 
   Remove usage of `port` arg from `prepareMiddleware()` and stop doing inline console.logs
 
-- [8494e4cc](https://github.com/keystonejs/keystone-5/commit/8494e4cc):
+- [8494e4cc](https://github.com/keystonejs/keystone/commit/8494e4cc):
 
   `@keystone-alpha/app-admin-ui` no longer accepts a `keystone` paramater in its constructor. It is now automatically passed during the `keystone.prepare()` call.
 
 ### Patch Changes
 
-- [991c6df0](https://github.com/keystonejs/keystone-5/commit/991c6df0):
+- [991c6df0](https://github.com/keystonejs/keystone/commit/991c6df0):
 
   Fix react-router-dom error when installed through npm
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Remove unused dependency
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Fix Admin UI building on Windows
 
@@ -911,15 +1187,15 @@
 
 ### Patch Changes
 
-- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
 
   Minor Admin UI Tweaks
 
-- [adec8047](https://github.com/keystonejs/keystone-5/commit/adec8047):
+- [adec8047](https://github.com/keystonejs/keystone/commit/adec8047):
 
   Use babel-preset-react-app in the Admin UI
 
-- [7a513e8f](https://github.com/keystonejs/keystone-5/commit/7a513e8f):
+- [7a513e8f](https://github.com/keystonejs/keystone/commit/7a513e8f):
 
   Fix non-stop renders on list pages
 
@@ -927,74 +1203,74 @@
 
 ### Minor Changes
 
-- [22ec53a8](https://github.com/keystonejs/keystone-5/commit/22ec53a8):
+- [22ec53a8](https://github.com/keystonejs/keystone/commit/22ec53a8):
 
   - Adding support for custom pages in Admin UI
 
-- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+- [6f598e83](https://github.com/keystonejs/keystone/commit/6f598e83):
 
   - Add Admin UI static building
 
 ### Patch Changes
 
-- [18b88df0](https://github.com/keystonejs/keystone-5/commit/18b88df0):
+- [18b88df0](https://github.com/keystonejs/keystone/commit/18b88df0):
 
   Fix a bug with admin UI serving in production
 
-- [ebb858a5](https://github.com/keystonejs/keystone-5/commit/ebb858a5):
+- [ebb858a5](https://github.com/keystonejs/keystone/commit/ebb858a5):
 
   - Optimistically open Nested Create Item Modal and show loading spinner
 
-- [b8fc0a22](https://github.com/keystonejs/keystone-5/commit/b8fc0a22):
+- [b8fc0a22](https://github.com/keystonejs/keystone/commit/b8fc0a22):
 
   - Add tooltip to columns button in list table
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
-- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+- [119448fc](https://github.com/keystonejs/keystone/commit/119448fc):
 
   - Field view Controllers: Rename `.getValue()` to `.serialize()` and add `.deserialize()` to enable handling pre-save to server & post-read from server respectively.
 
-- [5e7d1940](https://github.com/keystonejs/keystone-5/commit/5e7d1940):
+- [5e7d1940](https://github.com/keystonejs/keystone/commit/5e7d1940):
 
   - Remove custom context menu on list page
 
-- [c79cd7eb](https://github.com/keystonejs/keystone-5/commit/c79cd7eb):
+- [c79cd7eb](https://github.com/keystonejs/keystone/commit/c79cd7eb):
 
   - Update Many modal shows spinner while loading fields
 
-- [51a0d853](https://github.com/keystonejs/keystone-5/commit/51a0d853):
+- [51a0d853](https://github.com/keystonejs/keystone/commit/51a0d853):
 
   Put the admin UI at `adminPath` rather than `/admin` with prod middleware.
 
-- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+- [c9102446](https://github.com/keystonejs/keystone/commit/c9102446):
 
   - Add a mechanism for loading multiple Suspense-aware components in parallel
 
-- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+- [119448fc](https://github.com/keystonejs/keystone/commit/119448fc):
 
   - Field view Controllers: Rename `.getIntialData()` to `.getDefaultValue()` to better reflect the purpose of the function.
 
-* [5637518f](https://github.com/keystonejs/keystone-5/commit/5637518f):
+* [5637518f](https://github.com/keystonejs/keystone/commit/5637518f):
 
   - Show loading spinner while loading views in List Table
 
-* [997c0b9c](https://github.com/keystonejs/keystone-5/commit/997c0b9c):
+* [997c0b9c](https://github.com/keystonejs/keystone/commit/997c0b9c):
 
   - DX: Open Create Modal optimistically and display loading state
 
-- Updated dependencies [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
-- Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
-- Updated dependencies [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
-- Updated dependencies [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
-- Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
-- Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
-- Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
-- Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
-- Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
-- Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+- Updated dependencies [e6e95173](https://github.com/keystonejs/keystone/commit/e6e95173):
+- Updated dependencies [9dbed649](https://github.com/keystonejs/keystone/commit/9dbed649):
+- Updated dependencies [81b481d0](https://github.com/keystonejs/keystone/commit/81b481d0):
+- Updated dependencies [a03fd601](https://github.com/keystonejs/keystone/commit/a03fd601):
+- Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone/commit/5f1a5cf3):
+- Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone/commit/1a7b706c):
+- Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone/commit/1a7b706c):
+- Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone/commit/bd0ea21f):
+- Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone/commit/b7a2ea9c):
+- Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone/commit/5f1a5cf3):
   - @keystone-alpha/fields@6.0.0
   - @keystone-alpha/build-field-types@1.0.0
   - @arch-ui/controls@0.0.5
@@ -1009,42 +1285,42 @@
 
 ## 3.1.0
 
-- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+- [patch][ec76b500](https://github.com/keystonejs/keystone/commit/ec76b500):
 
   - Add missing arch-ui deps to admin-ui
 
-- [patch][2e227a73](https://github.com/keystonejs/keystone-5/commit/2e227a73):
+- [patch][2e227a73](https://github.com/keystonejs/keystone/commit/2e227a73):
 
   - Correctly handle async .getValue() calls when saving
 
-- [minor][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- [minor][e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
 
   - admin revamp
 
-- Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+- Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone/commit/85b74a2c):
   - @keystone-alpha/fields@5.0.0
 
 ## 3.0.6
 
-- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone/commit/b69fb9b7):
 
   - Update dev devependencies
 
-- [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):
+- [patch][7b8d254d](https://github.com/keystonejs/keystone/commit/7b8d254d):
 
   - Update external dependencies
 
-- [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+- [patch][24bed583](https://github.com/keystonejs/keystone/commit/24bed583):
 
   - Update react-router-dom dependency to 5.0.0
 
-- [patch][545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+- [patch][545c9464](https://github.com/keystonejs/keystone/commit/545c9464):
 
   - Add support for mass update
 
-- Updated dependencies [545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
-- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
-- Updated dependencies [302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+- Updated dependencies [545c9464](https://github.com/keystonejs/keystone/commit/545c9464):
+- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone/commit/37dcee37):
+- Updated dependencies [302930a4](https://github.com/keystonejs/keystone/commit/302930a4):
   - @keystone-alpha/fields@4.0.0
   - @arch-ui/drawer@0.0.4
   - @arch-ui/confirm@0.0.4
@@ -1055,56 +1331,56 @@
 
 ## 3.0.5
 
-- Updated dependencies [4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):
+- Updated dependencies [4131e232](https://github.com/keystonejs/keystone/commit/4131e232):
   - @keystone-alpha/field-views-loader@2.0.0
 
 ## 3.0.4
 
-- [patch][d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+- [patch][d718c016](https://github.com/keystonejs/keystone/commit/d718c016):
 
   - Add the `admin` audience when signing in via the admin UI session middleware.
 
-- [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- [patch][5ebf4c3a](https://github.com/keystonejs/keystone/commit/5ebf4c3a):
 
   - Use the new @keystone-alpha/session package
 
-- Updated dependencies [d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
-- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- Updated dependencies [d718c016](https://github.com/keystonejs/keystone/commit/d718c016):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone/commit/5ebf4c3a):
   - @keystone-alpha/session@1.0.0
 
 ## 3.0.3
 
-- [patch][85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
+- [patch][85cb44a9](https://github.com/keystonejs/keystone/commit/85cb44a9):
 
   - Introduce `pages` config option
   - Remove `sortListsAlphabetically`
 
-- Updated dependencies [85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
+- Updated dependencies [85cb44a9](https://github.com/keystonejs/keystone/commit/85cb44a9):
   - @arch-ui/navbar@0.0.4
 
 ## 3.0.2
 
-- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone/commit/5ddb2ed6):
 
   - Always display clickable links when starting a server in dev mode
 
-- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone/commit/98c02a46):
   - @keystone-alpha/fields@3.0.1
   - @keystone-alpha/utils@2.0.0
 
 ## 3.0.1
 
-- [patch][f12a2a80](https://github.com/keystonejs/keystone-5/commit/f12a2a80):
+- [patch][f12a2a80](https://github.com/keystonejs/keystone/commit/f12a2a80):
 
   - Fix running Babel on Admin UI src when on npm
 
 ## 3.0.0
 
-- [major][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+- [major][9a9f214a](https://github.com/keystonejs/keystone/commit/9a9f214a):
 
   - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
 
-- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+- [major][de616f7e](https://github.com/keystonejs/keystone/commit/de616f7e):
 
   - Update authStrategy APIs
     - Removes `authStrategy` from the `config` API of `Webserver`.
@@ -1113,7 +1389,7 @@
     - Adds `authStrategy` to the `config` API of `AdminUI`.
     - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
 
-- [major][4ed35dfd](https://github.com/keystonejs/keystone-5/commit/4ed35dfd):
+- [major][4ed35dfd](https://github.com/keystonejs/keystone/commit/4ed35dfd):
 
   - Remove methods from `AdminUI` class:
     - `redirectSuccessfulSignin`
@@ -1123,41 +1399,41 @@
 
 ## 2.0.0
 
-- [major][dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+- [major][dcb93771](https://github.com/keystonejs/keystone/commit/dcb93771):
 
   - Put field type views onto field controllers
 
-- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+- [patch][11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
 
   - Update minor-level dependencies
 
-- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+- [patch][3a775092](https://github.com/keystonejs/keystone/commit/3a775092):
 
   - Update dependencies
 
-- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+- [patch][619b17c2](https://github.com/keystonejs/keystone/commit/619b17c2):
 
   - Reformat code using latest version of Prettier (1.16.4)
 
-- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+- [patch][d9a1be91](https://github.com/keystonejs/keystone/commit/d9a1be91):
 
   - Update dependencies
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 
 ## 1.1.0
 
-- [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):
+- [minor][91557b24](https://github.com/keystonejs/keystone/commit/91557b24):
 
   - Make links in terminal clicky where possible
 
-- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+- [patch][1f0bc236](https://github.com/keystonejs/keystone/commit/1f0bc236):
 
   - Update the package.json author field to "The Keystone Development Team"
 
-- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+- [patch][9534f98f](https://github.com/keystonejs/keystone/commit/9534f98f):
 
   - Add README.md to package
 

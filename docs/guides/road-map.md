@@ -33,49 +33,43 @@ There may be complementary services, plugins or packages that tie in with the ab
 
 We also want to ensure Keystone works well with static sites and serverless architecture. This goal will help keep Keystone light-weight, nimble, customisable and not tied to a specific architecture, in-line with our core goals.
 
-## Our Current Focus
+## Our current focus
 
 A lot of work has been done on Keystone's core architecture. In this area Keystone 5 is significantly more mature than Keystone 4 was. We'd like to add database transactions, slightly refactor some of the internal workings of relationship fields and make the experience of database migrations easier. Aside from this we imagine the core architecture will remain largely the same.
 
 In the short term we want to focus on a better onboarding experience and making it easier to build typical applications with Keystone. This involves better error messages, documentation and examples, extensibility of the AdminUI as well as new field types and adapters.
 
-All PRs in these areas will be welcome. The list of features and bugs below represents identified tasks that align with Keystone's core goals and current focus. Although the core goals of this project will remain the same, some tasks may evolve, new tasks may be added and priorities might change. For the latest list of Roadmap tasks, take a look at our [Roadmap Milestone on Github](https://github.com/keystonejs/keystone-5/milestone/6).
+All PRs in these areas will be welcome. The list of features and bugs below represents identified tasks that align with Keystone's core goals and current focus. Although the core goals of this project will remain the same, some tasks may evolve, new tasks may be added and priorities might change. For the latest list of Roadmap tasks, take a look at our [Roadmap Milestone on Github](https://github.com/keystonejs/keystone/milestone/6).
 
 ### Features
 
-- Options pages ([#1639](https://github.com/keystonejs/keystone-5/issues/1639))
-- Better seeding of initial data ([#301](https://github.com/keystonejs/keystone-5/issues/301))
-- Migrations ([#299](https://github.com/keystonejs/keystone-5/issues/299))
-- Virtual\\Dynamic fields ([#1117](https://github.com/keystonejs/keystone-5/issues/1117))
-- Repeating sections ([#313](https://github.com/keystonejs/keystone-5/issues/313), [#195](https://github.com/keystonejs/keystone-5/issues/195))
-- Ability to deploy the Admin UI to a static server ([#734](https://github.com/keystonejs/keystone-5/issues/734), [#1258](https://github.com/keystonejs/keystone-5/issues/1258), [#1257](https://github.com/keystonejs/keystone-5/issues/1257))
-- Add a DateRange field type ([#215](https://github.com/keystonejs/keystone-5/issues/215))
-- Add case options to text fields ([#1639](https://github.com/keystonejs/keystone-5/issues/1639))
-- A React App ([#1669](https://github.com/keystonejs/keystone-5/issues/1669))
-- Transaction Support ([#211](https://github.com/keystonejs/keystone-5/issues/211))
-- Admin UI Hooks ([#1665](https://github.com/keystonejs/keystone-5/issues/1665))
-- StateMachine Type ([#1528](https://github.com/keystonejs/keystone-5/issues/1528))
-- Make Hooks an Array ([#1495](https://github.com/keystonejs/keystone-5/issues/1495))
-- Finalise query limits ([#1469](https://github.com/keystonejs/keystone-5/issues/1469))
-- JSON & Memory Adapters ([#947](https://github.com/keystonejs/keystone-5/issues/947), [#324](https://github.com/keystonejs/keystone-5/issues/324))
-- Allow `where` clauses on single relationships ([#699](https://github.com/keystonejs/keystone-5/issues/699))
-- Allow upsert mutations ([#182](https://github.com/keystonejs/keystone-5/issues/182))
-- Auth Strategy and Authentication improvement ([#878](https://github.com/keystonejs/keystone-5/issues/878))
+- Options pages ([#1639](https://github.com/keystonejs/keystone/issues/1639))
+- Better seeding of initial data ([#301](https://github.com/keystonejs/keystone/issues/301))
+- Migrations ([#299](https://github.com/keystonejs/keystone/issues/299))
+- Virtual\\Dynamic fields ([#1117](https://github.com/keystonejs/keystone/issues/1117))
+- Repeating sections ([#313](https://github.com/keystonejs/keystone/issues/313), [#195](https://github.com/keystonejs/keystone/issues/195))
+- Ability to deploy the Admin UI to a static server ([#734](https://github.com/keystonejs/keystone/issues/734), [#1258](https://github.com/keystonejs/keystone/issues/1258), [#1257](https://github.com/keystonejs/keystone/issues/1257))
+- Add a DateRange field type ([#215](https://github.com/keystonejs/keystone/issues/215), [#1642](https://github.com/keystonejs/keystone/issues/1642))
+- Add case options to text fields ([#1641](https://github.com/keystonejs/keystone/issues/1641))
+- A React App ([#1669](https://github.com/keystonejs/keystone/issues/1669))
+- Transaction Support ([#211](https://github.com/keystonejs/keystone/issues/211))
+- Admin UI Hooks ([#1665](https://github.com/keystonejs/keystone/issues/1665))
+- StateMachine Type ([#1528](https://github.com/keystonejs/keystone/issues/1528))
+- Make Hooks an Array ([#1495](https://github.com/keystonejs/keystone/issues/1495))
+- Finalise query limits ([#1469](https://github.com/keystonejs/keystone/issues/1469))
+- JSON & Memory Adapters ([#947](https://github.com/keystonejs/keystone/issues/947), [#324](https://github.com/keystonejs/keystone/issues/324))
+- Allow `where` clauses on single relationships ([#699](https://github.com/keystonejs/keystone/issues/699))
+- Allow upsert mutations ([#182](https://github.com/keystonejs/keystone/issues/182))
+- Auth Strategy and Authentication improvement ([#878](https://github.com/keystonejs/keystone/issues/878))
 
-### Developer Experience & Maintenance
+### DX and maintenance
 
-- Creating custom field types ([#1054](https://github.com/keystonejs/keystone-5/issues/1054), [#1218](https://github.com/keystonejs/keystone-5/issues/1218))
+- Creating custom field types ([#1054](https://github.com/keystonejs/keystone/issues/1054))
 - Creating new adapters
-- Error messages ([#1659](https://github.com/keystonejs/keystone-5/issues/1659))
-- Improve the speed of our CI ([#1672](https://github.com/keystonejs/keystone-5/issues/1672))
+- Error messages ([#1659](https://github.com/keystonejs/keystone/issues/1659))
+- Improve the speed of our CI ([#1672](https://github.com/keystonejs/keystone/issues/1672))
 
 ### Planning
 
-- Plugin Architecture ([#1489](https://github.com/keystonejs/keystone-5/issues/1489))
-- Relationship field types ([#1322](https://github.com/keystonejs/keystone-5/issues/1322))
-
-### High Priority Bugs
-
-- Removing items form to many relationships ([#1548](https://github.com/keystonejs/keystone-5/issues/1548))
-- Create form submits unedited values ([#1398](https://github.com/keystonejs/keystone-5/issues/1398))
-- Create many mutation not connecting relationships ([#1318](https://github.com/keystonejs/keystone-5/issues/1318))
+- Plugin Architecture ([#1489](https://github.com/keystonejs/keystone/issues/1489))
+- Relationship field types ([#1322](https://github.com/keystonejs/keystone/issues/1322))

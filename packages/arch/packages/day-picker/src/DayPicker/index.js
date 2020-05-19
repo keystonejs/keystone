@@ -69,7 +69,7 @@ function scrollToDate(date, yearRangeFrom, yearRangeTo, list) {
 let weekLabels = (
   <WeekLabels>
     {[...new Array(7)]
-      .map((_, day) => format(setDay(new Date(), day), 'ddd'))
+      .map((_, day) => format(setDay(new Date(), day), 'iii'))
       .map(d => (
         <Day key={d}>{d}</Day>
       ))}
@@ -80,9 +80,9 @@ let weekLabels = (
 // so there's lots of memoization
 
 export const DayPicker = ({
-  yearRangeFrom,
-  yearRangeTo,
-  yearPickerType,
+  yearRangeFrom = getYear(new Date()) - 100,
+  yearRangeTo = getYear(new Date()),
+  yearPickerType = 'auto',
   startCurrentDateAt,
   selectedDate,
   onSelectedChange,
@@ -249,10 +249,4 @@ export const DayPicker = ({
       </div>
     </Wrapper>
   );
-};
-
-DayPicker.defaultProps = {
-  yearRangeFrom: getYear(new Date()) - 100,
-  yearRangeTo: getYear(new Date()),
-  yearPickerType: 'auto',
 };
