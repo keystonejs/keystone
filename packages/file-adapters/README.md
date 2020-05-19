@@ -28,8 +28,8 @@ const fileAdapter = new LocalFileAdapter({...});
 | `path`        | `String`   | Value of `src` | The path from which requests for files will be served from the server.                                                      |
 | `getFilename` | `Function` | `null`         | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk. |
 
-**Note:** `src` and `path` may be the same.
-**Note 2:** You will need to set also a [static file server](https://v5.keystonejs.com/keystonejs/app-static/#static-file-app) to consume the uploaded files. 
+> **Note:** `src` and `path` may be the same.
+> **Note 2:** You will need to set also a [static file server](https://v5.keystonejs.com/keystonejs/app-static/#static-file-app) to consume the uploaded files. 
 
 ### Methods
 
