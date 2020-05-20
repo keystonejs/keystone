@@ -442,6 +442,16 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
     pages,
     authStrategy: { listKey: authListKey } = {},
   } = useAdminMeta();
+
+  const sortedListKeys = useMemo(
+    () =>
+      listKeys
+        .map(key => getListByKey(key))
+        .sort(({ label: a }, { label: b }) => a.localeCompare(b)) // TODO: locale options once intl support is added
+        .map(({ key }) => key),
+    [listKeys]
+  );
+
   return (
     <Inner>
       <Title
@@ -465,7 +475,7 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
         adminPath={adminPath}
         authListKey={authListKey}
         getListByKey={getListByKey}
-        listKeys={listKeys.sort()}
+        listKeys={sortedListKeys}
         pages={pages}
         mouseIsOverNav={mouseIsOverNav}
       />
