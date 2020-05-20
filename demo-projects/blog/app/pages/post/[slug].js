@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useState } from 'react';
 
 import { jsx } from '@emotion/core';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 import Layout from '../../templates/layout';
 import Header from '../../components/header';
@@ -98,7 +98,7 @@ const Comments = ({ data }) => (
                   margin: '8px 0',
                 }}
               >
-                {comment.author.name} on {format(comment.posted, 'DD MMM YYYY')}
+                {comment.author.name} on {format(parseISO(comment.posted), 'dd MMM yyyy')}
               </p>
               <p css={{ margin: '8px 0' }}>{comment.body}</p>
             </div>
@@ -250,7 +250,7 @@ const PostPage = withApollo(({ slug }) => {
                     <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
                       <p css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}>
                         Posted by {post.author ? post.author.name : 'someone'} on{' '}
-                        {format(post.posted, 'DD/MM/YYYY')}
+                        {format(parseISO(post.posted), 'dd/MM/yyyy')}
                       </p>
                     </div>
                   </article>

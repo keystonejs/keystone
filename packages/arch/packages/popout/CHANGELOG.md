@@ -1,5 +1,20 @@
 # @arch-ui/popout
 
+## 0.0.19
+
+### Patch Changes
+
+- [`216e6dec`](https://github.com/keystonejs/keystone/commit/216e6deca2b0d9a22ddbf0657a01b5122c178269) [#2831](https://github.com/keystonejs/keystone/pull/2831) Thanks [@Vultraz](https://github.com/Vultraz)! - Reimplemented Popup component with react-popper.
+
+## 0.0.18
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/modal-utils@1.0.10
+
 ## 0.0.17
 
 ### Patch Changes

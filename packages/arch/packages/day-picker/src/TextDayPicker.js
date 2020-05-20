@@ -1,57 +1,64 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
-import { useState } from 'react';
+import React, { useState, useEffect, forwardRef, useRef } from 'react';
 import chrono from 'chrono-node';
 import { Input } from '@arch-ui/input';
-import { format } from 'date-fns';
+import { format, formatISO, parseISO } from 'date-fns';
 
-export const TextDayPicker = ({
-  date,
-  onChange,
-  format: displayFormat = 'Do MMMM YYYY',
-  ...props
-}) => {
-  const formatDate = newDate => (newDate === null ? '' : format(newDate, displayFormat));
+export const TextDayPicker = forwardRef(
+  ({ date = '', onChange, format: displayFormat = 'do MMMM yyyy', ...props }, ref) => {
+    const formatDate = newDate => (newDate ? format(parseISO(newDate), displayFormat) : '');
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState({
-    raw: date,
-    formatted: formatDate(date),
-  });
-
-  const toggleEditing = () => {
-    setIsEditing(!isEditing);
-  };
-
-  const onBlur = () => {
-    toggleEditing();
-
-    const newDate = parseDate(value.raw);
-    onChange(newDate);
-
-    setValue({
-      raw: newDate,
-      formatted: formatDate(newDate),
+    const [isEditing, setIsEditing] = useState(false);
+    const [value, setValue] = useState({
+      raw: date,
+      formatted: formatDate(date),
     });
-  };
 
-  const handleChange = ({ target: { value: raw } }) => {
-    setValue(oldValue => ({ ...oldValue, raw }));
-  };
+    const parseCache = useRef();
 
-  return (
-    <Input
-      value={isEditing ? value.raw : value.formatted}
-      placeholder="Enter a date..."
-      onFocus={toggleEditing}
-      onBlur={onBlur}
-      onChange={handleChange}
-      {...props}
-    />
-  );
-};
+    useEffect(() => {
+      // Parse the raw input. This may be a string such as 'Today'.
+      const parsedDate = chrono.parseDate(value.raw);
 
-function parseDate(value) {
-  const parsed = chrono.parseDate(value);
-  return parsed === undefined ? null : format(parsed, 'YYYY-MM-DD');
-}
+      // If valid, convert it to ISO 8601.
+      const isoDate = parsedDate ? formatISO(parsedDate, { representation: 'date' }) : null;
+
+      // Pass it up the tree. The parent can handle the null case.
+      onChange(isoDate);
+
+      parseCache.current = isoDate;
+    }, [value.raw]);
+
+    const onFocus = () => {
+      setIsEditing(true);
+    };
+
+    const onBlur = () => {
+      setIsEditing(false);
+
+      const raw = parseCache.current;
+
+      // At this point, the parse cache should either be null or an ISO 8601 date.
+      if (raw) {
+        setValue({ raw, formatted: formatDate(raw) });
+      } else {
+        setValue({ raw: '', formatted: '' });
+      }
+    };
+
+    const handleChange = ({ target: { value: raw } }) => {
+      setValue(oldValue => ({ ...oldValue, raw }));
+    };
+
+    return (
+      <Input
+        ref={ref}
+        value={isEditing ? value.raw : value.formatted}
+        placeholder="Enter a date..."
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+  }
+);

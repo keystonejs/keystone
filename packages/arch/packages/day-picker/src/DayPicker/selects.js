@@ -6,7 +6,7 @@ import { months, yearRange, usePrevious, isNumberInRange } from './utils';
 
 const monthOptions = months.map((month, i) => (
   <option key={i} value={i}>
-    {format(setMonth(new Date(), month), 'MMM')}
+    {format(setMonth(new Date(), month), 'LLL')}
   </option>
 ));
 

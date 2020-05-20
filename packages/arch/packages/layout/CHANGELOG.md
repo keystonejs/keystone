@@ -1,5 +1,17 @@
 # @arch-ui/layout
 
+## 0.2.13
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+## 0.2.12
+
+### Patch Changes
+
+- [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32) [#2463](https://github.com/keystonejs/keystone/pull/2463) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced ContainerQuery component with useResizeObserver.
+
 ## 0.2.11
 
 ### Patch Changes

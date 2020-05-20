@@ -12,7 +12,7 @@ import {
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
 
-const TextField = ({ onChange, autoFocus, field, value, errors }) => {
+const CheckboxField = ({ onChange, autoFocus, field, value, errors }) => {
   const handleChange = event => {
     onChange(event.target.checked);
   };
@@ -22,7 +22,7 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
 
   return (
     <FieldContainer>
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <FieldInput css={{ height: 35, alignItems: 'center' }}>
         <CheckboxPrimitive
           autoFocus={autoFocus}
@@ -42,4 +42,4 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
   );
 };
 
-export default TextField;
+export default CheckboxField;

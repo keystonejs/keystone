@@ -32,12 +32,15 @@ export class DateTimeUtcImplementation extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    return { ...meta, format: 'YYYY-MM-DD[T]HH:mm:ss.SSSZZ' };
+    return { ...meta, format: 'yyyy-MM-dd[T]HH:mm:ss.SSSxx' };
   }
 }
 
 // All values must have an offset
 const toDate = str => {
+  if (str === null) {
+    return null;
+  }
   if (!str.match(/([zZ]|[\+\-][0-9]+(\:[0-9]+)?)$/)) {
     throw `Value supplied (${str}) is not a valid date time with offset.`;
   }

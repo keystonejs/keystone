@@ -13,6 +13,7 @@ class Field {
       schemaDoc,
       adminDoc,
       isReadOnly,
+      adminConfig,
       ...config
     },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
@@ -22,6 +23,7 @@ class Field {
     this.isReadOnly = isReadOnly;
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
+    this.adminConfig = adminConfig;
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
@@ -94,7 +96,7 @@ class Field {
     return {};
   }
 
-  /*
+  /**
    * @param {Object} data
    * @param {Object} data.resolvedData  The incoming item for the mutation with
    * relationships and defaults already resolved
@@ -183,6 +185,7 @@ class Field {
       defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
       isPrimaryKey: this.isPrimaryKey,
       isReadOnly: this.isReadOnly,
+      ...this.adminConfig,
       // NOTE: This data is serialised, so we're unable to pass through any
       // access control _functions_. But we can still check for the boolean case
       // and pass that through (we assume that if there is a function, it's a

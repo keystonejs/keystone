@@ -262,6 +262,20 @@ class MongooseListAdapter extends BaseListAdapter {
     );
   }
 
+  async _unsetForeignOneToOneValues(data, id) {
+    // If there's a 1:1 FK in the data on a different list we need to go and
+    // delete it from any other item;
+    await Promise.all(
+      Object.keys(data)
+        .map(key => ({ adapter: this.fieldAdaptersByPath[key] }))
+        .filter(({ adapter }) => adapter && adapter.isRelationship)
+        .filter(({ adapter: { rel } }) => rel.cardinality === '1:1' && rel.tableName !== this.key)
+        .map(({ adapter: { rel: { tableName, columnName } } }) =>
+          this._setNullByValue({ tableName, columnName, value: id })
+        )
+    );
+  }
+
   async _processNonRealFields(data, processFunction) {
     return resolveAllKeys(
       arrayToObject(
@@ -361,6 +375,7 @@ class MongooseListAdapter extends BaseListAdapter {
 
     // Unset any real 1:1 fields
     await this._unsetOneToOneValues(realData);
+    await this._unsetForeignOneToOneValues(data, id);
 
     // Update the real data
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
@@ -459,7 +474,10 @@ class MongooseListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(({ tableName }) => tableName === this.key)
+        .filter(
+          ({ tableName, left, right }) =>
+            tableName === this.key && right && left.refListKey === right.refListKey
+        )
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )
@@ -518,7 +536,10 @@ class MongooseListAdapter extends BaseListAdapter {
           ? graphQlQueryToMongoJoinQuery(whereElement) // Recursively traverse relationship fields
           : whereElement
       ),
-      ...mapKeyNames(pick(modifiers, ['search', 'orderBy', 'skip', 'first']), key => `$${key}`),
+      ...mapKeyNames(
+        pick(modifiers, ['search', 'sortBy', 'orderBy', 'skip', 'first']),
+        key => `$${key}`
+      ),
     });
     let query;
     try {

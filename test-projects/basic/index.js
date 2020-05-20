@@ -33,7 +33,7 @@ const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
-const getYear = require('date-fns/get_year');
+const getYear = require('date-fns/getYear');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -43,6 +43,7 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',
   adapter: new MongooseAdapter(),
+  cookieSecret: 'qwerty',
 });
 
 const fileAdapter = new LocalFileAdapter({
@@ -77,13 +78,13 @@ keystone.createList('User', {
     email: { type: Text, isUnique: true },
     dob: {
       type: CalendarDay,
-      format: 'Do MMMM YYYY',
+      format: 'do MMMM yyyy',
       yearRangeFrom: 1901,
       yearRangeTo: getYear(new Date()),
     },
     lastOnline: {
       type: DateTime,
-      format: 'MM/DD/YYYY h:mm A',
+      format: 'MM/dd/yyyy h:mm a',
       yearRangeFrom: 2013,
     },
     password: { type: Password },
