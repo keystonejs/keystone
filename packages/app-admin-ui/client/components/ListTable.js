@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Suspense, Fragment, useState, useEffect, useRef } from 'react';
-import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 import { captureSuspensePromises, noop } from '@keystonejs/utils';
@@ -22,45 +21,69 @@ import { NoResults } from './NoResults';
 const Render = ({ children }) => children();
 
 // Styled Components
-const Table = styled('table')({
-  borderCollapse: 'collapse',
-  borderSpacing: 0,
-  width: '100%',
-});
-const TableRow = styled('tr')(({ isSelected }) => ({
-  '> td': {
-    backgroundColor: isSelected ? colors.B.L95 : null,
-    boxShadow: isSelected
-      ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
-      : `0 -1px 0 ${colors.N10}`,
-  },
-}));
-const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
-  backgroundColor: 'white',
-  boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
-  boxSizing: 'border-box',
-  color: isSelected ? colors.text : colors.N40,
-  cursor: isSortable ? 'pointer' : 'auto',
-  display: 'table-cell',
-  fontWeight: 'normal',
-  padding: gridSize,
-  position: 'sticky',
-  top: 0,
-  transition: 'background-color 100ms',
-  zIndex: 1,
-  textAlign: 'left',
-  verticalAlign: 'bottom',
-  fontSize: '1.1rem',
+const Table = props => (
+  <table
+    css={{
+      borderCollapse: 'collapse',
+      borderSpacing: 0,
+      tableLayout: 'fixed',
+      width: '100%',
+    }}
+    {...props}
+  />
+);
 
-  ':hover': {
-    color: isSortable && !isSelected ? colors.N60 : null,
-  },
-}));
-const BodyCell = styled('td')({
-  boxSizing: 'border-box',
-  padding: `${gridSize + 2}px ${gridSize}px`,
-  position: 'relative',
-});
+const TableRow = ({ isSelected, ...props }) => (
+  <tr
+    css={{
+      '> td': {
+        backgroundColor: isSelected ? colors.B.L95 : null,
+        boxShadow: isSelected
+          ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
+          : `0 -1px 0 ${colors.N10}`,
+      },
+    }}
+    {...props}
+  />
+);
+
+const HeaderCell = ({ isSelected, isSortable, ...props }) => (
+  <th
+    css={{
+      backgroundColor: 'white',
+      boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
+      boxSizing: 'border-box',
+      color: isSelected ? colors.text : colors.N40,
+      cursor: isSortable ? 'pointer' : 'auto',
+      display: 'table-cell',
+      fontWeight: 'normal',
+      padding: gridSize,
+      position: 'sticky',
+      top: 0,
+      transition: 'background-color 100ms',
+      zIndex: 1,
+      textAlign: 'left',
+      verticalAlign: 'bottom',
+      fontSize: '1.1rem',
+
+      ':hover': {
+        color: isSortable && !isSelected ? colors.N60 : null,
+      },
+    }}
+    {...props}
+  />
+);
+
+const BodyCell = props => (
+  <td
+    css={{
+      boxSizing: 'border-box',
+      padding: `${gridSize + 2}px ${gridSize}px`,
+      position: 'relative',
+    }}
+    {...props}
+  />
+);
 
 const ItemLink = ({ path, item, ...props }) => (
   <Link
@@ -82,26 +105,36 @@ const ItemLink = ({ path, item, ...props }) => (
   />
 );
 
-const BodyCellTruncated = styled(BodyCell)`
-  max-width: 10rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-wrap: normal;
-`;
+const BodyCellTruncated = props => (
+  <BodyCell
+    css={{
+      maxWidth: '10rem',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      wordWrap: 'normal',
+    }}
+    {...props}
+  />
+);
 
-const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
-  borderLeft: `${size} solid transparent`,
-  borderRight: `${size} solid transparent`,
-  borderTop: `${size} solid`,
-  display: 'inline-block',
-  height: 0,
-  marginLeft: '0.33em',
-  marginTop: '-0.125em',
-  verticalAlign: 'middle',
-  width: 0,
-  transform: `rotate(${rotate})`,
-}));
+const SortDirectionArrow = ({ size = '0.25em', rotate = '0deg', ...props }) => (
+  <span
+    css={{
+      borderLeft: `${size} solid transparent`,
+      borderRight: `${size} solid transparent`,
+      borderTop: `${size} solid`,
+      display: 'inline-block',
+      height: 0,
+      marginLeft: '0.33em',
+      marginTop: '-0.125em',
+      verticalAlign: 'middle',
+      width: 0,
+      transform: `rotate(${rotate})`,
+    }}
+    {...props}
+  />
+);
 
 // Functional Components
 
@@ -347,7 +380,7 @@ export default function ListTable({
 
   return (
     <Card css={{ marginBottom: '3em' }}>
-      <Table id={cypressId} style={{ tableLayout: 'fixed' }}>
+      <Table id={cypressId}>
         <Suspense
           fallback={
             <TableContents isLoading>
