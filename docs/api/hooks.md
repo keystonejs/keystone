@@ -14,23 +14,21 @@ This document describes:
 - The specific arguments and usage information of different hook sets
 
 For a more general overview of the concepts, patterns and function of the Keystone hook system, see the
-[Hook Guide](/docs/guides/hooks.md).
+[hooks guide](/docs/guides/hooks.md).
 
----
-
-## Hook Types
+## Hook types
 
 Hooks can be categories into three [types](/docs/guides/hooks.md#hook-type)
 depending on where in the list schema they're attached:
 
 - [List hooks](#list-hooks)
 - [Field hooks](#field-hooks)
-- [Field Type hooks](#field-type-hooks)
+- [Field type hooks](#field-type-hooks)
 
 The [hook sets](/docs/guides/hooks.md#hook-set) that span these types have very similar signatures.
 Any differences are called out in the documentation below.
 
-### List Hooks
+### List hooks
 
 List hooks can be defined by the system developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.
 Hooks for the `create`, `update` and `delete` operations are available.
@@ -41,25 +39,23 @@ Hooks for the `create`, `update` and `delete` operations are available.
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    ...
   },
   hooks: {
     // Hooks for create and update operations
-    resolveInput: async (...) => { ... },
-    validateInput: async (...) => { ... },
-    beforeChange: async (...) => { ... },
-    afterChange: async (...) => { ... },
+    resolveInput: async (...) => {...},
+    validateInput: async (...) => {...},
+    beforeChange: async (...) => {...},
+    afterChange: async (...) => {...},
 
     // Hooks for delete operations
-    validateDelete: async (...) => { ... },
-    beforeDelete: async (...) => { ... },
-    afterDelete: async (...) => { ... },
+    validateDelete: async (...) => {...},
+    beforeDelete: async (...) => {...},
+    afterDelete: async (...) => {...},
   },
-  ...
 });
 ```
 
-### Field Hooks
+### Field hooks
 
 Field hooks can be defined by the system developer by specifying the `hooks` attribute of a field configuration when calling `createList()`.
 Hooks for the `create`, `update` and `delete` operations are available.
@@ -73,27 +69,24 @@ keystone.createList('User', {
       type: Text,
       hooks: {
         // Hooks for create and update operations
-        resolveInput: async (...) => { ... },
-        validateInput: async (...) => { ... },
-        beforeChange: async (...) => { ... },
-        afterChange: async (...) => { ... },
+        resolveInput: async (...) => {...}
+        validateInput: async (...) => {...}
+        beforeChange: async (...) => {...}
+        afterChange: async (...) => {...}
 
         // Hooks for delete operations
-        validateDelete: async (...) => { ... },
-        beforeDelete: async (...) => { ... },
-        afterDelete: async (...) => { ... },
+        validateDelete: async (...) => {...}
+        beforeDelete: async (...) => {...}
+        afterDelete: async (...) => {...}
       },
-      ...
     },
-    ...
   },
-  ...
 });
 ```
 
-### Field Type Hooks
+### Field type hooks
 
-Field Type hooks are associated with a particular _field type_ and are applied to all fields of that type.
+Field type hooks are associated with a particular _field type_ and are applied to all fields of that type.
 Custom field types can implement hooks by implementing the following hook methods on the `Field` base class.
 See the [Custom Field Types guide](/docs/guides/custom-field-types.md) for more info.
 
@@ -104,21 +97,19 @@ Hooks for the `create`, `update` and `delete` operations are available.
 ```js
 class CustomFieldType extends Field {
   // Hooks for create and update operations
-  async resolveInput(...) { ... }
-  async validateInput(...) { ... }
-  async beforeChange(...) { ... }
-  async afterChange(...) { ... }
+  async resolveInput(...) {...},
+  async validateInput(...) {...},
+  async beforeChange(...) {...},
+  async afterChange(...) {...},
 
   // Hooks for delete operations
-  async beforeDelete(...) { ... }
-  async validateDelete(...) { ... }
-  async afterDelete(...) { ... }
+  async beforeDelete(...) {...},
+  async validateDelete(...) {...},
+  async afterDelete(...) {...},
 }
 ```
 
----
-
-## Hook Sets
+## Hook sets
 
 ### `resolveInput`
 
@@ -155,8 +146,7 @@ const resolveInput = ({
   context,
   actions,
 }) => {
-  // Input resolution logic
-  // Object returned is used in place of resolvedData
+  // Input resolution logic. Object returned is used in place of `resolvedData`.
   return resolvedData;
 };
 ```
@@ -392,18 +382,17 @@ const afterDelete = ({
 };
 ```
 
----
-
-## `actions` Argument
+## The `actions` argument
 
 All hooks receive an `actions` object as an argument.
+
 It contains helper functionality for accessing the GraphQL schema, optionally _within_ the context of the current request.
 When used, this context reuse causes access control to be applied as though the caller themselves initiated an operation.
 It can therefore be useful for performing additional operations on behalf of the caller.
 
 The `actions` object currently contains a single function: `query`.
 
-### Query Helper
+### Query helper
 
 Perform a GraphQL query, optionally _within_ the context of the current request.
 It returns a `Promise<Object>` containing the standard GraphQL `errors` and `data` properties.
@@ -421,7 +410,6 @@ It returns a `Promise<Object>` containing the standard GraphQL `errors` and `dat
 
 ```js
 const myHook = ({
-  // ...
   actions: { query },
 }) => {
   const queryString = `

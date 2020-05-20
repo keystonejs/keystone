@@ -204,7 +204,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
             ) {
               id
-              teachers(orderBy: "id_ASC") {
+              teachers(sortBy: id_ASC) {
                 id
               }
             }

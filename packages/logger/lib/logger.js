@@ -1,6 +1,6 @@
 const falsey = require('falsey');
 const pino = require('pino');
-const memoize = require('fast-memoize');
+const memoize = require('micro-memoize');
 
 module.exports = memoize(function(name) {
   return pino({

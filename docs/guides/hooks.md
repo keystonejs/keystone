@@ -10,11 +10,11 @@ Hooks give developers a way to add custom logic to the framework of lists, field
 This document provides an overview of the concepts, patterns and function of the Keystone hook system.
 The [Hooks API docs](/docs/api/hooks.md) describe the specific arguments and usage information.
 
-## Conceptual Organisation
+## Conceptual organisation
 
 There are several categorisations that can be applied to hooks and are useful for understanding what is run and when.
 
-> Note: the concepts listed here have some exceptions.
+> **Note:** the concepts listed here have some exceptions.
 > See the [Gotchas section](#gotchas).
 
 ### Stage
@@ -36,14 +36,14 @@ Hooks are available for these core operations:
 - `delete`
 
 These operations are reused used for both "single" and "many" modes.
-E.g. the `deleteUser` (singluar) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
+E.g. the `deleteUser` (singular) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
 Hooks for these operations have different signatures due to the nature of the operations being performed.
 See the [Hook API docs](/docs/api/hooks.md) for specifics.
 
-> Note: Keystone does not currently implement `read` hooks.
+> **Note:** Keystone does not currently implement `read` hooks.
 
-### Hook Type
+### Hook type
 
 A hooks _type_ is defined by where it is attached.
 Keystone recognises three _types_ of hook:
@@ -55,7 +55,7 @@ Keystone recognises three _types_ of hook:
 - [List hooks](/docs/api/hooks.md#list-hooks) -
   List hooks can be defined by the app developer by specifying the `hooks` attribute of a list configuration when calling `createList()`.
 
-### Hook Set
+### Hook set
 
 For most _stage_ and _operation_ combinations, different functions (hooks) can be supplied for each _hook type_.
 This group of distinct but related hooks are referred to as a _hook set_.
@@ -64,7 +64,7 @@ E.g. a `beforeDelete` function could be supplied for a list, several specific fi
 All hooks in a hook set share the same functional signature but are invoked at different times.
 See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order section](#intra-hook-execution-order) for more information.
 
-### Putting It Together
+### Putting it together
 
 In total there 7 _hook sets_ available.
 This table shows the _hook set_ relevant to each combination of _stage_ and _operation_:
@@ -84,7 +84,7 @@ for create operations `existingItem` will be `undefined`.
 
 See the [Hooks API docs](/docs/api/hooks.md) for argument details and usage.
 
-## Execution Order
+## Execution order
 
 The hooks are invoked in a specific order during an operation.
 For full details of the mutation lifecycle, and where hooks fit within this, see the [Mutation Lifecycle Guide](/docs/guides/mutation-lifecycle.md).
@@ -107,7 +107,7 @@ For full details of the mutation lifecycle, and where hooks fit within this, see
 4. Database operation (after all `beforeDelete` calls have returned)
 5. `afterDelete` called on all fields (after the DB operation has completed)
 
-### Intra-Hook Execution Order
+### Intra-hook execution order
 
 Within each hook set, the different [hook types](#hook-type) are invoked in a specific order.
 

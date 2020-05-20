@@ -1,15 +1,13 @@
 <!--[meta]
 section: guides
-title: GraphQL Performance Monitoring
+title: Performance monitoring
 subSection: graphql
-order: 2
+order: 4
 [meta]-->
 
-# GraphQL Performance Monitoring
+# GraphQL performance monitoring
 
-## Query Performance Monitoring with Apollo Engine
-
-The GraphQL stack in keystone-alpha is powered by [Apollo Server](https://www.apollographql.com/docs/apollo-server/),
+The GraphQL stack in Keystone is powered by [Apollo Server](https://www.apollographql.com/docs/apollo-server/),
 which comes with performance monitoring built in via the [Apollo Engine](https://engine.apollographql.com).
 
 Apollo Engine provides a free service up to 25 million monthly requests,
@@ -21,11 +19,9 @@ including:
 - Query performance tracing
 - Schema version history
 
-[Apollo Engine Query Trace Example](./apollo-engine-trace.png)
+![Apollo Engine Query Trace Example](./apollo-engine-trace.png)
 
-### Setting up Apollo Engine
-
-#### Apollo Engine Account
+## Setup
 
 Sign up for an [Apollo Engine](https://engine.apollographql.com) account.
 
@@ -38,19 +34,17 @@ Ignore the `npx apollo service:push` command for now,
 we'll need to upload the schema a slightly different way to account for any
 [Access Control](/docs/guides/access-control.md) you may have setup.
 
-#### Config
+## Config
 
 Create the `.env` file as suggested:
 
-```.env
+```shell title=.env showLanguage=false allowCopy=false
 ENGINE_API_KEY=service:tests:C-ddserkuj5-BU-2345jf
 ```
 
-_(👆 that's not a real key!)_
+Create the `apollo.config.js` file:
 
-Create a file `apollo.config.js`:
-
-```javascript
+```javascript title=apollo.config.js
 module.exports = {
   service: {
     localSchemaFile: './schema.graphql',
@@ -58,7 +52,7 @@ module.exports = {
 };
 ```
 
-#### Push Schema To Apollo Engine
+### Push schema to Apollo Engine
 
 We will use the `keystone.dumpSchema()` command to create a schema we can upload
 to Apollo Engine.
@@ -86,15 +80,15 @@ const server = new WebServer(keystone, {
 });
 ```
 
-Next, start the KeystoneJS server but include a `DUMP_SCHEMA` environment variable.
-This will output the KeystoneJS schema to the given path
+Next, start the Keystone server but include a `DUMP_SCHEMA` environment variable.
+This will output the Keystone schema to the given path
 (ready for us to upload to Apollo Engine!):
 
 ```shell
 DUMP_SCHEMA=./schema.graphql node index.js
 ```
 
-_Note `./schema.graphql` is the same path we set in `apollo.config.js`_
+> **Note:** `./schema.graphql` is the same path we set in `apollo.config.js`
 
 `schema.graphql` should look something like:
 
@@ -123,7 +117,7 @@ Wait for Apollo Engine to show the newly uploaded service:
 
 [Successfully pushed schema to Apollo Engine](./apollo-engine-pushed-schema.png)
 
-#### Send stats to Apollo Engine
+### Send stats to Apollo Engine
 
 Ensure your application is reading `.env` environment variables on boot.
 We recommend the [`dotenv`](https://www.npmjs.com/package/dotenv) library for this:
@@ -134,7 +128,7 @@ node -r dotenv/config index.js
 
 _(Note: you do not need the `DUMP_SCHEMA` environment variable when starting the
 server - it is only used for exporting an updated schema and should not be set
-when trying to start the KeystoneJS GraphQL API)_
+when trying to start the Keystone GraphQL API)_
 
 Apollo Server will read the `ENGINE_API_KEY` env var and start sending GraphQL
 stats to Apollo Engine.
@@ -144,7 +138,7 @@ Engine:
 
 [Apollo Engine > Metrics > Slow Query > Trace > Inspect](./apollo-engine-metrics-usage.gif)
 
-#### Tweaking stats sent to Apollo Engine
+### Tweaking stats sent to Apollo Engine
 
 The `WebServer` config option can accept an `apollo` key for setting different
 options, one of which can be used to configure the Apollo Engine connection:
@@ -160,4 +154,4 @@ const server = new WebServer(keystone, {
 });
 ```
 
-See [the Apollo Server docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#EngineReportingOptions) for more options.
+See the [Apollo Server docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#EngineReportingOptions) for more options.

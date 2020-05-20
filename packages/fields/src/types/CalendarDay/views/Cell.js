@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 const CalendarDayCell = ({ data, field: { config } }) => {
   if (!data) {
@@ -9,7 +9,7 @@ const CalendarDayCell = ({ data, field: { config } }) => {
     return data;
   }
 
-  return format(data, config.format);
+  return format(parseISO(data), config.format);
 };
 
 export default CalendarDayCell;

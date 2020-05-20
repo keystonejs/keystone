@@ -1,3 +1,3 @@
-const { commonSessionMiddleware, startAuthedSession, endAuthedSession } = require('./lib/session');
+const { SessionManager } = require('./lib/session');
 
-module.exports = { commonSessionMiddleware, startAuthedSession, endAuthedSession };
+module.exports = { SessionManager };

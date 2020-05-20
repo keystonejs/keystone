@@ -18,6 +18,7 @@ const {
   zipObj,
   captureSuspensePromises,
   upcase,
+  asyncForEach,
   ...utils
 } = require('../src');
 
@@ -294,6 +295,16 @@ describe('utils', () => {
         ],
       },
     });
+  });
+
+  test('asyncForEach', async () => {
+    const callback = jest.fn().mockResolvedValue(1);
+    const array = [10, 20, 30];
+    await asyncForEach(array, callback);
+    expect(callback).toHaveBeenCalledTimes(3);
+    expect(callback).toHaveBeenNthCalledWith(1, 10, 0, array);
+    expect(callback).toHaveBeenNthCalledWith(2, 20, 1, array);
+    expect(callback).toHaveBeenNthCalledWith(3, 30, 2, array);
   });
 
   describe('captureSuspensePromises', () => {

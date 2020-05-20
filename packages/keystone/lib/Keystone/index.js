@@ -1,7 +1,7 @@
 const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
-const fastMemoize = require('fast-memoize');
+const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { print } = require('graphql/language/printer');
@@ -22,11 +22,7 @@ const {
   validateCustomAccessControl,
   validateAuthAccessControl,
 } = require('@keystonejs/access-control');
-const {
-  startAuthedSession,
-  endAuthedSession,
-  commonSessionMiddleware,
-} = require('@keystonejs/session');
+const { SessionManager } = require('@keystonejs/session');
 const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
 
 const {
@@ -46,11 +42,14 @@ module.exports = class Keystone {
     defaultAdapter,
     name,
     onConnect,
-    cookieSecret = 'qwerty',
+    cookieSecret,
     sessionStore,
     queryLimits = {},
-    secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
-    cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
+    cookie = {
+      secure: process.env.NODE_ENV === 'production', // Default to true in production
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+      sameSite: false,
+    },
     schemaNames = ['public'],
     appVersion = {
       version: '1.0.0',
@@ -65,10 +64,11 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._schemas = {};
-    this._cookieSecret = cookieSecret;
-    this._secureCookies = secureCookies;
-    this._cookieMaxAge = cookieMaxAge;
-    this._sessionStore = sessionStore;
+    this._sessionManager = new SessionManager({
+      cookieSecret,
+      cookie,
+      sessionStore,
+    });
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
@@ -118,13 +118,6 @@ module.exports = class Keystone {
     };
   }
 
-  getCookieSecret() {
-    if (!this._cookieSecret) {
-      throw new Error('No cookieSecret set in Keystone constructor');
-    }
-    return this._cookieSecret;
-  }
-
   _executeOperation({
     requestString,
     rootValue = null,
@@ -164,15 +157,18 @@ module.exports = class Keystone {
       // memoizing to avoid requests that hit the same type multiple times.
       // We do it within the request callback so we can resolve it based on the
       // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = fastMemoize(access => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-        });
-      });
+      getCustomAccessControlForUser = memoize(
+        async access => {
+          return validateCustomAccessControl({
+            access: access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+          });
+        },
+        { isPromise: true }
+      );
 
-      getListAccessControlForUser = fastMemoize(
-        (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+      getListAccessControlForUser = memoize(
+        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
           return validateListAccessControl({
             access: this.lists[listKey].access[schemaName],
             originalInput,
@@ -183,11 +179,12 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }
+        },
+        { isPromise: true }
       );
 
-      getFieldAccessControlForUser = fastMemoize(
-        (
+      getFieldAccessControlForUser = memoize(
+        async (
           listKey,
           fieldKey,
           originalInput,
@@ -207,26 +204,26 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }
+        },
+        { isPromise: true }
       );
 
-      getAuthAccessControlForUser = fastMemoize((listKey, { gqlName } = {}) => {
-        return validateAuthAccessControl({
-          access: this.lists[listKey].access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-          gqlName,
-        });
-      });
+      getAuthAccessControlForUser = memoize(
+        async (listKey, { gqlName } = {}) => {
+          return validateAuthAccessControl({
+            access: this.lists[listKey].access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+            listKey,
+            gqlName,
+          });
+        },
+        { isPromise: true }
+      );
     }
 
     return {
       schemaName,
-      startAuthedSession: ({ item, list }) =>
-        startAuthedSession(req, { item, list }, this._cookieSecret),
-      endAuthedSession: endAuthedSession.bind(null, req),
-      authedItem: req.user,
-      authedListKey: req.authedListKey,
+      ...this._sessionManager.getContext(req),
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
@@ -374,29 +371,110 @@ module.exports = class Keystone {
         `${left.listKey}.${left.path} refers to a non-existant field, ${left.config.ref}`
       );
     }
-  }
 
-  /**
-   * @return Promise<null>
-   */
-  connect() {
-    const { adapters, name } = this;
-    return resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name }))).then(() => {
-      if (this.eventHandlers.onConnect) {
-        return this.eventHandlers.onConnect(this);
+    // Ensure that the left/right pattern is always the same no matter what order
+    // the lists and fields are defined.
+    Object.values(rels).forEach(rel => {
+      const { left, right } = rel;
+      if (right) {
+        const order = left.listKey.localeCompare(right.listKey);
+        if (order > 0) {
+          // left comes after right, so swap them.
+          rel.left = right;
+          rel.right = left;
+        } else if (order === 0) {
+          // self referential list, so check the paths.
+          if (left.path.localeCompare(right.path) > 0) {
+            rel.left = right;
+            rel.right = left;
+          }
+        }
       }
     });
+
+    Object.values(rels).forEach(rel => {
+      const { left, right } = rel;
+      let cardinality;
+      if (left.config.many) {
+        if (right) {
+          if (right.config.many) {
+            cardinality = 'N:N';
+          } else {
+            cardinality = '1:N';
+          }
+        } else {
+          // right not specified, have to assume that it's N:N
+          cardinality = 'N:N';
+        }
+      } else {
+        if (right) {
+          if (right.config.many) {
+            cardinality = 'N:1';
+          } else {
+            cardinality = '1:1';
+          }
+        } else {
+          // right not specified, have to assume that it's N:1
+          cardinality = 'N:1';
+        }
+      }
+      rel.cardinality = cardinality;
+
+      let tableName;
+      let columnName;
+      if (cardinality === 'N:N') {
+        tableName = right
+          ? `${left.listKey}_${left.path}_${right.listKey}_${right.path}`
+          : `${left.listKey}_${left.path}_many`;
+        if (right) {
+          const leftKey = `${left.listKey}.${left.path}`;
+          const rightKey = `${right.listKey}.${right.path}`;
+          rel.columnNames = {
+            [leftKey]: { near: `${left.listKey}_left_id`, far: `${right.listKey}_right_id` },
+            [rightKey]: { near: `${right.listKey}_right_id`, far: `${left.listKey}_left_id` },
+          };
+        } else {
+          const leftKey = `${left.listKey}.${left.path}`;
+          const rightKey = `${left.config.ref}`;
+          rel.columnNames = {
+            [leftKey]: { near: `${left.listKey}_left_id`, far: `${left.config.ref}_right_id` },
+            [rightKey]: { near: `${left.config.ref}_right_id`, far: `${left.listKey}_left_id` },
+          };
+        }
+      } else if (cardinality === '1:1') {
+        tableName = left.listKey;
+        columnName = left.path;
+      } else if (cardinality === '1:N') {
+        tableName = right.listKey;
+        columnName = right.path;
+      } else {
+        tableName = left.listKey;
+        columnName = left.path;
+      }
+      rel.tableName = tableName;
+      rel.columnName = columnName;
+    });
+
+    return Object.values(rels);
   }
 
   /**
    * @return Promise<null>
    */
-  disconnect() {
-    return resolveAllKeys(
-      mapKeys(this.adapters, adapter => adapter.disconnect())
-      // Chain an empty function so that the result of this promise
-      // isn't unintentionally leaked to the caller
-    ).then(() => {});
+  async connect() {
+    const { adapters, name } = this;
+    const rels = this._consolidateRelationships();
+    await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels })));
+    if (this.eventHandlers.onConnect) {
+      return this.eventHandlers.onConnect(this);
+    }
+  }
+
+  /**
+   * @return Promise<null>
+   */
+  async disconnect() {
+    await resolveAllKeys(mapKeys(this.adapters, adapter => adapter.disconnect()));
   }
 
   getAdminMeta({ schemaName }) {
@@ -418,6 +496,16 @@ module.exports = class Keystone {
     );
 
     return { lists, name: this.name };
+  }
+
+  getAdminViews({ schemaName }) {
+    return {
+      listViews: arrayToObject(
+        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
+        'key',
+        list => list.views
+      ),
+    };
   }
 
   // It's not Keystone core's responsibility to create an executable schema, but
@@ -516,13 +604,7 @@ module.exports = class Keystone {
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
       // TODO: set up a session test rig (maybe by wrapping an in-memory store)
-      commonSessionMiddleware({
-        keystone: this,
-        cookieSecret: this._cookieSecret,
-        sessionStore: this._sessionStore,
-        secureCookies: this._secureCookies,
-        cookieMaxAge: this._cookieMaxAge,
-      }),
+      this._sessionManager.getSessionMiddleware({ keystone: this }),
       falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
       cors && createCorsMiddleware(cors),
       ...(await Promise.all(
@@ -555,7 +637,6 @@ module.exports = class Keystone {
     pinoOptions,
     cors = { origin: true, credentials: true },
   } = {}) {
-    this._consolidateRelationships();
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
 
     // Now that the middlewares are done, it's safe to assume all the schemas
@@ -568,6 +649,13 @@ module.exports = class Keystone {
         schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
       })
     );
+
+    // These function can't be called after prepare(), so make them throw an error from now on.
+    ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
+      this[f] = () => {
+        throw new Error(`keystone.${f} must be called before keystone.prepare()`);
+      };
+    });
 
     return { middlewares };
   }

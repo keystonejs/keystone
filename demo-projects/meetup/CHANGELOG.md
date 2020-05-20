@@ -1,5 +1,157 @@
 # @keystonejs/demo-project-meetup
 
+## 6.0.0
+
+### Major Changes
+
+- [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc) [#2927](https://github.com/keystonejs/keystone/pull/2927) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to date-fns 2.x. This version uses [Unicode tokens](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table) for its formatting strings. A conversion table is available [here](https://github.com/date-fns/date-fns/blob/master/CHANGELOG.md#200---2019-08-20).
+
+  This change only affects the `CalendarDay` and `DateTime` fields' `format` config option.
+
+  The following script utilizes the [`@date-fns/upgrade`](https://github.com/date-fns/date-fns-upgrade) package and can be used to convert old formatting strings:
+
+  ```js
+  const { convertTokens } = require('@date-fns/upgrade/v2');
+
+  console.table(
+    [
+      // Add date-dns 1.x formatting strings here.
+    ].map(str => ({
+      v1: str,
+      v2: convertTokens(str).replace(/'/g, ''),
+    }))
+  );
+  ```
+
+  Do note this converts symbols to standalone style as opposed to formatted style which may not always be desired. For example, `DD/MM/YYYY` would be converted to `dd/LL/yyyy` instead of `dd/MM/yyyy`. See [here](http://cldr.unicode.org/translation/date-time-1/date-time#TOC-Stand-Alone-vs.-Format-Styles) for more information on which you should use.
+
+### Patch Changes
+
+- Updated dependencies [[`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be), [`a124417f`](https://github.com/keystonejs/keystone/commit/a124417fddc75889db5e4e8e0d5625fb4af12590), [`54931d75`](https://github.com/keystonejs/keystone/commit/54931d75d3f26f4f300c2c4c3ee65ed3183b4a6a), [`f9604621`](https://github.com/keystonejs/keystone/commit/f9604621048afceb071a43c7b8d36d944555487f), [`3e5a8962`](https://github.com/keystonejs/keystone/commit/3e5a8962cc982765574464537904008be975b446), [`5a58bde6`](https://github.com/keystonejs/keystone/commit/5a58bde636f551f2d241086d47781d3c88852b99), [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc), [`3b0f4137`](https://github.com/keystonejs/keystone/commit/3b0f4137df4112c79e6db57ae68fe04ad338da4c), [`15c57317`](https://github.com/keystonejs/keystone/commit/15c573178fa056912503f3ed83efeccceabba3ec), [`d60e2ca9`](https://github.com/keystonejs/keystone/commit/d60e2ca91ab4a7dd815e030bcc92991c3380fa7e), [`94d55b8f`](https://github.com/keystonejs/keystone/commit/94d55b8fc3a334a556c19765063e9efb594b41a7), [`59ed6310`](https://github.com/keystonejs/keystone/commit/59ed6310bacc76f571639de048689becbedbeac5), [`2709a6b5`](https://github.com/keystonejs/keystone/commit/2709a6b512fe636d979837599b67bdb17b2517b1)]:
+  - @keystonejs/app-admin-ui@6.0.1
+  - @keystonejs/fields@11.0.0
+  - @keystonejs/auth-password@5.1.8
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.8
+  - @keystonejs/keystone@9.0.1
+
+## 5.1.12
+
+### Patch Changes
+
+- Updated dependencies [[`4d3efe0f`](https://github.com/keystonejs/keystone/commit/4d3efe0fb65e0155c130cf3e0c378f024965f46d), [`c506dfa8`](https://github.com/keystonejs/keystone/commit/c506dfa81a5ef3640716f69412b1a37c947d4f95), [`72e0a4e1`](https://github.com/keystonejs/keystone/commit/72e0a4e19942df11c72d11c2cf6ee9bc94300d87), [`5e20df81`](https://github.com/keystonejs/keystone/commit/5e20df81aaa8b464071c1e0adc64635752163362), [`a1c9c372`](https://github.com/keystonejs/keystone/commit/a1c9c372c274de8cb0d0012c0d5c20c46f356b0a), [`04dffb3c`](https://github.com/keystonejs/keystone/commit/04dffb3c0abd03712df431ff57b3271b10f4f47b), [`bfa3a287`](https://github.com/keystonejs/keystone/commit/bfa3a287a40f625b74d1f430dff6826296bb7019), [`12126788`](https://github.com/keystonejs/keystone/commit/121267885eb3e279eb5b6d035568f547323dd245), [`d639624d`](https://github.com/keystonejs/keystone/commit/d639624db8615b52731af56fea0ae9c573ef38a1), [`e0e3e30a`](https://github.com/keystonejs/keystone/commit/e0e3e30a9051741de3f5a0c12ba00f2238d54800), [`3e9bfb85`](https://github.com/keystonejs/keystone/commit/3e9bfb854196dffcca98f60c5de9ad463d79f4f2), [`5ec4e5d5`](https://github.com/keystonejs/keystone/commit/5ec4e5d547503baeae2ac2f6317b66c2ebae93b7), [`6e507838`](https://github.com/keystonejs/keystone/commit/6e5078380e1d17eb2884554eef114fdd521a15f4), [`c8e52f3b`](https://github.com/keystonejs/keystone/commit/c8e52f3ba892269922c1ed3af0c2114f07387704), [`3cd5f205`](https://github.com/keystonejs/keystone/commit/3cd5f205348311a2ad00875782530b96c3c477af), [`08087998`](https://github.com/keystonejs/keystone/commit/08087998af0045aa45b26d721f75639cd279ae1b), [`6c19f04c`](https://github.com/keystonejs/keystone/commit/6c19f04c0e5ce972283562daebe60c9f4a29c55c), [`fcb9f2c1`](https://github.com/keystonejs/keystone/commit/fcb9f2c1751ec866adddeb6946e8ab60ffef06e6), [`547fd837`](https://github.com/keystonejs/keystone/commit/547fd8373797f0cb5d8dd0acd193750686053fac), [`2a1e4f49`](https://github.com/keystonejs/keystone/commit/2a1e4f49d7f234c49e5b04440ff786ddf3e9e7ed), [`9e2e0071`](https://github.com/keystonejs/keystone/commit/9e2e00715aff50f2ddfedf3dbc14f390275ff23b), [`b5c44934`](https://github.com/keystonejs/keystone/commit/b5c4493442c5e4cfeba23c058a9a6819c628aab9), [`0fbc5b98`](https://github.com/keystonejs/keystone/commit/0fbc5b989a9f96248d1bd7f2f589fe77cb1d8f7d), [`e3d46ce4`](https://github.com/keystonejs/keystone/commit/e3d46ce4bd9f9ec8808ab3194672c6849e624e27), [`d8584765`](https://github.com/keystonejs/keystone/commit/d85847652e224e5000e036be2df0b8a45ab96385), [`405d0ae1`](https://github.com/keystonejs/keystone/commit/405d0ae1d332e31423db43f58ac26c25abbe94a3), [`121cb02d`](https://github.com/keystonejs/keystone/commit/121cb02d1c9886a24bfa14c985ede48d6a56edca), [`da1359df`](https://github.com/keystonejs/keystone/commit/da1359dfc1bff7e27505eff876efe3a0865bae2d), [`285026a0`](https://github.com/keystonejs/keystone/commit/285026a04ffce23ab72d7defc18ced2e980b0de4), [`d4811b02`](https://github.com/keystonejs/keystone/commit/d4811b0231c5d64e95dbbce57531df0931d4defa), [`e2800875`](https://github.com/keystonejs/keystone/commit/e28008756cbcc1e07e012a9fdb0cfa0ad94f3673), [`60e2c7eb`](https://github.com/keystonejs/keystone/commit/60e2c7eb2298a016c68a19a056040a3b45beab2a), [`99da34a8`](https://github.com/keystonejs/keystone/commit/99da34a8db26b8861b08cee330407605e787a80c), [`9bad0e5f`](https://github.com/keystonejs/keystone/commit/9bad0e5fe67d2379537f4cb145058c6c809b3533), [`9a94cee8`](https://github.com/keystonejs/keystone/commit/9a94cee8e59fdf7956d82887390dfb84bf6185fa), [`bcf03a7f`](https://github.com/keystonejs/keystone/commit/bcf03a7f8067a3f29f22dde397b957bf5cee1a07), [`e765ad20`](https://github.com/keystonejs/keystone/commit/e765ad20abae9838f64b72b7d43767ec87db336a), [`1ca8951c`](https://github.com/keystonejs/keystone/commit/1ca8951c71c5af3b0ff338a9a6a8733231fb90c4), [`d7eb2601`](https://github.com/keystonejs/keystone/commit/d7eb260144d2aa31e7ef4e636e7a23f91dc37285)]:
+  - @keystonejs/app-admin-ui@6.0.0
+  - @keystonejs/fields@10.0.0
+  - @keystonejs/keystone@9.0.0
+  - @keystonejs/auth-password@5.1.7
+  - @keystonejs/email@5.1.5
+  - @keystonejs/session@7.0.0
+  - @keystonejs/adapter-mongoose@8.1.0
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.7
+  - @keystonejs/app-graphql@5.1.7
+
+## 5.1.11
+
+### Patch Changes
+
+- [`c68aed4a`](https://github.com/keystonejs/keystone/commit/c68aed4a414f5188f5dc9e99ac51d1afefc22e64) [#2846](https://github.com/keystonejs/keystone/pull/2846) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded `uuid` from `3.x` to `7.x`.
+
+- Updated dependencies [[`ab484f19`](https://github.com/keystonejs/keystone/commit/ab484f195752bb3ec59f6beb7d8817dce610ad06), [`1b059e72`](https://github.com/keystonejs/keystone/commit/1b059e726d95bbc6ad09a76ed3b40dbc4cf11682), [`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d), [`4af9e407`](https://github.com/keystonejs/keystone/commit/4af9e4075c9329ab27e7aa18a664d2f2bcc1ac2d), [`04ec9981`](https://github.com/keystonejs/keystone/commit/04ec998166a8b3044570769a8c3f501d80527bf9), [`b897ba14`](https://github.com/keystonejs/keystone/commit/b897ba14e34aa441b2d658c30b3dda9d1ebd48e2), [`0aac3b41`](https://github.com/keystonejs/keystone/commit/0aac3b411a9e4f397645d9641c4675eab7a6e55b), [`b0bfcf79`](https://github.com/keystonejs/keystone/commit/b0bfcf79477249f3c0bb14db68588d84a68f0186), [`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b), [`4e56eed6`](https://github.com/keystonejs/keystone/commit/4e56eed68c643fd436c371e2635d3024c51968b0), [`8a135a88`](https://github.com/keystonejs/keystone/commit/8a135a88ae6f3a4434db0ba7033cad2e5f18651e), [`63a2f7c3`](https://github.com/keystonejs/keystone/commit/63a2f7c31777d968bad32d6e746e2f960c6ef0ad), [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca), [`81a9aa7c`](https://github.com/keystonejs/keystone/commit/81a9aa7c2349f9bb71d1a9686e4fa359a14b033f)]:
+  - @keystonejs/app-admin-ui@5.12.0
+  - @keystonejs/file-adapters@6.0.2
+  - @keystonejs/fields@9.0.5
+  - @keystonejs/app-graphql@5.1.6
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.6
+  - @keystonejs/keystone@8.1.4
+
+## 5.1.10
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @keystonejs/app-admin-ui@5.11.1
+  - @keystonejs/email@5.1.4
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.5
+  - @keystonejs/fields@9.0.4
+
+## 5.1.9
+
+### Patch Changes
+
+- [`2686c9f8`](https://github.com/keystonejs/keystone/commit/2686c9f8cd49a1ce6876787a0a634ddf4e19952c) [#2724](https://github.com/keystonejs/keystone/pull/2724) Thanks [@Vultraz](https://github.com/Vultraz)! - Used functional components for email templates.
+
+- Updated dependencies [[`9d862edc`](https://github.com/keystonejs/keystone/commit/9d862edc506460d4a0456e48ec418b9042b582ad), [`344c45ef`](https://github.com/keystonejs/keystone/commit/344c45efbb96a90010f81e4c8447a9c5728ea87f), [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32), [`6a27fcf1`](https://github.com/keystonejs/keystone/commit/6a27fcf1896c5a745308346e5b0e66dd8bdd57a3), [`98e9f6d1`](https://github.com/keystonejs/keystone/commit/98e9f6d16e16ee13d2a8a22eb25be9cd2afc6fc0), [`57e6ce29`](https://github.com/keystonejs/keystone/commit/57e6ce293e5afd0add52728aa73c74e90fcbe0f7), [`2686c9f8`](https://github.com/keystonejs/keystone/commit/2686c9f8cd49a1ce6876787a0a634ddf4e19952c)]:
+  - @keystonejs/app-admin-ui@5.10.0
+  - @keystonejs/fields@9.0.2
+  - @keystonejs/keystone@8.1.2
+  - @keystonejs/email@5.1.3
+
+## 5.1.8
+
+### Patch Changes
+
+- [`a5a6663c`](https://github.com/keystonejs/keystone/commit/a5a6663cd1139a404b03270966c0766dc5a42b50) [#2723](https://github.com/keystonejs/keystone/pull/2723) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed custom schema not getting registered in Meetup demo.
+
+- Updated dependencies [[`c013d8bc`](https://github.com/keystonejs/keystone/commit/c013d8bc1113b2a31ededc3918ab98c2c99f25f4), [`3193f4a5`](https://github.com/keystonejs/keystone/commit/3193f4a56c6391d07e8c04913a667940ef7b8815), [`885bc678`](https://github.com/keystonejs/keystone/commit/885bc6786dd63cad86515b2fe6a39ea52b39d4c0), [`93ae77ef`](https://github.com/keystonejs/keystone/commit/93ae77efe71151279a15ddb7ddc3df60651022b4), [`eb90aea6`](https://github.com/keystonejs/keystone/commit/eb90aea6b33dda8d95baba818306328dd747247f)]:
+  - @keystonejs/fields@9.0.1
+  - @keystonejs/app-admin-ui@5.9.6
+  - @keystonejs/auth-password@5.1.6
+
+## 5.1.7
+
+### Patch Changes
+
+- Updated dependencies [[`fd685241`](https://github.com/keystonejs/keystone/commit/fd68524135025e4d800b4a98932916736dd50e9d)]:
+  - @keystonejs/adapter-mongoose@8.0.0
+  - @keystonejs/fields@9.0.0
+  - @keystonejs/keystone@8.0.0
+  - @keystonejs/app-admin-ui@5.9.5
+  - @keystonejs/auth-password@5.1.5
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.3
+
+## 5.1.6
+
+### Patch Changes
+
+- [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373) [#2560](https://github.com/keystonejs/keystone/pull/2560) Thanks [@JedWatson](https://github.com/JedWatson)! - Updated links to Keystone github project.
+
+* [`0339eaf1`](https://github.com/keystonejs/keystone/commit/0339eaf1bde1b5d814f8745812ab3a1bd72fc8aa) [#2607](https://github.com/keystonejs/keystone/pull/2607) Thanks [@Vultraz](https://github.com/Vultraz)! - Made the Meetup demo functional again, and refactored out last use of withApollo.
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+* [`89bec596`](https://github.com/keystonejs/keystone/commit/89bec5966c07ea700a863d3a7a8d1ebb8fb5541a) [#2608](https://github.com/keystonejs/keystone/pull/2608) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Next.js to 9.3.2. Includes an important security fix.
+
+- [`cef28dfd`](https://github.com/keystonejs/keystone/commit/cef28dfdad332cf185a577b06600acc3d8ba4888) [#2645](https://github.com/keystonejs/keystone/pull/2645) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted more class components to functional ones.
+
+* [`c70c339a`](https://github.com/keystonejs/keystone/commit/c70c339a307d92427962f7332bc371f9226bb2d6) [#2603](https://github.com/keystonejs/keystone/pull/2603) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed apollo-boost dependency and switched the meetup demo to using apollo-upload-client.
+
+* Updated dependencies [[`e7e4bc1d`](https://github.com/keystonejs/keystone/commit/e7e4bc1d22149d4daceb31d303f6ad10c2b853ba), [`58c4ffc3`](https://github.com/keystonejs/keystone/commit/58c4ffc3d4b1edf8bdfbc4ea299133d303239fc6), [`b4d16b89`](https://github.com/keystonejs/keystone/commit/b4d16b89aab643f34d70f42823817a246bf16373), [`7fc00071`](https://github.com/keystonejs/keystone/commit/7fc00071cd22514103593f0da68b9efa3bf853e9), [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad), [`007063c4`](https://github.com/keystonejs/keystone/commit/007063c4f17e6e7038312ed9126eaf91757e7939), [`89bec596`](https://github.com/keystonejs/keystone/commit/89bec5966c07ea700a863d3a7a8d1ebb8fb5541a), [`4a7d1eab`](https://github.com/keystonejs/keystone/commit/4a7d1eabf9b44fac7e16dfe20afdce409986e8dc), [`c08c28d2`](https://github.com/keystonejs/keystone/commit/c08c28d22f2c6a2bfa73ab0ea347c9e0da8a9063), [`d138736d`](https://github.com/keystonejs/keystone/commit/d138736db184c5884171c7a65e43377f248046b5), [`2ae2bd47`](https://github.com/keystonejs/keystone/commit/2ae2bd47eb54a816cfd4c8cd178c460729cbc258), [`2cbd38b0`](https://github.com/keystonejs/keystone/commit/2cbd38b05adc98cface11a8767f66b48a1cb0bbf), [`3407fa68`](https://github.com/keystonejs/keystone/commit/3407fa68b91d7ebb3e7288c7e95631013fe12535), [`c2b1b725`](https://github.com/keystonejs/keystone/commit/c2b1b725a9474348964a4ac2e0f5b4aaf1a7f486)]:
+  - @keystonejs/fields@8.0.0
+  - @keystonejs/app-admin-ui@5.9.4
+  - @keystonejs/app-next@5.1.2
+  - @keystonejs/keystone@7.1.0
+  - @keystonejs/adapter-mongoose@7.0.0
+  - @keystonejs/app-graphql@5.1.5
+  - @keystonejs/auth-password@5.1.4
+  - @keystonejs/email@5.1.2
+  - @keystonejs/file-adapters@6.0.1
+  - @keystonejs/session@6.0.1
+  - @keystonejs/fields-wysiwyg-tinymce@5.2.2
+
+## 5.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a), [`b6a555c2`](https://github.com/keystonejs/keystone/commit/b6a555c28296394908757f7404b72bc6b828b52a), [`7c9d36a2`](https://github.com/keystonejs/keystone/commit/7c9d36a2d5002258964cbd9414766ee244945005), [`ca28681c`](https://github.com/keystonejs/keystone/commit/ca28681ca23c74bc57041fa36c20b93a4520e762), [`68be8f45`](https://github.com/keystonejs/keystone/commit/68be8f452909100fbddec431d6fe60c20a06a700), [`61a70503`](https://github.com/keystonejs/keystone/commit/61a70503f6c184a8f0f5440466399f12e6d7fa41), [`cec7ba5e`](https://github.com/keystonejs/keystone/commit/cec7ba5e2061280eff2a1d989054ecb02760e36d)]:
+  - @keystonejs/app-admin-ui@5.9.3
+  - @keystonejs/keystone@7.0.0
+  - @keystonejs/session@6.0.0
+  - @keystonejs/app-graphql@5.1.4
+  - @keystonejs/adapter-mongoose@6.0.0
+  - @keystonejs/fields@7.0.2
+  - @keystonejs/auth-password@5.1.3
+
 ## 5.1.4
 
 ### Patch Changes
@@ -191,7 +343,7 @@
 
 ### Major Changes
 
-- [`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone-5/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
+- [`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310) [#1821](https://github.com/keystonejs/keystone/pull/1821) Thanks [@jesstelford](https://github.com/jesstelford)! - Release @keystonejs/\* packages (つ＾ ◡ ＾)つ
 
   - This is the first release of `@keystonejs/*` packages (previously `@keystone-alpha/*`).
   - All packages in the `@keystone-alpha` namespace are now available in the `@keystonejs` namespace, starting at version `5.0.0`.
@@ -199,7 +351,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone-5/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
+- Updated dependencies [[`7b4ed362`](https://github.com/keystonejs/keystone/commit/7b4ed3623f5774d7783c39962bfa1ce97938e310)]:
   - @keystonejs/adapter-mongoose@5.0.0
   - @keystonejs/app-admin-ui@5.0.0
   - @keystonejs/app-graphql@5.0.0
@@ -218,7 +370,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`0a36b0f4`](https://github.com/keystonejs/keystone-5/commit/0a36b0f403da73a76106b5e14940a789466b4f94), [`7129c887`](https://github.com/keystonejs/keystone-5/commit/7129c8878a825d961f2772be497dcd5bd6b2b697), [`3bc02545`](https://github.com/keystonejs/keystone-5/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb), [`768420f5`](https://github.com/keystonejs/keystone-5/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d), [`a48281ba`](https://github.com/keystonejs/keystone-5/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec), [`a8ee0179`](https://github.com/keystonejs/keystone-5/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26), [`effc1f63`](https://github.com/keystonejs/keystone-5/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
+- Updated dependencies [[`0a36b0f4`](https://github.com/keystonejs/keystone/commit/0a36b0f403da73a76106b5e14940a789466b4f94), [`7129c887`](https://github.com/keystonejs/keystone/commit/7129c8878a825d961f2772be497dcd5bd6b2b697), [`3bc02545`](https://github.com/keystonejs/keystone/commit/3bc025452fb8e6e69790bdbee032ddfdeeb7dabb), [`768420f5`](https://github.com/keystonejs/keystone/commit/768420f567c244d57a4e2a3aaafe628ea9813d9d), [`a48281ba`](https://github.com/keystonejs/keystone/commit/a48281ba605bf5bebc89fcbb36d3e69c17182eec), [`a8ee0179`](https://github.com/keystonejs/keystone/commit/a8ee0179842f790dd3b5d4aae3524793e752ee26), [`effc1f63`](https://github.com/keystonejs/keystone/commit/effc1f639d5824720b7a9d82c2ee881d77acb901)]:
   - @keystone-alpha/keystone@16.1.0
   - @keystone-alpha/app-graphql@8.2.1
   - @keystone-alpha/adapter-mongoose@6.0.1
@@ -231,7 +383,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone-5/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
+- Updated dependencies [[`6d7d0df0`](https://github.com/keystonejs/keystone/commit/6d7d0df0515c3aa21c7d24db17919ddbb5701ce9)]:
   - @keystone-alpha/adapter-mongoose@6.0.0
   - @keystone-alpha/fields@14.0.0
   - @keystone-alpha/keystone@16.0.0
@@ -241,8 +393,8 @@
 
 ## 0.3.5
 
-- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone-5/commit/4e6a574d):
-- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone-5/commit/b96a3a58):
+- Updated dependencies [4e6a574d](https://github.com/keystonejs/keystone/commit/4e6a574d):
+- Updated dependencies [b96a3a58](https://github.com/keystonejs/keystone/commit/b96a3a58):
   - @keystone-alpha/app-admin-ui@5.10.0
   - @keystone-alpha/auth-password@1.0.4
   - @keystone-alpha/fields-wysiwyg-tinymce@3.0.8
@@ -252,20 +404,20 @@
 
 ## 0.3.4
 
-- Updated dependencies [d316166e](https://github.com/keystonejs/keystone-5/commit/d316166e):
+- Updated dependencies [d316166e](https://github.com/keystonejs/keystone/commit/d316166e):
   - @keystone-alpha/file-adapters@2.0.0
 
 ## 0.3.3
 
-- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone-5/commit/42a45bbd):
+- Updated dependencies [42a45bbd](https://github.com/keystonejs/keystone/commit/42a45bbd):
   - @keystone-alpha/adapter-mongoose@4.0.7
   - @keystone-alpha/keystone@15.1.0
 
 ## 0.3.2
 
-- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone-5/commit/b61289b4):
-- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone-5/commit/0bba9f07):
-- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone-5/commit/9ade2b2d):
+- Updated dependencies [b61289b4](https://github.com/keystonejs/keystone/commit/b61289b4):
+- Updated dependencies [0bba9f07](https://github.com/keystonejs/keystone/commit/0bba9f07):
+- Updated dependencies [9ade2b2d](https://github.com/keystonejs/keystone/commit/9ade2b2d):
   - @keystone-alpha/adapter-mongoose@4.0.6
   - @keystone-alpha/keystone@15.0.0
   - @keystone-alpha/app-admin-ui@5.8.1
@@ -275,11 +427,11 @@
 
 ## 0.3.1
 
-- Updated dependencies [decf7319](https://github.com/keystonejs/keystone-5/commit/decf7319):
-- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
-- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone-5/commit/89c0d7e9):
-- Updated dependencies [f8ad0975](https://github.com/keystonejs/keystone-5/commit/f8ad0975):
-- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone-5/commit/a8e9378d):
+- Updated dependencies [decf7319](https://github.com/keystonejs/keystone/commit/decf7319):
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone/commit/89c0d7e9):
+- Updated dependencies [89c0d7e9](https://github.com/keystonejs/keystone/commit/89c0d7e9):
+- Updated dependencies [f8ad0975](https://github.com/keystonejs/keystone/commit/f8ad0975):
+- Updated dependencies [a8e9378d](https://github.com/keystonejs/keystone/commit/a8e9378d):
   - @keystone-alpha/adapter-mongoose@4.0.5
   - @keystone-alpha/keystone@14.0.0
   - @keystone-alpha/app-admin-ui@5.8.0
@@ -292,11 +444,11 @@
 
 ### Minor Changes
 
-- [79e362c0](https://github.com/keystonejs/keystone-5/commit/79e362c0): update demos to use apollo hooks instead of Query and Mutations.
+- [79e362c0](https://github.com/keystonejs/keystone/commit/79e362c0): update demos to use apollo hooks instead of Query and Mutations.
 
 ## 0.2.3
 
-- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone-5/commit/8d0d98c7):
+- Updated dependencies [8d0d98c7](https://github.com/keystonejs/keystone/commit/8d0d98c7):
   - @keystone-alpha/adapter-mongoose@4.0.4
   - @keystone-alpha/app-graphql@7.0.0
   - @keystone-alpha/keystone@13.0.0
@@ -305,11 +457,11 @@
 
 ### Patch Changes
 
-- [30f6b7eb](https://github.com/keystonejs/keystone-5/commit/30f6b7eb): upgraded `react-toast-notifications` to `2.2.4`. use `useToasts` hook when possible.
+- [30f6b7eb](https://github.com/keystonejs/keystone/commit/30f6b7eb): upgraded `react-toast-notifications` to `2.2.4`. use `useToasts` hook when possible.
 
 ## 0.2.1
 
-- Updated dependencies [33001656](https://github.com/keystonejs/keystone-5/commit/33001656):
+- Updated dependencies [33001656](https://github.com/keystonejs/keystone/commit/33001656):
   - @keystone-alpha/adapter-mongoose@4.0.3
   - @keystone-alpha/keystone@12.0.0
 
@@ -317,19 +469,19 @@
 
 ### Minor Changes
 
-- [e42fdb4a](https://github.com/keystonejs/keystone-5/commit/e42fdb4a): Makes the password auth strategy its own package.
+- [e42fdb4a](https://github.com/keystonejs/keystone/commit/e42fdb4a): Makes the password auth strategy its own package.
   Previously: `const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');`
   After change: `const { PasswordAuthStrategy } = require('@keystone-alpha/auth-password');`
 
 ## 0.1.9
 
-- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone-5/commit/b86f0e26):
+- Updated dependencies [b86f0e26](https://github.com/keystonejs/keystone/commit/b86f0e26):
   - @keystone-alpha/adapter-mongoose@4.0.1
   - @keystone-alpha/keystone@10.5.0
 
 ## 0.1.8
 
-- Updated dependencies [144e6e86](https://github.com/keystonejs/keystone-5/commit/144e6e86):
+- Updated dependencies [144e6e86](https://github.com/keystonejs/keystone/commit/144e6e86):
   - @keystone-alpha/fields@10.2.0
   - @keystone-alpha/adapter-mongoose@4.0.0
   - @keystone-alpha/keystone@10.0.0
@@ -338,12 +490,12 @@
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade eslint to 6.0.1
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade express to 4.17.1
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade eslint to 6.0.1
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade express to 4.17.1
 
-- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
-- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9):
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9):
+- Updated dependencies [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9):
   - @keystone-alpha/adapter-mongoose@3.0.0
   - @keystone-alpha/keystone@9.0.0
   - @keystone-alpha/fields@10.0.0
@@ -352,7 +504,7 @@
 
 ## 0.1.6
 
-- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone-5/commit/4007f5dd):
+- Updated dependencies [4007f5dd](https://github.com/keystonejs/keystone/commit/4007f5dd):
   - @keystone-alpha/adapter-mongoose@2.2.1
   - @keystone-alpha/keystone@8.0.0
   - @keystone-alpha/fields@9.1.0
@@ -361,11 +513,11 @@
 
 ### Patch Changes
 
-- [db212300](https://github.com/keystonejs/keystone-5/commit/db212300):
+- [db212300](https://github.com/keystonejs/keystone/commit/db212300):
 
   Upgrade next to v9 and remove support for next-routes. You should switch to the native support for dynamic routes in next@9
 
-* Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone-5/commit/2b094b7f):
+* Updated dependencies [2b094b7f](https://github.com/keystonejs/keystone/commit/2b094b7f):
   - @keystone-alpha/app-admin-ui@5.0.4
   - @keystone-alpha/fields-wysiwyg-tinymce@3.0.4
   - @keystone-alpha/fields@9.0.0
@@ -375,13 +527,13 @@
 
 ### Patch Changes
 
-- [aa9d8920](https://github.com/keystonejs/keystone-5/commit/aa9d8920):
+- [aa9d8920](https://github.com/keystonejs/keystone/commit/aa9d8920):
 
   Remove commercial font Nueu Haas Unica from Open Source library
 
 ## 0.1.3
 
-- Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone-5/commit/b6a9f6b9):
+- Updated dependencies [b6a9f6b9](https://github.com/keystonejs/keystone/commit/b6a9f6b9):
   - @keystone-alpha/app-admin-ui@5.0.3
   - @keystone-alpha/fields-wysiwyg-tinymce@3.0.3
   - @keystone-alpha/keystone@7.0.2
@@ -389,7 +541,7 @@
 
 ## 0.1.2
 
-- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone-5/commit/91fffa1e):
+- Updated dependencies [91fffa1e](https://github.com/keystonejs/keystone/commit/91fffa1e):
   - @keystone-alpha/adapter-mongoose@2.2.0
   - @keystone-alpha/keystone@7.0.0
 
@@ -397,14 +549,14 @@
 
 ### Patch Changes
 
-- [7086b423](https://github.com/keystonejs/keystone-5/commit/7086b423):
+- [7086b423](https://github.com/keystonejs/keystone/commit/7086b423):
 
   Use latest (un)authenticate mutations
 
-* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone-5/commit/30c1b1e1):
-* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
-* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
-* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone-5/commit/1b4cf4e0):
+* Updated dependencies [30c1b1e1](https://github.com/keystonejs/keystone/commit/30c1b1e1):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
+* Updated dependencies [1b4cf4e0](https://github.com/keystonejs/keystone/commit/1b4cf4e0):
   - @keystone-alpha/app-admin-ui@5.0.0
   - @keystone-alpha/fields-wysiwyg-tinymce@3.0.1
   - @keystone-alpha/keystone@6.0.0
@@ -417,7 +569,7 @@
 
 ### Minor Changes
 
-- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+- [dfcabe6a](https://github.com/keystonejs/keystone/commit/dfcabe6a):
 
   Specify custom servers from within the index.js file
 
@@ -450,20 +602,20 @@
 
 ### Patch Changes
 
-- [92f69b5c](https://github.com/keystonejs/keystone-5/commit/92f69b5c):
+- [92f69b5c](https://github.com/keystonejs/keystone/commit/92f69b5c):
 
   Use KS5 built-in login routes
 
-- [a98bce08](https://github.com/keystonejs/keystone-5/commit/a98bce08):
+- [a98bce08](https://github.com/keystonejs/keystone/commit/a98bce08):
 
   Add support for an `onConnect` function to be passed to the Keystone constructor, which is called when all adapters have connected.
 
-- [8494e4cc](https://github.com/keystonejs/keystone-5/commit/8494e4cc):
+- [8494e4cc](https://github.com/keystonejs/keystone/commit/8494e4cc):
 
   `@keystone-alpha/app-admin-ui` no longer accepts a `keystone` paramater in its constructor. It is now automatically passed during the `keystone.prepare()` call.
 
-* Updated dependencies [666e15f5](https://github.com/keystonejs/keystone-5/commit/666e15f5):
-* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+* Updated dependencies [666e15f5](https://github.com/keystonejs/keystone/commit/666e15f5):
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone/commit/b2651279):
   - @keystone-alpha/keystone@5.0.0
   - @keystone-alpha/app-admin-ui@4.0.0
   - @keystone-alpha/app-graphql@6.0.0
@@ -472,11 +624,11 @@
 
 ### Patch Changes
 
-- [9b6fec3e](https://github.com/keystonejs/keystone-5/commit/9b6fec3e):
+- [9b6fec3e](https://github.com/keystonejs/keystone/commit/9b6fec3e):
 
   Remove unnecessary dependency from packages
 
-* Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+* Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone/commit/9a0456ff):
   - @keystone-alpha/fields@6.1.1
   - @keystone-alpha/adapter-mongoose@2.0.0
 
@@ -484,11 +636,11 @@
 
 ### Patch Changes
 
-- [0ea974f9](https://github.com/keystonejs/keystone-5/commit/0ea974f9):
+- [0ea974f9](https://github.com/keystonejs/keystone/commit/0ea974f9):
 
   Add to changeset set, so we don't end up in an error state
 
-- [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+- [b22d6c16](https://github.com/keystonejs/keystone/commit/b22d6c16):
 
   Remove custom server execution from the CLI.
 
@@ -499,11 +651,11 @@
   + "start": "node server.js"
   ```
 
-- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+- [6f598e83](https://github.com/keystonejs/keystone/commit/6f598e83):
 
   - Add Admin UI static building
 
-* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone/commit/9dbed649):
   - @keystone-alpha/admin-ui@3.2.0
   - @keystone-alpha/fields-wysiwyg-tinymce@2.0.0
   - @keystone-alpha/keystone@4.0.0

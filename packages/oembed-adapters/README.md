@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: field-adapters
-title: OEmbed Adapters
+title: OEmbed adapters
 [meta]-->
 
-# OEmbed Adapters
+# OEmbed adapters
 
 The `OEmbed` field type (from `@keystonejs/fields`) can fetch oEmbed data
 from a number of providers such as [Iframely](https://iframely.com).
@@ -34,7 +34,7 @@ keystone.createList('User', {
 });
 ```
 
-NOTE: The request to Iframely will include the following [parameters](https://iframely.com/docs/parameters):
+The request to Iframely will include the following [parameters](https://iframely.com/docs/parameters):
 
 - `iframe=1`
 - `omit_script=1`

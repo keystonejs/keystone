@@ -1,5 +1,17 @@
 # @arch-ui/layout
 
+## 0.2.13
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+## 0.2.12
+
+### Patch Changes
+
+- [`875c7df5`](https://github.com/keystonejs/keystone/commit/875c7df5873c3a5173fba1a7c3078fcd098f0a32) [#2463](https://github.com/keystonejs/keystone/pull/2463) Thanks [@Vultraz](https://github.com/Vultraz)! - Replaced ContainerQuery component with useResizeObserver.
+
 ## 0.2.11
 
 ### Patch Changes
@@ -68,44 +80,44 @@
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
 
 ## 0.2.3
 
 ### Patch Changes
 
-- [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
 
   Move frontmatter in docs into comments
 
 ## 0.2.2
 
-- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone/commit/d580c298):
   - @arch-ui/common@0.0.5
 
 ## 0.2.1
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
 ## 0.2.0
 
-- [minor][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- [minor][e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
 
   - admin revamp
 
 ## 0.1.0
 
-- [minor][3f075eb5](https://github.com/keystonejs/keystone-5/commit/3f075eb5):
+- [minor][3f075eb5](https://github.com/keystonejs/keystone/commit/3f075eb5):
 
   - Forward refs passed to FlexGroup to the container element
 
 ## 0.0.3
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 

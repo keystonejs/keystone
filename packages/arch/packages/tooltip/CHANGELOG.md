@@ -1,5 +1,28 @@
 # @arch-ui/tooltip
 
+## 0.1.12
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/modal-utils@1.0.10
+
+## 0.1.11
+
+### Patch Changes
+
+- [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621) [#2786](https://github.com/keystonejs/keystone/pull/2786) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to react-popper 2.2.2.
+
+## 0.1.10
+
+### Patch Changes
+
+- [`63169b6a`](https://github.com/keystonejs/keystone/commit/63169b6a6b6a4dc286cd224b7f871960f2d4b0ad) [#2638](https://github.com/keystonejs/keystone/pull/2638) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed uses of defaultProps for functional components.
+
+* [`0b37b13b`](https://github.com/keystonejs/keystone/commit/0b37b13b5b11a5391b70920f9e8cbd6c5a71f586) [#2633](https://github.com/keystonejs/keystone/pull/2633) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed state updates on Tooltip when unmounted.
+
 ## 0.1.9
 
 ### Patch Changes
@@ -70,13 +93,13 @@
 
 ### Patch Changes
 
-- [42c3fbc9](https://github.com/keystonejs/keystone-5/commit/42c3fbc9): Upgrade emotion to 10.0.14
+- [42c3fbc9](https://github.com/keystonejs/keystone/commit/42c3fbc9): Upgrade emotion to 10.0.14
 
 ## 0.1.1
 
 ### Patch Changes
 
-- [ac7934fe](https://github.com/keystonejs/keystone-5/commit/ac7934fe):
+- [ac7934fe](https://github.com/keystonejs/keystone/commit/ac7934fe):
 
   Turn off warnings about 'preventOverflow' modifier is required by 'hide' modifier in order to work, be sure to include it before 'hide'!
 
@@ -84,13 +107,13 @@
 
 ### Minor Changes
 
-- [3544f852](https://github.com/keystonejs/keystone-5/commit/3544f852):
+- [3544f852](https://github.com/keystonejs/keystone/commit/3544f852):
 
   Added modifiers to arch/tooltip
 
 ## 0.0.7
 
-- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone-5/commit/19fe6c1b):
+- Updated dependencies [19fe6c1b](https://github.com/keystonejs/keystone/commit/19fe6c1b):
   - @arch-ui/modal-utils@1.0.1
   - @arch-ui/theme@0.0.5
 
@@ -98,38 +121,38 @@
 
 ### Patch Changes
 
-- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+- [81dc0be5](https://github.com/keystonejs/keystone/commit/81dc0be5):
 
   - Update dependencies
 
-- [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+- [5f1a5cf3](https://github.com/keystonejs/keystone/commit/5f1a5cf3):
 
   - Update usage of transition API
 
-* Updated dependencies [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
-* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+* Updated dependencies [a03fd601](https://github.com/keystonejs/keystone/commit/a03fd601):
+* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone/commit/5f1a5cf3):
   - @arch-ui/modal-utils@1.0.0
 
 ## 0.0.5
 
-- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone/commit/e75c105c):
   - @arch-ui/modal-utils@0.0.5
   - @arch-ui/theme@0.0.3
 
 ## 0.0.4
 
-- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+- [patch][302930a4](https://github.com/keystonejs/keystone/commit/302930a4):
 
   - Minor internal code cleanups
 
 ## 0.0.3
 
-- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+- [patch][7417ea3a](https://github.com/keystonejs/keystone/commit/7417ea3a):
 
   - Update patch-level dependencies
 
-- Updated dependencies [11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
-- Updated dependencies [d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+- Updated dependencies [11c372fa](https://github.com/keystonejs/keystone/commit/11c372fa):
+- Updated dependencies [d9a1be91](https://github.com/keystonejs/keystone/commit/d9a1be91):
   - @arch-ui/modal-utils@0.0.3
 
 ## 0.0.2

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "falsey": "^1.0.0",
-    "fast-memoize": "^2.4.0",
+    "micro-memoize": "^4.0.9",
     "pino": "5.11.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/logger"
