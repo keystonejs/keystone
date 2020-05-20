@@ -156,7 +156,7 @@ const SortLink = ({
   return (
     <HeaderCell isSortable={sortable} isSelected={active} onClick={onClick} data-field={dataField}>
       {field.label}
-      {sortable && <SortDirectionArrow rotate={active && !sortAscending ? '180deg' : '0deg'} />}
+      {sortable && <SortDirectionArrow rotate={active && sortAscending ? '180deg' : '0deg'} />}
     </HeaderCell>
   );
 };
