@@ -3,26 +3,11 @@ const AWS = require('aws-sdk');
 const urlJoin = require('url-join');
 
 module.exports = class S3Adapter {
-  constructor({
-    accessKeyId,
-    secretAccessKey,
-    region,
-    bucket,
-    folder,
-    getFilename,
-    publicUrl,
-    s3Options,
-    uploadParams,
-  }) {
-    if (!accessKeyId || !secretAccessKey || !region || !bucket || !folder) {
-      throw new Error('S3Adapter requires accessKeyId, secretAccessKey, region, bucket, folder.');
+  constructor({ bucket, getFilename, publicUrl, s3Options, uploadParams, folder = '' }) {
+    if (!bucket) {
+      throw new Error('S3Adapter requires a bucket name.');
     }
-    this.s3 = new AWS.S3({
-      accessKeyId,
-      secretAccessKey,
-      region,
-      ...s3Options,
-    });
+    this.s3 = new AWS.S3(s3Options);
     this.bucket = bucket;
     this.folder = folder;
     if (getFilename) {
