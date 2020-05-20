@@ -222,6 +222,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
                           warnings={validationWarnings[field.path] || []}
                           onChange={onChange}
                           renderContext="dialog"
+                          isReadOnly={field.isReadOnly}
                         />
                       ),
                       [
