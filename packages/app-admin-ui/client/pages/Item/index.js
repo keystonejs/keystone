@@ -44,7 +44,7 @@ const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...prop
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
 
-const checkIsReadOnly = ({ maybeAccess, config }) => !maybeAccess.update || !!config.isReadOnly;
+const checkIsReadOnly = ({ maybeAccess, isReadOnly }) => !maybeAccess.update || !!isReadOnly;
 
 // Memoizing allows us to reduce the calls to `.serialize` when data hasn't
 // changed.
