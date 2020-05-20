@@ -87,7 +87,7 @@ Additional field configs affecting field rendering or display in `admin-ui`.
 
 #### `adminConfig.isReadOnly`
 
-This admin config makes the field read only in `admin-ui`, Field with `isReadOnly` set to `true` will be rendered as disabled and you can not modify them in Item Details page or in Create item modal.
+Fields with `isReadOnly` set to `true` will be disabled preventing users from modifying the min the Admin UI. This does not affect access control and fields can still be updated via GraphQL.
 
 ```javascript
 keystone.createList('Post', {
