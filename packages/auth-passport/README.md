@@ -128,6 +128,7 @@ const googleStrategy = keystone.createAuthStrategy({
     appSecret: '<Your Google App Secret>',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
+    callbackHost: 'http://localhost:3000',
 
     // Once a user is found/created and successfully matched to the
     // googleId, they are authenticated, and the token is returned here.
@@ -207,6 +208,7 @@ const googleStrategy = keystone.createAuthStrategy({
     appSecret: '<Your Google App Secret>',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
+    callbackHost: 'http://localhost:3000',
 
     loginPathMiddleware: (req, res, next) => {
       // An express middleware executed before the Passport social signin flow
