@@ -61,19 +61,26 @@ const BodyCell = styled('td')({
   padding: `${gridSize + 2}px ${gridSize}px`,
   position: 'relative',
 });
-const ItemLink = styled(Link)`
-  color: ${colors.text};
 
-  /* Increase hittable area on item link */
-  &:only-of-type::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
-  }
-`;
+const ItemLink = ({ path, item, ...props }) => (
+  <Link
+    to={`${path}/${item.id}`}
+    css={{
+      color: colors.text,
+
+      /* Increase hittable area on item link */
+      '&:only-of-type::before': {
+        content: '" "',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+      },
+    }}
+    {...props}
+  />
+);
 
 const BodyCellTruncated = styled(BodyCell)`
   max-width: 10rem;
@@ -130,7 +137,6 @@ const ListRow = ({
   fields,
   item,
   itemErrors = {},
-  link,
   linkField = '_label_',
   isSelected,
   onSelectChange,
@@ -168,12 +174,11 @@ const ListRow = ({
     setShowDeleteModal(false);
   };
 
-  const copyText = window.location.origin + link({ path: list.path, item });
   const items = [
     {
       content: 'Copy Link',
       icon: <LinkIcon />,
-      onClick: () => copyToClipboard(copyText),
+      onClick: () => copyToClipboard(`${window.location.origin}${list.fullPath}/${item.id}`),
     },
     {
       content: 'Delete',
@@ -214,7 +219,9 @@ const ListRow = ({
         if (path === linkField) {
           return (
             <BodyCellTruncated key={path}>
-              <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
+              <ItemLink path={list.fullPath} item={item}>
+                {item[linkField]}
+              </ItemLink>
             </BodyCellTruncated>
           );
         }
@@ -224,20 +231,14 @@ const ListRow = ({
         if (field.views.Cell) {
           const [Cell] = field.readViews([field.views.Cell]);
 
-          // TODO
-          // fix this later, creating a react component on every render is really bad
-          // react will rerender into the DOM on every react render
-          // probably not a huge deal on a leaf component like this but still bad
-          const LinkComponent = ({ children, ...data }) => (
-            <ItemLink to={link(data)}>{children}</ItemLink>
-          );
           content = (
             <Cell
               isSelected={isSelected}
               list={list}
+              item={item} // FIXME: just passing this for the password cell, but not that optimal
               data={item[path]}
               field={field}
-              Link={LinkComponent}
+              Link={ItemLink}
             />
           );
         } else {
@@ -276,20 +277,17 @@ const SingleCell = ({ columns, children }) => (
 );
 
 export default function ListTable({
-  adminPath,
   columnControl,
   fields,
-  isFullWidth,
   items,
   queryErrors = [],
   list,
-  onChange,
+  onDelete,
   onSelectChange,
   selectedItems,
   currentPage,
   filters,
   search,
-  itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
   linkField = '_label_',
 }) {
   const [sortBy, onSortChange] = useListSort();
@@ -308,11 +306,11 @@ export default function ListTable({
   const TableContents = ({ isLoading, children }) => (
     <Fragment>
       <colgroup>
-        <col width="32" />
+        <col css={{ width: '40px' }} />
         {fields.map(f => (
           <col key={f.path} />
         ))}
-        <col width="32" />
+        <col css={{ width: '40px' }} />
       </colgroup>
       <thead>
         <tr>
@@ -349,7 +347,7 @@ export default function ListTable({
 
   return (
     <Card css={{ marginBottom: '3em' }}>
-      <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
+      <Table id={cypressId} style={{ tableLayout: 'fixed' }}>
         <Suspense
           fallback={
             <TableContents isLoading>
@@ -410,10 +408,9 @@ export default function ListTable({
                         item={item}
                         itemErrors={queryErrors[itemIndex] || {}}
                         key={item.id}
-                        link={itemLink}
                         linkField={linkField}
                         list={list}
-                        onDelete={onChange}
+                        onDelete={onDelete}
                         onSelectChange={onSelectChange}
                       />
                     ))}
