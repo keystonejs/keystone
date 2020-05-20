@@ -278,7 +278,14 @@ const ListRow = ({
           content = item[path];
         }
 
-        return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
+        return (
+          <BodyCellTruncated
+            key={path}
+            css={{ fontFamily: field.isPrimaryKey ? 'Monaco, Consolas, monospace' : null }}
+          >
+            {content}
+          </BodyCellTruncated>
+        );
       })}
       <BodyCell css={{ padding: 0 }}>
         <Dropdown
