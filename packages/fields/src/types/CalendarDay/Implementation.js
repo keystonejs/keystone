@@ -1,21 +1,33 @@
-import { formatISO, parseISO } from 'date-fns';
+import { formatISO, parseISO, compareAsc, compareDesc, isValid } from 'date-fns';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
 export class CalendarDay extends Implementation {
-  constructor(
-    path,
-    {
-      format = 'yyyy-MM-dd',
-      yearRangeFrom = new Date().getFullYear() - 100,
-      yearRangeTo = new Date().getFullYear(),
-    }
-  ) {
+  constructor(path, { format = 'yyyy-MM-dd', dateFrom, dateTo }) {
     super(...arguments);
     this.format = format;
-    this.yearRangeFrom = yearRangeFrom;
-    this.yearRangeTo = yearRangeTo;
+    this._dateFromString = dateFrom;
+    this._dateToString = dateTo;
+    this._dateFromJS = dateFrom && parseISO(dateFrom);
+    this._dateToJS = dateTo && parseISO(dateTo);
+
+    if (dateFrom && !isValid(this._dateFromJS)) {
+      throw new Error(
+        `Invalid value for option "dateFrom" of field '${this.listKey}.${path}': "${dateFrom}"`
+      );
+    }
+    if (dateTo && !isValid(this._dateToJS)) {
+      throw new Error(
+        `Invalid value for option "dateTo" of field '${this.listKey}.${path}': "${dateTo}"`
+      );
+    }
+
+    if (dateTo && dateFrom && compareAsc(this._dateFromJS, this._dateToJS) === 1) {
+      throw new Error(
+        `Invalid values for options "dateFrom", "dateTo" of field '${this.listKey}.${path}': "${dateFrom}" > "${dateTo}"`
+      );
+    }
     this.isOrderable = true;
   }
 
@@ -43,9 +55,30 @@ export class CalendarDay extends Implementation {
     return {
       ...meta,
       format: this.format,
-      yearRangeFrom: this.yearRangeFrom,
-      yearRangeTo: this.yearRangeTo,
+      dateFrom: this.dateFrom,
+      dateTo: this.dateTo,
     };
+  }
+
+  async validateInput({ resolvedData, addFieldValidationError }) {
+    const parsedValue = resolvedData[this.path] && parseISO(resolvedData[this.path]);
+    if (!isValid(parsedValue)) {
+      addFieldValidationError('Invalid CalendarDay value', { value: resolvedData[this.path] });
+    }
+    if (parsedValue) {
+      if (this._dateFromJS && compareAsc(this._dateFromJS, parsedValue) === 1) {
+        addFieldValidationError('Value is before earliest allowed date.', {
+          value: resolvedData[this.path],
+          dateFrom: this._dateFromString,
+        });
+      }
+      if (this._dateToJS && compareDesc(this._dateToJS, parsedValue) === 1) {
+        addFieldValidationError('Value is after latest allowed date.', {
+          value: resolvedData[this.path],
+          dateTo: this._dateToString,
+        });
+      }
+    }
   }
 }
 

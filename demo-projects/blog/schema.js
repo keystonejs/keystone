@@ -45,8 +45,8 @@ exports.User = {
     dob: {
       type: CalendarDay,
       format: 'do MMMM yyyy',
-      yearRangeFrom: 1901,
-      yearRangeTo: getYear(new Date()),
+      dateFrom: '1901-01-01',
+      dateTo: getYear(new Date()), // FIXME
     },
     ...(process.env.IFRAMELY_API_KEY
       ? {
