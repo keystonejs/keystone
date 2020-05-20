@@ -4,7 +4,10 @@ import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
 
 export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDelete }) {
-  const [deleteItems, { loading }] = useMutation(list.deleteManyMutation);
+  const [deleteItems, { loading }] = useMutation(list.deleteManyMutation, {
+    refetchQueries: ['getList'],
+  });
+
   return (
     <Confirm
       isOpen={isOpen}
@@ -21,11 +24,10 @@ export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDele
         <Button
           appearance="danger"
           variant="ghost"
-          onClick={() => {
+          onClick={async () => {
             if (loading) return;
-            deleteItems({
-              variables: { ids: itemIds },
-            }).then(onDelete);
+            await deleteItems({ variables: { ids: itemIds } });
+            onDelete();
           }}
         >
           Delete

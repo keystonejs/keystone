@@ -526,7 +526,10 @@ class KnexListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(({ tableName }) => tableName === this.key)
+        .filter(
+          ({ tableName, left, right }) =>
+            tableName === this.key && right && left.refListKey === right.refListKey
+        )
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )

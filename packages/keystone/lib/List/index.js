@@ -525,10 +525,10 @@ module.exports = class List {
 
   // Wrap the "inner" resolver for a single output field with list-specific modifiers
   _wrapFieldResolver(field, innerResolver) {
-    return (item, args, context, info) => {
+    return async (item, args, context, info) => {
       // Check access
       const operation = 'read';
-      const access = context.getFieldAccessControlForUser(
+      const access = await context.getFieldAccessControlForUser(
         this.key,
         field.path,
         undefined,
@@ -661,26 +661,25 @@ module.exports = class List {
     return mutations;
   }
 
-  checkFieldAccess(operation, itemsToUpdate, context, { gqlName, ...extraInternalData }) {
+  async checkFieldAccess(operation, itemsToUpdate, context, { gqlName, ...extraInternalData }) {
     const restrictedFields = [];
+    for (const { existingItem, id, data } of itemsToUpdate) {
+      const fields = this.fields.filter(field => field.path in data);
 
-    itemsToUpdate.forEach(({ existingItem, id, data }) => {
-      this.fields
-        .filter(field => field.path in data)
-        .forEach(field => {
-          const access = context.getFieldAccessControlForUser(
-            this.key,
-            field.path,
-            data,
-            existingItem,
-            operation,
-            { gqlName, itemId: id, ...extraInternalData }
-          );
-          if (!access) {
-            restrictedFields.push(field.path);
-          }
-        });
-    });
+      for (const field of fields) {
+        const access = await context.getFieldAccessControlForUser(
+          this.key,
+          field.path,
+          data,
+          existingItem,
+          operation,
+          { gqlName, itemId: id, ...extraInternalData }
+        );
+        if (!access) {
+          restrictedFields.push(field.path);
+        }
+      }
+    }
     if (restrictedFields.length) {
       throwAccessDenied(opToType[operation], context, gqlName, extraInternalData, {
         restrictedFields,
@@ -688,8 +687,8 @@ module.exports = class List {
     }
   }
 
-  checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
-    const access = context.getListAccessControlForUser(this.key, originalInput, operation, {
+  async checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
+    const access = await context.getListAccessControlForUser(this.key, originalInput, operation, {
       gqlName,
       ...extraInternalData,
     });
@@ -838,7 +837,7 @@ module.exports = class List {
   }
 
   async listQuery(args, context, gqlName, info, from) {
-    const access = this.checkListAccess(context, undefined, 'read', { gqlName });
+    const access = await this.checkListAccess(context, undefined, 'read', { gqlName });
 
     return this._itemsQuery(mergeWhereClause(args, access), { context, info, from });
   }
@@ -849,7 +848,7 @@ module.exports = class List {
       // on what the user requested
       // Evaluation takes place in ../Keystone/index.js
       getCount: async () => {
-        const access = this.checkListAccess(context, undefined, 'read', { gqlName });
+        const access = await this.checkListAccess(context, undefined, 'read', { gqlName });
 
         const { count } = await this._itemsQuery(mergeWhereClause(args, access), {
           meta: true,
@@ -906,7 +905,10 @@ module.exports = class List {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
-    const access = this.checkListAccess(context, undefined, operation, { gqlName, itemId: id });
+    const access = await this.checkListAccess(context, undefined, operation, {
+      gqlName,
+      itemId: id,
+    });
 
     const result = await this.getAccessControlledItem(id, access, {
       context,
@@ -1323,13 +1325,13 @@ module.exports = class List {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
 
-    this.checkListAccess(context, data, operation, { gqlName });
+    await this.checkListAccess(context, data, operation, { gqlName });
 
     const existingItem = undefined;
 
     const itemsToUpdate = [{ existingItem, data }];
 
-    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
+    await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
     return await this._createSingle(data, existingItem, context, mutationState);
   }
@@ -1338,11 +1340,11 @@ module.exports = class List {
     const operation = 'create';
     const gqlName = this.gqlNames.createManyMutationName;
 
-    this.checkListAccess(context, data, operation, { gqlName });
+    await this.checkListAccess(context, data, operation, { gqlName });
 
     const itemsToUpdate = data.map(d => ({ existingItem: undefined, data: d.data }));
 
-    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
+    await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
     return Promise.all(
       data.map(d => this._createSingle(d.data, undefined, context, mutationState))
@@ -1408,7 +1410,7 @@ module.exports = class List {
     const gqlName = this.gqlNames.updateMutationName;
     const extraData = { gqlName, itemId: id };
 
-    const access = this.checkListAccess(context, data, operation, extraData);
+    const access = await this.checkListAccess(context, data, operation, extraData);
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1418,7 +1420,7 @@ module.exports = class List {
 
     const itemsToUpdate = [{ existingItem, data }];
 
-    this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
+    await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return await this._updateSingle(id, data, existingItem, context, mutationState);
   }
@@ -1429,7 +1431,7 @@ module.exports = class List {
     const ids = data.map(d => d.id);
     const extraData = { gqlName, itemIds: ids };
 
-    const access = this.checkListAccess(context, data, operation, extraData);
+    const access = await this.checkListAccess(context, data, operation, extraData);
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
@@ -1440,7 +1442,7 @@ module.exports = class List {
     });
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations
-    this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
+    await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
     return Promise.all(
       itemsToUpdate.map(({ existingItem, id, data }) =>
@@ -1479,7 +1481,10 @@ module.exports = class List {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteMutationName;
 
-    const access = this.checkListAccess(context, undefined, operation, { gqlName, itemId: id });
+    const access = await this.checkListAccess(context, undefined, operation, {
+      gqlName,
+      itemId: id,
+    });
 
     const existingItem = await this.getAccessControlledItem(id, access, {
       context,
@@ -1494,7 +1499,10 @@ module.exports = class List {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
-    const access = this.checkListAccess(context, undefined, operation, { gqlName, itemIds: ids });
+    const access = await this.checkListAccess(context, undefined, operation, {
+      gqlName,
+      itemIds: ids,
+    });
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 

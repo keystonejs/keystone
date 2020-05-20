@@ -1,5 +1,11 @@
 # @keystonejs/adapter-knex
 
+## 10.0.1
+
+### Patch Changes
+
+- [`63e00d80`](https://github.com/keystonejs/keystone/commit/63e00d805f3653863002befdaeda74c711f36f6b) [#2973](https://github.com/keystonejs/keystone/pull/2973) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug which could lead to data loss (knex adapter only) when deleting items from a list which was the `1` side of a `1:N` relationship.
+
 ## 10.0.0
 
 ### Major Changes
