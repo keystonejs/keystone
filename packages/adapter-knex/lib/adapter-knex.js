@@ -26,6 +26,8 @@ class KnexAdapter extends BaseKeystoneAdapter {
     this.rels = undefined;
     if (this.client === 'mysql') {
       Object.assign(KnexFieldAdapter.prototype, MysqlFieldAdapterMixin);
+      Object.assign(KnexListAdapter.prototype, MysqlListAdapterMixin);
+      Object.assign(QueryBuilder.prototype, MysqlQueryBuilderMixin);
     }
   }
 
@@ -632,8 +634,7 @@ class QueryBuilder {
     const searchField = listAdapter.fieldAdaptersByPath['name'];
     if (search !== undefined && searchField) {
       if (searchField.fieldName === 'Text') {
-        const f = escapeRegExp;
-        this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
+        this._addSearch(baseTableAlias, search);
       } else {
         this._query.whereRaw('false'); // Return no results
       }
@@ -667,6 +668,11 @@ class QueryBuilder {
         );
       }
     }
+  }
+
+  _addSearch(search, listAdapter, baseTableAlias) {
+    const f = escapeRegExp;
+    this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
   }
 
   get() {
@@ -1004,6 +1010,24 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     };
   }
 }
+
+const MysqlListAdapterMixin = {
+  async _createSingle(realData) {
+    const id = (
+      await this._query()
+        .insert(realData)
+        .into(this.tableName)
+    )[0];
+    return { item: { ...realData, id }, itemId: id };
+  },
+};
+
+const MysqlQueryBuilderMixin = {
+  _addSearch(baseTableAlias, search) {
+    const f = escapeRegExp;
+    this._query.andWhere(`${baseTableAlias}.name`, 'LIKE', `%${f(search)}%`);
+  },
+};
 
 const MysqlFieldAdapterMixin = {
   equalityConditionsInsensitive(dbPath, f = identity) {
