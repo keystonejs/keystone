@@ -29,6 +29,7 @@ import { AutocompleteCaptor } from '@arch-ui/input';
 import PageLoading from './PageLoading';
 import { useList } from '../providers/List';
 import { validateFields, handleCreateUpdateMutationError } from '../util';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const Render = ({ children }) => children();
 
@@ -199,9 +200,9 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
               return creatable.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
-                    let [Field] = field.readViews([field.views.Field]);
+                    const [Field] = field.readViews([field.views.Field]);
                     // eslint-disable-next-line react-hooks/rules-of-hooks
-                    let onChange = useCallback(value => {
+                    const onChange = useCallback(value => {
                       setItem(item => ({
                         ...item,
                         [field.path]: value,
@@ -212,17 +213,19 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
                     // eslint-disable-next-line react-hooks/rules-of-hooks
                     return useMemo(
                       () => (
-                        <Field
-                          autoFocus={!i}
-                          value={item[field.path]}
-                          savedValue={item[field.path]}
-                          field={field}
-                          /* TODO: Permission query results */
-                          errors={validationErrors[field.path] || []}
-                          warnings={validationWarnings[field.path] || []}
-                          onChange={onChange}
-                          renderContext="dialog"
-                        />
+                        <ErrorBoundary>
+                          <Field
+                            autoFocus={!i}
+                            value={item[field.path]}
+                            savedValue={item[field.path]}
+                            field={field}
+                            /* TODO: Permission query results */
+                            errors={validationErrors[field.path] || []}
+                            warnings={validationWarnings[field.path] || []}
+                            onChange={onChange}
+                            renderContext="dialog"
+                          />
+                        </ErrorBoundary>
                       ),
                       [
                         i,
