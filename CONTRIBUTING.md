@@ -275,11 +275,8 @@ We also build commonjs builds to run in node (for testing with jest or etc.) and
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 <!-- prettier-ignore-start -->
-
 <!-- markdownlint-disable -->
-
 <table>
   <tr>
     <td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="80px;" alt=""/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=JedWatson" title="Code">💻</a></td>
@@ -337,13 +334,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/wcalebgray"><img src="https://avatars2.githubusercontent.com/u/11668534?v=4" width="80px;" alt=""/><br /><sub><b>Caleb Gray</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=wcalebgray" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone/commits?author=wcalebgray" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://hackweb.altervista.org"><img src="https://avatars0.githubusercontent.com/u/754139?v=4" width="80px;" alt=""/><br /><sub><b>frank10gm</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=frank10gm" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
-
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
