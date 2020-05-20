@@ -33,8 +33,6 @@ import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
 
-import { useAdminMeta } from '../../providers/AdminMeta';
-
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
@@ -47,28 +45,14 @@ export function ListLayout(props) {
   const [sortBy, handleSortChange] = useListSort();
   const [selectedItems, onSelectChange] = useListSelect(items);
 
-  const { adminPath } = useAdminMeta();
-  const history = useHistory();
-
   // Misc.
   // ------------------------------
 
   const onDeleteSelectedItems = () => {
-    query.refetch();
     onSelectChange([]);
   };
-  const onDeleteItem = () => {
-    query.refetch();
-  };
-  const onUpdateSelectedItems = () => {
-    query.refetch();
-  };
-  const onCreate = ({ data }) => {
-    const id = data[list.gqlNames.createMutationName].id;
-    query.refetch().then(() => {
-      history.push(`${list.fullPath}/${id}`);
-    });
-  };
+
+  const onUpdateSelectedItems = () => {};
 
   // Success
   // ------------------------------
@@ -189,12 +173,11 @@ export function ListLayout(props) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal />
 
       <Container isFullWidth>
         <ListTable
           {...props}
-          adminPath={adminPath}
           columnControl={
             <ColumnPopout
               listKey={list.key}
@@ -223,7 +206,6 @@ export function ListLayout(props) {
           items={items}
           queryErrors={queryErrors}
           list={list}
-          onChange={onDeleteItem}
           onSelectChange={onSelectChange}
           selectedItems={selectedItems}
           sortBy={sortBy}
@@ -239,7 +221,8 @@ export function ListLayout(props) {
 const ListPage = props => {
   const {
     list,
-    listData: { items, itemCount, queryErrors },
+    listData: { items, itemCount },
+    queryErrorsParsed,
     query,
   } = useList();
 
@@ -250,11 +233,12 @@ const ListPage = props => {
   // ------------------------------
   useEffect(() => {
     const maybePersistedSearch = list.getPersistedSearch();
+    if (location.search === maybePersistedSearch) {
+      return;
+    }
 
     if (location.search) {
-      if (location.search !== maybePersistedSearch) {
-        list.setPersistedSearch(location.search);
-      }
+      list.setPersistedSearch(location.search);
     } else if (maybePersistedSearch) {
       history.replace({
         ...location,
@@ -267,9 +251,8 @@ const ListPage = props => {
   // ------------------------------
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
-  // Note this is the error returned from Apollo, *not* any that are part of the GQL result.
   if (query.error && (!query.data || !items || !Object.keys(items).length)) {
-    let message = query.error.message;
+    let message = queryErrorsParsed.message;
 
     // If there was an error returned by GraphQL, use that message instead
     // FIXME: convert this to an optional chaining operator at some point
@@ -305,7 +288,7 @@ const ListPage = props => {
         items={items}
         itemCount={itemCount}
         query={query}
-        queryErrors={queryErrors}
+        queryErrors={queryErrorsParsed}
       />
     </Fragment>
   );

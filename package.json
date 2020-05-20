@@ -54,7 +54,7 @@
     "@preconstruct/cli": "^1.1.2",
     "@types/jest": "^25.1.2",
     "all-contributors-cli": "^6.2.0",
-    "apollo-client": "^2.6.8",
+    "apollo-client": "^2.6.10",
     "babel-eslint": "^10.0.1",
     "babel-plugin-emotion": "^10.0.27",
     "chalk": "^2.4.2",
@@ -201,5 +201,8 @@
       "!packages/fields/types.js",
       "!packages/mongo-join-builder/examples/**"
     ]
+  },
+  "resolutions": {
+    "graphql-upload": "^10.0.0"
   }
 }

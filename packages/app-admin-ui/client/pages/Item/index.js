@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
-import styled from '@emotion/styled';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
@@ -30,7 +29,6 @@ import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
   toastItemSuccess,
-  toastError,
   validateFields,
   handleCreateUpdateMutationError,
 } from '../../util';
@@ -40,9 +38,7 @@ import { useList } from '../../providers/List';
 
 const Render = ({ children }) => children();
 
-const Form = styled.form({
-  marginBottom: gridSize * 3,
-});
+const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...props} />;
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
@@ -72,8 +68,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
 
   const history = useHistory();
   const { addToast } = useToasts();
-
-  const { query: listQuery } = useList();
 
   const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
     errorPolicy: 'all',
@@ -114,25 +108,14 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     }
   };
 
-  const onDelete = async deletePromise => {
+  const onDelete = () => {
     deleteConfirmed.current = true;
-
-    try {
-      await deletePromise;
-      const refetch = listQuery.refetch();
-
-      if (mounted) {
-        setShowDeleteModal(false);
-      }
-
-      toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
-
-      // Wait for the refetch to finish before returning to the list
-      await refetch;
-      history.replace(list.fullPath);
-    } catch (error) {
-      toastError({ addToast }, error);
+    if (mounted) {
+      setShowDeleteModal(false);
     }
+
+    toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
+    history.replace(list.getFullPersistentPath());
   };
 
   const openDeleteModal = () => {
@@ -241,11 +224,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     }
   };
 
-  const onCreate = ({ data }) => {
-    const { id } = data[list.gqlNames.createMutationName];
-    history.push(`${list.fullPath}/${id}`);
-  };
-
   return (
     <Fragment>
       {itemHasChanged.current && !deleteConfirmed.current && <PreventNavigation />}
@@ -326,7 +304,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
         />
       </Card>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal />
       <DeleteItemModal
         isOpen={showDeleteModal}
         item={initialData}
@@ -355,15 +333,14 @@ const ItemNotFound = ({ errorMessage, list }) => (
 const ItemPage = ({ itemId }) => {
   const { list } = useList();
 
-  const itemQuery = list.getItemQuery(itemId);
-
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache
   // NOTE: We specifically trigger this query here, before the later code which
   // could Suspend which allows the code and data to load in parallel.
-  const { loading, error, data, refetch } = useQuery(itemQuery, {
+  const { loading, error, data, refetch } = useQuery(list.itemQuery, {
     fetchPolicy: 'network-only',
     errorPolicy: 'all',
+    variables: { id: itemId },
   });
 
   // Now that the network request for data has been triggered, we
