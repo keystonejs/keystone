@@ -1,5 +1,33 @@
 # @arch-ui/pagination
 
+## 0.0.21
+
+### Patch Changes
+
+- [`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be) [#2946](https://github.com/keystonejs/keystone/pull/2946) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-router-dom to 5.2.0.
+
+- Updated dependencies [[`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be)]:
+  - @arch-ui/button@0.0.19
+
+## 0.0.20
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/button@0.0.18
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [[`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/icons@0.1.0
+
 ## 0.0.18
 
 ### Patch Changes

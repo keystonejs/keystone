@@ -45,7 +45,7 @@ function errorMessageFn({ type }) {
   }
 }
 
-export default class FileField extends Component {
+export default class CloudinaryImageField extends Component {
   static propTypes = {
     cancelButtonLabel: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
@@ -233,7 +233,7 @@ export default class FileField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        <FieldDescription text={field.config.adminDoc} />
+        <FieldDescription text={field.adminDoc} />
         <FieldInput>
           {!isEmpty && imagePath ? (
             <Wrapper>

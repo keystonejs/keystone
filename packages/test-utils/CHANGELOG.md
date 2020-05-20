@@ -1,5 +1,29 @@
 # @keystonejs/test-utils
 
+## 6.1.2
+
+### Patch Changes
+
+- [`ddd6b435`](https://github.com/keystonejs/keystone/commit/ddd6b435cc1301cd5ea1ff2e24fa827d9b46aea3) [#2889](https://github.com/keystonejs/keystone/pull/2889) Thanks [@timleslie](https://github.com/timleslie)! - Explicitly set `cookieSecret` in `Keystone` objects to prevent warnings.
+
+- Updated dependencies [[`12126788`](https://github.com/keystonejs/keystone/commit/121267885eb3e279eb5b6d035568f547323dd245), [`e0e3e30a`](https://github.com/keystonejs/keystone/commit/e0e3e30a9051741de3f5a0c12ba00f2238d54800), [`c8e52f3b`](https://github.com/keystonejs/keystone/commit/c8e52f3ba892269922c1ed3af0c2114f07387704), [`2a1e4f49`](https://github.com/keystonejs/keystone/commit/2a1e4f49d7f234c49e5b04440ff786ddf3e9e7ed), [`9e2e0071`](https://github.com/keystonejs/keystone/commit/9e2e00715aff50f2ddfedf3dbc14f390275ff23b), [`b5c44934`](https://github.com/keystonejs/keystone/commit/b5c4493442c5e4cfeba23c058a9a6819c628aab9), [`0fbc5b98`](https://github.com/keystonejs/keystone/commit/0fbc5b989a9f96248d1bd7f2f589fe77cb1d8f7d), [`da1359df`](https://github.com/keystonejs/keystone/commit/da1359dfc1bff7e27505eff876efe3a0865bae2d), [`babed628`](https://github.com/keystonejs/keystone/commit/babed628a408d7da39990a4c89a19828468555a8), [`9bad0e5f`](https://github.com/keystonejs/keystone/commit/9bad0e5fe67d2379537f4cb145058c6c809b3533), [`e765ad20`](https://github.com/keystonejs/keystone/commit/e765ad20abae9838f64b72b7d43767ec87db336a)]:
+  - @keystonejs/keystone@9.0.0
+  - @keystonejs/adapter-knex@10.0.0
+  - @keystonejs/adapter-mongoose@8.1.0
+  - @keystonejs/app-graphql@5.1.7
+
+## 6.1.1
+
+### Patch Changes
+
+- [`3d40bd7d`](https://github.com/keystonejs/keystone/commit/3d40bd7dd39f2b5589012356dd2b1698eda4f0b2) [#2850](https://github.com/keystonejs/keystone/pull/2850) Thanks [@Vultraz](https://github.com/Vultraz)! - Switched to mongodb-memory-server-core.
+
+* [`96f0c6e9`](https://github.com/keystonejs/keystone/commit/96f0c6e917ecdd02af8da52829608b003219d3ca) [#2845](https://github.com/keystonejs/keystone/pull/2845) Thanks [@timleslie](https://github.com/timleslie)! - Updated patch versions of dependencies.
+
+* Updated dependencies [[`f266a692`](https://github.com/keystonejs/keystone/commit/f266a6923a24c84936d66e00ec7de0ea0956445b), [`8a135a88`](https://github.com/keystonejs/keystone/commit/8a135a88ae6f3a4434db0ba7033cad2e5f18651e)]:
+  - @keystonejs/app-graphql@5.1.6
+  - @keystonejs/keystone@8.1.4
+
 ## 6.1.0
 
 ### Minor Changes

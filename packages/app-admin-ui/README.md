@@ -17,10 +17,12 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
+const keystone = new Keystone({...});
+
 const authStrategy = keystone.createAuthStrategy({...});
 
 module.exports = {
-  keystone: new Keystone(),
+  keystone,
   apps: [
     new GraphQLApp(),
     new AdminUIApp({

@@ -401,6 +401,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "wcalebgray",
+      "name": "Caleb Gray",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/11668534?v=4",
+      "profile": "https://github.com/wcalebgray",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,

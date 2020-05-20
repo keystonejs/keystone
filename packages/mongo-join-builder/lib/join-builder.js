@@ -57,7 +57,7 @@ function relationshipPipeline(relationship) {
   const { cardinality, columnNames } = rel;
   const extraPipeline = pipelineBuilder(relationship);
   const extraField = `${uniqueField}_all`;
-  if (cardinality === '1:N' || cardinality === 'N:1') {
+  if (cardinality !== 'N:N') {
     // Perform a single FK join
     let targetKey, foreignKey;
     // FIXME: I feel like the logic here could use some revie

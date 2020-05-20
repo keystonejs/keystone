@@ -31,7 +31,7 @@ export const FieldLabel = props => {
       {accessError ? (
         <ShieldIcon title={accessError.message} css={{ color: colors.N20, marginRight: '1em' }} />
       ) : null}{' '}
-      {props.field.config.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
+      {props.field.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
     </label>
   );
 };

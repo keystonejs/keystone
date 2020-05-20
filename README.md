@@ -131,6 +131,9 @@ We'd like to start by thanking all our wonderful contributors:
     <td align="center"><a href="https://atticus.dev"><img src="https://avatars1.githubusercontent.com/u/9361948?v=4" width="80px;" alt=""/><br /><sub><b>Liam Clarke</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=LiamAttClarke" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/wbarcovsky"><img src="https://avatars2.githubusercontent.com/u/5498761?v=4" width="80px;" alt=""/><br /><sub><b>Vladimir Barcovsky</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=wbarcovsky" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/wcalebgray"><img src="https://avatars2.githubusercontent.com/u/11668534?v=4" width="80px;" alt=""/><br /><sub><b>Caleb Gray</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=wcalebgray" title="Code">💻</a> <a href="https://github.com/keystonejs/keystone/commits?author=wcalebgray" title="Tests">⚠️</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->

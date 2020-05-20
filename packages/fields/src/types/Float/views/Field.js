@@ -12,18 +12,30 @@ const FloatField = ({ onChange, autoFocus, field, value, errors }) => {
     }
   };
 
+  const valueToString = value => {
+    // Make the value a string to keep react happy.
+    if (typeof value === 'string') {
+      return value;
+    } else if (typeof value === 'number') {
+      return String(value);
+    } else {
+      // If it is neither string nor number then it must be empty.
+      return '';
+    }
+  };
+
   const htmlID = `ks-input-${field.path}`;
 
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.config.adminDoc} />
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
           type="text"
-          value={value}
+          value={valueToString(value)}
           onChange={handleChange}
           id={htmlID}
         />

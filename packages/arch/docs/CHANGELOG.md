@@ -1,5 +1,70 @@
 # @arch-ui/docs
 
+## 1.1.22
+
+### Patch Changes
+
+- Updated dependencies [[`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be)]:
+  - @arch-ui/button@0.0.19
+  - @arch-ui/dropdown@0.0.18
+  - @arch-ui/navbar@0.1.11
+  - @arch-ui/pagination@0.0.21
+
+## 1.1.21
+
+### Patch Changes
+
+- Updated dependencies [[`216e6dec`](https://github.com/keystonejs/keystone/commit/216e6deca2b0d9a22ddbf0657a01b5122c178269)]:
+  - @arch-ui/popout@0.0.19
+
+## 1.1.20
+
+### Patch Changes
+
+- Updated dependencies [[`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d), [`45b151b0`](https://github.com/keystonejs/keystone/commit/45b151b05de0583ba50364caeda8b5bb7a111385)]:
+  - @arch-ui/navbar@0.1.10
+  - @arch-ui/badge@0.0.16
+  - @arch-ui/dialog@0.0.21
+
+## 1.1.19
+
+### Patch Changes
+
+- [`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a) [#2799](https://github.com/keystonejs/keystone/pull/2799) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Upgraded React and Emotion packages.
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a)]:
+  - @arch-ui/alert@0.0.17
+  - @arch-ui/badge@0.0.15
+  - @arch-ui/button@0.0.18
+  - @arch-ui/controls@0.1.8
+  - @arch-ui/dialog@0.0.20
+  - @arch-ui/dropdown@0.0.17
+  - @arch-ui/fields@3.0.1
+  - @arch-ui/icons@0.1.1
+  - @arch-ui/input@0.1.9
+  - @arch-ui/layout@0.2.13
+  - @arch-ui/loading@0.0.17
+  - @arch-ui/lozenge@0.0.16
+  - @arch-ui/navbar@0.1.9
+  - @arch-ui/pagination@0.0.20
+  - @arch-ui/pill@0.1.15
+  - @arch-ui/popout@0.0.18
+  - @arch-ui/select@0.1.8
+  - @arch-ui/tooltip@0.1.12
+  - @arch-ui/typography@0.0.17
+
+## 1.1.18
+
+### Patch Changes
+
+- Updated dependencies [[`78fda9d7`](https://github.com/keystonejs/keystone/commit/78fda9d7b9a090240c946553cc42ba0bf6b8a88c), [`732128fb`](https://github.com/keystonejs/keystone/commit/732128fb3598039cbb13b08c237fcd3c612b6621), [`e5fac4db`](https://github.com/keystonejs/keystone/commit/e5fac4db00e1d38c2271d8ca55e7e2bd86a07dfa), [`9c403c7c`](https://github.com/keystonejs/keystone/commit/9c403c7c273cc915d023bd98986d43cd4ab74477)]:
+  - @arch-ui/fields@3.0.0
+  - @arch-ui/tooltip@0.1.11
+  - @arch-ui/input@0.1.8
+  - @arch-ui/icons@0.1.0
+  - @arch-ui/pagination@0.0.19
+  - @arch-ui/pill@0.1.14
+
 ## 1.1.17
 
 ### Patch Changes

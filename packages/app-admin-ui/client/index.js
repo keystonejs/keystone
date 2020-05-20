@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo } from 'react';
+import React, { Fragment, Suspense, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
@@ -6,14 +6,17 @@ import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
 
 import { globalStyles } from '@arch-ui/theme';
+import { InfoIcon } from '@arch-ui/icons';
 
-import ApolloClient from './apolloClient';
+import { initApolloClient } from './apolloClient';
 import Nav from './components/Nav';
 import ScrollToTop from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
 import PageLoading from './components/PageLoading';
 import ToastContainer from './components/ToastContainer';
+import DocTitle from './components/DocTitle';
+import PageError from './components/PageError';
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 import { ListProvider } from './providers/List';
 import { HooksProvider } from './providers/Hooks';
@@ -27,6 +30,7 @@ import SignoutPage from './pages/Signout';
 
 export const KeystoneAdminUI = () => {
   const {
+    listKeys,
     getListByPath,
     adminPath,
     signinPath,
@@ -36,7 +40,7 @@ export const KeystoneAdminUI = () => {
     hooks,
   } = useAdminMeta();
 
-  const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
+  const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   const routes = [
     ...pages
@@ -54,7 +58,25 @@ export const KeystoneAdminUI = () => {
       }),
     {
       path: `${adminPath}`,
-      component: () => <HomePage />,
+      component: () => {
+        if (listKeys.length === 0) {
+          return (
+            <Fragment>
+              <DocTitle title="Home" />
+              <PageError icon={InfoIcon}>
+                <p>
+                  No lists defined.{' '}
+                  <a target="_blank" href="https://keystonejs.com/tutorials/add-lists">
+                    Get started by creating your first list.
+                  </a>
+                </p>
+              </PageError>
+            </Fragment>
+          );
+        }
+
+        return <HomePage />;
+      },
       exact: true,
     },
     {
@@ -72,15 +94,9 @@ export const KeystoneAdminUI = () => {
         }
 
         return (
-          <ListProvider list={list}>
+          <ListProvider key={listKey} list={list}>
             <Switch>
-              <Route
-                exact
-                path={`${adminPath}/:list`}
-                render={routeProps => (
-                  <ListPage key={listKey} list={list} routeProps={routeProps} />
-                )}
-              />
+              <Route exact path={`${adminPath}/:list`} render={() => <ListPage key={listKey} />} />
               ,
               <Route
                 exact
@@ -89,7 +105,7 @@ export const KeystoneAdminUI = () => {
                   match: {
                     params: { itemId },
                   },
-                }) => <ItemPage key={`${listKey}-${itemId}`} list={list} itemId={itemId} />}
+                }) => <ItemPage key={`${listKey}-${itemId}`} itemId={itemId} />}
               />
               ,
               <Route render={() => <InvalidRoutePage />} />,

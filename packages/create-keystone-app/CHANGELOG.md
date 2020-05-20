@@ -1,5 +1,19 @@
 # create-keystone-app
 
+## 3.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`babed628`](https://github.com/keystonejs/keystone/commit/babed628a408d7da39990a4c89a19828468555a8), [`9bad0e5f`](https://github.com/keystonejs/keystone/commit/9bad0e5fe67d2379537f4cb145058c6c809b3533), [`e765ad20`](https://github.com/keystonejs/keystone/commit/e765ad20abae9838f64b72b7d43767ec87db336a)]:
+  - @keystonejs/adapter-knex@10.0.0
+  - @keystonejs/adapter-mongoose@8.1.0
+
+## 3.1.1
+
+### Patch Changes
+
+- [`0229e9f5`](https://github.com/keystonejs/keystone/commit/0229e9f5a0e783d8ace577d3b49bc532cc213754) [#2804](https://github.com/keystonejs/keystone/pull/2804) Thanks [@timleslie](https://github.com/timleslie)! - Updated `create-table` script to use `cross-env` to support Windows. Fixes #2803.
+
 ## 3.1.0
 
 ### Minor Changes

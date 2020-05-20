@@ -310,6 +310,22 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
+  async _unsetForeignOneToOneValues(data, id) {
+    // If there's a 1:1 FK in the data on a different list we need to go and
+    // delete it from any other item;
+    await Promise.all(
+      Object.keys(data)
+        .map(key => ({ adapter: this.fieldAdaptersByPath[key] }))
+        .filter(({ adapter }) => adapter && adapter.isRelationship)
+        .filter(
+          ({ adapter: { rel } }) => rel.cardinality === '1:1' && rel.tableName !== this.tableName
+        )
+        .map(({ adapter: { rel: { tableName, columnName } } }) =>
+          this._setNullByValue({ tableName, columnName, value: id })
+        )
+    );
+  }
+
   async _processNonRealFields(data, processFunction) {
     return resolveAllKeys(
       arrayToObject(
@@ -411,6 +427,7 @@ class KnexListAdapter extends BaseListAdapter {
 
     // Unset any real 1:1 fields
     await this._unsetOneToOneValues(realData);
+    await this._unsetForeignOneToOneValues(data, id);
 
     // Update the real data
     const query = this._query()
@@ -509,7 +526,10 @@ class KnexListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(({ tableName }) => tableName === this.key)
+        .filter(
+          ({ tableName, left, right }) =>
+            tableName === this.key && right && left.refListKey === right.refListKey
+        )
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )
@@ -551,7 +571,7 @@ class KnexListAdapter extends BaseListAdapter {
 class QueryBuilder {
   constructor(
     listAdapter,
-    { where = {}, first, skip, orderBy, search },
+    { where = {}, first, skip, sortBy, orderBy, search },
     { meta = false, from = {} }
   ) {
     this._tableAliases = {};
@@ -631,6 +651,17 @@ class QueryBuilder {
         const [orderField, orderDirection] = orderBy.split('_');
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
         this._query.orderBy(sortKey, orderDirection);
+      }
+      if (sortBy !== undefined) {
+        // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
+        this._query.orderBy(
+          sortBy.map(s => {
+            const [orderField, orderDirection] = s.split('_');
+            const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
+
+            return { column: sortKey, order: orderDirection };
+          })
+        );
       }
     }
   }

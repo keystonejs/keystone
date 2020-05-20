@@ -1,10 +1,10 @@
+/* global ENABLE_DEV_FEATURES */
 /** @jsx jsx */
 
-import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useMemo, forwardRef } from 'react'; // eslint-disable-line no-unused-vars
 import { Link, useRouteMatch } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
-import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
 import { colors, gridSize } from '@arch-ui/theme';
@@ -19,12 +19,11 @@ import {
 import { Title, Truncate } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
-import { PersonIcon } from '@arch-ui/icons';
+import { PersonIcon, SignOutIcon, TerminalIcon, MarkGithubIcon } from '@arch-ui/icons';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
-import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
-import { NavIcons } from './NavIcons';
-import ScrollQuery from '../ScrollQuery';
+import { useResizeHandler, KEYBOARD_SHORTCUT } from './ResizeHandler';
+import { useScrollQuery } from '../ScrollQuery';
 
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -36,87 +35,100 @@ function camelToKebab(string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-const Col = styled.div({
-  alignItems: 'flex-start',
-  display: 'flex',
-  flex: 1,
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  overflow: 'hidden',
-  width: '100%',
-});
-const Inner = styled(Col)({
-  height: ' 100vh',
-});
-const Page = styled.div({
-  flex: 1,
-  minHeight: '100vh',
-  position: 'relative',
-});
-const PageWrapper = styled.div({
-  display: 'flex',
-});
-const Relative = styled(Col)({
-  height: ' 100%',
-  position: 'relative',
-});
-const GrabHandle = styled.div(({ isActive }) => ({
-  backgroundColor: alpha(colors.text, 0.06),
-  height: isActive ? '100%' : 0,
-  cursor: 'col-resize',
-  position: 'absolute',
-  right: 0,
-  top: 0,
-  transition: `background-color ${TRANSITION_DURATION} linear, height ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-  width: 1,
+const Col = props => (
+  <div
+    css={{
+      alignItems: 'flex-start',
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      overflow: 'hidden',
+      width: '100%',
+    }}
+    {...props}
+  />
+);
 
-  ':hover': {
-    transitionDelay: '100ms', // avoid inadvertent mouse passes
-    backgroundColor: alpha(colors.text, 0.12),
-  },
-  ':active': {
-    backgroundColor: alpha(colors.text, 0.24),
-  },
+const Inner = props => <Col css={{ height: '100vh', alignItems: 'stretch' }} {...props} />;
 
-  // increase hit-area
-  ':before': {
-    bottom: -gridSize,
-    content: '" "',
-    left: -gridSize,
-    position: 'absolute',
-    right: -gridSize,
-    top: -gridSize,
-  },
-}));
-const CollapseExpand = styled.button(({ isCollapsed, mouseIsOverNav }) => {
+const Page = props => (
+  <div css={{ flex: 1, minHeight: '100vh', position: 'relative' }} {...props} />
+);
+
+const PageWrapper = props => <div css={{ display: 'flex' }} {...props} />;
+
+const Relative = props => <Col css={{ height: '100%', position: 'relative' }} {...props} />;
+
+const GrabHandle = ({ isActive, ...props }) => (
+  <div
+    css={{
+      backgroundColor: alpha(colors.text, 0.06),
+      height: isActive ? '100%' : 0,
+      cursor: 'col-resize',
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      transition: `background-color ${TRANSITION_DURATION} linear, height ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+      width: 1,
+
+      ':hover': {
+        transitionDelay: '100ms', // avoid inadvertent mouse passes
+        backgroundColor: alpha(colors.text, 0.12),
+      },
+      ':active': {
+        backgroundColor: alpha(colors.text, 0.24),
+      },
+
+      // increase hit-area
+      ':before': {
+        bottom: -gridSize,
+        content: '" "',
+        left: -gridSize,
+        position: 'absolute',
+        right: -gridSize,
+        top: -gridSize,
+      },
+    }}
+    {...props}
+  />
+);
+
+const CollapseExpand = forwardRef(({ isCollapsed, mouseIsOverNav, ...props }, ref) => {
   const size = 32;
   const offsetTop = 20;
   const isActive = isCollapsed || mouseIsOverNav;
 
-  return {
-    alignItems: 'center',
-    background: 0,
-    border: 0,
-    borderRadius: '50%',
-    // boxShadow,
-    color: isActive ? colors.text : 'transparent',
-    cursor: 'pointer',
-    display: 'flex',
-    height: size,
-    justifyContent: 'center',
-    right: -size,
-    transform: isActive ? `translateX(0)` : `translateX(-10px)`,
-    outline: 0,
-    padding: 0,
-    position: 'absolute',
-    transition: `color ${TRANSITION_DURATION}, transform ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-    width: size,
-    top: offsetTop,
+  return (
+    <button
+      ref={ref}
+      css={{
+        alignItems: 'center',
+        background: 0,
+        border: 0,
+        borderRadius: '50%',
+        // boxShadow,
+        color: isActive ? colors.text : 'transparent',
+        cursor: 'pointer',
+        display: 'flex',
+        height: size,
+        justifyContent: 'center',
+        right: -size,
+        transform: isActive ? `translateX(0)` : `translateX(-10px)`,
+        outline: 0,
+        padding: 0,
+        position: 'absolute',
+        transition: `color ${TRANSITION_DURATION}, transform ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+        width: size,
+        top: offsetTop,
 
-    ':hover': {
-      color: colors.primary,
-    },
-  };
+        ':hover': {
+          color: colors.primary,
+        },
+      }}
+      {...props}
+    />
+  );
 });
 
 const TooltipContent = ({ kbd, children }) => (
@@ -205,10 +217,7 @@ function renderChildren(
   }
 
   const label = node.label || list.plural;
-  const maybeSearchParam = list.getPersistedSearch() || '';
-  const path = getPath(location.pathname);
-  const href = `${adminPath}/${list.path}`;
-  const isSelected = href === path;
+  const isSelected = list.fullPath === getPath(location.pathname);
   const id = `ks-nav-${list.path}`;
 
   return (
@@ -217,7 +226,7 @@ function renderChildren(
       depth={depth}
       id={id}
       isSelected={isSelected}
-      to={`${href}${maybeSearchParam}`}
+      to={list.getFullPersistentPath()}
       mouseIsOverNav={mouseIsOverNav}
     >
       {label}
@@ -237,6 +246,7 @@ function PrimaryNavItems({
   mouseIsOverNav,
 }) {
   const isAtDashboard = useRouteMatch({ path: adminPath, exact: true });
+  const [scrollRef, snapshot] = useScrollQuery({ isPassive: false });
 
   let hasRenderedIndexPage = false;
   const onRenderIndexPage = () => {
@@ -271,57 +281,63 @@ function PrimaryNavItems({
         );
   return (
     <Relative>
-      <ScrollQuery isPassive={false}>
-        {(ref, snapshot) => (
-          <PrimaryNavScrollArea ref={ref} {...snapshot}>
-            {hasRenderedIndexPage === false && (
-              <PrimaryNavItem
-                to={adminPath}
-                isSelected={isAtDashboard}
-                mouseIsOverNav={mouseIsOverNav}
-              >
-                Dashboard
-              </PrimaryNavItem>
-            )}
-
-            {pageNavItems}
-          </PrimaryNavScrollArea>
+      <PrimaryNavScrollArea ref={scrollRef} {...snapshot}>
+        {hasRenderedIndexPage === false && (
+          <PrimaryNavItem to={adminPath} isSelected={isAtDashboard} mouseIsOverNav={mouseIsOverNav}>
+            Dashboard
+          </PrimaryNavItem>
         )}
-      </ScrollQuery>
+
+        {pageNavItems}
+      </PrimaryNavScrollArea>
     </Relative>
   );
 }
 
-const UserInfoContainer = styled.div`
-  align-self: stretch;
-  padding: ${PRIMARY_NAV_GUTTER}px 0;
-  margin: 0 ${PRIMARY_NAV_GUTTER}px;
-  border-bottom: 2px solid ${colors.N10};
-  display: flex;
-  align-items: center;
-  font-size: 1.3em;
-`;
+const UserInfoContainer = props => (
+  <div
+    css={{
+      paddingBottom: `${PRIMARY_NAV_GUTTER}px`,
+      margin: `${PRIMARY_NAV_GUTTER}px`,
+      borderBottom: `2px solid ${colors.N10}`,
+      display: 'flex',
+      alignItems: 'center',
+      fontSize: '1.3em',
+    }}
+    {...props}
+  />
+);
 
-const UserIcon = styled.div`
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: ${colors.primary};
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: ${PRIMARY_NAV_GUTTER}px;
-`;
+const UserIcon = props => (
+  <div
+    css={{
+      flexShrink: 0,
+      width: '40px',
+      height: '40px',
+      borderRadius: '50%',
+      backgroundColor: `${colors.primary}`,
+      color: 'white',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: `${PRIMARY_NAV_GUTTER}px`,
+    }}
+    {...props}
+  />
+);
 
-const UserInfo = ({ authListKey, authListPath }) => {
-  // We're assuming the user list as a 'name' field
+const UserInfo = ({ authListPath }) => {
+  const {
+    authStrategy: {
+      gqlNames: { authenticatedQueryName },
+    },
+  } = useAdminMeta();
+
   const AUTHED_USER_QUERY = gql`
     query {
-      user: authenticated${authListKey} {
+      user: ${authenticatedQueryName} {
         id
-        name
+        _label_
       }
     }
   `;
@@ -350,11 +366,70 @@ const UserInfo = ({ authListKey, authListPath }) => {
             to={`${authListPath}/${user.id}`}
             css={{ fontWeight: 'bold', color: colors.N90 }}
           >
-            {user.name}
+            {user._label_}
           </Truncate>
         )}
       </div>
     </UserInfoContainer>
+  );
+};
+
+const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone';
+
+const ActionItems = ({ mouseIsOverNav }) => {
+  const { signoutPath, graphiqlPath, authStrategy } = useAdminMeta();
+
+  const entries = useMemo(
+    () => [
+      ...(authStrategy
+        ? [
+            {
+              label: 'Sign out',
+              to: signoutPath,
+              icon: SignOutIcon,
+            },
+          ]
+        : []),
+      ...(ENABLE_DEV_FEATURES
+        ? [
+            {
+              label: 'GraphQL Playground',
+              to: graphiqlPath,
+              icon: TerminalIcon,
+              target: '_blank',
+            },
+            {
+              label: 'Keystone on GitHub',
+              to: GITHUB_PROJECT,
+              icon: MarkGithubIcon,
+              target: '_blank',
+            },
+          ]
+        : []),
+    ],
+    [] // The admin meta never changes between server restarts
+  );
+
+  // No items to show
+  if (!entries.length) {
+    return null;
+  }
+
+  return (
+    <div css={{ marginBottom: `${PRIMARY_NAV_GUTTER}px` }}>
+      {entries.map(({ label, to, icon: ActionIcon, target }) => (
+        <PrimaryNavItem
+          key={to}
+          href={to}
+          target={target}
+          mouseIsOverNav={mouseIsOverNav}
+          css={{ display: 'flex', alignItems: 'center' }}
+        >
+          <ActionIcon css={{ flexShrink: 0 }} />
+          <span css={{ padding: `0 ${PRIMARY_NAV_GUTTER}px` }}>{label}</span>
+        </PrimaryNavItem>
+      ))}
+    </div>
   );
 };
 
@@ -375,15 +450,17 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
         margin="both"
         crop
         css={{
+          fontSize: '1.6em',
           color: colors.N90,
           textDecoration: 'none',
-          alignSelf: 'stretch',
           marginLeft: PRIMARY_NAV_GUTTER,
           marginRight: PRIMARY_NAV_GUTTER,
         }}
       >
         {name}
       </Title>
+      {authListKey && <UserInfo authListPath={getListByKey(authListKey).fullPath} />}
+      <ActionItems mouseIsOverNav={mouseIsOverNav} />
       <PrimaryNavItems
         adminPath={adminPath}
         authListKey={authListKey}
@@ -392,13 +469,6 @@ const PrimaryNavContent = ({ mouseIsOverNav }) => {
         pages={pages}
         mouseIsOverNav={mouseIsOverNav}
       />
-      {authListKey && (
-        <UserInfo
-          authListKey={authListKey}
-          authListPath={`${adminPath}/${getListByKey(authListKey).path}`}
-        />
-      )}
-      <NavIcons />
     </Inner>
   );
 };
@@ -414,81 +484,81 @@ const Nav = ({ children }) => {
     setMouseIsOverNav(false);
   };
 
-  return (
-    <ResizeHandler isActive={mouseIsOverNav}>
-      {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
-        const navWidth = isCollapsed ? 0 : width;
-        const makeResizeStyles = key => {
-          const pointers = isDragging ? { pointerEvents: 'none' } : null;
-          const transitions = isDragging
-            ? null
-            : {
-                transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
-              };
-          return { [key]: navWidth, ...pointers, ...transitions };
-        };
+  const {
+    resizeProps,
+    clickProps,
+    snapshot: { isCollapsed, isDragging, width },
+  } = useResizeHandler();
 
-        return (
-          <PageWrapper>
-            <PropToggle
-              isActive={isDragging}
-              styles={{
-                cursor: 'col-resize',
-                '-moz-user-select': 'none',
-                '-ms-user-select': 'none',
-                '-webkit-user-select': 'none',
-                'user-select': 'none',
-              }}
-            />
-            <PrimaryNav
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              style={makeResizeStyles('width')}
+  const navWidth = isCollapsed ? 0 : width;
+  const makeResizeStyles = key => {
+    const pointers = isDragging ? { pointerEvents: 'none' } : null;
+    const transitions = isDragging
+      ? null
+      : {
+          transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+        };
+    return { [key]: navWidth, ...pointers, ...transitions };
+  };
+
+  return (
+    <PageWrapper>
+      <PropToggle
+        isActive={isDragging}
+        styles={{
+          cursor: 'col-resize',
+          '-moz-user-select': 'none',
+          '-ms-user-select': 'none',
+          '-webkit-user-select': 'none',
+          'user-select': 'none',
+        }}
+      />
+      <PrimaryNav
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={makeResizeStyles('width')}
+      >
+        <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
+        {isCollapsed ? null : (
+          <GrabHandle
+            onDoubleClick={clickProps.onClick}
+            isActive={mouseIsOverNav || isDragging}
+            {...resizeProps}
+          />
+        )}
+        <Tooltip
+          content={
+            <TooltipContent kbd={KEYBOARD_SHORTCUT}>
+              {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
+            </TooltipContent>
+          }
+          placement="right"
+          hideOnMouseDown
+          hideOnKeyDown
+          delay={600}
+        >
+          {ref => (
+            <CollapseExpand
+              isCollapsed={isCollapsed}
+              mouseIsOverNav={mouseIsOverNav}
+              {...clickProps}
+              ref={ref}
             >
-              <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
-              {isCollapsed ? null : (
-                <GrabHandle
-                  onDoubleClick={clickProps.onClick}
-                  isActive={mouseIsOverNav || isDragging}
-                  {...resizeProps}
-                />
-              )}
-              <Tooltip
-                content={
-                  <TooltipContent kbd={KEYBOARD_SHORTCUT}>
-                    {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
-                  </TooltipContent>
-                }
-                placement="right"
-                hideOnMouseDown
-                hideOnKeyDown
-                delay={600}
+              <svg
+                fill="currentColor"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {ref => (
-                  <CollapseExpand
-                    isCollapsed={isCollapsed}
-                    mouseIsOverNav={mouseIsOverNav}
-                    {...clickProps}
-                    ref={ref}
-                  >
-                    <svg
-                      fill="currentColor"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
-                    </svg>
-                  </CollapseExpand>
-                )}
-              </Tooltip>
-            </PrimaryNav>
-            <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
-          </PageWrapper>
-        );
-      }}
-    </ResizeHandler>
+                <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
+              </svg>
+            </CollapseExpand>
+          )}
+        </Tooltip>
+      </PrimaryNav>
+      <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
+    </PageWrapper>
   );
 };
 
