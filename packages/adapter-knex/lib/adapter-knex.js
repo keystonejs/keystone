@@ -24,6 +24,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
     this.schemaName = schemaName;
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
     this.rels = undefined;
+    if (this.client === 'mysql') {
+      Object.assign(KnexFieldAdapter.prototype, MysqlFieldAdapterMixin);
+    }
   }
 
   async _connect({ name }) {
@@ -1001,6 +1004,58 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     };
   }
 }
+
+const MysqlFieldAdapterMixin = {
+  equalityConditionsInsensitive(dbPath, f = identity) {
+    return {
+      [`${this.path}_i`]: value => b => b.where(dbPath, f(value)),
+      [`${this.path}_not_i`]: value => b => b.where(dbPath, '!=', f(value)).orWhereNull(dbPath),
+    };
+  },
+  equalityConditions(dbPath, f = identity) {
+    return {
+      [this.path]: value => b => b.whereRaw(dbPath + ' = BINARY ?', [f(value)]),
+      [`${this.path}_not`]: value => b =>
+        value === null
+          ? b.whereNotNull(dbPath)
+          : b.whereRaw(dbPath + ' != BINARY ?', [f(value)]).orWhereNull(dbPath),
+    };
+  },
+  stringConditions(dbPath) {
+    const f = escapeRegExp;
+    return {
+      [`${this.path}_contains`]: value => b =>
+        b.whereRaw(`${dbPath} LIKE BINARY ?`, [`%${f(value)}%`]),
+      [`${this.path}_not_contains`]: value => b =>
+        b.whereRaw(`${dbPath} NOT LIKE BINARY ?`, [`%${f(value)}%`]).orWhereNull(dbPath),
+      [`${this.path}_starts_with`]: value => b =>
+        b.whereRaw(`${dbPath} LIKE BINARY ?`, [`${f(value)}%`]),
+      [`${this.path}_not_starts_with`]: value => b =>
+        b.whereRaw(`${dbPath} NOT LIKE BINARY ?`, [`${f(value)}%`]).orWhereNull(dbPath),
+      [`${this.path}_ends_with`]: value => b =>
+        b.whereRaw(`${dbPath} LIKE BINARY ?`, [`%${f(value)}`]),
+      [`${this.path}_not_ends_with`]: value => b =>
+        b.whereRaw(`${dbPath} NOT LIKE BINARY ?`, [`%${f(value)}`]).orWhereNull(dbPath),
+    };
+  },
+  stringConditionsInsensitive(dbPath) {
+    const f = escapeRegExp;
+    return {
+      [`${this.path}_contains_i`]: value => b => b.where(dbPath, 'LIKE', `%${f(value)}%`),
+      [`${this.path}_not_contains_i`]: value => b => {
+        const query = b.where(dbPath, 'NOT LIKE', `%${f(value)}%`).orWhereNull(dbPath);
+        console.log(query.toString());
+        return query;
+      },
+      [`${this.path}_starts_with_i`]: value => b => b.where(dbPath, 'LIKE', `${f(value)}%`),
+      [`${this.path}_not_starts_with_i`]: value => b =>
+        b.where(dbPath, 'NOT LIKE', `${f(value)}%`).orWhereNull(dbPath),
+      [`${this.path}_ends_with_i`]: value => b => b.where(dbPath, 'LIKE', `%${f(value)}`),
+      [`${this.path}_not_ends_with_i`]: value => b =>
+        b.where(dbPath, 'NOT LIKE', `%${f(value)}`).orWhereNull(dbPath),
+    };
+  },
+};
 
 KnexAdapter.defaultListAdapterClass = KnexListAdapter;
 

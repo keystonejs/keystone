@@ -17,5 +17,11 @@
     "p-settle": "^3.1.0",
     "pg": "^8.0.3"
   },
+  "peerDependencies": {
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "mysql": "^2.18.1"
+  },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-knex"
 }
