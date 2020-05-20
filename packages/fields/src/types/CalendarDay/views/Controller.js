@@ -57,15 +57,4 @@ export default class CalendarDayController extends FieldController {
     // QUESTION: should we support "in" and "not_in" filters for DateTime?
     // What does the UI look like for that.
   ];
-
-  validateInput = ({ resolvedData, addFieldValidationError }) => {
-    const { yearRangeFrom, yearRangeTo } = this.config;
-
-    const inputYear = getYear(parseISO(resolvedData[this.path]));
-    const inRange = yearRangeFrom <= inputYear && inputYear <= yearRangeTo;
-
-    if (!inRange) {
-      return addFieldValidationError(`Input not within configured date interval.`);
-    }
-  };
 }
