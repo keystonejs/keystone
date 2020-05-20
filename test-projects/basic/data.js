@@ -107,5 +107,10 @@ module.exports = {
       name: 'Number comparison',
     },
   ],
+  ReadOnlyList: [
+    {
+      name: 'ReadOnly',
+    },
+  ],
   User: users.map(user => ({ ...user, password: 'password' })),
 };

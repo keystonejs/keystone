@@ -81,6 +81,28 @@ A description of the field used in the AdminUI.
 
 A description of the field used used in the GraphQL schema.
 
+### `adminConfig`
+
+Additional field configs affecting field rendering or display in `admin-ui`.
+
+#### `adminConfig.isReadOnly`
+
+This admin config makes the field read only in `admin-ui`, Field with `isReadOnly` set to `true` will be rendered as disabled and you can not modify them in Item Details page or in Create item modal.
+
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    slug: {
+      type: Slug,
+      adminConfig: {
+        isReadOnly: true, //slug can be created automatically and you may want to show this as read only
+      },
+    },
+  },
+});
+```
+
 ### `defaultValue`
 
 Sets the value when no data is provided.

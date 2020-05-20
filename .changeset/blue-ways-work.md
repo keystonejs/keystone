@@ -7,4 +7,24 @@
 '@keystonejs/cypress-project-access-control': patch
 ---
 
-Added `isReadOnly` option on fields and show them as disabled in admin ui edit item page. Before this you can not see the fields in admin-ui if you do not have `update` access
+* Added `isReadOnly` option on field's `adminConfig`. This allows to show them as disabled in `admin-ui` item detail page.
+* This PR also enables you to see the fields (disabled) in item detail page when you have no `update` access to field.
+
+example:
+
+```js
+keystone.createList('Todo', {
+  fields: {
+    name: { type: Text, isRequired: true },
+    someReadOnlyField: {
+      type: Text,
+      adminConfig: {
+        isReadOnly: true,
+      },
+      defaultValue: 'Some default value',
+    },
+  },
+});
+```
+
+
