@@ -203,7 +203,6 @@ export function ListLayout(props) {
           }
           fields={fields}
           handleSortChange={handleSortChange}
-          isFullWidth
           items={items}
           queryErrors={queryErrors}
           list={list}
