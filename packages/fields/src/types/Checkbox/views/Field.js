@@ -7,7 +7,6 @@ import {
   FieldLabel,
   FieldDescription,
   FieldInput,
-  isReadOnly,
 } from '@arch-ui/fields';
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
