@@ -2,12 +2,7 @@
 
 import { jsx } from '@emotion/core';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldDescription,
-  FieldInput,
-} from '@arch-ui/fields';
+import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
 
