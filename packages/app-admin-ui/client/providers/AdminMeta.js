@@ -78,6 +78,10 @@ export const AdminMetaProvider = ({ children }) => {
     }
   );
 
+  const listKeys = Object.values(listsByKey)
+    .sort(({ label: a }, { label: b }) => a.localeCompare(b)) // TODO: locale options once intl support is added
+    .map(({ key }) => key);
+
   let hookViews = {};
   if (typeof hookView === 'function') {
     [hookViews] = readViews([hookView]);
@@ -94,7 +98,7 @@ export const AdminMetaProvider = ({ children }) => {
     signoutPath,
     authStrategy,
     name,
-    listKeys: Object.keys(lists || {}),
+    listKeys,
     getListByKey,
     getListByPath: path => listsByPath[path],
     hooks: hookViews,
