@@ -16,7 +16,6 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   },
 });
 
-
 export const initApolloClient = ({ uri }) => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
