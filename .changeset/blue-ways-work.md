@@ -8,7 +8,7 @@
 ---
 
 * Added `isReadOnly` option on field's `adminConfig`. Fields with this option set will be excluded from the `create` form, and set as disabled in the `update` form in the Admin UI.
-* This PR also enables you to see the fields (disabled) in item detail page when you have no `update` access to field.
+* Updated the item detail page to include fields with access `{ update: false }` in a disabled state, rather than excluded the form.
 
 Example:
 
