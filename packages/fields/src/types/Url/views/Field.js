@@ -25,6 +25,7 @@ const UrlField = ({ onChange, autoFocus, field, value: serverValue, errors, isRe
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="url"
           value={canRead ? value : undefined}
           placeholder={canRead ? undefined : error.message}
