@@ -192,6 +192,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
             {() => {
               const creatable = list.fields
                 .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                .filter(({ isReadOnly }) => !isReadOnly) // Remove read-only fields from the create dialog
                 .filter(({ maybeAccess }) => !!maybeAccess.create);
 
               captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
@@ -222,7 +223,6 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
                           warnings={validationWarnings[field.path] || []}
                           onChange={onChange}
                           renderContext="dialog"
-                          isReadOnly={field.isReadOnly}
                         />
                       ),
                       [
