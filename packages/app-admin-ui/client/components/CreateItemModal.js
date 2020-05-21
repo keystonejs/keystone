@@ -193,6 +193,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
             {() => {
               const creatable = list.fields
                 .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                .filter(({ isReadOnly }) => !isReadOnly)
                 .filter(({ maybeAccess }) => !!maybeAccess.create);
 
               captureSuspensePromises(creatable.map(field => () => field.initFieldView()));

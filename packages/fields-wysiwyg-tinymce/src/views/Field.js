@@ -37,7 +37,7 @@ const GlobalStyles = () => (
   />
 );
 
-const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue }) => {
+const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue, isReadOnly }) => {
   const handleChange = value => {
     if (typeof value === 'string') {
       onChange(value);
@@ -63,6 +63,7 @@ const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue }
           init={{ ...defaultOptions, auto_focus: autoFocus, ...overrideOptions }}
           onEditorChange={handleChange}
           value={value}
+          isDisabled={isReadOnly}
         />
       </div>
     </FieldContainer>

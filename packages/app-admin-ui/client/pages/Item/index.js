@@ -45,6 +45,8 @@ const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...prop
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
 
+const checkIsReadOnly = ({ maybeAccess, isReadOnly }) => !maybeAccess.update || !!isReadOnly;
+
 // Memoizing allows us to reduce the calls to `.serialize` when data hasn't
 // changed.
 const getInitialValues = memoizeOne(getValues);
@@ -53,9 +55,7 @@ const getCurrentValues = memoizeOne(getValues);
 const deserializeItem = memoizeOne((list, data) => list.deserializeItemData(data));
 
 const getRenderableFields = memoizeOne(list =>
-  list.fields
-    .filter(({ isPrimaryKey }) => !isPrimaryKey)
-    .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
+  list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey)
 );
 
 const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
@@ -236,6 +236,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
             <Render key={field.path}>
               {() => {
                 const [Field] = field.readViews([field.views.Field]);
+                const isReadOnly = checkIsReadOnly(field);
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -267,6 +268,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                         field={field}
                         list={list}
                         item={item}
+                        isReadOnly={isReadOnly}
                         errors={[
                           ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
                           ...(validationErrors[field.path] || []),
@@ -290,6 +292,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                     validationWarnings[field.path],
                     initialData[field.path],
                     onChange,
+                    isReadOnly,
                   ]
                 );
               }}

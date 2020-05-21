@@ -179,17 +179,22 @@ export default class FileField extends Component {
   // ==============================
 
   renderUploadButton = () => {
-    const { uploadButtonLabel } = this.props;
+    const { uploadButtonLabel, isReadOnly } = this.props;
     const { changeStatus, isLoading } = this.state;
 
     return (
-      <LoadingButton onClick={this.openFileBrowser} isLoading={isLoading} variant="ghost">
+      <LoadingButton
+        onClick={this.openFileBrowser}
+        isLoading={isLoading}
+        variant="ghost"
+        isDisabled={isReadOnly}
+      >
         {uploadButtonLabel({ status: changeStatus })}
       </LoadingButton>
     );
   };
   renderCancelButton = () => {
-    const { cancelButtonLabel } = this.props;
+    const { cancelButtonLabel, isReadOnly } = this.props;
     const { changeStatus } = this.state;
 
     // possible states; no case for 'empty' as cancel is not rendered
@@ -206,14 +211,14 @@ export default class FileField extends Component {
     }
 
     return (
-      <Button onClick={onClick} variant="subtle" appearance={appearance}>
+      <Button onClick={onClick} variant="subtle" appearance={appearance} isDisabled={isReadOnly}>
         {cancelButtonLabel({ status: changeStatus })}
       </Button>
     );
   };
 
   render() {
-    const { autoFocus, field, statusMessage, errors } = this.props;
+    const { autoFocus, field, statusMessage, errors, isReadOnly } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
@@ -260,6 +265,7 @@ export default class FileField extends Component {
             name={field.path}
             onChange={this.onChange}
             type="file"
+            disabled={isReadOnly}
           />
         </FieldInput>
       </FieldContainer>
