@@ -60,7 +60,7 @@ const ListManage = ({ list, pageSize, totalItems, selectedItems, onDeleteMany, o
           </IconButton>
         )}
 
-        {list.access.update && (
+        {list.access.delete && (
           <IconButton
             appearance="danger"
             icon={TrashcanIcon}
