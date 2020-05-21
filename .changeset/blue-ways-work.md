@@ -7,7 +7,7 @@
 '@keystonejs/cypress-project-access-control': patch
 ---
 
-* Added `isReadOnly` option on field's `adminConfig`. This allows to show them as disabled in `admin-ui` item detail page.
+* Added `isReadOnly` option on field's `adminConfig`. Fields with this option set will be excluded from the `create` form, and set as disabled in the `update` form in the Admin UI.
 * This PR also enables you to see the fields (disabled) in item detail page when you have no `update` access to field.
 
 example:
@@ -26,5 +26,4 @@ keystone.createList('Todo', {
   },
 });
 ```
-
 
