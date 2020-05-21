@@ -20,12 +20,7 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const keystone = new Keystone({
   name: projectName,
   adapter: new MongooseAdapter(),
-});
-
-// eslint-disable-next-line no-unused-vars
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
+  cookieSecret: 'qwerty',
 });
 
 keystone.createList('User', {
@@ -50,6 +45,11 @@ keystone.createList('User', {
     noRead: { type: Text, access: { read: () => false } },
     yesRead: { type: Text, access: { read: () => true } },
   },
+});
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
 });
 
 function createListWithStaticAccess(access) {

@@ -27,17 +27,22 @@ keystone.createList('User', {
 
 ### Config
 
-| Option          | Type      | Default                | Description                                                                |
-| --------------- | --------- | ---------------------- | -------------------------------------------------------------------------- |
-| `format`        | `String`  | `YYYY-MM-DD`           | Defines the format of string that the component will display               |
-| `yearRangeFrom` | `Integer` | The current year - 100 | Defines the starting point of the year range, eg `1918`                    |
-| `yearRangeTo`   | `Integer` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018` |
-| `isRequired`    | `Boolean` | `false`                | Does this field require a value?                                           |
-| `isUnique`      | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored            |
+| Option          | Type      | Default                | Description                                                                   |
+| --------------- | --------- | ---------------------- | ----------------------------------------------------------------------------- |
+| `format`        | `String`  | `YYYY-MM-DD`           | Defines the format of date string that the will be displayed in the Admin UI. |
+| `yearRangeFrom` | `Integer` | The current year - 100 | Defines the starting point of the year range, eg `1918`                       |
+| `yearRangeTo`   | `Integer` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018`    |
+| `isRequired`    | `Boolean` | `false`                | Does this field require a value?                                              |
+| `isUnique`      | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored               |
 
 #### `format`
 
-Defines the format of string that the component will display, such as `Do MMMM YYYY`. Values will be stored in the database in ISO8601 (`YYYY-MM-DD`) format.
+Defines the format of date string that the will be displayed in the Admin UI.
+The Admin UI uses the [`date-fns` v2.x](https://date-fns.org/v2.13.0/docs/format) library for formatting, and any format supported by that library is valid. E.g.
+
+- `yyyy-MM-dd` => "1970-01-31"
+- `MM/dd/yyyy` => "01/31/1970"
+- `MMM do, yy` => "Jan 31st, 70"
 
 #### `yearRangeFrom`
 
@@ -58,13 +63,13 @@ The default value for this field is the current year.
 `CalendarDay` fields use the `String` type in GraphQL.
 They produce values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
 
-### Input Fields
+### Input fields
 
 | Field name | Type     | Description                                              |
 | :--------- | :------- | :------------------------------------------------------- |
 | `${path}`  | `String` | The value to be stored, in ISO8601 (`YYYY-MM-DD`) format |
 
-### Output Fields
+### Output fields
 
 | Field name | Type     | Description                                 |
 | :--------- | :------- | :------------------------------------------ |
@@ -87,14 +92,14 @@ All filter fields expect values in the ISO8601 (`YYYY-MM-DD`) format.
 
 ## Storage
 
-### Mongoose Adaptor
+### Mongoose adapter
 
 In Mongoose the field is added using the `String` schema type.
 
 The `isRequired` config option is enforced by KeystoneJS only.
 
-### Knex Adaptor
+### Knex adapter
 
-The Knex adaptor uses the [Knex `date` type](https://knexjs.org/#Schema-date):
+The Knex adapter uses the [Knex `date` type](https://knexjs.org/#Schema-date):
 
 The `isRequired` config option is enforced by KeystoneJS and, if equal to `true`, the column is set as not nullable.

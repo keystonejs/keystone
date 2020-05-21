@@ -2,27 +2,23 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import gql from 'graphql-tag';
-import React from 'react';
-import { Mutation, Query } from 'react-apollo';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useState } from 'react';
 
 import { jsx } from '@emotion/core';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 import Layout from '../../templates/layout';
 import Header from '../../components/header';
+import { Banner } from '../../components/banner';
+import { withApollo } from '../../lib/apollo';
 
 /** @jsx jsx */
 
 const ADD_COMMENT = gql`
-  mutation AddComment($body: String!, $author: ID!, $postId: ID!, $posted: DateTime!) {
+  mutation AddComment($body: String!, $postId: ID!, $posted: DateTime!) {
     createComment(
-      data: {
-        body: $body
-        author: { connect: { id: $author } }
-        originalPost: { connect: { id: $postId } }
-        posted: $posted
-      }
+      data: { body: $body, originalPost: { connect: { id: $postId } }, posted: $posted }
     ) {
       id
       body
@@ -64,12 +60,6 @@ const ALL_QUERIES = gql`
       }
       posted
     }
-
-    allUsers {
-      name
-      email
-      id
-    }
   }
 `;
 
@@ -108,7 +98,7 @@ const Comments = ({ data }) => (
                   margin: '8px 0',
                 }}
               >
-                {comment.author.name} on {format(comment.posted, 'DD MMM YYYY')}
+                {comment.author.name} on {format(parseISO(comment.posted), 'dd MMM yyyy')}
               </p>
               <p css={{ margin: '8px 0' }}>{comment.body}</p>
             </div>
@@ -118,33 +108,48 @@ const Comments = ({ data }) => (
   </div>
 );
 
-const AddComments = ({ users, post }) => {
-  let user = users.filter(u => u.email == 'user@keystonejs.com')[0];
+const AddComments = ({ post }) => {
   let [comment, setComment] = useState('');
+
+  const { data, loading: userLoading, error: userError } = useQuery(gql`
+    query {
+      authenticatedUser {
+        id
+      }
+    }
+  `);
+
+  const [createComment, { loading: savingComment, error: saveError }] = useMutation(ADD_COMMENT, {
+    refetchQueries: ['AllQueries'],
+  });
+
+  const loggedIn = !userLoading && !!data.authenticatedUser;
+  const formDisabled = !loggedIn || savingComment;
+  const error = userError || saveError;
 
   return (
     <div>
       <h2>Add new Comment</h2>
-      <Mutation
-        mutation={ADD_COMMENT}
-        update={(cache, { data: data }) => {
-          const { allComments, allUsers, allPosts } = cache.readQuery({
-            query: ALL_QUERIES,
-            variables: { slug: post.slug },
-          });
 
-          cache.writeQuery({
-            query: ALL_QUERIES,
-            variables: { slug: post.slug },
-            data: {
-              allPosts,
-              allUsers,
-              allComments: allComments.concat([data.createComment]),
-            },
-          });
-        }}
-      >
-        {createComment => (
+      {userLoading ? (
+        <p>loading...</p>
+      ) : (
+        <>
+          {error && (
+            <Banner style={'error'}>
+              <strong>Whoops!</strong> Something has gone wrong
+              <br />
+              {error.message || userError.toString()}
+            </Banner>
+          )}
+          {!loggedIn && (
+            <Banner style={'error'}>
+              <a href="/signin" as="/signin">
+                Sign In
+              </a>{' '}
+              to leave a comment.
+            </Banner>
+          )}
           <form
             onSubmit={e => {
               e.preventDefault();
@@ -152,7 +157,6 @@ const AddComments = ({ users, post }) => {
               createComment({
                 variables: {
                   body: comment,
-                  author: user.id,
                   postId: post.id,
                   posted: new Date(),
                 },
@@ -165,6 +169,7 @@ const AddComments = ({ users, post }) => {
               type="text"
               placeholder="Write a comment"
               name="comment"
+              disabled={formDisabled}
               css={{
                 padding: 12,
                 fontSize: 16,
@@ -183,6 +188,7 @@ const AddComments = ({ users, post }) => {
             <input
               type="submit"
               value="Submit"
+              disabled={formDisabled}
               css={{
                 padding: '6px 12px',
                 borderRadius: 6,
@@ -194,75 +200,74 @@ const AddComments = ({ users, post }) => {
               }}
             />
           </form>
-        )}
-      </Mutation>
+        </>
+      )}
     </div>
   );
 };
 
-class PostPage extends React.Component {
-  static getInitialProps({ query: { slug } }) {
-    return { slug };
-  }
-  render() {
-    const { slug } = this.props;
-    return (
-      <Layout>
-        <Header />
-        <div css={{ margin: '48px 0' }}>
-          <Link href="/" passHref>
-            <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
-          </Link>
-          <Query query={ALL_QUERIES} variables={{ slug }}>
-            {({ data, loading, error }) => {
-              if (loading) return <p>loading...</p>;
-              if (error) return <p>Error!</p>;
+const Render = ({ children }) => children();
 
-              const post = data.allPosts && data.allPosts[0];
+const PostPage = withApollo(({ slug }) => {
+  const { data, loading, error } = useQuery(ALL_QUERIES, { variables: { slug } });
 
-              if (!post) return <p>404: Post not found</p>;
+  return (
+    <Layout>
+      <Header />
+      <div css={{ margin: '48px 0' }}>
+        <Link href="/" passHref>
+          <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
+        </Link>
 
-              return (
-                <>
-                  <div
-                    css={{
-                      background: 'white',
-                      margin: '24px 0',
-                      boxShadow: '0px 10px 20px hsla(200, 20%, 20%, 0.20)',
-                      marginBottom: 32,
-                      borderRadius: 6,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <Head>
-                      <title>{post.title}</title>
-                    </Head>
-                    {post.image ? <img src={post.image.publicUrl} css={{ width: '100%' }} /> : null}
-                    <article css={{ padding: '1em' }}>
-                      <h1 css={{ marginTop: 0 }}>{post.title}</h1>
-                      <section dangerouslySetInnerHTML={{ __html: post.body }} />
-                      <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
-                        <p
-                          css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}
-                        >
-                          Posted by {post.author ? post.author.name : 'someone'} on{' '}
-                          {format(post.posted, 'DD/MM/YYYY')}
-                        </p>
-                      </div>
-                    </article>
-                  </div>
+        <Render>
+          {() => {
+            if (loading) return <p>loading...</p>;
+            if (error) return <p>Error!</p>;
 
-                  <Comments data={data} />
+            const post = data.allPosts && data.allPosts[0];
 
-                  <AddComments post={post} users={data.allUsers} />
-                </>
-              );
-            }}
-          </Query>
-        </div>
-      </Layout>
-    );
-  }
-}
+            if (!post) return <p>404: Post not found</p>;
+
+            return (
+              <>
+                <div
+                  css={{
+                    background: 'white',
+                    margin: '24px 0',
+                    boxShadow: '0px 10px 20px hsla(200, 20%, 20%, 0.20)',
+                    marginBottom: 32,
+                    borderRadius: 6,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Head>
+                    <title>{post.title}</title>
+                  </Head>
+                  {post.image ? <img src={post.image.publicUrl} css={{ width: '100%' }} /> : null}
+                  <article css={{ padding: '1em' }}>
+                    <h1 css={{ marginTop: 0 }}>{post.title}</h1>
+                    <section dangerouslySetInnerHTML={{ __html: post.body }} />
+                    <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
+                      <p css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}>
+                        Posted by {post.author ? post.author.name : 'someone'} on{' '}
+                        {format(parseISO(post.posted), 'dd/MM/yyyy')}
+                      </p>
+                    </div>
+                  </article>
+                </div>
+
+                <Comments data={data} />
+
+                <AddComments post={post} />
+              </>
+            );
+          }}
+        </Render>
+      </div>
+    </Layout>
+  );
+});
+
+PostPage.getInitialProps = ({ query: { slug } }) => ({ slug });
 
 export default PostPage;

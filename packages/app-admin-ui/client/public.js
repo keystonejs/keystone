@@ -7,10 +7,11 @@ import { Global } from '@emotion/core';
 
 import { globalStyles } from '@arch-ui/theme';
 
-import ApolloClient from './apolloClient';
+import { initApolloClient } from './apolloClient';
 
 import ConnectivityListener from './components/ConnectivityListener';
-import { useAdminMeta } from './providers/AdminMeta';
+import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
+import { HooksProvider } from './providers/Hooks';
 
 import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
@@ -24,38 +25,38 @@ import SigninPage from './pages/Signin';
 */
 
 const Keystone = () => {
-  let adminMeta = useAdminMeta();
-  let { apiPath } = adminMeta;
-  const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
+  const { authStrategy, apiPath, signoutPath, hooks } = useAdminMeta();
+
+  const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <ToastProvider>
-        <ConnectivityListener />
-        <Global styles={globalStyles} />
+    <HooksProvider hooks={hooks}>
+      <ApolloProvider client={apolloClient}>
+        <ToastProvider>
+          <ConnectivityListener />
+          <Global styles={globalStyles} />
 
-        {adminMeta.authStrategy ? (
-          <BrowserRouter>
-            <Switch>
-              <Route
-                exact
-                path={adminMeta.signoutPath}
-                render={() => <SignoutPage {...adminMeta} />}
-              />
-              <Route render={() => <SigninPage {...adminMeta} />} />
-            </Switch>
-          </BrowserRouter>
-        ) : (
-          <InvalidRoutePage {...adminMeta} />
-        )}
-      </ToastProvider>
-    </ApolloProvider>
+          {authStrategy ? (
+            <BrowserRouter>
+              <Switch>
+                <Route exact path={signoutPath} render={() => <SignoutPage />} />
+                <Route render={() => <SigninPage />} />
+              </Switch>
+            </BrowserRouter>
+          ) : (
+            <InvalidRoutePage />
+          )}
+        </ToastProvider>
+      </ApolloProvider>
+    </HooksProvider>
   );
 };
 
 ReactDOM.render(
   <Suspense fallback={null}>
-    <Keystone />
+    <AdminMetaProvider>
+      <Keystone />
+    </AdminMetaProvider>
   </Suspense>,
   document.getElementById('app')
 );

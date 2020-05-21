@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { createContext, useEffect, useRef, useContext } from 'react';
 
-const { Consumer, Provider } = React.createContext();
+const KeyboardContext = createContext();
 
 const LISTENER_OPTIONS = {
   capture: true,
@@ -8,67 +8,70 @@ const LISTENER_OPTIONS = {
   passive: true,
 };
 
-export default class KeyboardShortcuts extends React.Component {
-  listeners = {};
+const KeyboardShortcuts = ({ children }) => {
+  const listeners = useRef({});
+  const keyIsDown = useRef(false);
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.onKeyDown, LISTENER_OPTIONS);
-    document.addEventListener('keyup', this.onKeyUp, LISTENER_OPTIONS);
-  }
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown, LISTENER_OPTIONS);
-    document.removeEventListener('keyup', this.onKeyUp, LISTENER_OPTIONS);
-  }
-
-  subscribe = (key, callback) => {
-    if (this.listeners[key]) {
-      throw new Error(`There is already a listener subscribed to the key "${key}"`);
-    }
-
-    this.listeners[key] = callback;
-  };
-  unsubscribe = key => {
-    if (!this.listeners[key]) {
-      throw new Error(`There is no listener subscribed to the key "${key}"`);
-    }
-
-    delete this.listeners[key];
-  };
-
-  onKeyDown = event => {
+  const onKeyDown = event => {
     // bail if there's already a keydown
-    if (this.keyIsDown) return;
+    if (keyIsDown.current) return;
 
     // setup
-    this.keyIsDown = true;
-    const activeNode = document.activeElement.nodeName;
+    keyIsDown.current = true;
+    const { nodeName, isContentEditable } = document.activeElement;
 
     // bail if the user is focused on an input element
-    if (activeNode === 'INPUT' || activeNode === 'TEXTAREA') {
+    if (nodeName === 'INPUT' || nodeName === 'TEXTAREA' || isContentEditable) {
       return;
     }
 
     // call any applicable listeners
-    if (this.listeners[event.key]) {
-      this.listeners[event.key](event);
+    if (listeners.current[event.key]) {
+      listeners.current[event.key](event);
     }
   };
-  onKeyUp = () => {
-    this.keyIsDown = false;
+
+  const onKeyUp = () => {
+    keyIsDown.current = false;
   };
 
-  render() {
-    const value = {
-      subscribe: this.subscribe,
-      unsubscribe: this.unsubscribe,
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown, LISTENER_OPTIONS);
+    document.addEventListener('keyup', onKeyUp, LISTENER_OPTIONS);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown, LISTENER_OPTIONS);
+      document.removeEventListener('keyup', onKeyUp, LISTENER_OPTIONS);
     };
+  }, []);
 
-    return <Provider value={value}>{this.props.children}</Provider>;
-  }
-}
+  const subscribe = (key, callback) => {
+    if (listeners.current[key]) {
+      throw new Error(`There is already a listener subscribed to the key "${key}"`);
+    }
 
-export const KeyboardConsumer = ({ children }) => <Consumer>{ctx => children(ctx)}</Consumer>;
+    listeners.current[key] = callback;
+  };
 
-export const withKeyboardConsumer = Comp => props => (
-  <KeyboardConsumer>{context => <Comp keyManager={context} {...props} />}</KeyboardConsumer>
-);
+  const unsubscribe = key => {
+    if (!listeners.current[key]) {
+      throw new Error(`There is no listener subscribed to the key "${key}"`);
+    }
+
+    delete listeners.current[key];
+  };
+
+  const value = {
+    subscribe,
+    unsubscribe,
+  };
+
+  return <KeyboardContext.Provider value={value}>{children}</KeyboardContext.Provider>;
+};
+
+export default KeyboardShortcuts;
+
+export const useKeyboardManager = () => {
+  const { subscribe, unsubscribe } = useContext(KeyboardContext);
+  return { addBinding: subscribe, removeBinding: unsubscribe };
+};

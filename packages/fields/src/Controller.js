@@ -1,26 +1,45 @@
 import isEqual from 'lodash.isequal';
 
 export default class FieldController {
-  constructor(config, list, adminMeta, views) {
+  constructor(
+    {
+      label,
+      path,
+      type,
+      access,
+      isOrderable,
+      isPrimaryKey,
+      isRequired,
+      isReadOnly,
+      adminDoc,
+      defaultValue,
+      ...config
+    },
+    { readViews, preloadViews, getListByKey, adminPath, authStrategy },
+    views
+  ) {
     this.config = config;
-    this.label = config.label;
-    this.path = config.path;
-    this.type = config.type;
-    this.maybeAccess = config.access;
-    this.isPrimaryKey = config.isPrimaryKey;
-    this.list = list;
-    this.adminMeta = adminMeta;
+    this.label = label;
+    this.path = path;
+    this.type = type;
+    this.maybeAccess = access;
+    this.isOrderable = isOrderable;
+    this.isPrimaryKey = isPrimaryKey;
+    this.isRequired = isRequired;
+    this.isReadOnly = isReadOnly;
+    this.adminDoc = adminDoc;
+    this.readViews = readViews;
+    this.preloadViews = preloadViews;
+    this.getListByKey = getListByKey;
+    this.adminPath = adminPath;
+    this.authStrategy = authStrategy;
     this.views = views;
 
-    if ('defaultValue' in config) {
-      if (typeof config.defaultValue !== 'function') {
-        this._getDefaultValue = ({ prefill }) => prefill[this.path] || config.defaultValue;
-      } else {
-        this._getDefaultValue = config.defaultValue;
-      }
-    } else {
+    if (typeof defaultValue !== 'function') {
       // By default, the default value is undefined
-      this._getDefaultValue = ({ prefill }) => prefill[this.path] || undefined;
+      this._getDefaultValue = ({ prefill }) => prefill[this.path] || defaultValue;
+    } else {
+      this._getDefaultValue = defaultValue;
     }
   }
 
@@ -91,7 +110,6 @@ export default class FieldController {
   hasChanged = (initialData, currentData) =>
     !isEqual(initialData[this.path], currentData[this.path]);
 
-  // eslint-disable-next-line no-unused-vars
   getDefaultValue = ({ originalInput = {}, prefill = {} } = {}) => {
     return this._getDefaultValue({ originalInput, prefill });
   };
@@ -101,7 +119,7 @@ export default class FieldController {
     if (!Cell) {
       return;
     }
-    this.adminMeta.readViews([Cell]);
+    this.readViews([Cell]);
   };
 
   initFieldView = () => {
@@ -109,7 +127,7 @@ export default class FieldController {
     if (!Field) {
       return;
     }
-    this.adminMeta.readViews([Field]);
+    this.readViews([Field]);
   };
 
   initFilterView = () => {
@@ -117,8 +135,9 @@ export default class FieldController {
     if (!Filter) {
       return;
     }
-    this.adminMeta.readViews([Filter]);
+    this.readViews([Filter]);
   };
 
   getFilterTypes = () => [];
+  getFilterValue = value => value;
 }

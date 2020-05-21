@@ -19,16 +19,10 @@ const defaultAccess = ({ authentication: { item } }) => !!item;
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
   adapter: new MongooseAdapter(),
+  cookieSecret: 'qwerty',
   defaultAccess: {
     list: defaultAccess,
   },
-});
-
-// eslint-disable-next-line no-unused-vars
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  // config: { protectIdentities: true },
 });
 
 keystone.createList('User', {
@@ -71,6 +65,12 @@ keystone.createList('ListWithPlugin', {
     createdBy(),
     updatedBy(),
   ],
+});
+
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+  // config: { protectIdentities: true },
 });
 
 module.exports = {

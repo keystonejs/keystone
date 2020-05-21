@@ -4,7 +4,7 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import mongoose from 'mongoose';
 
 // Disabling the getter of mongoose >= 5.1.0
-// https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md#checking-if-a-path-is-populated
+// https://mongoosejs.com/docs/migrating_to_5.html#id-getter
 mongoose.set('objectIdGetter', false);
 
 const {
@@ -12,11 +12,9 @@ const {
 } = mongoose;
 
 export class File extends Implementation {
-  constructor(path, { directory, route, adapter }) {
+  constructor(path, { adapter }) {
     super(...arguments);
     this.graphQLOutputType = 'File';
-    this.directory = directory;
-    this.route = route;
     this.fileAdapter = adapter;
 
     if (!this.fileAdapter) {
@@ -30,8 +28,6 @@ export class File extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      directory: this.directory,
-      route: this.route,
     };
   }
   gqlQueryInputFields() {
@@ -67,10 +63,6 @@ export class File extends Implementation {
         if (!itemValues) {
           return null;
         }
-
-        // FIXME: This can hopefully be removed once graphql 14.1.0 is released.
-        // https://github.com/graphql/graphql-js/pull/1520
-        if (itemValues.id) itemValues.id = itemValues.id.toString();
 
         return {
           publicUrl: this.fileAdapter.publicUrl(itemValues),
@@ -148,7 +140,9 @@ export class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter
         id: ObjectId,
         path: String,
         filename: String,
+        originalFilename: String,
         mimetype: String,
+        encoding: String,
         _meta: Object,
       },
     };

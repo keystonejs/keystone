@@ -1,36 +1,48 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-export default class TextField extends Component {
-  onChange = event => {
+const FloatField = ({ onChange, autoFocus, field, value, errors, isReadOnly }) => {
+  const handleChange = event => {
     const value = event.target.value;
     // Similar implementation as per old Keystone version
     if (/^-?\d*\.?\d*$/.test(value)) {
-      this.props.onChange(value);
+      onChange(value);
     }
   };
 
-  render() {
-    const { autoFocus, field, value, errors } = this.props;
-    const htmlID = `ks-input-${field.path}`;
+  const valueToString = value => {
+    // Make the value a string to keep react happy.
+    if (typeof value === 'string') {
+      return value;
+    } else if (typeof value === 'number') {
+      return String(value);
+    } else {
+      // If it is neither string nor number then it must be empty.
+      return '';
+    }
+  };
 
-    return (
-      <FieldContainer>
-        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
-        <FieldInput>
-          <Input
-            autoComplete="off"
-            autoFocus={autoFocus}
-            type="text"
-            value={value}
-            onChange={this.onChange}
-            id={htmlID}
-          />
-        </FieldInput>
-      </FieldContainer>
-    );
-  }
-}
+  const htmlID = `ks-input-${field.path}`;
+
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+      <FieldDescription text={field.adminDoc} />
+      <FieldInput>
+        <Input
+          autoComplete="off"
+          autoFocus={autoFocus}
+          type="text"
+          value={valueToString(value)}
+          onChange={handleChange}
+          id={htmlID}
+          disabled={isReadOnly}
+        />
+      </FieldInput>
+    </FieldContainer>
+  );
+};
+
+export default FloatField;

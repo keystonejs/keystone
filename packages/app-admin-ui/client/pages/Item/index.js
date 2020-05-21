@@ -1,9 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
-import styled from '@emotion/styled';
+import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
 
@@ -30,21 +29,22 @@ import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
   toastItemSuccess,
-  toastError,
   validateFields,
   handleCreateUpdateMutationError,
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
+import { ItemProvider } from '../../providers/Item';
+import { useList } from '../../providers/List';
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
-const Form = styled.form({
-  marginBottom: gridSize * 3,
-});
+const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...props} />;
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
+
+const checkIsReadOnly = ({ maybeAccess, isReadOnly }) => !maybeAccess.update || !!isReadOnly;
 
 // Memoizing allows us to reduce the calls to `.serialize` when data hasn't
 // changed.
@@ -54,359 +54,297 @@ const getCurrentValues = memoizeOne(getValues);
 const deserializeItem = memoizeOne((list, data) => list.deserializeItemData(data));
 
 const getRenderableFields = memoizeOne(list =>
-  list.fields
-    .filter(({ isPrimaryKey }) => !isPrimaryKey)
-    .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
+  list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey)
 );
 
-const ItemDetails = withRouter(
-  class ItemDetails extends Component {
-    constructor(props) {
-      super(props);
-      // memoized function so we can call it multiple times _per component_
-      this.getFieldsObject = memoizeOne(() =>
-        arrayToObject(
-          // NOTE: We _exclude_ read only fields
-          getRenderableFields(props.list).filter(({ config }) => !config.isReadOnly),
-          'path'
-        )
-      );
-    }
+const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
+  const [item, setItem] = useState(initialData);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [validationWarnings, setValidationWarnings] = useState({});
 
-    state = {
-      item: this.props.item,
-      itemHasChanged: false,
-      showCreateModal: false,
-      showDeleteModal: false,
-      validationErrors: {},
-      validationWarnings: {},
+  const itemHasChanged = useRef(false);
+  const deleteConfirmed = useRef(false);
+
+  const history = useHistory();
+  const { addToast } = useToasts();
+
+  const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
+    errorPolicy: 'all',
+    onError: error => handleCreateUpdateMutationError({ error, addToast }),
+  });
+
+  const getFieldsObject = memoizeOne(() =>
+    arrayToObject(
+      // NOTE: We _exclude_ read only fields
+      getRenderableFields(list).filter(({ config }) => !config.isReadOnly),
+      'path'
+    )
+  );
+
+  const mounted = useRef();
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
     };
+  }, []);
 
-    componentDidMount() {
-      this.mounted = true;
-      document.addEventListener('keydown', this.onKeyDown, false);
-    }
-    componentWillUnmount() {
-      this.mounted = false;
-      document.removeEventListener('keydown', this.onKeyDown, false);
-    }
-    onKeyDown = event => {
-      if (event.defaultPrevented) return;
-
-      switch (event.key) {
-        case 'Enter':
-          if (event.metaKey) {
-            return this.onSave();
-          }
-      }
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown, false);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown, false);
     };
-    onDelete = deletePromise => {
-      const {
-        adminPath,
-        history,
-        list,
-        item,
-        toastManager: { addToast },
-      } = this.props;
+  }, []);
 
-      deletePromise
-        .then(() => {
-          if (this.mounted) {
-            this.setState({ showDeleteModal: false });
-          }
-          history.push(`${adminPath}/${list.path}`);
+  const onKeyDown = event => {
+    if (event.defaultPrevented) return;
 
-          toastItemSuccess({ addToast }, item, 'Deleted successfully');
-        })
-        .catch(error => {
-          toastError({ addToast }, error);
+    switch (event.key) {
+      case 'Enter':
+        if (event.metaKey) {
+          return onSave();
+        }
+    }
+  };
+
+  const onDelete = () => {
+    deleteConfirmed.current = true;
+    if (mounted) {
+      setShowDeleteModal(false);
+    }
+
+    toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
+    history.replace(list.getFullPersistentPath());
+  };
+
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
+  const onReset = () => {
+    setItem(initialData);
+    itemHasChanged.current = false;
+  };
+
+  const onSave = async () => {
+    // There are errors, no need to proceed - the entire save can be aborted.
+    if (countArrays(validationErrors)) {
+      return;
+    }
+
+    const fieldsObject = getFieldsObject();
+
+    const initialValues = getInitialValues(fieldsObject, initialData);
+    const currentValues = getCurrentValues(fieldsObject, item);
+
+    // Don't try to update anything that hasn't changed.
+    // This is particularly important for access control where a field
+    // may be `read: true, update: false`, so will appear in the item
+    // details, but is not editable, and would cause an error if a value
+    // was sent as part of the update query.
+    const data = omitBy(
+      currentValues,
+      path => !fieldsObject[path].hasChanged(initialValues, currentValues)
+    );
+
+    const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
+
+    // On the first pass through, there wont be any warnings, so we go ahead
+    // and check.
+    // On the second pass through, there _may_ be warnings, and by this point
+    // we know there are no errors (see the `validationErrors` check above),
+    // if so, we let the user force the update through anyway and hence skip
+    // this check.
+    // Later, on every change, we reset the warnings, so we know if things
+    // have changed since last time we checked.
+    if (!countArrays(validationWarnings)) {
+      const { errors, warnings } = await validateFields(fields, item, data);
+
+      const totalErrors = countArrays(errors);
+      const totalWarnings = countArrays(warnings);
+
+      if (totalErrors + totalWarnings > 0) {
+        const messages = [];
+        if (totalErrors > 0) {
+          messages.push(`${totalErrors} error${totalErrors > 1 ? 's' : ''}`);
+        }
+
+        if (totalWarnings > 0) {
+          messages.push(`${totalWarnings} warning${totalWarnings > 1 ? 's' : ''}`);
+        }
+
+        addToast(`Validation failed: ${messages.join(' and ')}.`, {
+          autoDismiss: true,
+          appearance: errors.length ? 'error' : 'warning',
         });
-    };
 
-    openDeleteModal = () => {
-      this.setState({ showDeleteModal: true });
-    };
-    closeDeleteModal = () => {
-      this.setState({ showDeleteModal: false });
-    };
+        setValidationErrors(errors);
+        setValidationWarnings(warnings);
 
-    onReset = () => {
-      this.setState({
-        item: this.props.item,
-        itemHasChanged: false,
-      });
-    };
-
-    renderDeleteModal() {
-      const { showDeleteModal } = this.state;
-      const { item, list } = this.props;
-
-      return (
-        <DeleteItemModal
-          isOpen={showDeleteModal}
-          item={item}
-          list={list}
-          onClose={this.closeDeleteModal}
-          onDelete={this.onDelete}
-        />
-      );
-    }
-
-    onSave = async () => {
-      const { item, validationErrors, validationWarnings } = this.state;
-
-      // There are errors, no need to proceed - the entire save can be aborted.
-      if (countArrays(validationErrors)) {
         return;
       }
-
-      const {
-        onUpdate,
-        toastManager: { addToast },
-        updateItem,
-        item: initialData,
-      } = this.props;
-
-      const fieldsObject = this.getFieldsObject();
-
-      const initialValues = getInitialValues(fieldsObject, initialData);
-      const currentValues = getCurrentValues(fieldsObject, item);
-
-      // Don't try to update anything that hasn't changed.
-      // This is particularly important for access control where a field
-      // may be `read: true, update: false`, so will appear in the item
-      // details, but is not editable, and would cause an error if a value
-      // was sent as part of the update query.
-      const data = omitBy(
-        currentValues,
-        path => !fieldsObject[path].hasChanged(initialValues, currentValues)
-      );
-
-      const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
-
-      // On the first pass through, there wont be any warnings, so we go ahead
-      // and check.
-      // On the second pass through, there _may_ be warnings, and by this point
-      // we know there are no errors (see the `validationErrors` check above),
-      // if so, we let the user force the update through anyway and hence skip
-      // this check.
-      // Later, on every change, we reset the warnings, so we know if things
-      // have changed since last time we checked.
-      if (!countArrays(validationWarnings)) {
-        const { errors, warnings } = await validateFields(fields, item, data);
-
-        const totalErrors = countArrays(errors);
-        const totalWarnings = countArrays(warnings);
-
-        if (totalErrors + totalWarnings > 0) {
-          const messages = [];
-          if (totalErrors > 0) {
-            messages.push(`${totalErrors} error${totalErrors > 1 ? 's' : ''}`);
-          }
-          if (totalWarnings > 0) {
-            messages.push(`${totalWarnings} warning${totalWarnings > 1 ? 's' : ''}`);
-          }
-
-          addToast(`Validation failed: ${messages.join(' and ')}.`, {
-            autoDismiss: true,
-            appearance: errors.length ? 'error' : 'warning',
-          });
-
-          this.setState(() => ({
-            validationErrors: errors,
-            validationWarnings: warnings,
-          }));
-
-          return;
-        }
-      }
-
-      updateItem({ variables: { id: item.id, data } })
-        .then(() => {
-          const toastContent = (
-            <div>
-              {item._label_ ? <strong>{item._label_}</strong> : null}
-              <div>Saved successfully</div>
-            </div>
-          );
-
-          addToast(toastContent, {
-            autoDismiss: true,
-            appearance: 'success',
-          });
-          this.setState(state => {
-            const newState = {
-              validationErrors: {},
-              validationWarnings: {},
-            };
-            // we only want to set itemHasChanged to false
-            // when it hasn't changed since we did the mutation
-            // otherwise a user could edit the data and
-            // accidentally close the page without a warning
-            if (state.item === item) {
-              newState.itemHasChanged = false;
-            }
-            return newState;
-          });
-        })
-        .then(onUpdate)
-        .then(savedItem => {
-          // No changes since we kicked off the item saving
-          if (!this.state.itemHasChanged) {
-            // Then reset the state to the current server value
-            // This ensures we are able to pass any extra information returned
-            // from the server that otherwise would be unknown to client state
-            this.setState({
-              item: savedItem,
-            });
-          }
-        });
-    };
-
-    /**
-     * Create item
-     */
-    openCreateModal = () => this.setState({ showCreateModal: true });
-    closeCreateModal = () => this.setState({ showCreateModal: false });
-    renderCreateModal = () => (
-      <CreateItemModal
-        isOpen={this.state.showCreateModal}
-        list={this.props.list}
-        onClose={this.closeCreateModal}
-        onCreate={this.onCreate}
-      />
-    );
-    onCreate = ({ data }) => {
-      const { list, adminPath, history } = this.props;
-      const { id } = data[list.gqlNames.createMutationName];
-      history.push(`${adminPath}/${list.path}/${id}`);
-    };
-
-    render() {
-      const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
-      const { item, itemHasChanged, validationErrors, validationWarnings } = this.state;
-
-      return (
-        <Fragment>
-          {itemHasChanged && <PreventNavigation />}
-          <ItemTitle
-            onCreateClick={this.openCreateModal}
-            id={item.id}
-            list={list}
-            adminPath={adminPath}
-            titleText={savedData._label_}
-          />
-          <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
-            <Form>
-              <AutocompleteCaptor />
-              {getRenderableFields(list).map((field, i) => (
-                <Render key={field.path}>
-                  {() => {
-                    const [Field] = field.adminMeta.readViews([field.views.Field]);
-
-                    let onChange = useCallback(
-                      value => {
-                        this.setState(({ item: itm }) => ({
-                          item: {
-                            ...itm,
-                            [field.path]: value,
-                          },
-                          validationErrors: {},
-                          validationWarnings: {},
-                          itemHasChanged: true,
-                        }));
-                      },
-                      [field]
-                    );
-
-                    return useMemo(
-                      () => (
-                        <Field
-                          autoFocus={!i}
-                          field={field}
-                          list={list}
-                          item={item}
-                          errors={[
-                            ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                            ...(validationErrors[field.path] || []),
-                          ]}
-                          warnings={validationWarnings[field.path] || []}
-                          value={item[field.path]}
-                          savedValue={savedData[field.path]}
-                          onChange={onChange}
-                          renderContext="page"
-                          CreateItemModal={CreateItemModal}
-                        />
-                      ),
-                      [
-                        i,
-                        field,
-                        list,
-                        itemErrors[field.path],
-                        item[field.path],
-                        item.id,
-                        validationErrors[field.path],
-                        validationWarnings[field.path],
-                        savedData[field.path],
-                        onChange,
-                      ]
-                    );
-                  }}
-                </Render>
-              ))}
-            </Form>
-            <Footer
-              onSave={this.onSave}
-              onDelete={this.openDeleteModal}
-              canReset={itemHasChanged && !updateInProgress}
-              onReset={this.onReset}
-              updateInProgress={updateInProgress}
-              hasWarnings={countArrays(validationWarnings)}
-              hasErrors={countArrays(validationErrors)}
-            />
-          </Card>
-
-          {this.renderCreateModal()}
-          {this.renderDeleteModal()}
-        </Fragment>
-      );
     }
-  }
-);
-const ItemNotFound = ({ adminPath, errorMessage, list }) => (
+
+    // Cache the current item data at the time of saving.
+    const itemSaveCheckCache = item;
+
+    // The result will be undefined if an error (such as access denial) occurred.
+    const mutationResult = await updateItem({ variables: { id: item.id, data } });
+    if (!mutationResult) {
+      return;
+    }
+
+    setValidationErrors({});
+    setValidationWarnings({});
+
+    // we only want to set itemHasChanged to false
+    // when it hasn't changed since we did the mutation
+    // otherwise a user could edit the data and
+    // accidentally close the page without a warning
+    if (item === itemSaveCheckCache) {
+      itemHasChanged.current = false;
+    }
+
+    const savedItem = await onUpdate();
+
+    // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
+    toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
+
+    // No changes since we kicked off the item saving.
+    // Then reset the state to the current server value
+    // This ensures we are able to pass any extra information returned
+    // from the server that otherwise would be unknown to client state
+    if (!itemHasChanged.current) {
+      setItem(savedItem);
+    }
+  };
+
+  return (
+    <Fragment>
+      {itemHasChanged.current && !deleteConfirmed.current && <PreventNavigation />}
+      <ItemTitle id={item.id} list={list} titleText={initialData._label_} />
+      <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
+        <Form>
+          <AutocompleteCaptor />
+          {getRenderableFields(list).map((field, i) => (
+            <Render key={field.path}>
+              {() => {
+                const [Field] = field.readViews([field.views.Field]);
+                const isReadOnly = checkIsReadOnly(field);
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const onChange = useCallback(
+                  value => {
+                    setItem(oldItem => {
+                      // Don't flag things as changed if they're not actually changed
+                      if (oldItem[field.path] === value) {
+                        return oldItem;
+                      }
+
+                      setValidationErrors({});
+                      setValidationWarnings({});
+
+                      itemHasChanged.current = true;
+
+                      return {
+                        ...oldItem,
+                        [field.path]: value,
+                      };
+                    });
+                  },
+                  [field]
+                );
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                return useMemo(
+                  () => (
+                    <Field
+                      autoFocus={!i}
+                      field={field}
+                      list={list}
+                      item={item}
+                      isReadOnly={isReadOnly}
+                      errors={[
+                        ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                        ...(validationErrors[field.path] || []),
+                      ]}
+                      warnings={validationWarnings[field.path] || []}
+                      value={item[field.path]}
+                      savedValue={initialData[field.path]}
+                      onChange={onChange}
+                      renderContext="page"
+                    />
+                  ),
+                  [
+                    i,
+                    field,
+                    list,
+                    itemErrors[field.path],
+                    item[field.path],
+                    item.id,
+                    validationErrors[field.path],
+                    validationWarnings[field.path],
+                    initialData[field.path],
+                    onChange,
+                    isReadOnly,
+                  ]
+                );
+              }}
+            </Render>
+          ))}
+        </Form>
+        <Footer
+          onSave={onSave}
+          onDelete={openDeleteModal}
+          canReset={itemHasChanged.current && !updateInProgress}
+          onReset={onReset}
+          updateInProgress={updateInProgress}
+          hasWarnings={countArrays(validationWarnings)}
+          hasErrors={countArrays(validationErrors)}
+        />
+      </Card>
+
+      <CreateItemModal />
+      <DeleteItemModal
+        isOpen={showDeleteModal}
+        item={initialData}
+        list={list}
+        onClose={closeDeleteModal}
+        onDelete={onDelete}
+      />
+    </Fragment>
+  );
+};
+
+const ItemNotFound = ({ errorMessage, list }) => (
   <PageError>
     <p>Couldn't find a {list.singular} matching that ID</p>
-    <Button to={`${adminPath}/${list.path}`} variant="ghost">
+    <Button to={list.fullPath} variant="ghost">
       Back to List
     </Button>
-    {errorMessage ? (
-      <p style={{ fontSize: '0.75rem', marginTop: gridSize * 4 }}>
+    {errorMessage && (
+      <p style={{ fontSize: '0.75rem', marginTop: `${gridSize * 4}px` }}>
         <code>{errorMessage}</code>
       </p>
-    ) : null}
+    )}
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
-  const itemQuery = list.getItemQuery(itemId);
-  const { addToast } = useToasts();
+const ItemPage = ({ itemId }) => {
+  const { list } = useList();
 
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache
   // NOTE: We specifically trigger this query here, before the later code which
   // could Suspend which allows the code and data to load in parallel.
-  const { loading, error, data, refetch } = useQuery(itemQuery, {
+  const { loading, error, data, refetch } = useQuery(list.itemQuery, {
     fetchPolicy: 'network-only',
     errorPolicy: 'all',
+    variables: { id: itemId },
   });
-
-  const [updateItem, { loading: updateInProgress, error: updateError }] = useMutation(
-    list.updateMutation,
-    {
-      errorPolicy: 'all',
-      onError: error => handleCreateUpdateMutationError({ error, addToast }),
-    }
-  );
 
   // Now that the network request for data has been triggered, we
   // try to initialise the fields. They are Suspense capable, so may
@@ -422,7 +360,15 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
     // Deserialising requires the field be loaded and also any of its
     // deserialisation dependencies (eg; the Content field relies on the Blocks
     // being loaded), so it too could suspend here.
-    () => deserializeItem(list, loading || !data ? {} : data[list.gqlNames.itemQueryName]),
+    () =>
+      deserializeItem(
+        list,
+        loading || !data
+          ? {}
+          : data[list.gqlNames.itemQueryName]
+          ? data[list.gqlNames.itemQueryName]
+          : {}
+      ),
   ]);
 
   // If the views load before the API request comes back, keep showing
@@ -441,8 +387,8 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   ) {
     return (
       <Fragment>
-        <DocTitle>{list.singular} not found</DocTitle>
-        <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+        <DocTitle title={`${list.singular} not found`} />
+        <ItemNotFound errorMessage={error.message} list={list} />
       </Fragment>
     );
   }
@@ -452,40 +398,28 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   const item = deserializeItem(list, data[list.gqlNames.itemQueryName]);
   const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
-  const handleUpdateItem = async args => {
-    const result = await updateItem(args);
-    if (!result) throw Error();
-  };
-
   if (!item) {
-    return <ItemNotFound adminPath={adminPath} list={list} />;
+    return <ItemNotFound list={list} />;
   }
 
   return (
-    <main>
-      <DocTitle>
-        {item._label_} - {list.singular}
-      </DocTitle>
-      <Container id="toast-boundary">
-        <ItemDetails
-          adminPath={adminPath}
-          item={item}
-          itemErrors={itemErrors}
-          key={itemId}
-          list={list}
-          getListByKey={getListByKey}
-          onUpdate={() =>
-            refetch().then(refetchedData =>
-              deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])
-            )
-          }
-          toastManager={{ addToast }}
-          updateInProgress={updateInProgress}
-          updateErrorMessage={updateError && updateError.message}
-          updateItem={handleUpdateItem}
-        />
-      </Container>
-    </main>
+    <ItemProvider item={item}>
+      <main>
+        <DocTitle title={`${item._label_} — ${list.singular}`} />
+        <Container id="toast-boundary">
+          <ItemDetails
+            item={item}
+            itemErrors={itemErrors}
+            key={itemId}
+            list={list}
+            onUpdate={async () => {
+              const { data } = await refetch();
+              return deserializeItem(list, data[list.gqlNames.itemQueryName]);
+            }}
+          />
+        </Container>
+      </main>
+    </ItemProvider>
   );
 };
 

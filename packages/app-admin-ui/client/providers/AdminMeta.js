@@ -1,17 +1,32 @@
 /* global KEYSTONE_ADMIN_META */
 
-import React from 'react';
-
 import List from '../classes/List';
 import { views, readViews, preloadViews } from '../FIELD_TYPES';
+
+import React, { useContext, createContext } from 'react';
 
 const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 
 // TODO: Pull this off `window.X` to support server side permission queries
-const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
+const {
+  adminPath,
+  apiPath,
+  graphiqlPath,
+  pages,
+  hooks,
+  signinPath,
+  signoutPath,
+  authStrategy,
+  lists,
+  name,
+  ...customMeta
+} = KEYSTONE_ADMIN_META;
+
+const AdminMetaContext = createContext();
 
 const resolveCustomPages = pages => {
   if (!Array.isArray(pages)) return pages;
+
   pages.forEach(page => {
     if (typeof page.component === 'string') {
       // this can be simplified once all pages are hooks
@@ -22,85 +37,72 @@ const resolveCustomPages = pages => {
       page.children = resolveCustomPages(page.children);
     }
   });
+
   return pages;
 };
 
-const listKeys = Object.keys(lists || {});
-const listsByKey = {};
-const listsByPath = {};
-let hasInitialisedLists = false;
+export const AdminMetaProvider = ({ children }) => {
+  // TODO: Permission query to see which lists to provide
+  const listsByKey = {};
+  const listsByPath = {};
+  const getListByKey = key => listsByKey[key];
 
-const adminMeta = {
-  ...srcMeta,
-  listKeys,
-  getListByKey(key) {
-    return listsByKey[key];
-  },
-  getListByPath(path) {
-    return listsByPath[path];
-  },
-  readViews,
-  preloadViews,
-};
+  const viewsToLoad = new Set();
+  if (typeof hookView === 'function') {
+    viewsToLoad.add(hookView);
+  }
 
-// it's important to note that List could throw a promise in it's constructor
-// technically List should never actually throw a promise since the views that
-// it needs are preloaded before the Lists are initialised
-// but from an API perspective, it should be seen as if List could throw in it's constructor
-// so this function should only be called inside a react render
-function readAdminMeta() {
-  if (!hasInitialisedLists) {
-    let viewsToLoad = new Set();
-    if (typeof hookView === 'function') {
-      viewsToLoad.add(hookView);
-    }
-    Object.values(pageViews).forEach(view => {
-      viewsToLoad.add(view);
+  Object.values(pageViews).forEach(view => {
+    viewsToLoad.add(view);
+  });
+
+  Object.values(listViews).forEach(list => {
+    Object.values(list).forEach(({ Controller }) => {
+      viewsToLoad.add(Controller);
     });
+  });
 
-    Object.values(listViews).forEach(list => {
-      Object.values(list).forEach(({ Controller }) => {
-        viewsToLoad.add(Controller);
-      });
-    });
+  // We want to load all of the field controllers, views and hooks upfront
+  // so we don't have a waterfall of requests
+  readViews([...viewsToLoad]);
 
-    // we want to load all of the field controllers, views and hooks upfront so we don't have a waterfall of requests
-    readViews([...viewsToLoad]);
-    listKeys.forEach(key => {
-      const list = new List(lists[key], adminMeta, views[key]);
+  Object.entries(lists || {}).forEach(
+    ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
+      const list = new List(
+        { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
+        { readViews, preloadViews, getListByKey, apiPath, adminPath, authStrategy },
+        views[key]
+      );
       listsByKey[key] = list;
       listsByPath[list.path] = list;
-    });
-    hasInitialisedLists = true;
-  }
-  let hooks = {};
+    }
+  );
+
+  let hookViews = {};
   if (typeof hookView === 'function') {
-    [hooks] = readViews([hookView]);
+    [hookViews] = readViews([hookView]);
   }
-  const hookPages = hooks.pages ? hooks.pages() : [];
-  const adminMataPages = adminMeta.pages ? adminMeta.pages : [];
-  const pages = resolveCustomPages([...adminMataPages, ...hookPages]);
-  return { ...adminMeta, hooks, pages };
-}
 
-// Provider
-// TODO: Permission query to see which lists to provide
-export const AdminMetaProvider = ({ children }) => children(readAdminMeta());
+  const hookPages = hookViews.pages ? hookViews.pages() : [];
+  const adminMetaPages = pages || [];
 
-// why are we using a hook rather just exporting the adminMeta?
-// so that we can add more logic later like reading the adminMeta from context so
-// we can do a permission query
-export const useAdminMeta = () => {
-  return readAdminMeta();
+  const value = {
+    adminPath,
+    apiPath,
+    graphiqlPath,
+    signinPath,
+    signoutPath,
+    authStrategy,
+    name,
+    listKeys: Object.keys(lists || {}),
+    getListByKey,
+    getListByPath: path => listsByPath[path],
+    hooks: hookViews,
+    pages: resolveCustomPages([...adminMetaPages, ...hookPages]),
+    ...customMeta,
+  };
+
+  return <AdminMetaContext.Provider value={value}>{children}</AdminMetaContext.Provider>;
 };
 
-// HOC Wrapper
-
-function setDisplayName(c) {
-  c.displayName = `withAdminMeta(${c.name || c.displayName})`;
-}
-export const withAdminMeta = Component => props => {
-  setDisplayName(Component);
-  // TODO: Permission query to see which lists to provide
-  return <Component {...props} adminMeta={readAdminMeta()} />;
-};
+export const useAdminMeta = () => useContext(AdminMetaContext);

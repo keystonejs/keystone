@@ -3,26 +3,11 @@ const AWS = require('aws-sdk');
 const urlJoin = require('url-join');
 
 module.exports = class S3Adapter {
-  constructor({
-    accessKeyId,
-    secretAccessKey,
-    region,
-    bucket,
-    folder,
-    getFilename,
-    publicUrl,
-    s3Options,
-    uploadParams,
-  }) {
-    if (!accessKeyId || !secretAccessKey || !region || !bucket || !folder) {
-      throw new Error('S3Adapter requires accessKeyId, secretAccessKey, region, bucket, folder.');
+  constructor({ bucket, getFilename, publicUrl, s3Options, uploadParams, folder = '' }) {
+    if (!bucket) {
+      throw new Error('S3Adapter requires a bucket name.');
     }
-    this.s3 = new AWS.S3({
-      accessKeyId,
-      secretAccessKey,
-      region,
-      ...s3Options,
-    });
+    this.s3 = new AWS.S3(s3Options);
     this.bucket = bucket;
     this.folder = folder;
     if (getFilename) {
@@ -69,18 +54,22 @@ module.exports = class S3Adapter {
 
   /**
    * Deletes the given file from S3
-   * @param file file field data
+   * @param file File field data
    * @param options A config object to be passed with each call to S3.deleteObject.
    *                Options `Bucket` and `Key` will be set by default.
    *                For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
    */
   delete(file, options = {}) {
-    if (!file) throw new Error("Missing required argument 'file'.");
-    this.s3.deleteObject({
-      Bucket: this.bucket,
-      Key: path.join(this.folder, file.filename),
-      ...options,
-    });
+    if (file) {
+      return this.s3
+        .deleteObject({
+          Bucket: this.bucket,
+          Key: path.join(this.folder, file.filename),
+          ...options,
+        })
+        .promise();
+    }
+    return Promise.reject(new Error("Missing required argument 'file'."));
   }
 
   getFilename({ id, originalFilename }) {

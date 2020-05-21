@@ -1,20 +1,20 @@
 <!--[meta]
 section: api
-title: Adapter Framework
+title: Adapter framework
 [meta]-->
 
-# Adapter Framework
+# Adapter framework
 
 This document describes the role of data store adapters in Keystone 5 and how they relate to lists and fields.
 
 A `Keystone` system consists of multiple `Lists`, each of which contains multiple `Fields`.
 This data structure needs to be backed by a persistent data store of some kind.
-The _KeystoneJS Adapter Framework_ facilitates this by providing an abstraction layer which can be implemented
+The _Keystone Adapter Framework_ facilitates this by providing an abstraction layer which can be implemented
 by adapters for different data stores (e.g. Mongoose, Postgres, etc).
 
 ## Usage
 
-### Single Adapter
+### Single adapter
 
 Every `Keystone` system requires at least one adapter.
 To use a single adapter in your project, provide an instance of your adapter of choice as the `adapter` config item.
@@ -22,13 +22,12 @@ To use a single adapter in your project, provide an instance of your adapter of 
 ```js
 const keystone = new Keystone({
   adapter: new MongooseAdapter(),
-  // ...
 });
 ```
 
 All the `Lists` in your system will be backed by this adapter.
 
-### Multiple Adapters
+### Multiple adapters
 
 If you want to use multiple adapters in your system (e.g. a different database for content management and business data),
 you can provide an `adapters` object in your config, along with a `defaultAdapter`.
@@ -40,7 +39,6 @@ const keystone = new Keystone({
     data: new PostgresAdapter(),
   },
   defaultAdapter: 'data',
-  // ...
 });
 ```
 
@@ -49,14 +47,11 @@ When you create your lists, the default adapter will be used unless your specify
 ```js
 keystone.createList('Pages', {
   adapterName: 'content',
-  fields: {
-    // ...
-  },
-  // ...
+  fields: {...},
 });
 ```
 
-## The Adapter Data Model
+## The adapter data model
 
 The adapter framework data model mirrors the KeystoneJS data model.
 
@@ -69,7 +64,7 @@ All required information is passed in to the adapter as parameters to the constr
 
 Each `KeystoneAdapter` contains references to its associated `ListAdapter` instances, via the `.listAdapters` property.
 The `ListAdapter` instances contain a back reference to the `KeystoneAdapter` via the `.parentAdapter` property.
-Each `ListAttribute` keeps a list of associated `FieldAdapter` instances, via .`fieldAdapters`.
+Each `ListAdapter` keeps a list of associated `FieldAdapter` instances, via .`fieldAdapters`.
 These in turn have back reference to the `ListAdapter` in the property `.listAdapter`.
 
 This data model allows all fields under a `KeystoneAdapter` to access all other fields in the same adapter,
@@ -90,7 +85,7 @@ Keystone    .adapters  ->   KeystoneAdapter   (.listAdapters)
               1:1
 ```
 
-### The Field Type \<- FieldAdapter Relationship
+### The `FieldType` to `FieldAdapter` relationship
 
 Each field type definition contains a mapping from `KeystoneAdapter` to `FieldAdapter` class in `.adapters`.
 The key to this mapping is the `KeystoneAdapter` instance's `.name` property.
@@ -109,23 +104,23 @@ var fieldTypeDef = {
 };
 ```
 
-## Creating Adapters
+## Creating adapters
 
 You can create a new adapter by extending the adapter framework classes.
 
-### Creating New Adapters
+### Creating new adapters
 
 To add a new adapter you need to extend the core adapter classes `BaseKeystoneAdapter`, `BaseListAdapter`, and `BaseFieldAdapter`.
 
 The API for these classes is not yet finalised.
 Experiment at your own risk.
 
-### Creating New Field Types
+### Creating new field types
 
 When creating a new field type, a `FieldAdapter` must be implemented for each `KeystoneAdapter` you want to support.
 The `.adapters` mapping for your new field type should contain the mapping from adapter name to `FieldAdapter` class for each adapter.
 
-## Advanced Usage
+## Advanced usage
 
 ### Custom `ListAdapter`
 
@@ -137,7 +132,6 @@ const keystone = new Keystone({
   adapter: new MongooseAdapter({
     listAdapterClass: require('custom-mongoose-list-adapter'),
   }),
-  // ...
 });
 ```
 
@@ -146,10 +140,7 @@ A custom list adapter can also be used on a per list basis.
 ```js
 keystone.createList('User', {
   listAdapterClass: require('custom-mongoose-list-adapter'),
-  fields: {
-    // ...
-  },
-  // ...
+  fields: {...},
 });
 ```
 
@@ -158,6 +149,8 @@ keystone.createList('User', {
 The recommended mechanism for customising the field type adapter is to create a new field type which overrides a specific field adapter mapping.
 
 ```js
+import { Text } from '@keystonejs/fields';
+
 const CustomText = {
   ...Text,
   adapters: {
@@ -169,8 +162,6 @@ const CustomText = {
 keystone.createList('User', {
   fields: {
     name: { type: CustomText },
-    // ...
   },
-  // ...
 });
 ```

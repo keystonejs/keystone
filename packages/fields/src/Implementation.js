@@ -4,13 +4,24 @@ import { parseFieldAccess } from '@keystonejs/access-control';
 class Field {
   constructor(
     path,
-    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, adminDoc, ...config },
+    {
+      hooks = {},
+      isRequired,
+      defaultValue,
+      access,
+      label,
+      schemaDoc,
+      adminDoc,
+      adminConfig,
+      ...config
+    },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
+    this.adminConfig = adminConfig;
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
@@ -59,7 +70,7 @@ class Field {
    *
    * These are special cases, and should be used sparingly
    *
-   * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
+   * NOTE: When a naming conflict occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
   getGqlAuxTypes() {
@@ -83,7 +94,7 @@ class Field {
     return {};
   }
 
-  /*
+  /**
    * @param {Object} data
    * @param {Object} data.resolvedData  The incoming item for the mutation with
    * relationships and defaults already resolved
@@ -95,7 +106,7 @@ class Field {
    * (no relationships or defaults resolved)
    * @param {Object} data.actions
    * @param {Function} data.actions.query Perform a graphQl query
-   * programatically
+   * programmatically
    */
   async resolveInput({ resolvedData }) {
     return resolvedData[this.path];
@@ -171,6 +182,7 @@ class Field {
       // functions
       defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
       isPrimaryKey: this.isPrimaryKey,
+      ...this.adminConfig,
       // NOTE: This data is serialised, so we're unable to pass through any
       // access control _functions_. But we can still check for the boolean case
       // and pass that through (we assume that if there is a function, it's a
@@ -189,10 +201,10 @@ class Field {
   extendAdminViews(views) {
     return views;
   }
-  getDefaultValue({ existingItem, context, originalInput, actions }) {
+  getDefaultValue({ context, originalInput, actions }) {
     if (typeof this.defaultValue !== 'undefined') {
       if (typeof this.defaultValue === 'function') {
-        return this.defaultValue({ existingItem, context, originalInput, actions });
+        return this.defaultValue({ context, originalInput, actions });
       } else {
         return this.defaultValue;
       }

@@ -4,6 +4,7 @@ import {
   parseCustomAccess,
   validateListAccessControl,
   validateFieldAccessControl,
+  validateAuthAccessControl,
 } from '../';
 
 describe('Access control package tests', () => {
@@ -252,21 +253,29 @@ describe('Access control package tests', () => {
     });
   });
 
-  test('validateListAccessControl', () => {
+  test('validateListAccessControl', async () => {
     let operation = 'read';
     const access = { [operation]: true };
 
     // Test the static case: returning a boolean
-    expect(validateListAccessControl({ access: { [operation]: true }, operation })).toBe(true);
-    expect(validateListAccessControl({ access: { [operation]: false }, operation })).toBe(false);
-    expect(() => validateListAccessControl({ access: { [operation]: 10 }, operation })).toThrow(
-      Error
-    );
+    await expect(
+      validateListAccessControl({ access: { [operation]: true }, operation })
+    ).resolves.toBe(true);
+    await expect(
+      validateListAccessControl({ access: { [operation]: false }, operation })
+    ).resolves.toBe(false);
+    await expect(
+      validateListAccessControl({ access: { [operation]: 10 }, operation })
+    ).rejects.toThrow(Error);
 
     const originalInput = {};
     const accessFn = jest.fn(() => true);
 
-    validateListAccessControl({ access: { [operation]: accessFn }, operation, originalInput });
+    await validateListAccessControl({
+      access: { [operation]: accessFn },
+      operation,
+      originalInput,
+    });
 
     expect(accessFn).toHaveBeenCalledTimes(1);
     expect(accessFn).toHaveBeenCalledWith(
@@ -275,65 +284,70 @@ describe('Access control package tests', () => {
       })
     );
 
-    [{}, { item: {} }].forEach(authentication => {
+    const items = [{}, { item: {} }];
+    for (const authentication of items) {
       operation = 'read';
 
       // Boolean function
       access[operation] = () => true;
-      expect(
+      await expect(
         validateListAccessControl({
           access: { [operation]: () => true },
           operation,
           authentication,
         })
-      ).toBe(true);
-      expect(
+      ).resolves.toBe(true);
+      await expect(
         validateListAccessControl({
           access: { [operation]: () => false },
           operation,
           authentication,
         })
-      ).toBe(false);
+      ).resolves.toBe(false);
       // Object function
-      expect(
+      await expect(
         validateListAccessControl({
           access: { [operation]: () => ({ a: 1 }) },
           operation,
           authentication,
         })
-      ).toEqual({ a: 1 });
+      ).resolves.toEqual({ a: 1 });
 
       // Object function with create operation
       operation = 'create';
-      expect(() =>
+      await expect(
         validateListAccessControl({
           access: { [operation]: () => ({ a: 1 }) },
           operation,
           authentication,
         })
-      ).toThrow(Error);
+      ).rejects.toThrow(Error);
 
       // Number function
-      expect(() =>
+      await expect(
         validateListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
-      ).toThrow(Error);
-    });
+      ).rejects.toThrow(Error);
+    }
   });
 
-  test('validateFieldAccessControl', () => {
+  test('validateFieldAccessControl', async () => {
     const operation = 'read';
     // Test the StaticAccess case: returning a boolean
-    expect(validateFieldAccessControl({ access: { [operation]: true }, operation })).toBe(true);
-    expect(validateFieldAccessControl({ access: { [operation]: false }, operation })).toBe(false);
-    expect(() => validateFieldAccessControl({ access: { [operation]: 10 }, operation })).toThrow(
-      Error
-    );
+    await expect(
+      validateFieldAccessControl({ access: { [operation]: true }, operation })
+    ).resolves.toBe(true);
+    await expect(
+      validateFieldAccessControl({ access: { [operation]: false }, operation })
+    ).resolves.toBe(false);
+    await expect(
+      validateFieldAccessControl({ access: { [operation]: 10 }, operation })
+    ).rejects.toThrow(Error);
 
     const originalInput = {};
     const existingItem = {};
     const accessFn = jest.fn(() => true);
 
-    validateFieldAccessControl({
+    await validateFieldAccessControl({
       access: { [operation]: accessFn },
       operation,
       originalInput,
@@ -348,27 +362,75 @@ describe('Access control package tests', () => {
       })
     );
 
-    [{}, { item: {} }].forEach(authentication => {
+    const items = [{}, { item: {} }];
+    for (const authentication of items) {
       // Test the ImperativeAccess case: a function which should return boolean
-      expect(
+      await expect(
         validateFieldAccessControl({
           access: { [operation]: () => true },
           operation,
           authentication,
         })
-      ).toBe(true);
+      ).resolves.toBe(true);
 
-      expect(
+      await expect(
         validateFieldAccessControl({
           access: { [operation]: () => false },
           operation,
           authentication,
         })
-      ).toBe(false);
+      ).resolves.toBe(false);
 
-      expect(() =>
+      await expect(
         validateFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
-      ).toThrow(Error);
-    });
+      ).rejects.toThrow(Error);
+    }
+  });
+
+  test('validateAuthAccessControl', async () => {
+    let operation = 'auth';
+    const access = { [operation]: true };
+
+    // Test the static case: returning a boolean
+    await expect(validateAuthAccessControl({ access: { [operation]: true } })).resolves.toBe(true);
+    await expect(validateAuthAccessControl({ access: { [operation]: false } })).resolves.toBe(
+      false
+    );
+    await expect(validateAuthAccessControl({ access: { [operation]: 10 } })).rejects.toThrow(Error);
+
+    const accessFn = jest.fn(() => true);
+
+    await validateAuthAccessControl({ access: { [operation]: accessFn } });
+
+    expect(accessFn).toHaveBeenCalledTimes(1);
+
+    const items = [{}, { item: {} }];
+    for (const authentication of items) {
+      operation = 'auth';
+
+      // Boolean function
+      access[operation] = () => true;
+      await expect(
+        validateAuthAccessControl({ access: { [operation]: () => true }, authentication })
+      ).resolves.toBe(true);
+      await expect(
+        validateAuthAccessControl({ access: { [operation]: () => false }, authentication })
+      ).resolves.toBe(false);
+      // Object function
+      await expect(
+        validateAuthAccessControl({ access: { [operation]: () => ({ a: 1 }) }, authentication })
+      ).resolves.toEqual({ a: 1 });
+
+      // Object function with create operation
+      operation = 'create';
+      await expect(
+        validateAuthAccessControl({ access: { [operation]: () => ({ a: 1 }) }, authentication })
+      ).rejects.toThrow(Error);
+
+      // Number function
+      await expect(
+        validateAuthAccessControl({ access: { [operation]: () => 10 }, authentication })
+      ).rejects.toThrow(Error);
+    }
   });
 });

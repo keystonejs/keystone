@@ -4,7 +4,7 @@ https://github.com/zeit/next.js/blob/canary/examples/with-apollo */
 import React from 'react';
 import initApollo from './initApollo';
 import Head from 'next/head';
-import { getDataFromTree } from 'react-apollo';
+import { getDataFromTree } from '@apollo/react-ssr';
 
 export default App => {
   return class Apollo extends React.Component {
@@ -13,12 +13,12 @@ export default App => {
       const {
         Component,
         router,
-        ctx: { res },
+        ctx: { res, req },
       } = ctx;
 
       // Run all GraphQL queries in the component tree
       // and extract the resulting data
-      const apollo = initApollo();
+      const apollo = initApollo(null, req);
 
       ctx.ctx.apolloClient = apollo;
 

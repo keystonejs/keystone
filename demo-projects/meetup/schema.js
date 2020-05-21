@@ -1,5 +1,5 @@
 require('dotenv').config();
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 const { sendEmail } = require('./emails');
 
 const {
@@ -23,12 +23,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 
 const access = {
   userIsAdmin: ({ authentication: { item: user } }) => Boolean(user && user.isAdmin),
-  userIsCurrentAuth: ({ authentication: { item } }) => {
-    if (!item) {
-      return false;
-    }
-    return { id: item.id };
-  },
+  userIsCurrentAuth: ({ authentication: { item: user } }) => Boolean(user), // item will be undefined for anonymous user
 };
 
 // Read: public / Write: admin
@@ -259,6 +254,9 @@ exports.ForgottenPasswordToken = {
       await sendEmail('forgot-password.jsx', props, options);
     },
   },
+};
+
+exports.customSchema = {
   mutations: [
     {
       schema: 'startPasswordRecovery(email: String!): ForgottenPasswordToken',
@@ -284,7 +282,7 @@ exports.ForgottenPasswordToken = {
           { variables: { email: email }, skipAccessControl: true }
         );
 
-        if (userErrors) {
+        if (userErrors || !userData.allUsers || !userData.allUsers.length) {
           console.error(
             userErrors,
             `Unable to find user when trying to create forgotten password token.`

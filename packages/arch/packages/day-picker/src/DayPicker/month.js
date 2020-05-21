@@ -66,7 +66,7 @@ export const Month = memo(({ style, index, data }) => {
   );
 });
 
-let readableMonths = months.map(month => format(setMonth(new Date(), month), 'MMMM'));
+const readableMonths = months.map(month => format(setMonth(new Date(), month), 'LLLL'));
 
 const MonthHeader = memo(({ month, year }) => {
   return (

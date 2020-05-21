@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
@@ -12,10 +12,11 @@ import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
 import RelationshipSelect from './RelationshipSelect';
+import { CreateItemModal, ListProvider, useList } from '@keystonejs/app-admin-ui/components';
 
 const MAX_IDS_IN_FILTER = 100;
 
-function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
+function SetAsCurrentUser({ listKey, value, onAddUser, many, isDisabled }) {
   const path = 'authenticated' + listKey;
 
   const { data } = useQuery(gql`
@@ -45,6 +46,7 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
             }}
             icon={PersonIcon}
             aria-label={label}
+            isDisabled={isDisabled}
           />
         )}
       </Tooltip>
@@ -55,12 +57,12 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 }
 
 function LinkToRelatedItems({ field, value }) {
-  const { many, ref } = field.config;
-  const { adminPath, getListByKey } = field.adminMeta;
-  const refList = getListByKey(ref);
+  const { many } = field.config;
+  const { adminPath } = field;
+  const { path } = field.getRefList();
   let isDisabled = false;
   let label;
-  let link = `${adminPath}/${refList.path}`;
+  let link = `${adminPath}/${path}`;
   if (many) {
     label = 'View List of Related Items';
 
@@ -102,9 +104,10 @@ function LinkToRelatedItems({ field, value }) {
   );
 }
 
-function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
-  let relatedList = field.adminMeta.getListByKey(field.config.ref);
-  let [isOpen, setIsOpen] = useState(false);
+function CreateAndAddItem({ field, item, onCreate, isDisabled }) {
+  const { list, openCreateItemModal } = useList();
+
+  let relatedList = field.getRefList();
   let label = `Create and add ${relatedList.singular}`;
 
   let prefillData;
@@ -130,33 +133,26 @@ function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
         };
       }, {});
   }
-
   return (
     <Fragment>
       <Tooltip placement="top" content={label}>
-        {ref => (
-          <IconButton
-            ref={ref}
-            onClick={() => {
-              setIsOpen(true);
-            }}
-            icon={PlusIcon}
-            aria-label={label}
-            variant="ghost"
-            css={{ marginLeft: gridSize }}
-          />
-        )}
+        {ref => {
+          return (
+            <IconButton
+              ref={ref}
+              onClick={openCreateItemModal}
+              icon={PlusIcon}
+              aria-label={label}
+              variant="ghost"
+              css={{ marginLeft: gridSize }}
+              isDisabled={isDisabled}
+            />
+          );
+        }}
       </Tooltip>
       <CreateItemModal
-        isOpen={isOpen}
-        list={relatedList}
         prefillData={prefillData}
-        onClose={() => {
-          setIsOpen(false);
-        }}
         onCreate={({ data }) => {
-          setIsOpen(false);
-          console.log(data);
           onCreate(data[relatedList.gqlNames.createMutationName]);
         }}
       />
@@ -164,9 +160,18 @@ function CreateAndAddItem({ field, item, list, onCreate, CreateItemModal }) {
   );
 }
 
-export default class RelationshipField extends Component {
-  onChange = option => {
-    const { field, onChange } = this.props;
+const RelationshipField = ({
+  autoFocus,
+  field,
+  value = [],
+  renderContext,
+  errors,
+  onChange,
+  item,
+  list,
+  isReadOnly,
+}) => {
+  const handleChange = option => {
     const { many } = field.config;
     if (many) {
       onChange(option ? option.map(i => i.value) : []);
@@ -174,60 +179,57 @@ export default class RelationshipField extends Component {
       onChange(option ? option.value : null);
     }
   };
-  render() {
-    const {
-      autoFocus,
-      field,
-      value,
-      renderContext,
-      errors,
-      onChange,
-      item,
-      list,
-      CreateItemModal,
-    } = this.props;
-    const { many, ref } = field.config;
-    const { authStrategy } = field.adminMeta;
-    const htmlID = `ks-input-${field.path}`;
-    return (
-      <FieldContainer>
-        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
-        <FieldInput>
-          <div css={{ flex: 1 }}>
-            <RelationshipSelect
-              autoFocus={autoFocus}
-              isMulti={many}
-              field={field}
-              value={value}
-              errors={errors}
-              renderContext={renderContext}
-              htmlID={htmlID}
-              onChange={this.onChange}
-            />
-          </div>
+
+  const { many, ref } = field.config;
+  const { authStrategy } = field;
+  const htmlID = `ks-input-${field.path}`;
+
+  const relatedList = field.getRefList();
+
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+      <FieldDescription text={field.adminDoc} />
+      <FieldInput>
+        <div css={{ flex: 1 }}>
+          <RelationshipSelect
+            autoFocus={autoFocus}
+            isMulti={many}
+            field={field}
+            value={value}
+            errors={errors}
+            renderContext={renderContext}
+            htmlID={htmlID}
+            onChange={handleChange}
+            isDisabled={isReadOnly}
+          />
+        </div>
+        <ListProvider list={relatedList}>
           <CreateAndAddItem
             onCreate={item => {
-              onChange(many ? (value || []).concat(item) : item);
+              onChange(many ? value.concat(item) : item);
             }}
             field={field}
             item={item}
             list={list}
-            CreateItemModal={CreateItemModal}
+            isDisabled={isReadOnly}
           />
-          {authStrategy && ref === authStrategy.listKey && (
-            <SetAsCurrentUser
-              many={many}
-              onAddUser={user => {
-                onChange(many ? (value || []).concat(user) : user);
-              }}
-              value={value}
-              listKey={authStrategy.listKey}
-            />
-          )}
-          <LinkToRelatedItems field={field} value={value} />
-        </FieldInput>
-      </FieldContainer>
-    );
-  }
-}
+        </ListProvider>
+        {authStrategy && ref === authStrategy.listKey && (
+          <SetAsCurrentUser
+            many={many}
+            onAddUser={user => {
+              onChange(many ? value.concat(user) : user);
+            }}
+            value={value}
+            listKey={authStrategy.listKey}
+            isDisabled={isReadOnly}
+          />
+        )}
+        <LinkToRelatedItems field={field} value={value} />
+      </FieldInput>
+    </FieldContainer>
+  );
+};
+
+export default RelationshipField;

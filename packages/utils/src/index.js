@@ -22,7 +22,7 @@ export const mapKeyNames = (obj, func) =>
     {}
   );
 
-export const resolveAllKeys = obj => {
+export const resolveAllKeys = async obj => {
   const returnValue = {};
   const errors = {};
 
@@ -38,18 +38,19 @@ export const resolveAllKeys = obj => {
     })
   );
 
-  return Promise.all(allPromises).then(results => {
-    // If there are any errors, we want to surface them in the same shape as the
-    // input object
-    if (Object.keys(errors).length) {
-      const firstError = results.find(({ isRejected }) => isRejected).reason;
-      // Use the first error as the message so it's at least meaningful
-      const error = new Error(firstError.message || firstError.toString());
-      error.errors = errors;
-      throw error;
-    }
-    return returnValue;
-  });
+  const results = await Promise.all(allPromises);
+
+  // If there are any errors, we want to surface them in the same shape as the
+  // input object
+  if (Object.keys(errors).length) {
+    const firstError = results.find(({ isRejected }) => isRejected).reason;
+    // Use the first error as the message so it's at least meaningful
+    const error = new Error(firstError.message || firstError.toString());
+    error.errors = errors;
+    throw error;
+  }
+
+  return returnValue;
 };
 
 export const unique = arr => [...new Set(arr)];
@@ -220,4 +221,13 @@ export const versionGreaterOrEqualTo = (comp, base) => {
   const v1 = parseVersion(comp);
   const v2 = parseVersion(base);
   return semver.gte(v1, v2);
+};
+
+export const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+
+// Iteratively execute a callback against each item in an array
+export const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
 };

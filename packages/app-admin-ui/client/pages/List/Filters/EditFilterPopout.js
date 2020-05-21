@@ -1,18 +1,13 @@
-import React, { Component } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 
 import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
 
-export default class EditFilterPopout extends Component {
-  state = { value: this.props.filter.value };
+const EditFilterPopout = ({ filter, target, onChange }) => {
+  const [value, setValue] = useState(filter.value);
 
-  onChangeFilter = value => {
-    this.setState({ value });
-  };
-  onSubmit = () => {
-    const { filter, onChange } = this.props;
-    const { value } = this.state;
-    if (value === null) return;
+  const onSubmit = () => {
+    if (value === null || filter.field.getFilterValue(value) === null) return;
     onChange({
       field: filter.field,
       label: filter.label,
@@ -24,31 +19,33 @@ export default class EditFilterPopout extends Component {
   // Refs
   // ==============================
 
-  getFilterRef = ref => {
-    if (!ref) return;
-    this.filterRef = ref;
-  };
+  const filterRef = useRef();
 
-  render() {
-    const { filter, target } = this.props;
-    const { value } = this.state;
-    let [Filter] = filter.field.adminMeta.readViews([filter.field.views.Filter]);
-    const headerTitle = filter.field.getFilterLabel(filter);
+  // TODO: see if we can do away with the ref. Without this, the filter loses focus while typing.
+  useEffect(() => {
+    if (filterRef.current) {
+      filterRef.current.focus();
+    }
+  }, [filterRef.current]);
 
-    return (
-      <PopoutForm target={target} headerTitle={headerTitle} onSubmit={this.onSubmit} showFooter>
-        {({ ref }) => (
-          <div ref={ref} style={{ padding: POPOUT_GUTTER }}>
-            <Filter
-              innerRef={this.getFilterRef}
-              field={filter.field}
-              filter={filter}
-              onChange={this.onChangeFilter}
-              value={value}
-            />
-          </div>
-        )}
-      </PopoutForm>
-    );
-  }
-}
+  const [Filter] = useMemo(() => filter.field.readViews([filter.field.views.Filter]), []);
+  const headerTitle = filter.field.getFilterLabel(filter);
+
+  return (
+    <PopoutForm target={target} headerTitle={headerTitle} onSubmit={onSubmit} showFooter>
+      {({ ref }) => (
+        <div ref={ref} style={{ padding: `${POPOUT_GUTTER}px` }}>
+          <Filter
+            innerRef={filterRef}
+            field={filter.field}
+            filter={filter}
+            onChange={setValue}
+            value={value}
+          />
+        </div>
+      )}
+    </PopoutForm>
+  );
+};
+
+export default EditFilterPopout;
