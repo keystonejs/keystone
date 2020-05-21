@@ -29,17 +29,21 @@ export const ItemTitle = memo(function ItemTitle({ titleText }) {
       <PageTitle>{titleText}</PageTitle>
       <ListDescription text={list.adminDoc} />
       <FlexGroup align="center" justify="space-between" css={{ marginBottom: '0.9rem' }}>
-        <div>
-          <IconButton
-            variant="subtle"
-            icon={ChevronLeftIcon}
-            to={list.getFullPersistentPath()}
-            css={{ marginLeft: -12 }}
-          >
-            {list.label}
-          </IconButton>
-          <Search list={list} />
-        </div>
+        {!list.adminConfig.singleton ? (
+          <div>
+            <IconButton
+              variant="subtle"
+              icon={ChevronLeftIcon}
+              to={list.getFullPersistentPath()}
+              css={{ marginLeft: -12 }}
+            >
+              {list.label}
+            </IconButton>
+            <Search list={list} />
+          </div>
+        ) : (
+          <div />
+        )}
         {itemHeaderActions ? (
           itemHeaderActions()
         ) : (
