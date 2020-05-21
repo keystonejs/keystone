@@ -55,8 +55,12 @@ function setupKeystone(adapterName) {
       });
 
       keystone.createList('GroupNoCreate', {
-        fields: { name: { type: Text } },
-        access: { create: () => false },
+        fields: {
+          name: { type: Text },
+        },
+        access: {
+          create: () => false,
+        },
       });
 
       keystone.createList('EventToGroupNoCreate', {
