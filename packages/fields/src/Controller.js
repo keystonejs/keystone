@@ -10,6 +10,7 @@ export default class FieldController {
       isOrderable,
       isPrimaryKey,
       isRequired,
+      isReadOnly,
       adminDoc,
       defaultValue,
       ...config
@@ -25,6 +26,7 @@ export default class FieldController {
     this.isOrderable = isOrderable;
     this.isPrimaryKey = isPrimaryKey;
     this.isRequired = isRequired;
+    this.isReadOnly = isReadOnly;
     this.adminDoc = adminDoc;
     this.readViews = readViews;
     this.preloadViews = preloadViews;

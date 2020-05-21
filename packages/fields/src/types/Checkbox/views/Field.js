@@ -6,7 +6,7 @@ import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
 
-const CheckboxField = ({ onChange, autoFocus, field, value, errors }) => {
+const CheckboxField = ({ onChange, autoFocus, field, value, errors, isReadOnly }) => {
   const handleChange = event => {
     onChange(event.target.checked);
   };
@@ -23,6 +23,7 @@ const CheckboxField = ({ onChange, autoFocus, field, value, errors }) => {
           checked={checked}
           onChange={handleChange}
           id={htmlID}
+          isDisabled={isReadOnly}
         />
         <FieldLabel
           htmlFor={htmlID}
