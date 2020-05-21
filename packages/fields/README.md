@@ -87,7 +87,7 @@ Additional field configs affecting field rendering or display in `admin-ui`.
 
 #### `adminConfig.isReadOnly`
 
-Fields with `isReadOnly` set to `true` will be disabled preventing users from modifying the min the Admin UI. This does not affect access control and fields can still be updated via GraphQL.
+Fields with `isReadOnly` set to `true` will be disabled preventing users from modifying them in the Admin UI. This does not affect access control and fields can still be updated via GraphQL.
 
 ```javascript
 keystone.createList('Post', {
