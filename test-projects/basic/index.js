@@ -14,6 +14,7 @@ const {
   Url,
   Decimal,
   OEmbed,
+  Slug,
   Unsplash,
   Virtual,
 } = require('@keystonejs/fields');
@@ -202,6 +203,55 @@ keystone.createList('Post', {
     } else {
       return item.name;
     }
+  },
+});
+
+keystone.createList('ReadOnlyList', {
+  fields: {
+    name: { type: Text },
+    slug: { type: Slug, adminConfig: { isReadOnly: true } },
+    status: {
+      type: Select,
+      defaultValue: 'draft',
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      adminConfig: { isReadOnly: true },
+    },
+    author: {
+      type: Relationship,
+      ref: 'User',
+      adminConfig: { isReadOnly: true },
+    },
+    views: { type: Integer, adminConfig: { isReadOnly: true } },
+    price: { type: Decimal, symbol: '$', adminConfig: { isReadOnly: true } },
+    currency: { type: Text, adminConfig: { isReadOnly: true } },
+    hero: { type: File, adapter: fileAdapter, adminConfig: { isReadOnly: true } },
+    markdownValue: { type: Markdown, adminConfig: { isReadOnly: true } },
+    value: {
+      type: Content,
+      blocks: [
+        ...(cloudinaryAdapter
+          ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
+          : []),
+        ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
+        ...(unsplash.accessKey
+          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
+          : []),
+        Content.blocks.blockquote,
+        Content.blocks.orderedList,
+        Content.blocks.unorderedList,
+        Content.blocks.link,
+        Content.blocks.heading,
+      ],
+      adminConfig: { isReadOnly: true },
+    },
+  },
+  adminConfig: {
+    defaultPageSize: 20,
+    defaultColumns: 'name, status',
+    defaultSort: 'name',
   },
 });
 

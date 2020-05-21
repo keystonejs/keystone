@@ -3,7 +3,7 @@ import React from 'react';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-const FloatField = ({ onChange, autoFocus, field, value, errors }) => {
+const FloatField = ({ onChange, autoFocus, field, value, errors, isReadOnly }) => {
   const handleChange = event => {
     const value = event.target.value;
     // Similar implementation as per old Keystone version
@@ -39,6 +39,7 @@ const FloatField = ({ onChange, autoFocus, field, value, errors }) => {
           value={valueToString(value)}
           onChange={handleChange}
           id={htmlID}
+          disabled={isReadOnly}
         />
       </FieldInput>
     </FieldContainer>
