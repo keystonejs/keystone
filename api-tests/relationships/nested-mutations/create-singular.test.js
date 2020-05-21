@@ -27,8 +27,12 @@ function setupKeystone(adapterName) {
       });
 
       keystone.createList('GroupNoRead', {
-        fields: { name: { type: Text } },
-        access: { read: () => false },
+        fields: {
+          name: { type: Text },
+        },
+        access: {
+          read: () => false,
+        },
       });
 
       keystone.createList('EventToGroupNoRead', {
