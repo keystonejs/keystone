@@ -62,6 +62,7 @@ const OEmbedField = ({ onChange, autoFocus, field, value = null, savedValue = nu
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="url"
           value={(canRead && value && value.originalUrl) || ''}
           placeholder={canRead ? undefined : error.message}

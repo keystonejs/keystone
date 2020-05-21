@@ -25,6 +25,7 @@ const UnsplashField = ({ onChange, autoFocus, field, errors, value: serverValue 
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="text"
           value={canRead ? value : undefined}
           placeholder={canRead ? 'Unsplash Image ID' : error.message}
