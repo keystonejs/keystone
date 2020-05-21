@@ -192,7 +192,6 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
             {() => {
               const creatable = list.fields
                 .filter(({ isPrimaryKey }) => !isPrimaryKey)
-                // Remove read-only fields from the create dialog
                 .filter(({ isReadOnly }) => !isReadOnly)
                 .filter(({ maybeAccess }) => !!maybeAccess.create);
 
