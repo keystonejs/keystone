@@ -12,7 +12,12 @@ import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
 import RelationshipSelect from './RelationshipSelect';
-import { CreateItemModal, ListProvider, useList } from '@keystonejs/app-admin-ui/components';
+import {
+  CreateItemModal,
+  ListProvider,
+  useList,
+  useAdminMeta,
+} from '@keystonejs/app-admin-ui/components';
 
 const MAX_IDS_IN_FILTER = 100;
 
@@ -57,11 +62,10 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 
 function LinkToRelatedItems({ field, value }) {
   const { many } = field.config;
-  const { adminPath } = field;
-  const { path } = field.getRefList();
+  const { fullPath } = field.getRefList();
   let isDisabled = false;
   let label;
-  let link = `${adminPath}/${path}`;
+  let link = fullPath;
   if (many) {
     label = 'View List of Related Items';
 
@@ -178,7 +182,7 @@ const RelationshipField = ({
   };
 
   const { many, ref } = field.config;
-  const { authStrategy } = field;
+  const { authStrategy } = useAdminMeta();
   const htmlID = `ks-input-${field.path}`;
 
   const relatedList = field.getRefList();

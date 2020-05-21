@@ -5,7 +5,7 @@ import { arrayToObject, mapKeys, omit } from '@keystonejs/utils';
 export default class List {
   constructor(
     { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-    { readViews, preloadViews, getListByKey, adminPath, authStrategy },
+    { readViews, preloadViews, getListByKey, adminPath },
     views
   ) {
     this.access = access;
@@ -23,7 +23,7 @@ export default class List {
       const [Controller] = readViews([views[fieldConfig.path].Controller]);
       return new Controller(
         fieldConfig,
-        { readViews, preloadViews, getListByKey, adminPath, authStrategy },
+        { readViews, preloadViews, getListByKey },
         views[fieldConfig.path]
       );
     });

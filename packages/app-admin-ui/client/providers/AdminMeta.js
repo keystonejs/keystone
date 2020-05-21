@@ -70,7 +70,7 @@ export const AdminMetaProvider = ({ children }) => {
     ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
       const list = new List(
         { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-        { readViews, preloadViews, getListByKey, apiPath, adminPath, authStrategy },
+        { readViews, preloadViews, getListByKey, apiPath, adminPath },
         views[key]
       );
       listsByKey[key] = list;
