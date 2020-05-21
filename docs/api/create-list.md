@@ -286,7 +286,9 @@ Changes the path in the Admin UI. Updating `plural` and `singular` values will n
 
 ### `plugins`
 
-An array of functions that modify config values. Plugin functions receive a config object and can modify or extend this. They should return a valid list config.
+An array of functions that modify config values. Plugin functions receive a config object and can modify or extend this. They should return a valid list config. starting Keystone version 10.0.0, plugins receives second parameter with `{ listKey, keystone}`. Where listKey is the name of list and keystone instance.
+
+> This keystone instance is not fully functional when plugins are initialised. Features like `executeQuery` is ready only after `keystone.connect` is run. You can use keystone instance from within hooks and access control methods.
 
 ```javascript
 const setupUserList = ({ fields, ...config }) => {
