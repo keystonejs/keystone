@@ -18,7 +18,7 @@ describe('Home page', () => {
   it('Create list buttons exists', () => {
     cy.visit('/admin');
     [{ text: 'User' }, { text: 'Post' }, { text: 'Post Category' }].forEach(({ text }) => {
-      cy.contains('button', new RegExp(`^Create ${text}$g`)).should(
+      cy.contains('button', new RegExp(`^Create ${text}$`)).should(
         'have.attr',
         'title',
         `Create ${text}`
@@ -39,7 +39,7 @@ describe('Home page', () => {
       },
       { text: 'Post Category', labels: ['Name', 'Slug'] },
     ].forEach(({ text, labels }) => {
-      cy.contains('button', new RegExp(`^Create ${text}$g`)).click({ force: true });
+      cy.contains('button', new RegExp(`^Create ${text}$`)).click({ force: true });
       cy.contains('div', `Create ${text} Dialog`).contains('h3', `Create ${text}`);
       cy.contains('div', `Create ${text} Dialog`).contains('button', 'Create');
       labels.forEach(label => {
