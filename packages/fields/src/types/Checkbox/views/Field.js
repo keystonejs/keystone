@@ -11,7 +11,7 @@ import {
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
 
-const CheckboxField = ({ onChange, autoFocus, field, value, errors }) => {
+const CheckboxField = ({ onChange, autoFocus, field, value, errors, isReadOnly }) => {
   const handleChange = event => {
     onChange(event.target.checked);
   };
