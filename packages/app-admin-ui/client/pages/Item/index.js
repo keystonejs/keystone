@@ -235,7 +235,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
             <Render key={field.path}>
               {() => {
                 const [Field] = field.readViews([field.views.Field]);
-                const isReadOnly = checkIsReadOnly(field);
+                const isReadOnly = checkIsReadOnly(field) || !list.access.update;
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -299,7 +299,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
         <Footer
           onSave={onSave}
           onDelete={openDeleteModal}
-          canReset={itemHasChanged.current && !updateInProgress && list.access.update}
+          canReset={itemHasChanged.current && !updateInProgress}
           onReset={onReset}
           updateInProgress={updateInProgress}
           hasWarnings={countArrays(validationWarnings)}
