@@ -32,7 +32,6 @@ import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
-import { useAdminMeta } from '../../providers/AdminMeta';
 
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
