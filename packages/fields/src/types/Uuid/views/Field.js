@@ -25,6 +25,7 @@ const UuidField = ({ onChange, autoFocus, field, errors, value: serverValue, isR
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="text"
           value={canRead ? value : undefined}
           placeholder={canRead ? undefined : error.message}

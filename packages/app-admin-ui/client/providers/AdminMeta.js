@@ -70,13 +70,17 @@ export const AdminMetaProvider = ({ children }) => {
     ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
       const list = new List(
         { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-        { readViews, preloadViews, getListByKey, apiPath, adminPath, authStrategy },
+        { readViews, preloadViews, getListByKey, apiPath, adminPath },
         views[key]
       );
       listsByKey[key] = list;
       listsByPath[list.path] = list;
     }
   );
+
+  const listKeys = Object.values(listsByKey)
+    .sort(({ label: a }, { label: b }) => a.localeCompare(b)) // TODO: locale options once intl support is added
+    .map(({ key }) => key);
 
   let hookViews = {};
   if (typeof hookView === 'function') {
@@ -94,7 +98,7 @@ export const AdminMetaProvider = ({ children }) => {
     signoutPath,
     authStrategy,
     name,
-    listKeys: Object.keys(lists || {}),
+    listKeys,
     getListByKey,
     getListByPath: path => listsByPath[path],
     hooks: hookViews,

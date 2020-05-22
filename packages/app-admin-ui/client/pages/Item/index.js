@@ -25,6 +25,7 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
 import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
@@ -261,22 +262,24 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      list={list}
-                      item={item}
-                      isReadOnly={isReadOnly}
-                      errors={[
-                        ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                        ...(validationErrors[field.path] || []),
-                      ]}
-                      warnings={validationWarnings[field.path] || []}
-                      value={item[field.path]}
-                      savedValue={initialData[field.path]}
-                      onChange={onChange}
-                      renderContext="page"
-                    />
+                    <ErrorBoundary>
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        list={list}
+                        item={item}
+                        isReadOnly={isReadOnly}
+                        errors={[
+                          ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                          ...(validationErrors[field.path] || []),
+                        ]}
+                        warnings={validationWarnings[field.path] || []}
+                        value={item[field.path]}
+                        savedValue={initialData[field.path]}
+                        onChange={onChange}
+                        renderContext="page"
+                      />
+                    </ErrorBoundary>
                   ),
                   [
                     i,

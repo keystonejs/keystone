@@ -12,6 +12,7 @@ import { LoadingIndicator } from '@arch-ui/loading';
 import Select from '@arch-ui/select';
 
 import { validateFields, handleCreateUpdateMutationError } from '../util';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const Render = ({ children }) => children();
 
@@ -169,18 +170,20 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      value={item[field.path]}
-                      // Explicitly pass undefined here as it doesn't make
-                      // sense to pass in any one 'saved' value
-                      savedValue={undefined}
-                      errors={validationErrors[field.path] || []}
-                      warnings={validationWarnings[field.path] || []}
-                      onChange={onChange}
-                      renderContext="dialog"
-                    />
+                    <ErrorBoundary>
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        value={item[field.path]}
+                        // Explicitly pass undefined here as it doesn't make
+                        // sense to pass in any one 'saved' value
+                        savedValue={undefined}
+                        errors={validationErrors[field.path] || []}
+                        warnings={validationWarnings[field.path] || []}
+                        onChange={onChange}
+                        renderContext="dialog"
+                      />
+                    </ErrorBoundary>
                   ),
                   [
                     i,
