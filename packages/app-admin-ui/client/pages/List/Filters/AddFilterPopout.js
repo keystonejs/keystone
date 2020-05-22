@@ -15,6 +15,7 @@ import { LoadingSpinner } from '@arch-ui/loading';
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { DisclosureArrow, POPOUT_GUTTER } from '../../../components/Popout';
+import { ErrorBoundary } from '../../../components/ErrorBoundary';
 
 const EventCatcher = props => (
   <div
@@ -337,16 +338,18 @@ export default class AddFilterPopout extends Component<Props, State> {
               >
                 <Render>
                   {() => {
-                    let [Filter] = field.readViews([field.views.Filter]);
+                    const [Filter] = field.readViews([field.views.Filter]);
 
                     return (
-                      <Filter
-                        innerRef={this.filterRef}
-                        field={field}
-                        filter={filter}
-                        value={this.state.value}
-                        onChange={this.onChangeFilter}
-                      />
+                      <ErrorBoundary>
+                        <Filter
+                          innerRef={this.filterRef}
+                          field={field}
+                          filter={filter}
+                          value={this.state.value}
+                          onChange={this.onChangeFilter}
+                        />
+                      </ErrorBoundary>
                     );
                   }}
                 </Render>
