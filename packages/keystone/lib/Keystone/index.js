@@ -33,9 +33,6 @@ const List = require('../List');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
-// composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
-
 module.exports = class Keystone {
   constructor({
     defaultAccess,
@@ -307,6 +304,9 @@ module.exports = class Keystone {
     if (isReservedName) {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
+
+    // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
+    const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 
     const list = new List(
       key,
