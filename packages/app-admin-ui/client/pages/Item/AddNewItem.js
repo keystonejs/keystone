@@ -7,13 +7,10 @@ import { useList } from '../../providers/List';
 
 const AddNewItem = () => {
   let {
-    list: {
-      access,
-      adminConfig: { singleton = false },
-    },
+    list: { access },
     openCreateItemModal,
   } = useList();
-  if (!access.create || singleton) return null;
+  if (!access.create) return null;
   const cypressId = 'item-page-create-button';
   return (
     <Tooltip content="Create" hideOnMouseDown hideOnKeyDown>

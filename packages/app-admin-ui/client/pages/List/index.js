@@ -225,6 +225,7 @@ const ListPage = props => {
     queryErrorsParsed,
     query,
   } = useList();
+
   const history = useHistory();
   const location = useLocation();
 
@@ -245,12 +246,6 @@ const ListPage = props => {
       });
     }
   }, []);
-
-  useEffect(() => {
-    if (list.adminConfig.singleton && itemCount > 0) {
-      history.replace(`${list.fullPath}/${items[0].id}`);
-    }
-  }, [itemCount]);
 
   // Error
   // ------------------------------
