@@ -97,7 +97,7 @@ export default memo(
             >
               {hasWarnings && !hasErrors ? 'Ignore Warnings and Save Changes' : 'Save Changes'}
             </LoadingButton>
-            <Reset canReset={canReset && !list.access.update} onReset={onReset} />
+            <Reset canReset={canReset} onReset={onReset} />
           </div>
           <div>
             <Button

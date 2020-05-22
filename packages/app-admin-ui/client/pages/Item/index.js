@@ -299,7 +299,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
         <Footer
           onSave={onSave}
           onDelete={openDeleteModal}
-          canReset={itemHasChanged.current && !updateInProgress}
+          canReset={itemHasChanged.current && !updateInProgress && list.access.update}
           onReset={onReset}
           updateInProgress={updateInProgress}
           hasWarnings={countArrays(validationWarnings)}
