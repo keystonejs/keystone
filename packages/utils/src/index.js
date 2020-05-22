@@ -110,9 +110,6 @@ export const zipObj = obj =>
 // compose([f, g, h])(o) = h(g(f(o)))
 export const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
 
-// composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-export const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
-
 export const mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   if (
     getType(whereClauseToMergeIn) !== 'Object' ||
