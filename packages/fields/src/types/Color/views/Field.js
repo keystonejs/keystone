@@ -6,7 +6,7 @@ import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
 import SketchPicker from 'react-color/lib/Sketch';
 
-const ColorField = ({ field, value: serverValue, errors, onChange, isReadOnly }) => {
+const ColorField = ({ field, value: serverValue, errors, onChange, isDisabled }) => {
   const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
 
@@ -24,7 +24,7 @@ const ColorField = ({ field, value: serverValue, errors, onChange, isReadOnly })
   }, [value]);
 
   const target = props => (
-    <Button {...props} variant="ghost" isDisabled={isReadOnly}>
+    <Button {...props} variant="ghost" isDisabled={isDisabled}>
       {value ? (
         <Fragment>
           <div

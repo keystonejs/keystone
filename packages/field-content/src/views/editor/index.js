@@ -32,7 +32,7 @@ function getSchema(blocks) {
   return schema;
 }
 
-function Stories({ value: editorState, onChange, blocks, className, id, isReadOnly }) {
+function Stories({ value: editorState, onChange, blocks, className, id, isDisabled }) {
   let schema = useMemo(() => {
     return getSchema(blocks);
   }, [blocks]);
@@ -75,7 +75,7 @@ function Stories({ value: editorState, onChange, blocks, className, id, isReadOn
         onChange={({ value }) => {
           onChange(value);
         }}
-        readOnly={isReadOnly}
+        readOnly={isDisabled}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
       <Toolbar {...{ editorState, editor, blocks }} />
