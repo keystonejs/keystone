@@ -34,7 +34,7 @@ const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
 // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-export const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 
 module.exports = class Keystone {
   constructor({
