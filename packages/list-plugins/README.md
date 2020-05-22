@@ -116,7 +116,7 @@ const { singleton } = require('@keystonejs/list-plugins');
 keystone.createList('ListWithPlugin', {
   fields: {...},
   plugins: [
-    singleton({...}),
+    singleton(),
   ],
 });
 ```
