@@ -5,6 +5,9 @@ import { views, readViews, preloadViews } from '../FIELD_TYPES';
 
 import React, { useContext, createContext } from 'react';
 
+// Re-export these here for convenience
+export { readViews, preloadViews };
+
 const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 
 // TODO: Pull this off `window.X` to support server side permission queries
@@ -70,7 +73,7 @@ export const AdminMetaProvider = ({ children }) => {
     ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
       const list = new List(
         { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-        { readViews, preloadViews, getListByKey, apiPath, adminPath },
+        { readViews, getListByKey, adminPath },
         views[key]
       );
       listsByKey[key] = list;

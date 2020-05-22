@@ -3,4 +3,4 @@
 '@keystonejs/fields': patch
 ---
 
-Removed adminPath and authStrategy members from base field Controller class.
+Removed adminPath, authStrategy, and preloadViews members from base field Controller class.

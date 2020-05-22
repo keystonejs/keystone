@@ -16,6 +16,7 @@ import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { DisclosureArrow, POPOUT_GUTTER } from '../../../components/Popout';
 import { ErrorBoundary } from '../../../components/ErrorBoundary';
+import { preloadViews } from '../../../providers/AdminMeta';
 
 const EventCatcher = props => (
   <div
@@ -233,9 +234,7 @@ export default class AddFilterPopout extends Component<Props, State> {
             exiting: { transform: 'translateX(-100%)' },
             exited: { transform: 'translateX(-100%)' },
           };
-          this.props.fields[0].preloadViews(
-            this.props.fields.map(({ views }) => views.Filter).filter(x => x)
-          );
+          preloadViews(this.props.fields.map(({ views }) => views.Filter).filter(x => x));
 
           const style = { ...base, ...states[state] };
           return (

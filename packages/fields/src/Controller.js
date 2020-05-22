@@ -15,7 +15,7 @@ export default class FieldController {
       defaultValue,
       ...config
     },
-    { readViews, preloadViews, getListByKey },
+    { readViews, getListByKey },
     views
   ) {
     this.config = config;
@@ -29,7 +29,6 @@ export default class FieldController {
     this.isReadOnly = isReadOnly;
     this.adminDoc = adminDoc;
     this.readViews = readViews;
-    this.preloadViews = preloadViews;
     this.getListByKey = getListByKey;
     this.views = views;
 
