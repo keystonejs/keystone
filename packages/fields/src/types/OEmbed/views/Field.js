@@ -40,7 +40,15 @@ const PlaceholderPreview = ({ originalUrl, fieldPath }) => (
   />
 );
 
-const OEmbedField = ({ onChange, autoFocus, field, value = null, savedValue = null, errors }) => {
+const OEmbedField = ({
+  onChange,
+  autoFocus,
+  field,
+  value = null,
+  savedValue = null,
+  errors,
+  isReadOnly,
+}) => {
   const handleChange = event => {
     onChange({
       originalUrl: event.target.value,
@@ -62,11 +70,13 @@ const OEmbedField = ({ onChange, autoFocus, field, value = null, savedValue = nu
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="url"
           value={(canRead && value && value.originalUrl) || ''}
           placeholder={canRead ? undefined : error.message}
           onChange={handleChange}
           id={htmlID}
+          disabled={isReadOnly}
         />
       </FieldInput>
       {value && value.originalUrl && hasChanged && (

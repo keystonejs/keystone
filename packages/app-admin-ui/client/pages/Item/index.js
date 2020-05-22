@@ -25,6 +25,7 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
 import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
@@ -44,6 +45,8 @@ const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...prop
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
 
+const checkIsReadOnly = ({ maybeAccess, isReadOnly }) => !maybeAccess.update || !!isReadOnly;
+
 // Memoizing allows us to reduce the calls to `.serialize` when data hasn't
 // changed.
 const getInitialValues = memoizeOne(getValues);
@@ -52,9 +55,7 @@ const getCurrentValues = memoizeOne(getValues);
 const deserializeItem = memoizeOne((list, data) => list.deserializeItemData(data));
 
 const getRenderableFields = memoizeOne(list =>
-  list.fields
-    .filter(({ isPrimaryKey }) => !isPrimaryKey)
-    .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
+  list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey)
 );
 
 const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
@@ -235,6 +236,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
             <Render key={field.path}>
               {() => {
                 const [Field] = field.readViews([field.views.Field]);
+                const isReadOnly = checkIsReadOnly(field) || !list.access.update;
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -260,21 +262,24 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      list={list}
-                      item={item}
-                      errors={[
-                        ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                        ...(validationErrors[field.path] || []),
-                      ]}
-                      warnings={validationWarnings[field.path] || []}
-                      value={item[field.path]}
-                      savedValue={initialData[field.path]}
-                      onChange={onChange}
-                      renderContext="page"
-                    />
+                    <ErrorBoundary>
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        list={list}
+                        item={item}
+                        isReadOnly={isReadOnly}
+                        errors={[
+                          ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                          ...(validationErrors[field.path] || []),
+                        ]}
+                        warnings={validationWarnings[field.path] || []}
+                        value={item[field.path]}
+                        savedValue={initialData[field.path]}
+                        onChange={onChange}
+                        renderContext="page"
+                      />
+                    </ErrorBoundary>
                   ),
                   [
                     i,
@@ -287,6 +292,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                     validationWarnings[field.path],
                     initialData[field.path],
                     onChange,
+                    isReadOnly,
                   ]
                 );
               }}
