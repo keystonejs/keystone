@@ -25,5 +25,19 @@ describe('ReadOnly Fields', () => {
             cy.get('button').should('be.disabled');
           });
       });
+
+    // wysiwyg field rendering
+    cy.get(`label[for="ks-input-wysiwygValue"]`)
+      .should('exist')
+      .then($label => {
+        cy.get($label)
+          .next()
+          .within(() => {
+            cy.get('iframe').then($iframe => {
+              const iframe = $iframe.contents();
+              cy.wrap(iframe.find('#tinymce')).should('have.attr', 'contenteditable', 'false');
+            });
+          });
+      });
   });
 });

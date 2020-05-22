@@ -21,6 +21,7 @@ const {
 const { Content } = require('@keystonejs/field-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 const { Markdown } = require('@keystonejs/fields-markdown');
+const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
@@ -229,6 +230,7 @@ keystone.createList('ReadOnlyList', {
     currency: { type: Text, adminConfig: { isReadOnly: true } },
     hero: { type: File, adapter: fileAdapter, adminConfig: { isReadOnly: true } },
     markdownValue: { type: Markdown, adminConfig: { isReadOnly: true } },
+    wysiwygValue: { type: Wysiwyg, adminConfig: { isReadOnly: true } },
     value: {
       type: Content,
       blocks: [
