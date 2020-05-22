@@ -43,6 +43,7 @@ const DecimalField = ({ onChange, autoFocus, field, value, errors, isReadOnly })
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="text"
           value={valueToString(value)}
           onChange={handleChange}

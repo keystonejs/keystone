@@ -29,7 +29,7 @@ const CheckboxField = ({ onChange, autoFocus, field, value, errors, isReadOnly }
           htmlFor={htmlID}
           field={field}
           errors={errors}
-          css={{ padding: '4px', fontSize: '1rem' }}
+          css={{ padding: '4px', fontSize: '1rem', width: '100%' }}
         />
       </FieldInput>
     </FieldContainer>
