@@ -14,7 +14,6 @@ const {
   flatten,
   unique,
   filterValues,
-  compose,
 } = require('@keystonejs/utils');
 const {
   validateFieldAccessControl,
@@ -306,23 +305,30 @@ module.exports = class Keystone {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
 
-    const list = new List(key, compose(config.plugins || [])(config), {
-      getListByKey,
-      queryHelper: this._buildQueryHelper.bind(this),
-      adapter: adapters[adapterName],
-      defaultAccess: this.defaultAccess,
-      registerType: type => this.registeredTypes.add(type),
-      isAuxList,
-      createAuxList: (auxKey, auxConfig) => {
-        if (isAuxList) {
-          throw new Error(
-            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
-          );
-        }
-        return this.createList(auxKey, auxConfig, { isAuxList: true });
-      },
-      schemaNames: this._schemaNames,
-    });
+    // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
+    const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+
+    const list = new List(
+      key,
+      composePlugins(config.plugins || [])(config, { listKey: key, keystone: this }),
+      {
+        getListByKey,
+        queryHelper: this._buildQueryHelper.bind(this),
+        adapter: adapters[adapterName],
+        defaultAccess: this.defaultAccess,
+        registerType: type => this.registeredTypes.add(type),
+        isAuxList,
+        createAuxList: (auxKey, auxConfig) => {
+          if (isAuxList) {
+            throw new Error(
+              `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
+            );
+          }
+          return this.createList(auxKey, auxConfig, { isAuxList: true });
+        },
+        schemaNames: this._schemaNames,
+      }
+    );
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);

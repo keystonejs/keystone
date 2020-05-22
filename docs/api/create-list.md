@@ -286,7 +286,8 @@ Changes the path in the Admin UI. Updating `plural` and `singular` values will n
 
 ### `plugins`
 
-An array of functions that modify config values. Plugin functions receive a config object and can modify or extend this. They should return a valid list config.
+An array of functions that modify config values. Plugin functions receive `(config, { listKey, keystone })`, where `config` is the a list config object, `listKey` is the name of the list, and `keystone` is the keystone object. They should return a valid list config. Plugin functions are executed in the order provided in the list, with the output config of one being passed as input to the next. The output of the final plugin is used to construct the `List` instance.
+
 
 ```javascript
 const setupUserList = ({ fields, ...config }) => {
