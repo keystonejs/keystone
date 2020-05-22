@@ -226,7 +226,6 @@ const ListPage = props => {
     queryErrorsParsed,
     query,
   } = useList();
-  const { adminPath } = useAdminMeta();
   const history = useHistory();
   const location = useLocation();
 
@@ -247,6 +246,12 @@ const ListPage = props => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (list.adminConfig.singleton && itemCount > 0) {
+      history.replace(`${list.fullPath}/${items[0].id}`);
+    }
+  }, [itemCount]);
 
   // Error
   // ------------------------------
@@ -277,10 +282,6 @@ const ListPage = props => {
         <p>{message}</p>
       </PageError>
     );
-  }
-
-  if (list.adminConfig.singleton && itemCount > 0) {
-    history.push(`${adminPath}/${list.path}/${items[0].id}`);
   }
 
   // Success
