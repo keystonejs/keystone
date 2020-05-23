@@ -92,7 +92,7 @@ export const KeystoneAdminUI = () => {
                       <Suspense fallback={<PageLoading />}>
                         <Switch>
                           {customRoutes.map(({ path, children }) => (
-                            <Route exact={true} key={path} path={path} children={children} />
+                            <Route exact key={path} path={path} children={children} />
                           ))}
                           <Route exact path={adminPath} children={<HomePageWrapper />} />
                           <Route path={`${adminPath}/:listKey`} children={<ListPageWrapper />} />
