@@ -29,8 +29,6 @@ import SignoutPage from './pages/Signout';
 const HomePageWrapper = () => {
   const { listKeys } = useAdminMeta();
 
-  // TODO: handle case where there are no lists you have permission to view
-  // Perhaps handle that in HomePage
   if (listKeys.length === 0) {
     return <NoListsPage />;
   }
