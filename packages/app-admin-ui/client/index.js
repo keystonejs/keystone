@@ -100,9 +100,7 @@ export const KeystoneAdminUI = () => {
             <Global styles={globalStyles} />
             <BrowserRouter>
               <Switch>
-                <Route exact path={signinPath}>
-                  <Redirect to={adminPath} />
-                </Route>
+                <Route exact path={signinPath} children={<Redirect to={adminPath} />} />
                 <Route exact path={signoutPath} children={<SignoutPage />} />
                 <Route children={<MainPageWrapper />} />
               </Switch>
