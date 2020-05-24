@@ -1,6 +1,7 @@
 import React, { Suspense, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 import { BrowserRouter, Redirect, Route, Switch, useParams } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
@@ -57,10 +58,8 @@ const ListPageWrapper = () => {
   );
 };
 
-export const KeystoneAdminUI = () => {
-  const { adminPath, signinPath, signoutPath, apiPath, pages, hooks } = useAdminMeta();
-
-  const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
+const MainPageWrapper = () => {
+  const { adminPath, pages } = useAdminMeta();
 
   const customRoutes = [
     ...pages
@@ -70,6 +69,28 @@ export const KeystoneAdminUI = () => {
         children: <Page {...config} />,
       })),
   ];
+
+  return (
+    <ScrollToTop>
+      <Nav>
+        <Suspense fallback={<PageLoading />}>
+          <Switch>
+            {customRoutes.map(({ path, children }) => (
+              <Route exact key={path} path={path} children={children} />
+            ))}
+            <Route exact path={adminPath} children={<HomePageWrapper />} />
+            <Route path={`${adminPath}/:listKey`} children={<ListPageWrapper />} />
+          </Switch>
+        </Suspense>
+      </Nav>
+    </ScrollToTop>
+  );
+};
+
+export const KeystoneAdminUI = () => {
+  const { adminPath, signinPath, signoutPath, apiPath, hooks } = useAdminMeta();
+
+  const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
     <HooksProvider hooks={hooks}>
@@ -84,21 +105,7 @@ export const KeystoneAdminUI = () => {
                   <Redirect to={adminPath} />
                 </Route>
                 <Route exact path={signoutPath} children={<SignoutPage />} />
-                <Route>
-                  <ScrollToTop>
-                    <Nav>
-                      <Suspense fallback={<PageLoading />}>
-                        <Switch>
-                          {customRoutes.map(({ path, children }) => (
-                            <Route exact key={path} path={path} children={children} />
-                          ))}
-                          <Route exact path={adminPath} children={<HomePageWrapper />} />
-                          <Route path={`${adminPath}/:listKey`} children={<ListPageWrapper />} />
-                        </Switch>
-                      </Suspense>
-                    </Nav>
-                  </ScrollToTop>
-                </Route>
+                <Route children={<MainPageWrapper />} />
               </Switch>
             </BrowserRouter>
           </ToastProvider>
