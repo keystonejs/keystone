@@ -37,7 +37,7 @@ While it has served us well, it's time for an upgrade.
 ## The problem
 
 The key challenge in designing our schema is how we represent relationships between lists.
-Our initial design borrowed heavily from a `MongDB` inspired pattern, where each object was responsible for tracking its related items.
+Our initial design borrowed heavily from a `MongoDB` inspired pattern, where each object was responsible for tracking its related items.
 This made the initial implementation very simple, particularly for the `MongoDB` adapter.
 The `PostgreSQL` adapter was more complex, as it had to emulate the patterns from `MongoDB`, but it also worked.
 

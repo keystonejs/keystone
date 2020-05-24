@@ -236,7 +236,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
             <Render key={field.path}>
               {() => {
                 const [Field] = field.readViews([field.views.Field]);
-                const isReadOnly = checkIsReadOnly(field);
+                const isReadOnly = checkIsReadOnly(field) || !list.access.update;
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -268,7 +268,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                         field={field}
                         list={list}
                         item={item}
-                        isReadOnly={isReadOnly}
+                        isDisabled={isReadOnly}
                         errors={[
                           ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
                           ...(validationErrors[field.path] || []),

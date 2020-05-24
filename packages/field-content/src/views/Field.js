@@ -24,7 +24,7 @@ class ErrorBoundary extends Component {
   }
 }
 
-let ContentField = ({ field, value, onChange, autoFocus, errors, isReadOnly }) => {
+let ContentField = ({ field, value, onChange, autoFocus, errors, isDisabled }) => {
   const htmlID = `ks-content-editor-${field.path}`;
 
   return (
@@ -62,7 +62,7 @@ let ContentField = ({ field, value, onChange, autoFocus, errors, isReadOnly }) =
                   padding: '16px 32px',
                   minHeight: 200,
                 }}
-                isReadOnly={isReadOnly}
+                isDisabled={isDisabled}
               />
             )}
         </ErrorBoundary>
