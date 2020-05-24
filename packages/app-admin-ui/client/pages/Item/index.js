@@ -268,7 +268,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                         field={field}
                         list={list}
                         item={item}
-                        isReadOnly={isReadOnly}
+                        isDisabled={isReadOnly}
                         errors={[
                           ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
                           ...(validationErrors[field.path] || []),

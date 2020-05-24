@@ -13,7 +13,7 @@ const LocationField = ({
   onChange,
   google,
   renderContext,
-  isReadOnly,
+  isDisabled,
 }) => {
   const { googlePlaceID, formattedAddress, lat, lng } = serverValue || {};
   const htmlID = `ks-input-${field.path}`;
@@ -97,7 +97,7 @@ const LocationField = ({
           inputId={htmlID}
           instanceId={htmlID}
           css={{ width: '100%' }}
-          isDisabled={isReadOnly}
+          isDisabled={isDisabled}
           {...selectProps}
         />
         {marker && (
