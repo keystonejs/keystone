@@ -173,7 +173,7 @@ const RelationshipField = ({
   onChange,
   item,
   list,
-  isReadOnly,
+  isDisabled,
 }) => {
   const handleChange = option => {
     const { many } = field.config;
@@ -205,7 +205,7 @@ const RelationshipField = ({
             renderContext={renderContext}
             htmlID={htmlID}
             onChange={handleChange}
-            isDisabled={isReadOnly}
+            isDisabled={isDisabled}
           />
         </div>
         <ListProvider list={relatedList}>
@@ -216,7 +216,7 @@ const RelationshipField = ({
             field={field}
             item={item}
             list={list}
-            isDisabled={isReadOnly}
+            isDisabled={isDisabled}
           />
         </ListProvider>
         {authStrategy && ref === authStrategy.listKey && (
@@ -227,7 +227,7 @@ const RelationshipField = ({
             }}
             value={value}
             listKey={authStrategy.listKey}
-            isDisabled={isReadOnly}
+            isDisabled={isDisabled}
           />
         )}
         <LinkToRelatedItems field={field} value={value} />

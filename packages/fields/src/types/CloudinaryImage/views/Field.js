@@ -187,7 +187,7 @@ export default class CloudinaryImageField extends Component {
   // ==============================
 
   renderUploadButton = () => {
-    const { uploadButtonLabel, isReadOnly } = this.props;
+    const { uploadButtonLabel, isDisabled } = this.props;
     const { changeStatus, isLoading } = this.state;
 
     return (
@@ -195,14 +195,14 @@ export default class CloudinaryImageField extends Component {
         onClick={this.openFileBrowser}
         isLoading={isLoading}
         variant="ghost"
-        isDisabled={isReadOnly}
+        isDisabled={isDisabled}
       >
         {uploadButtonLabel({ status: changeStatus })}
       </LoadingButton>
     );
   };
   renderCancelButton = () => {
-    const { cancelButtonLabel, isReadOnly } = this.props;
+    const { cancelButtonLabel, isDisabled } = this.props;
     const { changeStatus } = this.state;
 
     // possible states; no case for 'empty' as cancel is not rendered
@@ -219,14 +219,14 @@ export default class CloudinaryImageField extends Component {
     }
 
     return (
-      <Button onClick={onClick} variant="subtle" appearance={appearance} isDisabled={isReadOnly}>
+      <Button onClick={onClick} variant="subtle" appearance={appearance} isDisabled={isDisabled}>
         {cancelButtonLabel({ status: changeStatus })}
       </Button>
     );
   };
 
   render() {
-    const { autoFocus, field, statusMessage, errors, isReadOnly } = this.props;
+    const { autoFocus, field, statusMessage, errors, isDisabled } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
@@ -274,7 +274,7 @@ export default class CloudinaryImageField extends Component {
             name={field.path}
             onChange={this.onChange}
             type="file"
-            disabled={isReadOnly}
+            disabled={isDisabled}
           />
         </FieldInput>
       </FieldContainer>
