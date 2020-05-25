@@ -273,9 +273,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(event).toBeTruthy();
                 expect(event.group).toBeTruthy();
 
-                const findGroup = await findById(group.name, event.group);
-                expect(findGroup).toBeTruthy();
-                expect(findGroup.name).toBe(groupName);
+                const _group = await findById(group.name, event.group);
+                expect(_group).toBeTruthy();
+                expect(_group.name).toBe(groupName);
               })
             );
 
@@ -285,9 +285,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
-                const eventModel = await create(`EventTo${group.name}`, {
-                  title: 'A thing',
-                });
+                const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
 
                 // Update an item that does the nested create
                 const { data, errors } = await networkedGraphqlRequest({
@@ -317,9 +315,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(event).toBeTruthy();
                 expect(event.group).toBeTruthy();
 
-                const findGroup = await findById(group.name, event.group);
-                expect(findGroup).toBeTruthy();
-                expect(findGroup.name).toBe(groupName);
+                const _group = await findById(group.name, event.group);
+                expect(_group).toBeTruthy();
+                expect(_group.name).toBe(groupName);
               })
             );
           } else {

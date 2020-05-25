@@ -308,24 +308,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             test(
               'does not throw error when linking nested within update mutation',
               runner(setupKeystone, async ({ app, create }) => {
-                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
+                const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
-                const groupModel = await create(group.name, {
-                  name: groupModelName,
-                });
+                const groupModel = await create(group.name, { name: groupName });
 
                 expect(groupModel.id).toBeTruthy();
 
                 // Create an item to update
-                const eventModel = await create(`EventTo${group.name}`, {
-                  title: 'A Thing',
-                });
+                const eventModel = await create(`EventTo${group.name}`, { title: 'A Thing' });
 
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { errors, data } = await networkedGraphqlRequest({
+                const {data, errors } = await networkedGraphqlRequest({
                   app,
                   query: `
                 mutation {
@@ -352,7 +348,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     id: expect.any(String),
                     group: {
                       id: expect.any(String),
-                      name: groupModelName,
+                      name: groupName,
                     },
                   },
                 });
@@ -362,12 +358,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             test(
               'throws error when linking nested within update mutation',
               runner(setupKeystone, async ({ app, create }) => {
-                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
+                const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
-                const groupModel = await create(group.name, {
-                  name: groupModelName,
-                });
+                const groupModel = await create(group.name, { name: groupName });
 
                 expect(groupModel.id).toBeTruthy();
 
@@ -418,12 +412,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             test(
               'throws error when linking nested within create mutation',
               runner(setupKeystone, async ({ app, create }) => {
-                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
+                const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
-                const { id } = await create(group.name, {
-                  name: groupModelName,
-                });
+                const { id } = await create(group.name, { name: groupName });
 
                 expect(id).toBeTruthy();
 
