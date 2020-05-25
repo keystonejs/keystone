@@ -273,11 +273,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             test(
               'does not throw error when linking nested within create mutation',
               runner(setupKeystone, async ({ app, create }) => {
-                const groupModelName = sampleOne(gen.alphaNumString.notEmpty());
+                const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
                 // We can't use the graphQL query here (it's `create: () => false`)
-                const { id } = await create(group.name, { name: groupModelName });
+                const { id } = await create(group.name, { name: groupName });
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
@@ -317,11 +317,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 // Create an item to update
                 const eventModel = await create(`EventTo${group.name}`, { title: 'A Thing' });
-
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const {data, errors } = await networkedGraphqlRequest({
+                const { data, errors } = await networkedGraphqlRequest({
                   app,
                   query: `
                 mutation {
@@ -352,6 +351,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     },
                   },
                 });
+                expect(errors).toBe(undefined);	
+
+                // See that it actually stored the group ID on the Event record	
+                const event = await findOne(`EventTo${group.name}`, { title: 'A thing' });	
+                expect(event).toBeTruthy();	
+                expect(event.group).toBeTruthy();	
+
+                const _group = await findById(group.name, event.group);	
+                expect(_group).toBeTruthy();	
+                expect(_group.name).toBe(groupName);                
               })
             );
           } else {

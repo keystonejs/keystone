@@ -321,7 +321,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               })
             );
           } else {
-            describe(`${group.func} on related list`, () => {
               test(
                 'throws error when creating nested within create mutation',
                 runner(setupKeystone, async ({ app, findOne }) => {
@@ -437,7 +436,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   expect(findGroup).toBeFalsy();
                 })
               );
-            });
           }
         });
       });
