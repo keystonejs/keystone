@@ -210,7 +210,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     });
 
     describe('with access control', () => {
-      [{ name: 'GroupNoRead', allowed: false, func: 'read: () => false' }].forEach(group => {
+      [
+        { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
+        { name: 'GroupNoCreate', allowed: true, func: 'create: () => false' },
+      ].forEach(group => {
         describe(`${group.func} on related list`, () => {
           if (group.allowed) {
             test(
@@ -221,6 +224,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Create an item to link against
                 // We can't use the graphQL query here (it's `create: () => false`)
                 const { id } = await create(group.name, { name: groupName });
+                expect(id).toBeTruthy();
 
                 // Create an item that does the linking
                 const { data, errors } = await networkedGraphqlRequest({
@@ -253,6 +257,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 // Create an item to link against
                 const groupModel = await create(group.name, { name: groupName });
+                expect(groupModel.id).toBeTruthy();
 
                 // Create an item to update
                 const eventModel = await create(`EventTo${group.name}`, { title: 'A Thing' });
@@ -303,42 +308,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             );
           } else {
             test(
-              'throws error when linking nested within create mutation',
-              runner(setupKeystone, async ({ app, create }) => {
-                const groupName = sampleOne(gen.alphaNumString.notEmpty());
-
-                // Create an item to link against
-                const { id } = await create(group.name, { name: groupName });
-
-                // Create an item that does the linking
-                const { errors } = await networkedGraphqlRequest({
-                  app,
-                  query: `
-                mutation {
-                  createEventTo${group.name}(data: {
-                    title: "A thing",
-                    group: { connect: { id: "${id}" } }
-                  }) {
-                    id
-                  }
-                }
-              `,
-                });
-
-                expect(errors).toMatchObject([
-                  {
-                    data: {
-                      errors: expect.arrayContaining([
-                        expect.objectContaining({
-                          message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
-                        }),
-                      ]),
-                    },
-                  },
-                ]);
-              })
-            );
-            test(
               'throws error when linking nested within update mutation',
               runner(setupKeystone, async ({ app, create }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
@@ -363,6 +332,44 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       group: { connect: { id: "${groupModel.id}" } }
                     }
                   ) {
+                    id
+                  }
+                }
+              `,
+                });
+
+                expect(errors).toMatchObject([
+                  {
+                    data: {
+                      errors: expect.arrayContaining([
+                        expect.objectContaining({
+                          message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                        }),
+                      ]),
+                    },
+                  },
+                ]);
+              })
+            );
+
+            test(
+              'throws error when linking nested within create mutation',
+              runner(setupKeystone, async ({ app, create }) => {
+                const groupName = sampleOne(gen.alphaNumString.notEmpty());
+
+                // Create an item to link against
+                const { id } = await create(group.name, { name: groupName });
+                expect(id).toBeTruthy();
+
+                // Create an item that does the linking
+                const { errors } = await networkedGraphqlRequest({
+                  app,
+                  query: `
+                mutation {
+                  createEventTo${group.name}(data: {
+                    title: "A thing",
+                    group: { connect: { id: "${id}" } }
+                  }) {
                     id
                   }
                 }
