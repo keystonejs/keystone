@@ -391,10 +391,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     }
                   ) {
                     id
-                    group {
-                      id
-                      name
-                    }
                   }
                 }
               `,

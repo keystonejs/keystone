@@ -120,19 +120,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const { data, errors } = await graphqlRequest({
             keystone,
             query: `
-        mutation {
-          createEvent(data: {
-            title: "A thing",
-            group: { create: { name: "${groupName}" } }
-          }) {
-            id
-            group {
-              id
-              name
-            }
-          }
-        }
-    `,
+              mutation {
+                createEvent(data: {
+                  title: "A thing",
+                  group: { create: { name: "${groupName}" } }
+                }) {
+                  id
+                  group {
+                    id
+                    name
+                  }
+                }
+              }
+          `,
           });
 
           expect(errors).toBe(undefined);
@@ -151,13 +151,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           } = await graphqlRequest({
             keystone,
             query: `
-        query {
-          Group(where: { id: "${data.createEvent.group.id}" }) {
-            id
-            name
-          }
-        }
-    `,
+              query {
+                Group(where: { id: "${data.createEvent.group.id}" }) {
+                  id
+                  name
+                }
+              }
+          `,
           });
 
           expect(Group).toMatchObject({
@@ -179,22 +179,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const { data, errors } = await graphqlRequest({
             keystone,
             query: `
-        mutation {
-          updateEvent(
-            id: "${createEvent.id}"
-            data: {
-              title: "A thing",
-              group: { create: { name: "${groupName}" } }
-            }
-          ) {
-            id
-            group {
-              id
-              name
-            }
-          }
-        }
-    `,
+              mutation {
+                updateEvent(
+                  id: "${createEvent.id}"
+                  data: {
+                    title: "A thing",
+                    group: { create: { name: "${groupName}" } }
+                  }
+                ) {
+                  id
+                  group {
+                    id
+                    name
+                  }
+                }
+              }
+          `,
           });
 
           expect(errors).toBe(undefined);
@@ -213,13 +213,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           } = await graphqlRequest({
             keystone,
             query: `
-        query {
-          Group(where: { id: "${data.updateEvent.group.id}" }) {
-            id
-            name
-          }
-        }
-    `,
+              query {
+                Group(where: { id: "${data.updateEvent.group.id}" }) {
+                  id
+                  name
+                }
+              }
+          `,
           });
 
           expect(Group).toMatchObject({
@@ -391,8 +391,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   updateEventToGroupNoCreate(
                     id: "${eventModel.id}"
                     data: {
-                      title: "A thing",
-                      group: { create: { name: "${groupName}" } }
+                      errors: expect.arrayContaining([
+                        expect.objectContaining({
+                          message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                        }),
+                      ]),
+                    },
+                  },
+                ]);
+
+                // Confirm it didn't insert either of the records anyway
+                const result = await graphqlRequest({
+                  keystone,
+                  query: `
+                    query {
+                      all${group.name}s(where: { name: "${groupName}" }) {
+                        id
+                        name
+                      }
                     }
                   ) {
                     id
