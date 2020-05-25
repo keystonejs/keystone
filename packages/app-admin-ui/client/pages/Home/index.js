@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
@@ -81,36 +81,32 @@ const Homepage = () => {
     );
   }
 
+  // NOTE: `loading` is intentionally omitted here
+  // the display of a loading indicator for counts is deferred to the
+  // list component so we don't block rendering the lists immediately
+  // to the user.
   return (
-    <Fragment>
+    <main>
       <DocTitle title="Home" />
-      {
-        // NOTE: `loading` is intentionally omitted here
-        // the display of a loading indicator for counts is deferred to the
-        // list component so we don't block rendering the lists immediately
-        // to the user.
-      }
-      <main>
-        <Container>
-          <HeaderInset>
-            <PageTitle>Dashboard</PageTitle>
-          </HeaderInset>
-          <Grid ref={measureElement} gap={16}>
-            {allowedLists.map(list => {
-              const { key, path } = list;
-              const meta = data && data[list.gqlNames.listQueryMetaName];
-              return (
-                <ListProvider list={list} key={key}>
-                  <Cell width={cellWidth}>
-                    <Box to={`${adminPath}/${path}`} meta={meta} />
-                  </Cell>
-                </ListProvider>
-              );
-            })}
-          </Grid>
-        </Container>
-      </main>
-    </Fragment>
+      <Container>
+        <HeaderInset>
+          <PageTitle>Dashboard</PageTitle>
+        </HeaderInset>
+        <Grid ref={measureElement} gap={16}>
+          {allowedLists.map(list => {
+            const { key, path } = list;
+            const meta = data && data[list.gqlNames.listQueryMetaName];
+            return (
+              <ListProvider list={list} key={key}>
+                <Cell width={cellWidth}>
+                  <Box to={`${adminPath}/${path}`} meta={meta} />
+                </Cell>
+              </ListProvider>
+            );
+          })}
+        </Grid>
+      </Container>
+    </main>
   );
 };
 
