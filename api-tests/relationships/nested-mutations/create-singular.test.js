@@ -329,7 +329,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   const groupName = sampleOne(alphaNumGenerator);
 
                   // Create an item that does the nested create
-                  const { errors } = await networkedGraphqlRequest({
+                  const { data, errors } = await networkedGraphqlRequest({
                     app,
                     query: `
                 mutation {
@@ -344,7 +344,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   });
 
                   // Assert it throws an access denied error
-                  expect(errors).toBeTruthy();
+                expect(data[`createEventTo${group.name}`]).toBe(null);
+                                    expect(errors).toBeTruthy();
                   if (!group.name.match(/Hard/)) {
                     expect(errors).toMatchObject([
                       {
@@ -382,7 +383,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     app,
                     query: `
                 mutation {
-                  updateEventToGroupNoCreate(
+                  updateEventTo${group.name}(
                     id: "${eventModel.id}"
                     data: {
                       errors: expect.arrayContaining([

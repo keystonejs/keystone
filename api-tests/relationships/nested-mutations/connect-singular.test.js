@@ -339,7 +339,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               `,
                 });
 
-                expect(errors).toBe(undefined);
                 expect(data).toMatchObject({
                   [`updateEventTo${group.name}`]: {
                     id: expect.any(String),
