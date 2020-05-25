@@ -344,7 +344,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   });
 
                   // Assert it throws an access denied error
-                  //console.log(data, errors, group);
                   expect(errors).toBeTruthy();
                   if (!group.name.match(/Hard/)) {
                     expect(errors).toMatchObject([
@@ -376,9 +375,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                   // Create an item to update
-                  const eventModel = await create(`EventTo${group.name}`, {
-                    title: 'A thing',
-                  });
+                  const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
 
                   // Update an item that does the nested create
                   const { data, errors } = await networkedGraphqlRequest({

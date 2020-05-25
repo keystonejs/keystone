@@ -292,7 +292,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     id
                     group {
                       id
-                      name
                     }
                   }
                 }
@@ -307,12 +306,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             );
             test(
               'does not throw error when linking nested within update mutation',
-              runner(setupKeystone, async ({ app, create }) => {
+              runner(setupKeystone, async ({ app, create, findOne, findById }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
                 const groupModel = await create(group.name, { name: groupName });
-
                 expect(groupModel.id).toBeTruthy();
 
                 // Create an item to update
