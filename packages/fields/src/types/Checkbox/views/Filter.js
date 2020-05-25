@@ -12,7 +12,7 @@ const CheckboxFilterView = ({ onChange, filter, value }) => {
     onChange(inputMap[newValue]);
   };
 
-  const textValue = Object.entries(inputMap).find(([_, v]) => v === value)[0];
+  const textValue = Object.entries(inputMap).find(([, v]) => v === value)[0];
   if (!filter) return null;
 
   return (
