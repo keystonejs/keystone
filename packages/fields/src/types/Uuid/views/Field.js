@@ -5,7 +5,7 @@ import { jsx } from '@emotion/core';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-const UuidField = ({ onChange, autoFocus, field, errors, value: serverValue, isReadOnly }) => {
+const UuidField = ({ onChange, autoFocus, field, errors, value: serverValue, isDisabled }) => {
   const handleChange = event => {
     onChange(event.target.value);
   };
@@ -31,7 +31,7 @@ const UuidField = ({ onChange, autoFocus, field, errors, value: serverValue, isR
           placeholder={canRead ? undefined : error.message}
           onChange={handleChange}
           id={htmlID}
-          disabled={isReadOnly}
+          disabled={isDisabled}
         />
       </FieldInput>
     </FieldContainer>

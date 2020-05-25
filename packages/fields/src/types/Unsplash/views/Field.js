@@ -5,7 +5,7 @@ import { jsx } from '@emotion/core';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-const UnsplashField = ({ onChange, autoFocus, field, errors, value: serverValue, isReadOnly }) => {
+const UnsplashField = ({ onChange, autoFocus, field, errors, value: serverValue, isDisabled }) => {
   const handleChange = event => {
     onChange(event.target.value);
   };
@@ -31,7 +31,7 @@ const UnsplashField = ({ onChange, autoFocus, field, errors, value: serverValue,
           placeholder={canRead ? 'Unsplash Image ID' : error.message}
           onChange={handleChange}
           id={htmlID}
-          disabled={isReadOnly}
+          disabled={isDisabled}
         />
       </FieldInput>
     </FieldContainer>

@@ -27,6 +27,7 @@
     "@keystonejs/field-content": "^6.0.1",
     "@keystonejs/fields": "^11.0.0",
     "@keystonejs/fields-markdown": "^5.1.11",
+    "@keystonejs/fields-wysiwyg-tinymce": "^5.2.8",
     "@keystonejs/file-adapters": "^6.0.1",
     "@keystonejs/keystone": "^9.0.1",
     "@keystonejs/oembed-adapters": "^5.1.4",

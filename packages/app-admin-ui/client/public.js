@@ -39,8 +39,8 @@ const Keystone = () => {
           {authStrategy ? (
             <BrowserRouter>
               <Switch>
-                <Route exact path={signoutPath} render={() => <SignoutPage />} />
-                <Route render={() => <SigninPage />} />
+                <Route exact path={signoutPath} children={<SignoutPage />} />
+                <Route children={<SigninPage />} />
               </Switch>
             </BrowserRouter>
           ) : (

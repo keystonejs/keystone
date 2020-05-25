@@ -47,7 +47,7 @@ const OEmbedField = ({
   value = null,
   savedValue = null,
   errors,
-  isReadOnly,
+  isDisabled,
 }) => {
   const handleChange = event => {
     onChange({
@@ -76,7 +76,7 @@ const OEmbedField = ({
           placeholder={canRead ? undefined : error.message}
           onChange={handleChange}
           id={htmlID}
-          disabled={isReadOnly}
+          disabled={isDisabled}
         />
       </FieldInput>
       {value && value.originalUrl && hasChanged && (

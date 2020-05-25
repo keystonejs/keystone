@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
 
@@ -268,7 +268,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                         field={field}
                         list={list}
                         item={item}
-                        isReadOnly={isReadOnly}
+                        isDisabled={isReadOnly}
                         errors={[
                           ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
                           ...(validationErrors[field.path] || []),
@@ -336,7 +336,8 @@ const ItemNotFound = ({ errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ itemId }) => {
+const ItemPage = () => {
+  const { itemId } = useParams();
   const { list } = useList();
 
   // network-only because the data we mutate with is important for display

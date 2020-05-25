@@ -12,7 +12,7 @@ const SelectField = ({
   value: serverValue,
   renderContext,
   errors,
-  isReadOnly,
+  isDisabled,
 }) => {
   const handleChange = option => {
     onChange(option ? option.value : null);
@@ -49,7 +49,7 @@ const SelectField = ({
             id={`react-select-${htmlID}`}
             inputId={htmlID}
             instanceId={htmlID}
-            isDisabled={isReadOnly}
+            isDisabled={isDisabled}
             {...selectProps}
           />
         </div>
