@@ -5,12 +5,11 @@ import { jsx } from '@emotion/core';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-const UrlField = ({ onChange, autoFocus, field, value: serverValue, errors, isDisabled }) => {
+const UrlField = ({ onChange, autoFocus, field, value = '', errors, isDisabled }) => {
   const handleChange = event => {
     onChange(event.target.value);
   };
 
-  const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
   const canRead = errors.every(
     error => !(error instanceof Error && error.name === 'AccessDeniedError')

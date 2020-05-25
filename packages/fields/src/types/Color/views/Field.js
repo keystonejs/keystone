@@ -6,8 +6,7 @@ import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
 import SketchPicker from 'react-color/lib/Sketch';
 
-const ColorField = ({ field, value: serverValue, errors, onChange, isDisabled }) => {
-  const value = serverValue || '';
+const ColorField = ({ field, value = '', errors, onChange, isDisabled }) => {
   const htmlID = `ks-input-${field.path}`;
 
   const colorPickerValue = useMemo(() => {
