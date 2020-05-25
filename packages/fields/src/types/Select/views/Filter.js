@@ -25,10 +25,8 @@ const SelectFilterView = ({ innerRef, field, value, onChange }) => {
   };
 
   const handleSelectChange = newValue => {
-    if (newValue.length) {
-      const options = [...newValue]; // ensure consistent data shape
-      onChange({ ...value, options });
-    }
+    const options = [...(newValue || [])]; // ensure consistent data shape
+    onChange({ ...value, options });
   };
 
   const radioValue = value.inverted ? 'does_not_match' : 'does_match';
