@@ -42,6 +42,18 @@ function setupKeystone(adapterName) {
         },
       });
 
+      keystone.createList('GroupNoReadHard', {
+        fields: { name: { type: Text } },
+        access: { read: false },
+      });
+
+      keystone.createList('EventToGroupNoReadHard', {
+        fields: {
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoReadHard' },
+        },
+      });
+
       keystone.createList('GroupNoCreate', {
         fields: {
           name: { type: Text },
@@ -55,6 +67,42 @@ function setupKeystone(adapterName) {
         fields: {
           title: { type: Text },
           group: { type: Relationship, ref: 'GroupNoCreate' },
+        },
+      });
+
+      keystone.createList('GroupNoCreateHard', {
+        fields: { name: { type: Text } },
+        access: { create: false },
+      });
+
+      keystone.createList('EventToGroupNoCreateHard', {
+        fields: {
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoCreateHard' },
+        },
+      });
+
+      keystone.createList('GroupNoUpdate', {
+        fields: { name: { type: Text } },
+        access: { update: () => false },
+      });
+
+      keystone.createList('EventToGroupNoUpdate', {
+        fields: {
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoUpdate' },
+        },
+      });
+
+      keystone.createList('GroupNoUpdateHard', {
+        fields: { name: { type: Text } },
+        access: { update: false },
+      });
+
+      keystone.createList('EventToGroupNoUpdateHard', {
+        fields: {
+          title: { type: Text },
+          group: { type: Relationship, ref: 'GroupNoUpdateHard' },
         },
       });
     },
@@ -185,7 +233,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('with access control', () => {
       [
         { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
+        { name: 'GroupNoReadHard', allowed: true, func: 'read: false' },
         { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
+        { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
+        { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
+        { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
       ].forEach(group => {
         describe(`${group.func} on related list`, () => {
           if (group.allowed) {
@@ -287,22 +339,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       }
                     }
                   `,
+                  expectedStatusCode: group.name === 'GroupNoCreateHard' ? 400 : 200,
                 });
 
-                // Assert it throws an access denied error
-                expect(data[`createEventTo${group.name}`]).toBe(null);
-                expect(errors).toMatchObject([
-                  {
-                    data: {
-                      errors: expect.arrayContaining([
-                        expect.objectContaining({
-                          message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
-                        }),
-                      ]),
+                if (group.name === 'GroupNoCreateHard') {
+                  // For { create: false } the mutation won't even exist, so we expect a different behaviour
+                  expect(data).toBe(undefined);
+                } else {
+                  // Assert it throws an access denied error
+                  expect(data[`createEventTo${group.name}`]).toBe(null);
+                  expect(errors).toMatchObject([
+                    {
+                      data: {
+                        errors: expect.arrayContaining([
+                          expect.objectContaining({
+                            message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                          }),
+                        ]),
+                      },
                     },
-                  },
-                ]);
-
+                  ]);
+                }
                 // Confirm it didn't insert either of the records anyway
                 const result = await graphqlRequest({
                   keystone,
@@ -359,21 +416,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       }
                     }
                   `,
+                  expectedStatusCode: group.name === 'GroupNoCreateHard' ? 400 : 200,
                 });
 
                 // Assert it throws an access denied error
-                expect(data[`updateEventTo${group.name}`]).toBe(null);
-                expect(errors).toMatchObject([
-                  {
-                    data: {
-                      errors: expect.arrayContaining([
-                        expect.objectContaining({
-                          message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
-                        }),
-                      ]),
+                if (group.name === 'GroupNoCreateHard') {
+                  // For { create: false } the mutation won't even exist, so we expect a different behaviour
+                  expect(data).toBe(undefined);
+                } else {
+                  expect(data[`updateEventTo${group.name}`]).toBe(null);
+                  expect(errors).toMatchObject([
+                    {
+                      data: {
+                        errors: expect.arrayContaining([
+                          expect.objectContaining({
+                            message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                          }),
+                        ]),
+                      },
                     },
-                  },
-                ]);
+                  ]);
+                }
 
                 // Confirm it didn't insert the record anyway
                 const result = await graphqlRequest({
