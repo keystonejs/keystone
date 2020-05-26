@@ -62,23 +62,6 @@ export function ListLayout(props) {
 
   const { listHeaderActions } = useUIHooks();
 
-  // Mount with Persisted Search
-  // ------------------------------
-  useEffect(() => {
-    const maybePersistedSearch = list.getPersistedSearch();
-
-    if (location.search) {
-      if (location.search !== maybePersistedSearch) {
-        list.setPersistedSearch(location.search);
-      }
-    } else if (maybePersistedSearch) {
-      history.replace({
-        ...location,
-        search: maybePersistedSearch,
-      });
-    }
-  }, []);
-
   // Misc.
   // ------------------------------
 
