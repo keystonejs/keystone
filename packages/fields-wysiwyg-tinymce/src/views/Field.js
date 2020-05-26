@@ -37,14 +37,13 @@ const GlobalStyles = () => (
   />
 );
 
-const WysiwygField = ({ onChange, autoFocus, field, errors, value: serverValue, isDisabled }) => {
+const WysiwygField = ({ onChange, autoFocus, field, errors, value = '', isDisabled }) => {
   const handleChange = value => {
     if (typeof value === 'string') {
       onChange(value);
     }
   };
 
-  const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
   const accessError = errors.find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
