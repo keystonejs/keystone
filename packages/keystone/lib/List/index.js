@@ -864,6 +864,7 @@ module.exports = class List {
 
   listMeta(context) {
     return {
+      key: this.key,
       name: this.key,
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested

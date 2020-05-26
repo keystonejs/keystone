@@ -252,7 +252,10 @@ const ListPage = props => {
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
   if (query.error && (!query.data || !items || !Object.keys(items).length)) {
-    let message = queryErrorsParsed.message;
+    let message = '';
+    if (queryErrorsParsed) {
+      message = queryErrorsParsed.message;
+    }
 
     // If there was an error returned by GraphQL, use that message instead
     // FIXME: convert this to an optional chaining operator at some point
