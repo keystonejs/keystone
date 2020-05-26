@@ -29,7 +29,7 @@ const {
   createRelationships,
   mergeRelationships,
 } = require('./relationship-utils');
-const List = require('../List');
+const { List } = require('../ListTypes');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
