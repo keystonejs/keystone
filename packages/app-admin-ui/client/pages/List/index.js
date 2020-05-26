@@ -5,8 +5,6 @@ import { Fragment, useEffect, Suspense } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useList } from '../../providers/List';
 
-import { IconButton } from '@arch-ui/button';
-import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
@@ -38,7 +36,7 @@ import CreateItem from './CreateItem';
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
-  const { list, openCreateItemModal } = useList();
+  const { list } = useList();
   const {
     urlState: { currentPage, fields, pageSize, search },
   } = useListUrlState(list);
@@ -70,7 +68,7 @@ export function ListLayout(props) {
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
             <PageTitle>{list.plural}</PageTitle>
-            {list.access.create ? listHeaderActions ? listHeaderActions() : <CreateItem /> : null}
+            {listHeaderActions ? listHeaderActions() : <CreateItem />}
           </FlexGroup>
           <ListDescription text={list.adminDoc} />
           <div
