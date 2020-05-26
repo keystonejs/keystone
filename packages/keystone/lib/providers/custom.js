@@ -3,7 +3,7 @@ const { parseCustomAccess } = require('@keystonejs/access-control');
 const { objMerge } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
-const { AccessDeniedError } = require('../List/graphqlErrors');
+const { AccessDeniedError } = require('../ListTypes/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 

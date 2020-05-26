@@ -1,6 +1,6 @@
 const isPromise = require('p-is-promise');
 const Keystone = require('../lib/Keystone');
-const List = require('../lib/List');
+const { List } = require('../lib/ListTypes');
 const { Text, Relationship } = require('@keystonejs/fields');
 
 class MockFieldAdapter {}
