@@ -5,7 +5,15 @@ import { jsx } from '@emotion/core';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 
-const SelectField = ({ onChange, autoFocus, field, value: serverValue, renderContext, errors }) => {
+const SelectField = ({
+  onChange,
+  autoFocus,
+  field,
+  value: serverValue,
+  renderContext,
+  errors,
+  isDisabled,
+}) => {
   const handleChange = option => {
     onChange(option ? option.value : null);
   };
@@ -28,7 +36,7 @@ const SelectField = ({ onChange, autoFocus, field, value: serverValue, renderCon
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         <div css={{ flex: 1 }}>
           <Select
@@ -41,6 +49,7 @@ const SelectField = ({ onChange, autoFocus, field, value: serverValue, renderCon
             id={`react-select-${htmlID}`}
             inputId={htmlID}
             instanceId={htmlID}
+            isDisabled={isDisabled}
             {...selectProps}
           />
         </div>

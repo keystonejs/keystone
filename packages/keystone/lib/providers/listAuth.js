@@ -1,11 +1,9 @@
-const { mergeWhereClause } = require('@keystonejs/utils');
+const { mergeWhereClause, upcase } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
-const { throwAccessDenied } = require('../List/graphqlErrors');
+const { throwAccessDenied } = require('../ListTypes/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
-
-const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
 class ListAuthProvider {
   constructor({ authStrategy, list }) {
@@ -21,6 +19,9 @@ class ListAuthProvider {
       authenticateOutputName: `authenticate${itemQueryName}Output`,
       unauthenticateOutputName: `unauthenticate${itemQueryName}Output`,
     };
+
+    // Record GQL names in the strategy
+    authStrategy.gqlNames = this.gqlNames;
   }
 
   getTypes({ schemaName }) {
@@ -89,7 +90,7 @@ class ListAuthProvider {
     };
   }
 
-  _authenticatedQuery(context, info) {
+  async _authenticatedQuery(context, info) {
     if (info && info.cacheControl) {
       info.cacheControl.setCacheHint({ scope: 'PRIVATE' });
     }
@@ -99,7 +100,7 @@ class ListAuthProvider {
     }
 
     const gqlName = this.gqlNames.authenticatedQueryName;
-    const access = this.checkAccess(context, 'query', { gqlName });
+    const access = await this.checkAccess(context, 'query', { gqlName });
     return this.list.itemQuery(
       mergeWhereClause({ where: { id: context.authedItem.id } }, access),
       context,
@@ -109,34 +110,29 @@ class ListAuthProvider {
 
   async _authenticateMutation(args, context) {
     const gqlName = this.gqlNames.authenticateMutationName;
-    this.checkAccess(context, 'mutation', { gqlName });
-
-    // This is currently hard coded to enable authenticating with the admin UI.
-    // In the near future we will set up the admin-ui application and api to be
-    // non-public.
-    const audiences = ['admin'];
+    await this.checkAccess(context, 'mutation', { gqlName });
 
     // Verify incoming details
-    const { item, success, message } = await this.authStrategy.validate(args);
+    const { item, success, message } = await this.authStrategy.validate(args, context);
     if (!success) {
       throw new Error(message);
     }
 
-    const token = await context.startAuthedSession({ item, list: this.list }, audiences);
+    const token = await context.startAuthedSession({ item, list: this.list });
     return { token, item };
   }
 
   async _unauthenticateMutation(context) {
     const gqlName = this.gqlNames.unauthenticateMutationName;
-    this.checkAccess(context, 'mutation', { gqlName });
+    await this.checkAccess(context, 'mutation', { gqlName });
 
     await context.endAuthedSession();
     return { success: true };
   }
 
-  checkAccess(context, type, { gqlName }) {
+  async checkAccess(context, type, { gqlName }) {
     const operation = 'auth';
-    const access = context.getAuthAccessControlForUser(this.list.key, { gqlName });
+    const access = await context.getAuthAccessControlForUser(this.list.key, { gqlName });
     if (!access) {
       graphqlLogger.debug({ operation, access, gqlName }, 'Access statically or implicitly denied');
       graphqlLogger.info({ operation, gqlName }, 'Access Denied');

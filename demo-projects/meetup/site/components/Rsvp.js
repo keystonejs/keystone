@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Mutation, Query } from 'react-apollo';
+import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { jsx } from '@emotion/core';
 
 import { Button as ButtonPrimitive, CheckmarkIcon, Loading } from '../primitives';
@@ -23,10 +23,22 @@ function validateRsvp({ userRsvps, eventRsvps, event }) {
   return { okay: true };
 }
 
-const Rsvp = ({ children, event, text, themeColor }) => {
+const Rsvp = ({ children = () => null, event, text = 'Are you going?', themeColor }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const eventId = event.id;
   const isPast = new Date() > new Date(event.startTime);
+
+  const [
+    getRsvps,
+    { data: { userRsvps, eventRsvps, event: RSVPEvent } = {}, called, loading: loadingData, error },
+  ] = useLazyQuery(GET_RSVPS);
+
+  const userResponse = userRsvps && userRsvps[0];
+  const hasResponded = Boolean(userResponse);
+
+  const [updateRsvp, { error: mutationError, loading: mutationLoading }] = useMutation(
+    hasResponded ? UPDATE_RSVP : ADD_RSVP
+  );
 
   if (isLoading) {
     return null;
@@ -51,96 +63,80 @@ const Rsvp = ({ children, event, text, themeColor }) => {
         });
   }
 
-  return (
-    <Query query={GET_RSVPS} variables={{ event: eventId, user: user.id }}>
-      {({ data, loading: loadingData, error }) => {
-        if (error) {
-          console.error(error);
-          return null;
-        }
+  // Launch the query now that we know `user` isn't null (happens if there's no authed user)
+  if (!called) {
+    getRsvps({ variables: { event: eventId, user: user.id } });
+  }
 
-        if (loadingData) {
-          return children({
-            component: (
-              <ButtonWrapper>
-                <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
-                <Loading size="xsmall" color={themeColor} />
-              </ButtonWrapper>
-            ),
-          });
-        }
+  if (error) {
+    console.error(error);
+    return null;
+  }
 
-        const { userRsvps, eventRsvps, event } = data;
-        const userResponse = userRsvps && userRsvps[0];
-        const hasResponded = Boolean(userResponse);
-        const { okay, message } = validateRsvp({ userRsvps, eventRsvps, event });
+  if (loadingData) {
+    return children({
+      component: (
+        <ButtonWrapper>
+          <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
+          <Loading size="xsmall" color={themeColor} />
+        </ButtonWrapper>
+      ),
+    });
+  }
 
-        if (!okay) {
-          return children({ message });
-        }
+  const { okay, message } = validateRsvp({ userRsvps, eventRsvps, event: RSVPEvent });
 
-        const refetch = () => [
-          {
-            query: GET_RSVPS,
-            variables: { event: eventId, user: user.id },
-          },
-        ];
+  if (!okay) {
+    return children({ message });
+  }
 
-        return (
-          <Mutation mutation={hasResponded ? UPDATE_RSVP : ADD_RSVP} refetchQueries={refetch}>
-            {(updateRsvp, { error: mutationError, loading: mutationLoading }) => {
-              if (mutationError) {
-                return children({ message: mutationError.message });
-              }
+  if (mutationError) {
+    return children({ message: mutationError.message });
+  }
 
-              const doRespond = status =>
-                updateRsvp({
-                  variables: {
-                    rsvp: hasResponded ? userResponse.id : null,
-                    event: eventId,
-                    user: user.id,
-                    status,
-                  },
-                });
-              const respondYes = () => doRespond('yes');
-              const respondNo = () => doRespond('no');
+  const doRespond = status =>
+    updateRsvp({
+      variables: {
+        rsvp: hasResponded ? userResponse.id : null,
+        event: eventId,
+        user: user.id,
+        status,
+      },
+      refetchQueries: [
+        {
+          query: GET_RSVPS,
+          variables: { event: eventId, user: user.id },
+        },
+      ],
+    });
+  const respondYes = () => doRespond('yes');
+  const respondNo = () => doRespond('no');
 
-              const isGoing = hasResponded ? userResponse.status === 'yes' : false;
+  const isGoing = hasResponded ? userResponse.status === 'yes' : false;
 
-              return children({
-                component: (
-                  <ButtonWrapper>
-                    <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
-                    <Button
-                      disabled={mutationLoading || isGoing}
-                      isSelected={hasResponded && isGoing}
-                      background={themeColor}
-                      onClick={respondYes}
-                    >
-                      Yes
-                    </Button>
-                    <Button
-                      disabled={mutationLoading || !isGoing}
-                      isSelected={hasResponded && !isGoing}
-                      background={themeColor}
-                      onClick={respondNo}
-                    >
-                      No
-                    </Button>
-                  </ButtonWrapper>
-                ),
-              });
-            }}
-          </Mutation>
-        );
-      }}
-    </Query>
-  );
-};
-
-Rsvp.defaultProps = {
-  children: () => null,
-  text: 'Are you going?',
+  return children({
+    component: (
+      <ButtonWrapper>
+        <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
+        <Button
+          disabled={mutationLoading || isGoing}
+          isSelected={hasResponded && isGoing}
+          background={themeColor}
+          onClick={respondYes}
+        >
+          Yes
+        </Button>
+        <Button
+          disabled={mutationLoading || !isGoing}
+          isSelected={hasResponded && !isGoing}
+          background={themeColor}
+          onClick={respondNo}
+        >
+          No
+        </Button>
+      </ButtonWrapper>
+    ),
+  });
 };
 
 const ButtonWrapper = props => (

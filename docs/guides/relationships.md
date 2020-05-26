@@ -1,123 +1,209 @@
 <!--[meta]
 section: guides
-title: Creating Relationships Between Lists
-subSection: setup
-order: 4
+title: Configuring relationships
 [meta]-->
 
-# Creating Relationships Between Lists
+# Configuring relationships
 
-This chapter assumes that that the reader has the code that was created in [Setup - Chapter 1](https://www.keystonejs.com/guides/new-project) and [Setup - Chapter 2](https://www.keystonejs.com/guides/add-lists).
+Keystone allows you to model your data by declaring [relationships](/docs/discussions/relationships.md) between lists.
+There are a number of different ways you can configure relationships, depending on how you want to model your data and how you need to access it from the graphQL API.
+This guide will step you through the decision making process to help you get all your configurations just right.
 
-## Pick assignee from Users collection (to-single relationship)
+Throughout this guide we will use the example of a blog application which has `Users` and `Posts`.
 
-Let's link the Todo list and the User list together by setting up
-a `relationship`. Tweak the `assignee` field in `Todos.js` to match the following code:
+## One-sided vs two-sided
 
-Import the `Relationship` field:
+A relationship in Keystone exists _between_ two lists.
+In our blog, the concept of _authorship_ (who wrote a post) can be represented as a relationship between the `User` and the `Post` lists.
 
-```javascript
-const { Text, CalendarDay, Checkbox, Relationship } = require('@keystonejs/fields');
-```
+The first question you need to consider is which list do you want to be able to access the relationship from in your graphQL API?
+In our blog we might want to be able to ask about a `user's posts`, a `post's author`, or possibly both.
+If you only need to access one side of the relationship then you want to configure a _one-sided_ relationship. If you need both, then you want to configure a _two-sided_ relationship.
 
-Old code:
+Let's assume that each post in our blog has a single author and look at how we would use the `ref` option to configure both a one-sided and two-sided relationship.
 
-```javascript
-assignee: {
-    type: Text,
-    isRequired: true,
-},
-```
+### One-sided
 
-New code:
+If we want to know who the author of a post is, but we're not interested in querying for all the posts written by a given user we can set up a one-sided relationship as follow:
 
 ```javascript
-assignee: {
-    type: Relationship,
-    ref: 'User',
-    isRequired: true,
-},
-```
+keystone.createList('User', { fields: { name: { type: Text } } });
 
-The `ref` option defines the collection to which we will relate. The name assigned to the option is the same name that is passed to `createList`. In the AdminUI you can now pick one of the created users to make them responsible for completing the task.
-
-## Pick task from Todos collection (two-way to-single relationship)
-
-Is is now possible to assign a task to a user, but it is not possible to assign the user to a task! Let's fix this.
-In `Users.js` add the following:
-
-```javascript
-module.exports = {
-  // ...
-  task: {
-    type: Relationship,
-    ref: 'Todo',
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User', many: false },
   },
-};
+});
 ```
 
-Now we can set a task for the User from the admin panel. But something is wrong! When we pick a task for the user and then check this task, the assignee is incorrect. This can be solved by using a `Back Reference`.
+In the `author` field we have specified `ref: 'User'` to indicate that this field relates to an item in the `User` list.
+We can now write the following query to find the author for each post:
 
-## Enabling Back Reference between Users and Todos
-
-`Back Reference` is KeystoneJS' mechanism that can overwrite fields of the referenced entity.
-It is better seen in action, so let's write some code first.
-
-In `Users.js` adjust the `task` field to the following:
-
-```javascript
-task: {
-    type: Relationship,
-    ref: 'Todo.assignee',
+```graphql
+Query {
+  allPosts {
+    title
+    content
+    author {
+      name
+    }
+  }
 }
 ```
 
-And in `Todos.js` update the `assignee` field:
+### Two-sided
+
+If we also want to access all the posts written by a user then we need to use a two-sided relationship.
 
 ```javascript
-assignee: {
-    type: Relationship,
-    ref: 'User.task',
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    posts: { type: Relationship, ref: 'Post.author', many: true },
+  },
+});
+
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User.posts', many: false },
+  },
+});
+```
+
+In this case we have a `Relationship` field on both lists, and they both have a `ref` config in the form `<listName>.<fieldName>`.
+These `Relationship` fields represent the two sides of the relationship, and we can now use the following graphQL query as well:
+
+```graphql
+Query {
+  allUsers {
+    name
+    posts {
+      title
+      content
+    }
+  }
 }
 ```
 
-Start the AdminUI and create a Todo and assign a user. Check the user's `task` field and notice that it is already set! When a user is created and a Todo is assigned, the `assignee` field won't be filled in. Add the following code to make it work both ways:
+## Cardinality
+
+The second question we need to ask is what the _cardinality_ of our relationship should be.
+The _cardinality_ of a relationship is the number items which can exist on either side of the relationship.
+In our blog do we want each post to have exactly one author, or can it have multiple authors?
+Are users allowed to write more than one post or do we want to restrict them to exactly one post each for some reason?
+The answers to these questions will give us the cardinality of our relationship.
+
+There are three types of cardinality, `one-to-many`, `many-to-many`, and `one-to-one`, and they can be configured using the `many` config option.
+
+### One-to-many
+
+If we want a blog where each post can have **one** author, and each user can be the author of **many** posts, then we have a `one-to-many` relationship.
+We can configure a one-sided version of this:
 
 ```javascript
-task: {
-    type: Relationship,
-    ref: 'Todo.assignee',
-}
+keystone.createList('User', { fields: { name: { type: Text } } });
+
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User', many: false },
+  },
+});
 ```
 
-To test it out, remove the `isRequired: true` property from the `assignee` field in the `Todos` file:
+or a two-sided version:
 
 ```javascript
-assignee: {
-    type: Relationship,
-    ref: 'User.task',
-    // isRequired: true,
-},
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    posts: { type: Relationship, ref: 'Post.author', many: true },
+  },
+});
+
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User.posts', many: false },
+  },
+});
 ```
 
-Create a Todo without assigning it to a user. Then go to a user, assign a Todo to the `task` field. Go back to the todo and notice that the `assignee` field has been filled in.
+Note that we have used `many: false` in the `author` field and `many: true` in the `posts` field.
 
-## Assigning multiple tasks to a user (to-many relationship)
+### Many-to-many
 
-What if a user needs to be able to do multiple tasks? KeystoneJS provides a way to do this easily.
-Take a look at following code in `Users.js`:
+If we want a blog where each post can have **many** authors, and each user can be the author of **many** posts, then we have a `many-to-many` relationship.
+We can configure a one-sided version of this:
 
 ```javascript
-tasks: {
-    type: Relationship,
-    ref: 'Todo.assignee',
-    many: true,
-}
+keystone.createList('User', { fields: { name: { type: Text } } });
+
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    authors: { type: Relationship, ref: 'User', many: true },
+  },
+});
 ```
 
-The `many: true` option indicates that `User` can store multiple references to tasks. Note that we've changed `task` to `tasks`. Copy this code to your application and don't forget to change the `assignee` field in `Todos.js` to match the new field name `User.tasks`. Now in the AdminUI you can pick multiple tasks for a user.
+or a two-sided version:
 
-See also:
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    posts: { type: Relationship, ref: 'Post.authors', many: true },
+  },
+});
 
-- [Schema - Lists & Fields](/docs/guides/schema.md)
-- [Field Types - Relationship](/packages/fields/src/types/Relationship/README.md)
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    authors: { type: Relationship, ref: 'User.posts', many: true },
+  },
+});
+```
+
+Note that we have used `many: true` in both the `authors` and `posts` fields.
+
+### One-to-one
+
+If we want a blog where each post has exactly **one** author, and each user is restricted to writing exactly **one** post, then we have a `one-to-one` relationship.
+In this case we can only specify this with a two-sided relationship:
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    post: { type: Relationship, ref: 'Post.author', many: false },
+  },
+});
+
+keystone.createList('Post', {
+  fields: {
+    title: { type: Text },
+    content: { type: Text },
+    author: { type: Relationship, ref: 'User.post', many: false },
+  },
+});
+```
+
+Note that we have used `many: false` in both the `authors` and `posts` fields.
+
+## Summary
+
+When configuring a relationship in Keystone there are two key questions you need to answer:
+
+- Do I want a one-sided or two-sided relationship?
+- What is the cardinality of my relationship?
+
+Once you know the answers to these questions you can configure your relationship using the `ref` and `many` options.

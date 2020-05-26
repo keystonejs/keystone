@@ -1,25 +1,19 @@
 import FieldController from '@keystonejs/fields/Controller';
 
-export default class TextController extends FieldController {
+export default class MongoIdController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     switch (type) {
       case 'is': {
-        return `${this.path}: "${value}"`;
+        return { [this.path]: value };
       }
       case 'not': {
-        return `${this.path}_not: "${value}"`;
+        return { [`${this.path}_not`]: value };
       }
       case 'in': {
-        return `${this.path}_in: [${value
-          .split(',')
-          .map(value => `"${value.trim()}"`)
-          .join(',')}]`;
+        return { [`${this.path}_in`]: value.split(',').map(value => value.trim()) };
       }
       case 'not_in': {
-        return `${this.path}_not_in: [${value
-          .split(',')
-          .map(value => `"${value.trim()}"`)
-          .join(',')}]`;
+        return { [`${this.path}_not_in`]: value.split(',').map(value => value.trim()) };
       }
     }
   };

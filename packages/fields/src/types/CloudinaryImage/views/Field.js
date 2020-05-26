@@ -45,7 +45,7 @@ function errorMessageFn({ type }) {
   }
 }
 
-export default class FileField extends Component {
+export default class CloudinaryImageField extends Component {
   static propTypes = {
     cancelButtonLabel: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
@@ -187,17 +187,22 @@ export default class FileField extends Component {
   // ==============================
 
   renderUploadButton = () => {
-    const { uploadButtonLabel } = this.props;
+    const { uploadButtonLabel, isDisabled } = this.props;
     const { changeStatus, isLoading } = this.state;
 
     return (
-      <LoadingButton onClick={this.openFileBrowser} isLoading={isLoading} variant="ghost">
+      <LoadingButton
+        onClick={this.openFileBrowser}
+        isLoading={isLoading}
+        variant="ghost"
+        isDisabled={isDisabled}
+      >
         {uploadButtonLabel({ status: changeStatus })}
       </LoadingButton>
     );
   };
   renderCancelButton = () => {
-    const { cancelButtonLabel } = this.props;
+    const { cancelButtonLabel, isDisabled } = this.props;
     const { changeStatus } = this.state;
 
     // possible states; no case for 'empty' as cancel is not rendered
@@ -214,14 +219,14 @@ export default class FileField extends Component {
     }
 
     return (
-      <Button onClick={onClick} variant="subtle" appearance={appearance}>
+      <Button onClick={onClick} variant="subtle" appearance={appearance} isDisabled={isDisabled}>
         {cancelButtonLabel({ status: changeStatus })}
       </Button>
     );
   };
 
   render() {
-    const { autoFocus, field, statusMessage, errors } = this.props;
+    const { autoFocus, field, statusMessage, errors, isDisabled } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
@@ -233,7 +238,7 @@ export default class FileField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+        <FieldDescription text={field.adminDoc} />
         <FieldInput>
           {!isEmpty && imagePath ? (
             <Wrapper>
@@ -265,10 +270,11 @@ export default class FileField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             id={htmlID}
-            innerRef={this.getInputRef}
+            ref={this.getInputRef}
             name={field.path}
             onChange={this.onChange}
             type="file"
+            disabled={isDisabled}
           />
         </FieldInput>
       </FieldContainer>

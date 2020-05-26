@@ -107,5 +107,15 @@ module.exports = {
       name: 'Number comparison',
     },
   ],
+  ReadOnlyList: [
+    {
+      name: 'ReadOnly',
+      price: '25.25',
+      markdownValue: '# markdown header',
+      wysiwygValue: '<h1>html header</h1>',
+      views: '25',
+      currency: 'AUD',
+    },
+  ],
   User: users.map(user => ({ ...user, password: 'password' })),
 };

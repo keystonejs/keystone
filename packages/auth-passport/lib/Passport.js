@@ -1,7 +1,6 @@
 const express = require('express');
 const passport = require('passport');
 const assert = require('nanoassert');
-const { startAuthedSession } = require('@keystonejs/session');
 
 const FIELD_SERVICE_NAME = 'service';
 const FIELD_USER_ID = 'serviceUserId';
@@ -81,7 +80,7 @@ class PassportAuthStrategy {
     this._keystone = keystone;
     this._listKey = listKey;
     this._ServiceStrategy = ServiceStrategy;
-    this._cookieSecret = keystone.getCookieSecret();
+    this._sessionManager = keystone._sessionManager;
 
     // Pull all the required data off the `config` object
     this._serviceAppId = config.appId;
@@ -89,8 +88,10 @@ class PassportAuthStrategy {
     this._loginPath = config.loginPath;
     this._loginPathMiddleware = config.loginPathMiddleware || ((req, res, next) => next());
     this._callbackPath = config.callbackPath;
+    this._callbackHost = config.callbackHost || '';
     this._callbackPathMiddleware = config.callbackPathMiddleware || ((req, res, next) => next());
     this._passportScope = config.scope || [];
+    this._authOptions = config.authOptions || {};
     this._resolveCreateData = config.resolveCreateData || (({ createData }) => createData);
     this._onAuthenticated = config.onAuthenticated || (() => {});
     this._onError =
@@ -135,6 +136,7 @@ class PassportAuthStrategy {
       passport.authenticate(this.authType, {
         session: false,
         scope: this._passportScope,
+        ...this._authOptions,
       })(req, res, next);
     });
 
@@ -390,7 +392,7 @@ class PassportAuthStrategy {
       {
         clientID: this._serviceAppId,
         clientSecret: this._serviceAppSecret,
-        callbackURL: this._callbackPath,
+        callbackURL: `${this._callbackHost}${this._callbackPath}`,
         passReqToCallback: true,
         ...strategyConfig,
       },
@@ -506,14 +508,10 @@ class PassportAuthStrategy {
   }
 
   async _authenticateItem(item, accessToken, isNewItem, req, res, next) {
-    const audiences = ['admin'];
-
-    const token = await startAuthedSession(
-      req,
-      { item, list: this._getList() },
-      audiences,
-      this._cookieSecret
-    );
+    const token = await this._sessionManager.startAuthedSession(req, {
+      item,
+      list: this._getList(),
+    });
     this._onAuthenticated({ token, item, isNewItem }, req, res, next);
   }
 }

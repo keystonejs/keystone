@@ -6,7 +6,7 @@ import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-
 
 import { CheckboxPrimitive } from '@arch-ui/controls';
 
-const TextField = ({ onChange, autoFocus, field, value, errors }) => {
+const CheckboxField = ({ onChange, autoFocus, field, value, errors, isDisabled }) => {
   const handleChange = event => {
     onChange(event.target.checked);
   };
@@ -16,18 +16,24 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
 
   return (
     <FieldContainer>
-      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
-      <FieldInput css={{ height: 35 }}>
+      <FieldDescription text={field.adminDoc} />
+      <FieldInput css={{ height: 35, alignItems: 'center' }}>
         <CheckboxPrimitive
           autoFocus={autoFocus}
           checked={checked}
           onChange={handleChange}
           id={htmlID}
+          isDisabled={isDisabled}
+        />
+        <FieldLabel
+          htmlFor={htmlID}
+          field={field}
+          errors={errors}
+          css={{ padding: '4px', fontSize: '1rem', width: '100%' }}
         />
       </FieldInput>
     </FieldContainer>
   );
 };
 
-export default TextField;
+export default CheckboxField;

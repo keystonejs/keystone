@@ -10,6 +10,7 @@ import {
   useEffect,
   forwardRef,
 } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import { useToasts } from 'react-toast-notifications';
 
@@ -28,27 +29,38 @@ import { AutocompleteCaptor } from '@arch-ui/input';
 import PageLoading from './PageLoading';
 import { useList } from '../providers/List';
 import { validateFields, handleCreateUpdateMutationError } from '../util';
+import { ErrorBoundary } from './ErrorBoundary';
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
 
-function useEventCallback(callback) {
-  let callbackRef = useRef(callback);
-  let cb = useCallback((...args) => {
+const useEventCallback = callback => {
+  const callbackRef = useRef(callback);
+  const cb = useCallback((...args) => {
     return callbackRef.current(...args);
   }, []);
   useEffect(() => {
     callbackRef.current = callback;
   });
   return cb;
-}
+};
 
-function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onCreate }) {
+const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
   const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
+
   const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
+
+  const history = useHistory();
+  const { addToast } = useToasts();
+
+  const [createItem, { loading }] = useMutation(list.createMutation, {
+    errorPolicy: 'all',
+    onError: error => handleCreateUpdateMutationError({ error, addToast }),
+    refetchQueries: ['getList', 'RelationshipSelect'],
+  });
 
   const { fields } = list;
   const creatable = fields
@@ -78,17 +90,17 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
     // correctly, But, if we exclude the blank field altogether, default values
     // (knex DB-level default) are respected. Additionally, we need to make sure
     // that we don't omit the required fields for client-side input validation.
-    function hasnotChangedAndIsNotRequired(path) {
+    const hasNotChangedAndIsNotRequired = path => {
       const hasChanged = fieldsObject[path].hasChanged(initialValues, currentValues);
-      const isRequired = fieldsObject[path].config.isRequired;
+      const isRequired = fieldsObject[path].isRequired;
       return !hasChanged && !isRequired;
-    }
+    };
 
-    const data = omitBy(currentValues, hasnotChangedAndIsNotRequired);
+    const data = omitBy(currentValues, hasNotChangedAndIsNotRequired);
 
     const fields = Object.values(omitBy(fieldsObject, path => !data.hasOwnProperty(path)));
 
-    if (isLoading) return;
+    if (loading) return;
 
     if (countArrays(validationErrors)) return;
     if (!countArrays(validationWarnings)) {
@@ -101,18 +113,22 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
       }
     }
 
-    createItem({ variables: { data } }).then(data => {
-      if (!data) return;
-      closeCreateItemModal();
-      setItem(list.getInitialItemData({}));
-      if (onCreate) {
-        onCreate(data);
-      }
-    });
+    const savedData = await createItem({ variables: { data } });
+    if (!savedData) return;
+
+    closeCreateItemModal();
+    setItem(list.getInitialItemData({}));
+
+    if (onCreate) {
+      onCreate(savedData);
+    }
+
+    const newItemID = savedData.data[list.gqlNames.createMutationName].id;
+    history.push(`${list.fullPath}/${newItemID}`);
   });
 
   const _onClose = () => {
-    if (isLoading) return;
+    if (loading) return;
     closeCreateItemModal();
     setItem(list.getInitialItemData({}));
     const data = arrayToObject(creatable, 'path', field => field.serialize(item));
@@ -154,7 +170,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
             appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
             id={cypressId}
             isDisabled={hasErrors}
-            isLoading={isLoading}
+            isLoading={loading}
             type="submit"
           >
             {hasWarnings && !hasErrors ? 'Ignore Warnings and Create' : 'Create'}
@@ -177,6 +193,7 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
             {() => {
               const creatable = list.fields
                 .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                .filter(({ isReadOnly }) => !isReadOnly)
                 .filter(({ maybeAccess }) => !!maybeAccess.create);
 
               captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
@@ -184,9 +201,9 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
               return creatable.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
-                    let [Field] = field.adminMeta.readViews([field.views.Field]);
+                    const [Field] = field.readViews([field.views.Field]);
                     // eslint-disable-next-line react-hooks/rules-of-hooks
-                    let onChange = useCallback(value => {
+                    const onChange = useCallback(value => {
                       setItem(item => ({
                         ...item,
                         [field.path]: value,
@@ -197,18 +214,19 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
                     // eslint-disable-next-line react-hooks/rules-of-hooks
                     return useMemo(
                       () => (
-                        <Field
-                          autoFocus={!i}
-                          value={item[field.path]}
-                          savedValue={item[field.path]}
-                          field={field}
-                          /* TODO: Permission query results */
-                          errors={validationErrors[field.path] || []}
-                          warnings={validationWarnings[field.path] || []}
-                          CreateItemModal={CreateItemModalWithMutation}
-                          onChange={onChange}
-                          renderContext="dialog"
-                        />
+                        <ErrorBoundary>
+                          <Field
+                            autoFocus={!i}
+                            value={item[field.path]}
+                            savedValue={item[field.path]}
+                            field={field}
+                            /* TODO: Permission query results */
+                            errors={validationErrors[field.path] || []}
+                            warnings={validationWarnings[field.path] || []}
+                            onChange={onChange}
+                            renderContext="dialog"
+                          />
+                        </ErrorBoundary>
                       ),
                       [
                         i,
@@ -228,18 +246,6 @@ function CreateItemModal({ prefillData = {}, isLoading, createItem, onClose, onC
       </div>
     </Drawer>
   );
-}
+};
 
-export default function CreateItemModalWithMutation(props) {
-  const {
-    list: { createMutation },
-  } = useList();
-  const { addToast } = useToasts();
-  const [createItem, { loading }] = useMutation(createMutation, {
-    errorPolicy: 'all',
-    onError: error => handleCreateUpdateMutationError({ error, addToast }),
-  });
-  return (
-    <CreateItemModal createItem={createItem} isLoading={loading} addToast={addToast} {...props} />
-  );
-}
+export default CreateItemModal;

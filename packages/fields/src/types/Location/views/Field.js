@@ -6,8 +6,15 @@ import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-
 import Select from '@arch-ui/select';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
-const LocationField = ({ field, value: serverValue, errors, onChange, google, renderContext }) => {
-  const { googlePlaceID, formattedAddress, lat, lng } = serverValue || {};
+const LocationField = ({
+  field,
+  value: { googlePlaceID, formattedAddress, lat, lng } = {},
+  errors,
+  onChange,
+  google,
+  renderContext,
+  isDisabled,
+}) => {
   const htmlID = `ks-input-${field.path}`;
   const autocompleteService = new google.maps.places.AutocompleteService();
   const geocoder = new google.maps.Geocoder();
@@ -75,7 +82,7 @@ const LocationField = ({ field, value: serverValue, errors, onChange, google, re
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <FieldInput css={{ flexDirection: 'column' }}>
         <Select
           isAsync
@@ -89,6 +96,7 @@ const LocationField = ({ field, value: serverValue, errors, onChange, google, re
           inputId={htmlID}
           instanceId={htmlID}
           css={{ width: '100%' }}
+          isDisabled={isDisabled}
           {...selectProps}
         />
         {marker && (

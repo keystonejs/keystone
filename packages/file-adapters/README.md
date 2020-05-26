@@ -1,10 +1,10 @@
 <!--[meta]
 section: api
 subSection: field-adapters
-title: File Adapters
+title: File adapters
 [meta]-->
 
-# File Adapters
+# File adapters
 
 The `File` field type can support files hosted in a range of different contexts, e.g. in the local filesystem, or on a cloud based file server.
 
@@ -17,9 +17,7 @@ Different contexts are supported by different file adapters. This package contai
 ```javascript
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
 
-const fileAdapter = new LocalFileAdapter({
-  /*...config */
-});
+const fileAdapter = new LocalFileAdapter({...});
 ```
 
 ### Config
@@ -30,11 +28,12 @@ const fileAdapter = new LocalFileAdapter({
 | `path`        | `String`   | Value of `src` | The path from which requests for files will be served from the server.                                                      |
 | `getFilename` | `Function` | `null`         | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk. |
 
-_Note:_ `src` and `path` may be the same.
+> **Note:** `src` and `path` may be the same.
+> **Note 2:** You will need to set also a [static file server](https://v5.keystonejs.com/keystonejs/app-static/#static-file-app) to consume the uploaded files.
 
 ### Methods
 
-### `delete`
+#### `delete`
 
 Takes a `file` object (such as the one returned in file field hooks) and deletes that file from disk.
 
@@ -77,9 +76,7 @@ keystone.createList('UploadTest', {
 ```javascript
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 
-const fileAdapter = new CloudinaryAdapter({
-  /*...config */
-});
+const fileAdapter = new CloudinaryAdapter({...});
 ```
 
 ### Config
@@ -93,11 +90,13 @@ const fileAdapter = new CloudinaryAdapter({
 
 ### Methods
 
-### `delete`
+#### `delete`
 
 Deletes the provided file from cloudinary. Takes a `file` object (such as the one returned in file field hooks) and an optional `options` argument passed to the Cloudinary destroy method. For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
 
 ## `S3FileAdapter`
+
+### Usage
 
 ```javascript
 const { S3Adapter } = require('@keystonejs/file-adapters');
@@ -106,15 +105,16 @@ const CF_DISTRIBUTION_ID = 'cloudfront-distribution-id';
 const S3_PATH = 'uploads';
 
 const fileAdapter = new S3Adapter({
-  accessKeyId: 'ACCESS_KEY_ID',
-  secretAccessKey: 'SECRET_ACCESS_KEY',
-  region: 'us-west-2',
   bucket: 'bucket-name',
   folder: S3_PATH,
   publicUrl: ({ id, filename, _meta }) =>
     `https://${CF_DISTRIBUTION_ID}.cloudfront.net/${S3_PATH}/${filename}`,
   s3Options: {
+    // Optional paramaters to be supplied directly to AWS.S3 constructor
     apiVersion: '2006-03-01',
+    accessKeyId: 'ACCESS_KEY_ID',
+    secretAccessKey: 'SECRET_ACCESS_KEY',
+    region: 'us-west-2',
   },
   uploadParams: ({ filename, id, mimetype, encoding }) => ({
     Metadata: {
@@ -124,21 +124,22 @@ const fileAdapter = new S3Adapter({
 });
 ```
 
-| Option            | Type              | Default     | Description                                                                                                                                                                                                                              |
-| ----------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `accessKeyId`     | `String`          | Required    | AWS access key ID                                                                                                                                                                                                                        |
-| `secretAccessKey` | `String`          | Required    | AWS secret access key                                                                                                                                                                                                                    |
-| `region`          | `String`          | Required    | AWS region                                                                                                                                                                                                                               |
-| `bucket`          | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                           |
-| `folder`          | `String`          | Required    | Upload folder from root of bucket                                                                                                                                                                                                        |
-| `getFilename`     | `Function`        | `null`      | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk.                                                                                                              |
-| `publicUrl`       | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                       |
-| `s3Options`       | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                         |
-| `uploadParams`    | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.upload. For available options refer to the [AWS S3 upload API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property). |
+### Config
+
+| Option         | Type              | Default     | Description                                                                                                                                                                                                                              |
+| -------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bucket`       | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                           |
+| `folder`       | `String`          | `''`        | Upload folder from root of bucket. By default uploads will be sent to the bucket's root folder.                                                                                                                                          |
+| `getFilename`  | `Function`        | `null`      | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk.                                                                                                              |
+| `publicUrl`    | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                       |
+| `s3Options`    | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                         |
+| `uploadParams` | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.upload. For available options refer to the [AWS S3 upload API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property). |
+
+> **Note:** Authentication can be done in many different ways. One option is to include valid `accessKeyId` and `secretAccessKey` properties in the `s3Options` parameter. Other methods include setting environment variables. See [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) for a complete set of options.
 
 ### Methods
 
-### `delete`
+#### `delete`
 
 Deletes the provided file in the S3 bucket. Takes a `file` object (such as the one returned in file field hooks) and an optional `options` argument for overriding S3.deleteObject options. Options `Bucket` and `Key` are set by default. For available options refer to the [AWS S3 deleteObject API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObject-property).
 

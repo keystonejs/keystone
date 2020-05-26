@@ -57,7 +57,7 @@ keystone.createList('User', {
 });
 ```
 
-### A custom `generate` method
+### Custom `generate` method
 
 ```javascript
 const { Slug, Text, DateTime } = require('@keystonejs/fields');
@@ -88,7 +88,7 @@ For example, if you create an item with a slug `abc123`, then perform an
 `update` mutation without changing any of the data which the slug initial
 generation was based on, the slug should stay as `abc123`.
 
-### Caveats with Updates and `makeUnique`
+### Caveats with updates and `makeUnique`
 
 There is one situation where the `Slug` field cannot guarantee stability; when:
 
@@ -241,13 +241,13 @@ mutation {
 
 `Slug` fields use the `String` type in GraphQL.
 
-### Input Fields
+### Input fields
 
 | Field name | Type     | Description                            |
 | ---------- | -------- | -------------------------------------- |
 | `${path}`  | `String` | A slug, or blank to execute `generate` |
 
-### Output Fields
+### Output fields
 
 | Field name | Type     | Description   |
 | ---------- | -------- | ------------- |

@@ -1,15 +1,21 @@
 <!--[meta]
 section: api
 subSection: utilities
-title: Keystone Email
+title: Keystone email
 [meta]-->
 
-# Keystone Email
+# Keystone email
 
 Send emails via various transports, rendered with Express-compatible
-renderers.
+renderers. Powered by [`keystone-email`](https://github.com/keystonejs/keystone-email).
 
-Powered by [`keystone-email`](https://github.com/keystonejs/keystone-email).
+## Installation
+
+```shell allowCopy=false showLanguage=false
+yarn add @keystonejs/email
+# or
+npm install @keystonejs/email
+```
 
 ## Transports
 
@@ -25,11 +31,7 @@ Express-compatible renderers should work out of the box
 
 There is a `jsx` renderer powered by `express-react-views`.
 
-Usage:
-
-`index.js`
-
-```javascript
+```javascript title=/emails/index.js
 const { emailSender } = require('@keystonejs/email');
 
 const jsxEmailSender = emailSender.jsx({
@@ -45,36 +47,30 @@ await jsxEmailSender('new-user.jsx').send(
 );
 ```
 
-`emails/new-user.jsx`
-
-```javascript
+```jsx title=/emails/new-user.jsx
 const React = require('react');
 
-module.exports = class extends React.Component {
-  render() {
-    return (
-      <html>
-        <body>
-          <div>Hello {this.props.name}</div>
-        </body>
-      </html>
-    );
-  }
+const UserTemplate = ({ name }) => {
+  return (
+    <html>
+      <body>
+        <div>Hello {name}</div>
+      </body>
+    </html>
+  );
 };
+
+module.exports = UserTemplate;
 ```
 
-> NOTE: The `jsx` renderer has a peer dependency on `react` and `react-dom`
+> **Note:** The `jsx` renderer has a peer dependency on `react` and `react-dom`
 
 ### mjml
 
 There is support for [`mjml-react`](https://github.com/wix-incubator/mjml-react)
 using the `mjml` renderer.
 
-Usage:
-
-`index.js`
-
-```javascript
+```javascript title=/emails/index.js
 const { emailSender } = require('@keystonejs/email');
 
 const mjmlEmailSender = emailSender.mjml({
@@ -91,36 +87,32 @@ await mjmlEmailSender('new-user.jsx').send(
 );
 ```
 
-`emails/new-user.jsx`
-
-```javascript
+```jsx title=/emails/new-user.jsx
 const React = require('react');
 const { Mjml, MjmlBody, MjmlSection, MjmlColumn, MjmlText } = require('mjml-react');
 
-module.exports = class extends React.Component {
-  render() {
-    return (
-      <Mjml>
-        <MjmlBody width={500}>
-          <MjmlSection fullWidth backgroundColor="#efefef">
-            <MjmlColumn>
-              <MjmlText>Hello!</MjmlText>
-            </MjmlColumn>
-          </MjmlSection>
-        </MjmlBody>
-      </Mjml>
-    );
-  }
+const UserTemplate = ({ name }) => {
+  return (
+    <Mjml>
+      <MjmlBody width={500}>
+        <MjmlSection fullWidth backgroundColor="#efefef">
+          <MjmlColumn>
+            <MjmlText>Hello {name}!</MjmlText>
+          </MjmlColumn>
+        </MjmlSection>
+      </MjmlBody>
+    </Mjml>
+  );
 };
+
+module.exports = UserTemplate;
 ```
 
-> NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
+> **Note:** The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
 
 ### Pug (previously Jade)
 
-Usage:
-
-```javascript
+```javascript title=/emails/index.js
 const { emailSender } = require('@keystonejs/email');
 
 const pugEmailSender = emailSender.pug({
@@ -142,7 +134,7 @@ Above are examples of using 2 renderers, `jsx`, and `pug`.
 
 In general, renderers are available directly on the exported object:
 
-```javascript
+```javascript title=/emails/index.js
 const { emailSender } = require('@keystonejs/email');
 
 emailSender.<renderer>(...);

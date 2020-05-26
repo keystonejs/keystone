@@ -4,10 +4,11 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
 import { jsx } from '@emotion/core';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 import Layout from '../templates/layout';
 import Header from '../components/header';
+import { withApollo } from '../lib/apollo';
 
 /** @jsx jsx */
 
@@ -32,7 +33,7 @@ const Post = ({ post }) => {
           <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
             <p css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}>
               Posted by {post.author ? post.author.name : 'someone'} on{' '}
-              {format(post.posted, 'DD/MM/YYYY')}
+              {format(parseISO(post.posted), 'dd/MM/yyyy')}
             </p>
           </div>
         </article>
@@ -41,7 +42,7 @@ const Post = ({ post }) => {
   );
 };
 
-export default function() {
+export default withApollo(() => {
   const { data, loading, error } = useQuery(gql`
     query {
       allPosts {
@@ -89,4 +90,4 @@ export default function() {
       </section>
     </Layout>
   );
-}
+});
