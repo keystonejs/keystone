@@ -8,7 +8,7 @@ const EditFilterPopout = ({ filter, target, onChange }) => {
   const [value, setValue] = useState(filter.value);
 
   const onSubmit = () => {
-    if (value === null || filter.field.getFilterValue(value) === null) return;
+    if (filter.field.getFilterValue(value) === undefined) return;
     onChange({
       field: filter.field,
       label: filter.label,

@@ -1,7 +1,7 @@
 const { mergeWhereClause, upcase } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
-const { throwAccessDenied } = require('../List/graphqlErrors');
+const { throwAccessDenied } = require('../ListTypes/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 

@@ -8,14 +8,13 @@ import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 const LocationField = ({
   field,
-  value: serverValue,
+  value: { googlePlaceID, formattedAddress, lat, lng } = {},
   errors,
   onChange,
   google,
   renderContext,
   isDisabled,
 }) => {
-  const { googlePlaceID, formattedAddress, lat, lng } = serverValue || {};
   const htmlID = `ks-input-${field.path}`;
   const autocompleteService = new google.maps.places.AutocompleteService();
   const geocoder = new google.maps.Geocoder();

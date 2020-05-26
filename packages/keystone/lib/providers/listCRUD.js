@@ -42,8 +42,11 @@ class ListCRUDProvider {
         auth: JSON
       }`,
       `type _ListSchemaFields {
+        """ The path of the field in its list. """
+        path: String
+
         """The name of the field in its list."""
-        name: String
+        name: String @deprecated(reason: "Use \`path\` instead")
 
         """The field type (ie, Checkbox, Text, etc)"""
         type: String
@@ -71,8 +74,11 @@ class ListCRUDProvider {
         relatedFields: [_ListSchemaRelatedFields]
       }`,
       `type _ListMeta {
+        """ The Keystone list key """
+        key: String
+
         """The Keystone List name"""
-        name: String
+        name: String @deprecated(reason: "Use \`key\` instead")
 
         """Access control configuration for the currently authenticated
            request"""
@@ -140,6 +146,7 @@ class ListCRUDProvider {
           .getAllFieldsWithAccess({ schemaName, access: 'read' })
           .filter(field => !type || field.constructor.name === type)
           .map(field => ({
+            path: field.path,
             name: field.path,
             type: field.constructor.name,
           }));

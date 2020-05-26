@@ -12,7 +12,7 @@ This transformation is handled by the [database adapters](/docs/quick-start/adap
 This transformation is generally reasonably simple.
 A `List` called `User` in Keystone will have table called `Users` in PostgreSQL or a collection called `users` in MongoDB.
 For most field types there is also a one to to correspondence between a Keystone `Field` and a PostgreSQL column or MongoDB field.
-Each field type is responsible for articulating the exact correspondence, which includes the storage types and any auxillary data that needs to be stored.
+Each field type is responsible for articulating the exact correspondence, which includes the storage types and any auxiliary data that needs to be stored.
 
 The most complicated aspect of the database schema is the representation of relationships.
 To understand the storage of relationships you should first make sure you understand the basic ideas behind [Keystone relationships](/docs/discussions/relationships.md).

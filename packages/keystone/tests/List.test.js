@@ -6,8 +6,8 @@ jest.doMock('@keystonejs/logger', () => ({
   logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
 }));
 
-const List = require('../lib/List');
-const { AccessDeniedError } = require('../lib/List/graphqlErrors');
+const { List } = require('../lib/ListTypes');
+const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
 const { getType } = require('@keystonejs/utils');
 const path = require('path');
@@ -589,6 +589,11 @@ describe(`getGqlTypes() `, () => {
         writeOnce_ASC
         writeOnce_DESC
       }`;
+  const otherRelateToOneInput = `input OtherRelateToOneInput {
+    connect: OtherWhereUniqueInput
+    disconnect: OtherWhereUniqueInput
+    disconnectAll: Boolean
+  }`;
   const schemaName = 'public';
   test('access: true', () => {
     expect(
@@ -597,6 +602,7 @@ describe(`getGqlTypes() `, () => {
         .map(s => print(gql(s)))
     ).toEqual(
       [
+        otherRelateToOneInput,
         type,
         whereInput,
         whereUniqueInput,
@@ -620,7 +626,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: true, create: false, update: false, delete: false } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput, sortTestsBy].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
   test('create: true', () => {
     expect(
@@ -628,9 +638,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, sortTestsBy, createInput, createManyInput].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        createInput,
+        createManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('update: true', () => {
@@ -639,9 +655,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, sortTestsBy, updateInput, updateManyInput].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        updateInput,
+        updateManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('delete: true', () => {
@@ -649,7 +671,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: false, create: false, update: false, delete: true } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput, sortTestsBy].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
 });
 
