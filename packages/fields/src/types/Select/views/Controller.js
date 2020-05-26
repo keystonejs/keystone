@@ -45,7 +45,7 @@ export default class SelectController extends FieldController {
       : `${this.label} is ${optionLabel}`;
   };
   getFilterValue = value => {
-    return value && value.options && value.options.length ? value : null;
+    return value && value.options && value.options.length ? value : undefined;
   };
   getFilterTypes = () => [
     {
