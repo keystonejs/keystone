@@ -1,7 +1,7 @@
 const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
-const fastMemoize = require('fast-memoize');
+const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { print } = require('graphql/language/printer');
@@ -14,7 +14,6 @@ const {
   flatten,
   unique,
   filterValues,
-  compose,
 } = require('@keystonejs/utils');
 const {
   validateFieldAccessControl,
@@ -30,7 +29,7 @@ const {
   createRelationships,
   mergeRelationships,
 } = require('./relationship-utils');
-const List = require('../List');
+const { List } = require('../ListTypes');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
@@ -157,15 +156,18 @@ module.exports = class Keystone {
       // memoizing to avoid requests that hit the same type multiple times.
       // We do it within the request callback so we can resolve it based on the
       // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = fastMemoize(access => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-        });
-      });
+      getCustomAccessControlForUser = memoize(
+        async access => {
+          return validateCustomAccessControl({
+            access: access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+          });
+        },
+        { isPromise: true }
+      );
 
-      getListAccessControlForUser = fastMemoize(
-        (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+      getListAccessControlForUser = memoize(
+        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
           return validateListAccessControl({
             access: this.lists[listKey].access[schemaName],
             originalInput,
@@ -176,11 +178,12 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }
+        },
+        { isPromise: true }
       );
 
-      getFieldAccessControlForUser = fastMemoize(
-        (
+      getFieldAccessControlForUser = memoize(
+        async (
           listKey,
           fieldKey,
           originalInput,
@@ -200,17 +203,21 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }
+        },
+        { isPromise: true }
       );
 
-      getAuthAccessControlForUser = fastMemoize((listKey, { gqlName } = {}) => {
-        return validateAuthAccessControl({
-          access: this.lists[listKey].access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-          gqlName,
-        });
-      });
+      getAuthAccessControlForUser = memoize(
+        async (listKey, { gqlName } = {}) => {
+          return validateAuthAccessControl({
+            access: this.lists[listKey].access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+            listKey,
+            gqlName,
+          });
+        },
+        { isPromise: true }
+      );
     }
 
     return {
@@ -298,23 +305,30 @@ module.exports = class Keystone {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
 
-    const list = new List(key, compose(config.plugins || [])(config), {
-      getListByKey,
-      queryHelper: this._buildQueryHelper.bind(this),
-      adapter: adapters[adapterName],
-      defaultAccess: this.defaultAccess,
-      registerType: type => this.registeredTypes.add(type),
-      isAuxList,
-      createAuxList: (auxKey, auxConfig) => {
-        if (isAuxList) {
-          throw new Error(
-            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
-          );
-        }
-        return this.createList(auxKey, auxConfig, { isAuxList: true });
-      },
-      schemaNames: this._schemaNames,
-    });
+    // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
+    const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+
+    const list = new List(
+      key,
+      composePlugins(config.plugins || [])(config, { listKey: key, keystone: this }),
+      {
+        getListByKey,
+        queryHelper: this._buildQueryHelper.bind(this),
+        adapter: adapters[adapterName],
+        defaultAccess: this.defaultAccess,
+        registerType: type => this.registeredTypes.add(type),
+        isAuxList,
+        createAuxList: (auxKey, auxConfig) => {
+          if (isAuxList) {
+            throw new Error(
+              `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
+            );
+          }
+          return this.createList(auxKey, auxConfig, { isAuxList: true });
+        },
+        schemaNames: this._schemaNames,
+      }
+    );
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);
@@ -488,6 +502,16 @@ module.exports = class Keystone {
     );
 
     return { lists, name: this.name };
+  }
+
+  getAdminViews({ schemaName }) {
+    return {
+      listViews: arrayToObject(
+        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
+        'key',
+        list => list.views
+      ),
+    };
   }
 
   // It's not Keystone core's responsibility to create an executable schema, but

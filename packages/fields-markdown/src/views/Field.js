@@ -62,7 +62,7 @@ const IconToolbarButton = ({ isActive, label, icon, tooltipPlacement = 'top', ..
   );
 };
 
-export default function MarkdownField({ field, errors, value, onChange }) {
+export default function MarkdownField({ field, errors, value, onChange, isDisabled }) {
   const htmlID = `ks-input-${field.path}`;
   const accessError = errors.find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
@@ -81,7 +81,15 @@ export default function MarkdownField({ field, errors, value, onChange }) {
         }}
       >
         {tools.map(({ action, label, icon: Icon }) => {
-          return <IconToolbarButton key={label} icon={<Icon />} onClick={action} label={label} />;
+          return (
+            <IconToolbarButton
+              key={label}
+              icon={<Icon />}
+              onClick={action}
+              label={label}
+              disabled={isDisabled}
+            />
+          );
         })}
       </div>
     );
@@ -102,7 +110,7 @@ export default function MarkdownField({ field, errors, value, onChange }) {
       ]}
     >
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.config.adminDoc} />
+      <FieldDescription text={field.adminDoc} />
       <div
         css={{
           border: `1px ${colors.N20} solid`,
@@ -122,6 +130,7 @@ export default function MarkdownField({ field, errors, value, onChange }) {
             tabSize: '2',
             lineWrapping: true,
             addModeClass: true,
+            readOnly: isDisabled,
           }}
           editorDidMount={editor => {
             setTools(getTools(editor));

@@ -52,7 +52,7 @@ const { createdAt, updatedAt } = require('@keystonejs/list-plugins');
 
 _Note_: The API is the same.
 
-## byTracking
+# byTracking
 
 Adds `createdBy` and `updatedBy` fields to a list. These fields are read-only by will be updated automatically when items are created or updated.
 
@@ -103,3 +103,20 @@ const { createdBy, updatedBy } = require('@keystonejs/list-plugins');
 ```
 
 _Note_: The API is the same.
+
+# singleton
+
+This plugin makes a list singleton by allowing only one item in the list. Useful for list which must contain only one items.
+
+## Usage
+
+```js
+const { singleton } = require('@keystonejs/list-plugins');
+
+keystone.createList('ListWithPlugin', {
+  fields: {...},
+  plugins: [
+    singleton(),
+  ],
+});
+```

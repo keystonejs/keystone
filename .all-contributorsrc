@@ -401,6 +401,25 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "wcalebgray",
+      "name": "Caleb Gray",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/11668534?v=4",
+      "profile": "https://github.com/wcalebgray",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "frank10gm",
+      "name": "frank10gm",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/754139?v=4",
+      "profile": "http://hackweb.altervista.org",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

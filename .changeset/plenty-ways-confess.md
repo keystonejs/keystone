@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Refactored `UpdateManyModal` component.
+Cleaned up TableRow and BodyCell styling.

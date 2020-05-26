@@ -69,7 +69,7 @@ function scrollToDate(date, yearRangeFrom, yearRangeTo, list) {
 let weekLabels = (
   <WeekLabels>
     {[...new Array(7)]
-      .map((_, day) => format(setDay(new Date(), day), 'ddd'))
+      .map((_, day) => format(setDay(new Date(), day), 'iii'))
       .map(d => (
         <Day key={d}>{d}</Day>
       ))}

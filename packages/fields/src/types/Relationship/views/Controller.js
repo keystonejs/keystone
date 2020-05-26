@@ -2,13 +2,11 @@ import FieldController from '../../../Controller';
 
 export default class RelationshipController extends FieldController {
   constructor(config, ...args) {
-    const defaultValue = 'defaultValue' in config ? config.defaultValue : config.many ? [] : null;
+    const { defaultValue = config.many ? [] : null } = config;
     super({ ...config, defaultValue }, ...args);
   }
   getRefList() {
-    const { getListByKey } = this.adminMeta;
-    const { ref } = this.config;
-    return getListByKey(ref);
+    return this.getListByKey(this.config.ref);
   }
   getQueryFragment = (path = this.path) => {
     return `
@@ -20,9 +18,9 @@ export default class RelationshipController extends FieldController {
   };
   getFilterGraphQL = ({ type, value }) => {
     if (type === 'contains') {
-      return `${this.path}_some: {id: "${value}"}`;
+      return { [`${this.path}_some`]: { id: value } };
     } else if (type === 'is') {
-      return `${this.path}: {id: "${value}"}`;
+      return { [`${this.path}`]: { id: value } };
     }
   };
   getFilterLabel = ({ label }) => {

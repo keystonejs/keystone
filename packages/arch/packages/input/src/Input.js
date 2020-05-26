@@ -26,6 +26,11 @@ export const inputStyles = (props = {}) => ({
     outline: 0,
   },
 
+  ':invalid': {
+    borderColor: colors.danger,
+    outline: 0,
+  },
+
   '&[disabled]': {
     borderColor: colors.N15,
     backgroundColor: colors.N05,

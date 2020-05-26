@@ -9,10 +9,11 @@ export const FieldContainer = props => (
   <div data-selector="field-container" css={{ marginBottom: gridSize * 2 }} {...props} />
 );
 
-export const FieldLabel = props => {
-  const accessError = (props.errors || []).find(
+export const FieldLabel = ({ errors = [], field, ...props }) => {
+  const accessError = errors.find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
   );
+
   return (
     <label
       css={{
@@ -24,14 +25,15 @@ export const FieldLabel = props => {
         flexDirection: 'row',
         justifyContent: 'space-between',
       }}
-      className={props.className}
-      htmlFor={props.htmlFor}
+      {...props}
     >
-      {props.field.label}{' '}
-      {accessError ? (
-        <ShieldIcon title={accessError.message} css={{ color: colors.N20, marginRight: '1em' }} />
-      ) : null}{' '}
-      {props.field.config.isRequired ? <Lozenge appearance="primary"> Required </Lozenge> : null}
+      {field.label}
+      <span>
+        {field.isRequired && <Lozenge appearance="primary">Required</Lozenge>}
+        {accessError && (
+          <ShieldIcon title={accessError.message} css={{ color: colors.N20, margin: '0 1em' }} />
+        )}
+      </span>
     </label>
   );
 };

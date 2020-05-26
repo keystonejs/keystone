@@ -67,7 +67,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           query {
             allUsers(
               where: { name_contains: "J" },
-              orderBy: "name_ASC",
+              sortBy: name_ASC,
             ) {
               name
             }
@@ -232,10 +232,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   { title: "Two authors" },
                 ]
               }
-              orderBy: "title_ASC",
+              sortBy: title_ASC,
             ) {
               title
-              author(orderBy: "name_ASC") {
+              author(sortBy: name_ASC) {
                 name
               }
             }
@@ -319,7 +319,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               title
               author {
                 posts {
-                  title 
+                  title
                 }
               }
             }

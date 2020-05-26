@@ -35,7 +35,7 @@ describe('Access Control Lists > Admin UI', () => {
 
         cy.visit(`admin/${slug}`);
 
-        cy.get('body').should('contain', `The list “${slug}” doesn't exist`);
+        cy.get('body').should('contain', `The list “${slug}” does not exist`);
       });
 
       it(`is visible when readable`, () => {
@@ -49,7 +49,7 @@ describe('Access Control Lists > Admin UI', () => {
 
         cy.visit(`/admin/${slug}`);
 
-        cy.get('body').should('not.contain', `The list “${slug}” doesn't exist`);
+        cy.get('body').should('not.contain', `The list “${slug}” does not exist`);
         cy.get('body h1').should('contain', prettyName);
       });
     });

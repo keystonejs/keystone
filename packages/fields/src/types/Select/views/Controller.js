@@ -1,8 +1,7 @@
 import FieldController from '../../../Controller';
 
 export default class SelectController extends FieldController {
-  constructor(config, ...args) {
-    const defaultValue = 'defaultValue' in config ? config.defaultValue : null;
+  constructor({ defaultValue = null, ...config }, ...args) {
     super({ ...config, defaultValue }, ...args);
     this.options = config.options;
     this.dataType = config.dataType;
@@ -23,9 +22,9 @@ export default class SelectController extends FieldController {
       key = `${this.path}_not`;
     }
 
-    const value = isMulti ? `[${options.map(x => x.value).join(',')}]` : options[0].value;
+    const value = isMulti ? options.map(x => x.value) : options[0].value;
 
-    return this.dataType === 'string' ? `${key}: "${value}"` : `${key}: ${value}`;
+    return { [key]: value };
   };
   getFilterLabel = (/*{ value }*/) => {
     return this.label;
@@ -46,7 +45,7 @@ export default class SelectController extends FieldController {
       : `${this.label} is ${optionLabel}`;
   };
   getFilterValue = value => {
-    return value && value.options && value.options.length ? value : null;
+    return value && value.options && value.options.length ? value : undefined;
   };
   getFilterTypes = () => [
     {

@@ -8,7 +8,19 @@ import React, { useContext, createContext } from 'react';
 const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 
 // TODO: Pull this off `window.X` to support server side permission queries
-const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
+const {
+  adminPath,
+  apiPath,
+  graphiqlPath,
+  pages,
+  hooks,
+  signinPath,
+  signoutPath,
+  authStrategy,
+  lists,
+  name,
+  ...customMeta
+} = KEYSTONE_ADMIN_META;
 
 const AdminMetaContext = createContext();
 
@@ -31,18 +43,9 @@ const resolveCustomPages = pages => {
 
 export const AdminMetaProvider = ({ children }) => {
   // TODO: Permission query to see which lists to provide
-  const listKeys = Object.keys(lists || {});
   const listsByKey = {};
   const listsByPath = {};
-
-  const adminMeta = {
-    ...srcMeta,
-    listKeys,
-    getListByKey: key => listsByKey[key],
-    getListByPath: path => listsByPath[path],
-    readViews,
-    preloadViews,
-  };
+  const getListByKey = key => listsByKey[key];
 
   const viewsToLoad = new Set();
   if (typeof hookView === 'function') {
@@ -63,31 +66,47 @@ export const AdminMetaProvider = ({ children }) => {
   // so we don't have a waterfall of requests
   readViews([...viewsToLoad]);
 
-  listKeys.forEach(key => {
-    const list = new List(lists[key], adminMeta, views[key]);
-    listsByKey[key] = list;
-    listsByPath[list.path] = list;
-  });
+  Object.entries(lists || {}).forEach(
+    ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
+      const list = new List(
+        { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
+        { readViews, preloadViews, getListByKey, apiPath, adminPath },
+        views[key]
+      );
+      listsByKey[key] = list;
+      listsByPath[list.path] = list;
+    }
+  );
 
-  let hooks = {};
+  const listKeys = Object.values(listsByKey)
+    .sort(({ label: a }, { label: b }) => a.localeCompare(b)) // TODO: locale options once intl support is added
+    .map(({ key }) => key);
+
+  let hookViews = {};
   if (typeof hookView === 'function') {
-    [hooks] = readViews([hookView]);
+    [hookViews] = readViews([hookView]);
   }
 
-  const hookPages = hooks.pages ? hooks.pages() : [];
-  const adminMetaPages = adminMeta.pages ? adminMeta.pages : [];
-
-  const pages = resolveCustomPages([...adminMetaPages, ...hookPages]);
+  const hookPages = hookViews.pages ? hookViews.pages() : [];
+  const adminMetaPages = pages || [];
 
   const value = {
-    ...adminMeta,
-    hooks,
-    pages,
+    adminPath,
+    apiPath,
+    graphiqlPath,
+    signinPath,
+    signoutPath,
+    authStrategy,
+    name,
+    listKeys,
+    getListByKey,
+    getListByPath: path => listsByPath[path],
+    hooks: hookViews,
+    pages: resolveCustomPages([...adminMetaPages, ...hookPages]),
+    ...customMeta,
   };
 
   return <AdminMetaContext.Provider value={value}>{children}</AdminMetaContext.Provider>;
 };
 
-export const useAdminMeta = () => {
-  return useContext(AdminMetaContext);
-};
+export const useAdminMeta = () => useContext(AdminMetaContext);

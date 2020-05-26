@@ -7,15 +7,23 @@ import { pseudoLabelField } from './FieldSelect';
 
 const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sortBy', 'filters'];
 
-const getSearchDefaults = props => {
-  const { defaultColumns, defaultSort, defaultPageSize } = props.list.adminConfig;
+const getSearchDefaults = ({ list }) => {
+  const { defaultColumns, defaultSort, defaultPageSize } = list.adminConfig;
 
-  // Dynamic defaults
-  const fields = parseFields(defaultColumns, props.list);
-  const sortBy =
-    parseSortBy(defaultSort, props.list) ||
-    (fields[0] ? { field: fields[0], direction: 'ASC' } : null);
+  // Look for the default sort-by fields
+  const fields = parseFields(defaultColumns, list);
+
+  // If defaultSort isn't a valid sortable field, fall back to the first such field, or none.
+  let sortBy = parseSortBy(defaultSort, list);
+  if (!sortBy) {
+    // TODO: should we include ID fields here?
+    const firstSortableField = fields.find(({ isOrderable }) => isOrderable);
+    sortBy = firstSortableField ? { field: firstSortableField, direction: 'ASC' } : null;
+  }
+
+  // Move the _label_ first
   fields.unshift(pseudoLabelField);
+
   return {
     currentPage: 1,
     pageSize: defaultPageSize,
@@ -48,7 +56,7 @@ const parseSortBy = (sortBy, list) => {
     direction = 'DESC';
   }
 
-  const field = list.fields.filter(field => field.config.isOrderable).find(f => f.path === key);
+  const field = list.fields.filter(field => field.isOrderable).find(f => f.path === key);
   if (!field) {
     return null;
   }

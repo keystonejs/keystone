@@ -375,13 +375,6 @@ export function useListSelect(items) {
     }
   };
 
-  // TODO: deal with this elsewhere
-  // const deleteSelectedItems = () => {
-  //   const { query } = this.props;
-  //   if (query.refetch) query.refetch();
-  //   setSelectedItems([]);
-  // };
-
   return [selectedItems, onSelect];
 }
 
@@ -399,12 +392,15 @@ export function useKeyDown(targetKey, [keydownHandler, keyupHandler] = []) {
   useEffect(() => {
     const handleKeyDown = e => {
       if (e.key !== targetKey) return;
+      e.preventDefault();
       if (keydownHandler) keydownHandler(e);
 
       setKeyDown(true);
     };
+
     const handleKeyUp = e => {
       if (e.key !== targetKey) return;
+      e.preventDefault();
       if (keyupHandler) keyupHandler(e);
 
       setKeyDown(false);

@@ -1,7 +1,8 @@
-import React, { useContext, createContext, useState, useMemo } from 'react';
+import React, { useContext, createContext, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { useListUrlState } from '../pages/List/dataHooks';
+import { deconstructErrorsToDataShape } from '../util';
 
 const ListContext = createContext();
 
@@ -29,41 +30,37 @@ export const ListProvider = ({ list, children }) => {
   // List items
   // ==============================
 
-  const { urlState } = useListUrlState(list);
+  const {
+    urlState: { currentPage, fields, filters, pageSize, search, sortBy },
+  } = useListUrlState(list);
 
-  const LIST_QUERY = useMemo(() => {
-    const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
-
-    return list.getQuery({
-      fields,
-      filters,
-      first: pageSize,
-      orderBy: sortBy ? `${sortBy.field.path}_${sortBy.direction}` : null,
-      search,
-      skip: (currentPage - 1) * pageSize,
-    });
-  }, [urlState]);
-
-  const query = useQuery(LIST_QUERY, {
+  const query = useQuery(list.getListQuery(fields), {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
+    variables: {
+      where: formatFilter(filters),
+      search,
+      sortBy: formatSortBy(sortBy),
+      first: pageSize,
+      skip: (currentPage - 1) * pageSize,
+    },
   });
 
   const { listQueryName, listQueryMetaName } = list.gqlNames;
 
   // Organize the data for easier use.
   // TODO: consider doing this at the query level with an alias
-  // TODO: should we use deconstructErrorsToDataShape on the error?
-  // Need to check all uses of this data before deciding.
   const {
-    data: { error, [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
+    error,
+    data: { [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
   } = query;
 
   return (
     <ListContext.Provider
       value={{
         list,
-        listData: { items, itemCount: count, queryErrors: error },
+        listData: { items, itemCount: count },
+        queryErrorsParsed: deconstructErrorsToDataShape(error)[listQueryName],
         query,
         isCreateItemModalOpen: isOpen,
         openCreateItemModal,
@@ -73,4 +70,18 @@ export const ListProvider = ({ list, children }) => {
       {children}
     </ListContext.Provider>
   );
+};
+
+// ==============================
+// Formatting helpers
+// ==============================
+
+const formatFilter = (filters = []) => {
+  return filters
+    .map(({ field, ...config }) => field.getFilterGraphQL(config))
+    .reduce((acc, value) => ({ ...acc, ...value }), {});
+};
+
+const formatSortBy = sortBy => {
+  return sortBy ? `${sortBy.field.path}_${sortBy.direction}` : undefined;
 };

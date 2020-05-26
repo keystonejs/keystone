@@ -3,7 +3,7 @@ const { parseCustomAccess } = require('@keystonejs/access-control');
 const { objMerge } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
-const { AccessDeniedError } = require('../List/graphqlErrors');
+const { AccessDeniedError } = require('../ListTypes/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
@@ -70,8 +70,8 @@ class CustomProvider {
 
       // Perform access control check before passing off control to the
       // user defined resolver (along with the evalutated access).
-      const computeAccess = context => {
-        const _access = context.getCustomAccessControlForUser(access);
+      const computeAccess = async context => {
+        const _access = await context.getCustomAccessControlForUser(access);
         if (!_access) {
           graphqlLogger.debug({ access, gqlName }, 'Access statically or implicitly denied');
           graphqlLogger.info({ gqlName }, 'Access Denied');
@@ -89,10 +89,10 @@ class CustomProvider {
         return _access;
       };
       return {
-        [gqlName]: (obj, args, context, info) =>
+        [gqlName]: async (obj, args, context, info) =>
           resolver(obj, args, context, info, {
             query: this._buildQueryHelper(context),
-            access: computeAccess(context),
+            access: await computeAccess(context),
           }),
       };
     };

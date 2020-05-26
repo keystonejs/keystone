@@ -12,7 +12,7 @@ import { LoadingIndicator } from '@arch-ui/loading';
 import Select from '@arch-ui/select';
 
 import { validateFields, handleCreateUpdateMutationError } from '../util';
-import CreateItemModal from './CreateItemModal';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const Render = ({ children }) => children();
 
@@ -21,6 +21,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
   const [updateItem, { loading }] = useMutation(list.updateManyMutation, {
     errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
+    refetchQueries: ['getList'],
   });
 
   const [item, setItem] = useState({});
@@ -99,7 +100,10 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
 
   const options = useMemo(
     // remove the `options` key from select type fields
-    () => list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey).map(f => omit(f, ['options'])),
+    () =>
+      list.fields
+        .filter(({ isPrimaryKey, maybeAccess }) => !isPrimaryKey && !!maybeAccess.update)
+        .map(f => omit(f, ['options'])),
     []
   );
 
@@ -118,7 +122,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
         <Fragment>
           <LoadingButton
             appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
-            isDisabled={hasErrors}
+            isDisabled={hasErrors || selectedFields.length === 0}
             isLoading={loading}
             onClick={handleUpdate}
           >
@@ -153,7 +157,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
           >
             <Render>
               {() => {
-                const [Field] = field.adminMeta.readViews([field.views.Field]);
+                const [Field] = field.readViews([field.views.Field]);
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -166,19 +170,20 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      value={item[field.path]}
-                      // Explicitly pass undefined here as it doesn't make
-                      // sense to pass in any one 'saved' value
-                      savedValue={undefined}
-                      errors={validationErrors[field.path] || []}
-                      warnings={validationWarnings[field.path] || []}
-                      onChange={onChange}
-                      renderContext="dialog"
-                      CreateItemModal={CreateItemModal}
-                    />
+                    <ErrorBoundary>
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        value={item[field.path]}
+                        // Explicitly pass undefined here as it doesn't make
+                        // sense to pass in any one 'saved' value
+                        savedValue={undefined}
+                        errors={validationErrors[field.path] || []}
+                        warnings={validationWarnings[field.path] || []}
+                        onChange={onChange}
+                        renderContext="dialog"
+                      />
+                    </ErrorBoundary>
                   ),
                   [
                     i,

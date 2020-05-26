@@ -1,7 +1,7 @@
 /* global ENABLE_DEV_FEATURES */
-
-import React, { Fragment, useState } from 'react';
-import styled from '@emotion/styled';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Fragment, useState } from 'react';
 
 import { SettingsIcon, TrashcanIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
@@ -11,17 +11,21 @@ import { colors, gridSize } from '@arch-ui/theme';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
-export const ManageToolbar = styled.div(({ isVisible }) => ({
-  height: 35,
-  marginBottom: gridSize * 2,
-  marginTop: gridSize,
-  visibility: isVisible ? 'visible' : 'hidden',
-}));
+export const ManageToolbar = ({ isVisible, ...props }) => (
+  <div
+    css={{
+      height: '35px',
+      marginBottom: `${gridSize * 2}px`,
+      marginTop: `${gridSize}px`,
+      visibility: isVisible ? 'visible' : 'hidden',
+    }}
+    {...props}
+  />
+);
 
-const SelectedCount = styled.div`
-  color: ${colors.N40};
-  margin-right: ${gridSize}px;
-`;
+const SelectedCount = props => (
+  <div css={{ color: colors.N40, marginRight: `${gridSize}px` }} {...props} />
+);
 
 const ListManage = ({ list, pageSize, totalItems, selectedItems, onDeleteMany, onUpdateMany }) => {
   const [deleteModalIsVisible, setDeleteModalIsVisible] = useState(false);
@@ -56,7 +60,7 @@ const ListManage = ({ list, pageSize, totalItems, selectedItems, onDeleteMany, o
           </IconButton>
         )}
 
-        {list.access.update && (
+        {list.access.delete && (
           <IconButton
             appearance="danger"
             icon={TrashcanIcon}
