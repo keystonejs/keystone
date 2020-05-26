@@ -1,12 +1,12 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, useEffect, useRef, Suspense } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { Fragment, useEffect, Suspense } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useList } from '../../providers/List';
 
-
+import { IconButton } from '@arch-ui/button';
+import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
@@ -15,7 +15,6 @@ import { KebabHorizontalIcon } from '@arch-ui/icons';
 import Tooltip from '@arch-ui/tooltip';
 import { applyRefs } from 'apply-ref';
 import { LoadingIndicator } from '@arch-ui/loading';
-import { captureSuspensePromises } from '@keystonejs/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -24,6 +23,7 @@ import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
 import { DisclosureArrow } from '../../components/Popout';
 import { HeaderInset } from '../Home/components';
+
 import ColumnPopout from './ColumnSelect';
 import ActiveFilters from './Filters/ActiveFilters';
 import SortPopout from './SortSelect';
@@ -31,25 +31,12 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
-
-import { useList } from '../../providers/List';
+import { captureSuspensePromises } from '@keystonejs/utils';
 import { useUIHooks } from '../../providers/Hooks';
-import { useAdminMeta } from '../../providers/AdminMeta';
 import CreateItem from './CreateItem';
 
-const HeaderInset = props => (
-  <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
-);
-
 export function ListLayout(props) {
-  const { items, itemCount, queryErrors, routeProps, query } = props;
-  
-  const measureElementRef = useRef();
-  const { list } = useList();
-  const { urlState } = useListUrlState(list.key);
-  const { filters } = useListFilter(list.key);
-  const [sortBy, handleSortChange] = useListSort(list.key);
-
+  const { items, itemCount, queryErrors, query } = props;
 
   const { list, openCreateItemModal } = useList();
   const {
@@ -83,7 +70,7 @@ export function ListLayout(props) {
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
             <PageTitle>{list.plural}</PageTitle>
-            {listHeaderActions ? listHeaderActions() : <CreateItem />}
+            {list.access.create ? listHeaderActions ? listHeaderActions() : <CreateItem /> : null}
           </FlexGroup>
           <ListDescription text={list.adminDoc} />
           <div
