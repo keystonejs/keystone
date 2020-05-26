@@ -4,7 +4,8 @@
     "blog": "yarn --cwd blog",
     "meetup": "yarn --cwd meetup",
     "todo": "yarn --cwd todo",
-    "custom-fields": "yarn --cwd custom-fields"
+    "custom-fields": "yarn --cwd custom-fields",
+    "content": "yarn --cwd content"
   },
   "repository": "https://github.com/keystonejs/keystone.git",
   "homepage": "https://github.com/keystonejs/keystone",

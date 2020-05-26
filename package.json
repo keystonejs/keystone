@@ -173,6 +173,7 @@
       "packages/fields-authed-relationship",
       "packages/fields-auto-increment",
       "packages/fields-datetime-utc",
+      "packages/fields-document",
       "packages/fields-markdown",
       "packages/fields-mongoid",
       "packages/fields-wysiwyg-tinymce",
