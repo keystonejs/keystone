@@ -1,0 +1,31 @@
+{
+  "name": "@keystonejs/fields-document",
+  "description": "KeystoneJS Markdown Field Type",
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@arch-ui/fields": "^3.0.1",
+    "@arch-ui/icons": "^0.1.1",
+    "@arch-ui/input": "^0.1.9",
+    "@arch-ui/theme": "^0.0.10",
+    "@arch-ui/tooltip": "^0.1.12",
+    "@arch-ui/typography": "^0.0.17",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.28",
+    "@keystonejs/build-field-types": "^5.2.7",
+    "@keystonejs/fields": "^11.0.0",
+    "lodash.isequal": "^4.5.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "slate": "^0.58.1",
+    "slate-history": "^0.58.1",
+    "slate-react": "^0.58.1"
+  },
+  "main": "dist/fields-document.cjs.js",
+  "module": "dist/fields-document.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-document"
+}
