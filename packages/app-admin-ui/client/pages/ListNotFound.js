@@ -11,11 +11,7 @@ const ListNotFoundPage = ({ listKey }) => {
 
   return (
     <PageError icon={IssueOpenedIcon}>
-      <p>
-        The list &ldquo;
-        {listKey}
-        &rdquo; doesn&apos;t exist
-      </p>
+      <p>{`The list “${listKey}” does not exist`}</p>
       <Button to={adminPath} variant="ghost">
         Go Home
       </Button>

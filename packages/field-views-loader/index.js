@@ -64,7 +64,7 @@ module.exports = function() {
       }
     }
 
-  and our loader simply tranforms it into usuable code that looks like this:
+  and our loader simply transforms it into usable code that looks like this:
 
   module.exports = {
     "__pages__": {

@@ -14,18 +14,18 @@ export default class CheckboxController extends FieldController {
     return `${this.label} ${label.toLowerCase()}`;
   };
   formatFilter = ({ label, value }) => {
-    return `${this.getFilterLabel({ label })}: "${value}"`;
+    return `${this.getFilterLabel({ label })}: ${value}`;
   };
   getFilterTypes = () => [
     {
       type: 'is',
       label: 'Is',
-      getInitialValue: () => 'true',
+      getInitialValue: () => true,
     },
     {
       type: 'not',
       label: 'Is not',
-      getInitialValue: () => 'true',
+      getInitialValue: () => true,
     },
   ];
 }
