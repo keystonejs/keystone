@@ -6,7 +6,6 @@ import React, { useContext, createContext } from 'react';
 
 const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 
-// TODO: Pull this off `window.X` to support server side permission queries
 const {
   adminPath,
   apiPath,
@@ -16,11 +15,10 @@ const {
   signinPath,
   signoutPath,
   authStrategy,
-  lists,
   name,
   ...customMeta
 } = KEYSTONE_ADMIN_META;
-console.log(lists);
+
 const AdminMetaContext = createContext();
 
 const resolveCustomPages = pages => {
