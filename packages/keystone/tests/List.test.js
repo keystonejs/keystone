@@ -1092,6 +1092,7 @@ test(`listMeta`, () => {
       updateManyInput: 'TestsUpdateInput',
     },
     type: 'Test',
+    sortType: 'SortTestsBy',
   });
 
   expect(
@@ -1122,6 +1123,7 @@ test(`listMeta`, () => {
       updateManyInput: 'TestsUpdateInput',
     },
     type: 'Test',
+    sortType: 'SortTestsBy',
   });
 });
 
