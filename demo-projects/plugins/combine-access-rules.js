@@ -13,8 +13,6 @@ const combineAccessRules = (rules, operationIsOr) => async auth => {
     })
   );
 
-  console.log(resolved);
-
   // For AND: if every rule is true, we return true
   // For OR: if any rule is true, we return true
   const checkedRules = operationIsOr
