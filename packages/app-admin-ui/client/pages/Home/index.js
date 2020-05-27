@@ -30,7 +30,6 @@ const Homepage = () => {
   const { getListByKey, listKeys } = useMasterList();
   const { adminPath } = useAdminMeta();
 
-  // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
   const { data, error } = useQuery(getCountQuery(lists), {
@@ -54,27 +53,11 @@ const Homepage = () => {
   });
 
   if (error) {
-    if (!error.graphQLErrors || !error.graphQLErrors.length) {
-      return (
-        <PageError>
-          <p>{error.message}</p>
-        </PageError>
-      );
-    }
-
-    const deniedQueries = error.graphQLErrors
-      .filter(({ name }) => name === 'AccessDeniedError')
-      .map(({ path }) => path && path[0]);
-
-    if (deniedQueries.length !== error.graphQLErrors.length) {
-      // There were more than Access Denied Errors, so throw a normal
-      // error message
-      return (
-        <PageError>
-          <p>{error.message}</p>
-        </PageError>
-      );
-    }
+    return (
+      <PageError>
+        <p>{error.message}</p>
+      </PageError>
+    );
   }
 
   // NOTE: `loading` is intentionally omitted here
