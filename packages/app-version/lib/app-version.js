@@ -24,6 +24,9 @@ class AppVersionProvider {
   getMutations({}) {
     return [];
   }
+  getSubscriptions({}) {
+    return [];
+  }
 
   getTypeResolvers({}) {
     return {};
@@ -32,6 +35,9 @@ class AppVersionProvider {
     return this._access[schemaName] ? { appVersion: () => this._version } : {};
   }
   getMutationResolvers({}) {
+    return {};
+  }
+  getSubscriptionResolvers({}) {
     return {};
   }
 }
