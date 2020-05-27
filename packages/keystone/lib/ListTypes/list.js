@@ -1499,15 +1499,20 @@ module.exports = class List {
 
         const mutations = {
           create: this.gqlNames.createMutationName,
-          createInput: this.gqlNames.createInputName,
           createMany: this.gqlNames.createManyMutationName,
-          createManyInput: this.gqlNames.createManyInputName,
           update: this.gqlNames.updateMutationName,
-          updateInput: this.gqlNames.updateInputName,
           updateMany: this.gqlNames.updateManyMutationName,
-          updateManyInput: this.gqlNames.updateManyInputName,
           delete: this.gqlNames.deleteMutationName,
           deleteMany: this.gqlNames.deleteManyMutationName,
+        };
+
+        const inputTypes = {
+          whereInput: this.gqlNames.whereInputName,
+          whereUniqueInput: this.gqlNames.whereUniqueInputName,
+          createInput: this.gqlNames.createInputName,
+          createManyInput: this.gqlNames.createManyInputName,
+          updateInput: this.gqlNames.updateInputName,
+          updateManyInput: this.gqlNames.updateManyInputName,
         };
 
         // NOTE: Other fields on this type are resolved in the main resolver in
@@ -1516,7 +1521,8 @@ module.exports = class List {
           type: this.gqlNames.outputTypeName,
           queries,
           mutations,
-          key: this.key,
+          inputTypes,
+          key: this.key, // Used to resolve fields
         };
       },
     };
