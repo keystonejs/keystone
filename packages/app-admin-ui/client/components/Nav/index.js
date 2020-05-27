@@ -436,12 +436,7 @@ const ActionItems = ({ mouseIsOverNav }) => {
 
 const PrimaryNavContent = ({ mouseIsOverNav }) => {
   const { getListByKey, listKeys } = useMasterList();
-  const {
-    adminPath,
-    name,
-    pages,
-    authStrategy: { listKey: authListKey } = {},
-  } = useAdminMeta();
+  const { adminPath, name, pages, authStrategy: { listKey: authListKey } = {} } = useAdminMeta();
 
   return (
     <Inner>
