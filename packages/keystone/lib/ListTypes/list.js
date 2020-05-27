@@ -1471,9 +1471,15 @@ module.exports = class List {
     return {
       key: this.key,
       name: this.key,
+      description: this.adminDoc,
+      label: this.adminUILabels.label,
+      singular: this.adminUILabels.singular,
+      plural: this.adminUILabels.plural,
+      path: this.adminUILabels.path,
+
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
+      // Evaluation takes place in ../providers/listCRUD.js
       // NOTE: These could return a Boolean or a JSON object (if using the
       // declarative syntax)
       getAccess: () => ({
@@ -1483,18 +1489,33 @@ module.exports = class List {
         getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
         getAuth: () => context.getAuthAccessControlForUser(this.key),
       }),
+
       getSchema: () => {
-        const queries = [
-          this.gqlNames.itemQueryName,
-          this.gqlNames.listQueryName,
-          this.gqlNames.listQueryMetaName,
-        ];
+        const queries = {
+          item: this.gqlNames.itemQueryName,
+          list: this.gqlNames.listQueryName,
+          meta: this.gqlNames.listQueryMetaName,
+        };
+
+        const mutations = {
+          create: this.gqlNames.createMutationName,
+          createInput: this.gqlNames.createInputName,
+          createMany: this.gqlNames.createManyMutationName,
+          createManyInput: this.gqlNames.createManyInputName,
+          update: this.gqlNames.updateMutationName,
+          updateInput: this.gqlNames.updateInputName,
+          updateMany: this.gqlNames.updateManyMutationName,
+          updateManyInput: this.gqlNames.updateManyInputName,
+          delete: this.gqlNames.deleteMutationName,
+          deleteMany: this.gqlNames.deleteManyMutationName,
+        };
 
         // NOTE: Other fields on this type are resolved in the main resolver in
-        // ../Keystone/index.js
+        // ../providers/listCRUD.js
         return {
           type: this.gqlNames.outputTypeName,
           queries,
+          mutations,
           key: this.key,
         };
       },

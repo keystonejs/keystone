@@ -1104,7 +1104,23 @@ test(`listMeta`, () => {
   const schema = meta.getSchema();
   expect(schema).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createInput: 'TestCreateInput',
+      createMany: 'createTests',
+      createManyInput: 'TestsCreateInput',
+      update: 'updateTest',
+      updateInput: 'TestUpdateInput',
+      updateMany: 'updateTests',
+      updateManyInput: 'TestsUpdateInput',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
     type: 'Test',
   });
 
@@ -1114,7 +1130,23 @@ test(`listMeta`, () => {
       .getSchema()
   ).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createInput: 'TestCreateInput',
+      createMany: 'createTests',
+      createManyInput: 'TestsCreateInput',
+      update: 'updateTest',
+      updateInput: 'TestUpdateInput',
+      updateMany: 'updateTests',
+      updateManyInput: 'TestsUpdateInput',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
     type: 'Test',
   });
 });
