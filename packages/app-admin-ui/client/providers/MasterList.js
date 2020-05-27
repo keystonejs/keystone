@@ -64,7 +64,7 @@ const LISTS_QUERY = gql`
 export const MasterListProvider = ({ children }) => {
   const { adminPath } = useAdminMeta();
   const { data, loading } = useQuery(LISTS_QUERY, {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     partialRefetch: true,
   });
 
@@ -87,13 +87,9 @@ export const MasterListProvider = ({ children }) => {
   //
   // In all these cases, the Admin UI becomes unnecessarily complex,
   // so we only allow all these actions if you also have read access.
-  //
-  // Note this only filters bool values. If a `where` clause was returned, we'll
-  // handle that later when we fetch the list items.
-
   // TODO: see if we can handle this server-side in the `where` input.
   //
-  const listsCanRead = data.meta.filter(({ access: { read } }) => !!read);
+  const listsCanRead = data.meta.filter(({ access: { read } }) => read !== false);
 
   const listsByKey = {};
   const listsByPath = {};
