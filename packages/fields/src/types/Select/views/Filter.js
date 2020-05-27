@@ -25,15 +25,12 @@ const SelectFilterView = ({ innerRef, field, value, onChange }) => {
   };
 
   const handleSelectChange = newValue => {
-    if (newValue.length) {
-      const options = [...newValue]; // ensure consistent data shape
-      onChange({ ...value, options });
-    }
+    const options = [...(newValue || [])]; // ensure consistent data shape
+    onChange({ ...value, options });
   };
 
   const radioValue = value.inverted ? 'does_not_match' : 'does_match';
   const selectProps = {
-    components: { Option: CheckMarkOption },
     innerRef: innerRef,
     onChange: handleSelectChange,
     options: field.options,
@@ -51,10 +48,18 @@ const SelectFilterView = ({ innerRef, field, value, onChange }) => {
       <SelectWrapper>
         {field.options.length > 8 ? (
           <EventCatcher>
-            <Select menuPortalTarget={document.body} {...selectProps} />
+            <Select
+              menuPortalTarget={document.body}
+              {...selectProps}
+              components={{ Option: CheckMarkOptionSelect }}
+            />
           </EventCatcher>
         ) : (
-          <Options displaySearch={false} {...selectProps} />
+          <Options
+            displaySearch={false}
+            {...selectProps}
+            components={{ Option: CheckMarkOption }}
+          />
         )}
       </SelectWrapper>
     </Fragment>
@@ -66,6 +71,14 @@ const CheckMarkOption = ({ children, ...props }) => (
     <span>{children}</span>
     <CheckMark isFocused={props.isFocused} isSelected={props.isSelected} />
   </OptionPrimitive>
+);
+
+// TODO: figure out a better way to give options padding in the the dropdown
+const CheckMarkOptionSelect = props => (
+  <CheckMarkOption
+    {...props}
+    css={{ paddingLeft: `${gridSize}px`, paddingRight: `${gridSize}px` }}
+  />
 );
 
 export default SelectFilterView;

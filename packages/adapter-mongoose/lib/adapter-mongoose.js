@@ -474,7 +474,10 @@ class MongooseListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(({ tableName }) => tableName === this.key)
+        .filter(
+          ({ tableName, left, right }) =>
+            tableName === this.key && right && left.refListKey === right.refListKey
+        )
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )
@@ -533,7 +536,10 @@ class MongooseListAdapter extends BaseListAdapter {
           ? graphQlQueryToMongoJoinQuery(whereElement) // Recursively traverse relationship fields
           : whereElement
       ),
-      ...mapKeyNames(pick(modifiers, ['search', 'orderBy', 'skip', 'first']), key => `$${key}`),
+      ...mapKeyNames(
+        pick(modifiers, ['search', 'sortBy', 'orderBy', 'skip', 'first']),
+        key => `$${key}`
+      ),
     });
     let query;
     try {

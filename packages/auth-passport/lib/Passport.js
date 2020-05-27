@@ -88,8 +88,10 @@ class PassportAuthStrategy {
     this._loginPath = config.loginPath;
     this._loginPathMiddleware = config.loginPathMiddleware || ((req, res, next) => next());
     this._callbackPath = config.callbackPath;
+    this._callbackHost = config.callbackHost || '';
     this._callbackPathMiddleware = config.callbackPathMiddleware || ((req, res, next) => next());
     this._passportScope = config.scope || [];
+    this._authOptions = config.authOptions || {};
     this._resolveCreateData = config.resolveCreateData || (({ createData }) => createData);
     this._onAuthenticated = config.onAuthenticated || (() => {});
     this._onError =
@@ -134,6 +136,7 @@ class PassportAuthStrategy {
       passport.authenticate(this.authType, {
         session: false,
         scope: this._passportScope,
+        ...this._authOptions,
       })(req, res, next);
     });
 
@@ -389,7 +392,7 @@ class PassportAuthStrategy {
       {
         clientID: this._serviceAppId,
         clientSecret: this._serviceAppSecret,
-        callbackURL: this._callbackPath,
+        callbackURL: `${this._callbackHost}${this._callbackPath}`,
         passReqToCallback: true,
         ...strategyConfig,
       },

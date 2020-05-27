@@ -112,7 +112,9 @@ To use secure cookies we need to add below to index.js.
 ```js
 const keystone = new Keystone({
   ...
-  secureCookies: true,
+  cookie: {
+    secure: true,
+  },
   cookieSecret: 'very-secret'
 });
 

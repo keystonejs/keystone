@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/dialog",
   "description": "Dialog Component as used in @keystonejs Admin UI.",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/dialog.cjs.js",

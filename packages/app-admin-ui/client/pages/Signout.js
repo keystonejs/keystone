@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import styled from '@emotion/styled';
 
 import { Fragment } from 'react';
 
@@ -16,52 +15,50 @@ import { colors } from '@arch-ui/theme';
 import Animation from '../components/Animation';
 import { useAdminMeta } from '../providers/AdminMeta';
 
-const FlexBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
+const FlexBox = props => (
+  <div
+    css={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+    {...props}
+  />
+);
 
-const Container = styled(FlexBox)`
-  min-height: 100vh;
-`;
+const Container = props => <FlexBox css={{ minHeight: '100vh' }} {...props} />;
 
-const Caption = styled.p`
-  font-size: 1.5em;
-`;
+const Caption = props => <p css={{ fontSize: '1.5em' }} {...props} />;
 
-const SignOutPageButton = styled(Button)`
-  width: 200px;
-  height: 2.6em;
-  margin-bottom: 0.8em;
-  line-height: unset;
-`;
+const SignOutPageButton = props => (
+  <Button
+    css={{ width: '200px', height: '2.6em', marginBottom: '0.8em', lineHeight: 'unset' }}
+    {...props}
+  />
+);
 
 const SignedOutPage = () => {
   const {
-    authStrategy: { listKey },
+    authStrategy: {
+      gqlNames: { unauthenticateMutationName },
+    },
     signinPath,
   } = useAdminMeta();
 
   const UNAUTH_MUTATION = gql`
     mutation {
-      unauthenticate: unauthenticate${listKey} {
+      unauthenticate: ${unauthenticateMutationName} {
         success
       }
     }
   `;
 
   const [signOut, { loading, client, called }] = useMutation(UNAUTH_MUTATION, {
-    onCompleted: ({ error }) => {
-      if (error) {
-        throw error;
-      }
-
+    onCompleted: () => {
       // Ensure there's no old authenticated data hanging around
       client.resetStore();
     },
-    onError: console.error,
   });
 
   if (!called) {

@@ -526,7 +526,10 @@ class KnexListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(({ tableName }) => tableName === this.key)
+        .filter(
+          ({ tableName, left, right }) =>
+            tableName === this.key && right && left.refListKey === right.refListKey
+        )
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )
@@ -568,7 +571,7 @@ class KnexListAdapter extends BaseListAdapter {
 class QueryBuilder {
   constructor(
     listAdapter,
-    { where = {}, first, skip, orderBy, search },
+    { where = {}, first, skip, sortBy, orderBy, search },
     { meta = false, from = {} }
   ) {
     this._tableAliases = {};
@@ -648,6 +651,17 @@ class QueryBuilder {
         const [orderField, orderDirection] = orderBy.split('_');
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
         this._query.orderBy(sortKey, orderDirection);
+      }
+      if (sortBy !== undefined) {
+        // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
+        this._query.orderBy(
+          sortBy.map(s => {
+            const [orderField, orderDirection] = s.split('_');
+            const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
+
+            return { column: sortKey, order: orderDirection };
+          })
+        );
       }
     }
   }

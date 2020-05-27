@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
-const lastOnline = '2018-08-16T11:08:18.886+10:00';
+const lastOnline = parseISO('2018-08-16T11:08:18.886+10:00');
 
 const calendarDayInputSelector = `#ks-daypicker-dob`;
 const dateTimeInputSelector = `#ks-input-lastOnline`;
@@ -62,7 +62,7 @@ describe('DateTime Component - Formatting', () => {
   });
 
   it('should format date-time correctly on the list page', () => {
-    cy.get(getCellFromSecondRow(4)).contains(format(lastOnline, 'MM/DD/YYYY h:mm A'));
+    cy.get(getCellFromSecondRow(4)).contains(format(lastOnline, 'MM/dd/yyyy h:mm a'));
   });
 
   it('should format date-time correctly on the details page', () => {

@@ -1,5 +1,17 @@
 # @arch-ui/navbar
 
+## 0.1.11
+
+### Patch Changes
+
+- [`2b0f6441`](https://github.com/keystonejs/keystone/commit/2b0f6441e50787a4a82f417b573078717b39e9be) [#2946](https://github.com/keystonejs/keystone/pull/2946) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated react-router-dom to 5.2.0.
+
+## 0.1.10
+
+### Patch Changes
+
+- [`95babf5d`](https://github.com/keystonejs/keystone/commit/95babf5da8488f2d7f8ab9f91ff640576462af6d) [#2798](https://github.com/keystonejs/keystone/pull/2798) Thanks [@Vultraz](https://github.com/Vultraz)! - Revamped sidebar design.
+
 ## 0.1.9
 
 ### Patch Changes

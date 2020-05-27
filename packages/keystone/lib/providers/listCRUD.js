@@ -41,9 +41,53 @@ class ListCRUDProvider {
            user when performing 'auth' operations."""
         auth: JSON
       }`,
+      `type _ListQueries {
+        """Single-item query name."""
+        item: String
+
+        """All-items query name."""
+        list: String
+
+        """List metadata query name."""
+        meta: String
+      }`,
+      `type _ListMutations {
+        """Create mutation name."""
+        create: String
+
+        """Create mutation input type name."""
+        createInput: String
+
+        """Create many mutation name."""
+        createMany: String
+
+        """Create many mutation input type name."""
+        createManyInput: String
+
+        """Update mutation name."""
+        update: String
+
+        """Update mutation name input."""
+        updateInput: String
+
+        """Update many mutation name."""
+        updateMany: String
+
+        """Update many mutation name input."""
+        updateManyInput: String
+
+        """Delete mutation name."""
+        delete: String
+
+        """Delete many mutation name."""
+        deleteMany: String
+      }`,
       `type _ListSchemaFields {
+        """ The path of the field in its list. """
+        path: String
+
         """The name of the field in its list."""
-        name: String
+        name: String @deprecated(reason: "Use \`path\` instead")
 
         """The field type (ie, Checkbox, Text, etc)"""
         type: String
@@ -61,7 +105,10 @@ class ListCRUDProvider {
 
         """Top level GraphQL query names which either return this type, or
            provide aggregate information about this type"""
-        queries: [String]
+        queries: _ListQueries
+
+        """Top-level GraphQL mutation names"""
+        mutations: _ListMutations
 
         """Information about fields defined on this list. """
         fields(where: _ListSchemaFieldsInput): [_ListSchemaFields]
@@ -71,8 +118,26 @@ class ListCRUDProvider {
         relatedFields: [_ListSchemaRelatedFields]
       }`,
       `type _ListMeta {
+        """ The Keystone list key """
+        key: String
+
         """The Keystone List name"""
-        name: String
+        name: String @deprecated(reason: "Use \`key\` instead")
+
+        """The list's user-facing description"""
+        description: String
+
+        """The list's display name in the Admin UI"""
+        label: String
+
+        """The list's singular display name"""
+        singular: String
+
+        """The list's plural display name"""
+        plural: String
+
+        """The list's data path"""
+        path: String
 
         """Access control configuration for the currently authenticated
            request"""
@@ -86,6 +151,9 @@ class ListCRUDProvider {
       }`,
       `input ${this.gqlNames.listsMetaInput} {
         key: String
+
+        """Whether this is an auxiliary helper list."""
+        auxiliary: Boolean
       }`,
       `input _ListSchemaFieldsInput {
         type: String
@@ -140,9 +208,10 @@ class ListCRUDProvider {
       fields: ({ key }, { where: { type } = {} }) => {
         return this.lists
           .find(list => list.key === key)
-          .getFieldsWithAccess({ schemaName, access: 'read' })
+          .getAllFieldsWithAccess({ schemaName, access: 'read' })
           .filter(field => !type || field.constructor.name === type)
           .map(field => ({
+            path: field.path,
             name: field.path,
             type: field.constructor.name,
           }));
@@ -187,9 +256,14 @@ class ListCRUDProvider {
       ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
 
       // And the Keystone meta queries must always be available
-      [this.gqlNames.listsMeta]: (_, { where: { key } = {} }, context) =>
+      [this.gqlNames.listsMeta]: (_, { where: { key, auxiliary } = {} }, context) =>
         this.lists
-          .filter(list => list.access[schemaName].read && (!key || list.key === key))
+          .filter(
+            list =>
+              list.access[schemaName].read &&
+              (!key || list.key === key) &&
+              (auxiliary === undefined || list.isAuxList === auxiliary)
+          )
           .map(list => list.listMeta(context)),
     };
   }

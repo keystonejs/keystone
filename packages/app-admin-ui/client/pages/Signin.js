@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import styled from '@emotion/styled';
+/** @jsx jsx */
+
+import { useState } from 'react';
+import { jsx } from '@emotion/core';
 
 import { Alert } from '@arch-ui/alert';
-import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
-import { colors } from '@arch-ui/theme';
-import { PageTitle } from '@arch-ui/typography';
+import { Input } from '@arch-ui/input';
+import { colors, gridSize } from '@arch-ui/theme';
+import { PageTitle, Title } from '@arch-ui/typography';
 
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -17,62 +19,77 @@ import KeystoneLogo from '../components/KeystoneLogo';
 import { useAdminMeta } from '../providers/AdminMeta';
 import { useUIHooks } from '../providers/Hooks';
 
-const Container = styled.div({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  minHeight: '100vh',
-  width: '100%',
-});
+const _PADDING = gridSize * 2;
+const _BUTTON_WIDTH = 280;
 
-const Alerts = styled.div({
-  margin: '20px auto',
-  width: 650,
-  height: 48,
-});
+const Container = props => (
+  <div
+    css={{
+      alignItems: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      width: '100%',
+    }}
+    {...props}
+  />
+);
 
-const Form = styled.form({
-  boxShadow: '0 2px 1px #f1f1f1',
-  backgroundColor: 'white',
-  border: '1px solid #e9e9e9',
-  borderRadius: '0.3em',
-  margin: '0 auto',
-  minWidth: 650,
-  padding: 40,
-  display: 'flex',
-  flexWrap: 'nowrap',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+const Alerts = props => <div css={{ height: '48px' }} {...props} />;
 
-const Divider = styled.div({
-  borderRight: '1px solid #eee',
-  minHeight: 185,
-  lineHeight: 185,
-  margin: '0 40px',
-});
+const Form = props => (
+  <form
+    css={{
+      marginBottom: '120px',
+      minWidth: '650px',
+      padding: '40px',
+      display: 'flex',
+      flexWrap: 'nowrap',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+    {...props}
+  />
+);
 
-const FieldLabel = styled.div({
-  color: colors.N60,
-  marginTop: 16,
-  marginBottom: 8,
-  fontSize: 16,
-});
+const Divider = props => (
+  <div
+    css={{
+      borderRight: `2px solid ${colors.N10}`,
+      minHeight: '450px',
+      lineHeight: '450px',
+      marginRight: '40px',
+      marginLeft: '60px',
+    }}
+    {...props}
+  />
+);
 
-const Fields = styled.div({
-  marginBottom: 16,
-  width: 280,
-});
+const FieldLabel = props => (
+  <div
+    css={{
+      color: `${colors.N60}`,
+      marginTop: `${_PADDING}px`,
+      marginBottom: `${gridSize}px`,
+      fontSize: `${_PADDING}px`,
+    }}
+    {...props}
+  />
+);
 
-const Spacer = styled.div({
-  height: 120,
-});
+const Fields = props => (
+  <div css={{ margin: `${_PADDING}px 0`, width: `${_BUTTON_WIDTH}px` }} {...props} />
+);
 
 const SignInPage = () => {
   const {
     name: siteName,
-    authStrategy: { listKey, identityField, secretField },
+    authStrategy: {
+      gqlNames: { authenticateMutationName },
+      identityField,
+      secretField,
+    },
   } = useAdminMeta();
 
   const { logo: getCustomLogo } = useUIHooks();
@@ -83,7 +100,7 @@ const SignInPage = () => {
 
   const AUTH_MUTATION = gql`
     mutation signin($identity: String, $secret: String) {
-      authenticate: authenticate${listKey}WithPassword(${identityField}: $identity, ${secretField}: $secret) {
+      authenticate: ${authenticateMutationName}(${identityField}: $identity, ${secretField}: $secret) {
         item {
           id
         }
@@ -93,11 +110,7 @@ const SignInPage = () => {
 
   const [signIn, { error, loading, client }] = useMutation(AUTH_MUTATION, {
     variables: { identity, secret },
-    onCompleted: ({ error }) => {
-      if (error) {
-        throw error;
-      }
-
+    onCompleted: () => {
       // Ensure there's no old unauthenticated data hanging around
       client.resetStore();
 
@@ -107,7 +120,7 @@ const SignInPage = () => {
       // Let the server-side redirects kick in to send the user to the right place
       window.location.reload(true);
     },
-    onError: console.error,
+    onError: () => {}, // Remove once a bad password no longer throws an error
   });
 
   const onSubmit = e => {
@@ -121,15 +134,14 @@ const SignInPage = () => {
   return (
     <Container>
       <Alerts>
-        {error ? (
-          <Alert appearance="danger">Your username and password were incorrect</Alert>
-        ) : null}
+        {error && <Alert appearance="danger">Your username or password were incorrect</Alert>}
       </Alerts>
-      <PageTitle>{siteName}</PageTitle>
       <Form method="post" onSubmit={onSubmit}>
         {getCustomLogo ? getCustomLogo() : <KeystoneLogo />}
         <Divider />
         <div>
+          <PageTitle css={{ marginTop: 0, marginBottom: `${gridSize}px` }}>{siteName}</PageTitle>
+          <Title css={{ marginBottom: `${_PADDING * 2}px` }}>Admin UI</Title>
           <Fields>
             <FieldLabel>{upcase(identityField)}</FieldLabel>
             <Input
@@ -153,17 +165,16 @@ const SignInPage = () => {
             type="submit"
             isLoading={loading || reloading}
             indicatorVariant="dots"
-            style={{
-              width: '280px',
+            css={{
+              width: `${_BUTTON_WIDTH}px`,
               height: '2.6em',
-              margin: '1em 0',
+              margin: `${_PADDING}px 0`,
             }}
           >
             Sign In
           </LoadingButton>
         </div>
       </Form>
-      <Spacer />
     </Container>
   );
 };

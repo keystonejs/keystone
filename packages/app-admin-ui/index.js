@@ -40,65 +40,28 @@ class AdminUIApp {
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
     this._adminMeta = adminMeta;
-
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
       signoutPath: `${this.adminPath}/signout`,
     };
   }
 
-  getAdminMeta() {
-    return {
-      adminPath: this.adminPath,
-      pages: this.pages,
-      hooks: this.hooks,
-      ...this.routes,
-      ...(this.authStrategy
-        ? {
-            authStrategy: this.authStrategy.getAdminMeta(),
-          }
-        : {}),
-      ...this._adminMeta,
-    };
-  }
-
   isAccessAllowed(req) {
-    if (!this.authStrategy) {
-      return true;
-    }
-
     return (
-      req.user &&
-      this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } })
+      !this.authStrategy ||
+      (req.user &&
+        this._isAccessAllowed({ authentication: { item: req.user, listKey: req.authedListKey } }))
     );
-  }
-
-  createSessionMiddleware() {
-    const { signinPath } = this.routes;
-
-    const app = express();
-
-    // Short-circuit GET requests when the user already signed in (avoids
-    // downloading UI bundle, doing a client side redirect, etc)
-    app.get(signinPath, (req, res, next) =>
-      this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
-    );
-
-    // TODO: Attach a server-side signout to signoutPath
-
-    return app;
   }
 
   build({ keystone, distDir }) {
     const builtAdminRoot = path.join(distDir, 'admin');
-
     const adminMeta = this.getAdminUIMeta(keystone);
-
     const compilers = [];
-
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
         outputPath: path.join(builtAdminRoot, 'secure'),
       })
@@ -110,6 +73,7 @@ class AdminUIApp {
         getWebpackConfig({
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
           outputPath: path.join(builtAdminRoot, 'public'),
         })
@@ -134,15 +98,33 @@ class AdminUIApp {
   }
 
   getAdminUIMeta(keystone) {
-    const { adminPath } = this;
-
+    // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
+    const { adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { signinPath, signoutPath } = this.routes;
+    const { lists, name } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
     return {
       adminPath,
-      apiPath: this.apiPath,
-      graphiqlPath: this.graphiqlPath,
-      ...this.getAdminMeta(),
-      ...keystone.getAdminMeta({ schemaName: this._schemaName }),
+      apiPath,
+      graphiqlPath,
+      pages,
+      hooks,
+      signinPath,
+      signoutPath,
+      authStrategy,
+      lists,
+      name,
+      ...this._adminMeta,
     };
+  }
+
+  getAdminViews({ keystone, includeLists }) {
+    const { pages, hooks } = this;
+    const { listViews } = includeLists
+      ? keystone.getAdminViews({ schemaName: this._schemaName })
+      : { listViews: {} };
+
+    return { pages, hooks, listViews };
   }
 
   prepareMiddleware({ keystone, distDir, dev }) {
@@ -160,7 +142,14 @@ class AdminUIApp {
         default: () => {
           next();
         },
+        // Without this, request with an 'Accept: */*' header get picked up by
+        // the 'text/html' handler rather than the default
         '*/*': () => {
+          // We need to reset the res 'Content-Type' otherwise it gets replaced by the format we've matched on: '*/*'.
+          // Returning a wildcard mimetype causes problems if a 'X-Content-Type-Options: nosniff' header is also set.
+          // See.. https://github.com/keystonejs/keystone/issues/2741
+          const extension = path.extname(req.url);
+          if (extension) res.type(extension);
           next();
         },
         // For page loads, we want to redirect back to signin page
@@ -173,7 +162,6 @@ class AdminUIApp {
       });
     });
 
-    let middlewarePairs, mountPath;
     if (dev) {
       // ensure any non-resource requests are rewritten for history api fallback
       app.use(adminPath, (req, res, next) => {
@@ -184,28 +172,29 @@ class AdminUIApp {
         if (/^[\w\/\-]+$/.test(req.path)) req.url = '/';
         next();
       });
-      const adminMeta = this.getAdminUIMeta(keystone);
-      middlewarePairs = this.createDevMiddleware({ adminMeta });
-      mountPath = '/';
-    } else {
+    }
+
+    if (!dev) {
       app.use(compression());
-      middlewarePairs = this.createProdMiddleware({ distDir });
-      mountPath = adminPath;
     }
 
     if (this.authStrategy) {
-      app.use(this.createSessionMiddleware());
-      for (const pair of middlewarePairs) {
-        app.use(mountPath, (req, res, next) => {
-          return this.isAccessAllowed(req)
-            ? pair.secure(req, res, next)
-            : pair.public(req, res, next);
-        });
-      }
-    } else {
-      for (const pair of middlewarePairs) {
-        app.use(mountPath, pair.secure);
-      }
+      // Short-circuit GET requests when the user already signed in (avoids
+      // downloading UI bundle, doing a client side redirect, etc)
+      app.get(this.routes.signinPath, (req, res, next) =>
+        this.isAccessAllowed(req) ? res.redirect(this.adminPath) : next()
+      );
+    }
+
+    const middlewarePairs = dev
+      ? this.createDevMiddleware({ adminMeta: this.getAdminUIMeta(keystone), keystone })
+      : this.createProdMiddleware({ distDir });
+    for (const pair of middlewarePairs) {
+      const middleware = (req, res, next) =>
+        !this.authStrategy || this.isAccessAllowed(req)
+          ? pair.secure(req, res, next)
+          : pair.public(req, res, next);
+      app.use(dev ? '/' : adminPath, middleware);
     }
 
     if (this.enableDefaultRoute) {
@@ -233,95 +222,51 @@ class AdminUIApp {
       );
     }
     const secureBuiltRoot = path.join(builtAdminRoot, 'secure');
-    const secureStaticMiddleware = express.static(secureBuiltRoot);
-    const secureFallbackMiddleware = fallback('index.html', {
-      root: secureBuiltRoot,
-    });
-
+    const middlewares = [
+      { secure: express.static(secureBuiltRoot) },
+      { secure: fallback('index.html', { root: secureBuiltRoot }) },
+    ];
     if (this.authStrategy) {
       const publicBuiltRoot = path.join(builtAdminRoot, 'public');
-      const publicStaticMiddleware = express.static(publicBuiltRoot);
-      const publicFallbackMiddleware = fallback('index.html', {
-        root: publicBuiltRoot,
-      });
-      return [
-        {
-          secure: secureStaticMiddleware,
-          public: publicStaticMiddleware,
-        },
-        {
-          secure: secureFallbackMiddleware,
-          public: publicFallbackMiddleware,
-        },
-      ];
-    } else {
-      return [
-        {
-          secure: secureStaticMiddleware,
-        },
-        {
-          secure: secureFallbackMiddleware,
-        },
-      ];
+      middlewares[0].public = express.static(publicBuiltRoot);
+      middlewares[1].public = fallback('index.html', { root: publicBuiltRoot });
     }
+    return middlewares;
   }
 
-  createDevMiddleware({ adminMeta }) {
+  createDevMiddleware({ adminMeta, keystone }) {
     const webpackMiddlewareConfig = {
       publicPath: this.adminPath,
       stats: 'none',
       logLevel: 'error',
     };
-
-    const webpackHotMiddlewareConfig = {
-      log: null,
-    };
-
+    const webpackHotMiddlewareConfig = { log: null };
     const secureCompiler = webpack(
       getWebpackConfig({
         adminMeta,
+        adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
       })
     );
 
-    const secureMiddleware = webpackDevMiddleware(secureCompiler, webpackMiddlewareConfig);
-    const secureHotMiddleware = webpackHotMiddleware(secureCompiler, webpackHotMiddlewareConfig);
-
+    const middlewares = [
+      { secure: webpackDevMiddleware(secureCompiler, webpackMiddlewareConfig) },
+      { secure: webpackHotMiddleware(secureCompiler, webpackHotMiddlewareConfig) },
+    ];
     if (this.authStrategy) {
+      // override lists so that schema and field views are excluded
       const publicCompiler = webpack(
         getWebpackConfig({
-          // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
+          adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
         })
       );
-
-      const publicMiddleware = webpackDevMiddleware(publicCompiler, webpackMiddlewareConfig);
-      const publicHotMiddleware = webpackHotMiddleware(publicCompiler, webpackHotMiddlewareConfig);
-
-      return [
-        {
-          secure: secureMiddleware,
-          public: publicMiddleware,
-        },
-        {
-          secure: secureHotMiddleware,
-          public: publicHotMiddleware,
-        },
-      ];
-    } else {
-      return [
-        {
-          secure: secureMiddleware,
-        },
-        {
-          secure: secureHotMiddleware,
-        },
-      ];
+      middlewares[0].public = webpackDevMiddleware(publicCompiler, webpackMiddlewareConfig);
+      middlewares[1].public = webpackHotMiddleware(publicCompiler, webpackHotMiddlewareConfig);
     }
+    return middlewares;
   }
 }
 
-module.exports = {
-  AdminUIApp,
-};
+module.exports = { AdminUIApp };

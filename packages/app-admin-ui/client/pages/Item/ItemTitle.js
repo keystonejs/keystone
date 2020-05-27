@@ -21,9 +21,8 @@ const Container = ({ children }) => {
   return <div css={{ paddingLeft: padding, paddingRight: padding }}>{children}</div>;
 };
 
-export const ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
+export const ItemTitle = memo(function ItemTitle({ titleText }) {
   const { list } = useList();
-  const listHref = `${adminPath}/${list.path}`;
   const { itemHeaderActions } = useUIHooks();
   return (
     <Container>
@@ -34,7 +33,7 @@ export const ItemTitle = memo(function ItemTitle({ titleText, adminPath }) {
           <IconButton
             variant="subtle"
             icon={ChevronLeftIcon}
-            to={listHref}
+            to={list.getFullPersistentPath()}
             css={{ marginLeft: -12 }}
           >
             {list.label}

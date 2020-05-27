@@ -1,35 +1,36 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
+import { Fragment, useMemo, useCallback, Suspense, useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
+import { omit, arrayToObject, countArrays } from '@keystonejs/utils';
+
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import Select from '@arch-ui/select';
-import { omit, arrayToObject, countArrays } from '@keystonejs/utils';
 import { LoadingIndicator } from '@arch-ui/loading';
+import Select from '@arch-ui/select';
 
-import { validateFields } from '../util';
-import CreateItemModal from './CreateItemModal';
+import { validateFields, handleCreateUpdateMutationError } from '../util';
+import { ErrorBoundary } from './ErrorBoundary';
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
-class UpdateManyModal extends Component {
-  constructor(props) {
-    super(props);
-    const { list } = props;
-    const selectedFields = [];
-    const item = list.getInitialItemData();
-    const validationErrors = {};
-    const validationWarnings = {};
+const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
+  const { addToast } = useToasts();
+  const [updateItem, { loading }] = useMutation(list.updateManyMutation, {
+    errorPolicy: 'all',
+    onError: error => handleCreateUpdateMutationError({ error, addToast }),
+    refetchQueries: ['getList'],
+  });
 
-    this.state = { item, selectedFields, validationErrors, validationWarnings };
-  }
-  onUpdate = async () => {
-    const { updateItem, isLoading, items } = this.props;
-    const { item, selectedFields, validationErrors, validationWarnings } = this.state;
-    if (isLoading) return;
-    if (countArrays(validationErrors)) {
+  const [item, setItem] = useState({});
+  const [selectedFields, setSelectedFields] = useState([]);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [validationWarnings, setValidationWarnings] = useState({});
+
+  const handleUpdate = async () => {
+    if (loading || countArrays(validationErrors)) {
       return;
     }
 
@@ -39,135 +40,137 @@ class UpdateManyModal extends Component {
       const { errors, warnings } = await validateFields(selectedFields, item, data);
 
       if (countArrays(errors) + countArrays(warnings) > 0) {
-        this.setState(() => ({
-          validationErrors: errors,
-          validationWarnings: warnings,
-        }));
+        setValidationErrors(errors);
+        setValidationWarnings(warnings);
 
         return;
       }
     }
 
-    updateItem({
+    const result = await updateItem({
       variables: {
         data: items.map(id => ({ id, data })),
       },
-    }).then(() => {
-      this.props.onUpdate();
-      this.resetState();
     });
+
+    // Result will be undefined if a GraphQL error occurs (such as failed validation)
+    // Leave the modal open in that case
+    if (!result) return;
+
+    resetState();
+    onUpdate();
   };
 
-  resetState = () => {
-    this.setState({ item: this.props.list.getInitialItemData({}), selectedFields: [] });
+  const resetState = () => {
+    setItem(list.getInitialItemData({}));
+    setSelectedFields([]);
   };
-  onClose = () => {
-    const { isLoading } = this.props;
-    if (isLoading) return;
-    this.resetState();
-    this.props.onClose();
+
+  const handleClose = () => {
+    if (loading) return;
+    resetState();
+    onClose();
   };
-  onKeyDown = event => {
+
+  const onKeyDown = event => {
     if (event.defaultPrevented) return;
     switch (event.key) {
       case 'Escape':
-        return this.onClose();
+        return handleClose();
       case 'Enter':
-        return this.onUpdate();
+        return handleUpdate();
     }
   };
-  handleSelect = selected => {
-    const { list } = this.props;
-    const selectedFields = selected.map(({ path, value }) => {
-      return list.fields
-        .filter(({ isPrimaryKey }) => !isPrimaryKey)
-        .find(f => f.path === path || f.path === value);
-    });
-    this.setState({ selectedFields });
+
+  const handleSelect = selected => {
+    setSelectedFields(
+      selected
+        ? selected.map(({ path, value }) => {
+            return list.fields
+              .filter(({ isPrimaryKey }) => !isPrimaryKey)
+              .find(f => f.path === path || f.path === value);
+          })
+        : []
+    );
   };
-  getOptionValue = option => {
+
+  const getOptionValue = option => {
     return option.path || option.value;
   };
-  getOptionValue = option => {
-    return option.path || option.value;
-  };
-  getOptions = () => {
-    const { list } = this.props;
+
+  const options = useMemo(
     // remove the `options` key from select type fields
-    return list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey).map(f => omit(f, ['options']));
-  };
-  render() {
-    const { isLoading, isOpen, items, list } = this.props;
-    const { item, selectedFields, validationErrors, validationWarnings } = this.state;
-    const options = this.getOptions();
+    () =>
+      list.fields
+        .filter(({ isPrimaryKey, maybeAccess }) => !isPrimaryKey && !!maybeAccess.update)
+        .map(f => omit(f, ['options'])),
+    []
+  );
 
-    const hasWarnings = countArrays(validationWarnings);
-    const hasErrors = countArrays(validationErrors);
+  const hasWarnings = countArrays(validationWarnings);
+  const hasErrors = countArrays(validationErrors);
 
-    return (
-      <Drawer
-        isOpen={isOpen}
-        onClose={this.onClose}
-        closeOnBlanketClick
-        heading={`Update ${list.formatCount(items)}`}
-        onKeyDown={this.onKeyDown}
-        slideInFrom="left"
-        footer={
-          <Fragment>
-            <LoadingButton
-              appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
-              isDisabled={hasErrors}
-              isLoading={isLoading}
-              onClick={this.onUpdate}
-            >
-              {hasWarnings && !hasErrors ? 'Ignore Warnings and Update' : 'Update'}
-            </LoadingButton>
-            <Button appearance="warning" variant="subtle" onClick={this.onClose}>
-              Cancel
-            </Button>
-          </Fragment>
-        }
-      >
-        <FieldContainer>
-          <FieldLabel field={{ label: 'Fields', config: { isRequired: false } }} />
-          <FieldInput>
-            <Select
-              autoFocus
-              isMulti
-              menuPosition="fixed"
-              onChange={this.handleSelect}
-              options={options}
-              tabSelectsValue={false}
-              value={selectedFields}
-              getOptionValue={this.getOptionValue}
-              filterOption={this.filterOption}
-            />
-          </FieldInput>
-        </FieldContainer>
-        {selectedFields.map((field, i) => {
-          return (
-            <Suspense
-              fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}
-              key={field.path}
-            >
-              <Render>
-                {() => {
-                  let [Field] = field.adminMeta.readViews([field.views.Field]);
-                  let onChange = useCallback(
-                    value => {
-                      this.setState(({ item }) => ({
-                        item: {
-                          ...item,
-                          [field.path]: value,
-                        },
-                        validationErrors: {},
-                        validationWarnings: {},
-                      }));
-                    },
-                    [field]
-                  );
-                  return useMemo(
-                    () => (
+  return (
+    <Drawer
+      isOpen={isOpen}
+      onClose={handleClose}
+      closeOnBlanketClick
+      heading={`Update ${list.formatCount(items)}`}
+      onKeyDown={onKeyDown}
+      slideInFrom="left"
+      footer={
+        <Fragment>
+          <LoadingButton
+            appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
+            isDisabled={hasErrors || selectedFields.length === 0}
+            isLoading={loading}
+            onClick={handleUpdate}
+          >
+            {hasWarnings && !hasErrors ? 'Ignore Warnings and Update' : 'Update'}
+          </LoadingButton>
+          <Button appearance="warning" variant="subtle" onClick={handleClose}>
+            Cancel
+          </Button>
+        </Fragment>
+      }
+    >
+      <FieldContainer>
+        <FieldLabel field={{ label: 'Fields', config: { isRequired: false } }} />
+        <FieldInput>
+          <Select
+            autoFocus
+            isMulti
+            menuPosition="fixed"
+            onChange={handleSelect}
+            options={options}
+            tabSelectsValue={false}
+            value={selectedFields}
+            getOptionValue={getOptionValue}
+          />
+        </FieldInput>
+      </FieldContainer>
+      {selectedFields.map((field, i) => {
+        return (
+          <Suspense
+            fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}
+            key={field.path}
+          >
+            <Render>
+              {() => {
+                const [Field] = field.readViews([field.views.Field]);
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const onChange = useCallback(
+                  value => {
+                    setItem(prev => ({ ...prev, [field.path]: value }));
+                    setValidationErrors({});
+                    setValidationWarnings({});
+                  },
+                  [field]
+                );
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                return useMemo(
+                  () => (
+                    <ErrorBoundary>
                       <Field
                         autoFocus={!i}
                         field={field}
@@ -179,31 +182,25 @@ class UpdateManyModal extends Component {
                         warnings={validationWarnings[field.path] || []}
                         onChange={onChange}
                         renderContext="dialog"
-                        CreateItemModal={CreateItemModal}
                       />
-                    ),
-                    [
-                      i,
-                      field,
-                      item[field.path],
-                      validationErrors[field.path],
-                      validationWarnings[field.path],
-                      onChange,
-                    ]
-                  );
-                }}
-              </Render>
-            </Suspense>
-          );
-        })}
-      </Drawer>
-    );
-  }
-}
+                    </ErrorBoundary>
+                  ),
+                  [
+                    i,
+                    field,
+                    item[field.path],
+                    validationErrors[field.path],
+                    validationWarnings[field.path],
+                    onChange,
+                  ]
+                );
+              }}
+            </Render>
+          </Suspense>
+        );
+      })}
+    </Drawer>
+  );
+};
 
-export default function UpdateManyModalWithMutation(props) {
-  const { list } = props;
-  const [updateItem, { loading }] = useMutation(list.updateManyMutation);
-
-  return <UpdateManyModal updateItem={updateItem} isLoading={loading} {...props} />;
-}
+export default UpdateManyModal;

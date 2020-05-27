@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/button",
   "description": "Button Components as used in @keystonejs Admin UI.",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/button.cjs.js",
@@ -20,7 +20,7 @@
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "react-pseudo-state": "^2.2.2",
-    "react-router-dom": "5.1.2"
+    "react-router-dom": "5.2.0"
   },
   "module": "dist/button.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/button"

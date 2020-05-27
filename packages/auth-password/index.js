@@ -8,6 +8,7 @@ class PasswordAuthStrategy {
   constructor(keystone, listKey, config) {
     this.keystone = keystone;
     this.listKey = listKey;
+    this.gqlNames = {}; // Set by the auth provider
     this.config = {
       identityField: 'email',
       secretField: 'password',
@@ -74,7 +75,9 @@ class PasswordAuthStrategy {
       // TODO: This should call `secretFieldInstance.compare()` to ensure it's
       // always consistent.
       // This may still leak if the workfactor for the password field has changed
-      const hash = await secretFieldInstance.generateHash('password1234');
+      const hash = await secretFieldInstance.generateHash(
+        'simulated-password-to-counter-timing-attack'
+      );
       await secretFieldInstance.compare('', hash);
       return { success: false, message: '[passwordAuth:failure] Authentication failed' };
     }
@@ -107,7 +110,9 @@ class PasswordAuthStrategy {
       };
     }
 
-    const hash = await secretFieldInstance.generateHash('password1234');
+    const hash = await secretFieldInstance.generateHash(
+      'simulated-password-to-counter-timing-attack'
+    );
     await secretFieldInstance.compare(secret, hash);
     return {
       success: false,
@@ -117,9 +122,9 @@ class PasswordAuthStrategy {
   }
 
   getAdminMeta() {
-    const { listKey } = this;
+    const { listKey, gqlNames } = this;
     const { identityField, secretField } = this.config;
-    return { listKey, identityField, secretField };
+    return { listKey, gqlNames, identityField, secretField };
   }
 }
 
