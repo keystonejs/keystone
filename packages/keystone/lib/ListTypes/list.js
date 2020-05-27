@@ -1476,7 +1476,6 @@ module.exports = class List {
       singular: this.adminUILabels.singular,
       plural: this.adminUILabels.plural,
       path: this.adminUILabels.path,
-      adminConfig: this.adminConfig,
 
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
