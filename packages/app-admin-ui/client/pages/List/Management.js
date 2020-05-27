@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 
 import { FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
