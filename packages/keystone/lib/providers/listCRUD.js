@@ -92,6 +92,9 @@ class ListCRUDProvider {
       }`,
       `input ${this.gqlNames.listsMetaInput} {
         key: String
+
+        """Whether this is an auxiliary helper list."""
+        auxiliary: Boolean
       }`,
       `input _ListSchemaFieldsInput {
         type: String
@@ -191,9 +194,14 @@ class ListCRUDProvider {
       ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
 
       // And the Keystone meta queries must always be available
-      [this.gqlNames.listsMeta]: (_, { where: { key } = {} }, context) =>
+      [this.gqlNames.listsMeta]: (_, { where: { key, auxiliary } = {} }, context) =>
         this.lists
-          .filter(list => list.access[schemaName].read && (!key || list.key === key))
+          .filter(
+            list =>
+              list.access[schemaName].read &&
+              (!key || list.key === key) &&
+              (auxiliary === undefined || list.isAuxList === auxiliary)
+          )
           .map(list => list.listMeta(context)),
     };
   }
