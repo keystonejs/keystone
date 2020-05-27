@@ -75,7 +75,9 @@ class PasswordAuthStrategy {
       // TODO: This should call `secretFieldInstance.compare()` to ensure it's
       // always consistent.
       // This may still leak if the workfactor for the password field has changed
-      const hash = await secretFieldInstance.generateHash('password1234');
+      const hash = await secretFieldInstance.generateHash(
+        'simulated-password-to-counter-timing-attack'
+      );
       await secretFieldInstance.compare('', hash);
       return { success: false, message: '[passwordAuth:failure] Authentication failed' };
     }
@@ -108,7 +110,9 @@ class PasswordAuthStrategy {
       };
     }
 
-    const hash = await secretFieldInstance.generateHash('password1234');
+    const hash = await secretFieldInstance.generateHash(
+      'simulated-password-to-counter-timing-attack'
+    );
     await secretFieldInstance.compare(secret, hash);
     return {
       success: false,
