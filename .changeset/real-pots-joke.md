@@ -2,4 +2,18 @@
 '@keystonejs/app-admin-ui': minor
 ---
 
-enable use of `listHeaderActions` hook
+Enabled the use of `listHeaderActions` hook in the Admin UI.
+
+Usage: 
+
+new AdminUIApp({
+  hooks: require.resolve('./admin-ui/'),
+});
+
+The index file in the `admin-ui` directory should export a hooks which will be packaged for use in the Admin UI during the Keystone build:
+
+import { CreateItem } '@keystonejs/admin-ui/components/'
+export default {
+  // re-implement the default create item button + custom text
+  listHeaderActions: () => (<div><CreateItem /><p>Hello world</p></div>), 
+};
