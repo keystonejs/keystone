@@ -5,13 +5,18 @@ import React, { Fragment, useState } from 'react';
 import { IconButton } from '@arch-ui/button';
 import { SettingsIcon } from '@arch-ui/icons/src';
 
-import { useList, useListData } from '../providers/List';
+import { useList } from '../providers/List';
 import { UpdateManyItemsModal } from '../../components';
+import { useListSelect } from '../pages/List/dataHooks';
 
 const UpdateItems = () => {
   const [updateModalIsVisible, setUpdateModal] = useState(false);
-  const { list } = useList();
-  const { query, selectedItems } = useListData();
+  const {
+    list,
+    listData: { items },
+    query,
+  } = useList();
+  const [selectedItems] = useListSelect(items);
 
   const handleUpdate = () => {
     setUpdateModal(false);

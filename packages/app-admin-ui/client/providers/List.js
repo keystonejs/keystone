@@ -85,23 +85,3 @@ const formatFilter = (filters = []) => {
 const formatSortBy = sortBy => {
   return sortBy ? `${sortBy.field.path}_${sortBy.direction}` : undefined;
 };
-
-// ==============================
-// ListData Context
-// ==============================
-
-const ListDataContext = createContext();
-export const useListData = () => useContext(ListDataContext);
-
-export const ListDataProvider = ({ query, items, selectedItems, onSelectChange, children }) => (
-  <ListDataContext.Provider
-    value={{
-      query,
-      items,
-      selectedItems,
-      onSelectChange,
-    }}
-  >
-    {children}
-  </ListDataContext.Provider>
-);

@@ -1,4 +1,5 @@
-export { ListProvider, useList, useListData } from '../client/providers/List';
+export { useListSelect } from '../client/pages/List/dataHooks';
+export { ListProvider, useList } from '../client/providers/List';
 export { default as ListPage, ListLayout } from '../client/pages/List/index';
 export { default as ListManage } from '../client/pages/List/Management';
 export { default as FieldSelect } from '../client/pages/List/FieldSelect';

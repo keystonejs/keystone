@@ -4,12 +4,17 @@ import { TrashcanIcon } from '@arch-ui/icons';
 import { IconButton } from '@arch-ui/button';
 
 import DeleteManyItemsModal from './DeleteManyItemsModal';
-import { useList, useListData } from '../providers/List';
+import { useList } from '../providers/List';
+import { useListSelect } from '../pages/List/dataHooks';
 
 const DeleteItems = () => {
   const [deleteModalIsVisible, setDeleteModal] = useState(false);
-  const { list } = useList();
-  const { query, selectedItems, onSelectChange } = useListData();
+  const {
+    list,
+    listData: { items },
+    query,
+  } = useList();
+  const [selectedItems, onSelectChange] = useListSelect(items);
 
   const handleDelete = () => {
     setDeleteModal(false);
