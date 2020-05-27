@@ -55,32 +55,39 @@ class ListCRUDProvider {
         """Create mutation name."""
         create: String
 
-        """Create mutation input type name."""
-        createInput: String
-
         """Create many mutation name."""
         createMany: String
-
-        """Create many mutation input type name."""
-        createManyInput: String
 
         """Update mutation name."""
         update: String
 
-        """Update mutation name input."""
-        updateInput: String
-
         """Update many mutation name."""
         updateMany: String
-
-        """Update many mutation name input."""
-        updateManyInput: String
 
         """Delete mutation name."""
         delete: String
 
         """Delete many mutation name."""
         deleteMany: String
+      }`,
+      `type _ListInputTypes {
+        """Input type for matching multiple items."""
+        whereInput: String
+
+        """Input type for matching a unique item."""
+        whereUniqueInput: String
+
+        """Create mutation input type name."""
+        createInput: String
+
+        """Create many mutation input type name."""
+        createManyInput: String
+
+        """Update mutation name input."""
+        updateInput: String
+
+        """Update many mutation name input."""
+        updateManyInput: String
       }`,
       `type _ListSchemaFields {
         """ The path of the field in its list. """
@@ -109,6 +116,9 @@ class ListCRUDProvider {
 
         """Top-level GraphQL mutation names"""
         mutations: _ListMutations
+
+        """Top-level GraphQL input types"""
+        inputTypes: _ListInputTypes
 
         """Information about fields defined on this list. """
         fields(where: _ListSchemaFieldsInput): [_ListSchemaFields]
@@ -205,7 +215,7 @@ class ListCRUDProvider {
     const listSchemaResolver = {
       // Aux lists aren't filtered out here since you can query them via _ksListsMeta.
       // They need to be included so the `key` check can match them and fetch their fields.
-      fields: ({ key }, { where: { type } = {} }) => {
+      fields: ({ key,...rest }, { where: { type } = {} }) => {
         return this.lists
           .find(list => list.key === key)
           .getAllFieldsWithAccess({ schemaName, access: 'read' })
