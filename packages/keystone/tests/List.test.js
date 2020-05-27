@@ -1118,8 +1118,8 @@ test(`listMeta`, () => {
       deleteMany: 'deleteTests',
     },
     inputTypes: {
-      whereInput: 'CreateWhereInput',
-      whereUniqueInput: 'CreateWhereUniqueInput',
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
       createInput: 'TestCreateInput',
       createManyInput: 'TestsCreateInput',
       updateInput: 'TestUpdateInput',
@@ -1148,8 +1148,8 @@ test(`listMeta`, () => {
       deleteMany: 'deleteTests',
     },
     inputTypes: {
-      whereInput: 'CreateWhereInput',
-      whereUniqueInput: 'CreateWhereUniqueInput',
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
       createInput: 'TestCreateInput',
       createManyInput: 'TestsCreateInput',
       updateInput: 'TestUpdateInput',
