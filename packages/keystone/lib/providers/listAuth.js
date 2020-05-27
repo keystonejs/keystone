@@ -70,6 +70,9 @@ class ListAuthProvider {
       `${unauthenticateMutationName}: ${unauthenticateOutputName}`,
     ];
   }
+  getSubscriptions({}) {
+    return [];
+  }
 
   getTypeResolvers({}) {
     return {};
@@ -88,6 +91,9 @@ class ListAuthProvider {
       [authenticateMutationName]: (_, args, context) => this._authenticateMutation(args, context),
       [unauthenticateMutationName]: (_, __, context) => this._unauthenticateMutation(context),
     };
+  }
+  getSubscriptionResolvers({}) {
+    return {};
   }
 
   async _authenticatedQuery(context, info) {
