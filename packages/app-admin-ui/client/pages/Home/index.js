@@ -10,7 +10,7 @@ import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
-import { useMasterList } from '../../providers/MasterList';
+import { useListMeta } from '../../providers/ListMeta';
 
 import useResizeObserver from 'use-resize-observer';
 import throttle from 'lodash.throttle';
@@ -27,7 +27,7 @@ const getCountQuery = lists => {
 };
 
 const Homepage = () => {
-  const { getListByKey, listKeys } = useMasterList();
+  const { getListByKey, listKeys } = useListMeta();
   const { adminPath } = useAdminMeta();
 
   const lists = listKeys.map(key => getListByKey(key));

@@ -16,6 +16,7 @@ import PageLoading from './components/PageLoading';
 import ToastContainer from './components/ToastContainer';
 
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
+import { ListMetaProvider, useListMeta } from './providers/ListMeta';
 import { ListProvider } from './providers/List';
 import { HooksProvider } from './providers/Hooks';
 
@@ -26,10 +27,9 @@ import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
 import NoListsPage from './pages/NoLists';
 import SignoutPage from './pages/Signout';
-import { MasterListProvider, useMasterList } from './providers/MasterList';
 
 const HomePageWrapper = () => {
-  const { listKeys } = useMasterList();
+  const { listKeys } = useListMeta();
 
   if (listKeys.length === 0) {
     return <NoListsPage />;
@@ -39,7 +39,7 @@ const HomePageWrapper = () => {
 };
 
 const ListPageWrapper = () => {
-  const { getListByPath } = useMasterList();
+  const { getListByPath } = useListMeta();
   const { adminPath } = useAdminMeta();
   const { listKey } = useParams();
 
@@ -97,7 +97,7 @@ export const KeystoneAdminUI = () => {
   return (
     <ApolloProvider client={apolloClient}>
       <Global styles={globalStyles} />
-      <MasterListProvider>
+      <ListMetaProvider>
         <HooksProvider hooks={hooks}>
           <KeyboardShortcuts>
             <ToastProvider components={{ ToastContainer }}>
@@ -112,7 +112,7 @@ export const KeystoneAdminUI = () => {
             </ToastProvider>
           </KeyboardShortcuts>
         </HooksProvider>
-      </MasterListProvider>
+      </ListMetaProvider>
     </ApolloProvider>
   );
 };
