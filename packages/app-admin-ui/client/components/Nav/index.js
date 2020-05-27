@@ -421,7 +421,7 @@ const ActionItems = ({ mouseIsOverNav }) => {
       {entries.map(({ label, to, icon: ActionIcon, target }) => (
         <PrimaryNavItem
           key={to}
-          href={to}
+          {...(target === '_blank' ? { href: to } : { to })}
           target={target}
           mouseIsOverNav={mouseIsOverNav}
           css={{ display: 'flex', alignItems: 'center' }}
