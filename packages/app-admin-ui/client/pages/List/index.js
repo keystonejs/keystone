@@ -5,8 +5,6 @@ import { Fragment, useEffect, Suspense } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useList } from '../../providers/List';
 
-import { IconButton } from '@arch-ui/button';
-import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
@@ -32,11 +30,13 @@ import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
+import { useUIHooks } from '../../providers/Hooks';
+import CreateItem from './CreateItem';
 
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
-  const { list, openCreateItemModal } = useList();
+  const { list } = useList();
   const {
     urlState: { currentPage, fields, pageSize, search },
   } = useListUrlState(list);
@@ -44,6 +44,8 @@ export function ListLayout(props) {
   const { filters } = useListFilter();
   const [sortBy, handleSortChange] = useListSort();
   const [selectedItems, onSelectChange] = useListSelect(items);
+
+  const { listHeaderActions } = useUIHooks();
 
   // Misc.
   // ------------------------------
@@ -57,7 +59,6 @@ export function ListLayout(props) {
   // Success
   // ------------------------------
 
-  const cypressCreateId = 'list-page-create-button';
   const cypressFiltersId = 'ks-list-active-filters';
 
   const Render = ({ children }) => children();
@@ -67,16 +68,7 @@ export function ListLayout(props) {
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
             <PageTitle>{list.plural}</PageTitle>
-            {list.access.create ? (
-              <IconButton
-                appearance="primary"
-                icon={PlusIcon}
-                onClick={openCreateItemModal}
-                id={cypressCreateId}
-              >
-                Create
-              </IconButton>
-            ) : null}
+            {listHeaderActions ? listHeaderActions() : <CreateItem />}
           </FlexGroup>
           <ListDescription text={list.adminDoc} />
           <div
