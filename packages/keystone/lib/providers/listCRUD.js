@@ -124,6 +124,9 @@ class ListCRUDProvider {
         """The Keystone List name"""
         name: String @deprecated(reason: "Use \`key\` instead")
 
+        """The list's user-facing description"""
+        description: String
+
         """The list's display name in the Admin UI"""
         label: String
 

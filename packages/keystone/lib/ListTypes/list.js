@@ -1471,6 +1471,7 @@ module.exports = class List {
     return {
       key: this.key,
       name: this.key,
+      description: this.adminDoc,
       label: this.adminUILabels.label,
       singular: this.adminUILabels.singular,
       plural: this.adminUILabels.plural,
