@@ -7,16 +7,10 @@ import { SettingsIcon } from '@arch-ui/icons/src';
 
 import { useList } from '../providers/List';
 import { UpdateManyItemsModal } from '../../components';
-import { useListSelect } from '../pages/List/dataHooks';
 
 const UpdateItems = () => {
   const [updateModalIsVisible, setUpdateModal] = useState(false);
-  const {
-    list,
-    listData: { items },
-    query,
-  } = useList();
-  const [selectedItems] = useListSelect(items);
+  const { list, query, selectedItems } = useList();
 
   const handleUpdate = () => {
     setUpdateModal(false);

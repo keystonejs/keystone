@@ -1,4 +1,3 @@
-export { useListSelect } from '../client/pages/List/dataHooks';
 export { ListProvider, useList } from '../client/providers/List';
 export { default as ListPage, ListLayout } from '../client/pages/List/index';
 export { default as ListManage } from '../client/pages/List/Management';
@@ -21,3 +20,4 @@ export { default as ItemId } from '../client/pages/Item/ItemId';
 export { default as CreateItem } from '../client/pages/List/CreateItem';
 export { default as UpdateItems } from '../client/components/UpdateItems';
 export { default as DeleteItems } from '../client/components/DeleteItems';
+export { useKeyDown, useListSelect } from '../client/util';

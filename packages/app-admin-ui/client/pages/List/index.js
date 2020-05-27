@@ -27,7 +27,7 @@ import SortPopout from './SortSelect';
 import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
-import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+import { useListFilter, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
 import { useList } from '../../providers/List';
 import { useUIHooks } from '../../providers/Hooks';
@@ -36,14 +36,13 @@ import CreateItem from './CreateItem';
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
-  const { list } = useList();
+  const { list, selectedItems, onSelectChange } = useList();
   const {
     urlState: { currentPage, fields, pageSize, search },
   } = useListUrlState(list);
 
   const { filters } = useListFilter();
   const [sortBy, handleSortChange] = useListSort();
-  const [selectedItems, onSelectChange] = useListSelect(items);
 
   const { listHeaderActions } = useUIHooks();
 

@@ -5,16 +5,10 @@ import { IconButton } from '@arch-ui/button';
 
 import DeleteManyItemsModal from './DeleteManyItemsModal';
 import { useList } from '../providers/List';
-import { useListSelect } from '../pages/List/dataHooks';
 
 const DeleteItems = () => {
   const [deleteModalIsVisible, setDeleteModal] = useState(false);
-  const {
-    list,
-    listData: { items },
-    query,
-  } = useList();
-  const [selectedItems, onSelectChange] = useListSelect(items);
+  const { list, query, selectedItems, onSelectChange } = useList();
 
   const handleDelete = () => {
     setDeleteModal(false);
