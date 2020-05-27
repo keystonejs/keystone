@@ -143,6 +143,9 @@ class ListCRUDProvider {
            request"""
         access: _ListAccess
 
+        """Admin UI-specific configuration options"""
+        adminConfig: JSON
+
         """Information on the generated GraphQL schema"""
         schema: _ListSchema
       }`,
