@@ -110,6 +110,9 @@ class ListCRUDProvider {
         """The typename as used in GraphQL queries"""
         type: String
 
+        """The sort GraphQL enum type name"""
+        sortType: String
+
         """Top level GraphQL query names which either return this type, or
            provide aggregate information about this type"""
         queries: _ListQueries

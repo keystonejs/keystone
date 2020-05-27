@@ -30,8 +30,8 @@ const Keystone = () => {
   const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
-    <HooksProvider hooks={hooks}>
-      <ApolloProvider client={apolloClient}>
+    <ApolloProvider client={apolloClient}>
+      <HooksProvider hooks={hooks}>
         <ToastProvider>
           <ConnectivityListener />
           <Global styles={globalStyles} />
@@ -47,8 +47,8 @@ const Keystone = () => {
             <InvalidRoutePage />
           )}
         </ToastProvider>
-      </ApolloProvider>
-    </HooksProvider>
+      </HooksProvider>
+    </ApolloProvider>
   );
 };
 

@@ -27,6 +27,7 @@ import { useScrollQuery } from '../ScrollQuery';
 
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { useMasterList } from '../../providers/MasterList';
 
 const TRANSITION_DURATION = '220ms';
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
@@ -434,10 +435,9 @@ const ActionItems = ({ mouseIsOverNav }) => {
 };
 
 const PrimaryNavContent = ({ mouseIsOverNav }) => {
+  const { getListByKey, listKeys } = useMasterList();
   const {
     adminPath,
-    getListByKey,
-    listKeys,
     name,
     pages,
     authStrategy: { listKey: authListKey } = {},

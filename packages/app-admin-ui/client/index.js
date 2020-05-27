@@ -26,9 +26,10 @@ import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
 import NoListsPage from './pages/NoLists';
 import SignoutPage from './pages/Signout';
+import { MasterListProvider, useMasterList } from './providers/MasterList';
 
 const HomePageWrapper = () => {
-  const { listKeys } = useAdminMeta();
+  const { listKeys } = useMasterList();
 
   if (listKeys.length === 0) {
     return <NoListsPage />;
@@ -38,7 +39,8 @@ const HomePageWrapper = () => {
 };
 
 const ListPageWrapper = () => {
-  const { getListByPath, adminPath } = useAdminMeta();
+  const { getListByPath } = useMasterList();
+  const { adminPath } = useAdminMeta();
   const { listKey } = useParams();
 
   // TODO: Permission query to show/hide a list from the menu
@@ -93,23 +95,25 @@ export const KeystoneAdminUI = () => {
   const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
-    <HooksProvider hooks={hooks}>
-      <ApolloProvider client={apolloClient}>
-        <KeyboardShortcuts>
-          <ToastProvider components={{ ToastContainer }}>
-            <ConnectivityListener />
-            <Global styles={globalStyles} />
-            <BrowserRouter>
-              <Switch>
-                <Route exact path={signinPath} children={<Redirect to={adminPath} />} />
-                <Route exact path={signoutPath} children={<SignoutPage />} />
-                <Route children={<MainPageWrapper />} />
-              </Switch>
-            </BrowserRouter>
-          </ToastProvider>
-        </KeyboardShortcuts>
-      </ApolloProvider>
-    </HooksProvider>
+    <ApolloProvider client={apolloClient}>
+      <Global styles={globalStyles} />
+      <MasterListProvider>
+        <HooksProvider hooks={hooks}>
+          <KeyboardShortcuts>
+            <ToastProvider components={{ ToastContainer }}>
+              <ConnectivityListener />
+              <BrowserRouter>
+                <Switch>
+                  <Route exact path={signinPath} children={<Redirect to={adminPath} />} />
+                  <Route exact path={signoutPath} children={<SignoutPage />} />
+                  <Route children={<MainPageWrapper />} />
+                </Switch>
+              </BrowserRouter>
+            </ToastProvider>
+          </KeyboardShortcuts>
+        </HooksProvider>
+      </MasterListProvider>
+    </ApolloProvider>
   );
 };
 

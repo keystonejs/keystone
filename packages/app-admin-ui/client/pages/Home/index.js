@@ -10,6 +10,7 @@ import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
+import { useMasterList } from '../../providers/MasterList';
 
 import useResizeObserver from 'use-resize-observer';
 import throttle from 'lodash.throttle';
@@ -26,7 +27,8 @@ const getCountQuery = lists => {
 };
 
 const Homepage = () => {
-  const { getListByKey, listKeys, adminPath } = useAdminMeta();
+  const { getListByKey, listKeys } = useMasterList();
+  const { adminPath } = useAdminMeta();
 
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
@@ -51,8 +53,6 @@ const Homepage = () => {
     },
   });
 
-  let allowedLists = lists;
-
   if (error) {
     if (!error.graphQLErrors || !error.graphQLErrors.length) {
       return (
@@ -75,10 +75,6 @@ const Homepage = () => {
         </PageError>
       );
     }
-
-    allowedLists = allowedLists.filter(
-      list => deniedQueries.indexOf(list.gqlNames.listQueryMetaName) === -1
-    );
   }
 
   // NOTE: `loading` is intentionally omitted here
@@ -93,7 +89,7 @@ const Homepage = () => {
           <PageTitle>Dashboard</PageTitle>
         </HeaderInset>
         <Grid ref={measureElement} gap={16}>
-          {allowedLists.map(list => {
+          {lists.map(list => {
             const { key, path } = list;
             const meta = data && data[list.gqlNames.listQueryMetaName];
             return (
