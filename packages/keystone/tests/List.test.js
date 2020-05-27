@@ -422,40 +422,6 @@ describe('getAdminMeta()', () => {
     const schemaName = 'public';
     const adminMeta = list.getAdminMeta({ schemaName });
 
-    expect(adminMeta.key).toEqual('Test');
-    expect(adminMeta.access).toEqual({
-      create: true,
-      delete: true,
-      read: true,
-      update: true,
-      auth: true,
-    });
-    expect(adminMeta.label).toEqual('Tests');
-    expect(adminMeta.singular).toEqual('Test');
-    expect(adminMeta.plural).toEqual('Tests');
-    expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.gqlNames).toEqual({
-      outputTypeName: 'Test',
-      itemQueryName: 'Test',
-      listQueryName: 'allTests',
-      listQueryMetaName: '_allTestsMeta',
-      listSortName: 'SortTestsBy',
-      listMetaName: '_TestsMeta',
-      deleteMutationName: 'deleteTest',
-      deleteManyMutationName: 'deleteTests',
-      updateMutationName: 'updateTest',
-      createMutationName: 'createTest',
-      updateManyMutationName: 'updateTests',
-      createManyMutationName: 'createTests',
-      whereInputName: 'TestWhereInput',
-      whereUniqueInputName: 'TestWhereUniqueInput',
-      updateInputName: 'TestUpdateInput',
-      createInputName: 'TestCreateInput',
-      updateManyInputName: 'TestsUpdateInput',
-      createManyInputName: 'TestsCreateInput',
-      relateToManyInputName: 'TestRelateToManyInput',
-      relateToOneInputName: 'TestRelateToOneInput',
-    });
     expect(adminMeta.adminConfig).toEqual({
       defaultColumns: 'name,email',
       defaultPageSize: 50,
