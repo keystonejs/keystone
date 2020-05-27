@@ -215,7 +215,7 @@ class ListCRUDProvider {
     const listSchemaResolver = {
       // Aux lists aren't filtered out here since you can query them via _ksListsMeta.
       // They need to be included so the `key` check can match them and fetch their fields.
-      fields: ({ key,...rest }, { where: { type } = {} }) => {
+      fields: ({ key }, { where: { type } = {} }) => {
         return this.lists
           .find(list => list.key === key)
           .getAllFieldsWithAccess({ schemaName, access: 'read' })
