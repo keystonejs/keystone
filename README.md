@@ -20,7 +20,7 @@
 - [What's new](#whats-new)
 - [Getting Started](#getting-started)
 - [Documentation](#documentation)
-- [Changelog](#changelog)
+- [Version Control](#version-control)
 - [Contributing](#contributing)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
