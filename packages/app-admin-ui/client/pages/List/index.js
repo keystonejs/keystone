@@ -3,7 +3,6 @@
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, Suspense } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useList } from '../../providers/List';
 
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
@@ -28,33 +27,24 @@ import SortPopout from './SortSelect';
 import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
-import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+import { useListFilter, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
+import { useList } from '../../providers/List';
 import { useUIHooks } from '../../providers/Hooks';
 import CreateItem from './CreateItem';
 
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
-  const { list } = useList();
+  const { list, selectedItems, setSelectedItems } = useList();
   const {
     urlState: { currentPage, fields, pageSize, search },
   } = useListUrlState(list);
 
   const { filters } = useListFilter();
   const [sortBy, handleSortChange] = useListSort();
-  const [selectedItems, onSelectChange] = useListSelect(items);
 
   const { listHeaderActions } = useUIHooks();
-
-  // Misc.
-  // ------------------------------
-
-  const onDeleteSelectedItems = () => {
-    onSelectChange([]);
-  };
-
-  const onUpdateSelectedItems = () => {};
 
   // Success
   // ------------------------------
@@ -93,12 +83,8 @@ export function ListLayout(props) {
           <ManageToolbar isVisible css={{ marginLeft: 2 }}>
             {selectedItems.length ? (
               <Management
-                list={list}
-                onDeleteMany={onDeleteSelectedItems}
-                onUpdateMany={onUpdateSelectedItems}
                 pageSize={pageSize}
                 selectedItems={selectedItems}
-                onSelectChange={onSelectChange}
                 totalItems={itemCount}
               />
             ) : items && items.length ? (
@@ -198,7 +184,7 @@ export function ListLayout(props) {
           items={items}
           queryErrors={queryErrors}
           list={list}
-          onSelectChange={onSelectChange}
+          onSelectChange={setSelectedItems}
           selectedItems={selectedItems}
           sortBy={sortBy}
           currentPage={currentPage}
