@@ -1,6 +1,6 @@
 <!--[meta]
 section: list-plugins
-title: singletoon
+title: singleton
 [meta]-->
 
 # singleton Plugin
