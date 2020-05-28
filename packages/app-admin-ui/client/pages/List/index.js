@@ -36,7 +36,7 @@ import CreateItem from './CreateItem';
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
-  const { list, selectedItems, onSelectChange } = useList();
+  const { list, selectedItems, setSelectedItems } = useList();
   const {
     urlState: { currentPage, fields, pageSize, search },
   } = useListUrlState(list);
@@ -184,7 +184,7 @@ export function ListLayout(props) {
           items={items}
           queryErrors={queryErrors}
           list={list}
-          onSelectChange={onSelectChange}
+          onSelectChange={setSelectedItems}
           selectedItems={selectedItems}
           sortBy={sortBy}
           currentPage={currentPage}

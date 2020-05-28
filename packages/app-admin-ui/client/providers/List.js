@@ -54,7 +54,7 @@ export const ListProvider = ({ list, children }) => {
     error,
     data: { [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
   } = query;
-  const [selectedItems, onSelectChange] = useListSelect(items);
+  const [selectedItems, setSelectedItems] = useListSelect(items);
   return (
     <ListContext.Provider
       value={{
@@ -66,7 +66,7 @@ export const ListProvider = ({ list, children }) => {
         openCreateItemModal,
         closeCreateItemModal,
         selectedItems,
-        onSelectChange,
+        setSelectedItems,
       }}
     >
       {children}
