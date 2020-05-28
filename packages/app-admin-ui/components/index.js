@@ -18,3 +18,5 @@ export { useAdminMeta } from '../client/providers/AdminMeta';
 export { default as AddNewItem } from '../client/pages/Item/AddNewItem';
 export { default as ItemId } from '../client/pages/Item/ItemId';
 export { default as CreateItem } from '../client/pages/List/CreateItem';
+export { default as UpdateItems } from '../client/components/UpdateItems';
+export { default as DeleteItems } from '../client/components/DeleteItems';

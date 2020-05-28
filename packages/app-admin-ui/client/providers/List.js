@@ -2,7 +2,7 @@ import React, { useContext, createContext, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { useListUrlState } from '../pages/List/dataHooks';
-import { deconstructErrorsToDataShape } from '../util';
+import { deconstructErrorsToDataShape, useListSelect } from '../util';
 
 const ListContext = createContext();
 
@@ -54,7 +54,7 @@ export const ListProvider = ({ list, children }) => {
     error,
     data: { [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
   } = query;
-
+  const [selectedItems, setSelectedItems] = useListSelect(items);
   return (
     <ListContext.Provider
       value={{
@@ -65,6 +65,8 @@ export const ListProvider = ({ list, children }) => {
         isCreateItemModalOpen: isOpen,
         openCreateItemModal,
         closeCreateItemModal,
+        selectedItems,
+        setSelectedItems,
       }}
     >
       {children}
