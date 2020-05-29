@@ -1,7 +1,7 @@
 const { GraphQLJSON } = require('graphql-type-json');
 const { flatten, objMerge, unique } = require('@keystonejs/utils');
 
-const { _getListCRUDTypes } = require('./listCRUDTypes');
+const { getListCRUDTypes } = require('./listCRUDTypes');
 
 class ListCRUDProvider {
   constructor({ metaPrefix = 'ks' } = {}) {
@@ -15,7 +15,7 @@ class ListCRUDProvider {
   getTypes({ schemaName }) {
     return unique([
       ...flatten(this.lists.map(list => list.getGqlTypes({ schemaName }))),
-      ..._getListCRUDTypes(this.gqlNames),
+      ...getListCRUDTypes(this.gqlNames),
     ]);
   }
 

@@ -2,7 +2,7 @@
  * Helper function to get the static GraphQL Type definitions for the CRUD provider.
  * @param {Object} gqlNames CRUD provider GraphQL type names
  */
-const _getListCRUDTypes = ({ listsMetaInput }) => [
+const getListCRUDTypes = ({ listsMetaInput }) => [
   `
     """
     NOTE: Can be JSON, or a Boolean/Int/String
@@ -199,4 +199,4 @@ const _getListCRUDTypes = ({ listsMetaInput }) => [
   `,
 ];
 
-module.exports = { _getListCRUDTypes };
+module.exports = { getListCRUDTypes };
