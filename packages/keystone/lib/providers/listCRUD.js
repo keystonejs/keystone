@@ -15,7 +15,7 @@ class ListCRUDProvider {
   getTypes({ schemaName }) {
     return unique([
       ...flatten(this.lists.map(list => list.getGqlTypes({ schemaName }))),
-      ..._getListCRUDTypes(this.gqlNames)
+      ..._getListCRUDTypes(this.gqlNames),
     ]);
   }
 
