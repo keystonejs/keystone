@@ -10,7 +10,7 @@ export const useList = () => {
   return useContext(ListContext);
 };
 
-export const ListProvider = ({ list, children }) => {
+export const ListProvider = ({ children, list, skipQuery = false }) => {
   // ==============================
   // Modal handlers
   // ==============================
@@ -37,6 +37,7 @@ export const ListProvider = ({ list, children }) => {
   const query = useQuery(list.getListQuery(fields), {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
+    skip: skipQuery,
     variables: {
       where: formatFilter(filters),
       search,
