@@ -10,7 +10,7 @@ export const useList = () => {
   return useContext(ListContext);
 };
 
-export const ListProvider = ({ list, skipQuery = false, children }) => {
+export const ListProvider = ({ children, list, skipQuery = false }) => {
   // ==============================
   // Modal handlers
   // ==============================
