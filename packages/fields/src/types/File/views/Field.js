@@ -1,16 +1,19 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { Component, Suspense } from 'react';
+import { useImage } from 'react-image';
 import PropTypes from 'prop-types';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { AlertIcon } from '@arch-ui/icons';
 import { HiddenInput } from '@arch-ui/input';
+import { LoadingIndicator } from '@arch-ui/loading';
 import { Lozenge } from '@arch-ui/lozenge';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import { FileMediaIcon } from '@arch-ui/icons/src';
 
 function uploadButtonLabelFn({ status }) {
   return status === 'empty' ? 'Upload File' : 'Change File';
@@ -233,7 +236,7 @@ export default class FileField extends Component {
         <FieldInput>
           {file ? (
             <Wrapper>
-              {imagePath ? <Image src={imagePath} alt={field.path} /> : null}
+              {imagePath && <ImageContainer src={imagePath} alt={field.path} />}
               <Content>
                 <FlexGroup style={{ marginBottom: gridSize }}>
                   {this.renderUploadButton()}
@@ -279,30 +282,6 @@ export default class FileField extends Component {
 
 const Wrapper = props => <div css={{ alignItems: 'flex-start', display: 'flex' }} {...props} />;
 const Content = props => <div css={{ flex: 1, minWidth: 0 }} {...props} />;
-const Image = props => (
-  <div
-    css={{
-      backgroundColor: 'white',
-      borderRadius,
-      border: `1px solid ${colors.N20}`,
-      flexShrink: 0,
-      lineHeight: 0,
-      marginRight: gridSize,
-      padding: 4,
-      position: 'relative',
-      textAlign: 'center',
-      width: 130, // 120px image + chrome
-    }}
-  >
-    <img
-      css={{
-        height: 'auto',
-        maxWidth: '100%',
-      }}
-      {...props}
-    />
-  </div>
-);
 const MetaInfo = props => <Lozenge crop="right" {...props} />;
 const ErrorInfo = ({ children, ...props }) => (
   <Lozenge
@@ -327,3 +306,58 @@ const ChangeInfo = ({ status = 'default', ...props }) => {
   const appearance = appearanceMap[status];
   return <Lozenge appearance={appearance} {...props} />;
 };
+
+const Image = ({ src: imgSrc, alt }) => {
+  const { src } = useImage({ srcList: imgSrc });
+  return <img css={{ height: 'auto', maxWidth: '100%' }} src={src} alt={alt} />;
+};
+
+const ImageContainer = props => {
+  return (
+    <div
+      css={{
+        backgroundColor: 'white',
+        borderRadius,
+        border: `1px solid ${colors.N20}`,
+        flexShrink: 0,
+        marginRight: gridSize,
+        padding: '4px',
+        position: 'relative',
+        textAlign: 'center',
+        width: 130, // 120px image + chrome
+        lineHeight: 0,
+      }}
+    >
+      <ImageErrorBoundary>
+        <Suspense fallback={<LoadingIndicator />}>
+          <Image {...props} />
+        </Suspense>
+      </ImageErrorBoundary>
+    </div>
+  );
+};
+
+class ImageErrorBoundary extends Component {
+  state = {
+    hasError: false,
+  };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div css={{ padding: '4px 0', color: colors.N40, lineHeight: 'initial' }}>
+          <div>
+            <FileMediaIcon />
+          </div>
+          <span css={{ fontSize: '0.9em' }}>Could not load image</span>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
