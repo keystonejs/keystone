@@ -540,7 +540,7 @@ module.exports = class Keystone {
       subscriptions.length > 0 && `type Subscription { ${subscriptions.join('\n')} }`,
     ]
       .filter(s => s)
-      .map(s => print(gql(s)));
+      .map(s => gql(s));
   }
 
   getResolvers({ schemaName }) {
@@ -568,13 +568,11 @@ module.exports = class Keystone {
   dumpSchema(file, schemaName) {
     // The 'Upload' scalar is normally automagically added by Apollo Server
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
-    // Since we don't execute apollo server over this schema, we have to
-    // reinsert it.
-    const schema = `
-      scalar Upload
-      ${this.getTypeDefs({ schemaName }).join('\n')}
-    `;
-    fs.writeFileSync(file, schema);
+    // Since we don't execute apollo server over this schema, we have to reinsert it.
+    fs.writeFileSync(
+      file,
+      ['scalar Upload', ...this.getTypeDefs({ schemaName }).map(t => print(t))].join('\n')
+    );
   }
 
   createItem(listKey, itemData) {
