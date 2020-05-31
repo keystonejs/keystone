@@ -55,9 +55,9 @@ const SignedOutPage = () => {
   `;
 
   const [signOut, { loading, client, called }] = useMutation(UNAUTH_MUTATION, {
-    onCompleted: () => {
+    onCompleted: async () => {
       // Ensure there's no old authenticated data hanging around
-      client.resetStore();
+      await client.clearStore();
     },
   });
 

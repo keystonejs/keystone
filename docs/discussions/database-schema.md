@@ -67,7 +67,7 @@ This means that we `Post` needs to store multiple reference to `Users`, and also
 To store this information we use a join table with two columns.
 One column holds a reference to `Posts` and the other holds a reference to `Users`.
 In PostgreSQL this is implemented as a table where the contents of each column is a [foreign key](https://www.postgresql.org/docs/12/ddl-constraints.html#DDL-CONSTRAINTS-FK) referencing the respective table.
-In MongoDB this is implemented as a collection the the contents of each field is an `ObjectID` referencing the respective column.
+In MongoDB this is implemented as a collection the contents of each field is an `ObjectID` referencing the respective column.
 
 The two-sided cases is handled using the same pattern, however the generated table/collection and column/fields names will be different.
 
