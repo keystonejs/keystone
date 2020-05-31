@@ -17,9 +17,9 @@ The index file in the `admin-ui` directory should export a hooks which will be p
 
 ```js
 // ./admin-ui/index.js
-import { DeleteItems } '@keystonejs/admin-ui/components/'
+import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
 export default {
-  // re-implement the default create item button + custom text
-  listManageActions: () => (<div><DeleteItems /><p>Hello world</p></div>), 
+  // re-implement the default delete many and update many items buttons + custom text
+  listManageActions: () => (<div><UpdateItems /><DeleteItems /><p>Hello world</p></div>),
 };
 ```
