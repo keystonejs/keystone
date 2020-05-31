@@ -228,7 +228,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
       ],
     });
     const schemaName = 'public';
-    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    const schema = keystone.dumpSchema({ schemaName });
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._customProvider._extendedQueries).toHaveLength(1);
   });
@@ -256,7 +256,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
       ],
     });
     const schemaName = 'public';
-    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    const schema = keystone.dumpSchema({ schemaName });
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._customProvider._extendedMutations).toHaveLength(1);
   });
