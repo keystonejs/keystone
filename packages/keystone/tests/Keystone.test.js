@@ -3,6 +3,8 @@ const Keystone = require('../lib/Keystone');
 const { List } = require('../lib/ListTypes');
 const { Text, Relationship } = require('@keystonejs/fields');
 
+const { print } = require('graphql/language/printer');
+
 class MockFieldAdapter {}
 
 class MockFieldImplementation {
@@ -228,7 +230,10 @@ describe('Keystone.extendGraphQLSchema()', () => {
       ],
     });
     const schemaName = 'public';
-    const schema = keystone.dumpSchema({ schemaName });
+    const schema = keystone
+      .getTypeDefs({ schemaName })
+      .map(t => print(t))
+      .join('\n');
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._customProvider._extendedQueries).toHaveLength(1);
   });
@@ -256,7 +261,10 @@ describe('Keystone.extendGraphQLSchema()', () => {
       ],
     });
     const schemaName = 'public';
-    const schema = keystone.dumpSchema({ schemaName });
+    const schema = keystone
+      .getTypeDefs({ schemaName })
+      .map(t => print(t))
+      .join('\n');
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._customProvider._extendedMutations).toHaveLength(1);
   });
