@@ -309,7 +309,7 @@ const ChangeInfo = ({ status = 'default', ...props }) => {
 
 const Image = ({ src: imgSrc, alt }) => {
   const { src } = useImage({ srcList: imgSrc });
-  return <img css={{ height: 'auto', maxWidth: '100%' }} src={src} alt={alt} />;
+  return <img css={{ display: 'block', height: 'auto', maxWidth: '100%' }} src={src} alt={alt} />;
 };
 
 const ImageContainer = props => {
@@ -325,7 +325,6 @@ const ImageContainer = props => {
         position: 'relative',
         textAlign: 'center',
         width: 130, // 120px image + chrome
-        lineHeight: 0,
       }}
     >
       <ImageErrorBoundary>
@@ -349,7 +348,7 @@ class ImageErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div css={{ padding: '4px 0', color: colors.N40, lineHeight: 'initial' }}>
+        <div css={{ padding: '4px 0', color: colors.N40 }}>
           <div>
             <FileMediaIcon />
           </div>
