@@ -86,8 +86,7 @@ Header components on the Item Details page can be replaced using this hook. Ths 
 
 > This must return a React component.
 
-```javascript
-// ./admin-ui/index.js
+```javascript title=/admin-ui/index.js
 import { ItemId, AddNewItem } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default AddNewItem and ItemId button + custom text
@@ -101,8 +100,7 @@ Header components on the List page can be replaced using this hook. This replace
 
 > This must return a React component.
 
-```javascript
-// ./admin-ui/index.js
+```javascript title=/admin-ui/index.js
 import { CreateItem } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default create item button + custom text
@@ -116,8 +114,7 @@ Custom Actions component for multiple items in the list can be replaced with thi
 
 > This must return a React component.
 
-```javascript
-// ./admin-ui/index.js
+```javascript title=/admin-ui/index.js
 import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default delete many and update many items buttons + custom text
