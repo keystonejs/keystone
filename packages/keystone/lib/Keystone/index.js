@@ -1,4 +1,3 @@
-const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
@@ -565,14 +564,11 @@ module.exports = class Keystone {
     );
   }
 
-  dumpSchema(file, schemaName) {
+  dumpSchema(schemaName = 'public') {
     // The 'Upload' scalar is normally automagically added by Apollo Server
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
     // Since we don't execute apollo server over this schema, we have to reinsert it.
-    fs.writeFileSync(
-      file,
-      ['scalar Upload', ...this.getTypeDefs({ schemaName }).map(t => print(t))].join('\n')
-    );
+    return ['scalar Upload', ...this.getTypeDefs({ schemaName }).map(t => print(t))].join('\n');
   }
 
   createItem(listKey, itemData) {
