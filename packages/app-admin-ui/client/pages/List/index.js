@@ -44,8 +44,11 @@ export function ListLayout(props) {
   const { filters } = useListFilter();
   const [sortBy, handleSortChange] = useListSort();
 
-  const { listHeaderActions } = useUIHooks();
-
+  const {
+    listHeaderActions,
+    [`listHeader${list.key}Actions`]: listHeaderListActions,
+  } = useUIHooks();
+  const listHeaderHook = listHeaderListActions || listHeaderActions;
   // Success
   // ------------------------------
 
@@ -58,7 +61,7 @@ export function ListLayout(props) {
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
             <PageTitle>{list.plural}</PageTitle>
-            {listHeaderActions ? listHeaderActions() : <CreateItem />}
+            {listHeaderHook ? listHeaderHook() : <CreateItem />}
           </FlexGroup>
           <ListDescription text={list.adminDoc} />
           <div

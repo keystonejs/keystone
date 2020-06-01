@@ -173,8 +173,11 @@ const ListRow = ({
   linkField = '_label_',
   isSelected,
   onSelectChange,
-  hooks: { listItemActions },
+  hooks,
 }) => {
+  const { listItemActions, [`listItem${list.key}Actions`]: listItemListActions } = hooks;
+  const listItemHook = listItemListActions || listItemActions;
+
   const onCheckboxChange = () => {
     onSelectChange(item.id);
   };
@@ -242,9 +245,7 @@ const ListRow = ({
         );
       })}
       <BodyCell css={{ padding: 0 }}>
-        <ItemProvider item={item}>
-          {listItemActions ? listItemActions() : <ItemDropDown />}
-        </ItemProvider>
+        <ItemProvider item={item}>{listItemHook ? listItemHook() : <ItemDropDown />}</ItemProvider>
       </BodyCell>
     </TableRow>
   );

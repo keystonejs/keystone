@@ -81,9 +81,9 @@ export default {
 };
 ```
 
-#### `itemHeaderActions`
+#### `itemHeaderActions`, `itemHeader${listKey}Actions`
 
-Header components on the Item Details page can be replaced using this hook. This replaces the components for item Details page for all Lists.
+Header components on the Item Details page can be replaced using this hook. `itemHeaderActions` replaces the components for item Details page for all lists whereas `itemHeader${listKey}Actions` replaces components on specific list. List specific UI hooks supersedes global UI hooks
 
 > This must return a React component.
 
@@ -92,12 +92,13 @@ import { ItemId, AddNewItem } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default AddNewItem and ItemId button + custom text
   itemHeaderActions: () => (<div><ItemId /><AddNewItem /><p>Hello world</p></div>),
+  itemHeaderUserActions: () => <UserSpecificItemHeaderAction />,
 };
 ```
 
-#### `listHeaderActions`
+#### `listHeaderActions`, `listHeader${listKey}Actions`
 
-Header components on the List page can be replaced using this hook. This replaces components on list page for all Lists.
+Header components on the List page can be replaced using this hook. `listHeaderActions` replaces components on list page for all lists whereas `listHeader${listKey}Actions` replaces components on specific list. List specific UI hooks supersedes global UI hooks.This.
 
 > This must return a React component.
 
@@ -106,12 +107,13 @@ import { CreateItem } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default create item button + custom text
   listHeaderActions: () => (<div><CreateItem /><p>Hello world</p></div>),
+  listHeaderUserActions: () => <UserSpecificListHeaderAction />,
 };
 ```
 
-#### `listManageActions`
+#### `listManageActions`, `listManage${listKey}Actions`
 
-Custom Actions component for multiple items in the list can be replaced with this hook. This replaces the list management toolbar Items for all lists.
+Custom Actions component for multiple items in the list can be replaced with this hook. `listManageActions` replaces the list management toolbar Items for all lists whereas `listManage${listKey}Actions` replaces components on specific list. List specific UI hooks supersedes global UI hooks.This.
 
 > This must return a React component.
 
@@ -120,12 +122,13 @@ import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
 export default {
   // re-implement the default delete many and update many items buttons + custom text
   listManageActions: () => (<div><UpdateItems /><DeleteItems /><p>Hello world</p></div>),
+  listManageUserActions: () => <UserSpecificListManageAction />,
 };
 ```
 
-#### `listItemActions`
+#### `listItemActions`, `listItem${listKey}Actions`
 
-Dropdown component for individual item in list view can be replaced with this hook. This replaces the item dropdown for all lists.
+Dropdown component for individual item in list view can be replaced with this hook. `listItemActions` replaces the item dropdown for all lists whereas `listItem${listKey}Actions` replaces components on specific list. List specific UI hooks supersedes global UI hooks.This.
 
 > This must return a React component.
 
@@ -139,6 +142,7 @@ const dropDownItem = {
 export default {
   // re-implement the default dropdown with additional items
   listItemActions: () => (<ItemDropDown items={[dropDownItem]} />),
+  listItemUserActions: () => <UserSpecificListItemAction />,
 };
 ```
 

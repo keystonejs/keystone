@@ -23,7 +23,11 @@ const Container = ({ children }) => {
 
 export const ItemTitle = memo(function ItemTitle({ titleText }) {
   const { list } = useList();
-  const { itemHeaderActions } = useUIHooks();
+  const {
+    itemHeaderActions,
+    [`itemHeader${list.key}Actions`]: itemHeaderListActions,
+  } = useUIHooks();
+  const itemHeaderHook = itemHeaderListActions || itemHeaderActions;
   return (
     <Container>
       <PageTitle>{titleText}</PageTitle>
@@ -40,8 +44,8 @@ export const ItemTitle = memo(function ItemTitle({ titleText }) {
           </IconButton>
           <Search list={list} />
         </div>
-        {itemHeaderActions ? (
-          itemHeaderActions()
+        {itemHeaderHook ? (
+          itemHeaderHook()
         ) : (
           <div>
             <ItemId />
