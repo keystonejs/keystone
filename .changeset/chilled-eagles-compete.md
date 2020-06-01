@@ -13,7 +13,7 @@ new AdminUIApp({
 });
 ```
 
-The index file in the `admin-ui` directory should export a hooks which will be packaged for use in the Admin UI during the Keystone build:
+The index file in the `admin-ui` directory should export hooks which will be packaged for use in the Admin UI during the Keystone build:
 
 ```js
 // ./admin-ui/index.js
