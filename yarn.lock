@@ -20147,6 +20147,11 @@ react-hot-loader@^4.12.5:
     shallowequal "^1.0.2"
     source-map "^0.7.3"
 
+react-image@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-image/-/react-image-4.0.0.tgz#328ed515d0f5a39feb7a3f1f14709b07c9eda97a"
+  integrity sha512-8mhwtONmJT+dZN7Xe5Cbmm1qaSz/Dc1uFfQRNZLJ/Q15SeuyTt3ED1Fq0WWYz9qgJwvaMIDw6xnr1cJrJ0CkLQ==
+
 react-immutable-proptypes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-2.1.0.tgz#023d6f39bb15c97c071e9e60d00d136eac5fa0b4"
