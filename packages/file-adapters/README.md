@@ -137,6 +137,34 @@ const fileAdapter = new S3Adapter({
 
 > **Note:** Authentication can be done in many different ways. One option is to include valid `accessKeyId` and `secretAccessKey` properties in the `s3Options` parameter. Other methods include setting environment variables. See [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) for a complete set of options.
 
+### S3-compatible object storage providers
+
+You can also use any S3 compatible object storage provider with this adapter. You must provide the config `s3Options.endpoint` to correctly point to provider's server. Other options may be required based on which provider you choose.
+
+- [DigitalOcean Spaces](https://www.digitalocean.com/docs/spaces/resources/s3-sdk-examples/)
+
+```js
+const s3Options = {
+  accessKeyId: 'YOUR-ACCESSKEYID',
+  secretAccessKey: 'YOUR-SECRETACCESSKEY',
+  endpoint: 'https://${REGION}.digitaloceanspaces.com', // REGION is datacenter region e.g. nyc3, sgp1 etc
+};
+```
+
+- [Minio](https://docs.minio.io/docs/how-to-use-aws-sdk-for-javascript-with-minio-server.html)
+
+```js
+const s3Options = {
+  accessKeyId: 'YOUR-ACCESSKEYID',
+  secretAccessKey: 'YOUR-SECRETACCESSKEY',
+  endpoint: 'http://127.0.0.1:9000', // locally or cloud url
+  s3ForcePathStyle: true, // needed with minio?
+  signatureVersion: 'v4', // needed with minio?
+};
+```
+
+> For Minio `ACL: 'public-read'` config on `uploadParams.Metadata` option does not work compared to AWS or DigitalOcean, you must set `public` policy on bucket to use anonymous access, if you want to provide authenticated access, you must use `afterChange` hook to populate publicUrl. Check [`policy`](https://docs.minio.io/docs/minio-client-complete-guide.html) command in Minio client
+
 ### Methods
 
 #### `delete`
