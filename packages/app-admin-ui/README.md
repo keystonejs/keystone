@@ -65,6 +65,7 @@ The following hooks are available. Each is a function that takes no arguments.
 export default {
   logo,
   pages,
+  [toast${listKey}Saved],
 };
 ```
 
@@ -72,11 +73,53 @@ export default {
 
 The logo to display on the signin screen.
 
-Should return a React component.
+> This must return a React component.
 
 ```javascript
 export default {
   logo: () => <MyAwesomeLogo />,
+};
+```
+
+#### `itemHeaderActions`
+
+Header components on the Item Details page can be replaced using this hook. Ths replaces the components for item Details page for all Lists.
+
+> This must return a React component.
+
+```javascript title=/admin-ui/index.js
+import { ItemId, AddNewItem } '@keystonejs/admin-ui/components/'
+export default {
+  // re-implement the default AddNewItem and ItemId button + custom text
+  listHeaderActions: () => (<div><ItemId /><AddNewItem /><p>Hello world</p></div>),
+};
+```
+
+#### `listHeaderActions`
+
+Header components on the List page can be replaced using this hook. This replaces components on list page for all Lists.
+
+> This must return a React component.
+
+```javascript title=/admin-ui/index.js
+import { CreateItem } '@keystonejs/admin-ui/components/'
+export default {
+  // re-implement the default create item button + custom text
+  listHeaderActions: () => (<div><CreateItem /><p>Hello world</p></div>),
+};
+```
+
+#### `listManageActions`
+
+Custom Actions component for multiple items in the list can be replaced with this hook. This replaces the list management toolbar Items for all lists.
+
+> This must return a React component.
+
+```javascript title=/admin-ui/index.js
+import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
+export default {
+  // re-implement the default delete many and update many items buttons + custom text
+  listManageActions: () => (<div><UpdateItems /><DeleteItems /><p>Hello world</p></div>),
 };
 ```
 
@@ -121,6 +164,23 @@ export default {
       children: ['User'],
     },
   ],
+};
+```
+
+#### `toast${listKey}Saved`
+
+Allows customizing the content of the Success toast notification when an item is saved. These may be specified on a per-list basis. For example, to customize the Success toast for a list called `MyList`, use `toastMyListSaved`.
+
+Unlike most hooks, this takes a single argument containing the newly-saved item data. It should return a React component.
+
+```javascript
+export default {
+  toastMyListSaved: itemData => (
+    <div>
+      <strong>My custom toast notification!</strong>
+      <span>{itemData._label_}</span>
+    </div>
+  ),
 };
 ```
 
