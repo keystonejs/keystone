@@ -2,4 +2,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Don't parse the GraphQL schema twice.
+Prevented parsing theGraphQL schema twice. Internal refactor only.
