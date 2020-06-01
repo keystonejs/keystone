@@ -225,7 +225,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
       { addToast, customToast },
       { item: savedItem, list },
       'Saved successfully',
-      'save'
+      'update'
     );
 
     // No changes since we kicked off the item saving.
