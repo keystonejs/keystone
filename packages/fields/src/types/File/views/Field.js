@@ -6,14 +6,13 @@ import { useImage } from 'react-image';
 import PropTypes from 'prop-types';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
-import { AlertIcon } from '@arch-ui/icons';
+import { AlertIcon, FileMediaIcon } from '@arch-ui/icons';
 import { HiddenInput } from '@arch-ui/input';
 import { LoadingIndicator } from '@arch-ui/loading';
 import { Lozenge } from '@arch-ui/lozenge';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
-import { FileMediaIcon } from '@arch-ui/icons/src';
 
 function uploadButtonLabelFn({ status }) {
   return status === 'empty' ? 'Upload File' : 'Change File';
