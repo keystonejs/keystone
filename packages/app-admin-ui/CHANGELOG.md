@@ -1,5 +1,14 @@
 # @keystonejs/app-admin-ui
 
+## 7.0.1
+
+### Patch Changes
+
+- [`8a1338362`](https://github.com/keystonejs/keystone/commit/8a13383629b99745ba39cd8ff1e91214be7f98da) [#3086](https://github.com/keystonejs/keystone/pull/3086) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fixed an issue with the AdminUI where some icons were throwing errors.
+
+- Updated dependencies [[`8a1338362`](https://github.com/keystonejs/keystone/commit/8a13383629b99745ba39cd8ff1e91214be7f98da)]:
+  - @keystonejs/fields@12.0.1
+
 ## 7.0.0
 
 ### Major Changes
