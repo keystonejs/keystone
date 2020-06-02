@@ -84,14 +84,14 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return pSettle(
       Object.values(this.listAdapters).map(listAdapter => {
         const { tableName } = listAdapter;
-        // If it has a create table method it's a Knex adapter
+        // In theory it's possible for lists to have different adapters
+        // check the adapter has a createTable method
         if (listAdapter.createTable) {
           return this.knex.schema
             .hasTable(tableName)
             .then(result => ({ tableName, hasTable: result }));
         } else {
-          // ToDo: For Mongo we currently just return true.
-          // Would it would be helpful to also verify mongo "tables"?
+          // For unknown list adapters, skip, by returning true
           return { tableName, hasTable: true };
         }
       })

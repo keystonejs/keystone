@@ -160,7 +160,6 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   if (isKnex) {
     spinner.start('Verifying tables');
     const verifyTableResults = await keystone.adapters.KnexAdapter._verifyTables();
-    // console.log(verifyTableResults);
     verifyTableMessages(verifyTableResults);
     spinner.succeed('Verifying tables');
   }
