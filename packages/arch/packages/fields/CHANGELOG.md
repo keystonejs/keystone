@@ -1,5 +1,11 @@
 # @arch-ui/fields
 
+## 3.0.2
+
+### Patch Changes
+
+- [`a8d444b25`](https://github.com/keystonejs/keystone/commit/a8d444b25109f84e9d4659f2a260c5ad65f93393) [#3006](https://github.com/keystonejs/keystone/pull/3006) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed minor layout issues with the FieldLabel component.
+
 ## 3.0.1
 
 ### Patch Changes

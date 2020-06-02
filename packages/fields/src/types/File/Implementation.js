@@ -25,11 +25,6 @@ export class File extends Implementation {
   gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
-  extendAdminMeta(meta) {
-    return {
-      ...meta,
-    };
-  }
   gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),

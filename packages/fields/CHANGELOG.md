@@ -1,5 +1,88 @@
 # @keystonejs/fields
 
+## 12.0.1
+
+### Patch Changes
+
+- [`8a1338362`](https://github.com/keystonejs/keystone/commit/8a13383629b99745ba39cd8ff1e91214be7f98da) [#3086](https://github.com/keystonejs/keystone/pull/3086) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fixed an issue with the AdminUI where some icons were throwing errors.
+
+- Updated dependencies [[`8a1338362`](https://github.com/keystonejs/keystone/commit/8a13383629b99745ba39cd8ff1e91214be7f98da)]:
+  - @keystonejs/app-admin-ui@7.0.1
+
+## 12.0.0
+
+### Major Changes
+
+- [`ea9608342`](https://github.com/keystonejs/keystone/commit/ea960834262cec66f52fa39c1b3b07b702b3cd4d) [#2976](https://github.com/keystonejs/keystone/pull/2976) Thanks [@Vultraz](https://github.com/Vultraz)! - Refactored how list and item queries and generated. Field controllers' `getFilterGraphQL` method now returns an object in the format { filter: value } rather than a GraphQL string. Additionally, `getFilterValue` should now return `undefined` instead of `null` if the filter should not be submitted.
+
+### Minor Changes
+
+- [`c2ebb51c7`](https://github.com/keystonejs/keystone/commit/c2ebb51c786297879fe9fac2007804055631e9e2) [#2258](https://github.com/keystonejs/keystone/pull/2258) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Added `isReadOnly` option on field's `adminConfig`. Fields with this option set will be excluded from the `create` form, and set as disabled in the `update` form in the Admin UI.
+
+  - Updated the item detail page to include fields with access `{ update: false }` in a disabled state, rather than excluded the form.
+  - Updated all Field Views to accept `isDisabled` prop. When set to `true` this will disable the field input.
+
+  Example:
+
+  ```js
+  keystone.createList('Todo', {
+    fields: {
+      name: { type: Text, isRequired: true },
+      someReadOnlyField: {
+        type: Text,
+        adminConfig: {
+          isReadOnly: true,
+        },
+        defaultValue: 'Some default value',
+      },
+    },
+  });
+  ```
+
+* [`fdfb01417`](https://github.com/keystonejs/keystone/commit/fdfb01417b6d330342f4b6c326767c9567e35ca5) [#2947](https://github.com/keystonejs/keystone/pull/2947) Thanks [@timleslie](https://github.com/timleslie)! - Added support for arguments being defined on `Virtual` fields.
+
+### Patch Changes
+
+- [`c3faeeff4`](https://github.com/keystonejs/keystone/commit/c3faeeff41f9b29a9fc31ca4e7778b596fcb20b9) [#3019](https://github.com/keystonejs/keystone/pull/3019) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a layout issue with required checkbox fields.
+
+* [`397982096`](https://github.com/keystonejs/keystone/commit/39798209642571d3ba698e11410f5161cd1943bb) [#2956](https://github.com/keystonejs/keystone/pull/2956) Thanks [@Vultraz](https://github.com/Vultraz)! - Added a password field cell view.
+
+- [`538378e4e`](https://github.com/keystonejs/keystone/commit/538378e4eb143dbe6e7a943408e0af302eb86b85) [#2987](https://github.com/keystonejs/keystone/pull/2987) Thanks [@Vultraz](https://github.com/Vultraz)! - Simplifed ItemLink handling.
+
+* [`9f67e0e91`](https://github.com/keystonejs/keystone/commit/9f67e0e912b4f7dcb90fcb07c4b30bd6c45de464) [#3036](https://github.com/keystonejs/keystone/pull/3036) Thanks [@Vultraz](https://github.com/Vultraz)! - Cleaned up some code in the field definitions.
+
+- [`8fddd97b2`](https://github.com/keystonejs/keystone/commit/8fddd97b20f1928ff7306d5d0dcc96e58ffe55fb) [#2994](https://github.com/keystonejs/keystone/pull/2994) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed React warning about controlled handling in the Float field.
+
+* [`83548d43d`](https://github.com/keystonejs/keystone/commit/83548d43d661959a34a6de475994430ee1de3a1d) [#3009](https://github.com/keystonejs/keystone/pull/3009) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed adminPath and authStrategy members from base field Controller class.
+
+- [`5ea313461`](https://github.com/keystonejs/keystone/commit/5ea313461aa2cba310b2634cc87780092c84b5be) [#3081](https://github.com/keystonejs/keystone/pull/3081) Thanks [@pahaz](https://github.com/pahaz)! - Removed redundant code.
+
+* [`aacc4a7f8`](https://github.com/keystonejs/keystone/commit/aacc4a7f8f88c242ae4bd784330d25056842d3fb) [#2990](https://github.com/keystonejs/keystone/pull/2990) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated various Apollo dependencies to their latest versions.
+
+- [`04c57fa78`](https://github.com/keystonejs/keystone/commit/04c57fa7840714d3413e093d468b78d740c95c9a) [#3007](https://github.com/keystonejs/keystone/pull/3007) Thanks [@Vultraz](https://github.com/Vultraz)! - Added client-side is-required flag to most fields.
+
+* [`f33388b50`](https://github.com/keystonejs/keystone/commit/f33388b5061d59747ab46e238f43e9b08f52bd1e) [#3068](https://github.com/keystonejs/keystone/pull/3068) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved File field image-not-found display.
+
+- [`4b06157be`](https://github.com/keystonejs/keystone/commit/4b06157be6cffde2d88969823f7c410fefd82317) [#2046](https://github.com/keystonejs/keystone/pull/2046) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed some workarounds for issues with older graphql versions
+
+* [`649017fbd`](https://github.com/keystonejs/keystone/commit/649017fbd5ea17c36e8c49d44836e1f2bcae2692) [#3040](https://github.com/keystonejs/keystone/pull/3040) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed an error when clearing the last selection in the Select field filter.
+
+- [`170faf568`](https://github.com/keystonejs/keystone/commit/170faf568fef5b74147791476b466dc7a25c7d6f) [#3041](https://github.com/keystonejs/keystone/pull/3041) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when the `ref` list of a `Relationship` field had access control of `{ create: false }`. Keystone no longer throws an error on startup. Fixes #1677.
+
+* [`de27d2c16`](https://github.com/keystonejs/keystone/commit/de27d2c16b520ae5126a74efb85c70ae88ae6b60) [#2970](https://github.com/keystonejs/keystone/pull/2970) Thanks [@Vultraz](https://github.com/Vultraz)! - Added validation to ensure the CloudinaryImage field is used with CloudinaryAdapter.
+
+* Updated dependencies [[`c2ebb51c7`](https://github.com/keystonejs/keystone/commit/c2ebb51c786297879fe9fac2007804055631e9e2), [`f493eecc3`](https://github.com/keystonejs/keystone/commit/f493eecc34a0f1a6ba9f8eea1c34882784c1b5fe), [`b61987552`](https://github.com/keystonejs/keystone/commit/b619875520aa3b10d104794140f7977ffaebfbf0), [`397982096`](https://github.com/keystonejs/keystone/commit/39798209642571d3ba698e11410f5161cd1943bb), [`538378e4e`](https://github.com/keystonejs/keystone/commit/538378e4eb143dbe6e7a943408e0af302eb86b85), [`9f67e0e91`](https://github.com/keystonejs/keystone/commit/9f67e0e912b4f7dcb90fcb07c4b30bd6c45de464), [`ea9608342`](https://github.com/keystonejs/keystone/commit/ea960834262cec66f52fa39c1b3b07b702b3cd4d), [`83548d43d`](https://github.com/keystonejs/keystone/commit/83548d43d661959a34a6de475994430ee1de3a1d), [`aacc4a7f8`](https://github.com/keystonejs/keystone/commit/aacc4a7f8f88c242ae4bd784330d25056842d3fb), [`da8ca8835`](https://github.com/keystonejs/keystone/commit/da8ca8835a910cc9b2f53e12ddaef88ffc194695), [`04c57fa78`](https://github.com/keystonejs/keystone/commit/04c57fa7840714d3413e093d468b78d740c95c9a), [`fd4e9100a`](https://github.com/keystonejs/keystone/commit/fd4e9100a636e0654db45d2471ce47a19b753647), [`4b06157be`](https://github.com/keystonejs/keystone/commit/4b06157be6cffde2d88969823f7c410fefd82317), [`6ab523476`](https://github.com/keystonejs/keystone/commit/6ab523476ceca5ad57e7833ebd172b2da6c0b5fd), [`839666e25`](https://github.com/keystonejs/keystone/commit/839666e25d8bffefd034e6344e11d72dd43b925b), [`9ca0733e5`](https://github.com/keystonejs/keystone/commit/9ca0733e57b525a7efdfdedfb7c80364e186994e), [`a8d444b25`](https://github.com/keystonejs/keystone/commit/a8d444b25109f84e9d4659f2a260c5ad65f93393), [`7203c5889`](https://github.com/keystonejs/keystone/commit/7203c588901c46fae1550f3596cab43a1dd5052a), [`d2390b703`](https://github.com/keystonejs/keystone/commit/d2390b703d30e0b4264ab6ed9b1ba4d7bb9fca6c), [`34a9816d3`](https://github.com/keystonejs/keystone/commit/34a9816d3c40a35409be735e748cea2c6d5aa895), [`60db743aa`](https://github.com/keystonejs/keystone/commit/60db743aa79f6590d6a3ebb0169021f1c36f64cc), [`326242533`](https://github.com/keystonejs/keystone/commit/3262425335de5eee6979e38ebb45f19a22c1ee1a), [`b15221ac2`](https://github.com/keystonejs/keystone/commit/b15221ac21746b1380ddb31395cdd386d52920a9), [`16649fa55`](https://github.com/keystonejs/keystone/commit/16649fa556ae3723ca97eb0752653259ccae4bc2), [`ba363d9a8`](https://github.com/keystonejs/keystone/commit/ba363d9a82d3ca3ec464547a5d9e38354bc2a172), [`927150d81`](https://github.com/keystonejs/keystone/commit/927150d81e297fdb5c8ccad087ea255b861dfe32), [`c7599a46f`](https://github.com/keystonejs/keystone/commit/c7599a46f05108b10b3a805a20b77b4d834e616d), [`86f3fffb8`](https://github.com/keystonejs/keystone/commit/86f3fffb8aa4de455cf18d7c95f5135a5ad17731), [`1cc3deaf0`](https://github.com/keystonejs/keystone/commit/1cc3deaf0b0a48aecb0f0f2454f4fe2634e1da5f), [`070519dbe`](https://github.com/keystonejs/keystone/commit/070519dbec289b759759343d084bc5d2de9d4b37), [`98bd9d8c0`](https://github.com/keystonejs/keystone/commit/98bd9d8c05971e88f46dc9c9892f6a232ddf124c), [`10babad4b`](https://github.com/keystonejs/keystone/commit/10babad4b4135738bc0633b113e5c96d3ddb9e9f), [`24f5ab51c`](https://github.com/keystonejs/keystone/commit/24f5ab51c69d744fb0e1f47a0723c2cc70492010), [`c35f9cd1c`](https://github.com/keystonejs/keystone/commit/c35f9cd1cba5bf27eb9cf7cc1a113716bc4a50ef)]:
+  - @keystonejs/app-admin-ui@7.0.0
+  - @keystonejs/field-content@7.0.0
+  - @arch-ui/input@0.1.10
+  - @keystonejs/access-control@6.0.0
+  - @arch-ui/fields@3.0.2
+  - @keystonejs/build-field-types@5.2.8
+  - @arch-ui/button@0.0.20
+  - @keystonejs/adapter-knex@10.0.2
+  - @keystonejs/adapter-mongoose@8.1.2
+  - @keystonejs/test-utils@6.1.3
+
 ## 11.0.0
 
 ### Major Changes
