@@ -1,6 +1,6 @@
 <!--[meta]
 section: api
-subSection: @keystonejs/fields-auto-increment
+subSection: '@keystonejs/fields-auto-increment'
 title: AutoIncrement
 [meta]-->
 

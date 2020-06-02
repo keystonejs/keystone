@@ -1,6 +1,6 @@
 <!--[meta]
 section: api
-subSection: @keystonejs/fields-wysiwyg-tinymce
+subSection: '@keystonejs/fields-wysiwyg-tinymce'
 title: Wysiwyg
 [meta]-->
 

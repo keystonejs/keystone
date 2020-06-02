@@ -1,6 +1,6 @@
 <!--[meta]
 section: api
-subSection: @keystonejs/fields
+subSection: '@keystonejs/fields'
 title: Uuid
 [meta]-->
 
