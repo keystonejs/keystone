@@ -1,6 +1,6 @@
 <!--[meta]
 section: api
-subSection: @keystonejs/field-content
+subSection: '@keystonejs/field-content'
 title: Content
 [meta]-->
 
