@@ -1,6 +1,6 @@
 <!--[meta]
 section: api
-subSection: field-types
+subSection: @keystonejs/fields-mongoid
 title: MongoID
 [meta]-->
 
