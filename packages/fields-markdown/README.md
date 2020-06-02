@@ -1,7 +1,6 @@
 <!--[meta]
 section: api
-subSection: '@keystonejs/fields-markdown'
-title: Markdown
+title: '@keystonejs/fields-markdown'
 [meta]-->
 
 # Markdown Field

@@ -1,7 +1,6 @@
 <!--[meta]
 section: api
-subSection: '@keystonejs/fields-authed-relationship'
-title: AuthedRelationship
+title: '@keystonejs/fields-authed-relationship'
 [meta]-->
 
 # AuthedRelationship

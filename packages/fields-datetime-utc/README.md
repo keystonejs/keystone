@@ -1,7 +1,6 @@
 <!--[meta]
 section: api
-subSection: '@keystonejs/fields-datetime-utc'
-title: DateTimeUtc
+title: '@keystonejs/fields-datetime-utc'
 [meta]-->
 
 # DateTimeUtc
