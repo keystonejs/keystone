@@ -1,5 +1,11 @@
 # @arch-ui/input
 
+## 0.1.10
+
+### Patch Changes
+
+- [`04c57fa78`](https://github.com/keystonejs/keystone/commit/04c57fa7840714d3413e093d468b78d740c95c9a) [#3007](https://github.com/keystonejs/keystone/pull/3007) Thanks [@Vultraz](https://github.com/Vultraz)! - Added client-side is-required flag to most fields.
+
 ## 0.1.9
 
 ### Patch Changes
