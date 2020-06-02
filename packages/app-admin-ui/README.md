@@ -169,7 +169,7 @@ export default {
 
 #### `customToast`
 
-Allows customizing the content of toast notification when an item is saved or deleted.
+Allows customising the content of toast notification when an item is updated or deleted.
 
 The hook function receives a context variable containing an `item` key with the original item data, a `list` key that can be used to limit the scope of the hook, the original `message` as well as a `toastAction` that will be either 'update' or 'delete'. The function should return a React component.
 
