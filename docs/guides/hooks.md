@@ -45,7 +45,7 @@ See the [Hook API docs](/docs/api/hooks.md) for specifics.
 
 ### Hook type
 
-A hooks _type_ is defined by where it is attached.
+A hook _type_ is defined by where it is attached.
 Keystone recognises three _types_ of hook:
 
 - [Field Type hooks](/docs/api/hooks.md#field-type-hooks) -
