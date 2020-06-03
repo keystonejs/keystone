@@ -13,11 +13,10 @@ const SectionHero = () => (
     <Grid>
       <div>
         <Heading>
-          A scalable, extensible and open-source platform to build NodeJS applications
+          Headless CMS &amp; GraphQL API for Node
         </Heading>
         <Description>
-          KeystoneJS comes with first-class GraphQL support, a highly extensible architecture, and a
-          wonderful Admin UI
+          Configure your data model in JavaScript, and KeystoneJS will generate a powerful GraphQL API and CMS.
         </Description>
         <ButtonWrapper>
           <Button
