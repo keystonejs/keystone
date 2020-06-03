@@ -10,16 +10,12 @@ const { DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
 const verifyTableMessages = verifyTableResults => {
   const verifyTableErrors = verifyTableResults.filter(({ isRejected }) => isRejected);
 
-  if (Array.isArray(verifyTableErrors)) {
+  verifyTableErrors.forEach(({ value, reason }) => {
     console.log('\n');
-    verifyTableErrors.forEach(({ value, reason }) => {
-      console.warn(
-        `Error verifying ${value && value.tableName ? value.tableName : 'table'}: ${reason}`
-      );
-    });
-    console.log('\n');
-  }
-
+    console.warn(
+      `Error verifying ${value && value.tableName ? value.tableName : 'table'}: ${reason}`
+    );
+  });
   if (verifyTableResults.every(({ value }) => !(value && value.hasTable))) {
     console.log('\n');
     console.warn(
