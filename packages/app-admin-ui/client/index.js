@@ -9,7 +9,7 @@ import { globalStyles } from '@arch-ui/theme';
 
 import { initApolloClient } from './apolloClient';
 import Nav from './components/Nav';
-import ScrollToTop from './components/ScrollToTop';
+import { useScrollToTop } from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
 import PageLoading from './components/PageLoading';
@@ -61,6 +61,8 @@ const ListPageWrapper = () => {
 const MainPageWrapper = () => {
   const { adminPath, pages } = useAdminMeta();
 
+  useScrollToTop();
+
   const customRoutes = [
     ...pages
       .filter(({ path }) => typeof path === 'string')
@@ -71,19 +73,17 @@ const MainPageWrapper = () => {
   ];
 
   return (
-    <ScrollToTop>
-      <Nav>
-        <Suspense fallback={<PageLoading />}>
-          <Switch>
-            {customRoutes.map(({ path, children }) => (
-              <Route exact key={path} path={path} children={children} />
-            ))}
-            <Route exact path={adminPath} children={<HomePageWrapper />} />
-            <Route path={`${adminPath}/:listKey`} children={<ListPageWrapper />} />
-          </Switch>
-        </Suspense>
-      </Nav>
-    </ScrollToTop>
+    <Nav>
+      <Suspense fallback={<PageLoading />}>
+        <Switch>
+          {customRoutes.map(({ path, children }) => (
+            <Route exact key={path} path={path} children={children} />
+          ))}
+          <Route exact path={adminPath} children={<HomePageWrapper />} />
+          <Route path={`${adminPath}/:listKey`} children={<ListPageWrapper />} />
+        </Switch>
+      </Suspense>
+    </Nav>
   );
 };
 
