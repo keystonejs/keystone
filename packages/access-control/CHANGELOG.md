@@ -1,5 +1,11 @@
 # @keystonejs/access-control
 
+## 6.1.0
+
+### Minor Changes
+
+- [`463f55233`](https://github.com/keystonejs/keystone/commit/463f552335013d5ba9ebf2e8f7a9ebf8e2b0e0db) [#3095](https://github.com/keystonejs/keystone/pull/3095) Thanks [@timleslie](https://github.com/timleslie)! - Added `{ item, args, context, info, gqlName }` to the arguments available in access control functions for custom queries/mutations.
+
 ## 6.0.0
 
 ### Major Changes
