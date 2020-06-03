@@ -86,8 +86,15 @@ class CustomProvider {
 
       // Perform access control check before passing off control to the
       // user defined resolver (along with the evalutated access).
-      const computeAccess = async context => {
-        const _access = await context.getCustomAccessControlForUser(access);
+      const computeAccess = async (item, args, context, info) => {
+        const _access = await context.getCustomAccessControlForUser(
+          item,
+          args,
+          context,
+          info,
+          access,
+          gqlName
+        );
         if (!_access) {
           graphqlLogger.debug({ access, gqlName }, 'Access statically or implicitly denied');
           graphqlLogger.info({ gqlName }, 'Access Denied');
@@ -105,19 +112,18 @@ class CustomProvider {
         return _access;
       };
 
-      const resolve = async (obj, args, context, info) => {
+      const resolve = async (item, args, context, info) => {
         if (resolver) {
-          return resolver(obj, args, context, info, {
+          return resolver(item, args, context, info, {
             query: this._buildQueryHelper(context),
-            access: await computeAccess(context),
+            access: await computeAccess(item, args, context, info),
           });
         }
       };
 
       return {
-        [gqlName]:
-          // Subscriptions use a slightly different format
-          type === 'subscription' ? { subscribe, resolve } : resolve,
+        // Subscriptions use a slightly different format
+        [gqlName]: type === 'subscription' ? { subscribe, resolve } : resolve,
       };
     };
   }
