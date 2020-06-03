@@ -157,10 +157,15 @@ module.exports = class Keystone {
       // We do it within the request callback so we can resolve it based on the
       // request info ( like who's logged in right now, etc)
       getCustomAccessControlForUser = memoize(
-        async access => {
+        async (item, args, context, info, access, gqlName) => {
           return validateCustomAccessControl({
+            item,
+            args,
+            context,
+            info,
             access: access[schemaName],
             authentication: { item: req.user, listKey: req.authedListKey },
+            gqlName,
           });
         },
         { isPromise: true }
