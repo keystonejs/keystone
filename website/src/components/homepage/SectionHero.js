@@ -12,11 +12,10 @@ const SectionHero = () => (
   <HomepageSection>
     <Grid>
       <div>
-        <Heading>
-          Headless CMS &amp; GraphQL API for Node
-        </Heading>
+        <Heading>Headless CMS &amp; GraphQL API for Node</Heading>
         <Description>
-          Configure your data model in JavaScript, and KeystoneJS will generate a powerful GraphQL API and CMS.
+          Configure your data model in JavaScript, and KeystoneJS will generate a powerful GraphQL
+          API and CMS.
         </Description>
         <ButtonWrapper>
           <Button
