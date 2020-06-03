@@ -7,7 +7,7 @@ import { Grid, Card } from './HomepageCard';
 const CARDS = [
   {
     heading: `Fully featured`,
-    content: `Zero assumptions doesn’t mean zero features. Keystone comes with dozens of features out of the box including Lists, Fields, Access Control, Authentication, and Apps. You can add and configure each these, as well as extend, modify or build your own.`,
+    content: `Zero assumptions doesn’t mean zero features. Keystone comes with dozens of features out of the box including Lists, Fields, Access Control, Authentication, and Apps. You can add and configure each of these, as well as extend, modify or build your own.`,
     to: '/guides/apps',
   },
   {
@@ -17,7 +17,7 @@ const CARDS = [
   },
   {
     heading: `Own your data`,
-    content: `Provide your own PostgreSQL or MongoDB database for to Keystone to connect to deploy your application anywhere. Have complete freedom of choice when hosting your data, admin application, API and front-end applications.`,
+    content: `Provide your own PostgreSQL or MongoDB database for Keystone to connect to, and deploy your application anywhere. Have complete freedom of choice when hosting your data, admin application, API and front-end applications.`,
     to: '/guides/deployment',
   },
   {
