@@ -1,5 +1,11 @@
 # @keystonejs/app-next
 
+## 5.2.0
+
+### Minor Changes
+
+- [`eaf5d0084`](https://github.com/keystonejs/keystone/commit/eaf5d008430fe0b9ed0b713602c59138924b42b8) [#3080](https://github.com/keystonejs/keystone/pull/3080) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated Next.js dependency to 9.4.4.
+
 ## 5.1.2
 
 ### Patch Changes
