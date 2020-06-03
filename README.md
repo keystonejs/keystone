@@ -48,7 +48,7 @@ Guide](https://keystonejs.com/quick-start/).
 
 ## Documentation
 
-The [API documentation](https://keystonejs.com/api/) contains a reference for all KeystoneJS packages.
+The [API documentation](https://www.keystonejs.com/keystonejs/keystone/) contains a reference for all KeystoneJS packages.
 
 For walk-throughs and discussions, see the [Guides
 documentation](https://www.keystonejs.com/guides/).
