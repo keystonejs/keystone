@@ -30,15 +30,6 @@ let ContentField = ({ field, value, onChange, autoFocus, errors, isDisabled }) =
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldInput
-        css={{ cursor: 'text', tabIndex: 0 }}
-        onClick={() => {
-          const elm = document.getElementById(htmlID).querySelector('[data-slate-editor]');
-          if (elm) {
-            elm.focus();
-          }
-        }}
-      >
         <ErrorBoundary>
           {Object.values(field.getBlocks())
             .filter(({ Provider, options }) => Provider && options)
@@ -60,13 +51,11 @@ let ContentField = ({ field, value, onChange, autoFocus, errors, isDisabled }) =
                 css={{
                   ...inputStyles({ isMultiline: true }),
                   padding: '16px 32px',
-                  minHeight: 200,
                 }}
                 isDisabled={isDisabled}
               />
             )}
         </ErrorBoundary>
-      </FieldInput>
     </FieldContainer>
   );
 };

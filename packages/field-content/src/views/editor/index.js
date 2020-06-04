@@ -76,6 +76,9 @@ function Stories({ value: editorState, onChange, blocks, className, id, isDisabl
           onChange(value);
         }}
         readOnly={isDisabled}
+        css= {{
+          minHeight: 200,
+        }}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
       <Toolbar {...{ editorState, editor, blocks }} />
