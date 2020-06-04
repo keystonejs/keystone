@@ -30,31 +30,31 @@ let ContentField = ({ field, value, onChange, autoFocus, errors, isDisabled }) =
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        <ErrorBoundary>
-          {Object.values(field.getBlocks())
-            .filter(({ Provider, options }) => Provider && options)
-            .reduce(
-              (children, { Provider, options }, index) => (
-                // Using index within key is ok here as the blocks never change
-                // across renders
-                <Provider value={options} key={`${htmlID}-provider-${index}`}>
-                  {children}
-                </Provider>
-              ),
-              <Editor
-                key={htmlID}
-                blocks={field.getBlocks()}
-                value={value}
-                onChange={onChange}
-                autoFocus={autoFocus}
-                id={htmlID}
-                css={{
-                  ...inputStyles({ isMultiline: true }),
-                }}
-                isDisabled={isDisabled}
-              />
-            )}
-        </ErrorBoundary>
+      <ErrorBoundary>
+        {Object.values(field.getBlocks())
+          .filter(({ Provider, options }) => Provider && options)
+          .reduce(
+            (children, { Provider, options }, index) => (
+              // Using index within key is ok here as the blocks never change
+              // across renders
+              <Provider value={options} key={`${htmlID}-provider-${index}`}>
+                {children}
+              </Provider>
+            ),
+            <Editor
+              key={htmlID}
+              blocks={field.getBlocks()}
+              value={value}
+              onChange={onChange}
+              autoFocus={autoFocus}
+              id={htmlID}
+              css={{
+                ...inputStyles({ isMultiline: true }),
+              }}
+              isDisabled={isDisabled}
+            />
+          )}
+      </ErrorBoundary>
     </FieldContainer>
   );
 };
