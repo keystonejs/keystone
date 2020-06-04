@@ -7,6 +7,44 @@ const path = require('path');
 
 const { DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
 
+const verifyTableMessages = verifyTableResults => {
+  const verifyTableErrors = verifyTableResults.filter(({ isRejected }) => isRejected);
+
+  verifyTableErrors.forEach(({ value, reason }) => {
+    console.log('\n');
+    console.warn(
+      `Error verifying ${value && value.tableName ? value.tableName : 'table'}: ${reason}`
+    );
+  });
+  if (verifyTableResults.every(({ value }) => !(value && value.hasTable))) {
+    console.log('\n');
+    console.warn(
+      `Database is empty. Initialise tables with: '${chalk.green('npx keystone create-tables')}'`
+    );
+    console.warn(
+      `See: 🔗 ${chalk.green('https://www.keystonejs.com/quick-start/#installing-keystone')}`
+    );
+    console.log('\n');
+  } else if (verifyTableResults.some(({ value }) => !(value && value.hasTable))) {
+    const notTables = verifyTableResults
+      .filter(({ value }) => !value.hasTable)
+      .map(({ value }) => value.tableName);
+
+    console.log('\n');
+    console.warn(
+      `Your database has been initialised, but ${chalk.bold(
+        'the following tables are missing'
+      )}: ${notTables.join(', ')}`
+    );
+    console.warn(
+      `You might need a migration: 🔗 ${chalk.green(
+        'https://www.keystonejs.com/guides/migrations/#migrations-in-keystone'
+      )}`
+    );
+    console.log('\n');
+  }
+};
+
 const ttyLink = (text, path, port) => {
   if (ciInfo.isCI) {
     return;
@@ -103,7 +141,6 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   configureExpress(app);
 
   spinner.succeed('Initialised Keystone instance');
-  spinner.start('Connecting to database');
 
   status = 'db-connect';
 
@@ -111,9 +148,17 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   const { middlewares } = await keystone.prepare({ apps, distDir, dev, cors, pinoOptions });
 
+  spinner.start('Connecting to database');
   await keystone.connect();
-
   spinner.succeed('Connected to database');
+
+  const isKnex = !!(keystone.adapters && keystone.adapters.KnexAdapter);
+  if (isKnex) {
+    spinner.start('Verifying tables');
+    const verifyTableResults = await keystone.adapters.KnexAdapter._verifyTables();
+    verifyTableMessages(verifyTableResults);
+    spinner.succeed('Verifying tables');
+  }
   spinner.start('Preparing to accept requests');
 
   app.use(middlewares);

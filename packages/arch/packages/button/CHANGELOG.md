@@ -1,5 +1,11 @@
 # @arch-ui/button
 
+## 0.0.20
+
+### Patch Changes
+
+- [`98bd9d8c0`](https://github.com/keystonejs/keystone/commit/98bd9d8c05971e88f46dc9c9892f6a232ddf124c) [#3072](https://github.com/keystonejs/keystone/pull/3072) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed stray innerRef prop on a <Link>.
+
 ## 0.0.19
 
 ### Patch Changes

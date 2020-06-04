@@ -1,5 +1,15 @@
 # @arch-ui/docs
 
+## 1.1.23
+
+### Patch Changes
+
+- Updated dependencies [[`04c57fa78`](https://github.com/keystonejs/keystone/commit/04c57fa7840714d3413e093d468b78d740c95c9a), [`a8d444b25`](https://github.com/keystonejs/keystone/commit/a8d444b25109f84e9d4659f2a260c5ad65f93393), [`98bd9d8c0`](https://github.com/keystonejs/keystone/commit/98bd9d8c05971e88f46dc9c9892f6a232ddf124c)]:
+  - @arch-ui/input@0.1.10
+  - @arch-ui/fields@3.0.2
+  - @arch-ui/button@0.0.20
+  - @arch-ui/pagination@0.0.22
+
 ## 1.1.22
 
 ### Patch Changes

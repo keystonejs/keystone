@@ -1,5 +1,12 @@
 # @arch-ui/pagination
 
+## 0.0.22
+
+### Patch Changes
+
+- Updated dependencies [[`98bd9d8c0`](https://github.com/keystonejs/keystone/commit/98bd9d8c05971e88f46dc9c9892f6a232ddf124c)]:
+  - @arch-ui/button@0.0.20
+
 ## 0.0.21
 
 ### Patch Changes

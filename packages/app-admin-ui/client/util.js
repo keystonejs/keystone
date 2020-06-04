@@ -28,9 +28,14 @@ export const deconstructErrorsToDataShape = ({ graphQLErrors = [] } = {}) => {
 // Toast Formatters
 // ==============================
 
-export function toastItemSuccess({ addToast, customToast }, item, message = 'Success') {
+export function toastItemSuccess(
+  { addToast, customToast },
+  { item, list },
+  message = 'Success',
+  toastAction
+) {
   const toastContent = customToast ? (
-    customToast(item)
+    customToast({ item, toastAction, list, message })
   ) : (
     <div>
       {item && item._label_ ? <strong>{item._label_}</strong> : null}
