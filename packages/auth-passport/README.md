@@ -8,6 +8,8 @@ title: Passport auth strategy
 
 [![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/auth-passport)
 
+> This feature is currently in progress. While passport works for the `GraphQLApp`, only password authentication is supported for the `AdminUIApp`. Please see [this issue](https://github.com/keystonejs/keystone/issues/2581) for more details.
+
 Enable Keystone authentication via services such as Google, Twitter, Facebook,
 GitHub, and any [others supported by passport.js](http://www.passportjs.org).
 
@@ -126,6 +128,7 @@ const googleStrategy = keystone.createAuthStrategy({
     appSecret: '<Your Google App Secret>',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
+    callbackHost: 'http://localhost:3000',
 
     // Once a user is found/created and successfully matched to the
     // googleId, they are authenticated, and the token is returned here.
@@ -148,7 +151,12 @@ const googleStrategy = keystone.createAuthStrategy({
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp()],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({
+      authStrategy: googleStrategy,
+    }),
+  ],
 };
 ```
 
@@ -200,6 +208,7 @@ const googleStrategy = keystone.createAuthStrategy({
     appSecret: '<Your Google App Secret>',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
+    callbackHost: 'http://localhost:3000',
 
     loginPathMiddleware: (req, res, next) => {
       // An express middleware executed before the Passport social signin flow
@@ -253,7 +262,12 @@ const googleStrategy = keystone.createAuthStrategy({
 
 keystone
   .prepare({
-    apps: [new GraphQLApp(), new AdminUIApp()],
+    apps: [
+      new GraphQLApp(),
+      new AdminUIApp({
+        authStrategy: googleStrategy,
+      }),
+    ],
     dev: process.env.NODE_ENV !== 'production',
   })
   .then(async ({ middlewares }) => {

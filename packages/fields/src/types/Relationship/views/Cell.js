@@ -4,7 +4,7 @@ export default ({ data, field, Link }) => {
   if (!data) {
     return null;
   }
-  const refList = field.adminMeta.getListByKey(field.config.ref);
+  const { fullPath } = field.getRefList();
   return (
     <Fragment>
       {(Array.isArray(data) ? data : [data])
@@ -12,7 +12,7 @@ export default ({ data, field, Link }) => {
         .map((item, index) => (
           <Fragment key={item.id}>
             {!!index ? ', ' : ''}
-            <Link path={refList.path} item={item}>
+            <Link path={fullPath} item={item}>
               {item._label_}
             </Link>
           </Fragment>

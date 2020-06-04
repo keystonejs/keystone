@@ -1,7 +1,7 @@
 import {
   isSameMonth,
   startOfMonth,
-  eachDay,
+  eachDayOfInterval,
   addWeeks,
   startOfWeek,
   endOfWeek,
@@ -36,7 +36,7 @@ export function getWeeksInMonth(date) {
   const lastDayOfFirstWeek = endOfWeek(firstDayOfMonth, weekOptions);
 
   const getWeeks = (startDay, endDay, weekArray) => {
-    const week = eachDay(startDay, endDay).map(createDayObject);
+    const week = eachDayOfInterval({ start: startDay, end: endDay }).map(createDayObject);
     const weeks = [...weekArray, week];
     const nextWeek = addWeeks(startDay, 1);
 

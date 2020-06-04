@@ -18,7 +18,7 @@ function useIntersectionObserver(cb, ref) {
   });
 }
 
-const initalItemsToLoad = 10;
+const initialItemsToLoad = 10;
 const subsequentItemsToLoad = 50;
 
 // to use hooks in render props
@@ -39,6 +39,7 @@ const Relationship = forwardRef(
       setSearch,
       selectProps,
       fetchMore,
+      isDisabled,
     },
     ref
   ) => {
@@ -76,16 +77,22 @@ const Relationship = forwardRef(
       () => ({
         MenuList: ({ children, ...props }) => {
           const loadingRef = useRef(null);
+          const QUERY = gql`
+            query RelationshipSelectMore($search: String!, $first: Int!, $skip: Int!) {
+              ${refList.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
+                _label_
+                id
+              }
+            }
+          `;
 
           useIntersectionObserver(([{ isIntersecting }]) => {
             if (!props.isLoading && isIntersecting && props.options.length < count) {
               fetchMore({
-                query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
-                  refList.gqlNames.listQueryName,
-                  `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
-                )}}`,
+                query: QUERY,
                 variables: {
                   search,
+                  first: subsequentItemsToLoad,
                   skip: props.options.length,
                 },
                 updateQuery: (prev, { fetchMoreResult }) => {
@@ -134,6 +141,7 @@ const Relationship = forwardRef(
         inputId={htmlID}
         innerRef={ref}
         menuPortalTarget={document.body}
+        isDisabled={isDisabled}
         {...selectProps}
       />
     );
@@ -150,21 +158,32 @@ const RelationshipSelect = ({
   onChange,
   isMulti,
   value,
+  isDisabled,
 }) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
-  const query = gql`query RelationshipSelect($search: String!, $skip: Int!) {${refList.buildQuery(
-    refList.gqlNames.listQueryName,
-    `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`
-  )}${refList.countQuery(`(search: $search)`)}}`;
+
+  const QUERY = gql`
+    query RelationshipSelect($search: String!, $first: Int!, $skip: Int!) {
+      ${refList.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
+        _label_
+        id
+      }
+
+      ${refList.gqlNames.listQueryMetaName}(search: $search) {
+        count
+      }
+    }
+  `;
 
   const canRead =
     !serverErrors ||
     serverErrors.every(error => !(error instanceof Error && error.name === 'AccessDeniedError'));
   const selectProps = renderContext === 'dialog' ? { menuShouldBlockScroll: true } : null;
 
-  const { data, error, loading, fetchMore } = useQuery(query, {
-    variables: { search, skip: 0 },
+  const { data, error, loading, fetchMore } = useQuery(QUERY, {
+    fetchPolicy: 'network-only',
+    variables: { search, first: initialItemsToLoad, skip: 0 },
   });
 
   // TODO: better error UI
@@ -194,6 +213,7 @@ const RelationshipSelect = ({
         selectProps,
         fetchMore,
         ref: innerRef,
+        isDisabled,
       }}
     />
   );

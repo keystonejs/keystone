@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 const DateTimeCell = props => {
   if (!props.data) {
@@ -8,7 +8,7 @@ const DateTimeCell = props => {
   if (!formatConfig) {
     return props.data;
   }
-  return format(props.data, formatConfig);
+  return format(parseISO(props.data), formatConfig);
 };
 
 export default DateTimeCell;

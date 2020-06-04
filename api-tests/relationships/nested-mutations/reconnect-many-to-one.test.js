@@ -46,7 +46,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes: { connect: [{ id: "${noteA.id}" }, { id: "${noteB.id}" }] }
                 }) {
                   id
-                  notes(orderBy: "title_ASC") { id title }
+                  notes(sortBy: title_ASC) { id title }
                 }
               }
           `,
@@ -60,7 +60,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes: { connect: [{ id: "${noteC.id}" }, { id: "${noteD.id}" }] }
                 }) {
                   id
-                  notes(orderBy: "title_ASC") { id title }
+                  notes(sortBy: title_ASC) { id title }
                 }
               }
           `,
@@ -82,7 +82,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes: { connect: [{ id: "${noteB.id}" }] }
                 }) {
                   id
-                  notes(orderBy: "title_ASC") { id title }
+                  notes(sortBy: title_ASC) { id title }
                 }
               }
           `,
@@ -119,7 +119,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               User(where: { id: "${alice.createUser.id}"}) {
                 id
-                notes(orderBy: "title_ASC") { id title }
+                notes(sortBy: title_ASC) { id title }
               }
             }
             `,

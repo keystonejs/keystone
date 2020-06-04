@@ -37,7 +37,7 @@ While it has served us well, it's time for an upgrade.
 ## The problem
 
 The key challenge in designing our schema is how we represent relationships between lists.
-Our initial design borrowed heavily from a `MongDB` inspired pattern, where each object was responsible for tracking its related items.
+Our initial design borrowed heavily from a `MongoDB` inspired pattern, where each object was responsible for tracking its related items.
 This made the initial implementation very simple, particularly for the `MongoDB` adapter.
 The `PostgreSQL` adapter was more complex, as it had to emulate the patterns from `MongoDB`, but it also worked.
 
@@ -80,7 +80,7 @@ This will allow us to extend the kind of modelling that Keystone provides to inc
 ## Updating your database
 
 In order to take advantage of these improvements you will need to make some changes to your database.
-In some instances this will simply involving removing tables or columns which are no longer required.
+In some instances this will simply involve removing tables or columns which are no longer required.
 In other cases you will need to rename some tables or columns and possibly move data from one table to another.
 
 To assist with this process we have written a [Schema Upgrade Guide](/docs/guides/relationship-migration.md), which will take you through the steps to safely transition your database.

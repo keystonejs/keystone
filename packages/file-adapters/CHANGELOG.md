@@ -1,5 +1,36 @@
 # @keystonejs/file-adapters
 
+## 7.0.0
+
+### Major Changes
+
+- [`614164c58`](https://github.com/keystonejs/keystone/commit/614164c5804b20800938efe781face46f5aea7bc) [#2967](https://github.com/keystonejs/keystone/pull/2967) Thanks [@intmainvoid](https://github.com/intmainvoid)! - Providing an access key, secret access key or region directly to AWS has been deprecated (according to AWS). As such, parameters `accessKeyId`, `secretAccessKey` and `region` are no longer `required` on the S3Adapter's constructor and - if provided this way - are ignored by the S3Adapter. These parameters can however, still be provided via the optional `s3Options` parameter object if required like so:
+
+  ```Javascript
+  const fileAdapter = new S3Adapter({
+    bucket: 'bucket-name',
+    // accessKeyId: 'ACCESS_KEY_ID', // No longer required. Ignored if provided here
+    // secretAccessKey: 'SECRET_ACCESS_KEY', // No longer required. Ignored if provided here
+    // region: 'us-west-2' // No longer required. Ignored if provided here
+    s3Options: {
+      accessKeyId: 'ACCESS_KEY_ID',
+      secretAccessKey: 'SECRET_ACCESS_KEY',
+      region: 'us-west-2',
+    }
+  });
+  ```
+
+### Patch Changes
+
+- [`cced67b8f`](https://github.com/keystonejs/keystone/commit/cced67b8f9785348d79b23a89405fcc474461c14) [#3073](https://github.com/keystonejs/keystone/pull/3073) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Replaced `stream.close` with `stream.destroy()` in s3 file-adapter as there is no `readableStream.close` method.
+  - Added documentation about using S3-compatible storage provider. Provided sample config for DigitalOcean and Minio.
+
+## 6.0.2
+
+### Patch Changes
+
+- [`04ec9981`](https://github.com/keystonejs/keystone/commit/04ec998166a8b3044570769a8c3f501d80527bf9) [#2843](https://github.com/keystonejs/keystone/pull/2843) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated cloudinary dependency to 1.21.0.
+
 ## 6.0.1
 
 ### Patch Changes

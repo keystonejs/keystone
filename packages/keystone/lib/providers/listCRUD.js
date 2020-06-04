@@ -1,6 +1,8 @@
 const { GraphQLJSON } = require('graphql-type-json');
 const { flatten, objMerge, unique } = require('@keystonejs/utils');
 
+const { getListCRUDTypes } = require('./listCRUDTypes');
+
 class ListCRUDProvider {
   constructor({ metaPrefix = 'ks' } = {}) {
     this.lists = [];
@@ -13,85 +15,10 @@ class ListCRUDProvider {
   getTypes({ schemaName }) {
     return unique([
       ...flatten(this.lists.map(list => list.getGqlTypes({ schemaName }))),
-      `"""NOTE: Can be JSON, or a Boolean/Int/String
-          Why not a union? GraphQL doesn't support a union including a scalar
-          (https://github.com/facebook/graphql/issues/215)"""
-       scalar JSON`,
-      `type _ListAccess {
-        """Access Control settings for the currently logged in (or anonymous)
-           user when performing 'create' operations.
-           NOTE: 'create' can only return a Boolean.
-           It is not possible to specify a declarative Where clause for this
-           operation"""
-        create: Boolean
-
-        """Access Control settings for the currently logged in (or anonymous)
-           user when performing 'read' operations."""
-        read: JSON
-
-        """Access Control settings for the currently logged in (or anonymous)
-           user when performing 'update' operations."""
-        update: JSON
-
-        """Access Control settings for the currently logged in (or anonymous)
-           user when performing 'delete' operations."""
-        delete: JSON
-
-        """Access Control settings for the currently logged in (or anonymous)
-           user when performing 'auth' operations."""
-        auth: JSON
-      }`,
-      `type _ListSchemaFields {
-        """The name of the field in its list."""
-        name: String
-
-        """The field type (ie, Checkbox, Text, etc)"""
-        type: String
-      }`,
-      `type _ListSchemaRelatedFields {
-        """The typename as used in GraphQL queries"""
-        type: String
-
-        """A list of GraphQL field names"""
-        fields: [String]
-      }`,
-      `type _ListSchema {
-        """The typename as used in GraphQL queries"""
-        type: String
-
-        """Top level GraphQL query names which either return this type, or
-           provide aggregate information about this type"""
-        queries: [String]
-
-        """Information about fields defined on this list. """
-        fields(where: _ListSchemaFieldsInput): [_ListSchemaFields]
-
-        """Information about fields on other types which return this type, or
-           provide aggregate information about this type"""
-        relatedFields: [_ListSchemaRelatedFields]
-      }`,
-      `type _ListMeta {
-        """The Keystone List name"""
-        name: String
-
-        """Access control configuration for the currently authenticated
-           request"""
-        access: _ListAccess
-
-        """Information on the generated GraphQL schema"""
-        schema: _ListSchema
-      }`,
-      `type _QueryMeta {
-        count: Int
-      }`,
-      `input ${this.gqlNames.listsMetaInput} {
-        key: String
-      }`,
-      `input _ListSchemaFieldsInput {
-        type: String
-      }`,
+      ...getListCRUDTypes(this.gqlNames),
     ]);
   }
+
   getQueries({ schemaName }) {
     // Aux lists are only there for typing and internal operations, they should
     // not have any GraphQL operations performed on them
@@ -102,9 +29,14 @@ class ListCRUDProvider {
       ${this.gqlNames.listsMeta}(where: ${this.gqlNames.listsMetaInput}): [_ListMeta]`,
     ];
   }
+
   getMutations({ schemaName }) {
     const firstClassLists = this.lists.filter(list => !list.isAuxList);
     return flatten(firstClassLists.map(list => list.getGqlMutations({ schemaName })));
+  }
+
+  getSubscriptions({}) {
+    return [];
   }
 
   getTypeResolvers({ schemaName }) {
@@ -137,9 +69,10 @@ class ListCRUDProvider {
       fields: ({ key }, { where: { type } = {} }) => {
         return this.lists
           .find(list => list.key === key)
-          .getFieldsWithAccess({ schemaName, access: 'read' })
+          .getAllFieldsWithAccess({ schemaName, access: 'read' })
           .filter(field => !type || field.constructor.name === type)
           .map(field => ({
+            path: field.path,
             name: field.path,
             type: field.constructor.name,
           }));
@@ -175,6 +108,7 @@ class ListCRUDProvider {
       _ListSchema: listSchemaResolver,
     };
   }
+
   getQueryResolvers({ schemaName }) {
     const firstClassLists = this.lists.filter(list => !list.isAuxList);
     return {
@@ -184,18 +118,28 @@ class ListCRUDProvider {
       ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
 
       // And the Keystone meta queries must always be available
-      [this.gqlNames.listsMeta]: (_, { where: { key } = {} }, context) =>
+      [this.gqlNames.listsMeta]: (_, { where: { key, auxiliary } = {} }, context) =>
         this.lists
-          .filter(list => list.access[schemaName].read && (!key || list.key === key))
+          .filter(
+            list =>
+              list.access[schemaName].read &&
+              (!key || list.key === key) &&
+              (auxiliary === undefined || list.isAuxList === auxiliary)
+          )
           .map(list => list.listMeta(context)),
     };
   }
+
   getMutationResolvers({ schemaName }) {
     const firstClassLists = this.lists.filter(list => !list.isAuxList);
     return {
       ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
       ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
     };
+  }
+
+  getSubscriptionResolvers({}) {
+    return {};
   }
 }
 

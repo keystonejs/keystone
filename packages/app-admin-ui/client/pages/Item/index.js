@@ -1,9 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
-import styled from '@emotion/styled';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
 
@@ -26,27 +25,28 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
 import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
   toastItemSuccess,
-  toastError,
   validateFields,
   handleCreateUpdateMutationError,
 } from '../../util';
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
-import { useAdminMeta } from '../../providers/AdminMeta';
+import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
 
-let Render = ({ children }) => children();
+const Render = ({ children }) => children();
 
-const Form = styled.form({
-  marginBottom: gridSize * 3,
-});
+const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...props} />;
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
+
+const checkIsReadOnly = ({ maybeAccess, isReadOnly }) => !maybeAccess.update || !!isReadOnly;
 
 // Memoizing allows us to reduce the calls to `.serialize` when data hasn't
 // changed.
@@ -56,31 +56,26 @@ const getCurrentValues = memoizeOne(getValues);
 const deserializeItem = memoizeOne((list, data) => list.deserializeItemData(data));
 
 const getRenderableFields = memoizeOne(list =>
-  list.fields
-    .filter(({ isPrimaryKey }) => !isPrimaryKey)
-    .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
+  list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey)
 );
 
-const ItemDetails = ({
-  adminPath,
-  list,
-  item: initialData,
-  itemErrors,
-  onUpdate,
-  updateItem,
-  updateInProgress,
-}) => {
+const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
   const [item, setItem] = useState(initialData);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
 
   const itemHasChanged = useRef(false);
-  const itemSaveCheckCache = useRef({});
   const deleteConfirmed = useRef(false);
 
   const history = useHistory();
   const { addToast } = useToasts();
+  const { customToast } = useUIHooks();
+
+  const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
+    errorPolicy: 'all',
+    onError: error => handleCreateUpdateMutationError({ error, addToast }),
+  });
 
   const getFieldsObject = memoizeOne(() =>
     arrayToObject(
@@ -116,20 +111,19 @@ const ItemDetails = ({
     }
   };
 
-  const onDelete = deletePromise => {
+  const onDelete = () => {
     deleteConfirmed.current = true;
-    deletePromise
-      .then(() => {
-        if (mounted) {
-          setShowDeleteModal(false);
-        }
+    if (mounted) {
+      setShowDeleteModal(false);
+    }
 
-        history.replace(`${adminPath}/${list.path}`);
-        toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
-      })
-      .catch(error => {
-        toastError({ addToast }, error);
-      });
+    toastItemSuccess(
+      { addToast, customToast },
+      { item: initialData, list },
+      'Deleted successfully',
+      'delete'
+    );
+    history.replace(list.getFullPersistentPath());
   };
 
   const openDeleteModal = () => {
@@ -205,64 +199,56 @@ const ItemDetails = ({
     }
 
     // Cache the current item data at the time of saving.
-    itemSaveCheckCache.current = item;
+    const itemSaveCheckCache = item;
 
-    updateItem({ variables: { id: item.id, data } })
-      .then(() => {
-        const toastContent = (
-          <div>
-            {item._label_ ? <strong>{item._label_}</strong> : null}
-            <div>Saved successfully</div>
-          </div>
-        );
+    // The result will be undefined if an error (such as access denial) occurred.
+    const mutationResult = await updateItem({ variables: { id: item.id, data } });
+    if (!mutationResult) {
+      return;
+    }
 
-        addToast(toastContent, {
-          autoDismiss: true,
-          appearance: 'success',
-        });
+    setValidationErrors({});
+    setValidationWarnings({});
 
-        setValidationErrors({});
-        setValidationWarnings({});
+    // we only want to set itemHasChanged to false
+    // when it hasn't changed since we did the mutation
+    // otherwise a user could edit the data and
+    // accidentally close the page without a warning
+    if (item === itemSaveCheckCache) {
+      itemHasChanged.current = false;
+    }
 
-        // we only want to set itemHasChanged to false
-        // when it hasn't changed since we did the mutation
-        // otherwise a user could edit the data and
-        // accidentally close the page without a warning
-        if (item === itemSaveCheckCache.current) {
-          itemHasChanged.current = false;
-        }
-      })
-      .then(onUpdate)
-      .then(savedItem => {
-        // No changes since we kicked off the item saving
-        if (!itemHasChanged.current) {
-          // Then reset the state to the current server value
-          // This ensures we are able to pass any extra information returned
-          // from the server that otherwise would be unknown to client state
-          setItem(savedItem);
+    const savedItem = await onUpdate();
 
-          // Clear the cache
-          itemSaveCheckCache.current = {};
-        }
-      });
-  };
+    // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
+    toastItemSuccess(
+      { addToast, customToast },
+      { item: savedItem, list },
+      'Saved successfully',
+      'update'
+    );
 
-  const onCreate = ({ data }) => {
-    const { id } = data[list.gqlNames.createMutationName];
-    history.push(`${adminPath}/${list.path}/${id}`);
+    // No changes since we kicked off the item saving.
+    // Then reset the state to the current server value
+    // This ensures we are able to pass any extra information returned
+    // from the server that otherwise would be unknown to client state
+    if (!itemHasChanged.current) {
+      setItem(savedItem);
+    }
   };
 
   return (
     <Fragment>
       {itemHasChanged.current && !deleteConfirmed.current && <PreventNavigation />}
-      <ItemTitle id={item.id} list={list} adminPath={adminPath} titleText={initialData._label_} />
+      <ItemTitle id={item.id} list={list} titleText={initialData._label_} />
       <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
         <Form>
           <AutocompleteCaptor />
           {getRenderableFields(list).map((field, i) => (
             <Render key={field.path}>
               {() => {
-                const [Field] = field.adminMeta.readViews([field.views.Field]);
+                const [Field] = field.readViews([field.views.Field]);
+                const isReadOnly = checkIsReadOnly(field) || !list.access.update;
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -288,22 +274,24 @@ const ItemDetails = ({
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      list={list}
-                      item={item}
-                      errors={[
-                        ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                        ...(validationErrors[field.path] || []),
-                      ]}
-                      warnings={validationWarnings[field.path] || []}
-                      value={item[field.path]}
-                      savedValue={initialData[field.path]}
-                      onChange={onChange}
-                      renderContext="page"
-                      CreateItemModal={CreateItemModal}
-                    />
+                    <ErrorBoundary>
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        list={list}
+                        item={item}
+                        isDisabled={isReadOnly}
+                        errors={[
+                          ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                          ...(validationErrors[field.path] || []),
+                        ]}
+                        warnings={validationWarnings[field.path] || []}
+                        value={item[field.path]}
+                        savedValue={initialData[field.path]}
+                        onChange={onChange}
+                        renderContext="page"
+                      />
+                    </ErrorBoundary>
                   ),
                   [
                     i,
@@ -316,6 +304,7 @@ const ItemDetails = ({
                     validationWarnings[field.path],
                     initialData[field.path],
                     onChange,
+                    isReadOnly,
                   ]
                 );
               }}
@@ -333,7 +322,7 @@ const ItemDetails = ({
         />
       </Card>
 
-      <CreateItemModal onCreate={onCreate} />
+      <CreateItemModal />
       <DeleteItemModal
         isOpen={showDeleteModal}
         item={initialData}
@@ -345,42 +334,33 @@ const ItemDetails = ({
   );
 };
 
-const ItemNotFound = ({ adminPath, errorMessage, list }) => (
+const ItemNotFound = ({ errorMessage, list }) => (
   <PageError>
     <p>Couldn't find a {list.singular} matching that ID</p>
-    <Button to={`${adminPath}/${list.path}`} variant="ghost">
+    <Button to={list.fullPath} variant="ghost">
       Back to List
     </Button>
-    {errorMessage ? (
-      <p style={{ fontSize: '0.75rem', marginTop: gridSize * 4 }}>
+    {errorMessage && (
+      <p style={{ fontSize: '0.75rem', marginTop: `${gridSize * 4}px` }}>
         <code>{errorMessage}</code>
       </p>
-    ) : null}
+    )}
   </PageError>
 );
 
-const ItemPage = ({ list, itemId }) => {
-  const { adminPath, getListByKey } = useAdminMeta();
-  const { addToast } = useToasts();
-
-  const itemQuery = list.getItemQuery(itemId);
+const ItemPage = () => {
+  const { itemId } = useParams();
+  const { list } = useList();
 
   // network-only because the data we mutate with is important for display
   // in the UI, and may be different than what's in the cache
   // NOTE: We specifically trigger this query here, before the later code which
   // could Suspend which allows the code and data to load in parallel.
-  const { loading, error, data, refetch } = useQuery(itemQuery, {
+  const { loading, error, data, refetch } = useQuery(list.itemQuery, {
     fetchPolicy: 'network-only',
     errorPolicy: 'all',
+    variables: { id: itemId },
   });
-
-  const [updateItem, { loading: updateInProgress, error: updateError }] = useMutation(
-    list.updateMutation,
-    {
-      errorPolicy: 'all',
-      onError: error => handleCreateUpdateMutationError({ error, addToast }),
-    }
-  );
 
   // Now that the network request for data has been triggered, we
   // try to initialise the fields. They are Suspense capable, so may
@@ -424,7 +404,7 @@ const ItemPage = ({ list, itemId }) => {
     return (
       <Fragment>
         <DocTitle title={`${list.singular} not found`} />
-        <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+        <ItemNotFound errorMessage={error.message} list={list} />
       </Fragment>
     );
   }
@@ -434,13 +414,8 @@ const ItemPage = ({ list, itemId }) => {
   const item = deserializeItem(list, data[list.gqlNames.itemQueryName]);
   const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
-  const handleUpdateItem = async args => {
-    const result = await updateItem(args);
-    if (!result) throw Error();
-  };
-
   if (!item) {
-    return <ItemNotFound adminPath={adminPath} list={list} />;
+    return <ItemNotFound list={list} />;
   }
 
   return (
@@ -449,20 +424,14 @@ const ItemPage = ({ list, itemId }) => {
         <DocTitle title={`${item._label_} — ${list.singular}`} />
         <Container id="toast-boundary">
           <ItemDetails
-            adminPath={adminPath}
             item={item}
             itemErrors={itemErrors}
             key={itemId}
             list={list}
-            getListByKey={getListByKey}
-            onUpdate={() =>
-              refetch().then(refetchedData =>
-                deserializeItem(list, refetchedData.data[list.gqlNames.itemQueryName])
-              )
-            }
-            updateInProgress={updateInProgress}
-            updateErrorMessage={updateError && updateError.message}
-            updateItem={handleUpdateItem}
+            onUpdate={async () => {
+              const { data } = await refetch();
+              return deserializeItem(list, data[list.gqlNames.itemQueryName]);
+            }}
           />
         </Container>
       </main>

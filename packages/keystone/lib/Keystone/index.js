@@ -1,7 +1,7 @@
 const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
-const fastMemoize = require('fast-memoize');
+const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { print } = require('graphql/language/printer');
@@ -14,7 +14,6 @@ const {
   flatten,
   unique,
   filterValues,
-  compose,
 } = require('@keystonejs/utils');
 const {
   validateFieldAccessControl,
@@ -30,7 +29,7 @@ const {
   createRelationships,
   mergeRelationships,
 } = require('./relationship-utils');
-const List = require('../List');
+const { List } = require('../ListTypes');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 
@@ -42,11 +41,14 @@ module.exports = class Keystone {
     defaultAdapter,
     name,
     onConnect,
-    cookieSecret = 'qwerty',
+    cookieSecret,
     sessionStore,
     queryLimits = {},
-    secureCookies = process.env.NODE_ENV === 'production', // Default to true in production
-    cookieMaxAge = 1000 * 60 * 60 * 24 * 30, // 30 days
+    cookie = {
+      secure: process.env.NODE_ENV === 'production', // Default to true in production
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+      sameSite: false,
+    },
     schemaNames = ['public'],
     appVersion = {
       version: '1.0.0',
@@ -63,8 +65,7 @@ module.exports = class Keystone {
     this._schemas = {};
     this._sessionManager = new SessionManager({
       cookieSecret,
-      secureCookies,
-      cookieMaxAge,
+      cookie,
       sessionStore,
     });
     this.eventHandlers = { onConnect };
@@ -155,15 +156,23 @@ module.exports = class Keystone {
       // memoizing to avoid requests that hit the same type multiple times.
       // We do it within the request callback so we can resolve it based on the
       // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = fastMemoize(access => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-        });
-      });
+      getCustomAccessControlForUser = memoize(
+        async (item, args, context, info, access, gqlName) => {
+          return validateCustomAccessControl({
+            item,
+            args,
+            context,
+            info,
+            access: access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+            gqlName,
+          });
+        },
+        { isPromise: true }
+      );
 
-      getListAccessControlForUser = fastMemoize(
-        (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+      getListAccessControlForUser = memoize(
+        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
           return validateListAccessControl({
             access: this.lists[listKey].access[schemaName],
             originalInput,
@@ -174,11 +183,12 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }
+        },
+        { isPromise: true }
       );
 
-      getFieldAccessControlForUser = fastMemoize(
-        (
+      getFieldAccessControlForUser = memoize(
+        async (
           listKey,
           fieldKey,
           originalInput,
@@ -198,17 +208,21 @@ module.exports = class Keystone {
             itemId,
             itemIds,
           });
-        }
+        },
+        { isPromise: true }
       );
 
-      getAuthAccessControlForUser = fastMemoize((listKey, { gqlName } = {}) => {
-        return validateAuthAccessControl({
-          access: this.lists[listKey].access[schemaName],
-          authentication: { item: req.user, listKey: req.authedListKey },
-          listKey,
-          gqlName,
-        });
-      });
+      getAuthAccessControlForUser = memoize(
+        async (listKey, { gqlName } = {}) => {
+          return validateAuthAccessControl({
+            access: this.lists[listKey].access[schemaName],
+            authentication: { item: req.user, listKey: req.authedListKey },
+            listKey,
+            gqlName,
+          });
+        },
+        { isPromise: true }
+      );
     }
 
     return {
@@ -296,23 +310,30 @@ module.exports = class Keystone {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
 
-    const list = new List(key, compose(config.plugins || [])(config), {
-      getListByKey,
-      queryHelper: this._buildQueryHelper.bind(this),
-      adapter: adapters[adapterName],
-      defaultAccess: this.defaultAccess,
-      registerType: type => this.registeredTypes.add(type),
-      isAuxList,
-      createAuxList: (auxKey, auxConfig) => {
-        if (isAuxList) {
-          throw new Error(
-            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
-          );
-        }
-        return this.createList(auxKey, auxConfig, { isAuxList: true });
-      },
-      schemaNames: this._schemaNames,
-    });
+    // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
+    const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+
+    const list = new List(
+      key,
+      composePlugins(config.plugins || [])(config, { listKey: key, keystone: this }),
+      {
+        getListByKey,
+        queryHelper: this._buildQueryHelper.bind(this),
+        adapter: adapters[adapterName],
+        defaultAccess: this.defaultAccess,
+        registerType: type => this.registeredTypes.add(type),
+        isAuxList,
+        createAuxList: (auxKey, auxConfig) => {
+          if (isAuxList) {
+            throw new Error(
+              `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
+            );
+          }
+          return this.createList(auxKey, auxConfig, { isAuxList: true });
+        },
+        schemaNames: this._schemaNames,
+      }
+    );
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);
@@ -320,8 +341,8 @@ module.exports = class Keystone {
     return list;
   }
 
-  extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
-    return this._customProvider.extendGraphQLSchema({ types, queries, mutations });
+  extendGraphQLSchema({ types = [], queries = [], mutations = [], subscriptions = [] }) {
+    return this._customProvider.extendGraphQLSchema({ types, queries, mutations, subscriptions });
   }
 
   _consolidateRelationships() {
@@ -478,12 +499,8 @@ module.exports = class Keystone {
   /**
    * @return Promise<null>
    */
-  disconnect() {
-    return resolveAllKeys(
-      mapKeys(this.adapters, adapter => adapter.disconnect())
-      // Chain an empty function so that the result of this promise
-      // isn't unintentionally leaked to the caller
-    ).then(() => {});
+  async disconnect() {
+    await resolveAllKeys(mapKeys(this.adapters, adapter => adapter.disconnect()));
   }
 
   getAdminMeta({ schemaName }) {
@@ -507,6 +524,16 @@ module.exports = class Keystone {
     return { lists, name: this.name };
   }
 
+  getAdminViews({ schemaName }) {
+    return {
+      listViews: arrayToObject(
+        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
+        'key',
+        list => list.views
+      ),
+    };
+  }
+
   // It's not Keystone core's responsibility to create an executable schema, but
   // once one is, Keystone wants to be able to expose the ability to query that
   // schema, so this function enables other modules to register that function.
@@ -517,6 +544,10 @@ module.exports = class Keystone {
   getTypeDefs({ schemaName }) {
     const queries = unique(flatten(this._providers.map(p => p.getQueries({ schemaName }))));
     const mutations = unique(flatten(this._providers.map(p => p.getMutations({ schemaName }))));
+    const subscriptions = unique(
+      flatten(this._providers.map(p => p.getSubscriptions({ schemaName })))
+    );
+
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGqlAuxTypes()` method, it will be
     // duplicated.
@@ -526,6 +557,7 @@ module.exports = class Keystone {
       ...unique(flatten(this._providers.map(p => p.getTypes({ schemaName })))),
       queries.length > 0 && `type Query { ${queries.join('\n')} }`,
       mutations.length > 0 && `type Mutation { ${mutations.join('\n')} }`,
+      subscriptions.length > 0 && `type Subscription { ${subscriptions.join('\n')} }`,
     ]
       .filter(s => s)
       .map(s => print(gql(s)));
@@ -534,8 +566,8 @@ module.exports = class Keystone {
   getResolvers({ schemaName }) {
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
-    // - first one wins)
-    // TODO: Document this order of precendence, because it's not obvious, and
+    // - last one wins)
+    // TODO: Document this order of precedence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
     return filterValues(
@@ -545,6 +577,9 @@ module.exports = class Keystone {
         ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
         Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
         Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
+        Subscription: objMerge(
+          this._providers.map(p => p.getSubscriptionResolvers({ schemaName }))
+        ),
       },
       o => Object.entries(o).length > 0
     );

@@ -45,11 +45,11 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
     // Knex will not error until a connection is made
     // To check the connection we run a test query
-    const result = await this.knex.raw('select 1+1 as result').catch(result => ({
+    const connectResult = await this.knex.raw('select 1+1 as result').catch(result => ({
       error: result.error || result,
     }));
-    if (result.error) {
-      const connectionError = result.error;
+    if (connectResult.error) {
+      const connectionError = connectResult.error;
       let dbName;
       if (typeof knexConnection === 'string') {
         dbName = knexConnection.split('/').pop();
@@ -63,8 +63,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
       console.warn(`createdb ${dbName}`);
       throw connectionError;
     }
-
-    return result;
+    return true;
   }
 
   async postConnect({ rels }) {
@@ -79,6 +78,24 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
     await this.dropDatabase();
     return this._createTables();
+  }
+
+  async _verifyTables() {
+    return pSettle(
+      Object.values(this.listAdapters).map(listAdapter => {
+        const { tableName } = listAdapter;
+        // In theory it's possible for lists to have different adapters
+        // check the adapter has a createTable method
+        if (listAdapter.createTable) {
+          return this.knex.schema
+            .hasTable(tableName)
+            .then(result => ({ tableName, hasTable: result }));
+        } else {
+          // For unknown list adapters, skip, by returning true
+          return { tableName, hasTable: true };
+        }
+      })
+    );
   }
 
   async _createTables() {
@@ -310,6 +327,22 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
+  async _unsetForeignOneToOneValues(data, id) {
+    // If there's a 1:1 FK in the data on a different list we need to go and
+    // delete it from any other item;
+    await Promise.all(
+      Object.keys(data)
+        .map(key => ({ adapter: this.fieldAdaptersByPath[key] }))
+        .filter(({ adapter }) => adapter && adapter.isRelationship)
+        .filter(
+          ({ adapter: { rel } }) => rel.cardinality === '1:1' && rel.tableName !== this.tableName
+        )
+        .map(({ adapter: { rel: { tableName, columnName } } }) =>
+          this._setNullByValue({ tableName, columnName, value: id })
+        )
+    );
+  }
+
   async _processNonRealFields(data, processFunction) {
     return resolveAllKeys(
       arrayToObject(
@@ -411,6 +444,7 @@ class KnexListAdapter extends BaseListAdapter {
 
     // Unset any real 1:1 fields
     await this._unsetOneToOneValues(realData);
+    await this._unsetForeignOneToOneValues(data, id);
 
     // Update the real data
     const query = this._query()
@@ -509,7 +543,10 @@ class KnexListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(({ tableName }) => tableName === this.key)
+        .filter(
+          ({ tableName, left, right }) =>
+            tableName === this.key && right && left.refListKey === right.refListKey
+        )
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )
@@ -551,7 +588,7 @@ class KnexListAdapter extends BaseListAdapter {
 class QueryBuilder {
   constructor(
     listAdapter,
-    { where = {}, first, skip, orderBy, search },
+    { where = {}, first, skip, sortBy, orderBy, search },
     { meta = false, from = {} }
   ) {
     this._tableAliases = {};
@@ -632,6 +669,17 @@ class QueryBuilder {
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
         this._query.orderBy(sortKey, orderDirection);
       }
+      if (sortBy !== undefined) {
+        // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
+        this._query.orderBy(
+          sortBy.map(s => {
+            const [orderField, orderDirection] = s.split('_');
+            const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
+
+            return { column: sortKey, order: orderDirection };
+          })
+        );
+      }
     }
   }
 
@@ -661,29 +709,32 @@ class QueryBuilder {
     // Insert joins to handle 1:1 relationships where the FK is stored on the other table.
     // We join against the other table and select its ID as the path name, so that it appears
     // as if it existed on the primary table all along!
-    if (!meta) {
-      listAdapter.fieldAdapters
-        .filter(a => a.isRelationship && a.rel.cardinality === '1:1' && a.rel.right === a.field)
-        .forEach(a => {
-          const { tableName, columnName } = a.rel;
-          const otherTableAlias = `${tableAlias}__${a.path}_11`;
-          if (!this._tableAliases[otherTableAlias]) {
-            this._tableAliases[otherTableAlias] = true;
-            // LEFT OUTERJOIN on ... table>.<id> = <otherTable>.<columnName> SELECT <othertable>.<id> as <path>
-            query
-              .leftOuterJoin(
-                `${tableName} as ${otherTableAlias}`,
-                `${otherTableAlias}.${columnName}`,
-                `${tableAlias}.id`
-              )
-              .select(`${otherTableAlias}.id as ${a.path}`);
-          }
-        });
-    }
 
     const joinPaths = Object.keys(where).filter(
       path => !this._getQueryConditionByPath(listAdapter, path)
     );
+
+    const joinedPaths = [];
+    listAdapter.fieldAdapters
+      .filter(a => a.isRelationship && a.rel.cardinality === '1:1' && a.rel.right === a.field)
+      .forEach(({ path, rel }) => {
+        const { tableName, columnName } = rel;
+        const otherTableAlias = `${tableAlias}__${path}`;
+        if (!this._tableAliases[otherTableAlias] && (!meta || joinPaths.includes(path))) {
+          this._tableAliases[otherTableAlias] = true;
+          // LEFT OUTERJOIN on ... table>.<id> = <otherTable>.<columnName> SELECT <othertable>.<id> as <path>
+          query.leftOuterJoin(
+            `${tableName} as ${otherTableAlias}`,
+            `${otherTableAlias}.${columnName}`,
+            `${tableAlias}.id`
+          );
+          if (!meta) {
+            query.select(`${otherTableAlias}.id as ${path}`);
+          }
+          joinedPaths.push(path);
+        }
+      });
+
     for (let path of joinPaths) {
       if (path === 'AND' || path === 'OR') {
         // AND/OR we need to traverse their children
@@ -692,7 +743,7 @@ class QueryBuilder {
         const otherAdapter = listAdapter.fieldAdaptersByPath[path];
         // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
         // These correspond to many-relationships, which are handled separately
-        if (otherAdapter) {
+        if (otherAdapter && !joinedPaths.includes(path)) {
           // We need a join of the form:
           // ... LEFT OUTER JOIN {otherList} AS t1 ON {tableAlias}.{path} = t1.id
           // Each table has a unique path to the root table via foreign keys

@@ -35,7 +35,7 @@ You can use either `MongoDB` or `PostgreSQL`.
 - [MongoDB](https://www.mongodb.com/) >= 4.x: MongoDB is a powerful NoSQL document storage database.
 - [PostgreSQL](https://www.postgresql.org) >= 9.x: PostgreSQL is an open source relational database that uses the SQL language.
 
-Follow the [database setup](/docs/quick-start/adapters.md) instructions to install and configure your databasem, and to find out what your `connection string` is.
+Follow the [database setup](/docs/quick-start/adapters.md) instructions to install and configure your database, and to find out what your `connection string` is.
 
 > **Important:** You will need to make sure you have a valid `connection string` for your database in order to set up Keystone.
 
@@ -69,9 +69,9 @@ cd my-app
 If you are using `PostgreSQL` then you will need to create the tables in your database for Keystone to use.
 
 ```
-yarn create-tables
+yarn keystone create-tables
 # or
-npm run create-tables
+npx keystone create-tables
 ```
 
 You can now start your development server with the following command:
@@ -115,7 +115,7 @@ This todo app is a good introduction to Keystone, but chances are you'll want to
 
 <!-- FIXME:TL Next step should be tutorials, not guides. -->
 
-The [guides section](/docs/guides/index.md) is a great next step.
+The [guides section](/docs/guides/apps.md) is a great next step.
 It will walk you through concepts like [creating lists](/docs/tutorials/add-lists.md),
 setting up [content relationships](/docs/tutorials/relationships.md),
 managing [access control](/docs/guides/access-control.md) and much more.

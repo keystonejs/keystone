@@ -8,6 +8,7 @@ class PasswordAuthStrategy {
   constructor(keystone, listKey, config) {
     this.keystone = keystone;
     this.listKey = listKey;
+    this.gqlNames = {}; // Set by the auth provider
     this.config = {
       identityField: 'email',
       secretField: 'password',
@@ -52,15 +53,15 @@ class PasswordAuthStrategy {
     // Verify the secret matches
     const match = await this._matchItem(item, args, secretFieldInstance);
 
-    if (!match) {
+    if (!match.success) {
       return {
         success: false,
         message: this.config.protectIdentities
           ? '[passwordAuth:failure] Authentication failed'
-          : `[passwordAuth:secret:mismatch] The ${secretField} provided is incorrect`,
+          : match.message,
       };
     }
-    return { success: true, list, item, message: 'Authentication successful' };
+    return { ...match, list, item };
   }
 
   async _getItem(list, args, secretFieldInstance) {
@@ -74,7 +75,10 @@ class PasswordAuthStrategy {
       // TODO: This should call `secretFieldInstance.compare()` to ensure it's
       // always consistent.
       // This may still leak if the workfactor for the password field has changed
-      await secretFieldInstance.generateHash('password1234');
+      const hash = await secretFieldInstance.generateHash(
+        'simulated-password-to-counter-timing-attack'
+      );
+      await secretFieldInstance.compare('', hash);
       return { success: false, message: '[passwordAuth:failure] Authentication failed' };
     }
 
@@ -96,13 +100,31 @@ class PasswordAuthStrategy {
   async _matchItem(item, args, secretFieldInstance) {
     const { secretField } = this.config;
     const secret = args[secretField];
-    return await secretFieldInstance.compare(secret, item[secretField]);
+    if (item[secretField]) {
+      const success = await secretFieldInstance.compare(secret, item[secretField]);
+      return {
+        success,
+        message: success
+          ? 'Authentication successful'
+          : `[passwordAuth:secret:mismatch] The ${secretField} provided is incorrect`,
+      };
+    }
+
+    const hash = await secretFieldInstance.generateHash(
+      'simulated-password-to-counter-timing-attack'
+    );
+    await secretFieldInstance.compare(secret, hash);
+    return {
+      success: false,
+      message:
+        '[passwordAuth:secret:notSet] The item identified has no secret set so can not be authenticated',
+    };
   }
 
   getAdminMeta() {
-    const { listKey } = this;
+    const { listKey, gqlNames } = this;
     const { identityField, secretField } = this.config;
-    return { listKey, identityField, secretField };
+    return { listKey, gqlNames, identityField, secretField };
   }
 }
 

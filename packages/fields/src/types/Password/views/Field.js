@@ -11,7 +11,15 @@ import { Button } from '@arch-ui/button';
 import { EyeIcon, LockIcon } from '@arch-ui/icons';
 import { A11yText } from '@arch-ui/typography';
 
-const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors, warnings }) => {
+const PasswordField = ({
+  onChange,
+  autoFocus,
+  field,
+  item: { password_is_set } = {},
+  errors,
+  warnings,
+  isDisabled,
+}) => {
   const focusTarget = useRef();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -53,13 +61,12 @@ const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors,
     ));
   };
 
-  const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
 
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         {isEditing ? (
           <FlexGroup growIndexes={[0, 1]}>
@@ -73,6 +80,7 @@ const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors,
               placeholder="New Password"
               type={showInputValue ? 'text' : 'password'}
               value={inputPassword}
+              disabled={isDisabled}
             />
             <Input
               autoComplete="off"
@@ -83,20 +91,27 @@ const PasswordField = ({ onChange, autoFocus, field, value: serverValue, errors,
               placeholder="Confirm Password"
               type={showInputValue ? 'text' : 'password'}
               value={inputConfirm}
+              disabled={isDisabled}
             />
             <Button
               isActive={showInputValue}
               onClick={toggleMode}
               title={showInputValue ? 'Hide Text' : 'Show Text'}
               variant="ghost"
+              isDisabled={isDisabled}
             >
               <A11yText>{showInputValue ? 'Hide Text' : 'Show Text'}</A11yText>
               <div css={{ width: 20 }}>{showInputValue ? <LockIcon /> : <EyeIcon />}</div>
             </Button>
           </FlexGroup>
         ) : (
-          <Button id={`${htmlID}-button`} onClick={toggleInterface} variant="ghost">
-            {value ? 'Update Password' : 'Set Password'}
+          <Button
+            id={`${htmlID}-button`}
+            onClick={toggleInterface}
+            variant="ghost"
+            isDisabled={isDisabled}
+          >
+            {password_is_set ? 'Update Password' : 'Set Password'}
           </Button>
         )}
       </FieldInput>

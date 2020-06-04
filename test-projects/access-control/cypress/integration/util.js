@@ -1,5 +1,5 @@
 /* eslint-disable jest/valid-expect */
-const memoize = require('fast-memoize');
+const memoize = require('micro-memoize');
 
 function yesNo(truthy) {
   return truthy ? 'Yes' : 'No';

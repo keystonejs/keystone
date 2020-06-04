@@ -6,8 +6,8 @@ jest.doMock('@keystonejs/logger', () => ({
   logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
 }));
 
-const List = require('../lib/List');
-const { AccessDeniedError } = require('../lib/List/graphqlErrors');
+const { List } = require('../lib/ListTypes');
+const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
 const { getType } = require('@keystonejs/utils');
 const path = require('path');
@@ -250,6 +250,7 @@ describe('new List()', () => {
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
       listMetaName: '_TestsMeta',
+      listSortName: 'SortTestsBy',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
       updateMutationName: 'updateTest',
@@ -438,6 +439,7 @@ describe('getAdminMeta()', () => {
       itemQueryName: 'Test',
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
+      listSortName: 'SortTestsBy',
       listMetaName: '_TestsMeta',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
@@ -473,42 +475,6 @@ describe('getAdminMeta()', () => {
     expect(adminMeta.fields[2].path).toEqual('email');
     expect(adminMeta.fields[3].path).toEqual('other');
     expect(adminMeta.fields[4].path).toEqual('writeOnce');
-  });
-
-  test('getAdminMeta() - views', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.views).toEqual({
-      id: {}, // Mocked
-      name: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      email: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      other: {
-        Controller: resolveViewPath('Relationship/views/Controller'),
-        Field: resolveViewPath('Relationship/views/Field'),
-        Filter: resolveViewPath('Relationship/views/Filter'),
-        Cell: resolveViewPath('Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-    });
   });
 });
 
@@ -613,7 +579,21 @@ describe(`getGqlTypes() `, () => {
   const createManyInput = `input TestsCreateInput {
         data: TestCreateInput
       }`;
-
+  const sortTestsBy = `enum SortTestsBy {
+        name_ASC
+        name_DESC
+        email_ASC
+        email_DESC
+        other_ASC
+        other_DESC
+        writeOnce_ASC
+        writeOnce_DESC
+      }`;
+  const otherRelateToOneInput = `input OtherRelateToOneInput {
+    connect: OtherWhereUniqueInput
+    disconnect: OtherWhereUniqueInput
+    disconnectAll: Boolean
+  }`;
   const schemaName = 'public';
   test('access: true', () => {
     expect(
@@ -622,9 +602,11 @@ describe(`getGqlTypes() `, () => {
         .map(s => print(gql(s)))
     ).toEqual(
       [
+        otherRelateToOneInput,
         type,
         whereInput,
         whereUniqueInput,
+        sortTestsBy,
         updateInput,
         updateManyInput,
         createInput,
@@ -644,7 +626,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: true, create: false, update: false, delete: false } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
   test('create: true', () => {
     expect(
@@ -652,7 +638,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, createInput, createManyInput].map(s => print(gql(s)))
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        createInput,
+        createManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('update: true', () => {
@@ -661,7 +655,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, updateInput, updateManyInput].map(s => print(gql(s)))
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        updateInput,
+        updateManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('delete: true', () => {
@@ -669,7 +671,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: false, create: false, update: false, delete: true } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
 });
 
@@ -678,6 +684,7 @@ test('getGraphqlFilterFragment', () => {
   expect(list.getGraphqlFilterFragment()).toEqual([
     'where: TestWhereInput',
     'search: String',
+    'sortBy: [SortTestsBy!]',
     'orderBy: String',
     'first: Int',
     'skip: Int',
@@ -697,6 +704,7 @@ describe(`getGqlQueries()`, () => {
           allTests(
           where: TestWhereInput
           search: String
+          sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
           skip: Int
@@ -709,6 +717,7 @@ describe(`getGqlQueries()`, () => {
           _allTestsMeta(
           where: TestWhereInput
           search: String
+          sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
           skip: Int
@@ -733,12 +742,12 @@ test('getFieldsRelatedTo', () => {
   expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
 });
 
-test('_wrapFieldResolverWith', () => {
+test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
   const newResolver = list._wrapFieldResolver(list.fieldsByPath['name'], resolver);
-  expect(newResolver({}, {}, context)).toEqual('result');
-  expect(() => newResolver({ makeFalse: true }, {}, context)).toThrow(AccessDeniedError);
+  await expect(newResolver({}, {}, context)).resolves.toEqual('result');
+  await expect(newResolver({ makeFalse: true }, {}, context)).rejects.toThrow(AccessDeniedError);
 });
 
 test('gqlFieldResolvers', () => {
@@ -853,7 +862,7 @@ describe(`getGqlMutations()`, () => {
   });
 });
 
-test('checkFieldAccess', () => {
+test('checkFieldAccess', async () => {
   const list = setup();
   list.checkFieldAccess(
     'read',
@@ -863,21 +872,21 @@ test('checkFieldAccess', () => {
       gqlName: 'testing',
     }
   );
-  expect(() =>
+  await expect(
     list.checkFieldAccess(
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
       { gqlName: '' }
     )
-  ).toThrow(AccessDeniedError);
+  ).rejects.toThrow(AccessDeniedError);
   let thrownError;
   try {
-    list.checkFieldAccess(
+    await list.checkFieldAccess(
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
-      { gqlName: 'testing', extraData: { extra: 1 } }
+      { gqlName: 'testing', extra: 1 }
     );
   } catch (error) {
     thrownError = error;
@@ -894,23 +903,23 @@ test('checkFieldAccess', () => {
   });
 });
 
-test('checkListAccess', () => {
+test('checkListAccess', async () => {
   const list = setup();
   const originalInput = {};
-  expect(list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })).toEqual(
-    true
-  );
+  await expect(
+    list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })
+  ).resolves.toEqual(true);
 
   const newContext = {
     ...context,
     getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
   };
-  expect(list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })).toEqual(
-    true
-  );
-  expect(() =>
+  await expect(
+    list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })
+  ).resolves.toEqual(true);
+  await expect(
     list.checkListAccess(newContext, originalInput, 'read', { gqlName: 'testing' })
-  ).toThrow(AccessDeniedError);
+  ).rejects.toThrow(AccessDeniedError);
 });
 
 test('getAccessControlledItem', async () => {
@@ -1095,7 +1104,27 @@ test(`listMeta`, () => {
   const schema = meta.getSchema();
   expect(schema).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 
@@ -1105,7 +1134,27 @@ test(`listMeta`, () => {
       .getSchema()
   ).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 });

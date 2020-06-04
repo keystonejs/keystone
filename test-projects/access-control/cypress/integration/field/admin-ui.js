@@ -203,14 +203,14 @@ describe('Access Control Fields > Admin UI', () => {
           });
       });
 
-      it('does not show non-updatable inputs', () => {
+      it('shows non-updatable inputs as disabled', () => {
         fieldAccessVariations
           .filter(({ update, read }) => !update && read)
           .forEach(access => {
             const field = getFieldName(access);
             cy.get(`label[for="ks-input-${field}"]`)
-              .should('not.exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
+              .should('exist')
+              .then(() => cy.get(`#ks-input-${field}`).should('be.disabled'));
           });
       });
 
@@ -241,14 +241,14 @@ describe('Access Control Fields > Admin UI', () => {
           });
       });
 
-      it.skip('does not show non-updatable inputs', () => {
+      it.skip('shows non-updatable inputs as disabled', () => {
         fieldAccessVariations
           .filter(({ update, read }) => !update && read)
           .forEach(access => {
             const field = getFieldName(access);
             cy.get(`label[for="ks-input-${field}"]`)
-              .should('not.exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
+              .should('exist')
+              .then(() => cy.get(`#ks-input-${field}`).should('be.disabled'));
           });
       });
 

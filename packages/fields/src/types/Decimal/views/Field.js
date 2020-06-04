@@ -9,7 +9,7 @@ import {
 } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-const TextField = ({ onChange, autoFocus, field, value, errors }) => {
+const DecimalField = ({ onChange, autoFocus, field, value, errors, isDisabled }) => {
   const handleChange = event => {
     const value = event.target.value;
     onChange(value.replace(/[^0-9.,]+/g, ''));
@@ -37,20 +37,22 @@ const TextField = ({ onChange, autoFocus, field, value, errors }) => {
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         {symbol && <Currency>{symbol}</Currency>}
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="text"
           value={valueToString(value)}
           onChange={handleChange}
           id={htmlID}
+          disabled={isDisabled}
         />
       </FieldInput>
     </FieldContainer>
   );
 };
 
-export default TextField;
+export default DecimalField;

@@ -10,17 +10,26 @@ What makes up a field type?
 
 ```shell allowCopy=false showLanguage=false
 Type/index.js           # The field definition, points to other files and defines the type
-Type/Controller.js      # Client-side controller for the field type
 Type/Implementation.js  # Back-end implementation of the field type
 Type/README.md          # Type specific documentation and usage examples
 Type/views/
 ├── Field.js            # Main React component rendered by the Item Details view
 └── Cell.js             # Main React component rendered by the List view
+└── Controller.js       # Client-side controller for the field type
 ```
 
 ## Example
 
-For an example of a custom field, please see the [Stars field](https://github.com/keystonejs/keystone/tree/master/test-projects/basic/custom-fields/Stars) in the basic test project.
+For an example of a custom field, please see the [Stars field](https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields/) in the basic test project.
+
+## Implementation
+
+This is the back-end class that implements the field type and its schema in
+Keystone. It implements the GraphQL schema types, custom argument definitions
+and resolvers, as well as Field Config and Admin Meta management.
+
+Back-end logic for value validation, processing and hooks should be implemented
+here.
 
 ## Controller
 
@@ -32,15 +41,6 @@ It should extend the `./Controller.js` in the package root.
 It is generally responsible for getting the default data for new items,
 processing raw data returned by the API, implementing client-side validation
 methods, and other helper utilities.
-
-## Implementation
-
-This is the back-end class that implements the field type and its schema in
-Keystone. It implements the GraphQL schema types, custom argument definitions
-and resolvers, as well as Field Config and Admin Meta management.
-
-Back-end logic for value validation, processing and hooks should be implemented
-here.
 
 ## Views
 

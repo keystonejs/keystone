@@ -1,5 +1,5 @@
 require('dotenv').config();
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 const { sendEmail } = require('./emails');
 
 const {
@@ -254,6 +254,9 @@ exports.ForgottenPasswordToken = {
       await sendEmail('forgot-password.jsx', props, options);
     },
   },
+};
+
+exports.customSchema = {
   mutations: [
     {
       schema: 'startPasswordRecovery(email: String!): ForgottenPasswordToken',
@@ -279,7 +282,7 @@ exports.ForgottenPasswordToken = {
           { variables: { email: email }, skipAccessControl: true }
         );
 
-        if (userErrors) {
+        if (userErrors || !userData.allUsers || !userData.allUsers.length) {
           console.error(
             userErrors,
             `Unable to find user when trying to create forgotten password token.`
