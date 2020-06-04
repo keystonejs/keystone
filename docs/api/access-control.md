@@ -428,10 +428,15 @@ There are two ways to define the value of `access`:
 
 ```typescript
 interface AccessInput {
+  item {};
+  args {} ;
+  context: {};
+  info: {};
   authentication: {
     item?: {};
     listKey?: string;
   };
+  gqlName: string;
 }
 
 type StaticAccess = boolean;
@@ -449,7 +454,7 @@ keystone.extendGraphQLSchema({
   queries: [
     {
       schema: 'getUserByName(name: String!): Boolean',
-      resolver: async (item, context, info, info) => {...},
+      resolver: async (item, args, context, info, { query, access }) => {...},
       access: true,
     },
   ],
@@ -467,8 +472,8 @@ keystone.extendGraphQLSchema({
   queries: [
     {
       schema: 'getUserByName(name: String!): Boolean',
-      resolver: async (item, context, info, info) => {...},
-      access: ({ authentication: { item, listKey } }) => {
+      resolver: async (item, args, context, info, { query, access }) => {...},
+      access: async ({ item, args, context, info, { authentication: { item, listKey } }, gqlName) => {
         return true;
       },
     },
