@@ -76,7 +76,7 @@ function Stories({ value: editorState, onChange, blocks, className, id, isDisabl
           onChange(value);
         }}
         readOnly={isDisabled}
-        css={{
+        css= {{
           minHeight: 200,
           padding: '16px 32px',
         }}
