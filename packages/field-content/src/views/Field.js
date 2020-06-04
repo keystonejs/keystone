@@ -50,6 +50,7 @@ let ContentField = ({ field, value, onChange, autoFocus, errors, isDisabled }) =
               id={htmlID}
               css={{
                 ...inputStyles({ isMultiline: true }),
+                padding: '0',
               }}
               isDisabled={isDisabled}
             />
