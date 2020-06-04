@@ -78,6 +78,7 @@ function Stories({ value: editorState, onChange, blocks, className, id, isDisabl
         readOnly={isDisabled}
         css= {{
           minHeight: 200,
+          padding: '16px 32px',
         }}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
