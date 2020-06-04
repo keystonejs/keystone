@@ -10,10 +10,11 @@ import { globalStyles } from '@arch-ui/theme';
 import { initApolloClient } from './apolloClient';
 import Nav from './components/Nav';
 import { useScrollToTop } from './components/ScrollToTop';
-import ConnectivityListener from './components/ConnectivityListener';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
 import PageLoading from './components/PageLoading';
 import ToastContainer from './components/ToastContainer';
+
+import { useConnectivityListener } from './hooks/ConnectivityListener';
 
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 import { ListProvider } from './providers/List';
@@ -61,6 +62,7 @@ const ListPageWrapper = () => {
 const MainPageWrapper = () => {
   const { adminPath, pages } = useAdminMeta();
 
+  useConnectivityListener();
   useScrollToTop();
 
   const customRoutes = [
@@ -97,7 +99,6 @@ export const KeystoneAdminUI = () => {
       <ApolloProvider client={apolloClient}>
         <KeyboardShortcuts>
           <ToastProvider components={{ ToastContainer }}>
-            <ConnectivityListener />
             <Global styles={globalStyles} />
             <BrowserRouter>
               <Switch>
