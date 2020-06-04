@@ -8,7 +8,7 @@ const LISTENER_OPTIONS = {
   passive: true,
 };
 
-const KeyboardShortcuts = ({ children }) => {
+export const KeyboardShortcutsProvider = ({ children }) => {
   const listeners = useRef({});
   const keyIsDown = useRef(false);
 
@@ -68,8 +68,6 @@ const KeyboardShortcuts = ({ children }) => {
 
   return <KeyboardContext.Provider value={value}>{children}</KeyboardContext.Provider>;
 };
-
-export default KeyboardShortcuts;
 
 export const useKeyboardManager = () => {
   const { subscribe, unsubscribe } = useContext(KeyboardContext);
