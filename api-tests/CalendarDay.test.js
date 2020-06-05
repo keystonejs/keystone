@@ -12,13 +12,6 @@ function setupKeystone(adapterName) {
       keystone.createList('User', {
         fields: {
           birthday: { type: CalendarDay, dateFrom: '2000-01-01', dateTo: '2020-01-01' },
-          beforeToday: {
-            type: CalendarDay,
-            dateFrom: '2000-01-01',
-            dateTo: () => {
-              return formatISO(new Date(), { representation: 'date' });
-            },
-          },
         },
       });
     },
@@ -50,25 +43,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toHaveLength(1);
           const error = errors[0];
           expect(error.message).toEqual('You attempted to perform an invalid mutation');
-        })
-      );
-
-      test(
-        'Dynamic date dateFrom and dataTo work',
-        runner(setupKeystone, async ({ keystone }) => {
-          const { errors } = await graphqlRequest({
-            keystone,
-            query: `mutation { createUser(data: { beforeToday: "3000-01-01" }) { beforeToday } }`,
-          });
-          expect(errors).toHaveLength(1);
-          const error = errors[0];
-          expect(error.message).toEqual('You attempted to perform an invalid mutation');
-
-          const { data } = await graphqlRequest({
-            keystone,
-            query: `mutation { createUser(data: { beforeToday: "2010-01-01" }) { beforeToday } }`,
-          });
-          expect(data).toHaveProperty('createUser.beforeToday', '2010-01-01');
         })
       );
     });
