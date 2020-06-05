@@ -9,16 +9,16 @@ import { globalStyles } from '@arch-ui/theme';
 
 import { initApolloClient } from './apolloClient';
 import Nav from './components/Nav';
-import { useScrollToTop } from './components/ScrollToTop';
-import KeyboardShortcuts from './components/KeyboardShortcuts';
 import PageLoading from './components/PageLoading';
 import ToastContainer from './components/ToastContainer';
 
 import { useConnectivityListener } from './hooks/ConnectivityListener';
+import { useScrollToTop } from './hooks/ScrollToTop';
 
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 import { ListProvider } from './providers/List';
 import { HooksProvider } from './providers/Hooks';
+import { KeyboardShortcutsProvider } from './providers/KeyboardShortcuts';
 
 import HomePage from './pages/Home';
 import ListPage from './pages/List';
@@ -97,7 +97,7 @@ export const KeystoneAdminUI = () => {
   return (
     <HooksProvider hooks={hooks}>
       <ApolloProvider client={apolloClient}>
-        <KeyboardShortcuts>
+        <KeyboardShortcutsProvider>
           <ToastProvider components={{ ToastContainer }}>
             <Global styles={globalStyles} />
             <BrowserRouter>
@@ -108,7 +108,7 @@ export const KeystoneAdminUI = () => {
               </Switch>
             </BrowserRouter>
           </ToastProvider>
-        </KeyboardShortcuts>
+        </KeyboardShortcutsProvider>
       </ApolloProvider>
     </HooksProvider>
   );

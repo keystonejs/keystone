@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import raf from 'raf-schd';
 
-import { useKeyboardManager } from '../KeyboardShortcuts';
+import { useKeyboardManager } from '../providers/KeyboardShortcuts';
 
 const LS_KEY = 'KEYSTONE_NAVIGATION_STATE';
 const DEFAULT_STATE = { isCollapsed: false, width: 280 };
