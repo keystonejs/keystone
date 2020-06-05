@@ -1,5 +1,14 @@
 # @keystonejs/app-version
 
+## 1.0.2
+
+### Patch Changes
+
+- [`64c0d68ac`](https://github.com/keystonejs/keystone/commit/64c0d68acb1ee969097a8fe59b5c296473790c5c) [#2650](https://github.com/keystonejs/keystone/pull/2650) Thanks [@Vultraz](https://github.com/Vultraz)! - Added the boilerplate for subscription support to the providers (no functionality yet).
+
+- Updated dependencies [[`839666e25`](https://github.com/keystonejs/keystone/commit/839666e25d8bffefd034e6344e11d72dd43b925b)]:
+  - @keystonejs/access-control@6.0.0
+
 ## 1.0.1
 
 ### Patch Changes

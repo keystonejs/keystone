@@ -151,13 +151,28 @@ module.exports = {
     return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
   },
 
-  async validateCustomAccessControl({ access, authentication = {} }) {
+  async validateCustomAccessControl({
+    item,
+    args,
+    context,
+    info,
+    access,
+    authentication = {},
+    gqlName,
+  }) {
     // Either a boolean or an object describing a where clause
     let result;
     if (typeof access !== 'function') {
       result = access;
     } else {
-      result = await access({ authentication: authentication.item ? authentication : {} });
+      result = await access({
+        item,
+        args,
+        context,
+        info,
+        authentication: authentication.item ? authentication : {},
+        gqlName,
+      });
     }
     const type = getType(result);
 

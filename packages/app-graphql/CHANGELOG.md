@@ -1,5 +1,15 @@
 # @keystonejs/app-graphql
 
+## 5.1.8
+
+### Patch Changes
+
+- [`aacc4a7f8`](https://github.com/keystonejs/keystone/commit/aacc4a7f8f88c242ae4bd784330d25056842d3fb) [#2990](https://github.com/keystonejs/keystone/pull/2990) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated various Apollo dependencies to their latest versions.
+
+- Updated dependencies [[`aacc4a7f8`](https://github.com/keystonejs/keystone/commit/aacc4a7f8f88c242ae4bd784330d25056842d3fb), [`839666e25`](https://github.com/keystonejs/keystone/commit/839666e25d8bffefd034e6344e11d72dd43b925b)]:
+  - @keystonejs/app-graphql-playground@5.1.4
+  - @keystonejs/logger@5.1.2
+
 ## 5.1.7
 
 ### Patch Changes

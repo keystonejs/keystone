@@ -46,7 +46,7 @@ module.exports = class S3Adapter {
           } else {
             resolve({ ...fileData, _meta: data });
           }
-          stream.close();
+          stream.destroy();
         }
       );
     });

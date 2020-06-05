@@ -36,6 +36,7 @@ import {
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
 import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
 
 const Render = ({ children }) => children();
 
@@ -69,6 +70,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
 
   const history = useHistory();
   const { addToast } = useToasts();
+  const { customToast } = useUIHooks();
 
   const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
     errorPolicy: 'all',
@@ -115,7 +117,12 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
       setShowDeleteModal(false);
     }
 
-    toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
+    toastItemSuccess(
+      { addToast, customToast },
+      { item: initialData, list },
+      'Deleted successfully',
+      'delete'
+    );
     history.replace(list.getFullPersistentPath());
   };
 
@@ -214,7 +221,12 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     const savedItem = await onUpdate();
 
     // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
-    toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
+    toastItemSuccess(
+      { addToast, customToast },
+      { item: savedItem, list },
+      'Saved successfully',
+      'update'
+    );
 
     // No changes since we kicked off the item saving.
     // Then reset the state to the current server value

@@ -13,7 +13,7 @@ const showSuccessMessage = async () => {
 ${c.bold('  Before you run Keystone you will need to initialise the tables in your database:')}
 
   - cd ${projectDir}
-  - yarn create-tables
+  - npx keystone create-tables
 
   For troubleshooting and further information see:
 

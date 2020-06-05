@@ -1104,7 +1104,27 @@ test(`listMeta`, () => {
   const schema = meta.getSchema();
   expect(schema).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 
@@ -1114,7 +1134,27 @@ test(`listMeta`, () => {
       .getSchema()
   ).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 });

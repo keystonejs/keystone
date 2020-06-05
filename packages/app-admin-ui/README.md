@@ -65,6 +65,7 @@ The following hooks are available. Each is a function that takes no arguments.
 export default {
   logo,
   pages,
+  customToast,
 };
 ```
 
@@ -72,11 +73,53 @@ export default {
 
 The logo to display on the signin screen.
 
-Should return a React component.
+> This must return a React component.
 
 ```javascript
 export default {
   logo: () => <MyAwesomeLogo />,
+};
+```
+
+#### `itemHeaderActions`
+
+Header components on the Item Details page can be replaced using this hook. Ths replaces the components for item Details page for all Lists.
+
+> This must return a React component.
+
+```javascript title=/admin-ui/index.js
+import { ItemId, AddNewItem } '@keystonejs/admin-ui/components/'
+export default {
+  // re-implement the default AddNewItem and ItemId button + custom text
+  listHeaderActions: () => (<div><ItemId /><AddNewItem /><p>Hello world</p></div>),
+};
+```
+
+#### `listHeaderActions`
+
+Header components on the List page can be replaced using this hook. This replaces components on list page for all Lists.
+
+> This must return a React component.
+
+```javascript title=/admin-ui/index.js
+import { CreateItem } '@keystonejs/admin-ui/components/'
+export default {
+  // re-implement the default create item button + custom text
+  listHeaderActions: () => (<div><CreateItem /><p>Hello world</p></div>),
+};
+```
+
+#### `listManageActions`
+
+Custom Actions component for multiple items in the list can be replaced with this hook. This replaces the list management toolbar Items for all lists.
+
+> This must return a React component.
+
+```javascript title=/admin-ui/index.js
+import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
+export default {
+  // re-implement the default delete many and update many items buttons + custom text
+  listManageActions: () => (<div><UpdateItems /><DeleteItems /><p>Hello world</p></div>),
 };
 ```
 
@@ -121,6 +164,35 @@ export default {
       children: ['User'],
     },
   ],
+};
+```
+
+#### `customToast`
+
+Allows customising the content of toast notification when an item is updated or deleted.
+
+The hook function receives a context variable containing an `item` key with the original item data, a `list` key that can be used to limit the scope of the hook, the original `message` as well as a `toastAction` that will be either 'update' or 'delete'. The function should return a React component.
+
+```javascript
+export default {
+  customToast: ({ item, list, message }) => {
+    // custom Toast for MyList
+    if (list.key === 'MyList') {
+      return (
+        <div>
+          <strong>My custom toast notification!</strong>
+          {item && item._label_ ? <strong>{item._label_}</strong> : null}
+        </div>
+      );
+    }
+    // Default toast
+    return (
+      <div>
+        {item && item._label_ ? <strong>{item._label_}</strong> : null}
+        <div>{message}</div>
+      </div>
+    );
+  },
 };
 ```
 

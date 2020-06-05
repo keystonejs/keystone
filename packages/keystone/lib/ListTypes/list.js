@@ -1471,9 +1471,15 @@ module.exports = class List {
     return {
       key: this.key,
       name: this.key,
+      description: this.adminDoc,
+      label: this.adminUILabels.label,
+      singular: this.adminUILabels.singular,
+      plural: this.adminUILabels.plural,
+      path: this.adminUILabels.path,
+
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
+      // Evaluation takes place in ../providers/listCRUD.js
       // NOTE: These could return a Boolean or a JSON object (if using the
       // declarative syntax)
       getAccess: () => ({
@@ -1483,19 +1489,40 @@ module.exports = class List {
         getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
         getAuth: () => context.getAuthAccessControlForUser(this.key),
       }),
+
       getSchema: () => {
-        const queries = [
-          this.gqlNames.itemQueryName,
-          this.gqlNames.listQueryName,
-          this.gqlNames.listQueryMetaName,
-        ];
+        const queries = {
+          item: this.gqlNames.itemQueryName,
+          list: this.gqlNames.listQueryName,
+          meta: this.gqlNames.listQueryMetaName,
+        };
+
+        const mutations = {
+          create: this.gqlNames.createMutationName,
+          createMany: this.gqlNames.createManyMutationName,
+          update: this.gqlNames.updateMutationName,
+          updateMany: this.gqlNames.updateManyMutationName,
+          delete: this.gqlNames.deleteMutationName,
+          deleteMany: this.gqlNames.deleteManyMutationName,
+        };
+
+        const inputTypes = {
+          whereInput: this.gqlNames.whereInputName,
+          whereUniqueInput: this.gqlNames.whereUniqueInputName,
+          createInput: this.gqlNames.createInputName,
+          createManyInput: this.gqlNames.createManyInputName,
+          updateInput: this.gqlNames.updateInputName,
+          updateManyInput: this.gqlNames.updateManyInputName,
+        };
 
         // NOTE: Other fields on this type are resolved in the main resolver in
-        // ../Keystone/index.js
+        // ../providers/listCRUD.js
         return {
           type: this.gqlNames.outputTypeName,
           queries,
-          key: this.key,
+          mutations,
+          inputTypes,
+          key: this.key, // Used to resolve fields
         };
       },
     };
