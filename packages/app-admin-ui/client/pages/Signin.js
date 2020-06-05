@@ -110,12 +110,12 @@ const SignInPage = () => {
 
   const [signIn, { error, loading, client }] = useMutation(AUTH_MUTATION, {
     variables: { identity, secret },
-    onCompleted: () => {
-      // Ensure there's no old unauthenticated data hanging around
-      client.resetStore();
-
+    onCompleted: async () => {
       // Flag so the "Submit" button doesn't temporarily flash as available while reloading the page.
       setReloading(true);
+
+      // Ensure there's no old unauthenticated data hanging around
+      await client.clearStore();
 
       // Let the server-side redirects kick in to send the user to the right place
       window.location.reload(true);

@@ -15,18 +15,22 @@ describe('AppVersionProvider', () => {
           appVersion: String`,
     ]);
     expect(appVersion.getMutations({ schemaName })).toEqual([]);
+    expect(appVersion.getSubscriptions({ schemaName })).toEqual([]);
     expect(appVersion.getTypeResolvers({ schemaName })).toEqual({});
     expect(appVersion.getQueryResolvers({ schemaName })).toHaveProperty('appVersion');
     expect(appVersion.getQueryResolvers({ schemaName }).appVersion()).toEqual('1.0.0');
     expect(appVersion.getMutationResolvers({ schemaName })).toEqual({});
+    expect(appVersion.getSubscriptionResolvers({ schemaName })).toEqual({});
 
     schemaName = 'other';
     expect(appVersion.getTypes({ schemaName })).toEqual([]);
     expect(appVersion.getQueries({ schemaName })).toEqual([]);
     expect(appVersion.getMutations({ schemaName })).toEqual([]);
+    expect(appVersion.getSubscriptions({ schemaName })).toEqual([]);
     expect(appVersion.getTypeResolvers({ schemaName })).toEqual({});
     expect(appVersion.getQueryResolvers({ schemaName })).toEqual({});
     expect(appVersion.getMutationResolvers({ schemaName })).toEqual({});
+    expect(appVersion.getSubscriptionResolvers({ schemaName })).toEqual({});
   });
 
   test('AppVersionProvider - complex access', async () => {

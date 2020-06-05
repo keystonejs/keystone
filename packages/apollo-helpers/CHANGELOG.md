@@ -1,5 +1,11 @@
 # @keystonejs/apollo-helpers
 
+## 5.1.5
+
+### Patch Changes
+
+- [`aacc4a7f8`](https://github.com/keystonejs/keystone/commit/aacc4a7f8f88c242ae4bd784330d25056842d3fb) [#2990](https://github.com/keystonejs/keystone/pull/2990) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated various Apollo dependencies to their latest versions.
+
 ## 5.1.4
 
 ### Patch Changes

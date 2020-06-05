@@ -10,7 +10,7 @@ const {
 } = getConfig();
 
 // Check if date is in future or past
-export const isInFuture = date => isFuture(date);
+export const isInFuture = date => isFuture(parseISO(date));
 
 // Pretty date formatting
 export const formatFutureDate = date => format(parseISO(date), 'iii d MMM, h:mm a');

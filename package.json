@@ -85,7 +85,7 @@
     "luxon": "^1.11.4",
     "mdast-util-to-string": "^1.1.0",
     "memoize-one": "^5.1.1",
-    "meow": "^5.0.0",
+    "meow": "^7.0.1",
     "mjml": "^4.3.1",
     "mjml-react": "^1.0.57",
     "mkdirp": "^0.5.1",

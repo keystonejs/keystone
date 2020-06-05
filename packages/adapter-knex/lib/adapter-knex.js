@@ -45,11 +45,11 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
     // Knex will not error until a connection is made
     // To check the connection we run a test query
-    const result = await this.knex.raw('select 1+1 as result').catch(result => ({
+    const connectResult = await this.knex.raw('select 1+1 as result').catch(result => ({
       error: result.error || result,
     }));
-    if (result.error) {
-      const connectionError = result.error;
+    if (connectResult.error) {
+      const connectionError = connectResult.error;
       let dbName;
       if (typeof knexConnection === 'string') {
         dbName = knexConnection.split('/').pop();
@@ -63,8 +63,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
       console.warn(`createdb ${dbName}`);
       throw connectionError;
     }
-
-    return result;
+    return true;
   }
 
   async postConnect({ rels }) {
@@ -79,6 +78,24 @@ class KnexAdapter extends BaseKeystoneAdapter {
 
     await this.dropDatabase();
     return this._createTables();
+  }
+
+  async _verifyTables() {
+    return pSettle(
+      Object.values(this.listAdapters).map(listAdapter => {
+        const { tableName } = listAdapter;
+        // In theory it's possible for lists to have different adapters
+        // check the adapter has a createTable method
+        if (listAdapter.createTable) {
+          return this.knex.schema
+            .hasTable(tableName)
+            .then(result => ({ tableName, hasTable: result }));
+        } else {
+          // For unknown list adapters, skip, by returning true
+          return { tableName, hasTable: true };
+        }
+      })
+    );
   }
 
   async _createTables() {

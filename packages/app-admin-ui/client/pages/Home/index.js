@@ -97,7 +97,7 @@ const Homepage = () => {
             const { key, path } = list;
             const meta = data && data[list.gqlNames.listQueryMetaName];
             return (
-              <ListProvider list={list} key={key}>
+              <ListProvider list={list} key={key} skipQuery>
                 <Cell width={cellWidth}>
                   <Box to={`${adminPath}/${path}`} meta={meta} />
                 </Cell>
