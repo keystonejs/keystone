@@ -322,7 +322,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
         />
       </Card>
 
-      <CreateItemModal />
+      <CreateItemModal viewOnSave />
       <DeleteItemModal
         isOpen={showDeleteModal}
         item={initialData}
