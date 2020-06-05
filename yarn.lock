@@ -8294,6 +8294,11 @@ date-fns@^2.13.0:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.13.0.tgz#d7b8a0a2d392e8d88a8024d0a46b980bbfdbd708"
   integrity sha512-xm0c61mevGF7f0XpCGtDTGpzEFC/1fpLXHbmFpxZZQJuvByIK2ozm6cSYuU+nxFYOPh2EuCfzUwlTEFwKG+h5w==
 
+date-fns@^2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.14.0.tgz#359a87a265bb34ef2e38f93ecf63ac453f9bc7ba"
+  integrity sha512-1zD+68jhFgDIM0rF05rcwYO8cExdNqxjq4xP1QKM60Q45mnO6zaMWB4tOzrIr4M4GSLntsKeE4c9Bdl2jhL/yw==
+
 date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
@@ -10788,9 +10793,9 @@ from@~0:
   integrity sha1-g8YK/Fi5xWmXAH7Rp2izqzA6RP4=
 
 fs-capacitor@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/fs-capacitor/-/fs-capacitor-6.1.0.tgz#457f5868a743fe662caa9bd825be966c3d4641a4"
-  integrity sha512-YsKGCLAB40P3OKeciIa7cKzt7WkY8QT9ETa2wVIG3fQDHW2h3xtRo0770lUIbPrjCr5Sa+zFhixNJ+2xNxaraQ==
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/fs-capacitor/-/fs-capacitor-6.2.0.tgz#fa79ac6576629163cb84561995602d8999afb7f5"
+  integrity sha512-nKcE1UduoSKX27NSZlg879LdQc94OtbOsEmKMN2MBNudXREvijRKx2GEBsTMTfws+BrbkJoEuynbGSVRSpauvw==
 
 fs-constants@^1.0.0:
   version "1.0.0"
