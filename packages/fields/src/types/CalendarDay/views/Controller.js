@@ -1,5 +1,4 @@
 import FieldController from '../../../Controller';
-import { getYear, parseISO } from 'date-fns';
 
 export default class CalendarDayController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
