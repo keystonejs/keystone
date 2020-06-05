@@ -65,7 +65,7 @@ export class CalendarDay extends Implementation {
       ...meta,
       format: this.format,
       dateFrom: this._dateFrom,
-      dateTo: this.dateTo,
+      dateTo: this._dateTo,
     };
   }
 
