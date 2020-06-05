@@ -544,8 +544,8 @@ class KnexListAdapter extends BaseListAdapter {
     await Promise.all(
       this.rels
         .filter(
-          ({ tableName, left, right }) =>
-            tableName === this.key && right && left.refListKey === right.refListKey
+          ({ tableName, left }) =>
+            tableName === this.key && left.listKey === left.refListKey
         )
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
