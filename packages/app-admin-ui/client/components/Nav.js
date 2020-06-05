@@ -21,9 +21,9 @@ import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 import { PersonIcon, SignOutIcon, TerminalIcon, MarkGithubIcon } from '@arch-ui/icons';
 
-import { useAdminMeta } from '../../providers/AdminMeta';
-import { useResizeHandler, KEYBOARD_SHORTCUT } from './ResizeHandler';
-import { useScrollQuery } from '../ScrollQuery';
+import { useAdminMeta } from '../providers/AdminMeta';
+import { useResizeHandler, KEYBOARD_SHORTCUT } from '../hooks/ResizeHandler';
+import { useScrollQuery } from '../hooks/ScrollQuery';
 
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -420,7 +420,7 @@ const ActionItems = ({ mouseIsOverNav }) => {
       {entries.map(({ label, to, icon: ActionIcon, target }) => (
         <PrimaryNavItem
           key={to}
-          href={to}
+          {...(target === '_blank' ? { href: to } : { to })}
           target={target}
           mouseIsOverNav={mouseIsOverNav}
           css={{ display: 'flex', alignItems: 'center' }}

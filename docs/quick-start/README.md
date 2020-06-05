@@ -69,9 +69,9 @@ cd my-app
 If you are using `PostgreSQL` then you will need to create the tables in your database for Keystone to use.
 
 ```
-yarn create-tables
+yarn keystone create-tables
 # or
-npm run create-tables
+npx keystone create-tables
 ```
 
 You can now start your development server with the following command:

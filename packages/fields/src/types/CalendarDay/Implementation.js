@@ -6,32 +6,25 @@ export class CalendarDay extends Implementation {
   constructor(path, { format = 'yyyy-MM-dd', dateFrom, dateTo }) {
     super(...arguments);
     this.format = format;
-    this._dateFrom = typeof dateFrom === 'function' ? dateFrom : () => dateFrom;
-    this._dateTo = typeof dateTo === 'function' ? dateTo : () => dateTo;
+    this._dateFrom = dateFrom;
+    this._dateTo = dateTo;
 
-    if (
-      this._dateFrom() &&
-      (this._dateFrom().length !== 10 || !isValid(parseISO(this._dateFrom())))
-    ) {
+    if (this._dateFrom && (this._dateFrom.length !== 10 || !isValid(parseISO(this._dateFrom)))) {
       throw new Error(
-        `Invalid value for option "dateFrom" of field '${
-          this.listKey
-        }.${path}': "${this._dateFrom()}"`
+        `Invalid value for option "dateFrom" of field '${this.listKey}.${path}': "${this._dateFrom}"`
       );
     }
 
-    if (this._dateTo() && (this._dateTo().length !== 10 || !isValid(parseISO(this._dateTo())))) {
+    if (this._dateTo && (this._dateTo.length !== 10 || !isValid(parseISO(this._dateTo)))) {
       throw new Error(
-        `Invalid value for option "dateTo" of field '${
-          this.listKey
-        }.${path}': "${this._dateFrom()}"`
+        `Invalid value for option "dateTo" of field '${this.listKey}.${path}': "${this._dateFrom}"`
       );
     }
 
     if (
-      this._dateTo() &&
-      this._dateFrom() &&
-      compareAsc(parseISO(this._dateFrom()), parseISO(this._dateTo())) === 1
+      this._dateTo &&
+      this._dateFrom &&
+      compareAsc(parseISO(this._dateFrom), parseISO(this._dateTo)) === 1
     ) {
       throw new Error(
         `Invalid values for options "dateFrom", "dateTo" of field '${this.listKey}.${path}': "${dateFrom}" > "${dateTo}"`
@@ -77,13 +70,13 @@ export class CalendarDay extends Implementation {
       addFieldValidationError('Invalid CalendarDay value', { value: resolvedData[this.path] });
     }
     if (parsedValue) {
-      if (parseISO(this._dateFrom()) && compareAsc(parseISO(this._dateFrom()), parsedValue) === 1) {
+      if (parseISO(this._dateFrom) && compareAsc(parseISO(this._dateFrom), parsedValue) === 1) {
         addFieldValidationError('Value is before earliest allowed date.', {
           value: resolvedData[this.path],
           dateFrom: this._dateFromString,
         });
       }
-      if (parseISO(this._dateTo()) && compareDesc(parseISO(this._dateTo()), parsedValue) === 1) {
+      if (parseISO(this._dateTo) && compareDesc(parseISO(this._dateTo), parsedValue) === 1) {
         addFieldValidationError('Value is after latest allowed date.', {
           value: resolvedData[this.path],
           dateTo: this._dateToString,

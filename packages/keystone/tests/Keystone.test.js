@@ -97,8 +97,7 @@ test('unique typeDefs', () => {
       hero: { type: MockFieldType },
     },
   });
-  const schemaName = 'public';
-  const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+  const schema = keystone.dumpSchema();
   expect(schema.match(/scalar Foo/g) || []).toHaveLength(1);
   expect(schema.match(/getFoo: Boolean/g) || []).toHaveLength(1);
   expect(schema.match(/mutateFoo: Boolean/g) || []).toHaveLength(1);
@@ -200,8 +199,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
     });
 
     keystone.extendGraphQLSchema({ types: [{ type: 'type FooBar { foo: Int, bar: Float }' }] });
-    const schemaName = 'public';
-    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    const schema = keystone.dumpSchema();
     expect(schema.match(/type FooBar {\s*foo: Int\s*bar: Float\s*}/g) || []).toHaveLength(1);
   });
 
@@ -227,8 +225,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
         },
       ],
     });
-    const schemaName = 'public';
-    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    const schema = keystone.dumpSchema();
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._customProvider._extendedQueries).toHaveLength(1);
   });
@@ -255,8 +252,7 @@ describe('Keystone.extendGraphQLSchema()', () => {
         },
       ],
     });
-    const schemaName = 'public';
-    const schema = keystone.getTypeDefs({ schemaName }).join('\n');
+    const schema = keystone.dumpSchema();
     expect(schema.match(/double\(x: Int\): Int/g) || []).toHaveLength(1);
     expect(keystone._customProvider._extendedMutations).toHaveLength(1);
   });

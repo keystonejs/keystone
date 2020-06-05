@@ -2,7 +2,7 @@ import React, { useContext, createContext, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { useListUrlState } from '../pages/List/dataHooks';
-import { deconstructErrorsToDataShape } from '../util';
+import { deconstructErrorsToDataShape, useListSelect } from '../util';
 
 const ListContext = createContext();
 
@@ -10,7 +10,7 @@ export const useList = () => {
   return useContext(ListContext);
 };
 
-export const ListProvider = ({ list, children }) => {
+export const ListProvider = ({ children, list, skipQuery = false }) => {
   // ==============================
   // Modal handlers
   // ==============================
@@ -37,6 +37,7 @@ export const ListProvider = ({ list, children }) => {
   const query = useQuery(list.getListQuery(fields), {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
+    skip: skipQuery,
     variables: {
       where: formatFilter(filters),
       search,
@@ -54,7 +55,7 @@ export const ListProvider = ({ list, children }) => {
     error,
     data: { [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
   } = query;
-
+  const [selectedItems, setSelectedItems] = useListSelect(items);
   return (
     <ListContext.Provider
       value={{
@@ -65,6 +66,8 @@ export const ListProvider = ({ list, children }) => {
         isCreateItemModalOpen: isOpen,
         openCreateItemModal,
         closeCreateItemModal,
+        selectedItems,
+        setSelectedItems,
       }}
     >
       {children}
