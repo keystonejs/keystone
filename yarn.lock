@@ -20037,6 +20037,11 @@ react-copy-to-clipboard@^5.0.1:
     copy-to-clipboard "^3"
     prop-types "^15.5.8"
 
+react-day-picker@^8.0.0-alpha.45:
+  version "8.0.0-alpha.45"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-alpha.45.tgz#5933a49a9b305d58d4a74c5f8f6f6366d1be5516"
+  integrity sha512-iZFbLMpXzvMSa9xF4WwChimJljs+qsZb7utpMJt3gfxZEMXYXr3SIGxdA31GKhD5rtYwHMEGTVqg2KuovoF6xQ==
+
 react-dev-utils@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-4.2.3.tgz#5b42d9ea58d5e9e017a2f57a40a8af408a3a46fb"

@@ -1,13 +1,18 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-
+import { useState } from 'react';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { TextDayPicker } from '@arch-ui/day-picker';
 import { Alert } from '@arch-ui/alert';
+import 'react-day-picker/dist/style.css';
+import { DayPicker } from 'react-day-picker';
 
 const CalendarDayField = ({ autoFocus, field, value, errors, onChange, isDisabled }) => {
   const htmlID = `ks-daypicker-${field.path}`;
+
+  const [selectedDay, setSelectedDay] = useState();
+  const handleDayClick = day => setSelectedDay(day);
 
   return (
     <FieldContainer>
@@ -22,6 +27,7 @@ const CalendarDayField = ({ autoFocus, field, value, errors, onChange, isDisable
           onChange={onChange}
           disabled={isDisabled}
         />
+        <DayPicker selected={selectedDay} onDayClick={handleDayClick} />
       </FieldInput>
 
       {errors.map(({ message, data }) => (
