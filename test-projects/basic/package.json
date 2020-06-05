@@ -32,7 +32,7 @@
     "@keystonejs/keystone": "^9.0.1",
     "@keystonejs/oembed-adapters": "^5.1.4",
     "cross-env": "^7.0.0",
-    "date-fns": "^2.13.0",
+    "date-fns": "^2.14.0",
     "express": "^4.17.1",
     "graphql": "^14.6.0",
     "react": "^16.13.1"

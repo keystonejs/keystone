@@ -44,7 +44,7 @@
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",
     "cuid": "^2.1.8",
-    "date-fns": "^2.13.0",
+    "date-fns": "^2.14.0",
     "dumb-passwords": "^0.2.1",
     "google-maps-react": "^2.0.2",
     "graphql": "^14.6.0",
