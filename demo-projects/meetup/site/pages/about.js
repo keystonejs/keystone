@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 

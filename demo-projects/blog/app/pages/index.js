@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { gql, useQuery } from '@apollo/client';
 
 import { jsx } from '@emotion/core';
 import { format, parseISO } from 'date-fns';
