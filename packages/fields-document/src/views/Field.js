@@ -3,22 +3,25 @@
 import { jsx } from '@emotion/core';
 import { useCallback, useMemo } from 'react';
 import { Slate, Editable, ReactEditor, useSlate, withReact } from 'slate-react';
-import { createEditor, Editor, Transforms, Text } from 'slate';
+import { createEditor, Editor, Transforms, Text, Element, Path, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 
 import { FieldContainer, FieldLabel, FieldDescription } from '@arch-ui/fields';
 
-const Button = ({ isPressed, ...props }) => (
+const Button = ({ isDisabled, isPressed, ...props }) => (
   <button
     type="button"
+    disabled={isDisabled}
     css={{
       background: isPressed ? '#f3f3f3' : 'white',
-      borderColor: isPressed ? '#aaa' : '#ccc',
+      borderColor: isDisabled ? '#eee' : isPressed ? '#aaa' : '#ccc',
       borderStyle: 'solid',
       borderWidth: 1,
       borderRadius: 5,
       boxShadow: isPressed ? 'inset 0px 3px 5px -4px rgba(0,0,0,0.50)' : undefined,
+      color: isDisabled ? '#999' : '#172B4D',
       marginRight: 4,
+      pointerEvents: isDisabled ? 'none' : undefined,
       ':hover': {
         borderColor: isPressed ? '#666' : '#999',
       },
@@ -76,14 +79,6 @@ const DocumentEditor = {
       { match: n => Editor.isBlock(editor, n) }
     );
   },
-
-  // Access Boundary
-  insertAccessBoundary(editor) {
-    if (isBlockActive(editor, 'access-boundary')) return;
-    const children = [{ type: 'i', text: 'one' }, { text: 'two' }];
-    const boundary = { type: 'access-boundary', roles: [], children };
-    Transforms.insertNodes(editor, boundary);
-  },
 };
 
 const isBlockActive = (editor, format) => {
@@ -125,7 +120,15 @@ const getKeyDownHandler = editor => event => {
 const Toolbar = () => {
   const editor = useSlate();
   return (
-    <div>
+    <div
+      css={{
+        backgroundColor: '#f9f9f9',
+        borderBottom: '1px solid #eee',
+        borderTop: '1px solid #eee',
+        padding: '8px 16px',
+        margin: '0 -16px',
+      }}
+    >
       <Button
         isPressed={DocumentEditor.isBoldMarkActive(editor)}
         onMouseDown={event => {
@@ -154,20 +157,114 @@ const Toolbar = () => {
         Code
       </Button>
       <Button
+        isDisabled={isInsideAccessBoundary(editor)}
         onMouseDown={event => {
           event.preventDefault();
-          DocumentEditor.insertAccessBoundary(editor);
+          insertAccessBoundary(editor);
         }}
       >
-        access
+        + Access Boundary
       </Button>
     </div>
   );
 };
 
-/* Block Elements */
+/* Paragraphs */
 
-const accessRoles = ['public', 'member', 'admin'];
+const withParagraphs = editor => {
+  const { normalizeNode } = editor;
+
+  editor.normalizeNode = entry => {
+    const [node, path] = entry;
+
+    // If the element is a paragraph, ensure its children are valid.
+    if (Element.isElement(node)) {
+      if (!node.type) {
+        Transforms.setNodes(editor, { type: 'paragraph' }, { at: path });
+        return;
+      }
+      if (!node.type || node.type === 'paragraph') {
+        for (const [child, childPath] of Node.children(editor, path)) {
+          if (Element.isElement(child) && !editor.isInline(child)) {
+            Transforms.unwrapNodes(editor, { at: childPath });
+            return;
+          }
+        }
+      }
+    }
+
+    // Fall back to the original `normalizeNode` to enforce other constraints.
+    normalizeNode(entry);
+  };
+
+  return editor;
+};
+
+/* Access Control */
+
+const ROLES = [
+  { label: 'Public', value: 'public' },
+  { label: 'Members', value: 'member' },
+  { label: 'Admins', value: 'admin' },
+];
+
+const getBlockAboveSelection = editor =>
+  Editor.above(editor, {
+    match: n => Editor.isBlock(editor, n),
+  }) || [editor, []];
+
+const isBlockTextEmpty = node => {
+  const lastChild = node.children[node.children.length - 1];
+  return Text.isText(lastChild) && !lastChild.text.length;
+};
+
+// Access Boundary
+const isInsideAccessBoundary = editor => {
+  return isBlockActive(editor, 'access-boundary');
+};
+const insertAccessBoundary = editor => {
+  if (isBlockActive(editor, 'access-boundary')) return;
+  const { selection } = editor;
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const [block] = getBlockAboveSelection(editor);
+  if (!!block && isCollapsed && isBlockTextEmpty(block)) {
+    const element = { type: 'access-boundary', roles: [], children: [] };
+    Transforms.wrapNodes(editor, element);
+  } else {
+    const children = [{ type: 'paragraph', children: [{ text: '' }] }];
+    const element = { type: 'access-boundary', roles: [], children };
+    Transforms.insertNodes(editor, element, { select: true });
+  }
+};
+
+const withAccess = editor => {
+  const { insertBreak } = editor;
+  editor.insertBreak = () => {
+    const [block] = getBlockAboveSelection(editor);
+
+    if (block && isBlockTextEmpty(block)) {
+      const accessBoundary = Editor.above(editor, {
+        match: n => n.type === 'access-boundary',
+      });
+
+      if (accessBoundary) {
+        const [, path] = accessBoundary;
+        Transforms.insertNodes(
+          editor,
+          { type: 'paragraph', children: [{ text: '' }] },
+          {
+            at: Path.next(path),
+            select: true,
+          }
+        );
+        return;
+      }
+    }
+
+    insertBreak();
+  };
+  return editor;
+};
 
 const AccessBoundaryElement = ({ attributes, children, element }) => {
   const editor = useSlate();
@@ -187,34 +284,51 @@ const AccessBoundaryElement = ({ attributes, children, element }) => {
           backgroundColor: '#f9f9f9',
           borderBottom: '1px solid #eee',
           padding: 8,
+          fontSize: 14,
+          color: '#d64242',
+          fontWeight: 600,
           userSelect: 'none',
         }}
       >
         <span css={{ marginRight: 8 }}>Restrict to:</span>
-        {accessRoles.map(role => {
-          const roleIsSelected = elementRoles.includes(role);
+        {ROLES.map(role => {
+          const roleIsSelected = elementRoles.includes(role.value);
           return (
             <Button
-              key={role}
+              key={role.value}
               isPressed={roleIsSelected}
               onMouseDown={event => {
                 event.preventDefault();
                 const path = ReactEditor.findPath(editor, element);
                 const newRoles = roleIsSelected
-                  ? elementRoles.filter(i => i !== role)
-                  : [...elementRoles, role];
+                  ? elementRoles.filter(i => i !== role.value)
+                  : [...elementRoles, role.value];
                 Transforms.setNodes(editor, { roles: newRoles }, { at: path });
               }}
             >
-              {role}
+              {role.label}
             </Button>
           );
         })}
+        <Button
+          css={{ float: 'right' }}
+          onMouseDown={event => {
+            event.preventDefault();
+            const path = ReactEditor.findPath(editor, element);
+            Transforms.unwrapNodes(editor, { at: path });
+            Transforms.select(editor, path);
+            Transforms.collapse(editor, { edge: 'start' });
+          }}
+        >
+          Remove
+        </Button>
       </div>
-      <div css={{ padding: 8 }}>{children}</div>
+      <div css={{ margin: 8 }}>{children}</div>
     </div>
   );
 };
+
+/* Block Elements */
 
 const CodeElement = props => {
   return (
@@ -244,32 +358,16 @@ const Leaf = props => {
   );
 };
 
-const withAccess = editor => {
-  const { insertBreak } = editor;
-  editor.insertBreak = () => {
-    const { selection } = editor;
-
-    if (selection) {
-      const [boundary] = Editor.nodes(editor, { match: n => n.type === 'access-boundary' });
-
-      if (boundary) {
-        console.log('inside access boundary');
-        return;
-      }
-    }
-
-    insertBreak();
-  };
-  return editor;
-};
-
 export default function DocumentField({ field, errors, value, onChange, isDisabled }) {
   const htmlID = `ks-input-${field.path}`;
   const accessError = errors.find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
   );
 
-  const editor = useMemo(() => withAccess(withHistory(withReact(createEditor()))), []);
+  const editor = useMemo(
+    () => withParagraphs(withAccess(withHistory(withReact(createEditor())))),
+    []
+  );
 
   const renderElement = useCallback(props => {
     switch (props.element.type) {
