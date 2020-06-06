@@ -37,7 +37,7 @@
     "apollo-client": "^2.6.10",
     "apollo-upload-client": "^13.0.0",
     "cross-env": "^7.0.0",
-    "date-fns": "^2.13.0",
+    "date-fns": "^2.14.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql-tag": "^2.10.3",
