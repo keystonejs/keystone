@@ -82,7 +82,7 @@ keystone.createList('User', {
       type: CalendarDay,
       format: 'do MMMM yyyy',
       dateFrom: '1901-01-01',
-      dateTo: formatISO(new Date(), { representation: 'date' })}
+      dateTo: formatISO(new Date(), { representation: 'date' }),
     },
     lastOnline: {
       type: DateTime,
