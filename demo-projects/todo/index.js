@@ -1,6 +1,6 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
-const { Text, CalendarDay } = require('@keystonejs/fields');
+const { Text } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
@@ -14,7 +14,6 @@ keystone.createList('Todo', {
   schemaDoc: 'A list of things which need to be done',
   fields: {
     name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
-    day: { type: CalendarDay, dateTo: '2000-01-01', ya: '2000-01-01' },
   },
 });
 

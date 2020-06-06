@@ -1,5 +1,4 @@
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
-import { formatISO } from 'date-fns';
 
 const { CalendarDay } = require('@keystonejs/fields');
 const cuid = require('cuid');
