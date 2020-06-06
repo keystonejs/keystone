@@ -35,7 +35,7 @@ const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
-const getYear = require('date-fns/getYear');
+const { formatISO } = require('date-fns');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -82,7 +82,7 @@ keystone.createList('User', {
       type: CalendarDay,
       format: 'do MMMM yyyy',
       dateFrom: '1901-01-01',
-      dateTo: getYear(new Date()), // FIXME
+      dateTo: formatISO(new Date(), { representation: 'date' }),
     },
     lastOnline: {
       type: DateTime,
