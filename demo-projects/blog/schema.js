@@ -14,7 +14,7 @@ const {
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
-const getYear = require('date-fns/getYear');
+const {formatISO} = require('date-fns');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const dev = process.env.NODE_ENV !== 'production';
@@ -46,7 +46,7 @@ exports.User = {
       type: CalendarDay,
       format: 'do MMMM yyyy',
       dateFrom: '1901-01-01',
-      dateTo: getYear(new Date()), // FIXME
+      dateTo:  formatISO(new Date(), { representation: 'date' })}
     },
     ...(process.env.IFRAMELY_API_KEY
       ? {
