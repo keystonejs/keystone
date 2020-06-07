@@ -1,12 +1,17 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { useCallback, useMemo } from 'react';
+import { createContext, useCallback, useMemo, useContext } from 'react';
 import { Slate, Editable, ReactEditor, useSlate, withReact } from 'slate-react';
 import { createEditor, Editor, Transforms, Text, Element, Path, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 
 import { FieldContainer, FieldLabel, FieldDescription } from '@arch-ui/fields';
+
+const DocumentFeaturesContext = createContext({});
+const useDocumentFeatures = () => {
+  return useContext(DocumentFeaturesContext);
+};
 
 const Button = ({ isDisabled, isPressed, ...props }) => (
   <button
@@ -268,7 +273,10 @@ const withAccess = editor => {
 
 const AccessBoundaryElement = ({ attributes, children, element }) => {
   const editor = useSlate();
+  const { access } = useDocumentFeatures();
   const elementRoles = Array.isArray(element.roles) ? element.roles : [];
+  // TODO: handle case where no access or roles are defined
+  // TODO: validate elementRoles against defined access roles
   return (
     <div
       css={{
@@ -291,7 +299,7 @@ const AccessBoundaryElement = ({ attributes, children, element }) => {
         }}
       >
         <span css={{ marginRight: 8 }}>Restrict to:</span>
-        {ROLES.map(role => {
+        {access.roles.map(role => {
           const roleIsSelected = elementRoles.includes(role.value);
           return (
             <Button
@@ -363,7 +371,9 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
   const accessError = errors.find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
   );
+  const { documentFeatures } = field.config;
 
+  // TODO: skip withAccess if documentFeatures.access is not defined
   const editor = useMemo(
     () => withParagraphs(withAccess(withHistory(withReact(createEditor())))),
     []
@@ -389,19 +399,21 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
   if (accessError) return null;
 
   return (
-    <FieldContainer>
-      <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      <FieldDescription text={field.adminDoc} />
-      <Slate editor={editor} value={value} onChange={onChange}>
-        <Toolbar editor={editor} />
-        <Editable
-          autoFocus
-          onKeyDown={onKeyDown}
-          readOnly={isDisabled}
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-        />
-      </Slate>
-    </FieldContainer>
+    <DocumentFeaturesContext.Provider value={documentFeatures}>
+      <FieldContainer>
+        <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
+        <FieldDescription text={field.adminDoc} />
+        <Slate editor={editor} value={value} onChange={onChange}>
+          <Toolbar editor={editor} />
+          <Editable
+            autoFocus
+            onKeyDown={onKeyDown}
+            readOnly={isDisabled}
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+          />
+        </Slate>
+      </FieldContainer>
+    </DocumentFeaturesContext.Provider>
   );
 }
