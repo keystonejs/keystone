@@ -13,11 +13,11 @@ export const isInsideAccessBoundary = editor => {
   return isBlockActive(editor, 'access-boundary');
 };
 export const insertAccessBoundary = editor => {
-  if (isBlockActive(editor, 'access-boundary')) return;
+  if (isInsideAccessBoundary(editor)) return;
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
   const [block] = getBlockAboveSelection(editor);
-  if (!!block && isCollapsed && isBlockTextEmpty(block)) {
+  if (block && isCollapsed && isBlockTextEmpty(block)) {
     const element = { type: 'access-boundary', roles: [], children: [] };
     Transforms.wrapNodes(editor, element);
   } else {
