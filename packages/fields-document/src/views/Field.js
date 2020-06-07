@@ -16,6 +16,7 @@ import {
 } from '../DocumentEditor/access';
 import { Button } from '../DocumentEditor/components';
 import { DocumentFeaturesContext } from '../DocumentEditor/documentFeatures';
+import { isInsidePanel, insertPanel, PanelElement } from '../DocumentEditor/panel';
 import { withParagraphs } from '../DocumentEditor/paragraphs';
 import { isBlockActive } from '../DocumentEditor/utils';
 
@@ -64,7 +65,7 @@ const DocumentEditor = {
     const isActive = DocumentEditor.isCodeBlockActive(editor);
     Transforms.setNodes(
       editor,
-      { type: isActive ? null : 'code' },
+      { type: isActive ? 'paragraph' : 'code' },
       { match: n => Editor.isBlock(editor, n) }
     );
   },
@@ -146,6 +147,15 @@ const Toolbar = () => {
       >
         + Access Boundary
       </Button>
+      <Button
+        isDisabled={isInsidePanel(editor)}
+        onMouseDown={event => {
+          event.preventDefault();
+          insertPanel(editor);
+        }}
+      >
+        + Panel
+      </Button>
     </div>
   );
 };
@@ -197,6 +207,8 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
     switch (props.element.type) {
       case 'access-boundary':
         return <AccessBoundaryElement {...props} />;
+      case 'panel':
+        return <PanelElement {...props} />;
       case 'code':
         return <CodeElement {...props} />;
       default:
