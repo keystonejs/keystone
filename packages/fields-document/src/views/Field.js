@@ -112,9 +112,9 @@ const Toolbar = () => {
   return (
     <div
       css={{
-        backgroundColor: '#f9f9f9',
-        borderBottom: '1px solid #eee',
-        borderTop: '1px solid #eee',
+        backgroundColor: '#F7FAFC',
+        borderBottom: '1px solid #E2E8F0',
+        borderTop: '1px solid #E2E8F0',
         padding: '8px 16px',
         margin: '0 -16px',
       }}
@@ -181,7 +181,7 @@ const Toolbar = () => {
 
 const CodeElement = props => {
   return (
-    <pre {...props.attributes}>
+    <pre css={{ color: '#2C5282' }} {...props.attributes}>
       <code>{props.children}</code>
     </pre>
   );
