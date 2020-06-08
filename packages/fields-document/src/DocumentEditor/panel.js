@@ -5,6 +5,7 @@ import { Editor, Path, Range, Transforms } from 'slate';
 import { ReactEditor, useFocused, useSelected, useSlate } from 'slate-react';
 
 import { Button } from './components';
+import { isBlockTextEmpty, getBlockAboveSelection, isBlockActive } from './utils';
 
 const PANEL_TYPES = {
   note: {
@@ -35,9 +36,6 @@ const PANEL_TYPES = {
 const PANEL_TYPE_KEYS = Object.keys(PANEL_TYPES);
 const DEFAULT_PANEL_TYPE = PANEL_TYPE_KEYS[0];
 
-// import { Button } from './components';
-import { isBlockTextEmpty, getBlockAboveSelection, isBlockActive } from './utils';
-
 export const isInsidePanel = editor => {
   return isBlockActive(editor, 'panel');
 };
@@ -61,7 +59,6 @@ export const withPanel = editor => {
     const panel = Editor.above(editor, {
       match: n => n.type === 'panel',
     });
-    console.log(panel);
     if (panel) {
       const [, path] = panel;
       Transforms.insertNodes(

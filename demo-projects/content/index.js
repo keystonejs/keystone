@@ -35,7 +35,7 @@ keystone.createList('Post', {
         access: {
           roles: {
             public: {
-              label: 'public',
+              label: 'Public',
               resolveAccess: ({ item }) => !item,
             },
             member: {

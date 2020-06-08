@@ -18,9 +18,11 @@ import { Button } from '../DocumentEditor/components';
 import { DocumentFeaturesContext } from '../DocumentEditor/documentFeatures';
 import { isInsidePanel, insertPanel, PanelElement, withPanel } from '../DocumentEditor/panel';
 import { withParagraphs } from '../DocumentEditor/paragraphs';
+import { renderQuoteElement, isInsideQuote, insertQuote, withQuote } from '../DocumentEditor/quote';
 import { isBlockActive } from '../DocumentEditor/utils';
 
 // TODO: more standard marks, and block types like headings, etc.
+// sould be configurable through documentFeatures
 
 const DocumentEditor = {
   // Bold
@@ -104,6 +106,7 @@ const getKeyDownHandler = editor => event => {
 
 /* UI Components */
 
+// TODO use icons for toolbar buttons, make it sticky, etc
 const Toolbar = () => {
   const editor = useSlate();
   return (
@@ -161,6 +164,15 @@ const Toolbar = () => {
       >
         + Panel
       </Button>
+      <Button
+        isDisabled={isInsideQuote(editor)}
+        onMouseDown={event => {
+          event.preventDefault();
+          insertQuote(editor);
+        }}
+      >
+        + Quote
+      </Button>
     </div>
   );
 };
@@ -186,8 +198,8 @@ const Leaf = props => {
     <span
       {...props.attributes}
       style={{
-        fontWeight: props.leaf.bold ? 'bold' : 'normal',
-        fontStyle: props.leaf.italic ? 'italic' : 'normal',
+        fontWeight: props.leaf.bold ? 'bold' : undefined,
+        fontStyle: props.leaf.italic ? 'italic' : undefined,
       }}
     >
       {props.children}
@@ -205,11 +217,16 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
   // TODO: skip withAccess if documentFeatures.access is not defined
   // TODO: define panel somehow as a documentFeatures plugin
   const editor = useMemo(
-    () => withParagraphs(withPanel(withAccess(withHistory(withReact(createEditor()))))),
+    () => withParagraphs(withQuote(withPanel(withAccess(withHistory(withReact(createEditor())))))),
     []
   );
 
   const renderElement = useCallback(props => {
+    // TODO: probably use this method for the access boundary as well, is this
+    // a good pattern for plugging in custom element renderers?
+    const quoteElement = renderQuoteElement(props);
+    if (quoteElement) return quoteElement;
+
     switch (props.element.type) {
       case 'access-boundary':
         return <AccessBoundaryElement {...props} />;
