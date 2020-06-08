@@ -1,5 +1,7 @@
 import { Transforms, Element, Node } from 'slate';
 
+export const paragraphElement = { type: 'paragraph', children: [{ text: '' }] };
+
 export const withParagraphs = editor => {
   const { normalizeNode } = editor;
 
@@ -22,7 +24,6 @@ export const withParagraphs = editor => {
       }
     }
 
-    // Fall back to the original `normalizeNode` to enforce other constraints.
     normalizeNode(entry);
   };
 
