@@ -16,9 +16,11 @@ import {
 } from '../DocumentEditor/access';
 import { Button } from '../DocumentEditor/components';
 import { DocumentFeaturesContext } from '../DocumentEditor/documentFeatures';
-import { isInsidePanel, insertPanel, PanelElement } from '../DocumentEditor/panel';
+import { isInsidePanel, insertPanel, PanelElement, withPanel } from '../DocumentEditor/panel';
 import { withParagraphs } from '../DocumentEditor/paragraphs';
 import { isBlockActive } from '../DocumentEditor/utils';
+
+// TODO: more standard marks, and block types like headings, etc.
 
 const DocumentEditor = {
   // Bold
@@ -61,6 +63,9 @@ const DocumentEditor = {
   isCodeBlockActive(editor) {
     return isBlockActive(editor, 'code');
   },
+  // TODO: you shouldn't be able to toggle a code block from within a custom
+  // component type, e.g Panel (I think?) -- or if we can, remove all the
+  // custom properties associated with it
   toggleCodeBlock(editor) {
     const isActive = DocumentEditor.isCodeBlockActive(editor);
     Transforms.setNodes(
@@ -198,8 +203,9 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
   const { documentFeatures } = field.config;
 
   // TODO: skip withAccess if documentFeatures.access is not defined
+  // TODO: define panel somehow as a documentFeatures plugin
   const editor = useMemo(
-    () => withParagraphs(withAccess(withHistory(withReact(createEditor())))),
+    () => withParagraphs(withPanel(withAccess(withHistory(withReact(createEditor()))))),
     []
   );
 
