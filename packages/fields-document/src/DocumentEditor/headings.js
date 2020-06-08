@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Editor, Node, Path, Transforms } from 'slate';
+import { Editor, Path, Transforms } from 'slate';
 import { paragraphElement } from './paragraphs';
 import { getBlockAboveSelection } from './utils';
 

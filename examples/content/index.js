@@ -9,7 +9,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
 const keystone = new Keystone({
   name: 'Keystone Content Management',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/content' }),
   cookieSecret: 'secret',
 });
 

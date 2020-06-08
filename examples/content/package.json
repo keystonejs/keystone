@@ -14,15 +14,15 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^8.1.0",
-    "@keystonejs/app-admin-ui": "^6.0.1",
-    "@keystonejs/app-graphql": "^5.1.7",
+    "@keystonejs/adapter-mongoose": "^9.0.4",
+    "@keystonejs/app-admin-ui": "^7.3.3",
+    "@keystonejs/app-graphql": "^6.1.1",
     "@keystonejs/app-static": "^5.1.2",
     "@keystonejs/auth-password": "^5.1.8",
-    "@keystonejs/fields": "^11.0.0",
+    "@keystonejs/fields": "^17.1.0",
     "@keystonejs/fields-document": "^0.0.0",
-    "@keystonejs/keystone": "^9.0.1",
-    "cross-env": "^7.0.0"
+    "@keystonejs/keystone": "^14.0.1",
+    "cross-env": "^7.0.2"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/content"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/content"
 }

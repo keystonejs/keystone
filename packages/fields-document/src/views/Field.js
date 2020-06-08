@@ -79,7 +79,7 @@ const BlockButton = ({ type, children }) => {
   );
 };
 
-const Spacer = () => <span css={{ display: 'inline-block', width: 8 }} />;
+const Spacer = () => <span css={{ display: 'inline-block', width: 12 }} />;
 
 // TODO use icons for toolbar buttons, make it sticky, etc
 const Toolbar = () => {
