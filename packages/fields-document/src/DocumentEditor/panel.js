@@ -36,6 +36,8 @@ const PANEL_TYPES = {
 const PANEL_TYPE_KEYS = Object.keys(PANEL_TYPES);
 const DEFAULT_PANEL_TYPE = PANEL_TYPE_KEYS[0];
 
+const panelElement = { type: 'panel', panelType: DEFAULT_PANEL_TYPE, children: [{ text: '' }] };
+
 export const isInsidePanel = editor => {
   return isBlockActive(editor, 'panel');
 };
@@ -46,10 +48,13 @@ export const insertPanel = editor => {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const [block] = getBlockAboveSelection(editor);
   if (!!block && isCollapsed && isBlockTextEmpty(block)) {
-    Transforms.setNodes(editor, { type: 'panel' }, { match: n => Editor.isBlock(editor, n) });
+    Transforms.setNodes(
+      editor,
+      { type: 'panel', panelType: DEFAULT_PANEL_TYPE },
+      { match: n => Editor.isBlock(editor, n) }
+    );
   } else {
-    const element = { type: 'panel', children: [{ text: '' }] };
-    Transforms.insertNodes(editor, element, { select: true });
+    Transforms.insertNodes(editor, panelElement, { select: true });
   }
 };
 

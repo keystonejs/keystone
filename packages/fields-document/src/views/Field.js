@@ -1,9 +1,10 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
+import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
+import { createEditor } from 'slate';
 import { Slate, Editable, useSlate, withReact } from 'slate-react';
-import { createEditor, Editor, Transforms, Text } from 'slate';
 import { withHistory } from 'slate-history';
 
 import { FieldContainer, FieldLabel, FieldDescription } from '@arch-ui/fields';
@@ -19,92 +20,66 @@ import { DocumentFeaturesContext } from '../DocumentEditor/documentFeatures';
 import { isInsidePanel, insertPanel, PanelElement, withPanel } from '../DocumentEditor/panel';
 import { withParagraphs } from '../DocumentEditor/paragraphs';
 import { renderQuoteElement, isInsideQuote, insertQuote, withQuote } from '../DocumentEditor/quote';
-import { isBlockActive } from '../DocumentEditor/utils';
+import {
+  // LIST_TYPES,
+  isBlockActive,
+  toggleBlock,
+  isMarkActive,
+  toggleMark,
+} from '../DocumentEditor/utils';
 
-// TODO: more standard marks, and block types like headings, etc.
-// sould be configurable through documentFeatures
-
-const DocumentEditor = {
-  // Bold
-  isBoldMarkActive(editor) {
-    const [match] = Editor.nodes(editor, {
-      match: n => n.bold === true,
-      universal: true,
-    });
-
-    return !!match;
-  },
-  toggleBoldMark(editor) {
-    const isActive = DocumentEditor.isBoldMarkActive(editor);
-    Transforms.setNodes(
-      editor,
-      { bold: isActive ? null : true },
-      { match: n => Text.isText(n), split: true }
-    );
-  },
-
-  // Italic
-  isItalicMarkActive(editor) {
-    const [match] = Editor.nodes(editor, {
-      match: n => n.italic === true,
-      universal: true,
-    });
-
-    return !!match;
-  },
-  toggleItalicMark(editor) {
-    const isActive = DocumentEditor.isItalicMarkActive(editor);
-    Transforms.setNodes(
-      editor,
-      { italic: isActive ? null : true },
-      { match: n => Text.isText(n), split: true }
-    );
-  },
-
-  // Code
-  isCodeBlockActive(editor) {
-    return isBlockActive(editor, 'code');
-  },
-  // TODO: you shouldn't be able to toggle a code block from within a custom
-  // component type, e.g Panel (I think?) -- or if we can, remove all the
-  // custom properties associated with it
-  toggleCodeBlock(editor) {
-    const isActive = DocumentEditor.isCodeBlockActive(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? 'paragraph' : 'code' },
-      { match: n => Editor.isBlock(editor, n) }
-    );
-  },
+const HOTKEYS = {
+  'mod+b': { mark: 'bold' },
+  'mod+i': { mark: 'italic' },
+  'mod+u': { mark: 'underline' },
+  'mod+`': { block: 'code' },
 };
 
 const getKeyDownHandler = editor => event => {
-  if (!event.ctrlKey) {
-    return;
-  }
-
-  switch (event.key) {
-    case '`': {
+  for (const hotkey in HOTKEYS) {
+    if (isHotkey(hotkey, event)) {
       event.preventDefault();
-      DocumentEditor.toggleCodeBlock(editor);
-      break;
-    }
-
-    case 'b': {
-      event.preventDefault();
-      DocumentEditor.toggleBoldMark(editor);
-      break;
-    }
-
-    case 'i': {
-      event.preventDefault();
-      DocumentEditor.toggleItalicMark(editor);
-      break;
+      const { block, mark } = HOTKEYS[hotkey];
+      if (block) toggleBlock(editor, block);
+      if (mark) toggleMark(editor, mark);
     }
   }
 };
 
 /* UI Components */
+
+const MarkButton = ({ type, children }) => {
+  const editor = useSlate();
+  return (
+    <Button
+      isPressed={isMarkActive(editor, type)}
+      onMouseDown={event => {
+        event.preventDefault();
+        toggleMark(editor, type);
+      }}
+    >
+      {children}
+    </Button>
+  );
+};
+
+const BlockButton = ({ type, children }) => {
+  const editor = useSlate();
+  return (
+    <Button
+      isDisabled={isInsideQuote(editor) || isInsidePanel(editor)}
+      isPressed={isBlockActive(editor, type)}
+      onMouseDown={event => {
+        event.preventDefault();
+        toggleBlock(editor, type);
+      }}
+    >
+      {children}
+    </Button>
+  );
+};
+
+const Spacer = () => <span css={{ display: 'inline-block', width: 8 }} />;
 
 // TODO use icons for toolbar buttons, make it sticky, etc
 const Toolbar = () => {
@@ -119,35 +94,20 @@ const Toolbar = () => {
         margin: '0 -16px',
       }}
     >
+      <BlockButton type="heading-1">H1</BlockButton>
+      <BlockButton type="heading-2">H2</BlockButton>
+      <BlockButton type="heading-3">H3</BlockButton>
+      <BlockButton type="code">Code</BlockButton>
+      <BlockButton type="unordered-list">• List</BlockButton>
+      <BlockButton type="ordered-list"># List</BlockButton>
+      <Spacer />
+      <MarkButton type="bold">Bold</MarkButton>
+      <MarkButton type="italic">Italic</MarkButton>
+      <Spacer />
       <Button
-        isPressed={DocumentEditor.isBoldMarkActive(editor)}
-        onMouseDown={event => {
-          event.preventDefault();
-          DocumentEditor.toggleBoldMark(editor);
-        }}
-      >
-        Bold
-      </Button>
-      <Button
-        isPressed={DocumentEditor.isItalicMarkActive(editor)}
-        onMouseDown={event => {
-          event.preventDefault();
-          DocumentEditor.toggleItalicMark(editor);
-        }}
-      >
-        Italic
-      </Button>
-      <Button
-        isPressed={DocumentEditor.isCodeBlockActive(editor)}
-        onMouseDown={event => {
-          event.preventDefault();
-          DocumentEditor.toggleCodeBlock(editor);
-        }}
-      >
-        Code
-      </Button>
-      <Button
-        isDisabled={isInsideAccessBoundary(editor)}
+        isDisabled={
+          isInsideAccessBoundary(editor) || isInsidePanel(editor) || isInsideQuote(editor)
+        }
         onMouseDown={event => {
           event.preventDefault();
           insertAccessBoundary(editor);
@@ -156,7 +116,7 @@ const Toolbar = () => {
         + Access Boundary
       </Button>
       <Button
-        isDisabled={isInsidePanel(editor)}
+        isDisabled={isInsidePanel(editor) || isInsideQuote(editor)}
         onMouseDown={event => {
           event.preventDefault();
           insertPanel(editor);
@@ -165,7 +125,7 @@ const Toolbar = () => {
         + Panel
       </Button>
       <Button
-        isDisabled={isInsideQuote(editor)}
+        isDisabled={isInsidePanel(editor) || isInsideQuote(editor)}
         onMouseDown={event => {
           event.preventDefault();
           insertQuote(editor);
@@ -179,16 +139,17 @@ const Toolbar = () => {
 
 /* Block Elements */
 
-const CodeElement = props => {
+const CodeElement = ({ attributes, children }) => {
   return (
-    <pre css={{ color: '#2C5282' }} {...props.attributes}>
-      <code>{props.children}</code>
+    <pre css={{ color: '#2C5282' }} {...attributes}>
+      <code>{children}</code>
     </pre>
   );
 };
 
-const DefaultElement = props => {
-  return <p {...props.attributes}>{props.children}</p>;
+const HeadingElement = ({ attributes, children, level }) => {
+  const Tag = `h${level}`;
+  return <Tag {...attributes}>{children}</Tag>;
 };
 
 /* Leaf Elements */
@@ -230,12 +191,25 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
     switch (props.element.type) {
       case 'access-boundary':
         return <AccessBoundaryElement {...props} />;
-      case 'panel':
-        return <PanelElement {...props} />;
       case 'code':
         return <CodeElement {...props} />;
+      case 'panel':
+        return <PanelElement {...props} />;
+      case 'heading-1':
+        return <HeadingElement level={1} {...props} />;
+      case 'heading-2':
+        return <HeadingElement level={2} {...props} />;
+      case 'heading-3':
+        return <HeadingElement level={3} {...props} />;
+
+      case 'ordered-list':
+        return <ol {...props.attributes}>{props.children}</ol>;
+      case 'unordered-list':
+        return <ul {...props.attributes}>{props.children}</ul>;
+      case 'list-item':
+        return <li {...props.attributes}>{props.children}</li>;
       default:
-        return <DefaultElement {...props} />;
+        return <p {...props.attributes}>{props.children}</p>;
     }
   }, []);
 
