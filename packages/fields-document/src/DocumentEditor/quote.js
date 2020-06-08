@@ -125,7 +125,7 @@ const QuoteElement = ({ attributes, children }) => {
   return (
     <div
       css={{
-        borderLeft: '3px solid #ccc',
+        borderLeft: '3px solid #CBD5E0',
         paddingLeft: 16,
       }}
       {...attributes}
@@ -137,7 +137,7 @@ const QuoteElement = ({ attributes, children }) => {
 
 const QuoteContentElement = ({ attributes, children }) => {
   return (
-    <p css={{ fontStyle: 'italic' }} {...attributes}>
+    <p css={{ fontStyle: 'italic', color: '#4A5568' }} {...attributes}>
       {children}
     </p>
   );
@@ -145,7 +145,7 @@ const QuoteContentElement = ({ attributes, children }) => {
 
 const QuoteAttributionElement = ({ attributes, children }) => {
   return (
-    <div css={{ fontWeight: 'bold', color: '#666' }} {...attributes}>
+    <div css={{ fontWeight: 'bold', color: '#718096' }} {...attributes}>
       <span
         contentEditable={false}
         style={{

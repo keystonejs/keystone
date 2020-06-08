@@ -9,27 +9,27 @@ import { isBlockTextEmpty, getBlockAboveSelection, isBlockActive } from './utils
 
 const PANEL_TYPES = {
   note: {
-    background: '#DEEBFF',
-    border: '#2684FF',
-    foreground: '#0747A6',
+    background: '#EBF8FF',
+    border: '#90CDF4',
+    foreground: '#2C5282',
     icon: '👋',
   },
   alert: {
-    background: '#FFEBE6',
-    border: '#FF5630',
-    foreground: '#BF2600',
+    background: '#FFF5F5',
+    border: '#FEB2B2',
+    foreground: '#9B2C2C',
     icon: '🚨',
   },
   tip: {
-    background: '#EAE6FF',
-    border: '#6554C0',
-    foreground: '#403294',
+    background: '#EBF4FF',
+    border: '#C3DAFE',
+    foreground: '#4C51BF',
     icon: '💎',
   },
   success: {
-    background: '#E3FCEF',
-    border: '#36B37E',
-    foreground: '#006644',
+    background: '#F0FFF4',
+    border: '#9AE6B4',
+    foreground: '#276749',
     icon: '✅',
   },
 };
@@ -95,12 +95,12 @@ const PanelTypeSelect = ({ value, onChange }) => {
           marginTop: 8,
           padding: 6,
           background: 'white',
-          borderRadius: 8,
+          borderRadius: 6,
           paddingLeft: 10,
-          border: '1px solid rgba(0,0,0,0.3)',
+          border: '1px solid rgba(0, 0, 0, 0.3)',
           boxShadow: `
-  0 2.4px 10px rgba(0, 0, 0, 0.08),
-  0 19px 80px rgba(0, 0, 0, 0.16)`,
+  0 2.4px 10px rgba(0, 0, 0, 0.09),
+  0 19px 80px rgba(0, 0, 0, 0.18)`,
         }}
       >
         {PANEL_TYPE_KEYS.map(type => (

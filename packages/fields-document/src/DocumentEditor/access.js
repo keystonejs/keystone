@@ -66,7 +66,7 @@ export const AccessBoundaryElement = ({ attributes, children, element }) => {
     <div
       css={{
         margin: '8px 0',
-        border: '3px dashed #eee',
+        border: '3px dashed #E2E8F0',
         borderRadius: 5,
       }}
       {...attributes}
@@ -74,13 +74,13 @@ export const AccessBoundaryElement = ({ attributes, children, element }) => {
       <div
         contentEditable={false}
         style={{
-          backgroundColor: '#f9f9f9',
-          borderBottom: '1px solid #eee',
+          userSelect: 'none',
+          backgroundColor: '#F7FAFC',
+          borderBottom: '1px solid #E2E8F0',
           padding: 8,
           fontSize: 14,
-          color: '#d64242',
+          color: '#E53E3E',
           fontWeight: 600,
-          userSelect: 'none',
         }}
       >
         <span css={{ marginRight: 8 }}>Restrict to:</span>
