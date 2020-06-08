@@ -3,7 +3,14 @@
 import { jsx } from '@emotion/core';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
 
-import { getBlockAboveSelection, isBlockActive, isBlockTextEmpty } from './utils';
+import { paragraphElement } from './paragraphs';
+import {
+  debugLog,
+  getBlockAboveSelection,
+  isBlockActive,
+  isBlockTextEmpty,
+  isFirstChild,
+} from './utils';
 
 export const isInsideQuote = editor => {
   return isBlockActive(editor, 'quote');
@@ -23,11 +30,15 @@ export const insertQuote = editor => {
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
   const [block, path] = getBlockAboveSelection(editor);
-  if (block && isCollapsed && isBlockTextEmpty(block)) {
-    Transforms.removeNodes(editor, { at: path });
+  if (block && isCollapsed && block.type === paragraphElement.type && isBlockTextEmpty(block)) {
+    debugLog('insertQuote: removing empty paragraph at ', path);
+    Transforms.removeNodes(editor, path);
+    debugLog('insertQuote: inserting quote at path ', path);
+    Transforms.insertNodes(editor, { ...quoteElement, id: Date.now() }, { at: path, select: true });
+  } else {
+    debugLog('insertQuote: inserting quote');
+    Transforms.insertNodes(editor, { ...quoteElement, id: Date.now() }, { select: true });
   }
-
-  Transforms.insertNodes(editor, quoteElement, { select: true });
   // move the selection back by one line so the cursor starts in the content
   Transforms.move(editor, { distance: 1, reverse: true, unit: 'line' });
 };
@@ -44,63 +55,105 @@ export const withQuote = editor => {
       });
 
       if (quote) {
-        const [node, path] = quote;
-        const content = Node.string(node);
-        if (!content && node.children.length === 2) {
-          Transforms.removeNodes(editor, { at: path });
+        // delete an empty quote if there is no content
+        const [quoteNode, quotePath] = quote;
+        const quoteContent = Node.string(quoteNode);
+        if (!quoteContent && quoteNode.children.length === 2) {
+          Transforms.removeNodes(editor, { at: quotePath });
           return;
         }
-      }
 
-      deleteBackward(...args);
+        const content = Editor.above(editor, {
+          match: n => n.type === 'quote-content',
+        });
+
+        if (content) {
+          const [contentBlock, contentPath] = content;
+          if (
+            isFirstChild(contentPath) &&
+            isBlockTextEmpty(contentBlock) &&
+            quoteNode.children.length > 2
+          ) {
+            Transforms.removeNodes(editor, { at: contentPath });
+            debugLog(quotePath);
+            Transforms.insertNodes(editor, paragraphElement, {
+              at: quotePath,
+              select: true,
+            });
+            return;
+          }
+        }
+      }
     }
+
+    deleteBackward(...args);
   };
 
   editor.insertBreak = () => {
     const quote = Editor.above(editor, {
-      match: n => n.type === 'quote-attribution',
+      match: n => n.type === 'quote',
     });
+
     if (quote) {
       const [, path] = quote;
-      Transforms.insertNodes(
-        editor,
-        { type: 'paragraph', children: [{ text: '' }] },
-        {
-          at: Path.next(path.slice(0, -1)),
+
+      // insert a new paragraph after the quote if the cursor is in the attribution
+      const attribution = Editor.above(editor, {
+        match: n => n.type === 'quote-attribution',
+      });
+      if (attribution) {
+        Transforms.insertNodes(editor, paragraphElement, {
+          at: Path.next(path),
           select: true,
-        }
-      );
-      return;
+        });
+        return;
+      }
     }
 
     insertBreak();
   };
 
   editor.normalizeNode = ([node, path]) => {
+    const contentElement = quoteElement.children[0];
+    const attributionElement = quoteElement.children[1];
+
     if (node.type === quoteElement.type) {
       const children = Array.from(Node.children(editor, path));
 
       if (!children.length) {
+        debugLog('normalizeNode: quotes: removing empty quote node');
         Transforms.removeNodes(editor, path);
         return;
       }
 
-      const contentElement = quoteElement.children[0];
       if (children[0][0].type !== contentElement.type) {
+        debugLog('normalizeNode: quotes: inserting initial content node');
         Transforms.insertNodes(editor, contentElement, { at: [...path, 0] });
         return;
       }
 
-      const attributionElement = quoteElement.children[1];
       if (children[children.length - 1][0].type !== attributionElement.type) {
+        debugLog('normalizeNode: quotes: inserting trailing attribution node');
         Transforms.insertNodes(editor, attributionElement, { at: [...path, children.length] });
         return;
       }
 
       for (var i = 1; i < children.length - 1; i++) {
         if (children[i].type !== contentElement.type) {
+          debugLog('normalizeNode: quotes: converting child ' + i + ' to content node');
           Transforms.setNodes(editor, { type: contentElement.type }, { at: [...path, i] });
+          return;
         }
+      }
+    }
+
+    // ensure quote content and attribution nodes are within a quote, otherwise turn them into paragraphs
+    if (node.type === contentElement.type || node.type === attributionElement.type) {
+      const parent = Node.parent(editor, path);
+      if (parent.type !== quoteElement.type) {
+        debugLog('normalizeNode: quotes: converting orphaned ' + node.type + ' node to paragraph');
+        Transforms.setNodes(editor, { type: paragraphElement.type }, { at: path });
+        return;
       }
     }
 
