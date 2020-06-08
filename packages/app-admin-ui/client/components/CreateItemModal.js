@@ -46,7 +46,7 @@ const useEventCallback = callback => {
   return cb;
 };
 
-const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
+const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) => {
   const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
 
   const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
@@ -123,8 +123,10 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
       onCreate(savedData);
     }
 
-    const newItemID = savedData.data[list.gqlNames.createMutationName].id;
-    history.push(`${list.fullPath}/${newItemID}`);
+    if (viewOnSave) {
+      const newItemID = savedData.data[list.gqlNames.createMutationName].id;
+      history.push(`${list.fullPath}/${newItemID}`);
+    }
   });
 
   const _onClose = () => {
