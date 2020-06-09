@@ -1,5 +1,18 @@
 # @keystonejs/app-admin-ui
 
+## 7.0.2
+
+### Patch Changes
+
+- [`083621c90`](https://github.com/keystonejs/keystone/commit/083621c9043a26af6fd48a57646e96b062c625a1) [#3104](https://github.com/keystonejs/keystone/pull/3104) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted ScrolToTop component to a custom hook.
+
+* [`2a7f22062`](https://github.com/keystonejs/keystone/commit/2a7f220628bb0b4d58d0a4dca370e8922a25da80) [#3108](https://github.com/keystonejs/keystone/pull/3108) Thanks [@Vultraz](https://github.com/Vultraz)! - Moved a couple files around to more logical places.
+
+- [`37f57c39a`](https://github.com/keystonejs/keystone/commit/37f57c39ac490fa8a67499ac7ac75a8c04af41bf) [#3124](https://github.com/keystonejs/keystone/pull/3124) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a regression in the Create Relationship workflow.
+
+- Updated dependencies [[`bb0649b59`](https://github.com/keystonejs/keystone/commit/bb0649b59d71dd23294ed7f5986402fe8893125f)]:
+  - @keystonejs/build-field-types@5.2.9
+
 ## 7.0.1
 
 ### Patch Changes
