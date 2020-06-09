@@ -1,5 +1,11 @@
 # @arch-ui/modal-utils
 
+## 1.0.11
+
+### Patch Changes
+
+- [`a212ae6e7`](https://github.com/keystonejs/keystone/commit/a212ae6e780d36160cf6089a59601acaaadaf210) [#3131](https://github.com/keystonejs/keystone/pull/3131) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted withModalHandlers to a functional component.
+
 ## 1.0.10
 
 ### Patch Changes

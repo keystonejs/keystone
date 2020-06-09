@@ -1,5 +1,14 @@
 # @keystonejs/cypress-project-client-validation
 
+## 6.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`8df24d2ab`](https://github.com/keystonejs/keystone/commit/8df24d2ab4bed8a7fc1a856c20a571781dd7c04e), [`083621c90`](https://github.com/keystonejs/keystone/commit/083621c9043a26af6fd48a57646e96b062c625a1), [`2a7f22062`](https://github.com/keystonejs/keystone/commit/2a7f220628bb0b4d58d0a4dca370e8922a25da80), [`37f57c39a`](https://github.com/keystonejs/keystone/commit/37f57c39ac490fa8a67499ac7ac75a8c04af41bf), [`33046a66f`](https://github.com/keystonejs/keystone/commit/33046a66f33a82cf099880303b44d9736344667d), [`7c38e2671`](https://github.com/keystonejs/keystone/commit/7c38e267143491f38699326f02764f40f337d416), [`835866e1a`](https://github.com/keystonejs/keystone/commit/835866e1a2954113d809c9f0bac186485ac6212b)]:
+  - @keystonejs/keystone@11.0.0
+  - @keystonejs/app-admin-ui@7.0.2
+  - @keystonejs/adapter-mongoose@8.1.3
+
 ## 6.0.1
 
 ### Patch Changes
