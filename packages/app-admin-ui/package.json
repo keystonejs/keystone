@@ -87,5 +87,9 @@
     "webpack-dev-middleware": "^3.7.2",
     "webpack-hot-middleware": "^2.25.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-admin-ui"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/app-admin-ui"
+  }
 }

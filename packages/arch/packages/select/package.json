@@ -17,5 +17,9 @@
     "react-select": "^3.1.0"
   },
   "module": "dist/select.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/select"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/select"
+  }
 }

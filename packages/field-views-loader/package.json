@@ -11,5 +11,9 @@
   "dependencies": {
     "loader-utils": "^2.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/field-views-loader"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/field-views-loader"
+  }
 }

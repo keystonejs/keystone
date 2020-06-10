@@ -18,5 +18,9 @@
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-mongoose"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/adapter-mongoose"
+  }
 }

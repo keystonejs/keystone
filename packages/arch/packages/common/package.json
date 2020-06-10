@@ -9,5 +9,9 @@
     "@arch-ui/theme": "^0.0.10"
   },
   "module": "dist/common.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/common"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/common"
+  }
 }

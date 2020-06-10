@@ -32,5 +32,9 @@
   },
   "main": "dist/apollo-helpers.cjs.js",
   "module": "dist/apollo-helpers.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/apollo-helpers"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/apollo-helpers"
+  }
 }

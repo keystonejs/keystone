@@ -19,5 +19,9 @@
     "@emotion/core": "^10.0.28"
   },
   "module": "dist/input.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/input"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/input"
+  }
 }

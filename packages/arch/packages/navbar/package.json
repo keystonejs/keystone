@@ -20,5 +20,9 @@
     "react-router-dom": "5.2.0"
   },
   "module": "dist/navbar.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/navbar"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/navbar"
+  }
 }

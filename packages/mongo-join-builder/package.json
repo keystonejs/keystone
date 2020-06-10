@@ -15,5 +15,9 @@
     "mongodb": "^3.5.7",
     "mongodb-memory-server-core": "^6.5.2"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/mongo-join-builder"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/mongo-join-builder"
+  }
 }

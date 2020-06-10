@@ -47,5 +47,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/blog"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "demo-projects/blog"
+  }
 }

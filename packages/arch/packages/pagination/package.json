@@ -23,5 +23,9 @@
     "react-router-dom": "5.2.0"
   },
   "module": "dist/pagination.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/pagination"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/pagination"
+  }
 }

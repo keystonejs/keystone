@@ -10,5 +10,9 @@
   "dependencies": {
     "@keystonejs/access-control": "^6.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-version"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/app-version"
+  }
 }

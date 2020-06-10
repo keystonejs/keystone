@@ -22,5 +22,9 @@
     "@keystonejs/keystone": "^11.0.0",
     "cross-env": "^7.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/todo"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "demo-projects/todo"
+  }
 }

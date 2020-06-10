@@ -19,5 +19,9 @@
     "passport-twitter": "^1.0.4",
     "passport-wordpress": "^0.0.4"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/auth-passport"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/auth-passport"
+  }
 }

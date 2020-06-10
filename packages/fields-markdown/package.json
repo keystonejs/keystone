@@ -25,5 +25,9 @@
   },
   "main": "dist/fields-markdown.cjs.js",
   "module": "dist/fields-markdown.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-markdown"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/fields-markdown"
+  }
 }

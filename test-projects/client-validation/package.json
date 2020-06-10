@@ -41,5 +41,9 @@
     "pino-colada": "^1.6.1",
     "start-server-and-test": "^1.11.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/test-projects/client-validation"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "test-projects/client-validation"
+  }
 }

@@ -20,5 +20,9 @@
     "react-radios": "^1.1.0"
   },
   "module": "dist/filters.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/filters"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/filters"
+  }
 }

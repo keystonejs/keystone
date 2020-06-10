@@ -4,7 +4,11 @@
   "private": true,
   "version": "5.3.5",
   "author": "The KeystoneJS Development Team",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/website",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "website"
+  },
   "homepage": "https://github.com/keystonejs/keystone",
   "license": "MIT",
   "engines": {

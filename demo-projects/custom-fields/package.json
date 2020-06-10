@@ -29,5 +29,9 @@
     "cross-env": "^7.0.0",
     "react": "^16.13.1"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "demo-projects/custom-fields"
+  }
 }

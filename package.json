@@ -5,7 +5,10 @@
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "repository": "https://github.com/keystonejs/keystone",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git"
+  },
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "dev": "yarn demo todo dev",

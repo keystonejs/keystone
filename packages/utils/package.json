@@ -5,7 +5,11 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "homepage": "https://github.com/keystonejs/keystone",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/utils",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/utils"
+  },
   "main": "dist/utils.cjs.js",
   "module": "dist/utils.esm.js",
   "engines": {

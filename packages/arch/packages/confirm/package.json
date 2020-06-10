@@ -23,5 +23,9 @@
     "react-scrolllock": "^4.0.1"
   },
   "module": "dist/confirm.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/confirm"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/confirm"
+  }
 }

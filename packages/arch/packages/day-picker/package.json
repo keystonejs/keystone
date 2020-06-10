@@ -27,5 +27,9 @@
     "react-window": "^1.7.0"
   },
   "module": "dist/day-picker.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/day-picker"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/day-picker"
+  }
 }

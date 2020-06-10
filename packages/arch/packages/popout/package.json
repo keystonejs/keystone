@@ -25,5 +25,9 @@
     "react-popper": "^2.2.2"
   },
   "module": "dist/popout.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/popout"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "packages/arch/packages/popout"
+  }
 }

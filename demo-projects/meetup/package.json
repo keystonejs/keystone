@@ -50,5 +50,9 @@
     "react-use-form-state": "^0.12.0",
     "uuid": "^7.0.3"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/meetup"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/keystonejs/keystone.git",
+    "directory": "demo-projects/meetup"
+  }
 }
