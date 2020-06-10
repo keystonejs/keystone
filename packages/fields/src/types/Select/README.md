@@ -6,6 +6,9 @@ title: Select
 
 # Select
 
+Stores one of several predefined string values.
+Presented as a dropdown in the Admin UI.
+
 ## Usage
 
 ```js
@@ -20,12 +23,12 @@ keystone.createList('Orders', {
 
 ## Config
 
-| Option       | Type      | Default | Description                                                                                 |
-| ------------ | --------- | ------- | ------------------------------------------------------------------------------------------- |
-| `options`    | \*        | `null`  | Defines the values (and labels) that can be be selected from, see below                     |
-| `dataType`   | `String`  | `enum`  | Controls the data type stored in the database, and defined in the GraphQL schema, see below |
-| `isRequired` | `Boolean` | `false` | Does this field require a value?                                                            |
-| `isUnique`   | `Boolean` | `false` | Adds a unique index that allows only unique values to be stored                             |
+| Option       | Type        | Default | Description                                                                                 |
+| ------------ | ----------- | ------- | ------------------------------------------------------------------------------------------- |
+| `options`    | (see below) | `null`  | Defines the values (and labels) that can be be selected from, see below                     |
+| `dataType`   | `String`    | `enum`  | Controls the data type stored in the database, and defined in the GraphQL schema, see below |
+| `isRequired` | `Boolean`   | `false` | Does this field require a value?                                                            |
+| `isUnique`   | `Boolean`   | `false` | Adds a unique index that allows only unique values to be stored                             |
 
 ### `options`
 

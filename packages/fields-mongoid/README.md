@@ -1,12 +1,12 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: MongoID
+title: MongoId
 [meta]-->
 
-# MongoID
+# MongoId
 
-This field allows arbitrary MongoID fields to be added to your lists.
+This field allows arbitrary Mongo `ObjectId` fields to be added to your lists.
 
 It supports the core Mongoose and Knex adapters:
 
