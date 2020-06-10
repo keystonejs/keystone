@@ -2,4 +2,4 @@
 '@keystonejs/keystone': patch
 ---
 
-Adding URL formulation rules to the style guide
+Adding URL formulation rules to the style guide.
