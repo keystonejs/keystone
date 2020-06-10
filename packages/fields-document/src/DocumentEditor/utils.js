@@ -13,6 +13,14 @@ export const isBlockActive = (editor, format) => {
   return !!match;
 };
 
+export const getSelected = editor => {
+  const { selection } = editor;
+  if (selection !== null && selection.anchor !== null) {
+    return editor.children[selection.anchor.path[0]];
+  }
+  return null;
+};
+
 export const getBlockAboveSelection = editor =>
   Editor.above(editor, {
     match: n => Editor.isBlock(editor, n),

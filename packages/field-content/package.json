@@ -26,7 +26,7 @@
     "get-selection-range": "^0.1.0",
     "image-extensions": "^1.1.0",
     "immutable": "^4.0.0-rc.12",
-    "is-hotkey": "^0.1.4",
+    "is-hotkey": "^0.1.6",
     "lodash.get": "^4.4.2",
     "memoize-one": "^5.1.1",
     "nanoassert": "^2.0.0",
@@ -34,10 +34,10 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-popper": "^2.2.2",
-    "slate": "^0.47.4",
+    "slate": "^0.58.1",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-plain-serializer": "^0.7.11",
-    "slate-react": "^0.22.4"
+    "slate-react": "^0.58.1"
   },
   "peerDependencies": {},
   "field-types": {

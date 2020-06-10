@@ -5,7 +5,7 @@ const { Text, Password, Checkbox, Relationship } = require('@keystonejs/fields')
 const { DocumentField } = require('@keystonejs/fields-document');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
-// const { StaticApp } = require('@keystonejs/app-static');
+// const { NextApp } = require('@keystonejs/app-next');
 
 const keystone = new Keystone({
   name: 'Keystone Content Management',
@@ -63,7 +63,7 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    // new StaticApp({ path: '/', src: 'public' }),
+    // new NextApp({ dir: 'app' }),
     new AdminUIApp({ enableDefaultRoute: true, authStrategy }),
   ],
 };

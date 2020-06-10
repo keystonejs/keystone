@@ -2,9 +2,10 @@
 
 import { jsx } from '@emotion/core';
 import isHotkey from 'is-hotkey';
-import { useCallback, useMemo } from 'react';
-import { createEditor } from 'slate';
-import { Slate, Editable, useSlate, withReact } from 'slate-react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
+import { createEditor, Transforms } from 'slate';
+import { Slate, Editable, useSlate, withReact, ReactEditor } from 'slate-react';
+
 import { withHistory } from 'slate-history';
 
 import { FieldContainer, FieldLabel, FieldDescription } from '@arch-ui/fields';
@@ -17,7 +18,13 @@ import {
 } from '../DocumentEditor/access';
 import { Button } from '../DocumentEditor/components';
 import { DocumentFeaturesContext } from '../DocumentEditor/documentFeatures';
-import { isInsidePanel, insertPanel, PanelElement, withPanel } from '../DocumentEditor/panel';
+import {
+  isInsidePanel,
+  insertPanel,
+  PanelElement,
+  withPanel,
+  PanelOptions,
+} from '../DocumentEditor/panel';
 import { withParagraphs } from '../DocumentEditor/paragraphs';
 import { renderQuoteElement, isInsideQuote, insertQuote, withQuote } from '../DocumentEditor/quote';
 import {
@@ -26,6 +33,7 @@ import {
   toggleBlock,
   isMarkActive,
   toggleMark,
+  getSelected,
 } from '../DocumentEditor/utils';
 
 const HOTKEYS = {
@@ -91,9 +99,9 @@ const Toolbar = () => {
         borderBottom: '1px solid #E2E8F0',
         borderTop: '1px solid #E2E8F0',
         padding: '8px 16px',
-        margin: '0 -16px',
       }}
     >
+      <BlockButton type="paragraph">P</BlockButton>
       <BlockButton type="heading-1">H1</BlockButton>
       <BlockButton type="heading-2">H2</BlockButton>
       <BlockButton type="heading-3">H3</BlockButton>
@@ -137,6 +145,39 @@ const Toolbar = () => {
   );
 };
 
+const PropsDrawer = ({ editor, element }) => {
+  // ToDo - redraw this on selection change
+  let options = null;
+  if (element) {
+    // ToDo: Don't hard code these
+    const { type, children, ...props } = element;
+
+    const onChange = values => {
+      const path = ReactEditor.findPath(editor, element);
+      Transforms.setNodes(editor, { ...values }, { at: path });
+    };
+
+    if (element.type === 'panel') {
+      options = <PanelOptions value={props} onChange={onChange} />;
+    }
+  }
+  return (
+    <div
+      css={{
+        backgroundColor: options ? '#F7FAFC' : '#FFF',
+        width: '300px',
+        flexGrow: '0',
+        borderLeft: '1px solid #E2E8F0',
+        borderRight: '1px solid #E2E8F0',
+        padding: 5,
+        marginLeft: 10,
+      }}
+    >
+      {options}
+    </div>
+  );
+};
+
 /* Block Elements */
 
 const CodeElement = ({ attributes, children }) => {
@@ -170,6 +211,7 @@ const Leaf = props => {
 
 export default function DocumentField({ field, errors, value, onChange, isDisabled }) {
   const htmlID = `ks-input-${field.path}`;
+
   const accessError = errors.find(
     error => error instanceof Error && error.name === 'AccessDeniedError'
   );
@@ -181,6 +223,8 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
     () => withParagraphs(withQuote(withPanel(withAccess(withHistory(withReact(createEditor())))))),
     []
   );
+
+  const [selectedElement, setSelectedElement] = useState(getSelected(editor));
 
   const renderElement = useCallback(props => {
     // TODO: probably use this method for the access boundary as well, is this
@@ -218,23 +262,37 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
   }, []);
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
+  const onSelectionChange = useEffect(() => {
+    const element = getSelected(editor);
+    if (element !== selectedElement) {
+      setSelectedElement(element);
+    }
+  });
 
   if (accessError) return null;
 
   return (
-    <DocumentFeaturesContext.Provider value={documentFeatures}>
+    <DocumentFeaturesContext.Provider value={{ ...documentFeatures }}>
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
         <FieldDescription text={field.adminDoc} />
         <Slate editor={editor} value={value} onChange={onChange}>
           <Toolbar editor={editor} />
-          <Editable
-            autoFocus
-            onKeyDown={onKeyDown}
-            readOnly={isDisabled}
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-          />
+          <div css={{ display: 'flex', borderBottom: '1px solid #E2E8F0' }}>
+            <Editable
+              autoFocus
+              onKeyDown={onKeyDown}
+              readOnly={isDisabled}
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
+              css={{ flexGrow: '1' }}
+              // ToDo: this is a bit of a hack, using key up is not the right way to detect selection changes
+              // But what is?
+              onKeyUp={onSelectionChange}
+              onMouseUp={onSelectionChange}
+            />
+            <PropsDrawer editor={editor} element={selectedElement} value={value} />
+          </div>
         </Slate>
       </FieldContainer>
     </DocumentFeaturesContext.Provider>
