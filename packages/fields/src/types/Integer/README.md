@@ -6,6 +6,8 @@ title: Integer
 
 # Integer
 
+A whole number.
+
 ## Usage
 
 ```js

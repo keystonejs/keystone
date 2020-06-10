@@ -4,7 +4,7 @@ subSection: field-types
 title: Content
 [meta]-->
 
-# Content Field
+# Content
 
 A Block-based Content Field for composing rich text such as blog posts, wikis,
 and even complete pages.
