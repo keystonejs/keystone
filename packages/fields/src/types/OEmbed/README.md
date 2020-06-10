@@ -11,7 +11,7 @@ Stores data in the oEmbed format:
 > `oEmbed` is a format for allowing an embedded representation of a URL on third party sites.
 > The simple API allows a website to display embedded content (such as photos or videos)
 > when a user posts a link to that resource, without having to parse the resource directly.
-> --- The [oEmbed Spec](https://oembed.com/)
+> \--- The [oEmbed Spec](https://oembed.com/)
 
 ## Usage
 

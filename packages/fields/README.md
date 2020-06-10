@@ -9,7 +9,7 @@ order: 3
 Keystone contains a set of primitive fields types that can be imported from the `@keystonejs/fields` package:
 
 | Field type                                                          | Description                                                                                                                                            |
-|:--------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`CalendarDay`](/packages/fields/src/types/CalendarDay/README.md)   | An abstract "day" value; useful for Birthdays and other all-day events always celebrated in the local time zone                                        |
 | [`Checkbox`](/packages/fields/src/types/Checkbox/README.md)         | A single Boolean value                                                                                                                                 |
 | [`CloudinaryImage`](/packages/fields/src/types/CloudinaryImage)     | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                             |
@@ -34,7 +34,7 @@ Keystone contains a set of primitive fields types that can be imported from the 
 In addition to these, some complex types are packaged separately:
 
 | Field type                                                             | Description                                                                                                                                                           |
-|:-----------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :--------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`Content`](/packages/field-content/README.md)                         | Block-based content for composing rich text such as blog posts, wikis, and even complete pages                                                                        |
 | [`AuthedRelationship`](/packages/fields-authed-relationship/README.md) | Extendes the [`Relationship`](/packages/fields/src/types/Relationship/README.md) type; automatically set to the currently authenticated item during a create mutation |
 | [`AutoIncrement`](/packages/fields-auto-increment/README.md)           | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter                                                                |

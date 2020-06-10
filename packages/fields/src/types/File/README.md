@@ -43,7 +43,7 @@ keystone.createList('Applicant', {
 
 ### Config
 
-| Option       | Type      | Default  | Description                                                                                            |
-| ------------ | --------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| Option       | Type      | Default  | Description                                                                             |
+| ------------ | --------- | -------- | --------------------------------------------------------------------------------------- |
 | `adapter`    | `Object`  | Required | See the [File Adapters](/packages/file-adapters/README.md) page for available adapters. |
-| `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                                       |
+| `isRequired` | `Boolean` | `false`  | Does this field require a value?                                                        |
