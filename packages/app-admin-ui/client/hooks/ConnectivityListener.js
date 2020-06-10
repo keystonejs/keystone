@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useToasts } from 'react-toast-notifications';
 
-const ConnectivityListener = ({}) => {
+export const useConnectivityListener = () => {
   const [isOnline, setIsOnline] = useState(window ? window.navigator.onLine : false);
 
   const offlineToastId = useRef(null);
@@ -9,10 +9,10 @@ const ConnectivityListener = ({}) => {
 
   const { addToast, removeToast } = useToasts();
 
-  const online = () => setIsOnline(true);
-  const offline = () => setIsOnline(false);
-
   useEffect(() => {
+    const online = () => setIsOnline(true);
+    const offline = () => setIsOnline(false);
+
     window.addEventListener('online', online, false);
     window.addEventListener('offline', offline, false);
 
@@ -21,17 +21,6 @@ const ConnectivityListener = ({}) => {
       window.removeEventListener('offline', offline);
     };
   }, []);
-
-  const onlineCallback = () => {
-    if (offlineToastId.current !== null) {
-      removeToast(offlineToastId.current);
-      offlineToastId.current = null;
-    }
-  };
-
-  const offlineCallback = id => {
-    offlineToastId.current = id;
-  };
 
   useEffect(() => {
     // Don't add a toast on mount
@@ -50,20 +39,16 @@ const ConnectivityListener = ({}) => {
 
     // remove the existing offline notification if it exists, otherwise store
     // the added toast id for use later
-    const callback = isOnline ? onlineCallback : offlineCallback;
+    const callback = id => {
+      if (isOnline && offlineToastId.current !== null) {
+        removeToast(offlineToastId.current);
+        offlineToastId.current = null;
+      } else {
+        offlineToastId.current = id;
+      }
+    };
 
     // add the applicable toast
-    addToast(
-      content,
-      {
-        appearance: 'info',
-        autoDismiss: isOnline,
-      },
-      callback
-    );
+    addToast(content, { appearance: 'info', autoDismiss: isOnline }, callback);
   }, [isOnline]);
-
-  return null;
 };
-
-export default ConnectivityListener;

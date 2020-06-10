@@ -1,5 +1,21 @@
 # @keystonejs/keystone
 
+## 11.0.0
+
+### Major Changes
+
+- [`8df24d2ab`](https://github.com/keystonejs/keystone/commit/8df24d2ab4bed8a7fc1a856c20a571781dd7c04e) [#3069](https://github.com/keystonejs/keystone/pull/3069) Thanks [@Vultraz](https://github.com/Vultraz)! - Prevented parsing the GraphQL schema twice.
+  - `keystone.getTypeDefs` now returns the parsed GraphQL AST instead of the raw SDL.
+  - `keystone.dumpSchema` now returns the GraphQL schema as a string instead of writing it to file. Additionally, its first `file` argument was removed and now only takes a the schema name, which defaults to `public`.
+
+### Minor Changes
+
+- [`7c38e2671`](https://github.com/keystonejs/keystone/commit/7c38e267143491f38699326f02764f40f337d416) [#3085](https://github.com/keystonejs/keystone/pull/3085) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new \_verifyTables method to the knex adapter. This is then used by the Keystone CLI to warn when tables have not been initialised or the database might need a migration.
+
+### Patch Changes
+
+- [`33046a66f`](https://github.com/keystonejs/keystone/commit/33046a66f33a82cf099880303b44d9736344667d) [#2703](https://github.com/keystonejs/keystone/pull/2703) Thanks [@jesstelford](https://github.com/jesstelford)! - Disallow keystone.executeQuery until after keystone.connect is called
+
 ## 10.1.0
 
 ### Minor Changes
