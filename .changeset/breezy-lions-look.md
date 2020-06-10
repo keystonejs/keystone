@@ -79,4 +79,4 @@
 '@keystonejs/website': patch
 ---
 
-Updating package.json "repository" configs to specify package directories independent of the monorepo url
+Updated package.json "repository" configs to specify package directories independent of the monorepo url.
