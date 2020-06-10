@@ -6,6 +6,8 @@ title: Float
 
 # Float
 
+An imprecise numeric value, stored as a floating point.
+
 ## Usage
 
 ```js

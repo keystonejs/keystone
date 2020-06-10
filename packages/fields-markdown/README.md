@@ -4,7 +4,7 @@ subSection: field-types
 title: Markdown
 [meta]-->
 
-# Markdown Field
+# Markdown
 
 This field inserts a string path into your schema based on the `Text` field type implementation, and renders a Markdown editor using [CodeMirror](https://codemirror.net/).
 
