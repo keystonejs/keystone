@@ -37,6 +37,12 @@ describe('CalendarDay#implementation', () => {
       ).toThrow();
     });
 
+    it("throws if 'dateTo' === 'dateFrom'", () => {
+      return expect(
+        () => new CalendarDay('date', { dateTo: '2020-01-01', dateFrom: '2020-01-01', mocks })
+      ).toThrow();
+    });
+
     it("throws if 'dateTo' is invalid", () => {
       return expect(
         () => new CalendarDay('date', { dateTo: '2000--1--1', dateFrom: '2020-01-01', mocks })
