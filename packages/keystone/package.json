@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/keystone",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "10.1.0",
+  "version": "11.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
