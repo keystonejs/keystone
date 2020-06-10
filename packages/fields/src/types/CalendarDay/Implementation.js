@@ -2,28 +2,30 @@ import { formatISO, parseISO, compareAsc, compareDesc, isValid } from 'date-fns'
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
-
 export class CalendarDay extends Implementation {
   constructor(path, { format = 'yyyy-MM-dd', dateFrom, dateTo }) {
     super(...arguments);
     this.format = format;
-    this._dateFromString = dateFrom;
-    this._dateToString = dateTo;
-    this._dateFromJS = dateFrom && parseISO(dateFrom);
-    this._dateToJS = dateTo && parseISO(dateTo);
+    this._dateFrom = dateFrom;
+    this._dateTo = dateTo;
 
-    if (dateFrom && !isValid(this._dateFromJS)) {
+    if (this._dateFrom && (this._dateFrom.length !== 10 || !isValid(parseISO(this._dateFrom)))) {
       throw new Error(
-        `Invalid value for option "dateFrom" of field '${this.listKey}.${path}': "${dateFrom}"`
-      );
-    }
-    if (dateTo && !isValid(this._dateToJS)) {
-      throw new Error(
-        `Invalid value for option "dateTo" of field '${this.listKey}.${path}': "${dateTo}"`
+        `Invalid value for option "dateFrom" of field '${this.listKey}.${path}': "${this._dateFrom}"`
       );
     }
 
-    if (dateTo && dateFrom && compareAsc(this._dateFromJS, this._dateToJS) === 1) {
+    if (this._dateTo && (this._dateTo.length !== 10 || !isValid(parseISO(this._dateTo)))) {
+      throw new Error(
+        `Invalid value for option "dateTo" of field '${this.listKey}.${path}': "${this._dateFrom}"`
+      );
+    }
+
+    if (
+      this._dateTo &&
+      this._dateFrom &&
+      compareAsc(parseISO(this._dateFrom), parseISO(this._dateTo)) === 1
+    ) {
       throw new Error(
         `Invalid values for options "dateFrom", "dateTo" of field '${this.listKey}.${path}': "${dateFrom}" > "${dateTo}"`
       );
@@ -55,24 +57,26 @@ export class CalendarDay extends Implementation {
     return {
       ...meta,
       format: this.format,
-      dateFrom: this.dateFrom,
-      dateTo: this.dateTo,
+      dateFrom: this._dateFrom,
+      dateTo: this._dateTo,
     };
   }
 
   async validateInput({ resolvedData, addFieldValidationError }) {
-    const parsedValue = resolvedData[this.path] && parseISO(resolvedData[this.path]);
-    if (!isValid(parsedValue)) {
+    const initialValue = resolvedData[this.path];
+    const parsedValue = parseISO(resolvedData[this.path]);
+
+    if (!(initialValue.length === 10 && isValid(parsedValue))) {
       addFieldValidationError('Invalid CalendarDay value', { value: resolvedData[this.path] });
     }
     if (parsedValue) {
-      if (this._dateFromJS && compareAsc(this._dateFromJS, parsedValue) === 1) {
+      if (parseISO(this._dateFrom) && compareAsc(parseISO(this._dateFrom), parsedValue) === 1) {
         addFieldValidationError('Value is before earliest allowed date.', {
           value: resolvedData[this.path],
           dateFrom: this._dateFromString,
         });
       }
-      if (this._dateToJS && compareDesc(this._dateToJS, parsedValue) === 1) {
+      if (parseISO(this._dateTo) && compareDesc(parseISO(this._dateTo), parsedValue) === 1) {
         addFieldValidationError('Value is after latest allowed date.', {
           value: resolvedData[this.path],
           dateTo: this._dateToString,
@@ -95,8 +99,7 @@ const CommonCalendarInterface = superclass =>
 
 export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    const validator = a =>
-      typeof a === 'string' && formatISO(parseISO(a), { representation: 'date' }) === a;
+    const validator = a => typeof a === 'string' && a.length === 10 && parseISO(a);
     const schemaOptions = {
       type: String,
       validate: {

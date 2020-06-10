@@ -14,12 +14,14 @@ const {
   Url,
   Decimal,
   OEmbed,
+  Slug,
   Unsplash,
   Virtual,
 } = require('@keystonejs/fields');
 const { Content } = require('@keystonejs/field-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 const { Markdown } = require('@keystonejs/fields-markdown');
+const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
@@ -33,7 +35,7 @@ const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
-const getYear = require('date-fns/getYear');
+const { formatISO } = require('date-fns');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -79,8 +81,8 @@ keystone.createList('User', {
     dob: {
       type: CalendarDay,
       format: 'do MMMM yyyy',
-      dateFrom: "1901-01-01",
-      dateTo: getYear(new Date()), // FIXME
+      dateFrom: '1901-01-01',
+      dateTo: formatISO(new Date(), { representation: 'date' }),
     },
     lastOnline: {
       type: DateTime,
@@ -202,6 +204,56 @@ keystone.createList('Post', {
     } else {
       return item.name;
     }
+  },
+});
+
+keystone.createList('ReadOnlyList', {
+  fields: {
+    name: { type: Text },
+    slug: { type: Slug, adminConfig: { isReadOnly: true } },
+    status: {
+      type: Select,
+      defaultValue: 'draft',
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      adminConfig: { isReadOnly: true },
+    },
+    author: {
+      type: Relationship,
+      ref: 'User',
+      adminConfig: { isReadOnly: true },
+    },
+    views: { type: Integer, adminConfig: { isReadOnly: true } },
+    price: { type: Decimal, symbol: '$', adminConfig: { isReadOnly: true } },
+    currency: { type: Text, adminConfig: { isReadOnly: true } },
+    hero: { type: File, adapter: fileAdapter, adminConfig: { isReadOnly: true } },
+    markdownValue: { type: Markdown, adminConfig: { isReadOnly: true } },
+    wysiwygValue: { type: Wysiwyg, adminConfig: { isReadOnly: true } },
+    value: {
+      type: Content,
+      blocks: [
+        ...(cloudinaryAdapter
+          ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
+          : []),
+        ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
+        ...(unsplash.accessKey
+          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
+          : []),
+        Content.blocks.blockquote,
+        Content.blocks.orderedList,
+        Content.blocks.unorderedList,
+        Content.blocks.link,
+        Content.blocks.heading,
+      ],
+      adminConfig: { isReadOnly: true },
+    },
+  },
+  adminConfig: {
+    defaultPageSize: 20,
+    defaultColumns: 'name, status',
+    defaultSort: 'name',
   },
 });
 

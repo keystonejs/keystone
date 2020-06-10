@@ -17,6 +17,7 @@ import copyToClipboard from 'clipboard-copy';
 import { useListSort } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
 import { NoResults } from './NoResults';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const Render = ({ children }) => children();
 
@@ -265,20 +266,29 @@ const ListRow = ({
           const [Cell] = field.readViews([field.views.Cell]);
 
           content = (
-            <Cell
-              isSelected={isSelected}
-              list={list}
-              item={item} // FIXME: just passing this for the password cell, but not that optimal
-              data={item[path]}
-              field={field}
-              Link={ItemLink}
-            />
+            <ErrorBoundary>
+              <Cell
+                isSelected={isSelected}
+                list={list}
+                item={item} // FIXME: just passing this for the password cell, but not that optimal
+                data={item[path]}
+                field={field}
+                Link={ItemLink}
+              />
+            </ErrorBoundary>
           );
         } else {
           content = item[path];
         }
 
-        return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
+        return (
+          <BodyCellTruncated
+            key={path}
+            css={{ fontFamily: field.isPrimaryKey ? 'Monaco, Consolas, monospace' : null }}
+          >
+            {content}
+          </BodyCellTruncated>
+        );
       })}
       <BodyCell css={{ padding: 0 }}>
         <Dropdown

@@ -12,11 +12,16 @@ import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
 import RelationshipSelect from './RelationshipSelect';
-import { CreateItemModal, ListProvider, useList } from '@keystonejs/app-admin-ui/components';
+import {
+  CreateItemModal,
+  ListProvider,
+  useList,
+  useAdminMeta,
+} from '@keystonejs/app-admin-ui/components';
 
 const MAX_IDS_IN_FILTER = 100;
 
-function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
+function SetAsCurrentUser({ listKey, value, onAddUser, many, isDisabled }) {
   const path = 'authenticated' + listKey;
 
   const { data } = useQuery(gql`
@@ -46,6 +51,7 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
             }}
             icon={PersonIcon}
             aria-label={label}
+            isDisabled={isDisabled}
           />
         )}
       </Tooltip>
@@ -57,11 +63,10 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 
 function LinkToRelatedItems({ field, value }) {
   const { many } = field.config;
-  const { adminPath } = field;
-  const { path } = field.getRefList();
+  const { fullPath } = field.getRefList();
   let isDisabled = false;
   let label;
-  let link = `${adminPath}/${path}`;
+  let link = fullPath;
   if (many) {
     label = 'View List of Related Items';
 
@@ -103,7 +108,7 @@ function LinkToRelatedItems({ field, value }) {
   );
 }
 
-function CreateAndAddItem({ field, item, onCreate }) {
+function CreateAndAddItem({ field, item, onCreate, isDisabled }) {
   const { list, openCreateItemModal } = useList();
 
   let relatedList = field.getRefList();
@@ -144,6 +149,7 @@ function CreateAndAddItem({ field, item, onCreate }) {
               aria-label={label}
               variant="ghost"
               css={{ marginLeft: gridSize }}
+              isDisabled={isDisabled}
             />
           );
         }}
@@ -167,6 +173,7 @@ const RelationshipField = ({
   onChange,
   item,
   list,
+  isDisabled,
 }) => {
   const handleChange = option => {
     const { many } = field.config;
@@ -178,7 +185,7 @@ const RelationshipField = ({
   };
 
   const { many, ref } = field.config;
-  const { authStrategy } = field;
+  const { authStrategy } = useAdminMeta();
   const htmlID = `ks-input-${field.path}`;
 
   const relatedList = field.getRefList();
@@ -198,6 +205,7 @@ const RelationshipField = ({
             renderContext={renderContext}
             htmlID={htmlID}
             onChange={handleChange}
+            isDisabled={isDisabled}
           />
         </div>
         <ListProvider list={relatedList}>
@@ -208,6 +216,7 @@ const RelationshipField = ({
             field={field}
             item={item}
             list={list}
+            isDisabled={isDisabled}
           />
         </ListProvider>
         {authStrategy && ref === authStrategy.listKey && (
@@ -218,6 +227,7 @@ const RelationshipField = ({
             }}
             value={value}
             listKey={authStrategy.listKey}
+            isDisabled={isDisabled}
           />
         )}
         <LinkToRelatedItems field={field} value={value} />

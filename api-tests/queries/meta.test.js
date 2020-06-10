@@ -43,7 +43,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             _CompaniesMeta {
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 relatedFields {
                   type
                   fields
@@ -58,7 +62,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data).toHaveProperty('_CompaniesMeta.schema');
           expect(data._CompaniesMeta.schema).toMatchObject({
             type: 'Company',
-            queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+            queries: {
+              item: 'Company',
+              list: 'allCompanies',
+              meta: '_allCompaniesMeta',
+            },
             relatedFields: [
               {
                 type: 'User',
@@ -79,7 +87,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             _PostsMeta {
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 relatedFields {
                   type
                   fields
@@ -94,7 +106,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data).toHaveProperty('_PostsMeta.schema');
           expect(data._PostsMeta.schema).toMatchObject({
             type: 'Post',
-            queries: ['Post', 'allPosts', '_allPostsMeta'],
+            queries: {
+              item: 'Post',
+              list: 'allPosts',
+              meta: '_allPostsMeta',
+            },
             relatedFields: [],
           });
         })
@@ -113,7 +129,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 fields {
                   name
                   type
@@ -134,7 +154,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               name: 'User',
               schema: {
-                queries: ['User', 'allUsers', '_allUsersMeta'],
+                queries: {
+                  item: 'User',
+                  list: 'allUsers',
+                  meta: '_allUsersMeta',
+                },
                 fields: [
                   {
                     name: 'id',
@@ -168,7 +192,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name: 'Company',
               schema: {
                 type: 'Company',
-                queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                queries: {
+                  item: 'Company',
+                  list: 'allCompanies',
+                  meta: '_allCompaniesMeta',
+                },
                 fields: [
                   {
                     name: 'id',
@@ -196,7 +224,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               name: 'Post',
               schema: {
-                queries: ['Post', 'allPosts', '_allPostsMeta'],
+                queries: {
+                  item: 'Post',
+                  list: 'allPosts',
+                  meta: '_allPostsMeta',
+                },
                 fields: [
                   {
                     name: 'id',
@@ -232,7 +264,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 fields {
                   name
                   type
@@ -253,7 +289,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               name: 'User',
               schema: {
-                queries: ['User', 'allUsers', '_allUsersMeta'],
+                queries: {
+                  item: 'User',
+                  list: 'allUsers',
+                  meta: '_allUsersMeta',
+                },
                 fields: [
                   {
                     name: 'id',
@@ -298,7 +338,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 fields(where: { type: "Text" }) {
                   name
                   type
@@ -320,7 +364,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name: 'Company',
               schema: {
                 type: 'Company',
-                queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                queries: {
+                  item: 'Company',
+                  list: 'allCompanies',
+                  meta: '_allCompaniesMeta',
+                },
                 fields: [
                   {
                     name: 'name',

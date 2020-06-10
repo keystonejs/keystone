@@ -1,13 +1,14 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 
 import { POPOUT_GUTTER } from '../../../components/Popout';
+import { ErrorBoundary } from '../../../components/ErrorBoundary';
 import PopoutForm from './PopoutForm';
 
 const EditFilterPopout = ({ filter, target, onChange }) => {
   const [value, setValue] = useState(filter.value);
 
   const onSubmit = () => {
-    if (value === null || filter.field.getFilterValue(value) === null) return;
+    if (filter.field.getFilterValue(value) === undefined) return;
     onChange({
       field: filter.field,
       label: filter.label,
@@ -35,13 +36,15 @@ const EditFilterPopout = ({ filter, target, onChange }) => {
     <PopoutForm target={target} headerTitle={headerTitle} onSubmit={onSubmit} showFooter>
       {({ ref }) => (
         <div ref={ref} style={{ padding: `${POPOUT_GUTTER}px` }}>
-          <Filter
-            innerRef={filterRef}
-            field={filter.field}
-            filter={filter}
-            onChange={setValue}
-            value={value}
-          />
+          <ErrorBoundary>
+            <Filter
+              innerRef={filterRef}
+              field={filter.field}
+              filter={filter}
+              onChange={setValue}
+              value={value}
+            />
+          </ErrorBoundary>
         </div>
       )}
     </PopoutForm>

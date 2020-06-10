@@ -1,7 +1,7 @@
 const { mergeWhereClause, upcase } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
-const { throwAccessDenied } = require('../List/graphqlErrors');
+const { throwAccessDenied } = require('../ListTypes/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
@@ -70,6 +70,9 @@ class ListAuthProvider {
       `${unauthenticateMutationName}: ${unauthenticateOutputName}`,
     ];
   }
+  getSubscriptions({}) {
+    return [];
+  }
 
   getTypeResolvers({}) {
     return {};
@@ -88,6 +91,9 @@ class ListAuthProvider {
       [authenticateMutationName]: (_, args, context) => this._authenticateMutation(args, context),
       [unauthenticateMutationName]: (_, __, context) => this._unauthenticateMutation(context),
     };
+  }
+  getSubscriptionResolvers({}) {
+    return {};
   }
 
   async _authenticatedQuery(context, info) {

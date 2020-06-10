@@ -5,13 +5,12 @@ import { jsx } from '@emotion/core';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-const TextField = ({ onChange, autoFocus, field, errors, value: serverValue }) => {
+const TextField = ({ onChange, autoFocus, field, errors, value = '', isDisabled }) => {
   const handleChange = event => {
     onChange(event.target.value);
   };
 
   const { isMultiline } = field.config;
-  const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
   const canRead = errors.every(
     error => !(error instanceof Error && error.name === 'AccessDeniedError')
@@ -26,12 +25,14 @@ const TextField = ({ onChange, autoFocus, field, errors, value: serverValue }) =
         <Input
           autoComplete="off"
           autoFocus={autoFocus}
+          required={field.isRequired}
           type="text"
           value={canRead ? value : undefined}
           placeholder={canRead ? undefined : error.message}
           onChange={handleChange}
           id={htmlID}
           isMultiline={isMultiline}
+          disabled={isDisabled}
         />
       </FieldInput>
     </FieldContainer>

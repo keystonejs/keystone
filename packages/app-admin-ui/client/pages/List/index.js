@@ -3,10 +3,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment, useEffect, Suspense } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useList } from '../../providers/List';
 
-import { IconButton } from '@arch-ui/button';
-import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
@@ -30,34 +27,28 @@ import SortPopout from './SortSelect';
 import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
-import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+import { useListFilter, useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
+import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
+import CreateItem from './CreateItem';
 
 export function ListLayout(props) {
   const { items, itemCount, queryErrors, query } = props;
 
-  const { list, openCreateItemModal } = useList();
+  const { list, selectedItems, setSelectedItems } = useList();
   const {
     urlState: { currentPage, fields, pageSize, search },
   } = useListUrlState(list);
 
   const { filters } = useListFilter();
   const [sortBy, handleSortChange] = useListSort();
-  const [selectedItems, onSelectChange] = useListSelect(items);
 
-  // Misc.
-  // ------------------------------
-
-  const onDeleteSelectedItems = () => {
-    onSelectChange([]);
-  };
-
-  const onUpdateSelectedItems = () => {};
+  const { listHeaderActions } = useUIHooks();
 
   // Success
   // ------------------------------
 
-  const cypressCreateId = 'list-page-create-button';
   const cypressFiltersId = 'ks-list-active-filters';
 
   const Render = ({ children }) => children();
@@ -67,16 +58,7 @@ export function ListLayout(props) {
         <HeaderInset>
           <FlexGroup align="center" justify="space-between">
             <PageTitle>{list.plural}</PageTitle>
-            {list.access.create ? (
-              <IconButton
-                appearance="primary"
-                icon={PlusIcon}
-                onClick={openCreateItemModal}
-                id={cypressCreateId}
-              >
-                Create
-              </IconButton>
-            ) : null}
+            {listHeaderActions ? listHeaderActions() : <CreateItem />}
           </FlexGroup>
           <ListDescription text={list.adminDoc} />
           <div
@@ -101,12 +83,8 @@ export function ListLayout(props) {
           <ManageToolbar isVisible css={{ marginLeft: 2 }}>
             {selectedItems.length ? (
               <Management
-                list={list}
-                onDeleteMany={onDeleteSelectedItems}
-                onUpdateMany={onUpdateSelectedItems}
                 pageSize={pageSize}
                 selectedItems={selectedItems}
-                onSelectChange={onSelectChange}
                 totalItems={itemCount}
               />
             ) : items && items.length ? (
@@ -173,7 +151,7 @@ export function ListLayout(props) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal />
+      <CreateItemModal viewOnSave />
 
       <Container isFullWidth>
         <ListTable
@@ -206,7 +184,7 @@ export function ListLayout(props) {
           items={items}
           queryErrors={queryErrors}
           list={list}
-          onSelectChange={onSelectChange}
+          onSelectChange={setSelectedItems}
           selectedItems={selectedItems}
           sortBy={sortBy}
           currentPage={currentPage}
@@ -252,7 +230,10 @@ const ListPage = props => {
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
   if (query.error && (!query.data || !items || !Object.keys(items).length)) {
-    let message = queryErrorsParsed.message;
+    let message = '';
+    if (queryErrorsParsed) {
+      message = queryErrorsParsed.message;
+    }
 
     // If there was an error returned by GraphQL, use that message instead
     // FIXME: convert this to an optional chaining operator at some point

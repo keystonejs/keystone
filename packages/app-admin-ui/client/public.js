@@ -9,7 +9,6 @@ import { globalStyles } from '@arch-ui/theme';
 
 import { initApolloClient } from './apolloClient';
 
-import ConnectivityListener from './components/ConnectivityListener';
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
 import { HooksProvider } from './providers/Hooks';
 
@@ -33,14 +32,13 @@ const Keystone = () => {
     <HooksProvider hooks={hooks}>
       <ApolloProvider client={apolloClient}>
         <ToastProvider>
-          <ConnectivityListener />
           <Global styles={globalStyles} />
 
           {authStrategy ? (
             <BrowserRouter>
               <Switch>
-                <Route exact path={signoutPath} render={() => <SignoutPage />} />
-                <Route render={() => <SigninPage />} />
+                <Route exact path={signoutPath} children={<SignoutPage />} />
+                <Route children={<SigninPage />} />
               </Switch>
             </BrowserRouter>
           ) : (

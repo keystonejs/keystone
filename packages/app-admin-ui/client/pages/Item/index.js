@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
 
@@ -25,6 +25,7 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
 import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
@@ -35,6 +36,7 @@ import {
 import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
 import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
 
 const Render = ({ children }) => children();
 
@@ -44,6 +46,8 @@ const Form = props => <form css={{ marginBottom: `${gridSize * 3}px` }} {...prop
 
 const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
 
+const checkIsReadOnly = ({ maybeAccess, isReadOnly }) => !maybeAccess.update || !!isReadOnly;
+
 // Memoizing allows us to reduce the calls to `.serialize` when data hasn't
 // changed.
 const getInitialValues = memoizeOne(getValues);
@@ -52,9 +56,7 @@ const getCurrentValues = memoizeOne(getValues);
 const deserializeItem = memoizeOne((list, data) => list.deserializeItemData(data));
 
 const getRenderableFields = memoizeOne(list =>
-  list.fields
-    .filter(({ isPrimaryKey }) => !isPrimaryKey)
-    .filter(({ maybeAccess, config }) => !!maybeAccess.update || !!config.isReadOnly)
+  list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey)
 );
 
 const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
@@ -68,6 +70,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
 
   const history = useHistory();
   const { addToast } = useToasts();
+  const { customToast } = useUIHooks();
 
   const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
     errorPolicy: 'all',
@@ -114,7 +117,12 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
       setShowDeleteModal(false);
     }
 
-    toastItemSuccess({ addToast }, initialData, 'Deleted successfully');
+    toastItemSuccess(
+      { addToast, customToast },
+      { item: initialData, list },
+      'Deleted successfully',
+      'delete'
+    );
     history.replace(list.getFullPersistentPath());
   };
 
@@ -213,7 +221,12 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     const savedItem = await onUpdate();
 
     // Defer the toast to this point since it ensures up-to-date data, such as for _label_.
-    toastItemSuccess({ addToast }, savedItem, 'Saved successfully');
+    toastItemSuccess(
+      { addToast, customToast },
+      { item: savedItem, list },
+      'Saved successfully',
+      'update'
+    );
 
     // No changes since we kicked off the item saving.
     // Then reset the state to the current server value
@@ -235,6 +248,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
             <Render key={field.path}>
               {() => {
                 const [Field] = field.readViews([field.views.Field]);
+                const isReadOnly = checkIsReadOnly(field) || !list.access.update;
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const onChange = useCallback(
                   value => {
@@ -260,21 +274,24 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 return useMemo(
                   () => (
-                    <Field
-                      autoFocus={!i}
-                      field={field}
-                      list={list}
-                      item={item}
-                      errors={[
-                        ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                        ...(validationErrors[field.path] || []),
-                      ]}
-                      warnings={validationWarnings[field.path] || []}
-                      value={item[field.path]}
-                      savedValue={initialData[field.path]}
-                      onChange={onChange}
-                      renderContext="page"
-                    />
+                    <ErrorBoundary>
+                      <Field
+                        autoFocus={!i}
+                        field={field}
+                        list={list}
+                        item={item}
+                        isDisabled={isReadOnly}
+                        errors={[
+                          ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                          ...(validationErrors[field.path] || []),
+                        ]}
+                        warnings={validationWarnings[field.path] || []}
+                        value={item[field.path]}
+                        savedValue={initialData[field.path]}
+                        onChange={onChange}
+                        renderContext="page"
+                      />
+                    </ErrorBoundary>
                   ),
                   [
                     i,
@@ -287,6 +304,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
                     validationWarnings[field.path],
                     initialData[field.path],
                     onChange,
+                    isReadOnly,
                   ]
                 );
               }}
@@ -304,7 +322,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
         />
       </Card>
 
-      <CreateItemModal />
+      <CreateItemModal viewOnSave />
       <DeleteItemModal
         isOpen={showDeleteModal}
         item={initialData}
@@ -330,7 +348,8 @@ const ItemNotFound = ({ errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ itemId }) => {
+const ItemPage = () => {
+  const { itemId } = useParams();
   const { list } = useList();
 
   // network-only because the data we mutate with is important for display

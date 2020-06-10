@@ -8,8 +8,9 @@ import { Kbd } from '@arch-ui/typography';
 import { Button } from '@arch-ui/button';
 
 import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
-import { useListSort, useKeyDown } from './dataHooks';
+import { useListSort } from './dataHooks';
 import { useList } from '../../providers/List';
+import { useKeyDown } from '../../util';
 
 export default function SortPopout() {
   const { list } = useList();

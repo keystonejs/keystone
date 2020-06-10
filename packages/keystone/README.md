@@ -327,11 +327,11 @@ See the [Custom schema guide](/docs/guides/custom-schema.md) for more informatio
 
 ```javascript
 {
-  resolver: (obj, args, context, info, extra) => {},
+  resolver: (parent, args, context, info, extra) => {},
 }
 ```
 
-For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains the following properties:
+For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments). The last argument `extra` is an object that contains the following properties:
 
 | Name     | Description                                        |
 | -------- | -------------------------------------------------- |

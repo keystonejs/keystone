@@ -29,6 +29,7 @@ import { AutocompleteCaptor } from '@arch-ui/input';
 import PageLoading from './PageLoading';
 import { useList } from '../providers/List';
 import { validateFields, handleCreateUpdateMutationError } from '../util';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const Render = ({ children }) => children();
 
@@ -45,7 +46,7 @@ const useEventCallback = callback => {
   return cb;
 };
 
-const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
+const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) => {
   const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
 
   const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
@@ -122,8 +123,10 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
       onCreate(savedData);
     }
 
-    const newItemID = savedData.data[list.gqlNames.createMutationName].id;
-    history.push(`${list.fullPath}/${newItemID}`);
+    if (viewOnSave) {
+      const newItemID = savedData.data[list.gqlNames.createMutationName].id;
+      history.push(`${list.fullPath}/${newItemID}`);
+    }
   });
 
   const _onClose = () => {
@@ -192,6 +195,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
             {() => {
               const creatable = list.fields
                 .filter(({ isPrimaryKey }) => !isPrimaryKey)
+                .filter(({ isReadOnly }) => !isReadOnly)
                 .filter(({ maybeAccess }) => !!maybeAccess.create);
 
               captureSuspensePromises(creatable.map(field => () => field.initFieldView()));
@@ -199,9 +203,9 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
               return creatable.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
-                    let [Field] = field.readViews([field.views.Field]);
+                    const [Field] = field.readViews([field.views.Field]);
                     // eslint-disable-next-line react-hooks/rules-of-hooks
-                    let onChange = useCallback(value => {
+                    const onChange = useCallback(value => {
                       setItem(item => ({
                         ...item,
                         [field.path]: value,
@@ -212,17 +216,19 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate }) => {
                     // eslint-disable-next-line react-hooks/rules-of-hooks
                     return useMemo(
                       () => (
-                        <Field
-                          autoFocus={!i}
-                          value={item[field.path]}
-                          savedValue={item[field.path]}
-                          field={field}
-                          /* TODO: Permission query results */
-                          errors={validationErrors[field.path] || []}
-                          warnings={validationWarnings[field.path] || []}
-                          onChange={onChange}
-                          renderContext="dialog"
-                        />
+                        <ErrorBoundary>
+                          <Field
+                            autoFocus={!i}
+                            value={item[field.path]}
+                            savedValue={item[field.path]}
+                            field={field}
+                            /* TODO: Permission query results */
+                            errors={validationErrors[field.path] || []}
+                            warnings={validationWarnings[field.path] || []}
+                            onChange={onChange}
+                            renderContext="dialog"
+                          />
+                        </ErrorBoundary>
                       ),
                       [
                         i,

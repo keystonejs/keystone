@@ -1,13 +1,14 @@
 const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
+const { MockAdapter, MockIdType, MockListAdapter } = require('@keystonejs/test-utils');
 
 // We don't want to actually log, so we mock it before we require the class
 jest.doMock('@keystonejs/logger', () => ({
   logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
 }));
 
-const List = require('../lib/List');
-const { AccessDeniedError } = require('../lib/List/graphqlErrors');
+const { List } = require('../lib/ListTypes');
+const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
 const { getType } = require('@keystonejs/utils');
 const path = require('path');
@@ -15,130 +16,6 @@ const path = require('path');
 let fieldsPackagePath = path.dirname(require.resolve('@keystonejs/fields/package.json'));
 function resolveViewPath(viewPath) {
   return path.join(fieldsPackagePath, 'src', 'types', viewPath);
-}
-
-class MockFieldImplementation {
-  constructor() {
-    this.access = {
-      public: {
-        create: false,
-        read: true,
-        update: false,
-        delete: false,
-      },
-    };
-    this.config = {};
-    this.hooks = {};
-  }
-  getAdminMeta() {
-    return { path: 'id' };
-  }
-  gqlOutputFields() {
-    return ['id: ID'];
-  }
-  gqlQueryInputFields() {
-    return ['id: ID'];
-  }
-  get gqlUpdateInputFields() {
-    return ['id: ID'];
-  }
-  get gqlCreateInputFields() {
-    return ['id: ID'];
-  }
-  getGqlAuxTypes() {
-    return [];
-  }
-  getGqlAuxQueries() {
-    return [];
-  }
-  getGqlAuxMutations() {
-    return [];
-  }
-  gqlOutputFieldResolvers() {
-    return {};
-  }
-  gqlAuxQueryResolvers() {
-    return {};
-  }
-  gqlAuxMutationResolvers() {
-    return {};
-  }
-  gqlAuxFieldResolvers() {
-    return {};
-  }
-  extendAdminViews(views) {
-    return views;
-  }
-  getDefaultValue() {
-    return;
-  }
-  async resolveInput({ resolvedData }) {
-    return resolvedData.id;
-  }
-  async validateInput() {}
-  async beforeChange() {}
-  async afterChange() {}
-  async beforeDelete() {}
-  async validateDelete() {}
-  async afterDelete() {}
-}
-class MockFieldAdapter {}
-
-const MockIdType = {
-  implementation: MockFieldImplementation,
-  views: {},
-  adapters: { mock: MockFieldAdapter },
-};
-
-class MockListAdapter {
-  name = 'mock';
-  constructor(parentAdapter) {
-    this.parentAdapter = parentAdapter;
-    this.index = 3;
-    this.items = {
-      0: { name: 'a', email: 'a@example.com', index: 0 },
-      1: { name: 'b', email: 'b@example.com', index: 1 },
-      2: { name: 'c', email: 'c@example.com', index: 2 },
-    };
-  }
-  newFieldAdapter = () => new MockFieldAdapter();
-  create = async item => {
-    this.items[this.index] = {
-      ...item,
-      index: this.index,
-    };
-    this.index += 1;
-    return this.items[this.index - 1];
-  };
-  findById = id => this.items[id];
-  delete = async id => {
-    this.items[id] = undefined;
-  };
-  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
-    if (meta) {
-      return {
-        count: (id !== undefined
-          ? [this.items[id]]
-          : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
-        ).length,
-      };
-    } else {
-      return id !== undefined
-        ? [this.items[id]]
-        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
-    }
-  };
-  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
-  update = (id, item) => {
-    this.items[id] = { ...this.items[id], ...item };
-    return this.items[id];
-  };
-}
-
-class MockAdapter {
-  name = 'mock';
-  newListAdapter = () => new MockListAdapter(this);
-  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
 }
 
 Text.adapters['mock'] = {};
@@ -589,6 +466,11 @@ describe(`getGqlTypes() `, () => {
         writeOnce_ASC
         writeOnce_DESC
       }`;
+  const otherRelateToOneInput = `input OtherRelateToOneInput {
+    connect: OtherWhereUniqueInput
+    disconnect: OtherWhereUniqueInput
+    disconnectAll: Boolean
+  }`;
   const schemaName = 'public';
   test('access: true', () => {
     expect(
@@ -597,6 +479,7 @@ describe(`getGqlTypes() `, () => {
         .map(s => print(gql(s)))
     ).toEqual(
       [
+        otherRelateToOneInput,
         type,
         whereInput,
         whereUniqueInput,
@@ -620,7 +503,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: true, create: false, update: false, delete: false } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput, sortTestsBy].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
   test('create: true', () => {
     expect(
@@ -628,9 +515,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, sortTestsBy, createInput, createManyInput].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        createInput,
+        createManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('update: true', () => {
@@ -639,9 +532,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, sortTestsBy, updateInput, updateManyInput].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        updateInput,
+        updateManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('delete: true', () => {
@@ -649,7 +548,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: false, create: false, update: false, delete: true } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput, sortTestsBy].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
 });
 
@@ -1078,7 +981,27 @@ test(`listMeta`, () => {
   const schema = meta.getSchema();
   expect(schema).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 
@@ -1088,7 +1011,27 @@ test(`listMeta`, () => {
       .getSchema()
   ).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 });

@@ -181,10 +181,9 @@ export default class ContentController extends Controller {
     captureSuspensePromises([
       () => {
         const { Field } = this.views;
-        if (!Field) {
-          return;
+        if (Field) {
+          this.readViews([Field]);
         }
-        this.readViews([Field]);
       },
       () => this.getBlocks(),
     ]);
@@ -194,10 +193,9 @@ export default class ContentController extends Controller {
     captureSuspensePromises([
       () => {
         const { Cell } = this.views;
-        if (!Cell) {
-          return;
+        if (Cell) {
+          this.readViews([Cell]);
         }
-        this.readViews([Cell]);
       },
       () => this.getBlocks(),
     ]);
@@ -207,10 +205,9 @@ export default class ContentController extends Controller {
     captureSuspensePromises([
       () => {
         const { Filter } = this.views;
-        if (!Filter) {
-          return;
+        if (Filter) {
+          this.readViews([Filter]);
         }
-        this.readViews([Filter]);
       },
       () => this.getBlocks(),
     ]);
