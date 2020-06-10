@@ -17,9 +17,8 @@ keystone.createList('User', {
     password: { type: Password },
     lastOnline: {
       type: CalendarDay,
-      format: 'Do MMMM YYYY',
-      yearRangeFrom: 1901,
-      yearRangeTo: 2018,
+      dateFrom: '2001-01-16',
+      dateTo: '2020-05-20',
     },
   },
 });
@@ -27,53 +26,26 @@ keystone.createList('User', {
 
 ### Config
 
-| Option          | Type      | Default                | Description                                                                   |
-| --------------- | --------- | ---------------------- | ----------------------------------------------------------------------------- |
-| `format`        | `String`  | `YYYY-MM-DD`           | Defines the format of date string that the will be displayed in the Admin UI. |
-| `yearRangeFrom` | `Integer` | The current year - 100 | Defines the starting point of the year range, eg `1918`                       |
-| `yearRangeTo`   | `Integer` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018`    |
-| `isRequired`    | `Boolean` | `false`                | Does this field require a value?                                              |
-| `isUnique`      | `Boolean` | `false`                | Adds a unique index that allows only unique values to be stored               |
+| Option       | Type      | Default     | Description                                                     |
+| ------------ | --------- | ----------- | --------------------------------------------------------------- |
+| `dateFrom`   | `String`  | `undefined` | The starting point of the allowable date range.                 |
+| `dateTo`     | `String`  | `undefined` | The end point of the allowable date range.                      |
+| `isRequired` | `Boolean` | `false`     | Does this field require a value?                                |
+| `isUnique`   | `Boolean` | `false`     | Adds a unique index that allows only unique values to be stored |
 
-#### `format`
+#### `dateFrom`
 
-Defines the format of date string that the will be displayed in the Admin UI.
-The Admin UI uses the [`date-fns` v2.x](https://date-fns.org/v2.13.0/docs/format) library for formatting, and any format supported by that library is valid. E.g.
+The CalendarDay field can enforce selected days to conform to a specific date range. `dateFrom` represents the start of a range and the earliest date that can be selected. `dateFrom` can be provided without a `dateTo` option. However, where a `dateTo` is provided, the `dateFrom` value must be equal to or earlier than the `dateTo` value.
 
-- `yyyy-MM-dd` => "1970-01-31"
-- `MM/dd/yyyy` => "01/31/1970"
-- `MMM do, yy` => "Jan 31st, 70"
+#### `dateTo`
 
-#### `yearRangeFrom`
-
-The CalendarDay component includes an input that allows the user to change the current year from a range of options.
-This prop allows the user to set the beginning of that range.
-
-The default value for this field is 100 years before the current year.
-
-#### `yearRangeTo`
-
-The CalendarDay component includes an input that allows the user to change the current year from a range of options.
-This prop allows the user to set the end of that range.
-
-The default value for this field is the current year.
+The CalendarDay field can enforce selected days to conform to a specific date range. `datTo` represents the end of a range and the latest date that can be selected. `dateTo` can be provided without a `dateFrom` option. However, where a `dateFrom` value is provided, the `dateTo` value must be equal to or after the `dateFrom` value.
 
 ## GraphQL
 
 `CalendarDay` fields use the `String` type in GraphQL.
-They produce values according to their configured `format` but always expect values in ISO8601 (`YYYY-MM-DD`) format.
 
-### Input fields
-
-| Field name | Type     | Description                                              |
-| :--------- | :------- | :------------------------------------------------------- |
-| `${path}`  | `String` | The value to be stored, in ISO8601 (`YYYY-MM-DD`) format |
-
-### Output fields
-
-| Field name | Type     | Description                                 |
-| :--------- | :------- | :------------------------------------------ |
-| `${path}`  | `String` | The stored value in the configured `format` |
+All date values must be in the 10 character ISO8601 format:`YYYY-MM-DD`.
 
 ### Filters
 
