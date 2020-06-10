@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-admin-ui",
   "description": "KeystoneJS Admin UI App.",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -39,7 +39,7 @@
     "@babel/core": "^7.9.0",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
-    "@keystonejs/build-field-types": "^5.2.8",
+    "@keystonejs/build-field-types": "^5.2.9",
     "@keystonejs/field-views-loader": "^6.0.0",
     "@keystonejs/fields": "^12.0.1",
     "@keystonejs/session": "^7.0.0",
