@@ -6,6 +6,8 @@ title: DateTime
 
 # DateTime
 
+Stores a point in time and a time zone offset.
+
 ## Usage
 
 ```js
