@@ -13,21 +13,6 @@ beforeEach(() => {
   cy.clock(1551628922000);
 });
 
-describe('CalendarDay Component - Formatting', () => {
-  beforeEach(() => {
-    cy.visit(path);
-  });
-
-  it('should format date correctly on the list page', () => {
-    cy.get(getCellFromSecondRow(3)).contains('1st January 1990');
-  });
-
-  it('should format date correctly on the details page', () => {
-    cy.get(`${getCellFromSecondRow(2)} > a`).click({ force: true });
-    cy.get(calendarDayInputSelector).should('have.value', '1st January 1990');
-  });
-});
-
 ///// Begin Date Time Component
 
 describe('DateTime Component - Formatting', () => {
