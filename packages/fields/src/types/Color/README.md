@@ -6,6 +6,9 @@ title: Color
 
 # Color
 
+Stores hexidecimal RGBA (Red, Green, Blue, Alpha) color values.
+Presents in the Admin UI as an interactive color picker.
+
 ## Usage
 
 ```js

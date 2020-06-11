@@ -21,7 +21,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('CalendarDay type', () => {
       test(
-        'Valid date passes',
+        'Valid date passes validation',
         runner(setupKeystone, async ({ keystone }) => {
           const { data } = await graphqlRequest({
             keystone,
@@ -33,7 +33,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
 
       test(
-        'Invalid date fails passes',
+        'date === dateTo passes validation',
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data } = await graphqlRequest({
+            keystone,
+            query: `mutation { createUser(data: { birthday: "2020-01-01" }) { birthday } }`,
+          });
+          expect(data).toHaveProperty('createUser.birthday', '2020-01-01');
+        })
+      );
+
+      test(
+        'date === dateFrom passes validation',
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data } = await graphqlRequest({
+            keystone,
+            query: `mutation { createUser(data: { birthday: "2020-01-01" }) { birthday } }`,
+          });
+          expect(data).toHaveProperty('createUser.birthday', '2020-01-01');
+        })
+      );
+
+      test(
+        'Invalid date failsvalidation',
         runner(setupKeystone, async ({ keystone }) => {
           const { errors } = await graphqlRequest({
             keystone,
