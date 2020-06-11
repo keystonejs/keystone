@@ -7,7 +7,7 @@ import { useList } from '../../providers/List';
 
 import CreateItemModal from '../../components/CreateItemModal';
 
-import { PlusIcon } from '@arch-ui/icons';
+import { PlusIcon } from '@primer/octicons-react';
 import { Card } from '@arch-ui/card';
 import { colors, gridSize } from '@arch-ui/theme';
 import { LoadingIndicator } from '@arch-ui/loading';

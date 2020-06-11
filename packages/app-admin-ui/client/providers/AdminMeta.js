@@ -21,7 +21,7 @@ const {
   name,
   ...customMeta
 } = KEYSTONE_ADMIN_META;
-
+console.log(lists)
 const AdminMetaContext = createContext();
 
 const resolveCustomPages = pages => {

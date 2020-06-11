@@ -8,7 +8,7 @@ import {
   ListOrderedIcon,
   ListUnorderedIcon,
   FileMediaIcon,
-} from '@arch-ui/icons';
+} from '@primer/octicons-react';
 
 export let getTools = cm => {
   function toggleBefore(insertion) {

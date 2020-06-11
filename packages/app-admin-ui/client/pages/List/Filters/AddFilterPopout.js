@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { Component, createRef, Suspense } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
-import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@arch-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@primer/octicons-react';
 import { colors, gridSize } from '@arch-ui/theme';
 import { A11yText } from '@arch-ui/typography';
 import { Alert } from '@arch-ui/alert';

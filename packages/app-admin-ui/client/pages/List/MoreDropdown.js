@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { FoldIcon, KebabVerticalIcon, UnfoldIcon, ZapIcon } from '@arch-ui/icons';
+import { FoldIcon, KebabVerticalIcon, UnfoldIcon, ZapIcon } from '@primer/octicons-react';
 import { CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-ui/layout';
 import { A11yText } from '@arch-ui/typography';
 import { IconButton } from '@arch-ui/button';

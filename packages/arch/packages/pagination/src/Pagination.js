@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { useEffect, useState } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, ListOrderedIcon } from '@arch-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon, ListOrderedIcon } from '@primer/octicons-react';
 import { FlexGroup } from '@arch-ui/layout';
 import { LoadingSpinner } from '@arch-ui/loading';
 

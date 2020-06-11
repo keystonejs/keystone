@@ -8,7 +8,7 @@ import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
 import { Button } from '@arch-ui/button';
-import { KebabHorizontalIcon } from '@arch-ui/icons';
+import { KebabHorizontalIcon } from '@primer/octicons-react';
 import Tooltip from '@arch-ui/tooltip';
 import { applyRefs } from 'apply-ref';
 import { LoadingIndicator } from '@arch-ui/loading';

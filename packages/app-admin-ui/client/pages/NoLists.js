@@ -3,7 +3,7 @@ import React from 'react';
 import DocTitle from '../components/DocTitle';
 import PageError from '../components/PageError';
 
-import { InfoIcon } from '@arch-ui/icons';
+import { InfoIcon } from '@primer/octicons-react';
 
 const NoListsPage = () => {
   return (

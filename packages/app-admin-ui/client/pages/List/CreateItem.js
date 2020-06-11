@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 
 import { IconButton } from '@arch-ui/button';
-import { PlusIcon } from '@arch-ui/icons';
+import { PlusIcon } from '@primer/octicons-react';
 
 import { useList } from '../../providers/List';
 
