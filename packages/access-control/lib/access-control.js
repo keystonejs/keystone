@@ -159,6 +159,7 @@ module.exports = {
     access,
     authentication = {},
     gqlName,
+    queryHelper
   }) {
     // Either a boolean or an object describing a where clause
     let result;
@@ -172,6 +173,7 @@ module.exports = {
         info,
         authentication: authentication.item ? authentication : {},
         gqlName,
+        action: { query: queryHelper },
       });
     }
     const type = getType(result);
@@ -193,6 +195,7 @@ module.exports = {
     gqlName,
     itemId,
     itemIds,
+    queryHelper
   }) {
     // Either a boolean or an object describing a where clause
     let result;
@@ -207,6 +210,7 @@ module.exports = {
         gqlName,
         itemId,
         itemIds,
+        action: { query: queryHelper },
       });
     }
 
@@ -239,6 +243,7 @@ module.exports = {
     gqlName,
     itemId,
     itemIds,
+    queryHelper,
   }) {
     let result;
     if (typeof access[operation] !== 'function') {
@@ -254,6 +259,7 @@ module.exports = {
         gqlName,
         itemId,
         itemIds,
+        action: { query: queryHelper },
       });
     }
 
@@ -268,7 +274,7 @@ module.exports = {
     return result;
   },
 
-  async validateAuthAccessControl({ access, listKey, authentication = {}, gqlName }) {
+  async validateAuthAccessControl({ access, listKey, authentication = {}, gqlName, queryHelper }) {
     const operation = 'auth';
     // Either a boolean or an object describing a where clause
     let result;
@@ -280,6 +286,7 @@ module.exports = {
         listKey,
         operation,
         gqlName,
+        action: { query: queryHelper },
       });
     }
 

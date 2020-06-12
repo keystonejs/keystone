@@ -152,6 +152,7 @@ module.exports = class Keystone {
       getFieldAccessControlForUser = () => true;
       getAuthAccessControlForUser = () => true;
     } else {
+      const buildQueryHelper = this._buildQueryHelper.bind(this);
       // memoizing to avoid requests that hit the same type multiple times.
       // We do it within the request callback so we can resolve it based on the
       // request info ( like who's logged in right now, etc)
@@ -165,13 +166,14 @@ module.exports = class Keystone {
             access: access[schemaName],
             authentication: { item: req.user, listKey: req.authedListKey },
             gqlName,
+            queryHelper: buildQueryHelper(context),
           });
         },
         { isPromise: true }
       );
 
       getListAccessControlForUser = memoize(
-        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}, context = {}) => {
           return validateListAccessControl({
             access: this.lists[listKey].access[schemaName],
             originalInput,
@@ -181,6 +183,7 @@ module.exports = class Keystone {
             gqlName,
             itemId,
             itemIds,
+            queryHelper: buildQueryHelper(context),
           });
         },
         { isPromise: true }
@@ -193,7 +196,8 @@ module.exports = class Keystone {
           originalInput,
           existingItem,
           operation,
-          { gqlName, itemId, itemIds } = {}
+          { gqlName, itemId, itemIds } = {},
+          context = {}
         ) => {
           return validateFieldAccessControl({
             access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
@@ -206,18 +210,20 @@ module.exports = class Keystone {
             gqlName,
             itemId,
             itemIds,
+            queryHelper: buildQueryHelper(context),
           });
         },
         { isPromise: true }
       );
 
       getAuthAccessControlForUser = memoize(
-        async (listKey, { gqlName } = {}) => {
+        async (listKey, { gqlName } = {}, context = {}) => {
           return validateAuthAccessControl({
             access: this.lists[listKey].access[schemaName],
             authentication: { item: req.user, listKey: req.authedListKey },
             listKey,
             gqlName,
+            queryHelper: buildQueryHelper(context),
           });
         },
         { isPromise: true }

@@ -437,7 +437,8 @@ module.exports = class List {
           data,
           existingItem,
           operation,
-          { gqlName, itemId: id, ...extraInternalData }
+          { gqlName, itemId: id, ...extraInternalData },
+          context
         );
         if (!access) {
           restrictedFields.push(field.path);
@@ -455,7 +456,7 @@ module.exports = class List {
     const access = await context.getListAccessControlForUser(this.key, originalInput, operation, {
       gqlName,
       ...extraInternalData,
-    });
+    }, context);
     if (!access) {
       graphqlLogger.debug(
         { operation, access, gqlName, ...extraInternalData },
@@ -1483,11 +1484,11 @@ module.exports = class List {
       // NOTE: These could return a Boolean or a JSON object (if using the
       // declarative syntax)
       getAccess: () => ({
-        getCreate: () => context.getListAccessControlForUser(this.key, undefined, 'create'),
-        getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read'),
-        getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update'),
-        getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
-        getAuth: () => context.getAuthAccessControlForUser(this.key),
+        getCreate: () => context.getListAccessControlForUser(this.key, undefined, 'create', undefined, context),
+        getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read', undefined, context),
+        getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update', undefined, context),
+        getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete', undefined, context),
+        getAuth: () => context.getAuthAccessControlForUser(this.key, undefined, context),
       }),
 
       getSchema: () => {
