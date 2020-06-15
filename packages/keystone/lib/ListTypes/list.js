@@ -404,7 +404,8 @@ module.exports = class List {
         field.path,
         undefined,
         item,
-        operation
+        operation,
+        { context }
       );
       if (!access) {
         // If the client handles errors correctly, it should be able to
@@ -437,7 +438,7 @@ module.exports = class List {
           data,
           existingItem,
           operation,
-          { gqlName, itemId: id, ...extraInternalData }
+          { gqlName, itemId: id, context, ...extraInternalData }
         );
         if (!access) {
           restrictedFields.push(field.path);
@@ -454,6 +455,7 @@ module.exports = class List {
   async checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
     const access = await context.getListAccessControlForUser(this.key, originalInput, operation, {
       gqlName,
+      context,
       ...extraInternalData,
     });
     if (!access) {
@@ -1483,11 +1485,15 @@ module.exports = class List {
       // NOTE: These could return a Boolean or a JSON object (if using the
       // declarative syntax)
       getAccess: () => ({
-        getCreate: () => context.getListAccessControlForUser(this.key, undefined, 'create'),
-        getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read'),
-        getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update'),
-        getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
-        getAuth: () => context.getAuthAccessControlForUser(this.key),
+        getCreate: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'create', { context }),
+        getRead: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'read', { context }),
+        getUpdate: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'update', { context }),
+        getDelete: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'delete', { context }),
+        getAuth: () => context.getAuthAccessControlForUser(this.key, { context }),
       }),
 
       getSchema: () => {
