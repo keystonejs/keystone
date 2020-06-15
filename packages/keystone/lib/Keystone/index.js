@@ -137,100 +137,106 @@ module.exports = class Keystone {
     return graphql(schema, requestString, rootValue, contextValue, variableValues, operationName);
   }
 
-  // The GraphQL App uses this method to build up the context required for each
-  // incoming query.
-  // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
-    let getCustomAccessControlForUser;
-    let getListAccessControlForUser;
-    let getFieldAccessControlForUser;
-    let getAuthAccessControlForUser;
-
+  _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
     if (skipAccessControl) {
-      getCustomAccessControlForUser = () => true;
-      getListAccessControlForUser = () => true;
-      getFieldAccessControlForUser = () => true;
-      getAuthAccessControlForUser = () => true;
-    } else {
-      // memoizing to avoid requests that hit the same type multiple times.
-      // We do it within the request callback so we can resolve it based on the
-      // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = memoize(
-        async (item, args, context, info, access, gqlName) => {
-          return validateCustomAccessControl({
-            item,
-            args,
-            context,
-            info,
-            access: access[schemaName],
-            authentication: { item: req.user, listKey: req.authedListKey },
-            gqlName,
-          });
-        },
-        { isPromise: true }
-      );
+      return {
+        getCustomAccessControlForUser: () => true,
+        getListAccessControlForUser: () => true,
+        getFieldAccessControlForUser: () => true,
+        getAuthAccessControlForUser: () => true,
+      };
+    }
+    // memoizing to avoid requests that hit the same type multiple times.
+    // We do it within the request callback so we can resolve it based on the
+    // request info (like who's logged in right now, etc)
+    const getCustomAccessControlForUser = memoize(
+      async (item, args, context, info, access, gqlName) => {
+        return validateCustomAccessControl({
+          item,
+          args,
+          context,
+          info,
+          access: access[schemaName],
+          authentication,
+          gqlName,
+        });
+      },
+      { isPromise: true }
+    );
 
-      getListAccessControlForUser = memoize(
-        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
-          return validateListAccessControl({
-            access: this.lists[listKey].access[schemaName],
-            originalInput,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-          });
-        },
-        { isPromise: true }
-      );
-
-      getFieldAccessControlForUser = memoize(
-        async (
+    const getListAccessControlForUser = memoize(
+      async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+        return validateListAccessControl({
+          access: this.lists[listKey].access[schemaName],
+          originalInput,
+          operation,
+          authentication,
           listKey,
-          fieldKey,
+          gqlName,
+          itemId,
+          itemIds,
+        });
+      },
+      { isPromise: true }
+    );
+
+    const getFieldAccessControlForUser = memoize(
+      async (
+        listKey,
+        fieldKey,
+        originalInput,
+        existingItem,
+        operation,
+        { gqlName, itemId, itemIds } = {}
+      ) => {
+        return validateFieldAccessControl({
+          access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
           originalInput,
           existingItem,
           operation,
-          { gqlName, itemId, itemIds } = {}
-        ) => {
-          return validateFieldAccessControl({
-            access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
-            originalInput,
-            existingItem,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-            fieldKey,
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-          });
-        },
-        { isPromise: true }
-      );
+          authentication,
+          fieldKey,
+          listKey,
+          gqlName,
+          itemId,
+          itemIds,
+        });
+      },
+      { isPromise: true }
+    );
 
-      getAuthAccessControlForUser = memoize(
-        async (listKey, { gqlName } = {}) => {
-          return validateAuthAccessControl({
-            access: this.lists[listKey].access[schemaName],
-            authentication: { item: req.user, listKey: req.authedListKey },
-            listKey,
-            gqlName,
-          });
-        },
-        { isPromise: true }
-      );
-    }
+    const getAuthAccessControlForUser = memoize(
+      async (listKey, { gqlName } = {}) => {
+        return validateAuthAccessControl({
+          access: this.lists[listKey].access[schemaName],
+          authentication,
+          listKey,
+          gqlName,
+        });
+      },
+      { isPromise: true }
+    );
 
     return {
-      schemaName,
-      ...this._sessionManager.getContext(req),
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
       getAuthAccessControlForUser,
+    };
+  }
+
+  // The GraphQL App uses this method to build up the context required for each
+  // incoming query.
+  // It is also used for generating the `keystone.query` method
+  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
+    return {
+      schemaName,
+      ...this._sessionManager.getContext(req),
+      ...this._getAccessControlContext({
+        schemaName,
+        authentication: { item: req.user, listKey: req.authedListKey },
+        skipAccessControl,
+      }),
       totalResults: 0,
       maxTotalResults: this.queryLimits.maxTotalResults,
     };
