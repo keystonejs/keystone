@@ -6,6 +6,8 @@ title: Text
 
 # Text
 
+A basic but versatile text field of arbitrary length.
+
 ## Usage
 
 ```js

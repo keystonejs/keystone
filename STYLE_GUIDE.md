@@ -17,7 +17,7 @@ If Prettier doesn't have an opinion on something, and it's not covered here, go 
 The aim of these conventions is to ensure:
 
 - Consistency across project docs
-- Readability when rendered as HTML
+- Readability when published as HTML (see especially the [URL Formulation Rules](#url-formulation-rules))
 - Readability as plain text
 - Readability when being updated (ie. in diffs)
 
@@ -82,7 +82,7 @@ As a rule of thumb, over 120 characters is too long.
 We'd _like_ to use different bullets styles for items at different levels but Prettier forces hyphens by default.
 Let's just go with that.
 
-- Lists levels are indented with spaces
+- Lists levels are indented with 2 spaces
   - Like this
     - And this
 - Items should end in punctuation only if they contains multiple sentences.
@@ -96,13 +96,36 @@ As such, there are two methods that work:
 1. Usually it's preferable to number all items with `1`.
    This keeps diffs clean since inserting or removing an item doesn't re-number all subsequent items.
 2. However, if the doc refers to the items _by number_ it makes sense to number them ordinarily within the Markdown.
-   The Prettier will _correct the order of items_ numbered in this way which is nice (but does cause noisier diffs).
+   The Prettier will _correct the order of items_ numbered in this way which is nice (but does cause more noise in the diffs).
 
 ## Links
 
 Links should be used generously to reference related material both inside and outside the current document.
 You can link to any section in a markdown document by lower-casing its heading,
 replacing spaces with hyphens and prefixing with a hash, eg: the [Text Blocks section](#text-blocks).
+
+### URL Formulation Rules
+
+It's important to remember that the Markdown files within this project are used in several places:
+
+- As raw Markdown in a local dev environment (eg. in editor, search/grep'ing, etc.)
+- Published on the [Keystone website](https://keystonejs.com/)
+- Published on the [GitHub repo](https://github.com/keystonejs/keystone)
+- Published on NPM (only effects package `README.md` docs)
+
+For links to work across these mediums, certain rules for URLs formulation must be followed:
+
+- Links _within a file_ (ie. to headings) must not include the file name or path
+  - Eg. `See the secion on [Foo Config](#foo-config).`
+- Links to _other files in the monorepo_ must use..
+  - An absolute file path from the monorepo root
+    - Eg. `/docs/api/hooks.md` (**not** `https://www.keystonejs.com/guides/hooks` or `https://github.com/keystonejs/keystone/blob/master/docs/guides/hooks.md`, etc.)
+  - The full filename, include the extension
+    - Eg. `/docs/guides/access-control.md` (**not** `/docs/guides/access-control`)
+- Links to `README.md` files must be explicit; they cannot rely on the GitHub behaviour that uses `README.md` at a sort of "index" for a directory
+  - Eg. `/packages/auth-password/README.md#identity` (**not** `/packages/auth-password#identity`)
+- Links to directories end in a slash (eg. `/packages/email/`)
+  - This as is convention for URLs (so as not to be confused with a files)
 
 ## Code and Code Blocks
 

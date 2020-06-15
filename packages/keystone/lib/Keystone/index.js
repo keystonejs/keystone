@@ -1,4 +1,3 @@
-const fs = require('fs');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
@@ -112,7 +111,7 @@ module.exports = class Keystone {
     // graphql app is setup, which is checked for elsewhere).
     this.executeQuery = () => {
       throw new Error(
-        'Attempted to execute keystone.query() before keystone.prepare() has completed.'
+        'Attempted to execute keystone.query() before keystone.connect() has completed.'
       );
     };
   }
@@ -138,95 +137,106 @@ module.exports = class Keystone {
     return graphql(schema, requestString, rootValue, contextValue, variableValues, operationName);
   }
 
-  // The GraphQL App uses this method to build up the context required for each
-  // incoming query.
-  // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
-    let getCustomAccessControlForUser;
-    let getListAccessControlForUser;
-    let getFieldAccessControlForUser;
-    let getAuthAccessControlForUser;
-
+  _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
     if (skipAccessControl) {
-      getCustomAccessControlForUser = () => true;
-      getListAccessControlForUser = () => true;
-      getFieldAccessControlForUser = () => true;
-      getAuthAccessControlForUser = () => true;
-    } else {
-      // memoizing to avoid requests that hit the same type multiple times.
-      // We do it within the request callback so we can resolve it based on the
-      // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = memoize(
-        async access => {
-          return validateCustomAccessControl({
-            access: access[schemaName],
-            authentication: { item: req.user, listKey: req.authedListKey },
-          });
-        },
-        { isPromise: true }
-      );
+      return {
+        getCustomAccessControlForUser: () => true,
+        getListAccessControlForUser: () => true,
+        getFieldAccessControlForUser: () => true,
+        getAuthAccessControlForUser: () => true,
+      };
+    }
+    // memoizing to avoid requests that hit the same type multiple times.
+    // We do it within the request callback so we can resolve it based on the
+    // request info (like who's logged in right now, etc)
+    const getCustomAccessControlForUser = memoize(
+      async (item, args, context, info, access, gqlName) => {
+        return validateCustomAccessControl({
+          item,
+          args,
+          context,
+          info,
+          access: access[schemaName],
+          authentication,
+          gqlName,
+        });
+      },
+      { isPromise: true }
+    );
 
-      getListAccessControlForUser = memoize(
-        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
-          return validateListAccessControl({
-            access: this.lists[listKey].access[schemaName],
-            originalInput,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-          });
-        },
-        { isPromise: true }
-      );
-
-      getFieldAccessControlForUser = memoize(
-        async (
+    const getListAccessControlForUser = memoize(
+      async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
+        return validateListAccessControl({
+          access: this.lists[listKey].access[schemaName],
+          originalInput,
+          operation,
+          authentication,
           listKey,
-          fieldKey,
+          gqlName,
+          itemId,
+          itemIds,
+        });
+      },
+      { isPromise: true }
+    );
+
+    const getFieldAccessControlForUser = memoize(
+      async (
+        listKey,
+        fieldKey,
+        originalInput,
+        existingItem,
+        operation,
+        { gqlName, itemId, itemIds } = {}
+      ) => {
+        return validateFieldAccessControl({
+          access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
           originalInput,
           existingItem,
           operation,
-          { gqlName, itemId, itemIds } = {}
-        ) => {
-          return validateFieldAccessControl({
-            access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
-            originalInput,
-            existingItem,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-            fieldKey,
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-          });
-        },
-        { isPromise: true }
-      );
+          authentication,
+          fieldKey,
+          listKey,
+          gqlName,
+          itemId,
+          itemIds,
+        });
+      },
+      { isPromise: true }
+    );
 
-      getAuthAccessControlForUser = memoize(
-        async (listKey, { gqlName } = {}) => {
-          return validateAuthAccessControl({
-            access: this.lists[listKey].access[schemaName],
-            authentication: { item: req.user, listKey: req.authedListKey },
-            listKey,
-            gqlName,
-          });
-        },
-        { isPromise: true }
-      );
-    }
+    const getAuthAccessControlForUser = memoize(
+      async (listKey, { gqlName } = {}) => {
+        return validateAuthAccessControl({
+          access: this.lists[listKey].access[schemaName],
+          authentication,
+          listKey,
+          gqlName,
+        });
+      },
+      { isPromise: true }
+    );
 
     return {
-      schemaName,
-      ...this._sessionManager.getContext(req),
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
       getAuthAccessControlForUser,
+    };
+  }
+
+  // The GraphQL App uses this method to build up the context required for each
+  // incoming query.
+  // It is also used for generating the `keystone.query` method
+  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
+    return {
+      schemaName,
+      ...this._sessionManager.getContext(req),
+      ...this._getAccessControlContext({
+        schemaName,
+        authentication: { item: req.user, listKey: req.authedListKey },
+        skipAccessControl,
+      }),
       totalResults: 0,
       maxTotalResults: this.queryLimits.maxTotalResults,
     };
@@ -465,12 +475,27 @@ module.exports = class Keystone {
   }
 
   /**
-   * @return Promise<null>
+   * Connects to the database via the given adapter(s)
+   *
+   * @return Promise<any> the result of executing `onConnect` as passed to the
+   * constructor, or `undefined` if no `onConnect` method specified.
    */
   async connect() {
     const { adapters, name } = this;
     const rels = this._consolidateRelationships();
     await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels })));
+
+    // Now that the middlewares are done, and we're connected to the database,
+    // it's safe to assume all the schemas are registered, so we can setup our
+    // query helper This enables god-mode queries with no access control checks
+    this.executeQuery = this._buildQueryHelper(
+      this.getGraphQlContext({
+        skipAccessControl: true,
+        // This is for backwards compatibility with single-schema Keystone
+        schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
+      })
+    );
+
     if (this.eventHandlers.onConnect) {
       return this.eventHandlers.onConnect(this);
     }
@@ -540,7 +565,7 @@ module.exports = class Keystone {
       subscriptions.length > 0 && `type Subscription { ${subscriptions.join('\n')} }`,
     ]
       .filter(s => s)
-      .map(s => print(gql(s)));
+      .map(s => gql(s));
   }
 
   getResolvers({ schemaName }) {
@@ -565,16 +590,11 @@ module.exports = class Keystone {
     );
   }
 
-  dumpSchema(file, schemaName) {
+  dumpSchema(schemaName = 'public') {
     // The 'Upload' scalar is normally automagically added by Apollo Server
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
-    // Since we don't execute apollo server over this schema, we have to
-    // reinsert it.
-    const schema = `
-      scalar Upload
-      ${this.getTypeDefs({ schemaName }).join('\n')}
-    `;
-    fs.writeFileSync(file, schema);
+    // Since we don't execute apollo server over this schema, we have to reinsert it.
+    return ['scalar Upload', ...this.getTypeDefs({ schemaName }).map(t => print(t))].join('\n');
   }
 
   createItem(listKey, itemData) {
@@ -652,18 +672,6 @@ module.exports = class Keystone {
     cors = { origin: true, credentials: true },
   } = {}) {
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
-
-    // Now that the middlewares are done, it's safe to assume all the schemas
-    // are registered, so we can setup our query helper
-    // This enables god-mode queries with no access control checks
-    this.executeQuery = this._buildQueryHelper(
-      this.getGraphQlContext({
-        skipAccessControl: true,
-        // This is for backwards compatibility with single-schema Keystone
-        schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
-      })
-    );
-
     // These function can't be called after prepare(), so make them throw an error from now on.
     ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
       this[f] = () => {

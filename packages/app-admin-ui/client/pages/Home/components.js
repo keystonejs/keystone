@@ -65,7 +65,7 @@ const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props 
           <A11yText>Create {singular}</A11yText>
         </CreateButton>
       </BoxElement>
-      <CreateItemModal />
+      <CreateItemModal viewOnSave />
     </Fragment>
   );
 };

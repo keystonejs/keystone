@@ -151,7 +151,7 @@ export function ListLayout(props) {
         </HeaderInset>
       </Container>
 
-      <CreateItemModal />
+      <CreateItemModal viewOnSave />
 
       <Container isFullWidth>
         <ListTable
