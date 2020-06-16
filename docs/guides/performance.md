@@ -69,7 +69,7 @@ keystone.createList('Foo', {
 // ---- Schema dumping ----
 if (typeof process.env.DUMP_SCHEMA === 'string') {
   const schemaName = 'public'; //this is the default keystonejs schema name
-  keystone.dumpSchema(process.env.DUMP_SCHEMA, schemaName);
+  fs.writeFileSync(process.env.DUMP_SCHEMA, keystone.dumpSchema(schemaName));
   console.log(`Schema dumped to: ${path.resolve(process.env.DUMP_SCHEMA)}`);
   process.exit(0);
 }
