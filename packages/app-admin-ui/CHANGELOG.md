@@ -1,5 +1,11 @@
 # @keystonejs/app-admin-ui
 
+## 7.0.4
+
+### Patch Changes
+
+- [`39d58e126`](https://github.com/keystonejs/keystone/commit/39d58e1261f4a6f4b736da59690c8617e61376b1) [#3156](https://github.com/keystonejs/keystone/pull/3156) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Always compile client directory regardless of whether or not the package is a direct child of a `node_modules` directory to work correctly with pnpm.
+
 ## 7.0.3
 
 ### Patch Changes
