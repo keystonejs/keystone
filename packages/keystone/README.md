@@ -142,7 +142,7 @@ Please note: We use these internally but provide no support or assurance if used
 
 | Method                | Description                                                                  |
 | --------------------- | ---------------------------------------------------------------------------- |
-| `dumpSchema`          | Dump schema to a file.                                                       |
+| `dumpSchema`          | Dump schema to a string.                                                       |
 | `getTypeDefs`         | Remove from user documentation?                                              |
 | `getResolvers`        | Remove from user documentation?                                              |
 | `registerSchema`      | Remove from user documentation?                                              |
