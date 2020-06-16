@@ -1,5 +1,16 @@
 # @keystonejs/field-content
 
+## 7.0.1
+
+### Patch Changes
+
+- [`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91) [#3140](https://github.com/keystonejs/keystone/pull/3140) Thanks [@molomby](https://github.com/molomby)! - Improving field type list and adding some missing field docs
+
+* [`2d0ed13f7`](https://github.com/keystonejs/keystone/commit/2d0ed13f7f4e92c9e87eb700df55c80bf06179bb) [#3110](https://github.com/keystonejs/keystone/pull/3110) Thanks [@zamkevich](https://github.com/zamkevich)! - Fixed a bug with pointer focus on fields that have identical names.
+
+* Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8)]:
+  - @keystonejs/fields@13.0.0
+
 ## 7.0.0
 
 ### Major Changes

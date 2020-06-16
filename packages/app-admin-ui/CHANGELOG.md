@@ -1,5 +1,14 @@
 # @keystonejs/app-admin-ui
 
+## 7.0.3
+
+### Patch Changes
+
+- [`2e5a93dee`](https://github.com/keystonejs/keystone/commit/2e5a93dee5be11bf020c1397c7653bdf07a90d24) [#3112](https://github.com/keystonejs/keystone/pull/3112) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted ConnectivityListener component to a custom hook.
+
+- Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8)]:
+  - @keystonejs/fields@13.0.0
+
 ## 7.0.2
 
 ### Patch Changes
