@@ -29,7 +29,7 @@ const sessionFragment = `
  * - Item: An item from a Keystone 5 list
  */
 class PassportAuthStrategy {
-  constructor(authType, keystone, listKey, config, ServiceStrategy = null) {
+  constructor(authType, keystone, listKey, config, ServiceStrategy = null, schemaName = 'public') {
     assert(!!config.callbackPath, 'Must provide `config.callbackPath` option.');
     assert(!!config.appId, 'Must provide `config.appId` option.');
     assert(!!config.appSecret, 'Must provide `config.appSecret` option.');
@@ -81,6 +81,7 @@ class PassportAuthStrategy {
     this._listKey = listKey;
     this._ServiceStrategy = ServiceStrategy;
     this._sessionManager = keystone._sessionManager;
+    this._schemaName = schemaName;
 
     // Pull all the required data off the `config` object
     this._serviceAppId = config.appId;
@@ -119,6 +120,21 @@ class PassportAuthStrategy {
       itemId: ID!
       accessToken: String!
     `;
+  }
+
+  async _executeQuery({ query, variables }) {
+    const { errors, data } = await this._keystone.executeGraphQL({
+      context: this._keystone.createContext({
+        schemaName: this._schemaName,
+        skipAccessControl: true,
+      }),
+      query,
+      variables,
+    });
+    if (errors) {
+      throw errors;
+    }
+    return data;
   }
 
   // Called this from within Keystone's .prepare() method
@@ -161,8 +177,8 @@ class PassportAuthStrategy {
           let item;
           try {
             const queryName = this._getList().gqlNames.listQueryName;
-            const { errors, data } = await this._keystone.executeQuery(
-              `
+            const data = await this._executeQuery({
+              query: `
                 query($serviceId: String) {
                   ${queryName}(
                     first: 1
@@ -175,12 +191,8 @@ class PassportAuthStrategy {
                   }
                 }
               `,
-              { variables: { serviceId: serviceProfile.id } }
-            );
-
-            if (errors) {
-              throw errors;
-            }
+              variables: { serviceId: serviceProfile.id },
+            });
 
             item = data[queryName].length ? data[queryName][0] : null;
           } catch (error) {
@@ -269,23 +281,16 @@ class PassportAuthStrategy {
 
     // Extract the accessToken from the Passport Session List Item
     const queryName = this._getSessionList().gqlNames.itemQueryName;
-    const {
-      errors,
-      data: { getSession: passportSessionInfo },
-    } = await this._keystone.executeQuery(
-      `
+    const { getSession: passportSessionInfo } = await this._executeQuery({
+      query: `
         query($id: ID!) {
           getSession: ${queryName}(where: { id: $id }) {
             ${sessionFragment}
           }
         }
       `,
-      { variables: { id: passportSessionId } }
-    );
-
-    if (errors) {
-      throw errors;
-    }
+      variables: { id: passportSessionId },
+    });
 
     // Ask the service for all the profile info for the given accessToken
     const serviceProfile = await this._validateWithService(
@@ -408,32 +413,23 @@ class PassportAuthStrategy {
         const mutationName = this._getSessionList().gqlNames.createMutationName;
         const mutationInputName = this._getSessionList().gqlNames.createInputName;
 
-        const {
-          errors,
-          data: { createSession: passportSessionInfo },
-        } = await this._keystone.executeQuery(
-          `
+        const { createSession: passportSessionInfo } = await this._executeQuery({
+          query: `
             mutation($newSessionDataObject: ${mutationInputName}) {
               createSession: ${mutationName}(data: $newSessionDataObject) {
                 ${sessionFragment}
               }
             }
           `,
-          {
-            variables: {
-              newSessionDataObject: {
-                [FIELD_TOKEN_SECRET]: accessToken,
-                [FIELD_REFRESH_TOKEN]: refreshToken,
-                [FIELD_SERVICE_NAME]: this.authType,
-                [FIELD_USER_ID]: serviceProfile.id,
-              },
+          variables: {
+            newSessionDataObject: {
+              [FIELD_TOKEN_SECRET]: accessToken,
+              [FIELD_REFRESH_TOKEN]: refreshToken,
+              [FIELD_SERVICE_NAME]: this.authType,
+              [FIELD_USER_ID]: serviceProfile.id,
             },
-          }
-        );
-
-        if (errors) {
-          throw errors;
-        }
+          },
+        });
 
         done(null, { serviceProfile, accessToken, passportSessionInfo });
       }
@@ -481,8 +477,8 @@ class PassportAuthStrategy {
 
     // Here we create both the Passport Session Item and the User Item
     // in KS5 as a single, nested mutation.
-    const { errors, data: sessionItem } = await this._keystone.executeQuery(
-      `
+    const { sessionItem } = await this._executeQuery({
+      query: `
         mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
           session: ${passportSessionMutationName}(id: $id , data: $data) {
             item {
@@ -491,18 +487,9 @@ class PassportAuthStrategy {
           }
         }
       `,
-      {
-        variables: {
-          id: passportSessionInfo.id,
-          // Create the Keystone item as a Nested Mutation
-          data: { item: { [operation]: itemData } },
-        },
-      }
-    );
-
-    if (errors) {
-      throw errors;
-    }
+      // Create the Keystone item as a Nested Mutation
+      variables: { id: passportSessionInfo.id, data: { item: { [operation]: itemData } } },
+    });
 
     return sessionItem.session.item;
   }
