@@ -136,7 +136,7 @@ exports.Rsvp = {
     status: { type: Select, options: 'yes, no' },
   },
   hooks: {
-    validateInput: async ({ resolvedData, existingItem, actions }) => {
+    validateInput: async ({ context, resolvedData, existingItem }) => {
       const { status } = resolvedData;
       const { event: eventId } = existingItem ? existingItem : resolvedData;
 
@@ -144,7 +144,8 @@ exports.Rsvp = {
         return;
       }
 
-      const { data } = await actions.query(`query {
+      const { data } = await context.executeGraphQL({
+        query: `query {
         event: Event(where: { id: "${eventId}" }) {
           id
           startTime
@@ -154,7 +155,8 @@ exports.Rsvp = {
         allRsvps(where: { event: { id: "${eventId}" }}) {
           id
         }
-      }`);
+      }`,
+      });
 
       const { event, allRsvps } = data;
 
@@ -208,13 +210,14 @@ exports.ForgottenPasswordToken = {
     expiresAt: { type: DateTime, isRequired: true },
   },
   hooks: {
-    afterChange: async ({ updatedItem, existingItem, actions: { query } }) => {
+    afterChange: async ({ context, updatedItem, existingItem }) => {
       if (existingItem) return null;
 
       const now = new Date().toISOString();
 
-      const { errors, data } = await query(
-        `
+      const { errors, data } = await context.executeGraphQL({
+        context: context.createContext({ skipAccessControl: true }),
+        query: `
         query GetUserAndToken($user: ID!, $now: DateTime!) {
           User( where: { id: $user }) {
             id
@@ -226,8 +229,8 @@ exports.ForgottenPasswordToken = {
           }
         }
       `,
-        { skipAccessControl: true, variables: { user: updatedItem.user.toString(), now } }
-      );
+        variables: { user: updatedItem.user.toString(), now },
+      });
 
       if (errors) {
         console.error(errors, `Unable to construct password updated email.`);
@@ -260,7 +263,7 @@ exports.customSchema = {
   mutations: [
     {
       schema: 'startPasswordRecovery(email: String!): ForgottenPasswordToken',
-      resolver: async (obj, { email }, context, info, { query }) => {
+      resolver: async (obj, { email }, context) => {
         const token = uuid();
 
         const tokenExpiration =
@@ -270,8 +273,9 @@ exports.customSchema = {
         const requestedAt = new Date(now).toISOString();
         const expiresAt = new Date(now + tokenExpiration).toISOString();
 
-        const { errors: userErrors, data: userData } = await query(
-          `
+        const { errors: userErrors, data: userData } = await context.executeQuery({
+          context: context.createContext({ skipAccessControl: true }),
+          query: `
             query findUserByEmail($email: String!) {
               allUsers(where: { email: $email }) {
                 id
@@ -279,8 +283,8 @@ exports.customSchema = {
               }
             }
           `,
-          { variables: { email: email }, skipAccessControl: true }
-        );
+          variables: { email: email },
+        });
 
         if (userErrors || !userData.allUsers || !userData.allUsers.length) {
           console.error(
@@ -299,8 +303,9 @@ exports.customSchema = {
           expiresAt,
         };
 
-        const { errors } = await query(
-          `
+        const { errors } = await context.executeGraphQL({
+          context: context.createContext({ skipAccessControl: true }),
+          query: `
             mutation createForgottenPasswordToken(
               $userId: ID!,
               $token: String,
@@ -323,8 +328,8 @@ exports.customSchema = {
               }
             }
           `,
-          { variables: result, skipAccessControl: true }
-        );
+          variables: result,
+        });
 
         if (errors) {
           console.error(errors, `Unable to create forgotten password token.`);
@@ -336,11 +341,12 @@ exports.customSchema = {
     },
     {
       schema: 'changePasswordWithToken(token: String!, password: String!): User',
-      resolver: async (obj, { token, password }, context, info, { query }) => {
+      resolver: async (obj, { token, password }, context) => {
         const now = Date.now();
 
-        const { errors, data } = await query(
-          `
+        const { errors, data } = await context.executeGraphQL({
+          context: context.createContext({ skipAccessControl: true }),
+          query: `
             query findUserFromToken($token: String!, $now: DateTime!) {
               passwordTokens: allForgottenPasswordTokens(where: { token: $token, expiresAt_gte: $now }) {
                 id
@@ -349,10 +355,9 @@ exports.customSchema = {
                   id
                 }
               }
-            }
-          `,
-          { variables: { token, now }, skipAccessControl: true }
-        );
+            }`,
+          variables: { token, now },
+        });
 
         if (errors || !data.passwordTokens || !data.passwordTokens.length) {
           console.error(errors, `Unable to find token`);
@@ -362,30 +367,31 @@ exports.customSchema = {
         const user = data.passwordTokens[0].user.id;
         const tokenId = data.passwordTokens[0].id;
 
-        const { errors: passwordError } = await query(
-          `mutation UpdateUserPassword($user: ID!, $password: String!) {
+        const { errors: passwordError } = await context.executeGraphQL({
+          context: context.createContext({ skipAccessControl: true }),
+          query: `mutation UpdateUserPassword($user: ID!, $password: String!) {
             updateUser(id: $user, data: { password: $password }) {
               id
             }
-          }
-        `,
-          { variables: { user, password }, skipAccessControl: true }
-        );
+          }`,
+          variables: { user, password },
+        });
 
         if (passwordError) {
           console.error(passwordError, `Unable to change password`);
           throw passwordError.message;
         }
 
-        await query(
-          `mutation DeletePasswordToken($tokenId: ID!) {
+        await context.executeGraphQL({
+          context: context.createContext({ skipAccessControl: true }),
+          query: `mutation DeletePasswordToken($tokenId: ID!) {
             deleteForgottenPasswordToken(id: $tokenId) {
               id
             }
           }
         `,
-          { variables: { tokenId }, skipAccessControl: true }
-        );
+          variables: { tokenId },
+        });
 
         return true;
       },
