@@ -228,20 +228,50 @@ module.exports = class Keystone {
     };
   }
 
+  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false }) {
+    const context = {
+      schemaName,
+      authedItem: authentication.item,
+      authedListKey: authentication.listKey,
+      ...this._getAccessControlContext({ schemaName, authentication, skipAccessControl }),
+      totalResults: 0,
+      maxTotalResults: this.queryLimits.maxTotalResults,
+    };
+    const orig = { schemaName, authentication, skipAccessControl };
+    context.createContext = ({
+      schemaName = orig.schemaName,
+      authentication = orig.authentication,
+      skipAccessControl = orig.skipAccessControl,
+    }) => this.createContext({ schemaName, authentication, skipAccessControl });
+    context.executeGraphQL = ({ context = context, query, variables }) =>
+      this.executeGraphQL({ context, query, variables });
+    return context;
+  }
+
+  executeGraphQL({ context, query, variables }) {
+    if (!context) {
+      context = this.createContext();
+    }
+    const schema = this._schemas[context.schemaName];
+    if (!schema) {
+      throw new Error(
+        `No executable schema named '${context.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
+      );
+    }
+    return graphql(schema, query, null, context, variables);
+  }
+
   // The GraphQL App uses this method to build up the context required for each
   // incoming query.
   // It is also used for generating the `keystone.query` method
   getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
     return {
-      schemaName,
-      ...this._sessionManager.getContext(req),
-      ...this._getAccessControlContext({
+      ...this.createContext({
         schemaName,
         authentication: { item: req.user, listKey: req.authedListKey },
         skipAccessControl,
       }),
-      totalResults: 0,
-      maxTotalResults: this.queryLimits.maxTotalResults,
+      ...this._sessionManager.getContext(req),
     };
   }
 
