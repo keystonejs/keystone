@@ -23,7 +23,7 @@ module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
     {
       test: /\.js$/,
       exclude: pathname => {
-        return pathname.includes('node_modules') && !pathname.includes(clientDirectory);
+        return pathname.includes('node_modules') && !pathname.startsWith(clientDirectory);
       },
       use: [
         {
