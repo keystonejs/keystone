@@ -1,5 +1,26 @@
 # @keystonejs/keystone
 
+## 11.1.0
+
+### Minor Changes
+
+- [`dec3d336a`](https://github.com/keystonejs/keystone/commit/dec3d336adbe8156722fbe65f315a57b2f5c08e7) [#3153](https://github.com/keystonejs/keystone/pull/3153) Thanks [@timleslie](https://github.com/timleslie)! - Made `context` available to user designed access control functions.
+
+* [`78a5d5a45`](https://github.com/keystonejs/keystone/commit/78a5d5a457f80bba592e5a81056125b11469a5a8) [#3154](https://github.com/keystonejs/keystone/pull/3154) Thanks [@timleslie](https://github.com/timleslie)! - Added improved support for [server-side GraphQL operations](/docs/discussions/server-side-graphql.md).
+
+### Patch Changes
+
+- [`1c69f4dc8`](https://github.com/keystonejs/keystone/commit/1c69f4dc8ab1eb23bc0a34850f48a51f2e9f1dce) [#3141](https://github.com/keystonejs/keystone/pull/3141) Thanks [@molomby](https://github.com/molomby)! - Adding URL formulation rules to the style guide.
+
+* [`950f23443`](https://github.com/keystonejs/keystone/commit/950f23443ef8f1a176a3cf6b039f93a29d954f5e) [#3138](https://github.com/keystonejs/keystone/pull/3138) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved adapter mocks into test utils package.
+
+- [`3c3c67abb`](https://github.com/keystonejs/keystone/commit/3c3c67abb5ec82155fec893d389eac3bbeb12bbd) [#3149](https://github.com/keystonejs/keystone/pull/3149) Thanks [@timleslie](https://github.com/timleslie)! - Added internal method `Keystone._getAccessControlContext()`, no functional changes.
+
+- Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`dec3d336a`](https://github.com/keystonejs/keystone/commit/dec3d336adbe8156722fbe65f315a57b2f5c08e7), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8), [`950f23443`](https://github.com/keystonejs/keystone/commit/950f23443ef8f1a176a3cf6b039f93a29d954f5e)]:
+  - @keystonejs/fields@13.0.0
+  - @keystonejs/access-control@6.2.0
+  - @keystonejs/test-utils@6.2.0
+
 ## 11.0.0
 
 ### Major Changes

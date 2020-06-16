@@ -1,5 +1,11 @@
 # @keystonejs/access-control
 
+## 6.2.0
+
+### Minor Changes
+
+- [`dec3d336a`](https://github.com/keystonejs/keystone/commit/dec3d336adbe8156722fbe65f315a57b2f5c08e7) [#3153](https://github.com/keystonejs/keystone/pull/3153) Thanks [@timleslie](https://github.com/timleslie)! - Made `context` available to user designed access control functions.
+
 ## 6.1.0
 
 ### Minor Changes

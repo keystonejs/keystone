@@ -130,6 +130,8 @@ const keystone = new Keystone({
 | `executeQuery`        | Run GraphQL queries and mutations directly against a `Keystone` instance.    |
 | `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
 | `prepare`             | Manually prepare `Keystone` middlewares.                                     |
+| `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.          |
+| `executeGraphQL`      | Execute a server-side GraphQL operation within the given context.            |
 
 <!--
 
@@ -140,7 +142,7 @@ Please note: We use these internally but provide no support or assurance if used
 
 | Method                | Description                                                                  |
 | --------------------- | ---------------------------------------------------------------------------- |
-| `dumpSchema`          | Dump schema to a file.                                                       |
+| `dumpSchema`          | Dump schema to a string.                                                       |
 | `getTypeDefs`         | Remove from user documentation?                                              |
 | `getResolvers`        | Remove from user documentation?                                              |
 | `registerSchema`      | Remove from user documentation?                                              |
@@ -363,3 +365,47 @@ const { middlewares } = await keystone.prepare({
 | `dev`         | `Boolean` | `false`                               | Sets the dev flag in Keystone' express middleware.                                                                  |
 | `distDir`     | `String`  | `dist`                                | The build directory for keystone.                                                                                   |
 | `pinoOptions` | `Object`  | `undefined`                           | Logging options passed to the [`express-pino-logger` npm module](https://www.npmjs.com/package/express-pino-logger) |
+
+### `createContext({ schemaName, authentication, skipAccessControl })`
+
+Create a `context` object that can be used with `executeGraphQL()`.
+
+#### Usage
+
+```
+// Create a context which can execute GraphQL operations with no access control
+const context = keystone.createContext({ skipAccessControl: true })
+
+// Execute a GraphQL operation with no access control
+const { data, errors } = keystone.executeGraphQL({ context, query: '{ ... }', variables: { ... }})
+```
+
+#### Config
+
+| Option              | Type      | default  | Description                                                                                  |
+| ------------------- | --------- | -------- | -------------------------------------------------------------------------------------------- |
+| `schemaName`        | `String`  | `public` | The name of the GraphQL schema to execute against.                                           |
+| `authentication`    | `Object`  | `{}`     | `{ item: { id }, listAuthKey: "" }`. Specificy the item to be used in access control checks. |
+| `skipAccessControl` | `Boolean` | `false`  | Set to `true` to skip all access control checks.                                             |
+
+### `executeGraphQL({ context, query, variables })`
+
+Execute a server-side GraphQL query within the given context.
+
+#### Usage
+
+```
+// Create a context which can execute GraphQL operations with no access control
+const context = keystone.createContext({ skipAccessControl: true })
+
+// Execute a GraphQL operation with no access control
+const { data, errors } = keystone.executeGraphQL({ context, query: '{ ... }', variables: { ... }})
+```
+
+#### Config
+
+| Option      | Type     | default                    | Description                                             |
+| ----------- | -------- | -------------------------- | ------------------------------------------------------- |
+| `context`   | `Array`  | `keystone.createContext()` | A `context` object to be used by the GraphQL resolvers. |
+| `query`     | `String` | `undefined`                | The GraphQL operation to execute.                       |
+| `variables` | `Object` | `undefined`                | The variables to be passed to the GraphQL operation.    |
