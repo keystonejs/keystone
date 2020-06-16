@@ -114,8 +114,13 @@ class CustomProvider {
 
       const resolve = async (item, args, context, info) => {
         if (resolver) {
+          const _query = this._buildQueryHelper(context);
           return resolver(item, args, context, info, {
-            query: this._buildQueryHelper(context),
+            query: (...args) => {
+              console.warn(`query() is deprecated and will be removed in a future release.
+Please use context.executeGraphQL() instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
+              return _query(...args);
+            },
             access: await computeAccess(item, args, context, info),
           });
         }
