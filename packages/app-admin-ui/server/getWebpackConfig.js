@@ -4,6 +4,8 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
+const clientDirectory = path.resolve(__dirname, '..', 'client');
+
 module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
@@ -20,7 +22,9 @@ module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!(?:\/|\\)@keystonejs(?:\/|\\)app-admin-ui)/],
+      exclude: pathname => {
+        return pathname.includes('node_modules') && !pathname.includes(clientDirectory);
+      },
       use: [
         {
           loader: 'babel-loader',
