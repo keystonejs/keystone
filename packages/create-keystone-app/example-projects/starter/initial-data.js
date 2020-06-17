@@ -7,31 +7,26 @@ module.exports = async keystone => {
     data: {
       _allUsersMeta: { count },
     },
-  } = await keystone.executeQuery(
-    `query {
+  } = await keystone.executeGraphQL({
+    query: `query {
       _allUsersMeta {
         count
       }
-    }`
-  );
+    }`,
+  });
 
   if (count === 0) {
     const password = randomString();
     const email = 'admin@example.com';
 
-    await keystone.executeQuery(
-      `mutation initialUser($password: String, $email: String) {
+    await keystone.executeGraphQL({
+      query: `mutation initialUser($password: String, $email: String) {
             createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
               id
             }
           }`,
-      {
-        variables: {
-          password,
-          email,
-        },
-      }
-    );
+      variables: { password, email },
+    });
 
     console.log(`
 

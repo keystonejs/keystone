@@ -61,15 +61,25 @@ async function setupServer({
   return { keystone, app };
 }
 
-function graphqlRequest({ keystone, query, variables, operationName }) {
-  return keystone.executeQuery(query, { variables, operationName });
+function graphqlRequest({ keystone, query, variables }) {
+  return keystone.executeGraphQL({
+    context: keystone.createContext({ schemaName: 'testing', skipAccessControl: true }),
+    query,
+    variables,
+  });
 }
 
 // This is much like graphqlRequest except we don't skip access control checks!
-function authedGraphqlRequest({ keystone, query, variables, operationName }) {
-  const context = keystone.getGraphQlContext({ schemaName: 'testing' });
-  const executeQuery = keystone._buildQueryHelper(context);
-  return executeQuery(query, { variables, operationName });
+function authedGraphqlRequest({ keystone, query, variables }) {
+  return keystone.executeGraphQL({
+    context: keystone.createContext({
+      schemaName: 'testing',
+      authentication: {},
+      skipAccessControl: false,
+    }),
+    query,
+    variables,
+  });
 }
 
 function networkedGraphqlRequest({
