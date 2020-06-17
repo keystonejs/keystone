@@ -16,7 +16,7 @@ This document describes:
 For a more general overview of the concepts, patterns and function of the Keystone hook system, see the
 [hooks guide](/docs/guides/hooks.md).
 
-Note: For performance reasons relationships fields are not fully resolved by hooks, and will return an array of ids. To fetch data from a relationship field, a second query is required. To do this inside a hook function use the `keystone.executeQuery()` method.
+Note: For performance reasons relationships fields are not fully resolved by hooks, and will return an array of ids. To fetch data from a relationship field, a second query is required. To do this inside a hook function use the `context.executeGraphQL()` method.
 
 ## Hook types
 

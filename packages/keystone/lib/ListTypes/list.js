@@ -771,11 +771,22 @@ module.exports = class List {
     };
   }
 
+  _buildActions(context) {
+    return mapKeys(this.hooksActions, buildQuery => {
+      const _query = buildQuery(context);
+      return (...args) => {
+        console.warn(`query() is deprecated and will be removed in a future release.
+Please use context.executeGraphQL() instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
+        return _query(...args);
+      };
+    });
+  }
+
   async _resolveDefaults({ context, originalInput }) {
     const args = {
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
     };
 
     const fieldsWithoutValues = this.fields.filter(
@@ -798,7 +809,7 @@ module.exports = class List {
       existingItem,
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
 
@@ -846,7 +857,7 @@ module.exports = class List {
       existingItem,
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     // Check for isRequired
@@ -878,7 +889,7 @@ module.exports = class List {
     const args = {
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     const fields = this.fields;
@@ -919,7 +930,7 @@ module.exports = class List {
       existingItem,
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, resolvedData, 'beforeChange');
@@ -929,7 +940,7 @@ module.exports = class List {
     const args = {
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, existingItem, 'beforeDelete');
@@ -941,7 +952,7 @@ module.exports = class List {
       originalInput,
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, updatedItem, 'afterChange');
@@ -951,7 +962,7 @@ module.exports = class List {
     const args = {
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, existingItem, 'afterDelete');
