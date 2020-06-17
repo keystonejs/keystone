@@ -1,5 +1,6 @@
 const express = require('express');
 const { GraphQLPlaygroundApp } = require('@keystonejs/app-graphql-playground');
+const { gql } = require('apollo-server-express');
 const { createApolloServer } = require('./lib/apolloServer');
 const validation = require('./validation');
 
@@ -48,4 +49,5 @@ class GraphQLApp {
 module.exports = {
   GraphQLApp,
   validation,
+  gql,
 };
