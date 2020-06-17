@@ -144,7 +144,6 @@ describe('defaultValue field config', () => {
                 expect.objectContaining({
                   context: expect.any(Object),
                   originalInput: expect.any(Object),
-                  actions: expect.any(Object),
                 })
               );
             })
@@ -172,7 +171,6 @@ describe('defaultValue field config', () => {
                   originalInput: {
                     salutation: 'Doctor',
                   },
-                  actions: expect.any(Object),
                 })
               );
               expect(data.createUser).toMatchObject({

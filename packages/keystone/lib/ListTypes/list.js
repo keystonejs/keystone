@@ -129,16 +129,7 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    {
-      getListByKey,
-      queryHelper,
-      adapter,
-      defaultAccess,
-      registerType,
-      createAuxList,
-      isAuxList,
-      schemaNames,
-    }
+    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList, schemaNames }
   ) {
     this.key = key;
     this._fields = fields;
@@ -228,20 +219,6 @@ module.exports = class List {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
-
-    this.hooksActions = {
-      /**
-       * @param queryString String A graphQL query string
-       * @param options.skipAccessControl Boolean By default access control _of
-       * the user making the initial request_ is still tested. Disable all
-       * Access Control checks with this flag
-       * @param options.variables Object The variables passed to the graphql
-       * query for the given queryString.
-       *
-       * @return Promise<Object> The graphql query response
-       */
-      query: queryHelper,
-    };
 
     // Tell Keystone about all the types we've seen
     Object.values(fields).forEach(({ type }) => registerType(type));
@@ -771,23 +748,8 @@ module.exports = class List {
     };
   }
 
-  _buildActions(context) {
-    return mapKeys(this.hooksActions, buildQuery => {
-      const _query = buildQuery(context);
-      return (...args) => {
-        console.warn(`query() is deprecated and will be removed in a future release.
-Please use context.executeGraphQL() instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
-        return _query(...args);
-      };
-    });
-  }
-
   async _resolveDefaults({ context, originalInput }) {
-    const args = {
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-    };
+    const args = { context, originalInput };
 
     const fieldsWithoutValues = this.fields.filter(
       field => typeof originalInput[field.path] === 'undefined'
@@ -804,14 +766,7 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
   }
 
   async _resolveInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = {
-      resolvedData,
-      existingItem,
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-      operation,
-    };
+    const args = { resolvedData, existingItem, context, originalInput, operation };
 
     // First we run the field type hooks
     // NOTE: resolveInput is run on _every_ field, regardless if it has a value
@@ -852,14 +807,7 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
   }
 
   async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = {
-      resolvedData,
-      existingItem,
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-      operation,
-    };
+    const args = { resolvedData, existingItem, context, originalInput, operation };
     // Check for isRequired
     const fieldValidationErrors = this.fields
       .filter(
@@ -886,12 +834,7 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
   }
 
   async _validateDelete(existingItem, context, operation) {
-    const args = {
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
+    const args = { existingItem, context, operation };
     const fields = this.fields;
     await this._validateHook(args, fields, operation, 'validateDelete');
   }
@@ -925,46 +868,22 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
   }
 
   async _beforeChange(resolvedData, existingItem, context, operation, originalInput) {
-    const args = {
-      resolvedData,
-      existingItem,
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-      operation,
-    };
+    const args = { resolvedData, existingItem, context, originalInput, operation };
     await this._runHook(args, resolvedData, 'beforeChange');
   }
 
   async _beforeDelete(existingItem, context, operation) {
-    const args = {
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
+    const args = { existingItem, context, operation };
     await this._runHook(args, existingItem, 'beforeDelete');
   }
 
   async _afterChange(updatedItem, existingItem, context, operation, originalInput) {
-    const args = {
-      updatedItem,
-      originalInput,
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
+    const args = { updatedItem, originalInput, existingItem, context, operation };
     await this._runHook(args, updatedItem, 'afterChange');
   }
 
   async _afterDelete(existingItem, context, operation) {
-    const args = {
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
+    const args = { existingItem, context, operation };
     await this._runHook(args, existingItem, 'afterDelete');
   }
 
