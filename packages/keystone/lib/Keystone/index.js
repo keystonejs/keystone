@@ -237,13 +237,15 @@ module.exports = class Keystone {
       totalResults: 0,
       maxTotalResults: this.queryLimits.maxTotalResults,
     };
-    const orig = { schemaName, authentication, skipAccessControl };
+    // Locally bind the values we use as defaults into an object to make
+    // JS behave the way we want.
+    const defaults = { schemaName, authentication, skipAccessControl, context };
     context.createContext = ({
-      schemaName = orig.schemaName,
-      authentication = orig.authentication,
-      skipAccessControl = orig.skipAccessControl,
+      schemaName = defaults.schemaName,
+      authentication = defaults.authentication,
+      skipAccessControl = defaults.skipAccessControl,
     }) => this.createContext({ schemaName, authentication, skipAccessControl });
-    context.executeGraphQL = ({ context = context, query, variables }) =>
+    context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
       this.executeGraphQL({ context, query, variables });
     return context;
   }
