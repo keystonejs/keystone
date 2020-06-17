@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 3.2.1
+
+### Patch Changes
+
+- [`89fb78db3`](https://github.com/keystonejs/keystone/commit/89fb78db3e2aac40ff093d72ed55268b3b518cb2) [#3161](https://github.com/keystonejs/keystone/pull/3161) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `keystone.executeGraphQL` for all server-side GraphQL operations.
+
 ## 3.2.0
 
 ### Minor Changes

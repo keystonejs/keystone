@@ -212,9 +212,7 @@ A good next step is to write an `executeQuery` function that accepts a query and
 
 ## Execution on the server
 
-In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeQuery()` method](/packages/keystone/README.md#executequeryquerystring-config).
-
-> **Note:** No access control checks are run when executing queries on the server. Any queries or mutations that checked for `context.req` in the resolver may also return different results as the `req` object is set to `{}`. See: [Keystone executeQuery()](/packages/keystone/README.md#executequeryquerystring-config)
+In addition to executing queries via the API, you can execute queries and mutations on the server using [the `keystone.executeGraphQL()` method](/docs/discussions/server-side-graphql.md).
 
 ## Filter, limit and sorting
 

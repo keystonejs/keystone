@@ -404,7 +404,8 @@ module.exports = class List {
         field.path,
         undefined,
         item,
-        operation
+        operation,
+        { context }
       );
       if (!access) {
         // If the client handles errors correctly, it should be able to
@@ -437,7 +438,7 @@ module.exports = class List {
           data,
           existingItem,
           operation,
-          { gqlName, itemId: id, ...extraInternalData }
+          { gqlName, itemId: id, context, ...extraInternalData }
         );
         if (!access) {
           restrictedFields.push(field.path);
@@ -454,6 +455,7 @@ module.exports = class List {
   async checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
     const access = await context.getListAccessControlForUser(this.key, originalInput, operation, {
       gqlName,
+      context,
       ...extraInternalData,
     });
     if (!access) {
@@ -769,11 +771,22 @@ module.exports = class List {
     };
   }
 
+  _buildActions(context) {
+    return mapKeys(this.hooksActions, buildQuery => {
+      const _query = buildQuery(context);
+      return (...args) => {
+        console.warn(`query() is deprecated and will be removed in a future release.
+Please use context.executeGraphQL() instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
+        return _query(...args);
+      };
+    });
+  }
+
   async _resolveDefaults({ context, originalInput }) {
     const args = {
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
     };
 
     const fieldsWithoutValues = this.fields.filter(
@@ -796,7 +809,7 @@ module.exports = class List {
       existingItem,
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
 
@@ -844,7 +857,7 @@ module.exports = class List {
       existingItem,
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     // Check for isRequired
@@ -876,7 +889,7 @@ module.exports = class List {
     const args = {
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     const fields = this.fields;
@@ -917,7 +930,7 @@ module.exports = class List {
       existingItem,
       context,
       originalInput,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, resolvedData, 'beforeChange');
@@ -927,7 +940,7 @@ module.exports = class List {
     const args = {
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, existingItem, 'beforeDelete');
@@ -939,7 +952,7 @@ module.exports = class List {
       originalInput,
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, updatedItem, 'afterChange');
@@ -949,7 +962,7 @@ module.exports = class List {
     const args = {
       existingItem,
       context,
-      actions: mapKeys(this.hooksActions, hook => hook(context)),
+      actions: this._buildActions(context),
       operation,
     };
     await this._runHook(args, existingItem, 'afterDelete');
@@ -1483,11 +1496,15 @@ module.exports = class List {
       // NOTE: These could return a Boolean or a JSON object (if using the
       // declarative syntax)
       getAccess: () => ({
-        getCreate: () => context.getListAccessControlForUser(this.key, undefined, 'create'),
-        getRead: () => context.getListAccessControlForUser(this.key, undefined, 'read'),
-        getUpdate: () => context.getListAccessControlForUser(this.key, undefined, 'update'),
-        getDelete: () => context.getListAccessControlForUser(this.key, undefined, 'delete'),
-        getAuth: () => context.getAuthAccessControlForUser(this.key),
+        getCreate: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'create', { context }),
+        getRead: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'read', { context }),
+        getUpdate: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'update', { context }),
+        getDelete: () =>
+          context.getListAccessControlForUser(this.key, undefined, 'delete', { context }),
+        getAuth: () => context.getAuthAccessControlForUser(this.key, { context }),
       }),
 
       getSchema: () => {

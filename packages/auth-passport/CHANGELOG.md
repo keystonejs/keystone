@@ -1,5 +1,21 @@
 # @keystonejs/auth-passport
 
+## 5.2.2
+
+### Patch Changes
+
+- [`431cf76b0`](https://github.com/keystonejs/keystone/commit/431cf76b054fda3e4fd43020acb1be579803577d) [#3163](https://github.com/keystonejs/keystone/pull/3163) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `keystone.executeGraphQL` for all server-side GraphQL operations.
+
+- Updated dependencies [[`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176)]:
+  - @keystonejs/fields@13.0.1
+
+## 5.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8)]:
+  - @keystonejs/fields@13.0.0
+
 ## 5.2.0
 
 ### Minor Changes

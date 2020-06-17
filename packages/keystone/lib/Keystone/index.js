@@ -137,102 +137,141 @@ module.exports = class Keystone {
     return graphql(schema, requestString, rootValue, contextValue, variableValues, operationName);
   }
 
-  // The GraphQL App uses this method to build up the context required for each
-  // incoming query.
-  // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
-    let getCustomAccessControlForUser;
-    let getListAccessControlForUser;
-    let getFieldAccessControlForUser;
-    let getAuthAccessControlForUser;
-
+  _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
     if (skipAccessControl) {
-      getCustomAccessControlForUser = () => true;
-      getListAccessControlForUser = () => true;
-      getFieldAccessControlForUser = () => true;
-      getAuthAccessControlForUser = () => true;
-    } else {
-      // memoizing to avoid requests that hit the same type multiple times.
-      // We do it within the request callback so we can resolve it based on the
-      // request info ( like who's logged in right now, etc)
-      getCustomAccessControlForUser = memoize(
-        async (item, args, context, info, access, gqlName) => {
-          return validateCustomAccessControl({
-            item,
-            args,
-            context,
-            info,
-            access: access[schemaName],
-            authentication: { item: req.user, listKey: req.authedListKey },
-            gqlName,
-          });
-        },
-        { isPromise: true }
-      );
+      return {
+        getCustomAccessControlForUser: () => true,
+        getListAccessControlForUser: () => true,
+        getFieldAccessControlForUser: () => true,
+        getAuthAccessControlForUser: () => true,
+      };
+    }
+    // memoizing to avoid requests that hit the same type multiple times.
+    // We do it within the request callback so we can resolve it based on the
+    // request info (like who's logged in right now, etc)
+    const getCustomAccessControlForUser = memoize(
+      async (item, args, context, info, access, gqlName) => {
+        return validateCustomAccessControl({
+          item,
+          args,
+          context,
+          info,
+          access: access[schemaName],
+          authentication,
+          gqlName,
+        });
+      },
+      { isPromise: true }
+    );
 
-      getListAccessControlForUser = memoize(
-        async (listKey, originalInput, operation, { gqlName, itemId, itemIds } = {}) => {
-          return validateListAccessControl({
-            access: this.lists[listKey].access[schemaName],
-            originalInput,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-          });
-        },
-        { isPromise: true }
-      );
-
-      getFieldAccessControlForUser = memoize(
-        async (
+    const getListAccessControlForUser = memoize(
+      async (listKey, originalInput, operation, { gqlName, itemId, itemIds, context } = {}) => {
+        return validateListAccessControl({
+          access: this.lists[listKey].access[schemaName],
+          originalInput,
+          operation,
+          authentication,
           listKey,
-          fieldKey,
+          gqlName,
+          itemId,
+          itemIds,
+          context,
+        });
+      },
+      { isPromise: true }
+    );
+
+    const getFieldAccessControlForUser = memoize(
+      async (
+        listKey,
+        fieldKey,
+        originalInput,
+        existingItem,
+        operation,
+        { gqlName, itemId, itemIds, context } = {}
+      ) => {
+        return validateFieldAccessControl({
+          access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
           originalInput,
           existingItem,
           operation,
-          { gqlName, itemId, itemIds } = {}
-        ) => {
-          return validateFieldAccessControl({
-            access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
-            originalInput,
-            existingItem,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-            fieldKey,
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-          });
-        },
-        { isPromise: true }
-      );
+          authentication,
+          fieldKey,
+          listKey,
+          gqlName,
+          itemId,
+          itemIds,
+          context,
+        });
+      },
+      { isPromise: true }
+    );
 
-      getAuthAccessControlForUser = memoize(
-        async (listKey, { gqlName } = {}) => {
-          return validateAuthAccessControl({
-            access: this.lists[listKey].access[schemaName],
-            authentication: { item: req.user, listKey: req.authedListKey },
-            listKey,
-            gqlName,
-          });
-        },
-        { isPromise: true }
-      );
-    }
+    const getAuthAccessControlForUser = memoize(
+      async (listKey, { gqlName, context } = {}) => {
+        return validateAuthAccessControl({
+          access: this.lists[listKey].access[schemaName],
+          authentication,
+          listKey,
+          gqlName,
+          context,
+        });
+      },
+      { isPromise: true }
+    );
 
     return {
-      schemaName,
-      ...this._sessionManager.getContext(req),
       getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
       getAuthAccessControlForUser,
+    };
+  }
+
+  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false }) {
+    const context = {
+      schemaName,
+      authedItem: authentication.item,
+      authedListKey: authentication.listKey,
+      ...this._getAccessControlContext({ schemaName, authentication, skipAccessControl }),
       totalResults: 0,
       maxTotalResults: this.queryLimits.maxTotalResults,
+    };
+    const orig = { schemaName, authentication, skipAccessControl };
+    context.createContext = ({
+      schemaName = orig.schemaName,
+      authentication = orig.authentication,
+      skipAccessControl = orig.skipAccessControl,
+    }) => this.createContext({ schemaName, authentication, skipAccessControl });
+    context.executeGraphQL = ({ context = context, query, variables }) =>
+      this.executeGraphQL({ context, query, variables });
+    return context;
+  }
+
+  executeGraphQL({ context, query, variables }) {
+    if (!context) {
+      context = this.createContext();
+    }
+    const schema = this._schemas[context.schemaName];
+    if (!schema) {
+      throw new Error(
+        `No executable schema named '${context.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
+      );
+    }
+    return graphql(schema, query, null, context, variables);
+  }
+
+  // The GraphQL App uses this method to build up the context required for each
+  // incoming query.
+  // It is also used for generating the `keystone.query` method
+  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
+    return {
+      ...this.createContext({
+        schemaName,
+        authentication: { item: req.user, listKey: req.authedListKey },
+        skipAccessControl,
+      }),
+      ...this._sessionManager.getContext(req),
     };
   }
 
@@ -482,13 +521,18 @@ module.exports = class Keystone {
     // Now that the middlewares are done, and we're connected to the database,
     // it's safe to assume all the schemas are registered, so we can setup our
     // query helper This enables god-mode queries with no access control checks
-    this.executeQuery = this._buildQueryHelper(
+    const _executeQuery = this._buildQueryHelper(
       this.getGraphQlContext({
         skipAccessControl: true,
         // This is for backwards compatibility with single-schema Keystone
         schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
       })
     );
+    this.executeQuery = (...args) => {
+      console.warn(`keystone.executeQuery() is deprecated and will be removed in a future release.
+Please use keystone.executeGraphQL instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
+      return _executeQuery(...args);
+    };
 
     if (this.eventHandlers.onConnect) {
       return this.eventHandlers.onConnect(this);
