@@ -139,6 +139,7 @@ const withModalHandlers = (WrappedComponent, { transition }) => {
               <WrappedComponent
                 close={close}
                 open={open}
+                mode={mode}
                 getModalRef={getContent}
                 targetNode={targetNode.current}
                 contentNode={contentNode.current}

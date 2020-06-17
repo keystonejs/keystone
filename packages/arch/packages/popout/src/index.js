@@ -68,25 +68,24 @@ const Popout = ({ children, targetNode, contentNode, getModalRef, style, width =
     modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
   });
 
-  const attachTo = typeof document !== 'undefined' ? document.body : null;
-  return attachTo
-    ? createPortal(
-        <div ref={getModalRef} style={{ ...styles.popper, zIndex: 2 }}>
-          <Wrapper
-            width={width}
-            style={style} // style comes from Transition
-          >
-            <FocusTrap focusTrapOptions={{ clickOutsideDeactivates: true }}>
-              <WrapperInner>
-                <Arrow ref={setArrowElement} style={styles.arrow} />
-                {children}
-              </WrapperInner>
-            </FocusTrap>
-          </Wrapper>
-        </div>,
-        attachTo
-      )
-    : null;
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  // Wrapper style comes from from Transition
+  return createPortal(
+    <div ref={getModalRef} style={{ ...styles.popper, zIndex: 2 }}>
+      <Wrapper width={width} style={style}>
+        <FocusTrap focusTrapOptions={{ clickOutsideDeactivates: true }}>
+          <WrapperInner>
+            <Arrow ref={setArrowElement} style={styles.arrow} />
+            {children}
+          </WrapperInner>
+        </FocusTrap>
+      </Wrapper>
+    </div>,
+    document.body
+  );
 };
 
 export default withModalHandlers(Popout, { transition: springDown });
