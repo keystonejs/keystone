@@ -4,14 +4,17 @@ exports.singleton = () => (
   { hooks = {}, access = {}, adminConfig = {}, ...rest },
   { listKey, keystone }
 ) => {
-  const newResolveInput = async ({ resolvedData, operation }) => {
+  const newResolveInput = async ({ context, resolvedData, operation }) => {
     if (operation === 'create') {
       const list = keystone.getListByKey(listKey);
       const query = `{${list.gqlNames.listQueryMetaName} { count }}`;
       const {
         data: { [list.gqlNames.listQueryMetaName]: listQuery } = {},
         errors,
-      } = await keystone.executeQuery(query);
+      } = await context.executeGraphQL({
+        context: context.createContext({ skipAccessControl: true }),
+        query,
+      });
       if (errors) {
         throw errors;
       }
