@@ -1,5 +1,15 @@
 # @keystonejs/keystone
 
+## 11.1.1
+
+### Patch Changes
+
+- [`3ecf74462`](https://github.com/keystonejs/keystone/commit/3ecf74462524f4940474eaf75eea958acbda9ee4) [#3165](https://github.com/keystonejs/keystone/pull/3165) Thanks [@timleslie](https://github.com/timleslie)! - Added deprecation warnings for `keystone.executeQuery`, `{ actions: { query } }` in hooks, and the `query` argument in custom query and mutation resolvers. These are being deprecated in favour of `keystone.executeGraphQL()` and `context.executeGraphQL()`. See [the docs](docs/discussions/server-side-graphql.md) for more details.
+
+- Updated dependencies [[`c6eac2dc2`](https://github.com/keystonejs/keystone/commit/c6eac2dc2dec857c668a5794fd84829d164563f3), [`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176)]:
+  - @keystonejs/test-utils@7.0.0
+  - @keystonejs/fields@13.0.1
+
 ## 11.1.0
 
 ### Minor Changes

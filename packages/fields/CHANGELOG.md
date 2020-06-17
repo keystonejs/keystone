@@ -1,5 +1,14 @@
 # @keystonejs/fields
 
+## 13.0.1
+
+### Patch Changes
+
+- [`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176) [#3167](https://github.com/keystonejs/keystone/pull/3167) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `context.executeGraphQL` for all server-side GraphQL operations.
+
+- Updated dependencies [[`c6eac2dc2`](https://github.com/keystonejs/keystone/commit/c6eac2dc2dec857c668a5794fd84829d164563f3)]:
+  - @keystonejs/test-utils@7.0.0
+
 ## 13.0.0
 
 ### Major Changes

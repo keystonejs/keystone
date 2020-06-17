@@ -1,5 +1,17 @@
 # @keystonejs/test-utils
 
+## 7.0.0
+
+### Major Changes
+
+- [`c6eac2dc2`](https://github.com/keystonejs/keystone/commit/c6eac2dc2dec857c668a5794fd84829d164563f3) [#3159](https://github.com/keystonejs/keystone/pull/3159) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `keystone.executeGraphQL` for all server-side GraphQL operations.
+  Removed the `operationName` argument from `graphqlRequest` and `authedGraphqlRequest`.
+
+### Patch Changes
+
+- Updated dependencies [[`3ecf74462`](https://github.com/keystonejs/keystone/commit/3ecf74462524f4940474eaf75eea958acbda9ee4)]:
+  - @keystonejs/keystone@11.1.1
+
 ## 6.2.0
 
 ### Minor Changes
