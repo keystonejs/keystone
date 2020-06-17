@@ -20,6 +20,7 @@
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "focus-trap-react": "^6.0.0",
+    "react-popper": "^2.2.2",
     "react-router-dom": "5.2.0"
   },
   "module": "dist/dropdown.esm.js",
