@@ -273,7 +273,7 @@ exports.customSchema = {
         const requestedAt = new Date(now).toISOString();
         const expiresAt = new Date(now + tokenExpiration).toISOString();
 
-        const { errors: userErrors, data: userData } = await context.executeQuery({
+        const { errors: userErrors, data: userData } = await context.executeGraphQL({
           context: context.createContext({ skipAccessControl: true }),
           query: `
             query findUserByEmail($email: String!) {
