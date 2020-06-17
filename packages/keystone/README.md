@@ -127,7 +127,6 @@ const keystone = new Keystone({
 | `createItems`         | Add items to a `Keystone` list.                                                        |
 | `createList`          | Add a list to the `Keystone` schema.                                                   |
 | `disconnect`          | Disconnect from all adapters.                                                          |
-| `executeQuery`        | (Deprecated) Run GraphQL queries and mutations directly against a `Keystone` instance. |
 | `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations.           |
 | `prepare`             | Manually prepare `Keystone` middlewares.                                               |
 | `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.                    |
@@ -238,54 +237,6 @@ keystone.createList('Posts', {...});
 
 Disconnect all adapters.
 
-### `executeQuery(queryString, config)`
-
-WARNING: This method is now deprecated and will be removed in a future release. Use `keystone.executeGraphQL` instead.
-
-Use this method to execute queries or mutations directly against a `Keystone` instance.
-
-**Note:** When querying or mutating via `keystone.executeQuery`, there are differences to keep in mind:
-
-- No access control checks are run (everything is set to `() => true`)
-- The `context.req` object is set to `{}` (you can override this if necessary,
-  see options below)
-- Attempting to authenticate will throw errors (due to `req` being mocked)
-
-Returns a Promise representing the result of the given query or mutation.
-
-```javascript allowCopy=false showLanguage=false
-keystone.executeQuery('query-string', {...});
-```
-
-#### queryString
-
-A GraphQL query string. For example:
-
-```graphql
-query {
-  allTodos {
-    id
-    name
-  }
-}
-```
-
-Can also be a mutation:
-
-```graphql
-mutation newTodo($name: String) {
-  createTodo(name: $name) {
-    id
-  }
-}
-```
-
-#### Config
-
-| Option      | Type     | Default | Description                                                                                                               |
-| ----------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `context`   | `Object` | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName` |
-| `variables` | `Object` | `{}`    | The variables passed to the graphql query for the given queryString.                                                      |
 
 ### `extendGraphQLSchema(config)`
 
