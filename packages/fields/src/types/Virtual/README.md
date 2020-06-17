@@ -8,10 +8,14 @@ title: Virtual
 
 The `Virtual` field type allows you to define a read-only field which you define the resolver for.
 This can be used to return computed values, values combining multiple fields, or custom formated values.
+The `resolver` function used in the `Virtual` field type is an [apollo server resolver](https://www.apollographql.com/docs/apollo-server/data/resolvers/), and supports the same [arguments](https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments).
 
 ## Usage
 
 The most basic usage is to provide a `resolver` function which returns a `String` value.
+The first argument to the resolver function is the list `item`.
+
+### Basic
 
 ```js
 const { Virtual, Text } = require('@keystonejs/fields');
@@ -29,6 +33,8 @@ keystone.createList('Example', {
 });
 ```
 
+### Return type
+
 If the return type is not `String` then you need to define `graphQLReturnType`.
 
 ```js
@@ -44,6 +50,8 @@ keystone.createList('Example', {
   },
 });
 ```
+
+### Complex return types
 
 For more complex types you can define a `graphQLReturnFragment` as well as `extendGraphQLTypes`. Resolver functions can be `async` so you can even fetch data from the file system or an external API:
 
@@ -70,7 +78,10 @@ keystone.createList('Example', {
 });
 ```
 
-`Virtual` fields can take arguments to be used by the resolver function using the `args` option, which takes a list of `{ name, type }` values.
+### Field arguments
+
+The GraphQL arguments to a `Virtual` field can be specified using the `args` option, which takes a list of `{ name, type }` values.
+The values for these arguments are made available in the second argument to the resolver function.
 
 ```js
 const { Virtual, CalendarDay } = require('@keystonejs/fields');
@@ -80,6 +91,7 @@ keystone.createList('Example', {
   fields: {
     date: { type: CalendarDay },
     formattedDate: {
+      type: Virtual,
       resolver: (item, { formatAs = 'do MMMM, yyyy' }) =>
         item.date && format(parseISO(item.date), formatAs),
       args: [{ name: 'formatAs', type: 'String' }],
@@ -88,16 +100,34 @@ keystone.createList('Example', {
 });
 ```
 
+### Server side queries
+
+The `item` argument to the resolver function is the raw database representation of the item, so related items will not be directly available on this object.
+If you need to access data beyond what lives on the `item` you can execute a [server-side GraphQL query](/docs/discussions/server-side-graphql.md) using `context.executeGraphQL()`.
+
+```js
+const { Virtual, CalendarDay } = require('@keystonejs/fields');
+const { format, parseISO } = require('date-fns');
+
+keystone.createList('Example', {
+  fields: {
+    virtual: {
+      type: Virtual,
+      resolver: async (item, args, context) => {
+        const { data, errors } = await context.executeGraphQL(`{ ... }`)
+        ...
+      }
+    },
+  },
+});
+```
+
 ## Config
 
-| Option                  | Type       | Default    | Description                                                                                          |
-| ----------------------- | ---------- | ---------- | ---------------------------------------------------------------------------------------------------- |
-| `resolver`              | `Function` | (required) |                                                                                                      |
-| `graphQLReturnType`     | `String`   | `String`   | A GraphQL Type String                                                                                |
-| `graphQLReturnFragment` | `String`   | `''`       | A GraphQL Fragment String - Used by the Admin UI and required if using a nested `graphQLReturnType`. |
-| `extendGraphQLTypes`    | `Array`    | `[]`       | An array of custom GraphQL type definitions                                                          |
-| `args`                  | `Array`    | `[]`       | An array of `{ name, type }` indicating the supported arguments for the field                        |
-
-> **Note:** Related fields within a virtual field resolver will not return related items.
-
-If you need to access related items, you can perform a subsequent graphql query within the resolver. The reason for this limitation is, we can't know which related items are required. Since it is possible for items to have millions of related items, it would be problematic to immediately look and return all of these.
+| Option                  | Type       | Default                             | Description                                                                                          |
+| ----------------------- | ---------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `resolver`              | `Function` | `async (item, args, context, info)` |                                                                                                      |
+| `graphQLReturnType`     | `String`   | `String`                            | A GraphQL Type String                                                                                |
+| `graphQLReturnFragment` | `String`   | `''`                                | A GraphQL Fragment String - Used by the Admin UI and required if using a nested `graphQLReturnType`. |
+| `extendGraphQLTypes`    | `Array`    | `[]`                                | An array of custom GraphQL type definitions                                                          |
+| `args`                  | `Array`    | `[]`                                | An array of `{ name, type }` indicating the supported arguments for the field                        |
