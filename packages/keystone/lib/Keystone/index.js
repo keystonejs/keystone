@@ -72,11 +72,7 @@ module.exports = class Keystone {
     this.appVersion = appVersion;
 
     this._listCRUDProvider = new ListCRUDProvider();
-    this._customProvider = new CustomProvider({
-      schemaNames,
-      defaultAccess: this.defaultAccess,
-      buildQueryHelper: this._buildQueryHelper.bind(this),
-    });
+    this._customProvider = new CustomProvider({ schemaNames, defaultAccess: this.defaultAccess });
     this._providers = [
       this._listCRUDProvider,
       this._customProvider,
