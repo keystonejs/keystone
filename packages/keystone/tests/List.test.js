@@ -1060,6 +1060,7 @@ describe(`gqlMutationResolvers`, () => {
     resolvers = setup({ access: false }).gqlMutationResolvers({ schemaName });
     expect(resolvers['authenticateTestWithPassword']).toBe(undefined);
     expect(resolvers['unauthenticateTest']).toBe(undefined);
+    expect(resolvers['updateAuthenticatedTest']).toBe(undefined);
   });
   test('read: true', () => {
     resolvers = setup({
