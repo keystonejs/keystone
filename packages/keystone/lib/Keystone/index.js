@@ -252,7 +252,7 @@ module.exports = class Keystone {
 
   executeGraphQL({ context, query, variables }) {
     if (!context) {
-      context = this.createContext();
+      context = this.createContext({});
     }
     const schema = this._schemas[context.schemaName];
     if (!schema) {
