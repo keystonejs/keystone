@@ -100,7 +100,7 @@ keystone.createList('Example', {
 });
 ```
 
-### Server side queries
+### Server-side queries
 
 The `item` argument to the resolver function is the raw database representation of the item, so related items will not be directly available on this object.
 If you need to access data beyond what lives on the `item` you can execute a [server-side GraphQL query](/docs/discussions/server-side-graphql.md) using `context.executeGraphQL()`.
