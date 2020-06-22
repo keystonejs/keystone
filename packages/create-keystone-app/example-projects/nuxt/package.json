@@ -12,7 +12,7 @@
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
     "build": "cross-env NODE_ENV=production keystone build",
     "start": "cross-env NODE_ENV=production keystone start",
-    "create-tables": "keystone create-tables"
+    "create-tables": "cross-env keystone create-tables"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/create-keystone-app/example-projects/nuxt",
   "homepage": "https://github.com/keystonejs/keystone",
