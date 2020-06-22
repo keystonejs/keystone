@@ -237,20 +237,22 @@ module.exports = class Keystone {
       totalResults: 0,
       maxTotalResults: this.queryLimits.maxTotalResults,
     };
-    const orig = { schemaName, authentication, skipAccessControl };
+    // Locally bind the values we use as defaults into an object to make
+    // JS behave the way we want.
+    const defaults = { schemaName, authentication, skipAccessControl, context };
     context.createContext = ({
-      schemaName = orig.schemaName,
-      authentication = orig.authentication,
-      skipAccessControl = orig.skipAccessControl,
+      schemaName = defaults.schemaName,
+      authentication = defaults.authentication,
+      skipAccessControl = defaults.skipAccessControl,
     }) => this.createContext({ schemaName, authentication, skipAccessControl });
-    context.executeGraphQL = ({ context = context, query, variables }) =>
+    context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
       this.executeGraphQL({ context, query, variables });
     return context;
   }
 
   executeGraphQL({ context, query, variables }) {
     if (!context) {
-      context = this.createContext();
+      context = this.createContext({});
     }
     const schema = this._schemas[context.schemaName];
     if (!schema) {
@@ -521,13 +523,18 @@ module.exports = class Keystone {
     // Now that the middlewares are done, and we're connected to the database,
     // it's safe to assume all the schemas are registered, so we can setup our
     // query helper This enables god-mode queries with no access control checks
-    this.executeQuery = this._buildQueryHelper(
+    const _executeQuery = this._buildQueryHelper(
       this.getGraphQlContext({
         skipAccessControl: true,
         // This is for backwards compatibility with single-schema Keystone
         schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
       })
     );
+    this.executeQuery = (...args) => {
+      console.warn(`keystone.executeQuery() is deprecated and will be removed in a future release.
+Please use keystone.executeGraphQL instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
+      return _executeQuery(...args);
+    };
 
     if (this.eventHandlers.onConnect) {
       return this.eventHandlers.onConnect(this);

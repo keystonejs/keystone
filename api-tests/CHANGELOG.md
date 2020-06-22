@@ -1,5 +1,14 @@
 # @keystonejs/api-tests
 
+## 5.4.9
+
+### Patch Changes
+
+- Updated dependencies [[`3ecf74462`](https://github.com/keystonejs/keystone/commit/3ecf74462524f4940474eaf75eea958acbda9ee4), [`c6eac2dc2`](https://github.com/keystonejs/keystone/commit/c6eac2dc2dec857c668a5794fd84829d164563f3), [`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176)]:
+  - @keystonejs/keystone@11.1.1
+  - @keystonejs/test-utils@7.0.0
+  - @keystonejs/fields@13.0.1
+
 ## 5.4.8
 
 ### Patch Changes

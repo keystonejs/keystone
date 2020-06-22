@@ -1,5 +1,15 @@
 # @keystonejs/demo-project-meetup
 
+## 6.1.3
+
+### Patch Changes
+
+- [`70718864f`](https://github.com/keystonejs/keystone/commit/70718864fcf12b07dbc37018924a7a401637efc0) [#3162](https://github.com/keystonejs/keystone/pull/3162) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `context.executeGraphQL` for all server-side GraphQL operations.
+
+- Updated dependencies [[`3ecf74462`](https://github.com/keystonejs/keystone/commit/3ecf74462524f4940474eaf75eea958acbda9ee4), [`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176)]:
+  - @keystonejs/keystone@11.1.1
+  - @keystonejs/fields@13.0.1
+
 ## 6.1.2
 
 ### Patch Changes

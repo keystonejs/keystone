@@ -1,5 +1,27 @@
 # @keystonejs/keystone
 
+## 11.1.3
+
+### Patch Changes
+
+- [`f6667f082`](https://github.com/keystonejs/keystone/commit/f6667f082539c11c5de02877f8c0e5174d74492f) [#3193](https://github.com/keystonejs/keystone/pull/3193) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug when calling `keystone.executeGraphQL()` without a `context` argument.
+
+## 11.1.2
+
+### Patch Changes
+
+- [`2c1cc55b0`](https://github.com/keystonejs/keystone/commit/2c1cc55b0eaaeb0aea04a14b70afde3ecd7c1d8d) [#3186](https://github.com/keystonejs/keystone/pull/3186) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when calling `context.executeGraphQL()` without a `context` argument.
+
+## 11.1.1
+
+### Patch Changes
+
+- [`3ecf74462`](https://github.com/keystonejs/keystone/commit/3ecf74462524f4940474eaf75eea958acbda9ee4) [#3165](https://github.com/keystonejs/keystone/pull/3165) Thanks [@timleslie](https://github.com/timleslie)! - Added deprecation warnings for `keystone.executeQuery`, `{ actions: { query } }` in hooks, and the `query` argument in custom query and mutation resolvers. These are being deprecated in favour of `keystone.executeGraphQL()` and `context.executeGraphQL()`. See [the docs](docs/discussions/server-side-graphql.md) for more details.
+
+- Updated dependencies [[`c6eac2dc2`](https://github.com/keystonejs/keystone/commit/c6eac2dc2dec857c668a5794fd84829d164563f3), [`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176)]:
+  - @keystonejs/test-utils@7.0.0
+  - @keystonejs/fields@13.0.1
+
 ## 11.1.0
 
 ### Minor Changes

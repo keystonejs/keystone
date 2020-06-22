@@ -134,7 +134,7 @@ export class SlugImplementation extends Text {
     this.isOrderable = true;
   }
 
-  async resolveInput({ resolvedData, existingItem, actions: { query } }) {
+  async resolveInput({ context, resolvedData, existingItem }) {
     let slug;
 
     // A slug has been passed in
@@ -231,7 +231,13 @@ export class SlugImplementation extends Text {
       makeUniqueAttempts++;
 
       // Check to see if the slug is unique
-      const { data, errors } = await query(queryString, {
+      const { data, errors } = await context.executeGraphQL({
+        // Access Control may filter out some results, so we wouldn't be
+        // retreiving an accurate list of all existing items. Because we add the
+        // unique constraint to the field, the database will throw an error if
+        // we miss a match and try to insert anyway.
+        context: context.createContext({ skipAccessControl: true }),
+        query: queryString,
         variables: {
           where: {
             [this.path]: uniqueSlug,
@@ -239,11 +245,6 @@ export class SlugImplementation extends Text {
             ...(existingItem && existingItem.id && { id_not_in: [existingItem.id] }),
           },
         },
-        // Access Control may filter out some results, so we wouldn't be
-        // retreiving an accurate list of all existing items. Because we add the
-        // unique constraint to the field, the database will throw an error if
-        // we miss a match and try to insert anyway.
-        skipAccessControl: true,
       });
 
       if (errors) {

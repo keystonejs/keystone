@@ -1,5 +1,17 @@
 # create-keystone-app
 
+## 3.2.2
+
+### Patch Changes
+
+- [`dac54b09e`](https://github.com/keystonejs/keystone/commit/dac54b09e93b69e3d0ac4fd94085f125fb0e99ff) [#3196](https://github.com/keystonejs/keystone/pull/3196) Thanks [@timleslie](https://github.com/timleslie)! - Updated the `package.json` script `create-tables` to use `cross-env`.
+
+## 3.2.1
+
+### Patch Changes
+
+- [`89fb78db3`](https://github.com/keystonejs/keystone/commit/89fb78db3e2aac40ff093d72ed55268b3b518cb2) [#3161](https://github.com/keystonejs/keystone/pull/3161) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `keystone.executeGraphQL` for all server-side GraphQL operations.
+
 ## 3.2.0
 
 ### Minor Changes

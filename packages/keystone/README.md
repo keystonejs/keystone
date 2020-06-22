@@ -120,18 +120,18 @@ const keystone = new Keystone({
 
 ## Methods
 
-| Method                | Description                                                                  |
-| --------------------- | ---------------------------------------------------------------------------- |
-| `connect`             | Manually connect to Adapters.                                                |
-| `createAuthStrategy`  | Creates a new authentication middleware instance.                            |
-| `createItems`         | Add items to a `Keystone` list.                                              |
-| `createList`          | Add a list to the `Keystone` schema.                                         |
-| `disconnect`          | Disconnect from all adapters.                                                |
-| `executeQuery`        | Run GraphQL queries and mutations directly against a `Keystone` instance.    |
-| `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
-| `prepare`             | Manually prepare `Keystone` middlewares.                                     |
-| `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.          |
-| `executeGraphQL`      | Execute a server-side GraphQL operation within the given context.            |
+| Method                | Description                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| `connect`             | Manually connect to Adapters.                                                          |
+| `createAuthStrategy`  | Creates a new authentication middleware instance.                                      |
+| `createItems`         | Add items to a `Keystone` list.                                                        |
+| `createList`          | Add a list to the `Keystone` schema.                                                   |
+| `disconnect`          | Disconnect from all adapters.                                                          |
+| `executeQuery`        | (Deprecated) Run GraphQL queries and mutations directly against a `Keystone` instance. |
+| `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations.           |
+| `prepare`             | Manually prepare `Keystone` middlewares.                                               |
+| `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.                    |
+| `executeGraphQL`      | Execute a server-side GraphQL operation within the given context.                      |
 
 <!--
 
@@ -239,6 +239,8 @@ keystone.createList('Posts', {...});
 Disconnect all adapters.
 
 ### `executeQuery(queryString, config)`
+
+WARNING: This method is now deprecated and will be removed in a future release. Use `keystone.executeGraphQL` instead.
 
 Use this method to execute queries or mutations directly against a `Keystone` instance.
 
