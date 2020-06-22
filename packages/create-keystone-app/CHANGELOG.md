@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 3.2.2
+
+### Patch Changes
+
+- [`dac54b09e`](https://github.com/keystonejs/keystone/commit/dac54b09e93b69e3d0ac4fd94085f125fb0e99ff) [#3196](https://github.com/keystonejs/keystone/pull/3196) Thanks [@timleslie](https://github.com/timleslie)! - Updated the `package.json` script `create-tables` to use `cross-env`.
+
 ## 3.2.1
 
 ### Patch Changes
