@@ -3,8 +3,7 @@ const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
-const { print } = require('graphql/language/printer');
-const { graphql } = require('graphql');
+const { graphql, execute, print } = require('graphql');
 const {
   resolveAllKeys,
   arrayToObject,
@@ -254,13 +253,19 @@ module.exports = class Keystone {
     if (!context) {
       context = this.createContext({});
     }
+
     const schema = this._schemas[context.schemaName];
     if (!schema) {
       throw new Error(
         `No executable schema named '${context.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
       );
     }
-    return graphql(schema, query, null, context, variables);
+
+    if (typeof query === 'string') {
+      query = gql(query);
+    }
+
+    return execute(schema, query, null, context, variables);
   }
 
   // The GraphQL App uses this method to build up the context required for each

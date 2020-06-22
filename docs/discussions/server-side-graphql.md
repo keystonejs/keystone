@@ -62,8 +62,13 @@ As a developer you might want to execute some GraphQL operations as part of your
 This can be done using the function `context.executeGraphQL()`, which is added to the `context` object by Keystone.
 This async function takes a `query` and `variables` as arguments and returns `{ data, errors }` as a response.
 
-```
-const { data, errors } = await context.executeGraphQL({ query: '{...}', variables: { ... } });
+```javascript
+const { gql } = require('apollo-server-express');
+
+const { data, errors } = await context.executeGraphQL({
+  query: gql` ... `,
+  variables: { ... },
+});
 ```
 
 ### Custom context
@@ -81,12 +86,14 @@ This can be achieved using the function `context.createContext({ schemaName, aut
 By default each of these values will take the value of the original `context` object.
 You can use this functions like this:
 
-```
+```javascript
+const { gql } = require('apollo-server-express');
+
 const { data, errors } = await context.executeGraphQL({
   context: context.createContext({ ... }),
-  query: '{...}',
-  variables: { ... }
-  });
+  query: gql` ... `,
+  variables: { ... },
+});
 ```
 
 ## General purpose operations
@@ -109,10 +116,12 @@ The methods `keystone.createContext()` and `keystone.executeGraphQL()` behave al
 
 These methods can be used anywhere you have access to the keystone object.
 
-```
+```javascript
+const { gql } = require('apollo-server-express');
+
 const { data, errors } = await keystone.executeGraphQL({
-    context: keystone.createContext({ ... }),
-    query: '{...}',
-    variables: { ... }
-  });
+  context: keystone.createContext({ ... }),
+  query: gql` ... `,
+  variables: { ... },
+});
 ```
