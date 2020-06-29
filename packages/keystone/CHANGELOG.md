@@ -1,5 +1,17 @@
 # @keystonejs/keystone
 
+## 11.1.3
+
+### Patch Changes
+
+- [`f6667f082`](https://github.com/keystonejs/keystone/commit/f6667f082539c11c5de02877f8c0e5174d74492f) [#3193](https://github.com/keystonejs/keystone/pull/3193) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug when calling `keystone.executeGraphQL()` without a `context` argument.
+
+## 11.1.2
+
+### Patch Changes
+
+- [`2c1cc55b0`](https://github.com/keystonejs/keystone/commit/2c1cc55b0eaaeb0aea04a14b70afde3ecd7c1d8d) [#3186](https://github.com/keystonejs/keystone/pull/3186) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when calling `context.executeGraphQL()` without a `context` argument.
+
 ## 11.1.1
 
 ### Patch Changes
