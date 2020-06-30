@@ -5,7 +5,6 @@ const {
   setupServer,
   networkedGraphqlRequest,
 } = require('@keystonejs/test-utils');
-const cuid = require('cuid');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -14,7 +13,6 @@ const postNames = ['Post 1', 'Post 2', 'Post 3'];
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('UserToPostLimitedRead', {
         fields: {

@@ -1,6 +1,5 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const cuid = require('cuid');
 const {
   multiAdapterRunners,
   setupServer,
@@ -11,7 +10,6 @@ const {
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Group', {
         fields: {

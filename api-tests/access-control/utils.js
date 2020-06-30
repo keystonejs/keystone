@@ -1,4 +1,3 @@
-const cuid = require('cuid');
 const { setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
 const { objMerge } = require('@keystonejs/utils');
@@ -102,7 +101,6 @@ const createFieldImperative = fieldAccess => ({
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', { fields: { name: { type: Text } } });
 
