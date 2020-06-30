@@ -27,7 +27,6 @@
     "@keystonejs/fields": "^13.0.1",
     "@keystonejs/test-utils": "^7.0.0",
     "@keystonejs/utils": "^5.4.1",
-    "cuid": "^2.1.8",
     "date-fns": "^2.14.0",
     "express": "^4.17.1"
   }
