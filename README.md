@@ -55,7 +55,7 @@ documentation](https://www.keystonejs.com/guides/).
 
 ## Version control
 
-We do our best to follow semver version control within Keystone. This means package versions have 3 numbers. A change in the first number indicates a breaking change, the second number indicates backward compatible feature and the third number indicates a bug fix.
+We do our best to follow SemVer version control within Keystone. This means package versions have 3 numbers. A change in the first number indicates a breaking change, the second number indicates backward compatible feature and the third number indicates a bug fix.
 
 You can find **changelogs** either by browsing our repository, or by using our [interactive changelog explorer](https://changelogs.xyz/@keystonejs/keystone).
 

@@ -374,12 +374,14 @@ Create a `context` object that can be used with `executeGraphQL()`.
 
 #### Usage
 
-```
+```javascript
+const { gql } = require('apollo-server-express');
+
 // Create a context which can execute GraphQL operations with no access control
 const context = keystone.createContext({ skipAccessControl: true })
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = keystone.executeGraphQL({ context, query: '{ ... }', variables: { ... }})
+const { data, errors } = keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
 ```
 
 #### Config
@@ -387,7 +389,7 @@ const { data, errors } = keystone.executeGraphQL({ context, query: '{ ... }', va
 | Option              | Type      | default  | Description                                                                                  |
 | ------------------- | --------- | -------- | -------------------------------------------------------------------------------------------- |
 | `schemaName`        | `String`  | `public` | The name of the GraphQL schema to execute against.                                           |
-| `authentication`    | `Object`  | `{}`     | `{ item: { id }, listAuthKey: "" }`. Specificy the item to be used in access control checks. |
+| `authentication`    | `Object`  | `{}`     | `{ item: { id }, listAuthKey: "" }`. Specifies the item to be used in access control checks. |
 | `skipAccessControl` | `Boolean` | `false`  | Set to `true` to skip all access control checks.                                             |
 
 ### `executeGraphQL({ context, query, variables })`
@@ -396,12 +398,14 @@ Execute a server-side GraphQL query within the given context.
 
 #### Usage
 
-```
+```javascript
+const { gql } = require('apollo-server-express');
+
 // Create a context which can execute GraphQL operations with no access control
 const context = keystone.createContext({ skipAccessControl: true })
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = keystone.executeGraphQL({ context, query: '{ ... }', variables: { ... }})
+const { data, errors } = keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
 ```
 
 #### Config
@@ -409,5 +413,5 @@ const { data, errors } = keystone.executeGraphQL({ context, query: '{ ... }', va
 | Option      | Type     | default                    | Description                                             |
 | ----------- | -------- | -------------------------- | ------------------------------------------------------- |
 | `context`   | `Array`  | `keystone.createContext()` | A `context` object to be used by the GraphQL resolvers. |
-| `query`     | `String` | `undefined`                | The GraphQL operation to execute.                       |
+| `query`     | `Object` | `undefined`                | The GraphQL operation to execute.                       |
 | `variables` | `Object` | `undefined`                | The variables to be passed to the GraphQL operation.    |

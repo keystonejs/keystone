@@ -3,8 +3,7 @@ const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
-const { print } = require('graphql/language/printer');
-const { graphql } = require('graphql');
+const { graphql, execute, print } = require('graphql');
 const {
   resolveAllKeys,
   arrayToObject,
@@ -237,28 +236,36 @@ module.exports = class Keystone {
       totalResults: 0,
       maxTotalResults: this.queryLimits.maxTotalResults,
     };
-    const orig = { schemaName, authentication, skipAccessControl };
+    // Locally bind the values we use as defaults into an object to make
+    // JS behave the way we want.
+    const defaults = { schemaName, authentication, skipAccessControl, context };
     context.createContext = ({
-      schemaName = orig.schemaName,
-      authentication = orig.authentication,
-      skipAccessControl = orig.skipAccessControl,
+      schemaName = defaults.schemaName,
+      authentication = defaults.authentication,
+      skipAccessControl = defaults.skipAccessControl,
     }) => this.createContext({ schemaName, authentication, skipAccessControl });
-    context.executeGraphQL = ({ context = context, query, variables }) =>
+    context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
       this.executeGraphQL({ context, query, variables });
     return context;
   }
 
   executeGraphQL({ context, query, variables }) {
     if (!context) {
-      context = this.createContext();
+      context = this.createContext({});
     }
+
     const schema = this._schemas[context.schemaName];
     if (!schema) {
       throw new Error(
         `No executable schema named '${context.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
       );
     }
-    return graphql(schema, query, null, context, variables);
+
+    if (typeof query === 'string') {
+      query = gql(query);
+    }
+
+    return execute(schema, query, null, context, variables);
   }
 
   // The GraphQL App uses this method to build up the context required for each
