@@ -1,6 +1,5 @@
 const globby = require('globby');
 const path = require('path');
-const cuid = require('cuid');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 // `mongodb-memory-server` downloads a binary on first run in CI, which can take
@@ -20,14 +19,13 @@ describe('Fields', () => {
         const keystoneTestWrapper = (testFn = () => {}) =>
           runner(
             () => {
-              const name = `Field tests for ${mod.name} ${cuid()}`;
               const createLists = keystone => {
                 // Create a list with all the fields required for testing
                 const fields = mod.getTestFields();
 
                 keystone.createList(listName, { fields });
               };
-              return setupServer({ name, adapterName, createLists });
+              return setupServer({ adapterName, createLists });
             },
             async ({ keystone, ...rest }) => {
               // Populate the database before running the tests

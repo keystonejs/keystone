@@ -9,7 +9,6 @@ const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 async function setupServer({
-  name,
   adapterName,
   schemaName = 'testing',
   schemaNames = ['testing'],
@@ -28,7 +27,7 @@ async function setupServer({
   }[adapterName];
 
   const keystone = new Keystone({
-    name,
+    name: 'keystone-test-server',
     adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
     schemaNames,

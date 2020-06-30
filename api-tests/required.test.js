@@ -1,4 +1,3 @@
-const cuid = require('cuid');
 const globby = require('globby');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
@@ -17,7 +16,6 @@ describe('Test isRequired flag for all field types', () => {
             runner(
               () =>
                 setupServer({
-                  name: `Field tests for ${type.type} ${cuid()}`,
                   adapterName,
                   createLists: keystone => {
                     if (type.type === 'Select') {
