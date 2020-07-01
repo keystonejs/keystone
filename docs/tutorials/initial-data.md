@@ -87,7 +87,7 @@ keystone.createItems({
 });
 ```
 
-> **Note:** The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the `email` field has `isUnique: true`, therefor it would not be possible for the above code to have the same email for each user that should be generated.
+> **Note:** The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the `email` field has `isUnique: true`, therefore it would not be possible for the above code to have the same email for each user that should be generated.
 
 Example on how to `seed` the data upon database connection:
 

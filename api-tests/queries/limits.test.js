@@ -9,12 +9,9 @@ const {
   validation: { depthLimit, definitionLimit, fieldLimit },
 } = require('@keystonejs/app-graphql');
 
-const cuid = require('cuid');
-
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Post', {
         fields: {

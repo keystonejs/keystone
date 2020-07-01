@@ -1,10 +1,8 @@
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
-const cuid = require('cuid');
 
 const setupList = (adapterName, fields) =>
   setupServer({
-    name: `ks5-testdb-${cuid()}`,
     adapterName,
     createLists: keystone => {
       keystone.createList('User', { fields });
