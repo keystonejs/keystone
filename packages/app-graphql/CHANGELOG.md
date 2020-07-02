@@ -1,5 +1,15 @@
 # @keystonejs/app-graphql
 
+## 5.1.9
+
+### Patch Changes
+
+- [`9ab6961e0`](https://github.com/keystonejs/keystone/commit/9ab6961e0202277a980bd60a323a1c599f1dd085) [#3217](https://github.com/keystonejs/keystone/pull/3217) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated apollo-server-express dependency to 2.15.1.
+
+- Updated dependencies [[`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed), [`2806a0bdf`](https://github.com/keystonejs/keystone/commit/2806a0bdfd65429e7c44ed070983f121d6934955)]:
+  - @keystonejs/utils@5.4.2
+  - @keystonejs/session@7.0.1
+
 ## 5.1.8
 
 ### Patch Changes
