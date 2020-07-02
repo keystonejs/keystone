@@ -1,5 +1,15 @@
 # @keystonejs/app-admin-ui
 
+## 7.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`887ad8199`](https://github.com/keystonejs/keystone/commit/887ad8199aa5c32a3db8588104f4548c90aa106c), [`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5), [`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed), [`2806a0bdf`](https://github.com/keystonejs/keystone/commit/2806a0bdfd65429e7c44ed070983f121d6934955), [`3adb2ac2a`](https://github.com/keystonejs/keystone/commit/3adb2ac2ac4ab65636ffea1b2b1f7044410c2b8b)]:
+  - @arch-ui/pagination@0.0.23
+  - @keystonejs/fields@13.0.2
+  - @keystonejs/utils@5.4.2
+  - @keystonejs/session@7.0.1
+
 ## 7.0.4
 
 ### Patch Changes

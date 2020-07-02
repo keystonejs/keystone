@@ -1,5 +1,12 @@
 # @arch-ui/docs
 
+## 1.1.24
+
+### Patch Changes
+
+- Updated dependencies [[`887ad8199`](https://github.com/keystonejs/keystone/commit/887ad8199aa5c32a3db8588104f4548c90aa106c)]:
+  - @arch-ui/pagination@0.0.23
+
 ## 1.1.23
 
 ### Patch Changes

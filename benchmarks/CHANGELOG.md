@@ -1,5 +1,18 @@
 # @keystonejs/benchmarks
 
+## 5.1.14
+
+### Patch Changes
+
+- [`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5) [#3212](https://github.com/keystonejs/keystone/pull/3212) Thanks [@timleslie](https://github.com/timleslie)! - Removed `name` argument from calls to `setupServer` in tests.
+
+- Updated dependencies [[`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5), [`f296866df`](https://github.com/keystonejs/keystone/commit/f296866dfab3af54381fd527473e3dc98425b3b9), [`2806a0bdf`](https://github.com/keystonejs/keystone/commit/2806a0bdfd65429e7c44ed070983f121d6934955), [`3adb2ac2a`](https://github.com/keystonejs/keystone/commit/3adb2ac2ac4ab65636ffea1b2b1f7044410c2b8b), [`9ab6961e0`](https://github.com/keystonejs/keystone/commit/9ab6961e0202277a980bd60a323a1c599f1dd085)]:
+  - @keystonejs/fields@13.0.2
+  - @keystonejs/test-utils@7.0.1
+  - @keystonejs/keystone@11.2.0
+  - @keystonejs/session@7.0.1
+  - @keystonejs/app-graphql@5.1.9
+
 ## 5.1.13
 
 ### Patch Changes

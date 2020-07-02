@@ -1,5 +1,15 @@
 # @keystonejs/test-utils
 
+## 7.0.1
+
+### Patch Changes
+
+- [`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5) [#3212](https://github.com/keystonejs/keystone/pull/3212) Thanks [@timleslie](https://github.com/timleslie)! - Removed `name` argument from calls to `setupServer` in tests.
+
+- Updated dependencies [[`f296866df`](https://github.com/keystonejs/keystone/commit/f296866dfab3af54381fd527473e3dc98425b3b9), [`9ab6961e0`](https://github.com/keystonejs/keystone/commit/9ab6961e0202277a980bd60a323a1c599f1dd085)]:
+  - @keystonejs/keystone@11.2.0
+  - @keystonejs/app-graphql@5.1.9
+
 ## 7.0.0
 
 ### Major Changes
