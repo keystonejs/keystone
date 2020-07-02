@@ -51,9 +51,17 @@ module.exports = class CloudinaryAdapter {
    *                For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
    */
   delete(file, options = {}) {
+    const destroyOptions = {
+      // Auth
+      api_key: this.apiKey,
+      api_secret: this.apiSecret,
+      cloud_name: this.cloudName,
+      ...options,
+    };
+
     return new Promise((resolve, reject) => {
       if (file) {
-        cloudinary.v2.uploader.destroy(file.id, options, (error, result) => {
+        cloudinary.v2.uploader.destroy(file.id, destroyOptions, (error, result) => {
           if (error) {
             reject(error);
           } else {
