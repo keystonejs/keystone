@@ -133,7 +133,6 @@ The result is passed to [the next function in the execution order](/docs/guides/
 | `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -146,7 +145,6 @@ const resolveInput = ({
   originalInput,
   resolvedData,
   context,
-  actions,
 }) => {
   // Input resolution logic. Object returned is used in place of `resolvedData`.
   return resolvedData;
@@ -172,7 +170,6 @@ Return values are ignored.
 | `originalInput`           | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `resolvedData`            | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `actions`                 | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 | `addFieldValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
@@ -186,7 +183,6 @@ const validateInput = ({
   originalInput,
   resolvedData,
   context,
-  actions,
   addFieldValidationError,
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
@@ -213,7 +209,6 @@ Return values are ignored.
 | `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -226,7 +221,6 @@ const beforeChange = ({
   originalInput,
   resolvedData,
   context,
-  actions,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -256,7 +250,6 @@ Return values are ignored.
 | `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `updatedItem`   | `Object`                | The new/currently stored item                                                                                                |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `actions`       | `Object`                | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -269,7 +262,6 @@ const afterChange = ({
   originalInput,
   updatedItem,
   context,
-  actions,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -292,7 +284,6 @@ Should throw or register errors with `addFieldValidationError(<String>)` if the 
 | `operation`               | `String`         | The operation being performed (`delete` in this case)                                                                        |
 | `existingItem`            | `Object`         | The current stored item                                                                                                      |
 | `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `actions`                 | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 | `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
@@ -304,7 +295,6 @@ const validateDelete = ({
   operation,
   existingItem,
   context,
-  actions,
   addFieldValidationError,
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
@@ -329,7 +319,6 @@ Return values are ignored.
 | `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                        |
 | `existingItem` | `Object`         | The current stored item                                                                                                      |
 | `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `actions`      | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -340,7 +329,6 @@ const beforeDelete = ({
   operation,
   existingItem,
   context,
-  actions,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -366,7 +354,6 @@ Return values are ignored.
 | `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                        |
 | `existingItem` | `Object`         | The previously stored item, now deleted                                                                                      |
 | `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `actions`      | `Object`         | Contains a `query` functions that queries the list within the current operations context, see [Query Helper](#query-helper)  |
 
 #### Usage
 
@@ -377,55 +364,13 @@ const afterDelete = ({
   operation,
   existingItem,
   context,
-  actions,
 }) => {
   // Perform side effects
   // Return values ignored
 };
 ```
 
-## The `actions` argument
+### Running GraphQL Queries From Hook
 
-All hooks receive an `actions` object as an argument.
-
-It contains helper functionality for accessing the GraphQL schema, optionally _within_ the context of the current request.
-When used, this context reuse causes access control to be applied as though the caller themselves initiated an operation.
-It can therefore be useful for performing additional operations on behalf of the caller.
-
-The `actions` object currently contains a single function: `query`.
-
-### Query helper
-
-Perform a GraphQL query, optionally _within_ the context of the current request.
-It returns a `Promise<Object>` containing the standard GraphQL `errors` and `data` properties.
-
-#### Argument
-
-| Argument                    | Type      | Description                                                                                                                          |
-| :-------------------------- | :-------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| `queryString`               | `String`  | A graphQL query string                                                                                                               |
-| `options`                   | `Object`  | Config for the query                                                                                                                 |
-| `options.skipAccessControl` | `Boolean` | By default access control _of the user making the initial request_ is still tested. Pass as `true` to disable access control checks. |
-| `options.variables`         | `Object`  | The variables passed to the graphql query for the given queryString                                                                  |
-
-#### Usage
-
-```js
-const myHook = ({
-  actions: { query },
-}) => {
-  const queryString = `
-    query {
-      # GraphQL query here...
-    }
-  `;
-  const options = {
-    skipAccessControl: false,
-    variables: { /* GraphQL variables here.. */ },
-  };
-  const { errors, data } = await query(queryString, options);
-
-  // Check for errors
-  // Do something with data
-};
-```
+If you need to execute a GraphQL query from within your hook function you can use `context.executeGraphQL()`.
+See the docs on [server-side graphql operations](/docs/discussions/server-side-graphql.md) for more details.
