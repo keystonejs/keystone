@@ -207,9 +207,18 @@ const ListPage = props => {
   const history = useHistory();
   const location = useLocation();
 
+  const hasErrorWithNoData = query.error && (!query.data || !items || !Object.keys(items).length);
+
   // Mount with Persisted Search
   // ------------------------------
   useEffect(() => {
+    // Remove the persisted search from localStorage if error occurs.
+    // This is to avoid appending the error-prone search query, which only renders the Error page.
+    if (hasErrorWithNoData) {
+      list.removePersistedSearch();
+      return;
+    }
+
     const maybePersistedSearch = list.getPersistedSearch();
     if (location.search === maybePersistedSearch) {
       return;
@@ -223,13 +232,13 @@ const ListPage = props => {
         search: maybePersistedSearch,
       });
     }
-  }, []);
+  }, [hasErrorWithNoData]);
 
   // Error
   // ------------------------------
   // Only show error page if there is no data
   // (ie; there could be partial data + partial errors)
-  if (query.error && (!query.data || !items || !Object.keys(items).length)) {
+  if (hasErrorWithNoData) {
     let message = '';
     if (queryErrorsParsed) {
       message = queryErrorsParsed.message;
