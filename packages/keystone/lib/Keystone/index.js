@@ -100,15 +100,6 @@ module.exports = class Keystone {
     if (this.queryLimits.maxTotalResults < 1) {
       throw new Error("queryLimits.maxTotalResults can't be < 1");
     }
-
-    // Placeholder until keystone.prepare() is run during which this function
-    // will be replaced with one that can actually make queries (assuming the
-    // graphql app is setup, which is checked for elsewhere).
-    this.executeQuery = () => {
-      throw new Error(
-        'Attempted to execute keystone.query() before keystone.connect() has completed.'
-      );
-    };
   }
 
   _executeOperation({
@@ -520,22 +511,6 @@ module.exports = class Keystone {
     const { adapters, name } = this;
     const rels = this._consolidateRelationships();
     await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels })));
-
-    // Now that the middlewares are done, and we're connected to the database,
-    // it's safe to assume all the schemas are registered, so we can setup our
-    // query helper This enables god-mode queries with no access control checks
-    const _executeQuery = this._buildQueryHelper(
-      this.getGraphQlContext({
-        skipAccessControl: true,
-        // This is for backwards compatibility with single-schema Keystone
-        schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
-      })
-    );
-    this.executeQuery = (...args) => {
-      console.warn(`keystone.executeQuery() is deprecated and will be removed in a future release.
-Please use keystone.executeGraphQL instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
-      return _executeQuery(...args);
-    };
 
     if (this.eventHandlers.onConnect) {
       return this.eventHandlers.onConnect(this);
