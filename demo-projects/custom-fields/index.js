@@ -8,7 +8,7 @@ const MultiCheck = require('./fields/MultiCheck');
 
 const keystone = new Keystone({
   name: 'custom-field',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/custom-field' }),
 });
 
 keystone.createList('Movie', {
