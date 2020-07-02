@@ -335,11 +335,10 @@ See the [Custom schema guide](/docs/guides/custom-schema.md) for more informatio
 }
 ```
 
-For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments). The last argument `extra` is an object that contains the following properties:
+For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments). The last argument `extra` is an object that contains the following property:
 
 | Name     | Description                                        |
 | -------- | -------------------------------------------------- |
-| `query`  | An executable helper function for running a query. |
 | `access` | Access control information about the current user. |
 
 - The `access` argument for `types`, `queries`, and `mutations` are all either boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
