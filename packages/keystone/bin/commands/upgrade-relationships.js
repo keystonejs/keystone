@@ -66,7 +66,7 @@ const strategySummary = (
   keystone,
   migration
 ) => {
-  const mongo = !!keystone.adapters.MongooseAdapter;
+  const mongo = keystone.adapter.name === 'mongoose';
 
   if (!migration) {
     console.log('\n', chalk.bold('One-sided: one to many'));
@@ -80,11 +80,11 @@ const strategySummary = (
     const { near, far } = columnNames[`${left.listKey}.${left.path}`];
     printArrow({ migration, left });
     if (mongo) {
-      const { _pluralize } = keystone.adapters.MongooseAdapter.mongoose;
+      const { _pluralize } = keystone.adapter.mongoose;
       console.log(moveData(migration, left, tableName, near, far, _pluralize));
       console.log(deleteField(migration, left, _pluralize));
     } else {
-      const { schemaName } = keystone.adapters.KnexAdapter;
+      const { schemaName } = keystone.adapter;
       console.log(renameTable(migration, `${left.listKey}_${left.path}`, tableName, schemaName));
       console.log(renameColumn(migration, `${left.listKey}_id`, near, schemaName, tableName));
       console.log(renameColumn(migration, `${left.refListKey}_id`, far, schemaName, tableName));
@@ -97,10 +97,10 @@ const strategySummary = (
   two_one_to_one.forEach(({ left, right }) => {
     printArrow({ migration, left, right });
     if (mongo) {
-      const { _pluralize } = keystone.adapters.MongooseAdapter.mongoose;
+      const { _pluralize } = keystone.adapter.mongoose;
       console.log(deleteField(migration, right, _pluralize));
     } else {
-      const { schemaName } = keystone.adapters.KnexAdapter;
+      const { schemaName } = keystone.adapter;
       console.log(dropColumn(migration, right.listKey, right.path, schemaName));
     }
   });
@@ -112,10 +112,10 @@ const strategySummary = (
     const dropper = left.listKey === tableName ? right : left;
     printArrow({ migration, left, right });
     if (mongo) {
-      const { _pluralize } = keystone.adapters.MongooseAdapter.mongoose;
+      const { _pluralize } = keystone.adapter.mongoose;
       console.log(deleteField(migration, dropper, _pluralize));
     } else {
-      const { schemaName } = keystone.adapters.KnexAdapter;
+      const { schemaName } = keystone.adapter;
       console.log(dropTable(migration, `${dropper.listKey}_${dropper.path}`, schemaName));
     }
   });
@@ -127,12 +127,12 @@ const strategySummary = (
     const { near, far } = columnNames[`${left.listKey}.${left.path}`];
     printArrow({ migration, left, right });
     if (mongo) {
-      const { _pluralize } = keystone.adapters.MongooseAdapter.mongoose;
+      const { _pluralize } = keystone.adapter.mongoose;
       console.log(moveData(migration, left, tableName, near, far, _pluralize));
       console.log(deleteField(migration, left, _pluralize));
       console.log(deleteField(migration, right, _pluralize));
     } else {
-      const { schemaName } = keystone.adapters.KnexAdapter;
+      const { schemaName } = keystone.adapter;
       console.log(dropTable(migration, `${right.listKey}_${right.path}`, schemaName));
       console.log(renameTable(migration, `${left.listKey}_${left.path}`, tableName, schemaName));
       console.log(renameColumn(migration, `${left.listKey}_id`, near, schemaName, tableName));
@@ -172,7 +172,7 @@ const upgradeRelationships = async (args, entryFile) => {
   ttyLink('https://www.keystonejs.com/discussions/relationships', 'More info on relationships');
 
   if (!migration) {
-    const mongo = !!keystone.adapters.MongooseAdapter;
+    const mongo = keystone.adapter.name === 'mongoose';
     console.log('');
     console.log(
       chalk.green(

@@ -152,10 +152,9 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   await keystone.connect();
   spinner.succeed('Connected to database');
 
-  const isKnex = !!(keystone.adapters && keystone.adapters.KnexAdapter);
-  if (isKnex) {
+  if (keystone.adapter && keystone.adapter.name === 'knex') {
     spinner.start('Verifying tables');
-    const verifyTableResults = await keystone.adapters.KnexAdapter._verifyTables();
+    const verifyTableResults = await keystone.adapter._verifyTables();
     verifyTableMessages(verifyTableResults);
     spinner.succeed('Verifying tables');
   }
