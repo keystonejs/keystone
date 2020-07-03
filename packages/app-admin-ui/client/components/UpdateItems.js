@@ -3,7 +3,7 @@
 import React, { Fragment, useState } from 'react';
 
 import { IconButton } from '@arch-ui/button';
-import { SettingsIcon } from '@arch-ui/icons';
+import { SettingsIcon } from '@primer/octicons-react';
 
 import { useList } from '../providers/List';
 import { UpdateManyItemsModal } from '../../components';

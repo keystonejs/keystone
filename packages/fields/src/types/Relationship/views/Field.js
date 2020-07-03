@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
-import { PlusIcon, PersonIcon, LinkExternalIcon } from '@arch-ui/icons';
+import { PlusIcon, PersonIcon, LinkExternalIcon } from '@primer/octicons-react';
 import { gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';

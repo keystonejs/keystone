@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
-import { LinkIcon } from '@arch-ui/icons';
+import { LinkIcon } from '@primer/octicons-react';
 
 // offset header height for hash links
 const hashLinkOffset = {

@@ -11,9 +11,7 @@ describe('Knex Adapter', () => {
     const testAdapter = new KnexAdapter({
       knexOptions: { connection: 'postgres://localhost/undefined_database' },
     });
-    const result = await testAdapter
-      ._connect({ name: 'undefined-database' })
-      .catch(result => result);
+    const result = await testAdapter._connect().catch(result => result);
 
     expect(result).toBeInstanceOf(Error);
     expect(global.console.error).toHaveBeenCalledWith(
@@ -32,9 +30,7 @@ describe('Knex Adapter', () => {
         },
       },
     });
-    const result = await testAdapter
-      ._connect({ name: 'undefined-database' })
-      .catch(result => result);
+    const result = await testAdapter._connect().catch(result => result);
 
     expect(result).toBeInstanceOf(Error);
     expect(global.console.error).toHaveBeenCalledWith(
@@ -45,7 +41,7 @@ describe('Knex Adapter', () => {
   describe('checkDatabaseVersion', () => {
     test('throws when database version is unsupported', async () => {
       const testAdapter = new KnexAdapter();
-      await testAdapter._connect({ name: 'postgres' });
+      await testAdapter._connect();
       testAdapter.minVer = '50.5.5';
       const result = await testAdapter.checkDatabaseVersion().catch(result => result);
       expect(result).toBeInstanceOf(Error);
@@ -54,7 +50,7 @@ describe('Knex Adapter', () => {
 
     test('does not throw when database version is supported', async () => {
       const testAdapter = new KnexAdapter();
-      await testAdapter._connect({ name: 'postgres' });
+      await testAdapter._connect();
       testAdapter.minVer = '1.0.0';
       const result = await testAdapter.checkDatabaseVersion().catch(result => result);
       expect(result).not.toBeInstanceOf(Error);

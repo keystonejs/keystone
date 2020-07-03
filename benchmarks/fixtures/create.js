@@ -1,4 +1,3 @@
-const cuid = require('cuid');
 const { Text } = require('@keystonejs/fields');
 const { setupServer } = require('@keystonejs/test-utils');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
@@ -6,7 +5,6 @@ const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', {
         fields: {

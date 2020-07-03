@@ -15,6 +15,7 @@ const Page = props => {
   return (
     <Button
       {...props}
+      variant="nuance"
       onClick={handleClick}
       css={isSelected ? { backgroundColor: colors.primary, color: 'white' } : {}}
     />

@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import { useRef, forwardRef, useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 
-import { SearchIcon, XIcon } from '@arch-ui/icons';
+import { SearchIcon, XIcon } from '@primer/octicons-react';
 // import { Input } from '@arch-ui/input';
 import { A11yText } from '@arch-ui/typography';
 import { LoadingSpinner } from '@arch-ui/loading';
