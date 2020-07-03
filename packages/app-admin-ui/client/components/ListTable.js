@@ -4,7 +4,7 @@ import { Suspense, Fragment, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { captureSuspensePromises, noop } from '@keystonejs/utils';
-import { KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@primer/octicons-react';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 import { Button } from '@arch-ui/button';

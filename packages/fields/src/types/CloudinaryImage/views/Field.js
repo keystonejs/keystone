@@ -5,7 +5,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
-import { AlertIcon } from '@arch-ui/icons';
+import { AlertIcon } from '@primer/octicons-react';
 import { HiddenInput } from '@arch-ui/input';
 import { Lozenge } from '@arch-ui/lozenge';
 import { Button, LoadingButton } from '@arch-ui/button';

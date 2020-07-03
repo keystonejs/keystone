@@ -4,7 +4,7 @@ import { useCallback, memo, useState, useEffect } from 'react';
 
 import copyToClipboard from 'clipboard-copy';
 import Animation from '../../components/Animation';
-import { CheckIcon, ClippyIcon } from '@arch-ui/icons';
+import { CheckIcon, ClippyIcon } from '@primer/octicons-react';
 import { FlexGroup } from '@arch-ui/layout';
 import { A11yText } from '@arch-ui/typography';
 import { colors } from '@arch-ui/theme';

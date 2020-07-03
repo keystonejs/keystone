@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import { marks, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
-import { CircleSlashIcon } from '@arch-ui/icons';
+import { CircleSlashIcon } from '@primer/octicons-react';
 import { colors, gridSize } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
 import { getSelectionReference } from './utils';
