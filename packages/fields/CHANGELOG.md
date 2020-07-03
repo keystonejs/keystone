@@ -1,5 +1,18 @@
 # @keystonejs/fields
 
+## 13.0.2
+
+### Patch Changes
+
+- [`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5) [#3212](https://github.com/keystonejs/keystone/pull/3212) Thanks [@timleslie](https://github.com/timleslie)! - Removed `name` argument from calls to `setupServer` in tests.
+
+* [`3adb2ac2a`](https://github.com/keystonejs/keystone/commit/3adb2ac2ac4ab65636ffea1b2b1f7044410c2b8b) [#3176](https://github.com/keystonejs/keystone/pull/3176) Thanks [@timleslie](https://github.com/timleslie)! - Updated docs for `Virtual` field type to show how to execute server-side GraphQL operations.
+
+* Updated dependencies [[`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5), [`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed)]:
+  - @keystonejs/test-utils@7.0.1
+  - @keystonejs/utils@5.4.2
+  - @keystonejs/app-admin-ui@7.0.5
+
 ## 13.0.1
 
 ### Patch Changes

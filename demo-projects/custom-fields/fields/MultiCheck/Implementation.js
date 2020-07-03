@@ -35,11 +35,11 @@ class MultiCheck extends Text.implementation {
     ];
   }
 
-  getDefaultValue({ context, originalInput, actions }) {
+  getDefaultValue({ context, originalInput }) {
     let result;
     if (typeof this.defaultValue !== 'undefined') {
       if (typeof this.defaultValue === 'function') {
-        result = this.defaultValue({ context, originalInput, actions });
+        result = this.defaultValue({ context, originalInput });
       } else {
         result = this.defaultValue;
       }

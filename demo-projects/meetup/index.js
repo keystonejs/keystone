@@ -23,7 +23,7 @@ const initialiseData = require('./initialData');
 
 const keystone = new Keystone({
   name: MEETUP.name,
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/meetup' }),
   onConnect: initialiseData,
 });
 

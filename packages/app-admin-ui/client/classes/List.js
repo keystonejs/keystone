@@ -169,6 +169,10 @@ export default class List {
     localStorage.setItem(`search:${this.path}`, value);
   }
 
+  removePersistedSearch() {
+    localStorage.removeItem(`search:${this.path}`);
+  }
+
   getFullPersistentPath() {
     return `${this.fullPath}${this.getPersistedSearch() || ''}`;
   }

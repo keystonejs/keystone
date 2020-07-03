@@ -3,7 +3,6 @@ const { versionGreaterOrEqualTo } = require('@keystonejs/utils');
 const knex = require('knex');
 const pSettle = require('p-settle');
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
-const logger = require('@keystonejs/logger').logger('knex');
 
 const {
   escapeRegExp,
@@ -13,7 +12,6 @@ const {
   resolveAllKeys,
   identity,
 } = require('@keystonejs/utils');
-const slugify = require('@sindresorhus/slugify');
 
 class KnexAdapter extends BaseKeystoneAdapter {
   constructor({ knexOptions = {}, schemaName = 'public' } = {}) {
@@ -26,16 +24,14 @@ class KnexAdapter extends BaseKeystoneAdapter {
     this.rels = undefined;
   }
 
-  async _connect({ name }) {
+  async _connect() {
     const { knexOptions = {} } = this.config;
     const { connection } = knexOptions;
     let knexConnection =
       connection || process.env.CONNECT_TO || process.env.DATABASE_URL || process.env.KNEX_URI;
 
     if (!knexConnection) {
-      const defaultDbName = slugify(name, { separator: '_' }) || 'keystone';
-      knexConnection = `postgres://localhost/${defaultDbName}`;
-      logger.warn(`No Knex connection URI specified. Defaulting to '${knexConnection}'`);
+      throw new Error(`No Knex connection URI specified.`);
     }
     this.knex = knex({
       client: this.client,
