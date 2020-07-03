@@ -234,17 +234,16 @@ module.exports = class Keystone {
     return execute(schema, query, null, context, variables);
   }
 
-  // The GraphQL App uses this method to build up the context required for each
-  // incoming query.
-  // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
+  createHTTPContext({ schemaName, req }) {
+    // The GraphQL App uses this method to build up the context required for each incoming query.
     return {
       ...this.createContext({
         schemaName,
         authentication: { item: req.user, listKey: req.authedListKey },
-        skipAccessControl,
+        skipAccessControl: false,
       }),
       ...this._sessionManager.getContext(req),
+      req,
     };
   }
 
