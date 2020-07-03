@@ -685,8 +685,8 @@ class QueryBuilder {
   }
 
   _getOrderFieldAndDirection(str) {
-    const splits = str.split("_");
-    const orderField = splits.slice(0, splits.length - 1).join("_");
+    const splits = str.split('_');
+    const orderField = splits.slice(0, splits.length - 1).join('_');
     const orderDirection = splits[splits.length - 1];
     return [orderField, orderDirection];
   }
