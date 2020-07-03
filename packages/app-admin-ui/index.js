@@ -11,6 +11,7 @@ const getWebpackConfig = require('./server/getWebpackConfig');
 
 class AdminUIApp {
   constructor({
+    name,
     adminPath = '/admin',
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
@@ -30,6 +31,7 @@ class AdminUIApp {
       throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
     }
 
+    this.name = name;
     this.adminPath = adminPath;
     this.authStrategy = authStrategy;
     this.pages = pages;
@@ -99,9 +101,9 @@ class AdminUIApp {
 
   getAdminUIMeta(keystone) {
     // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
-    const { adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { name, adminPath, apiPath, graphiqlPath, pages, hooks } = this;
     const { signinPath, signoutPath } = this.routes;
-    const { lists, name } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
     const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
     return {
       adminPath,
