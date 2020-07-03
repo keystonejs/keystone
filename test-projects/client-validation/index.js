@@ -9,7 +9,6 @@ const { staticRoute, staticPath } = require('./config');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'Cypress Test Project Client Validation',
   adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
   cookieSecret: 'qwerty',
 });
@@ -28,6 +27,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp({ enableDefaultRoute: true }),
+    new AdminUIApp({ name: 'Cypress Test Project Client Validation', enableDefaultRoute: true }),
   ],
 };
