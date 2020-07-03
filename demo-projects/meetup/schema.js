@@ -12,11 +12,13 @@ const {
   Select,
   Text,
 } = require('@keystonejs/fields');
-const { LocalFileAdapter } = require('@keystonejs/file-adapters');
+const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
-const cloudinaryAdapter = new LocalFileAdapter({
-  src: './files',
+const cloudinaryAdapter = new CloudinaryAdapter({
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  apiKey: process.env.CLOUDINARY_KEY,
+  apiSecret: process.env.CLOUDINARY_SECRET,
 });
 
 const access = {
