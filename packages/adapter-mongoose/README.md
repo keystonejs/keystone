@@ -14,7 +14,6 @@ title: Mongoose adapter
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'My Awesome Project',
   adapter: new MongooseAdapter({...}),
 });
 ```

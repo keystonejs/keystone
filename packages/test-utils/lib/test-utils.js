@@ -27,7 +27,6 @@ async function setupServer({
   }[adapterName];
 
   const keystone = new Keystone({
-    name: 'keystone-test-server',
     adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
     schemaNames,

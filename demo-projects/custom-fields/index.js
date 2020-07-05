@@ -7,7 +7,6 @@ const Stars = require('./fields/Stars');
 const MultiCheck = require('./fields/MultiCheck');
 
 const keystone = new Keystone({
-  name: 'custom-field',
   adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/custom-field' }),
 });
 
@@ -25,5 +24,5 @@ keystone.createList('Movie', {
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ enableDefaultRoute: true })],
+  apps: [new GraphQLApp(), new AdminUIApp({ name: 'custom-field', enableDefaultRoute: true })],
 };
