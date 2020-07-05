@@ -7,7 +7,7 @@ import { Fragment } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { CheckIcon } from '@arch-ui/icons';
+import { CheckIcon } from '@primer/octicons-react';
 import { Button } from '@arch-ui/button';
 import { LoadingIndicator } from '@arch-ui/loading';
 import { colors } from '@arch-ui/theme';

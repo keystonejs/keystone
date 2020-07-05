@@ -4,7 +4,7 @@ import { jsx, keyframes } from '@emotion/core';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { SearchIcon, XIcon } from '@arch-ui/icons';
+import { SearchIcon, XIcon } from '@primer/octicons-react';
 import { IconButton } from '@arch-ui/button';
 import { A11yText } from '@arch-ui/typography';
 import { colors } from '@arch-ui/theme';
