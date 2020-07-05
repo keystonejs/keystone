@@ -17,7 +17,6 @@ At present, the only fully tested backend is `Postgres`, however Knex gives the 
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
 const keystone = new Keystone({
-  name: 'My Awesome Project',
   adapter: new KnexAdapter({...}),
 });
 ```

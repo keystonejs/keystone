@@ -37,7 +37,6 @@ module.exports = class Keystone {
     adapters,
     adapter,
     defaultAdapter,
-    name,
     onConnect,
     cookieSecret,
     sessionStore,
@@ -54,7 +53,6 @@ module.exports = class Keystone {
       access: true,
     },
   }) {
-    this.name = name;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -473,7 +471,7 @@ module.exports = class Keystone {
       list => list.getAdminMeta({ schemaName })
     );
 
-    return { lists, name: this.name };
+    return { lists };
   }
 
   getAdminViews({ schemaName }) {
