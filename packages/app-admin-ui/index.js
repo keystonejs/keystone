@@ -11,7 +11,7 @@ const getWebpackConfig = require('./server/getWebpackConfig');
 
 class AdminUIApp {
   constructor({
-    name,
+    name = 'Keystone',
     adminPath = '/admin',
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
