@@ -103,7 +103,6 @@ const { GoogleAuthStrategy } = require('@keystonejs/auth-passport');
 const cookieSecret = '<Something super secret>';
 
 const keystone = new Keystone({
-  name: 'Login With Google Example',
   adapter: new MongooseAdapter(),
   cookieSecret,
 });
@@ -154,6 +153,7 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
+      name: 'Login With Google Example',
       authStrategy: googleStrategy,
     }),
   ],
@@ -183,7 +183,6 @@ const { GoogleAuthStrategy } = require('@keystonejs/auth-passport');
 const cookieSecret = '<Something super secret>';
 
 const keystone = new Keystone({
-  name: 'Login With Google Example',
   adapter: new MongooseAdapter(),
   cookieSecret,
 });
@@ -265,6 +264,7 @@ keystone
     apps: [
       new GraphQLApp(),
       new AdminUIApp({
+        name: 'Login With Google Example',
         authStrategy: googleStrategy,
       }),
     ],
