@@ -377,6 +377,7 @@ module.exports = class List {
       // Check access
       const operation = 'read';
       const access = await context.getFieldAccessControlForUser(
+        field.access,
         this.key,
         field.path,
         undefined,
@@ -410,6 +411,7 @@ module.exports = class List {
 
       for (const field of fields) {
         const access = await context.getFieldAccessControlForUser(
+          field.access,
           this.key,
           field.path,
           data,
@@ -430,11 +432,17 @@ module.exports = class List {
   }
 
   async checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
-    const access = await context.getListAccessControlForUser(this.key, originalInput, operation, {
-      gqlName,
-      context,
-      ...extraInternalData,
-    });
+    const access = await context.getListAccessControlForUser(
+      this.access,
+      this.key,
+      originalInput,
+      operation,
+      {
+        gqlName,
+        context,
+        ...extraInternalData,
+      }
+    );
     if (!access) {
       graphqlLogger.debug(
         { operation, access, gqlName, ...extraInternalData },
@@ -1416,14 +1424,22 @@ module.exports = class List {
       // declarative syntax)
       getAccess: () => ({
         getCreate: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'create', { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'create', {
+            context,
+          }),
         getRead: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'read', { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'read', {
+            context,
+          }),
         getUpdate: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'update', { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'update', {
+            context,
+          }),
         getDelete: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'delete', { context }),
-        getAuth: () => context.getAuthAccessControlForUser(this.key, { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'delete', {
+            context,
+          }),
+        getAuth: () => context.getAuthAccessControlForUser(this.access, this.key, { context }),
       }),
 
       getSchema: () => {
