@@ -658,7 +658,7 @@ class QueryBuilder {
       }
       if (orderBy !== undefined) {
         // SELECT ... ORDER BY <orderField>
-        const [orderField, orderDirection] = orderBy.split('_');
+        const [orderField, orderDirection] = this._getOrderFieldAndDirection(orderBy);
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
         this._query.orderBy(sortKey, orderDirection);
       }
@@ -666,7 +666,7 @@ class QueryBuilder {
         // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
         this._query.orderBy(
           sortBy.map(s => {
-            const [orderField, orderDirection] = s.split('_');
+            const [orderField, orderDirection] = this._getOrderFieldAndDirection(s);
             const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
 
             return { column: sortKey, order: orderDirection };
@@ -678,6 +678,13 @@ class QueryBuilder {
 
   get() {
     return this._query;
+  }
+
+  _getOrderFieldAndDirection(str) {
+    const splits = str.split('_');
+    const orderField = splits.slice(0, splits.length - 1).join('_');
+    const orderDirection = splits[splits.length - 1];
+    return [orderField, orderDirection];
   }
 
   _getNextBaseTableAlias() {
