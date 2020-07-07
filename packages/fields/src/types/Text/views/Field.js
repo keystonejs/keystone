@@ -5,7 +5,15 @@ import { jsx } from '@emotion/core';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 
-const TextField = ({ onChange, autoFocus, field, errors, value = '', isDisabled }) => {
+const TextField = ({
+  onChange,
+  autoFocus,
+  field,
+  errors,
+  value = '',
+  isDisabled,
+  type = 'text',
+}) => {
   const handleChange = event => {
     onChange(event.target.value);
   };
@@ -26,7 +34,7 @@ const TextField = ({ onChange, autoFocus, field, errors, value = '', isDisabled 
           autoComplete="off"
           autoFocus={autoFocus}
           required={field.isRequired}
-          type="text"
+          type={type}
           value={canRead ? value : undefined}
           placeholder={canRead ? undefined : error.message}
           onChange={handleChange}
