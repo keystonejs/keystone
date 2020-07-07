@@ -102,7 +102,7 @@ class HookManager {
     await this._validateHook({ args, fields, operation, hookName: 'validateDelete' });
   }
 
-  async _validateHook(args, fields, operation, hookName) {
+  async _validateHook({ args, fields, operation, hookName }) {
     const { originalInput } = args;
     const fieldValidationErrors = [];
 
