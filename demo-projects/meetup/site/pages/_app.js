@@ -1,19 +1,17 @@
 import React from 'react';
 import Head from 'next/head';
-import gql from 'graphql-tag';
-import { ApolloProvider } from '@apollo/react-hooks';
 import { ToastProvider } from 'react-toast-notifications';
-
-import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authentication';
 import StylesBase from '../primitives/StylesBase';
 import GoogleAnalytics from '../components/GoogleAnalytics';
-
-const MyApp = ({ Component, pageProps, apolloClient, user }) => {
+import { useApollo } from '../lib/apolloClient';
+import { ApolloProvider } from '@apollo/react-hooks';
+const MyApp = ({ Component, pageProps }) => {
+  const apolloClient = useApollo(pageProps.initialApolloState);
   return (
     <ToastProvider>
       <ApolloProvider client={apolloClient}>
-        <AuthProvider initialUserValue={user}>
+        <AuthProvider>
           <Head>
             <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
             <meta
@@ -30,27 +28,4 @@ const MyApp = ({ Component, pageProps, apolloClient, user }) => {
   );
 };
 
-MyApp.getInitialProps = async ({ Component, ctx }) => {
-  let pageProps = {};
-
-  const data = await ctx.apolloClient.query({
-    query: gql`
-      query {
-        authenticatedUser {
-          id
-          name
-          isAdmin
-        }
-      }
-    `,
-    fetchPolicy: 'network-only',
-  });
-
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
-  }
-
-  return { pageProps, user: data.data ? data.data.authenticatedUser : undefined };
-};
-
-export default withApollo(MyApp);
+export default MyApp;
