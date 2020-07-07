@@ -101,11 +101,7 @@ class SessionManager {
     }
     let item;
     try {
-      item = await list.getAccessControlledItem(req.session.keystoneItemId, true, {
-        operation: 'read',
-        context: {},
-        info: {},
-      });
+      item = (await list.adapter.itemsQuery({ where: { id: req.session.keystoneItemId } }))[0];
     } catch (e) {
       return;
     }
