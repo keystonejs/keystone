@@ -137,7 +137,6 @@ The result is passed to [the next function in the execution order](/docs/guides/
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const resolveInput = ({
   operation,
@@ -163,19 +162,18 @@ Return values are ignored.
 
 #### Arguments
 
-| Argument                  | Type                    | Description                                                                                                                  |
-| :------------------------ | :---------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| `operation`               | `String`                | The operation being performed (ie. `create` or `update`)                                                                     |
-| `existingItem`            | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                             |
-| `originalInput`           | `Object`                | The data received by the GraphQL mutation                                                                                    |
-| `resolvedData`            | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
-| `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `addValidationError`      | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
+| Argument             | Type                    | Description                                                                                                                  |
+| :------------------- | :---------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`          | `String`                | The operation being performed (ie. `create` or `update`)                                                                     |
+| `existingItem`       | `Object` or `undefined` | The current stored item (or `undefined` for `create` operations)                                                             |
+| `originalInput`      | `Object`                | The data received by the GraphQL mutation                                                                                    |
+| `resolvedData`       | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
+| `context`            | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `addValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const validateInput = ({
   operation,
@@ -213,7 +211,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const beforeChange = ({
   operation,
@@ -254,7 +251,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const afterChange = ({
   operation,
@@ -279,17 +275,16 @@ Should throw or register errors with `addValidationError(<String>)` if the delet
 
 #### Arguments
 
-| Argument                  | Type             | Description                                                                                                                  |
-| :------------------------ | :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| `operation`               | `String`         | The operation being performed (`delete` in this case)                                                                        |
-| `existingItem`            | `Object`         | The current stored item                                                                                                      |
-| `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `addValidationError`      | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
+| Argument             | Type             | Description                                                                                                                  |
+| :------------------- | :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `operation`          | `String`         | The operation being performed (`delete` in this case)                                                                        |
+| `existingItem`       | `Object`         | The current stored item                                                                                                      |
+| `context`            | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `addValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
 
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const validateDelete = ({
   operation,
@@ -323,7 +318,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const beforeDelete = ({
   operation,
@@ -358,7 +352,6 @@ Return values are ignored.
 #### Usage
 
 <!-- prettier-ignore -->
-
 ```js
 const afterDelete = ({
   operation,
