@@ -6,7 +6,7 @@ import { jsx } from '@emotion/core';
 
 import Link from 'next/link';
 import { useAuth } from '../lib/authentication';
-import { SignoutIcon } from '../primitives';
+import { SignoutIcon, Loading } from '../primitives';
 import { getForegroundColor, useLogoDimension } from '../helpers';
 import { mq } from '../helpers/media';
 import { fontSizes, gridSize, shadows } from '../theme';
@@ -143,7 +143,7 @@ const AnonActions = () => {
 };
 
 const Navbar = ({ background = 'white', ...props }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
   const { logoWidth, logoHeight, logoWidthSm, logoHeightSm } = useLogoDimension();
   const foreground = getForegroundColor(background);
 
@@ -171,7 +171,7 @@ const Navbar = ({ background = 'white', ...props }) => {
           <NavLink href="/about">About</NavLink>
           <NavLink href="/events">Events</NavLink>
         </div>
-        {isAuthenticated ? <UserActions user={user} /> : <AnonActions />}
+        {isLoading ? <Loading /> : isAuthenticated ? <UserActions user={user} /> : <AnonActions />}
       </Header>
     </ThemeContext.Provider>
   );
