@@ -121,12 +121,9 @@ class HookManager {
     };
 
     try {
-      await this._mapToFields(
-        fields,
-        ({ [hookName]: typeHook, hooks: { [hookName]: fieldHook } }) => {
-          return Promise.all([typeHook(args), fieldHook ? fieldHook(args) : undefined]);
-        }
-      );
+      await mapToFields(fields, ({ [hookName]: typeHook, hooks: { [hookName]: fieldHook } }) => {
+        return Promise.all([typeHook(args), fieldHook ? fieldHook(args) : undefined]);
+      });
     } catch ({ message }) {
       // Convert any generic Errors to a ValidationFailureError
       fieldValidationErrors.push({ msg: message, data: {}, internalData: {} });
