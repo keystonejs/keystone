@@ -210,7 +210,6 @@ keystone
         listName: 'User',
         items: initialData.User.map(x => ({ data: x })),
       });
-      // await keystone.createItems(initialData);
     }
 
     const app = express();
