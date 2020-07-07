@@ -1,6 +1,5 @@
 const pluralize = require('pluralize');
 const {
-  resolveAllKeys,
   mapKeys,
   omit,
   omitBy,
@@ -8,7 +7,6 @@ const {
   intersection,
   mergeWhereClause,
   objMerge,
-  arrayToObject,
   flatten,
   zipObj,
   createLazyDeferred,
@@ -23,12 +21,10 @@ const {
   opToType,
   mapNativeTypeToKeystoneType,
   getDefautlLabelResolver,
+  mapToFields,
 } = require('./utils');
-const {
-  LimitsExceededError,
-  ValidationFailureError,
-  throwAccessDenied,
-} = require('./graphqlErrors');
+const { HookManager } = require('./hooks');
+const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
@@ -58,7 +54,7 @@ module.exports = class List {
   ) {
     this.key = key;
     this._fields = fields;
-    this.hooks = hooks;
+    this._hooks = hooks;
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
 
@@ -225,6 +221,11 @@ module.exports = class List {
     this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
       this.fieldsByPath[path].extendAdminViews({ ...type.views })
     );
+    this.hookManager = new HookManager({
+      fields: this.fields,
+      hooks: this._hooks,
+      listKey: this.key,
+    });
   }
 
   getAdminMeta({ schemaName }) {
@@ -611,32 +612,6 @@ module.exports = class List {
   }
 
   // Mutation resolvers
-  _throwValidationFailure(errors, operation, data = {}) {
-    throw new ValidationFailureError({
-      data: {
-        messages: errors.map(e => e.msg),
-        errors: errors.map(e => e.data),
-        listKey: this.key,
-        operation,
-      },
-      internalData: {
-        errors: errors.map(e => e.internalData),
-        data,
-      },
-    });
-  }
-
-  _mapToFields(fields, action) {
-    return resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
-      if (!error.errors) {
-        throw error;
-      }
-      const errorCopy = new Error(error.message || error.toString());
-      errorCopy.errors = Object.values(error.errors);
-      throw errorCopy;
-    });
-  }
-
   _fieldsFromObject(obj) {
     return Object.keys(obj)
       .map(fieldPath => this.fieldsByPath[fieldPath])
@@ -645,7 +620,7 @@ module.exports = class List {
 
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
-    const resolvedRelationships = await this._mapToFields(fields, async field => {
+    const resolvedRelationships = await mapToFields(fields, async field => {
       const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
         existingItem,
@@ -688,7 +663,7 @@ module.exports = class List {
       field => typeof originalInput[field.path] === 'undefined'
     );
 
-    const defaultValues = await this._mapToFields(fieldsWithoutValues, field =>
+    const defaultValues = await mapToFields(fieldsWithoutValues, field =>
       field.getDefaultValue(args)
     );
 
@@ -696,140 +671,6 @@ module.exports = class List {
       ...omitBy(defaultValues, path => typeof defaultValues[path] === 'undefined'),
       ...originalInput,
     };
-  }
-
-  async _resolveInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
-
-    // First we run the field type hooks
-    // NOTE: resolveInput is run on _every_ field, regardless if it has a value
-    // passed in or not
-    resolvedData = await this._mapToFields(this.fields, field => field.resolveInput(args));
-
-    // We then filter out the `undefined` results (they should return `null` or
-    // a value)
-    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
-
-    // Run the schema-level field hooks, passing in the results from the field
-    // type hooks
-    resolvedData = {
-      ...resolvedData,
-      ...(await this._mapToFields(
-        this.fields.filter(field => field.hooks.resolveInput),
-        field => field.hooks.resolveInput({ ...args, resolvedData })
-      )),
-    };
-
-    // And filter out the `undefined`s again.
-    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
-
-    if (this.hooks.resolveInput) {
-      // And run any list-level hook
-      resolvedData = await this.hooks.resolveInput({ ...args, resolvedData });
-      if (typeof resolvedData !== 'object') {
-        throw new Error(
-          `Expected ${
-            this.key
-          }.hooks.resolveInput() to return an object, but got a ${typeof resolvedData}: ${resolvedData}`
-        );
-      }
-    }
-
-    // Finally returning the amalgamated result of all the hooks.
-    return resolvedData;
-  }
-
-  async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
-    // Check for isRequired
-    const fieldValidationErrors = this.fields
-      .filter(
-        field =>
-          field.isRequired &&
-          !field.isRelationship &&
-          ((operation === 'create' &&
-            (resolvedData[field.path] === undefined || resolvedData[field.path] === null)) ||
-            (operation === 'update' &&
-              Object.prototype.hasOwnProperty.call(resolvedData, field.path) &&
-              (resolvedData[field.path] === undefined || resolvedData[field.path] === null)))
-      )
-      .map(f => ({
-        msg: `Required field "${f.path}" is null or undefined.`,
-        data: { resolvedData, operation, originalInput },
-        internalData: {},
-      }));
-    if (fieldValidationErrors.length) {
-      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
-    }
-
-    const fields = this._fieldsFromObject(resolvedData);
-    await this._validateHook(args, fields, operation, 'validateInput');
-  }
-
-  async _validateDelete(existingItem, context, operation) {
-    const args = { existingItem, context, operation };
-    const fields = this.fields;
-    await this._validateHook(args, fields, operation, 'validateDelete');
-  }
-
-  async _validateHook(args, fields, operation, hookName) {
-    const { originalInput } = args;
-    const fieldValidationErrors = [];
-    // FIXME: Can we do this in a way where we simply return validation errors instead?
-    args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
-      fieldValidationErrors.push({ msg, data: _data, internalData });
-    await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(
-      fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
-    );
-    if (fieldValidationErrors.length) {
-      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
-    }
-
-    if (this.hooks[hookName]) {
-      const listValidationErrors = [];
-      await this.hooks[hookName]({
-        ...args,
-        addValidationError: (msg, _data = {}, internalData = {}) =>
-          listValidationErrors.push({ msg, data: _data, internalData }),
-      });
-      if (listValidationErrors.length) {
-        this._throwValidationFailure(listValidationErrors, operation, originalInput);
-      }
-    }
-  }
-
-  async _beforeChange(resolvedData, existingItem, context, operation, originalInput) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
-    await this._runHook(args, resolvedData, 'beforeChange');
-  }
-
-  async _beforeDelete(existingItem, context, operation) {
-    const args = { existingItem, context, operation };
-    await this._runHook(args, existingItem, 'beforeDelete');
-  }
-
-  async _afterChange(updatedItem, existingItem, context, operation, originalInput) {
-    const args = { updatedItem, originalInput, existingItem, context, operation };
-    await this._runHook(args, updatedItem, 'afterChange');
-  }
-
-  async _afterDelete(existingItem, context, operation) {
-    const args = { existingItem, context, operation };
-    await this._runHook(args, existingItem, 'afterDelete');
-  }
-
-  async _runHook(args, fieldObject, hookName) {
-    // Used to apply hooks that only produce side effects
-    const fields = this._fieldsFromObject(fieldObject);
-    await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(
-      fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
-    );
-
-    if (this.hooks[hookName]) await this.hooks[hookName](args);
   }
 
   async _nestedMutation(mutationState, context, mutation) {
@@ -909,22 +750,34 @@ module.exports = class List {
         mutationState
       );
 
-      resolvedData = await this._resolveInput(
+      resolvedData = await this.hookManager.resolveInput({
         resolvedData,
         existingItem,
         context,
         operation,
-        originalInput
-      );
+        originalInput,
+      });
 
-      await this._validateInput(resolvedData, existingItem, context, operation, originalInput);
+      await this.hookManager.validateInput({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      await this._beforeChange(resolvedData, existingItem, context, operation, originalInput);
+      await this.hookManager.beforeChange({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      let newItem;
+      let updatedItem;
       try {
-        newItem = await this.adapter.create(resolvedData);
-        createdPromise.resolve(newItem);
+        updatedItem = await this.adapter.create(resolvedData);
+        createdPromise.resolve(updatedItem);
         // Wait until next tick so the promise/micro-task queue can be flushed
         // fully, ensuring the deferred handlers get executed before we move on
         await new Promise(res => process.nextTick(res));
@@ -938,9 +791,15 @@ module.exports = class List {
       }
 
       return {
-        result: newItem,
+        result: updatedItem,
         afterHook: () =>
-          this._afterChange(newItem, existingItem, context, operation, originalInput),
+          this.hookManager.afterChange({
+            updatedItem,
+            existingItem,
+            context,
+            operation,
+            originalInput,
+          }),
       };
     });
   }
@@ -991,28 +850,53 @@ module.exports = class List {
     );
   }
 
-  async _updateSingle(id, data, existingItem, context, mutationState) {
+  async _updateSingle(id, originalInput, existingItem, context, mutationState) {
     const operation = 'update';
     return await this._nestedMutation(mutationState, context, async mutationState => {
       let resolvedData = await this._resolveRelationship(
-        data,
+        originalInput,
         existingItem,
         context,
         undefined,
         mutationState
       );
 
-      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      resolvedData = await this.hookManager.resolveInput({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this.hookManager.validateInput({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      await this._beforeChange(resolvedData, existingItem, context, operation, data);
+      await this.hookManager.beforeChange({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      const newItem = await this.adapter.update(id, resolvedData);
+      const updatedItem = await this.adapter.update(id, resolvedData);
 
       return {
-        result: newItem,
-        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+        result: updatedItem,
+        afterHook: () =>
+          this.hookManager.afterChange({
+            updatedItem,
+            existingItem,
+            context,
+            operation,
+            originalInput,
+          }),
       };
     });
   }
@@ -1055,15 +939,15 @@ module.exports = class List {
     const operation = 'delete';
 
     return await this._nestedMutation(mutationState, context, async () => {
-      await this._validateDelete(existingItem, context, operation);
+      await this.hookManager.validateDelete({ existingItem, context, operation });
 
-      await this._beforeDelete(existingItem, context, operation);
+      await this.hookManager.beforeDelete({ existingItem, context, operation });
 
       await this.adapter.delete(existingItem.id);
 
       return {
         result: existingItem,
-        afterHook: () => this._afterDelete(existingItem, context, operation),
+        afterHook: () => this.hookManager.afterDelete({ existingItem, context, operation }),
       };
     });
   }

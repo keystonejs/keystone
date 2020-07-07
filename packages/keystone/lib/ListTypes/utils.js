@@ -1,4 +1,4 @@
-const { upcase } = require('@keystonejs/utils');
+const { upcase, resolveAllKeys, arrayToObject } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
 const keystoneLogger = logger('keystone');
@@ -84,6 +84,16 @@ const getDefautlLabelResolver = labelField => item => {
   return value || item.id;
 };
 
+const mapToFields = (fields, action) =>
+  resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
+    if (!error.errors) {
+      throw error;
+    }
+    const errorCopy = new Error(error.message || error.toString());
+    errorCopy.errors = Object.values(error.errors);
+    throw errorCopy;
+  });
+
 module.exports = {
   preventInvalidUnderscorePrefix,
   keyToLabel,
@@ -92,4 +102,5 @@ module.exports = {
   opToType,
   mapNativeTypeToKeystoneType,
   getDefautlLabelResolver,
+  mapToFields,
 };
