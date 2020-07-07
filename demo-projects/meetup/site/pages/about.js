@@ -11,6 +11,7 @@ import Meta from '../components/Meta';
 import { colors, gridSize } from '../theme';
 import { GET_ORGANISERS } from '../graphql/organisers';
 import { mq } from '../helpers/media';
+import { initializeApollo } from '../lib/apolloClient';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -121,3 +122,18 @@ const Organiser = ({ organiser }) => (
   </li>
 );
 const Content = props => <div css={{ maxWidth: 720 }} {...props} />;
+
+export async function getStaticProps() {
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: GET_ORGANISERS,
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+    },
+    unstable_revalidate: 1,
+  };
+}
