@@ -1,11 +1,9 @@
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
-const cuid = require('cuid');
 
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', {
         fields: {
@@ -84,7 +82,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             _CompaniesMeta {
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 relatedFields {
                   type
                   fields
@@ -99,7 +101,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data).toHaveProperty('_CompaniesMeta.schema');
           expect(data._CompaniesMeta.schema).toMatchObject({
             type: 'Company',
-            queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+            queries: {
+              item: 'Company',
+              list: 'allCompanies',
+              meta: '_allCompaniesMeta',
+            },
             relatedFields: [
               {
                 type: 'User',
@@ -172,7 +178,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 relatedFields {
                   type
                   fields
@@ -189,7 +199,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               name: 'User',
               schema: {
-                queries: ['User', 'allUsers', '_allUsersMeta'],
+                queries: {
+                  item: 'User',
+                  list: 'allUsers',
+                  meta: '_allUsersMeta',
+                },
                 relatedFields: [
                   {
                     fields: ['employees'],
@@ -207,7 +221,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name: 'Company',
               schema: {
                 type: 'Company',
-                queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                queries: {
+                  item: 'Company',
+                  list: 'allCompanies',
+                  meta: '_allCompaniesMeta',
+                },
                 relatedFields: [
                   {
                     type: 'User',

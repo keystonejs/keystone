@@ -1,5 +1,51 @@
 # @keystonejs/access-control
 
+## 6.2.0
+
+### Minor Changes
+
+- [`dec3d336a`](https://github.com/keystonejs/keystone/commit/dec3d336adbe8156722fbe65f315a57b2f5c08e7) [#3153](https://github.com/keystonejs/keystone/pull/3153) Thanks [@timleslie](https://github.com/timleslie)! - Made `context` available to user designed access control functions.
+
+## 6.1.0
+
+### Minor Changes
+
+- [`463f55233`](https://github.com/keystonejs/keystone/commit/463f552335013d5ba9ebf2e8f7a9ebf8e2b0e0db) [#3095](https://github.com/keystonejs/keystone/pull/3095) Thanks [@timleslie](https://github.com/timleslie)! - Added `{ item, args, context, info, gqlName }` to the arguments available in access control functions for custom queries/mutations.
+
+## 6.0.0
+
+### Major Changes
+
+- [`839666e25`](https://github.com/keystonejs/keystone/commit/839666e25d8bffefd034e6344e11d72dd43b925b) [#2872](https://github.com/keystonejs/keystone/pull/2872) Thanks [@wcalebgray](https://github.com/wcalebgray)! - Added async capability for all Access Control resolvers. This changes the below methods to async functions, returning Promises:
+
+  ```
+  access-control
+  - validateCustomAccessControl
+  - validateListAccessControl
+  - validateFieldAccessControl
+  - validateAuthAccessControl
+
+  keystone/List
+  - checkFieldAccess
+  - checkListAccess
+
+  keystone/providers/custom
+  - computeAccess
+
+  keystone/providers/listAuth
+  - checkAccess
+
+  ```
+
+  Changed `keystone/Keystone`'s `getGraphQlContext` return object (context) to include async resolvers for the following methods:
+
+  ```
+  - context.getCustomAccessControlForUser
+  - context.getListAccessControlForUser
+  - context.getFieldAccessControlForUser
+  - context.getAuthAccessControlForUser
+  ```
+
 ## 5.2.0
 
 ### Minor Changes

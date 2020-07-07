@@ -1,12 +1,14 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { Component, Suspense } from 'react';
+import { useImage } from 'react-image';
 import PropTypes from 'prop-types';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
-import { AlertIcon } from '@arch-ui/icons';
+import { AlertIcon, FileMediaIcon } from '@primer/octicons-react';
 import { HiddenInput } from '@arch-ui/input';
+import { LoadingIndicator } from '@arch-ui/loading';
 import { Lozenge } from '@arch-ui/lozenge';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
@@ -179,17 +181,22 @@ export default class FileField extends Component {
   // ==============================
 
   renderUploadButton = () => {
-    const { uploadButtonLabel } = this.props;
+    const { uploadButtonLabel, isDisabled } = this.props;
     const { changeStatus, isLoading } = this.state;
 
     return (
-      <LoadingButton onClick={this.openFileBrowser} isLoading={isLoading} variant="ghost">
+      <LoadingButton
+        onClick={this.openFileBrowser}
+        isLoading={isLoading}
+        variant="ghost"
+        isDisabled={isDisabled}
+      >
         {uploadButtonLabel({ status: changeStatus })}
       </LoadingButton>
     );
   };
   renderCancelButton = () => {
-    const { cancelButtonLabel } = this.props;
+    const { cancelButtonLabel, isDisabled } = this.props;
     const { changeStatus } = this.state;
 
     // possible states; no case for 'empty' as cancel is not rendered
@@ -206,14 +213,14 @@ export default class FileField extends Component {
     }
 
     return (
-      <Button onClick={onClick} variant="subtle" appearance={appearance}>
+      <Button onClick={onClick} variant="subtle" appearance={appearance} isDisabled={isDisabled}>
         {cancelButtonLabel({ status: changeStatus })}
       </Button>
     );
   };
 
   render() {
-    const { autoFocus, field, statusMessage, errors } = this.props;
+    const { autoFocus, field, statusMessage, errors, isDisabled } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
@@ -224,11 +231,11 @@ export default class FileField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-        {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+        <FieldDescription text={field.adminDoc} />
         <FieldInput>
           {file ? (
             <Wrapper>
-              {imagePath ? <Image src={imagePath} alt={field.path} /> : null}
+              {imagePath && <ImageContainer src={imagePath} alt={field.path} />}
               <Content>
                 <FlexGroup style={{ marginBottom: gridSize }}>
                   {this.renderUploadButton()}
@@ -256,10 +263,11 @@ export default class FileField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             id={htmlID}
-            innerRef={this.getInputRef}
+            ref={this.getInputRef}
             name={field.path}
             onChange={this.onChange}
             type="file"
+            disabled={isDisabled}
           />
         </FieldInput>
       </FieldContainer>
@@ -273,30 +281,6 @@ export default class FileField extends Component {
 
 const Wrapper = props => <div css={{ alignItems: 'flex-start', display: 'flex' }} {...props} />;
 const Content = props => <div css={{ flex: 1, minWidth: 0 }} {...props} />;
-const Image = props => (
-  <div
-    css={{
-      backgroundColor: 'white',
-      borderRadius,
-      border: `1px solid ${colors.N20}`,
-      flexShrink: 0,
-      lineHeight: 0,
-      marginRight: gridSize,
-      padding: 4,
-      position: 'relative',
-      textAlign: 'center',
-      width: 130, // 120px image + chrome
-    }}
-  >
-    <img
-      css={{
-        height: 'auto',
-        maxWidth: '100%',
-      }}
-      {...props}
-    />
-  </div>
-);
 const MetaInfo = props => <Lozenge crop="right" {...props} />;
 const ErrorInfo = ({ children, ...props }) => (
   <Lozenge
@@ -321,3 +305,57 @@ const ChangeInfo = ({ status = 'default', ...props }) => {
   const appearance = appearanceMap[status];
   return <Lozenge appearance={appearance} {...props} />;
 };
+
+const Image = ({ src: imgSrc, alt }) => {
+  const { src } = useImage({ srcList: imgSrc });
+  return <img css={{ display: 'block', height: 'auto', maxWidth: '100%' }} src={src} alt={alt} />;
+};
+
+const ImageContainer = props => {
+  return (
+    <div
+      css={{
+        backgroundColor: 'white',
+        borderRadius,
+        border: `1px solid ${colors.N20}`,
+        flexShrink: 0,
+        marginRight: gridSize,
+        padding: '4px',
+        position: 'relative',
+        textAlign: 'center',
+        width: 130, // 120px image + chrome
+      }}
+    >
+      <ImageErrorBoundary>
+        <Suspense fallback={<LoadingIndicator />}>
+          <Image {...props} />
+        </Suspense>
+      </ImageErrorBoundary>
+    </div>
+  );
+};
+
+class ImageErrorBoundary extends Component {
+  state = {
+    hasError: false,
+  };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div css={{ padding: '4px 0', color: colors.N40 }}>
+          <div>
+            <FileMediaIcon />
+          </div>
+          <span css={{ fontSize: '0.9em' }}>Could not load image</span>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}

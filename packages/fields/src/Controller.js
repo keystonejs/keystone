@@ -1,26 +1,43 @@
 import isEqual from 'lodash.isequal';
 
 export default class FieldController {
-  constructor(config, list, adminMeta, views) {
+  constructor(
+    {
+      label,
+      path,
+      type,
+      access,
+      isOrderable,
+      isPrimaryKey,
+      isRequired,
+      isReadOnly,
+      adminDoc,
+      defaultValue,
+      ...config
+    },
+    { readViews, preloadViews, getListByKey },
+    views
+  ) {
     this.config = config;
-    this.label = config.label;
-    this.path = config.path;
-    this.type = config.type;
-    this.maybeAccess = config.access;
-    this.isPrimaryKey = config.isPrimaryKey;
-    this.list = list;
-    this.adminMeta = adminMeta;
+    this.label = label;
+    this.path = path;
+    this.type = type;
+    this.maybeAccess = access;
+    this.isOrderable = isOrderable;
+    this.isPrimaryKey = isPrimaryKey;
+    this.isRequired = isRequired;
+    this.isReadOnly = isReadOnly;
+    this.adminDoc = adminDoc;
+    this.readViews = readViews;
+    this.preloadViews = preloadViews;
+    this.getListByKey = getListByKey;
     this.views = views;
 
-    if ('defaultValue' in config) {
-      if (typeof config.defaultValue !== 'function') {
-        this._getDefaultValue = ({ prefill }) => prefill[this.path] || config.defaultValue;
-      } else {
-        this._getDefaultValue = config.defaultValue;
-      }
-    } else {
+    if (typeof defaultValue !== 'function') {
       // By default, the default value is undefined
-      this._getDefaultValue = ({ prefill }) => prefill[this.path] || undefined;
+      this._getDefaultValue = ({ prefill }) => prefill[this.path] || defaultValue;
+    } else {
+      this._getDefaultValue = defaultValue;
     }
   }
 
@@ -28,10 +45,12 @@ export default class FieldController {
   // by the implementations gqlOutputFields
   getQueryFragment = () => this.path;
 
-  // Prepare data for this field to be sent to the server as part of a GraphQL
-  // mutation. It must be serialized into the format expected within the field's
-  // Implementation#gqlCreateInputFields()/Implementation#gqlUpdateInputFields()
-  // NOTE: This function is run synchronously
+  /**
+   * Prepare data for this field to be sent to the server as part of a GraphQL
+   * mutation. It must be serialized into the format expected within the field's
+   * `Implementation#gqlCreateInputFields()`/`Implementation#gqlUpdateInputFields()`
+   * NOTE: This function is run synchronously
+   */
   serialize = data => data[this.path] || null;
 
   /**
@@ -49,7 +68,7 @@ export default class FieldController {
    * mutation. Any errors or warnings raised will abort the mutation and
    * re-render the `Field` view with a new `error` prop.
    *
-   * This method is only called on fields whos `.hasChanged()` property returns
+   * This method is only called on fields whose `.hasChanged()` property returns
    * truthy.
    *
    * If only warnings are raised, the Admin UI will allow the user to confirm
@@ -69,21 +88,23 @@ export default class FieldController {
    */
   validateInput = () => {};
 
-  // When receiving data from the server, it needs to be processed into a
-  // format ready for display. The format received will be the same as specified
-  // in the field's Implementation#gqlOutputFields()
-  // NOTE: This function is run synchronously
+  /**
+   * When receiving data from the server, it needs to be processed into a
+   * format ready for display. The format received will be the same as specified
+   * in the field's Implementation#gqlOutputFields()
+   * NOTE: This function is run synchronously
+   */
   deserialize = data => data[this.path];
 
   /**
-   * @description Before sending data to the GraphQL server, this check is run to exclude
+   * Before sending data to the GraphQL server, this check is run to exclude
    * possibly expensive data from being sent. It also prevents issues where "no
    * change" can be destructive (eg; uploading a file - we no longer have the
    * file, so cannot update it and may accidentally send `null`).
-   * @param initialData {Object} An object containing the most recently received
+   * @param {Object} initialData An object containing the most recently received
    * data from the server, keyed by the field's path. The values have already
    * been passed to this.serialize() for you.
-   * @param currentData {Object} An object containing all of the data for the
+   * @param {Object} currentData An object containing all of the data for the
    * current item, keyed by the field's path. The values have already been
    * passed to this.serialize() for you
    * @return boolean
@@ -91,34 +112,31 @@ export default class FieldController {
   hasChanged = (initialData, currentData) =>
     !isEqual(initialData[this.path], currentData[this.path]);
 
-  // eslint-disable-next-line no-unused-vars
   getDefaultValue = ({ originalInput = {}, prefill = {} } = {}) => {
     return this._getDefaultValue({ originalInput, prefill });
   };
 
   initCellView = () => {
     const { Cell } = this.views;
-    if (!Cell) {
-      return;
+    if (Cell) {
+      this.readViews([Cell]);
     }
-    this.adminMeta.readViews([Cell]);
   };
 
   initFieldView = () => {
     const { Field } = this.views;
-    if (!Field) {
-      return;
+    if (Field) {
+      this.readViews([Field]);
     }
-    this.adminMeta.readViews([Field]);
   };
 
   initFilterView = () => {
     const { Filter } = this.views;
-    if (!Filter) {
-      return;
+    if (Filter) {
+      this.readViews([Filter]);
     }
-    this.adminMeta.readViews([Filter]);
   };
 
   getFilterTypes = () => [];
+  getFilterValue = value => value;
 }

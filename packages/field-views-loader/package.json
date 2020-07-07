@@ -1,6 +1,6 @@
 {
   "name": "@keystonejs/field-views-loader",
-  "version": "5.2.1",
+  "version": "6.0.0",
   "description": "A webpack loader used to load all the field views used in an app",
   "main": "index.js",
   "author": "The Keystone Development Team",
@@ -9,7 +9,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "loader-utils": "^1.2.3"
+    "loader-utils": "^2.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/field-views-loader"
 }

@@ -11,7 +11,6 @@ const adapterConfig = {};
 /* /keystone-cli: generated-code */
 
 const keystone = new Keystone({
-  name: PROJECT_NAME,
   adapter: new Adapter(adapterConfig),
 });
 
@@ -26,7 +25,7 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
-    new AdminUIApp(),
+    new AdminUIApp({ name: PROJECT_NAME }),
     new NuxtApp({
       srcDir: 'src',
       buildDir: 'dist',

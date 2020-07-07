@@ -29,6 +29,7 @@ const fileAdapter = new LocalFileAdapter({...});
 | `getFilename` | `Function` | `null`         | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk. |
 
 > **Note:** `src` and `path` may be the same.
+> **Note 2:** You will need to set also a [static file server](https://v5.keystonejs.com/keystonejs/app-static/#static-file-app) to consume the uploaded files.
 
 ### Methods
 
@@ -104,15 +105,16 @@ const CF_DISTRIBUTION_ID = 'cloudfront-distribution-id';
 const S3_PATH = 'uploads';
 
 const fileAdapter = new S3Adapter({
-  accessKeyId: 'ACCESS_KEY_ID',
-  secretAccessKey: 'SECRET_ACCESS_KEY',
-  region: 'us-west-2',
   bucket: 'bucket-name',
   folder: S3_PATH,
   publicUrl: ({ id, filename, _meta }) =>
     `https://${CF_DISTRIBUTION_ID}.cloudfront.net/${S3_PATH}/${filename}`,
   s3Options: {
+    // Optional paramaters to be supplied directly to AWS.S3 constructor
     apiVersion: '2006-03-01',
+    accessKeyId: 'ACCESS_KEY_ID',
+    secretAccessKey: 'SECRET_ACCESS_KEY',
+    region: 'us-west-2',
   },
   uploadParams: ({ filename, id, mimetype, encoding }) => ({
     Metadata: {
@@ -124,17 +126,44 @@ const fileAdapter = new S3Adapter({
 
 ### Config
 
-| Option            | Type              | Default     | Description                                                                                                                                                                                                                              |
-| ----------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `accessKeyId`     | `String`          | Required    | AWS access key ID                                                                                                                                                                                                                        |
-| `secretAccessKey` | `String`          | Required    | AWS secret access key                                                                                                                                                                                                                    |
-| `region`          | `String`          | Required    | AWS region                                                                                                                                                                                                                               |
-| `bucket`          | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                           |
-| `folder`          | `String`          | Required    | Upload folder from root of bucket                                                                                                                                                                                                        |
-| `getFilename`     | `Function`        | `null`      | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk.                                                                                                              |
-| `publicUrl`       | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                       |
-| `s3Options`       | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                         |
-| `uploadParams`    | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.upload. For available options refer to the [AWS S3 upload API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property). |
+| Option         | Type              | Default     | Description                                                                                                                                                                                                                              |
+| -------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bucket`       | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                           |
+| `folder`       | `String`          | `''`        | Upload folder from root of bucket. By default uploads will be sent to the bucket's root folder.                                                                                                                                          |
+| `getFilename`  | `Function`        | `null`      | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk.                                                                                                              |
+| `publicUrl`    | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                       |
+| `s3Options`    | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                         |
+| `uploadParams` | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.upload. For available options refer to the [AWS S3 upload API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property). |
+
+> **Note:** Authentication can be done in many different ways. One option is to include valid `accessKeyId` and `secretAccessKey` properties in the `s3Options` parameter. Other methods include setting environment variables. See [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) for a complete set of options.
+
+### S3-compatible object storage providers
+
+You can also use any S3 compatible object storage provider with this adapter. You must provide the config `s3Options.endpoint` to correctly point to provider's server. Other options may be required based on which provider you choose.
+
+- [DigitalOcean Spaces](https://www.digitalocean.com/docs/spaces/resources/s3-sdk-examples/)
+
+```js
+const s3Options = {
+  accessKeyId: 'YOUR-ACCESSKEYID',
+  secretAccessKey: 'YOUR-SECRETACCESSKEY',
+  endpoint: 'https://${REGION}.digitaloceanspaces.com', // REGION is datacenter region e.g. nyc3, sgp1 etc
+};
+```
+
+- [Minio](https://docs.minio.io/docs/how-to-use-aws-sdk-for-javascript-with-minio-server.html)
+
+```js
+const s3Options = {
+  accessKeyId: 'YOUR-ACCESSKEYID',
+  secretAccessKey: 'YOUR-SECRETACCESSKEY',
+  endpoint: 'http://127.0.0.1:9000', // locally or cloud url
+  s3ForcePathStyle: true, // needed with minio?
+  signatureVersion: 'v4', // needed with minio?
+};
+```
+
+> For Minio `ACL: 'public-read'` config on `uploadParams.Metadata` option does not work compared to AWS or DigitalOcean, you must set `public` policy on bucket to use anonymous access, if you want to provide authenticated access, you must use `afterChange` hook to populate publicUrl. Check [`policy`](https://docs.minio.io/docs/minio-client-complete-guide.html) command in Minio client
 
 ### Methods
 

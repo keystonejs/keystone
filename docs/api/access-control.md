@@ -101,6 +101,7 @@ the list `User` it would match the input type `UserWhereInput`.
 | `gqlName`                | The name of the query or mutation which triggered the access check.                           |
 | `itemId`                 | The `id` of the item being updated/deleted in singular `update` and `delete` operations.      |
 | `itemIds`                | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations.    |
+| `context`                | The `context` of the originating GraphQL operation.                                           |
 
 When resolving `StaticAccess`:
 
@@ -281,6 +282,7 @@ interface AccessInput {
   gqlName?: string;
   itemId?: string;
   itemIds?: [string];
+  context?: {};
 }
 
 type StaticAccess = boolean;
@@ -314,6 +316,7 @@ type FieldConfig = {
 | `gqlName`                | The name of the query or mutation which triggered the access check.                                           |
 | `itemId`                 | The `id` of the item being updated/deleted in singular `update` and `delete` operations.                      |
 | `itemIds`                | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations.                    |
+| `context`                | The `context` of the originating GraphQL operation.                                                           |
 
 When defining `StaticAccess`:
 
@@ -428,10 +431,15 @@ There are two ways to define the value of `access`:
 
 ```typescript
 interface AccessInput {
+  item {};
+  args {} ;
+  context: {};
+  info: {};
   authentication: {
     item?: {};
     listKey?: string;
   };
+  gqlName: string;
 }
 
 type StaticAccess = boolean;
@@ -449,7 +457,7 @@ keystone.extendGraphQLSchema({
   queries: [
     {
       schema: 'getUserByName(name: String!): Boolean',
-      resolver: async (item, context, info, info) => {...},
+      resolver: async (item, args, context, info, { query, access }) => {...},
       access: true,
     },
   ],
@@ -467,8 +475,8 @@ keystone.extendGraphQLSchema({
   queries: [
     {
       schema: 'getUserByName(name: String!): Boolean',
-      resolver: async (item, context, info, info) => {...},
-      access: ({ authentication: { item, listKey } }) => {
+      resolver: async (item, args, context, info, { query, access }) => {...},
+      access: async ({ item, args, context, info, authentication: { item: authedItem, listKey }, gqlName }) => {
         return true;
       },
     },

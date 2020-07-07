@@ -71,7 +71,7 @@ function ButtonElementComponent(props, ref) {
   const variant = makeVariant(props);
 
   if (rest.to) {
-    return <Link innerRef={ref} css={variant} {...rest} />;
+    return <Link ref={ref} css={variant} {...rest} />;
   }
 
   if (rest.href) {

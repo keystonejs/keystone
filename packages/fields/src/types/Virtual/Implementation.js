@@ -4,18 +4,35 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { parseFieldAccess } from '@keystonejs/access-control';
 
 export class Virtual extends Implementation {
-  constructor() {
+  constructor(
+    path,
+    {
+      resolver,
+      graphQLReturnType = 'String',
+      graphQLReturnFragment = '',
+      extendGraphQLTypes = [],
+      args = [],
+    }
+  ) {
     super(...arguments);
+    this.resolver = resolver;
+    this.args = args;
+    this.graphQLReturnType = graphQLReturnType;
+    this.graphQLReturnFragment = graphQLReturnFragment;
+    this.extendGraphQLTypes = extendGraphQLTypes;
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ${this.config.graphQLReturnType || `String`}`];
+    const argString = this.args.length
+      ? `(${this.args.map(({ name, type }) => `${name}: ${type}`).join('\n')})`
+      : '';
+    return [`${this.path}${argString}: ${this.graphQLReturnType}`];
   }
   getGqlAuxTypes() {
-    return this.config.extendGraphQLTypes || [];
+    return this.extendGraphQLTypes;
   }
   gqlOutputFieldResolvers() {
-    return { [`${this.path}`]: this.config.resolver };
+    return { [`${this.path}`]: this.resolver };
   }
   gqlQueryInputFields() {
     return [];
@@ -23,8 +40,7 @@ export class Virtual extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      isOrderable: false,
-      graphQLSelection: this.config.graphQLReturnFragment || '',
+      graphQLSelection: this.graphQLReturnFragment,
       isReadOnly: true,
     };
   }

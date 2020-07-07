@@ -1,11 +1,9 @@
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
-const cuid = require('cuid');
 
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', {
         fields: {
@@ -100,7 +98,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         query {
           allUsers {
             id
-            posts (first: 1, orderBy: "content_ASC") {
+            posts (first: 1, sortBy: content_ASC) {
               id
               content
             }

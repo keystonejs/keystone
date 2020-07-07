@@ -23,14 +23,12 @@ const keystone = new Keystone({
 | `adapter`        | `Object`   | Required                        | The database storage adapter. See the [Adapter framework](https://keystonejs.com/keystonejs/keystone/lib/adapters/) docs for more details.        |
 | `adapters`       | `Object`   | `undefined`                     | A list of named database adapters. Use the format `{ name: adapterObject }`.                                                                      |
 | `appVersion`     | `Object`   | See [`appVersion`](#appversion) | Configure the application version and where it is made available.                                                                                 |
-| `cookieMaxAge`   | `Int`      | 30 days                         | The maximum time, in milliseconds, session ID cookies remain valid.                                                                               |
-| `cookieSecret`   | `String`   | `qwerty`                        | The secret used to sign session ID cookies. Should be long and unguessable. Don't use this default in production!                                 |
+| `cookie`         | `Object`   | See: [`cookie`](#cookie)        | Cookie object used to configure the [express-session middleware](https://github.com/expressjs/session#cookie).                                    |
+| `cookieSecret`   | `String`   | Required in production          | The secret used to sign session ID cookies. Should be long and unguessable.                                                                       |
 | `defaultAccess`  | `Object`   | `undefined`                     | Default list, field, and custom schema access. See the [Access control API](https://www.keystonejs.com/api/access-control) docs for more details. |
 | `defaultAdapter` | `String`   | `undefined`                     | The name of the database adapter to use by default if multiple are provided.                                                                      |
-| `name`           | `String`   | `undefined`                     | The name of the project. Appears in the Admin UI.                                                                                                 |
 | `onConnect`      | `Function` | `undefined`                     | Callback that executes once `keystone.connect()` complete. Takes no arguments.                                                                    |
 | `queryLimits`    | `Object`   | `{}`                            | Configures global query limits                                                                                                                    |
-| `secureCookies`  | `Boolean`  | Variable                        | Defaults to true in production mode, false otherwise. See [`secureCookies`](#securecookies) for important details.                                |
 | `sessionStore`   | `Object`   | `undefined`                     | A compatible Express session middleware.                                                                                                          |
 | `schemaNames`    | `Array`    | `['public']`                    |                                                                                                                                                   |
 
@@ -75,11 +73,34 @@ const keystone = new Keystone({
 
 Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
 
-### `secureCookies`
+### `cookie`
 
-A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secureCookies` is set to true (as is the default with a **production** build) for a Keystone project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secureCookies` to false. This does not affect development builds since this value is already false.
+_**Default:**_ see Usage.
+
+A description of the cookie properties is included in the [express-session documentation](https://github.com/expressjs/session#cookie).
+
+#### `secure`
+
+A secure cookie is only sent to the server with an encrypted request over the HTTPS protocol. If `secure` is set to true (as is the default with a **production** build) for a KeystoneJS project running on a non-HTTPS server (such as localhost), you will **not** be able to log in. In that case, be sure you set `secure` to false. This does not affect development builds since this value is already false.
 
 You can read more about secure cookies on the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies).
+
+#### Usage
+
+```javascript
+const keystone = new Keystone({
+  /* ...config */
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Default to true in production
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+    sameSite: false,
+  },
+});
+```
+
+### `cookieSecret`
+
+The secret used to sign session ID cookies. In production mode (`process.env.NODE_ENV === 'production'`) this option is required. In development mode, if undefined, a random `cookieSecret` will be generated each time Keystone starts (this will cause sessions to be reset between restarts).
 
 ### `sessionStore`
 
@@ -105,9 +126,10 @@ const keystone = new Keystone({
 | `createItems`         | Add items to a `Keystone` list.                                              |
 | `createList`          | Add a list to the `Keystone` schema.                                         |
 | `disconnect`          | Disconnect from all adapters.                                                |
-| `executeQuery`        | Run GraphQL queries and mutations directly against a `Keystone` instance.    |
 | `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
 | `prepare`             | Manually prepare `Keystone` middlewares.                                     |
+| `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.          |
+| `executeGraphQL`      | Execute a server-side GraphQL operation within the given context.            |
 
 <!--
 
@@ -118,7 +140,7 @@ Please note: We use these internally but provide no support or assurance if used
 
 | Method                | Description                                                                  |
 | --------------------- | ---------------------------------------------------------------------------- |
-| `dumpSchema`          | Dump schema to a file.                                                       |
+| `dumpSchema`          | Dump schema to a string.                                                       |
 | `getTypeDefs`         | Remove from user documentation?                                              |
 | `getResolvers`        | Remove from user documentation?                                              |
 | `registerSchema`      | Remove from user documentation?                                              |
@@ -214,53 +236,6 @@ keystone.createList('Posts', {...});
 
 Disconnect all adapters.
 
-### `executeQuery(queryString, config)`
-
-Use this method to execute queries or mutations directly against a `Keystone` instance.
-
-**Note:** When querying or mutating via `keystone.executeQuery`, there are differences to keep in mind:
-
-- No access control checks are run (everything is set to `() => true`)
-- The `context.req` object is set to `{}` (you can override this if necessary,
-  see options below)
-- Attempting to authenticate will throw errors (due to `req` being mocked)
-
-Returns a Promise representing the result of the given query or mutation.
-
-```javascript allowCopy=false showLanguage=false
-keystone.executeQuery('query-string', {...});
-```
-
-#### queryString
-
-A GraphQL query string. For example:
-
-```graphql
-query {
-  allTodos {
-    id
-    name
-  }
-}
-```
-
-Can also be a mutation:
-
-```graphql
-mutation newTodo($name: String) {
-  createTodo(name: $name) {
-    id
-  }
-}
-```
-
-#### Config
-
-| Option      | Type     | Default | Description                                                                                                               |
-| ----------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `context`   | `Object` | `{}`    | Override the default `context` object passed to the GraphQL engine. Useful for adding a `req` or setting the `schemaName` |
-| `variables` | `Object` | `{}`    | The variables passed to the graphql query for the given queryString.                                                      |
-
 ### `extendGraphQLSchema(config)`
 
 Extends keystones generated schema with custom types, queries, and mutations.
@@ -305,19 +280,18 @@ See the [Custom schema guide](/docs/guides/custom-schema.md) for more informatio
 
 ```javascript
 {
-  resolver: (obj, args, context, info, extra) => {},
+  resolver: (parent, args, context, info, extra) => {},
 }
 ```
 
-For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/graphql-tools/resolvers/#resolver-function-signature). The last argument `extra` is an object that contains the following properties:
+For more information about the first four arguments, please see the [Apollo docs](https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments). The last argument `extra` is an object that contains the following property:
 
 | Name     | Description                                        |
 | -------- | -------------------------------------------------- |
-| `query`  | An executable helper function for running a query. |
 | `access` | Access control information about the current user. |
 
 - The `access` argument for `types`, `queries`, and `mutations` are all either boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
-See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
+- See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
 
 ### `prepare(config)`
 
@@ -341,3 +315,51 @@ const { middlewares } = await keystone.prepare({
 | `dev`         | `Boolean` | `false`                               | Sets the dev flag in Keystone' express middleware.                                                                  |
 | `distDir`     | `String`  | `dist`                                | The build directory for keystone.                                                                                   |
 | `pinoOptions` | `Object`  | `undefined`                           | Logging options passed to the [`express-pino-logger` npm module](https://www.npmjs.com/package/express-pino-logger) |
+
+### `createContext({ schemaName, authentication, skipAccessControl })`
+
+Create a `context` object that can be used with `executeGraphQL()`.
+
+#### Usage
+
+```javascript
+const { gql } = require('apollo-server-express');
+
+// Create a context which can execute GraphQL operations with no access control
+const context = keystone.createContext({ skipAccessControl: true })
+
+// Execute a GraphQL operation with no access control
+const { data, errors } = keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+```
+
+#### Config
+
+| Option              | Type      | default  | Description                                                                                  |
+| ------------------- | --------- | -------- | -------------------------------------------------------------------------------------------- |
+| `schemaName`        | `String`  | `public` | The name of the GraphQL schema to execute against.                                           |
+| `authentication`    | `Object`  | `{}`     | `{ item: { id }, listAuthKey: "" }`. Specifies the item to be used in access control checks. |
+| `skipAccessControl` | `Boolean` | `false`  | Set to `true` to skip all access control checks.                                             |
+
+### `executeGraphQL({ context, query, variables })`
+
+Execute a server-side GraphQL query within the given context.
+
+#### Usage
+
+```javascript
+const { gql } = require('apollo-server-express');
+
+// Create a context which can execute GraphQL operations with no access control
+const context = keystone.createContext({ skipAccessControl: true })
+
+// Execute a GraphQL operation with no access control
+const { data, errors } = keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+```
+
+#### Config
+
+| Option      | Type     | default                    | Description                                             |
+| ----------- | -------- | -------------------------- | ------------------------------------------------------- |
+| `context`   | `Array`  | `keystone.createContext()` | A `context` object to be used by the GraphQL resolvers. |
+| `query`     | `Object` | `undefined`                | The GraphQL operation to execute.                       |
+| `variables` | `Object` | `undefined`                | The variables to be passed to the GraphQL operation.    |

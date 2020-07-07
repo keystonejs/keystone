@@ -1,5 +1,62 @@
 # create-keystone-app
 
+## 3.2.2
+
+### Patch Changes
+
+- [`dac54b09e`](https://github.com/keystonejs/keystone/commit/dac54b09e93b69e3d0ac4fd94085f125fb0e99ff) [#3196](https://github.com/keystonejs/keystone/pull/3196) Thanks [@timleslie](https://github.com/timleslie)! - Updated the `package.json` script `create-tables` to use `cross-env`.
+
+## 3.2.1
+
+### Patch Changes
+
+- [`89fb78db3`](https://github.com/keystonejs/keystone/commit/89fb78db3e2aac40ff093d72ed55268b3b518cb2) [#3161](https://github.com/keystonejs/keystone/pull/3161) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `keystone.executeGraphQL` for all server-side GraphQL operations.
+
+## 3.2.0
+
+### Minor Changes
+
+- [`7c38e2671`](https://github.com/keystonejs/keystone/commit/7c38e267143491f38699326f02764f40f337d416) [#3085](https://github.com/keystonejs/keystone/pull/3085) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new \_verifyTables method to the knex adapter. This is then used by the Keystone CLI to warn when tables have not been initialised or the database might need a migration.
+
+### Patch Changes
+
+- Updated dependencies [[`7c38e2671`](https://github.com/keystonejs/keystone/commit/7c38e267143491f38699326f02764f40f337d416), [`835866e1a`](https://github.com/keystonejs/keystone/commit/835866e1a2954113d809c9f0bac186485ac6212b)]:
+  - @keystonejs/adapter-knex@10.1.0
+  - @keystonejs/adapter-mongoose@8.1.3
+
+## 3.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`babed628`](https://github.com/keystonejs/keystone/commit/babed628a408d7da39990a4c89a19828468555a8), [`9bad0e5f`](https://github.com/keystonejs/keystone/commit/9bad0e5fe67d2379537f4cb145058c6c809b3533), [`e765ad20`](https://github.com/keystonejs/keystone/commit/e765ad20abae9838f64b72b7d43767ec87db336a)]:
+  - @keystonejs/adapter-knex@10.0.0
+  - @keystonejs/adapter-mongoose@8.1.0
+
+## 3.1.1
+
+### Patch Changes
+
+- [`0229e9f5`](https://github.com/keystonejs/keystone/commit/0229e9f5a0e783d8ace577d3b49bc532cc213754) [#2804](https://github.com/keystonejs/keystone/pull/2804) Thanks [@timleslie](https://github.com/timleslie)! - Updated `create-table` script to use `cross-env` to support Windows. Fixes #2803.
+
+## 3.1.0
+
+### Minor Changes
+
+- [`efff8d66`](https://github.com/keystonejs/keystone/commit/efff8d66a0c6f0d76960927c2839170643b8a3ac) [#2747](https://github.com/keystonejs/keystone/pull/2747) Thanks [@ohmonster](https://github.com/ohmonster)! - Fixed command line arguments to not prompt when connection-string and test-connection arguments are supplied
+
+### Patch Changes
+
+- Updated dependencies [[`98be4b48`](https://github.com/keystonejs/keystone/commit/98be4b4858f0f2cd672910acc5e6cc0c079ce21f)]:
+  - @keystonejs/adapter-knex@9.0.2
+
+## 3.0.1
+
+### Patch Changes
+
+- [`4c2d3927`](https://github.com/keystonejs/keystone/commit/4c2d3927d4b81592d65a404c814f111f5b97ce54) [#2735](https://github.com/keystonejs/keystone/pull/2735) Thanks [@timleslie](https://github.com/timleslie)! - Fixed `Starter` project so that it doesn't attempt to initialise data before tables are created.
+
+* [`a9bc0cda`](https://github.com/keystonejs/keystone/commit/a9bc0cda879a12b152063875ca9593cdcaf0b33e) [#2693](https://github.com/keystonejs/keystone/pull/2693) Thanks [@Vultraz](https://github.com/Vultraz)! - Trimmed whitespace from database connection string input.
+
 ## 3.0.0
 
 ### Major Changes

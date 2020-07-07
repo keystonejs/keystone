@@ -3,21 +3,21 @@ const { parseCustomAccess } = require('@keystonejs/access-control');
 const { objMerge } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
 
-const { AccessDeniedError } = require('../List/graphqlErrors');
+const { AccessDeniedError } = require('../ListTypes/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
 class CustomProvider {
-  constructor({ schemaNames, defaultAccess, buildQueryHelper }) {
+  constructor({ schemaNames, defaultAccess }) {
     this._schemaNames = schemaNames;
     this._defaultAccess = defaultAccess;
-    this._buildQueryHelper = buildQueryHelper;
     this._extendedTypes = [];
     this._extendedQueries = [];
     this._extendedMutations = [];
+    this._extendedSubscriptions = [];
   }
 
-  extendGraphQLSchema({ types = [], queries = [], mutations = [] }) {
+  extendGraphQLSchema({ types = [], queries = [], mutations = [], subscriptions = [] }) {
     const _parseAccess = obj => ({
       ...obj,
       access: parseCustomAccess({
@@ -30,6 +30,9 @@ class CustomProvider {
     this._extendedTypes = this._extendedTypes.concat(types.map(_parseAccess));
     this._extendedQueries = this._extendedQueries.concat(queries.map(_parseAccess));
     this._extendedMutations = this._extendedMutations.concat(mutations.map(_parseAccess));
+    this._extendedSubscriptions = this._extendedSubscriptions.concat(
+      subscriptions.map(_parseAccess)
+    );
   }
 
   getTypes({ schemaName }) {
@@ -42,6 +45,11 @@ class CustomProvider {
   }
   getMutations({ schemaName }) {
     return this._extendedMutations
+      .filter(({ access }) => access[schemaName])
+      .map(({ schema }) => schema);
+  }
+  getSubscriptions({ schemaName }) {
+    return this._extendedSubscriptions
       .filter(({ access }) => access[schemaName])
       .map(({ schema }) => schema);
   }
@@ -63,15 +71,29 @@ class CustomProvider {
         .map(this._customResolver('mutation'))
     );
   }
+  getSubscriptionResolvers({ schemaName }) {
+    return objMerge(
+      this._extendedSubscriptions
+        .filter(({ access }) => access[schemaName])
+        .map(this._customResolver('subscription'))
+    );
+  }
 
   _customResolver(type) {
-    return ({ schema, resolver, access }) => {
+    return ({ schema, subscribe, resolver, access }) => {
       const gqlName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
 
       // Perform access control check before passing off control to the
       // user defined resolver (along with the evalutated access).
-      const computeAccess = context => {
-        const _access = context.getCustomAccessControlForUser(access);
+      const computeAccess = async (item, args, context, info) => {
+        const _access = await context.getCustomAccessControlForUser(
+          item,
+          args,
+          context,
+          info,
+          access,
+          gqlName
+        );
         if (!_access) {
           graphqlLogger.debug({ access, gqlName }, 'Access statically or implicitly denied');
           graphqlLogger.info({ gqlName }, 'Access Denied');
@@ -88,12 +110,18 @@ class CustomProvider {
         }
         return _access;
       };
+
+      const resolve = async (item, args, context, info) => {
+        if (resolver) {
+          return resolver(item, args, context, info, {
+            access: await computeAccess(item, args, context, info),
+          });
+        }
+      };
+
       return {
-        [gqlName]: (obj, args, context, info) =>
-          resolver(obj, args, context, info, {
-            query: this._buildQueryHelper(context),
-            access: computeAccess(context),
-          }),
+        // Subscriptions use a slightly different format
+        [gqlName]: type === 'subscription' ? { subscribe, resolve } : resolve,
       };
     };
   }

@@ -8,7 +8,7 @@ import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { FlexGroup } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
-import { EyeIcon, LockIcon } from '@arch-ui/icons';
+import { EyeIcon, LockIcon } from '@primer/octicons-react';
 import { A11yText } from '@arch-ui/typography';
 
 const PasswordField = ({
@@ -18,6 +18,7 @@ const PasswordField = ({
   item: { password_is_set } = {},
   errors,
   warnings,
+  isDisabled,
 }) => {
   const focusTarget = useRef();
 
@@ -65,7 +66,7 @@ const PasswordField = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <FieldInput>
         {isEditing ? (
           <FlexGroup growIndexes={[0, 1]}>
@@ -79,6 +80,7 @@ const PasswordField = ({
               placeholder="New Password"
               type={showInputValue ? 'text' : 'password'}
               value={inputPassword}
+              disabled={isDisabled}
             />
             <Input
               autoComplete="off"
@@ -89,19 +91,26 @@ const PasswordField = ({
               placeholder="Confirm Password"
               type={showInputValue ? 'text' : 'password'}
               value={inputConfirm}
+              disabled={isDisabled}
             />
             <Button
               isActive={showInputValue}
               onClick={toggleMode}
               title={showInputValue ? 'Hide Text' : 'Show Text'}
               variant="ghost"
+              isDisabled={isDisabled}
             >
               <A11yText>{showInputValue ? 'Hide Text' : 'Show Text'}</A11yText>
               <div css={{ width: 20 }}>{showInputValue ? <LockIcon /> : <EyeIcon />}</div>
             </Button>
           </FlexGroup>
         ) : (
-          <Button id={`${htmlID}-button`} onClick={toggleInterface} variant="ghost">
+          <Button
+            id={`${htmlID}-button`}
+            onClick={toggleInterface}
+            variant="ghost"
+            isDisabled={isDisabled}
+          >
             {password_is_set ? 'Update Password' : 'Set Password'}
           </Button>
         )}

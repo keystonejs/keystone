@@ -2,7 +2,6 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Password, DateTime } = require('@keystonejs/fields');
 const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystonejs/test-utils');
 const { setupServer } = require('@keystonejs/test-utils');
-const cuid = require('cuid');
 
 const initialData = {
   User: [
@@ -25,7 +24,6 @@ const defaultAccess = ({ authentication: { item } }) => !!item;
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `Jest Test Project For Login Auth ${cuid()}`,
     createLists: keystone => {
       keystone.createList('Post', {
         fields: {

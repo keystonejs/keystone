@@ -4,7 +4,7 @@ subSection: field-types
 title: Wysiwyg
 [meta]-->
 
-# WYSIWYG
+# Wysiwyg
 
 This field inserts a string path into your schema based on the `Text` field type implementation, and renders a WYSIWYG editor in the Admin UI using [TinyMCE](https://www.tiny.cloud/)
 

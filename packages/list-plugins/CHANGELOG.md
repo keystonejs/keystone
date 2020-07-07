@@ -1,5 +1,90 @@
 # @keystonejs/list-plugins
 
+## 7.0.2
+
+### Patch Changes
+
+- [`0bf9e0615`](https://github.com/keystonejs/keystone/commit/0bf9e06153c52196b32c4e71e96b469cfe94f649) [#3160](https://github.com/keystonejs/keystone/pull/3160) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `context.executeGraphQL` for all server-side GraphQL operations.
+
+- Updated dependencies [[`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176)]:
+  - @keystonejs/fields@13.0.1
+
+## 7.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8)]:
+  - @keystonejs/fields@13.0.0
+  - @keystonejs/fields-authed-relationship@1.0.7
+
+## 7.0.0
+
+### Major Changes
+
+- [`79433ef17`](https://github.com/keystonejs/keystone/commit/79433ef17f8e7d51a1a1dbfd633574fbd8eef887) [#3013](https://github.com/keystonejs/keystone/pull/3013) Thanks [@gautamsi](https://github.com/gautamsi)! - \* Added `singleton` list plugin which prevents creating more items for a list or delete the only item in the list.
+
+### Patch Changes
+
+- [`9738e2ec9`](https://github.com/keystonejs/keystone/commit/9738e2ec929a4aa7dc8a58a58c95587f149e44f8) [#2958](https://github.com/keystonejs/keystone/pull/2958) Thanks [@Vultraz](https://github.com/Vultraz)! - Improved at-tracking date display format.
+
+- Updated dependencies [[`c2ebb51c7`](https://github.com/keystonejs/keystone/commit/c2ebb51c786297879fe9fac2007804055631e9e2), [`c3faeeff4`](https://github.com/keystonejs/keystone/commit/c3faeeff41f9b29a9fc31ca4e7778b596fcb20b9), [`397982096`](https://github.com/keystonejs/keystone/commit/39798209642571d3ba698e11410f5161cd1943bb), [`538378e4e`](https://github.com/keystonejs/keystone/commit/538378e4eb143dbe6e7a943408e0af302eb86b85), [`9f67e0e91`](https://github.com/keystonejs/keystone/commit/9f67e0e912b4f7dcb90fcb07c4b30bd6c45de464), [`ea9608342`](https://github.com/keystonejs/keystone/commit/ea960834262cec66f52fa39c1b3b07b702b3cd4d), [`8fddd97b2`](https://github.com/keystonejs/keystone/commit/8fddd97b20f1928ff7306d5d0dcc96e58ffe55fb), [`fdfb01417`](https://github.com/keystonejs/keystone/commit/fdfb01417b6d330342f4b6c326767c9567e35ca5), [`83548d43d`](https://github.com/keystonejs/keystone/commit/83548d43d661959a34a6de475994430ee1de3a1d), [`5ea313461`](https://github.com/keystonejs/keystone/commit/5ea313461aa2cba310b2634cc87780092c84b5be), [`aacc4a7f8`](https://github.com/keystonejs/keystone/commit/aacc4a7f8f88c242ae4bd784330d25056842d3fb), [`04c57fa78`](https://github.com/keystonejs/keystone/commit/04c57fa7840714d3413e093d468b78d740c95c9a), [`f33388b50`](https://github.com/keystonejs/keystone/commit/f33388b5061d59747ab46e238f43e9b08f52bd1e), [`4b06157be`](https://github.com/keystonejs/keystone/commit/4b06157be6cffde2d88969823f7c410fefd82317), [`649017fbd`](https://github.com/keystonejs/keystone/commit/649017fbd5ea17c36e8c49d44836e1f2bcae2692), [`170faf568`](https://github.com/keystonejs/keystone/commit/170faf568fef5b74147791476b466dc7a25c7d6f), [`de27d2c16`](https://github.com/keystonejs/keystone/commit/de27d2c16b520ae5126a74efb85c70ae88ae6b60)]:
+  - @keystonejs/fields@12.0.0
+  - @keystonejs/fields-authed-relationship@1.0.6
+
+## 6.0.0
+
+### Major Changes
+
+- [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc) [#2927](https://github.com/keystonejs/keystone/pull/2927) Thanks [@Vultraz](https://github.com/Vultraz)! - Upgraded to date-fns 2.x. This version uses [Unicode tokens](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table) for its formatting strings. A conversion table is available [here](https://github.com/date-fns/date-fns/blob/master/CHANGELOG.md#200---2019-08-20).
+
+  This change only affects the `CalendarDay` and `DateTime` fields' `format` config option.
+
+  The following script utilizes the [`@date-fns/upgrade`](https://github.com/date-fns/date-fns-upgrade) package and can be used to convert old formatting strings:
+
+  ```js
+  const { convertTokens } = require('@date-fns/upgrade/v2');
+
+  console.table(
+    [
+      // Add date-dns 1.x formatting strings here.
+    ].map(str => ({
+      v1: str,
+      v2: convertTokens(str).replace(/'/g, ''),
+    }))
+  );
+  ```
+
+  Do note this converts symbols to standalone style as opposed to formatted style which may not always be desired. For example, `DD/MM/YYYY` would be converted to `dd/LL/yyyy` instead of `dd/MM/yyyy`. See [here](http://cldr.unicode.org/translation/date-time-1/date-time#TOC-Stand-Alone-vs.-Format-Styles) for more information on which you should use.
+
+### Patch Changes
+
+- Updated dependencies [[`a124417f`](https://github.com/keystonejs/keystone/commit/a124417fddc75889db5e4e8e0d5625fb4af12590), [`54931d75`](https://github.com/keystonejs/keystone/commit/54931d75d3f26f4f300c2c4c3ee65ed3183b4a6a), [`e9a0de2c`](https://github.com/keystonejs/keystone/commit/e9a0de2cc03c211beca01ec206244105bdca6afc), [`59ed6310`](https://github.com/keystonejs/keystone/commit/59ed6310bacc76f571639de048689becbedbeac5)]:
+  - @keystonejs/fields@11.0.0
+  - @keystonejs/fields-authed-relationship@1.0.5
+
+## 5.2.1
+
+### Patch Changes
+
+- [`c3270e50`](https://github.com/keystonejs/keystone/commit/c3270e50a11ee328a31c4a8d8e77ee7ef873881c) [#2837](https://github.com/keystonejs/keystone/pull/2837) Thanks [@gautamsi](https://github.com/gautamsi)! - Tweaked hooks and utility function.
+  - Renamed `composeResolveInput` utility function to `composeHook` to indicate right use by name, this can also be used in other hook type and not just `resolveInput` hook.
+  - Switch to use of `operation` param to hook for detecting if this is `create` or `update` operation instead of existingItem being `undefined`.
+- Updated dependencies [[`72e0a4e1`](https://github.com/keystonejs/keystone/commit/72e0a4e19942df11c72d11c2cf6ee9bc94300d87), [`5ec4e5d5`](https://github.com/keystonejs/keystone/commit/5ec4e5d547503baeae2ac2f6317b66c2ebae93b7), [`6e507838`](https://github.com/keystonejs/keystone/commit/6e5078380e1d17eb2884554eef114fdd521a15f4), [`e3d46ce4`](https://github.com/keystonejs/keystone/commit/e3d46ce4bd9f9ec8808ab3194672c6849e624e27), [`d8584765`](https://github.com/keystonejs/keystone/commit/d85847652e224e5000e036be2df0b8a45ab96385), [`285026a0`](https://github.com/keystonejs/keystone/commit/285026a04ffce23ab72d7defc18ced2e980b0de4), [`d4811b02`](https://github.com/keystonejs/keystone/commit/d4811b0231c5d64e95dbbce57531df0931d4defa), [`e2800875`](https://github.com/keystonejs/keystone/commit/e28008756cbcc1e07e012a9fdb0cfa0ad94f3673), [`60e2c7eb`](https://github.com/keystonejs/keystone/commit/60e2c7eb2298a016c68a19a056040a3b45beab2a), [`99da34a8`](https://github.com/keystonejs/keystone/commit/99da34a8db26b8861b08cee330407605e787a80c), [`bcf03a7f`](https://github.com/keystonejs/keystone/commit/bcf03a7f8067a3f29f22dde397b957bf5cee1a07), [`e765ad20`](https://github.com/keystonejs/keystone/commit/e765ad20abae9838f64b72b7d43767ec87db336a), [`d7eb2601`](https://github.com/keystonejs/keystone/commit/d7eb260144d2aa31e7ef4e636e7a23f91dc37285)]:
+  - @keystonejs/fields@10.0.0
+  - @keystonejs/fields-authed-relationship@1.0.4
+
+## 5.2.0
+
+### Minor Changes
+
+- [`003c604a`](https://github.com/keystonejs/keystone/commit/003c604a8a8884457f2dda416eb14c2f64252596) [#2811](https://github.com/keystonejs/keystone/pull/2811) Thanks [@jesstelford](https://github.com/jesstelford)! - Leverage AuthedRelationship field within the byTracking plugin
+
+### Patch Changes
+
+- Updated dependencies [[`577b5e69`](https://github.com/keystonejs/keystone/commit/577b5e69ac4f949d1be2a80d8f391cb0a4b1333a), [`5958d58a`](https://github.com/keystonejs/keystone/commit/5958d58abc98c4f1b9a28e4a5a5666b2f634a054)]:
+  - @keystonejs/fields@9.0.4
+  - @keystonejs/fields-authed-relationship@1.0.3
+
 ## 5.1.4
 
 ### Patch Changes

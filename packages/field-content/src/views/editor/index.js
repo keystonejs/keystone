@@ -32,7 +32,7 @@ function getSchema(blocks) {
   return schema;
 }
 
-function Stories({ value: editorState, onChange, blocks, className, id }) {
+function Stories({ value: editorState, onChange, blocks, className, id, isDisabled }) {
   let schema = useMemo(() => {
     return getSchema(blocks);
   }, [blocks]);
@@ -74,6 +74,11 @@ function Stories({ value: editorState, onChange, blocks, className, id }) {
         tabIndex={0}
         onChange={({ value }) => {
           onChange(value);
+        }}
+        readOnly={isDisabled}
+        css={{
+          minHeight: 200,
+          padding: '16px 32px',
         }}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />

@@ -17,9 +17,9 @@ class BaseKeystoneAdapter {
     return this.listAdapters[key];
   }
 
-  async connect({ name, rels }) {
+  async connect({ rels }) {
     // Connect to the database
-    await this._connect({ name }, this.config);
+    await this._connect({}, this.config);
 
     // Set up all list adapters
     try {

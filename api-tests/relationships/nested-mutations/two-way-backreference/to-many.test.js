@@ -1,6 +1,5 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const cuid = require('cuid');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -14,7 +13,6 @@ jest.setTimeout(60000);
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Student', {
         fields: {
@@ -204,7 +202,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
             ) {
               id
-              teachers(orderBy: "id_ASC") {
+              teachers(sortBy: id_ASC) {
                 id
               }
             }

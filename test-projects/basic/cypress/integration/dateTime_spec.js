@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
-const lastOnline = '2018-08-16T11:08:18.886+10:00';
+const lastOnline = parseISO('2018-08-16T11:08:18.886+10:00');
 
 const calendarDayInputSelector = `#ks-daypicker-dob`;
 const dateTimeInputSelector = `#ks-input-lastOnline`;
@@ -13,47 +13,6 @@ beforeEach(() => {
   cy.clock(1551628922000);
 });
 
-describe('CalendarDay Component - Formatting', () => {
-  beforeEach(() => {
-    cy.visit(path);
-  });
-
-  it('should format date correctly on the list page', () => {
-    cy.get(getCellFromSecondRow(3)).contains('1st January 1990');
-  });
-
-  it('should format date correctly on the details page', () => {
-    cy.get(`${getCellFromSecondRow(2)} > a`).click({ force: true });
-    cy.get(calendarDayInputSelector).should('have.value', '1st January 1990');
-  });
-});
-
-describe('CalendarDay Component - Functionality', () => {
-  beforeEach(() => {
-    cy.visit(path);
-    cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
-  });
-
-  it('can accept natural language like today', () => {
-    cy.get(calendarDayInputSelector).type('today', { force: true });
-    cy.get('label:contains("Name")').click({ force: true });
-
-    cy.get(calendarDayInputSelector).should('have.value', '3rd March 2019');
-  });
-
-  it(`can accept natural language like tomorrow`, () => {
-    cy.get(calendarDayInputSelector).type('tomorrow', { force: true });
-    cy.get('label:contains("Name")').click({ force: true });
-    cy.get(calendarDayInputSelector).should('have.value', '4th March 2019');
-  });
-
-  it(`can accept a date`, () => {
-    cy.get(calendarDayInputSelector).type('20 september 2015', { force: true });
-    cy.get('label:contains("Name")').click({ force: true });
-    cy.get(calendarDayInputSelector).should('have.value', '20th September 2015');
-  });
-});
-
 ///// Begin Date Time Component
 
 describe('DateTime Component - Formatting', () => {
@@ -62,7 +21,7 @@ describe('DateTime Component - Formatting', () => {
   });
 
   it('should format date-time correctly on the list page', () => {
-    cy.get(getCellFromSecondRow(4)).contains(format(lastOnline, 'MM/DD/YYYY h:mm A'));
+    cy.get(getCellFromSecondRow(4)).contains(format(lastOnline, 'MM/dd/yyyy h:mm a'));
   });
 
   it('should format date-time correctly on the details page', () => {

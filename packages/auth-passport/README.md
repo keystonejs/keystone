@@ -103,7 +103,6 @@ const { GoogleAuthStrategy } = require('@keystonejs/auth-passport');
 const cookieSecret = '<Something super secret>';
 
 const keystone = new Keystone({
-  name: 'Login With Google Example',
   adapter: new MongooseAdapter(),
   cookieSecret,
 });
@@ -128,6 +127,7 @@ const googleStrategy = keystone.createAuthStrategy({
     appSecret: '<Your Google App Secret>',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
+    callbackHost: 'http://localhost:3000',
 
     // Once a user is found/created and successfully matched to the
     // googleId, they are authenticated, and the token is returned here.
@@ -153,6 +153,7 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
+      name: 'Login With Google Example',
       authStrategy: googleStrategy,
     }),
   ],
@@ -182,7 +183,6 @@ const { GoogleAuthStrategy } = require('@keystonejs/auth-passport');
 const cookieSecret = '<Something super secret>';
 
 const keystone = new Keystone({
-  name: 'Login With Google Example',
   adapter: new MongooseAdapter(),
   cookieSecret,
 });
@@ -207,6 +207,7 @@ const googleStrategy = keystone.createAuthStrategy({
     appSecret: '<Your Google App Secret>',
     loginPath: '/auth/google',
     callbackPath: '/auth/google/callback',
+    callbackHost: 'http://localhost:3000',
 
     loginPathMiddleware: (req, res, next) => {
       // An express middleware executed before the Passport social signin flow
@@ -263,6 +264,7 @@ keystone
     apps: [
       new GraphQLApp(),
       new AdminUIApp({
+        name: 'Login With Google Example',
         authStrategy: googleStrategy,
       }),
     ],

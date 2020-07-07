@@ -16,6 +16,9 @@ const { ListCRUDProvider } = require('./listCRUD');
 //   getMutations({ schemaName }) {
 //     return [];
 //   }
+//   getSubscriptions({ schemaName }) {
+//     return [];
+//   }
 //
 //   getTypeResolvers({ schemaName }) {
 //     return {};
@@ -24,6 +27,9 @@ const { ListCRUDProvider } = require('./listCRUD');
 //     return {};
 //   }
 //   getMutationResolvers({ schemaName }) {
+//     return {};
+//   }
+//   getSubscriptionResolvers({ schemaName }) {
 //     return {};
 //   }
 // }

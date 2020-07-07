@@ -1,11 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component, Suspense, Fragment } from 'react';
-import styled from '@emotion/styled';
+import { Suspense, Fragment, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { captureSuspensePromises, noop } from '@keystonejs/utils';
-import { KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@primer/octicons-react';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 import { Button } from '@arch-ui/button';
@@ -18,138 +17,176 @@ import copyToClipboard from 'clipboard-copy';
 import { useListSort } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
 import { NoResults } from './NoResults';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const Render = ({ children }) => children();
 
 // Styled Components
-const Table = styled('table')({
-  borderCollapse: 'collapse',
-  borderSpacing: 0,
-  width: '100%',
-});
-const TableRow = styled('tr')(({ isActive }) => ({
-  '> td': {
-    backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
-  },
-}));
-const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
-  backgroundColor: 'white',
-  boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
-  boxSizing: 'border-box',
-  color: isSelected ? colors.text : colors.N40,
-  cursor: isSortable ? 'pointer' : 'auto',
-  display: 'table-cell',
-  fontWeight: 'normal',
-  padding: gridSize,
-  position: 'sticky',
-  top: 0,
-  transition: 'background-color 100ms',
-  zIndex: 1,
-  textAlign: 'left',
-  verticalAlign: 'bottom',
-  fontSize: '1.1rem',
+const Table = props => (
+  <table
+    css={{
+      borderCollapse: 'collapse',
+      borderSpacing: 0,
+      tableLayout: 'fixed',
+      width: '100%',
+    }}
+    {...props}
+  />
+);
 
-  ':hover': {
-    color: isSortable && !isSelected ? colors.N60 : null,
-  },
-}));
-const BodyCell = styled('td')(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.B.L95 : null,
-  boxShadow: isSelected
-    ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
-    : `0 -1px 0 ${colors.N10}`,
-  boxSizing: 'border-box',
-  padding: `${gridSize + 2}px ${gridSize}px`,
-  position: 'relative',
-}));
-const ItemLink = styled(Link)`
-  color: ${colors.text};
+const TableRow = ({ isSelected, ...props }) => (
+  <tr
+    css={{
+      '> td': {
+        backgroundColor: isSelected ? colors.B.L95 : null,
+        boxShadow: isSelected
+          ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
+          : `0 -1px 0 ${colors.N10}`,
+      },
+    }}
+    {...props}
+  />
+);
 
-  /* Increase hittable area on item link */
-  &:only-of-type::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
-  }
-`;
+const HeaderCell = ({ isSelected, isSortable, ...props }) => (
+  <th
+    css={{
+      backgroundColor: 'white',
+      boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
+      boxSizing: 'border-box',
+      color: isSelected ? colors.text : colors.N40,
+      cursor: isSortable ? 'pointer' : 'auto',
+      display: 'table-cell',
+      fontWeight: 'normal',
+      padding: gridSize,
+      position: 'sticky',
+      top: 0,
+      transition: 'background-color 100ms',
+      zIndex: 1,
+      textAlign: 'left',
+      verticalAlign: 'bottom',
+      fontSize: '1.1rem',
 
-const BodyCellTruncated = styled(BodyCell)`
-  max-width: 10rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-wrap: normal;
-`;
+      ':hover': {
+        color: isSortable && !isSelected ? colors.N60 : null,
+      },
+    }}
+    {...props}
+  />
+);
 
-const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
-  borderLeft: `${size} solid transparent`,
-  borderRight: `${size} solid transparent`,
-  borderTop: `${size} solid`,
-  display: 'inline-block',
-  height: 0,
-  marginLeft: '0.33em',
-  marginTop: '-0.125em',
-  verticalAlign: 'middle',
-  width: 0,
-  transform: `rotate(${rotate})`,
-}));
+const BodyCell = props => (
+  <td
+    css={{
+      boxSizing: 'border-box',
+      padding: `${gridSize + 2}px ${gridSize}px`,
+      position: 'relative',
+    }}
+    {...props}
+  />
+);
+
+const ItemLink = ({ path, item, ...props }) => (
+  <Link
+    to={`${path}/${item.id}`}
+    css={{
+      color: colors.text,
+
+      /* Increase hittable area on item link */
+      '&:only-of-type::before': {
+        content: '" "',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+      },
+    }}
+    {...props}
+  />
+);
+
+const BodyCellTruncated = props => (
+  <BodyCell
+    css={{
+      maxWidth: '10rem',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      wordWrap: 'normal',
+    }}
+    {...props}
+  />
+);
+
+const SortDirectionArrow = ({ size = '0.25em', rotate = '0deg', ...props }) => (
+  <span
+    css={{
+      borderLeft: `${size} solid transparent`,
+      borderRight: `${size} solid transparent`,
+      borderTop: `${size} solid`,
+      display: 'inline-block',
+      height: 0,
+      marginLeft: '0.33em',
+      marginTop: '-0.125em',
+      verticalAlign: 'middle',
+      width: 0,
+      transform: `rotate(${rotate})`,
+    }}
+    {...props}
+  />
+);
 
 // Functional Components
 
-type SortLinkProps = {
-  handleSortChange: Function,
-  active: boolean,
-  sortAscending: boolean,
-};
-
-class SortLink extends React.Component<SortLinkProps> {
-  onClick = () => {
-    const { field, sortAscending, sortable } = this.props;
+const SortLink = ({
+  field,
+  'data-field': dataField,
+  active,
+  sortAscending,
+  sortable,
+  handleSortChange,
+}) => {
+  const onClick = () => {
     if (sortable) {
       // Set direction to the opposite of the current sortAscending value
-      this.props.handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
+      handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
     }
   };
 
-  render() {
-    // TODO: Do we want to make `sortable` a field config option?
-    return (
-      <HeaderCell
-        isSortable={this.props.sortable}
-        isSelected={this.props.active}
-        onClick={this.onClick}
-        data-field={this.props['data-field']}
-      >
-        {this.props.field.label}
-        {this.props.sortable && (
-          <SortDirectionArrow
-            rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
-          />
-        )}
-      </HeaderCell>
-    );
-  }
-}
+  return (
+    <HeaderCell isSortable={sortable} isSelected={active} onClick={onClick} data-field={dataField}>
+      {field.label}
+      {sortable && <SortDirectionArrow rotate={active && sortAscending ? '180deg' : '0deg'} />}
+    </HeaderCell>
+  );
+};
 
 // ==============================
 // Common for display & manage
 // ==============================
 
-class ListRow extends Component {
-  static defaultProps = { itemErrors: {}, linkField: '_label_' };
-  state = { showDeleteModal: false };
-  componentDidMount() {
-    this.mounted = true;
-  }
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+const ListRow = ({
+  list,
+  fields,
+  item,
+  itemErrors = {},
+  linkField = '_label_',
+  isSelected,
+  onSelectChange,
+  onDelete,
+}) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  onCheckboxChange = () => {
-    const { item, onSelectChange } = this.props;
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const onCheckboxChange = () => {
     onSelectChange(item.id);
   };
 
@@ -157,133 +194,124 @@ class ListRow extends Component {
   // Display
   // ==============================
 
-  showDeleteModal = () => {
-    this.setState({ showDeleteModal: true });
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
   };
-  closeDeleteModal = () => {
-    this.setState({ showDeleteModal: false });
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
   };
-  onDelete = result => {
-    if (this.props.onDelete) this.props.onDelete(result);
-    if (!this.mounted) return;
-    this.setState({ showDeleteModal: false });
+
+  const handleDelete = result => {
+    if (onDelete) onDelete(result);
+    if (!mounted.current) return;
+    setShowDeleteModal(false);
   };
-  renderDeleteModal() {
-    const { showDeleteModal } = this.state;
-    const { item, list } = this.props;
 
-    return (
-      <DeleteItemModal
-        isOpen={showDeleteModal}
-        item={item}
-        list={list}
-        onClose={this.closeDeleteModal}
-        onDelete={this.onDelete}
-      />
-    );
-  }
-  render() {
-    const { list, link, isSelected, item, itemErrors, fields, linkField } = this.props;
-    const copyText = window.location.origin + link({ path: list.path, item });
-    const items = [
-      {
-        content: 'Copy Link',
-        icon: <LinkIcon />,
-        onClick: () => copyToClipboard(copyText),
-      },
-      {
-        content: 'Delete',
-        icon: <TrashcanIcon />,
-        onClick: this.showDeleteModal,
-      },
-    ];
+  const items = [
+    {
+      content: 'Copy Link',
+      icon: <LinkIcon />,
+      onClick: () => copyToClipboard(`${window.location.origin}${list.fullPath}/${item.id}`),
+    },
+    {
+      content: 'Delete',
+      icon: <TrashcanIcon />,
+      onClick: openDeleteModal,
+    },
+  ];
 
-    return (
-      <TableRow>
-        <BodyCell isSelected={isSelected} key="checkbox">
-          <CheckboxPrimitive
-            checked={isSelected}
-            innerRef={this.getCheckbox}
-            value={item.id}
-            onChange={this.onCheckboxChange}
-            tabIndex="0"
-          />
-          {this.renderDeleteModal()}
-        </BodyCell>
-        {fields.map(field => {
-          const { path } = field;
+  return (
+    <TableRow isSelected={isSelected}>
+      <BodyCell key="checkbox">
+        <CheckboxPrimitive
+          checked={isSelected}
+          value={item.id}
+          onChange={onCheckboxChange}
+          tabIndex="0"
+        />
+        <DeleteItemModal
+          isOpen={showDeleteModal}
+          item={item}
+          list={list}
+          onClose={closeDeleteModal}
+          onDelete={handleDelete}
+        />
+      </BodyCell>
+      {fields.map(field => {
+        const { path } = field;
 
-          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
-            return (
-              <BodyCell key={path}>
-                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
-                <A11yText>{itemErrors[path].message}</A11yText>
-              </BodyCell>
-            );
-          }
+        if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
+          return (
+            <BodyCell key={path}>
+              <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N20 }} />
+              <A11yText>{itemErrors[path].message}</A11yText>
+            </BodyCell>
+          );
+        }
 
-          if (path === linkField) {
-            return (
-              <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, item })}>{item[linkField]}</ItemLink>
-              </BodyCellTruncated>
-            );
-          }
+        if (path === linkField) {
+          return (
+            <BodyCellTruncated key={path}>
+              <ItemLink path={list.fullPath} item={item}>
+                {item[linkField]}
+              </ItemLink>
+            </BodyCellTruncated>
+          );
+        }
 
-          let content;
+        let content;
 
-          if (field.views.Cell) {
-            const [Cell] = field.adminMeta.readViews([field.views.Cell]);
+        if (field.views.Cell) {
+          const [Cell] = field.readViews([field.views.Cell]);
 
-            // TODO
-            // fix this later, creating a react component on every render is really bad
-            // react will rerender into the DOM on every react render
-            // probably not a huge deal on a leaf component like this but still bad
-            const LinkComponent = ({ children, ...data }) => (
-              <ItemLink to={link(data)}>{children}</ItemLink>
-            );
-            content = (
+          content = (
+            <ErrorBoundary>
               <Cell
                 isSelected={isSelected}
                 list={list}
+                item={item} // FIXME: just passing this for the password cell, but not that optimal
                 data={item[path]}
                 field={field}
-                Link={LinkComponent}
+                Link={ItemLink}
               />
-            );
-          } else {
-            content = item[path];
-          }
-
-          return (
-            <BodyCellTruncated isSelected={isSelected} key={path}>
-              {content}
-            </BodyCellTruncated>
+            </ErrorBoundary>
           );
-        })}
-        <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
-          <Dropdown
-            align="right"
-            target={handlers => (
-              <Button
-                variant="subtle"
-                css={{
-                  opacity: 0,
-                  transition: 'opacity 150ms',
-                  'tr:hover > td > &': { opacity: 1 },
-                }}
-                {...handlers}
-              >
-                <KebabHorizontalIcon />
-              </Button>
-            )}
-            items={items}
-          />
-        </BodyCell>
-      </TableRow>
-    );
-  }
-}
+        } else {
+          content = item[path];
+        }
+
+        return (
+          <BodyCellTruncated
+            key={path}
+            css={{ fontFamily: field.isPrimaryKey ? 'Monaco, Consolas, monospace' : null }}
+          >
+            {content}
+          </BodyCellTruncated>
+        );
+      })}
+      <BodyCell css={{ padding: 0 }}>
+        <Dropdown
+          align="right"
+          target={handlers => (
+            <Button
+              variant="subtle"
+              css={{
+                opacity: 0,
+                transition: 'opacity 150ms',
+                'tr:hover > td > &': { opacity: 1 },
+              }}
+              {...handlers}
+            >
+              <KebabHorizontalIcon />
+            </Button>
+          )}
+          items={items}
+        />
+      </BodyCell>
+    </TableRow>
+  );
+};
 
 const SingleCell = ({ columns, children }) => (
   <tr>
@@ -291,26 +319,21 @@ const SingleCell = ({ columns, children }) => (
   </tr>
 );
 
-export default function ListTable(props) {
-  const {
-    adminPath,
-    columnControl,
-    fields,
-    isFullWidth,
-    items,
-    queryErrors = [],
-    list,
-    onChange,
-    onSelectChange,
-    selectedItems,
-    currentPage,
-    filters,
-    search,
-    itemLink = ({ path, item }) => `${adminPath}/${path}/${item.id}`,
-    linkField = '_label_',
-  } = props;
-
-  const [sortBy, onSortChange] = useListSort(list.key);
+export default function ListTable({
+  columnControl,
+  fields,
+  items,
+  queryErrors = [],
+  list,
+  onDelete,
+  onSelectChange,
+  selectedItems,
+  currentPage,
+  filters,
+  search,
+  linkField = '_label_',
+}) {
+  const [sortBy, onSortChange] = useListSort();
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;
@@ -326,11 +349,11 @@ export default function ListTable(props) {
   const TableContents = ({ isLoading, children }) => (
     <Fragment>
       <colgroup>
-        <col width="32" />
+        <col css={{ width: '40px' }} />
         {fields.map(f => (
           <col key={f.path} />
         ))}
-        <col width="32" />
+        <col css={{ width: '40px' }} />
       </colgroup>
       <thead>
         <tr>
@@ -350,7 +373,7 @@ export default function ListTable(props) {
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                sortable={field.path !== '_label_' && field.config.isOrderable}
+                sortable={field.path !== '_label_' && field.isOrderable}
                 field={field}
                 handleSortChange={onSortChange}
                 active={sortBy ? sortBy.field.path === field.path : false}
@@ -367,7 +390,7 @@ export default function ListTable(props) {
 
   return (
     <Card css={{ marginBottom: '3em' }}>
-      <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
+      <Table id={cypressId}>
         <Suspense
           fallback={
             <TableContents isLoading>
@@ -428,10 +451,9 @@ export default function ListTable(props) {
                         item={item}
                         itemErrors={queryErrors[itemIndex] || {}}
                         key={item.id}
-                        link={itemLink}
                         linkField={linkField}
                         list={list}
-                        onDelete={onChange}
+                        onDelete={onDelete}
                         onSelectChange={onSelectChange}
                       />
                     ))}

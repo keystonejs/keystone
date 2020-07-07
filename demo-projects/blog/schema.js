@@ -14,7 +14,7 @@ const {
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
-const getYear = require('date-fns/get_year');
+const { formatISO } = require('date-fns');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const dev = process.env.NODE_ENV !== 'production';
@@ -44,9 +44,9 @@ exports.User = {
     email: { type: Text, isUnique: true },
     dob: {
       type: CalendarDay,
-      format: 'Do MMMM YYYY',
-      yearRangeFrom: 1901,
-      yearRangeTo: getYear(new Date()),
+      format: 'do MMMM yyyy',
+      dateFrom: '1901-01-01',
+      dateTo: formatISO(new Date(), { representation: 'date' }),
     },
     ...(process.env.IFRAMELY_API_KEY
       ? {
@@ -89,7 +89,7 @@ exports.Post = {
       ],
     },
     body: { type: Wysiwyg },
-    posted: { type: DateTime, format: 'DD/MM/YYYY' },
+    posted: { type: DateTime, format: 'dd/MM/yyyy' },
     image: {
       type: File,
       adapter: fileAdapter,

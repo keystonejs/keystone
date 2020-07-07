@@ -1,13 +1,14 @@
 const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
+const { MockAdapter, MockIdType, MockListAdapter } = require('@keystonejs/test-utils');
 
 // We don't want to actually log, so we mock it before we require the class
 jest.doMock('@keystonejs/logger', () => ({
   logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
 }));
 
-const List = require('../lib/List');
-const { AccessDeniedError } = require('../lib/List/graphqlErrors');
+const { List } = require('../lib/ListTypes');
+const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
 const { getType } = require('@keystonejs/utils');
 const path = require('path');
@@ -17,130 +18,6 @@ function resolveViewPath(viewPath) {
   return path.join(fieldsPackagePath, 'src', 'types', viewPath);
 }
 
-class MockFieldImplementation {
-  constructor() {
-    this.access = {
-      public: {
-        create: false,
-        read: true,
-        update: false,
-        delete: false,
-      },
-    };
-    this.config = {};
-    this.hooks = {};
-  }
-  getAdminMeta() {
-    return { path: 'id' };
-  }
-  gqlOutputFields() {
-    return ['id: ID'];
-  }
-  gqlQueryInputFields() {
-    return ['id: ID'];
-  }
-  get gqlUpdateInputFields() {
-    return ['id: ID'];
-  }
-  get gqlCreateInputFields() {
-    return ['id: ID'];
-  }
-  getGqlAuxTypes() {
-    return [];
-  }
-  getGqlAuxQueries() {
-    return [];
-  }
-  getGqlAuxMutations() {
-    return [];
-  }
-  gqlOutputFieldResolvers() {
-    return {};
-  }
-  gqlAuxQueryResolvers() {
-    return {};
-  }
-  gqlAuxMutationResolvers() {
-    return {};
-  }
-  gqlAuxFieldResolvers() {
-    return {};
-  }
-  extendAdminViews(views) {
-    return views;
-  }
-  getDefaultValue() {
-    return;
-  }
-  async resolveInput({ resolvedData }) {
-    return resolvedData.id;
-  }
-  async validateInput() {}
-  async beforeChange() {}
-  async afterChange() {}
-  async beforeDelete() {}
-  async validateDelete() {}
-  async afterDelete() {}
-}
-class MockFieldAdapter {}
-
-const MockIdType = {
-  implementation: MockFieldImplementation,
-  views: {},
-  adapters: { mock: MockFieldAdapter },
-};
-
-class MockListAdapter {
-  name = 'mock';
-  constructor(parentAdapter) {
-    this.parentAdapter = parentAdapter;
-    this.index = 3;
-    this.items = {
-      0: { name: 'a', email: 'a@example.com', index: 0 },
-      1: { name: 'b', email: 'b@example.com', index: 1 },
-      2: { name: 'c', email: 'c@example.com', index: 2 },
-    };
-  }
-  newFieldAdapter = () => new MockFieldAdapter();
-  create = async item => {
-    this.items[this.index] = {
-      ...item,
-      index: this.index,
-    };
-    this.index += 1;
-    return this.items[this.index - 1];
-  };
-  findById = id => this.items[id];
-  delete = async id => {
-    this.items[id] = undefined;
-  };
-  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
-    if (meta) {
-      return {
-        count: (id !== undefined
-          ? [this.items[id]]
-          : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
-        ).length,
-      };
-    } else {
-      return id !== undefined
-        ? [this.items[id]]
-        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
-    }
-  };
-  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
-  update = (id, item) => {
-    this.items[id] = { ...this.items[id], ...item };
-    return this.items[id];
-  };
-}
-
-class MockAdapter {
-  name = 'mock';
-  newListAdapter = () => new MockListAdapter(this);
-  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
-}
-
 Text.adapters['mock'] = {};
 Checkbox.adapters['mock'] = {};
 Float.adapters['mock'] = {};
@@ -148,7 +25,7 @@ Relationship.adapters['mock'] = {};
 
 const context = {
   getListAccessControlForUser: () => true,
-  getFieldAccessControlForUser: (listKey, fieldPath, originalInput, existingItem) =>
+  getFieldAccessControlForUser: (access, listKey, fieldPath, originalInput, existingItem) =>
     !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
   authedItem: {
@@ -190,19 +67,16 @@ const getListByKey = listKey => {
   }
 };
 
-const listExtras = (queryMethod = undefined) => ({
+const listExtras = () => ({
   getListByKey,
   adapter: new MockAdapter(),
   defaultAccess: { list: true, field: true },
-  queryHelper: context => (queryString, { variables } = {}) => {
-    return queryMethod(queryString, context, variables);
-  },
   registerType: () => {},
   schemaNames: ['public'],
 });
 
-const setup = (extraConfig, queryMethod) => {
-  const list = new List('Test', { ...config, ...extraConfig }, listExtras(queryMethod));
+const setup = extraConfig => {
+  const list = new List('Test', { ...config, ...extraConfig }, listExtras());
   list.initFields();
   return list;
 };
@@ -250,6 +124,7 @@ describe('new List()', () => {
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
       listMetaName: '_TestsMeta',
+      listSortName: 'SortTestsBy',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
       updateMutationName: 'updateTest',
@@ -438,6 +313,7 @@ describe('getAdminMeta()', () => {
       itemQueryName: 'Test',
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
+      listSortName: 'SortTestsBy',
       listMetaName: '_TestsMeta',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
@@ -473,42 +349,6 @@ describe('getAdminMeta()', () => {
     expect(adminMeta.fields[2].path).toEqual('email');
     expect(adminMeta.fields[3].path).toEqual('other');
     expect(adminMeta.fields[4].path).toEqual('writeOnce');
-  });
-
-  test('getAdminMeta() - views', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.views).toEqual({
-      id: {}, // Mocked
-      name: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      email: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      other: {
-        Controller: resolveViewPath('Relationship/views/Controller'),
-        Field: resolveViewPath('Relationship/views/Field'),
-        Filter: resolveViewPath('Relationship/views/Filter'),
-        Cell: resolveViewPath('Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-    });
   });
 });
 
@@ -613,7 +453,21 @@ describe(`getGqlTypes() `, () => {
   const createManyInput = `input TestsCreateInput {
         data: TestCreateInput
       }`;
-
+  const sortTestsBy = `enum SortTestsBy {
+        name_ASC
+        name_DESC
+        email_ASC
+        email_DESC
+        other_ASC
+        other_DESC
+        writeOnce_ASC
+        writeOnce_DESC
+      }`;
+  const otherRelateToOneInput = `input OtherRelateToOneInput {
+    connect: OtherWhereUniqueInput
+    disconnect: OtherWhereUniqueInput
+    disconnectAll: Boolean
+  }`;
   const schemaName = 'public';
   test('access: true', () => {
     expect(
@@ -622,9 +476,11 @@ describe(`getGqlTypes() `, () => {
         .map(s => print(gql(s)))
     ).toEqual(
       [
+        otherRelateToOneInput,
         type,
         whereInput,
         whereUniqueInput,
+        sortTestsBy,
         updateInput,
         updateManyInput,
         createInput,
@@ -644,7 +500,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: true, create: false, update: false, delete: false } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
   test('create: true', () => {
     expect(
@@ -652,7 +512,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, createInput, createManyInput].map(s => print(gql(s)))
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        createInput,
+        createManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('update: true', () => {
@@ -661,7 +529,15 @@ describe(`getGqlTypes() `, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [type, whereInput, whereUniqueInput, updateInput, updateManyInput].map(s => print(gql(s)))
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        updateInput,
+        updateManyInput,
+      ].map(s => print(gql(s)))
     );
   });
   test('delete: true', () => {
@@ -669,7 +545,11 @@ describe(`getGqlTypes() `, () => {
       setup({ access: { read: false, create: false, update: false, delete: true } })
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
-    ).toEqual([type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+    ).toEqual(
+      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
+        print(gql(s))
+      )
+    );
   });
 });
 
@@ -678,6 +558,7 @@ test('getGraphqlFilterFragment', () => {
   expect(list.getGraphqlFilterFragment()).toEqual([
     'where: TestWhereInput',
     'search: String',
+    'sortBy: [SortTestsBy!]',
     'orderBy: String',
     'first: Int',
     'skip: Int',
@@ -697,6 +578,7 @@ describe(`getGqlQueries()`, () => {
           allTests(
           where: TestWhereInput
           search: String
+          sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
           skip: Int
@@ -709,6 +591,7 @@ describe(`getGqlQueries()`, () => {
           _allTestsMeta(
           where: TestWhereInput
           search: String
+          sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
           skip: Int
@@ -733,12 +616,12 @@ test('getFieldsRelatedTo', () => {
   expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
 });
 
-test('_wrapFieldResolverWith', () => {
+test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
   const newResolver = list._wrapFieldResolver(list.fieldsByPath['name'], resolver);
-  expect(newResolver({}, {}, context)).toEqual('result');
-  expect(() => newResolver({ makeFalse: true }, {}, context)).toThrow(AccessDeniedError);
+  await expect(newResolver({}, {}, context)).resolves.toEqual('result');
+  await expect(newResolver({ makeFalse: true }, {}, context)).rejects.toThrow(AccessDeniedError);
 });
 
 test('gqlFieldResolvers', () => {
@@ -853,7 +736,7 @@ describe(`getGqlMutations()`, () => {
   });
 });
 
-test('checkFieldAccess', () => {
+test('checkFieldAccess', async () => {
   const list = setup();
   list.checkFieldAccess(
     'read',
@@ -863,21 +746,21 @@ test('checkFieldAccess', () => {
       gqlName: 'testing',
     }
   );
-  expect(() =>
+  await expect(
     list.checkFieldAccess(
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
       { gqlName: '' }
     )
-  ).toThrow(AccessDeniedError);
+  ).rejects.toThrow(AccessDeniedError);
   let thrownError;
   try {
-    list.checkFieldAccess(
+    await list.checkFieldAccess(
       'read',
       [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
-      { gqlName: 'testing', extraData: { extra: 1 } }
+      { gqlName: 'testing', extra: 1 }
     );
   } catch (error) {
     thrownError = error;
@@ -894,23 +777,24 @@ test('checkFieldAccess', () => {
   });
 });
 
-test('checkListAccess', () => {
+test('checkListAccess', async () => {
   const list = setup();
   const originalInput = {};
-  expect(list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })).toEqual(
-    true
-  );
+  await expect(
+    list.checkListAccess(context, originalInput, 'read', { gqlName: 'testing' })
+  ).resolves.toEqual(true);
 
   const newContext = {
     ...context,
-    getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
+    getListAccessControlForUser: (access, listKey, originalInput, operation) =>
+      operation === 'update',
   };
-  expect(list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })).toEqual(
-    true
-  );
-  expect(() =>
+  await expect(
+    list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })
+  ).resolves.toEqual(true);
+  await expect(
     list.checkListAccess(newContext, originalInput, 'read', { gqlName: 'testing' })
-  ).toThrow(AccessDeniedError);
+  ).rejects.toThrow(AccessDeniedError);
 });
 
 test('getAccessControlledItem', async () => {
@@ -1095,7 +979,27 @@ test(`listMeta`, () => {
   const schema = meta.getSchema();
   expect(schema).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 
@@ -1105,7 +1009,27 @@ test(`listMeta`, () => {
       .getSchema()
   ).toEqual({
     key: 'Test',
-    queries: ['Test', 'allTests', '_allTestsMeta'],
+    queries: {
+      item: 'Test',
+      list: 'allTests',
+      meta: '_allTestsMeta',
+    },
+    mutations: {
+      create: 'createTest',
+      createMany: 'createTests',
+      update: 'updateTest',
+      updateMany: 'updateTests',
+      delete: 'deleteTest',
+      deleteMany: 'deleteTests',
+    },
+    inputTypes: {
+      whereInput: 'TestWhereInput',
+      whereUniqueInput: 'TestWhereUniqueInput',
+      createInput: 'TestCreateInput',
+      createManyInput: 'TestsCreateInput',
+      updateInput: 'TestUpdateInput',
+      updateManyInput: 'TestsUpdateInput',
+    },
     type: 'Test',
   });
 });
@@ -1257,72 +1181,8 @@ describe('List Hooks', () => {
           await action(list);
 
           Object.keys(hooks).forEach(hook => {
-            expect(hooks[hook]).toHaveBeenCalledWith(
-              expect.objectContaining({
-                actions: {
-                  query: expect.any(Function),
-                },
-              })
-            );
+            expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
           });
-        })
-      );
-    });
-
-    test('can execute a query from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
-          const queryString = 'query { /* Fake query string */ }';
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ actions: { query } }) => {
-              await query(queryString);
-            }),
-          };
-
-          const list = setup({ hooks }, queryMethod);
-          await action(list);
-
-          expect(queryMethod).toHaveBeenCalledWith(
-            queryString,
-            // The context object
-            expect.any(Object),
-            // no variables
-            undefined
-          );
-        })
-      );
-    });
-
-    test('can execute a query with variables from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
-          const queryString = 'query { /* Fake query string */ }';
-          const variables = { id: 'abc123' };
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ actions: { query } }) => {
-              await query(queryString, { variables });
-            }),
-          };
-
-          const list = setup({ hooks }, queryMethod);
-          await action(list);
-
-          expect(queryMethod).toHaveBeenCalledWith(
-            queryString,
-            // The context object
-            expect.any(Object),
-            expect.objectContaining(variables)
-          );
         })
       );
     });
@@ -1339,13 +1199,7 @@ describe('List Hooks', () => {
       await list.deleteMutation(1, context);
 
       Object.keys(hooks).forEach(hook => {
-        expect(hooks[hook]).toHaveBeenCalledWith(
-          expect.objectContaining({
-            actions: {
-              query: expect.any(Function),
-            },
-          })
-        );
+        expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
       });
     });
   });

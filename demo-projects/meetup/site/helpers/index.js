@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { format, isFuture } from 'date-fns';
+import { format, parseISO, isFuture } from 'date-fns';
 import getConfig from 'next/config';
 import contrast from 'get-contrast';
 
@@ -10,11 +10,11 @@ const {
 } = getConfig();
 
 // Check if date is in future or past
-export const isInFuture = date => isFuture(date);
+export const isInFuture = date => isFuture(parseISO(date));
 
 // Pretty date formatting
-export const formatFutureDate = date => format(date, 'ddd D MMM, h:mm A');
-export const formatPastDate = date => format(date, 'MMM YYYY');
+export const formatFutureDate = date => format(parseISO(date), 'iii d MMM, h:mm a');
+export const formatPastDate = date => format(parseISO(date), 'LLL yyyy');
 
 // Singular / Plural
 export const pluralLabel = (num, single, plural) => {

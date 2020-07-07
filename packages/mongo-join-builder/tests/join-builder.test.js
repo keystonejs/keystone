@@ -180,7 +180,7 @@ describe('join builder', () => {
             rel: { cardinality: '1:N', columnName: 'author' },
             filterType: 'every',
           },
-          postJoinPipeline: [{ $orderBy: 'title' }],
+          postJoinPipeline: [{ $sortBy: 'title' }],
           relationships: [],
           excludeFields: [],
         },
@@ -205,7 +205,7 @@ describe('join builder', () => {
           pipeline: [
             { $match: { $expr: { $eq: [`$_id`, '$$tmpVar'] } } },
             { $addFields: { id: '$_id' } },
-            { $orderBy: 'title' },
+            { $sortBy: 'title' },
           ],
         },
       },

@@ -1,5 +1,5 @@
 const { DateTime } = require('@keystonejs/fields');
-const { composeResolveInput } = require('../utils');
+const { composeHook } = require('../utils');
 
 const _atTracking = ({ created = true, updated = true }) => ({
   updatedAtField = 'updatedAt',
@@ -8,7 +8,7 @@ const _atTracking = ({ created = true, updated = true }) => ({
 } = {}) => ({ fields = {}, hooks = {}, ...rest }) => {
   const dateTimeOptions = {
     type: DateTime,
-    format: 'MM/DD/YYYY h:mm A',
+    format: 'MMMM do, yyyy - h:mm a',
     access: {
       read: true,
       create: false,
@@ -29,9 +29,9 @@ const _atTracking = ({ created = true, updated = true }) => ({
     };
   }
 
-  const newResolveInput = ({ resolvedData, existingItem, originalInput }) => {
+  const newResolveInput = ({ resolvedData, operation, originalInput }) => {
     const dateNow = new Date().toISOString();
-    if (existingItem === undefined) {
+    if (operation === 'create') {
       // create mode
       if (created) {
         resolvedData[createdAtField] = dateNow;
@@ -39,7 +39,8 @@ const _atTracking = ({ created = true, updated = true }) => ({
       if (updated) {
         resolvedData[updatedAtField] = dateNow;
       }
-    } else {
+    }
+    if (operation === 'update') {
       // update mode
 
       // if no data received from the mutation, skip the update
@@ -57,7 +58,7 @@ const _atTracking = ({ created = true, updated = true }) => ({
     return resolvedData;
   };
   const originalResolveInput = hooks.resolveInput;
-  hooks.resolveInput = composeResolveInput(originalResolveInput, newResolveInput);
+  hooks.resolveInput = composeHook(originalResolveInput, newResolveInput);
   return { fields, hooks, ...rest };
 };
 

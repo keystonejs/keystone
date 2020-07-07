@@ -14,12 +14,14 @@ const {
   Url,
   Decimal,
   OEmbed,
+  Slug,
   Unsplash,
   Virtual,
 } = require('@keystonejs/fields');
 const { Content } = require('@keystonejs/field-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 const { Markdown } = require('@keystonejs/fields-markdown');
+const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
@@ -33,7 +35,7 @@ const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
-const getYear = require('date-fns/get_year');
+const { formatISO } = require('date-fns');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -41,8 +43,8 @@ const getYear = require('date-fns/get_year');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'Cypress Test Project Basic',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
+  cookieSecret: 'qwerty',
 });
 
 const fileAdapter = new LocalFileAdapter({
@@ -77,13 +79,13 @@ keystone.createList('User', {
     email: { type: Text, isUnique: true },
     dob: {
       type: CalendarDay,
-      format: 'Do MMMM YYYY',
-      yearRangeFrom: 1901,
-      yearRangeTo: getYear(new Date()),
+      format: 'do MMMM yyyy',
+      dateFrom: '1901-01-01',
+      dateTo: formatISO(new Date(), { representation: 'date' }),
     },
     lastOnline: {
       type: DateTime,
-      format: 'MM/DD/YYYY h:mm A',
+      format: 'MM/dd/yyyy h:mm a',
       yearRangeFrom: 2013,
     },
     password: { type: Password },
@@ -204,6 +206,56 @@ keystone.createList('Post', {
   },
 });
 
+keystone.createList('ReadOnlyList', {
+  fields: {
+    name: { type: Text },
+    slug: { type: Slug, adminConfig: { isReadOnly: true } },
+    status: {
+      type: Select,
+      defaultValue: 'draft',
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      adminConfig: { isReadOnly: true },
+    },
+    author: {
+      type: Relationship,
+      ref: 'User',
+      adminConfig: { isReadOnly: true },
+    },
+    views: { type: Integer, adminConfig: { isReadOnly: true } },
+    price: { type: Decimal, symbol: '$', adminConfig: { isReadOnly: true } },
+    currency: { type: Text, adminConfig: { isReadOnly: true } },
+    hero: { type: File, adapter: fileAdapter, adminConfig: { isReadOnly: true } },
+    markdownValue: { type: Markdown, adminConfig: { isReadOnly: true } },
+    wysiwygValue: { type: Wysiwyg, adminConfig: { isReadOnly: true } },
+    value: {
+      type: Content,
+      blocks: [
+        ...(cloudinaryAdapter
+          ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
+          : []),
+        ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
+        ...(unsplash.accessKey
+          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
+          : []),
+        Content.blocks.blockquote,
+        Content.blocks.orderedList,
+        Content.blocks.unorderedList,
+        Content.blocks.link,
+        Content.blocks.heading,
+      ],
+      adminConfig: { isReadOnly: true },
+    },
+  },
+  adminConfig: {
+    defaultPageSize: 20,
+    defaultColumns: 'name, status',
+    defaultSort: 'name',
+  },
+});
+
 keystone.createList('PostCategory', {
   fields: {
     name: { type: Text },
@@ -222,6 +274,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp({ enableDefaultRoute: true }),
+    new AdminUIApp({ name: 'Cypress Test Project Basic', enableDefaultRoute: true }),
   ],
 };

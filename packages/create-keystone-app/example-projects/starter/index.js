@@ -12,9 +12,8 @@ const adapterConfig = {};
 /* /keystone-cli: generated-code */
 
 const keystone = new Keystone({
-  name: PROJECT_NAME,
   adapter: new Adapter(adapterConfig),
-  onConnect: initialiseData,
+  onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
 });
 
 // Access control functions
@@ -76,6 +75,7 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
+      name: PROJECT_NAME,
       enableDefaultRoute: true,
       authStrategy,
     }),

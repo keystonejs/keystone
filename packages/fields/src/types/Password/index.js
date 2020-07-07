@@ -8,6 +8,7 @@ export default {
     Controller: importView('./views/Controller'),
     Field: importView('./views/Field'),
     Filter: importView('./views/Filter'),
+    Cell: importView('./views/Cell'),
   },
   adapters: {
     mongoose: MongoPasswordInterface,

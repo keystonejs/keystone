@@ -1,11 +1,9 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const cuid = require('cuid');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Note', {
         fields: {
@@ -46,7 +44,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes: { connect: [{ id: "${noteA.id}" }, { id: "${noteB.id}" }] }
                 }) {
                   id
-                  notes(orderBy: "title_ASC") { id title }
+                  notes(sortBy: title_ASC) { id title }
                 }
               }
           `,
@@ -60,7 +58,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes: { connect: [{ id: "${noteC.id}" }, { id: "${noteD.id}" }] }
                 }) {
                   id
-                  notes(orderBy: "title_ASC") { id title }
+                  notes(sortBy: title_ASC) { id title }
                 }
               }
           `,
@@ -82,7 +80,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes: { connect: [{ id: "${noteB.id}" }] }
                 }) {
                   id
-                  notes(orderBy: "title_ASC") { id title }
+                  notes(sortBy: title_ASC) { id title }
                 }
               }
           `,
@@ -119,7 +117,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               User(where: { id: "${alice.createUser.id}"}) {
                 id
-                notes(orderBy: "title_ASC") { id title }
+                notes(sortBy: title_ASC) { id title }
               }
             }
             `,

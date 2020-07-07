@@ -5,9 +5,6 @@ describe('List view URL state', () => {
     // Loading at page 3
     cy.visit('/admin/posts?currentPage=3');
 
-    // expand all pages first
-    cy.get('#ks-pagination-show-pages').click({ force: true });
-
     cy.get('[aria-label="Go to page 3"]')
       .should('have.attr', 'aria-current', 'page')
       .should('contain', '3');
@@ -18,8 +15,7 @@ describe('List view URL state', () => {
       .click({ force: true });
     cy.location('search').should('eq', '?currentPage=2');
 
-    // expand all pages first
-    cy.get('#ks-pagination-show-pages').click({ force: true });
+    cy.wait(500);
 
     // Navigate to page 1 - this is the default so it should remove the search string
     cy.get('[aria-label="Go to page 1"]')
@@ -38,9 +34,6 @@ describe('List view URL state', () => {
     cy.visit('/admin/posts?pageSize=75');
     cy.get('#ks-pagination-count').should('contain', 'Showing 1 to 75 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 75);
-
-    // expand all pages first
-    cy.get('#ks-pagination-show-pages').click({ force: true });
 
     // click on a page button - to make sure we do not loose the page size
     cy.get('[aria-label="Go to page 2"]').click({ force: true });
@@ -164,9 +157,6 @@ describe('List view URL state', () => {
       '!views_gt="10"',
     ];
     cy.visit(`/admin/posts?${params.join('&')}`);
-
-    // expand all pages first
-    cy.get('#ks-pagination-show-pages').click({ force: true });
 
     cy.get('[aria-label="Go to page 2"]').should('have.attr', 'aria-current', 'page');
     // Has the correct number of items per page (pageSize)

@@ -4,22 +4,18 @@ import { jsx, keyframes } from '@emotion/core';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { SearchIcon, XIcon } from '@arch-ui/icons';
+import { SearchIcon, XIcon } from '@primer/octicons-react';
 import { IconButton } from '@arch-ui/button';
 import { A11yText } from '@arch-ui/typography';
 import { colors } from '@arch-ui/theme';
 import { uniformHeight } from '@arch-ui/common';
 import Tooltip from '@arch-ui/tooltip';
 
-import { useAdminMeta } from '../../providers/AdminMeta';
-
 export function Search({ list }) {
-  // const { urlState } = useListUrlState(list.key);
   const [value, setValue] = useState('');
   const [formIsVisible, setFormVisible] = useState(false);
   const inputRef = useRef(null);
   const history = useHistory();
-  const { adminPath } = useAdminMeta();
 
   const showForm = () => {
     setFormVisible(true);
@@ -38,7 +34,7 @@ export function Search({ list }) {
 
   const handleSubmit = event => {
     if (event) event.preventDefault();
-    history.push(`${adminPath}/${list.path}/?search=${value}`);
+    history.push(`${list.fullPath}/?search=${value}`);
   };
 
   const hasValue = value && value.length;
@@ -75,7 +71,7 @@ export function Search({ list }) {
           color: colors.N30,
           cursor: 'pointer',
           display: 'flex',
-          height: 34,
+          height: '100%',
           justifyContent: 'center',
           pointerEvents: hasValue ? 'all' : 'none',
           position: 'absolute',

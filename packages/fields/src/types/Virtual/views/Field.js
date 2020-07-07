@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/core';
 
 import { colors, gridSize } from '@arch-ui/theme';
-import { ShieldIcon } from '@arch-ui/icons';
+import { ShieldIcon } from '@primer/octicons-react';
 
 import { FieldContainer, FieldDescription } from '@arch-ui/fields';
 import PrettyData from '../prettyData';
@@ -42,7 +42,7 @@ const VirtualField = ({ field, errors, value: serverValue }) => {
   return (
     <FieldContainer>
       <FieldLabel field={field} errors={errors} />
-      {field.config.adminDoc && <FieldDescription>{field.config.adminDoc}</FieldDescription>}
+      <FieldDescription text={field.adminDoc} />
       <PrettyData data={canRead ? value : undefined} />
     </FieldContainer>
   );

@@ -21,7 +21,6 @@ const generateListName = () =>
 
 const setupList = (adapterName, fields) =>
   setupServer({
-    name: 'Slug Tests',
     adapterName,
     createLists: keystone => {
       keystone.createList(generateListName(), { fields });

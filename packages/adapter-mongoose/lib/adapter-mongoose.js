@@ -17,9 +17,6 @@ const {
 
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
 const { queryParser, pipelineBuilder } = require('@keystonejs/mongo-join-builder');
-const logger = require('@keystonejs/logger').logger('mongoose');
-
-const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
@@ -36,7 +33,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this._manyModels = {};
   }
 
-  async _connect({ name }) {
+  async _connect() {
     const { mongoUri, ...mongooseConfig } = this.config;
     // Default to the localhost instance
     let uri =
@@ -51,9 +48,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       process.env.MONGOLAB_URL;
 
     if (!uri) {
-      const defaultDbName = slugify(name) || 'keystone';
-      uri = `mongodb://localhost/${defaultDbName}`;
-      logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
+      throw new Error(`No MongoDB connection URI specified.`);
     }
 
     await this.mongoose.connect(uri, {
@@ -262,6 +257,20 @@ class MongooseListAdapter extends BaseListAdapter {
     );
   }
 
+  async _unsetForeignOneToOneValues(data, id) {
+    // If there's a 1:1 FK in the data on a different list we need to go and
+    // delete it from any other item;
+    await Promise.all(
+      Object.keys(data)
+        .map(key => ({ adapter: this.fieldAdaptersByPath[key] }))
+        .filter(({ adapter }) => adapter && adapter.isRelationship)
+        .filter(({ adapter: { rel } }) => rel.cardinality === '1:1' && rel.tableName !== this.key)
+        .map(({ adapter: { rel: { tableName, columnName } } }) =>
+          this._setNullByValue({ tableName, columnName, value: id })
+        )
+    );
+  }
+
   async _processNonRealFields(data, processFunction) {
     return resolveAllKeys(
       arrayToObject(
@@ -361,6 +370,7 @@ class MongooseListAdapter extends BaseListAdapter {
 
     // Unset any real 1:1 fields
     await this._unsetOneToOneValues(realData);
+    await this._unsetForeignOneToOneValues(data, id);
 
     // Update the real data
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
@@ -459,7 +469,7 @@ class MongooseListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(({ tableName }) => tableName === this.key)
+        .filter(({ tableName, left }) => tableName === this.key && left.listKey === left.refListKey)
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )
@@ -518,7 +528,10 @@ class MongooseListAdapter extends BaseListAdapter {
           ? graphQlQueryToMongoJoinQuery(whereElement) // Recursively traverse relationship fields
           : whereElement
       ),
-      ...mapKeyNames(pick(modifiers, ['search', 'orderBy', 'skip', 'first']), key => `$${key}`),
+      ...mapKeyNames(
+        pick(modifiers, ['search', 'sortBy', 'orderBy', 'skip', 'first']),
+        key => `$${key}`
+      ),
     });
     let query;
     try {

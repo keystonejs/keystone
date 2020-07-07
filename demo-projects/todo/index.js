@@ -6,8 +6,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
 
 const keystone = new Keystone({
-  name: 'Keystone To-Do List',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/todo' }),
 });
 
 keystone.createList('Todo', {
@@ -23,6 +22,6 @@ module.exports = {
     new GraphQLApp(),
     new StaticApp({ path: '/', src: 'public' }),
     // Setup the optional Admin UI
-    new AdminUIApp({ enableDefaultRoute: true }),
+    new AdminUIApp({ name: 'Keystone To-Do List', enableDefaultRoute: true }),
   ],
 };

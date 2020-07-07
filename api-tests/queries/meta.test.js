@@ -1,11 +1,9 @@
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
-const cuid = require('cuid');
 
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', {
         fields: {
@@ -43,7 +41,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             _CompaniesMeta {
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 relatedFields {
                   type
                   fields
@@ -58,7 +60,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data).toHaveProperty('_CompaniesMeta.schema');
           expect(data._CompaniesMeta.schema).toMatchObject({
             type: 'Company',
-            queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+            queries: {
+              item: 'Company',
+              list: 'allCompanies',
+              meta: '_allCompaniesMeta',
+            },
             relatedFields: [
               {
                 type: 'User',
@@ -79,7 +85,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             _PostsMeta {
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 relatedFields {
                   type
                   fields
@@ -94,7 +104,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data).toHaveProperty('_PostsMeta.schema');
           expect(data._PostsMeta.schema).toMatchObject({
             type: 'Post',
-            queries: ['Post', 'allPosts', '_allPostsMeta'],
+            queries: {
+              item: 'Post',
+              list: 'allPosts',
+              meta: '_allPostsMeta',
+            },
             relatedFields: [],
           });
         })
@@ -113,7 +127,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 fields {
                   name
                   type
@@ -134,8 +152,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               name: 'User',
               schema: {
-                queries: ['User', 'allUsers', '_allUsersMeta'],
+                queries: {
+                  item: 'User',
+                  list: 'allUsers',
+                  meta: '_allUsersMeta',
+                },
                 fields: [
+                  {
+                    name: 'id',
+                    type: expect.stringMatching(
+                      /MongoIdImplementation|AutoIncrementImplementation/
+                    ),
+                  },
                   {
                     name: 'company',
                     type: 'Relationship',
@@ -162,8 +190,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name: 'Company',
               schema: {
                 type: 'Company',
-                queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                queries: {
+                  item: 'Company',
+                  list: 'allCompanies',
+                  meta: '_allCompaniesMeta',
+                },
                 fields: [
+                  {
+                    name: 'id',
+                    type: expect.stringMatching(
+                      /MongoIdImplementation|AutoIncrementImplementation/
+                    ),
+                  },
                   {
                     name: 'name',
                     type: 'Text',
@@ -184,8 +222,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               name: 'Post',
               schema: {
-                queries: ['Post', 'allPosts', '_allPostsMeta'],
+                queries: {
+                  item: 'Post',
+                  list: 'allPosts',
+                  meta: '_allPostsMeta',
+                },
                 fields: [
+                  {
+                    name: 'id',
+                    type: expect.stringMatching(
+                      /MongoIdImplementation|AutoIncrementImplementation/
+                    ),
+                  },
                   {
                     name: 'content',
                     type: 'Text',
@@ -214,7 +262,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 fields {
                   name
                   type
@@ -235,8 +287,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             {
               name: 'User',
               schema: {
-                queries: ['User', 'allUsers', '_allUsersMeta'],
+                queries: {
+                  item: 'User',
+                  list: 'allUsers',
+                  meta: '_allUsersMeta',
+                },
                 fields: [
+                  {
+                    name: 'id',
+                    type: expect.stringMatching(
+                      /MongoIdImplementation|AutoIncrementImplementation/
+                    ),
+                  },
                   {
                     name: 'company',
                     type: 'Relationship',
@@ -264,7 +326,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
 
       test(
-        'returns results for one list and one type of fields',
+        'returns results for one list and one type of field',
         runner(setupKeystone, async ({ keystone }) => {
           const { data, errors } = await graphqlRequest({
             keystone,
@@ -274,7 +336,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name
               schema {
                 type
-                queries
+                queries {
+                  item
+                  list
+                  meta
+                }
                 fields(where: { type: "Text" }) {
                   name
                   type
@@ -296,7 +362,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               name: 'Company',
               schema: {
                 type: 'Company',
-                queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                queries: {
+                  item: 'Company',
+                  list: 'allCompanies',
+                  meta: '_allCompaniesMeta',
+                },
                 fields: [
                   {
                     name: 'name',

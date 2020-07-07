@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import { useRef, forwardRef, useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 
-import { SearchIcon, XIcon } from '@arch-ui/icons';
+import { SearchIcon, XIcon } from '@primer/octicons-react';
 // import { Input } from '@arch-ui/input';
 import { A11yText } from '@arch-ui/typography';
 import { LoadingSpinner } from '@arch-ui/loading';
@@ -15,7 +15,7 @@ import { useListSearch } from './dataHooks';
 import { elementOffsetStyles } from './Filters/ActiveFilters';
 
 export default function Search({ isLoading, list }) {
-  const { searchValue, onChange, onClear, onSubmit } = useListSearch(list.key);
+  const { searchValue, onChange, onClear, onSubmit } = useListSearch();
   const [value, setValue] = useState(searchValue);
   const inputRef = useRef();
 
@@ -68,7 +68,7 @@ export default function Search({ isLoading, list }) {
           color: colors.N30,
           cursor: 'pointer',
           display: 'flex',
-          height: 34,
+          height: '100%',
           justifyContent: 'center',
           pointerEvents: hasValue ? 'all' : 'none',
           position: 'absolute',

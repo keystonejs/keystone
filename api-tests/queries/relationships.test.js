@@ -4,12 +4,10 @@ const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
-const cuid = require('cuid');
 
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Post', {
         fields: {
@@ -180,7 +178,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               feed_some: { title_contains: "J" }
             }) {
               id
-              feed(orderBy: "title_ASC") {
+              feed(sortBy: title_ASC) {
                 title
               }
             }
@@ -299,7 +297,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }) {
               id
               name
-              feed(orderBy: "title_ASC") {
+              feed(sortBy: title_ASC) {
                 id
                 title
               }
@@ -331,7 +329,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             allUsers(where: {
               feed_none: { title_contains: "J" }
             },
-            orderBy: "id_ASC") {
+            sortBy: id_ASC) {
               id
               feed {
                 title
