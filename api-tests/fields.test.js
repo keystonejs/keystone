@@ -1,6 +1,7 @@
 const globby = require('globby');
 const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItems } = require('@keystonejs/orm');
 
 // `mongodb-memory-server` downloads a binary on first run in CI, which can take
 // a while, so we bump up the timeout here.
@@ -12,7 +13,7 @@ describe('Fields', () => {
   });
   testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
 
-  multiAdapterRunners().map(({ runner, adapterName }) =>
+  multiAdapterRunners('mongoose').map(({ runner, adapterName }) =>
     describe(`${adapterName} adapter`, () => {
       testModules.map(require).forEach(mod => {
         const listName = 'test';
@@ -29,8 +30,12 @@ describe('Fields', () => {
             },
             async ({ keystone, ...rest }) => {
               // Populate the database before running the tests
-              await keystone.createItems({ [listName]: mod.initItems() });
-
+              await createItems({
+                keystone,
+                listName,
+                items: mod.initItems().map(x => ({ data: x })),
+                schemaName: 'testing',
+              });
               return testFn({ keystone, listName, adapterName, ...rest });
             }
           );
