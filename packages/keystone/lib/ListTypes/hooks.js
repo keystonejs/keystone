@@ -133,7 +133,7 @@ class HookManager {
     }
 
     if (fieldValidationErrors.length) {
-      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
+      this._throwValidationFailure({ errors: fieldValidationErrors, operation, originalInput });
     }
 
     // This was non-functional before in list-level hooks. Make it throw an error now.
@@ -160,7 +160,7 @@ class HookManager {
       }
 
       if (listValidationErrors.length) {
-        this._throwValidationFailure(listValidationErrors, operation, originalInput);
+        this._throwValidationFailure({ errors: listValidationErrors, operation, originalInput });
       }
     }
   }
