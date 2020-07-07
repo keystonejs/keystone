@@ -888,43 +888,43 @@ test('getAccessControlledItem', async () => {
 
 test('getAccessControlledItems', async () => {
   const list = setup();
-  expect(await list.getAccessControlledItems([], true)).toEqual([]);
-  expect(await list.getAccessControlledItems([1, 2], true)).toEqual([
+  expect(await list.getAccessControlledItems([], true, {})).toEqual([]);
+  expect(await list.getAccessControlledItems([1, 2], true, {})).toEqual([
     { name: 'b', email: 'b@example.com', index: 1 },
     { name: 'c', email: 'c@example.com', index: 2 },
   ]);
-  expect(await list.getAccessControlledItems([1, 2, 1, 2], true)).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
-  ]);
-
-  expect(await list.getAccessControlledItems([1, 2], { id: 1 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-  ]);
-  expect(await list.getAccessControlledItems([1, 2], { id: 3 })).toEqual([]);
-
-  expect(await list.getAccessControlledItems([1, 2], { id_in: [1, 2, 3] })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
-  ]);
-  expect(await list.getAccessControlledItems([1, 2], { id_in: [2, 3] })).toEqual([
-    { name: 'c', email: 'c@example.com', index: 2 },
-  ]);
-  expect(await list.getAccessControlledItems([1, 2], { id_in: [3, 4] })).toEqual([]);
-
-  expect(await list.getAccessControlledItems([1, 2], { id_not: 2 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-  ]);
-  expect(await list.getAccessControlledItems([1, 2], { id_not: 3 })).toEqual([
+  expect(await list.getAccessControlledItems([1, 2, 1, 2], true, {})).toEqual([
     { name: 'b', email: 'b@example.com', index: 1 },
     { name: 'c', email: 'c@example.com', index: 2 },
   ]);
 
-  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [1, 2, 3] })).toEqual([]);
-  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [2, 3] })).toEqual([
+  expect(await list.getAccessControlledItems([1, 2], { id: 1 }, {})).toEqual([
     { name: 'b', email: 'b@example.com', index: 1 },
   ]);
-  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [3, 4] })).toEqual([
+  expect(await list.getAccessControlledItems([1, 2], { id: 3 }, {})).toEqual([]);
+
+  expect(await list.getAccessControlledItems([1, 2], { id_in: [1, 2, 3] }, {})).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_in: [2, 3] }, {})).toEqual([
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_in: [3, 4] }, {})).toEqual([]);
+
+  expect(await list.getAccessControlledItems([1, 2], { id_not: 2 }, {})).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_not: 3 }, {})).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+
+  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [1, 2, 3] }, {})).toEqual([]);
+  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [2, 3] }, {})).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [3, 4] }, {})).toEqual([
     { name: 'b', email: 'b@example.com', index: 1 },
     { name: 'c', email: 'c@example.com', index: 2 },
   ]);

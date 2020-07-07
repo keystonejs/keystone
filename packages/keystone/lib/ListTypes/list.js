@@ -419,7 +419,7 @@ module.exports = class List {
     return item;
   }
 
-  async getAccessControlledItems(ids, access, { context, info } = {}) {
+  async getAccessControlledItems(ids, access, { context, info }) {
     if (ids.length === 0) {
       return [];
     }
@@ -503,13 +503,7 @@ module.exports = class List {
     };
   }
 
-  async itemQuery(
-    // prettier-ignore
-    { where: { id } },
-    context,
-    gqlName,
-    info
-  ) {
+  async itemQuery({ where: { id } }, context, gqlName, info) {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
@@ -529,7 +523,7 @@ module.exports = class List {
     return result;
   }
 
-  async _itemsQuery(args, extra) {
+  async _itemsQuery(args, { info, ...extra }) {
     // This is private because it doesn't handle access control
 
     const { maxResults } = this.queryLimits;
@@ -578,15 +572,15 @@ module.exports = class List {
       }
     }
 
-    if (extra && extra.info && extra.info.cacheControl) {
+    if (info && info.cacheControl) {
       switch (typeof this.cacheHint) {
         case 'object':
-          extra.info.cacheControl.setCacheHint(this.cacheHint);
+          info.cacheControl.setCacheHint(this.cacheHint);
           break;
 
         case 'function':
-          const operationName = extra.info.operation.name && extra.info.operation.name.value;
-          extra.info.cacheControl.setCacheHint(
+          const operationName = info.operation.name && info.operation.name.value;
+          info.cacheControl.setCacheHint(
             this.cacheHint({ results, operationName, meta: !!extra.meta })
           );
           break;
@@ -606,7 +600,7 @@ module.exports = class List {
       .filter(field => field);
   }
 
-  async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
+  async _resolveRelationship(data, existingItem, context, getItem, mutationState, info) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
     const resolvedRelationships = await mapToFields(fields, async field => {
       const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
@@ -614,7 +608,8 @@ module.exports = class List {
         existingItem,
         context,
         getItem,
-        mutationState
+        mutationState,
+        info
       );
       // This code codifies the order of operations for nested mutations:
       // 1. disconnectAll
@@ -690,7 +685,7 @@ module.exports = class List {
     return result;
   }
 
-  async createMutation(data, context, mutationState) {
+  async createMutation(data, context, info, mutationState) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
 
@@ -702,10 +697,10 @@ module.exports = class List {
 
     await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
-    return await this._createSingle(data, existingItem, context, mutationState);
+    return await this._createSingle(data, existingItem, context, info, mutationState);
   }
 
-  async createManyMutation(data, context, mutationState) {
+  async createManyMutation(data, context, info, mutationState) {
     const operation = 'create';
     const gqlName = this.gqlNames.createManyMutationName;
 
@@ -716,11 +711,11 @@ module.exports = class List {
     await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
     return Promise.all(
-      data.map(d => this._createSingle(d.data, undefined, context, mutationState))
+      data.map(d => this._createSingle(d.data, undefined, context, info, mutationState))
     );
   }
 
-  async _createSingle(originalInput, existingItem, context, mutationState) {
+  async _createSingle(originalInput, existingItem, context, info, mutationState) {
     const operation = 'create';
     return await this._nestedMutation(mutationState, context, async mutationState => {
       const defaultedItem = await this._resolveDefaults({ context, originalInput });
@@ -735,7 +730,8 @@ module.exports = class List {
         existingItem,
         context,
         createdPromise.promise,
-        mutationState
+        mutationState,
+        info
       );
 
       resolvedData = await this.hookManager.resolveInput({
@@ -792,7 +788,7 @@ module.exports = class List {
     });
   }
 
-  async updateMutation(id, data, context, mutationState) {
+  async updateMutation(id, data, context, info, mutationState) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
     const extraData = { gqlName, itemId: id };
@@ -803,16 +799,17 @@ module.exports = class List {
       context,
       operation,
       gqlName,
+      info,
     });
 
     const itemsToUpdate = [{ existingItem, data }];
 
     await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
-    return await this._updateSingle(id, data, existingItem, context, mutationState);
+    return await this._updateSingle(id, data, existingItem, context, info, mutationState);
   }
 
-  async updateManyMutation(data, context, mutationState) {
+  async updateManyMutation(data, context, info, mutationState) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateManyMutationName;
     const ids = data.map(d => d.id);
@@ -820,7 +817,7 @@ module.exports = class List {
 
     const access = await this.checkListAccess(context, data, operation, extraData);
 
-    const existingItems = await this.getAccessControlledItems(ids, access);
+    const existingItems = await this.getAccessControlledItems(ids, access, { context, info });
     const existingItemsById = arrayToObject(existingItems, 'id');
 
     const itemsToUpdate = zipObj({
@@ -834,12 +831,12 @@ module.exports = class List {
 
     return Promise.all(
       itemsToUpdate.map(({ existingItem, id, data }) =>
-        this._updateSingle(id, data, existingItem, context, mutationState)
+        this._updateSingle(id, data, existingItem, context, info, mutationState)
       )
     );
   }
 
-  async _updateSingle(id, originalInput, existingItem, context, mutationState) {
+  async _updateSingle(id, originalInput, existingItem, context, info, mutationState) {
     const operation = 'update';
     return await this._nestedMutation(mutationState, context, async mutationState => {
       let resolvedData = await this._resolveRelationship(
@@ -847,7 +844,8 @@ module.exports = class List {
         existingItem,
         context,
         undefined,
-        mutationState
+        mutationState,
+        info
       );
 
       resolvedData = await this.hookManager.resolveInput({
@@ -890,7 +888,7 @@ module.exports = class List {
     });
   }
 
-  async deleteMutation(id, context, mutationState) {
+  async deleteMutation(id, context, info, mutationState) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteMutationName;
 
@@ -903,12 +901,13 @@ module.exports = class List {
       context,
       operation,
       gqlName,
+      info,
     });
 
     return this._deleteSingle(existingItem, context, mutationState);
   }
 
-  async deleteManyMutation(ids, context, mutationState) {
+  async deleteManyMutation(ids, context, info, mutationState) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
@@ -917,7 +916,7 @@ module.exports = class List {
       itemIds: ids,
     });
 
-    const existingItems = await this.getAccessControlledItems(ids, access);
+    const existingItems = await this.getAccessControlledItems(ids, access, { context, info });
 
     return Promise.all(
       existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
@@ -1289,28 +1288,28 @@ module.exports = class List {
 
     const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
     if (schemaAccess.create && createFields.length) {
-      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
-        this.createMutation(data, context);
+      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context, info) =>
+        this.createMutation(data, context, info);
 
-      mutationResolvers[this.gqlNames.createManyMutationName] = (_, { data }, context) =>
-        this.createManyMutation(data, context);
+      mutationResolvers[this.gqlNames.createManyMutationName] = (_, { data }, context, info) =>
+        this.createManyMutation(data, context, info);
     }
 
     const updateFields = this.getFieldsWithAccess({ schemaName, access: 'update' });
     if (schemaAccess.update && updateFields.length) {
-      mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
-        this.updateMutation(id, data, context);
+      mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context, info) =>
+        this.updateMutation(id, data, context, info);
 
-      mutationResolvers[this.gqlNames.updateManyMutationName] = (_, { data }, context) =>
-        this.updateManyMutation(data, context);
+      mutationResolvers[this.gqlNames.updateManyMutationName] = (_, { data }, context, info) =>
+        this.updateManyMutation(data, context, info);
     }
 
     if (schemaAccess.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = (_, { id }, context) =>
-        this.deleteMutation(id, context);
+      mutationResolvers[this.gqlNames.deleteMutationName] = (_, { id }, context, info) =>
+        this.deleteMutation(id, context, info);
 
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
-        this.deleteManyMutation(ids, context);
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context, info) =>
+        this.deleteManyMutation(ids, context, info);
     }
 
     return mutationResolvers;

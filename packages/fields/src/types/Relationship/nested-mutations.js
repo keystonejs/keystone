@@ -76,6 +76,7 @@ async function resolveNestedMany({
   localField,
   target,
   mutationState,
+  info,
 }) {
   // Disconnections
   let disconnectIds = [];
@@ -95,7 +96,7 @@ async function resolveNestedMany({
     // This will resolve access control, etc for us.
     // In the future, when WhereUniqueInput accepts more than just an id,
     // this will also resolve those queries for us too.
-    const action = where => refList.itemQuery(where, context, refList.gqlNames.itemQueryName);
+    const action = where => refList.itemQuery(where, context, refList.gqlNames.itemQueryName, info);
     // We don't throw if any fail; we're only interested in the ones this user has
     // access to read (and hence remove from the list)
     const disconnectItems = (await pSettle((withoutId || []).map(action)))
@@ -114,7 +115,7 @@ async function resolveNestedMany({
     // In the future, when WhereUniqueInput accepts more than just an id,
     // this will also resolve those queries for us too.
     const [connectedItems, connectErrors] = await _runActions(
-      where => refList.itemQuery({ where }, context, refList.gqlNames.itemQueryName),
+      where => refList.itemQuery({ where }, context, refList.gqlNames.itemQueryName, info),
       input.connect,
       ['connect']
     );
@@ -123,7 +124,7 @@ async function resolveNestedMany({
     // NOTE: We don't check for read access control on the returned ids as the
     // user will not have seen it, so it's ok to return it directly here.
     const [createdItems, createErrors] = await _runActions(
-      data => refList.createMutation(data, context, mutationState),
+      data => refList.createMutation(data, context, info, mutationState),
       input.create,
       ['create']
     );
@@ -162,6 +163,7 @@ async function resolveNestedSingle({
   context,
   target,
   mutationState,
+  info,
 }) {
   let result_ = {};
   if ((input.disconnect || input.disconnectAll) && currentValue) {
@@ -177,7 +179,8 @@ async function resolveNestedSingle({
           await refList.itemQuery(
             { where: input.disconnect },
             context,
-            refList.gqlNames.itemQueryName
+            refList.gqlNames.itemQueryName,
+            info
           )
         ).id.toString();
       } catch (error) {
@@ -199,10 +202,10 @@ async function resolveNestedSingle({
   if (input.connect) {
     operation = 'connect';
     method = () =>
-      refList.itemQuery({ where: input.connect }, context, refList.gqlNames.itemQueryName);
+      refList.itemQuery({ where: input.connect }, context, refList.gqlNames.itemQueryName, info);
   } else if (input.create) {
     operation = 'create';
-    method = () => refList.createMutation(input.create, context, mutationState);
+    method = () => refList.createMutation(input.create, context, info, mutationState);
   }
 
   if (operation) {
@@ -237,6 +240,7 @@ export async function resolveNested({
   listInfo,
   context,
   mutationState,
+  info,
 }) {
   const localList = listInfo.local.list;
   const localField = listInfo.local.field;
@@ -250,6 +254,7 @@ export async function resolveNested({
     localField,
     target,
     mutationState,
+    info,
   };
   return await (many ? resolveNestedMany(args) : resolveNestedSingle(args));
 }

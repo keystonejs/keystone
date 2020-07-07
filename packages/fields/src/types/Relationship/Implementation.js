@@ -166,7 +166,7 @@ export class Relationship extends Implementation {
    * previous stored values, which means indecies may not match those passed in
    * `operations`.
    */
-  async resolveNestedOperations(operations, item, context, getItem, mutationState) {
+  async resolveNestedOperations(operations, item, context, getItem, mutationState, info) {
     const { refList, refField } = this.tryResolveRefList();
     const listInfo = {
       local: { list: this.getListByKey(this.listKey), field: this },
@@ -222,6 +222,7 @@ export class Relationship extends Implementation {
       many: this.many,
       context,
       mutationState,
+      info,
     });
 
     return { create, connect, disconnect, currentValue };
