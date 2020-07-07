@@ -98,16 +98,16 @@ const createItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
   return runChunkedMutation({ keystone, query, items, ...rest });
 };
 
-const getItem = ({ keystone, listName, returnFields, item: id, ...args }) => {
+const getItem = ({ keystone, listName, returnFields, item: id, ...rest }) => {
   const { itemQueryName } = keystone.lists[listName].gqlNames;
   const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
-  return runQuery({ keystone, query, variables: { id }, ...args });
+  return runQuery({ keystone, query, variables: { id }, ...rest });
 };
 
-const getAllItems = ({ keystone, listName, returnFields, ...args }) => {
+const getAllItems = ({ keystone, listName, returnFields, ...rest }) => {
   const { listQueryName } = keystone.lists[listName].gqlNames;
   const query = `query ($first: Int!, $skip: Int!) { ${listQueryName}(first: $first, skip: $skip) { ${returnFields} }  }`;
-  return runPaginatedQuery({ keystone, query, pageSize: 500, ...args });
+  return runPaginatedQuery({ keystone, query, pageSize: 500, ...rest });
 };
 
 const updateItem = ({ keystone, listName, item, returnFields = `id`, ...rest }) => {
