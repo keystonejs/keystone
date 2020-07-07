@@ -1,4 +1,5 @@
 const { multiAdapterRunners, authedGraphqlRequest } = require('@keystonejs/test-utils');
+const { createItems } = require('@keystonejs/orm');
 const {
   FAKE_ID,
   FAKE_ID_2,
@@ -31,7 +32,7 @@ const expectNamedArray = (data, errors, name, values) => {
   });
 };
 
-multiAdapterRunners().map(({ before, after, adapterName }) =>
+multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     let keystone, items;
     beforeAll(async () => {
@@ -48,7 +49,14 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           }),
         {}
       );
-      items = await keystone.createItems(initialData);
+      for (const [listName, _items] of Object.entries(initialData)) {
+        items[listName] = await createItems({
+          keystone,
+          listName,
+          items: _items.map(x => ({ data: x })),
+          schemaName: 'testing',
+        });
+      }
     });
     afterAll(async () => {
       await after(keystone);
