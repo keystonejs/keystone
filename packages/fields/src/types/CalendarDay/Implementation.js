@@ -62,22 +62,22 @@ export class CalendarDay extends Implementation {
     };
   }
 
-  async validateInput({ resolvedData, addFieldValidationError }) {
+  async validateInput({ resolvedData, addValidationError }) {
     const initialValue = resolvedData[this.path];
     const parsedValue = parseISO(resolvedData[this.path]);
 
     if (!(initialValue.length === 10 && isValid(parsedValue))) {
-      addFieldValidationError('Invalid CalendarDay value.', { value: resolvedData[this.path] });
+      addValidationError('Invalid CalendarDay value.', { value: resolvedData[this.path] });
     }
     if (parsedValue) {
       if (parseISO(this._dateFrom) && compareAsc(parseISO(this._dateFrom), parsedValue) === 1) {
-        addFieldValidationError(`Value is before earliest allowed date: ${this._dateFromString}.`, {
+        addValidationError(`Value is before earliest allowed date: ${this._dateFromString}.`, {
           value: resolvedData[this.path],
           dateFrom: this._dateFromString,
         });
       }
       if (parseISO(this._dateTo) && compareDesc(parseISO(this._dateTo), parsedValue) === 1) {
-        addFieldValidationError(`Value is after latest allowed date: ${this._dateToString}.`, {
+        addValidationError(`Value is after latest allowed date: ${this._dateToString}.`, {
           value: resolvedData[this.path],
           dateTo: this._dateToString,
         });
