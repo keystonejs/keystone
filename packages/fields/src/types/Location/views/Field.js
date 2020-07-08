@@ -20,7 +20,7 @@ const LocationField = ({
     formattedAddress,
     lat,
     lng
-  } = (value || {})
+  } = { ...value }
   const htmlID = `ks-input-${field.path}`;
   const autocompleteService = new google.maps.places.AutocompleteService();
   const geocoder = new google.maps.Geocoder();
