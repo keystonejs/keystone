@@ -8,7 +8,7 @@ import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 const LocationField = ({
   field,
-  value = {},
+  value,
   errors,
   onChange,
   google,
