@@ -1,4 +1,5 @@
 ---
+'@keystonejs/fields': patch
 '@keystonejs/keystone': minor
 ---
 
