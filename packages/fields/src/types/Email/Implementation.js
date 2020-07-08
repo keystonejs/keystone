@@ -15,6 +15,7 @@ export class Email extends Text {
   }
 
   isValidEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
+    // https://www.w3.org/TR/2012/WD-html-markup-20120329/input.email.html#input.email.attrs.value.single
+    return /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
   }
 }
