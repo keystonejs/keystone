@@ -1,5 +1,6 @@
 import { Implementation } from '@keystonejs/fields';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 
 export class AutoIncrementImplementation extends Implementation {
   constructor(path, { gqlType, isUnique = true, access = {}, ...config } = {}, context = {}) {
@@ -100,6 +101,55 @@ export class KnexAutoIncrementInterface extends KnexFieldAdapter {
       ...this.equalityConditions(dbPath),
       ...this.orderingConditions(dbPath),
       ...this.inConditions(dbPath),
+    };
+  }
+}
+
+export class PrismaAutoIncrementInterface extends PrismaFieldAdapter {
+  constructor() {
+    super(...arguments);
+
+    // Default isUnique to true if not specified
+    this.isUnique = typeof this.config.isUnique === 'undefined' ? true : !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'Int', extra: '@default(autoincrement())' })];
+  }
+
+  gqlToPrisma(value) {
+    // If we're an ID type then we'll be getting strings from GQL
+    return Number(value);
+    // console.log(this.field.gqlType);
+    // return this.field.gqlType === 'ID' ? Number(value) : value;
+  }
+
+  equalityConditions(dbPath, f) {
+    return {
+      [this.path]: value => ({ [dbPath]: f(value) }),
+      [`${this.path}_not`]: value => ({ NOT: { [this.path]: f(value) } }),
+    };
+  }
+
+  inConditions(dbPath, f) {
+    return {
+      [`${this.path}_in`]: value =>
+        value.includes(null)
+          ? { [dbPath]: { in: f(value.filter(x => x !== null)) } }
+          : { [dbPath]: { in: f(value) } },
+      [`${this.path}_not_in`]: value =>
+        value.includes(null)
+          ? { AND: [{ NOT: { [dbPath]: { in: f(value.filter(x => x !== null)) } } }] }
+          : { NOT: { [dbPath]: { in: f(value) } } },
+    };
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath, x => Number(x) || -1),
+      ...this.orderingConditions(dbPath, x => Number(x) || -1),
+      ...this.inConditions(dbPath, x => x.map(xx => Number(xx) || -1)),
     };
   }
 }

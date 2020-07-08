@@ -12,3 +12,4 @@ packages/arch/www/public/**/*
 **/dist
 **/.next
 **/.keystone
+.api-test-prisma-clients

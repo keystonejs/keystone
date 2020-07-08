@@ -93,7 +93,10 @@ export class Content extends Relationship.implementation {
     // `ContentType`.
     // Including the list name + path to make sure these input types are unique
     // to this list+field and don't collide.
-    const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
+    const type =
+      listConfig.listAdapter.parentAdapter.name === 'prisma'
+        ? `KS_${GQL_TYPE_PREFIX}_${itemQueryName}_${path}` // Prisma doesn't support leading underscores
+        : `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
 
     // Normalise blocks to always be a tuple with a config object
     let blocks = (Array.isArray(inputBlocks) ? inputBlocks : []).map(block =>
@@ -236,3 +239,5 @@ export class Content extends Relationship.implementation {
 export class MongoContentInterface extends Relationship.adapters.mongoose {}
 
 export class KnexContentInterface extends Relationship.adapters.knex {}
+
+export class PrismaContentInterface extends Relationship.adapters.prisma {}

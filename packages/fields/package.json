@@ -35,6 +35,7 @@
     "@keystonejs/access-control": "^6.3.0",
     "@keystonejs/adapter-knex": "^11.0.6",
     "@keystonejs/adapter-mongoose": "^9.0.7",
+    "@keystonejs/adapter-prisma": "^0.0.0",
     "@keystonejs/app-admin-ui": "^7.3.6",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@keystonejs/utils": "^5.4.3",

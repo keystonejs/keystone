@@ -3,6 +3,7 @@ import {
   Content as ContentType,
   MongoContentInterface,
   KnexContentInterface,
+  PrismaContentInterface,
 } from './Implementation';
 import {
   blockquote,
@@ -26,6 +27,7 @@ export const Content = {
   adapters: {
     mongoose: MongoContentInterface,
     knex: KnexContentInterface,
+    prisma: PrismaContentInterface,
   },
   blocks: {
     blockquote,

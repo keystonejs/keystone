@@ -1,6 +1,7 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import dumbPasswords from 'dumb-passwords';
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
@@ -167,6 +168,35 @@ export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdap
         value
           ? b.where(dbPath, '~', bcryptHashRegex.source)
           : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
+    };
+  }
+}
+
+export class PrismaPasswordInterface extends CommonPasswordInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    if (this.config.isUnique || this.config.isIndexed) {
+      throw (
+        `The Password field type doesn't support indexes on Prisma. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
+    }
+  }
+
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'String' })];
+  }
+
+  getQueryConditions(dbPath) {
+    // JM: I wonder if performing a regex match here leaks any timing info that
+    // could be used to extract information about the hash.. :/
+    return {
+      // FIXME: Prisma needs to support regex matching...
+      [`${this.path}_is_set`]: value => (value ? { NOT: { [dbPath]: null } } : { [dbPath]: null }),
+      // ? b.where(dbPath, '~', bcryptHashRegex.source)
+      // : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
     };
   }
 }

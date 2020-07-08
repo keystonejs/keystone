@@ -93,5 +93,11 @@ class CloudinaryImage extends File.implementation {
 
 const MongoCloudinaryImageInterface = File.adapters.mongoose;
 const KnexCloudinaryImageInterface = File.adapters.knex;
+const PrismaCloudinaryImageInterface = File.adapters.prisma;
 
-export { CloudinaryImage, MongoCloudinaryImageInterface, KnexCloudinaryImageInterface };
+export {
+  CloudinaryImage,
+  MongoCloudinaryImageInterface,
+  KnexCloudinaryImageInterface,
+  PrismaCloudinaryImageInterface,
+};
