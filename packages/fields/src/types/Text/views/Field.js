@@ -1,9 +1,12 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
+import { useCallback, useMemo } from 'react';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
+
+const isAccessDeniedError = error => error instanceof Error && error.name === 'AccessDeniedError';
 
 const TextField = ({
   onChange,
@@ -14,16 +17,17 @@ const TextField = ({
   isDisabled,
   type = 'text',
 }) => {
-  const handleChange = event => {
-    onChange(event.target.value);
-  };
-
   const { isMultiline } = field.config;
   const htmlID = `ks-input-${field.path}`;
-  const canRead = errors.every(
-    error => !(error instanceof Error && error.name === 'AccessDeniedError')
+  const canRead = useMemo(() => errors.every(error => !isAccessDeniedError(error)), [errors]);
+  const error = useMemo(() => errors.find(isAccessDeniedError), [errors]);
+
+  const handleChange = useCallback(
+    event => {
+      onChange(event.target.value);
+    },
+    [onChange]
   );
-  const error = errors.find(error => error instanceof Error && error.name === 'AccessDeniedError');
 
   return (
     <FieldContainer>
