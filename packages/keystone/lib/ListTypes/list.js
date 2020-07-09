@@ -21,7 +21,7 @@ const {
   labelToClass,
   opToType,
   mapNativeTypeToKeystoneType,
-  getDefautlLabelResolver,
+  getDefaultLabelResolver,
   mapToFields,
 } = require('./utils');
 const { HookManager } = require('./hooks');
@@ -62,14 +62,12 @@ module.exports = class List {
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
-      defaultPageSize: 50,
       defaultColumns: nonIdFieldNames ? nonIdFieldNames.slice(0, 2).join(',') : 'id',
       defaultSort: nonIdFieldNames.length ? nonIdFieldNames[0] : '',
-      maximumPageSize: 1000,
       ...adminConfig,
     };
 
-    this.labelResolver = labelResolver || getDefautlLabelResolver(labelField);
+    this.labelResolver = labelResolver || getDefaultLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
@@ -231,13 +229,6 @@ module.exports = class List {
 
   getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    const {
-      defaultPageSize,
-      defaultColumns,
-      defaultSort,
-      maximumPageSize,
-      ...adminConfig
-    } = this.adminConfig;
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
@@ -252,13 +243,7 @@ module.exports = class List {
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
       adminDoc: this.adminDoc,
-      adminConfig: {
-        defaultPageSize,
-        defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: defaultSort,
-        maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
-        ...adminConfig,
-      },
+      adminConfig: this.adminConfig,
     };
   }
 

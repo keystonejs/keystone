@@ -76,7 +76,7 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   return keystoneType;
 };
 
-const getDefautlLabelResolver = labelField => item => {
+const getDefaultLabelResolver = labelField => item => {
   const value = item[labelField || 'name'];
   if (typeof value === 'number') {
     return value.toString();
@@ -101,6 +101,6 @@ module.exports = {
   labelToClass,
   opToType,
   mapNativeTypeToKeystoneType,
-  getDefautlLabelResolver,
+  getDefaultLabelResolver,
   mapToFields,
 };
