@@ -64,6 +64,10 @@ export class CalendarDay extends Implementation {
 
   async validateInput({ resolvedData, addFieldValidationError }) {
     const initialValue = resolvedData[this.path];
+
+    // Allow passing in the `null` value to the CalendarDay field type
+    if (initialValue === null) return true;
+
     const parsedValue = parseISO(resolvedData[this.path]);
 
     if (!(initialValue.length === 10 && isValid(parsedValue))) {
