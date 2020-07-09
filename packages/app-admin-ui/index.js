@@ -11,6 +11,7 @@ const getWebpackConfig = require('./server/getWebpackConfig');
 
 class AdminUIApp {
   constructor({
+    name = 'Keystone',
     adminPath = '/admin',
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
@@ -21,6 +22,8 @@ class AdminUIApp {
     hooks = path.resolve('./admin-ui/'),
     schemaName = 'public',
     adminMeta = {},
+    defaultPageSize = 50,
+    maximumPageSize = 1000,
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -30,6 +33,7 @@ class AdminUIApp {
       throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
     }
 
+    this.name = name;
     this.adminPath = adminPath;
     this.authStrategy = authStrategy;
     this.pages = pages;
@@ -37,6 +41,8 @@ class AdminUIApp {
     this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
     this.hooks = hooks;
+    this.defaultPageSize = defaultPageSize;
+    this.maximumPageSize = Math.max(defaultPageSize, maximumPageSize);
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
     this._adminMeta = adminMeta;
@@ -99,10 +105,33 @@ class AdminUIApp {
 
   getAdminUIMeta(keystone) {
     // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
-    const { adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { name, adminPath, apiPath, graphiqlPath, pages, hooks } = this;
     const { signinPath, signoutPath } = this.routes;
-    const { lists, name } = keystone.getAdminMeta({ schemaName: this._schemaName });
+    const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
     const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
+
+    // Normalize list adminConfig data, falling back to admin-level size defaults if necessary.
+    Object.values(lists || {}).forEach(
+      ({
+        key,
+        adminConfig: {
+          defaultPageSize = this.defaultPageSize,
+          defaultColumns,
+          defaultSort,
+          maximumPageSize = this.maximumPageSize,
+          ...rest
+        },
+      }) => {
+        lists[key].adminConfig = {
+          defaultPageSize,
+          defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
+          defaultSort,
+          maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
+          ...rest,
+        };
+      }
+    );
+
     return {
       adminPath,
       apiPath,

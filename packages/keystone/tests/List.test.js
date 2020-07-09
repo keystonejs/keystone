@@ -25,7 +25,7 @@ Relationship.adapters['mock'] = {};
 
 const context = {
   getListAccessControlForUser: () => true,
-  getFieldAccessControlForUser: (listKey, fieldPath, originalInput, existingItem) =>
+  getFieldAccessControlForUser: (access, listKey, fieldPath, originalInput, existingItem) =>
     !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
   authedItem: {
@@ -67,19 +67,16 @@ const getListByKey = listKey => {
   }
 };
 
-const listExtras = (queryMethod = undefined) => ({
+const listExtras = () => ({
   getListByKey,
   adapter: new MockAdapter(),
   defaultAccess: { list: true, field: true },
-  queryHelper: context => (queryString, { variables } = {}) => {
-    return queryMethod(queryString, context, variables);
-  },
   registerType: () => {},
   schemaNames: ['public'],
 });
 
-const setup = (extraConfig, queryMethod) => {
-  const list = new List('Test', { ...config, ...extraConfig }, listExtras(queryMethod));
+const setup = extraConfig => {
+  const list = new List('Test', { ...config, ...extraConfig }, listExtras());
   list.initFields();
   return list;
 };
@@ -103,9 +100,7 @@ describe('new List()', () => {
     expect(list.fields).toBeInstanceOf(Object);
     expect(list.adminConfig).toEqual({
       defaultColumns: 'name,email',
-      defaultPageSize: 50,
       defaultSort: 'name',
-      maximumPageSize: 1000,
     });
   });
 
@@ -335,9 +330,7 @@ describe('getAdminMeta()', () => {
     });
     expect(adminMeta.adminConfig).toEqual({
       defaultColumns: 'name,email',
-      defaultPageSize: 50,
       defaultSort: 'name',
-      maximumPageSize: 1000,
     });
   });
 
@@ -789,7 +782,8 @@ test('checkListAccess', async () => {
 
   const newContext = {
     ...context,
-    getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
+    getListAccessControlForUser: (access, listKey, originalInput, operation) =>
+      operation === 'update',
   };
   await expect(
     list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })
@@ -1184,72 +1178,8 @@ describe('List Hooks', () => {
           await action(list);
 
           Object.keys(hooks).forEach(hook => {
-            expect(hooks[hook]).toHaveBeenCalledWith(
-              expect.objectContaining({
-                actions: {
-                  query: expect.any(Function),
-                },
-              })
-            );
+            expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
           });
-        })
-      );
-    });
-
-    test('can execute a query from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
-          const queryString = 'query { /* Fake query string */ }';
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ actions: { query } }) => {
-              await query(queryString);
-            }),
-          };
-
-          const list = setup({ hooks }, queryMethod);
-          await action(list);
-
-          expect(queryMethod).toHaveBeenCalledWith(
-            queryString,
-            // The context object
-            expect.any(Object),
-            // no variables
-            undefined
-          );
-        })
-      );
-    });
-
-    test('can execute a query with variables from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
-          const queryString = 'query { /* Fake query string */ }';
-          const variables = { id: 'abc123' };
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ actions: { query } }) => {
-              await query(queryString, { variables });
-            }),
-          };
-
-          const list = setup({ hooks }, queryMethod);
-          await action(list);
-
-          expect(queryMethod).toHaveBeenCalledWith(
-            queryString,
-            // The context object
-            expect.any(Object),
-            expect.objectContaining(variables)
-          );
         })
       );
     });
@@ -1266,13 +1196,7 @@ describe('List Hooks', () => {
       await list.deleteMutation(1, context);
 
       Object.keys(hooks).forEach(hook => {
-        expect(hooks[hook]).toHaveBeenCalledWith(
-          expect.objectContaining({
-            actions: {
-              query: expect.any(Function),
-            },
-          })
-        );
+        expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
       });
     });
   });

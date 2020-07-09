@@ -16,7 +16,6 @@ When you create a new List, depending on the adapter, Keystone will initialise a
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 
 const keystone = new Keystone({
-  name: 'KnexMigrationDemo',
   adapter: new KnexAdapter(),
 });
 

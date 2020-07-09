@@ -8,7 +8,7 @@ import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { FlexGroup } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
-import { EyeIcon, LockIcon } from '@arch-ui/icons';
+import { EyeIcon, LockIcon } from '@primer/octicons-react';
 import { A11yText } from '@arch-ui/typography';
 
 const PasswordField = ({

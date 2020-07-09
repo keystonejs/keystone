@@ -1,10 +1,8 @@
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
-const cuid = require('cuid');
 
 const setupList = (adapterName, fields) =>
   setupServer({
-    name: `ks5-testdb-${cuid()}`,
     adapterName,
     createLists: keystone => {
       keystone.createList('User', { fields });
@@ -146,7 +144,6 @@ describe('defaultValue field config', () => {
                 expect.objectContaining({
                   context: expect.any(Object),
                   originalInput: expect.any(Object),
-                  actions: expect.any(Object),
                 })
               );
             })
@@ -174,7 +171,6 @@ describe('defaultValue field config', () => {
                   originalInput: {
                     salutation: 'Doctor',
                   },
-                  actions: expect.any(Object),
                 })
               );
               expect(data.createUser).toMatchObject({

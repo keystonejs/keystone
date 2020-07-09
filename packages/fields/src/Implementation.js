@@ -104,9 +104,6 @@ class Field {
    * request
    * @param {Object} data.originalInput The raw incoming item from the mutation
    * (no relationships or defaults resolved)
-   * @param {Object} data.actions
-   * @param {Function} data.actions.query Perform a graphQl query
-   * programmatically
    */
   async resolveInput({ resolvedData }) {
     return resolvedData[this.path];
@@ -201,10 +198,10 @@ class Field {
   extendAdminViews(views) {
     return views;
   }
-  getDefaultValue({ context, originalInput, actions }) {
+  getDefaultValue({ context, originalInput }) {
     if (typeof this.defaultValue !== 'undefined') {
       if (typeof this.defaultValue === 'function') {
-        return this.defaultValue({ context, originalInput, actions });
+        return this.defaultValue({ context, originalInput });
       } else {
         return this.defaultValue;
       }

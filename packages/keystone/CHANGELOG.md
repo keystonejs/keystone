@@ -1,5 +1,25 @@
 # @keystonejs/keystone
 
+## 11.2.0
+
+### Minor Changes
+
+- [`f296866df`](https://github.com/keystonejs/keystone/commit/f296866dfab3af54381fd527473e3dc98425b3b9) [#3199](https://github.com/keystonejs/keystone/pull/3199) Thanks [@Vultraz](https://github.com/Vultraz)! - Support GraphQL AST input in `executeGraphQL`. This should be created with the `gql` template literal imported from `apollo-server-express`.
+
+### Patch Changes
+
+- Updated dependencies [[`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5), [`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed), [`2806a0bdf`](https://github.com/keystonejs/keystone/commit/2806a0bdfd65429e7c44ed070983f121d6934955), [`3adb2ac2a`](https://github.com/keystonejs/keystone/commit/3adb2ac2ac4ab65636ffea1b2b1f7044410c2b8b)]:
+  - @keystonejs/fields@13.0.2
+  - @keystonejs/test-utils@7.0.1
+  - @keystonejs/utils@5.4.2
+  - @keystonejs/session@7.0.1
+
+## 11.1.3
+
+### Patch Changes
+
+- [`f6667f082`](https://github.com/keystonejs/keystone/commit/f6667f082539c11c5de02877f8c0e5174d74492f) [#3193](https://github.com/keystonejs/keystone/pull/3193) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug when calling `keystone.executeGraphQL()` without a `context` argument.
+
 ## 11.1.2
 
 ### Patch Changes
