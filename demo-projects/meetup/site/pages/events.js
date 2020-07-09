@@ -10,6 +10,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Meta from '../components/Meta';
 import { gridSize } from '../theme';
+import { initializeApollo } from '../lib/apolloClient';
 
 import { GET_ALL_EVENTS } from '../graphql/events';
 
@@ -37,4 +38,18 @@ export default function Events() {
       <Footer />
     </>
   );
+}
+export async function getStaticProps() {
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: GET_ALL_EVENTS,
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+    },
+    unstable_revalidate: 1,
+  };
 }

@@ -11,6 +11,7 @@ import Meta from '../components/Meta';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
 import { GET_EVENT_RSVPS } from '../graphql/rsvps';
 import { GET_SPONSORS } from '../graphql/sponsors';
+import { initializeApollo } from '../lib/apolloClient';
 
 import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
@@ -328,9 +329,23 @@ const Home = ({ now }) => {
   );
 };
 
-Home.getInitialProps = async () => ({
-  now: new Date().toISOString(),
-});
+export async function getStaticProps() {
+  const apolloClient = initializeApollo();
+
+  const now = new Date().toISOString();
+  await apolloClient.query({
+    query: GET_CURRENT_EVENTS,
+    variables: { now },
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+      now,
+    },
+    unstable_revalidate: 1,
+  };
+}
 
 export default Home;
 
