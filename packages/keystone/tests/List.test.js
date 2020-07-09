@@ -100,9 +100,7 @@ describe('new List()', () => {
     expect(list.fields).toBeInstanceOf(Object);
     expect(list.adminConfig).toEqual({
       defaultColumns: 'name,email',
-      defaultPageSize: 50,
       defaultSort: 'name',
-      maximumPageSize: 1000,
     });
   });
 
@@ -332,9 +330,7 @@ describe('getAdminMeta()', () => {
     });
     expect(adminMeta.adminConfig).toEqual({
       defaultColumns: 'name,email',
-      defaultPageSize: 50,
       defaultSort: 'name',
-      maximumPageSize: 1000,
     });
   });
 
