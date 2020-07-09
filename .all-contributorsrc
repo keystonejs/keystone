@@ -438,6 +438,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "matheuschimelli",
+      "name": "Matheus Chimelli",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10470074?v=4",
+      "profile": "https://github.com/matheuschimelli",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
