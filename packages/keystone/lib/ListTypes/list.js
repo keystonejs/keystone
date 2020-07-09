@@ -230,7 +230,6 @@ module.exports = class List {
   }
 
   getAdminMeta({ schemaName }) {
-    const schemaAccess = this.access[schemaName];
     const {
       defaultPageSize,
       defaultColumns,
@@ -239,19 +238,9 @@ module.exports = class List {
       ...adminConfig
     } = this.adminConfig;
     return {
-      key: this.key,
-      // Reduce to truthy values (functions can't be passed over the webpack
-      // boundary)
-      access: mapKeys(schemaAccess, val => !!val),
-      label: this.adminUILabels.label,
-      singular: this.adminUILabels.singular,
-      plural: this.adminUILabels.plural,
-      path: this.adminUILabels.path,
-      gqlNames: this.gqlNames,
       fields: this.fields
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
-      adminDoc: this.adminDoc,
       adminConfig: {
         defaultPageSize,
         defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
@@ -1282,6 +1271,7 @@ module.exports = class List {
         // ../providers/listCRUD.js
         return {
           type: this.gqlNames.outputTypeName,
+          sortType: this.gqlNames.listSortName,
           queries,
           mutations,
           inputTypes,

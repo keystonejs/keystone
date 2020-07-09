@@ -1,13 +1,11 @@
 /* global KEYSTONE_ADMIN_META */
 
-import List from '../classes/List';
-import { views, readViews, preloadViews } from '../FIELD_TYPES';
+import { views, readViews } from '../FIELD_TYPES';
 
 import React, { useContext, createContext } from 'react';
 
 const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 
-// TODO: Pull this off `window.X` to support server side permission queries
 const {
   adminPath,
   apiPath,
@@ -17,7 +15,6 @@ const {
   signinPath,
   signoutPath,
   authStrategy,
-  lists,
   name,
   ...customMeta
 } = KEYSTONE_ADMIN_META;
@@ -42,11 +39,6 @@ const resolveCustomPages = pages => {
 };
 
 export const AdminMetaProvider = ({ children }) => {
-  // TODO: Permission query to see which lists to provide
-  const listsByKey = {};
-  const listsByPath = {};
-  const getListByKey = key => listsByKey[key];
-
   const viewsToLoad = new Set();
   if (typeof hookView === 'function') {
     viewsToLoad.add(hookView);
@@ -66,22 +58,6 @@ export const AdminMetaProvider = ({ children }) => {
   // so we don't have a waterfall of requests
   readViews([...viewsToLoad]);
 
-  Object.entries(lists || {}).forEach(
-    ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
-      const list = new List(
-        { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
-        { readViews, preloadViews, getListByKey, apiPath, adminPath },
-        views[key]
-      );
-      listsByKey[key] = list;
-      listsByPath[list.path] = list;
-    }
-  );
-
-  const listKeys = Object.values(listsByKey)
-    .sort(({ label: a }, { label: b }) => a.localeCompare(b)) // TODO: locale options once intl support is added
-    .map(({ key }) => key);
-
   let hookViews = {};
   if (typeof hookView === 'function') {
     [hookViews] = readViews([hookView]);
@@ -98,9 +74,6 @@ export const AdminMetaProvider = ({ children }) => {
     signoutPath,
     authStrategy,
     name,
-    listKeys,
-    getListByKey,
-    getListByPath: path => listsByPath[path],
     hooks: hookViews,
     pages: resolveCustomPages([...adminMetaPages, ...hookPages]),
     ...customMeta,

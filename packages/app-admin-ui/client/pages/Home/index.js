@@ -10,6 +10,7 @@ import PageError from '../../components/PageError';
 import { Box, HeaderInset } from './components';
 
 import { useAdminMeta } from '../../providers/AdminMeta';
+import { useListMeta } from '../../providers/ListMeta';
 
 import useResizeObserver from 'use-resize-observer';
 import throttle from 'lodash.throttle';
@@ -26,9 +27,9 @@ const getCountQuery = lists => {
 };
 
 const Homepage = () => {
-  const { getListByKey, listKeys, adminPath } = useAdminMeta();
+  const { getListByKey, listKeys } = useListMeta();
+  const { adminPath } = useAdminMeta();
 
-  // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
 
   const { data, error } = useQuery(getCountQuery(lists), {
@@ -51,33 +52,11 @@ const Homepage = () => {
     },
   });
 
-  let allowedLists = lists;
-
   if (error) {
-    if (!error.graphQLErrors || !error.graphQLErrors.length) {
-      return (
-        <PageError>
-          <p>{error.message}</p>
-        </PageError>
-      );
-    }
-
-    const deniedQueries = error.graphQLErrors
-      .filter(({ name }) => name === 'AccessDeniedError')
-      .map(({ path }) => path && path[0]);
-
-    if (deniedQueries.length !== error.graphQLErrors.length) {
-      // There were more than Access Denied Errors, so throw a normal
-      // error message
-      return (
-        <PageError>
-          <p>{error.message}</p>
-        </PageError>
-      );
-    }
-
-    allowedLists = allowedLists.filter(
-      list => deniedQueries.indexOf(list.gqlNames.listQueryMetaName) === -1
+    return (
+      <PageError>
+        <p>{error.message}</p>
+      </PageError>
     );
   }
 
@@ -93,7 +72,7 @@ const Homepage = () => {
           <PageTitle>Dashboard</PageTitle>
         </HeaderInset>
         <Grid ref={measureElement} gap={16}>
-          {allowedLists.map(list => {
+          {lists.map(list => {
             const { key, path } = list;
             const meta = data && data[list.gqlNames.listQueryMetaName];
             return (

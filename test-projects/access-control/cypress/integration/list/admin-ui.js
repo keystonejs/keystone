@@ -79,13 +79,13 @@ describe('Access Control Lists > Admin UI', () => {
         const prettyName = prettyListName(name);
         const slug = listSlug(name);
 
-        // Still navigable
-        cy.get('body nav').should('contain', prettyName);
+        // Not navigable
+        cy.get('body nav').should('not.contain', prettyName);
 
         cy.visit(`admin/${slug}`);
 
         // But shows an error on attempt to read
-        cy.get('body').should('contain', 'You do not have access to this resource');
+        cy.get('body').should('contain', `The list “${slug}” does not exist`);
 
         // TODO: Check no items shown too
       });
@@ -116,13 +116,13 @@ describe('Access Control Lists > Admin UI', () => {
         const prettyName = prettyListName(name);
         const slug = listSlug(name);
 
-        // Still navigable
-        cy.get('body nav').should('contain', prettyName);
+        // Not navigable
+        cy.get('body nav').should('not.contain', prettyName);
 
         cy.visit(`admin/${slug}`);
 
         // But shows an error on attempt to read
-        cy.get('body').should('contain', 'You do not have access to this resource');
+        cy.get('body').should('contain', `The list “${slug}” does not exist`);
 
         // TODO: Check no items shown too
       });
@@ -159,13 +159,13 @@ describe('Access Control Lists > Admin UI', () => {
           const prettyName = prettyListName(name);
           const slug = listSlug(name);
 
-          // Still navigable
-          cy.get('body nav').should('contain', prettyName);
+          // Not navigable
+          cy.get('body nav').should('not.contain', prettyName);
 
           cy.visit(`admin/${slug}`);
 
           // But shows an error on attempt to read
-          cy.get('body').should('contain', 'You do not have access to this resource');
+          cy.get('body').should('contain', `The list “${slug}” does not exist`);
 
           // TODO: Check no items shown too
         });

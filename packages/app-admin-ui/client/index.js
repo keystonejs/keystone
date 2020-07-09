@@ -16,6 +16,7 @@ import { useConnectivityListener } from './hooks/ConnectivityListener';
 import { useScrollToTop } from './hooks/ScrollToTop';
 
 import { AdminMetaProvider, useAdminMeta } from './providers/AdminMeta';
+import { ListMetaProvider, useListMeta } from './providers/ListMeta';
 import { ListProvider } from './providers/List';
 import { HooksProvider } from './providers/Hooks';
 import { KeyboardShortcutsProvider } from './providers/KeyboardShortcuts';
@@ -29,7 +30,7 @@ import NoListsPage from './pages/NoLists';
 import SignoutPage from './pages/Signout';
 
 const HomePageWrapper = () => {
-  const { listKeys } = useAdminMeta();
+  const { listKeys } = useListMeta();
 
   if (listKeys.length === 0) {
     return <NoListsPage />;
@@ -39,7 +40,8 @@ const HomePageWrapper = () => {
 };
 
 const ListPageWrapper = () => {
-  const { getListByPath, adminPath } = useAdminMeta();
+  const { getListByPath } = useListMeta();
+  const { adminPath } = useAdminMeta();
   const { listKey } = useParams();
 
   // TODO: Permission query to show/hide a list from the menu
@@ -95,22 +97,24 @@ export const KeystoneAdminUI = () => {
   const apolloClient = useMemo(() => initApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
-    <HooksProvider hooks={hooks}>
-      <ApolloProvider client={apolloClient}>
-        <KeyboardShortcutsProvider>
-          <ToastProvider components={{ ToastContainer }}>
-            <Global styles={globalStyles} />
-            <BrowserRouter>
-              <Switch>
-                <Route exact path={signinPath} children={<Redirect to={adminPath} />} />
-                <Route exact path={signoutPath} children={<SignoutPage />} />
-                <Route children={<MainPageWrapper />} />
-              </Switch>
-            </BrowserRouter>
-          </ToastProvider>
-        </KeyboardShortcutsProvider>
-      </ApolloProvider>
-    </HooksProvider>
+    <ApolloProvider client={apolloClient}>
+      <Global styles={globalStyles} />
+      <ListMetaProvider>
+        <HooksProvider hooks={hooks}>
+          <KeyboardShortcutsProvider>
+            <ToastProvider components={{ ToastContainer }}>
+              <BrowserRouter>
+                <Switch>
+                  <Route exact path={signinPath} children={<Redirect to={adminPath} />} />
+                  <Route exact path={signoutPath} children={<SignoutPage />} />
+                  <Route children={<MainPageWrapper />} />
+                </Switch>
+              </BrowserRouter>
+            </ToastProvider>
+          </KeyboardShortcutsProvider>
+        </HooksProvider>
+      </ListMetaProvider>
+    </ApolloProvider>
   );
 };
 
