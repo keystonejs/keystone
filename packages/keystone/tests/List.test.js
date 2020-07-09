@@ -25,7 +25,7 @@ Relationship.adapters['mock'] = {};
 
 const context = {
   getListAccessControlForUser: () => true,
-  getFieldAccessControlForUser: (listKey, fieldPath, originalInput, existingItem) =>
+  getFieldAccessControlForUser: (access, listKey, fieldPath, originalInput, existingItem) =>
     !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
   authedItem: {
@@ -786,7 +786,8 @@ test('checkListAccess', async () => {
 
   const newContext = {
     ...context,
-    getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
+    getListAccessControlForUser: (access, listKey, originalInput, operation) =>
+      operation === 'update',
   };
   await expect(
     list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })

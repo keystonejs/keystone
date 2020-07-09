@@ -128,9 +128,15 @@ module.exports = class Keystone {
     );
 
     const getListAccessControlForUser = memoize(
-      async (listKey, originalInput, operation, { gqlName, itemId, itemIds, context } = {}) => {
+      async (
+        access,
+        listKey,
+        originalInput,
+        operation,
+        { gqlName, itemId, itemIds, context } = {}
+      ) => {
         return validateListAccessControl({
-          access: this.lists[listKey].access[schemaName],
+          access: access[schemaName],
           originalInput,
           operation,
           authentication,
@@ -146,6 +152,7 @@ module.exports = class Keystone {
 
     const getFieldAccessControlForUser = memoize(
       async (
+        access,
         listKey,
         fieldKey,
         originalInput,
@@ -154,7 +161,7 @@ module.exports = class Keystone {
         { gqlName, itemId, itemIds, context } = {}
       ) => {
         return validateFieldAccessControl({
-          access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
+          access: access[schemaName],
           originalInput,
           existingItem,
           operation,
@@ -171,9 +178,9 @@ module.exports = class Keystone {
     );
 
     const getAuthAccessControlForUser = memoize(
-      async (listKey, { gqlName, context } = {}) => {
+      async (access, listKey, { gqlName, context } = {}) => {
         return validateAuthAccessControl({
-          access: this.lists[listKey].access[schemaName],
+          access: access[schemaName],
           authentication,
           listKey,
           gqlName,
