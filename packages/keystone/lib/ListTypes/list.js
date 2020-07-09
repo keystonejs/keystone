@@ -10,6 +10,7 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
+  arrayToObject,
 } = require('@keystonejs/utils');
 const { parseListAccess } = require('@keystonejs/access-control');
 const { logger } = require('@keystonejs/logger');
@@ -818,9 +819,10 @@ module.exports = class List {
     const access = await this.checkListAccess(context, data, operation, extraData);
 
     const existingItems = await this.getAccessControlledItems(ids, access);
+    const existingItemsById = arrayToObject(existingItems, 'id');
 
     const itemsToUpdate = zipObj({
-      existingItem: existingItems,
+      existingItem: ids.map(id => existingItemsById[id]),
       id: ids, // itemId is taken from here in checkFieldAccess
       data: data.map(d => d.data),
     });
