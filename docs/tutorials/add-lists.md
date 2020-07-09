@@ -69,10 +69,11 @@ module.exports = {
     // added fields
     deadline: {
       type: CalendarDay,
-      dateFrom: '2019-01-01',
-      dateTo: '2029-01-01',
+      format: 'Do MMMM YYYY',
+      yearRangeFrom: '2019',
+      yearRangeTo: '2029',
       isRequired: false,
-      defaultValue: new Date().toISOString('YYYY-MM-DD').substring(0, 10), // Today's date
+      defaultValue: new Date().toISOString('YYYY-MM-DD').substring(0, 10),
     },
     assignee: {
       type: Text,
