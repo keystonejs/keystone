@@ -6,7 +6,7 @@ import { useImage } from 'react-image';
 import PropTypes from 'prop-types';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
-import { AlertIcon, FileMediaIcon } from '@arch-ui/icons';
+import { AlertIcon, FileMediaIcon } from '@primer/octicons-react';
 import { HiddenInput } from '@arch-ui/input';
 import { LoadingIndicator } from '@arch-ui/loading';
 import { Lozenge } from '@arch-ui/lozenge';

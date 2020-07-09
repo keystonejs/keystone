@@ -1,5 +1,11 @@
 # @keystonejs/session
 
+## 7.0.1
+
+### Patch Changes
+
+- [`2806a0bdf`](https://github.com/keystonejs/keystone/commit/2806a0bdfd65429e7c44ed070983f121d6934955) [#3182](https://github.com/keystonejs/keystone/pull/3182) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated express-session to 1.17.1.
+
 ## 7.0.0
 
 ### Major Changes

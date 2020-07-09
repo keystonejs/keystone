@@ -7,7 +7,7 @@ import { useList } from '../../providers/List';
 
 import CreateItemModal from '../../components/CreateItemModal';
 
-import { PlusIcon } from '@arch-ui/icons';
+import { PlusIcon } from '@primer/octicons-react';
 import { Card } from '@arch-ui/card';
 import { colors, gridSize } from '@arch-ui/theme';
 import { LoadingIndicator } from '@arch-ui/loading';
@@ -65,7 +65,7 @@ const BoxComponent = ({ focusOrigin, isActive, isHover, isFocus, meta, ...props 
           <A11yText>Create {singular}</A11yText>
         </CreateButton>
       </BoxElement>
-      <CreateItemModal />
+      <CreateItemModal viewOnSave />
     </Fragment>
   );
 };

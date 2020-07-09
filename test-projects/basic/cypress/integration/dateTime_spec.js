@@ -13,47 +13,6 @@ beforeEach(() => {
   cy.clock(1551628922000);
 });
 
-describe('CalendarDay Component - Formatting', () => {
-  beforeEach(() => {
-    cy.visit(path);
-  });
-
-  it('should format date correctly on the list page', () => {
-    cy.get(getCellFromSecondRow(3)).contains('1st January 1990');
-  });
-
-  it('should format date correctly on the details page', () => {
-    cy.get(`${getCellFromSecondRow(2)} > a`).click({ force: true });
-    cy.get(calendarDayInputSelector).should('have.value', '1st January 1990');
-  });
-});
-
-describe('CalendarDay Component - Functionality', () => {
-  beforeEach(() => {
-    cy.visit(path);
-    cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2) > a`).click({ force: true });
-  });
-
-  it('can accept natural language like today', () => {
-    cy.get(calendarDayInputSelector).type('today', { force: true });
-    cy.get('label:contains("Name")').click({ force: true });
-
-    cy.get(calendarDayInputSelector).should('have.value', '3rd March 2019');
-  });
-
-  it(`can accept natural language like tomorrow`, () => {
-    cy.get(calendarDayInputSelector).type('tomorrow', { force: true });
-    cy.get('label:contains("Name")').click({ force: true });
-    cy.get(calendarDayInputSelector).should('have.value', '4th March 2019');
-  });
-
-  it(`can accept a date`, () => {
-    cy.get(calendarDayInputSelector).type('20 september 2015', { force: true });
-    cy.get('label:contains("Name")').click({ force: true });
-    cy.get(calendarDayInputSelector).should('have.value', '20th September 2015');
-  });
-});
-
 ///// Begin Date Time Component
 
 describe('DateTime Component - Formatting', () => {

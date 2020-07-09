@@ -1,5 +1,56 @@
 # @keystonejs/fields
 
+## 13.0.2
+
+### Patch Changes
+
+- [`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5) [#3212](https://github.com/keystonejs/keystone/pull/3212) Thanks [@timleslie](https://github.com/timleslie)! - Removed `name` argument from calls to `setupServer` in tests.
+
+* [`3adb2ac2a`](https://github.com/keystonejs/keystone/commit/3adb2ac2ac4ab65636ffea1b2b1f7044410c2b8b) [#3176](https://github.com/keystonejs/keystone/pull/3176) Thanks [@timleslie](https://github.com/timleslie)! - Updated docs for `Virtual` field type to show how to execute server-side GraphQL operations.
+
+* Updated dependencies [[`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5), [`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed)]:
+  - @keystonejs/test-utils@7.0.1
+  - @keystonejs/utils@5.4.2
+  - @keystonejs/app-admin-ui@7.0.5
+
+## 13.0.1
+
+### Patch Changes
+
+- [`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176) [#3167](https://github.com/keystonejs/keystone/pull/3167) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `context.executeGraphQL` for all server-side GraphQL operations.
+
+- Updated dependencies [[`c6eac2dc2`](https://github.com/keystonejs/keystone/commit/c6eac2dc2dec857c668a5794fd84829d164563f3)]:
+  - @keystonejs/test-utils@7.0.0
+
+## 13.0.0
+
+### Major Changes
+
+- [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8) [#3002](https://github.com/keystonejs/keystone/pull/3002) Thanks [@timleslie](https://github.com/timleslie)! - The `CalendarDay` field type options `yearRangeFrom` and `yearRangeTo` have been removed, and replaced with `dateFrom` and `dateTo`. These options take an ISO8601 formatted date string in the form `YYYY-MM-DD`, e.g. `2020-06-30`. These values are now validated on the server-side, rather than just on the client-side within the Admin UI.
+
+  If you are currently using `yearRangeFrom` or `yearRangeTo` you will need to make the following change:
+
+  ```
+  birthday: { type: CalendarDay, yearRangeFrom: 1900, yearRangeTo: 2100 }
+  ```
+
+  becomes
+
+  ```
+  birthday: { type: CalendarDay, dateFrom: '1900-01-01', dateTo: '2100-12-31' }
+  ```
+
+### Patch Changes
+
+- [`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91) [#3140](https://github.com/keystonejs/keystone/pull/3140) Thanks [@molomby](https://github.com/molomby)! - Improving field type list and adding some missing field docs
+
+- Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`dec3d336a`](https://github.com/keystonejs/keystone/commit/dec3d336adbe8156722fbe65f315a57b2f5c08e7), [`2e5a93dee`](https://github.com/keystonejs/keystone/commit/2e5a93dee5be11bf020c1397c7653bdf07a90d24), [`2d0ed13f7`](https://github.com/keystonejs/keystone/commit/2d0ed13f7f4e92c9e87eb700df55c80bf06179bb), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8), [`950f23443`](https://github.com/keystonejs/keystone/commit/950f23443ef8f1a176a3cf6b039f93a29d954f5e)]:
+  - @keystonejs/field-content@7.0.1
+  - @keystonejs/access-control@6.2.0
+  - @keystonejs/app-admin-ui@7.0.3
+  - @arch-ui/day-picker@1.0.1
+  - @keystonejs/test-utils@6.2.0
+
 ## 12.0.1
 
 ### Patch Changes

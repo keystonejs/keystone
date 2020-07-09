@@ -9,7 +9,6 @@ const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 async function setupServer({
-  name,
   adapterName,
   schemaName = 'testing',
   schemaNames = ['testing'],
@@ -28,7 +27,6 @@ async function setupServer({
   }[adapterName];
 
   const keystone = new Keystone({
-    name,
     adapter: new Adapter(await argGenerator()),
     defaultAccess: { list: true, field: true },
     schemaNames,
@@ -61,15 +59,25 @@ async function setupServer({
   return { keystone, app };
 }
 
-function graphqlRequest({ keystone, query, variables, operationName }) {
-  return keystone.executeQuery(query, { variables, operationName });
+function graphqlRequest({ keystone, query, variables }) {
+  return keystone.executeGraphQL({
+    context: keystone.createContext({ schemaName: 'testing', skipAccessControl: true }),
+    query,
+    variables,
+  });
 }
 
 // This is much like graphqlRequest except we don't skip access control checks!
-function authedGraphqlRequest({ keystone, query, variables, operationName }) {
-  const context = keystone.getGraphQlContext({ schemaName: 'testing' });
-  const executeQuery = keystone._buildQueryHelper(context);
-  return executeQuery(query, { variables, operationName });
+function authedGraphqlRequest({ keystone, query, variables }) {
+  return keystone.executeGraphQL({
+    context: keystone.createContext({
+      schemaName: 'testing',
+      authentication: {},
+      skipAccessControl: false,
+    }),
+    query,
+    variables,
+  });
 }
 
 function networkedGraphqlRequest({
@@ -249,6 +257,130 @@ const matchFilter = ({ keystone, queryArgs, fieldSelection, expected, sortKey })
   });
 };
 
+class MockFieldImplementation {
+  constructor() {
+    this.access = {
+      public: {
+        create: false,
+        read: true,
+        update: false,
+        delete: false,
+      },
+    };
+    this.config = {};
+    this.hooks = {};
+  }
+  getAdminMeta() {
+    return { path: 'id' };
+  }
+  gqlOutputFields() {
+    return ['id: ID'];
+  }
+  gqlQueryInputFields() {
+    return ['id: ID'];
+  }
+  get gqlUpdateInputFields() {
+    return ['id: ID'];
+  }
+  get gqlCreateInputFields() {
+    return ['id: ID'];
+  }
+  getGqlAuxTypes() {
+    return [];
+  }
+  getGqlAuxQueries() {
+    return [];
+  }
+  getGqlAuxMutations() {
+    return [];
+  }
+  gqlOutputFieldResolvers() {
+    return {};
+  }
+  gqlAuxQueryResolvers() {
+    return {};
+  }
+  gqlAuxMutationResolvers() {
+    return {};
+  }
+  gqlAuxFieldResolvers() {
+    return {};
+  }
+  extendAdminViews(views) {
+    return views;
+  }
+  getDefaultValue() {
+    return;
+  }
+  async resolveInput({ resolvedData }) {
+    return resolvedData.id;
+  }
+  async validateInput() {}
+  async beforeChange() {}
+  async afterChange() {}
+  async beforeDelete() {}
+  async validateDelete() {}
+  async afterDelete() {}
+}
+class MockFieldAdapter {}
+
+const MockIdType = {
+  implementation: MockFieldImplementation,
+  views: {},
+  adapters: { mock: MockFieldAdapter },
+};
+
+class MockListAdapter {
+  name = 'mock';
+  constructor(parentAdapter) {
+    this.parentAdapter = parentAdapter;
+    this.index = 3;
+    this.items = {
+      0: { name: 'a', email: 'a@example.com', index: 0 },
+      1: { name: 'b', email: 'b@example.com', index: 1 },
+      2: { name: 'c', email: 'c@example.com', index: 2 },
+    };
+  }
+  newFieldAdapter = () => new MockFieldAdapter();
+  create = async item => {
+    this.items[this.index] = {
+      ...item,
+      index: this.index,
+    };
+    this.index += 1;
+    return this.items[this.index - 1];
+  };
+  findById = id => this.items[id];
+  delete = async id => {
+    this.items[id] = undefined;
+  };
+  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
+    if (meta) {
+      return {
+        count: (id !== undefined
+          ? [this.items[id]]
+          : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
+        ).length,
+      };
+    } else {
+      return id !== undefined
+        ? [this.items[id]]
+        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
+    }
+  };
+  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
+  update = (id, item) => {
+    this.items[id] = { ...this.items[id], ...item };
+    return this.items[id];
+  };
+}
+
+class MockAdapter {
+  name = 'mock';
+  newListAdapter = () => new MockListAdapter(this);
+  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
+}
+
 module.exports = {
   setupServer,
   multiAdapterRunners,
@@ -256,4 +388,7 @@ module.exports = {
   authedGraphqlRequest,
   networkedGraphqlRequest,
   matchFilter,
+  MockAdapter,
+  MockListAdapter,
+  MockIdType,
 };

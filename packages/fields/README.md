@@ -6,32 +6,44 @@ order: 3
 
 # Fields
 
-Keystone contains a set of primitive fields types that can be imported from `@keystonejs/fields`. These include:
+Keystone contains a set of primitive fields types that can be imported from the `@keystonejs/fields` package:
 
-- [CalendarDay](https://keystonejs.com/keystonejs/fields/src/types/calendar-day)
-- [Checkbox](https://keystonejs.com/keystonejs/fields/src/types/checkbox)
-- [CloudinaryImage](https://keystonejs.com/keystonejs/fields/src/types/cloudinary-image)
-- [Color](https://keystonejs.com/keystonejs/fields/src/types/color)
-- [Content](https://keystonejs.com/keystonejs/field-content)
-- [DateTime](https://keystonejs.com/keystonejs/fields/src/types/date-time)
-- [Decimal](https://keystonejs.com/keystonejs/fields/src/types/decimal)
-- [File](https://keystonejs.com/keystonejs/fields/src/types/file)
-- [Float](https://keystonejs.com/keystonejs/fields/src/types/float)
-- [Integer](https://keystonejs.com/keystonejs/fields/src/types/integer)
-- [Location](https://keystonejs.com/keystonejs/fields/src/types/location)
-- [OEmbed](https://keystonejs.com/keystonejs/fields/src/types/o-embed)
-- [Password](https://keystonejs.com/keystonejs/fields/src/types/password)
-- [Relationship](https://keystonejs.com/keystonejs/fields/src/types/relationship)
-- [Select](https://keystonejs.com/keystonejs/fields/src/types/select)
-- [Slug](https://keystonejs.com/keystonejs/fields/src/types/slug)
-- [Text](https://keystonejs.com/keystonejs/fields/src/types/text)
-- [Unsplash](https://keystonejs.com/keystonejs/fields/src/types/unsplash)
-- [Url](https://keystonejs.com/keystonejs/fields/src/types/url)
-- [Uuid](https://keystonejs.com/keystonejs/fields/src/types/uuid)
+| Field type                                                                | Description                                                                                                                                            |
+| :------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`CalendarDay`](/packages/fields/src/types/CalendarDay/README.md)         | An abstract "day" value; useful for Birthdays and other all-day events always celebrated in the local time zone                                        |
+| [`Checkbox`](/packages/fields/src/types/Checkbox/README.md)               | A single Boolean value                                                                                                                                 |
+| [`CloudinaryImage`](/packages/fields/src/types/CloudinaryImage/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                             |
+| [`Color`](/packages/fields/src/types/Color/README.md)                     | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                     |
+| [`DateTime`](/packages/fields/src/types/DateTime/README.md)               | A point in time and a time zone offset                                                                                                                 |
+| [`Decimal`](/packages/fields/src/types/Decimal/README.md)                 | Exact, numeric values in base-10; useful for currency, etc.                                                                                            |
+| [`File`](/packages/fields/src/types/File/README.md)                       | Files backed various storage mediums: local filesystem, cloud based hosting, etc.                                                                      |
+| [`Float`](/packages/fields/src/types/Float/README.md)                     | An imprecise numeric value, stored as a floating point                                                                                                 |
+| [`Integer`](/packages/fields/src/types/Integer/README.md)                 | A whole number                                                                                                                                         |
+| [`Location`](/packages/fields/src/types/Location/README.md)               | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                 |
+| [`OEmbed`](/packages/fields/src/types/OEmbed/README.md)                   | Data in the [oEmbed format](https://oembed.com/); allowing an embedded representation of a URL on third party sites                                    |
+| [`Password`](/packages/fields/src/types/Password/README.md)               | A [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hash of the value supplied; used by the [Password auth strategy](/packages/auth-password/README.md) |
+| [`Relationship`](/packages/fields/src/types/Relationship/README.md)       | A link between the current list and others, often paired with a field on the other list                                                                |
+| [`Select`](/packages/fields/src/types/Select/README.md)                   | One of several predefined string values, presented as a dropdown                                                                                       |
+| [`Slug`](/packages/fields/src/types/Slug/README.md)                       | Generate unique slugs (aka. keys, url segments) based on the item's data                                                                               |
+| [`Text`](/packages/fields/src/types/Text/README.md)                       | A basic but versatile text field of arbitrary length                                                                                                   |
+| [`Unsplash`](/packages/fields/src/types/Unsplash/README.md)               | Meta data from the [Unsplash API](https://unsplash.com/developers) and generates URLs to dynamically transformed images                                |
+| [`Url`](/packages/fields/src/types/Url/README.md)                         | Extends the [`Text`](/packages/fields/src/types/Text/README.md) type to store HTTP URLs                                                                |
+| [`Uuid`](/packages/fields/src/types/Uuid/README.md)                       | [Universally Unique Identifiers](https://en.wikipedia.org/wiki/Universally_unique_identifier) (UUIDs); useful for `id` fields                          |
+| [`Virtual`](/packages/fields/src/types/Virtual/README.md)                 | Read-only field with a developer-defined resolver, executed on read                                                                                    |
 
-In addition to these are some other complex types that have their own package such as `Markdown` and `Wysiwyg`.
+In addition to these, some complex types are packaged separately:
 
-> **Tip:** Need more? See our guide on [custom field types](https://keystonejs.com/guides/custom-field-types/)
+| Field type                                                             | Description                                                                                                                                                           |
+| :--------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`Content`](/packages/field-content/README.md)                         | Block-based content for composing rich text such as blog posts, wikis, and even complete pages                                                                        |
+| [`AuthedRelationship`](/packages/fields-authed-relationship/README.md) | Extendes the [`Relationship`](/packages/fields/src/types/Relationship/README.md) type; automatically set to the currently authenticated item during a create mutation |
+| [`AutoIncrement`](/packages/fields-auto-increment/README.md)           | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter                                                                |
+| [`DateTimeUtc`](/packages/fields-datetime-utc/README.md)               | Represents points in time, stored in UTC                                                                                                                              |
+| [`Markdown`](/packages/fields-markdown/README.md)                      | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI    |
+| [`MongoId`](/packages/fields-mongoid/README.md)                        | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter  |
+| [`Wysiwyg`](/packages/fields-wysiwyg-tinymce/README.md)                | Rich text content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [TinyMCE](https://www.tiny.cloud/) editor in the Admin UI      |
+
+> **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.
 
 ## Usage
 
@@ -112,7 +124,7 @@ keystone.createList('Post', {
   fields: {
     title: {
       type: Text,
-      defaultValue: ({ context, originalInput, actions }) => {
+      defaultValue: ({ context, originalInput }) => {
         /**/
       },
     },

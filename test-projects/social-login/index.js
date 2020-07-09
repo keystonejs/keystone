@@ -23,8 +23,7 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'Cypress Test for Social Login',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
   cookieSecret,
 });
 
@@ -172,6 +171,9 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp({ authStrategy: DISABLE_AUTH ? undefined : authStrategy }),
+    new AdminUIApp({
+      name: 'Cypress Test for Social Login',
+      authStrategy: DISABLE_AUTH ? undefined : authStrategy,
+    }),
   ],
 };

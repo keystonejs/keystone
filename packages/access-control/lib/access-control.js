@@ -193,6 +193,7 @@ module.exports = {
     gqlName,
     itemId,
     itemIds,
+    context,
   }) {
     // Either a boolean or an object describing a where clause
     let result;
@@ -207,6 +208,7 @@ module.exports = {
         gqlName,
         itemId,
         itemIds,
+        context,
       });
     }
 
@@ -239,6 +241,7 @@ module.exports = {
     gqlName,
     itemId,
     itemIds,
+    context,
   }) {
     let result;
     if (typeof access[operation] !== 'function') {
@@ -254,6 +257,7 @@ module.exports = {
         gqlName,
         itemId,
         itemIds,
+        context,
       });
     }
 
@@ -268,7 +272,7 @@ module.exports = {
     return result;
   },
 
-  async validateAuthAccessControl({ access, listKey, authentication = {}, gqlName }) {
+  async validateAuthAccessControl({ access, listKey, authentication = {}, gqlName, context }) {
     const operation = 'auth';
     // Either a boolean or an object describing a where clause
     let result;
@@ -280,6 +284,7 @@ module.exports = {
         listKey,
         operation,
         gqlName,
+        context,
       });
     }
 

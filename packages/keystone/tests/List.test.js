@@ -1,5 +1,6 @@
 const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
+const { MockAdapter, MockIdType, MockListAdapter } = require('@keystonejs/test-utils');
 
 // We don't want to actually log, so we mock it before we require the class
 jest.doMock('@keystonejs/logger', () => ({
@@ -17,130 +18,6 @@ function resolveViewPath(viewPath) {
   return path.join(fieldsPackagePath, 'src', 'types', viewPath);
 }
 
-class MockFieldImplementation {
-  constructor() {
-    this.access = {
-      public: {
-        create: false,
-        read: true,
-        update: false,
-        delete: false,
-      },
-    };
-    this.config = {};
-    this.hooks = {};
-  }
-  getAdminMeta() {
-    return { path: 'id' };
-  }
-  gqlOutputFields() {
-    return ['id: ID'];
-  }
-  gqlQueryInputFields() {
-    return ['id: ID'];
-  }
-  get gqlUpdateInputFields() {
-    return ['id: ID'];
-  }
-  get gqlCreateInputFields() {
-    return ['id: ID'];
-  }
-  getGqlAuxTypes() {
-    return [];
-  }
-  getGqlAuxQueries() {
-    return [];
-  }
-  getGqlAuxMutations() {
-    return [];
-  }
-  gqlOutputFieldResolvers() {
-    return {};
-  }
-  gqlAuxQueryResolvers() {
-    return {};
-  }
-  gqlAuxMutationResolvers() {
-    return {};
-  }
-  gqlAuxFieldResolvers() {
-    return {};
-  }
-  extendAdminViews(views) {
-    return views;
-  }
-  getDefaultValue() {
-    return;
-  }
-  async resolveInput({ resolvedData }) {
-    return resolvedData.id;
-  }
-  async validateInput() {}
-  async beforeChange() {}
-  async afterChange() {}
-  async beforeDelete() {}
-  async validateDelete() {}
-  async afterDelete() {}
-}
-class MockFieldAdapter {}
-
-const MockIdType = {
-  implementation: MockFieldImplementation,
-  views: {},
-  adapters: { mock: MockFieldAdapter },
-};
-
-class MockListAdapter {
-  name = 'mock';
-  constructor(parentAdapter) {
-    this.parentAdapter = parentAdapter;
-    this.index = 3;
-    this.items = {
-      0: { name: 'a', email: 'a@example.com', index: 0 },
-      1: { name: 'b', email: 'b@example.com', index: 1 },
-      2: { name: 'c', email: 'c@example.com', index: 2 },
-    };
-  }
-  newFieldAdapter = () => new MockFieldAdapter();
-  create = async item => {
-    this.items[this.index] = {
-      ...item,
-      index: this.index,
-    };
-    this.index += 1;
-    return this.items[this.index - 1];
-  };
-  findById = id => this.items[id];
-  delete = async id => {
-    this.items[id] = undefined;
-  };
-  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
-    if (meta) {
-      return {
-        count: (id !== undefined
-          ? [this.items[id]]
-          : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
-        ).length,
-      };
-    } else {
-      return id !== undefined
-        ? [this.items[id]]
-        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
-    }
-  };
-  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
-  update = (id, item) => {
-    this.items[id] = { ...this.items[id], ...item };
-    return this.items[id];
-  };
-}
-
-class MockAdapter {
-  name = 'mock';
-  newListAdapter = () => new MockListAdapter(this);
-  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
-}
-
 Text.adapters['mock'] = {};
 Checkbox.adapters['mock'] = {};
 Float.adapters['mock'] = {};
@@ -148,7 +25,7 @@ Relationship.adapters['mock'] = {};
 
 const context = {
   getListAccessControlForUser: () => true,
-  getFieldAccessControlForUser: (listKey, fieldPath, originalInput, existingItem) =>
+  getFieldAccessControlForUser: (access, listKey, fieldPath, originalInput, existingItem) =>
     !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
   authedItem: {
@@ -190,19 +67,16 @@ const getListByKey = listKey => {
   }
 };
 
-const listExtras = (queryMethod = undefined) => ({
+const listExtras = () => ({
   getListByKey,
   adapter: new MockAdapter(),
   defaultAccess: { list: true, field: true },
-  queryHelper: context => (queryString, { variables } = {}) => {
-    return queryMethod(queryString, context, variables);
-  },
   registerType: () => {},
   schemaNames: ['public'],
 });
 
-const setup = (extraConfig, queryMethod) => {
-  const list = new List('Test', { ...config, ...extraConfig }, listExtras(queryMethod));
+const setup = extraConfig => {
+  const list = new List('Test', { ...config, ...extraConfig }, listExtras());
   list.initFields();
   return list;
 };
@@ -912,7 +786,8 @@ test('checkListAccess', async () => {
 
   const newContext = {
     ...context,
-    getListAccessControlForUser: (listKey, originalInput, operation) => operation === 'update',
+    getListAccessControlForUser: (access, listKey, originalInput, operation) =>
+      operation === 'update',
   };
   await expect(
     list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })
@@ -1306,72 +1181,8 @@ describe('List Hooks', () => {
           await action(list);
 
           Object.keys(hooks).forEach(hook => {
-            expect(hooks[hook]).toHaveBeenCalledWith(
-              expect.objectContaining({
-                actions: {
-                  query: expect.any(Function),
-                },
-              })
-            );
+            expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
           });
-        })
-      );
-    });
-
-    test('can execute a query from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
-          const queryString = 'query { /* Fake query string */ }';
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ actions: { query } }) => {
-              await query(queryString);
-            }),
-          };
-
-          const list = setup({ hooks }, queryMethod);
-          await action(list);
-
-          expect(queryMethod).toHaveBeenCalledWith(
-            queryString,
-            // The context object
-            expect.any(Object),
-            // no variables
-            undefined
-          );
-        })
-      );
-    });
-
-    test('can execute a query with variables from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
-          const queryString = 'query { /* Fake query string */ }';
-          const variables = { id: 'abc123' };
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ actions: { query } }) => {
-              await query(queryString, { variables });
-            }),
-          };
-
-          const list = setup({ hooks }, queryMethod);
-          await action(list);
-
-          expect(queryMethod).toHaveBeenCalledWith(
-            queryString,
-            // The context object
-            expect.any(Object),
-            expect.objectContaining(variables)
-          );
         })
       );
     });
@@ -1388,13 +1199,7 @@ describe('List Hooks', () => {
       await list.deleteMutation(1, context);
 
       Object.keys(hooks).forEach(hook => {
-        expect(hooks[hook]).toHaveBeenCalledWith(
-          expect.objectContaining({
-            actions: {
-              query: expect.any(Function),
-            },
-          })
-        );
+        expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
       });
     });
   });

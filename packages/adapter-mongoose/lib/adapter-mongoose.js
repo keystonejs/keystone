@@ -17,9 +17,6 @@ const {
 
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
 const { queryParser, pipelineBuilder } = require('@keystonejs/mongo-join-builder');
-const logger = require('@keystonejs/logger').logger('mongoose');
-
-const slugify = require('@sindresorhus/slugify');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
@@ -36,7 +33,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this._manyModels = {};
   }
 
-  async _connect({ name }) {
+  async _connect() {
     const { mongoUri, ...mongooseConfig } = this.config;
     // Default to the localhost instance
     let uri =
@@ -51,9 +48,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       process.env.MONGOLAB_URL;
 
     if (!uri) {
-      const defaultDbName = slugify(name) || 'keystone';
-      uri = `mongodb://localhost/${defaultDbName}`;
-      logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
+      throw new Error(`No MongoDB connection URI specified.`);
     }
 
     await this.mongoose.connect(uri, {
@@ -474,10 +469,7 @@ class MongooseListAdapter extends BaseListAdapter {
     // Now traverse all self-referential relationships and sort them right out.
     await Promise.all(
       this.rels
-        .filter(
-          ({ tableName, left, right }) =>
-            tableName === this.key && right && left.refListKey === right.refListKey
-        )
+        .filter(({ tableName, left }) => tableName === this.key && left.listKey === left.refListKey)
         .map(({ columnName, tableName }) =>
           this._setNullByValue({ tableName, columnName, value: id })
         )

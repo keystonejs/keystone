@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { memo } from 'react';
 
-import { ChevronLeftIcon } from '@arch-ui/icons';
+import { ChevronLeftIcon } from '@primer/octicons-react';
 import { FlexGroup } from '@arch-ui/layout';
 import { IconButton } from '@arch-ui/button';
 import { gridSize } from '@arch-ui/theme';

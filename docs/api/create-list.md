@@ -50,7 +50,6 @@ Override the adapter config options for a specific list. Normally `adapterConfig
 
 ```javascript
 const keystone = new Keystone({
-  name: 'my-project',
   adapter: new Adapter({...}),
 });
 ```

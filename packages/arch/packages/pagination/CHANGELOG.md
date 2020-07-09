@@ -1,5 +1,11 @@
 # @arch-ui/pagination
 
+## 0.0.23
+
+### Patch Changes
+
+- [`887ad8199`](https://github.com/keystonejs/keystone/commit/887ad8199aa5c32a3db8588104f4548c90aa106c) [#3178](https://github.com/keystonejs/keystone/pull/3178) Thanks [@Vultraz](https://github.com/Vultraz)! - Redesigned Pagination display.
+
 ## 0.0.22
 
 ### Patch Changes

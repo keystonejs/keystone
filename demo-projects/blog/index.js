@@ -11,8 +11,7 @@ const { staticRoute, staticPath, distDir } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
 
 const keystone = new Keystone({
-  name: 'Keystone Demo Blog',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/keystone-demo-blog' }),
   onConnect: async () => {
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
@@ -35,6 +34,7 @@ const authStrategy = keystone.createAuthStrategy({
 });
 
 const adminApp = new AdminUIApp({
+  name: 'Keystone Demo Blog',
   adminPath: '/admin',
   hooks: require.resolve('./admin/'),
   authStrategy,

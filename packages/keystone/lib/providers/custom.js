@@ -8,10 +8,9 @@ const { AccessDeniedError } = require('../ListTypes/graphqlErrors');
 const graphqlLogger = logger('graphql');
 
 class CustomProvider {
-  constructor({ schemaNames, defaultAccess, buildQueryHelper }) {
+  constructor({ schemaNames, defaultAccess }) {
     this._schemaNames = schemaNames;
     this._defaultAccess = defaultAccess;
-    this._buildQueryHelper = buildQueryHelper;
     this._extendedTypes = [];
     this._extendedQueries = [];
     this._extendedMutations = [];
@@ -115,7 +114,6 @@ class CustomProvider {
       const resolve = async (item, args, context, info) => {
         if (resolver) {
           return resolver(item, args, context, info, {
-            query: this._buildQueryHelper(context),
             access: await computeAccess(item, args, context, info),
           });
         }

@@ -5,14 +5,12 @@ const {
   graphqlRequest,
   networkedGraphqlRequest,
 } = require('@keystonejs/test-utils');
-const cuid = require('cuid');
 
 const falseFn = () => false;
 
 function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
-    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', {
         fields: { name: { type: Text } },

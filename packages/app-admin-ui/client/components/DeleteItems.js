@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 
-import { TrashcanIcon } from '@arch-ui/icons';
+import { TrashcanIcon } from '@primer/octicons-react';
 import { IconButton } from '@arch-ui/button';
 
 import DeleteManyItemsModal from './DeleteManyItemsModal';

@@ -1,5 +1,78 @@
 # @keystonejs/keystone
 
+## 11.2.0
+
+### Minor Changes
+
+- [`f296866df`](https://github.com/keystonejs/keystone/commit/f296866dfab3af54381fd527473e3dc98425b3b9) [#3199](https://github.com/keystonejs/keystone/pull/3199) Thanks [@Vultraz](https://github.com/Vultraz)! - Support GraphQL AST input in `executeGraphQL`. This should be created with the `gql` template literal imported from `apollo-server-express`.
+
+### Patch Changes
+
+- Updated dependencies [[`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5), [`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed), [`2806a0bdf`](https://github.com/keystonejs/keystone/commit/2806a0bdfd65429e7c44ed070983f121d6934955), [`3adb2ac2a`](https://github.com/keystonejs/keystone/commit/3adb2ac2ac4ab65636ffea1b2b1f7044410c2b8b)]:
+  - @keystonejs/fields@13.0.2
+  - @keystonejs/test-utils@7.0.1
+  - @keystonejs/utils@5.4.2
+  - @keystonejs/session@7.0.1
+
+## 11.1.3
+
+### Patch Changes
+
+- [`f6667f082`](https://github.com/keystonejs/keystone/commit/f6667f082539c11c5de02877f8c0e5174d74492f) [#3193](https://github.com/keystonejs/keystone/pull/3193) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug when calling `keystone.executeGraphQL()` without a `context` argument.
+
+## 11.1.2
+
+### Patch Changes
+
+- [`2c1cc55b0`](https://github.com/keystonejs/keystone/commit/2c1cc55b0eaaeb0aea04a14b70afde3ecd7c1d8d) [#3186](https://github.com/keystonejs/keystone/pull/3186) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when calling `context.executeGraphQL()` without a `context` argument.
+
+## 11.1.1
+
+### Patch Changes
+
+- [`3ecf74462`](https://github.com/keystonejs/keystone/commit/3ecf74462524f4940474eaf75eea958acbda9ee4) [#3165](https://github.com/keystonejs/keystone/pull/3165) Thanks [@timleslie](https://github.com/timleslie)! - Added deprecation warnings for `keystone.executeQuery`, `{ actions: { query } }` in hooks, and the `query` argument in custom query and mutation resolvers. These are being deprecated in favour of `keystone.executeGraphQL()` and `context.executeGraphQL()`. See [the docs](docs/discussions/server-side-graphql.md) for more details.
+
+- Updated dependencies [[`c6eac2dc2`](https://github.com/keystonejs/keystone/commit/c6eac2dc2dec857c668a5794fd84829d164563f3), [`4884ce609`](https://github.com/keystonejs/keystone/commit/4884ce6094b3c9ec203c702a5de97b983bd14176)]:
+  - @keystonejs/test-utils@7.0.0
+  - @keystonejs/fields@13.0.1
+
+## 11.1.0
+
+### Minor Changes
+
+- [`dec3d336a`](https://github.com/keystonejs/keystone/commit/dec3d336adbe8156722fbe65f315a57b2f5c08e7) [#3153](https://github.com/keystonejs/keystone/pull/3153) Thanks [@timleslie](https://github.com/timleslie)! - Made `context` available to user designed access control functions.
+
+* [`78a5d5a45`](https://github.com/keystonejs/keystone/commit/78a5d5a457f80bba592e5a81056125b11469a5a8) [#3154](https://github.com/keystonejs/keystone/pull/3154) Thanks [@timleslie](https://github.com/timleslie)! - Added improved support for [server-side GraphQL operations](/docs/discussions/server-side-graphql.md).
+
+### Patch Changes
+
+- [`1c69f4dc8`](https://github.com/keystonejs/keystone/commit/1c69f4dc8ab1eb23bc0a34850f48a51f2e9f1dce) [#3141](https://github.com/keystonejs/keystone/pull/3141) Thanks [@molomby](https://github.com/molomby)! - Adding URL formulation rules to the style guide.
+
+* [`950f23443`](https://github.com/keystonejs/keystone/commit/950f23443ef8f1a176a3cf6b039f93a29d954f5e) [#3138](https://github.com/keystonejs/keystone/pull/3138) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved adapter mocks into test utils package.
+
+- [`3c3c67abb`](https://github.com/keystonejs/keystone/commit/3c3c67abb5ec82155fec893d389eac3bbeb12bbd) [#3149](https://github.com/keystonejs/keystone/pull/3149) Thanks [@timleslie](https://github.com/timleslie)! - Added internal method `Keystone._getAccessControlContext()`, no functional changes.
+
+- Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`dec3d336a`](https://github.com/keystonejs/keystone/commit/dec3d336adbe8156722fbe65f315a57b2f5c08e7), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8), [`950f23443`](https://github.com/keystonejs/keystone/commit/950f23443ef8f1a176a3cf6b039f93a29d954f5e)]:
+  - @keystonejs/fields@13.0.0
+  - @keystonejs/access-control@6.2.0
+  - @keystonejs/test-utils@6.2.0
+
+## 11.0.0
+
+### Major Changes
+
+- [`8df24d2ab`](https://github.com/keystonejs/keystone/commit/8df24d2ab4bed8a7fc1a856c20a571781dd7c04e) [#3069](https://github.com/keystonejs/keystone/pull/3069) Thanks [@Vultraz](https://github.com/Vultraz)! - Prevented parsing the GraphQL schema twice.
+  - `keystone.getTypeDefs` now returns the parsed GraphQL AST instead of the raw SDL.
+  - `keystone.dumpSchema` now returns the GraphQL schema as a string instead of writing it to file. Additionally, its first `file` argument was removed and now only takes a the schema name, which defaults to `public`.
+
+### Minor Changes
+
+- [`7c38e2671`](https://github.com/keystonejs/keystone/commit/7c38e267143491f38699326f02764f40f337d416) [#3085](https://github.com/keystonejs/keystone/pull/3085) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new \_verifyTables method to the knex adapter. This is then used by the Keystone CLI to warn when tables have not been initialised or the database might need a migration.
+
+### Patch Changes
+
+- [`33046a66f`](https://github.com/keystonejs/keystone/commit/33046a66f33a82cf099880303b44d9736344667d) [#2703](https://github.com/keystonejs/keystone/pull/2703) Thanks [@jesstelford](https://github.com/jesstelford)! - Disallow keystone.executeQuery until after keystone.connect is called
+
 ## 10.1.0
 
 ### Minor Changes

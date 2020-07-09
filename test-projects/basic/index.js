@@ -35,7 +35,7 @@ const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
-const getYear = require('date-fns/getYear');
+const { formatISO } = require('date-fns');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -43,8 +43,7 @@ const getYear = require('date-fns/getYear');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'Cypress Test Project Basic',
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
   cookieSecret: 'qwerty',
 });
 
@@ -81,8 +80,8 @@ keystone.createList('User', {
     dob: {
       type: CalendarDay,
       format: 'do MMMM yyyy',
-      yearRangeFrom: 1901,
-      yearRangeTo: getYear(new Date()),
+      dateFrom: '1901-01-01',
+      dateTo: formatISO(new Date(), { representation: 'date' }),
     },
     lastOnline: {
       type: DateTime,
@@ -275,6 +274,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp({ enableDefaultRoute: true }),
+    new AdminUIApp({ name: 'Cypress Test Project Basic', enableDefaultRoute: true }),
   ],
 };

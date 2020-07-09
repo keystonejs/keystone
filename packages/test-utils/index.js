@@ -5,6 +5,9 @@ const {
   authedGraphqlRequest,
   networkedGraphqlRequest,
   matchFilter,
+  MockAdapter,
+  MockListAdapter,
+  MockIdType,
 } = require('./lib/test-utils');
 
 module.exports = {
@@ -14,4 +17,7 @@ module.exports = {
   authedGraphqlRequest,
   networkedGraphqlRequest,
   matchFilter,
+  MockAdapter,
+  MockListAdapter,
+  MockIdType,
 };

@@ -1,6 +1,5 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const cuid = require('cuid');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -146,11 +145,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     ].forEach(([createLists, order]) => {
       describe(`One-to-many relationships - ${order}`, () => {
         function setupKeystone(adapterName) {
-          return setupServer({
-            adapterName,
-            name: `ks5-testdb-${cuid()}`,
-            createLists,
-          });
+          return setupServer({ adapterName, createLists });
         }
 
         describe('Count', () => {

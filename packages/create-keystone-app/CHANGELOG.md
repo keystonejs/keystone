@@ -1,5 +1,29 @@
 # create-keystone-app
 
+## 3.2.2
+
+### Patch Changes
+
+- [`dac54b09e`](https://github.com/keystonejs/keystone/commit/dac54b09e93b69e3d0ac4fd94085f125fb0e99ff) [#3196](https://github.com/keystonejs/keystone/pull/3196) Thanks [@timleslie](https://github.com/timleslie)! - Updated the `package.json` script `create-tables` to use `cross-env`.
+
+## 3.2.1
+
+### Patch Changes
+
+- [`89fb78db3`](https://github.com/keystonejs/keystone/commit/89fb78db3e2aac40ff093d72ed55268b3b518cb2) [#3161](https://github.com/keystonejs/keystone/pull/3161) Thanks [@timleslie](https://github.com/timleslie)! - Updated to use `keystone.executeGraphQL` for all server-side GraphQL operations.
+
+## 3.2.0
+
+### Minor Changes
+
+- [`7c38e2671`](https://github.com/keystonejs/keystone/commit/7c38e267143491f38699326f02764f40f337d416) [#3085](https://github.com/keystonejs/keystone/pull/3085) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new \_verifyTables method to the knex adapter. This is then used by the Keystone CLI to warn when tables have not been initialised or the database might need a migration.
+
+### Patch Changes
+
+- Updated dependencies [[`7c38e2671`](https://github.com/keystonejs/keystone/commit/7c38e267143491f38699326f02764f40f337d416), [`835866e1a`](https://github.com/keystonejs/keystone/commit/835866e1a2954113d809c9f0bac186485ac6212b)]:
+  - @keystonejs/adapter-knex@10.1.0
+  - @keystonejs/adapter-mongoose@8.1.3
+
 ## 3.1.2
 
 ### Patch Changes

@@ -101,6 +101,7 @@ the list `User` it would match the input type `UserWhereInput`.
 | `gqlName`                | The name of the query or mutation which triggered the access check.                           |
 | `itemId`                 | The `id` of the item being updated/deleted in singular `update` and `delete` operations.      |
 | `itemIds`                | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations.    |
+| `context`                | The `context` of the originating GraphQL operation.                                           |
 
 When resolving `StaticAccess`:
 
@@ -281,6 +282,7 @@ interface AccessInput {
   gqlName?: string;
   itemId?: string;
   itemIds?: [string];
+  context?: {};
 }
 
 type StaticAccess = boolean;
@@ -314,6 +316,7 @@ type FieldConfig = {
 | `gqlName`                | The name of the query or mutation which triggered the access check.                                           |
 | `itemId`                 | The `id` of the item being updated/deleted in singular `update` and `delete` operations.                      |
 | `itemIds`                | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations.                    |
+| `context`                | The `context` of the originating GraphQL operation.                                                           |
 
 When defining `StaticAccess`:
 
@@ -473,7 +476,7 @@ keystone.extendGraphQLSchema({
     {
       schema: 'getUserByName(name: String!): Boolean',
       resolver: async (item, args, context, info, { query, access }) => {...},
-      access: async ({ item, args, context, info, { authentication: { item, listKey } }, gqlName) => {
+      access: async ({ item, args, context, info, authentication: { item: authedItem, listKey }, gqlName }) => {
         return true;
       },
     },

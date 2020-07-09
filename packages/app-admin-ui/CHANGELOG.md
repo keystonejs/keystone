@@ -1,5 +1,43 @@
 # @keystonejs/app-admin-ui
 
+## 7.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`887ad8199`](https://github.com/keystonejs/keystone/commit/887ad8199aa5c32a3db8588104f4548c90aa106c), [`4ddc3dc6f`](https://github.com/keystonejs/keystone/commit/4ddc3dc6f87c192627d00db85a1080411400eeb5), [`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed), [`2806a0bdf`](https://github.com/keystonejs/keystone/commit/2806a0bdfd65429e7c44ed070983f121d6934955), [`3adb2ac2a`](https://github.com/keystonejs/keystone/commit/3adb2ac2ac4ab65636ffea1b2b1f7044410c2b8b)]:
+  - @arch-ui/pagination@0.0.23
+  - @keystonejs/fields@13.0.2
+  - @keystonejs/utils@5.4.2
+  - @keystonejs/session@7.0.1
+
+## 7.0.4
+
+### Patch Changes
+
+- [`39d58e126`](https://github.com/keystonejs/keystone/commit/39d58e1261f4a6f4b736da59690c8617e61376b1) [#3156](https://github.com/keystonejs/keystone/pull/3156) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Always compile client directory regardless of whether or not the package is a direct child of a `node_modules` directory to work correctly with pnpm.
+
+## 7.0.3
+
+### Patch Changes
+
+- [`2e5a93dee`](https://github.com/keystonejs/keystone/commit/2e5a93dee5be11bf020c1397c7653bdf07a90d24) [#3112](https://github.com/keystonejs/keystone/pull/3112) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted ConnectivityListener component to a custom hook.
+
+- Updated dependencies [[`c235e34c7`](https://github.com/keystonejs/keystone/commit/c235e34c7a72cd05b05b3d1af08c93c1e98a8e91), [`b693b2fa8`](https://github.com/keystonejs/keystone/commit/b693b2fa8a391d7f5bcfbea11061679bd4b559d8)]:
+  - @keystonejs/fields@13.0.0
+
+## 7.0.2
+
+### Patch Changes
+
+- [`083621c90`](https://github.com/keystonejs/keystone/commit/083621c9043a26af6fd48a57646e96b062c625a1) [#3104](https://github.com/keystonejs/keystone/pull/3104) Thanks [@Vultraz](https://github.com/Vultraz)! - Converted ScrolToTop component to a custom hook.
+
+* [`2a7f22062`](https://github.com/keystonejs/keystone/commit/2a7f220628bb0b4d58d0a4dca370e8922a25da80) [#3108](https://github.com/keystonejs/keystone/pull/3108) Thanks [@Vultraz](https://github.com/Vultraz)! - Moved a couple files around to more logical places.
+
+- [`37f57c39a`](https://github.com/keystonejs/keystone/commit/37f57c39ac490fa8a67499ac7ac75a8c04af41bf) [#3124](https://github.com/keystonejs/keystone/pull/3124) Thanks [@Vultraz](https://github.com/Vultraz)! - Fixed a regression in the Create Relationship workflow.
+
+- Updated dependencies [[`bb0649b59`](https://github.com/keystonejs/keystone/commit/bb0649b59d71dd23294ed7f5986402fe8893125f)]:
+  - @keystonejs/build-field-types@5.2.9
+
 ## 7.0.1
 
 ### Patch Changes
