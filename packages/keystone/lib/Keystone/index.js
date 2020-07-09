@@ -37,7 +37,6 @@ module.exports = class Keystone {
     adapters,
     adapter,
     defaultAdapter,
-    name,
     onConnect,
     cookieSecret,
     sessionStore,
@@ -54,7 +53,6 @@ module.exports = class Keystone {
       access: true,
     },
   }) {
-    this.name = name;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -130,9 +128,15 @@ module.exports = class Keystone {
     );
 
     const getListAccessControlForUser = memoize(
-      async (listKey, originalInput, operation, { gqlName, itemId, itemIds, context } = {}) => {
+      async (
+        access,
+        listKey,
+        originalInput,
+        operation,
+        { gqlName, itemId, itemIds, context } = {}
+      ) => {
         return validateListAccessControl({
-          access: this.lists[listKey].access[schemaName],
+          access: access[schemaName],
           originalInput,
           operation,
           authentication,
@@ -148,6 +152,7 @@ module.exports = class Keystone {
 
     const getFieldAccessControlForUser = memoize(
       async (
+        access,
         listKey,
         fieldKey,
         originalInput,
@@ -156,7 +161,7 @@ module.exports = class Keystone {
         { gqlName, itemId, itemIds, context } = {}
       ) => {
         return validateFieldAccessControl({
-          access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
+          access: access[schemaName],
           originalInput,
           existingItem,
           operation,
@@ -173,9 +178,9 @@ module.exports = class Keystone {
     );
 
     const getAuthAccessControlForUser = memoize(
-      async (listKey, { gqlName, context } = {}) => {
+      async (access, listKey, { gqlName, context } = {}) => {
         return validateAuthAccessControl({
-          access: this.lists[listKey].access[schemaName],
+          access: access[schemaName],
           authentication,
           listKey,
           gqlName,
@@ -473,7 +478,7 @@ module.exports = class Keystone {
       list => list.getAdminMeta({ schemaName })
     );
 
-    return { lists, name: this.name };
+    return { lists };
   }
 
   getAdminViews({ schemaName }) {

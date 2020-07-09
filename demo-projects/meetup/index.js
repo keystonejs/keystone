@@ -22,7 +22,6 @@ const MEETUP = require('./meetupConfig');
 const initialiseData = require('./initialData');
 
 const keystone = new Keystone({
-  name: MEETUP.name,
   adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/meetup' }),
   onConnect: initialiseData,
 });
@@ -43,6 +42,7 @@ const authStrategy = keystone.createAuthStrategy({
 });
 
 const adminApp = new AdminUIApp({
+  name: MEETUP.name,
   adminPath: '/admin',
   authStrategy,
   pages: [

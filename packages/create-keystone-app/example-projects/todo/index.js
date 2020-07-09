@@ -11,7 +11,6 @@ const adapterConfig = {};
 /* /keystone-cli: generated-code */
 
 const keystone = new Keystone({
-  name: PROJECT_NAME,
   adapter: new Adapter(adapterConfig),
 });
 
@@ -27,6 +26,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: '/', src: 'public' }),
-    new AdminUIApp({ enableDefaultRoute: true }),
+    new AdminUIApp({ name: PROJECT_NAME, enableDefaultRoute: true }),
   ],
 };

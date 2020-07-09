@@ -42,7 +42,6 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'example-project',
   adapter: new MongooseAdapter(),
 });
 
@@ -67,7 +66,10 @@ const authStrategy = keystone.createAuthStrategy({
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ enableDefaultRoute: true, authStrategy })],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({ name: 'example-project', enableDefaultRoute: true, authStrategy }),
+  ],
 };
 ```
 
@@ -93,7 +95,6 @@ Example on how to `seed` the data upon database connection:
 
 ```javascript
 const keystone = new Keystone({
-  name: 'New Project',
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
     await keystone.createItems({
@@ -154,7 +155,6 @@ The full example:
 
 ```javascript
 const keystone = new Keystone({
-  name: 'New Project',
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
     await keystone.createItems({
@@ -229,7 +229,6 @@ In action:
 
 ```javascript
 const keystone = new Keystone({
-  name: 'New Project',
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
     await keystone.createItems({
@@ -264,7 +263,6 @@ Clear the database, start the Keystone application and visit the Admin UI. Take 
 
 ```javascript
 const keystone = new Keystone({
-  name: 'New Project',
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
     await keystone.createItems({
