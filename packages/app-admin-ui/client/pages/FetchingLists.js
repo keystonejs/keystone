@@ -2,12 +2,12 @@
 import { jsx } from '@emotion/core';
 
 import { colors } from '@arch-ui/theme';
-import { CloudDownloadIcon } from '@arch-ui/icons/src';
+import { CloudDownloadIcon } from '@arch-ui/icons';
 import { LoadingIndicator } from '@arch-ui/loading';
 
 // TODO: this is duplicated (except color and fontSize) in the signin page.
 // There's also another component called Container which could be confused
-const Container = props => (
+const Container = (props) => (
   <div
     css={{
       color: colors.N30,

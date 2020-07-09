@@ -27,7 +27,7 @@ import { useScrollQuery } from '../hooks/ScrollQuery';
 
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useListMeta } from '../../providers/ListMeta';
+import { useListMeta } from '../providers/ListMeta';
 
 const TRANSITION_DURATION = '220ms';
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
