@@ -32,12 +32,12 @@ const expectNamedArray = (data, errors, name, values) => {
   });
 };
 
-multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
+multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     let keystone,
       items = {};
     beforeAll(async () => {
-      const _before = await before(setupKeystone);
+      const _before = await before(setupKeystone, { dbName: 'authedTest' });
       keystone = _before.keystone;
 
       // ensure every list has at least some data
@@ -50,14 +50,28 @@ multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
           }),
         {}
       );
+
+      const _skipAccess = await before(setupKeystone, {
+        skipAccessControl: true,
+        dbName: 'authedTest',
+      });
       for (const [listName, _items] of Object.entries(initialData)) {
-        items[listName] = await createItems({
-          keystone,
+        const newItems = await createItems({
+          keystone: _skipAccess.keystone,
           listName,
           items: _items.map(x => ({ data: x })),
+          returnFields: 'id, name',
           schemaName: 'testing',
         });
+
+        // ToDo: Can someone fix this mess please?
+        items[listName] = items[listName] ? items[listName] : [];
+        items[listName] = [
+          ...items[listName],
+          ...newItems.map(item => Object.keys(item).map(key => item[key])).flat(2),
+        ];
       }
+      await after(_skipAccess.keystone);
     });
     afterAll(async () => {
       await after(keystone);

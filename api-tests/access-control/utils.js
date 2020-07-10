@@ -98,9 +98,11 @@ const createFieldImperative = fieldAccess => ({
     },
   },
 });
-function setupKeystone(adapterName) {
+
+function setupKeystone(adapterName, { skipAccessControl, dbName } = {}) {
   return setupServer({
     adapterName,
+    dbName,
     createLists: keystone => {
       keystone.createList('User', { fields: { name: { type: Text } } });
 
@@ -110,36 +112,41 @@ function setupKeystone(adapterName) {
             name: { type: Text },
             ...objMerge(fieldMatrix.map(variation => createFieldStatic(variation))),
           },
-          access,
+          access: skipAccessControl ? true : access,
         });
         keystone.createList(getImperativeListName(access), {
           fields: {
             name: { type: Text },
             ...objMerge(fieldMatrix.map(variation => createFieldImperative(variation))),
           },
-          access: {
-            create: () => access.create,
-            read: () => access.read,
-            update: () => access.update,
-            delete: () => access.delete,
-            auth: () => access.auth,
-          },
+          access: skipAccessControl
+            ? true
+            : {
+                create: () => access.create,
+                read: () => access.read,
+                update: () => access.update,
+                delete: () => access.delete,
+                auth: () => access.auth,
+              },
         });
         keystone.createList(getDeclarativeListName(access), {
           fields: { name: { type: Text } },
-          access: {
-            create: access.create,
-            // arbitrarily restrict the data to a single item (see data.js)
-            read: () => access.read && { name_starts_with: 'Hello' },
-            update: () => access.update && { name_starts_with: 'Hello' },
-            delete: () => access.delete && { name_starts_with: 'Hello' },
-            auth: access.auth,
-          },
+          access: skipAccessControl
+            ? true
+            : {
+                create: access.create,
+                // arbitrarily restrict the data to a single item (see data.js)
+                read: () => access.read && { name_starts_with: 'Hello' },
+                update: () => access.update && { name_starts_with: 'Hello' },
+                delete: () => access.delete && { name_starts_with: 'Hello' },
+                auth: access.auth,
+              },
         });
       });
     },
   });
 }
+
 module.exports = {
   FAKE_ID,
   FAKE_ID_2,

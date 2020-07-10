@@ -13,7 +13,7 @@ describe('Fields', () => {
   });
   testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
 
-  multiAdapterRunners('mongoose').map(({ runner, adapterName }) =>
+  multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`${adapterName} adapter`, () => {
       testModules.map(require).forEach(mod => {
         const listName = 'test';

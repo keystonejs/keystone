@@ -53,21 +53,31 @@ function dropAllDatabases(adapters) {
 }
 
 /*
- * Seed the intial data using `createItem` API
- * 1. Insert all the lists having no associated relatioships: User, PostCategory, and ReadOnlyList.
- * 2. Insert the `Post` data, with the required relationships, via `connect` nested mutation.
+ * Seed the initial data using `createItem` API
+ * 1. Insert all the lists having no associated relationships: User, PostCategory, and ReadOnlyList.
+ * 2. Insert `Post` data, with the required relationships, via `connect` nested mutation.
  */
 async function seedData(initialData) {
-  const [[{ createUsers: users }], [{ createPostCategories: postCategories }]] = await Promise.all(
-    ['User', 'PostCategory', 'ReadOnlyList'].map(listName =>
-      createItems({
-        keystone,
-        listName,
-        items: initialData[listName],
-        returnFields: listName === 'User' ? 'id, email' : 'id, name',
-      })
-    )
-  );
+  const [{ createUsers: users }] = await createItems({
+    keystone,
+    listName: 'User',
+    items: initialData['User'],
+    returnFields: 'id, email',
+  });
+
+  const [{ createPostCategories: postCategories }] = await createItems({
+    keystone,
+    listName: 'PostCategory',
+    items: initialData['PostCategory'],
+    returnFields: 'id, name',
+  });
+
+  await createItems({
+    keystone,
+    listName: 'ReadOnlyList',
+    items: initialData['ReadOnlyList'],
+    returnFields: 'id, name',
+  });
 
   const Post = [
     {
