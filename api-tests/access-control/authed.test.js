@@ -34,7 +34,8 @@ const expectNamedArray = (data, errors, name, values) => {
 
 multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone, items;
+    let keystone,
+      items = {};
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
