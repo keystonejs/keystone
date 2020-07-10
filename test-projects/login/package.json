@@ -27,6 +27,7 @@
     "@keystonejs/keystone": "^11.1.0",
     "@keystonejs/list-plugins": "^7.0.1",
     "@keystonejs/session": "^7.0.0",
+    "@keystonejs/orm": "^0.0.0",
     "body-parser": "^1.18.2",
     "cross-env": "^7.0.0",
     "express": "^4.17.1"
