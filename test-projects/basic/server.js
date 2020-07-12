@@ -1,4 +1,5 @@
 const express = require('express');
+const { createItems } = require('@keystonejs/orm');
 
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
@@ -16,19 +17,19 @@ keystone
     // NOTE: This is only for test purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystone.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
+      await dropAllDatabases(keystone.adapters);
+      await createItems({
+        keystone,
+        listName: 'User',
+        items: initialData.User,
       });
-      await keystone.createItems(initialData);
     }
 
     const app = express();
 
     app.get('/reset-db', async (req, res) => {
-      Object.values(keystone.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
-      });
-      await keystone.createItems(initialData);
+      await dropAllDatabases(keystone.adapters);
+      await seedData(initialData);
       res.redirect('/admin');
     });
 
@@ -42,3 +43,85 @@ keystone
     console.error(error);
     process.exit(1);
   });
+
+/**
+ * @param {object} list of all the keystone adapters passed in while configuring the app.
+ * @returns {Promise[]} array of Promises for dropping the keystone databases.
+ */
+function dropAllDatabases(adapters) {
+  return Promise.all(Object.values(adapters).map(adapter => adapter.dropDatabase()));
+}
+
+/*
+ * Seed the intial data using `createItem` API
+ * 1. Insert all the lists having no associated relatioships: User, PostCategory, and ReadOnlyList.
+ * 2. Insert the `Post` data, with the required relationships, via `connect` nested mutation.
+ */
+async function seedData(initialData) {
+  const [[{ createUsers: users }], [{ createPostCategories: postCategories }]] = await Promise.all(
+    ['User', 'PostCategory', 'ReadOnlyList'].map(listName =>
+      createItems({
+        keystone,
+        listName,
+        items: initialData[listName],
+        returnFields: listName === 'User' ? 'id, email' : 'id, name',
+      })
+    )
+  );
+
+  const Post = [
+    {
+      data: {
+        name: 'Lets talk React Router',
+        author: {
+          connect: { id: users.find(user => user.email === 'ben@keystone.com').id },
+        },
+        categories: {
+          connect: postCategories.filter(p => /^React/i.test(p.name)).map(i => ({ id: i.id })),
+        },
+      },
+    },
+    {
+      data: {
+        name: 'Hello Things',
+      },
+    },
+    {
+      data: {
+        name: 'How we built Keystone 5',
+        author: { connect: { id: users.find(user => user.email === 'ben@keystone.com').id } },
+        categories: {
+          connect: postCategories
+            .filter(
+              ({ name }) =>
+                name === 'React' || name === 'Keystone' || name === 'GraphQL' || name === 'Node'
+            )
+            .map(i => ({ id: i.id })),
+        },
+      },
+    },
+  ].concat(
+    Array(120)
+      .fill(true)
+      .map(createPost(users, postCategories))
+  );
+
+  // Run the GraphQL query to insert all the post
+  await createItems({ keystone, listName: 'Post', items: Post });
+}
+
+function createPost(users, postCategories) {
+  return (_, i) => {
+    const user = users[i % users.length];
+    return {
+      data: {
+        name: `Why ${i} is better than ${i - 1}`,
+        views: i,
+        author: { connect: { id: user.id } },
+        categories: {
+          connect: { id: postCategories.find(p => (p.name = 'Number comparison')).id },
+        },
+      },
+    };
+  };
+}

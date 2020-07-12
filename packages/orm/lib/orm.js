@@ -70,11 +70,8 @@ const runChunkedMutation = async ({ pageSize = 500, items, ...rest }) => {
   const chunks = chunkArray(items, pageSize);
 
   const result = await Promise.all(
-    chunks.map(async chunk => {
-      return await runQuery({ ...rest, variables: { items: chunk } });
-    })
+    chunks.map(chunk => runQuery({ ...rest, variables: { items: chunk } }))
   );
-
   return result;
 };
 
