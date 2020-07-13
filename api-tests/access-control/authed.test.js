@@ -50,11 +50,14 @@ multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
           }),
         {}
       );
+
+      const _skipAccess = await before(setupKeystone, { skipAccessControl: true });
       for (const [listName, _items] of Object.entries(initialData)) {
         items[listName] = await createItems({
-          keystone,
+          keystone: _skipAccess.keystone,
           listName,
           items: _items.map(x => ({ data: x })),
+          returnFields: 'id, name',
           schemaName: 'testing',
         });
       }
@@ -196,6 +199,18 @@ multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
               test(`allows: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
                 const singleQueryName = nameFn[mode](access);
+
+                if (!items[singleQueryName]) {
+                  console.log(`Unexpected singleQueryName`, singleQueryName);
+                }
+                // TODO: singleQueryName is sometimes not as expected. E.g.
+                // `YesCreateYesReadYesUpdateYesAuthNoDeleteDeclarativeList`
+                // vs
+                // `createYesCreateYesReadYesUpdateYesAuthNoDeleteDeclarativeList`
+
+                // I expect the way these are resolved on line 56 differs from previous implementation
+                // Not 100% sure yet
+
                 const validId = items[singleQueryName].find(({ name }) => name === 'Hello').id;
                 const query = `mutation { ${updateMutationName}(id: "${validId}", data: { name: "bar" }) { id name } }`;
                 const { data, errors } = await authedGraphqlRequest({ keystone, query });

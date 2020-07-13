@@ -198,8 +198,8 @@ function _keystoneRunner(adapterName, tearDownFunction) {
 }
 
 function _before(adapterName) {
-  return async function(setupKeystone) {
-    const { keystone, app } = await setupKeystone(adapterName);
+  return async function(setupKeystone, opts) {
+    const { keystone, app } = await setupKeystone(adapterName, opts);
     await keystone.connect();
     return { keystone, app };
   };
