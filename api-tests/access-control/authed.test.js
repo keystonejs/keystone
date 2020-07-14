@@ -37,7 +37,7 @@ multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
     let keystone,
       items = {};
     beforeAll(async () => {
-      const _before = await before(setupKeystone);
+      const _before = await before(setupKeystone, { dbName: 'authedTest' });
       keystone = _before.keystone;
 
       // ensure every list has at least some data
@@ -51,7 +51,10 @@ multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
         {}
       );
 
-      const _skipAccess = await before(setupKeystone, { skipAccessControl: true });
+      const _skipAccess = await before(setupKeystone, {
+        skipAccessControl: true,
+        dbName: 'authedTest',
+      });
       for (const [listName, _items] of Object.entries(initialData)) {
         const newItems = await createItems({
           keystone: _skipAccess.keystone,
@@ -208,7 +211,6 @@ multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
                 const singleQueryName = nameFn[mode](access);
                 const validId = items[singleQueryName].find(({ name }) => name === 'Hello').id;
                 const query = `mutation { ${updateMutationName}(id: "${validId}", data: { name: "bar" }) { id name } }`;
-                console.log(query);
                 const { data, errors } = await authedGraphqlRequest({ keystone, query });
                 expect(errors).toBe(undefined);
                 expect(data[updateMutationName]).not.toBe(null);
