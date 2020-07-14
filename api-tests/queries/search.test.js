@@ -31,7 +31,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        let { data, errors } = await graphqlRequest({
+        const { data, errors } = await graphqlRequest({
           keystone,
           query: `
           query {
@@ -46,8 +46,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([{ name: 'one' }]);
+      })
+    );
 
-        ({ data, errors } = await graphqlRequest({
+    test(
+      'users - like escapes',
+      runner(setupKeystone, async ({ keystone, create }) => {
+        await Promise.all([
+          create('Test', { name: 'one' }),
+          create('Test', { name: '%islikelike%' }),
+          create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
+        ]);
+
+        const { data, errors } = await graphqlRequest({
           keystone,
           query: `
           query {
@@ -58,12 +70,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-        }));
+        });
         expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([{ name: '%islikelike%' }]);
+      })
+    );
 
-        ({ data, errors } = await graphqlRequest({
+    test(
+      'users - regex',
+      runner(setupKeystone, async ({ keystone, create }) => {
+        await Promise.all([
+          create('Test', { name: 'one' }),
+          create('Test', { name: '%islikelike%' }),
+          create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
+        ]);
+
+        const { data, errors } = await graphqlRequest({
           keystone,
           query: `
           query {
@@ -74,12 +98,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-        }));
+        });
         expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([]); // No results
+      })
+    );
 
-        ({ data, errors } = await graphqlRequest({
+    test(
+      'users - numbers',
+      runner(setupKeystone, async ({ keystone, create }) => {
+        await Promise.all([
+          create('Test', { name: 'one' }),
+          create('Test', { name: '%islikelike%' }),
+          create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
+        ]);
+
+        const { data, errors } = await graphqlRequest({
           keystone,
           query: `
           query {
@@ -90,7 +126,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-        }));
+        });
         expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allNumbers');
         expect(data.allNumbers).toEqual([]); // No results
