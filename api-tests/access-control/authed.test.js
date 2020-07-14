@@ -32,7 +32,7 @@ const expectNamedArray = (data, errors, name, values) => {
   });
 };
 
-multiAdapterRunners('mongoose').map(({ before, after, adapterName }) =>
+multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     let keystone,
       items = {};

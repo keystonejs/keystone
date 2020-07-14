@@ -84,7 +84,7 @@ function login(app, email, password) {
 
 const schemaName = 'testing';
 
-multiAdapterRunners('mongoose').map(({ runner, adapterName }) =>
+multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('Auth testing', () => {
       test(
