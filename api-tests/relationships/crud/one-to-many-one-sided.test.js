@@ -7,7 +7,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 jest.setTimeout(6000000);
 
 const createInitialData = async keystone => {
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `
 mutation {
@@ -24,12 +24,14 @@ mutation {
 }
 `,
   });
+  expect(errors).toBe(undefined);
   return { locations: data.createLocations, companies: data.createCompanies };
 };
 
 const createCompanyAndLocation = async keystone => {
   const {
     data: { createCompany },
+    errors,
   } = await graphqlRequest({
     keystone,
     query: `
@@ -39,6 +41,7 @@ mutation {
   }) { id location { id } }
 }`,
   });
+  expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
     keystone,
     createCompany.id,
@@ -88,8 +91,9 @@ const createComplexData = async keystone => {
 
   const {
     data: { allLocations },
+    errors: errors2,
   } = await graphqlRequest({ keystone, query: '{ allLocations { id name } }' });
-
+  expect(errors2).toBe(undefined);
   return {
     companies: [...data.createCompanies, result.data.createCompany],
     locations: allLocations,

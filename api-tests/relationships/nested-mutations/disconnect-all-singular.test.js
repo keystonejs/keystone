@@ -103,7 +103,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -120,7 +120,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data.createEvent).toMatchObject({
             id: expect.any(String),
             group: null,
@@ -136,7 +136,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createEvent = await create('Event', {});
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -156,7 +156,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data.updateEvent).toMatchObject({
             id: expect.any(String),
             group: null,

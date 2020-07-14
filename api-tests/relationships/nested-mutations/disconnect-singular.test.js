@@ -105,7 +105,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -122,6 +122,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
+          expect(errors).toBe(undefined);
 
           expect(data.createEvent).toMatchObject({
             id: expect.any(String),
@@ -140,7 +141,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createEvent = await create('Event', {});
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -160,7 +161,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data.updateEvent).toMatchObject({
             id: expect.any(String),
             group: null,
@@ -180,7 +181,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createEvent = await create('Event', { group: createGroup.id });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -200,7 +201,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data.updateEvent).toMatchObject({
             id: expect.any(String),
             group: { id: createGroup.id },

@@ -191,6 +191,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             `,
               variables: { userId: createUser.id },
             });
+            expect(result.errors).toBe(undefined);
             expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);
           })
         );

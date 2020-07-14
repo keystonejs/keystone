@@ -108,6 +108,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Sanity check that the items are actually created
           const {
             data: { allNotes },
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -121,7 +122,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(allNotes).toHaveLength(data.createUser.notes.length);
         })
       );
@@ -183,6 +184,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Sanity check that the items are actually created
           const {
             data: { allNotes },
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -196,7 +198,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(allNotes).toHaveLength(data.updateUser.notes.length);
         })
       );

@@ -7,7 +7,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 jest.setTimeout(6000000);
 
 const createInitialData = async keystone => {
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `
 mutation {
@@ -19,12 +19,14 @@ mutation {
 }
 `,
   });
+  expect(errors).toBe(undefined);
   return { users: data.createUsers };
 };
 
 const createUserAndFriend = async keystone => {
   const {
     data: { createUser },
+    errors,
   } = await graphqlRequest({
     keystone,
     query: `
@@ -34,6 +36,7 @@ mutation {
   }) { id friend { id } }
 }`,
   });
+  expect(errors).toBe(undefined);
   const { User, Friend } = await getUserAndFriend(keystone, createUser.id, createUser.friend.id);
 
   // Sanity check the links are setup correctly
@@ -81,8 +84,9 @@ const createComplexData = async keystone => {
 
   const {
     data: { allUsers },
+    errors: errors2,
   } = await graphqlRequest({ keystone, query: '{ allUsers { id name friend { id name } } }' });
-
+  expect(errors2).toBe(undefined);
   return { users: allUsers };
 };
 

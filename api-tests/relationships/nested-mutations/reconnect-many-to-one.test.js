@@ -35,7 +35,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const noteD = await create('Note', { title: 'D' });
 
           // Create some users that does the linking
-          const { data: alice } = await graphqlRequest({
+          const { data: alice, errors } = await graphqlRequest({
             keystone,
             query: `
               mutation {
@@ -49,7 +49,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
           `,
           });
-          const { data: bob } = await graphqlRequest({
+          expect(errors).toBe(undefined);
+          const { data: bob, errors: errors2 } = await graphqlRequest({
             keystone,
             query: `
               mutation {
@@ -63,7 +64,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
           `,
           });
-
+          expect(errors2).toBe(undefined);
           // Make sure everyone has the correct notes
           expect(alice.createUser).toEqual({ id: expect.any(String), notes: expect.any(Array) });
           expect(alice.createUser.notes.map(({ title }) => title)).toEqual(['A', 'B']);
@@ -72,7 +73,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Set Bob as the author of note B
           await (async () => {
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
               mutation {
@@ -85,13 +86,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
           `,
             });
+            expect(errors).toBe(undefined);
             expect(data.updateUser).toEqual({ id: bob.createUser.id, notes: expect.any(Array) });
             expect(data.updateUser.notes.map(({ title }) => title)).toEqual(['B', 'C', 'D']);
           })();
 
           // B should see Bob as its author
           await (async () => {
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
             {
@@ -102,7 +104,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
             `,
             });
-
+            expect(errors).toBe(undefined);
             expect(data.Note).toEqual({
               id: noteB.id,
               author: { id: bob.createUser.id, username: 'Bob' },
@@ -111,7 +113,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Alice should no longer see `B` in her notes
           await (async () => {
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
             {
@@ -122,6 +124,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
             `,
             });
+            expect(errors).toBe(undefined);
             expect(data.User).toEqual({ id: alice.createUser.id, notes: expect.any(Array) });
             expect(data.User.notes.map(({ title }) => title)).toEqual(['A']);
           })();
