@@ -52,7 +52,6 @@ const users = [
   },
 ];
 
-
 module.exports = {
   PostCategory: [
     {
