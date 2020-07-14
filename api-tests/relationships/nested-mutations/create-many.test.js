@@ -105,6 +105,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the nested create
           const {
             data: { createUser },
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -124,7 +125,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(createUser).toMatchObject({
             id: expect.any(String),
             notes: [
@@ -142,6 +143,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Sanity check that the items are actually created
           const {
             data: { allNotes },
+            errors: errors3,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -153,7 +155,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors3).toBe(undefined);
           expect(allNotes).toHaveLength(createUser.notes.length);
 
           // Test an empty list of related notes
@@ -171,7 +173,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(result.errors).toBe(undefined);
           expect(result.data.createUser).toMatchObject({
             id: expect.any(String),
             notes: [],
@@ -190,7 +192,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createUser = await create('User', { username: 'A thing' });
 
           // Update an item that does the nested create
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -210,7 +212,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
@@ -225,7 +227,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const {
             data: { updateUser },
-            errors,
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -252,7 +254,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(errors).toBe(undefined);
+          expect(errors2).toBe(undefined);
           expect(updateUser).toMatchObject({
             id: expect.any(String),
             notes: [
@@ -274,6 +276,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Sanity check that the items are actually created
           const {
             data: { allNotes },
+            errors: errors3,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -285,7 +288,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors3).toBe(undefined);
           expect(allNotes).toHaveLength(updateUser.notes.length);
         })
       );
@@ -421,6 +424,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Confirm it didn't insert either of the records anyway
             const {
               data: { allNoteNoCreates, allUserToNotesNoCreates },
+              errors: errors2,
             } = await graphqlRequest({
               keystone,
               query: `
@@ -436,7 +440,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
-
+            expect(errors2).toBe(undefined);
             expect(allNoteNoCreates).toMatchObject([]);
             expect(allUserToNotesNoCreates).toMatchObject([]);
           })
@@ -487,6 +491,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Confirm it didn't insert the record anyway
             const {
               data: { allNoteNoCreates },
+              errors: errors2,
             } = await graphqlRequest({
               keystone,
               query: `
@@ -498,7 +503,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
-
+            expect(errors2).toBe(undefined);
             expect(allNoteNoCreates).toMatchObject([]);
           })
         );

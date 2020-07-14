@@ -7,7 +7,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 jest.setTimeout(6000000);
 
 const createInitialData = async keystone => {
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `
 mutation {
@@ -19,12 +19,14 @@ mutation {
 }
 `,
   });
+  expect(errors).toBe(undefined);
   return { users: data.createUsers };
 };
 
 const createUserAndFriend = async keystone => {
   const {
     data: { createUser },
+    errors,
   } = await graphqlRequest({
     keystone,
     query: `
@@ -34,6 +36,7 @@ mutation {
   }) { id friends { id } }
 }`,
   });
+  expect(errors).toBe(undefined);
   const { User, Friend } = await getUserAndFriend(
     keystone,
     createUser.id,
@@ -61,13 +64,14 @@ const getUserAndFriend = async (keystone, userId, friendId) => {
 
 const createReadData = async keystone => {
   // create locations [A, A, B, B, C, C];
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `mutation create($users: [UsersCreateInput]) { createUsers(data: $users) { id name } }`,
     variables: {
       users: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ data: { name } })),
     },
   });
+  expect(errors).toBe(undefined);
   const { createUsers } = data;
   await Promise.all(
     [
@@ -82,13 +86,14 @@ const createReadData = async keystone => {
       [], //  -> []
     ].map(async (locationIdxs, j) => {
       const ids = locationIdxs.map(i => ({ id: createUsers[i].id }));
-      const { data } = await graphqlRequest({
+      const { data, errors } = await graphqlRequest({
         keystone,
         query: `mutation update($friends: [UserWhereUniqueInput], $user: ID!) { updateUser(id: $user data: {
     friends: { connect: $friends }
   }) { id friends { name }}}`,
         variables: { friends: ids, user: createUsers[j].id },
       });
+      expect(errors).toBe(undefined);
       return data.updateUser;
     })
   );
@@ -141,10 +146,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ['C', 3],
                   ['D', 0],
                 ].map(async ([name, count]) => {
-                  const { data } = await graphqlRequest({
+                  const { data, errors } = await graphqlRequest({
                     keystone,
                     query: `{ allUsers(where: { friends_some: { name: "${name}"}}) { id }}`,
                   });
+                  expect(errors).toBe(undefined);
                   expect(data.allUsers.length).toEqual(count);
                 })
               );
@@ -161,10 +167,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ['C', 6],
                   ['D', 9],
                 ].map(async ([name, count]) => {
-                  const { data } = await graphqlRequest({
+                  const { data, errors } = await graphqlRequest({
                     keystone,
                     query: `{ allUsers(where: { friends_none: { name: "${name}"}}) { id }}`,
                   });
+                  expect(errors).toBe(undefined);
                   expect(data.allUsers.length).toEqual(count);
                 })
               );
@@ -181,10 +188,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ['C', 1],
                   ['D', 1],
                 ].map(async ([name, count]) => {
-                  const { data } = await graphqlRequest({
+                  const { data, errors } = await graphqlRequest({
                     keystone,
                     query: `{ allUsers(where: { friends_every: { name: "${name}"}}) { id }}`,
                   });
+                  expect(errors).toBe(undefined);
                   expect(data.allUsers.length).toEqual(count);
                 })
               );
@@ -300,11 +308,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               const {
                 data: { allUsers },
+                errors: errors2,
               } = await graphqlRequest({
                 keystone,
                 query: `{ allUsers { id friends { id friendOf { id } } } }`,
               });
-
+              expect(errors2).toBe(undefined);
               // Both companies should have a location, and the location should have two companies
               const linkedUsers = allUsers.filter(({ id }) => id === user.id || id === User.id);
               linkedUsers.forEach(({ friends }) => {
@@ -347,10 +356,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               // Both companies should have a location, and the location should have two companies
               const {
                 data: { allUsers },
+                errors: errors2,
               } = await graphqlRequest({
                 keystone,
                 query: `{ allUsers { id friends { id friendOf { id } } } }`,
               });
+              expect(errors2).toBe(undefined);
               allUsers.forEach(({ id, friends }) => {
                 if (id === Friend.id) {
                   expect(friends.map(({ id }) => id)).toEqual([]);

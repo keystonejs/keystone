@@ -7,7 +7,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 jest.setTimeout(6000000);
 
 const createInitialData = async keystone => {
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `
 mutation {
@@ -24,12 +24,14 @@ mutation {
 }
 `,
   });
+  expect(errors).toBe(undefined);
   return { locations: data.createLocations, companies: data.createCompanies };
 };
 
 const createCompanyAndLocation = async keystone => {
   const {
     data: { createCompany },
+    errors,
   } = await graphqlRequest({
     keystone,
     query: `
@@ -40,6 +42,7 @@ mutation {
   }) { id name location { id name } }
 }`,
   });
+  expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
     keystone,
     createCompany.id,
@@ -56,6 +59,7 @@ mutation {
 const createLocationAndCompany = async keystone => {
   const {
     data: { createLocation },
+    errors,
   } = await graphqlRequest({
     keystone,
     query: `
@@ -66,6 +70,7 @@ mutation {
   }) { id name company { id name } }
 }`,
   });
+  expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
     keystone,
     createLocation.company.id,
@@ -372,11 +377,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               const {
                 data: { allCompanies },
+                errors: errors2,
               } = await graphqlRequest({
                 keystone,
                 query: `{ allCompanies { id location { id company { id }} } }`,
               });
-
+              expect(errors2).toBe(undefined);
               // The nested company should not have a location
               expect(
                 allCompanies.filter(({ id }) => id === Company.id)[0].location.company.id
@@ -418,11 +424,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               const {
                 data: { allLocations },
+                errors: errors2,
               } = await graphqlRequest({
                 keystone,
                 query: `{ allLocations { id company { id location { id }} } }`,
               });
-
+              expect(errors2).toBe(undefined);
               // The nested company should not have a location
               expect(
                 allLocations.filter(({ id }) => id === Location.id)[0].company.location.id
@@ -465,10 +472,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               // The nested company should not have a location
               const {
                 data: { allCompanies },
+                errors: errors2,
               } = await graphqlRequest({
                 keystone,
                 query: `{ allCompanies { id location { id company { id }} } }`,
               });
+              expect(errors2).toBe(undefined);
               expect(
                 allCompanies.filter(({ id }) => id === Company.id)[0].location.company.id
               ).toEqual(Company.id);

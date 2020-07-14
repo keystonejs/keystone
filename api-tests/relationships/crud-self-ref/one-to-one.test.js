@@ -7,7 +7,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 jest.setTimeout(6000000);
 
 const createInitialData = async keystone => {
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `
 mutation {
@@ -19,12 +19,14 @@ mutation {
 }
 `,
   });
+  expect(errors).toBe(undefined);
   return { users: data.createUsers };
 };
 
 const createUserAndFriend = async keystone => {
   const {
     data: { createUser },
+    errors,
   } = await graphqlRequest({
     keystone,
     query: `
@@ -35,6 +37,7 @@ mutation {
   }) { id name friend { id name } }
 }`,
   });
+  expect(errors).toBe(undefined);
   const { User, Friend } = await getUserAndFriend(keystone, createUser.id, createUser.friend.id);
 
   // Sanity check the links are setup correctly
@@ -269,11 +272,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               const {
                 data: { allUsers },
+                errors: errors2,
               } = await graphqlRequest({
                 keystone,
                 query: `{ allUsers { id friend { id friendOf { id }} } }`,
               });
-
+              expect(errors2).toBe(undefined);
               // The nested company should not have a location
               expect(allUsers.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
                 User.id
@@ -316,10 +320,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               // The nested company should not have a location
               const {
                 data: { allUsers },
+                errors: errors2,
               } = await graphqlRequest({
                 keystone,
                 query: `{ allUsers { id friend { id friendOf { id }} } }`,
               });
+              expect(errors2).toBe(undefined);
               expect(allUsers.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
                 User.id
               );
