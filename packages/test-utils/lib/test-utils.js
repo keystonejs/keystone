@@ -22,7 +22,10 @@ async function setupServer({
     mongoose: getMongoMemoryServerConfig,
     knex: () => ({
       dropDatabase: true,
-      knexOptions: { connection: process.env.KNEX_URI || 'postgres://localhost/keystone' },
+      knexOptions: {
+        connection:
+          process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
+      },
     }),
   }[adapterName];
 
