@@ -3,6 +3,7 @@ const express = require('express');
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
 const initialData = require('./data');
+const { createItems } = require('@keystonejs/orm');
 
 keystone
   .prepare({
@@ -19,7 +20,11 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+      await createItems({
+        keystone,
+        listName: 'User',
+        items: initialData.User.map(x => ({ data: x })),
+      });
     }
 
     const app = express();
@@ -28,7 +33,13 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+
+      await createItems({
+        keystone,
+        listName: 'User',
+        items: initialData.User.map(x => ({ data: x })),
+      });
+
       res.redirect('/admin');
     });
 

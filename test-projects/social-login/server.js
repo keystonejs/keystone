@@ -252,7 +252,13 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+      for (const [listName, _items] of Object.entries(initialData)) {
+        await createItems({
+          keystone,
+          listName,
+          items: _items.map(x => ({ data: x })),
+        });
+      }
       res.redirect('/admin');
     });
 
