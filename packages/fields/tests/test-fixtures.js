@@ -105,8 +105,9 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: id_in - missing id',
-    withKeystone(({ keystone }) => {
-      return match(keystone, 'where: { id_in: ["0123456789abcdef01234567"] }', []);
+    withKeystone(({ keystone, adapterName }) => {
+      const fakeID = adapterName === 'mongoose' ? '"0123456789abcdef01234567"' : 1000;
+      return match(keystone, `where: { id_in: [${fakeID}] }`, []);
     })
   );
 
