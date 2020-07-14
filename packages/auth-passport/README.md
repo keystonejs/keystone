@@ -307,23 +307,25 @@ keystone
     process.exit(1);
   });
 ```
+
 Sometimes you just need to get the profile data provided by the auth provider. In that case, you
 have to call the `resolveCreateData` with `serviceProfile` property. See an example below:
 
 ```javascript
 // Here we wait for our serviceProfile to get the data provided by the auth provider
-resolveCreateData: ({ createData,  serviceProfile }) => { 
+resolveCreateData: ({ createData, serviceProfile }) => {
   // Once we had our seviceProfile, we set it on our list fields
-    
+
   // Google will return the profile data inside the _json key
   // Each provider can return the user profile data in a different way.
   // Check how it's returned on your provider documentation
-  createData.name = serviceProfile._json.name
-  createData.profilePicture = serviceProfile._json.picture 
-    
+  createData.name = serviceProfile._json.name;
+  createData.profilePicture = serviceProfile._json.picture;
+
   return createData;
-}
+};
 ```
+
 ## Using other Passport strategies
 
 You can create your own strategies to work with Keystone by extending the
