@@ -124,10 +124,7 @@ function setupKeystone(adapterName, { skipAccessControl, dbName } = {}) {
             : {
                 create: () => access.create,
                 read: () => access.read,
-                update: () => {
-                  console.log('ACCESS Imperative', access.update);
-                  return access.update;
-                },
+                update: () => access.update,
                 delete: () => access.delete,
                 auth: () => access.auth,
               },
