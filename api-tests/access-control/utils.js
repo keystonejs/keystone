@@ -99,9 +99,10 @@ const createFieldImperative = fieldAccess => ({
   },
 });
 
-function setupKeystone(adapterName, { skipAccessControl } = {}) {
+function setupKeystone(adapterName, { skipAccessControl, dbName } = {}) {
   return setupServer({
     adapterName,
+    dbName,
     createLists: keystone => {
       keystone.createList('User', { fields: { name: { type: Text } } });
 
@@ -123,7 +124,10 @@ function setupKeystone(adapterName, { skipAccessControl } = {}) {
             : {
                 create: () => access.create,
                 read: () => access.read,
-                update: () => access.update,
+                update: () => {
+                  console.log('ACCESS Imperative', access.update);
+                  return access.update;
+                },
                 delete: () => access.delete,
                 auth: () => access.auth,
               },
