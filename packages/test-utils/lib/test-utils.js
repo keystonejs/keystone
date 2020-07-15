@@ -16,6 +16,8 @@ async function setupServer({
   keystoneOptions,
   graphqlOptions = {},
   dbName,
+  // extra keystone apps (e.g SchemaRouterApp to use custom Schema)
+  apps: keystoneApps = [],
 }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
 
@@ -53,6 +55,7 @@ async function setupServer({
       },
       ...graphqlOptions,
     }),
+    ...keystoneApps,
   ];
 
   const { middlewares } = await keystone.prepare({ dev: true, apps });

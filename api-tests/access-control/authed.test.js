@@ -37,7 +37,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     let keystone,
       items = {};
     beforeAll(async () => {
-      const _before = await before(setupKeystone, { dbName: 'authedTest' });
+      const _before = await before(setupKeystone);
       keystone = _before.keystone;
 
       // ensure every list has at least some data
@@ -51,17 +51,13 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         {}
       );
 
-      const _skipAccess = await before(setupKeystone, {
-        skipAccessControl: true,
-        dbName: 'authedTest',
-      });
       for (const [listName, _items] of Object.entries(initialData)) {
         const newItems = await createItems({
-          keystone: _skipAccess.keystone,
+          keystone,
           listName,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
-          schemaName: 'testing',
+          schemaName: 'seeding',
         });
 
         // ToDo: Can someone fix this mess please?
@@ -71,7 +67,6 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           ...newItems.map(item => Object.keys(item).map(key => item[key])).flat(2),
         ];
       }
-      await after(_skipAccess.keystone);
     });
     afterAll(async () => {
       await after(keystone);
