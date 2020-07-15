@@ -1,6 +1,7 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Password, Select } = require('@keystonejs/fields');
+const { SchemaRouterApp } = require('@keystonejs/app-schema-router');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { objMerge } = require('@keystonejs/utils');
@@ -20,6 +21,7 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const keystone = new Keystone({
   adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
   cookieSecret: 'qwerty',
+  schemaNames: ['testing', 'seeding'],
 });
 
 keystone.createList('User', {
@@ -38,10 +40,10 @@ keystone.createList('User', {
       type: Select,
       options: ['su', 'admin', 'editor', 'writer', 'reader'],
     },
-    // NOTE: We only need imperitive ones here - we test elsewhere that static
+    // NOTE: We only need imperative ones here - we test elsewhere that static
     // fields aren't included in graphQL responses. And fields can't have
     // declarative types.
-    noRead: { type: Text, access: { read: () => false } },
+    noRead: { type: Text, access: { testing: { read: () => false }, seeding: true } },
     yesRead: { type: Text, access: { read: () => true } },
   },
 });
@@ -55,7 +57,7 @@ function createListWithStaticAccess(access) {
   const createField = fieldAccess => ({
     [getFieldName(fieldAccess)]: {
       type: Text,
-      access: fieldAccess,
+      access: { testing: fieldAccess, seeding: true },
     },
   });
   keystone.createList(getStaticListName(access), {
@@ -64,7 +66,10 @@ function createListWithStaticAccess(access) {
       zip: { type: Text },
       ...objMerge(fieldAccessVariations.map(variation => createField(variation))),
     },
-    access,
+    access: {
+      testing: access,
+      seeding: true,
+    },
   });
 }
 
@@ -73,10 +78,13 @@ function createListWithImperativeAccess(access) {
     [getFieldName(fieldAccess)]: {
       type: Text,
       access: {
-        create: () => fieldAccess.create,
-        read: () => fieldAccess.read,
-        update: () => fieldAccess.update,
-        delete: () => fieldAccess.delete,
+        testing: {
+          create: () => fieldAccess.create,
+          read: () => fieldAccess.read,
+          update: () => fieldAccess.update,
+          delete: () => fieldAccess.delete,
+        },
+        seeding: true,
       },
     },
   });
@@ -87,11 +95,14 @@ function createListWithImperativeAccess(access) {
       ...objMerge(fieldAccessVariations.map(variation => createField(variation))),
     },
     access: {
-      create: () => access.create,
-      read: () => access.read,
-      update: () => access.update,
-      delete: () => access.delete,
-      auth: () => access.auth,
+      testing: {
+        create: () => access.create,
+        read: () => access.read,
+        update: () => access.update,
+        delete: () => access.delete,
+        auth: () => access.auth,
+      },
+      seeding: true,
     },
   });
 }
@@ -103,36 +114,39 @@ function createListWithDeclarativeAccess(access) {
       zip: { type: Text },
     },
     access: {
-      create: ({ authentication: { item, listKey } }) =>
-        access.create && listKey === 'User' && ['su', 'admin'].includes(item.level),
-      read: ({ authentication: { item, listKey } }) => {
-        if (access.read && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
-          return {
-            // arbitrarily restrict the data to a single item (see data.js)
-            foo_starts_with: 'Hello',
-          };
-        }
-        return false;
+      testing: {
+        create: ({ authentication: { item, listKey } }) =>
+          access.create && listKey === 'User' && ['su', 'admin'].includes(item.level),
+        read: ({ authentication: { item, listKey } }) => {
+          if (access.read && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
+            return {
+              // arbitrarily restrict the data to a single item (see data.js)
+              foo_starts_with: 'Hello',
+            };
+          }
+          return false;
+        },
+        update: ({ authentication: { item, listKey } }) => {
+          if (access.update && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
+            return {
+              // arbitrarily restrict the data to a single item (see data.js)
+              foo_starts_with: 'Hello',
+            };
+          }
+          return false;
+        },
+        delete: ({ authentication: { item, listKey } }) => {
+          if (access.delete && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
+            return {
+              // arbitrarily restrict the data to a single item (see data.js)
+              foo_starts_with: 'Hello',
+            };
+          }
+          return false;
+        },
+        auth: true,
       },
-      update: ({ authentication: { item, listKey } }) => {
-        if (access.update && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
-          return {
-            // arbitrarily restrict the data to a single item (see data.js)
-            foo_starts_with: 'Hello',
-          };
-        }
-        return false;
-      },
-      delete: ({ authentication: { item, listKey } }) => {
-        if (access.delete && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
-          return {
-            // arbitrarily restrict the data to a single item (see data.js)
-            foo_starts_with: 'Hello',
-          };
-        }
-        return false;
-      },
-      auth: true,
+      seeding: true,
     },
   });
 }
@@ -144,7 +158,19 @@ listAccessVariations.forEach(createListWithDeclarativeAccess);
 module.exports = {
   keystone,
   apps: [
-    new GraphQLApp(),
-    new AdminUIApp({ name: projectName, adminPath: '/admin', authStrategy }),
+    new SchemaRouterApp({
+      routerFn: () => 'testing',
+      apps: {
+        seeding: createGraphQLApp('seeding'),
+        testing: createGraphQLApp('testing'),
+      },
+    }),
+    new AdminUIApp({ name: projectName, adminPath: '/admin', authStrategy, schemaName: 'testing' }),
   ],
 };
+
+function createGraphQLApp(schemaName) {
+  return new GraphQLApp({
+    schemaName,
+  });
+}
