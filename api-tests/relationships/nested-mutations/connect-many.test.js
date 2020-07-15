@@ -95,6 +95,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const {
             data: { createUser },
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -109,7 +110,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(createUser).toMatchObject({
             id: expect.any(String),
             notes: expect.any(Array),
@@ -130,6 +131,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
+          expect(result.errors).toBe(undefined);
           expect(result.data.createUser).toMatchObject({
             id: expect.any(String),
             notes: [],
@@ -220,6 +222,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Update the item and link multiple relationship fields
           const {
             data: { updateUser },
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -242,7 +245,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(updateUser).toMatchObject({
             id: expect.any(String),
             notes: [

@@ -22,7 +22,10 @@ async function setupServer({
     mongoose: getMongoMemoryServerConfig,
     knex: () => ({
       dropDatabase: true,
-      knexOptions: { connection: process.env.KNEX_URI || 'postgres://localhost/keystone' },
+      knexOptions: {
+        connection:
+          process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
+      },
     }),
   }[adapterName];
 
@@ -251,7 +254,8 @@ const matchFilter = ({ keystone, queryArgs, fieldSelection, expected, sortKey })
     query: `query {
       allTests${queryArgs ? `(${queryArgs})` : ''} { ${fieldSelection} }
     }`,
-  }).then(({ data }) => {
+  }).then(({ data, errors }) => {
+    expect(errors).toBe(undefined);
     const value = sortKey ? sorted(data.allTests || [], i => i[sortKey]) : data.allTests;
     expect(value).toEqual(expected);
   });

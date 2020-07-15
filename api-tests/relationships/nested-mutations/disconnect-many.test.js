@@ -123,7 +123,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -140,7 +140,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data.createUser).toMatchObject({
             id: expect.any(String),
             notes: [],
@@ -160,7 +160,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createUser = await create('User', {});
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -180,7 +180,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data.updateUser).toMatchObject({
             id: expect.any(String),
             notes: [],
@@ -291,6 +291,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             `,
               variables: { userId: createUser.id },
             });
+            expect(result.errors).toBe(undefined);
             expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);
           })
         );
