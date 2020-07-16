@@ -161,16 +161,10 @@ module.exports = {
     new SchemaRouterApp({
       routerFn: () => 'testing',
       apps: {
-        seeding: createGraphQLApp('seeding'),
-        testing: createGraphQLApp('testing'),
+        seeding: new GraphQLApp({ schemaName: 'seeding' }),
+        testing: new GraphQLApp({ schemaName: 'testing' }),
       },
     }),
     new AdminUIApp({ name: projectName, adminPath: '/admin', authStrategy, schemaName: 'testing' }),
   ],
 };
-
-function createGraphQLApp(schemaName) {
-  return new GraphQLApp({
-    schemaName,
-  });
-}
