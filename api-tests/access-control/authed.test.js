@@ -59,13 +59,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           returnFields: 'id, name',
           schemaName: 'seeding',
         });
-
-        // ToDo: Can someone fix this mess please?
-        items[listName] = items[listName] ? items[listName] : [];
-        items[listName] = [
-          ...items[listName],
-          ...newItems.map(item => Object.keys(item).map(key => item[key])).flat(2),
-        ];
+        items[listName] = newItems[`create${listName}s`];
       }
     });
     afterAll(async () => {
