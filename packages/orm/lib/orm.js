@@ -66,10 +66,8 @@ const runPaginatedQuery = async ({ pageSize = 1, variables = {}, verbose = false
   return allItems;
 };
 
-const runChunkedMutation = async ({ listName, pageSize = 500, items, ...rest }) => {
+const runChunkedMutation = async ({ gqlName, pageSize = 500, items, ...rest }) => {
   const chunks = chunkArray(items, pageSize);
-
-  const { createManyMutationName } = rest.keystone.lists[listName].gqlNames;
 
   const result = await Promise.all(
     chunks.map(chunk => runQuery({ ...rest, variables: { items: chunk } }))
@@ -80,8 +78,7 @@ const runChunkedMutation = async ({ listName, pageSize = 500, items, ...rest }) 
    * We need to combine all objects into one array keyed by the `createUsers`, such that, the output is: {createUsers: [{id: '123', name: 'aman'}, {id: '456', name: 'Mike'}]}
    */
 
-  // Combining the result based on `createManyMutationName` key
-  return mergeByKey(result, createManyMutationName);
+  return { [gqlName]: [].concat(...result.map(item => item[gqlName])) };
 };
 
 const createItem = ({ keystone, listName, item, returnFields = `id`, ...rest }) => {
@@ -101,7 +98,13 @@ const createItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
     ${createManyMutationName}(data: $items) { ${returnFields} }
   }`;
 
-  return runChunkedMutation({ keystone, listName, query, items, ...rest });
+  return runChunkedMutation({
+    keystone,
+    query,
+    items,
+    gqlName: createManyMutationName,
+    ...rest,
+  });
 };
 
 const getItem = ({ keystone, listName, returnFields, item: id, ...rest }) => {
@@ -132,7 +135,7 @@ const updateItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
   const query = `mutation ($items: [${updateManyInputName}]){
     ${updateManyMutationName}(data: $items) { ${returnFields} }
   }`;
-  return runChunkedMutation({ keystone, query, items, ...rest });
+  return runChunkedMutation({ keystone, query, items, gqlName: updateManyMutationName, ...rest });
 };
 
 const deleteItem = ({ keystone, listName, item, returnFields = `id`, ...rest }) => {
@@ -154,18 +157,8 @@ const deleteItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
     }
   }`;
 
-  return runChunkedMutation({ keystone, query, items, ...rest });
+  return runChunkedMutation({ keystone, query, items, gqlName: deleteManyMutationName, ...rest });
 };
-
-function mergeByKey(arr, key) {
-  return arr.reduce(
-    (acc, item) => {
-      acc[key].push(...item[key]);
-      return acc;
-    },
-    { [key]: [] }
-  );
-}
 
 module.exports = {
   runQuery,
