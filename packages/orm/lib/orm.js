@@ -162,8 +162,6 @@ const deleteItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
 
 module.exports = {
   runQuery,
-  runPaginatedQuery,
-  runChunkedMutation,
   getItem,
   getAllItems,
   createItems,
