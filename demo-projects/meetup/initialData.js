@@ -39,7 +39,7 @@ async function seedData(intitialData, keystone) {
    * 2. Insert the data with the required relationships using connect
    */
 
-  const [{ createUsers: users }] = await createItems({
+  const { createUsers: users } = await createItems({
     keystone,
     listName: 'User',
     items: initialData['User'].map(x => ({ data: x })),
