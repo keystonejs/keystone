@@ -4,8 +4,8 @@ const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const {
   createItems,
   createItem,
-  getItem,
-  getAllItems,
+  getItemById,
+  getItems,
   updateItem,
   updateItems,
 } = require('../lib/orm');
@@ -38,7 +38,7 @@ const schemaName = 'testing';
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    describe('createItems', () => {
+    describe('create', () => {
       test(
         'Should create and get single item',
         runner(setupKeystone, async ({ keystone }) => {
@@ -51,11 +51,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Get single item from db
-          const item = await getItem({
+          const item = await getItemById({
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
-            item: createTest.id,
+            itemId: createTest.id,
             schemaName,
           });
 
@@ -69,7 +69,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await createItems({ keystone, listName: 'Test', items: testData, schemaName });
 
           // Get all the items back from db
-          const allItems = await getAllItems({
+          const allItems = await getItems({
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
@@ -80,7 +80,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         })
       );
     });
-    describe('udpate items', () => {
+    describe('udpate', () => {
       test(
         'Should update single item',
         runner(setupKeystone, async ({ keystone }) => {
@@ -101,15 +101,93 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Get updated item back from db using id: `createTest.id`
-          const item = await getItem({
+          const item = await getItemById({
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
-            item: createTest.id,
+            itemId: createTest.id,
             schemaName,
           });
 
           expect(item).toEqual({ Test: { name: 'updateTest', age: 30 } });
+        })
+      );
+
+      test(
+        'Should update multiple items',
+        runner(setupKeystone, async ({ keystone }) => {
+          // Seed the db
+          const { createTests: items } = await createItems({
+            keystone,
+            listName: 'Test',
+            items: testData,
+            schemaName,
+          });
+
+          // Update multiple items
+          await updateItems({
+            keystone,
+            listName: 'Test',
+            items: items.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
+            schemaName,
+          });
+
+          const allItems = await getItems({
+            keystone,
+            listName: 'Test',
+            returnFields: 'name, age',
+            schemaName,
+          });
+
+          expect(allItems).toEqual([
+            { name: 'update-0', age: 30 },
+            { name: 'update-1', age: 40 },
+          ]);
+        })
+      );
+    });
+    describe('getItems', () => {
+      test(
+        'Should get all items when no where caluse',
+        runner(setupKeystone, async ({ keystone }) => {
+          // Seed the db
+          await createItems({
+            keystone,
+            listName: 'Test',
+            items: testData,
+            schemaName,
+          });
+
+          const allItems = await getItems({
+            keystone,
+            listName: 'Test',
+            returnFields: 'name, age',
+            schemaName,
+          });
+
+          expect(allItems).toEqual(testData.map(x => x.data));
+        })
+      );
+      test(
+        'Should get specific items with where clause',
+        runner(setupKeystone, async ({ keystone }) => {
+          // Seed the db
+          await createItems({
+            keystone,
+            listName: 'Test',
+            items: testData,
+            schemaName,
+          });
+
+          const allItems = await getItems({
+            keystone,
+            listName: 'Test',
+            schemaName,
+            returnFields: 'name',
+            where: { name: 'test' },
+          });
+
+          expect(allItems).toEqual([{ name: 'test' }]);
         })
       );
     });
