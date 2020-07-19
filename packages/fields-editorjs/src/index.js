@@ -1,15 +1,6 @@
-// import { dirname } from 'path';
-// import express from 'express';
 import { Text } from '@keystonejs/fields';
 import { importView } from '@keystonejs/build-field-types';
 import { EditorJsImplementation } from './Implementation';
-
-// function prepareMiddleware() {
-//   const tinymcePath = dirname(require.resolve('tinymce'));
-//   const app = express();
-//   app.use('/tinymce-assets', express.static(tinymcePath));
-//   return app;
-// }
 
 export let EditorJs = {
   type: 'EditorJs',
@@ -20,5 +11,4 @@ export let EditorJs = {
     Filter: Text.views.Filter,
   },
   adapters: Text.adapters,
-  // prepareMiddleware,
 };

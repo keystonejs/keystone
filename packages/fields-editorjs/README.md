@@ -4,18 +4,18 @@ subSection: field-types
 title: EditorJs
 [meta]-->
 
-# WYSIWYG
+# EditorJS
 
-This field inserts a string path into your schema based on the `Text` field type implementation, and renders a WYSIWYG editor in the Admin UI using [TinyMCE](https://www.tiny.cloud/)
+This field inserts a string path into your schema based on the `Text` field type implementation, and renders a Block based editor in the Admin UI powered by [EditorJS](https://editorjs.io/)
 
 ## Usage
 
-This package isn't included with the keystone fields package and needs to be installed with `yarn add @keystonejs/fields-wysiwyg-tinymce` or `npm install @keystonejs/fields-wysiwyg-tinymce`
+This package isn't included with the keystone fields package and needs to be installed with `yarn add @keystonejs/fields-editorjs` or `npm install @keystonejs/fields-editorjs`
 
 Then import it, and use it like any other field:
 
 ```js
-const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
+const { EditorJs } = require('@keystonejs/fields-editorjs');
 ```
 
 ## Config
@@ -24,4 +24,6 @@ const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 **Default:** `{}`
 
-Accepts any [TinyMCE config options](https://www.tiny.cloud/docs/configure/). These will be passed to `tinymce.init` and can be used to override Keystone.js' default editor appearance and functionality.
+**TODO**
+- [ ] tools configuration needs to be passed on to editorjs instance.
+- [ ] image upload backend and adapter
