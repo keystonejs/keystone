@@ -34,7 +34,15 @@ export const ListProvider = ({ children, list, skipQuery = false }) => {
     urlState: { currentPage, fields, filters, pageSize, search, sortBy },
   } = useListUrlState(list);
 
-  const query = useQuery(list.getListQuery(fields), {
+  const { listQueryName, listQueryMetaName } = list.gqlNames;
+
+  // Organize the data for easier use.
+  // TODO: consider doing this at the query level with an alias
+  const {
+    loading,
+    error,
+    data: { [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
+  } = useQuery(list.getListQuery(fields), {
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
     skip: skipQuery,
@@ -47,22 +55,16 @@ export const ListProvider = ({ children, list, skipQuery = false }) => {
     },
   });
 
-  const { listQueryName, listQueryMetaName } = list.gqlNames;
-
-  // Organize the data for easier use.
-  // TODO: consider doing this at the query level with an alias
-  const {
-    error,
-    data: { [listQueryName]: items, [listQueryMetaName]: { count } = {} } = {},
-  } = query;
   const [selectedItems, setSelectedItems] = useListSelect(items);
+
   return (
     <ListContext.Provider
       value={{
         list,
         listData: { items, itemCount: count },
+        loading,
+        error,
         queryErrorsParsed: deconstructErrorsToDataShape(error)[listQueryName],
-        query,
         isCreateItemModalOpen: isOpen,
         openCreateItemModal,
         closeCreateItemModal,

@@ -8,11 +8,10 @@ import { useList } from '../providers/List';
 
 const DeleteItems = () => {
   const [deleteModalIsVisible, setDeleteModal] = useState(false);
-  const { list, query, selectedItems, setSelectedItems } = useList();
+  const { list, selectedItems, setSelectedItems } = useList();
 
   const handleDelete = () => {
     setDeleteModal(false);
-    query.refetch();
     setSelectedItems([]);
   };
 

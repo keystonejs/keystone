@@ -34,9 +34,9 @@ import { useUIHooks } from '../../providers/Hooks';
 import CreateItem from './CreateItem';
 
 export function ListLayout(props) {
-  const { items, itemCount, queryErrors, query } = props;
+  const { items, itemCount, queryErrors } = props;
 
-  const { list, selectedItems, setSelectedItems } = useList();
+  const { list, loading, selectedItems, setSelectedItems } = useList();
   const {
     urlState: { currentPage, fields, pageSize, search },
   } = useListUrlState(list);
@@ -73,7 +73,7 @@ export function ListLayout(props) {
                       .filter(field => field.path !== '_label_')
                       .map(field => () => field.initCellView())
                   );
-                  return <Search list={list} isLoading={query.loading} />;
+                  return <Search list={list} isLoading={loading} />;
                 }}
               </Render>
             </Suspense>
@@ -140,7 +140,7 @@ export function ListLayout(props) {
                             .filter(field => field.path !== '_label_')
                             .map(field => () => field.initCellView())
                         );
-                        return <Pagination isLoading={query.loading} />;
+                        return <Pagination isLoading={loading} />;
                       }}
                     </Render>
                   </Suspense>
@@ -200,14 +200,14 @@ const ListPage = props => {
   const {
     list,
     listData: { items, itemCount },
+    error,
     queryErrorsParsed,
-    query,
   } = useList();
 
   const history = useHistory();
   const location = useLocation();
 
-  const hasErrorWithNoData = query.error && (!query.data || !items || !Object.keys(items).length);
+  const hasErrorWithNoData = error && (!items || !Object.keys(items).length);
 
   // Mount with Persisted Search
   // ------------------------------
@@ -247,12 +247,12 @@ const ListPage = props => {
     // If there was an error returned by GraphQL, use that message instead
     // FIXME: convert this to an optional chaining operator at some point
     if (
-      query.error.networkError &&
-      query.error.networkError.result &&
-      query.error.networkError.result.errors &&
-      query.error.networkError.result.errors[0]
+      error.networkError &&
+      error.networkError.result &&
+      error.networkError.result.errors &&
+      error.networkError.result.errors[0]
     ) {
-      message = query.error.networkError.result.errors[0].message || message;
+      message = error.networkError.result.errors[0].message || message;
     }
 
     // Special case for when trying to access a non-existent list or a
@@ -273,13 +273,7 @@ const ListPage = props => {
   return (
     <Fragment>
       <DocTitle title={list.plural} />
-      <ListLayout
-        {...props}
-        items={items}
-        itemCount={itemCount}
-        query={query}
-        queryErrors={queryErrorsParsed}
-      />
+      <ListLayout {...props} items={items} itemCount={itemCount} queryErrors={queryErrorsParsed} />
     </Fragment>
   );
 };
