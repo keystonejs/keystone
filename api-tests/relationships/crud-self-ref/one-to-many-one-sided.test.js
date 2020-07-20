@@ -123,6 +123,54 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       function setupKeystone(adapterName) {
         return setupServer({ adapterName, createLists });
       }
+      describe('Read', () => {
+        test(
+          'one',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createComplexData(keystone);
+            await Promise.all(
+              [
+                ['A', 1],
+                ['B', 2],
+                ['C', 0],
+                ['D', 1],
+                ['E', 0],
+              ].map(async ([name, count]) => {
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{ allUsers(where: { friend: { name_contains: "${name}"}}) { id }}`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data.allUsers.length).toEqual(count);
+              })
+            );
+          })
+        );
+        test(
+          'is_null: true',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createComplexData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allUsers(where: { friend_is_null: true }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(5);
+          })
+        );
+        test(
+          'is_null: false',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createComplexData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allUsers(where: { friend_is_null: false }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(4);
+          })
+        );
+      });
 
       describe('Count', () => {
         test(
