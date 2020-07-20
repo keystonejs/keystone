@@ -54,7 +54,7 @@ describe('Adding data', () => {
     cy.get('#ks-input-author').click({ force: true });
     cy.get('#ks-input-author').type('John Doe{downarrow}{enter}', {
       force: true,
-      timeout: 500,
+      delay: 100,
     });
 
     cy.get('#create-item-modal-submit-button').click({ force: true });
