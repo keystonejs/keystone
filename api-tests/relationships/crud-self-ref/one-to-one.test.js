@@ -4,8 +4,6 @@ const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonej
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-jest.setTimeout(6000000);
-
 const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
