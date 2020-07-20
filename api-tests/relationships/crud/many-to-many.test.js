@@ -8,19 +8,18 @@ const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompanies(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-  createLocations(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createCompanies(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+        createLocations(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { locations: data.createLocations, companies: data.createCompanies };
@@ -33,11 +32,11 @@ const createCompanyAndLocation = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompany(data: {
-    locations: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
-  }) { id locations { id } }
-}`,
+      mutation {
+        createCompany(data: {
+          locations: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
+        }) { id locations { id } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
@@ -57,10 +56,10 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
   const { data } = await graphqlRequest({
     keystone,
     query: `
-  {
-    Company(where: { id: "${companyId}"} ) { id locations { id } }
-    Location(where: { id: "${locationId}"} ) { id companies { id } }
-  }`,
+      {
+        Company(where: { id: "${companyId}"} ) { id locations { id } }
+        Location(where: { id: "${locationId}"} ) { id companies { id } }
+      }`,
   });
   return data;
 };
