@@ -56,6 +56,8 @@ describe('Adding data', () => {
       force: true,
     });
 
+    cy.wait(500);
+
     cy.get('#create-item-modal-submit-button').click({ force: true });
 
     cy.location('pathname').should('match', new RegExp(`${url}/.+`));
