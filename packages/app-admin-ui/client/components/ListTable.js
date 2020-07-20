@@ -253,8 +253,17 @@ const ListRow = ({
         if (path === linkField) {
           return (
             <BodyCellTruncated key={path}>
-              <ItemLink path={list.fullPath} item={item}>
-                {item[linkField]}
+              <ItemLink path={list.fullPath} item={item} css={{ lineHeight: 1.4 }}>
+                <div>{item[linkField]}</div>
+                <div
+                  css={{
+                    fontSize: '0.9em',
+                    fontFamily: 'Monaco, Consolas, monospace',
+                    color: colors.N40,
+                  }}
+                >
+                  ID: {item.id}
+                </div>
               </ItemLink>
             </BodyCellTruncated>
           );
