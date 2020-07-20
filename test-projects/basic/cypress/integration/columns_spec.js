@@ -28,6 +28,7 @@ describe('Columns', () => {
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });
 
+        cy.wait(500);
         cy.get('#ks-list-table').should('contain', name);
       });
 
@@ -37,6 +38,7 @@ describe('Columns', () => {
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });
 
+        cy.wait(500);
         cy.get('#ks-list-table').should('not.contain', name);
       });
     });
