@@ -20,25 +20,26 @@ describe('Columns', () => {
   ].forEach(({ url, enable, disable }) => {
     it(`Testing all columns in ${url}`, () => {
       cy.visit(url);
-      cy.get('#ks-column-button').click({ force: true });
 
       enable.forEach(name => {
+        cy.get('#ks-column-button').click({ force: true });
+
         cy.get('#ks-column-select')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });
 
-        cy.wait(500);
         cy.get('#ks-list-table').should('contain', name);
       });
 
       disable.forEach(name => {
+        cy.get('#ks-column-button').click({ force: true });
+
         cy.get('#ks-column-select')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });
 
-        cy.wait(500);
         cy.get('#ks-list-table').should('not.contain', name);
       });
     });
