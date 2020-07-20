@@ -8,14 +8,13 @@ const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUsers(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createUsers(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { users: data.createUsers };
@@ -28,11 +27,11 @@ const createUserAndFriend = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUser(data: {
-    friend: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id friend { id } }
-}`,
+      mutation {
+        createUser(data: {
+          friend: { create: { name: "${sampleOne(alphanumGenerator)}" } }
+        }) { id friend { id } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { User, Friend } = await getUserAndFriend(keystone, createUser.id, createUser.friend.id);
@@ -46,14 +45,15 @@ mutation {
 const createComplexData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
-    query: `mutation {
-    createUsers(data: [
-      { data: { name: "A" friend: { create: { name: "A1" } } } }
-      { data: { name: "B" friend: { create: { name: "D1" } } } }
-      { data: { name: "C" friend: { create: { name: "B1" } } } }
-      { data: { name: "E" } }
-    ]) { id name friend { id name }}
-  }`,
+    query: `
+    mutation {
+      createUsers(data: [
+        { data: { name: "A" friend: { create: { name: "A1" } } } }
+        { data: { name: "B" friend: { create: { name: "D1" } } } }
+        { data: { name: "C" friend: { create: { name: "B1" } } } }
+        { data: { name: "E" } }
+      ]) { id name friend { id name }}
+    }`,
   });
   expect(errors).toBe(undefined);
   expect(data.createUsers[0].name).toEqual('A');

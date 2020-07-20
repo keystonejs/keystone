@@ -8,19 +8,18 @@ const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompanies(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-  createLocations(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createCompanies(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+        createLocations(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { locations: data.createLocations, companies: data.createCompanies };
@@ -33,11 +32,11 @@ const createCompanyAndLocation = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompany(data: {
-    location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id location { id } }
-}`,
+      mutation {
+        createCompany(data: {
+          location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
+        }) { id location { id } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
@@ -55,14 +54,15 @@ mutation {
 const createComplexData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
-    query: `mutation {
-    createCompanies(data: [
-      { data: { name: "A" location: { create: { name: "A" } } } }
-      { data: { name: "B" location: { create: { name: "D" } } } }
-      { data: { name: "C" location: { create: { name: "B" } } } }
-      { data: { name: "E" } }
-    ]) { id name location { id name }}
-  }`,
+    query: `
+      mutation {
+        createCompanies(data: [
+          { data: { name: "A" location: { create: { name: "A" } } } }
+          { data: { name: "B" location: { create: { name: "D" } } } }
+          { data: { name: "C" location: { create: { name: "B" } } } }
+          { data: { name: "E" } }
+        ]) { id name location { id name }}
+      }`,
   });
   expect(errors).toBe(undefined);
   expect(data.createCompanies[0].name).toEqual('A');

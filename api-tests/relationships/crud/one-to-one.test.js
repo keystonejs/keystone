@@ -33,12 +33,12 @@ const createCompanyAndLocation = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompany(data: {
-    name: "${sampleOne(alphanumGenerator)}"
-    location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id name location { id name } }
-}`,
+      mutation {
+        createCompany(data: {
+          name: "${sampleOne(alphanumGenerator)}"
+          location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
+        }) { id name location { id name } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
@@ -61,12 +61,12 @@ const createLocationAndCompany = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createLocation(data: {
-    name: "${sampleOne(alphanumGenerator)}"
-    company: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id name company { id name } }
-}`,
+      mutation {
+        createLocation(data: {
+          name: "${sampleOne(alphanumGenerator)}"
+          company: { create: { name: "${sampleOne(alphanumGenerator)}" } }
+        }) { id name company { id name } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(

@@ -8,14 +8,13 @@ const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUsers(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createUsers(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { users: data.createUsers };
@@ -28,11 +27,11 @@ const createUserAndFriend = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUser(data: {
-    friends: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
-  }) { id friends { id } }
-}`,
+      mutation {
+        createUser(data: {
+          friends: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
+        }) { id friends { id } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { User, Friend } = await getUserAndFriend(
@@ -51,10 +50,10 @@ const getUserAndFriend = async (keystone, userId, friendId) => {
   const { data } = await graphqlRequest({
     keystone,
     query: `
-  {
-    User(where: { id: "${userId}"} ) { id friends { id } }
-    Friend: User(where: { id: "${friendId}"} ) { id }
-  }`,
+      {
+        User(where: { id: "${userId}"} ) { id friends { id } }
+        Friend: User(where: { id: "${friendId}"} ) { id }
+      }`,
   });
   return data;
 };
