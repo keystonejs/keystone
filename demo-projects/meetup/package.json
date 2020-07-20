@@ -28,7 +28,7 @@
     "@keystonejs/file-adapters": "^7.0.0",
     "@keystonejs/keystone": "^11.1.1",
     "@keystonejs/session": "^7.0.0",
-    "apollo-upload-client": "^13.0.0",
+    "apollo-upload-client": "^14.0.0",
     "body-parser": "^1.18.2",
     "cross-env": "^7.0.0",
     "date-fns": "^2.14.0",
