@@ -68,12 +68,12 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
 };
 
 const createReadData = async keystone => {
-  // create locations [A, A, B, B, C, C];
+  // create locations [A, A, B, B, C, C, D];
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `mutation create($locations: [LocationsCreateInput]) { createLocations(data: $locations) { id name } }`,
     variables: {
-      locations: ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ data: { name } })),
+      locations: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ data: { name } })),
     },
   });
   expect(errors).toBe(undefined);
@@ -141,6 +141,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(data.allLocations.length).toEqual(count);
               })
             );
+          })
+        );
+        test(
+          'is_null: true',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createReadData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allLocations(where: { company_is_null: true }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(1);
+          })
+        );
+        test(
+          'is_null: false',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createReadData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allLocations(where: { company_is_null: false }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(6);
           })
         );
         test(

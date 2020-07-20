@@ -133,6 +133,55 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         return setupServer({ adapterName, createLists });
       }
 
+      describe('Read', () => {
+        test(
+          'one',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createComplexData(keystone);
+            await Promise.all(
+              [
+                ['A', 1],
+                ['B', 2],
+                ['C', 0],
+                ['D', 1],
+                ['E', 0],
+              ].map(async ([name, count]) => {
+                const { data, errors } = await graphqlRequest({
+                  keystone,
+                  query: `{ allCompanies(where: { location: { name_contains: "${name}"}}) { id }}`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data.allCompanies.length).toEqual(count);
+              })
+            );
+          })
+        );
+        test(
+          'is_null: true',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createComplexData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allCompanies(where: { location_is_null: true }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allCompanies.length).toEqual(1);
+          })
+        );
+        test(
+          'is_null: false',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createComplexData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allCompanies(where: { location_is_null: false }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allCompanies.length).toEqual(4);
+          })
+        );
+      });
+
       describe('Count', () => {
         test(
           'Count',
