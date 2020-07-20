@@ -4,23 +4,19 @@ const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonej
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-jest.setTimeout(6000000);
-
 const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
 mutation {
-  createCompanies(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-  createLocations(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
+  createCompanies(data: [
+    { data: { name: "${sampleOne(alphanumGenerator)}" } },
+    { data: { name: "${sampleOne(alphanumGenerator)}" } },
+    { data: { name: "${sampleOne(alphanumGenerator)}" } }]) { id }
+  createLocations(data: [
+    { data: { name: "${sampleOne(alphanumGenerator)}" } },
+    { data: { name: "${sampleOne(alphanumGenerator)}" } },
+    { data: { name: "${sampleOne(alphanumGenerator)}" } }]) { id }
 }
 `,
   });
