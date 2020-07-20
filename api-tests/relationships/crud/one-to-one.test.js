@@ -8,19 +8,19 @@ const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompanies(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-  createLocations(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createCompanies(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+        createLocations(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { locations: data.createLocations, companies: data.createCompanies };
@@ -154,6 +154,76 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allCompanies[0].id).toEqual(company.id);
           })
         );
+        if (adapterName !== 'mongoose') {
+          test(
+            'Where A: is_null: true',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createCompanyAndLocation(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allLocations(where: { company_is_null: true }) { id }
+                  allCompanies(where: { location_is_null: true }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allLocations.length).toEqual(4);
+              expect(data.allCompanies.length).toEqual(3);
+            })
+          );
+          test(
+            'Where B: is_null: true',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createLocationAndCompany(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allLocations(where: { company_is_null: true }) { id }
+                  allCompanies(where: { location_is_null: true }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allLocations.length).toEqual(4);
+              expect(data.allCompanies.length).toEqual(3);
+            })
+          );
+          test(
+            'Where A: is_null: false',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createCompanyAndLocation(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allLocations(where: { company_is_null: false }) { id }
+                  allCompanies(where: { location_is_null: false }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allLocations.length).toEqual(1);
+              expect(data.allCompanies.length).toEqual(1);
+            })
+          );
+          test(
+            'Where B: is_null: false',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createLocationAndCompany(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allLocations(where: { company_is_null: false }) { id }
+                  allCompanies(where: { location_is_null: false }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allLocations.length).toEqual(1);
+              expect(data.allCompanies.length).toEqual(1);
+            })
+          );
+        }
 
         test(
           'Count',
@@ -170,7 +240,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
             expect(errors).toBe(undefined);
             expect(data._allCompaniesMeta.count).toEqual(3);
-            expect(data._allLocationsMeta.count).toEqual(3);
+            expect(data._allLocationsMeta.count).toEqual(4);
           })
         );
 

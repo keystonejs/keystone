@@ -66,7 +66,7 @@ const createReadData = async keystone => {
     keystone,
     query: `mutation create($users: [UsersCreateInput]) { createUsers(data: $users) { id name } }`,
     variables: {
-      users: ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ data: { name } })),
+      users: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ data: { name } })),
     },
   });
   expect(errors).toBe(undefined);
@@ -133,6 +133,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           })
         );
         test(
+          'is_null: true',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createReadData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allUsers(where: { friendOf_is_null: true }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(5);
+          })
+        );
+        test(
+          'is_null: false',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createReadData(keystone);
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `{ allUsers(where: { friendOf_is_null: false }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(6);
+          })
+        );
+        test(
           '_some',
           runner(setupKeystone, async ({ keystone }) => {
             await createReadData(keystone);
@@ -159,10 +183,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             await createReadData(keystone);
             await Promise.all(
               [
-                ['A', 2 + 6],
-                ['B', 2 + 6],
-                ['C', 2 + 6],
-                ['D', 4 + 6],
+                ['A', 2 + 7],
+                ['B', 2 + 7],
+                ['C', 2 + 7],
+                ['D', 4 + 7],
               ].map(async ([name, count]) => {
                 const { data, errors } = await graphqlRequest({
                   keystone,
@@ -180,10 +204,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             await createReadData(keystone);
             await Promise.all(
               [
-                ['A', 1 + 6],
-                ['B', 1 + 6],
-                ['C', 2 + 6],
-                ['D', 1 + 6],
+                ['A', 1 + 7],
+                ['B', 1 + 7],
+                ['C', 2 + 7],
+                ['D', 1 + 7],
               ].map(async ([name, count]) => {
                 const { data, errors } = await graphqlRequest({
                   keystone,

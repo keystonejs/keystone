@@ -8,14 +8,12 @@ const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUsers(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createUsers(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { users: data.createUsers };
@@ -107,6 +105,66 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               expect(errors).toBe(undefined);
               expect(data.allUsers.length).toEqual(1);
               expect(data.allUsers[0].id).toEqual(friend.id);
+            })
+          );
+          test(
+            'Where friend: is_null: true',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createUserAndFriend(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allUsers(where: { friend_is_null: true }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allUsers.length).toEqual(4);
+            })
+          );
+          test(
+            'Where friendOf: is_null: true',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createUserAndFriend(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allUsers(where: { friendOf_is_null: true }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allUsers.length).toEqual(4);
+            })
+          );
+          test(
+            'Where friend: is_null: false',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createUserAndFriend(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allUsers(where: { friend_is_null: false }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allUsers.length).toEqual(1);
+            })
+          );
+          test(
+            'Where friendOf: is_null: false',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createUserAndFriend(keystone);
+              const { data, errors } = await graphqlRequest({
+                keystone,
+                query: `{
+                  allUsers(where: { friendOf_is_null: false }) { id }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data.allUsers.length).toEqual(1);
             })
           );
         }
