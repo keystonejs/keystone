@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 5.4.2
+
+### Patch Changes
+
+- [`69d7f2e50`](https://github.com/keystonejs/keystone/commit/69d7f2e50ef2325c0d3b02b8bb5c310590796fed) [#3183](https://github.com/keystonejs/keystone/pull/3183) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated doc comments.
+
 ## 5.4.1
 
 ### Patch Changes

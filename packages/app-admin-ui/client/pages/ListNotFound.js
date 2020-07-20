@@ -2,7 +2,7 @@ import React from 'react';
 
 import PageError from '../components/PageError';
 import { Button } from '@arch-ui/button';
-import { IssueOpenedIcon } from '@arch-ui/icons';
+import { IssueOpenedIcon } from '@primer/octicons-react';
 
 import { useAdminMeta } from '../providers/AdminMeta';
 

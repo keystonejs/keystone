@@ -7,7 +7,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 jest.setTimeout(6000000);
 
 const createInitialData = async keystone => {
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `
 mutation {
@@ -24,12 +24,14 @@ mutation {
 }
 `,
   });
+  expect(errors).toBe(undefined);
   return { locations: data.createLocations, companies: data.createCompanies };
 };
 
 const createCompanyAndLocation = async keystone => {
   const {
     data: { createCompany },
+    errors,
   } = await graphqlRequest({
     keystone,
     query: `
@@ -39,6 +41,7 @@ mutation {
   }) { id locations { id } }
 }`,
   });
+  expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
     keystone,
     createCompany.id,
@@ -65,13 +68,14 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
 
 const createReadData = async keystone => {
   // create locations [A, A, B, B, C, C];
-  const { data } = await graphqlRequest({
+  const { data, errors } = await graphqlRequest({
     keystone,
     query: `mutation create($locations: [LocationsCreateInput]) { createLocations(data: $locations) { id name } }`,
     variables: {
       locations: ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ data: { name } })),
     },
   });
+  expect(errors).toBe(undefined);
   const { createLocations } = data;
   await Promise.all(
     [
@@ -86,13 +90,15 @@ const createReadData = async keystone => {
       [], //  -> []
     ].map(async locationIdxs => {
       const ids = locationIdxs.map(i => ({ id: createLocations[i].id }));
-      const { data } = await graphqlRequest({
+      const { data, errors } = await graphqlRequest({
         keystone,
         query: `mutation create($locations: [LocationWhereUniqueInput]) { createCompany(data: {
     locations: { connect: $locations }
   }) { id locations { name }}}`,
         variables: { locations: ids },
       });
+      expect(errors).toBe(undefined);
+
       return data.createCompany;
     })
   );
@@ -150,10 +156,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ['C', 3],
                   ['D', 0],
                 ].map(async ([name, count]) => {
-                  const { data } = await graphqlRequest({
+                  const { data, errors } = await graphqlRequest({
                     keystone,
                     query: `{ allCompanies(where: { locations_some: { name: "${name}"}}) { id }}`,
                   });
+                  expect(errors).toBe(undefined);
                   expect(data.allCompanies.length).toEqual(count);
                 })
               );
@@ -170,10 +177,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ['C', 6],
                   ['D', 9],
                 ].map(async ([name, count]) => {
-                  const { data } = await graphqlRequest({
+                  const { data, errors } = await graphqlRequest({
                     keystone,
                     query: `{ allCompanies(where: { locations_none: { name: "${name}"}}) { id }}`,
                   });
+                  expect(errors).toBe(undefined);
                   expect(data.allCompanies.length).toEqual(count);
                 })
               );
@@ -190,10 +198,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ['C', 1],
                   ['D', 1],
                 ].map(async ([name, count]) => {
-                  const { data } = await graphqlRequest({
+                  const { data, errors } = await graphqlRequest({
                     keystone,
                     query: `{ allCompanies(where: { locations_every: { name: "${name}"}}) { id }}`,
                   });
+                  expect(errors).toBe(undefined);
                   expect(data.allCompanies.length).toEqual(count);
                 })
               );

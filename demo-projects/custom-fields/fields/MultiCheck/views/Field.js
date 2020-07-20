@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import { useState, useEffect } from 'react';
 import { FieldContainer, FieldDescription } from '@arch-ui/fields';
 import { Checkbox } from './MultiCheck';
-import { ShieldIcon } from '@arch-ui/icons';
+import { ShieldIcon } from '@primer/octicons-react';
 import { Lozenge } from '@arch-ui/lozenge';
 import { colors, gridSize } from '@arch-ui/theme';
 

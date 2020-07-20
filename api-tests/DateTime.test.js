@@ -23,6 +23,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Introspection query
           const {
             data: { __schema },
+            errors,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -42,7 +43,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
       `,
           });
-
+          expect(errors).toBe(undefined);
           expect(__schema).toHaveProperty('types');
           expect(__schema.types).toMatchObject(
             expect.arrayContaining([
@@ -79,7 +80,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createPost = await create('Post', { postedAt });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -89,7 +90,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('Post.postedAt', postedAt);
         })
       );
@@ -125,7 +126,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createPost = await create('Post', { postedAt });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -135,7 +136,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('updatePost.postedAt', updatedPostedAt);
         })
       );
@@ -148,7 +149,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createPost = await create('Post', { postedAt });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -158,7 +159,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('updatePost.postedAt', null);
         })
       );
@@ -167,7 +168,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'allows initialising to null',
         runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -177,7 +178,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('createPost.postedAt', null);
         })
       );
@@ -191,7 +192,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createPost = await create('Post', { postedAt, title });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -201,7 +202,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('updatePost.postedAt', postedAt);
         })
       );

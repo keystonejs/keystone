@@ -142,6 +142,7 @@ We'd like to start by thanking all our wonderful contributors:
     <td align="center"><a href="http://hackweb.altervista.org"><img src="https://avatars0.githubusercontent.com/u/754139?v=4" width="80px;" alt=""/><br /><sub><b>frank10gm</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=frank10gm" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/mbrodt"><img src="https://avatars2.githubusercontent.com/u/21239560?v=4" width="80px;" alt=""/><br /><sub><b>mbrodt</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=mbrodt" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/zamkevich"><img src="https://avatars0.githubusercontent.com/u/13717428?v=4" width="80px;" alt=""/><br /><sub><b>Misha Zamkevich</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=zamkevich" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/matheuschimelli"><img src="https://avatars0.githubusercontent.com/u/10470074?v=4" width="80px;" alt=""/><br /><sub><b>Matheus Chimelli</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=matheuschimelli" title="Documentation">📖</a></td>
   </tr>
 </table>
 

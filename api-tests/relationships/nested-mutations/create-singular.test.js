@@ -146,6 +146,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const {
             data: { Group },
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -157,7 +158,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
           `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(Group).toMatchObject({
             id: data.createEvent.group.id,
             name: groupName,
@@ -208,6 +209,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const {
             data: { Group },
+            errors: errors2,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -219,7 +221,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
           `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(Group).toMatchObject({
             id: data.updateEvent.group.id,
             name: groupName,
@@ -370,7 +372,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     }
                 `,
                 });
-
+                expect(result.errors).toBe(undefined);
                 expect(result.data[`all${group.name}s`]).toMatchObject([]);
 
                 // Confirm it didn't insert either of the records anyway
@@ -385,7 +387,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     }
                 `,
                 });
-
+                expect(result2.errors).toBe(undefined);
                 expect(result2.data[`allEventTo${group.name}s`]).toMatchObject([]);
               })
             );
@@ -448,7 +450,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     }
                 `,
                 });
-
+                expect(result.errors).toBe(undefined);
                 expect(result.data[`all${group.name}s`]).toMatchObject([]);
               })
             );

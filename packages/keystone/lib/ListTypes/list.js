@@ -1,6 +1,5 @@
 const pluralize = require('pluralize');
 const {
-  resolveAllKeys,
   mapKeys,
   omit,
   omitBy,
@@ -8,104 +7,27 @@ const {
   intersection,
   mergeWhereClause,
   objMerge,
-  arrayToObject,
   flatten,
   zipObj,
   createLazyDeferred,
-  upcase,
+  arrayToObject,
 } = require('@keystonejs/utils');
 const { parseListAccess } = require('@keystonejs/access-control');
 const { logger } = require('@keystonejs/logger');
+const {
+  preventInvalidUnderscorePrefix,
+  keyToLabel,
+  labelToPath,
+  labelToClass,
+  opToType,
+  mapNativeTypeToKeystoneType,
+  getDefaultLabelResolver,
+  mapToFields,
+} = require('./utils');
+const { HookManager } = require('./hooks');
+const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
 
 const graphqlLogger = logger('graphql');
-const keystoneLogger = logger('keystone');
-
-const {
-  LimitsExceededError,
-  ValidationFailureError,
-  throwAccessDenied,
-} = require('./graphqlErrors');
-
-const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
-
-const keyToLabel = str => {
-  let label = str
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .split(/\s|_|\-/)
-    .filter(i => i)
-    .map(upcase)
-    .join(' ');
-
-  // Retain the leading underscore for auxiliary lists
-  if (str[0] === '_') {
-    label = `_${label}`;
-  }
-  return label;
-};
-
-const labelToPath = str =>
-  str
-    .split(' ')
-    .join('-')
-    .toLowerCase();
-
-const labelToClass = str => str.replace(/\s+/g, '');
-
-const opToType = {
-  read: 'query',
-  create: 'mutation',
-  update: 'mutation',
-  delete: 'mutation',
-};
-
-const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
-  const { Text, Checkbox, Float } = require('@keystonejs/fields');
-
-  const nativeTypeMap = new Map([
-    [
-      Boolean,
-      {
-        name: 'Boolean',
-        keystoneType: Checkbox,
-      },
-    ],
-    [
-      String,
-      {
-        name: 'String',
-        keystoneType: Text,
-      },
-    ],
-    [
-      Number,
-      {
-        name: 'Number',
-        keystoneType: Float,
-      },
-    ],
-  ]);
-
-  if (!nativeTypeMap.has(type)) {
-    return type;
-  }
-
-  const { name, keystoneType } = nativeTypeMap.get(type);
-
-  keystoneLogger.warn(
-    { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystonejs/fields package.`
-  );
-
-  return keystoneType;
-};
-
-const getDefautlLabelResolver = labelField => item => {
-  const value = item[labelField || 'name'];
-  if (typeof value === 'number') {
-    return value.toString();
-  }
-  return value || item.id;
-};
 
 module.exports = class List {
   constructor(
@@ -129,34 +51,23 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    {
-      getListByKey,
-      queryHelper,
-      adapter,
-      defaultAccess,
-      registerType,
-      createAuxList,
-      isAuxList,
-      schemaNames,
-    }
+    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList, schemaNames }
   ) {
     this.key = key;
     this._fields = fields;
-    this.hooks = hooks;
+    this._hooks = hooks;
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
 
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
-      defaultPageSize: 50,
       defaultColumns: nonIdFieldNames ? nonIdFieldNames.slice(0, 2).join(',') : 'id',
       defaultSort: nonIdFieldNames.length ? nonIdFieldNames[0] : '',
-      maximumPageSize: 1000,
       ...adminConfig,
     };
 
-    this.labelResolver = labelResolver || getDefautlLabelResolver(labelField);
+    this.labelResolver = labelResolver || getDefaultLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
@@ -228,20 +139,6 @@ module.exports = class List {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
-
-    this.hooksActions = {
-      /**
-       * @param queryString String A graphQL query string
-       * @param options.skipAccessControl Boolean By default access control _of
-       * the user making the initial request_ is still tested. Disable all
-       * Access Control checks with this flag
-       * @param options.variables Object The variables passed to the graphql
-       * query for the given queryString.
-       *
-       * @return Promise<Object> The graphql query response
-       */
-      query: queryHelper,
-    };
 
     // Tell Keystone about all the types we've seen
     Object.values(fields).forEach(({ type }) => registerType(type));
@@ -323,17 +220,15 @@ module.exports = class List {
     this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
       this.fieldsByPath[path].extendAdminViews({ ...type.views })
     );
+    this.hookManager = new HookManager({
+      fields: this.fields,
+      hooks: this._hooks,
+      listKey: this.key,
+    });
   }
 
   getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    const {
-      defaultPageSize,
-      defaultColumns,
-      defaultSort,
-      maximumPageSize,
-      ...adminConfig
-    } = this.adminConfig;
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
@@ -348,13 +243,7 @@ module.exports = class List {
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
       adminDoc: this.adminDoc,
-      adminConfig: {
-        defaultPageSize,
-        defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: defaultSort,
-        maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
-        ...adminConfig,
-      },
+      adminConfig: this.adminConfig,
     };
   }
 
@@ -400,6 +289,7 @@ module.exports = class List {
       // Check access
       const operation = 'read';
       const access = await context.getFieldAccessControlForUser(
+        field.access,
         this.key,
         field.path,
         undefined,
@@ -433,6 +323,7 @@ module.exports = class List {
 
       for (const field of fields) {
         const access = await context.getFieldAccessControlForUser(
+          field.access,
           this.key,
           field.path,
           data,
@@ -453,11 +344,17 @@ module.exports = class List {
   }
 
   async checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
-    const access = await context.getListAccessControlForUser(this.key, originalInput, operation, {
-      gqlName,
-      context,
-      ...extraInternalData,
-    });
+    const access = await context.getListAccessControlForUser(
+      this.access,
+      this.key,
+      originalInput,
+      operation,
+      {
+        gqlName,
+        context,
+        ...extraInternalData,
+      }
+    );
     if (!access) {
       graphqlLogger.debug(
         { operation, access, gqlName, ...extraInternalData },
@@ -701,32 +598,6 @@ module.exports = class List {
   }
 
   // Mutation resolvers
-  _throwValidationFailure(errors, operation, data = {}) {
-    throw new ValidationFailureError({
-      data: {
-        messages: errors.map(e => e.msg),
-        errors: errors.map(e => e.data),
-        listKey: this.key,
-        operation,
-      },
-      internalData: {
-        errors: errors.map(e => e.internalData),
-        data,
-      },
-    });
-  }
-
-  _mapToFields(fields, action) {
-    return resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
-      if (!error.errors) {
-        throw error;
-      }
-      const errorCopy = new Error(error.message || error.toString());
-      errorCopy.errors = Object.values(error.errors);
-      throw errorCopy;
-    });
-  }
-
   _fieldsFromObject(obj) {
     return Object.keys(obj)
       .map(fieldPath => this.fieldsByPath[fieldPath])
@@ -735,7 +606,7 @@ module.exports = class List {
 
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
-    const resolvedRelationships = await this._mapToFields(fields, async field => {
+    const resolvedRelationships = await mapToFields(fields, async field => {
       const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
         existingItem,
@@ -771,29 +642,14 @@ module.exports = class List {
     };
   }
 
-  _buildActions(context) {
-    return mapKeys(this.hooksActions, buildQuery => {
-      const _query = buildQuery(context);
-      return (...args) => {
-        console.warn(`query() is deprecated and will be removed in a future release.
-Please use context.executeGraphQL() instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
-        return _query(...args);
-      };
-    });
-  }
-
   async _resolveDefaults({ context, originalInput }) {
-    const args = {
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-    };
+    const args = { context, originalInput };
 
     const fieldsWithoutValues = this.fields.filter(
       field => typeof originalInput[field.path] === 'undefined'
     );
 
-    const defaultValues = await this._mapToFields(fieldsWithoutValues, field =>
+    const defaultValues = await mapToFields(fieldsWithoutValues, field =>
       field.getDefaultValue(args)
     );
 
@@ -801,183 +657,6 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
       ...omitBy(defaultValues, path => typeof defaultValues[path] === 'undefined'),
       ...originalInput,
     };
-  }
-
-  async _resolveInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = {
-      resolvedData,
-      existingItem,
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-      operation,
-    };
-
-    // First we run the field type hooks
-    // NOTE: resolveInput is run on _every_ field, regardless if it has a value
-    // passed in or not
-    resolvedData = await this._mapToFields(this.fields, field => field.resolveInput(args));
-
-    // We then filter out the `undefined` results (they should return `null` or
-    // a value)
-    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
-
-    // Run the schema-level field hooks, passing in the results from the field
-    // type hooks
-    resolvedData = {
-      ...resolvedData,
-      ...(await this._mapToFields(
-        this.fields.filter(field => field.hooks.resolveInput),
-        field => field.hooks.resolveInput({ ...args, resolvedData })
-      )),
-    };
-
-    // And filter out the `undefined`s again.
-    resolvedData = omitBy(resolvedData, key => typeof resolvedData[key] === 'undefined');
-
-    if (this.hooks.resolveInput) {
-      // And run any list-level hook
-      resolvedData = await this.hooks.resolveInput({ ...args, resolvedData });
-      if (typeof resolvedData !== 'object') {
-        throw new Error(
-          `Expected ${
-            this.key
-          }.hooks.resolveInput() to return an object, but got a ${typeof resolvedData}: ${resolvedData}`
-        );
-      }
-    }
-
-    // Finally returning the amalgamated result of all the hooks.
-    return resolvedData;
-  }
-
-  async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = {
-      resolvedData,
-      existingItem,
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-      operation,
-    };
-    // Check for isRequired
-    const fieldValidationErrors = this.fields
-      .filter(
-        field =>
-          field.isRequired &&
-          !field.isRelationship &&
-          ((operation === 'create' &&
-            (resolvedData[field.path] === undefined || resolvedData[field.path] === null)) ||
-            (operation === 'update' &&
-              Object.prototype.hasOwnProperty.call(resolvedData, field.path) &&
-              (resolvedData[field.path] === undefined || resolvedData[field.path] === null)))
-      )
-      .map(f => ({
-        msg: `Required field "${f.path}" is null or undefined.`,
-        data: { resolvedData, operation, originalInput },
-        internalData: {},
-      }));
-    if (fieldValidationErrors.length) {
-      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
-    }
-
-    const fields = this._fieldsFromObject(resolvedData);
-    await this._validateHook(args, fields, operation, 'validateInput');
-  }
-
-  async _validateDelete(existingItem, context, operation) {
-    const args = {
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
-    const fields = this.fields;
-    await this._validateHook(args, fields, operation, 'validateDelete');
-  }
-
-  async _validateHook(args, fields, operation, hookName) {
-    const { originalInput } = args;
-    const fieldValidationErrors = [];
-    // FIXME: Can we do this in a way where we simply return validation errors instead?
-    args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
-      fieldValidationErrors.push({ msg, data: _data, internalData });
-    await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(
-      fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
-    );
-    if (fieldValidationErrors.length) {
-      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
-    }
-
-    if (this.hooks[hookName]) {
-      const listValidationErrors = [];
-      await this.hooks[hookName]({
-        ...args,
-        addValidationError: (msg, _data = {}, internalData = {}) =>
-          listValidationErrors.push({ msg, data: _data, internalData }),
-      });
-      if (listValidationErrors.length) {
-        this._throwValidationFailure(listValidationErrors, operation, originalInput);
-      }
-    }
-  }
-
-  async _beforeChange(resolvedData, existingItem, context, operation, originalInput) {
-    const args = {
-      resolvedData,
-      existingItem,
-      context,
-      originalInput,
-      actions: this._buildActions(context),
-      operation,
-    };
-    await this._runHook(args, resolvedData, 'beforeChange');
-  }
-
-  async _beforeDelete(existingItem, context, operation) {
-    const args = {
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
-    await this._runHook(args, existingItem, 'beforeDelete');
-  }
-
-  async _afterChange(updatedItem, existingItem, context, operation, originalInput) {
-    const args = {
-      updatedItem,
-      originalInput,
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
-    await this._runHook(args, updatedItem, 'afterChange');
-  }
-
-  async _afterDelete(existingItem, context, operation) {
-    const args = {
-      existingItem,
-      context,
-      actions: this._buildActions(context),
-      operation,
-    };
-    await this._runHook(args, existingItem, 'afterDelete');
-  }
-
-  async _runHook(args, fieldObject, hookName) {
-    // Used to apply hooks that only produce side effects
-    const fields = this._fieldsFromObject(fieldObject);
-    await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(
-      fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
-    );
-
-    if (this.hooks[hookName]) await this.hooks[hookName](args);
   }
 
   async _nestedMutation(mutationState, context, mutation) {
@@ -1057,22 +736,34 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
         mutationState
       );
 
-      resolvedData = await this._resolveInput(
+      resolvedData = await this.hookManager.resolveInput({
         resolvedData,
         existingItem,
         context,
         operation,
-        originalInput
-      );
+        originalInput,
+      });
 
-      await this._validateInput(resolvedData, existingItem, context, operation, originalInput);
+      await this.hookManager.validateInput({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      await this._beforeChange(resolvedData, existingItem, context, operation, originalInput);
+      await this.hookManager.beforeChange({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      let newItem;
+      let updatedItem;
       try {
-        newItem = await this.adapter.create(resolvedData);
-        createdPromise.resolve(newItem);
+        updatedItem = await this.adapter.create(resolvedData);
+        createdPromise.resolve(updatedItem);
         // Wait until next tick so the promise/micro-task queue can be flushed
         // fully, ensuring the deferred handlers get executed before we move on
         await new Promise(res => process.nextTick(res));
@@ -1086,9 +777,15 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
       }
 
       return {
-        result: newItem,
+        result: updatedItem,
         afterHook: () =>
-          this._afterChange(newItem, existingItem, context, operation, originalInput),
+          this.hookManager.afterChange({
+            updatedItem,
+            existingItem,
+            context,
+            operation,
+            originalInput,
+          }),
       };
     });
   }
@@ -1122,9 +819,10 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
     const access = await this.checkListAccess(context, data, operation, extraData);
 
     const existingItems = await this.getAccessControlledItems(ids, access);
+    const existingItemsById = arrayToObject(existingItems, 'id');
 
     const itemsToUpdate = zipObj({
-      existingItem: existingItems,
+      existingItem: ids.map(id => existingItemsById[id]),
       id: ids, // itemId is taken from here in checkFieldAccess
       data: data.map(d => d.data),
     });
@@ -1139,28 +837,53 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
     );
   }
 
-  async _updateSingle(id, data, existingItem, context, mutationState) {
+  async _updateSingle(id, originalInput, existingItem, context, mutationState) {
     const operation = 'update';
     return await this._nestedMutation(mutationState, context, async mutationState => {
       let resolvedData = await this._resolveRelationship(
-        data,
+        originalInput,
         existingItem,
         context,
         undefined,
         mutationState
       );
 
-      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      resolvedData = await this.hookManager.resolveInput({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this.hookManager.validateInput({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      await this._beforeChange(resolvedData, existingItem, context, operation, data);
+      await this.hookManager.beforeChange({
+        resolvedData,
+        existingItem,
+        context,
+        operation,
+        originalInput,
+      });
 
-      const newItem = await this.adapter.update(id, resolvedData);
+      const updatedItem = await this.adapter.update(id, resolvedData);
 
       return {
-        result: newItem,
-        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+        result: updatedItem,
+        afterHook: () =>
+          this.hookManager.afterChange({
+            updatedItem,
+            existingItem,
+            context,
+            operation,
+            originalInput,
+          }),
       };
     });
   }
@@ -1203,15 +926,15 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
     const operation = 'delete';
 
     return await this._nestedMutation(mutationState, context, async () => {
-      await this._validateDelete(existingItem, context, operation);
+      await this.hookManager.validateDelete({ existingItem, context, operation });
 
-      await this._beforeDelete(existingItem, context, operation);
+      await this.hookManager.beforeDelete({ existingItem, context, operation });
 
       await this.adapter.delete(existingItem.id);
 
       return {
         result: existingItem,
-        afterHook: () => this._afterDelete(existingItem, context, operation),
+        afterHook: () => this.hookManager.afterDelete({ existingItem, context, operation }),
       };
     });
   }
@@ -1497,14 +1220,22 @@ Please use context.executeGraphQL() instead. See https://www.keystonejs.com/disc
       // declarative syntax)
       getAccess: () => ({
         getCreate: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'create', { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'create', {
+            context,
+          }),
         getRead: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'read', { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'read', {
+            context,
+          }),
         getUpdate: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'update', { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'update', {
+            context,
+          }),
         getDelete: () =>
-          context.getListAccessControlForUser(this.key, undefined, 'delete', { context }),
-        getAuth: () => context.getAuthAccessControlForUser(this.key, { context }),
+          context.getListAccessControlForUser(this.access, this.key, undefined, 'delete', {
+            context,
+          }),
+        getAuth: () => context.getAuthAccessControlForUser(this.access, this.key, { context }),
       }),
 
       getSchema: () => {

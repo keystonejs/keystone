@@ -197,14 +197,16 @@ Add the query alongside our custom type and mutation. Note that custom queries t
 And finally, define our query's resolver:
 
 ```javascript
-const pageViewsOver = async (_, { id, threshold }, _, _, { query }) => {
+const pageViewsOver = async (_, { id, threshold }, context) => {
   const {
     data: { views },
-  } = await query(`
+  } = await context.executeGraphql({
+    query: `
     Post(where: { id: "${id}" }) {
       views
     }
-  `);
+  `,
+  });
 
   return views > threshold;
 };

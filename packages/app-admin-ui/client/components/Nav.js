@@ -19,7 +19,7 @@ import {
 import { Title, Truncate } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
-import { PersonIcon, SignOutIcon, TerminalIcon, MarkGithubIcon } from '@arch-ui/icons';
+import { PersonIcon, SignOutIcon, TerminalIcon, MarkGithubIcon } from '@primer/octicons-react';
 
 import { useAdminMeta } from '../providers/AdminMeta';
 import { useResizeHandler, KEYBOARD_SHORTCUT } from '../hooks/ResizeHandler';

@@ -1,5 +1,18 @@
 # @keystonejs/file-adapters
 
+## 7.0.1
+
+### Patch Changes
+
+- [`25921ebe4`](https://github.com/keystonejs/keystone/commit/25921ebe4d06652b03299fe4a516bd3d01de1800) [#3220](https://github.com/keystonejs/keystone/pull/3220) Thanks [@singhArmani](https://github.com/singhArmani)! - **Fix**: delete function not passing required config params
+
+  We are not setting global configuration (api_key, api_secret, and cloud_name) in our cloudinary SDK.
+  We are relying on passing these mandatory config settings in the options param of the upload API.
+  But in the case of destroy method, we are omitting them and passing ondefault empty options object as an argument.
+  This results in a rejected promise. To fix this issue, we are now injecting these values in the provided options object.
+
+  NOTE: User can still override these values if required.
+
 ## 7.0.0
 
 ### Major Changes

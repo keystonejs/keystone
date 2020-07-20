@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
-import { XIcon } from '@arch-ui/icons';
+import { XIcon } from '@primer/octicons-react';
 import { colors } from '@arch-ui/theme';
 import { uniformHeight } from '@arch-ui/common';
 

@@ -14,11 +14,10 @@ const adapterConfig = {};
  */
 
 const keystone = new Keystone({
-  name: PROJECT_NAME,
   adapter: new Adapter(adapterConfig),
 });
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ enableDefaultRoute: true })],
+  apps: [new GraphQLApp(), new AdminUIApp({ name: PROJECT_NAME, enableDefaultRoute: true })],
 };

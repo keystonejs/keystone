@@ -148,13 +148,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item to update
           const {
             data: { createEvent },
+            errors,
           } = await graphqlRequest({
             keystone,
             query: 'mutation { createEvent(data: { title: "A thing", }) { id } }',
           });
+          expect(errors).toBe(undefined);
 
           // Update the item and link the relationship field
-          const { data, errors } = await graphqlRequest({
+          const { data, errors: errors2 } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -174,7 +176,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
-
+          expect(errors2).toBe(undefined);
           expect(data).toMatchObject({
             updateEvent: {
               id: expect.any(String),
@@ -184,7 +186,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               },
             },
           });
-          expect(errors).toBe(undefined);
         })
       );
     });

@@ -18,6 +18,7 @@ class ListAuthProvider {
       unauthenticateMutationName: `unauthenticate${itemQueryName}`,
       authenticateOutputName: `authenticate${itemQueryName}Output`,
       unauthenticateOutputName: `unauthenticate${itemQueryName}Output`,
+      updateAuthenticatedMutationName: `updateAuthenticated${itemQueryName}`,
     };
 
     // Record GQL names in the strategy
@@ -59,6 +60,7 @@ class ListAuthProvider {
       authenticateOutputName,
       unauthenticateMutationName,
       unauthenticateOutputName,
+      updateAuthenticatedMutationName,
       outputTypeName,
     } = this.gqlNames;
     const { authStrategy } = this;
@@ -68,6 +70,7 @@ class ListAuthProvider {
         ${authenticateMutationName}(${authStrategy.getInputFragment()}): ${authenticateOutputName}
       `,
       `${unauthenticateMutationName}: ${unauthenticateOutputName}`,
+      `${updateAuthenticatedMutationName}(data: ${this.list.gqlNames.updateInputName}): ${outputTypeName}`,
     ];
   }
   getSubscriptions({}) {
@@ -86,10 +89,15 @@ class ListAuthProvider {
   }
   getMutationResolvers({ schemaName }) {
     if (!this.access[schemaName].auth) return {};
-    const { authenticateMutationName, unauthenticateMutationName } = this.gqlNames;
+    const {
+      updateAuthenticatedMutationName,
+      authenticateMutationName,
+      unauthenticateMutationName,
+    } = this.gqlNames;
     return {
       [authenticateMutationName]: (_, args, context) => this._authenticateMutation(args, context),
       [unauthenticateMutationName]: (_, __, context) => this._unauthenticateMutation(context),
+      [updateAuthenticatedMutationName]: (_, args, context) => this._updateMutation(args, context),
     };
   }
   getSubscriptionResolvers({}) {
@@ -136,9 +144,25 @@ class ListAuthProvider {
     return { success: true };
   }
 
+  async _updateMutation({ data }, context) {
+    const gqlName = this.gqlNames.updateAuthenticatedMutationName;
+
+    if (!context.authedItem || context.authedListKey !== this.list.key) {
+      // Not logged in? Can't update the data
+      throwAccessDenied('mutation', context, gqlName);
+    }
+
+    await this.checkAccess(context, 'mutation', { gqlName });
+
+    return this.list.updateMutation(context.authedItem.id, data, context);
+  }
+
   async checkAccess(context, type, { gqlName }) {
     const operation = 'auth';
-    const access = await context.getAuthAccessControlForUser(this.list.key, { gqlName, context });
+    const access = await context.getAuthAccessControlForUser(this.list.access, this.list.key, {
+      gqlName,
+      context,
+    });
     if (!access) {
       graphqlLogger.debug({ operation, access, gqlName }, 'Access statically or implicitly denied');
       graphqlLogger.info({ operation, gqlName }, 'Access Denied');

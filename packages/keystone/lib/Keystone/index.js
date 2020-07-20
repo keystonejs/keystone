@@ -3,7 +3,7 @@ const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
-const { graphql, execute, print } = require('graphql');
+const { execute, print } = require('graphql');
 const {
   resolveAllKeys,
   arrayToObject,
@@ -37,7 +37,6 @@ module.exports = class Keystone {
     adapters,
     adapter,
     defaultAdapter,
-    name,
     onConnect,
     cookieSecret,
     sessionStore,
@@ -54,7 +53,6 @@ module.exports = class Keystone {
       access: true,
     },
   }) {
-    this.name = name;
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -72,11 +70,7 @@ module.exports = class Keystone {
     this.appVersion = appVersion;
 
     this._listCRUDProvider = new ListCRUDProvider();
-    this._customProvider = new CustomProvider({
-      schemaNames,
-      defaultAccess: this.defaultAccess,
-      buildQueryHelper: this._buildQueryHelper.bind(this),
-    });
+    this._customProvider = new CustomProvider({ schemaNames, defaultAccess: this.defaultAccess });
     this._providers = [
       this._listCRUDProvider,
       this._customProvider,
@@ -104,36 +98,6 @@ module.exports = class Keystone {
     if (this.queryLimits.maxTotalResults < 1) {
       throw new Error("queryLimits.maxTotalResults can't be < 1");
     }
-
-    // Placeholder until keystone.prepare() is run during which this function
-    // will be replaced with one that can actually make queries (assuming the
-    // graphql app is setup, which is checked for elsewhere).
-    this.executeQuery = () => {
-      throw new Error(
-        'Attempted to execute keystone.query() before keystone.connect() has completed.'
-      );
-    };
-  }
-
-  _executeOperation({
-    requestString,
-    rootValue = null,
-    contextValue,
-    variableValues,
-    operationName,
-  }) {
-    // This method is a thin wrapper around the graphql() function which uses
-    // contextValue.schemaName to select a schema created by app-graphql to execute.
-    // https://graphql.org/graphql-js/graphql/#graphql
-    const schema = this._schemas[contextValue.schemaName];
-    if (!schema) {
-      return Promise.reject(
-        new Error(
-          `No executable schema named '${contextValue.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
-        )
-      );
-    }
-    return graphql(schema, requestString, rootValue, contextValue, variableValues, operationName);
   }
 
   _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
@@ -164,9 +128,15 @@ module.exports = class Keystone {
     );
 
     const getListAccessControlForUser = memoize(
-      async (listKey, originalInput, operation, { gqlName, itemId, itemIds, context } = {}) => {
+      async (
+        access,
+        listKey,
+        originalInput,
+        operation,
+        { gqlName, itemId, itemIds, context } = {}
+      ) => {
         return validateListAccessControl({
-          access: this.lists[listKey].access[schemaName],
+          access: access[schemaName],
           originalInput,
           operation,
           authentication,
@@ -182,6 +152,7 @@ module.exports = class Keystone {
 
     const getFieldAccessControlForUser = memoize(
       async (
+        access,
         listKey,
         fieldKey,
         originalInput,
@@ -190,7 +161,7 @@ module.exports = class Keystone {
         { gqlName, itemId, itemIds, context } = {}
       ) => {
         return validateFieldAccessControl({
-          access: this.lists[listKey].fieldsByPath[fieldKey].access[schemaName],
+          access: access[schemaName],
           originalInput,
           existingItem,
           operation,
@@ -207,9 +178,9 @@ module.exports = class Keystone {
     );
 
     const getAuthAccessControlForUser = memoize(
-      async (listKey, { gqlName, context } = {}) => {
+      async (access, listKey, { gqlName, context } = {}) => {
         return validateAuthAccessControl({
-          access: this.lists[listKey].access[schemaName],
+          access: access[schemaName],
           authentication,
           listKey,
           gqlName,
@@ -268,63 +239,16 @@ module.exports = class Keystone {
     return execute(schema, query, null, context, variables);
   }
 
-  // The GraphQL App uses this method to build up the context required for each
-  // incoming query.
-  // It is also used for generating the `keystone.query` method
-  getGraphQlContext({ schemaName, req = {}, skipAccessControl = false } = {}) {
+  createHTTPContext({ schemaName, req }) {
+    // The GraphQL App uses this method to build up the context required for each incoming query.
     return {
       ...this.createContext({
         schemaName,
         authentication: { item: req.user, listKey: req.authedListKey },
-        skipAccessControl,
+        skipAccessControl: false,
       }),
       ...this._sessionManager.getContext(req),
-    };
-  }
-
-  /**
-   * A factory for generating executable graphql query functions.
-   *
-   * @param context Object The graphQL Context object
-   * @param context.schemaName String Usually 'admin', this is the registered
-   * schema as passed to keystone.registerSchema()
-   *
-   * @return Function An executable function for running a query
-   */
-  _buildQueryHelper(defaultContext) {
-    /**
-     * An executable function for running a query
-     *
-     * @param requestString String A graphQL query string
-     * @param options.skipAccessControl Boolean By default access control _of
-     * the user making the initial request_ is still tested. Disable all
-     * Access Control checks with this flag
-     * @param options.variables Object The variables passed to the graphql
-     * query for the given queryString.
-     * @param options.context Object Overrides to the default context used when
-     * making a query. Useful for setting the `schemaName` for example.
-     *
-     * @return Promise<Object> The graphql query response
-     */
-    return (
-      requestString,
-      { skipAccessControl = false, variables, context = {}, operationName } = {}
-    ) => {
-      let contextValue = { ...defaultContext, ...context };
-
-      if (skipAccessControl) {
-        contextValue.getCustomAccessControlForUser = () => true;
-        contextValue.getListAccessControlForUser = () => true;
-        contextValue.getFieldAccessControlForUser = () => true;
-        contextValue.getAuthAccessControlForUser = () => true;
-      }
-
-      return this._executeOperation({
-        contextValue,
-        requestString,
-        variableValues: variables,
-        operationName,
-      });
+      req,
     };
   }
 
@@ -363,7 +287,6 @@ module.exports = class Keystone {
       composePlugins(config.plugins || [])(config, { listKey: key, keystone: this }),
       {
         getListByKey,
-        queryHelper: this._buildQueryHelper.bind(this),
         adapter: adapters[adapterName],
         defaultAccess: this.defaultAccess,
         registerType: type => this.registeredTypes.add(type),
@@ -521,25 +444,9 @@ module.exports = class Keystone {
    * constructor, or `undefined` if no `onConnect` method specified.
    */
   async connect() {
-    const { adapters, name } = this;
+    const { adapters } = this;
     const rels = this._consolidateRelationships();
-    await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ name, rels })));
-
-    // Now that the middlewares are done, and we're connected to the database,
-    // it's safe to assume all the schemas are registered, so we can setup our
-    // query helper This enables god-mode queries with no access control checks
-    const _executeQuery = this._buildQueryHelper(
-      this.getGraphQlContext({
-        skipAccessControl: true,
-        // This is for backwards compatibility with single-schema Keystone
-        schemaName: this._schemaNames.length === 1 ? this._schemaNames[0] : undefined,
-      })
-    );
-    this.executeQuery = (...args) => {
-      console.warn(`keystone.executeQuery() is deprecated and will be removed in a future release.
-Please use keystone.executeGraphQL instead. See https://www.keystonejs.com/discussions/server-side-graphql for details.`);
-      return _executeQuery(...args);
-    };
+    await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ rels })));
 
     if (this.eventHandlers.onConnect) {
       return this.eventHandlers.onConnect(this);
@@ -571,7 +478,7 @@ Please use keystone.executeGraphQL instead. See https://www.keystonejs.com/discu
       list => list.getAdminMeta({ schemaName })
     );
 
-    return { lists, name: this.name };
+    return { lists };
   }
 
   getAdminViews({ schemaName }) {

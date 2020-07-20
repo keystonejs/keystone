@@ -477,7 +477,7 @@ class PassportAuthStrategy {
 
     // Here we create both the Passport Session Item and the User Item
     // in KS5 as a single, nested mutation.
-    const { sessionItem } = await this._executeQuery({
+    const data = await this._executeQuery({
       query: `
         mutation($id: ID!, $data: ${passportSessionMutationInputName}) {
           session: ${passportSessionMutationName}(id: $id , data: $data) {
@@ -491,7 +491,7 @@ class PassportAuthStrategy {
       variables: { id: passportSessionInfo.id, data: { item: { [operation]: itemData } } },
     });
 
-    return sessionItem.session.item;
+    return data.session.item;
   }
 
   async _authenticateItem(item, accessToken, isNewItem, req, res, next) {

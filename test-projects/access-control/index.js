@@ -18,8 +18,7 @@ const { projectName } = require('./config');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: projectName,
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
   cookieSecret: 'qwerty',
 });
 
@@ -144,5 +143,8 @@ listAccessVariations.forEach(createListWithDeclarativeAccess);
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ adminPath: '/admin', authStrategy })],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({ name: projectName, adminPath: '/admin', authStrategy }),
+  ],
 };

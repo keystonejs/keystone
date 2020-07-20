@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
-import { ShieldIcon } from '@arch-ui/icons';
+import { ShieldIcon } from '@primer/octicons-react';
 import { Lozenge } from '@arch-ui/lozenge';
 
 export const FieldContainer = props => (

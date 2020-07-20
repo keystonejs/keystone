@@ -31,33 +31,34 @@ function setupKeystone(adapterName) {
   });
 }
 
-const getTeacher = async (keystone, teacherId) =>
-  (
-    await graphqlRequest({
-      keystone,
-      query: `query getTeacher($teacherId: ID!){
+const getTeacher = async (keystone, teacherId) => {
+  const { data, errors } = await graphqlRequest({
+    keystone,
+    query: `query getTeacher($teacherId: ID!){
   Teacher(where: { id: $teacherId }) {
     id
     students { id }
   }
 }`,
-      variables: { teacherId },
-    })
-  ).data.Teacher;
+    variables: { teacherId },
+  });
+  expect(errors).toBe(undefined);
+  return data.Teacher;
+};
 
-const getStudent = async (keystone, studentId) =>
-  (
-    await graphqlRequest({
-      keystone,
-      query: `query getStudent($studentId: ID!){
+const getStudent = async (keystone, studentId) => {
+  const { data } = await graphqlRequest({
+    keystone,
+    query: `query getStudent($studentId: ID!){
   Student(where: { id: $studentId }) {
     id
     teachers { id }
   }
 }`,
-      variables: { studentId },
-    })
-  ).data.Student;
+    variables: { studentId },
+  });
+  return data.Student;
+};
 
 // We can't assume what IDs get assigned, or what order they come back in
 const compareIds = (list, ids) =>

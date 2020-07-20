@@ -37,6 +37,7 @@ module.exports = {
 
 | Option               | Type       | Default       | Required | Description                                                                |
 | -------------------- | ---------- | ------------- | -------- | -------------------------------------------------------------------------- |
+| `name`               | `String`   | `undefined`   | `false`  | The name of the project.                                                   |
 | `adminPath`          | `String`   | `/admin`      | `false`  | The path of the Admin UI.                                                  |
 | `apiPath`            | `String`   | `/admin/api`  | `false`  | The path of the API provided to the Admin UI.                              |
 | `graphiqlPath`       | `String`   | `/admin/api`  | `false`  | The path of the graphiql app, an in-browser IDE for exploring GraphQL.     |
@@ -46,6 +47,8 @@ module.exports = {
 | `schemaName`         | `String`   | `public`      | `false`  |                                                                            |
 | `isAccessAllowed`    | `Function` | `true`        | `false`  | Controls which users have access to the Admin UI.                          |
 | `adminMeta`          | `Object`   | `{}`          | `false`  | Provides additional `adminMeta`. Useful for Hooks and other customizations |
+| `defaultPageSize`    | `Integer`  | 50            | `false`  | The default number of list items to show at once.                          |
+| `maximumPageSize`    | `Integer`  | 1000          | `false`  | The maximum number of list items to show at once.                          |
 
 ### `hooks`
 
