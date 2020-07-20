@@ -92,9 +92,10 @@ const createReadData = async keystone => {
   );
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    const createLists = keystone => {
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('User', {
         fields: {
           name: { type: Text },
@@ -102,13 +103,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           friends: { type: Relationship, ref: 'User.friendOf', many: true },
         },
       });
-    };
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
     describe(`One-to-many relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
-
       describe('Read', () => {
         test(
           'one',

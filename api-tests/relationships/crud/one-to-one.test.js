@@ -94,9 +94,10 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
   return data;
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    const createLists = keystone => {
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('Company', {
         fields: {
           name: { type: Text },
@@ -109,12 +110,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           company: { type: Relationship, ref: 'Company.location' },
         },
       });
-    };
-    describe(`One-to-one relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe(`One-to-one relationships`, () => {
       describe('Read', () => {
         test(
           'Where A',
