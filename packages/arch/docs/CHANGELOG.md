@@ -1,5 +1,14 @@
 # @arch-ui/docs
 
+## 1.1.25
+
+### Patch Changes
+
+- Updated dependencies [[`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669)]:
+  - @arch-ui/fields@3.0.3
+  - @arch-ui/pagination@0.0.24
+  - @arch-ui/pill@0.1.16
+
 ## 1.1.24
 
 ### Patch Changes
