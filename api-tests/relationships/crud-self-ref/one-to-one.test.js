@@ -56,9 +56,10 @@ const getUserAndFriend = async (keystone, userId, friendId) => {
   return data;
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    const createLists = keystone => {
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('User', {
         fields: {
           name: { type: Text },
@@ -66,13 +67,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           friend: { type: Relationship, ref: 'User.friendOf' },
         },
       });
-    };
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
     describe(`One-to-one relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
-
       describe('Read', () => {
         if (adapterName !== 'mongoose') {
           test(
