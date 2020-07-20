@@ -30,10 +30,6 @@ let mongoConnection;
 let mongoDb;
 let mongoServer;
 
-// `mongodb-memory-server` downloads a binary on first run in CI, which can take
-// a while, so we bump up the timeout here.
-jest.setTimeout(60000);
-
 beforeAll(async () => {
   mongoServer = new MongoDBMemoryServer();
   const mongoUri = await mongoServer.getConnectionString();
