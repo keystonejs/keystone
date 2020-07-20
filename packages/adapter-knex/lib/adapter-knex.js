@@ -698,7 +698,14 @@ class QueryBuilder {
     const fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
     // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
     return (
-      fieldAdapter && fieldAdapter.getQueryConditions(`${tableAlias}.${fieldAdapter.dbPath}`)[path]
+      fieldAdapter &&
+      fieldAdapter.getQueryConditions(
+        fieldAdapter.isRelationship &&
+          fieldAdapter.rel.cardinality === '1:1' &&
+          fieldAdapter.rel.right === fieldAdapter.field
+          ? `${tableAlias}__${fieldAdapter.path}.id`
+          : `${tableAlias}.${fieldAdapter.dbPath}`
+      )[path]
     );
   }
 
