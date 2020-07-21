@@ -113,6 +113,11 @@ describe('Access control package tests', () => {
         Error
       );
     });
+    test('creating a `private` schema should throw', () => {
+      expect(() => parseListAccess({ access: true, schemaNames: ['public', 'private'] })).toThrow(
+        Error
+      );
+    });
 
     test('Schema names matching the access keys', () => {
       const schemaNames = ['public', 'internal'];
