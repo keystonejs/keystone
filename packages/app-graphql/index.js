@@ -1,6 +1,5 @@
 const express = require('express');
 const { GraphQLPlaygroundApp } = require('@keystonejs/app-graphql-playground');
-const { createApolloServer } = require('./lib/apolloServer');
 const validation = require('./validation');
 
 class GraphQLApp {
@@ -20,7 +19,7 @@ class GraphQLApp {
    * @return Array<middlewares>
    */
   prepareMiddleware({ keystone, dev }) {
-    const server = createApolloServer(keystone, this._apollo, this._schemaName, dev);
+    const server = keystone.createApolloServer(this._apollo, this._schemaName, dev);
     const apiPath = this._apiPath;
     const graphiqlPath = this._graphiqlPath;
     const app = express();
