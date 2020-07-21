@@ -2,4 +2,4 @@
 '@keystonejs/app-admin-ui': patch
 ---
 
-Stop passing unnecessary props around through ListLayout, ListTable, ListRow, and SortLink.
+Stopped passing unnecessary props around, especially ones which can be accessed via hooks.
