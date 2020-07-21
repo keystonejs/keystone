@@ -2,14 +2,12 @@ import pluralize from 'pluralize';
 import { importView } from '@keystonejs/build-field-types';
 
 import { Block } from '@keystonejs/field-content/Block';
-import { imageContainer, caption } from '@keystonejs/field-content/blocks';
-import CloudinaryImage from './';
-import SelectType from '../Select';
-import RelationshipType from '../Relationship';
+import Unsplash from '.';
+import { Relationship } from '@keystonejs/fields';
 
 const RelationshipWrapper = {
-  ...RelationshipType,
-  implementation: class extends RelationshipType.implementation {
+  ...Relationship,
+  implementation: class extends Relationship.implementation {
     async resolveNestedOperations(operations, item, context, ...args) {
       const result = await super.resolveNestedOperations(operations, item, context, ...args);
       context._blockMeta = context._blockMeta || {};
@@ -20,11 +18,24 @@ const RelationshipWrapper = {
   },
 };
 
-export class ImageBlock extends Block {
-  constructor({ adapter }, { fromList, joinList, createAuxList, getListByKey }) {
+export class UnsplashBlock extends Block {
+  constructor(
+    { accessKey, secretKey, attribution },
+    { fromList, joinList, createAuxList, getListByKey }
+  ) {
     super(...arguments);
 
     this.joinList = joinList;
+
+    if (typeof attribution === 'string' && attribution) {
+      this.attribution = { source: attribution };
+    } else if (typeof attribution === 'object' && attribution.source) {
+      this.attribution = attribution;
+    } else {
+      throw new Error(
+        'The unsplash-image block requires the `attribution` option to be either a string, or object { source<String>, medium<String?> }'
+      );
+    }
 
     const auxListKey = `_Block_${fromList}_${this.type}`;
 
@@ -35,26 +46,21 @@ export class ImageBlock extends Block {
       auxList = createAuxList(auxListKey, {
         fields: {
           image: {
-            type: CloudinaryImage,
+            type: Unsplash,
             isRequired: true,
-            adapter,
-            schemaDoc: 'Cloudinary Image data returned from the Cloudinary API',
-          },
-          align: {
-            type: SelectType,
-            defaultValue: 'center',
-            options: ['left', 'center', 'right'],
-            schemaDoc: 'Set the image alignment',
+            accessKey,
+            secretKey,
+            schemaDoc: 'Unsplash image data',
           },
           // Useful for doing reverse lookups such as:
-          // - "Get all images in this post"
+          // - "Get all embeds in this post"
           // - "List all users mentioned in comment"
           from: {
-            type: RelationshipType,
+            type: Relationship,
             isRequired: true,
             ref: `${joinList}.${this.path}`,
             schemaDoc:
-              'A reference back to the Slate.js Serialised Document this image is embedded within',
+              'A reference back to the Slate.js Serialised Document this unsplash image is contained within',
           },
         },
       });
@@ -64,19 +70,11 @@ export class ImageBlock extends Block {
   }
 
   get type() {
-    return 'cloudinaryImage';
+    return 'unsplashImage';
   }
 
   get path() {
     return pluralize.plural(this.type);
-  }
-
-  getAdminViews() {
-    return [
-      importView('./views/blocks/single-image'),
-      ...new imageContainer().getAdminViews(),
-      ...new caption().getAdminViews(),
-    ];
   }
 
   getFieldDefinitions() {
@@ -85,7 +83,7 @@ export class ImageBlock extends Block {
         type: RelationshipWrapper,
         ref: `${this.auxList.key}.from`,
         many: true,
-        schemaDoc: 'Images which have been added to the Content field',
+        schemaDoc: 'Unsplash Images which have been added to the Content field',
       },
     };
   }
@@ -99,17 +97,28 @@ export class ImageBlock extends Block {
     };
   }
 
+  getAdminViews() {
+    return [importView('./views/blocks/unsplash-image')];
+  }
+
   getViewOptions() {
     return {
       query: `
-        cloudinaryImages {
+        unsplashImages {
           id
           image {
-            publicUrl
+            id
+            unsplashId
+            publicUrl: publicUrlTransformed(transformation: { w: "620" })
+            description
+            user {
+              name
+              url
+            }
           }
-          align
         }
       `,
+      attribution: this.attribution,
     };
   }
 }

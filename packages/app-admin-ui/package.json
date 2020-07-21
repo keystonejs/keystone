@@ -8,7 +8,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/react-hooks": "^3.1.5",
+    "@apollo/react-hooks": "^4.0.0",
     "@arch-ui/alert": "^0.0.17",
     "@arch-ui/badge": "^0.0.16",
     "@arch-ui/button": "^0.0.20",
@@ -63,7 +63,7 @@
     "falsey": "^1.0.0",
     "file-loader": "^3.0.1",
     "graphql": "^14.6.0",
-    "graphql-tag": "^2.10.3",
+    "graphql-tag": "^2.10.4",
     "html-webpack-plugin": "^4.2.0",
     "lodash.debounce": "^4.0.8",
     "lodash.set": "^4.3.2",

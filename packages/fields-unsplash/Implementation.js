@@ -3,7 +3,7 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import UnsplashAPI, { toJson } from 'unsplash-js';
 import queryString from 'query-string';
 
-import { Implementation } from '../../Implementation';
+import { Implementation } from '@keystonejs/fields';
 
 // Polyfill fetch so unsplash-js works
 global.fetch = global.fetch || require('node-fetch');

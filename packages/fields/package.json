@@ -12,7 +12,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/react-hooks": "^3.1.5",
+    "@apollo/react-hooks": "^4.0.0",
     "@arch-ui/alert": "^0.0.17",
     "@arch-ui/button": "^0.0.20",
     "@arch-ui/controls": "^0.1.8",
@@ -38,6 +38,9 @@
     "@keystonejs/app-admin-ui": "^7.1.0",
     "@keystonejs/build-field-types": "^5.2.10",
     "@keystonejs/field-content": "^7.0.2",
+    "@keystonejs/fields-cloudinary-image": "^1.0.0",
+    "@keystonejs/fields-oembed": "^1.0.0",
+    "@keystonejs/fields-unsplash": "^1.0.0",
     "@keystonejs/utils": "^5.4.2",
     "@primer/octicons-react": "^10.0.0",
     "@sindresorhus/slugify": "^0.11.0",
@@ -48,7 +51,7 @@
     "dumb-passwords": "^0.2.1",
     "google-maps-react": "^2.0.2",
     "graphql": "^14.6.0",
-    "graphql-tag": "^2.10.3",
+    "graphql-tag": "^2.10.4",
     "image-extensions": "^1.1.0",
     "inflection": "^1.12.0",
     "intersection-observer": "^0.10.0",
@@ -56,11 +59,10 @@
     "lodash.isequal": "^4.5.0",
     "luxon": "^1.11.4",
     "mongoose": "^5.9.11",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.6.0",
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0",
     "prop-types": "^15.7.2",
-    "query-string": "^6.8.1",
     "react": "^16.13.1",
     "react-color": "^2.17.3",
     "react-day-picker": "^8.0.0-alpha.45",
@@ -68,10 +70,9 @@
     "react-image": "^4.0.0",
     "react-select": "^3.1.0",
     "react-toast-notifications": "^2.3.0",
-    "slate": "^0.47.4",
+    "slate": "^0.58.4",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-react": "^0.22.4",
-    "unsplash-js": "^6.0.0"
+    "slate-react": "^0.58.4"
   },
   "devDependencies": {
     "@keystonejs/test-utils": "*"

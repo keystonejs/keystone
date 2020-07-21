@@ -2,8 +2,9 @@ import pluralize from 'pluralize';
 import { importView } from '@keystonejs/build-field-types';
 
 import { Block } from '@keystonejs/field-content/Block';
-import Unsplash from './';
-import RelationshipType from '../Relationship';
+import { imageContainer, caption } from '@keystonejs/field-content/blocks';
+import CloudinaryImage from '.';
+import { Select as SelectType, Relationship as RelationshipType } from '@keystonejs/fields';
 
 const RelationshipWrapper = {
   ...RelationshipType,
@@ -18,24 +19,11 @@ const RelationshipWrapper = {
   },
 };
 
-export class UnsplashBlock extends Block {
-  constructor(
-    { accessKey, secretKey, attribution },
-    { fromList, joinList, createAuxList, getListByKey }
-  ) {
+export class ImageBlock extends Block {
+  constructor({ adapter }, { fromList, joinList, createAuxList, getListByKey }) {
     super(...arguments);
 
     this.joinList = joinList;
-
-    if (typeof attribution === 'string' && attribution) {
-      this.attribution = { source: attribution };
-    } else if (typeof attribution === 'object' && attribution.source) {
-      this.attribution = attribution;
-    } else {
-      throw new Error(
-        'The unsplash-image block requires the `attribution` option to be either a string, or object { source<String>, medium<String?> }'
-      );
-    }
 
     const auxListKey = `_Block_${fromList}_${this.type}`;
 
@@ -46,21 +34,26 @@ export class UnsplashBlock extends Block {
       auxList = createAuxList(auxListKey, {
         fields: {
           image: {
-            type: Unsplash,
+            type: CloudinaryImage,
             isRequired: true,
-            accessKey,
-            secretKey,
-            schemaDoc: 'Unsplash image data',
+            adapter,
+            schemaDoc: 'Cloudinary Image data returned from the Cloudinary API',
+          },
+          align: {
+            type: SelectType,
+            defaultValue: 'center',
+            options: ['left', 'center', 'right'],
+            schemaDoc: 'Set the image alignment',
           },
           // Useful for doing reverse lookups such as:
-          // - "Get all embeds in this post"
+          // - "Get all images in this post"
           // - "List all users mentioned in comment"
           from: {
             type: RelationshipType,
             isRequired: true,
             ref: `${joinList}.${this.path}`,
             schemaDoc:
-              'A reference back to the Slate.js Serialised Document this unsplash image is contained within',
+              'A reference back to the Slate.js Serialised Document this image is embedded within',
           },
         },
       });
@@ -70,11 +63,19 @@ export class UnsplashBlock extends Block {
   }
 
   get type() {
-    return 'unsplashImage';
+    return 'cloudinaryImage';
   }
 
   get path() {
     return pluralize.plural(this.type);
+  }
+
+  getAdminViews() {
+    return [
+      importView('./views/blocks/single-image'),
+      ...new imageContainer().getAdminViews(),
+      ...new caption().getAdminViews(),
+    ];
   }
 
   getFieldDefinitions() {
@@ -83,7 +84,7 @@ export class UnsplashBlock extends Block {
         type: RelationshipWrapper,
         ref: `${this.auxList.key}.from`,
         many: true,
-        schemaDoc: 'Unsplash Images which have been added to the Content field',
+        schemaDoc: 'Images which have been added to the Content field',
       },
     };
   }
@@ -97,28 +98,17 @@ export class UnsplashBlock extends Block {
     };
   }
 
-  getAdminViews() {
-    return [importView('./views/blocks/unsplash-image')];
-  }
-
   getViewOptions() {
     return {
       query: `
-        unsplashImages {
+        cloudinaryImages {
           id
           image {
-            id
-            unsplashId
-            publicUrl: publicUrlTransformed(transformation: { w: "620" })
-            description
-            user {
-              name
-              url
-            }
+            publicUrl
           }
+          align
         }
       `,
-      attribution: this.attribution,
     };
   }
 }

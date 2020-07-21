@@ -15,7 +15,7 @@ This field must be used with the [`CoundinaryAdapter`](/packages/file-adapters/R
 ```js title=index.js
 const { Keystone } = require('@keystonejs/keystone');
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
-const { CloudinaryImage } = require('@keystonejs/fields');
+const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
 
 const keystone = new Keystone({...});
 

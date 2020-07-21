@@ -15,8 +15,7 @@ This package contains adapters for different providers.
 
 ```javascript
 const { Keystone } = require('@keystonejs/keystone');
-const { OEmbed } = require('@keystonejs/fields');
-const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
+const { OEmbed, IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
 
 const keystone = new Keystone(/* ... */);
 

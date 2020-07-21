@@ -2,6 +2,7 @@ import { importView } from '@keystonejs/build-field-types';
 
 import { OEmbed, MongoOEmbedInterface, KnexOEmbedInterface } from './Implementation';
 import { OEmbedBlock } from './OEmbedBlock';
+export { IframelyOEmbedAdapter } from './iframely/iframely';
 
 export default {
   type: 'OEmbed',

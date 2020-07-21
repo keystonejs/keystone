@@ -1,6 +1,6 @@
-import FieldController from '../../File/views/Controller';
+import Controller from '@keystonejs/fields/Controller';
 
-export default class FileController extends FieldController {
+export default class FileController extends Controller {
   getQueryFragment = () => `
     ${this.path} {
       type

@@ -1,6 +1,6 @@
-import { File, MongoFileInterface, KnexFileInterface } from '../File/Implementation';
+import { File } from '@keystonejs/fields';
 
-class CloudinaryImage extends File {
+class CloudinaryImage extends File.implementation {
   constructor() {
     super(...arguments);
     this.graphQLOutputType = 'CloudinaryImage_File';
@@ -91,8 +91,7 @@ class CloudinaryImage extends File {
   }
 }
 
-export {
-  CloudinaryImage,
-  MongoFileInterface as MongoCloudinaryImageInterface,
-  KnexFileInterface as KnexCloudinaryImageInterface,
-};
+const MongoCloudinaryImageInterface = File.adapters.mongoose;
+const KnexCloudinaryImageInterface = File.adapters.knex;
+
+export { CloudinaryImage, MongoCloudinaryImageInterface, KnexCloudinaryImageInterface };

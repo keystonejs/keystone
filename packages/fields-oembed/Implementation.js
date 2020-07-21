@@ -1,6 +1,6 @@
-import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { Implementation } from '@keystonejs/fields';
 
 export class OEmbed extends Implementation {
   constructor(path, { adapter, parameters = {} }, { listKey }) {

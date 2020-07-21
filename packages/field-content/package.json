@@ -34,10 +34,10 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-popper": "^2.2.2",
-    "slate": "^0.47.4",
+    "slate": "^0.58.4",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-plain-serializer": "^0.7.11",
-    "slate-react": "^0.22.4"
+    "slate-react": "^0.58.4"
   },
   "peerDependencies": {},
   "field-types": {
