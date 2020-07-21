@@ -97,9 +97,10 @@ const createReadData = async keystone => {
   );
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    const createLists = keystone => {
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('Company', {
         fields: {
           name: { type: Text },
@@ -112,12 +113,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           company: { type: Relationship, ref: 'Company.locations' },
         },
       });
-    };
-    describe(`One-to-many relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe(`One-to-many relationships`, () => {
       describe('Read', () => {
         test(
           'one',

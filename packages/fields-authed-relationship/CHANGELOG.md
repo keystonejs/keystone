@@ -1,5 +1,12 @@
 # @keystonejs/fields-authed-relationship
 
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [[`4b95d8a46`](https://github.com/keystonejs/keystone/commit/4b95d8a46d53d32b2873e350716311441cd37262), [`5fc97cbf4`](https://github.com/keystonejs/keystone/commit/5fc97cbf4489587a3a8cb38c04ba81fc2cb1fc5a), [`0cbb7e7b0`](https://github.com/keystonejs/keystone/commit/0cbb7e7b096c2a99685631a601fce7273d03cc70), [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669)]:
+  - @keystonejs/fields@14.0.0
+
 ## 1.0.7
 
 ### Patch Changes

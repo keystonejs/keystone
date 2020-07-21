@@ -1,5 +1,65 @@
 # @keystonejs/api-tests
 
+## 6.0.1
+
+### Patch Changes
+
+- [`ea111e454`](https://github.com/keystonejs/keystone/commit/ea111e4543ff15961f7351c18216502013647d64) [#3267](https://github.com/keystonejs/keystone/pull/3267) Thanks [@timleslie](https://github.com/timleslie)! - Used a common pattern for setting up keystone instance in relationship tests.
+
+* [`0f645ddca`](https://github.com/keystonejs/keystone/commit/0f645ddcad8f5b65e41fc731b8f10a7d406b3cda) [#3266](https://github.com/keystonejs/keystone/pull/3266) Thanks [@timleslie](https://github.com/timleslie)! - Updated the layout of queries for consistency.
+
+- [`587507495`](https://github.com/keystonejs/keystone/commit/587507495aeaa70c2f0566e1b573ca4b02d1e977) [#3263](https://github.com/keystonejs/keystone/pull/3263) Thanks [@timleslie](https://github.com/timleslie)! - Removed left/right relationship variations as these are now assured by `_consolidateRelationships()`.
+
+* [`5fc97cbf4`](https://github.com/keystonejs/keystone/commit/5fc97cbf4489587a3a8cb38c04ba81fc2cb1fc5a) [#3171](https://github.com/keystonejs/keystone/pull/3171) Thanks [@timleslie](https://github.com/timleslie)! - Hooks no longer recieve a `{ query }` argument. This functionality has been superseded by `context.executeGraphQL()`.
+
+  ```
+  {
+    ...
+    hooks: {
+      resolveInput: async ({ actions: { query } } ) => {
+        ...
+        const { data, errors } = await query(`{ ... }`);
+        ...
+      }
+    }
+  }
+  ```
+
+  should be changed to
+
+  ```
+  {
+    ...
+    hooks: {
+      resolveInput: async ({ context } ) => {
+        ...
+        const { data, errors } = await context.executeGraphQL({ query: `{ ... }` });
+        ...
+      }
+    }
+  }
+  ```
+
+  See [the docs](/docs/discussions/server-side-graphql.md) for more details on how to use `context.executeGraphQL()`.
+
+- [`7d4469f93`](https://github.com/keystonejs/keystone/commit/7d4469f9366c8dc2984df55313e1bcf253d112ac) [#3253](https://github.com/keystonejs/keystone/pull/3253) Thanks [@timleslie](https://github.com/timleslie)! - Added more checks for errors being undefined when returned from a graphQL request.
+
+* [`283839cfb`](https://github.com/keystonejs/keystone/commit/283839cfb84f80818dd85699e011eee4775e550d) [#3265](https://github.com/keystonejs/keystone/pull/3265) Thanks [@timleslie](https://github.com/timleslie)! - Updated tests to consistently use `jest.setTimeout()`.
+
+- [`88aee0530`](https://github.com/keystonejs/keystone/commit/88aee0530829217c03bd233cf57c5476cf0e9a15) [#3250](https://github.com/keystonejs/keystone/pull/3250) Thanks [@timleslie](https://github.com/timleslie)! - Split search test into indivudual tests.
+
+* [`7bdec6446`](https://github.com/keystonejs/keystone/commit/7bdec6446ed97fa962bb96abe07975bb23c6ec7a) [#3264](https://github.com/keystonejs/keystone/pull/3264) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug where `_is_null` queries on relationship fields could generate invalid SQL in `one-to-one` relationships.
+
+* Updated dependencies [[`5ad84ccd8`](https://github.com/keystonejs/keystone/commit/5ad84ccd8d008188e293629e90a4d7e7fde55333), [`753fa13ab`](https://github.com/keystonejs/keystone/commit/753fa13ab976cebdd145f4da948e13244612eedb), [`51c898537`](https://github.com/keystonejs/keystone/commit/51c898537c7fdc8578fa47eade6a499594b0d154), [`61cdafe20`](https://github.com/keystonejs/keystone/commit/61cdafe20e0a22b5a1f9b6a2dcc4aefa45a26902), [`8480f889a`](https://github.com/keystonejs/keystone/commit/8480f889a492d83ee805f19877d49fd112117939), [`e710cd445`](https://github.com/keystonejs/keystone/commit/e710cd445bfb71317ca38622cc3795da61d13dff), [`49984caae`](https://github.com/keystonejs/keystone/commit/49984caaec803ed86b027c9634ac6b3f671e9ba7), [`136cb505c`](https://github.com/keystonejs/keystone/commit/136cb505ce11931de7fc470debe438e335588781), [`02f069f0b`](https://github.com/keystonejs/keystone/commit/02f069f0b6e28ccfe6d5cdeb59ab01bde27a655e), [`4b95d8a46`](https://github.com/keystonejs/keystone/commit/4b95d8a46d53d32b2873e350716311441cd37262), [`e114894d1`](https://github.com/keystonejs/keystone/commit/e114894d1bbcea8940cf14486fc336aa8d112da7), [`e63b9f25a`](https://github.com/keystonejs/keystone/commit/e63b9f25adb64cecf0f65c6f97fe30c95e483996), [`5fc97cbf4`](https://github.com/keystonejs/keystone/commit/5fc97cbf4489587a3a8cb38c04ba81fc2cb1fc5a), [`56e1798d6`](https://github.com/keystonejs/keystone/commit/56e1798d6815723cfba01e6d7dc6b4fe73d4447b), [`06f86c6f5`](https://github.com/keystonejs/keystone/commit/06f86c6f5c573411f0efda565a269d1d7ccb3c66), [`0cbb7e7b0`](https://github.com/keystonejs/keystone/commit/0cbb7e7b096c2a99685631a601fce7273d03cc70), [`81b4df318`](https://github.com/keystonejs/keystone/commit/81b4df3182fc63c583e3fae5c05c528b678cab95), [`79d4c0d92`](https://github.com/keystonejs/keystone/commit/79d4c0d9250c1d1c1c46bcb2eaddae313eb7ac5f), [`e6909b003`](https://github.com/keystonejs/keystone/commit/e6909b0037c9d3dc4fc6131da7968a424ce02be9), [`c9ca62876`](https://github.com/keystonejs/keystone/commit/c9ca628765f1ecb599c8556de2d31567ddf12504), [`3ce644d5f`](https://github.com/keystonejs/keystone/commit/3ce644d5f2b6e674adb2f155c0e729536079347a), [`622cc7d69`](https://github.com/keystonejs/keystone/commit/622cc7d6976ecb71f5b135c931ac0fcb4afdb1c7), [`7bdec6446`](https://github.com/keystonejs/keystone/commit/7bdec6446ed97fa962bb96abe07975bb23c6ec7a), [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669)]:
+  - @keystonejs/keystone@12.0.0
+  - @keystonejs/test-utils@7.1.0
+  - @keystonejs/adapter-knex@11.0.0
+  - @keystonejs/session@8.0.0
+  - @keystonejs/fields@14.0.0
+  - @keystonejs/adapter-mongoose@9.0.0
+  - @keystonejs/app-graphql@6.0.0
+  - @keystonejs/auth-password@5.1.11
+
 ## 6.0.0
 
 ### Major Changes

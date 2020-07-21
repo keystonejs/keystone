@@ -100,27 +100,22 @@ const getUserAndFriend = async (keystone, userId, friendId) => {
   return data;
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    // 1:1 relationships are symmetric in how they behave, but
-    // are (in general) implemented in a non-symmetric way. For example,
-    // in postgres we may decide to store a single foreign key on just
-    // one of the tables involved. As such, we want to ensure that our
-    // tests work correctly no matter which side of the relationship is
-    // defined first.
-    const createUserList = keystone =>
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('User', {
         fields: {
           name: { type: Text },
           friend: { type: Relationship, ref: 'User' },
         },
       });
-    const createLists = createUserList;
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
     describe(`One-to-many relationships `, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
       describe('Read', () => {
         test(
           'one',

@@ -1,5 +1,11 @@
 # @keystonejs/website
 
+## 5.3.6
+
+### Patch Changes
+
+- [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669) [#3146](https://github.com/keystonejs/keystone/pull/3146) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to @primer/octicons-react v10.
+
 ## 5.3.5
 
 ### Patch Changes

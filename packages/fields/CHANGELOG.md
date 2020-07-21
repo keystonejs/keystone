@@ -1,5 +1,63 @@
 # @keystonejs/fields
 
+## 14.0.0
+
+### Major Changes
+
+- [`5fc97cbf4`](https://github.com/keystonejs/keystone/commit/5fc97cbf4489587a3a8cb38c04ba81fc2cb1fc5a) [#3171](https://github.com/keystonejs/keystone/pull/3171) Thanks [@timleslie](https://github.com/timleslie)! - Hooks no longer recieve a `{ query }` argument. This functionality has been superseded by `context.executeGraphQL()`.
+
+  ```
+  {
+    ...
+    hooks: {
+      resolveInput: async ({ actions: { query } } ) => {
+        ...
+        const { data, errors } = await query(`{ ... }`);
+        ...
+      }
+    }
+  }
+  ```
+
+  should be changed to
+
+  ```
+  {
+    ...
+    hooks: {
+      resolveInput: async ({ context } ) => {
+        ...
+        const { data, errors } = await context.executeGraphQL({ query: `{ ... }` });
+        ...
+      }
+    }
+  }
+  ```
+
+  See [the docs](/docs/discussions/server-side-graphql.md) for more details on how to use `context.executeGraphQL()`.
+
+### Patch Changes
+
+- [`4b95d8a46`](https://github.com/keystonejs/keystone/commit/4b95d8a46d53d32b2873e350716311441cd37262) [#3245](https://github.com/keystonejs/keystone/pull/3245) Thanks [@singhArmani](https://github.com/singhArmani)! - Allow passing in the `null` value to the **CalendarDay**[https://www.keystonejs.com/keystonejs/fields/src/types/calendar-day/#calendarday] field type.
+
+  Passing in the `null` value for **CalendarDay** field was throwing a `TypeError` inside the inputValidation method of CalendarDay.
+  This fix allow passing the null value.
+
+* [`0cbb7e7b0`](https://github.com/keystonejs/keystone/commit/0cbb7e7b096c2a99685631a601fce7273d03cc70) [#3242](https://github.com/keystonejs/keystone/pull/3242) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fix a bug with the location field where it is unable to render in admin ui after deleting the value.
+
+- [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669) [#3146](https://github.com/keystonejs/keystone/pull/3146) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to @primer/octicons-react v10.
+
+- Updated dependencies [[`753fa13ab`](https://github.com/keystonejs/keystone/commit/753fa13ab976cebdd145f4da948e13244612eedb), [`51c898537`](https://github.com/keystonejs/keystone/commit/51c898537c7fdc8578fa47eade6a499594b0d154), [`49984caae`](https://github.com/keystonejs/keystone/commit/49984caaec803ed86b027c9634ac6b3f671e9ba7), [`e6117d259`](https://github.com/keystonejs/keystone/commit/e6117d259e0ceeacc0b42e3db0bd39dd39537090), [`283839cfb`](https://github.com/keystonejs/keystone/commit/283839cfb84f80818dd85699e011eee4775e550d), [`79d4c0d92`](https://github.com/keystonejs/keystone/commit/79d4c0d9250c1d1c1c46bcb2eaddae313eb7ac5f), [`c9ca62876`](https://github.com/keystonejs/keystone/commit/c9ca628765f1ecb599c8556de2d31567ddf12504), [`622cc7d69`](https://github.com/keystonejs/keystone/commit/622cc7d6976ecb71f5b135c931ac0fcb4afdb1c7), [`7bdec6446`](https://github.com/keystonejs/keystone/commit/7bdec6446ed97fa962bb96abe07975bb23c6ec7a), [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669)]:
+  - @keystonejs/test-utils@7.1.0
+  - @keystonejs/adapter-knex@11.0.0
+  - @keystonejs/app-admin-ui@7.1.0
+  - @keystonejs/build-field-types@5.2.10
+  - @keystonejs/adapter-mongoose@9.0.0
+  - @arch-ui/day-picker@1.0.2
+  - @arch-ui/fields@3.0.3
+  - @arch-ui/options@0.0.22
+  - @keystonejs/field-content@7.0.2
+
 ## 13.0.2
 
 ### Patch Changes

@@ -1,5 +1,107 @@
 # @keystonejs/keystone
 
+## 12.0.0
+
+### Major Changes
+
+- [`49984caae`](https://github.com/keystonejs/keystone/commit/49984caaec803ed86b027c9634ac6b3f671e9ba7) [#3227](https://github.com/keystonejs/keystone/pull/3227) Thanks [@Vultraz](https://github.com/Vultraz)! - Moved `name` config option from Keystone constructor to Admin UI constructor.
+
+* [`5fc97cbf4`](https://github.com/keystonejs/keystone/commit/5fc97cbf4489587a3a8cb38c04ba81fc2cb1fc5a) [#3171](https://github.com/keystonejs/keystone/pull/3171) Thanks [@timleslie](https://github.com/timleslie)! - Hooks no longer recieve a `{ query }` argument. This functionality has been superseded by `context.executeGraphQL()`.
+
+  ```
+  {
+    ...
+    hooks: {
+      resolveInput: async ({ actions: { query } } ) => {
+        ...
+        const { data, errors } = await query(`{ ... }`);
+        ...
+      }
+    }
+  }
+  ```
+
+  should be changed to
+
+  ```
+  {
+    ...
+    hooks: {
+      resolveInput: async ({ context } ) => {
+        ...
+        const { data, errors } = await context.executeGraphQL({ query: `{ ... }` });
+        ...
+      }
+    }
+  }
+  ```
+
+  See [the docs](/docs/discussions/server-side-graphql.md) for more details on how to use `context.executeGraphQL()`.
+
+- [`56e1798d6`](https://github.com/keystonejs/keystone/commit/56e1798d6815723cfba01e6d7dc6b4fe73d4447b) [#3169](https://github.com/keystonejs/keystone/pull/3169) Thanks [@timleslie](https://github.com/timleslie)! - Resolver functions for custom queries and mutations no longer recieve a `{ query }` argument. This functionality has been superseded by `context.executeGraphQL()`.
+
+  ```
+  keystone.extendGraphQLSchema({
+    queries: {
+      schema: '...',
+      resolver: async (item, args, context, info, { query }) => {
+        ...
+        const { data, errors } = await query(`{ ... }`);
+        ...
+      }
+    }
+  });
+  ```
+
+  should be changed to
+
+  ```
+  keystone.extendGraphQLSchema({
+    queries: {
+      schema: '...',
+      resolver: async (item, args, context) => {
+        ...
+        const { data, errors } = await context.executeGraphQL({ query: `{ ... }` });
+        ...
+      }
+    }
+  });
+  ```
+
+  See [the docs](/docs/discussions/server-side-graphql.md) for more details on how to use `context.executeGraphQL()`.
+
+* [`81b4df318`](https://github.com/keystonejs/keystone/commit/81b4df3182fc63c583e3fae5c05c528b678cab95) [#3172](https://github.com/keystonejs/keystone/pull/3172) Thanks [@timleslie](https://github.com/timleslie)! - Removed the method `keystone.executeQuery()`, which has been superseded by `keystone.executeGraphQL()`.
+  See [the docs](/docs/discussions/server-side-graphql.md) for more details on how to use `keystone.executeGraphQL()`.
+
+- [`3ce644d5f`](https://github.com/keystonejs/keystone/commit/3ce644d5f2b6e674adb2f155c0e729536079347a) [#3174](https://github.com/keystonejs/keystone/pull/3174) Thanks [@timleslie](https://github.com/timleslie)! - Replaced `keystone.getGraphQlContext()` with `keystone.createHTTPContext()`, to be used primarily by the Apollo server.
+  If you need to create a context for executing server-side GraphQL operations please use `keystone.createContext()`.
+  See [the docs](/docs/discussions/server-side-graphql.md) for more details on how to use `keystone.createContext()`.
+
+### Minor Changes
+
+- [`e6909b003`](https://github.com/keystonejs/keystone/commit/e6909b0037c9d3dc4fc6131da7968a424ce02be9) [#3190](https://github.com/keystonejs/keystone/pull/3190) Thanks [@jesstelford](https://github.com/jesstelford)! - Add Mutation.updateAuthenticated<List>, commonly used as Mutation.updateAuthenticatedUser
+
+### Patch Changes
+
+- [`5ad84ccd8`](https://github.com/keystonejs/keystone/commit/5ad84ccd8d008188e293629e90a4d7e7fde55333) [#3235](https://github.com/keystonejs/keystone/pull/3235) Thanks [@timleslie](https://github.com/timleslie)! - Refactored hook management into a separate module.
+
+* [`61cdafe20`](https://github.com/keystonejs/keystone/commit/61cdafe20e0a22b5a1f9b6a2dcc4aefa45a26902) [#3241](https://github.com/keystonejs/keystone/pull/3241) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug where `existingItem` had the wrong value in hooks during an `updateManyMutation`.
+
+- [`8480f889a`](https://github.com/keystonejs/keystone/commit/8480f889a492d83ee805f19877d49fd112117939) [#3173](https://github.com/keystonejs/keystone/pull/3173) Thanks [@timleslie](https://github.com/timleslie)! - Removed `keystone._buildQueryHelper()` and `keystone._executeOperation()`.
+
+* [`02f069f0b`](https://github.com/keystonejs/keystone/commit/02f069f0b6e28ccfe6d5cdeb59ab01bde27a655e) [#3226](https://github.com/keystonejs/keystone/pull/3226) Thanks [@Vultraz](https://github.com/Vultraz)! - Don't pass name through to adapter.connect.
+
+- [`e114894d1`](https://github.com/keystonejs/keystone/commit/e114894d1bbcea8940cf14486fc336aa8d112da7) [#3234](https://github.com/keystonejs/keystone/pull/3234) Thanks [@timleslie](https://github.com/timleslie)! - Factored out utility `List` functions into a separate module.
+
+* [`06f86c6f5`](https://github.com/keystonejs/keystone/commit/06f86c6f5c573411f0efda565a269d1d7ccb3c66) [#3233](https://github.com/keystonejs/keystone/pull/3233) Thanks [@timleslie](https://github.com/timleslie)! - Updated internal access control functions to directly accept access control definition.
+
+- [`622cc7d69`](https://github.com/keystonejs/keystone/commit/622cc7d6976ecb71f5b135c931ac0fcb4afdb1c7) [#2745](https://github.com/keystonejs/keystone/pull/2745) Thanks [@Vultraz](https://github.com/Vultraz)! - Added defaultPageSize and maximumPageSize config options fto the Admin UI. These can be used to set defaults for all lists (previously, these defaults were 50 and 1000, respectively).
+
+- Updated dependencies [[`753fa13ab`](https://github.com/keystonejs/keystone/commit/753fa13ab976cebdd145f4da948e13244612eedb), [`e710cd445`](https://github.com/keystonejs/keystone/commit/e710cd445bfb71317ca38622cc3795da61d13dff), [`49984caae`](https://github.com/keystonejs/keystone/commit/49984caaec803ed86b027c9634ac6b3f671e9ba7), [`136cb505c`](https://github.com/keystonejs/keystone/commit/136cb505ce11931de7fc470debe438e335588781), [`4b95d8a46`](https://github.com/keystonejs/keystone/commit/4b95d8a46d53d32b2873e350716311441cd37262), [`e63b9f25a`](https://github.com/keystonejs/keystone/commit/e63b9f25adb64cecf0f65c6f97fe30c95e483996), [`5fc97cbf4`](https://github.com/keystonejs/keystone/commit/5fc97cbf4489587a3a8cb38c04ba81fc2cb1fc5a), [`0cbb7e7b0`](https://github.com/keystonejs/keystone/commit/0cbb7e7b096c2a99685631a601fce7273d03cc70), [`79d4c0d92`](https://github.com/keystonejs/keystone/commit/79d4c0d9250c1d1c1c46bcb2eaddae313eb7ac5f), [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669)]:
+  - @keystonejs/test-utils@7.1.0
+  - @keystonejs/session@8.0.0
+  - @keystonejs/fields@14.0.0
+
 ## 11.2.0
 
 ### Minor Changes
