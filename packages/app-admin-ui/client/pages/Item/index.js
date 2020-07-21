@@ -59,7 +59,8 @@ const getRenderableFields = memoizeOne(list =>
   list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey)
 );
 
-const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
+const ItemDetails = ({ item: initialData, itemErrors, onUpdate }) => {
+  const { list } = useList();
   const [item, setItem] = useState(initialData);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
@@ -240,7 +241,7 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
   return (
     <Fragment>
       {itemHasChanged.current && !deleteConfirmed.current && <PreventNavigation />}
-      <ItemTitle id={item.id} list={list} titleText={initialData._label_} />
+      <ItemTitle id={item.id} titleText={initialData._label_} />
       <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
         <Form>
           <AutocompleteCaptor />
@@ -326,7 +327,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
       <DeleteItemModal
         isOpen={showDeleteModal}
         item={initialData}
-        list={list}
         onClose={closeDeleteModal}
         onDelete={onDelete}
       />
@@ -427,7 +427,6 @@ const ItemPage = () => {
             item={item}
             itemErrors={itemErrors}
             key={itemId}
-            list={list}
             onUpdate={async () => {
               const { data } = await refetch();
               return deserializeItem(list, data[list.gqlNames.itemQueryName]);

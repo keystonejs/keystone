@@ -13,10 +13,12 @@ import Select from '@arch-ui/select';
 
 import { validateFields, handleCreateUpdateMutationError } from '../util';
 import { ErrorBoundary } from './ErrorBoundary';
+import { useList } from '../../components';
 
 const Render = ({ children }) => children();
 
-const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
+const UpdateManyModal = ({ items, isOpen, onUpdate, onClose }) => {
+  const { list } = useList();
   const { addToast } = useToasts();
   const [updateItem, { loading }] = useMutation(list.updateManyMutation, {
     errorPolicy: 'all',

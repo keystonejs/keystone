@@ -9,6 +9,7 @@ import { gridSize } from '@arch-ui/theme';
 import EditFilterPopout from './EditFilterPopout';
 import AddFilterPopout from './AddFilterPopout';
 import { useListFilter } from '../dataHooks';
+import { useList } from '../../../../components';
 
 export const elementOffsetStyles = {
   marginBottom: gridSize / 2,
@@ -16,7 +17,8 @@ export const elementOffsetStyles = {
   marginRight: gridSize / 2,
 };
 
-export default function ActiveFilters({ list }) {
+export default function ActiveFilters() {
+  const { list } = useList();
   const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter();
 
   return (

@@ -77,11 +77,11 @@ export function ListLayout(props) {
                       .filter(field => field.path !== '_label_')
                       .map(field => () => field.initCellView())
                   );
-                  return <Search list={list} isLoading={query.loading} />;
+                  return <Search isLoading={query.loading} />;
                 }}
               </Render>
             </Suspense>
-            <ActiveFilters list={list} />
+            <ActiveFilters />
           </div>
 
           <ManageToolbar isVisible css={{ marginLeft: 2 }}>

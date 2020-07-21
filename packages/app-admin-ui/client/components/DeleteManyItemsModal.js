@@ -2,8 +2,10 @@ import React from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
+import { useList } from '../../components';
 
-export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDelete }) {
+export default function DeleteManyModal({ isOpen, itemIds, onClose, onDelete }) {
+  const { list } = useList();
   const [deleteItems, { loading }] = useMutation(list.deleteManyMutation, {
     refetchQueries: ['getList'],
   });

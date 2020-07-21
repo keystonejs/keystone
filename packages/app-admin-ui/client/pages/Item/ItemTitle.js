@@ -38,7 +38,7 @@ export const ItemTitle = memo(function ItemTitle({ titleText }) {
           >
             {list.label}
           </IconButton>
-          <Search list={list} />
+          <Search />
         </div>
         {itemHeaderActions ? (
           itemHeaderActions()

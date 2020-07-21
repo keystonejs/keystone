@@ -7,6 +7,7 @@ import { InfoIcon } from '@primer/octicons-react';
 import { colors } from '@arch-ui/theme';
 
 import { useListPagination } from '../pages/List/dataHooks';
+import { useList } from '../../components';
 
 const NoResultsWrapper = ({ children, ...props }) => (
   <div
@@ -27,7 +28,8 @@ const NoResultsWrapper = ({ children, ...props }) => (
   </div>
 );
 
-export const NoResults = ({ currentPage, filters, list, search }) => {
+export const NoResults = ({ currentPage, filters, search }) => {
+  const { list } = useList();
   const { onChange } = useListPagination();
   const onResetPage = () => onChange(1);
 

@@ -33,7 +33,6 @@ const UpdateItems = () => {
       <UpdateManyItemsModal
         isOpen={updateModalIsVisible}
         items={selectedItems}
-        list={list}
         onClose={() => setUpdateModal(false)}
         onUpdate={handleUpdate}
       />

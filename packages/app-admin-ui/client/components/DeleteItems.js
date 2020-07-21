@@ -32,7 +32,6 @@ const DeleteItems = () => {
       <DeleteManyItemsModal
         isOpen={deleteModalIsVisible}
         itemIds={selectedItems}
-        list={list}
         onClose={() => setDeleteModal(false)}
         onDelete={handleDelete}
       />

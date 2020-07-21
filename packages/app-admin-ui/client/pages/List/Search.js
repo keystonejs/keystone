@@ -13,8 +13,10 @@ import { uniformHeight } from '@arch-ui/common';
 
 import { useListSearch } from './dataHooks';
 import { elementOffsetStyles } from './Filters/ActiveFilters';
+import { useList } from '../../../components';
 
-export default function Search({ isLoading, list }) {
+export default function Search({ isLoading }) {
+  const { list } = useList();
   const { searchValue, onChange, onClear, onSubmit } = useListSearch();
   const [value, setValue] = useState(searchValue);
   const inputRef = useRef();

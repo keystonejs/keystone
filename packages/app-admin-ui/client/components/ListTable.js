@@ -224,7 +224,6 @@ const ListRow = ({ item, itemErrors = {}, linkField = '_label_', isSelected }) =
         <DeleteItemModal
           isOpen={showDeleteModal}
           item={item}
-          list={list}
           onClose={closeDeleteModal}
           onDelete={handleDelete}
         />
@@ -418,12 +417,7 @@ export default function ListTable({ columnControl, linkField = '_label_' }) {
                 return (
                   <TableContents>
                     <SingleCell columns={columns}>
-                      <NoResults
-                        currentPage={currentPage}
-                        filters={filters}
-                        list={list}
-                        search={search}
-                      />
+                      <NoResults currentPage={currentPage} filters={filters} search={search} />
                     </SingleCell>
                   </TableContents>
                 );
