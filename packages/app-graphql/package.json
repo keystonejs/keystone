@@ -1,16 +1,16 @@
 {
   "name": "@keystonejs/app-graphql",
   "description": "KeystoneJS GraphQL App.",
-  "version": "5.1.9",
+  "version": "6.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/app-graphql-playground": "^5.1.4",
+    "@keystonejs/app-graphql-playground": "^5.1.5",
     "@keystonejs/logger": "^5.1.2",
-    "@keystonejs/session": "^7.0.1",
+    "@keystonejs/session": "^8.0.0",
     "@keystonejs/utils": "^5.4.2",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.15.1",
