@@ -27,22 +27,26 @@ import SortPopout from './SortSelect';
 import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
-import { useListFilter, useListSort, useListUrlState } from './dataHooks';
+import { useListSort, useListUrlState } from './dataHooks';
 import { captureSuspensePromises } from '@keystonejs/utils';
 import { useList } from '../../providers/List';
 import { useUIHooks } from '../../providers/Hooks';
 import CreateItem from './CreateItem';
 
 export function ListLayout(props) {
-  const { items, itemCount, queryErrors, query } = props;
+  const { query } = props;
 
-  const { list, selectedItems, setSelectedItems } = useList();
   const {
-    urlState: { currentPage, fields, pageSize, search },
+    list,
+    listData: { items, itemCount },
+    selectedItems,
+  } = useList();
+
+  const {
+    urlState: { currentPage, fields, pageSize },
   } = useListUrlState(list);
 
-  const { filters } = useListFilter();
-  const [sortBy, handleSortChange] = useListSort();
+  const [sortBy] = useListSort();
 
   const { listHeaderActions } = useUIHooks();
 
@@ -107,13 +111,11 @@ export function ListLayout(props) {
                     })}
                     ,
                   </span>
-                  {sortBy ? (
+                  {sortBy && (
                     <Fragment>
                       <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
                       <SortPopout />
                     </Fragment>
-                  ) : (
-                    ''
                   )}
                   <span css={{ paddingLeft: '0.5ex' }}>with</span>
                   <ColumnPopout
@@ -179,17 +181,6 @@ export function ListLayout(props) {
               )}
             />
           }
-          fields={fields}
-          handleSortChange={handleSortChange}
-          items={items}
-          queryErrors={queryErrors}
-          list={list}
-          onSelectChange={setSelectedItems}
-          selectedItems={selectedItems}
-          sortBy={sortBy}
-          currentPage={currentPage}
-          filters={filters}
-          search={search}
         />
       </Container>
     </main>
@@ -199,7 +190,7 @@ export function ListLayout(props) {
 const ListPage = props => {
   const {
     list,
-    listData: { items, itemCount },
+    listData: { items },
     queryErrorsParsed,
     query,
   } = useList();
@@ -273,13 +264,7 @@ const ListPage = props => {
   return (
     <Fragment>
       <DocTitle title={list.plural} />
-      <ListLayout
-        {...props}
-        items={items}
-        itemCount={itemCount}
-        query={query}
-        queryErrors={queryErrorsParsed}
-      />
+      <ListLayout {...props} query={query} />
     </Fragment>
   );
 };

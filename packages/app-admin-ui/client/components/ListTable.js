@@ -14,10 +14,11 @@ import { A11yText } from '@arch-ui/typography';
 import { Card } from '@arch-ui/card';
 import DeleteItemModal from './DeleteItemModal';
 import copyToClipboard from 'clipboard-copy';
-import { useListSort } from '../pages/List/dataHooks';
+import { useListSort, useListFilter, useListUrlState } from '../pages/List/dataHooks';
 import PageLoading from './PageLoading';
 import { NoResults } from './NoResults';
 import { ErrorBoundary } from './ErrorBoundary';
+import { useList } from '../../components';
 
 const Render = ({ children }) => children();
 
@@ -139,14 +140,9 @@ const SortDirectionArrow = ({ size = '0.25em', rotate = '0deg', ...props }) => (
 
 // Functional Components
 
-const SortLink = ({
-  field,
-  'data-field': dataField,
-  active,
-  sortAscending,
-  sortable,
-  handleSortChange,
-}) => {
+const SortLink = ({ field, 'data-field': dataField, active, sortAscending, sortable }) => {
+  const [handleSortChange] = useListSort();
+
   const onClick = () => {
     if (sortable) {
       // Set direction to the opposite of the current sortAscending value
@@ -166,17 +162,13 @@ const SortLink = ({
 // Common for display & manage
 // ==============================
 
-const ListRow = ({
-  list,
-  fields,
-  item,
-  itemErrors = {},
-  linkField = '_label_',
-  isSelected,
-  onSelectChange,
-  onDelete,
-}) => {
+const ListRow = ({ item, itemErrors = {}, linkField = '_label_', isSelected }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { list, setSelectedItems } = useList();
+
+  const {
+    urlState: { fields },
+  } = useListUrlState(list);
 
   const mounted = useRef(false);
   useEffect(() => {
@@ -187,7 +179,7 @@ const ListRow = ({
   }, []);
 
   const onCheckboxChange = () => {
-    onSelectChange(item.id);
+    setSelectedItems(item.id);
   };
 
   // ==============================
@@ -203,7 +195,6 @@ const ListRow = ({
   };
 
   const handleDelete = result => {
-    if (onDelete) onDelete(result);
     if (!mounted.current) return;
     setShowDeleteModal(false);
   };
@@ -319,26 +310,25 @@ const SingleCell = ({ columns, children }) => (
   </tr>
 );
 
-export default function ListTable({
-  columnControl,
-  fields,
-  items,
-  queryErrors = [],
-  list,
-  onDelete,
-  onSelectChange,
-  selectedItems,
-  currentPage,
-  filters,
-  search,
-  linkField = '_label_',
-}) {
-  const [sortBy, onSortChange] = useListSort();
+export default function ListTable({ columnControl, linkField = '_label_' }) {
+  const {
+    list,
+    listData: { items },
+    selectedItems,
+    setSelectedItems,
+    queryErrorsParsed: queryErrors = [],
+  } = useList();
+
+  const [sortBy] = useListSort();
+  const { filters } = useListFilter();
+  const {
+    urlState: { currentPage, fields, search },
+  } = useListUrlState(list);
 
   const handleSelectAll = () => {
     const allSelected = items && items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
-    onSelectChange(value);
+    setSelectedItems(value);
   };
 
   const cypressId = 'ks-list-table';
@@ -375,7 +365,6 @@ export default function ListTable({
                 key={field.path}
                 sortable={field.path !== '_label_' && field.isOrderable}
                 field={field}
-                handleSortChange={onSortChange}
                 active={sortBy ? sortBy.field.path === field.path : false}
                 sortAscending={sortBy ? sortBy.direction === 'ASC' : 'ASC'}
               />
@@ -446,15 +435,11 @@ export default function ListTable({
                     .map(item => list.deserializeItemData(item))
                     .map((item, itemIndex) => (
                       <ListRow
-                        fields={fields}
                         isSelected={selectedItems.includes(item.id)}
                         item={item}
                         itemErrors={queryErrors[itemIndex] || {}}
                         key={item.id}
                         linkField={linkField}
-                        list={list}
-                        onDelete={onDelete}
-                        onSelectChange={onSelectChange}
                       />
                     ))}
                 </TableContents>

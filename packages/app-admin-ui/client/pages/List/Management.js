@@ -29,21 +29,19 @@ const ListManage = ({ pageSize, totalItems, selectedItems }) => {
   const { listManageActions } = useUIHooks();
 
   return (
-    <Fragment>
-      <FlexGroup align="center">
-        <SelectedCount>
-          {`${selectedItems.length} of ${Math.min(pageSize, totalItems)} Selected`}
-        </SelectedCount>
-        {listManageActions ? (
-          listManageActions()
-        ) : (
-          <Fragment>
-            <UpdateItems />
-            <DeleteItems />
-          </Fragment>
-        )}
-      </FlexGroup>
-    </Fragment>
+    <FlexGroup align="center">
+      <SelectedCount>
+        {`${selectedItems.length} of ${Math.min(pageSize, totalItems)} Selected`}
+      </SelectedCount>
+      {listManageActions ? (
+        listManageActions()
+      ) : (
+        <Fragment>
+          <UpdateItems />
+          <DeleteItems />
+        </Fragment>
+      )}
+    </FlexGroup>
   );
 };
 
