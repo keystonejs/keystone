@@ -194,7 +194,7 @@ const ListRow = ({ item, itemErrors = {}, linkField = '_label_', isSelected }) =
     setShowDeleteModal(false);
   };
 
-  const handleDelete = result => {
+  const handleDelete = () => {
     if (!mounted.current) return;
     setShowDeleteModal(false);
   };
