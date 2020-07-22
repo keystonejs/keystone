@@ -61,16 +61,21 @@ function setupKeystone(adapterName) {
       });
 
       keystone.extendGraphQLSchema({
+        types: [{ type: 'type MyType { original: Int, double: Float }' }],
         queries: [
           {
-            schema: `customQuery: String`,
-            resolver: async () => {
-              return 'Hello World';
-            },
+            schema: 'double(x: Int): MyType',
+            resolver: (_, { x }) => ({ original: x, double: 2.0 * x }),
             cacheHint: {
               scope: 'PUBLIC',
               maxAge: 100,
             },
+          },
+        ],
+        mutations: [
+          {
+            schema: 'triple(x: Int): Int',
+            resolver: (_, { x }) => 3 * x,
           },
         ],
       });
@@ -329,7 +334,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
 
       test(
-        'extendedSchema',
+        'extendGraphQLSchemaQueries',
         runner(setupKeystone, async ({ app, create }) => {
           await addFixtures(create);
 
@@ -338,14 +343,38 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             app,
             query: `
               query {
-                customQuery
+                double(2) {
+                  original
+                  double
+                }
               }
             `,
           });
 
           expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('customQuery');
+          expect(data).toHaveProperty('double');
           expect(res.headers['cache-control']).toBe('max-age=100, public');
+        })
+      );
+
+      test(
+        'extendGraphQLSchemaMutations',
+        runner(setupKeystone, async ({ app, create }) => {
+          await addFixtures(create);
+
+          // Basic mutation which shouldn't be cached
+          let { data, errors, res } = await networkedGraphqlRequest({
+            app,
+            query: `
+              mutation {
+                triple(3)
+              }
+            `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('triple');
+          expect(res.headers['cache-control']).toBe(undefined);
         })
       );
     });
