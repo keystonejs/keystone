@@ -45,7 +45,7 @@ This option can be set using the [sessionStore](/packages/keystone/README.md#ses
 
 ## Caching
 
-Improve performance and responsiveness by adding cache hints to your [lists](/docs/api/create-list.md#cachehint), [fields](/packages/fields/README.md#cachehint) and [custom queries](/guides/cache-hints).
+Improve performance and responsiveness by adding [cache hints](/docs/guides/cache-hints.md) to your lists, fields and custom queries.
 
 ## Access control
 
