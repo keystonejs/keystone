@@ -59,6 +59,21 @@ function setupKeystone(adapterName) {
           };
         },
       });
+
+      keystone.extendGraphQLSchema({
+        queries: [
+          {
+            schema: `customQuery: String`,
+            resolver: async () => {
+              return 'Hello World';
+            },
+            cacheHint: {
+              scope: 'PUBLIC',
+              maxAge: 100,
+            },
+          },
+        ],
+      });
     },
   });
 }
@@ -310,6 +325,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('deletePost');
+        })
+      );
+
+      test(
+        'extendedSchema',
+        runner(setupKeystone, async ({ app, create }) => {
+          await addFixtures(create);
+
+          // Basic query
+          let { data, errors, res } = await networkedGraphqlRequest({
+            app,
+            query: `
+              query {
+                customQuery
+              }
+            `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('customQuery');
+          expect(res.headers['cache-control']).toBe('max-age=100, public');
         })
       );
     });
