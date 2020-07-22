@@ -10,7 +10,7 @@ Automatically set HTTP cache headers and save full responses in a cache. For mor
 
 ### Setting a default `maxAge`
 
-By default, all queries and mutations keystone generates have a `maxAge` of 0 (ie, uncacheable). You can update this behaviour by specifying a default max age when you create your `GraphQLApp`.
+By default, all queries and mutations keystone generates have a `maxAge` of 0 (ie, uncacheable). You can update this behaviour by specifying a default max age when creating the `GraphQLApp`.
 
 ```javascript
 const app = new GraphQLApp({
@@ -24,14 +24,22 @@ const app = new GraphQLApp({
 
 Please see the [Apollo docs](https://www.apollographql.com/docs/apollo-server/performance/caching/#setting-a-default-maxage) for more information.
 
-### Lists
+### Lists / fields
 
-Cache hints can be set on keystone lists like so:
+Cache hints can be set on lists and fields like so:
 
 ```javascript
 keystone.createList('Post', {
   fields: {
-    title: { type: Text },
+    title: {
+      type: Text,
+    },
+    description: {
+      type: Text,
+      cacheHint: {
+        maxAge: 80,
+      },
+    },
   },
   cacheHint: {
     scope: 'PUBLIC',
@@ -40,9 +48,7 @@ keystone.createList('Post', {
 });
 ```
 
-#### Dynamic cache hints
-
-Cache hints can be dynamically returned from a function that takes an object with these members:
+Only static cache hints are supported at the field level, but for lists cache hints can be dynamically returned from a function that takes an object with these members:
 
 - `results`: an array of query results
 - `operationName`: the name of the GraphQL operation that generated the results
@@ -71,7 +77,7 @@ keystone.createList('Post', {
 
 ### Custom queries
 
-Cache hints can be set for custom queries generated from the `keystone.extendGraphQLSchema()` method
+Static cache hints can be set for custom queries generated using the `keystone.extendGraphQLSchema()` method.
 
 ```javascript
 keystone.extendGraphQLSchema({
