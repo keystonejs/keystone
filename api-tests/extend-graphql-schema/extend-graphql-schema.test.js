@@ -46,11 +46,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Sets up access control properly',
         runner(setupKeystone, async ({ keystone }) => {
           expect(keystone._customProvider._extendedQueries.map(({ access }) => access)).toEqual([
-            { testing: true },
-            { testing: falseFn },
+            expect.objectContaining({ testing: true }),
+            expect.objectContaining({ testing: falseFn }),
           ]);
           expect(keystone._customProvider._extendedMutations.map(({ access }) => access)).toEqual([
-            { testing: true },
+            expect.objectContaining({ testing: true }),
           ]);
         })
       );
