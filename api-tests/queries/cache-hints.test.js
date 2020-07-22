@@ -356,6 +356,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(res.headers['cache-control']).toBe('max-age=100, public');
         })
       );
+
+      test(
+        'extendGraphQLSchemaMutations',
+        runner(setupKeystone, async ({ app, create }) => {
+          await addFixtures(create);
+
+          // Mutation responses shouldn't be cached.
+          // Here's a smoke test to make sure they still work.
+          let { data, errors } = await networkedGraphqlRequest({
+            app,
+            query: `
+              mutation {
+                triple(x: 3)
+              }
+            `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('triple');
+        })
+      );
     });
   })
 );
