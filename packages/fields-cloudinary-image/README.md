@@ -19,7 +19,7 @@ const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
 
 const keystone = new Keystone({...});
 
-const adapter = new CloudinaryAdapter({
+const fileAdapter = new CloudinaryAdapter({
   cloudName: process.env.CLOUDINARY_CLOUD_NAME,
   apiKey: process.env.CLOUDINARY_KEY,
   apiSecret: process.env.CLOUDINARY_SECRET,
@@ -28,7 +28,7 @@ const adapter = new CloudinaryAdapter({
 
 keystone.createList('Image', {
   fields: {
-    image: { type: CloudinaryImage, adapter },
+    image: { type: CloudinaryImage, adapter: fileAdapter },
   },
 });
 ```

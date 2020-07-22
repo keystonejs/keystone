@@ -59,6 +59,26 @@ function setupKeystone(adapterName) {
           };
         },
       });
+
+      keystone.extendGraphQLSchema({
+        types: [{ type: 'type MyType { original: Int, double: Float }' }],
+        queries: [
+          {
+            schema: 'double(x: Int): MyType',
+            resolver: (_, { x }) => ({ original: x, double: 2.0 * x }),
+            cacheHint: {
+              scope: 'PUBLIC',
+              maxAge: 100,
+            },
+          },
+        ],
+        mutations: [
+          {
+            schema: 'triple(x: Int): Int',
+            resolver: (_, { x }) => 3 * x,
+          },
+        ],
+      });
     },
   });
 }
@@ -310,6 +330,51 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('deletePost');
+        })
+      );
+
+      test(
+        'extendGraphQLSchemaQueries',
+        runner(setupKeystone, async ({ app, create }) => {
+          await addFixtures(create);
+
+          // Basic query
+          let { data, errors, res } = await networkedGraphqlRequest({
+            app,
+            query: `
+              query {
+                double(x: 2) {
+                  original
+                  double
+                }
+              }
+            `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('double');
+          expect(res.headers['cache-control']).toBe('max-age=100, public');
+        })
+      );
+
+      test(
+        'extendGraphQLSchemaMutations',
+        runner(setupKeystone, async ({ app, create }) => {
+          await addFixtures(create);
+
+          // Mutation responses shouldn't be cached.
+          // Here's a smoke test to make sure they still work.
+          let { data, errors } = await networkedGraphqlRequest({
+            app,
+            query: `
+              mutation {
+                triple(x: 3)
+              }
+            `,
+          });
+
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('triple');
         })
       );
     });
