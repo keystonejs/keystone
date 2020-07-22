@@ -343,7 +343,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             app,
             query: `
               query {
-                double(2) {
+                double(x: 2) {
                   original
                   double
                 }
@@ -354,28 +354,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('double');
           expect(res.headers['cache-control']).toBe('max-age=100, public');
-        })
-      );
-
-      test(
-        'extendGraphQLSchemaMutations',
-        runner(setupKeystone, async ({ app, create }) => {
-          await addFixtures(create);
-
-          // Basic mutation
-          // Custom mutations (and subscriptions) can't add cache hints
-          let { data, errors, res } = await networkedGraphqlRequest({
-            app,
-            query: `
-              mutation {
-                triple(3)
-              }
-            `,
-          });
-
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('triple');
-          expect(res.headers['cache-control']).toBe(undefined);
         })
       );
     });
