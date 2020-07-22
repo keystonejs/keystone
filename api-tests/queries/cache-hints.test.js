@@ -362,7 +362,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ app, create }) => {
           await addFixtures(create);
 
-          // Basic mutation which shouldn't be cached
+          // Basic mutation
+          // Custom mutations (and subscriptions) can't add cache hints
           let { data, errors, res } = await networkedGraphqlRequest({
             app,
             query: `

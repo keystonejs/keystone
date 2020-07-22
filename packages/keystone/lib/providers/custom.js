@@ -113,8 +113,8 @@ class CustomProvider {
 
       const resolve = async (item, args, context, info) => {
         if (resolver) {
-          // Allow cache hints to specified on custom queries/mutations/subscriptions
-          if (cacheHint) {
+          // Allow cache hints to be added to custom queries
+          if (type === 'query' && cacheHint) {
             if (typeof cacheHint !== 'object') {
               throw new Error(`cacheHint must be an object`);
             }
