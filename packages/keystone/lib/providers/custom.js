@@ -116,7 +116,7 @@ class CustomProvider {
           // Allow cache hints to specified on custom queries/mutations/subscriptions
           if (cacheHint) {
             if (typeof cacheHint !== 'object') {
-              throw new Error(`cacheHint must be an object or function`);
+              throw new Error(`cacheHint must be an object`);
             }
             if (info && info.cacheControl) {
               info.cacheControl.setCacheHint(cacheHint);
