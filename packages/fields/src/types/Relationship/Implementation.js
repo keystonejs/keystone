@@ -60,7 +60,7 @@ export class Relationship extends Implementation {
     if (this.many) {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
-        `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
+        `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}!]!`,
         this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta` : '',
       ];
     }
@@ -89,8 +89,6 @@ export class Relationship extends Implementation {
         ${this.path}_some: ${refList.gqlNames.whereInputName}`,
         `""" condition must be false for all nodes """
         ${this.path}_none: ${refList.gqlNames.whereInputName}`,
-        `""" is the relation field null """
-        ${this.path}_is_null: Boolean`,
       ];
     } else {
       return [`${this.path}: ${refList.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
