@@ -8,14 +8,11 @@ const {
   Password,
   Checkbox,
   CalendarDay,
-  CloudinaryImage,
   DateTime,
   Color,
   Url,
   Decimal,
-  OEmbed,
   Slug,
-  Unsplash,
   Virtual,
 } = require('@keystonejs/fields');
 const { Content } = require('@keystonejs/field-content');
@@ -26,8 +23,10 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
 const { graphql } = require('graphql');
+const { OEmbed } = require('@keystonejs/fields-oembed');
+const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
+const { Unsplash } = require('@keystonejs/fields-unsplash');
 
-const { staticRoute, staticPath, cloudinary, iframely, unsplash } = require('./config');
 const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 

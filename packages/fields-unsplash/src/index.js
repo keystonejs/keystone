@@ -1,9 +1,14 @@
 import { importView } from '@keystonejs/build-field-types';
-import { Unsplash, MongoUnsplashInterface, KnexUnsplashInterface } from './views/Implementation';
+import {
+  Unsplash as Implementation,
+  MongoUnsplashInterface,
+  KnexUnsplashInterface,
+} from './views/Implementation';
 import { UnsplashBlock } from './UnsplashBlock';
-export default {
+
+export const Unsplash = {
   type: 'Unsplash',
-  implementation: Unsplash,
+  implementation: Implementation,
   views: {
     Controller: importView('./views/Controller'),
     Field: importView('./views/Field'),

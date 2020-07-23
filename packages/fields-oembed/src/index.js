@@ -1,12 +1,16 @@
 import { importView } from '@keystonejs/build-field-types';
 
-import { OEmbed, MongoOEmbedInterface, KnexOEmbedInterface } from './Implementation';
+import {
+  OEmbed as Implementation,
+  MongoOEmbedInterface,
+  KnexOEmbedInterface,
+} from './Implementation';
 import { OEmbedBlock } from './OEmbedBlock';
 export { IframelyOEmbedAdapter } from './iframely/iframely';
 
-export default {
+export const OEmbed = {
   type: 'OEmbed',
-  implementation: OEmbed,
+  implementation: Implementation,
   views: {
     Controller: importView('./views/Controller'),
     Field: importView('./views/Field'),

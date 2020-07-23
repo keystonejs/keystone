@@ -1,15 +1,15 @@
 import { importView } from '@keystonejs/build-field-types';
 
 import {
-  CloudinaryImage,
+  CloudinaryImage as Implementation,
   MongoCloudinaryImageInterface,
   KnexCloudinaryImageInterface,
 } from './Implementation';
 import { ImageBlock } from './ImageBlock';
 
-export default {
+export const CloudinaryImage = {
   type: 'CloudinaryImage',
-  implementation: CloudinaryImage,
+  implementation: Implementation,
   views: {
     Controller: importView('./views/Controller'),
     Field: importView('./views/Field'),
