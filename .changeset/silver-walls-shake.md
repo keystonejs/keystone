@@ -1,5 +1,6 @@
 ---
 '@keystonejs/access-control': minor
+'@keystonejs/app-graphql': minor
 ---
 
 Added a new private internal schema that will allow a better method of bypassing access control on the `executeGraphQL` function. 
