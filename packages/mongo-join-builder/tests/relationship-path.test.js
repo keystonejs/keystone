@@ -4,8 +4,16 @@ describe('Relationship Path parser', () => {
   describe('paths', () => {
     test('Handles simple paths correctly', () => {
       const fieldAdapters = [
-        { path: 'bar', isRelationship: true, getRefListAdapter: jest.fn(() => barListAdapter) },
-        { path: 'zip', isRelationship: true, getRefListAdapter: jest.fn(() => zipListAdapter) },
+        {
+          path: 'bar',
+          isRelationship: true,
+          getListByKey: jest.fn(() => ({ adapter: barListAdapter })),
+        },
+        {
+          path: 'zip',
+          isRelationship: true,
+          getListByKey: jest.fn(() => ({ adapter: zipListAdapter })),
+        },
       ];
 
       const fooListAdapter = { fieldAdapters };
@@ -21,7 +29,7 @@ describe('Relationship Path parser', () => {
       const fieldAdapter = {
         path: 'foo',
         isRelationship: true,
-        getRefListAdapter: jest.fn(() => listAdapter),
+        getListByKey: jest.fn(() => ({ adapter: listAdapter })),
       };
       const listAdapter = { fieldAdapters: [fieldAdapter] };
 
@@ -35,12 +43,12 @@ describe('Relationship Path parser', () => {
         {
           path: 'bar_koodle',
           isRelationship: true,
-          getRefListAdapter: jest.fn(() => barListAdapter),
+          getListByKey: jest.fn(() => ({ adapter: barListAdapter })),
         },
         {
           path: 'zip-boom_zap',
           isRelationship: true,
-          getRefListAdapter: jest.fn(() => zipListAdapter),
+          getListByKey: jest.fn(() => ({ adapter: zipListAdapter })),
         },
       ];
 
@@ -58,12 +66,12 @@ describe('Relationship Path parser', () => {
         {
           path: 'bar_koodle',
           isRelationship: true,
-          getRefListAdapter: jest.fn(() => barListAdapter),
+          getListByKey: jest.fn(() => ({ adapter: barListAdapter })),
         },
         {
           path: 'zip-boom_zap',
           isRelationship: true,
-          getRefListAdapter: jest.fn(() => zipListAdapter),
+          getListByKey: jest.fn(() => ({ adapter: zipListAdapter })),
         },
       ];
 
@@ -87,12 +95,12 @@ describe('Relationship Path parser', () => {
         {
           path: 'bar_koodle',
           isRelationship: true,
-          getRefListAdapter: jest.fn(() => barListAdapter),
+          getListByKey: jest.fn(() => ({ adapter: barListAdapter })),
         },
         {
           path: 'zip-boom_zap',
           isRelationship: true,
-          getRefListAdapter: jest.fn(() => zipListAdapter),
+          getListByKey: jest.fn(() => ({ adapter: zipListAdapter })),
         },
       ];
 
@@ -119,7 +127,7 @@ describe('Relationship Path parser', () => {
         {
           path: 'zip-boom_zap',
           isRelationship: true,
-          getRefListAdapter: jest.fn(() => zipListAdapter),
+          getListByKey: jest.fn(() => ({ adapter: zipListAdapter })),
         },
       ];
 
