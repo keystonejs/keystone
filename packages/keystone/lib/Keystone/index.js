@@ -614,7 +614,7 @@ module.exports = class Keystone {
     pinoOptions,
     cors = { origin: true, credentials: true },
   } = {}) {
-    this.createApolloServer({ schemaName: 'private' });
+    this.createApolloServer({ schemaName: 'internal' });
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
     // These function can't be called after prepare(), so make them throw an error from now on.
     ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {

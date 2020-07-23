@@ -363,27 +363,6 @@ describe('keystone.prepare()', () => {
     expect(middlewares).toEqual(expect.arrayContaining([fn0, fn1, fn2]));
   });
 
-  test('executes FIELD.prepareMiddleware()', async () => {
-    const config = {
-      adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
-    };
-    const mockMiddlewareFn = jest.fn(() => {});
-    const MockFieldWithMiddleware = {
-      prepareMiddleware: jest.fn(() => mockMiddlewareFn),
-      implementation: MockFieldImplementation,
-      views: {},
-      adapters: { mock: MockFieldAdapter },
-    };
-    const keystone = new Keystone(config);
-    keystone.createList('Foo', { fields: { zip: { type: MockFieldWithMiddleware } } });
-    const { middlewares } = await keystone.prepare({ apps: [] });
-
-    expect(MockFieldWithMiddleware.prepareMiddleware).toHaveBeenCalled();
-    expect(middlewares).toBeInstanceOf(Array);
-    expect(middlewares).toEqual(expect.arrayContaining([mockMiddlewareFn]));
-  });
-
   test('orders field middlewares before app middlewares', async () => {});
 
   test('calls prepareMiddleware with correct params', async () => {});

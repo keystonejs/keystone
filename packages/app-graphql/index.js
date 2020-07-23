@@ -19,7 +19,11 @@ class GraphQLApp {
    * @return Array<middlewares>
    */
   prepareMiddleware({ keystone, dev }) {
-    const server = keystone.createApolloServer(this._apollo, this._schemaName, dev);
+    const server = keystone.createApolloServer({
+      apolloConfig: this._apollo,
+      schemaName: this._schemaName,
+      dev,
+    });
     const apiPath = this._apiPath;
     const graphiqlPath = this._graphiqlPath;
     const app = express();
