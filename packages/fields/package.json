@@ -70,9 +70,9 @@
     "react-image": "^4.0.0",
     "react-select": "^3.1.0",
     "react-toast-notifications": "^2.3.0",
-    "slate": "^0.58.4",
+    "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-react": "^0.58.4"
+    "slate-react": "^0.22.4"
   },
   "devDependencies": {
     "@keystonejs/test-utils": "*"

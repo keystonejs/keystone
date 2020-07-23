@@ -30,9 +30,10 @@
     "pluralize": "^7.0.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.1",
-    "slate": "^0.58.4",
+    "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-react": "^0.58.4"
+    "slate-react": "^0.22.4"
+
   },
   "peerDependencies": {
     "react": "^16.13.1"

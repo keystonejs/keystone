@@ -13,11 +13,5 @@
   },
   "dependencies": {
     "@keystonejs/fields-oembed": "^1.0.0"
-  },
-  "peerDependencies": {
-    "react": "^16.13.1"
-  },
-  "devDependencies": {
-    "react": "^16.13.1"
   }
 }
