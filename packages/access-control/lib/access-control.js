@@ -84,7 +84,6 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
 module.exports = {
   parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames }) {
     const accessTypes = [];
-
     const parseAndValidate = access => {
       const type = getType(access);
       if (!['Boolean', 'AsyncFunction', 'Function', 'Object'].includes(type)) {
