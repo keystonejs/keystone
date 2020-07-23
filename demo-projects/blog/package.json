@@ -40,7 +40,7 @@
     "date-fns": "^2.14.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "graphql-tag": "^2.10.4",
+    "graphql-tag": "^2.10.3",
     "isomorphic-unfetch": "^3.0.0",
     "next": "^9.4.4",
     "node-fetch": "^2.6.0",

@@ -33,7 +33,6 @@
     "slate": "^0.47.4",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.22.4"
-
   },
   "peerDependencies": {
     "react": "^16.13.1"
