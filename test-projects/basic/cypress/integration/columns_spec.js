@@ -22,7 +22,17 @@ describe('Columns', () => {
       cy.visit(url);
       cy.get('#ks-column-button').click({ force: true });
 
+      const openColumnControlsIfClosed = () => {
+        cy.get('body')
+          .not.find('#ks-column-select')
+          .then(() => {
+            cy.get('#ks-column-button').click({ force: true });
+          });
+      };
+
       enable.forEach(name => {
+        openColumnControlsIfClosed();
+
         cy.get('#ks-column-select')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
@@ -31,9 +41,9 @@ describe('Columns', () => {
         cy.get('#ks-list-table').should('contain', name);
       });
 
-      cy.get('#ks-column-button').click({ force: true });
-
       disable.forEach(name => {
+        openColumnControlsIfClosed();
+
         cy.get('#ks-column-select')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
