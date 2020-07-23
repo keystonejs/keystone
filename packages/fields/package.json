@@ -59,7 +59,7 @@
     "lodash.isequal": "^4.5.0",
     "luxon": "^1.11.4",
     "mongoose": "^5.9.11",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.3.0",
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0",
     "prop-types": "^15.7.2",
