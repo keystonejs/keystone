@@ -142,17 +142,22 @@ describe('new List()', () => {
 
   test('new List() - access', () => {
     const list = setup();
-    expect(list.access).toEqual(
-      expect.objectContaining({
-        public: {
-          create: true,
-          delete: true,
-          read: true,
-          update: true,
-          auth: true,
-        },
-      })
-    );
+    expect(list.access).toEqual({
+      internal: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+        auth: true,
+      },
+      public: {
+        create: true,
+        delete: true,
+        read: true,
+        update: true,
+        auth: true,
+      },
+    });
   });
 
   test('new List() - fields', () => {
