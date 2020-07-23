@@ -35,7 +35,7 @@ class AdminUIApp {
 
     if (schemaName === 'internal') {
       throw new Error(
-        "The schemaName 'internal' is reserved name cannot be used in the AdminUIApp."
+        "The schemaName 'internal' is a reserved name cannot be used in the AdminUIApp."
       );
     }
 
