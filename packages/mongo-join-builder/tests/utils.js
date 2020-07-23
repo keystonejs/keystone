@@ -1,6 +1,3 @@
-const findFieldAdapterForQuerySegment = ({ fieldAdapters }) => segment =>
-  fieldAdapters.find(({ path }) => path === segment || path === segment.split('_')[0]);
-
 const tagsAdapter = {
   key: 'Tag',
   model: { collection: { name: 'tags' } },
@@ -29,7 +26,9 @@ const postsAdapter = {
     },
     {
       path: 'tags',
-      field: { many: true },
+      dbPath: 'tags',
+      isRelationship: true,
+      field: { many: true, config: { many: true } },
       rel: {
         cardinality: 'N:N',
         columnNames: {
@@ -71,7 +70,8 @@ const listAdapter = {
     },
     {
       path: 'company',
-      field: { many: false },
+      isRelationship: true,
+      field: { many: false, config: { many: false } },
       rel: { columnNames: { User: {}, Company: {} } },
       getQueryConditions: () => {},
       getRefListAdapter: () => ({
@@ -90,7 +90,9 @@ const listAdapter = {
 listAdapter.fieldAdapters.push({
   getQueryConditions: () => {},
   path: 'posts',
-  field: { many: true },
+  dbPath: 'posts',
+  isRelationship: true,
+  field: { many: true, config: { many: true } },
   rel: {
     cardinality: '1:N',
     columnNames: { Tag: {}, Post: {} },
@@ -102,7 +104,9 @@ listAdapter.fieldAdapters.push({
 
 tagsAdapter.fieldAdapters.push({
   path: 'posts',
-  field: { many: true },
+  dbPath: 'posts',
+  isRelationship: true,
+  field: { many: true, config: { many: true } },
   rel: {
     cardinality: 'N:N',
     columnNames: {
@@ -118,7 +122,8 @@ tagsAdapter.fieldAdapters.push({
 postsAdapter.fieldAdapters.push({
   getQueryConditions: () => {},
   path: 'author',
-  field: { many: false },
+  isRelationship: true,
+  field: { many: false, config: { many: false } },
   rel: {
     cardinality: '1:N',
     columnNames: { Tag: {}, Post: {} },
@@ -127,9 +132,5 @@ postsAdapter.fieldAdapters.push({
   },
   getRefListAdapter: () => listAdapter,
 });
-
-postsAdapter.findFieldAdapterForQuerySegment = findFieldAdapterForQuerySegment(postsAdapter);
-tagsAdapter.findFieldAdapterForQuerySegment = findFieldAdapterForQuerySegment(tagsAdapter);
-listAdapter.findFieldAdapterForQuerySegment = findFieldAdapterForQuerySegment(listAdapter);
 
 module.exports = { tagsAdapter, postsAdapter, listAdapter };
