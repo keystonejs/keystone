@@ -19,7 +19,7 @@ class BaseKeystoneAdapter {
 
   async connect({ rels }) {
     // Connect to the database
-    await this._connect({}, this.config);
+    await this._connect({ rels }, this.config);
 
     // Set up all list adapters
     try {
