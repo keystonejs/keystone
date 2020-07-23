@@ -24,9 +24,11 @@ describe('Columns', () => {
 
       const openColumnControlsIfClosed = () => {
         cy.get('body')
-          .not.find('#ks-column-select')
-          .then(() => {
-            cy.get('#ks-column-button').click({ force: true });
+          .find('#ks-column-select')
+          .then(e => {
+            if (e.length === 0) {
+              cy.get('#ks-column-button').click({ force: true });
+            }
           });
       };
 
