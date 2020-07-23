@@ -242,7 +242,7 @@ describe('Access control package tests', () => {
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         expect(parseCustomAccess({ defaultAccess, schemaNames })).toEqual({
-          internal: {},
+          internal: true,
           public: defaultAccess,
         });
       });
@@ -252,7 +252,7 @@ describe('Access control package tests', () => {
       [...statics, ...imperatives, ...declaratives].forEach(defaultAccess => {
         [...statics, ...imperatives, ...declaratives].forEach(access => {
           expect(parseCustomAccess({ defaultAccess, access, schemaNames })).toEqual({
-            internal: {},
+            internal: true,
             public: access,
           });
         });
@@ -275,7 +275,7 @@ describe('Access control package tests', () => {
       const access = { public: true };
       const defaultAccess = false;
       expect(parseCustomAccess({ defaultAccess, access, schemaNames })).toEqual({
-        internal: {},
+        internal: true,
         public: true,
         private: false,
       });

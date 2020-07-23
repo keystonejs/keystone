@@ -9,6 +9,10 @@ class GraphQLApp {
     schemaName = 'public',
     apollo = {},
   } = {}) {
+    if (schemaName === 'internal') {
+      throw new Error("The schemaName 'internal' is reserved name cannot be used in a GraphQLApp.");
+    }
+
     this._apiPath = apiPath;
     this._graphiqlPath = graphiqlPath;
     this._apollo = apollo;
