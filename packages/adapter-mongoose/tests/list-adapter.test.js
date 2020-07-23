@@ -54,7 +54,6 @@ describe('MongooseListAdapter', () => {
       {
         isRelationship: true,
         getQueryConditions: () => {},
-        supportsRelationshipQuery: query => query === 'posts_some',
         getRefListAdapter: () => postListAdapter,
         field: { config: { many: true }, many: true },
         path: 'posts',
@@ -131,7 +130,6 @@ describe('MongooseListAdapter', () => {
       {
         isRelationship: true,
         getQueryConditions: () => {},
-        supportsRelationshipQuery: query => query === 'posts_some',
         getRefListAdapter: () => postListAdapter,
         field: { config: { many: true }, many: true },
         path: 'posts',

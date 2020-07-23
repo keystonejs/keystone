@@ -24,7 +24,11 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
     }
 
     // Eg; search for which field adapter handles `posts_some`, and return that one
-    const fieldAdapter = foundListAdapter.findFieldAdapterForQuerySegment(segment);
+    const fieldAdapter = foundListAdapter.fieldAdapters
+      .filter(adapter => adapter.isRelationship)
+      .find(({ path }) =>
+        [path, `${path}_every`, `${path}_some`, `${path}_none`].includes(segment)
+      );
 
     if (!fieldAdapter) {
       // prettier-ignore
@@ -54,7 +58,9 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
 
 const relationshipTokenizer = (listAdapter, queryKey, path, getUID = cuid) => {
   const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path);
-  const fieldAdapter = refListAdapter.findFieldAdapterForQuerySegment(queryKey);
+  const fieldAdapter = refListAdapter.fieldAdapters
+    .filter(adapter => adapter.isRelationship)
+    .find(({ path }) => [path, `${path}_every`, `${path}_some`, `${path}_none`].includes(queryKey));
 
   // Nothing found, return an empty operation
   // TODO: warn?
