@@ -16,3 +16,21 @@ export { default as Text } from './types/Text';
 export { default as Url } from './types/Url';
 export { default as Uuid } from './types/Uuid';
 export { default as Virtual } from './types/Virtual';
+
+export const Unsplash = {
+  init: () => {
+    throw new Error('This field has moved to @keystonejs/fields-unsplash');
+  },
+};
+
+export const CloudinaryImage = {
+  init: () => {
+    throw new Error('This field has moved to @keystonejs/fields-cloudinary-image');
+  },
+};
+
+export const OEmbed = {
+  init: () => {
+    throw new Error('This field has moved to @keystonejs/fields-cloudinary-image');
+  },
+};

@@ -191,6 +191,9 @@ module.exports = class List {
         throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
           `(${this.key}.${fieldKey}.type is undefined)`;
       }
+
+      if (fieldConfig.type.init) fieldConfig.type.init();
+
       const adapters = fieldConfig.type.adapters;
       if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
         throw `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`;
