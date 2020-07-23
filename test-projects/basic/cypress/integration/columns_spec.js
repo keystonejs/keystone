@@ -20,38 +20,41 @@ describe('Columns', () => {
   ].forEach(({ url, enable, disable }) => {
     it(`Testing all columns in ${url}`, () => {
       cy.visit(url);
-      cy.get('#ks-column-button').click({ force: true });
 
-      const openColumnControlsIfClosed = () => {
-        cy.get('body')
-          .find('#ks-column-select')
-          .then(e => {
-            if (e.length === 0) {
-              cy.get('#ks-column-button').click({ force: true });
-            }
-          });
-      };
+      const openColumnControlsIfClosed = () =>
+        new Promise(resolve => {
+          cy.get('body')
+            .find('#ks-column-select')
+            .its('length')
+            .then(l => {
+              if (!l) {
+                cy.get('#ks-column-button')
+                  .click({ force: true })
+                  .then(() => resolve());
+              } else resolve();
+            });
+        });
 
       enable.forEach(name => {
-        openColumnControlsIfClosed();
+        openColumnControlsIfClosed().then(() => {
+          cy.get('#ks-column-select')
+            .find('input[id^="react-select-"]')
+            .clear({ force: true })
+            .type(`${name}{enter}`, { force: true });
 
-        cy.get('#ks-column-select')
-          .find('input[id^="react-select-"]')
-          .clear({ force: true })
-          .type(`${name}{enter}`, { force: true });
-
-        cy.get('#ks-list-table').should('contain', name);
+          cy.get('#ks-list-table').should('contain', name);
+        });
       });
 
       disable.forEach(name => {
-        openColumnControlsIfClosed();
+        openColumnControlsIfClosed().then(() => {
+          cy.get('#ks-column-select')
+            .find('input[id^="react-select-"]')
+            .clear({ force: true })
+            .type(`${name}{enter}`, { force: true });
 
-        cy.get('#ks-column-select')
-          .find('input[id^="react-select-"]')
-          .clear({ force: true })
-          .type(`${name}{enter}`, { force: true });
-
-        cy.get('#ks-list-table').should('not.contain', name);
+          cy.get('#ks-list-table').should('not.contain', name);
+        });
       });
     });
   });
