@@ -25,8 +25,7 @@ import { useAdminMeta } from '../providers/AdminMeta';
 import { useResizeHandler, KEYBOARD_SHORTCUT } from '../hooks/ResizeHandler';
 import { useScrollQuery } from '../hooks/ScrollQuery';
 
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { useQuery, gql } from '@apollo/client';
 
 const TRANSITION_DURATION = '220ms';
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';

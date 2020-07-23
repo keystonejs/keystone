@@ -4,8 +4,7 @@ import { jsx } from '@emotion/core';
 
 import { Fragment } from 'react';
 
-import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { useMutation, gql } from '@apollo/client';
 
 import { CheckIcon } from '@primer/octicons-react';
 import { Button } from '@arch-ui/button';

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, gql } from '@apollo/client';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
@@ -13,7 +13,6 @@ import { useAdminMeta } from '../../providers/AdminMeta';
 
 import useResizeObserver from 'use-resize-observer';
 import throttle from 'lodash.throttle';
-import gql from 'graphql-tag';
 
 const getCountQuery = lists => {
   if (!lists) return null;
