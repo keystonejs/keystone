@@ -18,7 +18,7 @@ const runQuery = async ({
   query,
   variables,
   keystone,
-  schemaName = 'public',
+  schemaName = 'internal',
   extraContext = {},
 }) => {
   const { data, errors } = await keystone.executeGraphQL({
