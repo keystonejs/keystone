@@ -52,7 +52,6 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           listName,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
-          schemaName: 'seeding',
         });
         items[listName] = newItems[`create${listName}s`];
       }

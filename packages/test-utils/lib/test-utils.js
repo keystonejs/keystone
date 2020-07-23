@@ -15,8 +15,6 @@ async function setupServer({
   createLists = () => {},
   keystoneOptions,
   graphqlOptions = {},
-  // extra keystone apps (e.g SchemaRouterApp to use custom Schema)
-  apps: keystoneApps = [],
 }) {
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
 
@@ -54,7 +52,6 @@ async function setupServer({
       },
       ...graphqlOptions,
     }),
-    ...keystoneApps,
   ];
 
   const { middlewares } = await keystone.prepare({ dev: true, apps });
@@ -117,11 +114,11 @@ function networkedGraphqlRequest({
 let mongoServer;
 let mongoServerReferences = 0;
 
-async function getMongoMemoryServerConfig(useDBName) {
+async function getMongoMemoryServerConfig() {
   mongoServer = mongoServer || new MongoDBMemoryServer();
   mongoServerReferences++;
   // Passing `true` here generates a new, random DB name for us
-  const mongoUri = await mongoServer.getConnectionString(useDBName || true);
+  const mongoUri = await mongoServer.getConnectionString(true);
   // In theory the dbName can contain query params so lets parse it then extract the db name
   const dbName = url
     .parse(mongoUri)
@@ -204,8 +201,8 @@ function _keystoneRunner(adapterName, tearDownFunction) {
 }
 
 function _before(adapterName) {
-  return async function(setupKeystone, opts) {
-    const { keystone, app } = await setupKeystone(adapterName, opts);
+  return async function(setupKeystone) {
+    const { keystone, app } = await setupKeystone(adapterName);
     await keystone.connect();
     return { keystone, app };
   };
