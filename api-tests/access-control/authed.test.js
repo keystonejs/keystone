@@ -51,27 +51,16 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         {}
       );
 
-      const _skipAccess = await before(setupKeystone, {
-        skipAccessControl: true,
-        dbName: 'authedTest',
-      });
       for (const [listName, _items] of Object.entries(initialData)) {
         const newItems = await createItems({
-          keystone: _skipAccess.keystone,
+          keystone,
           listName,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
-          schemaName: 'testing',
+          schemaName: 'seeding',
         });
-
-        // ToDo: Can someone fix this mess please?
-        items[listName] = items[listName] ? items[listName] : [];
-        items[listName] = [
-          ...items[listName],
-          ...newItems.map(item => Object.keys(item).map(key => item[key])).flat(2),
-        ];
+        items[listName] = newItems[`create${listName}s`];
       }
-      await after(_skipAccess.keystone);
     });
     afterAll(async () => {
       await after(keystone);

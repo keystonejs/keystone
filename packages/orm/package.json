@@ -15,5 +15,9 @@
     "p-lazy": "^3.0.0",
     "p-reflect": "^2.1.0",
     "semver": "^5.7.1"
+  },
+  "devDependencies": {
+    "@keystonejs/fields": "*",
+    "@keystonejs/test-utils": "*"
   }
 }

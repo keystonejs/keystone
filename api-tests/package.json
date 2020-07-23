@@ -13,7 +13,6 @@
   "devDependencies": {
     "@keystonejs/adapter-knex": "*",
     "@keystonejs/adapter-mongoose": "*",
-    "@keystonejs/app-graphql": "*",
     "@keystonejs/keystone": "*",
     "@keystonejs/orm": "*",
     "@keystonejs/session": "*",
@@ -24,6 +23,8 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
+    "@keystonejs/app-graphql": "^5.1.9",
+    "@keystonejs/app-schema-router": "^5.1.1",
     "@keystonejs/auth-password": "^5.1.10",
     "@keystonejs/fields": "^13.0.2",
     "@keystonejs/test-utils": "^7.0.1",

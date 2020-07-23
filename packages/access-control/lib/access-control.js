@@ -71,6 +71,7 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
             : defaultAccess
           : access
       ),
+      private: { ...accessTypes.reduce((acc, accessType) => ({ ...acc, [accessType]: true }), {}) },
     }),
     {}
   );

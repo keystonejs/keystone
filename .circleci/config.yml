@@ -10,7 +10,7 @@ x-job-setup: &job-setup
     - image: circleci/node:dubnium-browsers
       environment:
         TEST_DATABASE_URL: postgresql://root@localhost/circle_test
-        KNEX_URI: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
+        DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
         NODE_OPTIONS: --max_old_space_size=4096
     - image: mongo:4.0.0
     - image: circleci/postgres:9.6.5-alpine-ram

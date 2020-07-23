@@ -33,7 +33,13 @@ const runQuery = async ({
   return data;
 };
 
-const runPaginatedQuery = async ({ pageSize = 1, variables = {}, verbose = false, ...rest }) => {
+const runPaginatedQuery = async ({
+  pageSize = 1,
+  variables = {},
+  verbose = false,
+  where = {},
+  ...rest
+}) => {
   let skip = 0;
   let latestResult;
   const allItems = [];
@@ -48,7 +54,7 @@ const runPaginatedQuery = async ({ pageSize = 1, variables = {}, verbose = false
 
     const response = await runQuery({
       ...rest,
-      variables: { ...variables, first: pageSize, skip },
+      variables: { ...variables, first: pageSize, skip, where },
     });
 
     latestResult = response[Object.keys(response || {})[0]];
@@ -66,13 +72,19 @@ const runPaginatedQuery = async ({ pageSize = 1, variables = {}, verbose = false
   return allItems;
 };
 
-const runChunkedMutation = async ({ pageSize = 500, items, ...rest }) => {
+const runChunkedMutation = async ({ gqlName, pageSize = 500, items, ...rest }) => {
   const chunks = chunkArray(items, pageSize);
 
   const result = await Promise.all(
     chunks.map(chunk => runQuery({ ...rest, variables: { items: chunk } }))
   );
-  return result;
+
+  /*
+   * The result is of the format: [{createUsers: [{id: '123', name: 'aman'}]}, {createUsers: [{id: '456', name: 'mike'}]}].
+   * We need to combine all objects into one array keyed by the `createUsers`, such that, the output is: {createUsers: [{id: '123', name: 'aman'}, {id: '456', name: 'Mike'}]}
+   */
+
+  return { [gqlName]: [].concat(...result.map(item => item[gqlName])) };
 };
 
 const createItem = ({ keystone, listName, item, returnFields = `id`, ...rest }) => {
@@ -92,18 +104,24 @@ const createItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
     ${createManyMutationName}(data: $items) { ${returnFields} }
   }`;
 
-  return runChunkedMutation({ keystone, query, items, ...rest });
+  return runChunkedMutation({
+    keystone,
+    query,
+    items,
+    gqlName: createManyMutationName,
+    ...rest,
+  });
 };
 
-const getItem = ({ keystone, listName, returnFields, item: id, ...rest }) => {
+const getItemById = ({ keystone, listName, returnFields, itemId: id, ...rest }) => {
   const { itemQueryName } = keystone.lists[listName].gqlNames;
   const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
   return runQuery({ keystone, query, variables: { id }, ...rest });
 };
 
-const getAllItems = ({ keystone, listName, returnFields, ...rest }) => {
-  const { listQueryName } = keystone.lists[listName].gqlNames;
-  const query = `query ($first: Int!, $skip: Int!) { ${listQueryName}(first: $first, skip: $skip) { ${returnFields} }  }`;
+const getItems = ({ keystone, listName, returnFields, ...rest }) => {
+  const { listQueryName, whereInputName } = keystone.lists[listName].gqlNames;
+  const query = `query ($first: Int!, $skip: Int!, $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, where: $where) { ${returnFields} }  }`;
   return runPaginatedQuery({ keystone, query, pageSize: 500, ...rest });
 };
 
@@ -123,8 +141,7 @@ const updateItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
   const query = `mutation ($items: [${updateManyInputName}]){
     ${updateManyMutationName}(data: $items) { ${returnFields} }
   }`;
-
-  return runChunkedMutation({ keystone, query, items, ...rest });
+  return runChunkedMutation({ keystone, query, items, gqlName: updateManyMutationName, ...rest });
 };
 
 const deleteItem = ({ keystone, listName, item, returnFields = `id`, ...rest }) => {
@@ -146,15 +163,13 @@ const deleteItems = ({ keystone, listName, items, returnFields = `id`, ...rest }
     }
   }`;
 
-  return runChunkedMutation({ keystone, query, items, ...rest });
+  return runChunkedMutation({ keystone, query, items, gqlName: deleteManyMutationName, ...rest });
 };
 
 module.exports = {
   runQuery,
-  runPaginatedQuery,
-  runChunkedMutation,
-  getItem,
-  getAllItems,
+  getItemById,
+  getItems,
   createItems,
   createItem,
   updateItem,

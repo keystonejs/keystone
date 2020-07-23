@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { createItems } = require('@keystonejs/orm');
 
 // Lets not hardcode password, even for test data
 const password = process.env.INITIAL_DATA_PASSWORD;
@@ -27,13 +28,57 @@ module.exports = async keystone => {
     // Ensure a valid initial password is available to be used
     validatePassword();
     // Drop the connected database to ensure no existing collections remain
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
+    await Promise.all(Object.values(keystone.adapters).map(adapter => adapter.dropDatabase()));
     console.log('💾 Creating initial data...');
-    await keystone.createItems(initialData);
+    await seedData(initialData, keystone);
   }
 };
+
+async function seedData(intitialData, keystone) {
+  /* 1. Insert the data which has no associated relationships
+   * 2. Insert the data with the required relationships using connect
+   */
+
+  const { createUsers: users } = await createItems({
+    keystone,
+    listName: 'User',
+    items: initialData['User'].map(x => ({ data: x })),
+    // name field is required for connect query for setting up Organiser list
+    returnFields: 'id, name',
+  });
+
+  await Promise.all(
+    ['Event', 'Talk', 'Rsvp', 'Sponsor'].map(list =>
+      createItems({
+        keystone,
+        listName: list,
+        items: intitialData[list].map(x => ({ data: x })),
+      })
+    )
+  );
+
+  // Preparing the Organiser list with connect nested mutation
+  const organisers = Array(3)
+    .fill(true)
+    .map(createOrganisers(users));
+
+  // Run the GraphQL query to insert all the organisers
+  await createItems({ keystone, listName: 'Organiser', items: organisers });
+}
+
+function createOrganisers(users) {
+  return (_, i) => {
+    return {
+      data: {
+        order: i + 1,
+        role: 'Organiser',
+        user: {
+          connect: { id: users.find(user => user.name === `Organiser ${i + 1}`).id },
+        },
+      },
+    };
+  };
+}
 
 const initialData = {
   User: [
@@ -92,11 +137,6 @@ const initialData = {
       twitterHandle: `@attendee3`,
       password,
     },
-  ],
-  Organiser: [
-    { user: { where: { name: 'Organiser 1' } }, order: 1, role: 'Organiser' },
-    { user: { where: { name: 'Organiser 2' } }, order: 2, role: 'Organiser' },
-    { user: { where: { name: 'Organiser 3' } }, order: 3, role: 'Organiser' },
   ],
   Event: [
     {

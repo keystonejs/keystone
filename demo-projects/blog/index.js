@@ -22,7 +22,7 @@ const keystone = new Keystone({
       await createItems({
         keystone,
         listName: 'User',
-        items: initialData.User.map(x => ({ data: x })),
+        items: initialData.User,
       });
     }
   },

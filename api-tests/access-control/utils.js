@@ -1,3 +1,5 @@
+const { SchemaRouterApp } = require('@keystonejs/app-schema-router');
+const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
 const { objMerge } = require('@keystonejs/utils');
@@ -85,16 +87,19 @@ const nameFn = { imperative: getImperativeListName, declarative: getDeclarativeL
 const createFieldStatic = fieldAccess => ({
   [getFieldName(fieldAccess)]: {
     type: Text,
-    access: fieldAccess,
+    access: { testing: fieldAccess, seeding: true },
   },
 });
 const createFieldImperative = fieldAccess => ({
   [getFieldName(fieldAccess)]: {
     type: Text,
     access: {
-      create: () => fieldAccess.create,
-      read: () => fieldAccess.read,
-      update: () => fieldAccess.update,
+      testing: {
+        create: () => fieldAccess.create,
+        read: () => fieldAccess.read,
+        update: () => fieldAccess.update,
+      },
+      seeding: true,
     },
   },
 });
@@ -112,38 +117,50 @@ function setupKeystone(adapterName, { skipAccessControl, dbName } = {}) {
             name: { type: Text },
             ...objMerge(fieldMatrix.map(variation => createFieldStatic(variation))),
           },
-          access: skipAccessControl ? true : access,
+          access: { testing: access, seeding: true },
         });
         keystone.createList(getImperativeListName(access), {
           fields: {
             name: { type: Text },
             ...objMerge(fieldMatrix.map(variation => createFieldImperative(variation))),
           },
-          access: skipAccessControl
-            ? true
-            : {
-                create: () => access.create,
-                read: () => access.read,
-                update: () => access.update,
-                delete: () => access.delete,
-                auth: () => access.auth,
-              },
+          access: {
+            testing: {
+              create: () => access.create,
+              read: () => access.read,
+              update: () => access.update,
+              delete: () => access.delete,
+              auth: () => access.auth,
+            },
+            seeding: true,
+          },
         });
         keystone.createList(getDeclarativeListName(access), {
           fields: { name: { type: Text } },
-          access: skipAccessControl
-            ? true
-            : {
-                create: access.create,
-                // arbitrarily restrict the data to a single item (see data.js)
-                read: () => access.read && { name_starts_with: 'Hello' },
-                update: () => access.update && { name_starts_with: 'Hello' },
-                delete: () => access.delete && { name_starts_with: 'Hello' },
-                auth: access.auth,
-              },
+          access: {
+            testing: {
+              create: access.create,
+              // arbitrarily restrict the data to a single item (see data.js)
+              read: () => access.read && { name_starts_with: 'Hello' },
+              update: () => access.update && { name_starts_with: 'Hello' },
+              delete: () => access.delete && { name_starts_with: 'Hello' },
+              auth: access.auth,
+            },
+            seeding: true,
+          },
         });
       });
     },
+    schemaNames: ['testing', 'seeding'],
+    apps: [
+      new SchemaRouterApp({
+        routerFn: () => 'testing',
+        apps: {
+          seeding: new GraphQLApp({ schemaName: 'seeding' }),
+          testing: new GraphQLApp({ schemaName: 'testing' }),
+        },
+      }),
+    ],
   });
 }
 

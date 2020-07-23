@@ -20,15 +20,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'uniqueness is enforced over multiple mutations',
         runner(setupKeystone, async ({ keystone }) => {
-          await graphqlRequest({
-            keystone,
-            query: `
-        mutation {
-          createUser(data: { email: "hi@test.com" }) { id }
-        }
-      `,
-          });
-
           const { errors } = await graphqlRequest({
             keystone,
             query: `
@@ -37,9 +28,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
       `,
           });
+          expect(errors).toBe(undefined);
 
-          expect(errors).toHaveProperty('0.message');
-          expect(errors[0].message).toEqual(expect.stringMatching(/duplicate key|to be unique/));
+          const { errors: errors2 } = await graphqlRequest({
+            keystone,
+            query: `
+        mutation {
+          createUser(data: { email: "hi@test.com" }) { id }
+        }
+      `,
+          });
+
+          expect(errors2).toHaveProperty('0.message');
+          expect(errors2[0].message).toEqual(expect.stringMatching(/duplicate key|to be unique/));
         })
       );
 

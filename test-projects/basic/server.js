@@ -58,14 +58,14 @@ function dropAllDatabases(adapters) {
  * 2. Insert `Post` data, with the required relationships, via `connect` nested mutation.
  */
 async function seedData(initialData) {
-  const [{ createUsers: users }] = await createItems({
+  const { createUsers: users } = await createItems({
     keystone,
     listName: 'User',
     items: initialData['User'],
     returnFields: 'id, email',
   });
 
-  const [{ createPostCategories: postCategories }] = await createItems({
+  const { createPostCategories: postCategories } = await createItems({
     keystone,
     listName: 'PostCategory',
     items: initialData['PostCategory'],

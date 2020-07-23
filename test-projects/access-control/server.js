@@ -17,14 +17,15 @@ keystone
     // NOTE: This is only for test purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystone.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
-      });
-      await createItems({
-        keystone,
-        listName: 'User',
-        items: initialData.User.map(x => ({ data: x })),
-      });
+      await Promise.all(Object.values(keystone.adapters).map(adapter => adapter.dropDatabase()));
+      for (const [listName, items] of Object.entries(initialData)) {
+        await createItems({
+          keystone,
+          listName,
+          items: items.map(x => ({ data: x })),
+          schemaName: 'seeding',
+        });
+      }
     }
 
     const app = express();
@@ -34,12 +35,14 @@ keystone
         await adapter.dropDatabase();
       });
 
-      await createItems({
-        keystone,
-        listName: 'User',
-        items: initialData.User.map(x => ({ data: x })),
-      });
-
+      for (const [listName, items] of Object.entries(initialData)) {
+        await createItems({
+          keystone,
+          listName,
+          items: items.map(x => ({ data: x })),
+          schemaName: 'seeding',
+        });
+      }
       res.redirect('/admin');
     });
 
