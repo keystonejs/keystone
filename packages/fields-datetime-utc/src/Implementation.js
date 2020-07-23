@@ -2,6 +2,7 @@ import { DateTime } from 'luxon';
 import { Implementation } from '@keystonejs/fields';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
+console.log(Implementation);
 
 export class DateTimeUtcImplementation extends Implementation {
   constructor() {
