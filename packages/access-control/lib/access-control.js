@@ -75,7 +75,7 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
             : defaultAccess
           : access
       ),
-      private: defaultObj(accessTypes, true),
+      internal: defaultObj(accessTypes, true), // Always returns {}
     }),
     {}
   );
