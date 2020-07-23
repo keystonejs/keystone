@@ -32,7 +32,7 @@ module.exports = {
       routerFn: (req) => req.session.keystoneItemId ? 'private' : 'public',
       apps: {
         public: new GraphQLApp({ apiPath, schemaName: 'public', graphiqlPath: undefined }),
-        admin: new GraphQLApp({ apiPath, schemaName: 'private', graphiqlPath: undefined }),
+        private: new GraphQLApp({ apiPath, schemaName: 'private', graphiqlPath: undefined }),
       },
     }),
     new AdminUIApp()
