@@ -29,10 +29,10 @@ module.exports = {
     new GraphQLAppPlayground({ apiPath })
     new SchemaRouterApp({
       apiPath,
-      routerFn: (req) => req.session.keystoneItemId ? 'private' : 'admin',
+      routerFn: (req) => req.session.keystoneItemId ? 'private' : 'public',
       apps: {
         public: new GraphQLApp({ apiPath, schemaName: 'public', graphiqlPath: undefined }),
-        admin: new GraphQLApp({ apiPath, schemaName: 'admin', graphiqlPath: undefined }),
+        admin: new GraphQLApp({ apiPath, schemaName: 'private', graphiqlPath: undefined }),
       },
     }),
     new AdminUIApp()
