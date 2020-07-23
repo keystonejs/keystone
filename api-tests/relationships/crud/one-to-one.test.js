@@ -4,8 +4,6 @@ const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonej
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-jest.setTimeout(6000000);
-
 const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
@@ -35,12 +33,12 @@ const createCompanyAndLocation = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompany(data: {
-    name: "${sampleOne(alphanumGenerator)}"
-    location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id name location { id name } }
-}`,
+      mutation {
+        createCompany(data: {
+          name: "${sampleOne(alphanumGenerator)}"
+          location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
+        }) { id name location { id name } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
@@ -63,12 +61,12 @@ const createLocationAndCompany = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createLocation(data: {
-    name: "${sampleOne(alphanumGenerator)}"
-    company: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id name company { id name } }
-}`,
+      mutation {
+        createLocation(data: {
+          name: "${sampleOne(alphanumGenerator)}"
+          company: { create: { name: "${sampleOne(alphanumGenerator)}" } }
+        }) { id name company { id name } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
@@ -96,9 +94,10 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
   return data;
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    const createLists = keystone => {
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('Company', {
         fields: {
           name: { type: Text },
@@ -111,12 +110,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           company: { type: Relationship, ref: 'Company.location' },
         },
       });
-    };
-    describe(`One-to-one relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe(`One-to-one relationships`, () => {
       describe('Read', () => {
         test(
           'Where A',

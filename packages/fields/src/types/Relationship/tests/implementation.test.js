@@ -296,10 +296,16 @@ describe('Type Generation', () => {
               },
               arguments: mockFilterAST,
               type: {
-                kind: 'ListType',
+                kind: 'NonNullType',
                 type: {
-                  name: {
-                    value: 'Zip',
+                  kind: 'ListType',
+                  type: {
+                    kind: 'NonNullType',
+                    type: {
+                      name: {
+                        value: 'Zip',
+                      },
+                    },
                   },
                 },
               },
@@ -354,10 +360,16 @@ describe('Type Generation', () => {
               },
               arguments: mockFilterAST,
               type: {
-                kind: 'ListType',
+                kind: 'NonNullType',
                 type: {
-                  name: {
-                    value: 'Zip',
+                  kind: 'ListType',
+                  type: {
+                    kind: 'NonNullType',
+                    type: {
+                      name: {
+                        value: 'Zip',
+                      },
+                    },
                   },
                 },
               },

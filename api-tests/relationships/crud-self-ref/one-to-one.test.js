@@ -4,8 +4,6 @@ const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonej
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-jest.setTimeout(6000000);
-
 const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
@@ -14,7 +12,8 @@ const createInitialData = async keystone => {
         createUsers(data: [
           { data: { name: "${sampleOne(alphanumGenerator)}" } },
           { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }]) { id }
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
       }`,
   });
   expect(errors).toBe(undefined);
@@ -28,12 +27,12 @@ const createUserAndFriend = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUser(data: {
-    name: "${sampleOne(alphanumGenerator)}"
-    friend: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-  }) { id name friend { id name } }
-}`,
+      mutation {
+        createUser(data: {
+          name: "${sampleOne(alphanumGenerator)}"
+          friend: { create: { name: "${sampleOne(alphanumGenerator)}" } }
+        }) { id name friend { id name } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { User, Friend } = await getUserAndFriend(keystone, createUser.id, createUser.friend.id);
@@ -49,17 +48,18 @@ const getUserAndFriend = async (keystone, userId, friendId) => {
   const { data } = await graphqlRequest({
     keystone,
     query: `
-  {
-    User(where: { id: "${userId}"} ) { id friend { id } }
-    Friend: User(where: { id: "${friendId}"} ) { id friendOf { id } }
-  }`,
+      {
+        User(where: { id: "${userId}"} ) { id friend { id } }
+        Friend: User(where: { id: "${friendId}"} ) { id friendOf { id } }
+      }`,
   });
   return data;
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    const createLists = keystone => {
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('User', {
         fields: {
           name: { type: Text },
@@ -67,13 +67,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           friend: { type: Relationship, ref: 'User.friendOf' },
         },
       });
-    };
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
     describe(`One-to-one relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
-
       describe('Read', () => {
         if (adapterName !== 'mongoose') {
           test(

@@ -4,25 +4,22 @@ const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonej
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-jest.setTimeout(6000000);
-
 const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompanies(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-  createLocations(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createCompanies(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+        createLocations(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { locations: data.createLocations, companies: data.createCompanies };
@@ -35,11 +32,11 @@ const createCompanyAndLocation = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createCompany(data: {
-    locations: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
-  }) { id locations { id } }
-}`,
+      mutation {
+        createCompany(data: {
+          locations: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
+        }) { id locations { id } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { Company, Location } = await getCompanyAndLocation(
@@ -58,10 +55,10 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
   const { data } = await graphqlRequest({
     keystone,
     query: `
-  {
-    Company(where: { id: "${companyId}"} ) { id locations { id } }
-    Location(where: { id: "${locationId}"} ) { id }
-  }`,
+      {
+        Company(where: { id: "${companyId}"} ) { id locations { id } }
+        Location(where: { id: "${locationId}"} ) { id }
+      }`,
   });
   return data;
 };
@@ -104,9 +101,10 @@ const createReadData = async keystone => {
   );
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    const createLists = keystone => {
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('Company', {
         fields: {
           name: { type: Text },
@@ -118,13 +116,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           name: { type: Text },
         },
       });
-    };
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
     describe(`Many-to-many relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
-
       describe('Read', () => {
         test(
           '_some',
