@@ -16,8 +16,3 @@ export { default as Text } from './types/Text';
 export { default as Url } from './types/Url';
 export { default as Uuid } from './types/Uuid';
 export { default as Virtual } from './types/Virtual';
-
-// Moved out of core packages
-export { default as OEmbed } from '@keystonejs/fields-oembed';
-export { default as Unsplash } from '@keystonejs/fields-unsplash';
-export { default as CloudinaryImage } from '@keystonejs/fields-cloudinary-image';
