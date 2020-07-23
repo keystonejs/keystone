@@ -1,3 +1,4 @@
+const { ApolloServer } = require('apollo-server-express');
 const gql = require('graphql-tag');
 const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
@@ -30,6 +31,7 @@ const {
 const { List } = require('../ListTypes');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
+const { formatError } = require('./format-error');
 
 module.exports = class Keystone {
   constructor({
@@ -453,6 +455,34 @@ module.exports = class Keystone {
     }
   }
 
+  createApolloServer({ apolloConfig = {}, schemaName, dev }) {
+    // add the Admin GraphQL API
+    const server = new ApolloServer({
+      maxFileSize: 200 * 1024 * 1024,
+      maxFiles: 5,
+      typeDefs: this.getTypeDefs({ schemaName }),
+      resolvers: this.getResolvers({ schemaName }),
+      context: ({ req }) => this.createHTTPContext({ schemaName, req }),
+      ...(process.env.ENGINE_API_KEY
+        ? {
+            engine: { apiKey: process.env.ENGINE_API_KEY },
+            tracing: true,
+          }
+        : {
+            engine: false,
+            // Only enable tracing in dev mode so we can get local debug info, but
+            // don't bother returning that info on prod when the `engine` is
+            // disabled.
+            tracing: dev,
+          }),
+      formatError,
+      ...apolloConfig,
+    });
+    this.registerSchema(schemaName, server.schema);
+
+    return server;
+  }
+
   /**
    * @return Promise<null>
    */
@@ -623,6 +653,7 @@ module.exports = class Keystone {
     pinoOptions,
     cors = { origin: true, credentials: true },
   } = {}) {
+    this.createApolloServer({ schemaName: 'internal' });
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
     // These function can't be called after prepare(), so make them throw an error from now on.
     ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
