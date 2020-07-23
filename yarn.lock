@@ -5268,14 +5268,14 @@ apollo-tracing@^0.11.1:
     apollo-server-env "^2.4.5"
     apollo-server-plugin-base "^0.9.1"
 
-apollo-upload-client@^14.0.0:
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-14.0.0.tgz#ff861b145b61e5e8749ec920ce55beb5a96e8609"
-  integrity sha512-TsyF21imH38N/PrjjbBf9gcgHdhlg/wxlgQGqg2jUWSO1Djtulw6mjb5ufcVyo0qvqvXb0siTs43Ohk+TFZgOw==
+apollo-upload-client@^14.1.0:
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-14.1.0.tgz#a61d594d966eb23e37f4bd727a6e83a5b0923297"
+  integrity sha512-MS2zKx/vhHzf8bH9/Smffipftmyoo15S7JMEHaUR7o/fB/SFKvHAThBaETm5Rl5hNXE+DebF+aZpGZ3t8OvPvg==
   dependencies:
     "@apollo/client" "^3.0.2"
     "@babel/runtime" "^7.10.5"
-    extract-files "^8.1.0"
+    extract-files "^9.0.0"
 
 apollo-utilities@^1.0.1, apollo-utilities@^1.2.1:
   version "1.2.1"
@@ -10430,10 +10430,10 @@ extract-css-chunks-webpack-plugin@^4.7.1:
     webpack-external-import "^1.1.0-beta.3"
     webpack-sources "^1.1.0"
 
-extract-files@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/extract-files/-/extract-files-8.1.0.tgz#46a0690d0fe77411a2e3804852adeaa65cd59288"
-  integrity sha512-PTGtfthZK79WUMk+avLmwx3NGdU8+iVFXC2NMGxKsn0MnihOG2lvumj+AZo8CTwTrwjXDgZ5tztbRlEdRjBonQ==
+extract-files@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/extract-files/-/extract-files-9.0.0.tgz#8a7744f2437f81f5ed3250ed9f1550de902fe54a"
+  integrity sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==
 
 extract-zip@1.7.0:
   version "1.7.0"
