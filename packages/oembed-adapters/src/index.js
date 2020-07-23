@@ -1,1 +1,1 @@
-export { IframelyOEmbedAdapter } from './iframely';
+export { IframelyOEmbedAdapter } from '@keystonejs/fields-oembed';
