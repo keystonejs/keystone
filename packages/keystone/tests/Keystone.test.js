@@ -552,7 +552,7 @@ describe('keystone.prepare()', () => {
     expect(middlewares).toEqual(expect.arrayContaining([fn0, fn1, fn2]));
   });
 
-  test('should create `private` GraphQL schema instance', async () => {
+  test('should create `internal` GraphQL schema instance', async () => {
     const config = {
       adapter: new MockAdapter(),
       cookieSecret: 'secretForTesting',
@@ -562,7 +562,7 @@ describe('keystone.prepare()', () => {
     // Prepare middlewares
     await keystone.prepare();
 
-    expect(keystone._schemas['private']).not.toBe(null);
+    expect(keystone._schemas['internal']).not.toBe(null);
   });
 
   test('orders field middlewares before app middlewares', async () => {});

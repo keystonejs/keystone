@@ -146,9 +146,7 @@ module.exports = class List {
     this.createAuxList = (auxKey, auxConfig) =>
       createAuxList(auxKey, {
         access: Object.entries(this.access)
-          .filter(([key]) => {
-            return key !== 'private';
-          })
+          .filter(([key]) => key !== 'internal')
           .reduce(
             (acc, [schemaName, access]) => ({
               ...acc,

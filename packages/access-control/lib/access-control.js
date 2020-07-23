@@ -35,8 +35,8 @@ const parseAccessCore = ({ accessTypes, access, defaultAccess, onGranularParseEr
 };
 
 const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate }) => {
-  if (schemaNames.includes('private')) {
-    throw new Error(`"private" is a reserved word and cannot be used as a schema name.`);
+  if (schemaNames.includes('internal')) {
+    throw new Error(`"internal" is a reserved word and cannot be used as a schema name.`);
   }
 
   // Check that none of the schemaNames match the accessTypes
@@ -75,7 +75,7 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
             : defaultAccess
           : access
       ),
-      private: { ...accessTypes.reduce((acc, accessType) => ({ ...acc, [accessType]: true }), {}) },
+      private: defaultObj(accessTypes, true),
     }),
     {}
   );
