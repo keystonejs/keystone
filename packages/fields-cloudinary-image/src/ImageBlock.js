@@ -3,7 +3,7 @@ import { importView } from '@keystonejs/build-field-types';
 
 import { Block } from '@keystonejs/field-content/Block';
 import { imageContainer, caption } from '@keystonejs/field-content/blocks';
-import CloudinaryImage from '.';
+import { CloudinaryImage } from '.';
 import { Select as SelectType, Relationship as RelationshipType } from '@keystonejs/fields';
 
 const RelationshipWrapper = {
