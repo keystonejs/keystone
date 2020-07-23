@@ -143,6 +143,13 @@ describe('new List()', () => {
   test('new List() - access', () => {
     const list = setup();
     expect(list.access).toEqual({
+      internal: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+        auth: true,
+      },
       public: {
         create: true,
         delete: true,

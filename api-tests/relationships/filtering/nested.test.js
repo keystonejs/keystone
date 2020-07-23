@@ -62,19 +62,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
+          expect(data.allUsers).toHaveLength(2);
+          expect(data.allUsers[0].id).toEqual(user.id);
           expect(data.allUsers[0].posts).toHaveLength(2);
-          expect(data).toMatchObject({
-            allUsers: [
-              {
-                id: user.id,
-                posts: [{ id: ids[1] }, { id: ids[2] }],
-              },
-              {
-                id: user2.id,
-                posts: [],
-              },
-            ],
-          });
+          expect(data.allUsers[0].posts.map(({ id }) => id).sort()).toEqual(
+            [ids[1], ids[2]].sort()
+          );
+          expect(data.allUsers[1].id).toEqual(user2.id);
+          expect(data.allUsers[1].posts).toHaveLength(0);
         })
       );
 

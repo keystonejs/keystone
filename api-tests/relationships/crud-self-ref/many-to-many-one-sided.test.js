@@ -4,20 +4,17 @@ const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonej
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-jest.setTimeout(6000000);
-
 const createInitialData = async keystone => {
   const { data, errors } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUsers(data: [{ data: { name: "${sampleOne(
-    alphanumGenerator
-  )}" } }, { data: { name: "${sampleOne(alphanumGenerator)}" } }, { data: { name: "${sampleOne(
-      alphanumGenerator
-    )}" } }]) { id }
-}
-`,
+      mutation {
+        createUsers(data: [
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } },
+          { data: { name: "${sampleOne(alphanumGenerator)}" } }
+        ]) { id }
+      }`,
   });
   expect(errors).toBe(undefined);
   return { users: data.createUsers };
@@ -30,11 +27,11 @@ const createUserAndFriend = async keystone => {
   } = await graphqlRequest({
     keystone,
     query: `
-mutation {
-  createUser(data: {
-    friends: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
-  }) { id friends { id } }
-}`,
+      mutation {
+        createUser(data: {
+          friends: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
+        }) { id friends { id } }
+      }`,
   });
   expect(errors).toBe(undefined);
   const { User, Friend } = await getUserAndFriend(
@@ -53,10 +50,10 @@ const getUserAndFriend = async (keystone, userId, friendId) => {
   const { data } = await graphqlRequest({
     keystone,
     query: `
-  {
-    User(where: { id: "${userId}"} ) { id friends { id } }
-    Friend: User(where: { id: "${friendId}"} ) { id }
-  }`,
+      {
+        User(where: { id: "${userId}"} ) { id friends { id } }
+        Friend: User(where: { id: "${friendId}"} ) { id }
+      }`,
   });
   return data;
 };
@@ -98,28 +95,22 @@ const createReadData = async keystone => {
   );
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    // 1:1 relationships are symmetric in how they behave, but
-    // are (in general) implemented in a non-symmetric way. For example,
-    // in postgres we may decide to store a single foreign key on just
-    // one of the tables involved. As such, we want to ensure that our
-    // tests work correctly no matter which side of the relationship is
-    // defined first.
-    const createUserList = keystone =>
+const setupKeystone = adapterName =>
+  setupServer({
+    adapterName,
+    createLists: keystone => {
       keystone.createList('User', {
         fields: {
           name: { type: Text },
           friends: { type: Relationship, ref: 'User', many: true },
         },
       });
-    const createLists = createUserList;
+    },
+  });
 
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
     describe(`Many-to-many relationships`, () => {
-      function setupKeystone(adapterName) {
-        return setupServer({ adapterName, createLists });
-      }
-
       describe('Read', () => {
         test(
           '_some',
