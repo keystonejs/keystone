@@ -2,7 +2,7 @@ import pluralize from 'pluralize';
 import { importView } from '@keystonejs/build-field-types';
 
 import { Block } from '@keystonejs/field-content/Block';
-import Unsplash from '.';
+import { Unsplash } from '.';
 import { Relationship } from '@keystonejs/fields';
 
 const RelationshipWrapper = {
