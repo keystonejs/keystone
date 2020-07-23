@@ -322,10 +322,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             linkedCompanies.forEach(({ locations }) => {
               expect(locations.map(({ id }) => id)).toEqual([Location.id.toString()]);
             });
-            expect(linkedCompanies[0].locations[0].companies).toEqual([
-              { id: linkedCompanies[0].id },
-              { id: linkedCompanies[1].id },
-            ]);
+            expect(linkedCompanies[0].locations[0].companies.map(({ id }) => id).sort()).toEqual(
+              [linkedCompanies[0].id, linkedCompanies[1].id].sort()
+            );
           })
         );
 
@@ -371,10 +370,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             allCompanies.forEach(({ locations }) => {
               expect(locations.map(({ id }) => id)).toEqual([Location.id.toString()]);
             });
-            expect(allCompanies[0].locations[0].companies).toEqual([
-              { id: allCompanies[0].id },
-              { id: allCompanies[1].id },
-            ]);
+            expect(allCompanies[0].locations[0].companies.map(({ id }) => id).sort()).toEqual(
+              [allCompanies[0].id, allCompanies[1].id].sort()
+            );
           })
         );
       });
