@@ -3,10 +3,6 @@ const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItems } = require('@keystonejs/orm');
 
-// `mongodb-memory-server` downloads a binary on first run in CI, which can take
-// a while, so we bump up the timeout here.
-jest.setTimeout(60000);
-
 describe('Fields', () => {
   const testModules = globby.sync(`packages/fields/src/types/**/test-fixtures.js`, {
     absolute: true,

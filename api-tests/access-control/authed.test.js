@@ -10,11 +10,6 @@ const {
   nameFn,
   setupKeystone,
 } = require('./utils');
-
-// `mongodb-memory-server` downloads a binary on first run in CI, which can take
-// a while, so we bump up the timeout here.
-jest.setTimeout(60000);
-
 const expectNoAccess = (data, errors, name) => {
   expect(data[name]).toBe(null);
   expect(errors).toHaveLength(1);

@@ -1,5 +1,11 @@
 # @keystonejs/mongo-join-builder
 
+## 7.1.1
+
+### Patch Changes
+
+- [`283839cfb`](https://github.com/keystonejs/keystone/commit/283839cfb84f80818dd85699e011eee4775e550d) [#3265](https://github.com/keystonejs/keystone/pull/3265) Thanks [@timleslie](https://github.com/timleslie)! - Updated tests to consistently use `jest.setTimeout()`.
+
 ## 7.1.0
 
 ### Minor Changes
