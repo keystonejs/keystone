@@ -241,19 +241,6 @@ module.exports = class Keystone {
     return execute(schema, query, null, context, variables);
   }
 
-  createHTTPContext({ schemaName, req }) {
-    // The GraphQL App uses this method to build up the context required for each incoming query.
-    return {
-      ...this.createContext({
-        schemaName,
-        authentication: { item: req.user, listKey: req.authedListKey },
-        skipAccessControl: false,
-      }),
-      ...this._sessionManager.getContext(req),
-      req,
-    };
-  }
-
   createAuthStrategy(options) {
     const { type: StrategyType, list: listKey, config } = options;
     const { authType } = StrategyType;
@@ -462,7 +449,15 @@ module.exports = class Keystone {
       maxFiles: 5,
       typeDefs: this.getTypeDefs({ schemaName }),
       resolvers: this.getResolvers({ schemaName }),
-      context: ({ req }) => this.createHTTPContext({ schemaName, req }),
+      context: ({ req }) => ({
+        ...this.createContext({
+          schemaName,
+          authentication: { item: req.user, listKey: req.authedListKey },
+          skipAccessControl: false,
+        }),
+        ...this._sessionManager.getContext(req),
+        req,
+      }),
       ...(process.env.ENGINE_API_KEY
         ? {
             engine: { apiKey: process.env.ENGINE_API_KEY },

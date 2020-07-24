@@ -333,10 +333,6 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
     }
   }
 
-  getRefListAdapter() {
-    return this.getListByKey(this.refListKey).adapter;
-  }
-
   getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_null`]: value => ({
@@ -375,10 +371,6 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
       ? false
       : this.knexOptions.isNotNullable));
-  }
-
-  getRefListAdapter() {
-    return this.getListByKey(this.refListKey).adapter;
   }
 
   addToTableSchema(table, rels) {
