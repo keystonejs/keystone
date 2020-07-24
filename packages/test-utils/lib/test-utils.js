@@ -18,7 +18,7 @@ async function setupServer({
   const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
 
   const argGenerator = {
-    mongoose: async () => await getMongoMemoryServerConfig(),
+    mongoose: getMongoMemoryServerConfig,
     knex: () => ({
       dropDatabase: true,
       knexOptions: {
