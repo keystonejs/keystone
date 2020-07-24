@@ -32,7 +32,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     let keystone,
       items = {};
     beforeAll(async () => {
-      const _before = await before(setupKeystone, { dbName: 'authedTest' });
+      const _before = await before(setupKeystone);
       keystone = _before.keystone;
 
       // ensure every list has at least some data

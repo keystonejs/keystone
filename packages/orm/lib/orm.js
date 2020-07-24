@@ -1,23 +1,7 @@
-const chunkArray = (array, chunkSize) => {
-  if (chunkSize <= 0) chunkSize = 1;
-
-  return array.reduce((accum, item, index) => {
-    const chunkIndex = Math.floor(index / chunkSize);
-
-    if (!accum[chunkIndex]) {
-      accum[chunkIndex] = [];
-    }
-
-    accum[chunkIndex].push(item);
-
-    return accum;
-  }, []);
-};
-
 const runQuery = async ({
+  keystone,
   query,
   variables,
-  keystone,
   schemaName = 'public',
   extraContext = {},
 }) => {
@@ -33,61 +17,28 @@ const runQuery = async ({
   return data;
 };
 
-const runPaginatedQuery = async ({
-  extraContext,
+const _runChunkedMutation = async ({
   keystone,
   query,
-  pageSize = 1,
-  schemaName,
-  variables = {},
-  verbose = false,
-  where = {},
-}) => {
-  let skip = 0;
-  let latestResult;
-  const allItems = [];
-
-  if (verbose) {
-    console.log(`Started paginated query`);
-    console.log({ pageSize });
-  }
-
-  do {
-    if (verbose) console.log({ skip });
-
-    const response = await runQuery({
-      keystone,
-      query,
-      schemaName,
-      extraContext,
-      variables: { ...variables, first: pageSize, skip, where },
-    });
-
-    latestResult = response[Object.keys(response || {})[0]];
-
-    allItems.push(...latestResult);
-
-    skip += pageSize;
-  } while (latestResult.length);
-
-  if (verbose) {
-    console.log(`Finished paginated query`);
-    console.log(`${allItems.length} items found`);
-  }
-
-  return allItems;
-};
-
-const runChunkedMutation = async ({
   gqlName,
-  keystone,
-  pageSize = 500,
+  pageSize,
   items,
-  query,
   schemaName,
   extraContext,
 }) => {
-  const chunks = chunkArray(items, pageSize);
+  if (pageSize <= 0) pageSize = 1;
+
+  const chunks = items.reduce((accum, item, index) => {
+    const chunkIndex = Math.floor(index / pageSize);
+
+    if (!accum[chunkIndex]) {
+      accum[chunkIndex] = [];
+    }
+
+    accum[chunkIndex].push(item);
+
+    return accum;
+  }, []);
 
   const result = await Promise.all(
     chunks.map(chunk =>
@@ -103,13 +54,13 @@ const runChunkedMutation = async ({
   return { [gqlName]: [].concat(...result.map(item => item[gqlName])) };
 };
 
-const createItem = ({
+const createItem = async ({
   keystone,
   listName,
   item,
   returnFields = `id`,
-  schemaName,
-  extraContext,
+  schemaName = 'public',
+  extraContext = {},
 }) => {
   const { createMutationName, createInputName } = keystone.lists[listName].gqlNames;
 
@@ -120,13 +71,14 @@ const createItem = ({
   return runQuery({ keystone, query, variables: { item }, schemaName, extraContext });
 };
 
-const createItems = ({
+const createItems = async ({
   keystone,
   listName,
   items,
+  pageSize = 500,
   returnFields = `id`,
-  schemaName,
-  extraContext,
+  schemaName = 'public',
+  extraContext = {},
 }) => {
   const { createManyMutationName, createManyInputName } = keystone.lists[listName].gqlNames;
 
@@ -134,42 +86,72 @@ const createItems = ({
     ${createManyMutationName}(data: $items) { ${returnFields} }
   }`;
 
-  return runChunkedMutation({
+  return _runChunkedMutation({
     keystone,
     query,
     items,
+    pageSize,
     gqlName: createManyMutationName,
     schemaName,
     extraContext,
   });
 };
 
-const getItemById = ({
+const getItemById = async ({
   keystone,
   listName,
+  itemId,
   returnFields = `id`,
-  itemId: id,
-  schemaName,
-  extraContext,
+  schemaName = 'public',
+  extraContext = {},
 }) => {
   const { itemQueryName } = keystone.lists[listName].gqlNames;
   const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
-  return runQuery({ keystone, query, variables: { id }, schemaName, extraContext });
+  return runQuery({ keystone, query, variables: { id: itemId }, schemaName, extraContext });
 };
 
-const getItems = ({ keystone, listName, returnFields = `id`, schemaName, extraContext, where }) => {
+const getItems = async ({
+  keystone,
+  listName,
+  where = {},
+  pageSize = 500,
+  returnFields = `id`,
+  schemaName = 'public',
+  extraContext = {},
+}) => {
   const { listQueryName, whereInputName } = keystone.lists[listName].gqlNames;
   const query = `query ($first: Int!, $skip: Int!, $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, where: $where) { ${returnFields} }  }`;
-  return runPaginatedQuery({ keystone, query, pageSize: 500, schemaName, extraContext, where });
+
+  let skip = 0;
+  let latestResult;
+  const allItems = [];
+
+  do {
+    const response = await runQuery({
+      keystone,
+      query,
+      schemaName,
+      extraContext,
+      variables: { first: pageSize, skip, where },
+    });
+
+    latestResult = response[Object.keys(response || {})[0]];
+
+    allItems.push(...latestResult);
+
+    skip += pageSize;
+  } while (latestResult.length);
+
+  return allItems;
 };
 
-const updateItem = ({
+const updateItem = async ({
   keystone,
   listName,
   item,
   returnFields = `id`,
-  schemaName,
-  extraContext,
+  schemaName = 'public',
+  extraContext = {},
 }) => {
   const { updateMutationName, updateInputName } = keystone.lists[listName].gqlNames;
 
@@ -186,36 +168,38 @@ const updateItem = ({
   });
 };
 
-const updateItems = ({
+const updateItems = async ({
   keystone,
   listName,
   items,
+  pageSize = 500,
   returnFields = `id`,
-  schemaName,
-  extraContext,
+  schemaName = 'public',
+  extraContext = {},
 }) => {
   const { updateManyMutationName, updateManyInputName } = keystone.lists[listName].gqlNames;
 
   const query = `mutation ($items: [${updateManyInputName}]){
     ${updateManyMutationName}(data: $items) { ${returnFields} }
   }`;
-  return runChunkedMutation({
+  return _runChunkedMutation({
     keystone,
     query,
     items,
+    pageSize,
     gqlName: updateManyMutationName,
     schemaName,
     extraContext,
   });
 };
 
-const deleteItem = ({
+const deleteItem = async ({
   keystone,
   listName,
   item,
   returnFields = `id`,
-  schemaName,
-  extraContext,
+  schemaName = 'public',
+  extraContext = {},
 }) => {
   const { deleteMutationName } = keystone.lists[listName].gqlNames;
 
@@ -226,13 +210,14 @@ const deleteItem = ({
   return runQuery({ keystone, query, variables: { item }, schemaName, extraContext });
 };
 
-const deleteItems = ({
+const deleteItems = async ({
   keystone,
   listName,
   items,
+  pageSize = 500,
   returnFields = `id`,
-  schemaName,
-  extraContext,
+  schemaName = 'public',
+  extraContext = {},
 }) => {
   const { deleteManyMutationName } = keystone.lists[listName].gqlNames;
 
@@ -242,10 +227,11 @@ const deleteItems = ({
     }
   }`;
 
-  return runChunkedMutation({
+  return _runChunkedMutation({
     keystone,
     query,
     items,
+    pageSize,
     gqlName: deleteManyMutationName,
     extraContext,
     schemaName,
@@ -253,13 +239,13 @@ const deleteItems = ({
 };
 
 module.exports = {
-  runQuery,
   getItemById,
   getItems,
-  createItems,
   createItem,
+  createItems,
   updateItem,
   updateItems,
   deleteItem,
   deleteItems,
+  runCustomQuery: runQuery,
 };
