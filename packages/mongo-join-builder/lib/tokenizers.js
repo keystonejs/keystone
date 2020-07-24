@@ -41,7 +41,7 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
 
     // Then follow the breadcrumbs to find the list adapter
     const currentKey = foundListAdapter.key;
-    foundListAdapter = fieldAdapter.getRefListAdapter();
+    foundListAdapter = fieldAdapter.getListByKey(fieldAdapter.refListKey).adapter;
 
     if (!foundListAdapter) {
       // prettier-ignore
@@ -71,7 +71,7 @@ const relationshipTokenizer = (listAdapter, queryKey, path, getUID = cuid) => {
     [`${fieldAdapter.path}_some`]: 'some',
     [`${fieldAdapter.path}_none`]: 'none',
   }[queryKey];
-  const refListAdapter2 = fieldAdapter.getRefListAdapter();
+  const refListAdapter2 = fieldAdapter.getListByKey(fieldAdapter.refListKey).adapter;
   const { rel } = fieldAdapter;
   const uniqueField = `${getUID(queryKey)}_${fieldAdapter.path}`;
   const fieldSize = { $size: `$${uniqueField}` };
