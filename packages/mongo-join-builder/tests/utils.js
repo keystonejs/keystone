@@ -38,7 +38,7 @@ const postsAdapter = {
         collectionName: 'posts_tags',
       },
       getQueryConditions: () => {},
-      getRefListAdapter: () => tagsAdapter,
+      getListByKey: () => ({ adapter: tagsAdapter }),
     },
   ],
   graphQlQueryPathToMongoField: orderField => orderField,
@@ -74,14 +74,16 @@ const listAdapter = {
       field: { many: false, config: { many: false } },
       rel: { columnNames: { User: {}, Company: {} } },
       getQueryConditions: () => {},
-      getRefListAdapter: () => ({
-        model: { collection: { name: 'company-collection' } },
-        fieldAdapters: [
-          {
-            dbPath: 'name',
-            getQueryConditions: dbPath => ({ [dbPath]: val => ({ [dbPath]: { $eq: val } }) }),
-          },
-        ],
+      getListByKey: () => ({
+        adapter: {
+          model: { collection: { name: 'company-collection' } },
+          fieldAdapters: [
+            {
+              dbPath: 'name',
+              getQueryConditions: dbPath => ({ [dbPath]: val => ({ [dbPath]: { $eq: val } }) }),
+            },
+          ],
+        },
       }),
     },
   ],
@@ -99,7 +101,7 @@ listAdapter.fieldAdapters.push({
     columnName: 'author',
     tableName: 'Post',
   },
-  getRefListAdapter: () => postsAdapter,
+  getListByKey: () => ({ adapter: postsAdapter }),
 });
 
 tagsAdapter.fieldAdapters.push({
@@ -116,7 +118,7 @@ tagsAdapter.fieldAdapters.push({
     collectionName: 'posts_tags',
   },
   getQueryConditions: () => {},
-  getRefListAdapter: () => postsAdapter,
+  getListByKey: () => ({ adapter: postsAdapter }),
 });
 
 postsAdapter.fieldAdapters.push({
@@ -130,7 +132,7 @@ postsAdapter.fieldAdapters.push({
     columnName: 'author',
     tableName: 'Post',
   },
-  getRefListAdapter: () => listAdapter,
+  getListByKey: () => ({ adapter: listAdapter }),
 });
 
 module.exports = { tagsAdapter, postsAdapter, listAdapter };
