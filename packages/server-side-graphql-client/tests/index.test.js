@@ -8,7 +8,7 @@ const {
   getItems,
   updateItem,
   updateItems,
-} = require('../lib/orm');
+} = require('../lib/server-side-graphql-client');
 
 const testData = [
   {

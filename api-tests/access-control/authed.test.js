@@ -1,5 +1,5 @@
 const { multiAdapterRunners, authedGraphqlRequest } = require('@keystonejs/test-utils');
-const { createItems } = require('@keystonejs/orm');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 const {
   FAKE_ID,
   FAKE_ID_2,

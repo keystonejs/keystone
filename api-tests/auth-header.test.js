@@ -2,7 +2,7 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Password, DateTime } = require('@keystonejs/fields');
 const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystonejs/test-utils');
 const { setupServer } = require('@keystonejs/test-utils');
-const { createItems } = require('@keystonejs/orm');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 const initialData = {
   User: [

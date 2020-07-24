@@ -1,5 +1,5 @@
 const express = require('express');
-const { createItems } = require('@keystonejs/orm');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 const { keystone, apps } = require('./index');
 const initialData = require('./data');

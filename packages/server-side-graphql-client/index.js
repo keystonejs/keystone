@@ -10,7 +10,7 @@ const {
   updateItems,
   deleteItem,
   deleteItems,
-} = require('./lib/orm');
+} = require('./lib/server-side-graphql-client');
 
 module.exports = {
   runQuery,

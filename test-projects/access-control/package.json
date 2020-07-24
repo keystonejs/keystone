@@ -24,7 +24,7 @@
     "@keystonejs/auth-password": "^5.1.11",
     "@keystonejs/fields": "^14.0.0",
     "@keystonejs/keystone": "^12.0.0",
-    "@keystonejs/orm": "^0.0.0",
+    "@keystonejs/server-side-graphql-client": "^0.0.0",
     "@keystonejs/utils": "^5.4.1",
     "cross-env": "^7.0.0",
     "express": "^4.17.1"

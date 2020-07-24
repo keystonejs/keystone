@@ -3,7 +3,7 @@ const express = require('express');
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
 const initialData = require('./data');
-const { createItems } = require('@keystonejs/orm');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 keystone
   .prepare({

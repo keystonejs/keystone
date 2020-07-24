@@ -15,7 +15,7 @@
     "@keystonejs/adapter-mongoose": "*",
     "@keystonejs/app-graphql": "*",
     "@keystonejs/keystone": "*",
-    "@keystonejs/orm": "*",
+    "@keystonejs/server-side-graphql-client": "*",
     "@keystonejs/session": "*",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
