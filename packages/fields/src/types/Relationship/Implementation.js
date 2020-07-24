@@ -344,12 +344,6 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       }),
     };
   }
-
-  supportsRelationshipQuery(query) {
-    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
-      query
-    );
-  }
 }
 
 export class KnexRelationshipInterface extends KnexFieldAdapter {
@@ -415,10 +409,5 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       [`${this.path}_is_null`]: value => b =>
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
     };
-  }
-  supportsRelationshipQuery(query) {
-    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
-      query
-    );
   }
 }

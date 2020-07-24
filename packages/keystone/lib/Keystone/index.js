@@ -473,7 +473,7 @@ module.exports = class Keystone {
       formatError,
       ...apolloConfig,
     });
-    this.registerSchema(schemaName, server.schema);
+    this._schemas[schemaName] = server.schema;
 
     return server;
   }
@@ -514,13 +514,6 @@ module.exports = class Keystone {
         list => list.views
       ),
     };
-  }
-
-  // It's not Keystone core's responsibility to create an executable schema, but
-  // once one is, Keystone wants to be able to expose the ability to query that
-  // schema, so this function enables other modules to register that function.
-  registerSchema(schemaName, schema) {
-    this._schemas[schemaName] = schema;
   }
 
   getTypeDefs({ schemaName }) {

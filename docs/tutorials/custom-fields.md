@@ -81,7 +81,7 @@ module.exports = {
 
 It's convention with existing field types to export the field implementation class, together with the adapter interfaces.
 
-Adapters provide an interface between our field and the database. Here we define how a queries and mutations should be translated into SQL or MongoDB actions. Again, as our implementation for the Starts is going to be the same as the Integer field type, we can just re-export the adapters for the Integer field type.
+Adapters provide an interface between our field and the database. Here we define how a queries and mutations should be translated into SQL or MongoDB actions. Again, as our implementation for the Stars is going to be the same as the Integer field type, we can just re-export the adapters for the Integer field type.
 
 We're not changing anything about how the data is stored, so for now we're just going to going to re-export the adapters for the `Integer` field.
 

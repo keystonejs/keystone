@@ -363,6 +363,19 @@ describe('keystone.prepare()', () => {
     expect(middlewares).toEqual(expect.arrayContaining([fn0, fn1, fn2]));
   });
 
+  test('should create `internal` GraphQL schema instance', async () => {
+    const config = {
+      adapter: new MockAdapter(),
+      cookieSecret: 'secretForTesting',
+    };
+    const keystone = new Keystone(config);
+
+    // Prepare middlewares
+    await keystone.prepare();
+
+    expect(keystone._schemas['internal']).not.toBe(null);
+  });
+
   test('orders field middlewares before app middlewares', async () => {});
 
   test('calls prepareMiddleware with correct params', async () => {});

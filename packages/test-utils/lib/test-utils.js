@@ -1,7 +1,6 @@
 const express = require('express');
 const supertest = require('supertest-light');
 const MongoDBMemoryServer = require('mongodb-memory-server-core').default;
-const pFinally = require('p-finally');
 const url = require('url');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
@@ -185,17 +184,19 @@ function _keystoneRunner(adapterName, tearDownFunction) {
 
       await keystone.connect();
 
-      return pFinally(
-        testFn({
+      try {
+        await testFn({
           ...setup,
           create: getCreate(keystone),
           findById: getFindById(keystone),
           findOne: getFindOne(keystone),
           update: getUpdate(keystone),
           delete: getDelete(keystone),
-        }),
-        () => keystone.disconnect().then(tearDownFunction)
-      );
+        });
+      } finally {
+        await keystone.disconnect();
+        await tearDownFunction();
+      }
     };
   };
 }
