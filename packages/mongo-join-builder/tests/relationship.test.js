@@ -4,7 +4,7 @@ describe('Relationship tokenizer', () => {
   test('Uses correct conditions', () => {
     const relationshipConditions = {
       isRelationship: true,
-      getRefListAdapter: () => ({ key: 'Bar', model: { collection: { name: 'name' } } }),
+      getListByKey: () => ({ adapter: { key: 'Bar', model: { collection: { name: 'name' } } } }),
       field: { many: false },
       path: 'name',
       rel: {},
