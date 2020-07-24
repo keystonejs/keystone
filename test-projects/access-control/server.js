@@ -23,6 +23,7 @@ keystone
           keystone,
           listName,
           items: items.map(x => ({ data: x })),
+          schemaName: 'internal',
         });
       }
     }
@@ -39,6 +40,7 @@ keystone
           keystone,
           listName,
           items: items.map(x => ({ data: x })),
+          schemaName: 'internal',
         });
       }
       res.redirect('/admin');
