@@ -1,7 +1,5 @@
 const {
-  runQuery,
-  runPaginatedQuery,
-  runChunkedMutation,
+  runCustomQuery,
   getItem,
   getAllItems,
   createItems,
@@ -13,9 +11,7 @@ const {
 } = require('./lib/server-side-graphql-client');
 
 module.exports = {
-  runQuery,
-  runPaginatedQuery,
-  runChunkedMutation,
+  runCustomQuery,
   getItem,
   getAllItems,
   createItems,
