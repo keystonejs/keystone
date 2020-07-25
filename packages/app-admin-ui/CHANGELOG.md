@@ -92,7 +92,7 @@
 
   ```js
   // ./admin-ui/index.js
-  import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
+  import { UpdateItems, DeleteItems } form '@keystonejs/app-admin-ui/components'
   export default {
     // re-implement the default delete many and update many items buttons + custom text
     listManageActions: () => (<div><UpdateItems /><DeleteItems /><p>Hello world</p></div>),
@@ -114,7 +114,7 @@
 
   ```js
   // ./admin-ui/index.js
-  import { CreateItem } '@keystonejs/admin-ui/components/'
+  import { CreateItem } from '@keystonejs/app-admin-ui/components'
   export default {
     // re-implement the default create item button + custom text
     listHeaderActions: () => (<div><CreateItem /><p>Hello world</p></div>),
