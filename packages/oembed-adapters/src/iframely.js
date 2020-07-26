@@ -21,7 +21,7 @@ export class IframelyOEmbedAdapter {
         .update(apiKey)
         .digest('hex');
     }
-    
+
     this.iframe = iframe;
     this.omit_script = omit_script;
   }
