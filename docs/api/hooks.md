@@ -20,7 +20,7 @@ Note: For performance reasons relationships fields are not fully resolved by hoo
 
 ## Hook types
 
-Hooks can be categories into three [types](/docs/guides/hooks.md#hook-type)
+Hooks can be categorized into three [types](/docs/guides/hooks.md#hook-type)
 depending on where in the list schema they're attached:
 
 - [List hooks](#list-hooks)
