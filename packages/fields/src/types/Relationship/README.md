@@ -7,7 +7,7 @@ title: Relationship
 # Relationship
 
 A link between the current list and others, often paired with a field on the other list.
-The relationships cardinality is determined by the `many` and `isRequire` configuring on either side.
+The relationships cardinality is determined by the `many` and `isRequired` configuring on either side.
 
 See the [Configuring Relationships](/docs/guides/relationships.md) guide for more information.
 
