@@ -155,15 +155,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
+          expect(data.allUsers).toHaveLength(1);
+          expect(data.allUsers[0].id).toEqual(user.id);
           expect(data.allUsers[0].posts).toHaveLength(3);
-          expect(data).toMatchObject({
-            allUsers: [
-              {
-                id: user.id,
-                posts: [{ id: ids[0] }, { id: ids[1] }, { id: ids[2] }],
-              },
-            ],
-          });
+          expect(data.allUsers[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
         })
       );
 
@@ -203,15 +198,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
+          expect(data.allUsers).toHaveLength(1);
+          expect(data.allUsers[0].id).toEqual(user.id);
           expect(data.allUsers[0].posts).toHaveLength(3);
-          expect(data).toMatchObject({
-            allUsers: [
-              {
-                id: user.id,
-                posts: [{ id: ids[0] }, { id: ids[1] }, { id: ids[2] }],
-              },
-            ],
-          });
+          expect(data.allUsers[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
         })
       );
 
