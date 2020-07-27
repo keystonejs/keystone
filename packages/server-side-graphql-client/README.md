@@ -159,7 +159,7 @@ keystone.createList('User', {
 });
 
 const getUser = async ({ itemId }) => {
-  const user = await getItemById({
+  const user = await getItem({
     keystone,
     listName: 'User',
     itemId,

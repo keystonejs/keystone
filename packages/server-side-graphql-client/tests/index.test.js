@@ -6,7 +6,7 @@ const {
   createItem,
   deleteItem,
   deleteItems,
-  getItemById,
+  getItem,
   getItems,
   updateItem,
   updateItems,
@@ -62,7 +62,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
-          const getItem = await getItemById({
+          const getItem = await getItem({
             keystone,
             listName: 'Test',
             returnFields: 'name, age',

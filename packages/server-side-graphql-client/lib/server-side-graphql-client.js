@@ -98,7 +98,7 @@ const createItems = async ({
   });
 };
 
-const getItemById = async ({
+const getItem = async ({
   keystone,
   listName,
   itemId,
@@ -257,7 +257,7 @@ const deleteItems = async ({
 };
 
 module.exports = {
-  getItemById,
+  getItem,
   getItems,
   createItem,
   createItems,
