@@ -1,6 +1,3 @@
-const findFieldAdapterForQuerySegment = ({ fieldAdapters }) => segment =>
-  fieldAdapters.find(({ path }) => path === segment || path === segment.split('_')[0]);
-
 const tagsAdapter = {
   key: 'Tag',
   model: { collection: { name: 'tags' } },
@@ -29,7 +26,9 @@ const postsAdapter = {
     },
     {
       path: 'tags',
-      field: { many: true },
+      dbPath: 'tags',
+      isRelationship: true,
+      field: { many: true, config: { many: true } },
       rel: {
         cardinality: 'N:N',
         columnNames: {
@@ -39,7 +38,7 @@ const postsAdapter = {
         collectionName: 'posts_tags',
       },
       getQueryConditions: () => {},
-      getRefListAdapter: () => tagsAdapter,
+      getListByKey: () => ({ adapter: tagsAdapter }),
     },
   ],
   graphQlQueryPathToMongoField: orderField => orderField,
@@ -71,17 +70,20 @@ const listAdapter = {
     },
     {
       path: 'company',
-      field: { many: false },
+      isRelationship: true,
+      field: { many: false, config: { many: false } },
       rel: { columnNames: { User: {}, Company: {} } },
       getQueryConditions: () => {},
-      getRefListAdapter: () => ({
-        model: { collection: { name: 'company-collection' } },
-        fieldAdapters: [
-          {
-            dbPath: 'name',
-            getQueryConditions: dbPath => ({ [dbPath]: val => ({ [dbPath]: { $eq: val } }) }),
-          },
-        ],
+      getListByKey: () => ({
+        adapter: {
+          model: { collection: { name: 'company-collection' } },
+          fieldAdapters: [
+            {
+              dbPath: 'name',
+              getQueryConditions: dbPath => ({ [dbPath]: val => ({ [dbPath]: { $eq: val } }) }),
+            },
+          ],
+        },
       }),
     },
   ],
@@ -90,19 +92,23 @@ const listAdapter = {
 listAdapter.fieldAdapters.push({
   getQueryConditions: () => {},
   path: 'posts',
-  field: { many: true },
+  dbPath: 'posts',
+  isRelationship: true,
+  field: { many: true, config: { many: true } },
   rel: {
     cardinality: '1:N',
     columnNames: { Tag: {}, Post: {} },
     columnName: 'author',
     tableName: 'Post',
   },
-  getRefListAdapter: () => postsAdapter,
+  getListByKey: () => ({ adapter: postsAdapter }),
 });
 
 tagsAdapter.fieldAdapters.push({
   path: 'posts',
-  field: { many: true },
+  dbPath: 'posts',
+  isRelationship: true,
+  field: { many: true, config: { many: true } },
   rel: {
     cardinality: 'N:N',
     columnNames: {
@@ -112,24 +118,21 @@ tagsAdapter.fieldAdapters.push({
     collectionName: 'posts_tags',
   },
   getQueryConditions: () => {},
-  getRefListAdapter: () => postsAdapter,
+  getListByKey: () => ({ adapter: postsAdapter }),
 });
 
 postsAdapter.fieldAdapters.push({
   getQueryConditions: () => {},
   path: 'author',
-  field: { many: false },
+  isRelationship: true,
+  field: { many: false, config: { many: false } },
   rel: {
     cardinality: '1:N',
     columnNames: { Tag: {}, Post: {} },
     columnName: 'author',
     tableName: 'Post',
   },
-  getRefListAdapter: () => listAdapter,
+  getListByKey: () => ({ adapter: listAdapter }),
 });
-
-postsAdapter.findFieldAdapterForQuerySegment = findFieldAdapterForQuerySegment(postsAdapter);
-tagsAdapter.findFieldAdapterForQuerySegment = findFieldAdapterForQuerySegment(tagsAdapter);
-listAdapter.findFieldAdapterForQuerySegment = findFieldAdapterForQuerySegment(listAdapter);
 
 module.exports = { tagsAdapter, postsAdapter, listAdapter };

@@ -33,6 +33,12 @@ class AdminUIApp {
       throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
     }
 
+    if (schemaName === 'internal') {
+      throw new Error(
+        "The schemaName 'internal' is a reserved name cannot be used in the AdminUIApp."
+      );
+    }
+
     this.name = name;
     this.adminPath = adminPath;
     this.authStrategy = authStrategy;
