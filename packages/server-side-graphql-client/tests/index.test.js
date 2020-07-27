@@ -96,7 +96,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Should update single item',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db with single item
-          const seedItems = await seedDb({ keystone, item: testData[0].data });
+          const seedItems = await seedDb({ keystone });
           // Update a single item
           const item = await updateItem({
             keystone,
