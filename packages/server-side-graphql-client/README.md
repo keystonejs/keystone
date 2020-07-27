@@ -142,7 +142,6 @@ addUsers();
 
 ### getItem
 
-[Shared Config Options](#shared-config-options) apply to this function.
 
 Retrieve single item by its id.
 
