@@ -144,10 +144,15 @@
 
   ```js
   // ./admin-ui/index.js
-  import { CreateItem } from '@keystonejs/app-admin-ui/components'
+  import { CreateItem } from '@keystonejs/app-admin-ui/components';
   export default {
     // re-implement the default create item button + custom text
-    listHeaderActions: () => (<div><CreateItem /><p>Hello world</p></div>),
+    listHeaderActions: () => (
+      <div>
+        <CreateItem />
+        <p>Hello world</p>
+      </div>
+    ),
   };
   ```
 
