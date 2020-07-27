@@ -1,5 +1,35 @@
 # @keystonejs/app-admin-ui
 
+## 7.1.0
+
+### Minor Changes
+
+- [`49984caae`](https://github.com/keystonejs/keystone/commit/49984caaec803ed86b027c9634ac6b3f671e9ba7) [#3227](https://github.com/keystonejs/keystone/pull/3227) Thanks [@Vultraz](https://github.com/Vultraz)! - Moved `name` config option from Keystone constructor to Admin UI constructor.
+
+* [`622cc7d69`](https://github.com/keystonejs/keystone/commit/622cc7d6976ecb71f5b135c931ac0fcb4afdb1c7) [#2745](https://github.com/keystonejs/keystone/pull/2745) Thanks [@Vultraz](https://github.com/Vultraz)! - Added defaultPageSize and maximumPageSize config options fto the Admin UI. These can be used to set defaults for all lists (previously, these defaults were 50 and 1000, respectively).
+
+### Patch Changes
+
+- [`e6117d259`](https://github.com/keystonejs/keystone/commit/e6117d259e0ceeacc0b42e3db0bd39dd39537090) [#3221](https://github.com/keystonejs/keystone/pull/3221) Thanks [@singhArmani](https://github.com/singhArmani)! - **Fix**
+
+  Upon filtering out the lists based on the ids, an error could occur. Irrespective of the error, we were still storing the search value into the localStorage.
+  And when user transit back to this list page, the error would persist as we append the search query onto the url.
+
+  This fix looks into any api error, and removes the localStorage search value `location.search`, which gets set when **Filter** form is submitted.
+
+  See #3075
+
+* [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669) [#3146](https://github.com/keystonejs/keystone/pull/3146) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to @primer/octicons-react v10.
+
+* Updated dependencies [[`e710cd445`](https://github.com/keystonejs/keystone/commit/e710cd445bfb71317ca38622cc3795da61d13dff), [`136cb505c`](https://github.com/keystonejs/keystone/commit/136cb505ce11931de7fc470debe438e335588781), [`4b95d8a46`](https://github.com/keystonejs/keystone/commit/4b95d8a46d53d32b2873e350716311441cd37262), [`e63b9f25a`](https://github.com/keystonejs/keystone/commit/e63b9f25adb64cecf0f65c6f97fe30c95e483996), [`5fc97cbf4`](https://github.com/keystonejs/keystone/commit/5fc97cbf4489587a3a8cb38c04ba81fc2cb1fc5a), [`0cbb7e7b0`](https://github.com/keystonejs/keystone/commit/0cbb7e7b096c2a99685631a601fce7273d03cc70), [`283839cfb`](https://github.com/keystonejs/keystone/commit/283839cfb84f80818dd85699e011eee4775e550d), [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669)]:
+  - @keystonejs/session@8.0.0
+  - @keystonejs/fields@14.0.0
+  - @keystonejs/build-field-types@5.2.10
+  - @arch-ui/fields@3.0.3
+  - @arch-ui/options@0.0.22
+  - @arch-ui/pagination@0.0.24
+  - @arch-ui/pill@0.1.16
+
 ## 7.0.5
 
 ### Patch Changes
@@ -92,7 +122,7 @@
 
   ```js
   // ./admin-ui/index.js
-  import { UpdateItems, DeleteItems } '@keystonejs/admin-ui/components/'
+  import { UpdateItems, DeleteItems } form '@keystonejs/app-admin-ui/components'
   export default {
     // re-implement the default delete many and update many items buttons + custom text
     listManageActions: () => (<div><UpdateItems /><DeleteItems /><p>Hello world</p></div>),
@@ -114,7 +144,7 @@
 
   ```js
   // ./admin-ui/index.js
-  import { CreateItem } '@keystonejs/admin-ui/components/'
+  import { CreateItem } from '@keystonejs/app-admin-ui/components'
   export default {
     // re-implement the default create item button + custom text
     listHeaderActions: () => (<div><CreateItem /><p>Hello world</p></div>),

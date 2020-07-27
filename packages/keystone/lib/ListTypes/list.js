@@ -145,16 +145,18 @@ module.exports = class List {
 
     this.createAuxList = (auxKey, auxConfig) =>
       createAuxList(auxKey, {
-        access: Object.entries(this.access).reduce(
-          (acc, [schemaName, access]) => ({
-            ...acc,
-            [schemaName]: Object.entries(access).reduce(
-              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
-              {}
-            ),
-          }),
-          {}
-        ),
+        access: Object.entries(this.access)
+          .filter(([key]) => key !== 'internal')
+          .reduce(
+            (acc, [schemaName, access]) => ({
+              ...acc,
+              [schemaName]: Object.entries(access).reduce(
+                (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+                {}
+              ),
+            }),
+            {}
+          ),
         ...auxConfig,
       });
   }

@@ -1,13 +1,14 @@
-const { ApolloServer } = require('apollo-server-express');
-const { formatError, isInstance: isApolloErrorInstance } = require('apollo-errors');
+const {
+  createError,
+  formatError: _formatError,
+  isInstance: isApolloErrorInstance,
+} = require('apollo-errors');
 const ensureError = require('ensure-error');
 const { serializeError } = require('serialize-error');
 const StackUtils = require('stack-utils');
 const cuid = require('cuid');
 const { omit } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
-
-const { NestedError } = require('./graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
@@ -21,8 +22,15 @@ const cleanError = maybeError => {
   return maybeError;
 };
 
+const NestedError = createError('NestedError', {
+  message: 'Nested errors occurred',
+  options: {
+    showPath: true,
+  },
+});
+
 const safeFormatError = error => {
-  const formattedError = formatError(error, true);
+  const formattedError = _formatError(error, true);
   if (formattedError) {
     return cleanError(formattedError);
   }
@@ -61,7 +69,7 @@ const flattenNestedErrors = error =>
     []
   );
 
-const _formatError = error => {
+const formatError = error => {
   const { originalError } = error;
   if (originalError && !originalError.path) {
     originalError.path = error.path;
@@ -139,34 +147,6 @@ const _formatError = error => {
   }
 };
 
-function createApolloServer(keystone, apolloConfig, schemaName, dev) {
-  // add the Admin GraphQL API
-  const server = new ApolloServer({
-    maxFileSize: 200 * 1024 * 1024,
-    maxFiles: 5,
-    typeDefs: keystone.getTypeDefs({ schemaName }),
-    resolvers: keystone.getResolvers({ schemaName }),
-    context: ({ req }) => keystone.createHTTPContext({ schemaName, req }),
-    ...(process.env.ENGINE_API_KEY
-      ? {
-          engine: { apiKey: process.env.ENGINE_API_KEY },
-          tracing: true,
-        }
-      : {
-          engine: false,
-          // Only enable tracing in dev mode so we can get local debug info, but
-          // don't bother returning that info on prod when the `engine` is
-          // disabled.
-          tracing: dev,
-        }),
-    formatError: _formatError,
-    ...apolloConfig,
-  });
-  keystone.registerSchema(schemaName, server.schema);
-
-  return server;
-}
-
 module.exports = {
-  createApolloServer,
+  formatError,
 };

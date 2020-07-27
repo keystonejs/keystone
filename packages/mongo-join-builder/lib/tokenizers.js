@@ -24,7 +24,11 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
     }
 
     // Eg; search for which field adapter handles `posts_some`, and return that one
-    const fieldAdapter = foundListAdapter.findFieldAdapterForQuerySegment(segment);
+    const fieldAdapter = foundListAdapter.fieldAdapters
+      .filter(adapter => adapter.isRelationship)
+      .find(({ path }) =>
+        [path, `${path}_every`, `${path}_some`, `${path}_none`].includes(segment)
+      );
 
     if (!fieldAdapter) {
       // prettier-ignore
@@ -37,7 +41,7 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
 
     // Then follow the breadcrumbs to find the list adapter
     const currentKey = foundListAdapter.key;
-    foundListAdapter = fieldAdapter.getRefListAdapter();
+    foundListAdapter = fieldAdapter.getListByKey(fieldAdapter.refListKey).adapter;
 
     if (!foundListAdapter) {
       // prettier-ignore
@@ -54,7 +58,9 @@ const getRelatedListAdapterFromQueryPath = (listAdapter, queryPath) => {
 
 const relationshipTokenizer = (listAdapter, queryKey, path, getUID = cuid) => {
   const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path);
-  const fieldAdapter = refListAdapter.findFieldAdapterForQuerySegment(queryKey);
+  const fieldAdapter = refListAdapter.fieldAdapters
+    .filter(adapter => adapter.isRelationship)
+    .find(({ path }) => [path, `${path}_every`, `${path}_some`, `${path}_none`].includes(queryKey));
 
   // Nothing found, return an empty operation
   // TODO: warn?
@@ -65,7 +71,7 @@ const relationshipTokenizer = (listAdapter, queryKey, path, getUID = cuid) => {
     [`${fieldAdapter.path}_some`]: 'some',
     [`${fieldAdapter.path}_none`]: 'none',
   }[queryKey];
-  const refListAdapter2 = fieldAdapter.getRefListAdapter();
+  const refListAdapter2 = fieldAdapter.getListByKey(fieldAdapter.refListKey).adapter;
   const { rel } = fieldAdapter;
   const uniqueField = `${getUID(queryKey)}_${fieldAdapter.path}`;
   const fieldSize = { $size: `$${uniqueField}` };
