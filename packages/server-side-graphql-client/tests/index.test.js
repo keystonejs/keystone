@@ -23,7 +23,7 @@ const testData = [
 ];
 const schemaName = 'testing';
 
-const seedDb = ({ keystone, ...rest }) =>
+const seedDb = ({ keystone }) =>
   createItems({
     keystone,
     listName: 'Test',
