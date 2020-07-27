@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-unsplash",
   "description": "KeystoneJS Unsplash Field Type",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-unsplash",
