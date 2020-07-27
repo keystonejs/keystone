@@ -4,6 +4,8 @@ const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const {
   createItems,
   createItem,
+  deleteItem,
+  deleteItems,
   getItemById,
   getItems,
   updateItem,
@@ -143,6 +145,70 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             { name: 'update-0', age: 30 },
             { name: 'update-1', age: 40 },
           ]);
+        })
+      );
+    });
+    describe('delete', () => {
+      test(
+        'Should delete single item',
+        runner(setupKeystone, async ({ keystone }) => {
+          // Seed the db
+          const { createTests } = await createItems({
+            keystone,
+            listName: 'Test',
+            items: testData,
+            schemaName,
+          });
+
+          // Delete a single item
+          await deleteItem({
+            keystone,
+            listName: 'Test',
+            returnFields: 'name age',
+            itemId: createTests[0].id,
+            schemaName,
+          });
+
+          // Retrieve items
+          const allItems = await getItems({
+            keystone,
+            listName: 'Test',
+            returnFields: 'name, age',
+            schemaName,
+          });
+
+          expect(allItems).toEqual([{ name: 'test2', age: 40 }]);
+        })
+      );
+      test(
+        'Should delete multiple items',
+        runner(setupKeystone, async ({ keystone }) => {
+          // Seed the db
+          const { createTests } = await createItems({
+            keystone,
+            listName: 'Test',
+            items: testData,
+            schemaName,
+          });
+
+          // Delete multiple items
+          await deleteItems({
+            keystone,
+            listName: 'Test',
+            returnFields: 'name age',
+            items: createTests.map(item => item.id),
+            schemaName,
+          });
+
+          // Get all the items back from db
+          const allItems = await getItems({
+            keystone,
+            listName: 'Test',
+            returnFields: 'name, age',
+            schemaName,
+          });
+
+          expect(allItems).toEqual([]);
         })
       );
     });

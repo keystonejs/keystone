@@ -196,18 +196,18 @@ const updateItems = async ({
 const deleteItem = async ({
   keystone,
   listName,
-  item,
+  itemId,
   returnFields = `id`,
   schemaName = 'public',
   extraContext = {},
 }) => {
   const { deleteMutationName } = keystone.lists[listName].gqlNames;
 
-  const query = `mutation ($item: ID!){
-    ${deleteMutationName}(id: $item) { ${returnFields} }
+  const query = `mutation ($id: ID!){
+    ${deleteMutationName}(id: $id) { ${returnFields} }
   }`;
 
-  return runQuery({ keystone, query, variables: { item }, schemaName, extraContext });
+  return runQuery({ keystone, query, variables: { id: itemId }, schemaName, extraContext });
 };
 
 const deleteItems = async ({
