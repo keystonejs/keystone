@@ -236,19 +236,6 @@ module.exports = class Keystone {
     return execute(schema, query, null, context, variables);
   }
 
-  createHTTPContext({ schemaName, req }) {
-    // The GraphQL App uses this method to build up the context required for each incoming query.
-    return {
-      ...this.createContext({
-        schemaName,
-        authentication: { item: req.user, listKey: req.authedListKey },
-        skipAccessControl: false,
-      }),
-      ...this._sessionManager.getContext(req),
-      req,
-    };
-  }
-
   createAuthStrategy(options) {
     const { type: StrategyType, list: listKey, config } = options;
     const { authType } = StrategyType;
@@ -457,7 +444,15 @@ module.exports = class Keystone {
       maxFiles: 5,
       typeDefs: this.getTypeDefs({ schemaName }),
       resolvers: this.getResolvers({ schemaName }),
-      context: ({ req }) => this.createHTTPContext({ schemaName, req }),
+      context: ({ req }) => ({
+        ...this.createContext({
+          schemaName,
+          authentication: { item: req.user, listKey: req.authedListKey },
+          skipAccessControl: false,
+        }),
+        ...this._sessionManager.getContext(req),
+        req,
+      }),
       ...(process.env.ENGINE_API_KEY
         ? {
             engine: { apiKey: process.env.ENGINE_API_KEY },
@@ -473,7 +468,7 @@ module.exports = class Keystone {
       formatError,
       ...apolloConfig,
     });
-    this.registerSchema(schemaName, server.schema);
+    this._schemas[schemaName] = server.schema;
 
     return server;
   }
@@ -514,13 +509,6 @@ module.exports = class Keystone {
         list => list.views
       ),
     };
-  }
-
-  // It's not Keystone core's responsibility to create an executable schema, but
-  // once one is, Keystone wants to be able to expose the ability to query that
-  // schema, so this function enables other modules to register that function.
-  registerSchema(schemaName, schema) {
-    this._schemas[schemaName] = schema;
   }
 
   getTypeDefs({ schemaName }) {

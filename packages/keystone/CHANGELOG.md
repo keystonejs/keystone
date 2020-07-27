@@ -853,7 +853,7 @@
   For example,
 
   ```js
-  parseListAccess({ defaultAccess: false, access: { public: true }, schemaNames: ['public', 'internal'] }
+  parseListAccess({ defaultAccess: false, access: { public: true }, schemaNames: ['public', 'private'] }
   ```
 
   will return
@@ -861,7 +861,7 @@
   ```js
   {
     public: { create: true, read: true, update: true, delete: true },
-    internal: { create: false, read: false, update: false, delete: false },
+    private: { create: false, read: false, update: false, delete: false },
   }
   ```
 
@@ -869,7 +869,7 @@
 
   ```js
   const access = { create: true, read: true, update: true, delete: true };
-  parseListAccess({ access, schemaNames: ['public', 'internal'] }
+  parseListAccess({ access, schemaNames: ['public', 'private'] }
   ```
 
   will return
@@ -877,7 +877,7 @@
   ```js
   {
     public: { create: true, read: true, update: true, delete: true },
-    internal: { create: true, read: true, update: true, delete: true },
+    private: { create: true, read: true, update: true, delete: true },
   }
   ```
 

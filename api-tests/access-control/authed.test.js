@@ -1,5 +1,5 @@
 const { multiAdapterRunners, authedGraphqlRequest } = require('@keystonejs/test-utils');
-const { createItems } = require('@keystonejs/orm');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 const {
   FAKE_ID,
   FAKE_ID_2,
@@ -32,7 +32,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     let keystone,
       items = {};
     beforeAll(async () => {
-      const _before = await before(setupKeystone, { dbName: 'authedTest' });
+      const _before = await before(setupKeystone);
       keystone = _before.keystone;
 
       // ensure every list has at least some data
@@ -52,6 +52,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           listName,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
+          schemaName: 'internal',
         });
         items[listName] = newItems[`create${listName}s`];
       }

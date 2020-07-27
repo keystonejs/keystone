@@ -3,7 +3,7 @@ const express = require('express');
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
 const initialData = require('./data');
-const { createItems } = require('@keystonejs/orm');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 keystone
   .prepare({
@@ -23,6 +23,7 @@ keystone
           keystone,
           listName,
           items: items.map(x => ({ data: x })),
+          schemaName: 'internal',
         });
       }
     }
@@ -39,6 +40,7 @@ keystone
           keystone,
           listName,
           items: items.map(x => ({ data: x })),
+          schemaName: 'internal',
         });
       }
       res.redirect('/admin');

@@ -1,7 +1,7 @@
 const globby = require('globby');
 const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { createItems } = require('@keystonejs/orm');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 describe('Fields', () => {
   const testModules = globby.sync(`packages/fields/src/types/**/test-fixtures.js`, {

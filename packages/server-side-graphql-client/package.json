@@ -1,11 +1,11 @@
 {
-  "name": "@keystonejs/orm",
+  "name": "@keystonejs/server-side-graphql-client",
   "description": "An ORM library for Keystone systems.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "homepage": "https://github.com/keystonejs/keystone",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/orm",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/server-side-graphql-client",
   "engines": {
     "node": ">=10.0.0"
   },
