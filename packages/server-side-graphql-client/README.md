@@ -1,59 +1,23 @@
 <!--[meta]
 section: api
-title: Server-side-graphql-client
+title: Server-side GraphQL Client
 [meta]-->
 
-# Server-Side-GraphQL-Client
+# Server-Side GraphQL Client
 
-This package is a library for running queries and mutations against a Keystone system using functional-programming paradigm.
+A library for running server-side graphQL queries and mutations in Keystone.
 
-The key points are: 
+The key points are:
 
-- It's a client for executing GraphQL queries against your database in the server. 
-- Technically it's a thin wrapper around `Keystone.executeGraphQL` method, which abstracts the process of building GraphQL queries.
-- It adheres to the philosophy of performing CRUD operations using single standard API which keystone provides out of the box. 
-- Provides `runCustomQuery` function to execute custom GraphQL queries. 
-- Respects your access-controls. In the scenarios where you want to manipulate data without altering your access-control, it provides an escape hatch by using an internal GraphQL schema.
+- it's a client for executing GraphQL queries against your database in the server
+- technically it's a thin wrapper around `Keystone.executeGraphQL` method, which abstracts the process of building GraphQL queries
+- it performs CRUD operations using the standard graphQL API which keystone provides
+- in addition to create, read, update and delete functions, it provides `runCustomQuery` to execute custom GraphQL via the same mechanism
+- by default it respects access-controls or can be run against the internal GraphQL schema to bypass access controls
 
 ```js
-// To insert data for the following Keystone list:
-keystone.createList('User', {
-    fields: {
-      name: { type: Text },
-      email: { type: String },
-    },
-  });
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
-const { createItems } =  require('@keystonejs/server-side-graphql-client')
-
-// Seed initial data while setting up keystone app
-const dummyUsers = [{data: {name: 'keystone user', email: 'keystone@test.com'}}];
-
-// Inside your async function 
-await createItems({keystone, listName: 'User', items: dummyUsers, schemaName: 'schema name' })
-```
-
-
-## API
-To perform CRUD operations, you can use the following functions to interact with your database.
-
-- createItem
-- createItems
-- updateItem,
-- updateItems,
-- deleteItem,
-- deleteItems,
-- runCustomQuery
-
-> NOTE: All functions accepts an `config` object as an argument, and returns a `Promise`.
-
-### createItem
-
-Allows you to create single item. 
-
-#### Usage
-```js
-// Keystone list:
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -61,27 +25,76 @@ keystone.createList('User', {
   },
 });
 
-const { createItem } =  require('@keystonejs/server-side-graphql-client')
+const seedUser = async usersData => {
+  await createItems({ keystone, listName: 'User', items: usersData });
+};
 
-const dummyUser = {name: 'keystone user', email: 'keystone@test.com'}}
+// seedUser would normally be called in a differnt script
+seedData([{ data: { name: 'keystone user', email: 'keystone@test.com' } }]);
+```
 
-// Inside your async function 
-const { createUser } = await createItem({keystone, listName: 'User', item: dummyUser, returnFields: `name, email`, schemaName: 'schema name' })
+## API
 
-console.log(createUser); // { name: 'keystone user', email: 'keystone@test.com'}
+To perform CRUD operations, you can use the following functions:
+
+- `createItem`
+- `createItems`
+- `updateItem`
+- `updateItems`
+- `deleteItem`
+- `deleteItems`
+- `runCustomQuery`
+
+> NOTE: All functions accepts an `config` object as an argument, and return a `Promise`.
+
+### Shared Config Options
+
+The following config options are common to all server-side graphQL functions.
+
+| Properties     | Type       | Default    | Description                                                                                                  |
+| -------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
+| `keystone`     | `Keystone` | (required) | Keystone instance.                                                                                           |
+| `listName`     | `String`   | (required) | Keystone list name name.                                                                                     |
+| `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                  |
+| `schemaName`   | `String`   | `public`   | Name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. |
+| `extraContext` | `Object`   | `{}`       | Additional context option object that gets passed onto `keystone.executeGraphQL` method.                     |
+
+### createItem
+
+Allows you to create single item.
+
+#### Usage
+
+```js
+const { createItem } = require('@keystonejs/server-side-graphql-client');
+
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    email: { type: String },
+  },
+});
+
+const addUser = async userInput => {
+  const user = await createItem({
+    keystone,
+    listName: 'User',
+    item: userInput,
+    returnFields: `name, email`,
+  });
+  console.log(user); // { name: 'keystone user', email: 'keystone@test.com'}
+};
+
+addUser({ name: 'keystone user', email: 'keystone@test.com' });
 ```
 
 #### Config
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `item` | `{[fieldName: String]: any}`       | (required)       |   The object to be inserted.       |
-| `returnFields` | `String`       | `id`       | Extract specific data fields from `create` mutation. Use `comma` or `space` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`.|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
+[Shared Config Options](#shared-config-options) apply to this function.
 
+| Properties | Type                            | Default    | Description              |
+| ---------- | ------------------------------- | ---------- | ------------------------ |
+| `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be inserted. |
 
 ### createItems
 
@@ -90,7 +103,8 @@ Allows bulk creation of items.
 #### Usage
 
 ```js
-// To insert data for the following Keystone list:
+const { createItems } = require('@keystonejs/server-side-graphql-client');
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -98,73 +112,81 @@ keystone.createList('User', {
   },
 });
 
-const { createItems } =  require('@keystonejs/server-side-graphql-client')
+const dummyUsers = [
+  {
+    data: { name: 'user1', email: 'user1@test.com' },
+    data: { name: 'user2', email: 'user2@test.com' },
+  },
+];
 
-const dummyUsers = [{data: {name: 'user1', email: 'user1@test.com'}, data: { name: 'user2', email: 'user2@test.com'}}];
-
-// Inside your async function 
-const { createUsers } = await createItems({keystone, listName: 'User', items: dummyUsers, returnFields: `name`, schemaName: 'schema name' })
-
-console.log(createUsers); // [{name: `user2`}, {name: `user2`}]
+const addUsers = async () => {
+  const users = await createItems({
+    keystone,
+    listName: 'User',
+    items: dummyUsers,
+    returnFields: `name`,
+  });
+  console.log(users); // [{name: `user2`}, {name: `user2`}]
+};
+addUsers();
 ```
 
 #### Config
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `items` | `{data: {[fieldNamL: String]: any}}[]`       | (required)       |   The array of objects to be inserted.       |
-| `pageSize` | `Number`       | 500       |  The create mutation batch size. This is useful when you have large set of data to be inserted.|
-| `returnFields` | `String`       | `id`       | Extract specific data fields from `create` mutation. Use `comma` or `space` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
+[Shared Config Options](#shared-config-options) apply to this function.
 
+| Properties | Type                             | Default    | Description                                                                                    |
+| ---------- | -------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be inserted.                                                           |
+| `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
-### getItemById
+### getItem
 
-Retrieve single item by its id. 
+[Shared Config Options](#shared-config-options) apply to this function.
+
+Retrieve single item by its id.
 
 #### Usage
+
 ```js
- // Keystone list: 
- keystone.createList('User', {
-   fields: {
-     name: { type: Text },
-     email: { type: String },
-   },
- });
+const { getItem } = require('@keystonejs/server-side-graphql-client');
 
-const { getItemById } =  require('@keystonejs/server-side-graphql-client')
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    email: { type: String },
+  },
+});
 
-
-// Inside your async function
-// For retrieving a user with id: `123`
-const user = await getItemById({keystone, listName: 'User', itemId: '123', schemaName: 'schema name' })
-
-console.log(user); // { User: { id: '123'} }
+const getUser = async ({ itemId }) => {
+  const user = await getItemById({
+    keystone,
+    listName: 'User',
+    itemId,
+    returnFields: 'id, name',
+  });
+  console.log(user); // User 123: { id: '123', name: 'Aman' }
+};
+getUser({ itemId: '123' });
 ```
 
 #### Config
 
+[Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `itemId` | `String`       | (required)       | The `id` of the item to be retrieved.       |
-| `returnFields` | `String`       | `id`       | Extract specific data fields from query response. Use `comma` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
-
+| Properties | Type     | Default    | Description                           |
+| ---------- | -------- | ---------- | ------------------------------------- |
+| `itemId`   | `String` | (required) | The `id` of the item to be retrieved. |
 
 ### getItems
 
 Retrieve multiple items. Use [where](https://www.keystonejs.com/guides/intro-to-graphql/#where) clause to filter results.
 
 #### Usage
+
 ```js
-// Keystone list: 
+const { getItems } = require('@keystonejs/server-side-graphql-client');
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -172,39 +194,38 @@ keystone.createList('User', {
   },
 });
 
-const { getItems } =  require('@keystonejs/server-side-graphql-client');
-
-// Inside your async function
-// Retrieve all 'User' items
-const allUsers = await getItems({keystone, listName: 'User', returnFields: 'name', schemaName: 'schema name' });
-// Retrieving all users with name: 'user1'
-const allUsersWhere = await getItems({keystone, listName: 'User', returnFields: 'name', schemaName: 'schema name', where: {name: 'user1'}  });
-
-console.log(allUsers); // [{name: 'user1'}, {name: 'user2'}]
-console.log(allUsersWhere); // [{name: 'user1'}]
+const getUsers = async () => {
+  const allUsers = await getItems({ keystone, listName: 'User', returnFields: 'name' });
+  const someUsers = await getItems({
+    keystone,
+    listName: 'User',
+    returnFields: 'name',
+    where: { name: 'user1' },
+  });
+  console.log(allUsers); // [{ name: 'user1' }, { name: 'user2' }];
+  console.log(someUsers); // [{ name: 'user1' }];
+};
+getUsers();
 ```
 
 #### Config
 
+[Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `where`   | `Object`       | `{}` | Limit results to items matching the where clause. [Where](https://www.keystonejs.com/guides/intro-to-graphql/#where) clauses are used to query fields in a keystone list before retrieving data.|
-| `pageSize` | `Number`       | 500       |  The query batch size. This is useful when you have large set of data to be retrieved.|
-| `returnFields` | `String`       | `id`       | Extract specific data fields from query response. Use `comma` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
-
+| Properties | Type                           | Default | Description                                                                                                |
+| ---------- | ------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------- |
+| `where`    | GraphQL `[listName]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
+| `pageSize` | `Number`                       | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
 
 ### updateItem
 
-Update single item. 
+Update single item.
 
 #### Usage
+
 ```js
-// Keystone list: 
+const { updateItem } = require('@keystonejs/server-side-graphql-client');
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -212,41 +233,35 @@ keystone.createList('User', {
   },
 });
 
-// Initial user item : {id: '123', name: 'user1'}
-
-const { getItemById, updateItem } =  require('@keystonejs/server-side-graphql-client')
-
-// Inside your async function
-// Update user name to 'newName'
-await updateItem({keystone, listName: 'User', item: {id: 123, data: {name: 'newName'}}, returnFields: 'name', schemaName: 'schema name' })
-
-// Retrieving updated user with id: 123
-const user = await getItemById({keystone, listName: 'User', itemId: '123', returnFields: 'name', schemaName: 'schema name' })
-
-console.log(user); // { User: { name: 'userName'} }
+const updateUser = async updateUser => {
+  const updatedUser = await updateItem({
+    keystone,
+    listName: 'User',
+    item: updateUser,
+    returnFields: 'name',
+  });
+  console.log(updatedUser); // { name: 'newName'}
+};
+updateUser({ id: 123, data: { name: 'newName' } });
 ```
 
 #### Config
 
+[Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `item` | `{id: String, data: {[fieldNameL: String]: any}}`       | (required)| The item to be updated.|
-| `returnFields` | `String`       | `id`       | Extract specific data fields from update mutation. Use `comma` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
+| Properties | Type                            | Default    | Description             |
+| ---------- | ------------------------------- | ---------- | ----------------------- |
+| `item`     | GraphQL `[listName]UpdateInput` | (required) | The item to be updated. |
 
-
-
-### updateItems(options)
+### updateItems
 
 Allow bulk updating of items.
 
 #### Usage
+
 ```js
-// Keystone list: 
+const { updateItems } =  require('@keystonejs/server-side-graphql-client')
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -254,39 +269,44 @@ keystone.createList('User', {
   },
 });
 
-// Initial user items : [{id: '123', name: 'user1'}, {id: '456', name: 'user2'}]
-const { updateItems, getItems } =  require('@keystonejs/server-side-graphql-client')
+const updateUsers = async (updateUser) => {
+  const users = await updateItems({
+    keystone,
+    listName: 'User',
+    items: [
+      {id: '123', data: {name: 'newName1'},
+      {id: '456', data: {name: 'newName2'}
+    ],
+    returnFields: 'name'
+  });
 
-// Inside your async function
-// Update multiple users 
-await updateItems({keystone, listName: 'User', items: [{id: '123', data: {name: 'newName1'}, {id: '456', data: {name: 'newName2'}}}, returnFields: 'name', schemaName: 'schema name' });
+  console.log(users); // [{name: 'newName1'}, {name: 'newName2'}]
+}
 
-// Retrieve all users
-const allUsers = await getItems({keystone, listName: 'User', returnFields: 'name', schemaName: 'schema name' });
+updateUsers([
+  {id: '123', data: {name: 'newName1'},
+  {id: '456', data: {name: 'newName2'}
+]);
 
-console.log(allUsers); // [{name: 'newName1'}, {name: 'newName2'}]
 ```
+
 #### Config
 
+[Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `items` | `{id: String, data: {[fieldName: String]: any}}[]`       | (required)| The array of items to be updated.|
-| `returnFields` | `String`       | `id`       | Extract specific data fields from update mutation. Use `comma` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
-
-
+| Properties | Type                             | Default    | Description                   |
+| ---------- | -------------------------------- | ---------- | ----------------------------- |
+| `items`    | GraphQL `[listName]sUpdateInput` | (required) | Array of items to be updated. |
 
 ### deleteItem
 
-Delete single item. 
+Delete single item.
 
 #### Usage
+
 ```js
-// Keystone list: 
+const { deleteItem } = require('@keystonejs/server-side-graphql-client');
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -294,36 +314,30 @@ keystone.createList('User', {
   },
 });
 
-const { deleteItem } =  require('@keystonejs/server-side-graphql-client');
-
-// Inside your async function
-// Delete a user with id: `123`
-const user = await deleteItem({keystone, listName: 'User', itemId: '123', schemaName: 'schema name' });
-
-console.log(user); // {deleteUser: {id: '123'}}
+const deleteUser = async itemId => {
+  const user = await deleteItem({ keystone, listName: 'User', itemId });
+  console.log(user); // { id: '123' }
+};
+deleteUser('123');
 ```
 
 #### Config
 
+[Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `itemId` | `String`       | (required)       | The `id` of the item to be deleted.       |
-| `returnFields` | `String`       | `id`       | Extract specific data fields from delete mutation. Use `comma` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
-
-
+| Properties | Type     | Default    | Description                         |
+| ---------- | -------- | ---------- | ----------------------------------- |
+| `itemId`   | `String` | (required) | The `id` of the item to be deleted. |
 
 ### deleteItems
 
 Allow bulk deleting of items.
 
 #### Usage
+
 ```js
-// Keystone list: 
+const { deleteItems } = require('@keystonejs/server-side-graphql-client');
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -331,38 +345,27 @@ keystone.createList('User', {
   },
 });
 
-const { deleteItems } =  require('@keystonejs/server-side-graphql-client');
-
-// Inside your async function
-// Delete all users with ids: ['123', '456']
-const deletedUsers = await deleteItems({keystone, listName: 'User', items: ['123', '456'], schemaName: 'schema name' });
-
-console.log(deletedUsers); // {deteteUsers: [{id: '123', {id: '456'}}]}
+const deletedUsers = async items => {
+  const users = await deleteItems({ keystone, listName: 'User', items });
+  console.log(users); // [{id: '123'}, {id: '456'}]
+};
+deletedUsers(['123', '456']);
 ```
+
 #### Config
 
+[Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `listName`   | `String`       | (required) | The keystone list name.                                                |
-| `items` | `String[]`       | (required)| The array of item `ids` to be deleted.|
-| `returnFields` | `String`       | `id`       | Extract specific data fields from delete mutation. Use `comma` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
+| Properties | Type       | Default    | Description                        |
+| ---------- | ---------- | ---------- | ---------------------------------- |
+| `itemId`   | `String[]` | (required) | Array of item `id`s to be deleted. |
 
-### runCustomQuery(options)
+### runCustomQuery
 
 Allow executing a custom query.
 
 #### Config
 
-
-| Properties   | Type           | Default    | Description                                                   |
-| -------- | -------------- | ---------- | ----------------------------------------------------------------- |
-| `keystone`   | `Keystone` | (required) | A keystone instance used to set up the app.                       |
-| `query` | `DocumentNode`  | (required)| The GraphQL query.|
-| `variables` | `{[key: String]: any}`       | (required)| An object containing all of the variables your query needs to execute |
-| `returnFields` | `String`       | `id`       | Extract specific data fields from delete mutation. Use `comma` separated names of fields for extracting multiple fields.|
-| `schemaName` | `String`       | `public`       | The name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. This will set all access-control to `true`|
-| `extraContext` | `Object`       | `{}`       | The additional context option object that gets passed onto `keystone.executeGraphQL` method.|
+| Properties  | Type   | Default    | Description                                          |
+| ----------- | ------ | ---------- | ---------------------------------------------------- |
+| `variables` | Object | (required) | Object containing variables your custom query needs. |
