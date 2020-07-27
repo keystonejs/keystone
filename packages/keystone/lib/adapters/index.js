@@ -19,7 +19,7 @@ class BaseKeystoneAdapter {
 
   async connect({ rels }) {
     // Connect to the database
-    await this._connect({}, this.config);
+    await this._connect({ rels }, this.config);
 
     // Set up all list adapters
     try {
@@ -142,12 +142,6 @@ class BaseListAdapter {
 
   itemsQueryMeta(args) {
     return this.itemsQuery(args, { meta: true });
-  }
-
-  findFieldAdapterForQuerySegment(segment) {
-    return this.fieldAdapters
-      .filter(adapter => adapter.isRelationship)
-      .find(adapter => adapter.supportsRelationshipQuery(segment));
   }
 
   getFieldAdapterByPath(path) {

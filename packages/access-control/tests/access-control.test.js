@@ -7,6 +7,14 @@ import {
   validateAuthAccessControl,
 } from '../';
 
+const internalAccess = {
+  create: true,
+  read: true,
+  update: true,
+  delete: true,
+  auth: true,
+};
+
 describe('Access control package tests', () => {
   describe('parseListAccess', () => {
     const statics = [true, false]; // type StaticAccess = boolean;
@@ -19,6 +27,7 @@ describe('Access control package tests', () => {
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         expect(parseListAccess({ defaultAccess, schemaNames })).toEqual({
+          internal: internalAccess,
           public: {
             create: defaultAccess,
             read: defaultAccess,
@@ -40,6 +49,7 @@ describe('Access control package tests', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(access => {
           expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+            internal: internalAccess,
             public: {
               create: access,
               read: access,
@@ -59,6 +69,7 @@ describe('Access control package tests', () => {
           [...statics, ...imperatives, ...declaratives].forEach(opAccess => {
             const access = { [operation]: opAccess };
             expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+              internal: internalAccess,
               public: {
                 create: defaultAccess,
                 read: defaultAccess,
@@ -84,6 +95,7 @@ describe('Access control package tests', () => {
         [...statics, ...imperatives].forEach(opAccess => {
           const access = { create: opAccess };
           expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+            internal: internalAccess,
             public: {
               create: opAccess,
               read: defaultAccess,
@@ -113,19 +125,25 @@ describe('Access control package tests', () => {
         Error
       );
     });
+    test('creating a `internal` schema should throw', () => {
+      expect(() => parseListAccess({ access: true, schemaNames: ['public', 'internal'] })).toThrow(
+        Error
+      );
+    });
 
     test('Schema names matching the access keys', () => {
-      const schemaNames = ['public', 'internal'];
+      const schemaNames = ['public', 'private'];
       const access = { public: true };
       const defaultAccess = false;
       expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+        internal: internalAccess,
         public: { create: true, read: true, update: true, delete: true, auth: true },
-        internal: { create: false, read: false, update: false, delete: false, auth: false },
+        private: { create: false, read: false, update: false, delete: false, auth: false },
       });
     });
 
     test('Access keys which dont match the schema keys should throw', () => {
-      const schemaNames = ['public', 'internal'];
+      const schemaNames = ['public', 'private'];
       const access = { public: true, missing: false };
       const defaultAccess = false;
       expect(() => parseListAccess({ defaultAccess, access, schemaNames })).toThrow(Error);
@@ -140,6 +158,11 @@ describe('Access control package tests', () => {
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         expect(parseFieldAccess({ defaultAccess, schemaNames })).toEqual({
+          internal: {
+            create: true,
+            read: true,
+            update: true,
+          },
           public: {
             create: defaultAccess,
             read: defaultAccess,
@@ -158,6 +181,11 @@ describe('Access control package tests', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(access => {
           expect(parseFieldAccess({ defaultAccess, access, schemaNames })).toEqual({
+            internal: {
+              create: true,
+              read: true,
+              update: true,
+            },
             public: {
               create: access,
               read: access,
@@ -174,6 +202,11 @@ describe('Access control package tests', () => {
           [...statics, ...imperatives].forEach(opAccess => {
             const access = { [operation]: opAccess };
             expect(parseFieldAccess({ defaultAccess, access, schemaNames })).toEqual({
+              internal: {
+                create: true,
+                read: true,
+                update: true,
+              },
               public: {
                 create: defaultAccess,
                 read: defaultAccess,
@@ -209,6 +242,7 @@ describe('Access control package tests', () => {
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         expect(parseCustomAccess({ defaultAccess, schemaNames })).toEqual({
+          internal: true,
           public: defaultAccess,
         });
       });
@@ -218,6 +252,7 @@ describe('Access control package tests', () => {
       [...statics, ...imperatives, ...declaratives].forEach(defaultAccess => {
         [...statics, ...imperatives, ...declaratives].forEach(access => {
           expect(parseCustomAccess({ defaultAccess, access, schemaNames })).toEqual({
+            internal: true,
             public: access,
           });
         });
@@ -236,17 +271,18 @@ describe('Access control package tests', () => {
     });
 
     test('Schema names matching the access keys', () => {
-      const schemaNames = ['public', 'internal'];
+      const schemaNames = ['public', 'private'];
       const access = { public: true };
       const defaultAccess = false;
       expect(parseCustomAccess({ defaultAccess, access, schemaNames })).toEqual({
+        internal: true,
         public: true,
-        internal: false,
+        private: false,
       });
     });
 
     test('Access keys which dont match the schema keys should throw', () => {
-      const schemaNames = ['public', 'internal'];
+      const schemaNames = ['public', 'private'];
       const access = { public: true, missing: false };
       const defaultAccess = false;
       expect(() => parseCustomAccess({ defaultAccess, access, schemaNames })).toThrow(Error);
