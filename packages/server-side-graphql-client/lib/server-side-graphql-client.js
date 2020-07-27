@@ -48,10 +48,10 @@ const _runChunkedMutation = async ({
 
   /*
    * The result is of the format: [{createUsers: [{id: '123', name: 'aman'}]}, {createUsers: [{id: '456', name: 'mike'}]}].
-   * We need to combine all objects into one array keyed by the `createUsers`, such that, the output is: {createUsers: [{id: '123', name: 'aman'}, {id: '456', name: 'Mike'}]}
+   * We need to combine all objects into one array keyed by the `createUsers`, such that, the output is: [{id: '123', name: 'aman'}, {id: '456', name: 'Mike'}]
    */
 
-  return { [gqlName]: [].concat(...result.map(item => item[gqlName])) };
+  return result.map(item => item[gqlName]).flat(1);
 };
 
 const createItem = async ({
@@ -68,7 +68,8 @@ const createItem = async ({
     ${createMutationName}(data: $item) { ${returnFields} }
   }`;
 
-  return runQuery({ keystone, query, variables: { item }, schemaName, extraContext });
+  const result = await runQuery({ keystone, query, variables: { item }, schemaName, extraContext });
+  return result[createMutationName];
 };
 
 const createItems = async ({
@@ -106,8 +107,16 @@ const getItemById = async ({
   extraContext = {},
 }) => {
   const { itemQueryName } = keystone.lists[listName].gqlNames;
+
   const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
-  return runQuery({ keystone, query, variables: { id: itemId }, schemaName, extraContext });
+  const result = await runQuery({
+    keystone,
+    query,
+    variables: { id: itemId },
+    schemaName,
+    extraContext,
+  });
+  return result[itemQueryName];
 };
 
 const getItems = async ({
@@ -159,13 +168,15 @@ const updateItem = async ({
     ${updateMutationName}(id: $id, data: $data) { ${returnFields} }
   }`;
 
-  return runQuery({
+  const result = await runQuery({
     keystone,
     query,
     variables: { id: item.id, data: item.data },
     schemaName,
     extraContext,
   });
+
+  return result[updateMutationName];
 };
 
 const updateItems = async ({
@@ -207,7 +218,14 @@ const deleteItem = async ({
     ${deleteMutationName}(id: $id) { ${returnFields} }
   }`;
 
-  return runQuery({ keystone, query, variables: { id: itemId }, schemaName, extraContext });
+  const result = await runQuery({
+    keystone,
+    query,
+    variables: { id: itemId },
+    schemaName,
+    extraContext,
+  });
+  return result[deleteMutationName];
 };
 
 const deleteItems = async ({
