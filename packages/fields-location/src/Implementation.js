@@ -1,4 +1,4 @@
-import { Implementation } from '../../Implementation';
+import { Implementation } from '@keystonejs/fields';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import mongoose from 'mongoose';
