@@ -383,7 +383,7 @@ deletedUsers(['123', '456']);
 
 ### runCustomQuery
 
-Allow executing a custom query.
+Execute a custom query.
 
 #### Config
 
