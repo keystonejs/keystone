@@ -89,7 +89,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const items = await updateItems({
             keystone,
             listKey: 'Test',
-            items: seedItems.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
+            items: seedItems.map((item, i) => ({
+              id: item.id,
+              data: { name: `update-${i}` },
+            })),
             returnFields: 'name, age',
           });
 
