@@ -5,37 +5,53 @@ title: Server-side GraphQL Client
 
 # Server-Side GraphQL Client
 
-A library for running server-side graphQL queries and mutations in Keystone.
+A library for running server-side graphQL queries and mutations in Keystone. It replaces the `keystone.createItems` method with a set of utility functions to generate and execute graphQL queries.
 
-The key points are:
+It differs from running queries directly with `keystone.executeGraphQL` by abstracting away a lot of the GraphQL syntax. You provide these functions with a `listName` and the data execute the query and it returns items without the internal graphQL list names.
 
-- it's a client for executing GraphQL queries against your database in the server
-- technically it's a thin wrapper around `Keystone.executeGraphQL` method, which abstracts the process of building GraphQL queries
-- it performs CRUD operations using the standard graphQL API which keystone provides
-- in addition to create, read, update and delete functions, it provides `runCustomQuery` to execute custom GraphQL via the same mechanism
-- by default it respects access-controls or can be run against the internal GraphQL schema to bypass access controls
+These functions use a server-side graphQL client that is based on same schema as your public API. You can also pass a `schemaName` to execute queries against a different schema including the private `internal` schema if you want to bypass access control checks.
+
+You can pass `extraContext`, which is added to the apollo context object, allowing you to execute queries as an authenticated user or provide any additional context for custom resolvers.
+
+These utilities can be used for a wide range of specific use-cases, some more common examples might include simple data seeding:
 
 ```js
-const { createItems } = require('@keystonejs/server-side-graphql-client');
-
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: String },
-  },
-});
-
-const seedUser = async usersData => {
+const seedUsers = async usersData => {
   await createItems({ keystone, listName: 'User', items: usersData });
 };
+```
 
-// seedUser would normally be called in a differnt script
-seedData([{ data: { name: 'keystone user', email: 'keystone@test.com' } }]);
+or fetching data inside hooks:
+
+```js
+// This example will copy data from a related field if set
+keystone.createList('Page', {
+  fields: {
+    name: { type: Text },
+    content: { type: Text },
+    copy: { type: Relationship, ref: 'Page' },
+  },
+  hooks: {
+    resolveInput: async ({ resolvedData }) => {
+      // Whenever copy field is set fetch the related data
+      const pageToCopy = resolvedData.copy
+        ? await getItem({
+            keystone,
+            listName: 'Page',
+            itemId: resolvedData.copy,
+            returnFields: 'name, content',
+          })
+        : {};
+      // resolve data from the copied item and unset the relationship
+      return { ...resolvedData, ...pageToCopy, copy: undefined };
+    },
+  },
+});
 ```
 
 ## API
 
-To perform CRUD operations, you can use the following functions:
+To perform CRUD operations, use the following functions:
 
 - `createItem`
 - `createItems`
@@ -43,7 +59,8 @@ To perform CRUD operations, you can use the following functions:
 - `updateItems`
 - `deleteItem`
 - `deleteItems`
-- `runCustomQuery`
+
+For custom queries use `runCustomQuery`.
 
 > NOTE: All functions accepts an `config` object as an argument, and return a `Promise`.
 
@@ -141,7 +158,6 @@ addUsers();
 | `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
 ### getItem
-
 
 Retrieve single item by its id.
 
