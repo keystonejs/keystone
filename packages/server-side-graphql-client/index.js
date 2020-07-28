@@ -8,7 +8,7 @@ const {
   updateItems,
   deleteItem,
   deleteItems,
-} = require("./lib/server-side-graphql-client");
+} = require('./lib/server-side-graphql-client');
 
 module.exports = {
   runCustomQuery,
