@@ -20,7 +20,7 @@ const seedDb = ({ keystone }) =>
     keystone,
     listName: 'Test',
     items: testData,
-    schemaName,
+    context: keystone.createContext({ schemaName }),
   });
 
 function setupKeystone(adapterName) {
@@ -41,14 +41,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('create', () => {
       test(
-        'createItem, getItem: Should create and get single item',
+        'createItem: Should create and get single item',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           const item = await createItem({
             keystone,
             listName: 'Test',
             item: testData[0].data,
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
           expect(typeof item.id).toBe('string');
 
@@ -58,24 +58,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             listName: 'Test',
             returnFields: 'name, age',
             itemId: item.id,
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(singleItem).toEqual(testData[0].data);
         })
       );
       test(
-        'Should create and get multiple items',
+        'createItems: Should create and get multiple items',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
-          await seedDb({ keystone });
-
+          await createItems({
+            keystone,
+            listName: 'Test',
+            items: testData,
+            context: keystone.createContext({ schemaName }),
+          });
           // Get all the items back from db
           const allItems = await getItems({
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(allItems).toEqual(testData.map(x => x.data));
@@ -84,7 +88,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     });
     describe('udpate', () => {
       test(
-        'Should update single item',
+        'updateItem: Should update single item',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           const seedItems = await seedDb({ keystone });
@@ -94,25 +98,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             listName: 'Test',
             item: { id: seedItems[0].id, data: { name: 'updateTest' } },
             returnFields: 'name, age',
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
           expect(item).toEqual({ name: 'updateTest', age: 30 });
         })
       );
 
       test(
-        'Should update multiple items',
+        'updateItems: Should update multiple items',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           const seedItems = await seedDb({ keystone });
-
           // Update multiple items
           const items = await updateItems({
             keystone,
             listName: 'Test',
             items: seedItems.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
             returnFields: 'name, age',
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(items).toEqual([
@@ -124,18 +127,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     });
     describe('delete', () => {
       test(
-        'Should delete single item',
+        'deleteItem: Should delete single item',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           const items = await seedDb({ keystone });
-
           // Delete a single item
           await deleteItem({
             keystone,
             listName: 'Test',
             returnFields: 'name age',
             itemId: items[0].id,
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           // Retrieve items
@@ -143,14 +145,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(allItems).toEqual([{ name: 'test2', age: 40 }]);
         })
       );
       test(
-        'Should delete multiple items',
+        'deleteItems: Should delete multiple items',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           const items = await seedDb({ keystone });
@@ -160,7 +162,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             listName: 'Test',
             returnFields: 'name age',
             items: items.map(item => item.id),
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(deletedItems).toEqual(testData.map(d => d.data));
@@ -170,7 +172,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(allItems).toEqual([]);
@@ -183,12 +185,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           await seedDb({ keystone });
-
           const allItems = await getItems({
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
-            schemaName,
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(allItems).toEqual(testData.map(x => x.data));
@@ -199,13 +200,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           await seedDb({ keystone });
-
           const allItems = await getItems({
             keystone,
             listName: 'Test',
-            schemaName,
             returnFields: 'name',
             where: { name: 'test' },
+            context: keystone.createContext({ schemaName }),
           });
 
           expect(allItems).toEqual([{ name: 'test' }]);

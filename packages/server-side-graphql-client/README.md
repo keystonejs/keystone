@@ -5,13 +5,43 @@ title: Server-side graphQL client
 
 # Server-side graphQL client
 
-A library for running server-side graphQL queries and mutations in Keystone.
+This library provides wrapper functions around `keystone.executeGraphQL` to make it easier to run server-side queries and mutations without needing to write boilerplate GraphQL.
 
-It differs from running queries directly with `keystone.executeGraphQL` by abstracting away a lot of the GraphQL syntax. You provide these functions with a `listName` and the data execute the query and it returns items without the internal graphQL list names.
+Creating a new `User` item would be written as follows using `keystone.executeGraphQL`:
 
-These functions use a server-side graphQL client that is based on same schema as your public API. You can also pass a `schemaName` to execute queries against a different schema including the private `internal` schema if you want to bypass access control checks.
+```js
+const { data, errors } = await keystone.executeGraphQL({
+  query: `mutation ($item: createUserInput){
+    createUser(data: $item) {
+      id
+      name
+    }
+  }`,
+  variables: { item: { name: 'Alice' } },
+});
+const user = data.createUserInput;
+```
 
-You can pass `extraContext`, which is added to the apollo context object, allowing you to execute queries as an authenticated user or provide any additional context for custom resolvers.
+Using `@keystonejs/server-side-graphql-client` we can replace this with
+
+```js
+const { createItem } = require('@keystonejs/server-side-graphql-client');
+
+const user = await createItem({
+  keystone,
+  listName: 'User',
+  item: { name: 'Alice' },
+  returnFields: `id name`,
+});
+```
+
+There are three key differences between `keystone.executeGraphQL` and `createItem` (and other functions from this package):
+
+1. If there is an error, `createItem` will be thrown as an exception, rather than providing the error as a return value.
+2. `createItem` runs with *access control disabled*. This is suitable for use cases such as seeding data or other server side scripts where the query is triggered by the system, rather than a specific user. This can be controlled with the `context` option.
+3. All queries are internally paginated and all mutations are internally chunked. This can be controlled with the `pageSize` option.
+
+### Use cases
 
 These utilities can be used for a wide range of specific use-cases, some more common examples might include simple data seeding:
 
@@ -68,13 +98,12 @@ For custom queries use [`runCustomQuery`](#runcustomquery).
 
 The following config options are common to all server-side graphQL functions.
 
-| Properties     | Type       | Default    | Description                                                                                              |
-| -------------- | ---------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| `keystone`     | `Keystone` | (required) | Keystone instance.                                                                                       |
-| `listName`     | `String`   | (required) | Keystone list name.                                                                                      |
-| `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                              |
-| `schemaName`   | `String`   | `public`   | Name of your GraphQL schema. To override the access-control mechanism, provide `internal` as schemaName. |
-| `extraContext` | `Object`   | `{}`       | Additional context option object that gets passed onto `keystone.executeGraphQL` method.                 |
+| Properties     | Type       | Default    | Description                                                                                                                                                                                                         |
+| -------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `keystone`     | `Keystone` | (required) | Keystone instance.                                                                                                                                                                                                  |
+| `listName`     | `String`   | (required) | Keystone list name.                                                                                                                                                                                                 |
+| `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                                                                                                                         |
+| `context`      | `Object`   | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
 
 ### createItem
 
@@ -109,8 +138,8 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                            | Default    | Description              |
-| ---------- | ------------------------------- | ---------- | ------------------------ |
+| Properties | Type                            | Default    | Description             |
+| ---------- | ------------------------------- | ---------- | ----------------------- |
 | `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be created. |
 
 ### createItems
@@ -154,7 +183,7 @@ addUsers();
 
 | Properties | Type                             | Default    | Description                                                                                    |
 | ---------- | -------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
-| `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be created.                                                           |
+| `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be created.                                                            |
 | `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
 ### getItem
@@ -299,7 +328,6 @@ updateUsers([
   {id: '123', data: {name: 'newName1'},
   {id: '456', data: {name: 'newName2'}
 ]);
-
 ```
 
 #### Config
