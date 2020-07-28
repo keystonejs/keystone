@@ -12,15 +12,7 @@ const {
   updateItems,
 } = require('../lib/server-side-graphql-client');
 
-const testData = [
-  {
-    data: {
-      name: 'test',
-      age: 30,
-    },
-  },
-  { data: { name: 'test2', age: 40 } },
-];
+const testData = [{ data: { name: 'test', age: 30 } }, { data: { name: 'test2', age: 40 } }];
 const schemaName = 'testing';
 
 const seedDb = ({ keystone }) =>
