@@ -8,5 +8,9 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/server-side-graphql-client",
   "engines": {
     "node": ">=10.0.0"
+  },
+  "devDependencies": {
+    "@keystonejs/fields": "*",
+    "@keystonejs/test-utils": "*"
   }
 }
