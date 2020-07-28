@@ -38,7 +38,7 @@ const user = await createItem({
 There are three key differences between `keystone.executeGraphQL` and `createItem` (and other functions from this package):
 
 1. If there is an error, `createItem` will be thrown as an exception, rather than providing the error as a return value.
-2. `createItem` runs with *access control disabled*. This is suitable for use cases such as seeding data or other server side scripts where the query is triggered by the system, rather than a specific user. This can be controlled with the `context` option.
+2. `createItem` runs with _access control disabled_. This is suitable for use cases such as seeding data or other server side scripts where the query is triggered by the system, rather than a specific user. This can be controlled with the `context` option.
 3. All queries are internally paginated and all mutations are internally chunked. This can be controlled with the `pageSize` option.
 
 ### Use cases
@@ -105,9 +105,9 @@ The following config options are common to all server-side graphQL functions.
 | `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                                                                                                                         |
 | `context`      | `Object`   | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
 
-### createItem
+### `createItem`
 
-Allows you to create single item.
+Create a single item.
 
 #### Usage
 
@@ -142,9 +142,9 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 | ---------- | ------------------------------- | ---------- | ----------------------- |
 | `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be created. |
 
-### createItems
+### `createItems`
 
-Allows bulk creation of items.
+Create multiple items.
 
 #### Usage
 
@@ -186,7 +186,7 @@ addUsers();
 | `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be created.                                                            |
 | `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
-### getItem
+### `getItem`
 
 Retrieve a single item by its ID.
 
@@ -222,7 +222,7 @@ getUser({ itemId: '123' });
 | ---------- | -------- | ---------- | ------------------------------------- |
 | `itemId`   | `String` | (required) | The `id` of the item to be retrieved. |
 
-### getItems
+### `getItems`
 
 Retrieve multiple items. Use [where](https://www.keystonejs.com/guides/intro-to-graphql/#where) clause to filter results.
 
@@ -261,7 +261,7 @@ getUsers();
 | `where`    | GraphQL `[listName]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
 | `pageSize` | `Number`                       | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
 
-### updateItem
+### `updateItem`
 
 Update a single item.
 
@@ -297,7 +297,7 @@ updateUser({ id: '123', data: { name: 'newName' } });
 | ---------- | ------------------------------- | ---------- | ----------------------- |
 | `item`     | GraphQL `[listName]UpdateInput` | (required) | The item to be updated. |
 
-### updateItems
+### `updateItems`
 
 Update multiple items.
 
@@ -338,7 +338,7 @@ updateUsers([
 | ---------- | -------------------------------- | ---------- | ----------------------------- |
 | `items`    | GraphQL `[listName]sUpdateInput` | (required) | Array of items to be updated. |
 
-### deleteItem
+### `deleteItem`
 
 Delete a single item.
 
@@ -369,7 +369,7 @@ deleteUser('123');
 | ---------- | -------- | ---------- | ----------------------------------- |
 | `itemId`   | `String` | (required) | The `id` of the item to be deleted. |
 
-### deleteItems
+### `deleteItems`
 
 Delete multiple items.
 
@@ -400,12 +400,15 @@ deletedUsers(['123', '456']);
 | ---------- | ---------- | ---------- | ---------------------------------- |
 | `itemId`   | `String[]` | (required) | Array of item `id`s to be deleted. |
 
-### runCustomQuery
+### `runCustomQuery`
 
 Execute a custom query.
 
 #### Config
 
-| Properties  | Type   | Default    | Description                                          |
-| ----------- | ------ | ---------- | ---------------------------------------------------- |
-| `variables` | Object | (required) | Object containing variables your custom query needs. |
+| Properties  | Type     | Default    | Description                                                                                                                                                                                                         |
+| ----------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `keystone`  | Object   | (required) | Keystone instance.                                                                                                                                                                                                  |
+| `query`     | String   | (required) | The GraphQL query to execute.                                                                                                                                                                                       |
+| `variables` | Object   | (required) | Object containing variables your custom query needs.                                                                                                                                                                |
+| `context`   | `Object` | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
