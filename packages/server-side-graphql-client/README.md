@@ -321,7 +321,7 @@ updateUsers([
 
 ### deleteItem
 
-Delete single item.
+Delete a single item.
 
 #### Usage
 
