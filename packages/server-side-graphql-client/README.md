@@ -62,15 +62,6 @@ To perform CRUD operations, use the following functions:
 
 For custom queries use [`runCustomQuery`](#runcustomquery).
 
-- `createItem`
-- `createItems`
-- `updateItem`
-- `updateItems`
-- `deleteItem`
-- `deleteItems`
-
-For custom queries use `runCustomQuery`
-
 > NOTE: All functions accepts a config object as an argument, and return a `Promise`.
 
 ### Shared Config Options
