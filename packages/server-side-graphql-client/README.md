@@ -5,7 +5,7 @@ title: Server-side graphQL client
 
 # Server-side graphQL client
 
-A library for running server-side graphQL queries and mutations in Keystone. It replaces the `keystone.createItems` method with a set of utility functions to generate and execute graphQL queries.
+A library for running server-side graphQL queries and mutations in Keystone.
 
 It differs from running queries directly with `keystone.executeGraphQL` by abstracting away a lot of the GraphQL syntax. You provide these functions with a `listName` and the data execute the query and it returns items without the internal graphQL list names.
 
