@@ -1,7 +1,7 @@
 const {
   runCustomQuery,
   getItem,
-  getAllItems,
+  getItems,
   createItems,
   createItem,
   updateItem,
@@ -13,7 +13,7 @@ const {
 module.exports = {
   runCustomQuery,
   getItem,
-  getAllItems,
+  getItems,
   createItems,
   createItem,
   updateItem,

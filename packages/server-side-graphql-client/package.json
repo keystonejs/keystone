@@ -1,6 +1,6 @@
 {
   "name": "@keystonejs/server-side-graphql-client",
-  "description": "A library for running server-side graphQL queries and mutations against in Keystone.",
+  "description": "A library for running server-side graphQL queries and mutations in Keystone.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
