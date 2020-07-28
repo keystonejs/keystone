@@ -29,7 +29,6 @@ const seedDb = ({ keystone }) =>
     listName: 'Test',
     items: testData,
     schemaName,
-    ...rest,
   });
 
 function setupKeystone(adapterName) {
@@ -62,7 +61,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
-          const getItem = await getItem({
+          const singleItem = await getItem({
             keystone,
             listName: 'Test',
             returnFields: 'name, age',
@@ -70,7 +69,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             schemaName,
           });
 
-          expect(getItem).toEqual(testData[0].data);
+          expect(singleItem).toEqual(testData[0].data);
         })
       );
       test(
@@ -95,7 +94,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'Should update single item',
         runner(setupKeystone, async ({ keystone }) => {
-          // Seed the db with single item
+          // Seed the db
           const seedItems = await seedDb({ keystone });
           // Update a single item
           const item = await updateItem({
@@ -188,7 +187,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     });
     describe('getItems', () => {
       test(
-        'Should get all items when no where caluse',
+        'Should get all items when no where clause',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           await seedDb({ keystone });

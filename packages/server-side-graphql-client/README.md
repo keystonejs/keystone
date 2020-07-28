@@ -29,7 +29,7 @@ const seedUser = async usersData => {
   await createItems({ keystone, listName: 'User', items: usersData });
 };
 
-// seedUser would normally be called in a differnt script
+// seedUser would normally be called in a different script
 seedData([{ data: { name: 'keystone user', email: 'keystone@test.com' } }]);
 ```
 
@@ -45,7 +45,7 @@ To perform CRUD operations, you can use the following functions:
 - `deleteItems`
 - `runCustomQuery`
 
-> NOTE: All functions accepts an `config` object as an argument, and return a `Promise`.
+> NOTE: All functions accepts a config object as an argument, and return a `Promise`.
 
 ### Shared Config Options
 
@@ -54,9 +54,9 @@ The following config options are common to all server-side graphQL functions.
 | Properties     | Type       | Default    | Description                                                                                                  |
 | -------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
 | `keystone`     | `Keystone` | (required) | Keystone instance.                                                                                           |
-| `listName`     | `String`   | (required) | Keystone list name name.                                                                                     |
+| `listName`     | `String`   | (required) | Keystone list name.                                                                                     |
 | `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                  |
-| `schemaName`   | `String`   | `public`   | Name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. |
+| `schemaName`   | `String`   | `public`   | Name of your GraphQL schema. To override the access-control mechanism, provide `internal` as schemaName. |
 | `extraContext` | `Object`   | `{}`       | Additional context option object that gets passed onto `keystone.executeGraphQL` method.                     |
 
 ### createItem
@@ -241,7 +241,7 @@ const updateUser = async updateUser => {
   });
   console.log(updatedUser); // { name: 'newName'}
 };
-updateUser({ id: 123, data: { name: 'newName' } });
+updateUser({ id: '123', data: { name: 'newName' } });
 ```
 
 #### Config
@@ -268,14 +268,11 @@ keystone.createList('User', {
   },
 });
 
-const updateUsers = async (updateUser) => {
+const updateUsers = async (updateUsers) => {
   const users = await updateItems({
     keystone,
     listName: 'User',
-    items: [
-      {id: '123', data: {name: 'newName1'},
-      {id: '456', data: {name: 'newName2'}
-    ],
+    items: updateUsers,
     returnFields: 'name'
   });
 
