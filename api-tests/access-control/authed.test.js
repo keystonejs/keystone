@@ -54,7 +54,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           returnFields: 'id, name',
           schemaName: 'internal',
         });
-        items[listName] = newItems[`create${listName}s`];
+        items[listName] = newItems;
       }
     });
     afterAll(async () => {
