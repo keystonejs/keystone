@@ -2,7 +2,7 @@
 '@keystonejs/server-side-graphql-client': major
 ---
 
-Added a new package `@keystonejs/server-side-graphql-client` a library for running server-side graphQL queries and mutations in Keystone. 
+This is the initial release of `@keystonejs/server-side-graphql-client,` a library for running server-side graphQL queries and mutations in Keystone. 
 
 It is intended to replace the `keystone.createItems` method with a set of utility functions to generate and execute graphQL queries.
 

@@ -62,7 +62,7 @@ To perform CRUD operations, use the following functions:
 
 For custom queries use [`runCustomQuery`](#runcustomquery).
 
-> NOTE: All functions accepts a config object as an argument, and return a `Promise`.
+> NOTE: All functions accept a config object as an argument, and return a `Promise`.
 
 ### Shared Config Options
 
@@ -111,7 +111,7 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 
 | Properties | Type                            | Default    | Description              |
 | ---------- | ------------------------------- | ---------- | ------------------------ |
-| `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be inserted. |
+| `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be created. |
 
 ### createItems
 
@@ -154,12 +154,12 @@ addUsers();
 
 | Properties | Type                             | Default    | Description                                                                                    |
 | ---------- | -------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
-| `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be inserted.                                                           |
+| `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be created.                                                           |
 | `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
 ### getItem
 
-Retrieve single item by its id.
+Retrieve a single item by its ID.
 
 #### Usage
 
@@ -234,7 +234,7 @@ getUsers();
 
 ### updateItem
 
-Update single item.
+Update a single item.
 
 #### Usage
 
