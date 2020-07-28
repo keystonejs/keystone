@@ -10,7 +10,7 @@ const {
   getItems,
   updateItem,
   updateItems,
-} = require('../lib/server-side-graphql-client');
+} = require('../index');
 
 const testData = [{ data: { name: 'test', age: 30 } }, { data: { name: 'test2', age: 40 } }];
 const schemaName = 'testing';
