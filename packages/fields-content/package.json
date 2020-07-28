@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/field-content",
+  "name": "@keystonejs/fields-content",
   "description": "A block-based content field for KeystoneJS",
   "version": "7.0.2",
   "author": "The KeystoneJS Development Team",
@@ -49,7 +49,7 @@
       "block-components"
     ]
   },
-  "main": "dist/field-content.cjs.js",
-  "module": "dist/field-content.esm.js",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/field-content"
+  "main": "dist/fields-content.cjs.js",
+  "module": "dist/fields-content.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-content"
 }

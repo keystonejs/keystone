@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Fragment, useState, useCallback, createContext, useContext } from 'react';
 import pluralize from 'pluralize';
-import { BlockMenuItem } from '@keystonejs/field-content/block-components';
+import { BlockMenuItem } from '@keystonejs/fields-content/block-components';
 import { Input } from '@arch-ui/input';
 
 import { useLazyQuery } from '@apollo/react-hooks';

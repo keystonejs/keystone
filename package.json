@@ -168,7 +168,7 @@
   },
   "field-types": {
     "packages": [
-      "packages/field-content",
+      "packages/fields-content",
       "packages/fields",
       "packages/fields-authed-relationship",
       "packages/fields-auto-increment",
