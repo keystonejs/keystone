@@ -1,9 +1,9 @@
 <!--[meta]
 section: api
-title: Server-side GraphQL Client
+title: Server-side graphQL client
 [meta]-->
 
-# Server-Side GraphQL Client
+# Server-side graphQL client
 
 A library for running server-side graphQL queries and mutations in Keystone. It replaces the `keystone.createItems` method with a set of utility functions to generate and execute graphQL queries.
 
@@ -53,14 +53,23 @@ keystone.createList('Page', {
 
 To perform CRUD operations, use the following functions:
 
-- [`createItem`](#createItem)
-- [`createItems`](#createItems)
-- [`updateItem`](#updateItem)
-- [`updateItems`](#updateItems)
-- [`deleteItem`](#deleteItem)
-- [`deleteItems`](#deleteItems)
+- [`createItem`](#createitem)
+- [`createItems`](#createitems)
+- [`updateItem`](#updateitem)
+- [`updateItems`](#updateitems)
+- [`deleteItem`](#deleteitem)
+- [`deleteItems`](#deleteitems)
 
-For custom queries use [`runCustomQuery`](#runCustomQuery)
+For custom queries use [`runCustomQuery`](#runcustomquery).
+
+- `createItem`
+- `createItems`
+- `updateItem`
+- `updateItems`
+- `deleteItem`
+- `deleteItems`
+
+For custom queries use `runCustomQuery`
 
 > NOTE: All functions accepts a config object as an argument, and return a `Promise`.
 
