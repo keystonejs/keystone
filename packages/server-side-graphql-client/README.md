@@ -53,14 +53,14 @@ keystone.createList('Page', {
 
 To perform CRUD operations, use the following functions:
 
-- [`createItem`](#create-item)
-- [`createItems`](#create-items)
-- [`updateItem`](#update-item)
-- [`updateItems`](#update-items)
-- [`deleteItem`](#delete-item)
-- [`deleteItems`](#delete-items)
+- `createItem`
+- `createItems`
+- `updateItem`
+- `updateItems`
+- `deleteItem`
+- `deleteItems`
 
-For custom queries use  [`runCustomQuery`](#run-custom-query)
+For custom queries use  `runCustomQuery`
 
 > NOTE: All functions accepts a config object as an argument, and return a `Promise`.
 
@@ -76,7 +76,7 @@ The following config options are common to all server-side graphQL functions.
 | `schemaName`   | `String`   | `public`   | Name of your GraphQL schema. To override the access-control mechanism, provide `internal` as schemaName. |
 | `extraContext` | `Object`   | `{}`       | Additional context option object that gets passed onto `keystone.executeGraphQL` method.                     |
 
-### <span id='create-item'>createItem</span>
+### createItem
 
 Allows you to create single item.
 
@@ -113,7 +113,7 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 | ---------- | ------------------------------- | ---------- | ------------------------ |
 | `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be inserted. |
 
-### <span id='create-items'>createItems</span>
+### createItems
 
 Allows bulk creation of items.
 
@@ -157,7 +157,7 @@ addUsers();
 | `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be inserted.                                                           |
 | `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
-### <span id='getItem'>getItem</span>
+### getItem
 
 Retrieve single item by its id.
 
@@ -193,7 +193,7 @@ getUser({ itemId: '123' });
 | ---------- | -------- | ---------- | ------------------------------------- |
 | `itemId`   | `String` | (required) | The `id` of the item to be retrieved. |
 
-### <span id='getItems'>getItems</span>
+### getItems
 
 Retrieve multiple items. Use [where](https://www.keystonejs.com/guides/intro-to-graphql/#where) clause to filter results.
 
@@ -232,7 +232,7 @@ getUsers();
 | `where`    | GraphQL `[listName]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
 | `pageSize` | `Number`                       | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
 
-### <span id='update-item'>updateItem</span>
+### updateItem
 
 Update single item.
 
@@ -268,7 +268,7 @@ updateUser({ id: '123', data: { name: 'newName' } });
 | ---------- | ------------------------------- | ---------- | ----------------------- |
 | `item`     | GraphQL `[listName]UpdateInput` | (required) | The item to be updated. |
 
-### <span id='update-items'>updateItems</span>
+### updateItems
 
 Allow bulk updating of items.
 
@@ -310,7 +310,7 @@ updateUsers([
 | ---------- | -------------------------------- | ---------- | ----------------------------- |
 | `items`    | GraphQL `[listName]sUpdateInput` | (required) | Array of items to be updated. |
 
-### <span id='delete-item'>deleteItem</span>
+### deleteItem
 
 Delete single item.
 
@@ -341,7 +341,7 @@ deleteUser('123');
 | ---------- | -------- | ---------- | ----------------------------------- |
 | `itemId`   | `String` | (required) | The `id` of the item to be deleted. |
 
-### <span id='delete-items'>deleteItems</span>
+### deleteItems
 
 Allow bulk deleting of items.
 
@@ -372,7 +372,7 @@ deletedUsers(['123', '456']);
 | ---------- | ---------- | ---------- | ---------------------------------- |
 | `itemId`   | `String[]` | (required) | Array of item `id`s to be deleted. |
 
-### <span id='run-custom-query'>runCustomQuery</span>
+### runCustomQuery
 
 Allow executing a custom query.
 
