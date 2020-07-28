@@ -6,6 +6,7 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 const { StaticApp } = require('@keystonejs/app-static');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 const { staticRoute, staticPath, distDir } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
@@ -18,7 +19,11 @@ const keystone = new Keystone({
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
       const initialData = require('./initialData');
-      await keystone.createItems(initialData);
+      await createItems({
+        keystone,
+        listName: 'User',
+        items: initialData.User,
+      });
     }
   },
 });

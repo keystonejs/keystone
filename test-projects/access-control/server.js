@@ -3,6 +3,7 @@ const express = require('express');
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
 const initialData = require('./data');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 keystone
   .prepare({
@@ -16,10 +17,15 @@ keystone
     // NOTE: This is only for test purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystone.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
-      });
-      await keystone.createItems(initialData);
+      await Promise.all(Object.values(keystone.adapters).map(adapter => adapter.dropDatabase()));
+      for (const [listName, items] of Object.entries(initialData)) {
+        await createItems({
+          keystone,
+          listName,
+          items: items.map(x => ({ data: x })),
+          schemaName: 'internal',
+        });
+      }
     }
 
     const app = express();
@@ -28,7 +34,15 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+
+      for (const [listName, items] of Object.entries(initialData)) {
+        await createItems({
+          keystone,
+          listName,
+          items: items.map(x => ({ data: x })),
+          schemaName: 'internal',
+        });
+      }
       res.redirect('/admin');
     });
 

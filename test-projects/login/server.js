@@ -1,4 +1,5 @@
 const express = require('express');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 const { keystone, apps } = require('./index');
 const initialData = require('./data');
@@ -12,19 +13,15 @@ keystone
     // NOTE: This is only for test purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystone.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
-      });
-      await keystone.createItems(initialData);
+      await dropAllDatabases(keystone.adapters);
+      await seedData(initialData);
     }
 
     const app = express();
 
     app.get('/reset-db', async (req, res) => {
-      Object.values(keystone.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
-      });
-      await keystone.createItems(initialData);
+      await dropAllDatabases(keystone.adapters);
+      await seedData(initialData);
       res.redirect('/admin');
     });
 
@@ -38,3 +35,19 @@ keystone
     console.error(error);
     process.exit(1);
   });
+
+/**
+ * @param {object} list of all the keystone adapters passed in while configuring the app.
+ * @returns {Promise[]} array of Promises for dropping the keystone databases.
+ */
+function dropAllDatabases(adapters) {
+  return Promise.all(Object.values(adapters).map(adapter => adapter.dropDatabase()));
+}
+
+async function seedData(initialData) {
+  return createItems({
+    keystone,
+    listName: 'User',
+    items: initialData.User.map(x => ({ data: x })),
+  });
+}

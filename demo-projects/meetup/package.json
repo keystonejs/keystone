@@ -27,6 +27,7 @@
     "@keystonejs/fields-wysiwyg-tinymce": "^5.3.3",
     "@keystonejs/file-adapters": "^7.0.2",
     "@keystonejs/keystone": "^12.0.0",
+    "@keystonejs/server-side-graphql-client": "^0.0.0",
     "@keystonejs/session": "^8.0.0",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",

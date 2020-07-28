@@ -6,6 +6,7 @@ const {
   TwitterAuthStrategy,
   GitHubAuthStrategy,
 } = require('@keystonejs/auth-passport');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 const { keystone, apps } = require('./index');
 const { google, facebook, twitter, github, port } = require('./config');
@@ -204,7 +205,11 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+      await createItems({
+        keystone,
+        listName: 'User',
+        items: initialData.User.map(x => ({ data: x })),
+      });
     }
 
     const app = express();
@@ -247,7 +252,13 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+      for (const [listName, _items] of Object.entries(initialData)) {
+        await createItems({
+          keystone,
+          listName,
+          items: _items.map(x => ({ data: x })),
+        });
+      }
       res.redirect('/admin');
     });
 

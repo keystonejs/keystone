@@ -1,4 +1,5 @@
 const { multiAdapterRunners, authedGraphqlRequest } = require('@keystonejs/test-utils');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 const {
   FAKE_ID,
   FAKE_ID_2,
@@ -28,7 +29,8 @@ const expectNamedArray = (data, errors, name, values) => {
 
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone, items;
+    let keystone,
+      items = {};
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
@@ -43,7 +45,17 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           }),
         {}
       );
-      items = await keystone.createItems(initialData);
+
+      for (const [listName, _items] of Object.entries(initialData)) {
+        const newItems = await createItems({
+          keystone,
+          listName,
+          items: _items.map(x => ({ data: x })),
+          returnFields: 'id, name',
+          schemaName: 'internal',
+        });
+        items[listName] = newItems;
+      }
     });
     afterAll(async () => {
       await after(keystone);
