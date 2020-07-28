@@ -39,9 +39,9 @@ async function seedData(intitialData, keystone) {
    * 2. Insert the data with the required relationships using connect
    */
 
-  const { createUsers: users } = await createItems({
+  const users = await createItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     items: initialData['User'].map(x => ({ data: x })),
     // name field is required for connect query for setting up Organiser list
     returnFields: 'id, name',
@@ -49,7 +49,7 @@ async function seedData(intitialData, keystone) {
 
   await Promise.all(
     ['Event', 'Talk', 'Rsvp', 'Sponsor'].map(list =>
-      createItems({ keystone, listName: list, items: intitialData[list].map(x => ({ data: x })) })
+      createItems({ keystone, listKey: list, items: intitialData[list].map(x => ({ data: x })) })
     )
   );
 
@@ -59,7 +59,7 @@ async function seedData(intitialData, keystone) {
     .map(createOrganisers(users));
 
   // Run the GraphQL query to insert all the organisers
-  await createItems({ keystone, listName: 'Organiser', items: organisers });
+  await createItems({ keystone, listKey: 'Organiser', items: organisers });
 }
 
 function createOrganisers(users) {

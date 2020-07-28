@@ -19,8 +19,8 @@ keystone
     if (!users.length) {
       await Promise.all(Object.values(keystone.adapters).map(adapter => adapter.dropDatabase()));
       const context = keystone.createContext({ schemaName: 'internal' });
-      for (const [listName, items] of Object.entries(initialData)) {
-        await createItems({ keystone, listName, items: items.map(x => ({ data: x })), context });
+      for (const [listKey, items] of Object.entries(initialData)) {
+        await createItems({ keystone, listKey, items: items.map(x => ({ data: x })), context });
       }
     }
 
@@ -29,8 +29,8 @@ keystone
     app.get('/reset-db', async (req, res) => {
       await Promise.all(Object.values(keystone.adapters).map(adapter => adapter.dropDatabase()));
       const context = keystone.createContext({ schemaName: 'internal' });
-      for (const [listName, items] of Object.entries(initialData)) {
-        await createItems({ keystone, listName, items: items.map(x => ({ data: x })), context });
+      for (const [listKey, items] of Object.entries(initialData)) {
+        await createItems({ keystone, listKey, items: items.map(x => ({ data: x })), context });
       }
       res.redirect('/admin');
     });

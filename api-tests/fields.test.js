@@ -12,7 +12,7 @@ describe('Fields', () => {
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`${adapterName} adapter`, () => {
       testModules.map(require).forEach(mod => {
-        const listName = 'test';
+        const listKey = 'test';
         const keystoneTestWrapper = (testFn = () => {}) =>
           runner(
             () => {
@@ -20,7 +20,7 @@ describe('Fields', () => {
                 // Create a list with all the fields required for testing
                 const fields = mod.getTestFields();
 
-                keystone.createList(listName, { fields });
+                keystone.createList(listKey, { fields });
               };
               return setupServer({ adapterName, createLists });
             },
@@ -29,11 +29,11 @@ describe('Fields', () => {
               const context = keystone.createContext({ schemaName: 'testing' });
               await createItems({
                 keystone,
-                listName,
+                listKey,
                 items: mod.initItems().map(x => ({ data: x })),
                 context,
               });
-              return testFn({ keystone, listName, adapterName, ...rest });
+              return testFn({ keystone, listKey, adapterName, ...rest });
             }
           );
 

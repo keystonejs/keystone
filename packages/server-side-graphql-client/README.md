@@ -29,7 +29,7 @@ const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const user = await createItem({
   keystone,
-  listName: 'User',
+  listKey: 'User',
   item: { name: 'Alice' },
   returnFields: `id name`,
 });
@@ -47,7 +47,7 @@ These utilities can be used for a wide range of specific use-cases, some more co
 
 ```js
 const seedUsers = async usersData => {
-  await createItems({ keystone, listName: 'User', items: usersData });
+  await createItems({ keystone, listKey: 'User', items: usersData });
 };
 ```
 
@@ -67,7 +67,7 @@ keystone.createList('Page', {
       const pageToCopy = resolvedData.copy
         ? await getItem({
             keystone,
-            listName: 'Page',
+            listKey: 'Page',
             itemId: resolvedData.copy,
             returnFields: 'name, content',
           })
@@ -101,7 +101,7 @@ The following config options are common to all server-side graphQL functions.
 | Properties     | Type       | Default    | Description                                                                                                                                                                                                         |
 | -------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `keystone`     | `Keystone` | (required) | Keystone instance.                                                                                                                                                                                                  |
-| `listName`     | `String`   | (required) | Keystone list name.                                                                                                                                                                                                 |
+| `listKey`     | `String`   | (required) | Keystone list name.                                                                                                                                                                                                 |
 | `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                                                                                                                         |
 | `context`      | `Object`   | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
 
@@ -124,7 +124,7 @@ keystone.createList('User', {
 const addUser = async userInput => {
   const user = await createItem({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     item: userInput,
     returnFields: `name, email`,
   });
@@ -140,7 +140,7 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 
 | Properties | Type                            | Default    | Description             |
 | ---------- | ------------------------------- | ---------- | ----------------------- |
-| `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be created. |
+| `item`     | GraphQL `[listKey]CreateInput` | (required) | The item to be created. |
 
 ### `createItems`
 
@@ -168,7 +168,7 @@ const dummyUsers = [
 const addUsers = async () => {
   const users = await createItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     items: dummyUsers,
     returnFields: `name`,
   });
@@ -183,7 +183,7 @@ addUsers();
 
 | Properties | Type                             | Default    | Description                                                                                    |
 | ---------- | -------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
-| `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be created.                                                            |
+| `items`    | GraphQL `[listKey]sCreateInput` | (required) | The array of objects to be created.                                                            |
 | `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
 ### `getItem`
@@ -205,7 +205,7 @@ keystone.createList('User', {
 const getUser = async ({ itemId }) => {
   const user = await getItem({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     itemId,
     returnFields: 'id, name',
   });
@@ -239,10 +239,10 @@ keystone.createList('User', {
 });
 
 const getUsers = async () => {
-  const allUsers = await getItems({ keystone, listName: 'User', returnFields: 'name' });
+  const allUsers = await getItems({ keystone, listKey: 'User', returnFields: 'name' });
   const someUsers = await getItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     returnFields: 'name',
     where: { name: 'user1' },
   });
@@ -258,7 +258,7 @@ getUsers();
 
 | Properties | Type                           | Default | Description                                                                                                |
 | ---------- | ------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `where`    | GraphQL `[listName]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
+| `where`    | GraphQL `[listKey]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
 | `pageSize` | `Number`                       | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
 
 ### `updateItem`
@@ -280,7 +280,7 @@ keystone.createList('User', {
 const updateUser = async updateUser => {
   const updatedUser = await updateItem({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     item: updateUser,
     returnFields: 'name',
   });
@@ -295,7 +295,7 @@ updateUser({ id: '123', data: { name: 'newName' } });
 
 | Properties | Type                            | Default    | Description             |
 | ---------- | ------------------------------- | ---------- | ----------------------- |
-| `item`     | GraphQL `[listName]UpdateInput` | (required) | The item to be updated. |
+| `item`     | GraphQL `[listKey]UpdateInput` | (required) | The item to be updated. |
 
 ### `updateItems`
 
@@ -316,7 +316,7 @@ keystone.createList('User', {
 const updateUsers = async (updateUsers) => {
   const users = await updateItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     items: updateUsers,
     returnFields: 'name'
   });
@@ -336,7 +336,7 @@ updateUsers([
 
 | Properties | Type                             | Default    | Description                   |
 | ---------- | -------------------------------- | ---------- | ----------------------------- |
-| `items`    | GraphQL `[listName]sUpdateInput` | (required) | Array of items to be updated. |
+| `items`    | GraphQL `[listKey]sUpdateInput` | (required) | Array of items to be updated. |
 
 ### `deleteItem`
 
@@ -355,7 +355,7 @@ keystone.createList('User', {
 });
 
 const deleteUser = async itemId => {
-  const user = await deleteItem({ keystone, listName: 'User', itemId });
+  const user = await deleteItem({ keystone, listKey: 'User', itemId });
   console.log(user); // { id: '123' }
 };
 deleteUser('123');
@@ -386,7 +386,7 @@ keystone.createList('User', {
 });
 
 const deletedUsers = async items => {
-  const users = await deleteItems({ keystone, listName: 'User', items });
+  const users = await deleteItems({ keystone, listKey: 'User', items });
   console.log(users); // [{id: '123'}, {id: '456'}]
 };
 deletedUsers(['123', '456']);

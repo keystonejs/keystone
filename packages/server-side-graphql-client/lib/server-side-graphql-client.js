@@ -38,8 +38,8 @@ const _runChunkedMutation = async ({ keystone, query, gqlName, pageSize, items, 
   return [].concat(...result.map(item => item[gqlName]));
 };
 
-const createItem = async ({ keystone, listName, item, returnFields = `id`, context }) => {
-  const { createMutationName, createInputName } = keystone.lists[listName].gqlNames;
+const createItem = async ({ keystone, listKey, item, returnFields = `id`, context }) => {
+  const { createMutationName, createInputName } = keystone.lists[listKey].gqlNames;
 
   const query = `mutation ($item: ${createInputName}){
     ${createMutationName}(data: $item) { ${returnFields} }
@@ -51,13 +51,13 @@ const createItem = async ({ keystone, listName, item, returnFields = `id`, conte
 
 const createItems = async ({
   keystone,
-  listName,
+  listKey,
   items,
   pageSize = 500,
   returnFields = `id`,
   context,
 }) => {
-  const { createManyMutationName, createManyInputName } = keystone.lists[listName].gqlNames;
+  const { createManyMutationName, createManyInputName } = keystone.lists[listKey].gqlNames;
 
   const query = `mutation ($items: [${createManyInputName}]){
     ${createManyMutationName}(data: $items) { ${returnFields} }
@@ -73,8 +73,8 @@ const createItems = async ({
   });
 };
 
-const getItem = async ({ keystone, listName, itemId, returnFields = `id`, context }) => {
-  const { itemQueryName } = keystone.lists[listName].gqlNames;
+const getItem = async ({ keystone, listKey, itemId, returnFields = `id`, context }) => {
+  const { itemQueryName } = keystone.lists[listKey].gqlNames;
 
   const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
   const result = await runQuery({ keystone, query, variables: { id: itemId }, context });
@@ -83,13 +83,13 @@ const getItem = async ({ keystone, listName, itemId, returnFields = `id`, contex
 
 const getItems = async ({
   keystone,
-  listName,
+  listKey,
   where = {},
   pageSize = 500,
   returnFields = `id`,
   context,
 }) => {
-  const { listQueryName, whereInputName } = keystone.lists[listName].gqlNames;
+  const { listQueryName, whereInputName } = keystone.lists[listKey].gqlNames;
   const query = `query ($first: Int!, $skip: Int!, $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, where: $where) { ${returnFields} }  }`;
 
   let skip = 0;
@@ -114,8 +114,8 @@ const getItems = async ({
   return allItems;
 };
 
-const updateItem = async ({ keystone, listName, item, returnFields = `id`, context }) => {
-  const { updateMutationName, updateInputName } = keystone.lists[listName].gqlNames;
+const updateItem = async ({ keystone, listKey, item, returnFields = `id`, context }) => {
+  const { updateMutationName, updateInputName } = keystone.lists[listKey].gqlNames;
 
   const query = `mutation ($id: ID!, $data: ${updateInputName}){
     ${updateMutationName}(id: $id, data: $data) { ${returnFields} }
@@ -133,13 +133,13 @@ const updateItem = async ({ keystone, listName, item, returnFields = `id`, conte
 
 const updateItems = async ({
   keystone,
-  listName,
+  listKey,
   items,
   pageSize = 500,
   returnFields = `id`,
   context,
 }) => {
-  const { updateManyMutationName, updateManyInputName } = keystone.lists[listName].gqlNames;
+  const { updateManyMutationName, updateManyInputName } = keystone.lists[listKey].gqlNames;
 
   const query = `mutation ($items: [${updateManyInputName}]){
     ${updateManyMutationName}(data: $items) { ${returnFields} }
@@ -154,8 +154,8 @@ const updateItems = async ({
   });
 };
 
-const deleteItem = async ({ keystone, listName, itemId, returnFields = `id`, context }) => {
-  const { deleteMutationName } = keystone.lists[listName].gqlNames;
+const deleteItem = async ({ keystone, listKey, itemId, returnFields = `id`, context }) => {
+  const { deleteMutationName } = keystone.lists[listKey].gqlNames;
 
   const query = `mutation ($id: ID!){
     ${deleteMutationName}(id: $id) { ${returnFields} }
@@ -167,13 +167,13 @@ const deleteItem = async ({ keystone, listName, itemId, returnFields = `id`, con
 
 const deleteItems = async ({
   keystone,
-  listName,
+  listKey,
   items,
   pageSize = 500,
   returnFields = `id`,
   context,
 }) => {
-  const { deleteManyMutationName } = keystone.lists[listName].gqlNames;
+  const { deleteManyMutationName } = keystone.lists[listKey].gqlNames;
 
   const query = `mutation ($items: [ID!]){
     ${deleteManyMutationName}(ids: $items) {

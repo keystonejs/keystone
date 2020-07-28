@@ -51,7 +51,7 @@ function dropAllDatabases(adapters) {
 async function seedData(initialData) {
   return createItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     items: initialData.User.map(x => ({ data: x })),
   });
 }

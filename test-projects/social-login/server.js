@@ -207,7 +207,7 @@ keystone
       });
       await createItems({
         keystone,
-        listName: 'User',
+        listKey: 'User',
         items: initialData.User.map(x => ({ data: x })),
       });
     }
@@ -252,10 +252,10 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      for (const [listName, _items] of Object.entries(initialData)) {
+      for (const [listKey, _items] of Object.entries(initialData)) {
         await createItems({
           keystone,
-          listName,
+          listKey,
           items: _items.map(x => ({ data: x })),
         });
       }

@@ -18,7 +18,7 @@ keystone
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
       await dropAllDatabases(keystone.adapters);
-      await createItems({ keystone, listName: 'User', items: initialData.User });
+      await createItems({ keystone, listKey: 'User', items: initialData.User });
     }
 
     const app = express();
@@ -54,23 +54,23 @@ function dropAllDatabases(adapters) {
  * 2. Insert `Post` data, with the required relationships, via `connect` nested mutation.
  */
 async function seedData(initialData) {
-  const { createUsers: users } = await createItems({
+  const users = await createItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     items: initialData['User'],
     returnFields: 'id, email',
   });
 
-  const { createPostCategories: postCategories } = await createItems({
+  const postCategories = await createItems({
     keystone,
-    listName: 'PostCategory',
+    listKey: 'PostCategory',
     items: initialData['PostCategory'],
     returnFields: 'id, name',
   });
 
   await createItems({
     keystone,
-    listName: 'ReadOnlyList',
+    listKey: 'ReadOnlyList',
     items: initialData['ReadOnlyList'],
     returnFields: 'id, name',
   });
@@ -113,7 +113,7 @@ async function seedData(initialData) {
   );
 
   // Run the GraphQL query to insert all the post
-  await createItems({ keystone, listName: 'Post', items: Post });
+  await createItems({ keystone, listKey: 'Post', items: Post });
 }
 
 function createPost(users, postCategories) {

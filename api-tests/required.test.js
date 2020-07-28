@@ -11,7 +11,7 @@ describe('Test isRequired flag for all field types', () => {
       testModules.map(require).forEach(mod => {
         describe(`Test isRequired flag for module: ${mod.name}`, () => {
           const type = mod.type;
-          const listName = 'Test';
+          const listKey = 'Test';
           const keystoneTestWrapper = (testFn = () => {}) =>
             runner(
               () =>
@@ -19,7 +19,7 @@ describe('Test isRequired flag for all field types', () => {
                   adapterName,
                   createLists: keystone => {
                     if (type.type === 'Select') {
-                      keystone.createList(listName, {
+                      keystone.createList(listKey, {
                         fields: {
                           name: { type: Text },
                           testField: {
@@ -33,7 +33,7 @@ describe('Test isRequired flag for all field types', () => {
                         },
                       });
                     } else {
-                      keystone.createList(listName, {
+                      keystone.createList(listKey, {
                         fields: {
                           name: { type: Text },
                           testField: { type, isRequired: true },

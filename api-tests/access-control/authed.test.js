@@ -47,10 +47,10 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
       items = {};
       const context = keystone.createContext({ schemaName: 'internal' });
-      for (const [listName, _items] of Object.entries(initialData)) {
-        items[listName] = await createItems({
+      for (const [listKey, _items] of Object.entries(initialData)) {
+        items[listKey] = await createItems({
           keystone,
-          listName,
+          listKey,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
           context,
