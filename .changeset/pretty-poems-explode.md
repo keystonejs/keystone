@@ -12,7 +12,7 @@ const { CloudinaryImage, Unsplash, OEmbed } = require('@keystonejs/fields');
 Needs to be changed to:
 
 ```js
-const { CloudinaryImage, Unsplash, OEmbed } = require('@keystonejs/fields-cloudinary-image');
+const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
 const { Unsplash } = require('@keystonejs/fields-unsplash');
 const { OEmbed } = require('@keystonejs/fields-oembed');
 ```
