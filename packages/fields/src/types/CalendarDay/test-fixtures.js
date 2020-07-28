@@ -5,6 +5,8 @@ import CalendarDay from './';
 export const name = 'CalendarDay';
 export { CalendarDay as type };
 export const exampleValue = '"1990-12-31"';
+export const exampleValue2 = '"2000-12-31"';
+export const supportsUnique = true;
 
 export const getTestFields = () => {
   return {
