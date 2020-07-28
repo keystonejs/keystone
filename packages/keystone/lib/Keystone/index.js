@@ -23,11 +23,6 @@ const {
 const { SessionManager } = require('@keystonejs/session');
 const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
 
-const {
-  unmergeRelationships,
-  createRelationships,
-  mergeRelationships,
-} = require('./relationship-utils');
 const { List } = require('../ListTypes');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
@@ -565,40 +560,6 @@ module.exports = class Keystone {
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
     // Since we don't execute apollo server over this schema, we have to reinsert it.
     return ['scalar Upload', ...this.getTypeDefs({ schemaName }).map(t => print(t))].join('\n');
-  }
-
-  createItem(listKey, itemData) {
-    return this.lists[listKey].adapter.create(itemData);
-  }
-
-  async createItems(itemsToCreate) {
-    // 1. Split it apart
-    const { relationships, data } = unmergeRelationships(this.lists, itemsToCreate);
-    // 2. Create the items
-    // NOTE: Only works if all relationships fields are non-"required"
-    const createdItems = await resolveAllKeys(
-      mapKeys(data, (items, listKey) =>
-        Promise.all(items.map(itemData => this.createItem(listKey, itemData)))
-      )
-    );
-
-    let createdRelationships;
-    try {
-      // 3. Create the relationships
-      createdRelationships = await createRelationships(this.lists, relationships, createdItems);
-    } catch (error) {
-      // 3.5. If creation of relationships didn't work, unwind the createItems
-      Promise.all(
-        Object.entries(createdItems).map(([listKey, items]) =>
-          Promise.all(items.map(({ id }) => this.lists[listKey].adapter.delete(id)))
-        )
-      );
-      // Re-throw the error now that we've cleaned up
-      throw error;
-    }
-
-    // 4. Merge the data back together again
-    return mergeRelationships(createdItems, createdRelationships);
   }
 
   async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {

@@ -29,8 +29,7 @@ const expectNamedArray = (data, errors, name, values) => {
 
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone,
-      items = {};
+    let keystone, items;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
@@ -46,15 +45,16 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         {}
       );
 
+      items = {};
+      const context = keystone.createContext({ schemaName: 'internal' });
       for (const [listName, _items] of Object.entries(initialData)) {
-        const newItems = await createItems({
+        items[listName] = await createItems({
           keystone,
           listName,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
-          schemaName: 'internal',
+          context,
         });
-        items[listName] = newItems;
       }
     });
     afterAll(async () => {

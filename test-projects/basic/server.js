@@ -18,11 +18,7 @@ keystone
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
       await dropAllDatabases(keystone.adapters);
-      await createItems({
-        keystone,
-        listName: 'User',
-        items: initialData.User,
-      });
+      await createItems({ keystone, listName: 'User', items: initialData.User });
     }
 
     const app = express();
@@ -58,14 +54,14 @@ function dropAllDatabases(adapters) {
  * 2. Insert `Post` data, with the required relationships, via `connect` nested mutation.
  */
 async function seedData(initialData) {
-  const users = await createItems({
+  const { createUsers: users } = await createItems({
     keystone,
     listName: 'User',
     items: initialData['User'],
     returnFields: 'id, email',
   });
 
-  const postCategories = await createItems({
+  const { createPostCategories: postCategories } = await createItems({
     keystone,
     listName: 'PostCategory',
     items: initialData['PostCategory'],

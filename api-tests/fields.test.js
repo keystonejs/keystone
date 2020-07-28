@@ -26,11 +26,12 @@ describe('Fields', () => {
             },
             async ({ keystone, ...rest }) => {
               // Populate the database before running the tests
+              const context = keystone.createContext({ schemaName: 'testing' });
               await createItems({
                 keystone,
                 listName,
                 items: mod.initItems().map(x => ({ data: x })),
-                schemaName: 'testing',
+                context,
               });
               return testFn({ keystone, listName, adapterName, ...rest });
             }

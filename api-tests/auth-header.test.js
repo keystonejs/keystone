@@ -91,8 +91,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Gives access denied when not logged in',
         runner(setupKeystone, async ({ keystone, app }) => {
           // seed the db
+          const context = keystone.createContext({ schemaName, skipAccessControl: true });
           for (const [listName, items] of Object.entries(initialData)) {
-            await createItems({ keystone, listName, items, schemaName });
+            await createItems({ keystone, listName, items, context });
           }
           const { data, errors } = await networkedGraphqlRequest({
             app,
@@ -107,8 +108,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'Allows access with bearer token',
           runner(setupKeystone, async ({ keystone, app }) => {
+            const context = keystone.createContext({ schemaName, skipAccessControl: true });
             for (const [listName, items] of Object.entries(initialData)) {
-              await createItems({ keystone, listName, items, schemaName });
+              await createItems({ keystone, listName, items, context });
             }
             const { token } = await login(
               app,
@@ -134,8 +136,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'Allows access with cookie',
           runner(setupKeystone, async ({ keystone, app }) => {
+            const context = keystone.createContext({ schemaName, skipAccessControl: true });
             for (const [listName, items] of Object.entries(initialData)) {
-              await createItems({ keystone, listName, items, schemaName });
+              await createItems({ keystone, listName, items, context });
             }
             const { token } = await login(
               app,

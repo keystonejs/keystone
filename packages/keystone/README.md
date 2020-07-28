@@ -144,7 +144,6 @@ _**Default:**_ `['public']`
 | --------------------- | ---------------------------------------------------------------------------- |
 | `connect`             | Manually connect to Adapters.                                                |
 | `createAuthStrategy`  | Creates a new authentication middleware instance.                            |
-| `createItems`         | Add items to a `Keystone` list.                                              |
 | `createList`          | Add a list to the `Keystone` schema.                                         |
 | `disconnect`          | Disconnect from all adapters.                                                |
 | `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
@@ -187,50 +186,6 @@ Creates a new authentication middleware instance. See:
 ```javascript allowCopy=false showLanguage=false
 const authStrategy = keystone.createAuthStrategy({...});
 ```
-
-### `createItems(items)`
-
-Allows bulk creation of items. This method's primary use is intended for migration scripts, or initial seeding of databases.
-
-```javascript
-keystone.createItems({
-  User: [{ name: 'Ticiana' }, { name: 'Lauren' }],
-  Post: [
-    {
-      title: 'Hello World',
-      author: { where: { name: 'Ticiana' } },
-    },
-  ],
-});
-```
-
-The `author` field of the `Post` list would have the following configuration:
-
-```javascript
-keystone.createList('Post', {
-  fields: {
-    author: { type: Relationship, ref: 'User' },
-  },
-});
-```
-
-#### Config
-
-| Option      | Type     | Description                                                                     |
-| ----------- | -------- | ------------------------------------------------------------------------------- |
-| `[listKey]` | `Object` | An object where keys are list keys, and values are an array of items to insert. |
-
-_Note_: The format of the data must match the lists and fields setup with `keystone.createList()`
-
-It is possible to create relationships at insertion using the Keystone query syntax.
-
-E.g. `author: { where: { name: 'Ticiana' } }`
-
-Upon insertion, Keystone will resolve the `{ where: { name: 'Ticiana' } }` query
-against the `User` list, ultimately setting the `author` field to the ID of the
-_first_ `User` that is found.
-
-Note an error is thrown if no items match the query.
 
 ### `createList(listKey, config)`
 
