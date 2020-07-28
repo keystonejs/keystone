@@ -76,7 +76,7 @@ The following config options are common to all server-side graphQL functions.
 | `schemaName`   | `String`   | `public`   | Name of your GraphQL schema. To override the access-control mechanism, provide `internal` as schemaName. |
 | `extraContext` | `Object`   | `{}`       | Additional context option object that gets passed onto `keystone.executeGraphQL` method.                 |
 
-### <span id='create-item'>createItem</span>
+### createItem
 
 Allows you to create single item.
 
