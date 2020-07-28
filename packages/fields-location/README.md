@@ -11,7 +11,7 @@ The Location Field Type enables storing data from the Google Maps API.
 ## Usage
 
 ```javascript
-const { Location } = require('@keystonejs/fields');
+const { Location } = require('@keystonejs/fields-location');
 const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone({...});

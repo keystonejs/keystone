@@ -1,4 +1,4 @@
-import FieldController from '../../../Controller';
+import FieldController from '@keystonejs/fields/Controller';
 
 export default class LocationController extends FieldController {
   getQueryFragment = () => `
