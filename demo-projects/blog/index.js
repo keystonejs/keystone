@@ -19,11 +19,7 @@ const keystone = new Keystone({
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
       const initialData = require('./initialData');
-      await createItems({
-        keystone,
-        listName: 'User',
-        items: initialData.User,
-      });
+      await createItems({ keystone, listName: 'User', items: initialData.User });
     }
   },
 });

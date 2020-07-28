@@ -308,7 +308,6 @@ updateUsers([
   {id: '123', data: {name: 'newName1'},
   {id: '456', data: {name: 'newName2'}
 ]);
-
 ```
 
 #### Config

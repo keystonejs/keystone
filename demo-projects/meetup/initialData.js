@@ -49,11 +49,7 @@ async function seedData(intitialData, keystone) {
 
   await Promise.all(
     ['Event', 'Talk', 'Rsvp', 'Sponsor'].map(list =>
-      createItems({
-        keystone,
-        listName: list,
-        items: intitialData[list].map(x => ({ data: x })),
-      })
+      createItems({ keystone, listName: list, items: intitialData[list].map(x => ({ data: x })) })
     )
   );
 

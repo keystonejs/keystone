@@ -18,11 +18,7 @@ keystone
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
       await dropAllDatabases(keystone.adapters);
-      await createItems({
-        keystone,
-        listName: 'User',
-        items: initialData.User,
-      });
+      await createItems({ keystone, listName: 'User', items: initialData.User });
     }
 
     const app = express();
