@@ -18,7 +18,7 @@ const schemaName = 'testing';
 const seedDb = ({ keystone }) =>
   createItems({
     keystone,
-    listName: 'Test',
+    listKey: 'Test',
     items: testData,
     context: keystone.createContext({ schemaName }),
   });
@@ -46,7 +46,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           const item = await createItem({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             item: testData[0].data,
             context: keystone.createContext({ schemaName }),
           });
@@ -55,7 +55,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Get single item from db
           const singleItem = await getItem({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name, age',
             itemId: item.id,
             context: keystone.createContext({ schemaName }),
@@ -70,14 +70,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           await createItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             items: testData,
             context: keystone.createContext({ schemaName }),
           });
           // Get all the items back from db
           const allItems = await getItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name, age',
             context: keystone.createContext({ schemaName }),
           });
@@ -95,7 +95,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Update a single item
           const item = await updateItem({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             item: { id: seedItems[0].id, data: { name: 'updateTest' } },
             returnFields: 'name, age',
             context: keystone.createContext({ schemaName }),
@@ -112,7 +112,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Update multiple items
           const items = await updateItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             items: seedItems.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
             returnFields: 'name, age',
             context: keystone.createContext({ schemaName }),
@@ -134,7 +134,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Delete a single item
           await deleteItem({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name age',
             itemId: items[0].id,
             context: keystone.createContext({ schemaName }),
@@ -143,7 +143,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Retrieve items
           const allItems = await getItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name, age',
             context: keystone.createContext({ schemaName }),
           });
@@ -159,7 +159,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Delete multiple items
           const deletedItems = await deleteItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name age',
             items: items.map(item => item.id),
             context: keystone.createContext({ schemaName }),
@@ -170,7 +170,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Get all the items back from db
           const allItems = await getItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name, age',
             context: keystone.createContext({ schemaName }),
           });
@@ -187,7 +187,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await seedDb({ keystone });
           const allItems = await getItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name, age',
             context: keystone.createContext({ schemaName }),
           });
@@ -202,7 +202,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await seedDb({ keystone });
           const allItems = await getItems({
             keystone,
-            listName: 'Test',
+            listKey: 'Test',
             returnFields: 'name',
             where: { name: 'test' },
             context: keystone.createContext({ schemaName }),
