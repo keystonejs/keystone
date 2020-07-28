@@ -51,7 +51,7 @@ const _runChunkedMutation = async ({
    * We need to combine all objects into one array keyed by the `createUsers`, such that, the output is: [{id: '123', name: 'aman'}, {id: '456', name: 'Mike'}]
    */
 
-return [].concat(...result.map(item => item[gqlName]));
+  return [].concat(...result.map(item => item[gqlName]));
 };
 
 const createItem = async ({

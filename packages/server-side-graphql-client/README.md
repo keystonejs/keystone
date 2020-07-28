@@ -53,16 +53,16 @@ keystone.createList('Page', {
 
 To perform CRUD operations, use the following functions:
 
-- `createItem`
-- `createItems`
-- `updateItem`
-- `updateItems`
-- `deleteItem`
-- `deleteItems`
+- [`createItem`](#create-item)
+- [`createItems`](#create-items)
+- [`updateItem`](#update-item)
+- [`updateItems`](#update-items)
+- [`deleteItem`](#delete-item)
+- [`deleteItems`](#delete-items)
 
-For custom queries use `runCustomQuery`.
+For custom queries use  [`runCustomQuery`](#run-custom-query)
 
-> NOTE: All functions accepts an `config` object as an argument, and return a `Promise`.
+> NOTE: All functions accepts a config object as an argument, and return a `Promise`.
 
 ### Shared Config Options
 
@@ -71,12 +71,12 @@ The following config options are common to all server-side graphQL functions.
 | Properties     | Type       | Default    | Description                                                                                                  |
 | -------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
 | `keystone`     | `Keystone` | (required) | Keystone instance.                                                                                           |
-| `listName`     | `String`   | (required) | Keystone list name name.                                                                                     |
+| `listName`     | `String`   | (required) | Keystone list name.                                                                                     |
 | `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                  |
-| `schemaName`   | `String`   | `public`   | Name of your GraphQL API schema. To override the access-control mechanism, provide `internal` as schemaName. |
+| `schemaName`   | `String`   | `public`   | Name of your GraphQL schema. To override the access-control mechanism, provide `internal` as schemaName. |
 | `extraContext` | `Object`   | `{}`       | Additional context option object that gets passed onto `keystone.executeGraphQL` method.                     |
 
-### createItem
+### <span id='create-item'>createItem</span>
 
 Allows you to create single item.
 
@@ -113,7 +113,7 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 | ---------- | ------------------------------- | ---------- | ------------------------ |
 | `item`     | GraphQL `[listName]CreateInput` | (required) | The item to be inserted. |
 
-### createItems
+### <span id='create-items'>createItems<span>
 
 Allows bulk creation of items.
 
@@ -157,7 +157,7 @@ addUsers();
 | `items`    | GraphQL `[listName]sCreateInput` | (required) | The array of objects to be inserted.                                                           |
 | `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
-### getItem
+### <span id='getItem'>getItem<span>
 
 Retrieve single item by its id.
 
@@ -193,7 +193,7 @@ getUser({ itemId: '123' });
 | ---------- | -------- | ---------- | ------------------------------------- |
 | `itemId`   | `String` | (required) | The `id` of the item to be retrieved. |
 
-### getItems
+### <span id='getItems'>getItems<span>
 
 Retrieve multiple items. Use [where](https://www.keystonejs.com/guides/intro-to-graphql/#where) clause to filter results.
 
@@ -232,7 +232,7 @@ getUsers();
 | `where`    | GraphQL `[listName]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
 | `pageSize` | `Number`                       | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
 
-### updateItem
+### <span id='update-item'>updateItem<span>
 
 Update single item.
 
@@ -257,7 +257,7 @@ const updateUser = async updateUser => {
   });
   console.log(updatedUser); // { name: 'newName'}
 };
-updateUser({ id: 123, data: { name: 'newName' } });
+updateUser({ id: '123', data: { name: 'newName' } });
 ```
 
 #### Config
@@ -268,7 +268,7 @@ updateUser({ id: 123, data: { name: 'newName' } });
 | ---------- | ------------------------------- | ---------- | ----------------------- |
 | `item`     | GraphQL `[listName]UpdateInput` | (required) | The item to be updated. |
 
-### updateItems
+### <span id='update-items'>updateItems<span>
 
 Allow bulk updating of items.
 
@@ -284,14 +284,11 @@ keystone.createList('User', {
   },
 });
 
-const updateUsers = async (updateUser) => {
+const updateUsers = async (updateUsers) => {
   const users = await updateItems({
     keystone,
     listName: 'User',
-    items: [
-      {id: '123', data: {name: 'newName1'},
-      {id: '456', data: {name: 'newName2'}
-    ],
+    items: updateUsers,
     returnFields: 'name'
   });
 
@@ -313,7 +310,7 @@ updateUsers([
 | ---------- | -------------------------------- | ---------- | ----------------------------- |
 | `items`    | GraphQL `[listName]sUpdateInput` | (required) | Array of items to be updated. |
 
-### deleteItem
+### <span id='delete-item'>deleteItem<span>
 
 Delete single item.
 
@@ -344,7 +341,7 @@ deleteUser('123');
 | ---------- | -------- | ---------- | ----------------------------------- |
 | `itemId`   | `String` | (required) | The `id` of the item to be deleted. |
 
-### deleteItems
+### <span id='delete-items'>deleteItems<span>
 
 Allow bulk deleting of items.
 
@@ -375,7 +372,7 @@ deletedUsers(['123', '456']);
 | ---------- | ---------- | ---------- | ---------------------------------- |
 | `itemId`   | `String[]` | (required) | Array of item `id`s to be deleted. |
 
-### runCustomQuery
+### <span id='run-custom-query'>runCustomQuery<span>
 
 Allow executing a custom query.
 
