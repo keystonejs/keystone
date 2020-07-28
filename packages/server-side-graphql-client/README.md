@@ -352,7 +352,7 @@ deleteUser('123');
 
 ### deleteItems
 
-Allow bulk deleting of items.
+Delete multiple items.
 
 #### Usage
 
