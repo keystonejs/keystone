@@ -49,7 +49,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('create', () => {
       test(
-        'Should create and get single item',
+        'createItem, getItem: Should create and get single item',
         runner(setupKeystone, async ({ keystone }) => {
           // Seed the db
           const item = await createItem({
