@@ -279,7 +279,7 @@ updateUser({ id: '123', data: { name: 'newName' } });
 
 ### updateItems
 
-Allow bulk updating of items.
+Update multiple items.
 
 #### Usage
 
