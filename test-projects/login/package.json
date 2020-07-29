@@ -26,6 +26,7 @@
     "@keystonejs/fields": "^14.0.0",
     "@keystonejs/keystone": "^12.0.0",
     "@keystonejs/list-plugins": "^7.0.3",
+    "@keystonejs/server-side-graphql-client": "^0.0.0",
     "@keystonejs/session": "^8.0.0",
     "body-parser": "^1.18.2",
     "cross-env": "^7.0.0",

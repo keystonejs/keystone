@@ -116,8 +116,8 @@ export const filterTests = withKeystone => {
 
 export const crudTests = withKeystone => {
   const withHelpers = wrappedFn => {
-    return async ({ keystone, listName, ...rest }) => {
-      const list = keystone.getListByKey(listName);
+    return async ({ keystone, listKey, ...rest }) => {
+      const list = keystone.getListByKey(listKey);
       const { listQueryName } = list.gqlNames;
       const {
         data: { [listQueryName]: items },
@@ -132,7 +132,7 @@ export const crudTests = withKeystone => {
         }`,
       });
       expect(errors).toBe(undefined);
-      return wrappedFn({ keystone, listName, ...rest, list, items, ...list.gqlNames });
+      return wrappedFn({ keystone, listKey, ...rest, list, items, ...list.gqlNames });
     };
   };
 
