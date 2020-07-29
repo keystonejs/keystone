@@ -101,7 +101,7 @@ The following config options are common to all server-side graphQL functions.
 | Properties     | Type       | Default    | Description                                                                                                                                                                                                         |
 | -------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `keystone`     | `Keystone` | (required) | Keystone instance.                                                                                                                                                                                                  |
-| `listKey`     | `String`   | (required) | Keystone list name.                                                                                                                                                                                                 |
+| `listKey`      | `String`   | (required) | Keystone list name.                                                                                                                                                                                                 |
 | `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                                                                                                                         |
 | `context`      | `Object`   | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
 
@@ -138,8 +138,8 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                            | Default    | Description             |
-| ---------- | ------------------------------- | ---------- | ----------------------- |
+| Properties | Type                           | Default    | Description             |
+| ---------- | ------------------------------ | ---------- | ----------------------- |
 | `item`     | GraphQL `[listKey]CreateInput` | (required) | The item to be created. |
 
 ### `createItems`
@@ -181,10 +181,10 @@ addUsers();
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                             | Default    | Description                                                                                    |
-| ---------- | -------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| Properties | Type                            | Default    | Description                                                                                    |
+| ---------- | ------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
 | `items`    | GraphQL `[listKey]sCreateInput` | (required) | The array of objects to be created.                                                            |
-| `pageSize` | `Number`                         | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
+| `pageSize` | `Number`                        | 500        | The create mutation batch size. This is useful when you have large set of data to be inserted. |
 
 ### `getItem`
 
@@ -256,10 +256,10 @@ getUsers();
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                           | Default | Description                                                                                                |
-| ---------- | ------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------- |
+| Properties | Type                          | Default | Description                                                                                                |
+| ---------- | ----------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
 | `where`    | GraphQL `[listKey]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
-| `pageSize` | `Number`                       | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
+| `pageSize` | `Number`                      | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
 
 ### `updateItem`
 
@@ -293,8 +293,8 @@ updateUser({ id: '123', data: { name: 'newName' } });
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                            | Default    | Description             |
-| ---------- | ------------------------------- | ---------- | ----------------------- |
+| Properties | Type                           | Default    | Description             |
+| ---------- | ------------------------------ | ---------- | ----------------------- |
 | `item`     | GraphQL `[listKey]UpdateInput` | (required) | The item to be updated. |
 
 ### `updateItems`
@@ -334,8 +334,8 @@ updateUsers([
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                             | Default    | Description                   |
-| ---------- | -------------------------------- | ---------- | ----------------------------- |
+| Properties | Type                            | Default    | Description                   |
+| ---------- | ------------------------------- | ---------- | ----------------------------- |
 | `items`    | GraphQL `[listKey]sUpdateInput` | (required) | Array of items to be updated. |
 
 ### `deleteItem`
