@@ -23,6 +23,10 @@ export class AutoIncrementImplementation extends Implementation {
     this.gqlType = ['ID', 'Int'].includes(gqlType) ? gqlType : this.isPrimaryKey ? 'ID' : 'Int';
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }

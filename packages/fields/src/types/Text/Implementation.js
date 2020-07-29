@@ -8,6 +8,11 @@ export class Text extends Implementation {
     this.isMultiline = isMultiline;
     this.isOrderable = true;
   }
+
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: String`];
   }

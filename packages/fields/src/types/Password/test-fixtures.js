@@ -5,6 +5,7 @@ import Text from '../Text';
 export const name = 'Password';
 export { Password as type };
 export const exampleValue = '"password"';
+export const supportsUnique = false;
 
 export const getTestFields = () => {
   return {

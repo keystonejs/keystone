@@ -27,6 +27,10 @@ export class Location extends Implementation {
     this._googleMapsKey = googleMapsKey;
   }
 
+  get _supportsUnique() {
+    return false;
+  }
+
   extendAdminMeta(meta) {
     return {
       ...meta,
@@ -151,7 +155,7 @@ export class KnexLocationInterface extends CommonLocationInterface(KnexFieldAdap
 
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
-    if (this.config.isUnique || this.config.isIndexed) {
+    if (this.config.isIndexed) {
       throw `The Location field type doesn't support indexes on Knex. ` +
         `Check the config for ${this.path} on the ${this.field.listKey} list`;
     }
