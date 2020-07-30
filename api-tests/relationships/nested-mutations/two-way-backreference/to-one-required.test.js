@@ -1,6 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { getItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -29,7 +30,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('update one to one relationship back reference', () => {
       test(
         'nested create',
-        runner(setupKeystone, async ({ keystone, findById }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const locationName = sampleOne(alphanumGenerator);
           const { data, errors } = await graphqlRequest({
             keystone,
@@ -52,9 +53,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const companyId = data.createCompany.id;
           const locationId = data.createCompany.location.id;
 
-          const company = await findById('Company', companyId);
+          const company = await getItem({
+            keystone,
+            listKey: 'Company',
+            itemId: companyId,
+            returnFields: 'id location { id }',
+          });
           // Everything should now be connected. 1:1 has a single connection on the first list defined.
-          expect(company.location.toString()).toBe(locationId.toString());
+          expect(company.location.id.toString()).toBe(locationId.toString());
         })
       );
     });
