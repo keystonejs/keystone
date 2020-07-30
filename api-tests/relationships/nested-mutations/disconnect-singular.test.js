@@ -4,7 +4,7 @@ const {
   multiAdapterRunners,
   setupServer,
   graphqlRequest,
-  networkedGraphqlRequest,
+  authedGraphqlRequest,
 } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -215,7 +215,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when disconnecting a specific id',
-          runner(setupKeystone, async ({ app, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             const groupName = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -231,8 +231,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(createEvent.group.toString()).toBe(createGroup.id);
 
             // Update the item and link the relationship field
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await authedGraphqlRequest({
+              keystone,
               query: `
                 mutation {
                   updateEventToGroupNoRead(

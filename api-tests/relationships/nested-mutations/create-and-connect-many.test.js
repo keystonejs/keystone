@@ -4,7 +4,7 @@ const {
   multiAdapterRunners,
   setupServer,
   graphqlRequest,
-  networkedGraphqlRequest,
+  authedGraphqlRequest,
 } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -231,7 +231,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'throws when link AND create nested from within create mutation',
-          runner(setupKeystone, async ({ app, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
             const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -241,8 +241,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await authedGraphqlRequest({
+              keystone,
               query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -258,24 +258,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               `,
             });
 
-            expect(errors).toMatchObject([
-              {
-                data: {
-                  errors: expect.arrayContaining([
-                    expect.objectContaining({
-                      message:
-                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
-                    }),
-                  ]),
-                },
-              },
-            ]);
+            expect(errors).toHaveLength(1);
+            const error = errors[0];
+            expect(error.message).toEqual(
+              'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
+            );
+            expect(error.path).toHaveLength(1);
+            expect(error.path[0]).toEqual('createUserToNotesNoRead');
           })
         );
 
         test(
           'throws when link & create nested from within update mutation',
-          runner(setupKeystone, async ({ app, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
             const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -288,8 +283,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await authedGraphqlRequest({
+              keystone,
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -308,18 +303,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               `,
             });
 
-            expect(errors).toMatchObject([
-              {
-                data: {
-                  errors: expect.arrayContaining([
-                    expect.objectContaining({
-                      message:
-                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
-                    }),
-                  ]),
-                },
-              },
-            ]);
+            expect(errors).toHaveLength(1);
+            const error = errors[0];
+            expect(error.message).toEqual(
+              'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
+            );
+            expect(error.path).toHaveLength(1);
+            expect(error.path[0]).toEqual('updateUserToNotesNoRead');
           })
         );
       });

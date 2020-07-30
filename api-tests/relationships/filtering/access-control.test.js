@@ -3,7 +3,7 @@ const { Text, Relationship } = require('@keystonejs/fields');
 const {
   multiAdapterRunners,
   setupServer,
-  networkedGraphqlRequest,
+  authedGraphqlRequest,
 } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -39,7 +39,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('relationship filtering with access control', () => {
       test(
         'implicitly filters to only the IDs in the database by default',
-        runner(setupKeystone, async ({ app, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
@@ -57,8 +57,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await networkedGraphqlRequest({
-            app,
+          const { data, errors } = await authedGraphqlRequest({
+            keystone,
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {
@@ -85,7 +85,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'explicitly filters when given a `where` clause',
-        runner(setupKeystone, async ({ app, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
@@ -103,8 +103,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await networkedGraphqlRequest({
-            app,
+          const { data, errors } = await authedGraphqlRequest({
+            keystone,
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {
