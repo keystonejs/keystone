@@ -1,10 +1,5 @@
 const { Text } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  authedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const falseFn = () => false;
 
@@ -77,8 +72,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       it(
         'Denies access acording to access control',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await authedGraphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               query {
                 quads(x: 10)

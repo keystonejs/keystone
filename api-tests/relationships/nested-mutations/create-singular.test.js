@@ -1,11 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  authedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -247,8 +242,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item that does the nested create
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                 mutation {
                   createEventTo${group.name}(data: {
@@ -286,8 +280,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
 
                 // Update an item that does the nested create
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                 mutation {
                   updateEventTo${group.name}(
@@ -327,8 +320,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const groupName = sampleOne(alphaNumGenerator);
 
                 // Create an item that does the nested create
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -397,8 +389,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
 
                 // Update an item that does the nested create
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                     mutation {
                       updateEventTo${group.name}(
