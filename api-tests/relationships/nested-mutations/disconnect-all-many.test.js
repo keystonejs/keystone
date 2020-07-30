@@ -1,6 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { setupServer, graphqlRequest, multiAdapterRunners } = require('@keystonejs/test-utils');
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -61,18 +62,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'removes all items from list',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const noteContent = `foo${sampleOne(alphanumGenerator)}`;
           const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
           // Create two items with content that can be matched
-          const createNote = await create('Note', { content: noteContent });
-          const createNote2 = await create('Note', { content: noteContent2 });
+          const createNote = await createItem({
+            keystone,
+            listKey: 'Note',
+            item: { content: noteContent },
+          });
+          const createNote2 = await createItem({
+            keystone,
+            listKey: 'Note',
+            item: { content: noteContent2 },
+          });
 
           // Create an item to update
-          const createUser = await create('User', {
-            username: 'A thing',
-            notes: [createNote.id, createNote2.id],
+          const createUser = await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              username: 'A thing',
+              notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
+            },
           });
 
           // Update the item and link the relationship field
@@ -142,16 +155,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when specifying disconnectAll',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNote = await create('NoteNoRead', { content: noteContent });
+            const createNote = await createItem({
+              keystone,
+              listKey: 'NoteNoRead',
+              item: { content: noteContent },
+            });
 
             // Create an item to update
-            const createUser = await create('UserToNotesNoRead', {
-              username: 'A thing',
-              notes: [createNote.id],
+            const createUser = await createItem({
+              keystone,
+              listKey: 'UserToNotesNoRead',
+              item: {
+                username: 'A thing',
+                notes: { connect: [{ id: createNote.id }] },
+              },
             });
 
             // Update the item and link the relationship field

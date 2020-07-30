@@ -1,5 +1,6 @@
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -31,12 +32,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('relationship filtering', () => {
       test(
         'nested to-single relationships can be filtered within AND clause',
-        runner(setupKeystone, async ({ keystone, create }) => {
-          const company = await create('Company', { name: 'Thinkmill' });
-          const otherCompany = await create('Company', { name: 'Cete' });
+        runner(setupKeystone, async ({ keystone }) => {
+          const company = await createItem({
+            keystone,
+            listKey: 'Company',
+            item: { name: 'Thinkmill' },
+          });
+          const otherCompany = await createItem({
+            keystone,
+            listKey: 'Company',
+            item: { name: 'Cete' },
+          });
 
-          const user = await create('User', { company: company.id });
-          await create('User', { company: otherCompany.id });
+          const user = await createItem({
+            keystone,
+            listKey: 'User',
+            item: { company: { connect: { id: company.id } } },
+          });
+          await createItem({
+            keystone,
+            listKey: 'User',
+            item: { company: { connect: { id: otherCompany.id } } },
+          });
 
           const { data, errors } = await graphqlRequest({
             keystone,
@@ -76,12 +93,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-single relationships can be filtered within OR clause',
-        runner(setupKeystone, async ({ keystone, create }) => {
-          const company = await create('Company', { name: 'Thinkmill' });
-          const otherCompany = await create('Company', { name: 'Cete' });
+        runner(setupKeystone, async ({ keystone }) => {
+          const company = await createItem({
+            keystone,
+            listKey: 'Company',
+            item: { name: 'Thinkmill' },
+          });
+          const otherCompany = await createItem({
+            keystone,
+            listKey: 'Company',
+            item: { name: 'Cete' },
+          });
 
-          const user = await create('User', { company: company.id });
-          await create('User', { company: otherCompany.id });
+          const user = await createItem({
+            keystone,
+            listKey: 'User',
+            item: { company: { connect: { id: company.id } } },
+          });
+          await createItem({
+            keystone,
+            listKey: 'User',
+            item: { company: { connect: { id: otherCompany.id } } },
+          });
 
           const { data, errors } = await graphqlRequest({
             keystone,
@@ -121,17 +154,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-many relationships can be filtered within AND clause',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const ids = [];
 
-          ids.push((await create('Post', { content: 'Hello world' })).id);
-          ids.push((await create('Post', { content: 'hi world' })).id);
-          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push(
+            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello world' } })).id
+          );
+          ids.push(
+            (await createItem({ keystone, listKey: 'Post', item: { content: 'hi world' } })).id
+          );
+          ids.push(
+            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
+          );
 
-          const user = await create('User', { posts: ids });
+          const user = await createItem({
+            keystone,
+            listKey: 'User',
+            item: { posts: { connect: ids.map(id => ({ id })) } },
+          });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await create('User', { posts: [] });
+          await createItem({ keystone, listKey: 'User', item: {} });
 
           const { data, errors } = await graphqlRequest({
             keystone,
@@ -164,17 +207,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-many relationships can be filtered within OR clause',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const ids = [];
 
-          ids.push((await create('Post', { content: 'Hello world' })).id);
-          ids.push((await create('Post', { content: 'hi world' })).id);
-          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push(
+            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello world' } })).id
+          );
+          ids.push(
+            (await createItem({ keystone, listKey: 'Post', item: { content: 'hi world' } })).id
+          );
+          ids.push(
+            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
+          );
 
-          const user = await create('User', { posts: ids });
+          const user = await createItem({
+            keystone,
+            listKey: 'User',
+            item: { posts: { connect: ids.map(id => ({ id })) } },
+          });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await create('User', { posts: [] });
+          await createItem({ keystone, listKey: 'User', item: {} });
 
           const { data, errors } = await graphqlRequest({
             keystone,
@@ -207,30 +260,74 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'many-to-many filtering composes with one-to-many filtering',
-        runner(setupKeystone, async ({ keystone, create }) => {
-          const adsCompany = await create('Company', { name: 'AdsAdsAds' });
-          const otherCompany = await create('Company', { name: 'Thinkmill' });
+        runner(setupKeystone, async ({ keystone }) => {
+          const adsCompany = await createItem({
+            keystone,
+            listKey: 'Company',
+            item: { name: 'AdsAdsAds' },
+            returnFields: 'id name',
+          });
+          const otherCompany = await createItem({
+            keystone,
+            listKey: 'Company',
+            item: { name: 'Thinkmill' },
+            returnFields: 'id name',
+          });
 
           // Content can have multiple authors
-          const spam1 = await create('Post', { content: 'spam' });
-          const spam2 = await create('Post', { content: 'spam' });
-          const content = await create('Post', { content: 'cute cat pics' });
+          const spam1 = await createItem({ keystone, listKey: 'Post', item: { content: 'spam' } });
+          const spam2 = await createItem({ keystone, listKey: 'Post', item: { content: 'spam' } });
+          const content = await createItem({
+            keystone,
+            listKey: 'Post',
+            item: { content: 'cute cat pics' },
+          });
 
-          const spammyUser = await create('User', {
-            company: adsCompany.id,
-            posts: [spam1.id, spam2.id],
+          const spammyUser = await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              company: { connect: { id: adsCompany.id } },
+              posts: { connect: [{ id: spam1.id }, { id: spam2.id }] },
+            },
           });
-          const mixedUser = await create('User', {
-            company: adsCompany.id,
-            posts: [spam1.id, content.id],
+          const mixedUser = await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              company: { connect: { id: adsCompany.id } },
+              posts: { connect: [{ id: spam1.id }, { id: content.id }] },
+            },
           });
-          const nonSpammyUser = await create('User', {
-            company: adsCompany.id,
-            posts: [content.id],
+          const nonSpammyUser = await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              company: { connect: { id: adsCompany.id } },
+              posts: { connect: [{ id: content.id }] },
+            },
           });
-          const quietUser = await create('User', { company: adsCompany.id, posts: [] });
-          await create('User', { company: otherCompany.id, posts: [content.id] });
-          await create('User', { company: otherCompany.id, posts: [spam1.id] });
+          const quietUser = await createItem({
+            keystone,
+            listKey: 'User',
+            item: { company: { connect: { id: adsCompany.id } } },
+          });
+          await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              company: { connect: { id: otherCompany.id } },
+              posts: { connect: [{ id: content.id }] },
+            },
+          });
+          await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              company: { connect: { id: otherCompany.id } },
+              posts: { connect: [{ id: spam1.id }] },
+            },
+          });
 
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all

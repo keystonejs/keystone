@@ -1,6 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -35,21 +36,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('relationship filtering with access control', () => {
       test(
         'implicitly filters to only the IDs in the database by default',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
-              return create('PostLimitedRead', { content: postContent, name });
+              return createItem({
+                keystone,
+                listKey: 'PostLimitedRead',
+                item: { content: postContent, name },
+              });
             })
           );
           const postIds = posts.map(({ id }) => id);
           // Create a user that owns 2 posts which are different from the one
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
-          const user = await create('UserToPostLimitedRead', {
-            username,
-            posts: [postIds[1], postIds[2]],
+          const user = await createItem({
+            keystone,
+            listKey: 'UserToPostLimitedRead',
+            item: {
+              username,
+              posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
+            },
           });
 
           // Create an item that does the linking
@@ -80,21 +89,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'explicitly filters when given a `where` clause',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
-              return create('PostLimitedRead', { content: postContent, name });
+              return createItem({
+                keystone,
+                listKey: 'PostLimitedRead',
+                item: { content: postContent, name },
+              });
             })
           );
           const postIds = posts.map(({ id }) => id);
           // Create a user that owns 2 posts which are different from the one
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
-          const user = await create('UserToPostLimitedRead', {
-            username,
-            posts: [postIds[1], postIds[2]],
+          const user = await createItem({
+            keystone,
+            listKey: 'UserToPostLimitedRead',
+            item: {
+              username,
+              posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
+            },
           });
 
           // Create an item that does the linking
