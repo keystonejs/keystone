@@ -32,7 +32,7 @@ function setupKeystone(adapterName) {
           {
             schema: 'triple(x: Int): Int',
             resolver: (_, { x }) => 3 * x,
-            access: { testing: true },
+            access: true,
           },
         ],
       });
@@ -46,11 +46,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Sets up access control properly',
         runner(setupKeystone, async ({ keystone }) => {
           expect(keystone._customProvider._extendedQueries.map(({ access }) => access)).toEqual([
-            { internal: true, testing: true },
-            { internal: true, testing: falseFn },
+            { internal: true, public: true },
+            { internal: true, public: falseFn },
           ]);
           expect(keystone._customProvider._extendedMutations.map(({ access }) => access)).toEqual([
-            { internal: true, testing: true },
+            { internal: true, public: true },
           ]);
         })
       );
