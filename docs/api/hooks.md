@@ -337,7 +337,7 @@ const beforeDelete = ({
 
 ### `afterDelete`
 
-**Used to cause side effects before the delete operation is executed.**
+**Used to cause side effects after the delete operation is executed.**
 
 - Invoked after the delete operation has been executed
 - Available for `delete` operations
