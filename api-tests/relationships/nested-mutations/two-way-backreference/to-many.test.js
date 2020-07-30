@@ -1,6 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -29,8 +29,7 @@ function setupKeystone(adapterName) {
 }
 
 const getTeacher = async (keystone, teacherId) => {
-  const { data, errors } = await graphqlRequest({
-    keystone,
+  const { data, errors } = await keystone.executeGraphQL({
     query: `query getTeacher($teacherId: ID!){
   Teacher(where: { id: $teacherId }) {
     id
@@ -44,8 +43,7 @@ const getTeacher = async (keystone, teacherId) => {
 };
 
 const getStudent = async (keystone, studentId) => {
-  const { data } = await graphqlRequest({
-    keystone,
+  const { data } = await keystone.executeGraphQL({
     query: `query getStudent($studentId: ID!){
   Student(where: { id: $studentId }) {
     id
@@ -88,8 +86,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
           mutation {
             createStudent(
@@ -146,8 +143,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await keystone.executeGraphQL({
               query: `
           mutation {
             updateStudent(
@@ -190,8 +186,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
           mutation {
             createStudent(
@@ -232,8 +227,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
           mutation {
             updateStudent(
@@ -299,8 +293,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
-          const { errors } = await graphqlRequest({
-            keystone,
+          const { errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateStudent(
@@ -366,8 +359,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
-          const { errors } = await graphqlRequest({
-            keystone,
+          const { errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateStudent(
@@ -434,8 +426,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         compareIds(teacher2.students, [student1, student2]);
 
         // Run the query to delete the student
-        const { errors } = await graphqlRequest({
-          keystone,
+        const { errors } = await keystone.executeGraphQL({
           query: `
       mutation {
         deleteStudent(id: "${student1.id}") {

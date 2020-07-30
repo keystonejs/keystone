@@ -1,6 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -67,8 +67,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
           // Create an item that does the nested create
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createUser(data: {
@@ -102,8 +101,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { createUser },
             errors: errors2,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
         mutation {
           createUser(data: {
@@ -140,8 +138,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { allNotes },
             errors: errors3,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
         query {
           allNotes(where: { id_in: [${createUser.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
@@ -155,8 +152,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(allNotes).toHaveLength(createUser.notes.length);
 
           // Test an empty list of related notes
-          const result = await graphqlRequest({
-            keystone,
+          const result = await keystone.executeGraphQL({
             query: `
         mutation {
           createUser(data: {
@@ -192,8 +188,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update an item that does the nested create
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateUser(
@@ -228,8 +223,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { updateUser },
             errors: errors2,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateUser(
@@ -277,8 +271,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { allNotes },
             errors: errors3,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
         query {
           allNotes(where: { id_in: [${updateUser.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
@@ -418,8 +411,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const {
               data: { allNoteNoCreates, allUserToNotesNoCreates },
               errors: errors2,
-            } = await graphqlRequest({
-              keystone,
+            } = await keystone.executeGraphQL({
               query: `
           query {
             allNoteNoCreates(where: { content: "${noteContent}" }) {
@@ -481,8 +473,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const {
               data: { allNoteNoCreates },
               errors: errors2,
-            } = await graphqlRequest({
-              keystone,
+            } = await keystone.executeGraphQL({
               query: `
           query {
             allNoteNoCreates(where: { content: "${noteContent}" }) {

@@ -1,6 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItem, getItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
@@ -118,8 +118,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
           mutation {
             createEvent(data: {
@@ -153,15 +152,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { createEvent },
             errors,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: 'mutation { createEvent(data: { title: "A thing", }) { id } }',
           });
           expect(errors).toBe(undefined);
 
           // Update the item and link the relationship field
-          const { data, errors: errors2 } = await graphqlRequest({
-            keystone,
+          const { data, errors: errors2 } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateEvent(
@@ -201,8 +198,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item that does the linking
-          const { errors } = await graphqlRequest({
-            keystone,
+          const { errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createEvent(data: {
@@ -233,8 +229,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createEvent = await createItem({ keystone, listKey: 'Event', item: {} });
 
           // Create an item that does the linking
-          const { errors } = await graphqlRequest({
-            keystone,
+          const { errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateEvent(

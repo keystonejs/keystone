@@ -1,6 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -89,8 +89,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateUser(
@@ -131,8 +130,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createUser(data: {
@@ -168,8 +166,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createUser = await createItem({ keystone, listKey: 'User', item: {} });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateUser(
@@ -227,8 +224,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateUser(
@@ -306,8 +302,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             expect(errors).toBe(undefined);
 
-            const result = await graphqlRequest({
-              keystone,
+            const result = await keystone.executeGraphQL({
               query: `
                 query getUserNodes($userId: ID!){
                   UserToNotesNoRead(where: { id: $userId }) {
@@ -317,6 +312,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
             `,
               variables: { userId: createUser.id },
+              context: keystone.createContext({ skipAccessControl: true }),
             });
             expect(result.errors).toBe(undefined);
             expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);

@@ -1,5 +1,5 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
@@ -55,8 +55,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             item: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -116,8 +115,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             item: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
           query {
             allUsers(where: {
@@ -176,8 +174,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await createItem({ keystone, listKey: 'User', item: {} });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -229,8 +226,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await createItem({ keystone, listKey: 'User', item: {} });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
           query {
             allUsers(where: {
@@ -331,8 +327,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all
-          let { data, errors } = await graphqlRequest({
-            keystone,
+          let { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -362,8 +357,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // adsCompany users with no spam
-          ({ data, errors } = await graphqlRequest({
-            keystone,
+          ({ data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -395,8 +389,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // adsCompany users with some spam
-          ({ data, errors } = await graphqlRequest({
-            keystone,
+          ({ data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers(where: {

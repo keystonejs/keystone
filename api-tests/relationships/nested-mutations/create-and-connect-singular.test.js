@@ -1,5 +1,5 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -27,8 +27,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'when neither id or create data passed',
         runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { errors } = await graphqlRequest({
-            keystone,
+          const { errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createEvent(data: { group: {} }) {
@@ -48,8 +47,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'when both id and create data passed',
         runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createEvent(data: { group: {
