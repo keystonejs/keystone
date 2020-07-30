@@ -3,7 +3,7 @@ const {
   multiAdapterRunners,
   setupServer,
   graphqlRequest,
-  networkedGraphqlRequest,
+  authedGraphqlRequest,
 } = require('@keystonejs/test-utils');
 
 const falseFn = () => false;
@@ -76,9 +76,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
       it(
         'Denies access acording to access control',
-        runner(setupKeystone, async ({ app }) => {
-          const { data, errors } = await networkedGraphqlRequest({
-            app,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await authedGraphqlRequest({
+            keystone,
             query: `
               query {
                 quads(x: 10)

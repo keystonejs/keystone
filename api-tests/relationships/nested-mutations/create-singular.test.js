@@ -4,7 +4,7 @@ const {
   multiAdapterRunners,
   setupServer,
   graphqlRequest,
-  networkedGraphqlRequest,
+  authedGraphqlRequest,
 } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
@@ -243,12 +243,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           if (group.allowed) {
             test(
               'does not throw error when creating nested within create mutation',
-              runner(setupKeystone, async ({ app, findOne, findById }) => {
+              runner(setupKeystone, async ({ keystone, findOne, findById }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item that does the nested create
-                const { data, errors } = await networkedGraphqlRequest({
-                  app,
+                const { data, errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                 mutation {
                   createEventTo${group.name}(data: {
@@ -279,15 +279,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'does not throw error when creating nested within update mutation',
-              runner(setupKeystone, async ({ app, create, findOne, findById }) => {
+              runner(setupKeystone, async ({ keystone, create, findOne, findById }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
                 const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
 
                 // Update an item that does the nested create
-                const { data, errors } = await networkedGraphqlRequest({
-                  app,
+                const { data, errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                 mutation {
                   updateEventTo${group.name}(
@@ -321,14 +321,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           } else {
             test(
               'throws error when creating nested within create mutation',
-              runner(setupKeystone, async ({ keystone, app }) => {
+              runner(setupKeystone, async ({ keystone }) => {
                 const alphaNumGenerator = gen.alphaNumString.notEmpty();
                 const eventName = sampleOne(alphaNumGenerator);
                 const groupName = sampleOne(alphaNumGenerator);
 
                 // Create an item that does the nested create
-                const { data, errors } = await networkedGraphqlRequest({
-                  app,
+                const { data, errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -344,21 +344,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 if (group.name === 'GroupNoCreateHard') {
                   // For { create: false } the mutation won't even exist, so we expect a different behaviour
-                  expect(data).toBe(undefined);
+                  expect(data[`createEventTo${group.name}`]).toBe(null);
                 } else {
                   // Assert it throws an access denied error
                   expect(data[`createEventTo${group.name}`]).toBe(null);
-                  expect(errors).toMatchObject([
-                    {
-                      data: {
-                        errors: expect.arrayContaining([
-                          expect.objectContaining({
-                            message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
-                          }),
-                        ]),
-                      },
-                    },
-                  ]);
+                  expect(errors).toHaveLength(1);
+                  const error = errors[0];
+                  expect(error.message).toEqual(
+                    `Unable to create a EventTo${group.name}.group<${group.name}>`
+                  );
+                  expect(error.path).toHaveLength(1);
+                  expect(error.path[0]).toEqual(`createEventTo${group.name}`);
                 }
                 // Confirm it didn't insert either of the records anyway
                 const result = await graphqlRequest({
@@ -394,15 +390,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'throws error when creating nested within update mutation',
-              runner(setupKeystone, async ({ keystone, app, create }) => {
+              runner(setupKeystone, async ({ keystone, create }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
                 const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
 
                 // Update an item that does the nested create
-                const { data, errors } = await networkedGraphqlRequest({
-                  app,
+                const { data, errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -422,20 +418,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Assert it throws an access denied error
                 if (group.name === 'GroupNoCreateHard') {
                   // For { create: false } the mutation won't even exist, so we expect a different behaviour
-                  expect(data).toBe(undefined);
+                  expect(data[`updateEventTo${group.name}`]).toBe(null);
                 } else {
                   expect(data[`updateEventTo${group.name}`]).toBe(null);
-                  expect(errors).toMatchObject([
-                    {
-                      data: {
-                        errors: expect.arrayContaining([
-                          expect.objectContaining({
-                            message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
-                          }),
-                        ]),
-                      },
-                    },
-                  ]);
+                  expect(errors).toHaveLength(1);
+                  const error = errors[0];
+                  expect(error.message).toEqual(
+                    `Unable to create a EventTo${group.name}.group<${group.name}>`
+                  );
+                  expect(error.path).toHaveLength(1);
+                  expect(error.path[0]).toEqual(`updateEventTo${group.name}`);
                 }
 
                 // Confirm it didn't insert the record anyway

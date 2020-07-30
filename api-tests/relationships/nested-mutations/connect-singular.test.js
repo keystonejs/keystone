@@ -4,7 +4,7 @@ const {
   multiAdapterRunners,
   setupServer,
   graphqlRequest,
-  networkedGraphqlRequest,
+  authedGraphqlRequest,
 } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
@@ -269,7 +269,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           if (group.allowed) {
             test(
               'does not throw error when linking nested within create mutation',
-              runner(setupKeystone, async ({ app, create }) => {
+              runner(setupKeystone, async ({ keystone, create }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
@@ -278,8 +278,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { data, errors } = await networkedGraphqlRequest({
-                  app,
+                const { data, errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                 mutation {
                   createEventTo${group.name}(data: {
@@ -303,7 +303,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             );
             test(
               'does not throw error when linking nested within update mutation',
-              runner(setupKeystone, async ({ app, create, findOne, findById }) => {
+              runner(setupKeystone, async ({ keystone, create, findOne, findById }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
@@ -315,8 +315,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { data, errors } = await networkedGraphqlRequest({
-                  app,
+                const { data, errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                 mutation {
                   updateEventTo${group.name}(
@@ -360,7 +360,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           } else {
             test(
               'throws error when linking nested within update mutation',
-              runner(setupKeystone, async ({ app, create }) => {
+              runner(setupKeystone, async ({ keystone, create }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
@@ -372,8 +372,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { errors } = await networkedGraphqlRequest({
-                  app,
+                const { errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                 mutation {
                   updateEventTo${group.name}(
@@ -388,24 +388,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               `,
                 });
-
-                expect(errors).toMatchObject([
-                  {
-                    data: {
-                      errors: expect.arrayContaining([
-                        expect.objectContaining({
-                          message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
-                        }),
-                      ]),
-                    },
-                  },
-                ]);
+                expect(errors).toHaveLength(1);
+                const error = errors[0];
+                expect(error.message).toEqual(
+                  `Unable to connect a EventTo${group.name}.group<${group.name}>`
+                );
+                expect(error.path).toHaveLength(1);
+                expect(error.path[0]).toEqual(`updateEventTo${group.name}`);
               })
             );
 
             test(
               'throws error when linking nested within create mutation',
-              runner(setupKeystone, async ({ app, create }) => {
+              runner(setupKeystone, async ({ keystone, create }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
@@ -413,8 +408,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { errors } = await networkedGraphqlRequest({
-                  app,
+                const { errors } = await authedGraphqlRequest({
+                  keystone,
                   query: `
                 mutation {
                   createEventTo${group.name}(data: {
@@ -426,18 +421,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               `,
                 });
-
-                expect(errors).toMatchObject([
-                  {
-                    data: {
-                      errors: expect.arrayContaining([
-                        expect.objectContaining({
-                          message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
-                        }),
-                      ]),
-                    },
-                  },
-                ]);
+                expect(errors).toHaveLength(1);
+                const error = errors[0];
+                expect(error.message).toEqual(
+                  `Unable to connect a EventTo${group.name}.group<${group.name}>`
+                );
+                expect(error.path).toHaveLength(1);
+                expect(error.path[0]).toEqual(`createEventTo${group.name}`);
               })
             );
           }
