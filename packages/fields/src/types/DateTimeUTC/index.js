@@ -3,7 +3,7 @@ import {
   MongoDateTimeUtcInterface,
   KnexDateTimeUtcInterface,
 } from './Implementation';
-import { DateTime } from '@keystonejs/fields';
+import { DateTime } from '../DateTime';
 
 export const DateTimeUtc = {
   type: 'DateTimeUtc',
