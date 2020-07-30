@@ -1,4 +1,5 @@
 ---
+'@keystonejs/field-content': major
 '@keystonejs/fields-content': major
 '@keystonejs/fields': patch
 '@keystonejs/cypress-project-basic': patch
