@@ -162,7 +162,6 @@ Please note: We use these internally but provide no support or assurance if used
 | `dumpSchema`          | Dump schema to a string.                                                     |
 | `getTypeDefs`         | Remove from user documentation?                                              |
 | `getResolvers`        | Remove from user documentation?                                              |
-| `createItem`          | Remove from user documentation?                                              |
 | `getAdminMeta`        | Remove from user documentation?                                              |
 -->
 
