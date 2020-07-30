@@ -7,7 +7,7 @@ order: 3
 # Seeding data
 
 This guide will show you how to create a `User` list and add initial data to it
-using the `createItems` method. This process is also called `seeding`.
+using the `createItems` function. This process is also called `seeding`.
 
 > **Note:** In a previous chapter the code was split up over separate files, while this is preferred in a real code base, in this part everything is put in one file for clarity reasons.
 
@@ -83,7 +83,6 @@ The [`createItems`](https://www.keystonejs.com/keystonejs/server-side-graphql-cl
 - `keystone`: a Keystone instance
 - `listKey`: the Keystone list name
 - `items`: the array of objects to be created.
-
 
 ```javascript
 createItems({
@@ -269,7 +268,7 @@ const keystone = new Keystone({
             name: 'John Duck',
             email: 'john@duck.com',
             password: 'dolphins',
-            posts: { 
+            posts: {
                // Filtering list of items where title contains the word `React`
                connect: post.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
           },
@@ -287,6 +286,7 @@ const keystone = new Keystone({
   },
 });
 ```
-Clear the database, start the Keystone application and visit the Admin UI. Take a look at the user `John Duck`, he has two posts associated with him (there were two posts with the word `React` in the `title`). 
+
+Clear the database, start the Keystone application and visit the Admin UI. Take a look at the user `John Duck`, he has two posts associated with him (there were two posts with the word `React` in the `title`).
 
 If you want to explore other utility functions for `CRUD` operations, please refer to [server-side GraphQL client](https://www.keystonejs.com/keystonejs/server-side-graphql-client) API for more details.

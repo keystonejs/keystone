@@ -2,7 +2,7 @@
 '@keystonejs/keystone': major
 ---
 
-Removed the `keystone.createItems` and `keystone.createItem` method. This has been replaced with the corresponding `createItems` and `createItem` function in `@keystonejs/server-side-graphql-client`.
+Removed the `keystone.createItems` and `keystone.createItem` methods. These have been replaced with the corresponding functions `createItems` and `createItem` in `@keystonejs/server-side-graphql-client`.
 
 If you have examples like:
 
