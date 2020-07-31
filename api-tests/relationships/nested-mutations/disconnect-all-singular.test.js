@@ -1,6 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { getItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -44,7 +45,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'removes item from list',
-        runner(setupKeystone, async ({ keystone, create, findById }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const groupName = `foo${sampleOne(alphanumGenerator)}`;
 
           const createGroup = await create('Group', { name: groupName });
@@ -88,7 +89,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toBe(undefined);
 
           // Avoid false-positives by checking the database directly
-          const eventData = await findById('Event', createEvent.id);
+          const eventData = await getItem({
+            keystone,
+            listKey: 'Event',
+            itemId: createEvent.id,
+            returnFields: 'id group { id }',
+          });
 
           expect(eventData).toHaveProperty('group', null);
         })
@@ -165,7 +171,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when using disconnectAll',
-          runner(setupKeystone, async ({ keystone, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const groupName = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -199,7 +205,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toBe(undefined);
 
             // Avoid false-positives by checking the database directly
-            const eventData = await findById('EventToGroupNoRead', createEvent.id);
+            const eventData = await getItem({
+              keystone,
+              listKey: 'EventToGroupNoRead',
+              itemId: createEvent.id,
+              returnFields: 'id group { id }',
+            });
 
             expect(eventData).toHaveProperty('group');
             expect(eventData.group).toBe(null);
