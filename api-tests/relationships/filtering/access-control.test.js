@@ -1,10 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  authedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -57,8 +53,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await authedGraphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {
@@ -103,8 +98,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await authedGraphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {

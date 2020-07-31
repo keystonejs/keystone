@@ -1,11 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  authedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -278,8 +273,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                 mutation {
                   createEventTo${group.name}(data: {
@@ -315,8 +309,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { data, errors } = await authedGraphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                 mutation {
                   updateEventTo${group.name}(
@@ -372,8 +365,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { errors } = await authedGraphqlRequest({
-                  keystone,
+                const { errors } = await keystone.executeGraphQL({
                   query: `
                 mutation {
                   updateEventTo${group.name}(
@@ -408,8 +400,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { errors } = await authedGraphqlRequest({
-                  keystone,
+                const { errors } = await keystone.executeGraphQL({
                   query: `
                 mutation {
                   createEventTo${group.name}(data: {

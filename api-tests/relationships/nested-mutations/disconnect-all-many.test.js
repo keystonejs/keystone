@@ -1,11 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const {
-  setupServer,
-  graphqlRequest,
-  multiAdapterRunners,
-  authedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { setupServer, graphqlRequest, multiAdapterRunners } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -160,8 +155,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await authedGraphqlRequest({
-              keystone,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
