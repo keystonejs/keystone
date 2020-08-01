@@ -33,7 +33,7 @@ const _byTracking = ({ created = true, updated = true }) => ({
       operation === 'create' &&
       updated
     ) {
-      resolvedData['updatedBy'] = null;
+      resolvedData[updatedByField] = null;
     }
 
     if (
