@@ -6,6 +6,14 @@ export const name = 'Select';
 
 export { Select as type };
 export const exampleValue = 'thinkmill';
+export const exampleValue2 = 'atlassian';
+export const supportsUnique = true;
+export const fieldConfig = {
+  options: [
+    { label: 'Thinkmill', value: 'thinkmill' },
+    { label: 'Atlassian', value: 'atlassian' },
+  ],
+};
 
 export const getTestFields = () => {
   return {

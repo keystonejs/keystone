@@ -1,5 +1,11 @@
 # @keystonejs/file-adapters
 
+## 7.0.2
+
+### Patch Changes
+
+- [`35335df8e`](https://github.com/keystonejs/keystone/commit/35335df8eb64541dc5c5685e89883f35aa85d3f5) [#3268](https://github.com/keystonejs/keystone/pull/3268) Thanks [@zamkevich](https://github.com/zamkevich)! - Fixed a bug in the delete function, due to which it was impossible to delete images in folders.
+
 ## 7.0.1
 
 ### Patch Changes

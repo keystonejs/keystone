@@ -26,6 +26,10 @@ export class Relationship extends Implementation {
     this.withMeta = typeof withMeta !== 'undefined' ? withMeta : true;
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   tryResolveRefList() {
     const { listKey, path, refListKey, refFieldPath } = this;
     const refList = this.getListByKey(refListKey);
@@ -60,12 +64,12 @@ export class Relationship extends Implementation {
     if (this.many) {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
-        `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
+        `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}!]!`,
         this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta` : '',
       ];
+    } else {
+      return [`${this.path}: ${refList.gqlNames.outputTypeName}`];
     }
-
-    return [`${this.path}: ${refList.gqlNames.outputTypeName}`];
   }
 
   extendAdminMeta(meta) {
@@ -89,8 +93,6 @@ export class Relationship extends Implementation {
         ${this.path}_some: ${refList.gqlNames.whereInputName}`,
         `""" condition must be false for all nodes """
         ${this.path}_none: ${refList.gqlNames.whereInputName}`,
-        `""" is the relation field null """
-        ${this.path}_is_null: Boolean`,
       ];
     } else {
       return [`${this.path}: ${refList.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
@@ -105,8 +107,27 @@ export class Relationship extends Implementation {
       return [];
     }
 
-    // to-one relationships are much easier to deal with.
-    if (!this.many) {
+    if (this.many) {
+      return {
+        [this.path]: (item, args, context, info) => {
+          return refList.listQuery(args, context, info.fieldName, info, {
+            fromList: this.getListByKey(this.listKey),
+            fromId: item.id,
+            fromField: this.path,
+          });
+        },
+
+        ...(this.withMeta && {
+          [`_${this.path}Meta`]: (item, args, context, info) => {
+            return refList.listQueryMeta(args, context, info.fieldName, info, {
+              fromList: this.getListByKey(this.listKey),
+              fromId: item.id,
+              fromField: this.path,
+            });
+          },
+        }),
+      };
+    } else {
       return {
         [this.path]: (item, _, context, info) => {
           // No ID set, so we return null for the value
@@ -121,26 +142,6 @@ export class Relationship extends Implementation {
         },
       };
     }
-
-    return {
-      [this.path]: (item, args, context, info) => {
-        return refList.listQuery(args, context, info.fieldName, info, {
-          fromList: this.getListByKey(this.listKey),
-          fromId: item.id,
-          fromField: this.path,
-        });
-      },
-
-      ...(this.withMeta && {
-        [`_${this.path}Meta`]: (item, args, context, info) => {
-          return refList.listQueryMeta(args, context, info.fieldName, info, {
-            fromList: this.getListByKey(this.listKey),
-            fromId: item.id,
-            fromField: this.path,
-          });
-        },
-      }),
-    };
   }
 
   /**
@@ -269,33 +270,34 @@ export class Relationship extends Implementation {
         }
       `,
       ];
-    }
-    if (refList.access[schemaName].create) {
-      operations.push(`# Provide data to create a new ${refList.key}.
+    } else {
+      if (refList.access[schemaName].create) {
+        operations.push(`# Provide data to create a new ${refList.key}.
         create: ${refList.gqlNames.createInputName}`);
-    }
-    operations.push(
-      `# Provide a filter to link to an existing ${refList.key}.
+      }
+      operations.push(
+        `# Provide a filter to link to an existing ${refList.key}.
         connect: ${refList.gqlNames.whereUniqueInputName}`,
-      `# Provide a filter to remove to an existing ${refList.key}.
+        `# Provide a filter to remove to an existing ${refList.key}.
         disconnect: ${refList.gqlNames.whereUniqueInputName}`,
-      `# Remove the existing ${refList.key} (if any).
+        `# Remove the existing ${refList.key} (if any).
         disconnectAll: Boolean`
-    );
-    return [
-      `input ${refList.gqlNames.relateToOneInputName} {
+      );
+      return [
+        `input ${refList.gqlNames.relateToOneInputName} {
           ${operations.join('\n')}
         }
       `,
-    ];
+      ];
+    }
   }
   get gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
     if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
+    } else {
+      return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
     }
-
-    return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
   }
   get gqlCreateInputFields() {
     return this.gqlUpdateInputFields;
@@ -335,22 +337,12 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
     }
   }
 
-  getRefListAdapter() {
-    return this.getListByKey(this.refListKey).adapter;
-  }
-
   getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_null`]: value => ({
         [dbPath]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
       }),
     };
-  }
-
-  supportsRelationshipQuery(query) {
-    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
-      query
-    );
   }
 }
 
@@ -385,10 +377,6 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       : this.knexOptions.isNotNullable));
   }
 
-  getRefListAdapter() {
-    return this.getListByKey(this.refListKey).adapter;
-  }
-
   addToTableSchema(table, rels) {
     // If we're relating to 'many' things, we don't store ids in this table
     if (!this.field.many) {
@@ -417,10 +405,5 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
       [`${this.path}_is_null`]: value => b =>
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
     };
-  }
-  supportsRelationshipQuery(query) {
-    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
-      query
-    );
   }
 }

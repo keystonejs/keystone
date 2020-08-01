@@ -1,7 +1,6 @@
 const express = require('express');
 const supertest = require('supertest-light');
 const MongoDBMemoryServer = require('mongodb-memory-server-core').default;
-const pFinally = require('p-finally');
 const url = require('url');
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
@@ -10,8 +9,8 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 async function setupServer({
   adapterName,
-  schemaName = 'testing',
-  schemaNames = ['testing'],
+  schemaName = 'public',
+  schemaNames = ['public'],
   createLists = () => {},
   keystoneOptions,
   graphqlOptions = {},
@@ -64,7 +63,7 @@ async function setupServer({
 
 function graphqlRequest({ keystone, query, variables }) {
   return keystone.executeGraphQL({
-    context: keystone.createContext({ schemaName: 'testing', skipAccessControl: true }),
+    context: keystone.createContext({ skipAccessControl: true }),
     query,
     variables,
   });
@@ -72,15 +71,7 @@ function graphqlRequest({ keystone, query, variables }) {
 
 // This is much like graphqlRequest except we don't skip access control checks!
 function authedGraphqlRequest({ keystone, query, variables }) {
-  return keystone.executeGraphQL({
-    context: keystone.createContext({
-      schemaName: 'testing',
-      authentication: {},
-      skipAccessControl: false,
-    }),
-    query,
-    variables,
-  });
+  return keystone.executeGraphQL({ query, variables });
 }
 
 function networkedGraphqlRequest({
@@ -185,17 +176,19 @@ function _keystoneRunner(adapterName, tearDownFunction) {
 
       await keystone.connect();
 
-      return pFinally(
-        testFn({
+      try {
+        await testFn({
           ...setup,
           create: getCreate(keystone),
           findById: getFindById(keystone),
           findOne: getFindOne(keystone),
           update: getUpdate(keystone),
           delete: getDelete(keystone),
-        }),
-        () => keystone.disconnect().then(tearDownFunction)
-      );
+        });
+      } finally {
+        await keystone.disconnect();
+        await tearDownFunction();
+      }
     };
   };
 }

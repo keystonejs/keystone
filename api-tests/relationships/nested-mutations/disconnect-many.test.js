@@ -1,11 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  networkedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -247,7 +242,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no impact when disconnecting directly with an id',
-          runner(setupKeystone, async ({ keystone, app, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -260,8 +255,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoRead(

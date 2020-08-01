@@ -70,6 +70,11 @@ export class Select extends Implementation {
     this.dataType = dataType;
     this.isOrderable = true;
   }
+
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
