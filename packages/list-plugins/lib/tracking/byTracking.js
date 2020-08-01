@@ -27,13 +27,20 @@ const _byTracking = ({ created = true, updated = true }) => ({
   const newResolveInput = ({ resolvedData, operation, originalInput, context }) => {
     // for anonymous mutation, we set the user to null
     const userId = context.authedItem === undefined ? null : context.authedItem.id;
-    // if nothing change we keep existing item as well
+
     if (
-      // this is an update
+      // if it's just created - we reset updatedBy field
+      operation === 'create' &&
+      updated
+    ) {
+      resolvedData['updatedBy'] = null;
+    }
+
+    if (
+      // if it's updated - we set current user to updatedBy field
       operation === 'update' &&
-      // opted-in to updatedBy tracking
       updated &&
-      // is not empty
+      // but if nothing is changed we keep existing item as well
       Object.keys(originalInput).length !== 0
     ) {
       resolvedData[updatedByField] = userId;
