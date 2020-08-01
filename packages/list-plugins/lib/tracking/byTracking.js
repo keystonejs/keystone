@@ -25,21 +25,23 @@ const _byTracking = ({ created = true, updated = true }) => ({
   }
 
   const newResolveInput = ({ resolvedData, operation, originalInput, context }) => {
+    // for anonymous mutation, we set the user to null
+    const userId = context.authedItem === undefined ? null : context.authedItem.id;
+    // if nothing change we keep existing item as well
     if (
-      // if no data received from the mutation, skip the update
-      Object.keys(originalInput).length === 0 &&
+      // this is an update
+      operation === 'update' &&
       // opted-in to updatedBy tracking
       updated &&
-      // this is an update
-      operation === 'update'
+      // is not empty
+      Object.keys(originalInput).length !== 0
     ) {
-      // If not logged in, the id is set to `null`
-      const { authedItem: { id = null } = {} } = context;
-      resolvedData[updatedByField] = id;
+      resolvedData[updatedByField] = userId;
     }
 
     return resolvedData;
   };
+
   const originalResolveInput = hooks.resolveInput;
   hooks.resolveInput = composeHook(originalResolveInput, newResolveInput);
   return { fields, hooks, ...rest };

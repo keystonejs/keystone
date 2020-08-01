@@ -36,9 +36,6 @@ const _atTracking = ({ created = true, updated = true }) => ({
       if (created) {
         resolvedData[createdAtField] = dateNow;
       }
-      if (updated) {
-        resolvedData[updatedAtField] = dateNow;
-      }
     }
     if (operation === 'update') {
       // update mode
